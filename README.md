@@ -26,8 +26,8 @@ The ultimate Israeli destination for niche & boutique perfume samples (decants).
 
 1. **Clone the repository**
    ```bash
-   git clone https://github.com/your-username/ml-tlv.git
-   cd ml-tlv/app
+   git clone https://github.com/your-username/ml.git
+   cd ml/app
    ```
 
 2. **Install dependencies**
@@ -59,7 +59,7 @@ The ultimate Israeli destination for niche & boutique perfume samples (decants).
 ## 📁 Project Structure
 
 ```
-ml-tlv/
+ml/
 ├── app/
 │   ├── admin/              # Admin dashboard pages
 │   ├── api/                # Backend API routes (Orders, Users)
