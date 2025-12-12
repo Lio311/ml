@@ -2,6 +2,7 @@ import Link from "next/link";
 import Image from "next/image";
 import pool from "./lib/db";
 import ProductCard from "./components/ProductCard";
+import LiveStats from "./components/LiveStats";
 
 export const dynamic = 'force-dynamic';
 
@@ -79,24 +80,7 @@ export default async function Home() {
       </section>
 
       {/* Live Stats Strip */}
-      <section className="bg-black text-white py-8 border-t border-gray-800">
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-3 gap-4 text-center divide-x divide-gray-800 rtl:divide-x-reverse">
-            <div className="flex flex-col items-center">
-              <span className="text-3xl md:text-4xl font-bold font-serif">{stats.brands}</span>
-              <span className="text-xs md:text-sm uppercase tracking-widest text-gray-400 mt-1">מותגים</span>
-            </div>
-            <div className="flex flex-col items-center">
-              <span className="text-3xl md:text-4xl font-bold font-serif">{stats.products}</span>
-              <span className="text-xs md:text-sm uppercase tracking-widest text-gray-400 mt-1">בשמים באתר</span>
-            </div>
-            <div className="flex flex-col items-center">
-              <span className="text-3xl md:text-4xl font-bold font-serif">+{stats.samples.toLocaleString()}</span>
-              <span className="text-xs md:text-sm uppercase tracking-widest text-gray-400 mt-1">דוגמיות שנמכרו</span>
-            </div>
-          </div>
-        </div>
-      </section>
+      <LiveStats stats={stats} />
 
       {/* New Arrivals Section */}
       <section className="py-4 bg-white">
