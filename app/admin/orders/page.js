@@ -74,13 +74,21 @@ export default async function AdminOrdersPage() {
                                     {new Date(order.created_at).toLocaleString('he-IL')}
                                 </td>
                                 <td className="p-4">
-                                    <span className={`text-xs px-2 py-1 rounded-full ${order.status === 'pending' ? 'bg-orange-100 text-orange-800' :
+                                    <span className={`text-xs px-2 py-1 rounded-full ${
+                                        order.status === 'pending' ? 'bg-orange-100 text-orange-800' :
+                                        order.status === 'processing' ? 'bg-blue-100 text-blue-800' :
+                                        order.status === 'shipped' ? 'bg-purple-100 text-purple-800' :
                                         order.status === 'completed' ? 'bg-green-100 text-green-800' :
-                                            'bg-gray-100 text-gray-800'
-                                        }`}>
-                                        {order.status === 'pending' ? 'ממתין' :
+                                        'bg-gray-100 text-gray-800'
+                                    }`}>
+                                        {
+                                            order.status === 'pending' ? 'ממתין' :
+                                            order.status === 'processing' ? 'בטיפול' :
+                                            order.status === 'shipped' ? 'נשלח' :
                                             order.status === 'completed' ? 'הושלם' :
-                                                order.status}
+                                            order.status === 'cancelled' ? 'בוטל' :
+                                            order.status
+                                        }
                                     </span>
                                 </td>
                                 <td className="p-4">
