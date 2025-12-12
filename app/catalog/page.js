@@ -6,7 +6,7 @@ import SortSelect from "./SortSelect";
 
 // Server Component - Fetch data directly
 async function getProducts(search, brand, category, minPrice, maxPrice, sort, page = 1) {
-    const LIMIT = 24;
+    const LIMIT = 16;
     const OFFSET = (page - 1) * LIMIT;
 
     let query = `
