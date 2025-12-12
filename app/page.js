@@ -7,7 +7,7 @@ export const dynamic = 'force-dynamic';
 
 export default async function Home() {
   let newArrivals = [];
-  let stats = { brands: 0, products: 0, samples: 5000 };
+  let stats = { brands: 0, products: 0, samples: 500 };
 
   try {
     const client = await pool.connect();
