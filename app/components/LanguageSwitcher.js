@@ -33,11 +33,15 @@ export default function LanguageSwitcher() {
         setCurrentLang(langCode);
         setIsOpen(false);
 
-        const select = document.querySelector(".goog-te-combo");
-        if (select) {
-            select.value = langCode;
-            select.dispatchEvent(new Event("change"));
-        }
+        // 1. Set the Google Translate cookie
+        // Format: /sourceLang/targetLang. We use 'auto' as source.
+        const cookieValue = `/auto/${langCode}`;
+
+        document.cookie = `googtrans=${cookieValue}; path=/; domain=${window.location.hostname}`;
+        document.cookie = `googtrans=${cookieValue}; path=/`;
+
+        // 2. Reload the page to apply the translation
+        window.location.reload();
     };
 
     const flags = {
