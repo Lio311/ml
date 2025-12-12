@@ -28,7 +28,7 @@ export default async function Home() {
       try {
         const orderCountRes = await client.query('SELECT COUNT(*) FROM orders');
         const orders = parseInt(orderCountRes.rows[0].count);
-        stats.samples += (orders * 3);
+        stats.samples += orders;
       } catch (e) {
         // Orders table might not exist or be empty, ignore
       }
