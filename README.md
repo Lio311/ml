@@ -1,36 +1,128 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 💎 ml_tlv - Luxury Perfume Decants
 
-## Getting Started
+[![Next.js](https://img.shields.io/badge/Next.js-14.0-black)](https://nextjs.org/) [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4-38B2AC)](https://tailwindcss.com/) [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16.0-336791)](https://www.postgresql.org/)
 
-First, run the development server:
+The ultimate Israeli destination for niche & boutique perfume samples (decants).
+- **Exclusive Collections**: Curated selection of high-end brands like Xerjoff, Roja, Creed, and more.
+- **Authentic Experience**: 100% original fragrances decanted into high-quality 2ml, 5ml, and 10ml bottles.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+### 🛍️ Shopping Experience
+- **Smart Cart**: Dynamic shopping cart with real-time updates.
+- **Tiered Bonuses**: Automatic free sample rewards based on cart value.
+- **Wishlist**: Save your favorite scents for later.
+- **Secure Checkout**: Streamlined order process.
+
+### 🎨 User Interface
+- **Modern Design**: Clean, minimalist, and luxury-focused aesthetic.
+- **Mobile First**: Fully responsive layout optimized for all devices.
+- **Multi-language**: Partial support for Hebrew, English, and Russian.
+- **Accessibility**: RTL support and clear navigation.
+
+---
+
+## 🚀 Quick Start
+
+### Installation
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/your-username/ml-tlv.git
+   cd ml-tlv/app
+   ```
+
+2. **Install dependencies**
+   ```bash
+   npm install
+   # or
+   yarn install
+   ```
+
+3. **Set up Environment Variables**
+   Create a `.env.local` file with the following:
+   ```env
+   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_...
+   CLERK_SECRET_KEY=sk_test_...
+   POSTGRES_URL=postgres://...
+   NEXT_PUBLIC_BASE_URL=http://localhost:3000
+   ```
+
+4. **Run the application**
+   ```bash
+   npm run dev
+   ```
+
+5. **Open in browser**
+   The app will automatically open at `http://localhost:3000`
+
+---
+
+## 📁 Project Structure
+
+```
+ml-tlv/
+├── app/
+│   ├── admin/              # Admin dashboard pages
+│   ├── api/                # Backend API routes (Orders, Users)
+│   ├── cart/               # Shopping cart logic
+│   ├── catalog/            # Product listing and filtering
+│   ├── components/         # Reusable UI components (Header, ProductCard)
+│   ├── context/            # Global state context (CartContext)
+│   ├── orders/             # User order history
+│   └── layout.js           # Root layout and providers
+├── public/                 # Static assets (images, icons)
+├── scripts/                # Database migration and setup scripts
+└── package.json            # Project dependencies
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+---
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+## 🛠️ Technical Stack
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **Frontend**: Next.js 14 (App Router), React
+- **Styling**: Tailwind CSS, PostCSS
+- **Database**: PostgreSQL (via `pg` pool)
+- **Authentication**: Clerk (`@clerk/nextjs`)
+- **Localization**: Google Translate (Cookie-based integration)
+- **Deployment**: Vercel ready
 
-## Learn More
+---
 
-To learn more about Next.js, take a look at the following resources:
+## 🎯 Key Features
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 🛒 Dynamic Cart & Bonuses
+- Real-time total calculation.
+- **Bonus Logic**:
+    - Over 300 ₪: 2 Free Samples
+    - Over 500 ₪: 4 Free Samples
+    - Over 1000 ₪: 6 Free Samples
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### 👑 Admin Dashboard
+- **View Orders**: Comprehensive table with status management.
+- **Localised Statuses**: Hebrew status tracking (Pending, Processing, Shipped).
+- **Order Details**: Full visibility of ordered items (Name, Quantity, Size).
 
-## Deploy on Vercel
+### 🔍 Product Catalog
+- **Search & Filter**: Find perfumes by name or category (Summer, Evening, Exclusive).
+- **Detailed Views**: High-quality images and rich descriptions.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/NewFeature`)
+3. Commit your changes (`git commit -m 'Add NewFeature'`)
+4. Push to the branch (`git push origin feature/NewFeature`)
+5. Open a Pull Request
+
+---
+
+<div align="center">
+
+**Made with ❤️ for ml_tlv**
+
+**Premium Niche Perfumes | Tel Aviv**
+
+</div>
