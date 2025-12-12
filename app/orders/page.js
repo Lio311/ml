@@ -70,15 +70,35 @@ export default function OrdersPage() {
                                 </div>
                             </div>
 
-                            <div className="space-y-3">
+                            <div className="divide-y">
                                 {order.items.map((item, idx) => (
-                                    <div key={idx} className="flex justify-between items-center text-sm">
-                                        <div className="flex items-center gap-2">
-                                            <span className="font-bold">{item.quantity}x</span>
-                                            <span>{item.name}</span>
-                                            <span className="text-gray-400 text-xs">({item.size})</span>
+                                    <div key={idx} className="flex items-center gap-4 py-4">
+                                        {/* Product Image */}
+                                        <div className="w-16 h-16 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0 border">
+                                            {item.image_url ? (
+                                                <img src={item.image_url} alt={item.name} className="w-full h-full object-contain" />
+                                            ) : (
+                                                <div className="w-full h-full flex items-center justify-center text-xl">🧴</div>
+                                            )}
                                         </div>
-                                        <div>{item.price * item.quantity} ₪</div>
+
+                                        {/* Details */}
+                                        <div className="flex-1">
+                                            <div className="font-bold text-gray-900">{item.name}</div>
+                                            <div className="text-sm text-gray-500 flex items-center gap-3 mt-1">
+                                                <span className="bg-gray-100 px-2 py-0.5 rounded text-xs text-gray-700">
+                                                    {item.size.toString().includes('ml') ? item.size : `${item.size} ml`}
+                                                </span>
+                                                <span className="text-xs">
+                                                    כמות: {item.quantity}
+                                                </span>
+                                            </div>
+                                        </div>
+
+                                        {/* Price */}
+                                        <div className="font-medium text-gray-900">
+                                            {item.price * item.quantity} ₪
+                                        </div>
                                     </div>
                                 ))}
                             </div>
