@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import TagInput from "../../components/TagInput";
 
 export default function AdminProductsClient({ products, initialSearch, totalProducts, filteredCount, currentPage, totalPages, currentLetter }) {
     const router = useRouter();
@@ -107,6 +108,12 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
         router.push(`/admin/products?q=${searchTerm}`);
     };
 
+    const allCategories = Array.from(new Set(
+        products.flatMap(p => p.category ? p.category.split(',') : [])
+            .map(c => c.trim())
+            .filter(Boolean)
+    )).sort();
+
     const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split('');
 
     return (
@@ -184,19 +191,13 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                             />
                         </div>
                         <div>
-                            <label className="text-sm text-gray-500">קטגוריה</label>
-                            <input
-                                list="category-options-create"
-                                value={editForm.category || ''}
-                                onChange={e => setEditForm({ ...editForm, category: e.target.value })}
-                                className="border p-2 rounded w-full bg-gray-50"
-                                placeholder="בחר או הקלד..."
+                            <label className="text-sm text-gray-500">קטגוריות (לחץ Enter להוספה)</label>
+                            <TagInput
+                                tags={editForm.category ? editForm.category.split(',').filter(Boolean) : []}
+                                onChange={(newTags) => setEditForm({ ...editForm, category: newTags.join(',') })}
+                                suggestions={allCategories}
+                                placeholder="הוסף קטגוריה (למשל: יוניסקס)..."
                             />
-                            <datalist id="category-options-create">
-                                {Array.from(new Set(products.map(p => p.category).filter(Boolean))).sort().map(cat => (
-                                    <option key={cat} value={cat} />
-                                ))}
-                            </datalist>
                         </div>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
@@ -279,19 +280,13 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                         />
                                     </div>
                                     <div className="md:col-span-1">
-                                        <label className="text-xs text-gray-500">קטגוריה</label>
-                                        <input
-                                            list="category-options-inline"
-                                            value={editForm.category || ''}
-                                            onChange={e => setEditForm({ ...editForm, category: e.target.value })}
-                                            className="border p-2 rounded w-full bg-gray-50"
-                                            placeholder="בחר או הקלד..."
+                                        <label className="text-xs text-gray-500">קטגוריות (לחץ Enter להוספה)</label>
+                                        <TagInput
+                                            tags={editForm.category ? editForm.category.split(',').filter(Boolean) : []}
+                                            onChange={(newTags) => setEditForm({ ...editForm, category: newTags.join(',') })}
+                                            suggestions={allCategories}
+                                            placeholder="הוסף קטגוריה..."
                                         />
-                                        <datalist id="category-options-inline">
-                                            {Array.from(new Set(products.map(p => p.category).filter(Boolean))).sort().map(cat => (
-                                                <option key={cat} value={cat} />
-                                            ))}
-                                        </datalist>
                                     </div>
                                     <div>
                                         <label className="text-xs text-gray-500">2 מ״ל</label>
