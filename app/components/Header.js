@@ -99,9 +99,6 @@ export default function Header() {
 
                     {/* Actions - Absolute Left on Desktop */}
                     <div className="flex items-center gap-4 md:absolute md:left-4 z-20">
-                        <div className="hidden md:block">
-                            <LanguageSwitcher />
-                        </div>
                         <SignedIn>
                             <div className="flex items-center gap-2">
                                 <UserButton afterSignOutUrl="/" />
