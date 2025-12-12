@@ -186,11 +186,17 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                         <div>
                             <label className="text-sm text-gray-500">קטגוריה</label>
                             <input
+                                list="category-options-create"
                                 value={editForm.category || ''}
                                 onChange={e => setEditForm({ ...editForm, category: e.target.value })}
                                 className="border p-2 rounded w-full bg-gray-50"
-                                placeholder="למשל: יוניסקס, גברים, נשים..."
+                                placeholder="בחר או הקלד..."
                             />
+                            <datalist id="category-options-create">
+                                {Array.from(new Set(products.map(p => p.category).filter(Boolean))).sort().map(cat => (
+                                    <option key={cat} value={cat} />
+                                ))}
+                            </datalist>
                         </div>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
@@ -275,10 +281,17 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                     <div className="md:col-span-1">
                                         <label className="text-xs text-gray-500">קטגוריה</label>
                                         <input
+                                            list="category-options-inline"
                                             value={editForm.category || ''}
                                             onChange={e => setEditForm({ ...editForm, category: e.target.value })}
                                             className="border p-2 rounded w-full bg-gray-50"
+                                            placeholder="בחר או הקלד..."
                                         />
+                                        <datalist id="category-options-inline">
+                                            {Array.from(new Set(products.map(p => p.category).filter(Boolean))).sort().map(cat => (
+                                                <option key={cat} value={cat} />
+                                            ))}
+                                        </datalist>
                                     </div>
                                     <div>
                                         <label className="text-xs text-gray-500">2 מ״ל</label>
