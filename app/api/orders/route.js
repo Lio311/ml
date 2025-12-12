@@ -4,7 +4,7 @@ import pool from '../../lib/db';
 
 export async function POST(req) {
     try {
-        const { userId } = auth();
+        const { userId } = await auth();
         const user = await currentUser();
 
         if (!userId) {
