@@ -35,6 +35,7 @@ export default async function AdminOrdersPage() {
                         <tr>
                             <th className="p-4">#</th>
                             <th className="p-4">לקוח</th>
+                            <th className="p-4 w-96">תכולת ההזמנה</th>
                             <th className="p-4">סכום</th>
                             <th className="p-4">בונוסים</th>
                             <th className="p-4">תאריך</th>
@@ -49,6 +50,17 @@ export default async function AdminOrdersPage() {
                                 <td className="p-4">
                                     <div className="font-bold">{order.customer_details?.name}</div>
                                     <div className="text-xs text-gray-500">{order.customer_details?.email}</div>
+                                </td>
+                                <td className="p-4 text-sm">
+                                    <ul className="space-y-1">
+                                        {order.items?.map((item, idx) => (
+                                            <li key={idx} className="flex gap-2 text-gray-700">
+                                                <span className="font-bold whitespace-nowrap">{item.quantity}x</span>
+                                                <span>{item.name}</span>
+                                                <span className="text-gray-500 whitespace-nowrap" dir="ltr">{item.size.toString().includes('ml') ? item.size : `${item.size} ml`}</span>
+                                            </li>
+                                        ))}
+                                    </ul>
                                 </td>
                                 <td className="p-4 font-bold">{order.total_amount} ₪</td>
                                 <td className="p-4 text-sm">
