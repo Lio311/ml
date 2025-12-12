@@ -54,7 +54,7 @@ export default function Header() {
                         {/* Mobile Logo Center */}
                         <div className="md:hidden absolute left-1/2 transform -translate-x-1/2">
                             <Link href="/" className="inline-block">
-                                <Image src="/logo_v2.png" alt="ml." width={100} height={40} className="h-10 w-auto object-contain" priority />
+                                <Image src="/logo_v3.png" alt="ml." width={100} height={40} className="h-10 w-auto object-contain" priority />
                             </Link>
                         </div>
 
@@ -63,7 +63,7 @@ export default function Header() {
                         <div className="hidden md:flex flex-col items-center gap-1">
                             {/* Logo Top */}
                             <Link href="/" className="block">
-                                <Image src="/logo_v2.png" alt="ml." width={180} height={70} className="h-16 w-auto object-contain" priority />
+                                <Image src="/logo_v3.png" alt="ml." width={180} height={70} className="h-16 w-auto object-contain" priority />
                             </Link>
 
                             <nav className="flex items-center gap-6 lg:gap-8">

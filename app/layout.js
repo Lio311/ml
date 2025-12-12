@@ -24,7 +24,7 @@ export default function RootLayout({ children }) {
       localization={heIL}
       appearance={{
         layout: {
-          logoImageUrl: '/logo_v2.png',
+          logoImageUrl: '/logo_v3.png',
           socialButtonsVariant: 'iconButton'
         },
         variables: {
