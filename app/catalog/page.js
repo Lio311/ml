@@ -155,8 +155,8 @@ export default async function CatalogPage(props) {
 
                     {/* Category Filter */}
                     <div className="bg-gray-50 p-4 rounded-lg border">
-                        <h3 className="font-bold mb-4 border-b pb-2">קטגוריות</h3>
-                        <div className="space-y-2 text-sm">
+                        <h3 className="font-bold mb-4 border-b pb-2">קטגוריות ({allCategories.length})</h3>
+                        <div className="space-y-2 text-sm max-h-[160px] overflow-y-auto custom-scrollbar pl-2">
                             <Link
                                 href={{ pathname: '/catalog', query: { ...searchParams, category: '', page: 1 } }}
                                 className={`block ${!category ? 'font-bold underline' : ''}`}
@@ -181,7 +181,7 @@ export default async function CatalogPage(props) {
                     {/* Brand Filter */}
                     <div className="bg-gray-50 p-4 rounded-lg border">
                         <h3 className="font-bold mb-4 border-b pb-2">מותגים ({allBrands.length})</h3>
-                        <div className="space-y-2 text-sm max-h-[40vh] overflow-y-auto custom-scrollbar">
+                        <div className="space-y-2 text-sm max-h-[160px] overflow-y-auto custom-scrollbar pl-2">
                             <Link
                                 href={{ pathname: '/catalog', query: { ...searchParams, brand: '', page: 1 } }}
                                 className={`block ${!brand ? 'font-bold underline' : ''}`}
