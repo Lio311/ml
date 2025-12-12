@@ -27,9 +27,14 @@ export default async function Home() {
 
       // Try to get orders count for samples estimation
       try {
-        const orderCountRes = await client.query('SELECT COUNT(*) FROM orders');
-        const orders = parseInt(orderCountRes.rows[0].count);
-        stats.samples += orders;
+        const ordersRes = await client.query('SELECT items FROM orders');
+        const totalSamplesSold = ordersRes.rows.reduce((acc, row) => {
+          const items = row.items || [];
+          // items is array of objects { quantity: 1, ... }
+          const orderSum = items.reduce((sum, item) => sum + (parseInt(item.quantity) || 0), 0);
+          return acc + orderSum;
+        }, 0);
+        stats.samples += totalSamplesSold;
       } catch (e) {
         // Orders table might not exist or be empty, ignore
       }
