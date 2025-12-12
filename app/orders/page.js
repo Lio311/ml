@@ -86,7 +86,7 @@ export default function OrdersPage() {
                                         <div className="flex-1">
                                             <div className="font-bold text-gray-900">{item.name}</div>
                                             <div className="text-sm text-gray-500 flex items-center gap-3 mt-1">
-                                                <span className="bg-gray-100 px-2 py-0.5 rounded text-xs text-gray-700">
+                                                <span className="bg-gray-100 px-2 py-0.5 rounded text-xs text-gray-700" dir="ltr">
                                                     {item.size.toString().includes('ml') ? item.size : `${item.size} ml`}
                                                 </span>
                                                 <span className="text-xs">
