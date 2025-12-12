@@ -3,7 +3,7 @@ import Link from 'next/link';
 export default function Footer() {
     return (
         <footer className="border-t bg-black text-white py-8 mt-12">
-            <div className="container grid grid-cols-1 md:grid-cols-3 gap-8 text-center md:text-right">
+            <div className="container grid grid-cols-1 md:grid-cols-4 gap-8 text-center md:text-right">
 
                 <div>
                     <h3 className="text-lg font-bold mb-4">ml_tlv</h3>
@@ -15,14 +15,20 @@ export default function Footer() {
                 </div>
 
                 <div>
-                    <h3 className="text-lg font-bold mb-4">קישורים</h3>
+                    <h3 className="text-lg font-bold mb-4">שירות לקוחות</h3>
                     <ul className="space-y-2 text-sm text-gray-400">
-                        <li><Link href="/catalog">קטלוג</Link></li>
-                        <li><Link href="/terms">תקנון</Link></li>
-                        <li><Link href="/shipping">משלוחים והחזרות</Link></li>
-                        <li><Link href="/privacy">מדיניות פרטיות</Link></li>
+                        <li><Link href="/about">אודות</Link></li>
                         <li><Link href="/faq">שאלות ותשובות</Link></li>
                         <li><Link href="/contact">צור קשר</Link></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h3 className="text-lg font-bold mb-4">מידע ונהלים</h3>
+                    <ul className="space-y-2 text-sm text-gray-400">
+                        <li><Link href="/terms">תקנון האתר</Link></li>
+                        <li><Link href="/shipping">משלוחים והחזרות</Link></li>
+                        <li><Link href="/privacy">מדיניות פרטיות</Link></li>
                     </ul>
                 </div>
 
