@@ -6,7 +6,7 @@ import { useUser, SignInButton } from "@clerk/nextjs";
 import { useState } from "react";
 
 export default function CartPage() {
-    const { cartItems, removeFromCart, updateQuantity, subtotal, total, shippingCost, freeSamplesCount, nextTier } = useCart();
+    const { cartItems, removeFromCart, updateQuantity, clearCart, subtotal, total, shippingCost, freeSamplesCount, nextTier } = useCart();
     const { isSignedIn, user } = useUser();
     const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -26,6 +26,7 @@ export default function CartPage() {
             });
 
             if (res.ok) {
+                clearCart();
                 window.location.href = '/checkout/success';
             } else {
                 const data = await res.json();

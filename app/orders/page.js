@@ -1,0 +1,97 @@
+"use client";
+
+import { useEffect, useState } from 'react';
+import { useUser } from '@clerk/nextjs';
+import Link from 'next/link';
+
+export default function OrdersPage() {
+    const { isLoaded, isSignedIn } = useUser();
+    const [orders, setOrders] = useState([]);
+    const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        if (!isLoaded || !isSignedIn) return;
+
+        async function fetchOrders() {
+            try {
+                const res = await fetch('/api/user/orders');
+                if (res.ok) {
+                    const data = await res.json();
+                    setOrders(data.orders);
+                }
+            } catch (error) {
+                console.error("Failed to fetch orders", error);
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        fetchOrders();
+    }, [isLoaded, isSignedIn]);
+
+    if (!isLoaded) return <div className="py-20 text-center">טוען...</div>;
+
+    if (!isSignedIn) {
+        return (
+            <div className="container py-20 text-center">
+                <h1 className="text-2xl font-bold mb-4">התחבר כדי לצפות בהזמנות שלך</h1>
+                <Link href="/sign-in" className="btn btn-primary">התחברות</Link>
+            </div>
+        );
+    }
+
+    if (loading) return <div className="py-20 text-center">טוען הזמנות...</div>;
+
+    return (
+        <div className="container py-12 max-w-4xl">
+            <h1 className="text-3xl font-bold mb-8">ההזמנות שלי</h1>
+
+            {orders.length === 0 ? (
+                <div className="text-center py-12 bg-gray-50 rounded-lg">
+                    <p className="text-lg text-gray-500 mb-4">עדיין לא ביצעת הזמנות.</p>
+                    <Link href="/catalog" className="text-blue-600 underline">התחל לקנות</Link>
+                </div>
+            ) : (
+                <div className="space-y-6">
+                    {orders.map((order) => (
+                        <div key={order.id} className="border rounded-lg p-6 bg-white shadow-sm">
+                            <div className="flex justify-between items-start mb-4 border-b pb-4">
+                                <div>
+                                    <div className="font-bold text-lg">הזמנה #{order.id}</div>
+                                    <div className="text-sm text-gray-500">
+                                        {new Date(order.created_at).toLocaleDateString('he-IL')} בשעה {new Date(order.created_at).toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' })}
+                                    </div>
+                                </div>
+                                <div className="text-left">
+                                    <div className="font-bold text-xl">{order.total_amount} ₪</div>
+                                    <div className={`text-sm px-2 py-1 rounded inline-block mt-1 ${order.status === 'pending' ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-800'}`}>
+                                        {order.status === 'pending' ? 'ממתין לתשלום' : order.status}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="space-y-3">
+                                {order.items.map((item, idx) => (
+                                    <div key={idx} className="flex justify-between items-center text-sm">
+                                        <div className="flex items-center gap-2">
+                                            <span className="font-bold">{item.quantity}x</span>
+                                            <span>{item.name}</span>
+                                            <span className="text-gray-400 text-xs">({item.size})</span>
+                                        </div>
+                                        <div>{item.price * item.quantity} ₪</div>
+                                    </div>
+                                ))}
+                            </div>
+
+                            {order.free_samples_count > 0 && (
+                                <div className="mt-4 text-sm text-blue-600 font-bold bg-blue-50 p-2 rounded">
+                                    🎁 כולל {order.free_samples_count} דוגמיות מתנה
+                                </div>
+                            )}
+                        </div>
+                    ))}
+                </div>
+            )}
+        </div>
+    );
+}
