@@ -6,6 +6,7 @@ import { usePathname } from 'next/navigation';
 import Image from 'next/image';
 import { SignInButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs';
 import { useCart } from '../context/CartContext';
+import LanguageSwitcher from './LanguageSwitcher';
 
 export default function Header() {
     const { cartItems } = useCart();
@@ -98,6 +99,9 @@ export default function Header() {
 
                     {/* Actions - Absolute Left on Desktop */}
                     <div className="flex items-center gap-4 md:absolute md:left-4 z-20">
+                        <div className="hidden md:block">
+                            <LanguageSwitcher />
+                        </div>
                         <SignedIn>
                             <div className="flex items-center gap-2">
                                 <UserButton afterSignOutUrl="/" />

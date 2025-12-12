@@ -14,7 +14,7 @@ export async function GET() {
         try {
             const res = await client.query(`
                 SELECT * FROM orders 
-                WHERE clerk_id = $1 OR customer_details->>'clerk_id' = $1
+                WHERE customer_details->>'clerk_id' = $1
                 ORDER BY created_at DESC
             `, [userId]);
 

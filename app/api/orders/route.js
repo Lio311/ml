@@ -32,10 +32,10 @@ export async function POST(req) {
             };
 
             const orderResult = await client.query(
-                `INSERT INTO orders (clerk_id, customer_details, total_amount, items, free_samples_count, status)
-         VALUES ($1, $2, $3, $4, $5, 'pending')
+                `INSERT INTO orders (customer_details, total_amount, items, free_samples_count, status)
+         VALUES ($1, $2, $3, $4, 'pending')
          RETURNING id`,
-                [userId, JSON.stringify(customerDetails), total, JSON.stringify(items), freeSamples]
+                [JSON.stringify(customerDetails), total, JSON.stringify(items), freeSamples]
             );
 
             const orderId = orderResult.rows[0].id;
