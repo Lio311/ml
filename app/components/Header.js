@@ -21,8 +21,8 @@ export default function Header() {
             </div>
 
             {/* Main Header */}
-            <div className="container mx-auto px-4 py-0 md:py-1 relative">
-                <div className="flex items-center justify-between h-16">
+            <div className="container mx-auto px-4 py-2 md:py-4 relative">
+                <div className="flex items-center justify-between">
 
                     {/* Mobile Menu Button */}
                     <div className="md:hidden z-20">
@@ -47,38 +47,41 @@ export default function Header() {
                         </div>
 
                         {/* Desktop Split Menu */}
-                        <nav className="hidden md:flex items-center gap-6 lg:gap-8">
-                            <Link
-                                href="/"
-                                className={`px-5 py-2 text-lg font-bold tracking-widest transition rounded-sm ${pathname === '/' ? 'bg-black text-white' : 'text-gray-900 hover:bg-black hover:text-white'}`}
-                            >
-                                דף הבית
-                            </Link>
-                            <Link
-                                href="/catalog"
-                                className={`px-5 py-2 text-lg font-bold tracking-widest transition rounded-sm ${pathname.startsWith('/catalog') ? 'bg-black text-white' : 'text-gray-900 hover:bg-black hover:text-white'}`}
-                            >
-                                קטלוג
+                        {/* Desktop Split Menu */}
+                        <div className="hidden md:flex flex-col items-center gap-4">
+                            {/* Logo Top */}
+                            <Link href="/" className="block">
+                                <Image src="/logo_v2.png" alt="ml." width={120} height={50} className="h-12 w-auto object-contain" priority />
                             </Link>
 
-                            {/* Logo Inline */}
-                            <Link href="/" className="px-4 block">
-                                <Image src="/logo_v2.png" alt="ml." width={150} height={60} className="h-16 w-auto object-contain" priority />
-                            </Link>
+                            <nav className="flex items-center gap-6 lg:gap-8">
+                                <Link
+                                    href="/"
+                                    className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm ${pathname === '/' ? 'bg-black text-white' : 'text-gray-900 hover:bg-black hover:text-white'}`}
+                                >
+                                    דף הבית
+                                </Link>
+                                <Link
+                                    href="/catalog"
+                                    className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm ${pathname.startsWith('/catalog') ? 'bg-black text-white' : 'text-gray-900 hover:bg-black hover:text-white'}`}
+                                >
+                                    קטלוג
+                                </Link>
 
-                            <Link
-                                href="/about"
-                                className={`px-5 py-2 text-lg font-bold tracking-widest transition rounded-sm ${pathname === '/about' ? 'bg-black text-white' : 'text-gray-900 hover:bg-black hover:text-white'}`}
-                            >
-                                אודות
-                            </Link>
-                            <Link
-                                href="/contact"
-                                className={`px-5 py-2 text-lg font-bold tracking-widest transition rounded-sm ${pathname === '/contact' ? 'bg-black text-white' : 'text-gray-900 hover:bg-black hover:text-white'}`}
-                            >
-                                צור קשר
-                            </Link>
-                        </nav>
+                                <Link
+                                    href="/about"
+                                    className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm ${pathname === '/about' ? 'bg-black text-white' : 'text-gray-900 hover:bg-black hover:text-white'}`}
+                                >
+                                    אודות
+                                </Link>
+                                <Link
+                                    href="/contact"
+                                    className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm ${pathname === '/contact' ? 'bg-black text-white' : 'text-gray-900 hover:bg-black hover:text-white'}`}
+                                >
+                                    צור קשר
+                                </Link>
+                            </nav>
+                        </div>
                     </div>
 
                     {/* Actions - Absolute Left on Desktop */}
