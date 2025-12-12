@@ -12,7 +12,7 @@ const assistant = Assistant({
 });
 
 export const metadata = {
-  title: "ml_tlv | דוגמיות בשמים יוקרתיות",
+  title: "ml. דוגמיות יוקרה",
   description: "חנות דוגמיות בשמים הגדולה בישראל. בשמי נישה, בוטיק ועוד.",
 };
 

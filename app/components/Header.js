@@ -60,10 +60,10 @@ export default function Header() {
 
                         {/* Desktop Split Menu */}
                         {/* Desktop Split Menu */}
-                        <div className="hidden md:flex flex-col items-center gap-4">
+                        <div className="hidden md:flex flex-col items-center gap-1">
                             {/* Logo Top */}
                             <Link href="/" className="block">
-                                <Image src="/logo_v2.png" alt="ml." width={120} height={50} className="h-12 w-auto object-contain" priority />
+                                <Image src="/logo_v2.png" alt="ml." width={180} height={70} className="h-16 w-auto object-contain" priority />
                             </Link>
 
                             <nav className="flex items-center gap-6 lg:gap-8">
