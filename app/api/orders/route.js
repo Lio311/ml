@@ -31,7 +31,8 @@ export async function POST(req) {
                 email: user.emailAddresses[0]?.emailAddress,
             };
 
-            `INSERT INTO orders (clerk_id, customer_details, total_amount, items, free_samples_count, status)
+            const orderResult = await client.query(
+                `INSERT INTO orders (clerk_id, customer_details, total_amount, items, free_samples_count, status)
          VALUES ($1, $2, $3, $4, $5, 'pending')
          RETURNING id`,
                 [userId, JSON.stringify(customerDetails), total, JSON.stringify(items), freeSamples]
