@@ -2,8 +2,6 @@ export default function AboutPage() {
     return (
         <div className="min-h-screen bg-gray-50 py-20">
             <div className="container max-w-4xl mx-auto">
-                <h1 className="text-4xl font-serif font-bold mb-8 text-center">אודות ml_tlv</h1>
-
                 <div className="space-y-6 text-lg leading-relaxed text-gray-700">
                     <p>
                         ברוכים הבאים ל-<strong>ml_tlv</strong>, הבית שלכם לבשמי נישה ובוטיק יוקרתיים בישראל.
