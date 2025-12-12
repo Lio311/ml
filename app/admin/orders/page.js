@@ -25,6 +25,19 @@ export default async function AdminOrdersPage() {
         revalidatePath("/admin/orders");
     }
 
+    async function deleteOrder(formData) {
+        "use server";
+        const orderId = formData.get("orderId");
+
+        const client = await pool.connect();
+        try {
+            await client.query('DELETE FROM orders WHERE id = $1', [orderId]);
+        } finally {
+            client.release();
+        }
+        revalidatePath("/admin/orders");
+    }
+
     return (
         <div>
             <h1 className="text-3xl font-bold mb-8">ניהול הזמנות</h1>
@@ -74,20 +87,19 @@ export default async function AdminOrdersPage() {
                                     {new Date(order.created_at).toLocaleString('he-IL')}
                                 </td>
                                 <td className="p-4">
-                                    <span className={`text-xs px-2 py-1 rounded-full ${
-                                        order.status === 'pending' ? 'bg-orange-100 text-orange-800' :
+                                    <span className={`text-xs px-2 py-1 rounded-full ${order.status === 'pending' ? 'bg-orange-100 text-orange-800' :
                                         order.status === 'processing' ? 'bg-blue-100 text-blue-800' :
-                                        order.status === 'shipped' ? 'bg-purple-100 text-purple-800' :
-                                        order.status === 'completed' ? 'bg-green-100 text-green-800' :
-                                        'bg-gray-100 text-gray-800'
-                                    }`}>
+                                            order.status === 'shipped' ? 'bg-purple-100 text-purple-800' :
+                                                order.status === 'completed' ? 'bg-green-100 text-green-800' :
+                                                    'bg-gray-100 text-gray-800'
+                                        }`}>
                                         {
                                             order.status === 'pending' ? 'ממתין' :
-                                            order.status === 'processing' ? 'בטיפול' :
-                                            order.status === 'shipped' ? 'נשלח' :
-                                            order.status === 'completed' ? 'הושלם' :
-                                            order.status === 'cancelled' ? 'בוטל' :
-                                            order.status
+                                                order.status === 'processing' ? 'בטיפול' :
+                                                    order.status === 'shipped' ? 'נשלח' :
+                                                        order.status === 'completed' ? 'הושלם' :
+                                                            order.status === 'cancelled' ? 'בוטל' :
+                                                                order.status
                                         }
                                     </span>
                                 </td>
@@ -103,6 +115,15 @@ export default async function AdminOrdersPage() {
                                         </select>
                                         <button type="submit" className="bg-black text-white px-3 py-1 rounded text-sm hover:bg-gray-800">
                                             שמור
+                                        </button>
+                                    </form>
+                                    <form action={deleteOrder} className="mt-1">
+                                        <input type="hidden" name="orderId" value={order.id} />
+                                        <button
+                                            type="submit"
+                                            className="text-red-500 text-xs underline hover:text-red-700"
+                                        >
+                                            מחק הזמנה
                                         </button>
                                     </form>
                                 </td>
