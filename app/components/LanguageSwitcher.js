@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from 'react';
-import Image from 'next/image';
 
 export default function LanguageSwitcher() {
     const [isOpen, setIsOpen] = useState(false);
@@ -9,23 +8,28 @@ export default function LanguageSwitcher() {
 
     useEffect(() => {
         // Initialize Google Translate
-        const googleTranslateElementInit = () => {
+        window.googleTranslateElementInit = () => {
             new window.google.translate.TranslateElement({
                 pageLanguage: 'he',
                 includedLanguages: 'he,en,ru',
                 autoDisplay: false,
-                layout: window.google.translate.TranslateElement.InlineLayout.SIMPLE
             }, 'google_translate_element');
         };
 
-        window.googleTranslateElementInit = googleTranslateElementInit;
-
-        if (!document.querySelector("#google-translate-script")) {
+        // Load Script
+        if (!document.getElementById("google-translate-script")) {
             const script = document.createElement("script");
             script.id = "google-translate-script";
             script.src = "//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit";
             script.async = true;
             document.body.appendChild(script);
+        }
+
+        // Check for existing cookie to update UI state
+        // Look for /he/lang or /auto/lang
+        const match = document.cookie.match(/googtrans=\/(?:he|auto)\/([a-z]{2})/);
+        if (match) {
+            setCurrentLang(match[1]);
         }
     }, []);
 
@@ -33,14 +37,20 @@ export default function LanguageSwitcher() {
         setCurrentLang(langCode);
         setIsOpen(false);
 
-        // 1. Set the Google Translate cookie
-        // Format: /sourceLang/targetLang. We use 'auto' as source.
-        const cookieValue = `/auto/${langCode}`;
+        // 1. Clear existing cookies to ensure no conflicts
+        const domain = window.location.hostname;
+        document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;`;
+        document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=${domain}`;
+        document.cookie = `googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; domain=.${domain}`;
 
-        document.cookie = `googtrans=${cookieValue}; path=/; domain=${window.location.hostname}`;
-        document.cookie = `googtrans=${cookieValue}; path=/`;
+        // 2. Set the new cookie with explicit source 'he'
+        // This is crucial: /auto/ fails if detection fails. /he/ forces it.
+        const cookieValue = `/he/${langCode}`;
 
-        // 2. Reload the page to apply the translation
+        document.cookie = `googtrans=${cookieValue}; path=/;`;
+        document.cookie = `googtrans=${cookieValue}; path=/; domain=${domain}`;
+
+        // 3. Reload the page
         window.location.reload();
     };
 
