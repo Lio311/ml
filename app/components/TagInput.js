@@ -18,18 +18,18 @@ export default function TagInput({ tags, onChange, suggestions = [], placeholder
         return () => document.removeEventListener("mousedown", handleClickOutside);
     }, [wrapperRef]);
 
+    const updateSuggestions = (val) => {
+        const filtered = suggestions.filter(
+            s => s.toLowerCase().includes(val.toLowerCase()) && !tags.includes(s)
+        );
+        setFilteredSuggestions(filtered);
+        setShowSuggestions(true);
+    };
+
     const handleInputChange = (e) => {
         const val = e.target.value;
         setInput(val);
-        if (val.trim()) {
-            const filtered = suggestions.filter(
-                s => s.toLowerCase().includes(val.toLowerCase()) && !tags.includes(s)
-            );
-            setFilteredSuggestions(filtered);
-            setShowSuggestions(true);
-        } else {
-            setShowSuggestions(false);
-        }
+        updateSuggestions(val);
     };
 
     const addTag = (tag) => {
@@ -38,6 +38,8 @@ export default function TagInput({ tags, onChange, suggestions = [], placeholder
             onChange([...tags, trimmed]);
         }
         setInput('');
+        // Keep suggestions open or close? Usually close and clear filter
+        setFilteredSuggestions(suggestions.filter(s => !tags.includes(s) && s !== trimmed));
         setShowSuggestions(false);
     };
 
@@ -76,9 +78,7 @@ export default function TagInput({ tags, onChange, suggestions = [], placeholder
                     value={input}
                     onChange={handleInputChange}
                     onKeyDown={handleKeyDown}
-                    onFocus={() => {
-                        if (input) setShowSuggestions(true);
-                    }}
+                    onFocus={() => updateSuggestions(input)}
                     placeholder={tags.length === 0 ? placeholder : ''}
                     className="flex-1 outline-none min-w-[100px] text-sm bg-transparent"
                 />
