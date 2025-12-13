@@ -41,7 +41,7 @@ export default function BrandCarousel({ brands }) {
                 100% { transform: translateX(50%); } /* RTL scroll direction */
             }
             .animate-scroll {
-                animation: scroll 80s linear infinite;
+                animation: scroll 120s linear infinite;
             }
             .hover\\:pause:hover {
                 animation-play-state: paused;
