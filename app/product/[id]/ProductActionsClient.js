@@ -7,11 +7,12 @@ export default function ProductActionsClient({ product }) {
     const [addedId, setAddedId] = useState(null);
 
     const handleAdd = (size, price) => {
-        const stock = product.stock || 0;
+        const stock = parseInt(product.stock) || 0;
 
         // Calculate current amount of this product in cart
         const currentInCart = (cartItems || []).reduce((total, item) => {
-            if (item.id === product.id) {
+            // Ensure ID comparison is type-safe (string vs number)
+            if (String(item.id) === String(product.id)) {
                 return total + (item.size * item.quantity);
             }
             return total;
