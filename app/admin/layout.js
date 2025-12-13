@@ -34,6 +34,9 @@ export default async function AdminLayout({ children }) {
                     <Link href="/admin/brands" className="block p-2 hover:bg-gray-800 rounded">
                         🏷️ ניהול מותגים (לוגואים)
                     </Link>
+                    <Link href="/admin/users" className="block p-2 hover:bg-gray-800 rounded">
+                        👥 ניהול משתמשים
+                    </Link>
                 </nav>
 
                 <div>
@@ -54,6 +57,7 @@ export default async function AdminLayout({ children }) {
                     <div className="space-x-4 space-x-reverse">
                         <Link href="/admin/orders">הזמנות</Link>
                         <Link href="/admin/products">מוצרים</Link>
+                        <Link href="/admin/users">משתמשים</Link>
                     </div>
                 </header>
 
