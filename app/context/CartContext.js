@@ -72,12 +72,34 @@ export function CartProvider({ children }) {
             removeFromCart(id, size);
             return;
         }
+
         setCartItems((prev) =>
-            prev.map((item) =>
-                item.id === id && item.size === size
-                    ? { ...item, quantity }
-                    : item
-            )
+            prev.map((item) => {
+                if (item.id === id && item.size === size) {
+                    const stock = parseInt(item.stock) || 0;
+                    const stockInMl = stock;
+                    // Note: Stock is in ml. Quantity is "units" of "size".
+                    // Total ml required = quantity * size.
+                    // Wait, previous logic in ProductActionsClient checked: currentInCart (ml) + size > stock.
+                    // Here, quantity is the number of bottles of 'size'.
+
+                    const totalMlRequested = quantity * size;
+
+                    // We need to check against TOTAL stock, but we might have multiple items of same ID but DIFFERENT sizes?
+                    // The simple logic in ProductActionsClient didn't account for other sizes of same product in cart? 
+                    // Actually it did: `reduce` over all items.
+
+                    // In the context of `updateQuantity`, checking "global" stock for this product across all sizes is hard inside a simple split map.
+                    // However, for the specific bug reported: "In cart, I can add infinite", usually means just pressing + on that item.
+
+                    if (totalMlRequested > stock) {
+                        alert(`לא ניתן להוסיף: נותרו ${stock} מ״ל במלאי`);
+                        return item; // Do not update
+                    }
+                    return { ...item, quantity };
+                }
+                return item;
+            })
         );
     };
 

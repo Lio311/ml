@@ -1,6 +1,9 @@
 import pool from "../../lib/db";
 import AdminProductsClient from "./AdminProductsClient";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export default async function AdminProductsPage(props) {
     const searchParams = await props.searchParams;
     const search = searchParams?.q || '';
