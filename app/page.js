@@ -26,7 +26,7 @@ export default async function Home() {
       stats.products = parseInt(productCountRes.rows[0].count);
       stats.brands = parseInt(brandCountRes.rows[0].count);
 
-      // Fetch all brands for carousel (Randomized)
+      // Fetch all brands for carousel (Randomized) 
       const brandsRes = await client.query('SELECT name, logo_url FROM brands WHERE logo_url IS NOT NULL ORDER BY RANDOM()');
       stats.allBrands = brandsRes.rows;
 
