@@ -25,8 +25,9 @@ export default function Header() {
             <div className="container mx-auto px-4 py-2 md:py-4 relative">
                 <div className="flex items-center justify-between">
 
-                    {/* Desktop Orders Icon (Right) */}
-                    <div className="hidden md:flex z-20 absolute right-4">
+                    {/* Desktop Orders Icon & Search (Right) */}
+                    <div className="hidden md:flex items-center gap-4 z-20 absolute right-4">
+                        {/* Search Bar Removed from Center */}
                         <SignedIn>
                             <Link href="/orders" className="relative group">
                                 <span className="sr-only">ההזמנות שלי</span>

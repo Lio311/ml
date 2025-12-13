@@ -62,12 +62,12 @@ export default async function ProductPage(props) {
                         </div>
 
                         {product.logo_url && (
-                            <div className="mb-6">
-                                <Link href={`/catalog?brand=${encodeURIComponent(product.brand)}`}>
+                            <div className="mb-6 w-32 h-16 flex items-center justify-start"> {/* Fixed container */}
+                                <Link href={`/catalog?brand=${encodeURIComponent(product.brand)}`} className="block w-full h-full relative">
                                     <img
                                         src={product.logo_url}
                                         alt={product.brand}
-                                        className="h-12 object-contain hover:opacity-80 transition-opacity"
+                                        className="w-full h-full object-contain hover:opacity-80 transition-opacity"
                                     />
                                 </Link>
                             </div>

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import pool from "../lib/db";
 import ProductCard from "../components/ProductCard";
-import PriceFilter from "./PriceFilter";
+import FilterSidebar from "./FilterSidebar";
 import SortSelect from "./SortSelect";
 
 // Server Component - Fetch data directly
@@ -21,13 +21,29 @@ async function getProducts(search, brand, category, minPrice, maxPrice, sort, pa
     }
 
     if (brand) {
-        params.push(brand);
-        query += ` AND brand = $${params.length}`;
+        // If brand is array/string, format for IN clause or multiple ORs? 
+        // Best approach for Postgres: brand = ANY($2) if array, but node-postgres handles IN easily? 
+        // Actually, let's keep it simple. Iterate.
+        const brands = Array.isArray(brand) ? brand : [brand];
+        if (brands.length > 0) {
+            // "brand IN (...)"
+            const placeHolders = brands.map((_, i) => `$${params.length + i + 1}`).join(', ');
+            query += ` AND brand IN (${placeHolders})`;
+            params.push(...brands);
+        }
     }
 
     if (category) {
-        params.push(`%${category}%`);
-        query += ` AND category ILIKE $${params.length}`;
+        const categories = Array.isArray(category) ? category : [category];
+        if (categories.length > 0) {
+            // For categories (text), we used ILIKE before. If multiple, maybe OR ILIKE?
+            // "AND (category ILIKE $x OR category ILIKE $y ...)"
+            // Or just exact match if we trust the filter options? 
+            // The filter options come from DB. Let's use ILIKE for flexibility with multi-values.
+            const catConditions = categories.map((_, i) => `category ILIKE $${params.length + i + 1}`).join(' OR ');
+            query += ` AND (${catConditions})`;
+            params.push(...categories.map(c => `%${c}%`));
+        }
     }
 
     if (minPrice) {
@@ -133,80 +149,12 @@ export default async function CatalogPage(props) {
             <div className="flex flex-col md:flex-row gap-8">
 
                 {/* Filters Sidebar */}
-                <aside className="w-full md:w-64 space-y-6">
-
-                    {/* Search */}
-                    <div className="bg-gray-50 p-4 rounded-lg border">
-                        <h3 className="font-bold mb-4 border-b pb-2">חיפוש</h3>
-                        <form action="/catalog" method="get">
-                            {brand && <input key="brand" type="hidden" name="brand" value={brand} />}
-                            {category && <input key="category" type="hidden" name="category" value={category} />}
-                            {maxPrice && <input key="max" type="hidden" name="max" value={maxPrice} />}
-                            {sort && <input key="sort" type="hidden" name="sort" value={sort} />}
-                            <input
-                                type="text"
-                                name="q"
-                                defaultValue={search}
-                                placeholder="חפש בושם..."
-                                className="w-full p-2 border rounded text-sm bg-white"
-                            />
-                        </form>
-                    </div>
-
-                    {/* Category Filter */}
-                    <div className="bg-gray-50 p-4 rounded-lg border">
-                        <h3 className="font-bold mb-4 border-b pb-2">קטגוריות ({allCategories.length})</h3>
-                        <div className="space-y-2 text-sm max-h-[160px] overflow-y-auto custom-scrollbar pl-2">
-                            <Link
-                                href={{ pathname: '/catalog', query: { ...searchParams, category: '', page: 1 } }}
-                                className={`block ${!category ? 'font-bold underline' : ''}`}
-                            >
-                                הכל
-                            </Link>
-                            {allCategories.map(cat => (
-                                <Link
-                                    key={cat}
-                                    href={{
-                                        pathname: '/catalog',
-                                        query: { ...searchParams, category: cat, page: 1 }
-                                    }}
-                                    className={`block hover:text-black hover:underline ${category === cat ? 'font-bold text-black' : 'text-gray-600'}`}
-                                >
-                                    {cat}
-                                </Link>
-                            ))}
-                        </div>
-                    </div>
-
-                    {/* Brand Filter */}
-                    <div className="bg-gray-50 p-4 rounded-lg border">
-                        <h3 className="font-bold mb-4 border-b pb-2">מותגים ({allBrands.length})</h3>
-                        <div className="space-y-2 text-sm max-h-[160px] overflow-y-auto custom-scrollbar pl-2">
-                            <Link
-                                href={{ pathname: '/catalog', query: { ...searchParams, brand: '', page: 1 } }}
-                                className={`block ${!brand ? 'font-bold underline' : ''}`}
-                            >
-                                כל המותגים
-                            </Link>
-                            {allBrands.map(b => (
-                                <Link
-                                    key={b}
-                                    href={{
-                                        pathname: '/catalog',
-                                        query: { ...searchParams, brand: b, page: 1 }
-                                    }}
-                                    className={`block hover:text-black hover:underline ${brand === b ? 'font-bold text-black' : 'text-gray-600'}`}
-                                >
-                                    {b}
-                                </Link>
-                            ))}
-                        </div>
-                    </div>
-
-                    {/* Price Filter Slider */}
-                    <PriceFilter />
-
-                </aside>
+                <FilterSidebar
+                    allBrands={allBrands}
+                    allCategories={allCategories}
+                    minPrice={minPrice}
+                    maxPrice={maxPrice}
+                />
 
                 {/* Product Grid */}
                 <div className="flex-1">
