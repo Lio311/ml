@@ -8,13 +8,28 @@ import { useState } from "react";
 import WishlistHeart from "./WishlistHeart";
 
 export default function ProductCard({ product }) {
-    const { addToCart } = useCart();
+    const { addToCart, cart } = useCart();
     const [added, setAdded] = useState(false);
 
     // Default to lowest price/size for display if needed, 
     // currently the design showed 3 lines.
 
     const handleAdd = (size, price) => {
+        const stock = product.stock || 0;
+
+        // Calculate current volume of this product in cart
+        const currentInCart = cart.reduce((total, item) => {
+            if (item.id === product.id) {
+                return total + (item.size * item.quantity);
+            }
+            return total;
+        }, 0);
+
+        if (currentInCart + size > stock) {
+            alert(`לא ניתן להוסיף לסל: נותרו ${stock} מ״ל במלאי (יש לך כבר ${currentInCart} מ״ל בסל)`);
+            return;
+        }
+
         addToCart(product, size, price);
         setAdded(true);
         setTimeout(() => setAdded(false), 2000);
