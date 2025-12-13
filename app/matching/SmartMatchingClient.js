@@ -62,14 +62,15 @@ export default function SmartMatchingClient({ initialNotes }) {
     const addToCartAll = () => {
         if (!results || !results.products) return;
 
-        let count = 0;
-        results.products.forEach(p => {
-            // We pass the product object (with image_url), the size, and the price
-            addToCart(p, parseInt(preferences.size), p.price);
-            count++;
-        });
+        const itemsToAdd = results.products.map(p => ({
+            product: p,
+            size: parseInt(preferences.size),
+            price: p.price
+        }));
 
-        alert(`נוספו ${count} מוצרים לסל בהצלחה!`);
+        addMultipleToCart(itemsToAdd);
+
+        alert(`נוספו ${itemsToAdd.length} מוצרים לסל בהצלחה!`);
     };
 
     const resetWizard = () => {
@@ -241,7 +242,7 @@ export default function SmartMatchingClient({ initialNotes }) {
                                     onClick={addToCartAll}
                                     className="px-8 py-3 rounded-full bg-white text-black font-bold hover:bg-gray-100 transition shadow-lg"
                                 >
-                                    הוסף הכל לסל 🛒
+                                    הוסף הכל לסל
                                 </button>
                             </div>
                         </div>

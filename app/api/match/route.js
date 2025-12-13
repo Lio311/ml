@@ -118,13 +118,61 @@ export async function POST(request) {
             }
         }
 
+
+        // Optimization 2: Upgrade if under budget (Upsell)
+        // If we are significantly under budget (e.g. < 90%), try to swap cheap items for better/more expensive ones
+        // Goal: Get closer to userBudget without exceeding it.
+        // We only consider upgrading if we have room.
+        if (currentTotal < userBudget * 0.95) {
+            // Remaining candidates that are NOT currently selected
+            const remaining = candidates.slice(requestedQty).filter(r => !selected.find(s => s.id === r.id));
+
+            // Sort remaining by Score DESC then Price DESC (Best quality/price to fill gap)
+            remaining.sort((a, b) => {
+                if (b.score !== a.score) return b.score - a.score;
+                return b.price - a.price;
+            });
+
+            let upgradesPossible = true;
+            while (currentTotal < userBudget && upgradesPossible) {
+                // Try to replace the cheapest selected item to make the biggest impact or fine tune?
+                // Strategy: Replace cheapest selected with something more expensive that fits.
+
+                selected.sort((a, b) => a.price - b.price); // Cheapest first
+                const cheapest = selected[0];
+
+                // Find an upgrade in remaining:
+                // 1. Price > Cheapest (to increase total)
+                // 2. (Total - Cheapest + New) <= Budget
+                const upgrade = remaining.find(r =>
+                    r.price > cheapest.price &&
+                    (currentTotal - cheapest.price + r.price) <= userBudget
+                );
+
+                if (upgrade) {
+                    // Perform Swap
+                    selected.shift(); // Remove cheapest
+                    selected.push(upgrade);
+
+                    // Update lists
+                    const idx = remaining.indexOf(upgrade);
+                    if (idx > -1) remaining.splice(idx, 1);
+
+                    currentTotal = selected.reduce((sum, p) => sum + p.price, 0);
+                } else {
+                    upgradesPossible = false;
+                }
+            }
+        }
+
         // Final Check
-        // If still over budget, we might notify the user or just show it (sometimes impossible to fit)
         let message = "";
         if (currentTotal > userBudget) {
             message = `התקציב היה נמוך מדי למארז זה, הגענו הכי קרוב שאפשר (${currentTotal} ₪)`;
+        } else if (currentTotal < userBudget * 0.8) {
+            message = `מצאנו מארז מעולה במחיר משתלם במיוחד! (${currentTotal} ₪)`;
         } else {
-            message = "נמצא מארז מושלם בתקציב!";
+            message = "בול בתקציב! מארז מושלם עבורך.";
         }
 
         return NextResponse.json({
