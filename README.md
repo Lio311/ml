@@ -44,6 +44,8 @@ The ultimate Israeli destination for niche & boutique perfume samples (decants).
    CLERK_SECRET_KEY=sk_test_...
    POSTGRES_URL=postgres://...
    NEXT_PUBLIC_BASE_URL=http://localhost:3000
+   GMAIL_USER=your-email@gmail.com
+   GMAIL_APP_PASSWORD=your-app-password
    ```
 
 4. **Run the application**
@@ -96,14 +98,21 @@ ml/
     - Over 500 ₪: 4 Free Samples
     - Over 1000 ₪: 6 Free Samples
 
+### 📦 Inventory Management
+- **Stock Tracking**: Precise milliliter-based stock management (Tracking total ML available).
+- **Auto-Block**: Prevents adding items to cart if stock is insufficient.
+- **Admin Controls**: Easy stock updates directly from the product edit page.
+
 ### 👑 Admin Dashboard
+- **Product Management**: Create, edit, and delete products with stock control.
+- **Brands Management**: Manage brand logos and details.
 - **View Orders**: Comprehensive table with status management.
 - **Localised Statuses**: Hebrew status tracking (Pending, Processing, Shipped).
-- **Order Details**: Full visibility of ordered items (Name, Quantity, Size).
 
 ### 🔍 Product Catalog
-- **Search & Filter**: Find perfumes by name or category (Summer, Evening, Exclusive).
-- **Detailed Views**: High-quality images and rich descriptions.
+- **Smart Filtering**: Multi-select support for Brands and Categories.
+- **Search**: Fast text-based search for products.
+- **Detailed Views**: High-quality images, descriptions, and stock status.
 
 ---
 
