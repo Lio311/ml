@@ -59,10 +59,17 @@ export default async function ProductPage(props) {
         })
             .sort((a, b) => b.similarity - a.similarity)
             .slice(0, 4);
+        if (related.length === 0) {
+            throw new Error("No related products found by notes similarity");
+        }
     } catch (e) {
-        console.error("Related products error:", e);
-        // Fallback: empty related or simple query? 
-        // For now, let's leave it empty to avoid crashing the whole page.
+        console.error("Related products error (falling back to category):", e);
+        try {
+            const fallbackRes = await pool.query('SELECT * FROM products WHERE category = $1 AND id != $2 LIMIT 4', [product.category, id]);
+            related = fallbackRes.rows;
+        } catch (err2) {
+            console.error("Fallback related failed:", err2);
+        }
     }
 
     return (
