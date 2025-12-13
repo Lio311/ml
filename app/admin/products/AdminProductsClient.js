@@ -409,6 +409,9 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                     <div className="font-bold text-lg">{product.brand}</div>
                                     <div className="text-gray-600">{product.model}</div>
                                 </div>
+                                <div className={`font-bold text-sm px-3 py-1 rounded shadow-sm ${product.stock > 0 ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>
+                                    מלאי: {product.stock || 0}
+                                </div>
                                 <div className="font-mono text-sm bg-gray-50 px-3 py-1 rounded shadow-sm">
                                     {product.price_10ml} ₪
                                 </div>
