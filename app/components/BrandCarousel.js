@@ -17,7 +17,7 @@ export default function BrandCarousel({ brands }) {
                 <div className="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-neutral-50 to-transparent z-10 pointer-events-none"></div>
                 <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-neutral-50 to-transparent z-10 pointer-events-none"></div>
 
-                <div className="flex animate-scroll whitespace-nowrap gap-16 md:gap-24 w-max hover:pause items-center">
+                <div className="flex animate-scroll whitespace-nowrap gap-16 md:gap-24 w-max hover:[animation-play-state:paused] items-center">
                     {/* Duplicate the array to create infinite loop effect */}
                     {[...brands, ...brands, ...brands].map((brand, i) => (
                         <Link
@@ -42,9 +42,6 @@ export default function BrandCarousel({ brands }) {
             }
             .animate-scroll {
                 animation: scroll 120s linear infinite;
-            }
-            .hover\\:pause:hover {
-                animation-play-state: paused;
             }
         `}</style>
         </div>
