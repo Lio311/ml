@@ -62,7 +62,7 @@ export default function CartPage() {
                 <div className="flex-1 space-y-6">
                     {cartItems.map((item) => (
                         <div key={`${item.id}-${item.size}`} className="flex items-center gap-4 border p-4 rounded-lg bg-white shadow-sm">
-                            <div className="w-20 h-20 bg-gray-100 flex items-center justify-center text-2xl rounded overflow-hidden relative">
+                            <div className="w-20 h-20 bg-white flex items-center justify-center text-2xl rounded overflow-hidden relative border border-gray-100">
                                 {item.image_url ? (
                                     <img src={item.image_url} alt={item.name} className="w-full h-full object-contain" />
                                 ) : (

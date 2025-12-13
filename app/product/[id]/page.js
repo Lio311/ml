@@ -112,7 +112,7 @@ export default async function ProductPage(props) {
         <div className="container py-12">
             <div className="flex flex-col md:flex-row items-start gap-12 mb-20">
                 {/* Image */}
-                <div className="w-full md:w-1/2 aspect-square bg-white rounded-xl flex items-center justify-center relative overflow-hidden shadow-sm p-12 group">
+                <div className="w-full md:w-1/2 aspect-square bg-white rounded-xl flex items-center justify-center relative overflow-hidden shadow-sm p-24 group">
                     {product.image_url ? (
                         <img
                             src={product.image_url}
