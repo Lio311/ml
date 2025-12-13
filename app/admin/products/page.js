@@ -5,6 +5,8 @@ export default async function AdminProductsPage(props) {
     const searchParams = await props.searchParams;
     const search = searchParams?.q || '';
     const letter = searchParams?.letter || '';
+    const view = searchParams?.view || 'all'; // 'all', 'out_of_stock', 'stock_list'
+    const sort = searchParams?.sort || 'default'; // 'stock_asc', 'stock_desc'
     const page = Number(searchParams?.page) || 1;
     const limit = 10;
     const offset = (page - 1) * limit;
@@ -32,6 +34,11 @@ export default async function AdminProductsPage(props) {
             params.push(`${letter}%`);
         }
 
+        // View Filter
+        if (view === 'out_of_stock') {
+            whereClauses.push(`stock <= 0`);
+        }
+
         if (whereClauses.length > 0) {
             const whereStmt = ' WHERE ' + whereClauses.join(' AND ');
             query += whereStmt;
@@ -42,8 +49,15 @@ export default async function AdminProductsPage(props) {
         const countRes = await client.query(countQuery, params);
         filteredCount = parseInt(countRes.rows[0].count);
 
-        // Add sorting and pagination
-        query += ` ORDER BY brand ASC, model ASC LIMIT ${limit} OFFSET ${offset}`;
+        // Sorting
+        let orderBy = 'brand ASC, model ASC';
+        if (sort === 'stock_asc') {
+            orderBy = 'stock ASC, brand ASC';
+        } else if (sort === 'stock_desc') {
+            orderBy = 'stock DESC, brand ASC';
+        }
+
+        query += ` ORDER BY ${orderBy} LIMIT ${limit} OFFSET ${offset}`;
 
         const res = await client.query(query, params);
         products = res.rows;
@@ -61,6 +75,8 @@ export default async function AdminProductsPage(props) {
             currentPage={page}
             totalPages={Math.ceil(filteredCount / limit)}
             currentLetter={letter}
+            currentView={view}
+            currentSort={sort}
         />
     );
 }

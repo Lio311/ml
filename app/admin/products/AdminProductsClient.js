@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import TagInput from "../../components/TagInput";
 
-export default function AdminProductsClient({ products, initialSearch, totalProducts, filteredCount, currentPage, totalPages, currentLetter }) {
+export default function AdminProductsClient({ products, initialSearch, totalProducts, filteredCount, currentPage, totalPages, currentLetter, currentView, currentSort }) {
     const router = useRouter();
     const [editingId, setEditingId] = useState(null);
     const [editForm, setEditForm] = useState({});
@@ -138,6 +138,48 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                         )}
                     </div>
                 </div>
+            </div>
+
+            {/* View Tabs */}
+            <div className="flex gap-4 border-b mb-6">
+                <button
+                    onClick={() => router.push('/admin/products?view=all')}
+                    className={`pb-2 px-4 font-bold transition ${currentView === 'all' ? 'border-b-2 border-black text-black' : 'text-gray-500 hover:text-black'}`}
+                >
+                    כל המוצרים
+                </button>
+                <button
+                    onClick={() => router.push('/admin/products?view=out_of_stock')}
+                    className={`pb-2 px-4 font-bold transition ${currentView === 'out_of_stock' ? 'border-b-2 border-red-600 text-red-600' : 'text-gray-500 hover:text-red-600'}`}
+                >
+                    חסרים במלאי ⚠️
+                </button>
+                <button
+                    onClick={() => router.push('/admin/products?view=stock_list')}
+                    className={`pb-2 px-4 font-bold transition ${currentView === 'stock_list' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-500 hover:text-blue-600'}`}
+                >
+                    דו״ח מלאי 📊
+                </button>
+            </div>
+
+            {/* Sorting Controls (Visible mainly in Stock List or All) */}
+            <div className="flex justify-between items-center mb-4">
+                <div className="flex gap-2">
+                    <span className="text-sm text-gray-500 self-center">מיון לפי מלאי:</span>
+                    <button
+                        onClick={() => router.push(`/admin/products?view=${currentView}&sort=stock_desc`)}
+                        className={`px-3 py-1 rounded text-sm border ${currentSort === 'stock_desc' ? 'bg-black text-white border-black' : 'bg-white text-black hover:border-black'}`}
+                    >
+                        גבוה לנמוך
+                    </button>
+                    <button
+                        onClick={() => router.push(`/admin/products?view=${currentView}&sort=stock_asc`)}
+                        className={`px-3 py-1 rounded text-sm border ${currentSort === 'stock_asc' ? 'bg-black text-white border-black' : 'bg-white text-black hover:border-black'}`}
+                    >
+                        נמוך לגבוה
+                    </button>
+                </div>
+
                 <div className="flex gap-4">
                     <button onClick={startCreate} className="bg-blue-600 text-white px-4 py-2 rounded font-bold hover:bg-blue-700 transition">
                         + מוצר חדש
