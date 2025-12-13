@@ -23,7 +23,7 @@ export default function FragrancePyramid({ top, middle, base }) {
                 className="w-full flex items-center justify-between text-right group py-2"
             >
                 <span className="font-bold text-lg text-gray-800 flex items-center gap-2">
-                    <span className="text-xl">✨</span> פירמידת הבושם
+                    פירמידת הבושם
                 </span>
                 <span className={`transform transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}>
                     ▼
