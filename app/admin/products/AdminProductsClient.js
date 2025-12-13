@@ -266,7 +266,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
 
                         {editingId === product.id ? (
                             <div className="flex-1 w-full flex flex-col gap-4">
-                                <div className="grid grid-cols-1 md:grid-cols-6 gap-2">
+                                <div className="grid grid-cols-1 md:grid-cols-7 gap-2">
                                     <div className="md:col-span-1">
                                         <label className="text-xs text-gray-500">מותג</label>
                                         <input
@@ -317,6 +317,15 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                             value={editForm.price_10ml}
                                             onChange={e => setEditForm({ ...editForm, price_10ml: Number(e.target.value) })}
                                             className="border p-2 rounded w-full bg-gray-50"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="text-xs text-gray-500 text-red-600 font-bold">מלאי (מ״ל)</label>
+                                        <input
+                                            type="number"
+                                            value={editForm.stock}
+                                            onChange={e => setEditForm({ ...editForm, stock: Number(e.target.value) })}
+                                            className="border p-2 rounded w-full bg-yellow-50 font-bold"
                                         />
                                     </div>
                                 </div>
