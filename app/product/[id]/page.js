@@ -57,18 +57,21 @@ export default async function ProductPage(props) {
                         <div className="text-gray-500 mb-2">{product.category}</div>
                         <h1 className="text-4xl font-bold mb-2">{product.name}</h1>
 
-                        <div className="mb-6 flex items-center gap-4">
+                        <div className="mb-4">
                             <StarRating productId={product.id} />
-                            {product.logo_url && (
+                        </div>
+
+                        {product.logo_url && (
+                            <div className="mb-6">
                                 <Link href={`/catalog?brand=${encodeURIComponent(product.brand)}`}>
                                     <img
                                         src={product.logo_url}
                                         alt={product.brand}
-                                        className="h-8 object-contain hover:opacity-80 transition-opacity"
+                                        className="h-12 object-contain hover:opacity-80 transition-opacity"
                                     />
                                 </Link>
-                            )}
-                        </div>
+                            </div>
+                        )}
 
                         <div className="text-lg text-gray-600 leading-relaxed">
                             {product.description || `תיאור מוצר מורחב יבוא כאן... ריחות של ${product.category} בשילוב תווים ייחודיים.`}

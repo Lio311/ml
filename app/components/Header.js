@@ -60,40 +60,57 @@ export default function Header() {
                         </div>
 
                         {/* Desktop Split Menu */}
-                        {/* Desktop Split Menu */}
-                        <div className="hidden md:flex flex-col items-center gap-1">
+                        {/* Desktop Split Menu & Search */}
+                        <div className="hidden md:flex flex-col items-center gap-2">
                             {/* Logo Top */}
                             <Link href="/" className="block">
                                 <Image src="/logo_v3.png" alt="ml." width={180} height={70} className="h-16 w-auto object-contain" priority />
                             </Link>
 
-                            <nav className="flex items-center gap-6 lg:gap-8">
-                                <Link
-                                    href="/"
-                                    className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm ${pathname === '/' ? 'bg-black text-white' : 'text-gray-900 hover:bg-black hover:text-white'}`}
-                                >
-                                    דף הבית
-                                </Link>
-                                <Link
-                                    href="/catalog"
-                                    className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm ${pathname.startsWith('/catalog') ? 'bg-black text-white' : 'text-gray-900 hover:bg-black hover:text-white'}`}
-                                >
-                                    קטלוג
-                                </Link>
+                            <div className="flex items-center gap-8">
+                                <nav className="flex items-center gap-6 lg:gap-8">
+                                    <Link
+                                        href="/"
+                                        className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm ${pathname === '/' ? 'bg-black text-white' : 'text-gray-900 hover:bg-black hover:text-white'}`}
+                                    >
+                                        דף הבית
+                                    </Link>
+                                    <Link
+                                        href="/catalog"
+                                        className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm ${pathname.startsWith('/catalog') ? 'bg-black text-white' : 'text-gray-900 hover:bg-black hover:text-white'}`}
+                                    >
+                                        קטלוג
+                                    </Link>
 
-                                <Link
-                                    href="/about"
-                                    className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm ${pathname === '/about' ? 'bg-black text-white' : 'text-gray-900 hover:bg-black hover:text-white'}`}
-                                >
-                                    אודות
-                                </Link>
-                                <Link
-                                    href="/contact"
-                                    className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm ${pathname === '/contact' ? 'bg-black text-white' : 'text-gray-900 hover:bg-black hover:text-white'}`}
-                                >
-                                    צור קשר
-                                </Link>
-                            </nav>
+                                    <Link
+                                        href="/about"
+                                        className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm ${pathname === '/about' ? 'bg-black text-white' : 'text-gray-900 hover:bg-black hover:text-white'}`}
+                                    >
+                                        אודות
+                                    </Link>
+                                    <Link
+                                        href="/contact"
+                                        className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm ${pathname === '/contact' ? 'bg-black text-white' : 'text-gray-900 hover:bg-black hover:text-white'}`}
+                                    >
+                                        צור קשר
+                                    </Link>
+                                </nav>
+
+                                {/* Search Bar */}
+                                <form action="/catalog" method="get" className="relative group">
+                                    <input
+                                        type="text"
+                                        name="q"
+                                        placeholder="חיפוש..."
+                                        className="border-b border-gray-300 py-1 px-2 text-sm focus:outline-none focus:border-black transition-all w-24 focus:w-48 bg-transparent"
+                                    />
+                                    <button type="submit" className="absolute left-0 top-1 text-gray-400 group-focus-within:text-black hover:text-black">
+                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                                        </svg>
+                                    </button>
+                                </form>
+                            </div>
                         </div>
                     </div>
 
