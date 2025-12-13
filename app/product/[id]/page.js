@@ -1,4 +1,5 @@
 import pool from "../../lib/db";
+import Link from "next/link";
 import ProductCard from "../../components/ProductCard";
 import StarRating from "../../components/StarRating";
 import WishlistHeart from "../../components/WishlistHeart";
@@ -8,7 +9,12 @@ export default async function ProductPage(props) {
     const params = await props.params;
     const { id } = params;
 
-    const res = await pool.query('SELECT * FROM products WHERE id = $1', [id]);
+    const res = await pool.query(`
+        SELECT p.*, b.logo_url 
+        FROM products p 
+        LEFT JOIN brands b ON p.brand = b.name 
+        WHERE p.id = $1
+    `, [id]);
     const product = res.rows[0];
 
     if (!product) {
@@ -51,8 +57,17 @@ export default async function ProductPage(props) {
                         <div className="text-gray-500 mb-2">{product.category}</div>
                         <h1 className="text-4xl font-bold mb-2">{product.name}</h1>
 
-                        <div className="mb-6">
+                        <div className="mb-6 flex items-center gap-4">
                             <StarRating productId={product.id} />
+                            {product.logo_url && (
+                                <Link href={`/catalog?brand=${encodeURIComponent(product.brand)}`}>
+                                    <img
+                                        src={product.logo_url}
+                                        alt={product.brand}
+                                        className="h-8 object-contain hover:opacity-80 transition-opacity"
+                                    />
+                                </Link>
+                            )}
                         </div>
 
                         <div className="text-lg text-gray-600 leading-relaxed">

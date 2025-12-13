@@ -3,6 +3,7 @@ import Image from "next/image";
 import pool from "./lib/db";
 import ProductCard from "./components/ProductCard";
 import LiveStats from "./components/LiveStats";
+import BrandCarousel from "./components/BrandCarousel";
 
 export const dynamic = 'force-dynamic';
 
@@ -24,6 +25,10 @@ export default async function Home() {
 
       stats.products = parseInt(productCountRes.rows[0].count);
       stats.brands = parseInt(brandCountRes.rows[0].count);
+
+      // Fetch all brands for carousel
+      const brandsRes = await client.query('SELECT name, logo_url FROM brands WHERE logo_url IS NOT NULL ORDER BY name');
+      stats.allBrands = brandsRes.rows;
 
       // Try to get orders count for samples estimation
       try {
@@ -104,6 +109,8 @@ export default async function Home() {
           </Link>
         </div>
       </section>
+
+      <BrandCarousel brands={stats.allBrands} />
 
       {/* Free Samples Logic Visualization */}
       <section className="py-12 bg-black text-white border-t border-gray-900">
