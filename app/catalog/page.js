@@ -164,8 +164,12 @@ export default async function CatalogPage(props) {
 
                             {/* Active Filters Summary */}
                             <div className="flex gap-2 text-xs mt-1 flex-wrap">
-                                {brand && <span className="bg-black text-white px-2 py-1 rounded">מותג: {brand}</span>}
-                                {category && <span className="bg-black text-white px-2 py-1 rounded">קטגוריה: {category}</span>}
+                                {(Array.isArray(brand) ? brand : [brand]).filter(Boolean).map(b => (
+                                    <span key={b} className="bg-black text-white px-2 py-1 rounded">מותג: {b}</span>
+                                ))}
+                                {(Array.isArray(category) ? category : [category]).filter(Boolean).map(c => (
+                                    <span key={c} className="bg-black text-white px-2 py-1 rounded">קטגוריה: {c}</span>
+                                ))}
                                 {search && <span className="bg-black text-white px-2 py-1 rounded">חיפוש: {search}</span>}
                             </div>
                         </div>
