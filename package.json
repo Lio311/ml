@@ -10,6 +10,7 @@
   "dependencies": {
     "@clerk/localizations": "^3.30.1",
     "@clerk/nextjs": "^6.36.2",
+    "canvas-confetti": "^1.9.4",
     "dotenv": "^17.2.3",
     "next": "16.0.9",
     "nodemailer": "^6.9.13",

@@ -3,12 +3,26 @@
 import { useCart } from "../context/CartContext";
 import Link from "next/link";
 import { useUser, SignInButton } from "@clerk/nextjs";
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
+import confetti from 'canvas-confetti';
 
 export default function CartPage() {
     const { cartItems, removeFromCart, updateQuantity, clearCart, subtotal, total, shippingCost, freeSamplesCount, nextTier } = useCart();
     const { isSignedIn, user } = useUser();
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const prevSamplesCount = useRef(freeSamplesCount);
+
+    useEffect(() => {
+        if (freeSamplesCount > prevSamplesCount.current) {
+            confetti({
+                particleCount: 100,
+                spread: 70,
+                origin: { y: 0.6 },
+                zIndex: 1000
+            });
+        }
+        prevSamplesCount.current = freeSamplesCount;
+    }, [freeSamplesCount]);
 
     const handleCheckout = async () => {
         setIsSubmitting(true);
