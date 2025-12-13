@@ -33,7 +33,7 @@ export function CartProvider({ children }) {
             if (existing) {
                 return prev.map((item) =>
                     item.id === product.id && item.size === size
-                        ? { ...item, quantity: item.quantity + 1 }
+                        ? { ...item, ...product, quantity: item.quantity + 1, size, price } // Merge new product details
                         : item
                 );
             }

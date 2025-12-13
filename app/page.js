@@ -3,6 +3,9 @@ import Image from "next/image";
 import pool from "./lib/db";
 import ProductCard from "./components/ProductCard";
 import LiveStats from "./components/LiveStats";
+
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
 import BrandCarousel from "./components/BrandCarousel";
 
 export const dynamic = 'force-dynamic';
