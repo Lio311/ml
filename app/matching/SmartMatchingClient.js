@@ -180,7 +180,7 @@ export default function SmartMatchingClient({ initialNotes }) {
                         <div className="pt-8 text-center">
                             <button
                                 onClick={handleMatch}
-                                className="bg-black text-white text-xl py-4 px-12 rounded-full font-bold hover:scale-105 transition-transform shadow-xl"
+                                className="bg-black text-white text-lg md:text-xl py-4 px-8 md:px-12 rounded-full font-bold hover:scale-105 transition-transform shadow-xl whitespace-nowrap"
                             >
                                 בצע התאמת מארז חכמה ✨
                             </button>
