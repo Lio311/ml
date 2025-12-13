@@ -8,7 +8,7 @@ import { useState } from "react";
 import WishlistHeart from "./WishlistHeart";
 
 export default function ProductCard({ product }) {
-    const { addToCart, cart } = useCart();
+    const { addToCart, cartItems } = useCart();
     const [added, setAdded] = useState(false);
 
     // Default to lowest price/size for display if needed, 
@@ -18,7 +18,7 @@ export default function ProductCard({ product }) {
         const stock = product.stock || 0;
 
         // Calculate current volume of this product in cart
-        const currentInCart = cart.reduce((total, item) => {
+        const currentInCart = (cartItems || []).reduce((total, item) => {
             if (item.id === product.id) {
                 return total + (item.size * item.quantity);
             }

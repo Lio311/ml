@@ -3,14 +3,14 @@ import { useCart } from "../../context/CartContext";
 import { useState } from "react";
 
 export default function ProductActionsClient({ product }) {
-    const { addToCart, cart } = useCart();
+    const { addToCart, cartItems } = useCart();
     const [addedId, setAddedId] = useState(null);
 
     const handleAdd = (size, price) => {
         const stock = product.stock || 0;
 
         // Calculate current amount of this product in cart
-        const currentInCart = cart.reduce((total, item) => {
+        const currentInCart = (cartItems || []).reduce((total, item) => {
             if (item.id === product.id) {
                 return total + (item.size * item.quantity);
             }
