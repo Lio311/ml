@@ -4,6 +4,9 @@ import ProductCard from "../components/ProductCard";
 import FilterSidebar from "./FilterSidebar";
 import SortSelect from "./SortSelect";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 // Server Component - Fetch data directly
 async function getProducts(search, brand, category, minPrice, maxPrice, sort, page = 1) {
     const LIMIT = 16;

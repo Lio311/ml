@@ -6,6 +6,9 @@ import WishlistHeart from "../../components/WishlistHeart";
 import AddToCartAdvanced from "../../components/ProductCard";
 import FragrancePyramid from "../../components/FragrancePyramid";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export default async function ProductPage(props) {
     const params = await props.params;
     const { id } = params;
