@@ -56,20 +56,41 @@ export default async function ProductPage(props) {
             const categoryBonus = (p.category && product.category && p.category.includes(product.category)) ? 0.1 : 0;
 
             return { ...p, similarity: score + categoryBonus };
-        })
-            .sort((a, b) => b.similarity - a.similarity)
-            .slice(0, 4);
-        if (related.length === 0) {
-            throw new Error("No related products found by notes similarity");
+        });
+
+        // Filter products with actual similarity
+        let matches = related.filter(p => p.similarity > 0);
+
+        let finalSelection = [];
+
+        if (matches.length >= 4) {
+            // Case 1: Enough matches. 
+            // Strategy: Take top 8 matches (to ensure relevance) and randomly select 4 from them.
+            matches.sort((a, b) => b.similarity - a.similarity);
+            const topPool = matches.slice(0, 8);
+            finalSelection = topPool.sort(() => 0.5 - Math.random()).slice(0, 4);
+        } else {
+            // Case 2: Not enough matches (< 4).
+            // Strategy: Take all matches, and fill the rest with random products.
+            finalSelection = [...matches];
+
+            const countNeeded = 4 - finalSelection.length;
+            const alreadySelectedIds = new Set(finalSelection.map(p => p.id));
+
+            // Get candidate pool for filling (everything else)
+            // We shuffle the "non-matching" products and take what we need
+            const fillPool = allProducts
+                .filter(p => !alreadySelectedIds.has(p.id))
+                .sort(() => 0.5 - Math.random()) // Shuffle
+                .slice(0, countNeeded);
+
+            finalSelection = [...finalSelection, ...fillPool];
         }
+
+        related = finalSelection;
+
     } catch (e) {
-        console.error("Related products error (falling back to category):", e);
-        try {
-            const fallbackRes = await pool.query('SELECT * FROM products WHERE category = $1 AND id != $2 LIMIT 4', [product.category, id]);
-            related = fallbackRes.rows;
-        } catch (err2) {
-            console.error("Fallback related failed:", err2);
-        }
+        console.error("Related products error:", e);
     }
 
     return (
@@ -152,7 +173,7 @@ export default async function ProductPage(props) {
 
             {related.length > 0 && (
                 <div>
-                    <h2 className="text-2xl font-bold mb-8">אולי תאהב גם</h2>
+                    <h2 className="text-2xl font-bold mb-8">אולי תאהב\י גם</h2>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                         {related.map(p => (
                             <ProductCard key={p.id} product={p} />
