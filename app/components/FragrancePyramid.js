@@ -3,6 +3,8 @@
 import React from 'react';
 
 export default function FragrancePyramid({ top, middle, base }) {
+    const [isOpen, setIsOpen] = React.useState(false);
+
     if (!top && !middle && !base) return null;
 
     const parseNotes = (notesStr) => {
@@ -15,55 +17,69 @@ export default function FragrancePyramid({ top, middle, base }) {
     const baseNotes = parseNotes(base);
 
     return (
-        <div className="w-full max-w-2xl mx-auto my-12 text-center rtl">
-            <h3 className="text-2xl font-serif text-black mb-8 border-b-2 border-black/10 pb-4 inline-block px-8">
-                פירמידת הבושם
-            </h3>
+        <div className="w-full mt-6 border-t pt-4">
+            <button
+                onClick={() => setIsOpen(!isOpen)}
+                className="w-full flex items-center justify-between text-right group py-2"
+            >
+                <span className="font-bold text-lg text-gray-800 flex items-center gap-2">
+                    <span className="text-xl">✨</span> פירמידת הבושם
+                </span>
+                <span className={`transform transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}>
+                    ▼
+                </span>
+            </button>
 
-            <div className="relative flex flex-col items-center gap-8 py-8 bg-neutral-50/50 rounded-3xl">
+            <div className={`transition-all duration-500 ease-in-out overflow-hidden ${isOpen ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'}`}>
+                <div className="py-4 flex flex-col items-center gap-4 relative">
 
-                {/* Top Notes */}
-                {topNotes.length > 0 && (
-                    <div className="w-[40%] flex flex-col items-center">
-                        <div className="mb-2 text-xs uppercase tracking-widest text-neutral-500 font-medium">תווים עליונים</div>
-                        <div className="flex flex-wrap justify-center gap-2">
-                            {topNotes.map((note, idx) => (
-                                <span key={idx} className="bg-white px-3 py-1.5 rounded-full shadow-sm text-sm border border-neutral-100 text-neutral-800">
-                                    {note}
-                                </span>
-                            ))}
-                        </div>
+                    {/* Background Triangle Shape */}
+                    <div className="absolute inset-0 z-0 flex justify-center opacity-5 pointer-events-none">
+                        <div className="w-0 h-0 border-l-[100px] border-l-transparent border-r-[100px] border-r-transparent border-b-[200px] border-b-black"></div>
                     </div>
-                )}
 
-                {/* Middle Notes */}
-                {middleNotes.length > 0 && (
-                    <div className="w-[70%] flex flex-col items-center border-t border-dashed border-neutral-300/50 pt-6">
-                        <div className="mb-2 text-xs uppercase tracking-widest text-neutral-500 font-medium">תווי לב</div>
-                        <div className="flex flex-wrap justify-center gap-2">
-                            {middleNotes.map((note, idx) => (
-                                <span key={idx} className="bg-white px-3 py-1.5 rounded-full shadow-sm text-sm border border-neutral-100 text-neutral-800">
-                                    {note}
-                                </span>
-                            ))}
+                    {/* Top Notes */}
+                    {topNotes.length > 0 && (
+                        <div className="z-10 flex flex-col items-center animate-fadeIn">
+                            <div className="text-[10px] uppercase tracking-widest text-gray-500 mb-1">תווים עליונים</div>
+                            <div className="flex flex-wrap justify-center gap-1.5">
+                                {topNotes.map((note, idx) => (
+                                    <span key={idx} className="bg-white/80 backdrop-blur-sm px-2 py-1 rounded-md text-xs border border-gray-200 shadow-sm">
+                                        {note}
+                                    </span>
+                                ))}
+                            </div>
                         </div>
-                    </div>
-                )}
+                    )}
 
-                {/* Base Notes */}
-                {baseNotes.length > 0 && (
-                    <div className="w-[90%] flex flex-col items-center border-t border-dashed border-neutral-300/50 pt-6">
-                        <div className="mb-2 text-xs uppercase tracking-widest text-neutral-500 font-medium">תווי בסיס</div>
-                        <div className="flex flex-wrap justify-center gap-2">
-                            {baseNotes.map((note, idx) => (
-                                <span key={idx} className="bg-white px-3 py-1.5 rounded-full shadow-sm text-sm border border-neutral-100 text-neutral-800">
-                                    {note}
-                                </span>
-                            ))}
+                    {/* Middle Notes */}
+                    {middleNotes.length > 0 && (
+                        <div className="z-10 flex flex-col items-center mt-2 animate-fadeIn delay-100">
+                            <div className="text-[10px] uppercase tracking-widest text-gray-500 mb-1">תווי לב</div>
+                            <div className="flex flex-wrap justify-center gap-1.5">
+                                {middleNotes.map((note, idx) => (
+                                    <span key={idx} className="bg-white/80 backdrop-blur-sm px-2 py-1 rounded-md text-xs border border-gray-200 shadow-sm">
+                                        {note}
+                                    </span>
+                                ))}
+                            </div>
                         </div>
-                    </div>
-                )}
+                    )}
 
+                    {/* Base Notes */}
+                    {baseNotes.length > 0 && (
+                        <div className="z-10 flex flex-col items-center mt-2 animate-fadeIn delay-200">
+                            <div className="text-[10px] uppercase tracking-widest text-gray-500 mb-1">תווי בסיס</div>
+                            <div className="flex flex-wrap justify-center gap-1.5">
+                                {baseNotes.map((note, idx) => (
+                                    <span key={idx} className="bg-white/80 backdrop-blur-sm px-2 py-1 rounded-md text-xs border border-gray-200 shadow-sm">
+                                        {note}
+                                    </span>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+                </div>
             </div>
         </div>
     );

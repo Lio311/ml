@@ -22,9 +22,41 @@ export default async function ProductPage(props) {
         return <div className="p-20 text-center">מוצר לא נמצא</div>;
     }
 
-    // Related products (simple logic: same category)
-    const relatedRes = await pool.query('SELECT * FROM products WHERE category = $1 AND id != $2 LIMIT 4', [product.category, id]);
-    const related = relatedRes.rows;
+    // Data for similarity - fetch all products to calculate score
+    // Optimally validation should happen in DB, but for ~200 items doing it in memory is fast and flexible for "Jaccard-like" similarity on text tags.
+    const allProductsRes = await pool.query('SELECT id, name, brand, image_url, price_10ml, is_limited, stock, top_notes, middle_notes, base_notes, category FROM products WHERE id != $1 AND active = true', [id]);
+    const allProducts = allProductsRes.rows;
+
+    const currentNotes = new Set([
+        ...(product.top_notes || '').split(',').map(n => n.trim()).filter(Boolean),
+        ...(product.middle_notes || '').split(',').map(n => n.trim()).filter(Boolean),
+        ...(product.base_notes || '').split(',').map(n => n.trim()).filter(Boolean)
+    ]);
+
+    const related = allProducts.map(p => {
+        const pNotes = new Set([
+            ...(p.top_notes || '').split(',').map(n => n.trim()).filter(Boolean),
+            ...(p.middle_notes || '').split(',').map(n => n.trim()).filter(Boolean),
+            ...(p.base_notes || '').split(',').map(n => n.trim()).filter(Boolean)
+        ]);
+
+        // Intersection count
+        let intersection = 0;
+        pNotes.forEach(note => {
+            if (currentNotes.has(note)) intersection++;
+        });
+
+        // Jaccard Index = (Intersection) / (Union)
+        const union = new Set([...currentNotes, ...pNotes]).size;
+        const score = union === 0 ? 0 : intersection / union;
+
+        // Boost if same category
+        const categoryBonus = (p.category && product.category && p.category.includes(product.category)) ? 0.1 : 0;
+
+        return { ...p, similarity: score + categoryBonus };
+    })
+        .sort((a, b) => b.similarity - a.similarity)
+        .slice(0, 4);
 
     return (
         <div className="container py-12">
@@ -78,14 +110,7 @@ export default async function ProductPage(props) {
                             {product.description || `תיאור מוצר מורחב יבוא כאן... ריחות של ${product.category} בשילוב תווים ייחודיים.`}
                         </div>
 
-                        {/* Fragrance Pyramid Visualization */}
-                        <div className="mt-8">
-                            <FragrancePyramid
-                                top={product.top_notes}
-                                middle={product.middle_notes}
-                                base={product.base_notes}
-                            />
-                        </div>
+                        {/* Fragrance Pyramid Visualization removed from here */}
                     </div>
 
                     <div className="bg-gray-50 p-6 rounded-xl border">
@@ -100,6 +125,13 @@ export default async function ProductPage(props) {
                             I'll use a Client Component Wrapper for AddToCart buttons.
                         */}
                         <ProductActionsClient product={product} />
+
+                        {/* Fragrance Pyramid Accordion */}
+                        <FragrancePyramid
+                            top={product.top_notes}
+                            middle={product.middle_notes}
+                            base={product.base_notes}
+                        />
                     </div>
                 </div>
             </div>
