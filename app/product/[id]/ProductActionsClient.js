@@ -3,10 +3,25 @@ import { useCart } from "../../context/CartContext";
 import { useState } from "react";
 
 export default function ProductActionsClient({ product }) {
-    const { addToCart } = useCart();
+    const { addToCart, cart } = useCart();
     const [addedId, setAddedId] = useState(null);
 
     const handleAdd = (size, price) => {
+        const stock = product.stock || 0;
+
+        // Calculate current amount of this product in cart
+        const currentInCart = cart.reduce((total, item) => {
+            if (item.id === product.id) {
+                return total + item.size; // Assuming item.size is the ML amount
+            }
+            return total;
+        }, 0);
+
+        if (currentInCart + size > stock) {
+            alert(`לא ניתן להוסיף לסל: נותרו ${stock} מ״ל במלאי (יש לך כבר ${currentInCart} מ״ל בסל)`);
+            return;
+        }
+
         addToCart(product, size, price);
         setAddedId(size);
         setTimeout(() => setAddedId(null), 2000);
