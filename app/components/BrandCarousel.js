@@ -23,12 +23,12 @@ export default function BrandCarousel({ brands }) {
                         <Link
                             key={`${brand.name}-${i}`}
                             href={`/catalog?brand=${encodeURIComponent(brand.name)}`}
-                            className="flex flex-col items-center justify-center min-w-[120px] md:min-w-[160px] opacity-60 hover:opacity-100 transition-all duration-300 transform hover:scale-110 grayscale hover:grayscale-0"
+                            className="flex items-center justify-center w-40 h-28 md:w-48 md:h-32 p-4 grayscale hover:grayscale-0 transition-all duration-300 hover:scale-105"
                         >
                             {brand.logo_url ? (
-                                <img src={brand.logo_url} alt={brand.name} className="h-20 md:h-28 w-auto object-contain mix-blend-multiply" />
+                                <img src={brand.logo_url} alt={brand.name} className="w-full h-full object-contain mix-blend-multiply opacity-80 hover:opacity-100" />
                             ) : (
-                                <span className="text-lg md:text-xl font-bold text-gray-400 font-serif">{brand.name}</span>
+                                <span className="text-xl font-bold text-gray-400 font-serif">{brand.name}</span>
                             )}
                         </Link>
                     ))}
