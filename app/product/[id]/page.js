@@ -4,6 +4,7 @@ import ProductCard from "../../components/ProductCard";
 import StarRating from "../../components/StarRating";
 import WishlistHeart from "../../components/WishlistHeart";
 import AddToCartAdvanced from "../../components/ProductCard";
+import FragrancePyramid from "../../components/FragrancePyramid";
 
 export default async function ProductPage(props) {
     const params = await props.params;
@@ -75,6 +76,15 @@ export default async function ProductPage(props) {
 
                         <div className="text-lg text-gray-600 leading-relaxed">
                             {product.description || `תיאור מוצר מורחב יבוא כאן... ריחות של ${product.category} בשילוב תווים ייחודיים.`}
+                        </div>
+
+                        {/* Fragrance Pyramid Visualization */}
+                        <div className="mt-8">
+                            <FragrancePyramid
+                                top={product.top_notes}
+                                middle={product.middle_notes}
+                                base={product.base_notes}
+                            />
                         </div>
                     </div>
 

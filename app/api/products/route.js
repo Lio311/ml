@@ -4,13 +4,13 @@ import pool from '../../lib/db';
 export async function PUT(req) {
     try {
         const body = await req.json();
-        const { id, brand, model, price_2ml, price_5ml, price_10ml, image_url, category, description } = body;
+        const { id, brand, model, price_2ml, price_5ml, price_10ml, image_url, category, description, top_notes, middle_notes, base_notes } = body;
 
         const client = await pool.connect();
         try {
             await client.query(
-                `UPDATE products SET brand = $1, model = $2, price_2ml = $3, price_5ml = $4, price_10ml = $5, image_url = $6, category = $7, description = $8, stock = $9 WHERE id = $10`,
-                [brand, model, price_2ml, price_5ml, price_10ml, image_url, category, description, body.stock || 0, id]
+                `UPDATE products SET brand = $1, model = $2, price_2ml = $3, price_5ml = $4, price_10ml = $5, image_url = $6, category = $7, description = $8, stock = $9, top_notes = $10, middle_notes = $11, base_notes = $12 WHERE id = $13`,
+                [brand, model, price_2ml, price_5ml, price_10ml, image_url, category, description, body.stock || 0, top_notes, middle_notes, base_notes, id]
             );
             return NextResponse.json({ success: true });
         } finally {
@@ -25,15 +25,15 @@ export async function PUT(req) {
 export async function POST(req) {
     try {
         const body = await req.json();
-        const { brand, model, price_2ml, price_5ml, price_10ml, image_url, category, description } = body;
+        const { brand, model, price_2ml, price_5ml, price_10ml, image_url, category, description, top_notes, middle_notes, base_notes } = body;
 
         const client = await pool.connect();
         try {
             const res = await client.query(
-                `INSERT INTO products (name, category, brand, model, price_2ml, price_5ml, price_10ml, image_url, description, stock) 
-                 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) 
+                `INSERT INTO products (name, category, brand, model, price_2ml, price_5ml, price_10ml, image_url, description, stock, top_notes, middle_notes, base_notes) 
+                 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) 
                  RETURNING id`,
-                [brand + ' ' + model, category || 'General', brand, model, price_2ml, price_5ml, price_10ml, image_url, description, body.stock || 0]
+                [brand + ' ' + model, category || 'General', brand, model, price_2ml, price_5ml, price_10ml, image_url, description, body.stock || 0, top_notes, middle_notes, base_notes]
             );
             return NextResponse.json({ success: true, id: res.rows[0].id });
         } finally {

@@ -29,7 +29,10 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
             category: product.category || '',
             category: product.category || '',
             description: product.description || '',
-            stock: product.stock || 0
+            stock: product.stock || 0,
+            top_notes: product.top_notes || '',
+            middle_notes: product.middle_notes || '',
+            base_notes: product.base_notes || ''
         });
     };
 
@@ -45,7 +48,10 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
             image_url: '',
             category: '',
             description: '',
-            stock: 0
+            stock: 0,
+            top_notes: '',
+            middle_notes: '',
+            base_notes: ''
         });
     };
 
@@ -294,6 +300,36 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                             placeholder="/products/image.png or https://..."
                         />
                     </div>
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                        <div>
+                            <label className="text-sm text-gray-500">תווים עליונים</label>
+                            <TagInput
+                                tags={editForm.top_notes ? editForm.top_notes.split(',').filter(Boolean) : []}
+                                onChange={(newTags) => setEditForm({ ...editForm, top_notes: newTags.join(',') })}
+                                suggestions={[]}
+                                placeholder="למשל: יסמין, ורד..."
+                            />
+                        </div>
+                        <div>
+                            <label className="text-sm text-gray-500">תווי לב</label>
+                            <TagInput
+                                tags={editForm.middle_notes ? editForm.middle_notes.split(',').filter(Boolean) : []}
+                                onChange={(newTags) => setEditForm({ ...editForm, middle_notes: newTags.join(',') })}
+                                suggestions={[]}
+                                placeholder="למשל: וניל, עץ..."
+                            />
+                        </div>
+                        <div>
+                            <label className="text-sm text-gray-500">תווי בסיס</label>
+                            <TagInput
+                                tags={editForm.base_notes ? editForm.base_notes.split(',').filter(Boolean) : []}
+                                onChange={(newTags) => setEditForm({ ...editForm, base_notes: newTags.join(',') })}
+                                suggestions={[]}
+                                placeholder="למשל: מאסק, אמבר..."
+                            />
+                        </div>
+                    </div>
+
                     <div className="mb-4">
                         <label className="text-sm text-gray-500">תיאור מוצר</label>
                         <textarea
@@ -396,6 +432,35 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                         onChange={e => setEditForm({ ...editForm, description: e.target.value })}
                                         className="border p-2 rounded w-full bg-gray-50 h-20 text-sm"
                                     />
+                                </div>
+                                <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+                                    <div>
+                                        <label className="text-xs text-gray-500">עליונים</label>
+                                        <TagInput
+                                            tags={editForm.top_notes ? editForm.top_notes.split(',').filter(Boolean) : []}
+                                            onChange={(newTags) => setEditForm({ ...editForm, top_notes: newTags.join(',') })}
+                                            suggestions={[]}
+                                            placeholder="..."
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="text-xs text-gray-500">לב</label>
+                                        <TagInput
+                                            tags={editForm.middle_notes ? editForm.middle_notes.split(',').filter(Boolean) : []}
+                                            onChange={(newTags) => setEditForm({ ...editForm, middle_notes: newTags.join(',') })}
+                                            suggestions={[]}
+                                            placeholder="..."
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="text-xs text-gray-500">בסיס</label>
+                                        <TagInput
+                                            tags={editForm.base_notes ? editForm.base_notes.split(',').filter(Boolean) : []}
+                                            onChange={(newTags) => setEditForm({ ...editForm, base_notes: newTags.join(',') })}
+                                            suggestions={[]}
+                                            placeholder="..."
+                                        />
+                                    </div>
                                 </div>
                             </div>
                         ) : (
