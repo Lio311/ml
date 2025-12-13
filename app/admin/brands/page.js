@@ -56,50 +56,56 @@ export default function AdminBrandsPage() {
             <p className="mb-4 text-gray-600">הזן קישורים ללוגואים של המותגים השונים. הלוגואים יוצגו בקרוסלה ובדפי המוצרים.</p>
 
             <div className="bg-white rounded-lg shadow border overflow-hidden">
-                <table className="w-full text-left border-collapse">
+                <table className="w-full text-center border-collapse">
                     <thead className="bg-gray-50">
                         <tr>
-                            <th className="p-4 border-b">מותג</th>
-                            <th className="p-4 border-b">לוגו (תצוגה)</th>
-                            <th className="p-4 border-b">קישור ללוגו</th>
-                            <th className="p-4 border-b">פעולות</th>
+                            <th className="p-4 border-b text-center">מותג</th>
+                            <th className="p-4 border-b text-center">לוגו (תצוגה)</th>
+                            <th className="p-4 border-b text-center">קישור ללוגו</th>
+                            <th className="p-4 border-b text-center">פעולות</th>
                         </tr>
                     </thead>
                     <tbody>
                         {brands.map(brand => (
                             <tr key={brand.id} className="border-b hover:bg-gray-50">
-                                <td className="p-4 font-bold">{brand.name}</td>
-                                <td className="p-4">
-                                    {brand.logo_url ? (
-                                        <img src={brand.logo_url} alt={brand.name} className="h-10 object-contain" />
-                                    ) : (
-                                        <span className="text-gray-300 text-xs">אין לוגו</span>
-                                    )}
+                                <td className="p-4 font-bold text-center">{brand.name}</td>
+                                <td className="p-4 text-center">
+                                    <div className="flex justify-center">
+                                        {brand.logo_url ? (
+                                            <img src={brand.logo_url} alt={brand.name} className="h-10 object-contain" />
+                                        ) : (
+                                            <span className="text-gray-300 text-xs">אין לוגו</span>
+                                        )}
+                                    </div>
                                 </td>
-                                <td className="p-4">
-                                    {editingId === brand.id ? (
-                                        <input
-                                            value={editUrl}
-                                            onChange={e => setEditUrl(e.target.value)}
-                                            className="border p-2 rounded w-full text-sm"
-                                            dir="ltr"
-                                            placeholder="https://..."
-                                        />
-                                    ) : (
-                                        <div className="text-gray-500 text-xs truncate max-w-[200px]" dir="ltr">
-                                            {brand.logo_url}
-                                        </div>
-                                    )}
+                                <td className="p-4 text-center">
+                                    <div className="flex justify-center">
+                                        {editingId === brand.id ? (
+                                            <input
+                                                value={editUrl}
+                                                onChange={e => setEditUrl(e.target.value)}
+                                                className="border p-2 rounded w-full text-sm text-center"
+                                                dir="ltr"
+                                                placeholder="https://..."
+                                            />
+                                        ) : (
+                                            <div className="text-gray-500 text-xs truncate max-w-[200px] mx-auto" dir="ltr">
+                                                {brand.logo_url}
+                                            </div>
+                                        )}
+                                    </div>
                                 </td>
-                                <td className="p-4">
-                                    {editingId === brand.id ? (
-                                        <div className="flex gap-2">
-                                            <button onClick={() => handleSave(brand.id)} className="bg-green-600 text-white px-3 py-1 rounded text-sm font-bold">שמור</button>
-                                            <button onClick={() => setEditingId(null)} className="bg-gray-300 text-black px-3 py-1 rounded text-sm">ביטול</button>
-                                        </div>
-                                    ) : (
-                                        <button onClick={() => startEdit(brand)} className="text-blue-600 underline text-sm font-bold">ערוך</button>
-                                    )}
+                                <td className="p-4 text-center">
+                                    <div className="flex justify-center gap-2">
+                                        {editingId === brand.id ? (
+                                            <>
+                                                <button onClick={() => handleSave(brand.id)} className="bg-green-600 text-white px-3 py-1 rounded text-sm font-bold">שמור</button>
+                                                <button onClick={() => setEditingId(null)} className="bg-gray-300 text-black px-3 py-1 rounded text-sm">ביטול</button>
+                                            </>
+                                        ) : (
+                                            <button onClick={() => startEdit(brand)} className="text-blue-600 underline text-sm font-bold">ערוך</button>
+                                        )}
+                                    </div>
                                 </td>
                             </tr>
                         ))}
