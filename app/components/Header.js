@@ -39,8 +39,22 @@ export default function Header() {
                         </button>
                     </div>
 
-                    {/* Desktop RIGHT Group: Search + User */}
+                    {/* Desktop RIGHT Group: User + Search */}
                     <div className="hidden md:flex items-center gap-4 z-20 absolute right-4">
+                        {/* User Icon (Rightmost) */}
+                        <SignedIn>
+                            <div className="flex items-center gap-2">
+                                <UserButton afterSignOutUrl="/" />
+                            </div>
+                        </SignedIn>
+                        <SignedOut>
+                            <SignInButton mode="modal">
+                                <button className="text-sm font-medium hover:text-gray-600 transition hidden md:block">
+                                    התחברות
+                                </button>
+                            </SignInButton>
+                        </SignedOut>
+
                         {/* Search Bar */}
                         <form action="/catalog" method="get" className="relative group">
                             <input
@@ -55,26 +69,6 @@ export default function Header() {
                                 </svg>
                             </button>
                         </form>
-
-                        {/* User Icon */}
-                        <SignedIn>
-                            <div className="flex items-center gap-2">
-                                <Link href="/orders" className="relative group hidden md:block" title="ההזמנות שלי">
-                                    <span className="sr-only">ההזמנות שלי</span>
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 hover:text-blue-600 transition">
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
-                                    </svg>
-                                </Link>
-                                <UserButton afterSignOutUrl="/" />
-                            </div>
-                        </SignedIn>
-                        <SignedOut>
-                            <SignInButton mode="modal">
-                                <button className="text-sm font-medium hover:text-gray-600 transition hidden md:block">
-                                    התחברות
-                                </button>
-                            </SignInButton>
-                        </SignedOut>
                     </div>
 
                     {/* Desktop CENTER Group: Logo + Menu */}
@@ -100,8 +94,19 @@ export default function Header() {
                         </div>
                     </div>
 
-                    {/* Desktop LEFT Group: Wishlist + Cart */}
+                    {/* Desktop LEFT Group: Orders + Wishlist + Cart */}
                     <div className="flex items-center gap-4 md:absolute md:left-4 z-20">
+
+                        {/* Orders (Moved here) */}
+                        <SignedIn>
+                            <Link href="/orders" className="relative group hidden md:block" title="ההזמנות שלי">
+                                <span className="sr-only">ההזמנות שלי</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 hover:text-blue-600 transition">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                                </svg>
+                            </Link>
+                        </SignedIn>
+
                         {/* Wishlist */}
                         <Link href="/wishlist" className="relative group">
                             <span className="sr-only">מועדפים</span>
