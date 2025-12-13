@@ -73,7 +73,7 @@ export default function CartPage() {
 
                                 <div className="flex-1">
                                     <h3 className="font-bold">{item.name}</h3>
-                                    <div className="text-sm text-gray-500">גודל: {item.size}</div>
+                                    <div className="text-sm text-gray-500">גודל: {item.size} מ"ל</div>
                                     <div className="text-sm font-bold mt-1">{item.price} ₪</div>
                                 </div>
 
