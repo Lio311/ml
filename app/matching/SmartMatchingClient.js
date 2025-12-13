@@ -7,6 +7,7 @@ import TagInput from '../components/TagInput'; // We might need to adjust TagInp
 // For now, I'll build a custom simple selector for notes.
 
 export default function SmartMatchingClient({ initialNotes }) {
+    const { addMultipleToCart } = useCart();
     const [step, setStep] = useState(1);
     const [preferences, setPreferences] = useState({
         quantity: 5,
@@ -209,7 +210,7 @@ export default function SmartMatchingClient({ initialNotes }) {
                             {results.products.map((p, idx) => (
                                 <div key={p.id} className="flex gap-4 p-4 border rounded-xl bg-white items-center">
                                     <div className="w-16 h-16 bg-gray-50 rounded-lg flex-shrink-0 flex items-center justify-center">
-                                        {p.img ? <img src={p.img} className="w-full h-full object-contain" /> : '🧴'}
+                                        {p.image_url ? <img src={p.image_url} className="w-full h-full object-contain" /> : '🧴'}
                                     </div>
                                     <div className="flex-1">
                                         <div className="font-bold text-sm line-clamp-1">{p.name}</div>

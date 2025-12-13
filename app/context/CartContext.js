@@ -41,6 +41,28 @@ export function CartProvider({ children }) {
         });
     };
 
+    const addMultipleToCart = (items) => {
+        setCartItems((prev) => {
+            let newCart = [...prev];
+            items.forEach(({ product, size, price }) => {
+                const existingIndex = newCart.findIndex(
+                    (item) => item.id === product.id && item.size === size
+                );
+                if (existingIndex > -1) {
+                    newCart[existingIndex] = {
+                        ...newCart[existingIndex],
+                        quantity: newCart[existingIndex].quantity + 1
+                    };
+                } else {
+                    newCart.push({ ...product, size, price, quantity: 1 });
+                }
+            });
+            return newCart;
+        });
+    };
+
+
+
     const removeFromCart = (id, size) => {
         setCartItems((prev) => prev.filter((item) => !(item.id === id && item.size === size)));
     };
@@ -88,6 +110,7 @@ export function CartProvider({ children }) {
             value={{
                 cartItems,
                 addToCart,
+                addMultipleToCart,
                 removeFromCart,
                 updateQuantity,
                 clearCart,
