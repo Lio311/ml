@@ -110,8 +110,6 @@ export default async function Home() {
         </div>
       </section>
 
-      <BrandCarousel brands={stats.allBrands} />
-
       {/* Free Samples Logic Visualization */}
       <section className="py-12 bg-black text-white border-t border-gray-900">
         <div className="container">
@@ -154,6 +152,8 @@ export default async function Home() {
 
         </div>
       </section>
+
+      <BrandCarousel brands={stats.allBrands} />
 
       {/* Collections Grid - Moved Bottom */}
       <section className="py-12 bg-white border-t">

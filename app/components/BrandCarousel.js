@@ -6,7 +6,7 @@ export default function BrandCarousel({ brands }) {
     if (!brands || brands.length === 0) return null;
 
     return (
-        <div className="w-full bg-neutral-50 py-16 border-t border-gray-200 overflow-hidden">
+        <div className="w-full bg-white py-16 border-t border-gray-200 overflow-hidden">
             <div className="container mx-auto px-4 text-center mb-10">
                 <h2 className="text-2xl md:text-3xl font-serif font-medium text-black tracking-widest uppercase">המותגים המובילים</h2>
                 <div className="w-12 h-0.5 bg-black mx-auto mt-4"></div>
