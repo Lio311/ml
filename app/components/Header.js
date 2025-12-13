@@ -88,7 +88,7 @@ export default function Header() {
                             <nav className="flex items-center gap-6 lg:gap-8">
                                 <Link href="/" className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm ${pathname === '/' ? 'bg-black text-white' : 'text-gray-900 hover:bg-black hover:text-white'}`}>דף הבית</Link>
                                 <Link href="/catalog" className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm ${pathname.startsWith('/catalog') ? 'bg-black text-white' : 'text-gray-900 hover:bg-black hover:text-white'}`}>קטלוג</Link>
-                                <Link href="/matching" className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm ${pathname === '/matching' ? 'bg-black text-white' : 'text-gray-900 hover:bg-black hover:text-white'}`}>מומחה המארזים</Link>
+                                <Link href="/matching" className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm ${pathname === '/matching' ? 'bg-black text-white' : 'text-gray-900 hover:bg-black hover:text-white'}`}>התאמת מארזים</Link>
                                 <Link href="/about" className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm ${pathname === '/about' ? 'bg-black text-white' : 'text-gray-900 hover:bg-black hover:text-white'}`}>אודות</Link>
                                 <Link href="/contact" className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm ${pathname === '/contact' ? 'bg-black text-white' : 'text-gray-900 hover:bg-black hover:text-white'}`}>צור קשר</Link>
                             </nav>
@@ -155,7 +155,7 @@ export default function Header() {
                             קטלוג
                         </Link>
                         <Link href="/matching" onClick={() => setIsMenuOpen(false)} className="border-b pb-4">
-                            מומחה המארזים
+                            התאמת מארזים
                         </Link>
                         <Link href="/about" onClick={() => setIsMenuOpen(false)} className="border-b pb-4">
                             אודות
