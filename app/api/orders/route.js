@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { auth, currentUser } from '@clerk/nextjs/server';
 import pool from '../../lib/db';
+import { sendEmail, getOrderConfirmationTemplate } from '../../lib/email';
 
 export async function POST(req) {
     try {
@@ -41,6 +42,13 @@ export async function POST(req) {
             const orderId = orderResult.rows[0].id;
 
             await client.query('COMMIT');
+
+            // Send Confirmation Email (Async, don't block response)
+            const userEmail = user?.emailAddresses[0]?.emailAddress;
+            if (userEmail) {
+                const html = getOrderConfirmationTemplate(orderId, items, total, freeSamples);
+                sendEmail(userEmail, `אישור הזמנה #${orderId} - ML Perfume`, html);
+            }
 
             return NextResponse.json({ success: true, orderId });
 
