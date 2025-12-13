@@ -109,7 +109,7 @@ export default function CartPage() {
                             <div className="bg-blue-50 p-4 rounded border border-blue-100 text-sm">
                                 {freeSamplesCount > 0 ? (
                                     <div className="text-blue-800 font-bold mb-1">
-                                        🎉 מגיע לך {freeSamplesCount} דוגמיות מתנה!
+                                        מגיע לך {freeSamplesCount} דוגמיות מתנה! 🎉
                                         <br />
                                         <span className="font-normal text-xs text-blue-600">
                                             (הצוות יבחר אותן בקפידה עבורך)
