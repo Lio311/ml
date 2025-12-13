@@ -12,7 +12,13 @@ export async function POST(request) {
 
         const requestedSize = parseInt(size);
         const requestedQty = parseInt(quantity);
-        const userBudget = parseInt(budget);
+        // Reserve 30 NIS for shipping as requested
+        const shippingCost = 30;
+        let userBudget = parseInt(budget) - shippingCost;
+
+        // Safety check: ensure decent budget remains
+        if (userBudget < 50) userBudget = parseInt(budget); // Fallback if budget is really low
+
         const userNotes = new Set(notes || []);
 
         // 1. Fetch Candidates
