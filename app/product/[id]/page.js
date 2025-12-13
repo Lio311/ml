@@ -90,7 +90,22 @@ export default async function ProductPage(props) {
         related = finalSelection;
 
     } catch (e) {
-        console.error("Related products error:", e);
+        console.error("Related products error (falling back to category):", e);
+        try {
+            // Fallback: Simple category match if advanced logic fails
+            const fallbackRes = await pool.query('SELECT * FROM products WHERE category = $1 AND id != $2 LIMIT 4', [product.category, id]);
+            related = fallbackRes.rows;
+
+            // If still not enough (e.g. category has few items), fill with random active products
+            if (related.length < 4) {
+                const randomRes = await pool.query('SELECT * FROM products WHERE id != $1 AND active = true ORDER BY RANDOM() LIMIT 4', [id]);
+                // Combine and dedup
+                const combined = [...related, ...randomRes.rows].filter((v, i, a) => a.findIndex(t => (t.id === v.id)) === i);
+                related = combined.slice(0, 4);
+            }
+        } catch (err2) {
+            console.error("Fallback related failed:", err2);
+        }
     }
 
     return (
