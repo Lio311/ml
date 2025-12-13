@@ -211,7 +211,7 @@ export default function SmartMatchingClient({ initialNotes }) {
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-h-[500px] overflow-y-auto pr-2">
                             {results.products.map((p, idx) => (
                                 <div key={p.id} className="flex gap-4 p-4 border rounded-xl bg-white items-center">
-                                    <div className="w-16 h-16 bg-gray-50 rounded-lg flex-shrink-0 flex items-center justify-center">
+                                    <div className="w-16 h-16 bg-white rounded-lg flex-shrink-0 flex items-center justify-center">
                                         {p.image_url ? <img src={p.image_url} className="w-full h-full object-contain" /> : '🧴'}
                                     </div>
                                     <div className="flex-1">

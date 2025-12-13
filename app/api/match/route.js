@@ -69,14 +69,28 @@ export async function POST(request) {
         // 3. Selection Algorithm (Greedy Knapsack-ish)
         // Goal: Maximize Score, Subject to Total Price <= Budget, Count == Quantity
 
-        // A simple heuristic:
-        // Filter out items that are individually way above budget? (Not necessarily, one expensive item is ok if others are cheap)
+        // Strategy Update: Instead of just "Cheapest" (Price ASC), we target the "Average Budget Per Item".
+        // This prevents the system from picking very cheap items when the user has a high budget.
+        const targetPrice = userBudget / requestedQty;
 
-        // Sort by Score DESC, Price ASC
+        // Sort by Score DESC, then by closeness to Target Price
         candidates.sort((a, b) => {
             if (b.score !== a.score) return b.score - a.score; // Higher score first
-            return a.price - b.price; // Lower price second (if scores equal)
+            // If scores equal, pick the one closer to the target price
+            return Math.abs(a.price - targetPrice) - Math.abs(b.price - targetPrice);
         });
+
+        // Ensure Uniqueness (just in case DB returns dupes, though likely distinct by ID)
+        // We do this by keeping a Set of IDs
+        const uniqueCandidates = [];
+        const seenIds = new Set();
+        for (const c of candidates) {
+            if (!seenIds.has(c.id)) {
+                uniqueCandidates.push(c);
+                seenIds.add(c.id);
+            }
+        }
+        candidates = uniqueCandidates;
 
         // Take top Qty
         let selected = candidates.slice(0, requestedQty);
