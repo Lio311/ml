@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from 'react';
+import { useCart } from '../context/CartContext';
 import TagInput from '../components/TagInput'; // We might need to adjust TagInput to be a selector, or use a custom one. 
 // Actually TagInput is designed for creating new tags. For selection from list, we might want a slightly different UI 
 // but TagInput with suggestions works too. Let's build a simple multi-select for now or reuse TagInput if it supports "suggestions only".
