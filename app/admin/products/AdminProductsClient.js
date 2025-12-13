@@ -44,7 +44,6 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
             price_10ml: 0,
             image_url: '',
             category: '',
-            category: '',
             description: '',
             stock: 0
         });
@@ -230,6 +229,16 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                 value={editForm.price_10ml}
                                 onChange={e => setEditForm({ ...editForm, price_10ml: Number(e.target.value) })}
                                 className="border p-2 rounded w-full bg-gray-50"
+                            />
+                        </div>
+                        <div className="md:col-span-3 mt-2">
+                            <label className="text-sm text-gray-500 font-bold">מלאי (מ״ל)</label>
+                            <input
+                                type="number"
+                                value={editForm.stock}
+                                onChange={e => setEditForm({ ...editForm, stock: Number(e.target.value) })}
+                                className="border p-2 rounded w-full bg-gray-50 bg-yellow-50"
+                                placeholder="לדוגמה: 100"
                             />
                         </div>
                     </div>
