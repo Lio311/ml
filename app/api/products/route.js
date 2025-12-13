@@ -9,8 +9,8 @@ export async function PUT(req) {
         const client = await pool.connect();
         try {
             await client.query(
-                `UPDATE products SET brand = $1, model = $2, price_2ml = $3, price_5ml = $4, price_10ml = $5, image_url = $6, category = $7, description = $8 WHERE id = $9`,
-                [brand, model, price_2ml, price_5ml, price_10ml, image_url, category, description, id]
+                `UPDATE products SET brand = $1, model = $2, price_2ml = $3, price_5ml = $4, price_10ml = $5, image_url = $6, category = $7, description = $8, stock = $9 WHERE id = $10`,
+                [brand, model, price_2ml, price_5ml, price_10ml, image_url, category, description, body.stock || 0, id]
             );
             return NextResponse.json({ success: true });
         } finally {
@@ -30,10 +30,10 @@ export async function POST(req) {
         const client = await pool.connect();
         try {
             const res = await client.query(
-                `INSERT INTO products (name, category, brand, model, price_2ml, price_5ml, price_10ml, image_url, description) 
-                 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) 
+                `INSERT INTO products (name, category, brand, model, price_2ml, price_5ml, price_10ml, image_url, description, stock) 
+                 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) 
                  RETURNING id`,
-                [brand + ' ' + model, category || 'General', brand, model, price_2ml, price_5ml, price_10ml, image_url, description]
+                [brand + ' ' + model, category || 'General', brand, model, price_2ml, price_5ml, price_10ml, image_url, description, body.stock || 0]
             );
             return NextResponse.json({ success: true, id: res.rows[0].id });
         } finally {
