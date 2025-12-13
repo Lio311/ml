@@ -12,7 +12,7 @@ export default function ProductActionsClient({ product }) {
         // Calculate current amount of this product in cart
         const currentInCart = cart.reduce((total, item) => {
             if (item.id === product.id) {
-                return total + item.size; // Assuming item.size is the ML amount
+                return total + (item.size * item.quantity);
             }
             return total;
         }, 0);
