@@ -27,7 +27,9 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
             price_10ml: product.price_10ml || 0,
             image_url: product.image_url || '',
             category: product.category || '',
-            description: product.description || ''
+            category: product.category || '',
+            description: product.description || '',
+            stock: product.stock || 0
         });
     };
 
@@ -42,7 +44,9 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
             price_10ml: 0,
             image_url: '',
             category: '',
-            description: ''
+            category: '',
+            description: '',
+            stock: 0
         });
     };
 
