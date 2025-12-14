@@ -78,18 +78,18 @@ export default function LotteryPage() {
         <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center p-4">
             {gameState === 'intro' && (
                 <div className="max-w-2xl text-center space-y-8 animate-fade-in">
-                    <h1 className="text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-yellow-600">
+                    <h1 className="text-6xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-red-700">
                         הגרלת הבשמים הגדולה 🎰
                     </h1>
                     <p className="text-xl text-gray-300 leading-relaxed">
                         אוהבים הפתעות? תנו לנו לבחור בשבילכם!<br />
                         בחרו תקציב, סובבו את הגלגל, וקבלו סט דוגמיות ייחודי ומגוון<br />
-                        <span className="text-yellow-400 font-bold">בהנחה מטורפת של 15% ל-10 דקות בלבד!</span>
+                        <span className="text-red-500 font-bold">בהנחה מטורפת של 15% ל-10 דקות בלבד!</span>
                     </p>
 
                     <div className="bg-gray-900 p-8 rounded-2xl border border-gray-800 shadow-2xl">
                         <label className="block text-2xl font-bold mb-8">
-                            התקציב שלי: <span className="text-yellow-400">{budget} ₪</span>
+                            התקציב שלי: <span className="text-red-500">{budget} ₪</span>
                         </label>
                         <input
                             type="range"
@@ -98,7 +98,7 @@ export default function LotteryPage() {
                             step="50"
                             value={budget}
                             onChange={handleBudgetChange}
-                            className="w-full h-4 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-yellow-500 hover:accent-yellow-400 transition-all"
+                            className="w-full h-4 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-red-600 hover:accent-red-500 transition-all"
                         />
                         <div className="flex justify-between text-gray-500 mt-2 text-sm">
                             <span>200 ₪</span>
@@ -108,9 +108,9 @@ export default function LotteryPage() {
 
                     <button
                         onClick={generateBundle}
-                        className="bg-gradient-to-r from-yellow-500 to-yellow-700 text-black text-2xl font-black py-4 px-12 rounded-full shadow-lg hover:scale-105 active:scale-95 transition-transform"
+                        className="bg-gradient-to-r from-red-600 to-red-800 text-white text-2xl font-black py-4 px-12 rounded-full shadow-lg hover:scale-105 active:scale-95 transition-transform"
                     >
-                        סובב את הגלגל! 🎲
+                        סובב את הגלגל
                     </button>
                 </div>
             )}
