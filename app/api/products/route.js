@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
 import pool from '../../lib/db';
+import { clerkClient } from '@clerk/nextjs/server';
+import { sendEmail, getNewProductTemplate } from '../../lib/email';
 
 export async function PUT(req) {
     try {
@@ -35,7 +37,34 @@ export async function POST(req) {
                  RETURNING id`,
                 [brand + ' ' + model, category || 'General', brand, model, price_2ml, price_5ml, price_10ml, image_url, description, body.stock || 0, top_notes, middle_notes, base_notes]
             );
-            return NextResponse.json({ success: true, id: res.rows[0].id });
+            const newProduct = res.rows[0];
+            const newProductId = newProduct.id;
+
+            // --- Newsletter Feature ---
+            // Fetch all users to notify them about the new product
+            (async () => {
+                try {
+                    const clerk = await clerkClient();
+                    const { data: users } = await clerk.users.getUserList({ limit: 500 });
+
+                    const emails = users
+                        .map(u => u.emailAddresses.find(e => e.id === u.primaryEmailAddressId)?.emailAddress || u.emailAddresses[0]?.emailAddress)
+                        .filter(Boolean);
+
+                    if (emails.length > 0) {
+                        const productForEmail = { id: newProductId, ...body };
+                        const html = getNewProductTemplate(productForEmail);
+                        // Send as BCC to protect privacy and respect bulk limits
+                        await sendEmail(emails, `חדש באתר: ${brand} ${model} ✨ - ml_tlv`, html);
+                        console.log(`Newsletter sent to ${emails.length} recipients.`);
+                    }
+                } catch (emailErr) {
+                    console.error("Failed to send newsletter:", emailErr);
+                }
+            })();
+            // --------------------------
+
+            return NextResponse.json({ success: true, id: newProductId });
         } finally {
             client.release();
         }
