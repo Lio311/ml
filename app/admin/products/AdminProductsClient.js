@@ -292,15 +292,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                             />
                         </div>
                     </div>
-                    <div className="mb-4 flex items-center gap-2 bg-gray-50 p-3 rounded border">
-                        <input
-                            type="checkbox"
-                            checked={editForm.in_lottery ?? true}
-                            onChange={e => setEditForm({ ...editForm, in_lottery: e.target.checked })}
-                            className="w-5 h-5 accent-red-600 cursor-pointer"
-                        />
-                        <label className="text-sm font-bold text-gray-700 select-none">לכלול במאגר ההגרלות? (רנדומלי)</label>
-                    </div>
+
                     <div className="mb-4">
                         <label className="text-sm text-gray-500">קישור לתמונה (Image URL)</label>
                         <input
@@ -349,6 +341,15 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                             className="border p-2 rounded w-full bg-gray-50 h-24"
                             placeholder="תיאור מלא של הבושם, תווים, וכו'..."
                         />
+                    </div>
+                    <div className="flex items-center gap-2 mb-4">
+                        <input
+                            type="checkbox"
+                            checked={editForm.in_lottery ?? true}
+                            onChange={e => setEditForm({ ...editForm, in_lottery: e.target.checked })}
+                            className="w-5 h-5 accent-red-600 cursor-pointer"
+                        />
+                        <label className="text-sm font-bold text-gray-700 select-none">לכלול במאגר ההגרלות? (רנדומלי)</label>
                     </div>
                     <div className="flex gap-2 justify-end">
                         <button onClick={handleCancel} className="bg-gray-200 text-black px-6 py-2 rounded font-bold">ביטול</button>
@@ -428,15 +429,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                     </div>
                                 </div>
 
-                                <div className="flex items-center gap-2 mt-4 ml-1">
-                                    <input
-                                        type="checkbox"
-                                        checked={editForm.in_lottery ?? true}
-                                        onChange={e => setEditForm({ ...editForm, in_lottery: e.target.checked })}
-                                        className="w-4 h-4 accent-red-600 cursor-pointer"
-                                    />
-                                    <label className="text-xs font-bold text-gray-700 select-none">לכלול במאגר ההגרלות? (רנדומלי)</label>
-                                </div>
+
 
                                 <div>
                                     <label className="text-xs text-gray-500">קישור לתמונה</label>
@@ -493,6 +486,10 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                     />
                                     <label className="text-xs font-bold text-gray-700 select-none">לכלול במאגר ההגרלות? (רנדומלי)</label>
                                 </div>
+                                <div className="flex gap-2 justify-end mt-4">
+                                    <button onClick={handleSave} className="bg-green-600 text-white px-4 py-2 rounded text-sm font-bold flex-1 md:flex-none">שמור</button>
+                                    <button onClick={handleCancel} className="bg-gray-200 text-black px-4 py-2 rounded text-sm font-bold flex-1 md:flex-none">ביטול</button>
+                                </div>
                             </div >
                         ) : (
                             <div className="flex-1 flex items-center gap-4 w-full">
@@ -518,23 +515,16 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                         )
                         }
 
-                        <div className="flex gap-2 w-full md:w-auto">
-                            {editingId === product.id ? (
-                                <>
-                                    <button onClick={handleSave} className="bg-green-600 text-white px-4 py-2 rounded text-sm font-bold flex-1 md:flex-none">שמור</button>
-                                    <button onClick={handleCancel} className="bg-gray-200 text-black px-4 py-2 rounded text-sm font-bold flex-1 md:flex-none">ביטול</button>
-                                </>
-                            ) : (
-                                <>
-                                    <button onClick={() => startEdit(product)} className="border-2 border-black text-black hover:bg-black hover:text-white px-6 py-1.5 rounded text-sm font-bold transition w-full md:w-auto">
-                                        ערוך
-                                    </button>
-                                    <button onClick={() => handleDelete(product.id)} className="border-2 border-red-500 text-red-500 hover:bg-red-500 hover:text-white px-4 py-1.5 rounded text-sm font-bold transition w-full md:w-auto">
-                                        מחק
-                                    </button>
-                                </>
-                            )}
-                        </div>
+                        {editingId !== product.id && (
+                            <div className="flex gap-2 w-full md:w-auto">
+                                <button onClick={() => startEdit(product)} className="border-2 border-black text-black hover:bg-black hover:text-white px-6 py-1.5 rounded text-sm font-bold transition w-full md:w-auto">
+                                    ערוך
+                                </button>
+                                <button onClick={() => handleDelete(product.id)} className="border-2 border-red-500 text-red-500 hover:bg-red-500 hover:text-white px-4 py-1.5 rounded text-sm font-bold transition w-full md:w-auto">
+                                    מחק
+                                </button>
+                            </div>
+                        )}
 
                     </div >
                 ))}
