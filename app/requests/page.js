@@ -42,11 +42,21 @@ export default function RequestsPage() {
 
         try {
             // Submit
-            await fetch('/api/requests', {
+            const res = await fetch('/api/requests', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ brand, model })
             });
+
+            if (res.status === 409) {
+                alert('לא ניתן לבקש את אותו מוצר פעמיים');
+                setLoading(false);
+                return;
+            }
+
+            if (!res.ok) {
+                throw new Error('Failed');
+            }
 
             // Fetch updated list
             await fetchRequests();

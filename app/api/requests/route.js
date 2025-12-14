@@ -111,9 +111,8 @@ export async function POST(req) {
             );
 
             if (duplicateCheck.rowCount > 0) {
-                // Already requested: Do nothing, return success to show "Received" screen
                 await client.query('COMMIT');
-                return NextResponse.json({ success: true, brand: finalBrand, model: finalModel, matchFound, message: 'Already requested' });
+                return NextResponse.json({ error: 'Duplicate request' }, { status: 409 });
             }
 
             // Fuzzy Matching (Wait, I should have done fuzzy matching BEFORE checking duplicate? 
