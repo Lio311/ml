@@ -178,5 +178,6 @@ export default function LotteryPage() {
                     </div>
                 )}
             </div>
-            );
+        </div>
+    );
 }
