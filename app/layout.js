@@ -35,7 +35,7 @@ export default function RootLayout({ children }) {
       <html lang="he" dir="rtl">
         <body className={assistant.className}>
           <CartProvider>
-            {/* <Header /> */}
+            <Header />
             <main className="min-h-screen">
               {children}
             </main>
