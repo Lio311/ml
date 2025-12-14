@@ -48,13 +48,23 @@ export default function CartPage() {
 
     // Trigger Wheel if > 1200
     useEffect(() => {
-        if (subtotal >= 1200 && !luckyPrize && !hasSeenWheel) {
+        const lastSpin = localStorage.getItem('lastLuckySpin');
+        const now = Date.now();
+        const cooldown = 24 * 60 * 60 * 1000; // 24 hours
+
+        const canSpin = !lastSpin || (now - parseInt(lastSpin) > cooldown);
+
+        if (subtotal >= 1200 && !luckyPrize && !hasSeenWheel && canSpin) {
             setShowWheel(true);
         }
     }, [subtotal, luckyPrize, hasSeenWheel]);
 
     const handleWin = (prize) => {
         setLuckyPrize(prize);
+
+        // Save spin time
+        localStorage.setItem('lastLuckySpin', Date.now().toString());
+
         // If it's an item, add to cart
         if (prize.type === 'item') {
             const prizeProduct = {
@@ -71,7 +81,7 @@ export default function CartPage() {
         setTimeout(() => {
             setShowWheel(false);
             setHasSeenWheel(true);
-        }, 2000);
+        }, 1000);
     };
 
     const handleCheckout = async () => {
