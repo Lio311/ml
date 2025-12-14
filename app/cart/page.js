@@ -196,7 +196,7 @@ export default function CartPage() {
                             {luckyPrize?.type === 'discount' && (
                                 <div className="flex justify-between text-lg text-green-600 font-bold">
                                     <span>הנחת גלגל המזל ({luckyPrize.value * 100}%)</span>
-                                    <span>-{discountAmount} ₪</span>
+                                    <span>{discountAmount}- ₪</span>
                                 </div>
                             )}
 
