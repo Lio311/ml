@@ -93,6 +93,7 @@ export default function Header() {
                                 <Link href="/" className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm ${pathname === '/' ? 'bg-black text-white' : 'text-gray-900 hover:bg-black hover:text-white'}`}>דף הבית</Link>
                                 <Link href="/catalog" className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm ${pathname.startsWith('/catalog') ? 'bg-black text-white' : 'text-gray-900 hover:bg-black hover:text-white'}`}>קטלוג</Link>
                                 <Link href="/matching" className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm ${pathname === '/matching' ? 'bg-black text-white' : 'text-gray-900 hover:bg-black hover:text-white'}`}>התאמת מארזים</Link>
+                                <Link href="/requests" className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm ${pathname === '/requests' ? 'bg-black text-white' : 'text-gray-900 hover:bg-black hover:text-white'}`}>בקשת בשמים</Link>
                                 <Link href="/about" className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm ${pathname === '/about' ? 'bg-black text-white' : 'text-gray-900 hover:bg-black hover:text-white'}`}>אודות</Link>
                                 <Link href="/contact" className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm ${pathname === '/contact' ? 'bg-black text-white' : 'text-gray-900 hover:bg-black hover:text-white'}`}>צור קשר</Link>
                             </nav>
