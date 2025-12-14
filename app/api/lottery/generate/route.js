@@ -38,18 +38,17 @@ export async function POST(req) {
         let bestSum = 0;
 
         if (candidates.length === 0) {
-            // If strictly no items fit the budget (e.g. Budget 200 -> Target 170, Cheapest item is 180)
-            // We should pick the CHEAPEST item available to at least offer something?
+            // If strictly no items fit the budget standard logic...
+            // Fallback: Pick the absolute cheapest item available to at least offer something.
             // User said "System MUST be able to assemble".
-            // So we pick the cheapest one.
             const cheapest = allCandidates.sort((a, b) => Number(a.price) - Number(b.price))[0];
-            
+
             if (cheapest) {
-                 bestBundle = [cheapest];
-                 bestSum = Number(cheapest.price);
-                 // Note: This might exceed targetAmount, but it's the best we can do.
+                bestBundle = [cheapest];
+                bestSum = Number(cheapest.price);
+                // We accept that bestSum might be > targetAmount here significantly if target is very low.
             } else {
-                 return NextResponse.json({ success: false, message: 'No products available in lottery pool.' });
+                return NextResponse.json({ success: false, message: 'No products available in lottery pool.' });
             }
         } else {
             // Normal Logic: Randomized Greedy
@@ -58,35 +57,35 @@ export async function POST(req) {
                 let currentBundle = [];
                 let currentSum = 0;
                 let usedBrands = new Set();
-                
+
                 const shuffled = [...candidates].sort(() => 0.5 - Math.random());
-                
+
                 for (const item of shuffled) {
                     const price = Number(item.price);
-                    
+
                     if (usedBrands.has(item.brand)) continue;
-                    
+
                     if (currentSum + price <= targetAmount) {
                         currentBundle.push(item);
                         currentSum += price;
                         usedBrands.add(item.brand);
                     }
                 }
-                
+
                 if (currentSum > bestSum) {
                     bestSum = currentSum;
                     bestBundle = currentBundle;
                 }
-                if (targetAmount - currentSum < 5) break; 
+                if (targetAmount - currentSum < 5) break;
             }
-            
-             // Double check if we failed to pick anything from candidates
-             if (bestBundle.length === 0 && candidates.length > 0) {
+
+            // Double check if we failed to pick anything from candidates
+            if (bestBundle.length === 0 && candidates.length > 0) {
                 // Should not happen if candidates exist, but purely safe fallback
                 const cheapest = candidates.sort((a, b) => Number(a.price) - Number(b.price))[0];
                 bestBundle = [cheapest];
                 bestSum = Number(cheapest.price);
-             }
+            }
         }
 
         return NextResponse.json({

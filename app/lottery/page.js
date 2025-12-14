@@ -75,8 +75,9 @@ export default function LotteryPage() {
     };
 
     return (
+    return (
         <div
-            className="min-h-screen text-white flex flex-col items-center justify-center p-4 relative"
+            className="min-h-screen text-white flex flex-col items-center justify-start pt-32 p-4 relative"
             style={{
                 backgroundImage: 'url(https://images.pexels.com/photos/24643920/pexels-photo-24643920/free-photo-of-interior-of-a-casino.jpeg)',
                 backgroundSize: 'cover',
@@ -91,11 +92,13 @@ export default function LotteryPage() {
                 {gameState === 'intro' && (
                     <div className="max-w-2xl text-center space-y-8 animate-fade-in">
                         {/* Title Removed as per request */}
-                        <p className="text-xl text-gray-300 leading-relaxed">
-                            אוהבים הפתעות? תנו לנו לבחור בשבילכם!<br />
-                            בחרו תקציב, סובבו את הגלגל, וקבלו סט דוגמיות ייחודי ומגוון<br />
-                            <span className="text-red-500 font-bold">בהנחה מטורפת של 15% ל-10 דקות בלבד!</span>
-                        </p>
+                        <div className="bg-white/10 backdrop-blur-md p-6 rounded-xl border border-white/20 shadow-lg max-w-xl mx-auto">
+                            <p className="text-xl text-white font-bold leading-relaxed drop-shadow-md">
+                                אוהבים הפתעות? תנו לנו לבחור בשבילכם!<br />
+                                בחרו תקציב, סובבו את הגלגל, וקבלו סט דוגמיות ייחודי ומגוון<br />
+                                <span className="text-red-400 font-black mt-2 block text-2xl">בהנחה מטורפת של 15% ל-10 דקות בלבד!</span>
+                            </p>
+                        </div>
 
                         <div className="bg-gray-900 p-8 rounded-2xl border border-gray-800 shadow-2xl">
                             <label className="block text-2xl font-bold mb-8">
