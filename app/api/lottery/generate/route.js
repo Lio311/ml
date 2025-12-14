@@ -15,92 +15,78 @@ export async function POST(req) {
         const targetAmount = numericBudget - 30;
 
         const client = await pool.connect();
-        let candidates = [];
+        let allCandidates = [];
         try {
-            // Fetch ALL active products with stock.
-            // We want diversity, so we fetch everything and filter in code if needed.
-            // We prioritize items that "make sense" for a lottery (e.g. not 1000 NIS items if budget is 500).
-            // But checking <= targetAmount is a good basic filter.
+            // Fetch ALL active products in lottery with stock.
+            // We fetch ALL and filter in JS to avoid any DB type mismatches or strictness issues in SQL.
             const res = await client.query(`
                 SELECT * FROM products 
-                WHERE price > 0 AND price <= $1
-                AND stock > 0 
+                WHERE stock > 0 
                 AND is_active = true
-            `, [targetAmount]);
-            candidates = res.rows;
+                AND in_lottery = true
+            `);
+            allCandidates = res.rows;
         } finally {
             client.release();
         }
 
-        if (candidates.length === 0) {
-            // Fallback: This effectively means no products under the budget exist.
-            return NextResponse.json({ success: false, message: 'No products available within budget' });
-        }
+        // Filter for budget in JS
+        const candidates = allCandidates.filter(item => Number(item.price) <= targetAmount);
 
-        // 2. Algorithm to find Best Bundle
-        // Goal: Sum(prices) <= targetAmount (and close to it)
-        // Check: Unique Brand
-
-        // We'll run multiple iterations of a randomized greedy approach.
-
+        // Fallback or Normal Flow
         let bestBundle = [];
         let bestSum = 0;
 
-        // Allow slightly exceeding? User said "If 470, 450 is fine". 
-        // He implies "close to 470 from below" is definitely fine.
-        // What about "close from above"? Usually people get angry if they pay MORE than budget.
-        // So we strictly cap at `budget` (inclusive of shipping) -> `sum <= targetAmount`.
-        // Or maybe `sum <= numericBudget`.
-        // Let's stick to: Try to hit `targetAmount`. If we get 450 for 470, good.
-        // We will NOT exceed `targetAmount + 5` (small buffer?) No, let's keep it safe: <= Target.
-
-        const MAX_ITERATIONS = 1000; // Fast enough for JS
-
-        for (let i = 0; i < MAX_ITERATIONS; i++) {
-            let currentBundle = [];
-            let currentSum = 0;
-            let usedBrands = new Set();
-
-            // Shuffle candidates
-            const shuffled = [...candidates].sort(() => 0.5 - Math.random());
-
-            for (const item of shuffled) {
-                const price = Number(item.price);
-
-                // Check Brand constraints
-                if (usedBrands.has(item.brand)) continue;
-
-                // Check Budget constraint
-                if (currentSum + price <= targetAmount) {
-                    currentBundle.push(item);
-                    currentSum += price;
-                    usedBrands.add(item.brand);
+        if (candidates.length === 0) {
+            // If strictly no items fit the budget (e.g. Budget 200 -> Target 170, Cheapest item is 180)
+            // We should pick the CHEAPEST item available to at least offer something?
+            // User said "System MUST be able to assemble".
+            // So we pick the cheapest one.
+            const cheapest = allCandidates.sort((a, b) => Number(a.price) - Number(b.price))[0];
+            
+            if (cheapest) {
+                 bestBundle = [cheapest];
+                 bestSum = Number(cheapest.price);
+                 // Note: This might exceed targetAmount, but it's the best we can do.
+            } else {
+                 return NextResponse.json({ success: false, message: 'No products available in lottery pool.' });
+            }
+        } else {
+            // Normal Logic: Randomized Greedy
+            const MAX_ITERATIONS = 2000;
+            for (let i = 0; i < MAX_ITERATIONS; i++) {
+                let currentBundle = [];
+                let currentSum = 0;
+                let usedBrands = new Set();
+                
+                const shuffled = [...candidates].sort(() => 0.5 - Math.random());
+                
+                for (const item of shuffled) {
+                    const price = Number(item.price);
+                    
+                    if (usedBrands.has(item.brand)) continue;
+                    
+                    if (currentSum + price <= targetAmount) {
+                        currentBundle.push(item);
+                        currentSum += price;
+                        usedBrands.add(item.brand);
+                    }
                 }
+                
+                if (currentSum > bestSum) {
+                    bestSum = currentSum;
+                    bestBundle = currentBundle;
+                }
+                if (targetAmount - currentSum < 5) break; 
             }
-
-            // Update best
-            if (currentSum > bestSum) {
-                bestSum = currentSum;
-                bestBundle = currentBundle;
-            }
-
-            // If we are VERY close (e.g. within 5 NIS), stop early
-            if (targetAmount - currentSum < 5) break;
-        }
-
-        // 3. Validation
-        // If bestSum is too low (e.g. < 50% of budget), maybe user won't like it?
-        // But "System MUST be able to assemble". So providing *something* is better than nothing.
-        // Unless it's empty.
-        if (bestBundle.length === 0) {
-            // Fallback: Try to find at least ONE item that fits
-            const cheapest = candidates.sort((a, b) => Number(a.price) - Number(b.price))[0];
-            if (cheapest && Number(cheapest.price) <= targetAmount) {
+            
+             // Double check if we failed to pick anything from candidates
+             if (bestBundle.length === 0 && candidates.length > 0) {
+                // Should not happen if candidates exist, but purely safe fallback
+                const cheapest = candidates.sort((a, b) => Number(a.price) - Number(b.price))[0];
                 bestBundle = [cheapest];
                 bestSum = Number(cheapest.price);
-            } else {
-                return NextResponse.json({ success: false, message: 'Could not form a valid bundle even with single item.' });
-            }
+             }
         }
 
         return NextResponse.json({
