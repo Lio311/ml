@@ -41,7 +41,7 @@ export default async function AdminLayout({ children }) {
                         🗳️ ניהול בקשות
                     </Link>
                     <Link href="/admin/lottery" className="block p-2 hover:bg-gray-800 rounded">
-                        ניהול הגרלות
+                        🎰 ניהול הגרלות
                     </Link>
                 </nav>
 
