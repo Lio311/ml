@@ -121,7 +121,7 @@ export default function RequestsPage() {
             ) : (
                 <div className="w-full max-w-6xl animate-fade-in-up">
                     <div className="text-center mb-12">
-                        <h2 className="text-4xl font-bold mb-4">הבקשה שלך התקבלה! ✅</h2>
+                        <h2 className="text-4xl font-bold mb-4">הבקשה שלך התקבלה!</h2>
                         <p className="text-xl text-gray-600">הנה מה שאחרים ביקשו... האם הטעם שלכם דומה?</p>
                     </div>
 
