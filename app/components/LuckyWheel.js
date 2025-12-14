@@ -10,25 +10,39 @@ const LuckyWheel = ({ onWin, onClose }) => {
 
     // Prizes Configuration
     // isWinning: Determines if this prize can actually be won.
+    // weight: Higher number = higher chance to win.
     const prizes = [
-        { label: '5% הנחה', color: '#FFB6C1', type: 'discount', value: 0.05, isWinning: true },
-        { label: 'דוגמית 2 מ"ל', color: '#87CEFA', type: 'item', size: 2, name: 'דוגמית 2 מ"ל', price: 0, isWinning: true, image_url: 'https://www.dulcie.world/cdn/shop/files/DREAMLANDSAMPLESQUARE.png?v=1751633413&width=2366' },
-        { label: 'בושם נישה מתנה', color: '#FF69B4', type: 'item', size: 'bottle', name: 'בושם נישה מתנה', price: 0, isWinning: false },
-        { label: 'דיסקברי סט', color: '#FFD700', type: 'item', size: 'set', name: 'דיסקברי סט', price: 0, isWinning: true, image_url: 'https://www.francescadelloro.it/images/galleries/original/Icon-yul2umy6sshp7qbpeh2t25.jpg' },
-        { label: '25% הנחה', color: '#FF6347', type: 'discount', value: 0.25, isWinning: false },
-        { label: '10% הנחה', color: '#90EE90', type: 'discount', value: 0.10, isWinning: true },
-        { label: 'דוגמית 10 מ"ל', color: '#FFA07A', type: 'item', size: 10, name: 'דוגמית 10 מ"ל', price: 0, isWinning: true, image_url: 'https://allbottlesusa.com/cdn/shop/products/10mlClearTallBCOpen.jpg?v=1662849592&width=2048' },
+        { label: '5% הנחה', color: '#FFB6C1', type: 'discount', value: 0.05, isWinning: true, weight: 40 },
+        { label: 'דוגמית 2 מ"ל', color: '#87CEFA', type: 'item', size: 2, name: 'דוגמית 2 מ"ל', price: 0, isWinning: true, image_url: 'https://www.dulcie.world/cdn/shop/files/DREAMLANDSAMPLESQUARE.png?v=1751633413&width=2366', weight: 40 },
+        { label: 'בושם נישה מתנה', color: '#FF69B4', type: 'item', size: 'bottle', name: 'בושם נישה מתנה', price: 0, isWinning: false, weight: 0 },
+        { label: 'דיסקברי סט', color: '#FFD700', type: 'item', size: 'set', name: 'דיסקברי סט', price: 0, isWinning: true, image_url: 'https://www.francescadelloro.it/images/galleries/original/Icon-yul2umy6sshp7qbpeh2t25.jpg', weight: 5 },
+        { label: '25% הנחה', color: '#FF6347', type: 'discount', value: 0.25, isWinning: false, weight: 0 },
+        { label: '10% הנחה', color: '#90EE90', type: 'discount', value: 0.10, isWinning: false, weight: 0 },
+        { label: 'דוגמית 10 מ"ל', color: '#FFA07A', type: 'item', size: 10, name: 'דוגמית 10 מ"ל', price: 0, isWinning: true, image_url: 'https://allbottlesusa.com/cdn/shop/products/10mlClearTallBCOpen.jpg?v=1662849592&width=2048', weight: 15 },
     ];
 
     const spinWheel = () => {
         if (spinning) return;
         setSpinning(true);
 
-        // Filter valid winning indices
-        const winningIndices = prizes.map((p, i) => p.isWinning ? i : -1).filter(i => i !== -1);
+        // Weighted Random Selection
+        const winningPrizes = prizes.map((p, i) => ({ ...p, originalIndex: i })).filter(p => p.isWinning);
+        const totalWeight = winningPrizes.reduce((sum, p) => sum + p.weight, 0);
+        let random = Math.random() * totalWeight;
+        let selectedPrize = null;
 
-        // Select random index from VALID winners only
-        const randomWinningIndex = winningIndices[Math.floor(Math.random() * winningIndices.length)];
+        for (const prize of winningPrizes) {
+            random -= prize.weight;
+            if (random <= 0) {
+                selectedPrize = prize;
+                break;
+            }
+        }
+
+        // Fallback
+        if (!selectedPrize) selectedPrize = winningPrizes[0];
+
+        const randomWinningIndex = selectedPrize.originalIndex;
 
         const segmentAngle = 360 / prizes.length;
 
@@ -56,10 +70,10 @@ const LuckyWheel = ({ onWin, onClose }) => {
                 zIndex: 2000
             });
 
-            // Delay before closing/updating cart (User request: "Always leave window for a few seconds")
+            // Delay before closing/updating cart (User request: "Always leave window for a few seconds" -> reduced by 1 second)
             setTimeout(() => {
                 onWin(prizes[randomWinningIndex]);
-            }, 4000); // 4 seconds delay after win reveal
+            }, 3000); // 3 seconds delay after win reveal
 
         }, 5000); // 5s spin duration
     };
