@@ -4,6 +4,7 @@
 import { useState, useEffect } from 'react';
 import { useCart } from '../context/CartContext';
 import { useRouter } from 'next/navigation';
+import LotteryGameContainer from '../components/lottery/LotteryGameContainer';
 
 export default function LotteryPage() {
     const { startLottery } = useCart();
@@ -64,6 +65,15 @@ export default function LotteryPage() {
         }
     };
 
+    const handleAllGamesFinished = () => {
+        setGameState('summary');
+    };
+
+    const confirmSelection = () => {
+        startLottery(bundle);
+        router.push('/cart');
+    };
+
     return (
         <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center p-4">
             {gameState === 'intro' && (
@@ -113,18 +123,48 @@ export default function LotteryPage() {
             )}
 
             {gameState === 'playing' && (
-                <div className="text-center">
-                    {/* Placeholder for Game Container */}
-                    <h2 className="text-4xl text-yellow-400 mb-8">Games would be here</h2>
-                    <ul>
-                        {bundle.map((item, idx) => (
-                            <li key={idx}>{item.name} - {item.price}₪</li>
-                        ))}
-                    </ul>
-                    <button onClick={() => {
-                        startLottery(bundle);
-                        router.push('/cart');
-                    }}>Simulate Finish</button>
+                <div className="flex flex-col items-center w-full">
+                    <LotteryGameContainer bundle={bundle} onFinish={handleAllGamesFinished} />
+                </div>
+            )}
+
+            {gameState === 'summary' && (
+                <div className="max-w-2xl w-full text-center space-y-8 animate-fade-in-up">
+                    <h2 className="text-5xl font-extrabold text-white">זה השלל שלך! 🎁</h2>
+                    <div className="bg-white/10 backdrop-blur-md p-6 rounded-2xl border border-white/20">
+                        <ul className="space-y-4">
+                            {bundle.map((item, idx) => (
+                                <li key={idx} className="flex justify-between items-center text-lg border-b border-white/5 pb-2">
+                                    <span className="font-bold">{item.brand} {item.model}</span>
+                                    <span className="text-yellow-400">{item.price} ₪</span>
+                                </li>
+                            ))}
+                        </ul>
+                        <div className="mt-8 pt-4 border-t border-white/20 flex justify-between text-2xl font-bold">
+                            <span>שווי כולל:</span>
+                            <span className="line-through text-gray-400 mx-2">
+                                {bundle.reduce((sum, i) => sum + Number(i.price), 0)} ₪
+                            </span>
+                            <span className="text-green-400">
+                                {Math.round(bundle.reduce((sum, i) => sum + Number(i.price), 0) * 0.85)} ₪
+                            </span>
+                        </div>
+                        <p className="text-sm text-yellow-300 mt-2 font-bold">כולל 15% הנחת הגרלה!</p>
+                    </div>
+
+                    <button
+                        onClick={confirmSelection}
+                        className="w-full bg-green-600 hover:bg-green-700 text-white font-black text-2xl py-6 rounded-xl shadow-2xl transition-all hover:scale-105 active:scale-95"
+                    >
+                        הוסף לסל והפעל טיימר (10:00) 🛒
+                    </button>
+
+                    <button
+                        onClick={() => setGameState('intro')}
+                        className="text-gray-400 hover:text-white mt-4 underline"
+                    >
+                        לא אהבתי (וותר על ההנחה)
+                    </button>
                 </div>
             )}
         </div>

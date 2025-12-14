@@ -9,7 +9,7 @@ import { useRouter } from 'next/navigation';
 import LuckyWheel from "../components/LuckyWheel";
 
 export default function CartPage() {
-    const { cartItems, removeFromCart, updateQuantity, addToCart, clearCart, subtotal, total, shippingCost, freeSamplesCount, nextTier, luckyPrize, setLuckyPrize, discountAmount } = useCart();
+    const { cartItems, removeFromCart, updateQuantity, addToCart, clearCart, subtotal, total, shippingCost, freeSamplesCount, nextTier, luckyPrize, setLuckyPrize, discountAmount, lotteryMode, lotteryTimeLeft } = useCart();
     const { isSignedIn, user } = useUser();
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [upsellProducts, setUpsellProducts] = useState([]);
@@ -155,6 +155,20 @@ export default function CartPage() {
     return (
         <div className="min-h-screen bg-gray-50">
             <div className="container py-12">
+                {lotteryMode.active && (
+                    <div className="bg-gradient-to-r from-yellow-500 to-yellow-600 text-black p-4 rounded-xl mb-8 shadow-lg flex items-center justify-between animate-pulse">
+                        <div className="flex items-center gap-4">
+                            <span className="text-3xl">⏰</span>
+                            <div>
+                                <h3 className="font-black text-xl">מחיר ההגרלה בתוקף!</h3>
+                                <p className="text-sm font-bold opacity-80">הנחת 15% פעילה. הסל נעול לשינויים.</p>
+                            </div>
+                        </div>
+                        <div className="text-4xl font-mono font-black">
+                            {Math.floor(lotteryTimeLeft / 60)}:{(lotteryTimeLeft % 60).toString().padStart(2, '0')}
+                        </div>
+                    </div>
+                )}
                 <h1 className="text-3xl font-bold mb-8">העגלה שלי</h1>
 
                 <div className="flex flex-col lg:flex-row gap-12">
@@ -203,7 +217,14 @@ export default function CartPage() {
                                 <span>{subtotal} ₪</span>
                             </div>
 
-                            {luckyPrize?.type === 'discount' && (
+                            {lotteryMode.active && (
+                                <div className="flex justify-between text-lg text-yellow-600 font-bold">
+                                    <span>הנחת הגרלה (15%)</span>
+                                    <span>{discountAmount}- ₪</span>
+                                </div>
+                            )}
+
+                            {luckyPrize?.type === 'discount' && !lotteryMode.active && (
                                 <div className="flex justify-between text-lg text-green-600 font-bold">
                                     <span>הנחת גלגל המזל ({luckyPrize.value * 100}%)</span>
                                     <span>{discountAmount}- ₪</span>

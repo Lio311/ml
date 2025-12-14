@@ -94,6 +94,7 @@ export default function Header() {
                                 <Link href="/catalog" className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm ${pathname.startsWith('/catalog') ? 'bg-black text-white' : 'text-gray-900 hover:bg-black hover:text-white'}`}>קטלוג</Link>
                                 <Link href="/matching" className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm ${pathname === '/matching' ? 'bg-black text-white' : 'text-gray-900 hover:bg-black hover:text-white'}`}>התאמת מארזים</Link>
                                 <Link href="/requests" className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm ${pathname === '/requests' ? 'bg-black text-white' : 'text-gray-900 hover:bg-black hover:text-white'}`}>בקשת בשמים</Link>
+                                <Link href="/lottery" className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm text-yellow-600 hover:text-yellow-700 hover:bg-yellow-50`}>🎲 הגרלה</Link>
                                 <Link href="/about" className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm ${pathname === '/about' ? 'bg-black text-white' : 'text-gray-900 hover:bg-black hover:text-white'}`}>אודות</Link>
                                 <Link href="/contact" className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm ${pathname === '/contact' ? 'bg-black text-white' : 'text-gray-900 hover:bg-black hover:text-white'}`}>צור קשר</Link>
                             </nav>
@@ -161,6 +162,12 @@ export default function Header() {
                         </Link>
                         <Link href="/matching" onClick={() => setIsMenuOpen(false)} className="border-b pb-4">
                             התאמת מארזים
+                        </Link>
+                        <Link href="/requests" onClick={() => setIsMenuOpen(false)} className="border-b pb-4">
+                            בקשת בשמים
+                        </Link>
+                        <Link href="/lottery" onClick={() => setIsMenuOpen(false)} className="border-b pb-4 text-yellow-600">
+                            🎲 הגרלת בשמים
                         </Link>
                         <Link href="/about" onClick={() => setIsMenuOpen(false)} className="border-b pb-4">
                             אודות
