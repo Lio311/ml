@@ -76,7 +76,7 @@ export default function LotteryPage() {
 
     return (
         <div
-            className="min-h-screen text-white flex flex-col items-center justify-start pt-32 p-4 relative"
+            className="min-h-screen text-white flex flex-col items-center justify-start pt-12 p-4 relative"
             style={{
                 backgroundImage: 'url(https://images.pexels.com/photos/24643920/pexels-photo-24643920/free-photo-of-interior-of-a-casino.jpeg)',
                 backgroundSize: 'cover',
@@ -89,13 +89,13 @@ export default function LotteryPage() {
 
             <div className="relative z-10 w-full flex flex-col items-center">
                 {gameState === 'intro' && (
-                    <div className="max-w-2xl text-center space-y-8 animate-fade-in">
+                    <div className="max-w-3xl text-center space-y-6 animate-fade-in">
                         {/* Title Removed as per request */}
-                        <div className="bg-white/10 backdrop-blur-md p-6 rounded-xl border border-white/20 shadow-lg max-w-xl mx-auto">
-                            <p className="text-xl text-white font-bold leading-relaxed drop-shadow-md">
+                        <div className="bg-white/90 backdrop-blur-md p-8 rounded-2xl border border-white/50 shadow-2xl max-w-2xl mx-auto transform hover:scale-[1.01] transition-transform duration-300">
+                            <p className="text-2xl text-gray-900 font-bold leading-relaxed drop-shadow-sm">
                                 אוהבים הפתעות? תנו לנו לבחור בשבילכם!<br />
                                 בחרו תקציב, סובבו את הגלגל, וקבלו סט דוגמיות ייחודי ומגוון<br />
-                                <span className="text-red-400 font-black mt-2 block text-2xl">בהנחה מטורפת של 15% ל-10 דקות בלבד!</span>
+                                <span className="text-red-600 font-black mt-3 block text-3xl tracking-tight">בהנחה מטורפת של 15% ל-10 דקות בלבד!</span>
                             </p>
                         </div>
 
