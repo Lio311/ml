@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import pool from '../../lib/db';
 import { clerkClient } from '@clerk/nextjs/server';
-import { sendEmail, getNewProductTemplate } from '../../lib/email';
+import { sendEmail, getNewProductTemplate } from '../../../lib/email';
 
 export async function PUT(req) {
     try {
