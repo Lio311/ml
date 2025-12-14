@@ -68,7 +68,7 @@ const LuckyWheel = ({ onWin, onClose }) => {
         <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
             <div className="bg-white rounded-2xl p-8 max-w-md w-full text-center relative shadow-2xl animate-fade-in overflow-hidden">
                 <h2 className="text-3xl font-bold mb-2">גלגל המזל הסודי</h2>
-                <p className="mb-6 text-gray-600">כל הכבוד! העגלה שלך מעל 1,200 ₪.<br />סובב את הגלגל וזכה בפרס שווה!</p>
+                <p className="mb-6 text-gray-600">כל הכבוד! העגלה שלך מעל 1,200 ₪.<br />סובבו את הגלגל וזכו בפרס שווה!</p>
 
                 <div className="relative w-72 h-72 mx-auto mb-8">
                     {/* Wheel Container */}
@@ -84,28 +84,27 @@ const LuckyWheel = ({ onWin, onClose }) => {
                         {/* Text Overlay for Labels */}
                         {prizes.map((p, i) => {
                             const segmentAngle = 360 / prizes.length;
-                            const rotationAngle = (segmentAngle * i) + (segmentAngle / 2);
+                            const rotationAngle = (segmentAngle * i) + (segmentAngle / 2); // Center of segment
                             return (
                                 <div
                                     key={i}
-                                    className="absolute w-full h-full top-0 left-0 flex justify-center pt-4"
+                                    className="absolute w-full h-[50%] top-0 left-0 flex justify-center origin-bottom pt-4"
                                     style={{
                                         transform: `rotate(${rotationAngle}deg)`,
+                                        transformOrigin: 'bottom center', // Rotate around center of wheel
                                         pointerEvents: 'none'
                                     }}
                                 >
-                                    {/* Text Container - now rotated to look upright for the user when looking at the wedge */}
+                                    {/* Text span */}
                                     <span
-                                        className="text-[10px] sm:text-xs font-bold text-black px-1"
+                                        className="text-[10px] sm:text-xs font-bold text-black whitespace-normal text-center leading-3 w-16"
                                         style={{
-                                            // Ensure text is readable. 
-                                            // The container rotates with the wedge. 
-                                            // Text inside should probably just be vertical or standard but carefully placed.
-                                            // Let's try radiating efficiently.
-                                            transform: 'translateY(10px)', // Push down from edge slightly
-                                            writingMode: 'vertical-rl',
-                                            textOrientation: 'mixed'
-                                            // No background color as requested
+                                            // Radiate text:
+                                            // Standard text is upright. If we rotate the container, text rotates with it.
+                                            // To make text readable (top to center), we often keep it standard or rotate 180 if upside down.
+                                            // The simplest for these wheels is usually standard text radiating out or in.
+                                            // Let's try simple text, no special writing mode, just padded down.
+                                            marginTop: '10px'
                                         }}
                                     >
                                         {p.label}
