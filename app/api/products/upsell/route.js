@@ -8,7 +8,7 @@ export async function GET() {
     try {
         // Fetch 10 random active products
         const res = await client.query(`
-            SELECT id, name, brand, model, image_url, price_2ml, price_5ml, price_10ml 
+            SELECT id, name, brand, model, image_url, price_2ml, price_5ml, price_10ml, stock 
             FROM products 
             WHERE stock > 0
             ORDER BY RANDOM() 
