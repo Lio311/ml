@@ -41,6 +41,18 @@ export async function POST(req) {
 
             const orderId = orderResult.rows[0].id;
 
+            // 2. Update Stock
+            for (const item of items) {
+                // Skip prizes (synthetic IDs) or non-numeric sizes (sets) if stock tracking is ML only
+                if (!item.isPrize && !isNaN(item.size)) {
+                    const deduction = Number(item.size) * item.quantity;
+                    await client.query(
+                        `UPDATE products SET stock = stock - $1 WHERE id = $2`,
+                        [deduction, item.id]
+                    );
+                }
+            }
+
             await client.query('COMMIT');
 
             // Send Confirmation Email (Async, don't block response)
