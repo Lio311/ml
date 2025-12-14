@@ -262,13 +262,13 @@ export default function CartPage() {
 
                             <div className="pt-4">
                                 {isSignedIn ? (
-                                    <button
-                                        onClick={handleCheckout}
-                                        disabled={isSubmitting}
-                                        className="btn btn-primary w-full py-4 text-lg shadow-lg hover:shadow-xl transition transform hover:-translate-y-0.5"
-                                    >
-                                        {isSubmitting ? 'מעבד...' : 'לתשלום מאובטח'}
-                                    </button>
+                                        <button
+                                            onClick={handleCheckout}
+                                            disabled={isSubmitting}
+                                            className="btn btn-primary w-full py-4 text-lg shadow-lg hover:shadow-xl transition transform hover:-translate-y-0.5"
+                                        >
+                                            {isSubmitting ? 'מעבד...' : 'יצירת הזמנה'}
+                                        </button>
                                 ) : (
                                     <SignInButton mode="modal">
                                         <button className="btn btn-primary w-full py-4 text-lg shadow-lg hover:shadow-xl transition transform hover:-translate-y-0.5">

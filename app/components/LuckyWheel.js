@@ -67,7 +67,7 @@ const LuckyWheel = ({ onWin, onClose }) => {
     return (
         <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
             <div className="bg-white rounded-2xl p-8 max-w-md w-full text-center relative shadow-2xl animate-fade-in overflow-hidden">
-                <h2 className="text-3xl font-bold mb-2">🎉 גלגל המזל הסודי! 🎉</h2>
+                <h2 className="text-3xl font-bold mb-2">גלגל המזל הסודי</h2>
                 <p className="mb-6 text-gray-600">כל הכבוד! העגלה שלך מעל 1,200 ₪.<br />סובב את הגלגל וזכה בפרס שווה!</p>
 
                 <div className="relative w-72 h-72 mx-auto mb-8">
@@ -83,28 +83,32 @@ const LuckyWheel = ({ onWin, onClose }) => {
                     >
                         {/* Text Overlay for Labels */}
                         {prizes.map((p, i) => {
-                            const rotationAngle = (360 / prizes.length) * i + (360 / prizes.length) / 2;
+                            const segmentAngle = 360 / prizes.length;
+                            const rotationAngle = (segmentAngle * i) + (segmentAngle / 2);
                             return (
                                 <div
                                     key={i}
-                                    className="absolute w-1 h-1/2 top-0 left-1/2 -translate-x-1/2 origin-bottom flex justify-center pt-4"
-                                    style={{ transform: `rotate(${rotationAngle}deg)` }}
+                                    className="absolute w-full h-full top-0 left-0 flex justify-center pt-4"
+                                    style={{
+                                        transform: `rotate(${rotationAngle}deg)`,
+                                        pointerEvents: 'none'
+                                    }}
                                 >
+                                    {/* Text Container - now rotated to look upright for the user when looking at the wedge */}
                                     <span
-                                        className="text-xs font-bold text-black whitespace-nowrap transform rotate-180 writing-vertical"
+                                        className="text-[10px] sm:text-xs font-bold text-black px-1"
                                         style={{
+                                            // Ensure text is readable. 
+                                            // The container rotates with the wedge. 
+                                            // Text inside should probably just be vertical or standard but carefully placed.
+                                            // Let's try radiating efficiently.
+                                            transform: 'translateY(10px)', // Push down from edge slightly
                                             writingMode: 'vertical-rl',
-                                            textOrientation: 'mixed',
-                                            transform: 'rotate(180deg) translateY(0px)' // Flip text to be readable from outside in? Or generic rotation
+                                            textOrientation: 'mixed'
+                                            // No background color as requested
                                         }}
                                     >
-                                        {/* Simple text rotation doesn't work well with writing-mode vertical for this. 
-                                            Let's try standard horizontal text rotated 90deg? 
-                                            Actually, for a wheel, text usually radiates out from center.
-                                        */}
-                                        <span className='inline-block transform -rotate-90 origin-center translate-y-8 text-[10px] sm:text-xs px-1 bg-white/30 rounded'>
-                                            {p.label}
-                                        </span>
+                                        {p.label}
                                     </span>
                                 </div>
                             );
