@@ -69,9 +69,7 @@ export default function RequestsPage() {
 
             {!submitted ? (
                 <div className="max-w-xl w-full bg-white p-8 rounded-2xl shadow-xl transition-all duration-500 transform hover:scale-[1.01]">
-                    <h1 className="text-4xl font-extrabold text-center mb-6 bg-clip-text text-transparent bg-gradient-to-r from-black to-gray-600">
-                        בקשת בשמים 🗳️
-                    </h1>
+
 
                     <p className="text-center text-gray-600 mb-8 text-lg leading-relaxed">
                         לא מצאתם את הבושם שחיפשתם? <br />
@@ -91,7 +89,12 @@ export default function RequestsPage() {
                                 <input
                                     type="text"
                                     value={brand}
-                                    onChange={(e) => setBrand(e.target.value)}
+                                    onChange={(e) => {
+                                        const val = e.target.value;
+                                        if (/^[a-zA-Z0-9\s\-]*$/.test(val)) {
+                                            setBrand(val);
+                                        }
+                                    }}
                                     className="w-full p-4 border rounded-xl bg-gray-50 focus:bg-white focus:ring-2 focus:ring-black focus:border-transparent transition text-lg"
                                     placeholder="לדוגמה: Xerjoff"
                                     required
@@ -102,7 +105,12 @@ export default function RequestsPage() {
                                 <input
                                     type="text"
                                     value={model}
-                                    onChange={(e) => setModel(e.target.value)}
+                                    onChange={(e) => {
+                                        const val = e.target.value;
+                                        if (/^[a-zA-Z0-9\s\-]*$/.test(val)) {
+                                            setModel(val);
+                                        }
+                                    }}
                                     className="w-full p-4 border rounded-xl bg-gray-50 focus:bg-white focus:ring-2 focus:ring-black focus:border-transparent transition text-lg"
                                     placeholder="לדוגמה: Naxos"
                                     required
@@ -113,7 +121,7 @@ export default function RequestsPage() {
                                 type="submit"
                                 className="w-full py-4 text-xl font-bold text-white bg-black rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 mt-4"
                             >
-                                שלח בקשה 🚀
+                                שלח בקשה
                             </button>
                         </form>
                     )}

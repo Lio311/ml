@@ -86,6 +86,51 @@ export async function POST(req) {
                 }
             }
 
+
+            // Ensure Table Exists
+            await client.query(`
+                CREATE TABLE IF NOT EXISTS perfume_requests (
+                    id SERIAL PRIMARY KEY,
+                    user_email VARCHAR(255),
+                    brand VARCHAR(255) NOT NULL,
+                    model VARCHAR(255) NOT NULL,
+                    created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+                );
+            `);
+
+            // Validate English characters only
+            if (!/^[a-zA-Z0-9\s\-]+$/.test(finalBrand) || !/^[a-zA-Z0-9\s\-]+$/.test(finalModel)) {
+                await client.query('ROLLBACK');
+                return NextResponse.json({ error: 'Only English characters allowed' }, { status: 400 });
+            }
+
+            // Check for existing request by same user
+            const duplicateCheck = await client.query(
+                `SELECT 1 FROM perfume_requests WHERE user_email = $1 AND brand = $2 AND model = $3`,
+                [email, finalBrand, finalModel]
+            );
+
+            if (duplicateCheck.rowCount > 0) {
+                // Already requested: Do nothing, return success to show "Received" screen
+                await client.query('COMMIT');
+                return NextResponse.json({ success: true, brand: finalBrand, model: finalModel, matchFound, message: 'Already requested' });
+            }
+
+            // Fuzzy Matching (Wait, I should have done fuzzy matching BEFORE checking duplicate? 
+            // The code I'm replacing has fuzzy matching logic *after* table create but *before* insert.
+            // Oh, I am replacing a chunk that *includes* Fuzzy Matching?
+            // No, my TargetContent below is just the INSERT part.
+            // I need to be careful where I insert this check.
+            // The Fuzzy Logic computes `finalBrand` and `finalModel`.
+            // I should use `finalBrand` for the duplicate check.
+            // The `finalBrand` is computed in the loop.
+            // So I should insert the check *after* the loop and *before* the INSERT.
+
+            // Re-reading file content...
+            // Lines 78-87 is the loop.
+            // Lines 90-93 is INSERT.
+            // I will replace Lines 90-93 (Insert) with the Check + Insert.
+
             // Insert Request
             await client.query(
                 `INSERT INTO perfume_requests (user_email, brand, model) VALUES ($1, $2, $3)`,
