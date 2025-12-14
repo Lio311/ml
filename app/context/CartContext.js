@@ -105,10 +105,30 @@ export function CartProvider({ children }) {
 
     const clearCart = () => setCartItems([]);
 
+    const [luckyPrize, setLuckyPrize] = useState(null);
+
+    // Save lucky prize usage to local storage? Or maybe not, keep it per session.
+    // If we want persistence, add to the useEffect above. Let's keep it simple for now (clears on refresh).
+    
+    // Auto remove prize if below 1000
+    useEffect(() => {
+        if (subtotal < 1000 && luckyPrize) {
+            setLuckyPrize(null);
+        }
+    }, [subtotal, luckyPrize]);
+
+
     // Calculations
     const shippingCost = 30; // Fixed shipping cost
     const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-    const total = subtotal + shippingCost;
+    
+    let total = subtotal + shippingCost;
+    let discountAmount = 0;
+
+    if (luckyPrize?.type === 'discount') {
+        discountAmount = Math.round(total * luckyPrize.value);
+        total = total - discountAmount;
+    }
 
     let freeSamplesCount = 0;
     let nextTier = 0;
@@ -140,7 +160,10 @@ export function CartProvider({ children }) {
                 freeSamplesCount,
                 nextTier,
                 shippingCost,
-                total
+                total,
+                luckyPrize,
+                setLuckyPrize,
+                discountAmount
             }}
         >
             {children}
