@@ -41,6 +41,20 @@ export default function ProductCard({ product }) {
                 <WishlistHeart productId={product.id} />
             </div>
 
+            {/* New Badge (Last 7 days) */}
+            {(function () {
+                if (!product.created_at) return false;
+                const created = new Date(product.created_at);
+                const now = new Date();
+                const diffTime = Math.abs(now - created);
+                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                return diffDays <= 7;
+            })() && (
+                    <div className="absolute top-10 right-2 z-10 text-[10px] leading-3 font-bold bg-sky-300 text-white px-2 py-1 rounded shadow-sm text-center">
+                        חדש! ✨
+                    </div>
+                )}
+
             {((product.stock || 0) <= 20) && (
                 <div className={`absolute top-10 left-2 z-10 text-[10px] leading-3 font-bold px-2 py-1 rounded shadow-sm text-center text-white ${(product.stock || 0) <= 0 ? 'bg-gray-400' : 'bg-red-600'
                     }`}>
