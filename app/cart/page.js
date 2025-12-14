@@ -1,4 +1,8 @@
-// ... imports
+"use client";
+
+import { useCart } from "../context/CartContext";
+import Link from "next/link";
+import { useUser, SignInButton } from "@clerk/nextjs";
 import { useState, useEffect, useRef } from "react";
 import confetti from 'canvas-confetti';
 import { useRouter } from 'next/navigation';
