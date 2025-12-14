@@ -32,7 +32,8 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
             stock: product.stock || 0,
             top_notes: product.top_notes || '',
             middle_notes: product.middle_notes || '',
-            base_notes: product.base_notes || ''
+            base_notes: product.base_notes || '',
+            in_lottery: product.in_lottery ?? true
         });
     };
 
@@ -51,7 +52,8 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
             stock: 0,
             top_notes: '',
             middle_notes: '',
-            base_notes: ''
+            base_notes: '',
+            in_lottery: true
         });
     };
 
@@ -290,6 +292,15 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                             />
                         </div>
                     </div>
+                    <div className="mb-4 flex items-center gap-2 bg-gray-50 p-3 rounded border">
+                        <input
+                            type="checkbox"
+                            checked={editForm.in_lottery ?? true}
+                            onChange={e => setEditForm({ ...editForm, in_lottery: e.target.checked })}
+                            className="w-5 h-5 accent-red-600 cursor-pointer"
+                        />
+                        <label className="text-sm font-bold text-gray-700 select-none">לכלול במאגר ההגרלות? (רנדומלי)</label>
+                    </div>
                     <div className="mb-4">
                         <label className="text-sm text-gray-500">קישור לתמונה (Image URL)</label>
                         <input
@@ -475,8 +486,8 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                     <div className="text-gray-600">{product.model}</div>
                                 </div>
                                 <div className={`font-bold text-sm px-3 py-1 rounded shadow-sm ${(product.stock || 0) <= 20 ? 'bg-red-100 text-red-800' :
-                                        (product.stock || 0) <= 50 ? 'bg-orange-100 text-orange-800' :
-                                            'bg-green-100 text-green-800'
+                                    (product.stock || 0) <= 50 ? 'bg-orange-100 text-orange-800' :
+                                        'bg-green-100 text-green-800'
                                     }`}>
                                     מלאי: {product.stock || 0}
                                 </div>
