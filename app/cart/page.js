@@ -281,8 +281,8 @@ export default function CartPage() {
                                     </button>
                                 ) : (
                                     <SignInButton mode="modal">
-                                        <button className="btn btn-primary w-full py-4 text-lg shadow-lg hover:shadow-xl transition transform hover:-translate-y-0.5">
-                                            התחבר כדי להזמין
+                                        <button className="w-full py-4 text-xl font-bold text-white bg-black rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
+                                            התחבר כדי להזמין ✨
                                         </button>
                                     </SignInButton>
                                 )}
