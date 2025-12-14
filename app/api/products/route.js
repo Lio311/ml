@@ -52,7 +52,7 @@ export async function POST(req) {
                         .filter(Boolean);
 
                     if (emails.length > 0) {
-                        const productForEmail = { id: newProductId, ...body };
+                        const productForEmail = { ...body, id: newProductId };
                         const html = getNewProductTemplate(productForEmail);
                         // Send as BCC to protect privacy and respect bulk limits
                         await sendEmail(emails, `חדש באתר: ${brand} ${model} ✨ - ml_tlv`, html);
