@@ -40,6 +40,9 @@ export default async function AdminLayout({ children }) {
                     <Link href="/admin/requests" className="block p-2 hover:bg-gray-800 rounded">
                         🗳️ ניהול בקשות
                     </Link>
+                    <Link href="/admin/lottery" className="block p-2 hover:bg-gray-800 rounded text-yellow-300 font-bold">
+                        🎰 ניהול הגרלות
+                    </Link>
                 </nav>
 
                 <div>

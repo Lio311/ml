@@ -75,7 +75,6 @@ export default function LotteryPage() {
     };
 
     return (
-    return (
         <div
             className="min-h-screen text-white flex flex-col items-center justify-start pt-32 p-4 relative"
             style={{
