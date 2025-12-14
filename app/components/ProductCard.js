@@ -42,7 +42,7 @@ export default function ProductCard({ product }) {
             </div>
 
             {((product.stock || 0) <= 20) && (
-                <div className={`absolute top-10 left-2 z-10 text-[10px] leading-3 font-bold px-2 py-1 rounded shadow-sm text-center text-white ${(product.stock || 0) <= 0 ? 'bg-gray-800' : 'bg-red-600'
+                <div className={`absolute top-10 left-2 z-10 text-[10px] leading-3 font-bold px-2 py-1 rounded shadow-sm text-center text-white ${(product.stock || 0) <= 0 ? 'bg-gray-400' : 'bg-red-600'
                     }`}>
                     {(product.stock || 0) <= 0 ? (
                         <>אזל<br />במלאי</>
