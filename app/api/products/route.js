@@ -3,6 +3,40 @@ import pool from '../../lib/db';
 import { clerkClient } from '@clerk/nextjs/server';
 import { sendEmail, getNewProductTemplate } from '../../../lib/email';
 
+export async function GET(req) {
+    try {
+        const { searchParams } = new URL(req.url);
+        const limit = searchParams.get('limit');
+        const search = searchParams.get('q');
+
+        const client = await pool.connect();
+        try {
+            let query = 'SELECT * FROM products WHERE is_active = true';
+            const values = [];
+
+            if (search) {
+                query += ` AND (name ILIKE $1 OR brand ILIKE $1 OR model ILIKE $1)`;
+                values.push(`%${search}%`);
+            }
+
+            query += ' ORDER BY id DESC';
+
+            if (limit) {
+                query += ` LIMIT $${values.length + 1}`;
+                values.push(parseInt(limit));
+            }
+
+            const res = await client.query(query, values);
+            return NextResponse.json({ products: res.rows });
+        } finally {
+            client.release();
+        }
+    } catch (error) {
+        console.error('Get Products Error:', error);
+        return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+    }
+}
+
 export async function PUT(req) {
     try {
         const body = await req.json();
