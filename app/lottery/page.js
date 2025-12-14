@@ -122,14 +122,14 @@ export default function LotteryPage() {
                             onClick={generateBundle}
                             className="bg-gradient-to-r from-red-600 to-red-800 text-white text-2xl font-black py-4 px-12 rounded-full shadow-lg hover:scale-105 active:scale-95 transition-transform"
                         >
-                            סובב את הגלגל
+                            זהו יום המזל שלי
                         </button>
                     </div>
                 )}
 
                 {gameState === 'generating' && (
                     <div className="text-center">
-                        <div className="w-20 h-20 border-t-4 border-yellow-500 border-solid rounded-full animate-spin mx-auto mb-4"></div>
+                        <div className="w-20 h-20 border-t-4 border-red-500 border-solid rounded-full animate-spin mx-auto mb-4"></div>
                         <p className="text-2xl font-bold animate-pulse">מרכיבים את החבילה המושלמת...</p>
                     </div>
                 )}
