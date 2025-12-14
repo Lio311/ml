@@ -2,7 +2,7 @@ import SmartMatchingClient from "./SmartMatchingClient";
 import pool from "../lib/db";
 
 export const metadata = {
-    title: 'התאמת בשמים חכמה | ML TLV',
+    title: 'יוקרה בחתיכות קטנות | ML TLV',
     description: 'אשף התאמת בשמים אישי - בנה את המארז המושלם בשבילך',
 };
 
@@ -30,7 +30,7 @@ export default async function MatchingPage() {
         <div className="bg-neutral-50 min-h-screen py-12">
             <div className="container mx-auto px-4">
                 <div className="text-center mb-12">
-                    <h1 className="text-4xl md:text-5xl font-bold mb-4 font-serif">התאמת בשמים חכמה</h1>
+                    <h1 className="text-4xl md:text-5xl font-bold mb-4 font-serif">יוקרה בחתיכות קטנות</h1>
                     <p className="text-gray-600 text-lg max-w-2xl mx-auto">
                         ענה על מספר שאלות קצרות, והאלגוריתם שלנו ירכיב עבורך את המארז המושלם בהתאם לתקציב ולטעם שלך.
                     </p>
