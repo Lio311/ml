@@ -46,9 +46,9 @@ export default function CartPage() {
         fetchUpsell();
     }, []);
 
-    // Trigger Wheel if > 1000
+    // Trigger Wheel if > 1200
     useEffect(() => {
-        if (subtotal >= 1000 && !luckyPrize && !hasSeenWheel) {
+        if (subtotal >= 1200 && !luckyPrize && !hasSeenWheel) {
             setShowWheel(true);
         }
     }, [subtotal, luckyPrize, hasSeenWheel]);

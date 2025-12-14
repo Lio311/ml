@@ -139,9 +139,9 @@ export function CartProvider({ children }) {
         nextTier = 300 - subtotal;
     }
 
-    // Auto remove prize if below 1000
+    // Auto remove prize if below 1200
     useEffect(() => {
-        if (subtotal < 1000 && luckyPrize) {
+        if (subtotal < 1200 && luckyPrize) {
             setLuckyPrize(null);
             // Also remove any prize items from the cart
             setCartItems(prev => prev.filter(item => !item.isPrize));
