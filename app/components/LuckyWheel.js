@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import confetti from 'canvas-confetti';
 
 const LuckyWheel = ({ onWin, onClose }) => {
@@ -8,72 +8,72 @@ const LuckyWheel = ({ onWin, onClose }) => {
     const [rotation, setRotation] = useState(0);
     const [winnerIndex, setWinnerIndex] = useState(null);
 
+    // Prizes Configuration
+    // isWinning: Determines if this prize can actually be won.
     const prizes = [
-        { label: '5% הנחה', color: '#FFB6C1', type: 'discount', value: 0.05 },
-        { label: 'דוגמית 2 מ"ל', color: '#87CEFA', type: 'item', size: 2, name: 'דוגמית 2 מ"ל (בחירת צוות)', price: 0 },
-        { label: 'דיסקברי סט', color: '#FFD700', type: 'item', size: 'set', name: 'דיסקברי סט (מתנה)', price: 0 },
-        { label: '10% הנחה', color: '#90EE90', type: 'discount', value: 0.10 },
-        { label: 'דוגמית 10 מ"ל', color: '#FFA07A', type: 'item', size: 10, name: 'דוגמית 10 מ"ל (בחירת צוות)', price: 0 },
+        { label: '5% הנחה', color: '#FFB6C1', type: 'discount', value: 0.05, isWinning: true },
+        { label: 'דוגמית 2 מ"ל', color: '#87CEFA', type: 'item', size: 2, name: 'דוגמית 2 מ"ל (בחירת צוות)', price: 0, isWinning: true },
+        { label: 'בושם נישה מתנה', color: '#FF69B4', type: 'item', size: 'bottle', name: 'בושם נישה מתנה', price: 0, isWinning: false }, // Fake High Value
+        { label: 'דיסקברי סט', color: '#FFD700', type: 'item', size: 'set', name: 'דיסקברי סט (מתנה)', price: 0, isWinning: true },
+        { label: '25% הנחה', color: '#FF6347', type: 'discount', value: 0.25, isWinning: false }, // Fake High Value
+        { label: '10% הנחה', color: '#90EE90', type: 'discount', value: 0.10, isWinning: true },
+        { label: 'דוגמית 10 מ"ל', color: '#FFA07A', type: 'item', size: 10, name: 'דוגמית 10 מ"ל (בחירת צוות)', price: 0, isWinning: true },
     ];
 
     const spinWheel = () => {
         if (spinning) return;
         setSpinning(true);
 
-        const randomIndex = Math.floor(Math.random() * prizes.length);
+        // Filter valid winning indices
+        const winningIndices = prizes.map((p, i) => p.isWinning ? i : -1).filter(i => i !== -1);
+
+        // Select random index from VALID winners only
+        const randomWinningIndex = winningIndices[Math.floor(Math.random() * winningIndices.length)];
+
         const segmentAngle = 360 / prizes.length;
 
-        // Calculate rotation: 
-        // 5-10 full spins (1800-3600 deg) + angle to land on specific segment
-        // Current logic: The "pointer" is usually at the top (0 deg).
-        // If we rotate the wheel clockwise, the winning segment needs to end up at the top.
-        // Rotation = FullSpins + (360 - (Index * SegmentAngle)) - SegmentAngle/2 (center of segment)
+        // Calculate rotation to land on the selected winning index
+        // To land on index i, the wheel must rotate such that segment i is at the "pointer" (top, 0deg).
+        // Since rotation is clockwise, the target angle for segment i (which starts at i*segmentAngle) 
+        // to be at 0 is: 360 - (i * segmentAngle) - (segmentAngle / 2)
 
-        const fullSpins = 360 * (5 + Math.floor(Math.random() * 5));
-        const stopAngle = 360 - (randomIndex * segmentAngle) - (segmentAngle / 2); // Center of segment at top ? 
-        // Logic check: Pointer is Top. Segment 0 starts at 0?
-        // Let's assume Segment 0 is 0-72 deg. Center is 36. To put 36 at top (0), we rotate -36 or 324?
-        // Actually CSS rotate is usually clockwise. 
-        // Let's just add random extra rotation and calculate winner based on final angle.
+        const fullSpins = 360 * (5 + Math.floor(Math.random() * 3)); // 5-7 spins
+        const finalTargetAngle = 360 - (randomWinningIndex * segmentAngle) - (segmentAngle / 2);
 
-        const finalRotation = fullSpins + (Math.random() * 360); // Pure random? No, we want to control result? 
-        // User asked for "Randomly stops". 
-        // Let's control it to ensure it lands nicely in center of a wedge.
+        const totalRotation = fullSpins + finalTargetAngle;
 
-        const targetRotation = fullSpins + (360 - (randomIndex * segmentAngle)); // Land on start of segment?
-        // Let's adjust to land in middle:
-        const finalTarget = targetRotation - (segmentAngle / 2);
-
-        setRotation(finalTarget);
+        setRotation(totalRotation);
 
         setTimeout(() => {
             setSpinning(false);
-            setWinnerIndex(randomIndex);
+            setWinnerIndex(randomWinningIndex);
 
-            // Flashing effect then Prize logic
+            // Flashing effect
+            confetti({
+                particleCount: 150,
+                spread: 70,
+                origin: { y: 0.6 },
+                zIndex: 2000
+            });
+
+            // Delay before closing/updating cart (User request: "Always leave window for a few seconds")
             setTimeout(() => {
-                confetti({
-                    particleCount: 150,
-                    spread: 70,
-                    origin: { y: 0.6 },
-                    zIndex: 2000
-                });
-                onWin(prizes[randomIndex]);
-            }, 1000); // Wait for flash effect
+                onWin(prizes[randomWinningIndex]);
+            }, 4000); // 4 seconds delay after win reveal
 
-        }, 5000); // 5s spin
+        }, 5000); // 5s spin duration
     };
 
     return (
         <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
-            <div className="bg-white rounded-2xl p-8 max-w-md w-full text-center relative shadow-2xl animate-fade-in">
+            <div className="bg-white rounded-2xl p-8 max-w-md w-full text-center relative shadow-2xl animate-fade-in overflow-hidden">
                 <h2 className="text-3xl font-bold mb-2">🎉 גלגל המזל הסודי! 🎉</h2>
-                <p className="mb-6 text-gray-600">כל הכבוד! העגלה שלך מעל 1,000 ₪.<br />סובב את הגלגל וזכה בפרס שווה!</p>
+                <p className="mb-6 text-gray-600">כל הכבוד! העגלה שלך מעל 1,200 ₪.<br />סובב את הגלגל וזכה בפרס שווה!</p>
 
-                <div className="relative w-64 h-64 mx-auto mb-8">
-                    {/* Wheel */}
+                <div className="relative w-72 h-72 mx-auto mb-8">
+                    {/* Wheel Container */}
                     <div
-                        className="w-full h-full rounded-full border-4 border-white shadow-lg overflow-hidden transition-transform duration-[5000ms] ease-out"
+                        className="w-full h-full rounded-full border-4 border-white shadow-xl overflow-hidden transition-transform duration-[5000ms] ease-out relative"
                         style={{
                             transform: `rotate(${rotation}deg)`,
                             background: `conic-gradient(
@@ -81,11 +81,41 @@ const LuckyWheel = ({ onWin, onClose }) => {
                             )`
                         }}
                     >
-                        {/* Lines/Text Separators could go here, but simple colored wedges work best for CSS only */}
+                        {/* Text Overlay for Labels */}
+                        {prizes.map((p, i) => {
+                            const rotationAngle = (360 / prizes.length) * i + (360 / prizes.length) / 2;
+                            return (
+                                <div
+                                    key={i}
+                                    className="absolute w-1 h-1/2 top-0 left-1/2 -translate-x-1/2 origin-bottom flex justify-center pt-4"
+                                    style={{ transform: `rotate(${rotationAngle}deg)` }}
+                                >
+                                    <span
+                                        className="text-xs font-bold text-black whitespace-nowrap transform rotate-180 writing-vertical"
+                                        style={{
+                                            writingMode: 'vertical-rl',
+                                            textOrientation: 'mixed',
+                                            transform: 'rotate(180deg) translateY(0px)' // Flip text to be readable from outside in? Or generic rotation
+                                        }}
+                                    >
+                                        {/* Simple text rotation doesn't work well with writing-mode vertical for this. 
+                                            Let's try standard horizontal text rotated 90deg? 
+                                            Actually, for a wheel, text usually radiates out from center.
+                                        */}
+                                        <span className='inline-block transform -rotate-90 origin-center translate-y-8 text-[10px] sm:text-xs px-1 bg-white/30 rounded'>
+                                            {p.label}
+                                        </span>
+                                    </span>
+                                </div>
+                            );
+                        })}
                     </div>
 
                     {/* Pointer */}
                     <div className="absolute -top-4 left-1/2 transform -translate-x-1/2 w-0 h-0 border-l-[15px] border-l-transparent border-r-[15px] border-r-transparent border-t-[30px] border-t-red-600 z-10 drop-shadow-md"></div>
+
+                    {/* Center Pin */}
+                    <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-4 h-4 bg-white rounded-full shadow-md z-10"></div>
                 </div>
 
                 {/* Result Display / Button */}
@@ -94,13 +124,7 @@ const LuckyWheel = ({ onWin, onClose }) => {
                         <h3 className="text-2xl font-bold text-green-600 mb-4">
                             זכית ב: {prizes[winnerIndex].label}! 🎁
                         </h3>
-                        <p className="text-sm text-gray-500 mb-4">הפרס התווסף לעגלה בהצלחה.</p>
-                        <button
-                            onClick={onClose}
-                            className="btn btn-primary w-full py-3 text-lg"
-                        >
-                            מעולה, סגור
-                        </button>
+                        <p className="text-sm text-gray-500 mb-4">מעדכן את העגלה...</p>
                     </div>
                 ) : (
                     <button
@@ -108,7 +132,7 @@ const LuckyWheel = ({ onWin, onClose }) => {
                         disabled={spinning}
                         className="btn btn-primary w-full py-4 text-xl shadow-lg transform hover:scale-105 transition disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                        {spinning ? 'מסובב...' : 'סובב את הגלגל! 🎡'}
+                        {spinning ? 'מסובב...' : 'סובב/י את הגלגל'}
                     </button>
                 )}
             </div>
