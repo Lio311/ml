@@ -17,15 +17,37 @@ export async function POST(req) {
         const client = await pool.connect();
         let allCandidates = [];
         try {
-            // Fetch ALL active products in lottery with stock.
-            // We fetch ALL and filter in JS to avoid any DB type mismatches or strictness issues in SQL.
-            const res = await client.query(`
-                SELECT * FROM products 
-                WHERE stock > 0 
-                AND is_active = true
-                AND in_lottery = true
-            `);
-            allCandidates = res.rows;
+            // Attempt 1: Fetch active products strict with lottery flag
+            try {
+                const res = await client.query(`
+                    SELECT * FROM products 
+                    WHERE stock > 0 
+                    AND is_active = true
+                    AND in_lottery = true
+                `);
+                allCandidates = res.rows;
+            } catch (dbError) {
+                // If column 'in_lottery' does not exist yet (migration skipped), fallback to all products
+                console.warn("Lottery DB Query failed (likely missing column), falling back to all products:", dbError.message);
+                const resFallback = await client.query(`
+                    SELECT * FROM products 
+                    WHERE stock > 0 
+                    AND is_active = true
+                `);
+                allCandidates = resFallback.rows;
+            }
+
+            // Attempt 2: If we have NO candidates from lottery pool, broaden search to ALL products (Emergency Mode)
+            // This ensures we never return empty if the store has products.
+            if (allCandidates.length === 0) {
+                const resAll = await client.query(`
+                    SELECT * FROM products 
+                    WHERE stock > 0 
+                    AND is_active = true
+                `);
+                allCandidates = resAll.rows;
+            }
+
         } finally {
             client.release();
         }
