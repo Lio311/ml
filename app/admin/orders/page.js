@@ -43,6 +43,22 @@ export default async function AdminOrdersPage() {
 
         const client = await pool.connect();
         try {
+            // 1. Get items to restore stock
+            const res = await client.query('SELECT items FROM orders WHERE id = $1', [orderId]);
+            if (res.rows.length > 0) {
+                const items = res.rows[0].items;
+                for (const item of items) {
+                    if (!item.isPrize && !isNaN(item.size)) {
+                        const amountToRestore = Number(item.size) * item.quantity;
+                        await client.query(
+                            'UPDATE products SET stock = stock + $1 WHERE id = $2',
+                            [amountToRestore, item.id]
+                        );
+                    }
+                }
+            }
+
+            // 2. Delete
             await client.query('DELETE FROM orders WHERE id = $1', [orderId]);
         } finally {
             client.release();
