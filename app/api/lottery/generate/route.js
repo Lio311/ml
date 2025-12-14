@@ -22,7 +22,7 @@ export async function POST(req) {
                 const res = await client.query(`
                     SELECT * FROM products 
                     WHERE stock > 0 
-                    AND is_active = true
+                    AND active = true
                     AND in_lottery = true
                 `);
                 allCandidates = res.rows;
@@ -32,7 +32,7 @@ export async function POST(req) {
                 const resFallback = await client.query(`
                     SELECT * FROM products 
                     WHERE stock > 0 
-                    AND is_active = true
+                    AND active = true
                 `);
                 allCandidates = resFallback.rows;
             }
@@ -43,7 +43,7 @@ export async function POST(req) {
                 const resAll = await client.query(`
                     SELECT * FROM products 
                     WHERE stock > 0 
-                    AND is_active = true
+                    AND active = true
                 `);
                 allCandidates = resAll.rows;
             }
