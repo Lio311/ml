@@ -427,6 +427,15 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                         />
                                     </div>
                                 </div>
+                                <div className="flex items-center gap-2 bg-gray-50 p-2 rounded border mb-2">
+                                    <input
+                                        type="checkbox"
+                                        checked={editForm.in_lottery ?? true}
+                                        onChange={e => setEditForm({ ...editForm, in_lottery: e.target.checked })}
+                                        className="w-4 h-4 accent-red-600 cursor-pointer"
+                                    />
+                                    <label className="text-xs font-bold text-gray-700 select-none">לכלול במאגר ההגרלות? (רנדומלי)</label>
+                                </div>
                                 <div>
                                     <label className="text-xs text-gray-500">קישור לתמונה</label>
                                     <input
