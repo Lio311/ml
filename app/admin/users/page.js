@@ -80,34 +80,34 @@ export default function AdminUsersPage() {
                 <table className="min-w-full divide-y divide-gray-200">
                     <thead className="bg-gray-50">
                         <tr>
-                            <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">שם</th>
-                            <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">אימייל</th>
-                            <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">טלפון (לעריכה)</th>
-                            <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">הזמנות</th>
-                            <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">הצטרף ב</th>
-                            <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">פעולות</th>
+                            <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">שם</th>
+                            <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">אימייל</th>
+                            <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">טלפון (לעריכה)</th>
+                            <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">הזמנות</th>
+                            <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">הצטרף ב</th>
+                            <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">פעולות</th>
                         </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
                         {users.map((user) => (
                             <tr key={user.id} className="hover:bg-gray-50">
-                                <td className="px-6 py-4 whitespace-nowrap flex items-center gap-3">
+                                <td className="px-6 py-4 whitespace-nowrap flex items-center justify-center gap-3">
                                     <img src={user.image} alt="" className="w-8 h-8 rounded-full" />
                                     <div>
                                         <div className="font-bold">{user.firstName} {user.lastName}</div>
                                     </div>
                                 </td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
                                     {user.email}
                                 </td>
-                                <td className="px-6 py-4 whitespace-nowrap">
+                                <td className="px-6 py-4 whitespace-nowrap text-center">
                                     {editingId === user.id ? (
-                                        <div className="flex gap-2">
+                                        <div className="flex gap-2 justify-center">
                                             <input
                                                 type="text"
                                                 value={tempPhone}
                                                 onChange={(e) => setTempPhone(e.target.value)}
-                                                className="border rounded px-2 py-1 w-32 text-sm"
+                                                className="border rounded px-2 py-1 w-32 text-sm text-center"
                                                 placeholder="050..."
                                                 autoFocus
                                             />
@@ -115,7 +115,7 @@ export default function AdminUsersPage() {
                                             <button onClick={() => setEditingId(null)} className="text-red-600 hover:text-red-800">✗</button>
                                         </div>
                                     ) : (
-                                        <div className="flex items-center gap-2 group">
+                                        <div className="flex items-center justify-center gap-2 group">
                                             <div className="flex items-center gap-1 cursor-pointer" onClick={() => handleEditPhone(user)}>
                                                 <span className="text-sm">{user.manualPhone || "-"}</span>
                                                 <span className="opacity-0 group-hover:opacity-100 text-gray-400 text-xs">✏️</span>
@@ -138,10 +138,10 @@ export default function AdminUsersPage() {
                                 <td className="px-6 py-4 whitespace-nowrap text-sm font-bold text-center">
                                     {user.ordersCount}
                                 </td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 text-center">
                                     {new Date(user.createdAt).toLocaleDateString('he-IL')}
                                 </td>
-                                <td className="px-6 py-4 whitespace-nowrap text-sm">
+                                <td className="px-6 py-4 whitespace-nowrap text-sm text-center">
                                     <button
                                         onClick={() => handleDeleteUser(user.id)}
                                         className="text-red-600 hover:text-red-900 bg-red-50 hover:bg-red-100 px-3 py-1 rounded-full text-xs font-bold"

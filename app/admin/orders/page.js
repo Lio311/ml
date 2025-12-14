@@ -28,7 +28,7 @@ export default async function AdminOrdersPage() {
             const { sendEmail, getStatusUpdateTemplate } = require('../../../lib/email'); // Dynamic import for server action
             if (order && order.customer_details?.email) {
                 const html = getStatusUpdateTemplate(orderId, status, order.customer_details.name);
-                await sendEmail(order.customer_details.email, `עדכון סטטוס הזמנה #${orderId} - ML Perfume`, html);
+                await sendEmail(order.customer_details.email, `עדכון סטטוס הזמנה #${orderId} - ml`, html);
             }
 
         } finally {
