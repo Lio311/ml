@@ -50,7 +50,7 @@ export default function Header() {
                         <SignedOut>
                             <SignInButton mode="modal">
                                 <button className="text-sm font-bold text-white bg-black px-5 py-2 rounded-full shadow-md hover:shadow-lg transition-all duration-300 hidden md:block transform hover:-translate-y-0.5">
-                                    התחברות 👤
+                                    התחברות
                                 </button>
                             </SignInButton>
                         </SignedOut>
