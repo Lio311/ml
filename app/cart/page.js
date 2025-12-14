@@ -1,16 +1,15 @@
-"use client";
-
-import { useCart } from "../context/CartContext";
-import Link from "next/link";
-import { useUser, SignInButton } from "@clerk/nextjs";
+// ... imports
 import { useState, useEffect, useRef } from "react";
 import confetti from 'canvas-confetti';
+import { useRouter } from 'next/navigation';
 
 export default function CartPage() {
-    const { cartItems, removeFromCart, updateQuantity, clearCart, subtotal, total, shippingCost, freeSamplesCount, nextTier } = useCart();
+    const { cartItems, removeFromCart, updateQuantity, addToCart, clearCart, subtotal, total, shippingCost, freeSamplesCount, nextTier } = useCart();
     const { isSignedIn, user } = useUser();
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [upsellProducts, setUpsellProducts] = useState([]);
     const prevSamplesCount = useRef(freeSamplesCount);
+    const router = useRouter();
 
     useEffect(() => {
         if (freeSamplesCount > prevSamplesCount.current) {
@@ -24,10 +23,25 @@ export default function CartPage() {
         prevSamplesCount.current = freeSamplesCount;
     }, [freeSamplesCount]);
 
+    // Fetch Upsell Suggestions
+    useEffect(() => {
+        const fetchUpsell = async () => {
+            try {
+                const res = await fetch('/api/products/upsell');
+                if (res.ok) {
+                    const products = await res.json();
+                    setUpsellProducts(products);
+                }
+            } catch (err) {
+                console.error("Failed to fetch upsell products", err);
+            }
+        };
+        fetchUpsell();
+    }, []);
+
     const handleCheckout = async () => {
         setIsSubmitting(true);
-
-        // Create Order via API
+        // ... (existing checkout logic) ...
         try {
             const res = await fetch('/api/orders', {
                 method: 'POST',
@@ -41,7 +55,7 @@ export default function CartPage() {
 
             if (res.ok) {
                 clearCart();
-                window.location.href = '/checkout/success';
+                router.push('/checkout/success');
             } else {
                 const data = await res.json();
                 alert(`אירעה שגיאה לצערי: ${data.error}`);
@@ -54,6 +68,43 @@ export default function CartPage() {
         }
     };
 
+    // Smart Upsell Logic
+    const getRecommendations = () => {
+        if (nextTier <= 0) return []; // Already maxed out
+
+        // Find best fit for the gap
+        const recommendations = upsellProducts
+            // Filter out items that are already in cart (roughly, by ID)
+            // Actually, maybe allow adding more of same? Let's exclude for variety.
+            .filter(p => !cartItems.some(item => item.id === p.id))
+            .map(p => {
+                // Determine best size
+                const sizes = [
+                    { size: '2', price: Number(p.price_2ml) },
+                    { size: '5', price: Number(p.price_5ml) },
+                    { size: '10', price: Number(p.price_10ml) }
+                ].filter(s => s.price > 0);
+
+                // Try to find a size >= nextTier
+                let bestMatch = sizes.find(s => s.price >= nextTier);
+
+                // If not found (gap is large), take the largest size (closest)
+                if (!bestMatch) {
+                    bestMatch = sizes[sizes.length - 1];
+                }
+
+                // Or maybe cheapest one if gap is small?
+                // Logic: "Complete the sum". 
+                // If gap is 30, and we have 40 and 80. take 40. (Correct, `find` finds first, assuming sorted? prices usually sorted 2->10)
+
+                return { ...p, ...bestMatch }; // combines product info with selected size/price
+            })
+            .slice(0, 3); // Take top 3
+
+        return recommendations;
+    };
+
+    const recommendations = getRecommendations();
 
     if (cartItems.length === 0) {
         return (
@@ -76,8 +127,8 @@ export default function CartPage() {
                     {/* Items List */}
                     <div className="flex-1 space-y-6">
                         {cartItems.map((item) => (
-                            <div key={`${item.id}-${item.size}`} className="flex items-center gap-4 border p-4 rounded-lg bg-white shadow-sm">
-                                <div className="w-20 h-20 bg-white flex items-center justify-center text-2xl rounded overflow-hidden relative border border-gray-100">
+                            <div key={`${item.id}-${item.size}`} className="flex items-center gap-4 border p-4 rounded-lg bg-white shadow-sm relative">
+                                <div className="w-20 h-20 bg-white flex items-center justify-center text-2xl rounded overflow-hidden relative border border-gray-100 flex-shrink-0">
                                     {item.image_url ? (
                                         <img src={item.image_url} alt={item.name} className="w-full h-full object-contain" />
                                     ) : (
@@ -85,28 +136,30 @@ export default function CartPage() {
                                     )}
                                 </div>
 
-                                <div className="flex-1">
-                                    <h3 className="font-bold">{item.name}</h3>
+                                <div className="flex-1 min-w-0">
+                                    <h3 className="font-bold truncate">{item.name}</h3>
                                     <div className="text-sm text-gray-500">גודל: {item.size} מ"ל</div>
-                                    <div className="text-sm font-bold mt-1">{item.price} ₪</div>
+                                    <div className="text-sm font-bold mt-1 text-primary">{item.price} ₪</div>
                                 </div>
 
                                 <div className="flex items-center gap-3">
-                                    <button onClick={() => updateQuantity(item.id, item.size, item.quantity - 1)} className="w-8 h-8 rounded-full bg-gray-100">-</button>
-                                    <span className="w-4 text-center">{item.quantity}</span>
-                                    <button onClick={() => updateQuantity(item.id, item.size, item.quantity + 1)} className="w-8 h-8 rounded-full bg-gray-100">+</button>
+                                    <button onClick={() => updateQuantity(item.id, item.size, item.quantity - 1)} className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 transition">-</button>
+                                    <span className="w-8 text-center font-medium">{item.quantity}</span>
+                                    <button onClick={() => updateQuantity(item.id, item.size, item.quantity + 1)} className="w-8 h-8 rounded-full bg-gray-100 hover:bg-gray-200 transition">+</button>
                                 </div>
 
-                                <button onClick={() => removeFromCart(item.id, item.size)} className="text-red-500 text-sm hover:underline">
-                                    הסר
+                                <button onClick={() => removeFromCart(item.id, item.size)} className="text-red-500 p-2 hover:bg-red-50 rounded-full transition" aria-label="Remove">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+                                    </svg>
                                 </button>
                             </div>
                         ))}
                     </div>
 
                     {/* Summary & Checkout */}
-                    <div className="w-full lg:w-96">
-                        <div className="bg-gray-50 p-6 rounded-xl border space-y-6">
+                    <div className="w-full lg:w-96 space-y-6">
+                        <div className="bg-gray-50 p-6 rounded-xl border space-y-6 sticky top-24">
                             <h2 className="text-xl font-bold border-b pb-4">סיכום הזמנה</h2>
 
                             <div className="flex justify-between text-lg">
@@ -120,7 +173,7 @@ export default function CartPage() {
                             </div>
 
                             {/* Free Samples Logic */}
-                            <div className="bg-blue-50 p-4 rounded border border-blue-100 text-sm">
+                            <div className={`p-4 rounded border text-sm ${freeSamplesCount > 0 ? 'bg-blue-50 border-blue-100' : 'bg-orange-50 border-orange-100'}`}>
                                 {freeSamplesCount > 0 ? (
                                     <div className="text-blue-800 font-bold mb-1">
                                         מגיע לך {freeSamplesCount} דוגמיות מתנה! 🎉
@@ -130,17 +183,44 @@ export default function CartPage() {
                                         </span>
                                     </div>
                                 ) : (
-                                    <div className="text-gray-600">
-                                        הוסף ב-{nextTier} ₪ כדי לקבל <span className="font-bold">2 דוגמיות מתנה</span>
+                                    <div className="text-gray-800 font-medium">
+                                        חסר לך עוד <span className="font-bold text-orange-600">{nextTier} ₪</span> כדי לקבל <span className="font-bold">2 דוגמיות מתנה</span> 🎁
                                     </div>
                                 )}
 
                                 {nextTier > 0 && freeSamplesCount > 0 && freeSamplesCount < 6 && (
-                                    <div className="mt-2 text-xs text-gray-500 border-t border-blue-200 pt-2">
-                                        עוד {nextTier} ₪ למדרגה הבאה (+2 דוגמיות)
+                                    <div className="mt-2 text-xs text-blue-600 border-t border-blue-200 pt-2 font-medium">
+                                        הוסף עוד {nextTier} ₪ וקבל עוד 2 דוגמיות!
                                     </div>
                                 )}
                             </div>
+
+                            {/* Recommendations / Upsell */}
+                            {recommendations.length > 0 && (
+                                <div className="space-y-3 pt-2">
+                                    <h4 className="text-sm font-bold text-gray-700">השלם את החסר בקלות:</h4>
+                                    <div className="space-y-2">
+                                        {recommendations.map(rec => (
+                                            <div key={rec.id} className="flex items-center gap-3 bg-white border p-2 rounded-lg shadow-sm hover:shadow-md transition">
+                                                <div className="w-10 h-10 bg-gray-50 rounded flex-shrink-0 flex items-center justify-center overflow-hidden">
+                                                    {rec.image_url ? <img src={rec.image_url} alt="" className="w-full h-full object-cover" /> : '🧴'}
+                                                </div>
+                                                <div className="flex-1 min-w-0">
+                                                    <div className="font-bold text-xs truncate">{rec.name}</div>
+                                                    <div className="text-xs text-gray-500">{rec.size} מ"ל • {rec.price} ₪</div>
+                                                </div>
+                                                <button
+                                                    onClick={() => addToCart(rec, rec.size, rec.price)}
+                                                    className="w-8 h-8 flex items-center justify-center bg-black text-white rounded-full hover:bg-gray-800 transition"
+                                                    title="הוסף לעגלה"
+                                                >
+                                                    +
+                                                </button>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
 
                             <div className="flex justify-between text-xl font-bold pt-4 border-t">
                                 <span>סה״כ לתשלום</span>
@@ -152,13 +232,13 @@ export default function CartPage() {
                                     <button
                                         onClick={handleCheckout}
                                         disabled={isSubmitting}
-                                        className="btn btn-primary w-full py-4 text-lg"
+                                        className="btn btn-primary w-full py-4 text-lg shadow-lg hover:shadow-xl transition transform hover:-translate-y-0.5"
                                     >
-                                        {isSubmitting ? 'מעבד...' : 'בצע הזמנה'}
+                                        {isSubmitting ? 'מעבד...' : 'לתשלום מאובטח'}
                                     </button>
                                 ) : (
                                     <SignInButton mode="modal">
-                                        <button className="btn btn-primary w-full py-4 text-lg">
+                                        <button className="btn btn-primary w-full py-4 text-lg shadow-lg hover:shadow-xl transition transform hover:-translate-y-0.5">
                                             התחבר כדי להזמין
                                         </button>
                                     </SignInButton>
@@ -169,7 +249,6 @@ export default function CartPage() {
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
         </div>
