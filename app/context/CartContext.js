@@ -21,11 +21,66 @@ export function CartProvider({ children }) {
         }
     }, []);
 
+    // Lottery Mode State
+    const [lotteryMode, setLotteryMode] = useState({ active: false, expiresAt: null });
+    const [lotteryTimeLeft, setLotteryTimeLeft] = useState(null);
+
+    // Derived State
+    const isCartLocked = lotteryMode.active;
+
+    // Timer Interval
+    useEffect(() => {
+        let interval;
+        if (lotteryMode.active && lotteryMode.expiresAt) {
+            interval = setInterval(() => {
+                const now = Date.now();
+                const diff = lotteryMode.expiresAt - now;
+
+                if (diff <= 0) {
+                    // Expired
+                    setLotteryMode({ active: false, expiresAt: null });
+                    setLotteryTimeLeft(null);
+                } else {
+                    setLotteryTimeLeft(Math.floor(diff / 1000));
+                }
+            }, 1000);
+        }
+        return () => clearInterval(interval);
+    }, [lotteryMode]);
+
+    const startLottery = (items) => {
+        // Clear cart and add lottery items
+        const newCart = items.map(p => ({
+            ...p,
+            quantity: 1,
+            isLotteryItem: true
+        }));
+
+        setCartItems(newCart);
+
+        // 10 minutes
+        const duration = 10 * 60 * 1000;
+        setLotteryMode({
+            active: true,
+            expiresAt: Date.now() + duration
+        });
+    };
+
+    const cancelLottery = () => {
+        setLotteryMode({ active: false, expiresAt: null });
+        setLotteryTimeLeft(null);
+        setCartItems([]);
+    };
+
     useEffect(() => {
         localStorage.setItem("cart", JSON.stringify(cartItems));
     }, [cartItems]);
 
     const addToCart = (product, size, price) => {
+        if (isCartLocked) {
+            alert("העגלה נעולה בזמן שהגרלת הבשמים פעילה!");
+            return;
+        }
         setCartItems((prev) => {
             const existing = prev.find(
                 (item) => item.id === product.id && item.size === size
@@ -42,6 +97,10 @@ export function CartProvider({ children }) {
     };
 
     const addMultipleToCart = (items) => {
+        if (isCartLocked) {
+            alert("העגלה נעולה בזמן שהגרלת הבשמים פעילה!");
+            return;
+        }
         setCartItems((prev) => {
             let newCart = [...prev];
             items.forEach(({ product, size, price }) => {
@@ -64,10 +123,18 @@ export function CartProvider({ children }) {
 
 
     const removeFromCart = (id, size) => {
+        if (isCartLocked) {
+            alert("העגלה נעולה בזמן שהגרלת הבשמים פעילה!");
+            return;
+        }
         setCartItems((prev) => prev.filter((item) => !(item.id === id && item.size === size)));
     };
 
     const updateQuantity = (id, size, quantity) => {
+        if (isCartLocked) {
+            alert("העגלה נעולה בזמן שהגרלת הבשמים פעילה!");
+            return;
+        }
         if (quantity < 1) {
             removeFromCart(id, size);
             return;
@@ -117,7 +184,10 @@ export function CartProvider({ children }) {
     let total = subtotal + shippingCost;
     let discountAmount = 0;
 
-    if (luckyPrize?.type === 'discount') {
+    if (lotteryMode.active) {
+        discountAmount = Math.round(total * 0.15);
+        total = total - discountAmount;
+    } else if (luckyPrize?.type === 'discount') {
         discountAmount = Math.round(total * luckyPrize.value);
         total = total - discountAmount;
     }
@@ -164,7 +234,13 @@ export function CartProvider({ children }) {
                 total,
                 luckyPrize,
                 setLuckyPrize,
-                discountAmount
+                discountAmount,
+                // Lottery Exports
+                startLottery,
+                cancelLottery,
+                isCartLocked,
+                lotteryTimeLeft,
+                lotteryMode
             }}
         >
             {children}
