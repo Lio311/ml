@@ -42,26 +42,24 @@ export async function POST(req) {
 
             // --- Newsletter Feature ---
             // Fetch all users to notify them about the new product
-            (async () => {
-                try {
-                    const clerk = await clerkClient();
-                    const { data: users } = await clerk.users.getUserList({ limit: 500 });
+            try {
+                const clerk = await clerkClient();
+                const { data: users } = await clerk.users.getUserList({ limit: 500 });
 
-                    const emails = users
-                        .map(u => u.emailAddresses.find(e => e.id === u.primaryEmailAddressId)?.emailAddress || u.emailAddresses[0]?.emailAddress)
-                        .filter(Boolean);
+                const emails = users
+                    .map(u => u.emailAddresses.find(e => e.id === u.primaryEmailAddressId)?.emailAddress || u.emailAddresses[0]?.emailAddress)
+                    .filter(Boolean);
 
-                    if (emails.length > 0) {
-                        const productForEmail = { ...body, id: newProductId };
-                        const html = getNewProductTemplate(productForEmail);
-                        // Send as BCC to protect privacy and respect bulk limits
-                        await sendEmail(emails, `חדש באתר: ${brand} ${model} ✨ - ml_tlv`, html);
-                        console.log(`Newsletter sent to ${emails.length} recipients.`);
-                    }
-                } catch (emailErr) {
-                    console.error("Failed to send newsletter:", emailErr);
+                if (emails.length > 0) {
+                    const productForEmail = { ...body, id: newProductId };
+                    const html = getNewProductTemplate(productForEmail);
+                    // Send as BCC to protect privacy and respect bulk limits
+                    await sendEmail(emails, `חדש באתר: ${brand} ${model} ✨ - ml_tlv`, html);
+                    console.log(`Newsletter sent to ${emails.length} recipients.`);
                 }
-            })();
+            } catch (emailErr) {
+                console.error("Failed to send newsletter:", emailErr);
+            }
             // --------------------------
 
             return NextResponse.json({ success: true, id: newProductId });
