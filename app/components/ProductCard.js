@@ -40,10 +40,15 @@ export default function ProductCard({ product }) {
             <div className="absolute top-2 left-2 z-10">
                 <WishlistHeart productId={product.id} />
             </div>
-            
-            {(product.stock <= 20) && (
-                <div className="absolute top-10 left-2 z-10 text-[10px] leading-3 font-bold bg-red-600 text-white px-2 py-1 rounded shadow-sm text-center">
-                    יחידות אחרונות<br/>במלאי
+
+            {((product.stock || 0) <= 20) && (
+                <div className={`absolute top-10 left-2 z-10 text-[10px] leading-3 font-bold px-2 py-1 rounded shadow-sm text-center text-white ${(product.stock || 0) <= 0 ? 'bg-gray-800' : 'bg-red-600'
+                    }`}>
+                    {(product.stock || 0) <= 0 ? (
+                        <>אזל<br />במלאי</>
+                    ) : (
+                        <>יחידות אחרונות<br />במלאי</>
+                    )}
                 </div>
             )}
 
