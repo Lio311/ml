@@ -13,10 +13,10 @@ const LuckyWheel = ({ onWin, onClose }) => {
     // weight: Higher number = higher chance to win.
     const prizes = [
         { label: '5% הנחה', color: '#FFB6C1', type: 'discount', value: 0.05, isWinning: true, weight: 40 },
-        { label: 'דוגמית 2 מ"ל', color: '#87CEFA', type: 'item', size: 2, name: 'דוגמית 2 מ"ל', price: 0, isWinning: true, image_url: 'https://www.dulcie.world/cdn/shop/files/DREAMLANDSAMPLESQUARE.png?v=1751633413&width=2366', weight: 40 },
         { label: 'בושם נישה מתנה', color: '#FF69B4', type: 'item', size: 'bottle', name: 'בושם נישה מתנה', price: 0, isWinning: false, weight: 0 },
-        { label: 'דיסקברי סט', color: '#FFD700', type: 'item', size: 'set', name: 'דיסקברי סט', price: 0, isWinning: true, image_url: 'https://www.francescadelloro.it/images/galleries/original/Icon-yul2umy6sshp7qbpeh2t25.jpg', weight: 5 },
+        { label: 'דוגמית 2 מ"ל', color: '#87CEFA', type: 'item', size: 2, name: 'דוגמית 2 מ"ל', price: 0, isWinning: true, image_url: 'https://www.dulcie.world/cdn/shop/files/DREAMLANDSAMPLESQUARE.png?v=1751633413&width=2366', weight: 40 },
         { label: '25% הנחה', color: '#FF6347', type: 'discount', value: 0.25, isWinning: false, weight: 0 },
+        { label: 'דיסקברי סט', color: '#FFD700', type: 'item', size: 'set', name: 'דיסקברי סט', price: 0, isWinning: true, image_url: 'https://www.francescadelloro.it/images/galleries/original/Icon-yul2umy6sshp7qbpeh2t25.jpg', weight: 5 },
         { label: '10% הנחה', color: '#90EE90', type: 'discount', value: 0.10, isWinning: false, weight: 0 },
         { label: 'דוגמית 10 מ"ל', color: '#FFA07A', type: 'item', size: 10, name: 'דוגמית 10 מ"ל', price: 0, isWinning: true, image_url: 'https://allbottlesusa.com/cdn/shop/products/10mlClearTallBCOpen.jpg?v=1662849592&width=2048', weight: 15 },
     ];
