@@ -80,7 +80,7 @@ export default function AdminUsersPage() {
                 <table className="min-w-full divide-y divide-gray-200">
                     <thead className="bg-gray-50">
                         <tr>
-                            <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">שם</th>
+                            <th className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">שם</th>
                             <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">אימייל</th>
                             <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">טלפון (לעריכה)</th>
                             <th className="px-6 py-3 text-center text-xs font-medium text-gray-500 uppercase tracking-wider">הזמנות</th>
@@ -91,7 +91,7 @@ export default function AdminUsersPage() {
                     <tbody className="bg-white divide-y divide-gray-200">
                         {users.map((user) => (
                             <tr key={user.id} className="hover:bg-gray-50">
-                                <td className="px-6 py-4 whitespace-nowrap flex items-center justify-center gap-3">
+                                <td className="px-6 py-4 whitespace-nowrap flex items-center gap-3">
                                     <img src={user.image} alt="" className="w-8 h-8 rounded-full" />
                                     <div>
                                         <div className="font-bold">{user.firstName} {user.lastName}</div>
