@@ -1,0 +1,110 @@
+
+import pool from "../../../lib/db";
+import { revalidatePath } from "next/cache";
+
+export default async function AdminRequestsPage() {
+    const client = await pool.connect();
+    let requests = [];
+    try {
+        const res = await client.query('SELECT * FROM perfume_requests ORDER BY created_at DESC');
+        requests = res.rows;
+    } finally {
+        client.release();
+    }
+
+    async function deleteRequest(formData) {
+        "use server";
+        const id = formData.get("id");
+        const client = await pool.connect();
+        try {
+            await client.query('DELETE FROM perfume_requests WHERE id = $1', [id]);
+        } finally {
+            client.release();
+        }
+        revalidatePath("/admin/requests");
+    }
+
+    async function updateRequest(formData) {
+        "use server";
+        const id = formData.get("id");
+        const brand = formData.get("brand");
+        const model = formData.get("model");
+
+        const client = await pool.connect();
+        try {
+            await client.query('UPDATE perfume_requests SET brand = $1, model = $2 WHERE id = $3', [brand, model, id]);
+        } finally {
+            client.release();
+        }
+        revalidatePath("/admin/requests");
+    }
+
+    return (
+        <div className="p-6">
+            <h1 className="text-3xl font-bold mb-8">ניהול בקשות בשמים</h1>
+
+            <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
+                <table className="w-full text-right">
+                    <thead className="bg-gray-50 border-b">
+                        <tr>
+                            <th className="p-4">#</th>
+                            <th className="p-4">משתמש</th>
+                            <th className="p-4">מותג</th>
+                            <th className="p-4">דגם</th>
+                            <th className="p-4">תאריך</th>
+                            <th className="p-4">פעולות</th>
+                        </tr>
+                    </thead>
+                    <tbody className="divide-y">
+                        {requests.map((req) => (
+                            <tr key={req.id} className="hover:bg-gray-50">
+                                <td className="p-4 text-sm text-gray-500">{req.id}</td>
+                                <td className="p-4 text-sm font-mono">{req.user_email || 'לא ידוע'}</td>
+
+                                {/* Inline Edit Form */}
+                                <td className="p-4">
+                                    <form action={updateRequest} className="flex gap-2">
+                                        <input type="hidden" name="id" value={req.id} />
+                                        <input
+                                            name="brand"
+                                            defaultValue={req.brand}
+                                            className="border rounded px-2 py-1 text-sm w-32"
+                                        />
+                                        <input
+                                            name="model"
+                                            defaultValue={req.model}
+                                            className="border rounded px-2 py-1 text-sm w-32"
+                                        />
+                                        <button type="submit" className="bg-blue-600 text-white px-3 py-1 rounded text-xs hover:bg-blue-700">
+                                            עדכן
+                                        </button>
+                                    </form>
+                                    {/* Display values if not editing? Just showing inputs implies editability always. */}
+                                </td>
+                                <td className="p-4 text-sm">
+                                    {/* Model is in the form above for layout simplicity, but let's keep it structured */}
+                                    {/* Actually, let's just make the cells inputs */}
+                                </td>
+
+                                <td className="p-4 text-xs text-gray-400">
+                                    {new Date(req.created_at).toLocaleString('he-IL')}
+                                </td>
+                                <td className="p-4">
+                                    <form action={deleteRequest}>
+                                        <input type="hidden" name="id" value={req.id} />
+                                        <button
+                                            type="submit"
+                                            className="text-red-500 hover:text-red-700 text-xs font-bold border border-red-200 px-3 py-1 rounded hover:bg-red-50"
+                                        >
+                                            מחק
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    );
+}
