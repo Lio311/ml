@@ -14,6 +14,8 @@ export default function Header() {
     const cartCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
 
+    const [searchQuery, setSearchQuery] = useState('');
+
     return (
         <header className="sticky top-0 z-50 bg-white shadow-sm">
             {/* Top Bar - Black Promo Strip */}
@@ -61,7 +63,9 @@ export default function Header() {
                                 type="text"
                                 name="q"
                                 placeholder="חיפוש..."
-                                className="border-b border-gray-300 py-1 px-2 text-sm focus:outline-none focus:border-black transition-all w-24 focus:w-48 bg-transparent"
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                className={`border-b border-gray-300 py-1 px-2 text-sm focus:outline-none focus:border-black transition-all bg-transparent ${searchQuery.length > 0 ? 'w-48' : 'w-24 focus:w-48'}`}
                             />
                             <button type="submit" className="absolute left-0 top-1 text-gray-400 group-focus-within:text-black hover:text-black">
                                 <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
