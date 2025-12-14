@@ -1,0 +1,72 @@
+
+"use client";
+import { useState } from 'react';
+
+export default function SlotMachineGame({ prize, onComplete }) {
+    const [spinning, setSpinning] = useState(false);
+    const [finished, setFinished] = useState(false);
+
+    const handleSpin = () => {
+        setSpinning(true);
+        setTimeout(() => {
+            setSpinning(false);
+            setFinished(true);
+            setTimeout(onComplete, 2000);
+        }, 2000); // 2s spin
+    };
+
+    return (
+        <div className="flex flex-col items-center justify-center p-8">
+            <h3 className="text-2xl font-bold text-yellow-400 mb-8">מכונת המזל 🎰</h3>
+
+            <div className="bg-gray-800 p-4 rounded-xl border-4 border-yellow-600 shadow-2xl flex gap-2">
+                {/* 3 Slots. We assume they all land on the prize symbol for "Jackpot" feel */}
+                {[0, 1, 2].map((i) => (
+                    <div key={i} className="w-20 h-32 bg-white rounded overflow-hidden relative shadow-inner border border-gray-400">
+                        <div className={`flex flex-col items-center transition-transform duration-1000 ease-in-out ${spinning ? 'animate-slot-spin' : ''}`} style={{ transform: finished ? 'translateY(0)' : 'translateY(-10px)' }}>
+                            {/* Visual strip simulation */}
+                            {finished ? (
+                                <div className="h-32 flex flex-col items-center justify-center">
+                                    <span className="text-4xl">🧴</span>
+                                </div>
+                            ) : (
+                                <div className="space-y-8 py-2 opacity-50 blur-[1px]">
+                                    <span className="text-4xl block">🍒</span>
+                                    <span className="text-4xl block">💎</span>
+                                    <span className="text-4xl block">7️⃣</span>
+                                    <span className="text-4xl block">🍋</span>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                ))}
+            </div>
+
+            {!spinning && !finished && (
+                <button
+                    onClick={handleSpin}
+                    className="mt-8 bg-red-600 text-white font-bold py-3 px-8 rounded-full border-b-4 border-red-800 hover:bg-red-500 active:border-b-0 active:translate-y-1 transition-all"
+                >
+                    משוך בידית!
+                </button>
+            )}
+
+            {finished && (
+                <div className="mt-6 text-center animate-bounce">
+                    <p className="text-yellow-400 font-bold text-xl">JACKPOT!</p>
+                    <p className="text-white">{prize.brand} - {prize.model}</p>
+                </div>
+            )}
+
+            <style jsx>{`
+                @keyframes slot-spin {
+                    0% { transform: translateY(0); }
+                    100% { transform: translateY(-200px); }
+                }
+                .animate-slot-spin {
+                    animation: slot-spin 0.2s linear infinite;
+                }
+            `}</style>
+        </div>
+    );
+}
