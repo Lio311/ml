@@ -11,7 +11,7 @@ export async function GET(req) {
 
         const client = await pool.connect();
         try {
-            let query = 'SELECT * FROM products WHERE is_active = true';
+            let query = 'SELECT * FROM products WHERE active = true';
             const values = [];
 
             if (search) {
