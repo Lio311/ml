@@ -2,7 +2,7 @@ import SmartMatchingClient from "./SmartMatchingClient";
 import pool from "../lib/db";
 
 export const metadata = {
-    title: 'יוקרה בחתיכות קטנות | ML TLV',
+    title: 'יוקרה בחתיכות קטנות',
     description: 'אשף התאמת בשמים אישי - בנה את המארז המושלם בשבילך',
 };
 
