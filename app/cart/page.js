@@ -60,7 +60,7 @@ export default function CartPage() {
             const prizeProduct = {
                 id: `prize-${prize.size}`,
                 name: prize.name,
-                image_url: null, // or a gift icon
+                image_url: prize.image_url || null,
                 price: 0,
                 stock: 999, // Always available
                 isPrize: true // Flag to identify and maybe prevent quantity update
@@ -262,13 +262,13 @@ export default function CartPage() {
 
                             <div className="pt-4">
                                 {isSignedIn ? (
-                                        <button
-                                            onClick={handleCheckout}
-                                            disabled={isSubmitting}
-                                            className="btn btn-primary w-full py-4 text-lg shadow-lg hover:shadow-xl transition transform hover:-translate-y-0.5"
-                                        >
-                                            {isSubmitting ? 'מעבד...' : 'יצירת הזמנה'}
-                                        </button>
+                                    <button
+                                        onClick={handleCheckout}
+                                        disabled={isSubmitting}
+                                        className="btn btn-primary w-full py-4 text-lg shadow-lg hover:shadow-xl transition transform hover:-translate-y-0.5"
+                                    >
+                                        {isSubmitting ? 'מעבד...' : 'יצירת הזמנה'}
+                                    </button>
                                 ) : (
                                     <SignInButton mode="modal">
                                         <button className="btn btn-primary w-full py-4 text-lg shadow-lg hover:shadow-xl transition transform hover:-translate-y-0.5">

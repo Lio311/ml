@@ -39,6 +39,11 @@ export default function ProductCard({ product }) {
         <div className="group border rounded-lg overflow-hidden hover:shadow-xl transition bg-white flex flex-col h-full relative">
             <div className="absolute top-2 left-2 z-10">
                 <WishlistHeart productId={product.id} />
+                {(product.stock <= 20) && (
+                    <div className="mt-2 text-[10px] font-bold bg-red-600 text-white px-2 py-1 rounded shadow-sm">
+                        יחידות אחרונות במלאי
+                    </div>
+                )}
             </div>
 
             <Link href={`/product/${product.id}`} className="block relative aspect-square bg-white overflow-hidden cursor-pointer p-2">
