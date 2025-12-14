@@ -50,8 +50,8 @@ export default function ProductCard({ product }) {
                 const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
                 return diffDays <= 7;
             })() && (
-                    <div className="absolute top-10 right-2 z-10 text-[10px] leading-3 font-bold bg-sky-300 text-white px-2 py-1 rounded shadow-sm text-center">
-                        חדש! ✨
+                    <div className="absolute top-10 right-2 z-10 text-[10px] leading-3 font-bold bg-sky-500 text-white px-2 py-1 rounded shadow-sm text-center">
+                        חדש
                     </div>
                 )}
 
