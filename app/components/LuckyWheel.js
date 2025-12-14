@@ -70,10 +70,10 @@ const LuckyWheel = ({ onWin, onClose }) => {
                 zIndex: 2000
             });
 
-            // Delay before closing/updating cart (User request: "Always leave window for a few seconds" -> reduced by 1 second)
+            // Delay before closing/updating cart (User request: "Always leave window for a few seconds" -> reduced by another 2 seconds)
             setTimeout(() => {
                 onWin(prizes[randomWinningIndex]);
-            }, 3000); // 3 seconds delay after win reveal
+            }, 1000); // 1 second delay after win reveal
 
         }, 5000); // 5s spin duration
     };
