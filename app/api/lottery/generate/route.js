@@ -93,7 +93,14 @@ export async function POST(req) {
         // But "System MUST be able to assemble". So providing *something* is better than nothing.
         // Unless it's empty.
         if (bestBundle.length === 0) {
-            return NextResponse.json({ success: false, message: 'Could not form a valid bundle.' });
+            // Fallback: Try to find at least ONE item that fits
+            const cheapest = candidates.sort((a, b) => Number(a.price) - Number(b.price))[0];
+            if (cheapest && Number(cheapest.price) <= targetAmount) {
+                bestBundle = [cheapest];
+                bestSum = Number(cheapest.price);
+            } else {
+                return NextResponse.json({ success: false, message: 'Could not form a valid bundle even with single item.' });
+            }
         }
 
         return NextResponse.json({
