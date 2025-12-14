@@ -427,7 +427,8 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                         />
                                     </div>
                                 </div>
-                                <div className="flex items-center gap-2 bg-gray-50 p-2 rounded border mb-2">
+
+                                <div className="flex items-center gap-2 mt-4 ml-1">
                                     <input
                                         type="checkbox"
                                         checked={editForm.in_lottery ?? true}
@@ -436,6 +437,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                     />
                                     <label className="text-xs font-bold text-gray-700 select-none">לכלול במאגר ההגרלות? (רנדומלי)</label>
                                 </div>
+
                                 <div>
                                     <label className="text-xs text-gray-500">קישור לתמונה</label>
                                     <input
@@ -482,7 +484,16 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                         />
                                     </div>
                                 </div>
-                            </div>
+                                <div className="flex items-center gap-2 mt-4 ml-1">
+                                    <input
+                                        type="checkbox"
+                                        checked={editForm.in_lottery ?? true}
+                                        onChange={e => setEditForm({ ...editForm, in_lottery: e.target.checked })}
+                                        className="w-4 h-4 accent-red-600 cursor-pointer"
+                                    />
+                                    <label className="text-xs font-bold text-gray-700 select-none">לכלול במאגר ההגרלות? (רנדומלי)</label>
+                                </div>
+                            </div >
                         ) : (
                             <div className="flex-1 flex items-center gap-4 w-full">
                                 {product.image_url ? (
@@ -504,7 +515,8 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                     {product.price_10ml} ₪
                                 </div>
                             </div>
-                        )}
+                        )
+                        }
 
                         <div className="flex gap-2 w-full md:w-auto">
                             {editingId === product.id ? (
@@ -524,7 +536,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                             )}
                         </div>
 
-                    </div>
+                    </div >
                 ))}
             </div >
 
