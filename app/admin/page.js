@@ -70,10 +70,19 @@ export default async function AdminDashboard() {
                                 <div className="text-right">
                                     <div className="font-bold">{order.total_amount} ₪</div>
                                     <span className={`text-xs px-2 py-1 rounded-full ${order.status === 'pending' ? 'bg-orange-100 text-orange-800' :
-                                        order.status === 'completed' ? 'bg-green-100 text-green-800' :
-                                            'bg-gray-100 text-gray-800'
+                                        order.status === 'processing' ? 'bg-blue-100 text-blue-800' :
+                                            order.status === 'shipped' ? 'bg-purple-100 text-purple-800' :
+                                                order.status === 'completed' ? 'bg-green-100 text-green-800' :
+                                                    'bg-gray-100 text-gray-800'
                                         }`}>
-                                        {order.status === 'pending' ? 'ממתין' : order.status}
+                                        {
+                                            order.status === 'pending' ? 'ממתין' :
+                                                order.status === 'processing' ? 'בטיפול' :
+                                                    order.status === 'shipped' ? 'נשלח' :
+                                                        order.status === 'completed' ? 'הושלם' :
+                                                            order.status === 'cancelled' ? 'בוטל' :
+                                                                order.status
+                                        }
                                     </span>
                                 </div>
                             </div>
