@@ -47,49 +47,60 @@ export default async function AdminRequestsPage() {
                 <table className="w-full text-right">
                     <thead className="bg-gray-50 border-b">
                         <tr>
-                            <th className="p-4">#</th>
+                            <th className="p-4 text-center">#</th>
                             <th className="p-4">משתמש</th>
-                            <th className="p-4">מותג</th>
-                            <th className="p-4">דגם</th>
-                            <th className="p-4">תאריך</th>
-                            <th className="p-4">פעולות</th>
+                            <th className="p-4 text-center">מותג</th>
+                            <th className="p-4 text-center">דגם</th>
+                            <th className="p-4 text-center">תאריך</th>
+                            <th className="p-4 text-center">פעולות</th>
                         </tr>
                     </thead>
                     <tbody className="divide-y">
                         {requests.map((req) => (
                             <tr key={req.id} className="hover:bg-gray-50">
-                                <td className="p-4 text-sm text-gray-500">{req.id}</td>
+                                <td className="p-4 text-sm text-gray-500 text-center">{req.id}</td>
                                 <td className="p-4 text-sm font-mono">{req.user_email || 'לא ידוע'}</td>
 
-                                {/* Inline Edit Form */}
-                                <td className="p-4">
-                                    <form action={updateRequest} className="flex gap-2">
-                                        <input type="hidden" name="id" value={req.id} />
-                                        <input
-                                            name="brand"
-                                            defaultValue={req.brand}
-                                            className="border rounded px-2 py-1 text-sm w-32"
-                                        />
-                                        <input
-                                            name="model"
-                                            defaultValue={req.model}
-                                            className="border rounded px-2 py-1 text-sm w-32"
-                                        />
-                                        <button type="submit" className="bg-blue-600 text-white px-3 py-1 rounded text-xs hover:bg-blue-700">
-                                            עדכן
-                                        </button>
-                                    </form>
-                                    {/* Display values if not editing? Just showing inputs implies editability always. */}
-                                </td>
-                                <td className="p-4 text-sm">
-                                    {/* Model is in the form above for layout simplicity, but let's keep it structured */}
-                                    {/* Actually, let's just make the cells inputs */}
+                                {/* Brand Input (Centered) */}
+                                <td className="p-4 text-center">
+                                    <input
+                                        form={`update-${req.id}`}
+                                        name="brand"
+                                        defaultValue={req.brand}
+                                        className="border rounded px-2 py-1 text-sm w-32 text-center"
+                                    />
                                 </td>
 
-                                <td className="p-4 text-xs text-gray-400">
+                                {/* Model Input (Centered) */}
+                                <td className="p-4 text-center">
+                                    <input
+                                        form={`update-${req.id}`}
+                                        name="model"
+                                        defaultValue={req.model}
+                                        className="border rounded px-2 py-1 text-sm w-32 text-center"
+                                    />
+                                </td>
+
+                                <td className="p-4 text-xs text-gray-400 text-center">
                                     {new Date(req.created_at).toLocaleString('he-IL')}
                                 </td>
-                                <td className="p-4">
+
+                                <td className="p-4 flex items-center justify-center gap-2">
+                                    {/* Hidden Update Form Logic */}
+                                    {/* We put the form here but it has no visible fields, just the submit button and hidden id. 
+                                         The Inputs above refer to it via 'form' attribute. */}
+                                    <form id={`update-${req.id}`} action={updateRequest} className="hidden">
+                                        <input type="hidden" name="id" value={req.id} />
+                                    </form>
+
+                                    <button
+                                        form={`update-${req.id}`}
+                                        type="submit"
+                                        className="bg-blue-600 text-white px-3 py-1 rounded text-xs hover:bg-blue-700"
+                                    >
+                                        עדכן
+                                    </button>
+
                                     <form action={deleteRequest}>
                                         <input type="hidden" name="id" value={req.id} />
                                         <button
