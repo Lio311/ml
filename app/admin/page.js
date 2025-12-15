@@ -1,6 +1,8 @@
 import pool from "@/app/lib/db";
 import Link from "next/link";
 
+export const dynamic = 'force-dynamic';
+
 export default async function AdminDashboard() {
     const client = await pool.connect();
     let kpis = {
