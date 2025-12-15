@@ -114,6 +114,20 @@ ml/
 - **Search**: Fast text-based search for products.
 - **Detailed Views**: High-quality images, descriptions, and stock status.
 
+### 🎲 Smart Lottery (Mystery Box)
+- **AI-Powered Curation**: Our unique algorithm builds the perfect bundle based on your budget.
+    - **Budget & Discount**: Set a budget (100-1500 ₪) and get 15% MORE value than you pay for.
+    - **Smart Limits**: Randomly selects between 1 to 10 items to ensure variety and value.
+- **7 Interactive Mini-Games**:
+    1.  **Roulette**: Casino-style wheel with a white ball.
+    2.  **Slot Machine**: Vegas-style spinning reels.
+    3.  **Shell Game**: Classic cup shuffle.
+    4.  **Chicken Shooter**: Arcade aim-and-shoot fun.
+    5.  **Truth or Dare**: Spin the bottle to find your scent.
+    6.  **Speed Game**: Test your reflexes.
+    7.  **Memory Cards**: Find the matching brand card.
+- **Premium Experience**: Fully responsive, red-themed, and glass-morphism UI.
+
 ---
 
 ## 🤝 Contributing
