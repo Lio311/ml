@@ -49,7 +49,7 @@ export default function LotteryGameContainer({ bundle, onFinish }) {
                             <li key={idx} className="flex items-center gap-2 border-b border-gray-700 pb-2 last:border-0">
                                 <span className="text-green-500">✔</span>
                                 <span className="font-bold text-white">{item.brand}</span>
-                                <span className="text-gray-400">{item.model}</span>
+                                <span className="text-gray-400">{item.model} ({item.size} מ"ל)</span>
                             </li>
                         ))}
                     </ul>

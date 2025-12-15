@@ -63,9 +63,9 @@ export default function SlotMachineGame({ prize, onComplete, allImages = [] }) {
             )}
 
             {finished && (
-                <div className="mt-6 text-center animate-bounce">
-                    <p className="text-red-500 font-bold text-xl">זכיתם!</p>
-                    <p className="text-white">{prize.brand} - {prize.model}</p>
+                <div className="mt-8 bg-white/10 backdrop-blur-sm p-4 rounded-xl border border-white/20 animate-fade-in-up">
+                    <p className="text-red-500 font-bold text-xl mb-1">זכיתם!</p>
+                    <p className="text-white font-bold text-lg">{prize.brand} {prize.model} ({prize.size} מ"ל)</p>
                 </div>
             )}
 

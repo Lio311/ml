@@ -72,7 +72,7 @@ export default function RouletteGame({ prize, onComplete, allImages = [] }) {
                         )}
                         <div className="text-center">
                             <p className="text-red-500 font-bold text-sm">{prize.brand}</p>
-                            <p className="text-white font-bold text-lg leading-tight">{prize.model}</p>
+                            <p className="text-white font-bold text-lg leading-tight">{prize.model} ({prize.size} מ"ל)</p>
                         </div>
                     </div>
                 )}
