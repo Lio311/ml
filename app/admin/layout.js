@@ -37,6 +37,9 @@ export default async function AdminLayout({ children }) {
                     <Link href="/admin/users" className="block p-2 hover:bg-gray-800 rounded">
                         👥 ניהול משתמשים
                     </Link>
+                    <Link href="/admin/coupons" className="block p-2 hover:bg-gray-800 rounded">
+                        🎟️ ניהול קופונים
+                    </Link>
                     <Link href="/admin/requests" className="block p-2 hover:bg-gray-800 rounded">
                         🗳️ ניהול בקשות
                     </Link>

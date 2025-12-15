@@ -125,6 +125,7 @@ export default async function AdminDashboard() {
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden mt-8">
                 <div className="p-6 border-b flex justify-between items-center">
                     <h3 className="font-bold">קופונים אחרונים (עגלות נטושות)</h3>
+                    <Link href="/admin/coupons" className="text-blue-600 text-sm hover:underline">לניהול קופונים מלא &gt;</Link>
                 </div>
                 <div className="overflow-x-auto">
                     <table className="w-full text-right" dir="rtl">
@@ -145,8 +146,8 @@ export default async function AdminDashboard() {
                                     <td className="p-4 text-sm">{coupon.email}</td>
                                     <td className="p-4">
                                         <span className={`px-2 py-1 rounded-full text-xs ${coupon.status === 'active' ? 'bg-green-100 text-green-800' :
-                                                coupon.status === 'redeemed' ? 'bg-gray-800 text-white' :
-                                                    'bg-red-100 text-red-800'
+                                            coupon.status === 'redeemed' ? 'bg-gray-800 text-white' :
+                                                'bg-red-100 text-red-800'
                                             }`}>
                                             {coupon.status === 'active' ? 'פעיל' :
                                                 coupon.status === 'redeemed' ? 'מומש' : 'פג תוקף'}
