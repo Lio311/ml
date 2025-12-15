@@ -5,6 +5,9 @@ import { useState, useEffect } from 'react';
 import ShellGame from './games/ShellGame';
 import RouletteGame from './games/RouletteGame';
 import SlotMachineGame from './games/SlotMachineGame';
+import ChickenShooterGame from './games/ChickenShooterGame';
+import TruthOrDareGame from './games/TruthOrDareGame';
+import SpeedGame from './games/SpeedGame';
 
 export default function LotteryGameContainer({ bundle, onFinish }) {
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -12,14 +15,15 @@ export default function LotteryGameContainer({ bundle, onFinish }) {
 
     const currentPrize = bundle[currentIndex];
 
-    const [currentGameType, setCurrentGameType] = useState(Math.floor(Math.random() * 3));
+    // 6 Games Available
+    const [currentGameType, setCurrentGameType] = useState(Math.floor(Math.random() * 6));
 
     // Update random game when index changes, ensuring no repeats
     useEffect(() => {
         setCurrentGameType(prev => {
             let next;
             do {
-                next = Math.floor(Math.random() * 3);
+                next = Math.floor(Math.random() * 6);
             } while (next === prev); // Ensure variety
             return next;
         });
