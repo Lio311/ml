@@ -82,7 +82,7 @@ const LuckyWheel = ({ onWin, onClose }) => {
         <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
             <div className="bg-white rounded-2xl p-8 max-w-md w-full text-center relative shadow-2xl animate-fade-in overflow-hidden">
                 <h2 className="text-3xl font-bold mb-2">גלגל המזל הסודי</h2>
-                <p className="mb-6 text-gray-600">כל הכבוד! העגלה שלך מעל 1,200 ₪.<br />סובבו את הגלגל וזכו בפרס שווה!</p>
+                <p className="mb-6 text-gray-600">כל הכבוד! העגלה שלך שווה מעל 1,200 ₪.<br />סובבו את הגלגל וזכו בפרס שווה!</p>
 
                 <div className="relative w-72 h-72 mx-auto mb-8">
                     {/* Wheel Container */}
