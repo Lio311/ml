@@ -127,19 +127,14 @@ export async function POST(req) {
                     }
                 }
 
-                // Scoring Logic:
-                // 1. Primary Goal: Meet Minimum 3 Items constraint (give huge score boost)
-                // 2. Secondary Goal: Maximize Total Value
-                const currentScore = currentSum + (currentBundle.length >= 3 ? 1000000 : 0);
-                const bestScore = bestSum + (bestBundle.length >= 3 ? 1000000 : 0);
-
-                if (currentScore > bestScore) {
+                // Scoring Logic: Just Maximize Total Value (Min 1, Max 10)
+                if (currentSum > bestSum) {
                     bestSum = currentSum;
                     bestBundle = currentBundle;
                 }
 
-                // Optimization: Stop if we are close to budget AND met the minimum item count
-                if (targetAmount - currentSum < 5 && bestBundle.length >= 3) break;
+                // Optimization: Stop if we are close to budget
+                if (targetAmount - currentSum < 5) break;
             }
 
             // Failsafe: if greedy somehow failed but we have candidates (unlikely with loop, but possible if math weird)
