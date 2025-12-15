@@ -25,8 +25,8 @@ export default function SmartMatchingClient({ initialNotes }) {
         const val = e.target.value;
         setNoteInput(val);
         if (val.trim().length > 0) {
-            const filtered = initialNotes.filter(n => 
-                n.toLowerCase().includes(val.toLowerCase()) && 
+            const filtered = initialNotes.filter(n =>
+                n.toLowerCase().includes(val.toLowerCase()) &&
                 !preferences.notes.includes(n)
             );
             setSuggestions(filtered);
@@ -183,7 +183,7 @@ export default function SmartMatchingClient({ initialNotes }) {
                         <div className="space-y-4">
                             <label className="block text-xl font-bold">תווים אהובים</label>
                             <p className="text-sm text-gray-500">הקלד את שם התו ובחר מהרשימה (לדוגמה: "ורד", "אוד", "יסמין")</p>
-                            
+
                             <div className="relative">
                                 <input
                                     type="text"
@@ -237,7 +237,7 @@ export default function SmartMatchingClient({ initialNotes }) {
                                 onClick={handleMatch}
                                 className="bg-black text-white text-lg md:text-xl py-4 px-8 md:px-12 rounded-full font-bold hover:scale-105 transition-transform shadow-xl whitespace-nowrap"
                             >
-                                בצע התאמת מארז חכמה ✨
+                                בצע התאמת מארז חכמה
                             </button>
                         </div>
                     </div>
