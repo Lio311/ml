@@ -8,6 +8,7 @@ import SlotMachineGame from './games/SlotMachineGame';
 import ChickenShooterGame from './games/ChickenShooterGame';
 import TruthOrDareGame from './games/TruthOrDareGame';
 import SpeedGame from './games/SpeedGame';
+import MemoryGame from './games/MemoryGame';
 
 export default function LotteryGameContainer({ bundle, onFinish }) {
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -15,15 +16,15 @@ export default function LotteryGameContainer({ bundle, onFinish }) {
 
     const currentPrize = bundle[currentIndex];
 
-    // 6 Games Available
-    const [currentGameType, setCurrentGameType] = useState(Math.floor(Math.random() * 6));
+    // 7 Games Available
+    const [currentGameType, setCurrentGameType] = useState(Math.floor(Math.random() * 7));
 
     // Update random game when index changes, ensuring no repeats
     useEffect(() => {
         setCurrentGameType(prev => {
             let next;
             do {
-                next = Math.floor(Math.random() * 6);
+                next = Math.floor(Math.random() * 7);
             } while (next === prev); // Ensure variety
             return next;
         });
@@ -86,6 +87,7 @@ export default function LotteryGameContainer({ bundle, onFinish }) {
                 {currentGameType === 3 && <ChickenShooterGame prize={currentPrize} onComplete={handleGameComplete} />}
                 {currentGameType === 4 && <TruthOrDareGame prize={currentPrize} allImages={bundle.map(i => i.image_url).filter(Boolean)} onComplete={handleGameComplete} />}
                 {currentGameType === 5 && <SpeedGame prize={currentPrize} allImages={bundle.map(i => i.image_url).filter(Boolean)} onComplete={handleGameComplete} />}
+                {currentGameType === 6 && <MemoryGame prize={currentPrize} allImages={bundle.map(i => i.image_url).filter(Boolean)} onComplete={handleGameComplete} />}
             </div>
         </div>
     );
