@@ -80,7 +80,7 @@ export default function LotteryGameContainer({ bundle, distractorImages = [], on
                 </div>
             </div>
 
-            <div className="min-h-[400px] flex items-center justify-center">
+            <div className="min-h-[300px] flex items-center justify-center">
                 {currentGameType === 0 && <ShellGame prize={currentPrize} onComplete={handleGameComplete} />}
                 {currentGameType === 1 && <RouletteGame prize={currentPrize} allImages={bundle.map(i => i.image_url).filter(Boolean)} onComplete={handleGameComplete} />}
                 {currentGameType === 2 && <SlotMachineGame prize={currentPrize} allImages={bundle.map(i => i.image_url).filter(Boolean)} onComplete={handleGameComplete} />}
