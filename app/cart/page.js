@@ -40,7 +40,7 @@ export default function CartPage() {
                 setCouponInput('');
                 // Success feedback handled by UI showing the applied coupon
             } else {
-                setCouponError(data.error || 'הקוד שהזנת שגוי או לא קיים');
+                setCouponError('קוד קופון לא תקין');
                 setCoupon(null);
             }
         } catch (e) {
