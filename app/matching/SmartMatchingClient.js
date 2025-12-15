@@ -18,6 +18,34 @@ export default function SmartMatchingClient({ initialNotes }) {
     });
     const [loading, setLoading] = useState(false);
     const [results, setResults] = useState(null);
+    const [noteInput, setNoteInput] = useState('');
+    const [suggestions, setSuggestions] = useState([]);
+
+    const handleNoteInputChange = (e) => {
+        const val = e.target.value;
+        setNoteInput(val);
+        if (val.trim().length > 0) {
+            const filtered = initialNotes.filter(n => 
+                n.toLowerCase().includes(val.toLowerCase()) && 
+                !preferences.notes.includes(n)
+            );
+            setSuggestions(filtered);
+        } else {
+            setSuggestions([]);
+        }
+    };
+
+    const addNote = (note) => {
+        if (!preferences.notes.includes(note)) {
+            setPreferences({ ...preferences, notes: [...preferences.notes, note] });
+        }
+        setNoteInput('');
+        setSuggestions([]);
+    };
+
+    const removeNote = (note) => {
+        setPreferences({ ...preferences, notes: preferences.notes.filter(n => n !== note) });
+    };
 
     // Initial Budget Ranges per size (defaults, will be dynamic logic later?)
     // Actually user asked for a slider.
@@ -151,27 +179,54 @@ export default function SmartMatchingClient({ initialNotes }) {
                             </div>
                         </div>
 
-                        {/* 3. Notes */}
+                        {/* 3. Notes (Autocomplete) */}
                         <div className="space-y-4">
                             <label className="block text-xl font-bold">תווים אהובים</label>
-                            <p className="text-sm text-gray-500">בחר מהרשימה או הקלד כדי לסנן</p>
-                            <div className="flex flex-wrap gap-2 max-h-40 overflow-y-auto p-2 border rounded-xl bg-gray-50">
-                                {initialNotes.map(note => (
-                                    <button
+                            <p className="text-sm text-gray-500">הקלד את שם התו ובחר מהרשימה (לדוגמה: "ורד", "אוד", "יסמין")</p>
+                            
+                            <div className="relative">
+                                <input
+                                    type="text"
+                                    value={noteInput}
+                                    onChange={handleNoteInputChange}
+                                    placeholder="הקלד תו לחיפוש..."
+                                    className="w-full p-4 border rounded-xl bg-gray-50 focus:bg-white focus:ring-2 focus:ring-black focus:border-transparent transition text-lg"
+                                />
+                                {/* Suggestions Dropdown */}
+                                {suggestions.length > 0 && (
+                                    <div className="absolute z-10 w-full bg-white border border-gray-200 rounded-xl mt-2 shadow-xl max-h-60 overflow-y-auto divide-y">
+                                        {suggestions.map((note) => (
+                                            <button
+                                                key={note}
+                                                onClick={() => addNote(note)}
+                                                className="w-full text-right px-6 py-3 hover:bg-gray-50 transition flex justify-between items-center group"
+                                            >
+                                                <span className="font-bold text-gray-800">{note}</span>
+                                                <span className="text-gray-400 group-hover:text-black text-sm">הוסף +</span>
+                                            </button>
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Selected Notes Chips */}
+                            <div className="flex flex-wrap gap-2 min-h-[50px] p-4 bg-gray-50 rounded-xl border border-dashed border-gray-300">
+                                {preferences.notes.length === 0 && (
+                                    <span className="text-gray-400 text-sm">עדיין לא נבחרו תווים...</span>
+                                )}
+                                {preferences.notes.map(note => (
+                                    <div
                                         key={note}
-                                        onClick={() => {
-                                            const newNotes = preferences.notes.includes(note)
-                                                ? preferences.notes.filter(n => n !== note)
-                                                : [...preferences.notes, note];
-                                            setPreferences({ ...preferences, notes: newNotes });
-                                        }}
-                                        className={`px-3 py-1 rounded-full text-sm transition-colors ${preferences.notes.includes(note)
-                                            ? 'bg-black text-white'
-                                            : 'bg-white border border-gray-200 text-gray-700 hover:bg-gray-100'
-                                            }`}
+                                        className="px-4 py-2 bg-black text-white rounded-full text-sm font-bold flex items-center gap-2 animate-fadeIn"
                                     >
                                         {note}
-                                    </button>
+                                        <button
+                                            onClick={() => removeNote(note)}
+                                            className="w-5 h-5 bg-white/20 rounded-full flex items-center justify-center hover:bg-red-500 hover:text-white transition-colors"
+                                        >
+                                            ×
+                                        </button>
+                                    </div>
                                 ))}
                             </div>
                         </div>
