@@ -120,19 +120,26 @@ export async function POST(req) {
                 for (const item of shuffled) {
                     const price = item.price;
 
-                    if (currentSum + price <= targetAmount) {
+                    // Constraint: Max 10 items
+                    if (currentSum + price <= targetAmount && currentBundle.length < 10) {
                         currentBundle.push(item);
                         currentSum += price;
                     }
                 }
 
-                if (currentSum > bestSum) {
+                // Scoring Logic:
+                // 1. Primary Goal: Meet Minimum 3 Items constraint (give huge score boost)
+                // 2. Secondary Goal: Maximize Total Value
+                const currentScore = currentSum + (currentBundle.length >= 3 ? 1000000 : 0);
+                const bestScore = bestSum + (bestBundle.length >= 3 ? 1000000 : 0);
+
+                if (currentScore > bestScore) {
                     bestSum = currentSum;
                     bestBundle = currentBundle;
                 }
 
-                // If we are very close to target (within 5 NIS), stop early (optimization)
-                if (targetAmount - currentSum < 5) break;
+                // Optimization: Stop if we are close to budget AND met the minimum item count
+                if (targetAmount - currentSum < 5 && bestBundle.length >= 3) break;
             }
 
             // Failsafe: if greedy somehow failed but we have candidates (unlikely with loop, but possible if math weird)
