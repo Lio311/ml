@@ -105,16 +105,16 @@ export default function LotteryPage() {
                             </label>
                             <input
                                 type="range"
-                                min="200"
-                                max="3000"
+                                min="100"
+                                max="1500"
                                 step="50"
                                 value={budget}
                                 onChange={handleBudgetChange}
                                 className="w-full h-4 bg-gray-700 rounded-lg appearance-none cursor-pointer accent-red-600 hover:accent-red-500 transition-all"
                             />
                             <div className="flex justify-between text-gray-500 mt-2 text-sm">
-                                <span>200 ₪</span>
-                                <span>3000 ₪</span>
+                                <span>100 ₪</span>
+                                <span>1500 ₪</span>
                             </div>
                         </div>
 

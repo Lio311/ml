@@ -7,8 +7,8 @@ export async function POST(req) {
         const { budget } = await req.json();
         const numericBudget = Number(budget);
 
-        if (!numericBudget || numericBudget < 200) {
-            return NextResponse.json({ error: 'Invalid budget. Minimum 200.' }, { status: 400 });
+        if (!numericBudget || numericBudget < 100) {
+            return NextResponse.json({ error: 'Invalid budget. Minimum 100.' }, { status: 400 });
         }
 
         // 1. Deduct Shipping (30 NIS) and Reverse-Calculate the 15% Discount
