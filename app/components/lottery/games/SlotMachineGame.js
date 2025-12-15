@@ -34,11 +34,15 @@ export default function SlotMachineGame({ prize, onComplete }) {
                                     )}
                                 </div>
                             ) : (
-                                <div className="space-y-8 py-2 opacity-50 blur-[1px]">
-                                    <span className="text-4xl block">🍒</span>
-                                    <span className="text-4xl block">💎</span>
-                                    <span className="text-4xl block">7️⃣</span>
-                                    <span className="text-4xl block">🍋</span>
+                                <div className="space-y-4 py-2 opacity-50 blur-[1px]">
+                                    {/* Spinning visual - repeating the prize image */}
+                                    {[1, 2, 3, 4].map((_, idx) => (
+                                        prize.image_url ? (
+                                            <img key={idx} src={prize.image_url} alt="rolling" className="w-14 h-14 object-contain mx-auto filter grayscale opacity-70" />
+                                        ) : (
+                                            <span key={idx} className="text-4xl block">🧴</span>
+                                        )
+                                    ))}
                                 </div>
                             )}
                         </div>

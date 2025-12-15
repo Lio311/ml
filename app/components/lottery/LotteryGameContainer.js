@@ -14,9 +14,15 @@ export default function LotteryGameContainer({ bundle, onFinish }) {
 
     const [currentGameType, setCurrentGameType] = useState(Math.floor(Math.random() * 3));
 
-    // Update random game when index changes
+    // Update random game when index changes, ensuring no repeats
     useEffect(() => {
-        setCurrentGameType(Math.floor(Math.random() * 3));
+        setCurrentGameType(prev => {
+            let next;
+            do {
+                next = Math.floor(Math.random() * 3);
+            } while (next === prev); // Ensure variety
+            return next;
+        });
     }, [currentIndex]);
 
     const handleGameComplete = () => {
@@ -35,24 +41,24 @@ export default function LotteryGameContainer({ bundle, onFinish }) {
     if (gameStage === 'revealed') {
         return (
             <div className="flex flex-col items-center justify-center p-8 animate-fade-in text-center">
-                <h2 className="text-4xl font-bold text-green-400 mb-4">כל הכבוד! שמור בתיק! 🎒</h2>
-                <div className="bg-gray-800 p-6 rounded-xl border border-gray-700 mb-8">
+                <h2 className="text-4xl font-bold text-white mb-4">כל הכבוד! שמור בתיק</h2>
+                <div className="bg-gray-800 p-6 rounded-xl border border-gray-700 mb-8 w-full">
                     <p className="text-xl text-gray-300">עד כה השגת:</p>
                     <ul className="text-left mt-4 space-y-2">
                         {bundle.slice(0, currentIndex + 1).map((item, idx) => (
-                            <li key={idx} className="flex items-center gap-2">
-                                <span>✅</span>
-                                <span className="font-bold">{item.brand}</span>
-                                <span>{item.model}</span>
+                            <li key={idx} className="flex items-center gap-2 border-b border-gray-700 pb-2 last:border-0">
+                                <span className="text-green-500">✔</span>
+                                <span className="font-bold text-white">{item.brand}</span>
+                                <span className="text-gray-400">{item.model}</span>
                             </li>
                         ))}
                     </ul>
                 </div>
                 <button
                     onClick={nextGame}
-                    className="bg-red-500 hover:bg-red-600 text-white font-bold text-2xl py-4 px-12 rounded-full shadow-lg transition-transform hover:scale-105"
+                    className="bg-red-600 hover:bg-red-700 text-white font-bold text-2xl py-4 px-12 rounded-full shadow-lg transition-transform hover:scale-105"
                 >
-                    לבושם הבא! 👉
+                    לבושם הבא
                 </button>
             </div>
         );
