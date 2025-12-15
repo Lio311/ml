@@ -34,7 +34,7 @@ export default function ShellGame({ prize, onComplete }) {
 
     return (
         <div className="flex flex-col items-center justify-center p-8">
-            <h3 className="text-2xl font-bold text-yellow-400 mb-8">איפה הבושם מסתתר? 🐚</h3>
+            <h3 className="text-2xl font-bold text-red-400 mb-8">איפה הבושם מסתתר?</h3>
 
             <div className="flex gap-8">
                 {[0, 1, 2].map((idx) => (
@@ -42,15 +42,15 @@ export default function ShellGame({ prize, onComplete }) {
                         key={idx}
                         onClick={() => handlePick(idx)}
                         className={`
-                            w-24 h-24 bg-gradient-to-b from-yellow-600 to-yellow-800 rounded-t-full shadow-xl 
+                            w-24 h-24 bg-gradient-to-b from-red-600 to-red-800 rounded-t-full shadow-xl 
                             cursor-pointer transition-all duration-500 transform
                             ${gameState === 'shuffle' ? 'animate-bounce' : ''}
-                            ${gameState === 'pick' ? 'hover:-translate-y-2 hover:bg-yellow-500' : ''}
+                            ${gameState === 'pick' ? 'hover:-translate-y-2 hover:bg-red-500' : ''}
                             ${gameState === 'reveal' && idx === winningCup ? '-translate-y-16 opactiy-0' : ''}
                         `}
                     >
                         {/* Cup Visual */}
-                        <div className="w-full h-full rounded-t-full border-b-4 border-yellow-900 absolute top-0 left-0"></div>
+                        <div className="w-full h-full rounded-t-full border-b-4 border-red-900 absolute top-0 left-0"></div>
 
                         {/* Prize (Hidden behind cup until reveal) */}
                         {gameState === 'reveal' && idx === winningCup && (
@@ -64,7 +64,7 @@ export default function ShellGame({ prize, onComplete }) {
             </div>
             {gameState === 'shuffle' && <p className="mt-8 animate-pulse">מערבב...</p>}
             {gameState === 'pick' && <p className="mt-8 font-bold text-xl">בחרו כוס!</p>}
-            {gameState === 'reveal' && <p className="mt-8 font-bold text-yellow-400 text-xl">{prize.brand} {prize.model}!</p>}
+            {gameState === 'reveal' && <p className="mt-8 font-bold text-red-400 text-xl">{prize.brand} {prize.model}!</p>}
         </div>
     );
 }

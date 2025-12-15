@@ -156,9 +156,8 @@ export default function CartPage() {
         <div className="min-h-screen bg-gray-50">
             <div className="container py-12">
                 {lotteryMode.active && (
-                    <div className="bg-gradient-to-r from-yellow-500 to-yellow-600 text-black p-4 rounded-xl mb-8 shadow-lg flex items-center justify-between animate-pulse">
+                    <div className="bg-gradient-to-r from-red-500 to-red-600 text-white p-4 rounded-xl mb-8 shadow-lg flex items-center justify-between animate-pulse">
                         <div className="flex items-center gap-4">
-                            <span className="text-3xl">⏰</span>
                             <div>
                                 <h3 className="font-black text-xl">מחיר ההגרלה בתוקף!</h3>
                                 <p className="text-sm font-bold opacity-80">הנחת 15% פעילה. הסל נעול לשינויים.</p>
