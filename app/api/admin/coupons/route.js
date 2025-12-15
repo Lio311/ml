@@ -29,10 +29,14 @@ export async function POST(req) {
             return NextResponse.json({ error: 'Missing Required Fields' }, { status: 400 });
         }
 
+        const discountValue = parseInt(discount_percent);
+
         // Calculate expiration if provided
         let expires_at = null;
-        if (expires_in_hours) {
-            expires_at = new Date(Date.now() + expires_in_hours * 60 * 60 * 1000);
+        if (body.expires_at) {
+            expires_at = new Date(body.expires_at);
+        } else if (expires_in_hours) {
+            expires_at = new Date(Date.now() + parseInt(expires_in_hours) * 60 * 60 * 1000);
         }
 
         const client = await pool.connect();
@@ -40,7 +44,7 @@ export async function POST(req) {
             await client.query(`
                 INSERT INTO coupons (code, discount_percent, expires_at, status, email)
                 VALUES ($1, $2, $3, 'active', $4)
-            `, [code, discount_percent, expires_at, email || null]);
+            `, [code, discountValue, expires_at, email || null]);
 
             return NextResponse.json({ success: true });
         } finally {
@@ -51,6 +55,7 @@ export async function POST(req) {
         if (error.code === '23505') { // Unique violation
             return NextResponse.json({ error: 'קוד קופון כבר קיים' }, { status: 400 });
         }
-        return NextResponse.json({ error: 'Failed to create' }, { status: 500 });
+        // Return actual error for debugging
+        return NextResponse.json({ error: `Failed to create: ${error.message}` }, { status: 500 });
     }
 }
