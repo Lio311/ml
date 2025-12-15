@@ -41,7 +41,7 @@ export default function LotteryGameContainer({ bundle, onFinish }) {
     if (gameStage === 'revealed') {
         return (
             <div className="flex flex-col items-center justify-center p-8 animate-fade-in text-center">
-                <h2 className="text-4xl font-bold text-white mb-4">כל הכבוד! שמור בתיק</h2>
+                <h2 className="text-4xl font-bold text-white mb-4">כל הכבוד! שמור בתיק:</h2>
                 <div className="bg-gray-800 p-6 rounded-xl border border-gray-700 mb-8 w-full">
                     <p className="text-xl text-gray-300">עד כה השגת:</p>
                     <ul className="text-left mt-4 space-y-2">
@@ -77,7 +77,7 @@ export default function LotteryGameContainer({ bundle, onFinish }) {
 
             <div className="min-h-[400px] flex items-center justify-center">
                 {currentGameType === 0 && <ShellGame prize={currentPrize} onComplete={handleGameComplete} />}
-                {currentGameType === 1 && <RouletteGame prize={currentPrize} onComplete={handleGameComplete} />}
+                {currentGameType === 1 && <RouletteGame prize={currentPrize} allImages={bundle.map(i => i.image_url).filter(Boolean)} onComplete={handleGameComplete} />}
                 {currentGameType === 2 && <SlotMachineGame prize={currentPrize} onComplete={handleGameComplete} />}
             </div>
         </div>
