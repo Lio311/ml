@@ -111,10 +111,12 @@ export default function MemoryGame({ prize, onComplete, allImages = [] }) {
                                 </div>
 
                                 {/* Back (Revealed) */}
-                                <div className="absolute inset-0 w-full h-full bg-white rounded-xl border-2 border-red-500 flex items-center justify-center backface-hidden rotate-y-180 shadow-xl overflow-hidden p-2 text-center">
-                                    <span className="text-gray-900 font-bold text-sm break-words leading-tight">
-                                        {card.content}
-                                    </span>
+                                <div className="absolute inset-0 w-full h-full bg-white rounded-xl border-2 border-red-500 flex items-center justify-center backface-hidden rotate-y-180 shadow-xl overflow-hidden p-2">
+                                    <img 
+                                        src={card.content} 
+                                        alt="brand" 
+                                        className="w-full h-full object-contain"
+                                    />
                                 </div>
                             </div>
                         </div>
@@ -128,9 +130,6 @@ export default function MemoryGame({ prize, onComplete, allImages = [] }) {
                     <div className="bg-white p-8 rounded-2xl border-4 border-red-500 shadow-2xl text-center flex flex-col items-center">
                         {/* Transformation: Begins as Logo, Fades into Bottle */}
                         <div className="relative w-40 h-40 mb-4">
-                            <div className="absolute inset-0 flex items-center justify-center animate-fade-out-slow">
-                                <h2 className="text-4xl font-black text-black drop-shadow-lg">{prize.brand}</h2>
-                            </div>
                             <img
                                 src={prize.image_url}
                                 alt="prize"
