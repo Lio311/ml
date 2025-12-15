@@ -12,7 +12,9 @@ export async function GET(req) {
         try {
             // 1. Find Abandoned Carts (> 3 hours ago, pending)
             // For testing I can use > 1 minute if needed, but requirements say 3 hours.
-            const threeHoursAgo = new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString();
+            // 1. Find Abandoned Carts (> 60 seconds ago for TESTING, pending)
+            // const threeHoursAgo = new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString();
+            const threeHoursAgo = new Date(Date.now() - 60 * 1000).toISOString(); // 1 Minute for Test
 
             const res = await client.query(`
                 SELECT * FROM abandoned_carts 
