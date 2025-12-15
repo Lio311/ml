@@ -35,29 +35,31 @@ export default function SpeedGame({ prize, onComplete, allImages = [] }) {
         <div className="flex flex-col items-center justify-center p-8">
             <h3 className="text-2xl font-bold text-red-500 mb-8">משחק המהירות</h3>
 
-            <div className="relative w-64 h-64 bg-gray-800 rounded-2xl border-4 border-red-500 shadow-[0_0_30px_rgba(239,68,68,0.5)] flex items-center justify-center overflow-hidden mb-8">
-                {currentImg ? (
-                    <img
-                        src={currentImg}
-                        alt="item"
-                        className={`w-48 h-48 object-contain transition-transform duration-75 ${running ? 'scale-90 blur-[1px]' : 'scale-110 blur-none'}`}
-                    />
-                ) : (
-                    <span className="text-6xl animate-pulse">🧴</span>
-                )}
+            <div className="relative inline-block bg-white rounded-2xl border-4 border-red-500 shadow-[0_0_20px_rgba(239,68,68,0.5)] p-4 mb-8">
+                <div className="w-40 h-40 flex items-center justify-center overflow-hidden">
+                    {currentImg ? (
+                        <img
+                            src={currentImg}
+                            alt="item"
+                            className={`w-full h-full object-contain transition-transform duration-75 ${running ? 'scale-90 blur-[1px]' : 'scale-110 blur-none'}`}
+                        />
+                    ) : (
+                        <span className="text-6xl animate-pulse">🧴</span>
+                    )}
+                </div>
 
                 {/* Speed Lines or Overlay */}
                 {running && (
-                    <div className="absolute inset-0 bg-gradient-to-t from-transparent via-white/5 to-transparent animate-scan"></div>
+                    <div className="absolute inset-0 bg-gradient-to-t from-transparent via-white/5 to-transparent animate-scan pointer-events-none"></div>
                 )}
             </div>
 
             {!finished ? (
                 <button
                     onClick={handleStop}
-                    className="bg-red-600 hover:bg-red-700 text-white font-black text-3xl py-6 px-16 rounded-full shadow-2xl transform hover:scale-105 active:scale-95 border-b-8 border-red-900 transition-all"
+                    className="bg-red-600 hover:bg-red-700 text-white font-black text-3xl py-6 px-16 rounded-full shadow-2xl transform hover:scale-105 active:scale-95 border-b-8 border-red-900 transition-all uppercase tracking-widest"
                 >
-                    עצור! 🛑
+                    עצור!
                 </button>
             ) : (
                 <div className="bg-white/10 backdrop-blur-sm p-4 rounded-xl border border-white/20 animate-fade-in-up text-center w-full max-w-sm">

@@ -55,8 +55,8 @@ export default function TruthOrDareGame({ prize, onComplete, allImages = [] }) {
                     return (
                         <div
                             key={i}
-                            className={`absolute w-16 h-16 rounded-full border-2 bg-gray-800 flex items-center justify-center shadow-lg transition-transform
-                                ${finished && item.isPrize ? 'scale-125 border-green-500 shadow-[0_0_15px_lime]' : 'border-gray-600'}
+                            className={`absolute w-16 h-16 rounded-full border-2 bg-white flex items-center justify-center shadow-lg transition-transform
+                                ${finished && item.isPrize ? 'scale-125 border-green-500 shadow-[0_0_15px_lime]' : 'border-gray-200'}
                             `}
                             style={{
                                 left: `calc(50% + ${x}px)`,

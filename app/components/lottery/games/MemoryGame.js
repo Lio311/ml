@@ -137,11 +137,11 @@ export default function MemoryGame({ prize, onComplete, allImages = [] }) {
             {gameStage === 'won' && (
                 <div className="relative w-full h-80 flex items-center justify-center animate-zoom-in">
                     {/* The Final Prize Reveal */}
-                    <div className="bg-white/10 backdrop-blur-md p-8 rounded-2xl border-4 border-white/20 shadow-[0_0_50px_rgba(255,255,255,0.3)] text-center flex flex-col items-center">
+                    <div className="bg-white p-8 rounded-2xl border-4 border-red-500 shadow-2xl text-center flex flex-col items-center">
                         {/* Transformation: Begins as Logo, Fades into Bottle */}
                         <div className="relative w-40 h-40 mb-4">
                             <div className="absolute inset-0 flex items-center justify-center animate-fade-out-slow">
-                                <h2 className="text-4xl font-black text-white drop-shadow-lg">{prize.brand}</h2>
+                                <h2 className="text-4xl font-black text-black drop-shadow-lg">{prize.brand}</h2>
                             </div>
                             <img
                                 src={prize.image_url}
@@ -151,8 +151,8 @@ export default function MemoryGame({ prize, onComplete, allImages = [] }) {
                         </div>
 
                         <p className="text-red-500 font-bold text-2xl mb-2">מצאתם!</p>
-                        <p className="text-white text-xl font-bold">{prize.brand} {prize.model}</p>
-                        <p className="text-gray-300">({prize.size} מ"ל)</p>
+                        <p className="text-black text-xl font-bold">{prize.brand} {prize.model}</p>
+                        <p className="text-gray-500">({prize.size} מ"ל)</p>
                     </div>
                 </div>
             )}

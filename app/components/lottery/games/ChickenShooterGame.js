@@ -88,8 +88,12 @@ export default function ChickenShooterGame({ prize, onComplete }) {
                 {/* Crosshair */}
                 {gameStage === 'playing' && (
                     <div
-                        className={`absolute top-1/2 -translate-y-1/2 pointer-events-none transition-all duration-75 text-4xl -translate-x-1/2 ${recoil ? '-mt-2' : ''}`}
-                        style={{ left: `${aim}%`, color: 'red' }}
+                        className={`absolute top-1/2 pointer-events-none transition-all duration-75 text-4xl flex items-center justify-center ${recoil ? '-mt-2' : ''}`}
+                        style={{
+                            left: `${aim}%`,
+                            color: 'red',
+                            transform: 'translate(-50%, -50%)'
+                        }}
                     >
                         🎯
                     </div>
@@ -114,7 +118,7 @@ export default function ChickenShooterGame({ prize, onComplete }) {
                         onClick={handleShoot}
                         className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-4 rounded-full text-xl shadow-lg active:scale-95 transition-transform"
                     >
-                        אש! 🔥
+                        אש!
                     </button>
                 </div>
             )}
