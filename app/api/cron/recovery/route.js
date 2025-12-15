@@ -56,7 +56,7 @@ export async function GET(req) {
                 const mailOptions = {
                     from: process.env.EMAIL_USER,
                     to: cart.email,
-                    subject: 'שכחת משהו אצלנו... 🧴 קח מתנה!',
+                    subject: 'שכחת משהו אצלנו... קח מתנה!',
                     html: `
                         <div dir="rtl" style="font-family: Arial, sans-serif; color: #333;">
                             <h2>ראינו שהשארת מספר פריטים בסל... 👀</h2>
