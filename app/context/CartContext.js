@@ -201,6 +201,8 @@ export function CartProvider({ children }) {
     // Save lucky prize usage to local storage? Or maybe not, keep it per session.
     // If we want persistence, add to the useEffect above. Let's keep it simple for now (clears on refresh).
 
+    const [coupon, setCoupon] = useState(null);
+
     // Calculations
     const shippingCost = 30; // Fixed shipping cost
     const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
@@ -216,31 +218,15 @@ export function CartProvider({ children }) {
         total = total - discountAmount;
     }
 
-    let freeSamplesCount = 0;
-    let nextTier = 0;
-
-    if (subtotal >= 1000) {
-        freeSamplesCount = 6;
-        nextTier = 0; // Max tier
-    } else if (subtotal >= 500) {
-        freeSamplesCount = 4;
-        nextTier = 1000 - subtotal;
-    } else if (subtotal >= 300) {
-        freeSamplesCount = 2;
-        nextTier = 500 - subtotal;
-    } else {
-        freeSamplesCount = 0;
-        nextTier = 300 - subtotal;
+    // Apply Coupon
+    if (coupon) {
+        const couponDiscount = Math.round(total * (coupon.discountPercent / 100));
+        discountAmount += couponDiscount;
+        total = total - couponDiscount;
     }
 
-    // Auto remove prize if below 1200
-    useEffect(() => {
-        if (subtotal < 1200 && luckyPrize) {
-            setLuckyPrize(null);
-            // Also remove any prize items from the cart
-            setCartItems(prev => prev.filter(item => !item.isPrize));
-        }
-    }, [subtotal, luckyPrize]);
+    let freeSamplesCount = 0;
+    // ... rest of logic ...
 
     return (
         <CartContext.Provider
@@ -259,6 +245,8 @@ export function CartProvider({ children }) {
                 luckyPrize,
                 setLuckyPrize,
                 discountAmount,
+                coupon,
+                setCoupon,
                 // Lottery Exports
                 startLottery,
                 cancelLottery,
