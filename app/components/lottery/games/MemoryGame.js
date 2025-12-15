@@ -22,9 +22,14 @@ export default function MemoryGame({ prize, onComplete, allImages = [] }) {
     const [gameStage, setGameStage] = useState('playing'); // playing, won
 
     // Helper to get random image from pool
-    const getRandomImage = () => {
+    const getRandomImage = (exclude = null) => {
         if (!allImages || allImages.length === 0) return "❓";
-        return allImages[Math.floor(Math.random() * allImages.length)];
+        let pool = allImages;
+        if (exclude) {
+            pool = allImages.filter(img => img !== exclude);
+            if (pool.length === 0) pool = allImages; // Fallback
+        }
+        return pool[Math.floor(Math.random() * pool.length)];
     };
 
     const handleCardClick = (index) => {
@@ -56,7 +61,11 @@ export default function MemoryGame({ prize, onComplete, allImages = [] }) {
         }
         else if (clickStep === 2) {
             // Click 3: Reveal Random (Mismatch) -> Flip back
-            newCards[index] = { ...newCards[index], status: 'revealed', content: getRandomImage(), type: 'image' };
+            // Find the previously revealed random card to exclude it
+            const previousRandom = cards.find(c => c.status === 'revealed' && c.type === 'image' && c.id !== index);
+            const excludeContent = previousRandom ? previousRandom.content : null;
+
+            newCards[index] = { ...newCards[index], status: 'revealed', content: getRandomImage(excludeContent), type: 'image' };
             setCards(newCards);
             setClickStep(3);
 
@@ -68,11 +77,14 @@ export default function MemoryGame({ prize, onComplete, allImages = [] }) {
         }
         else if (clickStep === 3) {
             // Click 4: Reveal Prize (Match!)
-            newCards[index] = { ...newCards[index], status: 'matched', content: prize.brand, type: 'prize' };
+            newCards[index] = { ...newCards[index], status: 'matched', content: prize.image_url, type: 'prize' };
             // Mark the first one as matched too
-            const firstCardIndex = cards.findIndex(c => c.type === 'prize'); // Find the one revealed in step 0
+            const firstCardIndex = cards.findIndex(c => c.type === 'prize' || (c.type === 'image' && c.content === prize.image_url));
+            // Better logic: Find the card that was revealed in step 0. It has type='image' and content=prize.image_url.
+            // Wait, in step 0 I set type='image'.
+
             if (firstCardIndex !== -1) {
-                newCards[firstCardIndex] = { ...newCards[firstCardIndex], status: 'matched' };
+                newCards[firstCardIndex] = { ...newCards[firstCardIndex], status: 'matched', type: 'prize' };
             }
 
             setCards(newCards);
