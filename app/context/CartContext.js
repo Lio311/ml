@@ -204,26 +204,35 @@ export function CartProvider({ children }) {
     const [coupon, setCoupon] = useState(null);
 
     // Calculations
+    // Calculations
     const shippingCost = 30; // Fixed shipping cost
     const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
 
-    let total = subtotal + shippingCost;
+    let priceAfterDiscounts = subtotal;
     let discountAmount = 0;
 
     if (lotteryMode.active) {
-        discountAmount = Math.round(total * 0.15);
-        total = total - discountAmount;
+        // Discount on items only
+        const discount = Math.round(priceAfterDiscounts * 0.15);
+        discountAmount += discount;
+        priceAfterDiscounts -= discount;
     } else if (luckyPrize?.type === 'discount') {
-        discountAmount = Math.round(total * luckyPrize.value);
-        total = total - discountAmount;
+        const discount = Math.round(priceAfterDiscounts * luckyPrize.value);
+        discountAmount += discount;
+        priceAfterDiscounts -= discount;
     }
 
-    // Apply Coupon
+    // Apply Coupon (on items only)
     if (coupon) {
-        const couponDiscount = Math.round(total * (coupon.discountPercent / 100));
+        // Coupon applies to the current price including previous discounts (compounding)
+        // OR original price? Standard e-commerce usually compounds or blocks stacking.
+        // Given existing logic allowed stacking, we keep it but calculate off the goods value.
+        const couponDiscount = Math.round(priceAfterDiscounts * (coupon.discountPercent / 100));
         discountAmount += couponDiscount;
-        total = total - couponDiscount;
+        priceAfterDiscounts -= couponDiscount;
     }
+
+    let total = priceAfterDiscounts + shippingCost;
 
     let freeSamplesCount = 0;
     let nextTier = 0;
