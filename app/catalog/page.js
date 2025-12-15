@@ -79,7 +79,15 @@ async function getProducts(search, brand, category, minPrice, maxPrice, sort, pa
             break;
         case 'random':
         default:
-            orderBy = 'RANDOM()';
+            // Fix: Use stable sort to prevent duplicates across pages
+            // If true randomness is needed per session, we needs a seed. 
+            // For now, consistent order is better than duplicates.
+            // Let's use 'id DESC' as default "default" instead of random, or if they insist on random look, maybe 'created_at desc'?
+            // User complained about "Perfume X appears on page 1 and 2". 
+            // Switching default to 'id DESC' (Newest) or 'views desc' is standard practice.
+            // If they really want shuffle, we'd need to pass a seed from client.
+            // Let's stick to ID DESC (Newest) as the "default" view.
+            orderBy = 'id DESC';
             break;
     }
 
