@@ -38,6 +38,7 @@ export default async function AdminDashboard() {
         // Usually prizes are free?
         // Let's stick to "name contains דוגמית".
 
+        // Samples Sold Query (Parse JSON in SQL is best, assuming JSONB or Text)
         // Refined Query:
         const samplesSoldRes = await client.query(`
              SELECT SUM((item->>'quantity')::int) as count 
@@ -46,11 +47,11 @@ export default async function AdminDashboard() {
         `);
         kpis.totalSamples = parseInt(samplesSoldRes.rows[0].count || 0);
 
-        const countRes = await client.query('SELECT COUNT(*) FROM orders');
-        kpis.totalOrders = parseInt(countRes.rows[0].count);
-
-        const revRes = await client.query('SELECT SUM(total_amount) FROM orders');
-        kpis.totalRevenue = parseInt(revRes.rows[0].sum || 0);
+        // NOTE: totalOrders and totalRevenue were already fetched above in lines 19-23.
+        // We do NOT need to fetch them again.
+        // If they were removed by mistake in previous diff context quirks, we restore them here cleanly.
+        // But the error says "defined multiple times", meaning they exist TWICE.
+        // So I will just NOT re-declare them here.
 
         const pendingRes = await client.query("SELECT COUNT(*) FROM orders WHERE status = 'pending'");
         kpis.pendingOrders = parseInt(pendingRes.rows[0].count);
