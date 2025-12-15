@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, useContext, useState, useEffect } from "react";
+import { useUser } from "@clerk/nextjs";
 
 const CartContext = createContext();
 
@@ -75,6 +76,29 @@ export function CartProvider({ children }) {
     useEffect(() => {
         localStorage.setItem("cart", JSON.stringify(cartItems));
     }, [cartItems]);
+
+    // Sync Cart to DB for Abandoned Cart Recovery (Logged-in users only)
+    const { user } = useUser();
+    useEffect(() => {
+        if (!user?.primaryEmailAddress?.emailAddress) return;
+
+        // Don't sync empty carts? 
+        // Actually empty cart means they cleared it, so we should sync "empty" to stop recovery!
+        // But if they just logged out? No, user is null.
+
+        const syncCart = setTimeout(() => {
+            fetch('/api/cart/sync', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    email: user.primaryEmailAddress.emailAddress,
+                    items: cartItems
+                })
+            }).catch(err => console.error("Cart sync error:", err));
+        }, 2000); // Debounce 2s
+
+        return () => clearTimeout(syncCart);
+    }, [cartItems, user]);
 
     const addToCart = (product, size, price) => {
         if (isCartLocked) {
