@@ -10,7 +10,7 @@ import TruthOrDareGame from './games/TruthOrDareGame';
 import SpeedGame from './games/SpeedGame';
 import MemoryGame from './games/MemoryGame';
 
-export default function LotteryGameContainer({ bundle, onFinish }) {
+export default function LotteryGameContainer({ bundle, distractorImages = [], onFinish }) {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [gameStage, setGameStage] = useState('playing'); // playing, revealed (waiting for next)
 
@@ -87,7 +87,7 @@ export default function LotteryGameContainer({ bundle, onFinish }) {
                 {currentGameType === 3 && <ChickenShooterGame prize={currentPrize} onComplete={handleGameComplete} />}
                 {currentGameType === 4 && <TruthOrDareGame prize={currentPrize} allImages={bundle.map(i => i.image_url).filter(Boolean)} onComplete={handleGameComplete} />}
                 {currentGameType === 5 && <SpeedGame prize={currentPrize} allImages={bundle.map(i => i.image_url).filter(Boolean)} onComplete={handleGameComplete} />}
-                {currentGameType === 6 && <MemoryGame prize={currentPrize} allImages={bundle.map(i => i.image_url).filter(Boolean)} onComplete={handleGameComplete} />}
+                {currentGameType === 6 && <MemoryGame prize={currentPrize} allImages={distractorImages.length > 0 ? distractorImages : bundle.map(i => i.image_url).filter(Boolean)} onComplete={handleGameComplete} />}
             </div>
         </div>
     );

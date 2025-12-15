@@ -21,17 +21,10 @@ export default function MemoryGame({ prize, onComplete, allImages = [] }) {
 
     const [gameStage, setGameStage] = useState('playing'); // playing, won
 
-    // Helper to get random brand name that is NOT the prize
-    const getRandomBrand = () => {
-        // Mock brands if we only have the prize item?
-        // We can use generic names or other brands if available in bundle?
-        // Let's just say "Chanel", "Dior", "Versace" etc if we don't have a list.
-        // Or "Try Again" / "Miss".
-        // User said "Logo of a brand from the lottery pool".
-        // Realistically we assume other brands exist.
-        const distractions = ['Chanel', 'Dior', 'Creed', 'Tom Ford', 'Versace', 'YSL', 'Armani', 'Gucci'];
-        const valid = distractions.filter(d => d !== prize.brand);
-        return valid[Math.floor(Math.random() * valid.length)];
+    // Helper to get random image from pool
+    const getRandomImage = () => {
+        if (!allImages || allImages.length === 0) return "❓";
+        return allImages[Math.floor(Math.random() * allImages.length)];
     };
 
     const handleCardClick = (index) => {
@@ -43,23 +36,18 @@ export default function MemoryGame({ prize, onComplete, allImages = [] }) {
         let nextStep = clickStep + 1;
 
         if (clickStep === 0) {
-            // Click 1: Reveal Prize
-            newCards[index] = { ...newCards[index], status: 'revealed', content: prize.brand, type: 'prize' };
+            // Click 1: Reveal Prize (Image)
+            newCards[index] = { ...newCards[index], status: 'revealed', content: prize.image_url, type: 'image' };
             setClickStep(1);
             setCards(newCards);
         }
         else if (clickStep === 1) {
             // Click 2: Reveal Random (Mismatch)
-            // Wait, logic says "Flip back".
-            newCards[index] = { ...newCards[index], status: 'revealed', content: getRandomBrand(), type: 'random' };
+            newCards[index] = { ...newCards[index], status: 'revealed', content: getRandomImage(), type: 'image' };
             setCards(newCards);
             setClickStep(2);
 
-            // Delay and flip back ONLY the random one? Or both?
-            // "Cycle repeats". Usually memory games flip both if mismatch.
-            // But Card 1 is the reference. Let's keep Card 1 open?
-            // User: "Card 1... Card 2 random... Card flips back". Singular.
-            // So Card 2 flips back. Card 1 stays.
+            // Delay and flip back
             setTimeout(() => {
                 setCards(prev => prev.map((c, i) =>
                     i === index ? { ...c, status: 'hidden' } : c
@@ -68,7 +56,7 @@ export default function MemoryGame({ prize, onComplete, allImages = [] }) {
         }
         else if (clickStep === 2) {
             // Click 3: Reveal Random (Mismatch) -> Flip back
-            newCards[index] = { ...newCards[index], status: 'revealed', content: getRandomBrand(), type: 'random' };
+            newCards[index] = { ...newCards[index], status: 'revealed', content: getRandomImage(), type: 'image' };
             setCards(newCards);
             setClickStep(3);
 

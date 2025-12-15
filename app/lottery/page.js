@@ -12,6 +12,7 @@ export default function LotteryPage() {
     const [budget, setBudget] = useState(500);
     const [gameState, setGameState] = useState('intro'); // intro, generating, playing, summary
     const [bundle, setBundle] = useState([]);
+    const [distractorImages, setDistractorImages] = useState([]);
     const [products, setProducts] = useState([]);
 
     // Fetch products for lottery logic
@@ -54,6 +55,7 @@ export default function LotteryPage() {
             const data = await res.json();
             if (data.success) {
                 setBundle(data.items);
+                setDistractorImages(data.distractorImages || []);
                 setGameState('playing');
             } else {
                 alert('לא הצלחנו למצוא קומבינציה מתאימה לתקציב, נסה לשנות תקציב');
@@ -136,7 +138,7 @@ export default function LotteryPage() {
 
                 {gameState === 'playing' && (
                     <div className="flex flex-col items-center w-full">
-                        <LotteryGameContainer bundle={bundle} onFinish={handleAllGamesFinished} />
+                        <LotteryGameContainer bundle={bundle} distractorImages={distractorImages} onFinish={handleAllGamesFinished} />
                     </div>
                 )}
 

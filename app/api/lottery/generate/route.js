@@ -19,6 +19,7 @@ export async function POST(req) {
 
         const client = await pool.connect();
         let allCandidates = [];
+        let distractorImages = [];
         try {
             // Attempt 1: Fetch active products strict with lottery flag
             try {
@@ -49,6 +50,19 @@ export async function POST(req) {
                     AND active = true
                 `);
                 allCandidates = resAll.rows;
+            }
+
+            // Fetch Brand Images for Memory Game
+            try {
+                const brandRes = await client.query(`
+                    SELECT image_url FROM brands 
+                    WHERE image_url IS NOT NULL 
+                    ORDER BY RANDOM() 
+                    LIMIT 20
+                `);
+                distractorImages = brandRes.rows.map(row => row.image_url).filter(Boolean);
+            } catch (err) {
+                console.warn("Failed to fetch brands for lottery distractors:", err.message);
             }
 
         } finally {
@@ -150,7 +164,8 @@ export async function POST(req) {
             items: bestBundle,
             totalValue: bestSum,
             shippingDeducted: 30,
-            targetForItems: targetAmount
+            targetForItems: targetAmount,
+            distractorImages
         });
 
     } catch (error) {
