@@ -22,6 +22,36 @@ export default async function AdminDashboard() {
         const revRes = await client.query('SELECT SUM(total_amount) FROM orders');
         kpis.totalRevenue = parseInt(revRes.rows[0].sum || 0);
 
+        // Samples Sold Query (Parse JSON in SQL is best, assuming JSONB or Text)
+        // Adjust syntax based on your DB (Postgres JSONB: element->>'name'). 
+        // If 'items' is text, we might need casting. Assuming it handles JSON.
+        // Simple fallback if complex SQL fails: fetch all items? No, that's heavy.
+        // Let's try to count by name pattern matching in JSON.
+        const samplesRes = await client.query(`
+            SELECT SUM( (item->>'quantity')::int ) as total_samples
+            FROM orders, jsonb_array_elements(items::jsonb) as item
+            WHERE item->>'name' LIKE '%דוגמית%' 
+            OR item->>'name' LIKE '%Sample%'
+            OR (item->>'isPrize')::boolean = true
+        `);
+        // Wait, "Sold Samples" might exclude prizes? User said "Samples Sold".
+        // Usually prizes are free?
+        // Let's stick to "name contains דוגמית".
+
+        // Refined Query:
+        const samplesSoldRes = await client.query(`
+             SELECT SUM((item->>'quantity')::int) as count 
+             FROM orders, jsonb_array_elements(items::jsonb) as item 
+             WHERE item->>'name' LIKE '%דוגמית%'
+        `);
+        kpis.totalSamples = parseInt(samplesSoldRes.rows[0].count || 0);
+
+        const countRes = await client.query('SELECT COUNT(*) FROM orders');
+        kpis.totalOrders = parseInt(countRes.rows[0].count);
+
+        const revRes = await client.query('SELECT SUM(total_amount) FROM orders');
+        kpis.totalRevenue = parseInt(revRes.rows[0].sum || 0);
+
         const pendingRes = await client.query("SELECT COUNT(*) FROM orders WHERE status = 'pending'");
         kpis.pendingOrders = parseInt(pendingRes.rows[0].count);
 
@@ -62,6 +92,10 @@ export default async function AdminDashboard() {
                 <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
                     <div className="text-gray-500 text-sm font-bold uppercase mb-2">הכנסות</div>
                     <div className="text-3xl font-bold">{kpis.totalRevenue} ₪</div>
+                </div>
+                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                    <div className="text-gray-500 text-sm font-bold uppercase mb-2">דוגמיות שנמכרו</div>
+                    <div className="text-3xl font-bold text-purple-600">{kpis.totalSamples}</div>
                 </div>
                 <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
                     <div className="text-gray-500 text-sm font-bold uppercase mb-2">הזמנות סה״כ</div>

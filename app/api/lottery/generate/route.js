@@ -134,8 +134,8 @@ export async function POST(req) {
                 for (const item of shuffled) {
                     const price = item.price;
 
-                    // Constraint: Max 10 items
-                    if (currentSum + price <= targetAmount && currentBundle.length < 10) {
+                    // Constraint: Max 6 items
+                    if (currentSum + price <= targetAmount && currentBundle.length < 6) {
                         currentBundle.push(item);
                         currentSum += price;
                     }
