@@ -83,6 +83,9 @@ export default function LotteryGameContainer({ bundle, onFinish }) {
                 {currentGameType === 0 && <ShellGame prize={currentPrize} onComplete={handleGameComplete} />}
                 {currentGameType === 1 && <RouletteGame prize={currentPrize} allImages={bundle.map(i => i.image_url).filter(Boolean)} onComplete={handleGameComplete} />}
                 {currentGameType === 2 && <SlotMachineGame prize={currentPrize} allImages={bundle.map(i => i.image_url).filter(Boolean)} onComplete={handleGameComplete} />}
+                {currentGameType === 3 && <ChickenShooterGame prize={currentPrize} onComplete={handleGameComplete} />}
+                {currentGameType === 4 && <TruthOrDareGame prize={currentPrize} allImages={bundle.map(i => i.image_url).filter(Boolean)} onComplete={handleGameComplete} />}
+                {currentGameType === 5 && <SpeedGame prize={currentPrize} allImages={bundle.map(i => i.image_url).filter(Boolean)} onComplete={handleGameComplete} />}
             </div>
         </div>
     );
