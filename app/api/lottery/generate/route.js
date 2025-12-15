@@ -11,8 +11,11 @@ export async function POST(req) {
             return NextResponse.json({ error: 'Invalid budget. Minimum 200.' }, { status: 400 });
         }
 
-        // 1. Deduct Shipping (30 NIS)
-        const targetAmount = numericBudget - 30;
+        // 1. Deduct Shipping (30 NIS) and Reverse-Calculate the 15% Discount
+        // Formula: (TotalBudget - Shipping) = DiscountedItemsPrice
+        // DiscountedItemsPrice = RealItemsPrice * 0.85
+        // RealItemsPrice = (TotalBudget - 30) / 0.85
+        const targetAmount = (numericBudget - 30) / 0.85;
 
         const client = await pool.connect();
         let allCandidates = [];
