@@ -50,7 +50,7 @@ export default function LotteryGameContainer({ bundle, onFinish }) {
                 </div>
                 <button
                     onClick={nextGame}
-                    className="bg-yellow-500 hover:bg-yellow-600 text-black font-bold text-2xl py-4 px-12 rounded-full shadow-lg transition-transform hover:scale-105"
+                    className="bg-red-500 hover:bg-red-600 text-white font-bold text-2xl py-4 px-12 rounded-full shadow-lg transition-transform hover:scale-105"
                 >
                     לבושם הבא! 👉
                 </button>
@@ -61,10 +61,10 @@ export default function LotteryGameContainer({ bundle, onFinish }) {
     return (
         <div className="bg-gray-900 rounded-3xl shadow-2xl overflow-hidden border border-gray-800 max-w-2xl w-full">
             <div className="bg-gradient-to-r from-gray-800 to-gray-900 p-4 border-b border-gray-700 flex justify-between items-center">
-                <span className="text-yellow-500 font-bold">פריט {currentIndex + 1} מתוך {bundle.length}</span>
+                <span className="text-red-500 font-bold">פריט {currentIndex + 1} מתוך {bundle.length}</span>
                 <div className="flex gap-1">
                     {bundle.map((_, i) => (
-                        <div key={i} className={`w-3 h-3 rounded-full ${i < currentIndex ? 'bg-green-500' : i === currentIndex ? 'bg-yellow-500 animate-pulse' : 'bg-gray-700'}`}></div>
+                        <div key={i} className={`w-3 h-3 rounded-full ${i < currentIndex ? 'bg-green-500' : i === currentIndex ? 'bg-red-500 animate-pulse' : 'bg-gray-700'}`}></div>
                     ))}
                 </div>
             </div>
