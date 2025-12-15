@@ -54,9 +54,13 @@ export default function ShellGame({ prize, onComplete }) {
 
                         {/* Prize (Hidden behind cup until reveal) */}
                         {gameState === 'reveal' && idx === winningCup && (
-                            <div className="absolute top-20 left-0 w-full h-foll flex flex-col items-center animate-fade-in-up">
-                                <span className="text-4xl">🧴</span>
-                                <span className="text-xs text-white font-bold bg-black px-2 py-1 rounded mt-2 whitespace-nowrap">{prize.model}</span>
+                            <div className="absolute top-20 left-0 w-full h-full flex flex-col items-center animate-fade-in-up z-10">
+                                {prize.image_url ? (
+                                    <img src={prize.image_url} alt="prize" className="w-16 h-16 object-contain drop-shadow-md bg-white rounded-full p-1" />
+                                ) : (
+                                    <span className="text-4xl">🧴</span>
+                                )}
+                                <span className="text-xs text-white font-bold bg-black/80 px-2 py-1 rounded mt-2 whitespace-nowrap">{prize.model}</span>
                             </div>
                         )}
                     </div>

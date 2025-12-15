@@ -17,17 +17,21 @@ export default function SlotMachineGame({ prize, onComplete }) {
 
     return (
         <div className="flex flex-col items-center justify-center p-8">
-            <h3 className="text-2xl font-bold text-yellow-400 mb-8">מכונת המזל 🎰</h3>
+            <h3 className="text-2xl font-bold text-red-500 mb-8">מכונת המזל</h3>
 
-            <div className="bg-gray-800 p-4 rounded-xl border-4 border-yellow-600 shadow-2xl flex gap-2">
+            <div className="bg-gray-800 p-4 rounded-xl border-4 border-red-600 shadow-2xl flex gap-2">
                 {/* 3 Slots. We assume they all land on the prize symbol for "Jackpot" feel */}
                 {[0, 1, 2].map((i) => (
                     <div key={i} className="w-20 h-32 bg-white rounded overflow-hidden relative shadow-inner border border-gray-400">
                         <div className={`flex flex-col items-center transition-transform duration-1000 ease-in-out ${spinning ? 'animate-slot-spin' : ''}`} style={{ transform: finished ? 'translateY(0)' : 'translateY(-10px)' }}>
                             {/* Visual strip simulation */}
                             {finished ? (
-                                <div className="h-32 flex flex-col items-center justify-center">
-                                    <span className="text-4xl">🧴</span>
+                                <div className="h-32 flex flex-col items-center justify-center p-2">
+                                    {prize.image_url ? (
+                                        <img src={prize.image_url} alt="Prize" className="w-full h-full object-contain" />
+                                    ) : (
+                                        <span className="text-4xl">🧴</span>
+                                    )}
                                 </div>
                             ) : (
                                 <div className="space-y-8 py-2 opacity-50 blur-[1px]">
@@ -47,13 +51,13 @@ export default function SlotMachineGame({ prize, onComplete }) {
                     onClick={handleSpin}
                     className="mt-8 bg-red-600 text-white font-bold py-3 px-8 rounded-full border-b-4 border-red-800 hover:bg-red-500 active:border-b-0 active:translate-y-1 transition-all"
                 >
-                    משוך בידית!
+                    משוך בידית
                 </button>
             )}
 
             {finished && (
                 <div className="mt-6 text-center animate-bounce">
-                    <p className="text-yellow-400 font-bold text-xl">JACKPOT!</p>
+                    <p className="text-red-500 font-bold text-xl">זכיתם!</p>
                     <p className="text-white">{prize.brand} - {prize.model}</p>
                 </div>
             )}

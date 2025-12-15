@@ -40,11 +40,15 @@ export default function RouletteGame({ prize, onComplete }) {
 
                 {/* Result Overlay */}
                 {finished && (
-                    <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/80 rounded-full animate-fade-in z-30">
-                        <span className="text-4xl mb-2">🧴</span>
+                    <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/90 rounded-full animate-fade-in z-30 p-4">
+                        {prize.image_url ? (
+                            <img src={prize.image_url} alt="prize" className="w-24 h-24 object-contain mb-2 bg-white rounded-full p-2" />
+                        ) : (
+                            <span className="text-4xl mb-2">🧴</span>
+                        )}
                         <div className="text-center">
-                            <p className="text-red-400 font-bold text-sm">{prize.brand}</p>
-                            <p className="text-white font-bold text-lg">{prize.model}</p>
+                            <p className="text-red-500 font-bold text-sm">{prize.brand}</p>
+                            <p className="text-white font-bold text-lg leading-tight">{prize.model}</p>
                         </div>
                     </div>
                 )}
