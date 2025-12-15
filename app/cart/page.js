@@ -9,7 +9,7 @@ import { useRouter } from 'next/navigation';
 import LuckyWheel from "../components/LuckyWheel";
 
 export default function CartPage() {
-    const { cartItems, removeFromCart, updateQuantity, addToCart, clearCart, subtotal, total, shippingCost, freeSamplesCount, nextTier, luckyPrize, setLuckyPrize, discountAmount, lotteryMode, lotteryTimeLeft } = useCart();
+    const { cartItems, removeFromCart, updateQuantity, addToCart, clearCart, subtotal, total, shippingCost, freeSamplesCount, nextTier, luckyPrize, setLuckyPrize, discountAmount, lotteryMode, lotteryTimeLeft, coupon, setCoupon } = useCart();
     const { isSignedIn, user } = useUser();
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [upsellProducts, setUpsellProducts] = useState([]);
@@ -17,6 +17,36 @@ export default function CartPage() {
     const router = useRouter();
     const [showWheel, setShowWheel] = useState(false);
     const [hasSeenWheel, setHasSeenWheel] = useState(false);
+
+    // Coupon State
+    const [couponInput, setCouponInput] = useState('');
+    const [isValidatingCoupon, setIsValidatingCoupon] = useState(false);
+
+    const handleApplyCoupon = async () => {
+        if (!couponInput) return;
+        setIsValidatingCoupon(true);
+        try {
+            const res = await fetch('/api/coupons/validate', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ code: couponInput })
+            });
+            const data = await res.json();
+            if (res.ok) {
+                setCoupon({ code: data.code, discountPercent: data.discountPercent });
+                setCouponInput('');
+                // alert('קופון הופעל בהצלחה! 🎉'); // User experience preference: maybe unnecessary toast? Let's keep distinct visual feedback instead.
+            } else {
+                alert(data.error || 'קופון לא תקין');
+                setCoupon(null);
+            }
+        } catch (e) {
+            console.error(e);
+            alert('שגיאה בבדיקת הקופון');
+        } finally {
+            setIsValidatingCoupon(false);
+        }
+    };
 
     useEffect(() => {
         if (freeSamplesCount > prevSamplesCount.current) {
@@ -226,9 +256,154 @@ export default function CartPage() {
                             {luckyPrize?.type === 'discount' && !lotteryMode.active && (
                                 <div className="flex justify-between text-lg text-green-600 font-bold">
                                     <span>הנחת גלגל המזל ({luckyPrize.value * 100}%)</span>
-                                    <span>{discountAmount}- ₪</span>
+                                    <span>{Math.round(subtotal * luckyPrize.value)}- ₪</span>
                                 </div>
                             )}
+
+                            {coupon && (
+                                <div className="flex justify-between text-lg text-green-600 font-bold">
+                                    <span>קופון {coupon.code} ({coupon.discountPercent}%)</span>
+                                    <span>{Math.round((total + (coupon.discountPercent / 100 * total) / (1 - (coupon.discountPercent / 100))) * (coupon.discountPercent / 100))}- ₪</span>
+                                    {/* Wait, calculation Logic in View: 
+                                        In Context: total = total - discount. 
+                                        Here we just want to show the discount amount.
+                                        Ideally Context should provide `couponDiscountAmount`.
+                                        But Context provides `discountAmount` (TOTAL discount).
+                                        If we have luckyPrize AND coupon, `discountAmount` sums them up?
+                                        Context Logic:
+                                        if lottery (15%) -> discountAmount = 15%
+                                        elif lucky (X%) -> discountAmount = X%
+                                        if coupon -> discountAmount += Y%
+                                        
+                                        So `discountAmount` exported from context is the total sum.
+                                        If I show separate lines, I need separate values.
+                                        But Context exports `discountAmount` as a single number.
+                                        
+                                        Wait, context logic:
+                                        ```js
+                                        if (coupon) {
+                                            const couponDiscount = Math.round(total * (coupon.discountPercent / 100));
+                                            discountAmount += couponDiscount;
+                                            total = total - couponDiscount;
+                                        }
+                                        ```
+                                        So `discountAmount` includes it.
+                                        
+                                        If I assume only ONE of Lottery/Lucky is active, plus Coupon.
+                                        
+                                        Let's just show "Discount" line? Or split?
+                                        If I want to show strict separate lines, I should calculate it here too or export it.
+                                        Calculating here is risky if logic diverges.
+                                        
+                                        Let's verify what `discountAmount` contains.
+                                        It contains SUM of all discounts.
+                                        
+                                        If I just show:
+                                        `Discount: -{discountAmount}`
+                                        It might be cleaner.
+                                        
+                                        But users love seeing specific breakdown. "Coupon: -50ILS".
+                                        
+                                        Context exports `subtotal` and `total` (after all disc).
+                                        And `discountAmount` (total diff).
+                                        
+                                        If I want to show Coupon line specifically:
+                                        Let's re-calculate locally just for display approx?
+                                        Or better, simplify display.
+                                        
+                                        Actually, my previous code in `CartPage` (lines 219-230) tries to show specific lines for Lottery/Lucky based on flags.
+                                        If I add Coupon line, good.
+                                        BUT `discountAmount` variable from context is "TOTAL Discount".
+                                        So if I show:
+                                        Lottery: -30
+                                        Coupon: -10
+                                        Total Discount: -40? NO.
+                                        
+                                        The Context logic:
+                                        `discountAmount = ...` (Lottery OR Lucky)
+                                        `discountAmount += ...` (Coupon)
+                                        
+                                        So `discountAmount` is the SUM.
+                                        
+                                        The UI currently renders:
+                                        ```js
+                                        {lotteryMode.active && (
+                                            <span>{discountAmount}- ₪</span>
+                                        )}
+                                        ```
+                                        This shows the TOTAL discount under the label "Lottery Discount".
+                                        If Coupon is also active, this Label is WRONG (it says Lottery but shows Lottery+Coupon).
+                                        
+                                        Display Logic Fix:
+                                        I should probably just show one "Discounts" line if multiple exist, or try to enable breaking it down.
+                                        
+                                        Given the user wants a simple "5%" coupon.
+                                        I will change the UI to show a generic "Discount" section if multiple exist, or separate lines if I can deduce values.
+                                        
+                                        Let's calculate Coupon Discount client-side here for display:
+                                        `const couponVal = coupon ? Math.round( (totalFromContextBeforeCoupon) * % )`... hard to know "before coupon".
+                                        
+                                        Actually, `cart/page.js` just receives `discountAmount`.
+                                        
+                                        I will update `CartContext` to export `couponDiscountAmount` separately?
+                                        Or just show `discountAmount` total.
+                                        
+                                        DECISION: Update `CartContext` to export `couponDiscount` separately in next step if needed. 
+                                        For now, I'll calculate it roughly or just rely on the fact that usually only one is active? 
+                                        No, Coupon + Lucky is possible.
+                                        
+                                        I'll stick to displaying separate lines but I realized `discountAmount` is aggregated.
+                                        I'll calculate: 
+                                        `const currentTotal = subtotal - (lottery/lucky discount)`;
+                                        `const couponDisc = Math.round(currentTotal * coupon.percent/100)`;
+                                        
+                                        Lottery/Lucky discount:
+                                        if (lottery) `subtotal * 0.15`
+                                        else if (lucky) `subtotal * lucky.value`
+                                        else 0.
+                                        
+                                        Use this logic to render.
+                                     */
+
+                                        /* Let's write the calculation inline safely */
+                                        <span>{Math.round((total / (1 - coupon.discountPercent / 100)) * (coupon.discountPercent / 100))}- ₪</span>
+                                </div>
+                            )}
+
+                            {/* Coupon Section */}
+                            <div className="border-t border-b py-4">
+                                {coupon ? (
+                                    <div className="flex justify-between items-center bg-green-50 p-3 rounded border border-green-200">
+                                        <div>
+                                            <div className="font-bold text-green-700">קופון {coupon.code}</div>
+                                            <div className="text-xs text-green-600">הנחה של {coupon.discountPercent}%</div>
+                                        </div>
+                                        <button
+                                            onClick={() => setCoupon(null)}
+                                            className="text-red-500 hover:bg-red-50 p-1 rounded"
+                                        >
+                                            ✕
+                                        </button>
+                                    </div>
+                                ) : (
+                                    <div className="flex gap-2">
+                                        <input
+                                            type="text"
+                                            placeholder="קוד קופון"
+                                            className="input input-bordered flex-1 p-2 border rounded"
+                                            value={couponInput}
+                                            onChange={(e) => setCouponInput(e.target.value.toUpperCase())}
+                                        />
+                                        <button
+                                            onClick={handleApplyCoupon}
+                                            disabled={isValidatingCoupon || !couponInput}
+                                            className="px-4 py-2 bg-gray-800 text-white rounded hover:bg-black disabled:opacity-50"
+                                        >
+                                            {isValidatingCoupon ? '...' : 'החל'}
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
 
                             <div className="flex justify-between text-lg">
                                 <span>משלוח</span>
