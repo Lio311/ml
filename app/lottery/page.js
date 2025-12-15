@@ -147,7 +147,7 @@ export default function LotteryPage() {
                             <ul className="space-y-4">
                                 {bundle.map((item, idx) => (
                                     <li key={idx} className="flex justify-between items-center text-lg border-b border-white/5 pb-2">
-                                        <span className="font-bold">{item.brand} {item.model}</span>
+                                        <span className="font-bold">{item.brand} {item.model} <span className="text-sm font-normal opacity-70">({item.size} מ"ל)</span></span>
                                         <span className="text-red-300 font-bold">{item.price} ₪</span>
                                     </li>
                                 ))}

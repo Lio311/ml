@@ -64,7 +64,7 @@ export default function ShellGame({ prize, onComplete }) {
             </div>
             {gameState === 'shuffle' && <p className="mt-8 animate-pulse">מערבב...</p>}
             {gameState === 'pick' && <p className="mt-8 font-bold text-xl">בחרו כוס!</p>}
-            {gameState === 'reveal' && <p className="mt-8 font-bold text-red-400 text-xl">{prize.brand} {prize.model}!</p>}
+            {gameState === 'reveal' && <p className="mt-8 font-bold text-red-400 text-xl">{prize.brand} {prize.model} ({prize.size} מ"ל)!</p>}
         </div>
     );
 }

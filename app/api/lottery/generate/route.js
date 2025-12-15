@@ -52,23 +52,55 @@ export async function POST(req) {
             client.release();
         }
 
-        // Filter for budget in JS
-        const candidates = allCandidates.filter(item => Number(item.price) <= targetAmount);
+        // Expand candidates into Size Variants (2ml, 5ml, 10ml)
+        let expandedCandidates = [];
+        for (const item of allCandidates) {
+            // 2ml
+            if (item.price_2ml > 0) {
+                expandedCandidates.push({
+                    ...item,
+                    original_id: item.id,
+                    id: `${item.id}-2`, // Unique ID for React keys
+                    price: Number(item.price_2ml),
+                    size: '2'
+                });
+            }
+            // 5ml
+            if (item.price_5ml > 0) {
+                expandedCandidates.push({
+                    ...item,
+                    original_id: item.id,
+                    id: `${item.id}-5`,
+                    price: Number(item.price_5ml),
+                    size: '5'
+                });
+            }
+            // 10ml
+            if (item.price_10ml > 0) {
+                expandedCandidates.push({
+                    ...item,
+                    original_id: item.id,
+                    id: `${item.id}-10`,
+                    price: Number(item.price_10ml),
+                    size: '10'
+                });
+            }
+        }
+
+        // Filter for budget in JS using the expanded items with known prices
+        const candidates = expandedCandidates.filter(item => item.price <= targetAmount);
 
         // Fallback or Normal Flow
         let bestBundle = [];
         let bestSum = 0;
 
         if (candidates.length === 0) {
-            // If strictly no items fit the budget standard logic...
-            // Fallback: Pick the absolute cheapest item available to at least offer something.
-            // User said "System MUST be able to assemble".
-            const cheapest = allCandidates.sort((a, b) => Number(a.price) - Number(b.price))[0];
+            // Fallback: Pick the absolute cheapest item available
+            const cheapest = expandedCandidates.sort((a, b) => a.price - b.price)[0];
 
             if (cheapest) {
                 bestBundle = [cheapest];
-                bestSum = Number(cheapest.price);
-                // We accept that bestSum might be > targetAmount here significantly if target is very low.
+                bestSum = cheapest.price;
             } else {
                 return NextResponse.json({ success: false, message: 'No products available in lottery pool.' });
             }
@@ -78,20 +110,16 @@ export async function POST(req) {
             for (let i = 0; i < MAX_ITERATIONS; i++) {
                 let currentBundle = [];
                 let currentSum = 0;
-                // let usedBrands = new Set(); // Removed constraint
 
+                // Shuffle candidates
                 const shuffled = [...candidates].sort(() => 0.5 - Math.random());
 
                 for (const item of shuffled) {
-                    const price = Number(item.price);
-
-                    // Allow same brand, just fill the budget!
-                    // if (usedBrands.has(item.brand)) continue;
+                    const price = item.price;
 
                     if (currentSum + price <= targetAmount) {
                         currentBundle.push(item);
                         currentSum += price;
-                        // usedBrands.add(item.brand);
                     }
                 }
 
@@ -99,15 +127,16 @@ export async function POST(req) {
                     bestSum = currentSum;
                     bestBundle = currentBundle;
                 }
+
+                // If we are very close to target (within 5 NIS), stop early (optimization)
                 if (targetAmount - currentSum < 5) break;
             }
 
-            // Double check if we failed to pick anything from candidates
+            // Failsafe: if greedy somehow failed but we have candidates (unlikely with loop, but possible if math weird)
             if (bestBundle.length === 0 && candidates.length > 0) {
-                // Should not happen if candidates exist, but purely safe fallback
-                const cheapest = candidates.sort((a, b) => Number(a.price) - Number(b.price))[0];
+                const cheapest = candidates.sort((a, b) => a.price - b.price)[0];
                 bestBundle = [cheapest];
-                bestSum = Number(cheapest.price);
+                bestSum = cheapest.price;
             }
         }
 
