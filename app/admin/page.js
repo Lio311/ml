@@ -98,7 +98,7 @@ export default async function AdminDashboard() {
                 </div>
                 <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
                     <div className="text-gray-500 text-sm font-bold uppercase mb-2">דוגמיות שנמכרו</div>
-                    <div className="text-3xl font-bold text-purple-600">{kpis.totalSamples}</div>
+                    <div className="text-3xl font-bold">{kpis.totalSamples}</div>
                 </div>
                 <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
                     <div className="text-gray-500 text-sm font-bold uppercase mb-2">הזמנות סה״כ</div>
@@ -106,7 +106,7 @@ export default async function AdminDashboard() {
                 </div>
                 <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
                     <div className="text-gray-500 text-sm font-bold uppercase mb-2">הזמנות ממתינות</div>
-                    <div className="text-3xl font-bold text-orange-600">{kpis.pendingOrders}</div>
+                    <div className="text-3xl font-bold">{kpis.pendingOrders}</div>
                 </div>
                 <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
                     <div className="text-gray-500 text-sm font-bold uppercase mb-2">כניסות לאתר</div>
