@@ -53,21 +53,24 @@ export default function SlotMachineGame({ prize, onComplete, allImages = [] }) {
                 ))}
             </div>
 
-            {!spinning && !finished && (
-                <button
-                    onClick={handleSpin}
-                    className="mt-8 bg-red-600 text-white font-bold py-3 px-8 rounded-full border-b-4 border-red-800 hover:bg-red-500 active:border-b-0 active:translate-y-1 transition-all"
-                >
-                    משוך בידית
-                </button>
-            )}
+            {/* Interaction Area - Fixed Height to prevent layout shift */}
+            <div className="h-40 mt-8 w-full flex items-start justify-center">
+                {!spinning && !finished && (
+                    <button
+                        onClick={handleSpin}
+                        className="bg-red-600 text-white font-bold py-3 px-8 rounded-full border-b-4 border-red-800 hover:bg-red-500 active:border-b-0 active:translate-y-1 transition-all"
+                    >
+                        משוך בידית
+                    </button>
+                )}
 
-            {finished && (
-                <div className="mt-8 bg-white/10 backdrop-blur-sm p-4 rounded-xl border border-white/20 animate-fade-in-up">
-                    <p className="text-red-500 font-bold text-xl mb-1">זכיתם!</p>
-                    <p className="text-white font-bold text-lg">{prize.brand} {prize.model} ({prize.size} מ"ל)</p>
-                </div>
-            )}
+                {finished && (
+                    <div className="bg-white/10 backdrop-blur-sm p-4 rounded-xl border border-white/20 animate-fade-in-up">
+                        <p className="text-red-500 font-bold text-xl mb-1">זכיתם!</p>
+                        <p className="text-white font-bold text-lg">{prize.brand} {prize.model} ({prize.size} מ"ל)</p>
+                    </div>
+                )}
+            </div>
 
             <style jsx>{`
                 @keyframes slot-spin {
