@@ -124,7 +124,7 @@ export default function ProductCard({ product }) {
                     </div>
 
                     <Link href={`/product/${product.id}`} className={`block w-full text-center text-xs py-2 mt-3 rounded transition ${added ? 'bg-green-600 text-white' : 'bg-black text-white hover:bg-gray-800'}`}>
-                        {added ? 'נוסף לסל! 🛒' : 'פרטים נוספים'}
+                        {added ? 'נוסף לסל!' : 'פרטים נוספים'}
                     </Link>
                 </div>
             </div>
