@@ -20,11 +20,14 @@ export default function CartPage() {
 
     // Coupon State
     const [couponInput, setCouponInput] = useState('');
+    const [couponError, setCouponError] = useState('');
     const [isValidatingCoupon, setIsValidatingCoupon] = useState(false);
 
     const handleApplyCoupon = async () => {
         if (!couponInput) return;
         setIsValidatingCoupon(true);
+        setCouponError(''); // Clear prev error
+
         try {
             const res = await fetch('/api/coupons/validate', {
                 method: 'POST',
@@ -35,14 +38,14 @@ export default function CartPage() {
             if (res.ok) {
                 setCoupon({ code: data.code, discountPercent: data.discountPercent });
                 setCouponInput('');
-                // alert('קופון הופעל בהצלחה! 🎉'); // User experience preference: maybe unnecessary toast? Let's keep distinct visual feedback instead.
+                // Success feedback handled by UI showing the applied coupon
             } else {
-                alert(data.error || 'קופון לא תקין');
+                setCouponError(data.error || 'הקוד שהזנת שגוי או לא קיים');
                 setCoupon(null);
             }
         } catch (e) {
             console.error(e);
-            alert('שגיאה בבדיקת הקופון');
+            setCouponError('שגיאה בבדיקת הקופון');
         } finally {
             setIsValidatingCoupon(false);
         }
@@ -283,21 +286,34 @@ export default function CartPage() {
                                         </button>
                                     </div>
                                 ) : (
-                                    <div className="flex gap-2">
-                                        <input
-                                            type="text"
-                                            placeholder="קוד קופון"
-                                            className="input input-bordered flex-1 p-2 border rounded"
-                                            value={couponInput}
-                                            onChange={(e) => setCouponInput(e.target.value.toUpperCase())}
-                                        />
-                                        <button
-                                            onClick={handleApplyCoupon}
-                                            disabled={isValidatingCoupon || !couponInput}
-                                            className="px-4 py-2 bg-gray-800 text-white rounded hover:bg-black disabled:opacity-50"
-                                        >
-                                            {isValidatingCoupon ? '...' : 'החל'}
-                                        </button>
+                                    <div className="flex flex-col gap-2">
+                                        <div className="flex gap-2">
+                                            <input
+                                                type="text"
+                                                placeholder="קוד קופון"
+                                                className={`input input-bordered flex-1 p-2 border rounded ${couponError ? 'border-red-500 bg-red-50 text-red-900 focus:ring-red-500' : ''}`}
+                                                value={couponInput}
+                                                onChange={(e) => {
+                                                    setCouponInput(e.target.value.toUpperCase());
+                                                    if (couponError) setCouponError(''); // clear error while typing
+                                                }}
+                                            />
+                                            <button
+                                                onClick={handleApplyCoupon}
+                                                disabled={isValidatingCoupon || !couponInput}
+                                                className="px-4 py-2 bg-gray-800 text-white rounded hover:bg-black disabled:opacity-50"
+                                            >
+                                                {isValidatingCoupon ? '...' : 'החל'}
+                                            </button>
+                                        </div>
+                                        {couponError && (
+                                            <div className="text-red-600 text-sm font-bold flex items-center gap-1">
+                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                                                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                                                </svg>
+                                                {couponError}
+                                            </div>
+                                        )}
                                     </div>
                                 )}
                             </div>
