@@ -2,7 +2,7 @@
 "use client";
 import { useState } from 'react';
 
-export default function SlotMachineGame({ prize, onComplete }) {
+export default function SlotMachineGame({ prize, onComplete, allImages = [] }) {
     const [spinning, setSpinning] = useState(false);
     const [finished, setFinished] = useState(false);
 
@@ -15,14 +15,16 @@ export default function SlotMachineGame({ prize, onComplete }) {
         }, 2000); // 2s spin
     };
 
+    const pool = allImages.length > 0 ? allImages : [prize.image_url];
+
     return (
         <div className="flex flex-col items-center justify-center p-8">
             <h3 className="text-2xl font-bold text-red-500 mb-8">מכונת המזל</h3>
 
             <div className="bg-gray-800 p-4 rounded-xl border-4 border-red-600 shadow-2xl flex gap-2">
                 {/* 3 Slots. We assume they all land on the prize symbol for "Jackpot" feel */}
-                {[0, 1, 2].map((i) => (
-                    <div key={i} className="w-20 h-32 bg-white rounded overflow-hidden relative shadow-inner border border-gray-400">
+                {[0, 1, 2].map((colIndex) => (
+                    <div key={colIndex} className="w-20 h-32 bg-white rounded overflow-hidden relative shadow-inner border border-gray-400">
                         <div className={`flex flex-col items-center transition-transform duration-1000 ease-in-out ${spinning ? 'animate-slot-spin' : ''}`} style={{ transform: finished ? 'translateY(0)' : 'translateY(-10px)' }}>
                             {/* Visual strip simulation */}
                             {finished ? (
@@ -35,14 +37,15 @@ export default function SlotMachineGame({ prize, onComplete }) {
                                 </div>
                             ) : (
                                 <div className="space-y-4 py-2 opacity-50 blur-[1px]">
-                                    {/* Spinning visual - repeating the prize image */}
-                                    {[1, 2, 3, 4].map((_, idx) => (
-                                        prize.image_url ? (
-                                            <img key={idx} src={prize.image_url} alt="rolling" className="w-14 h-14 object-contain mx-auto filter grayscale opacity-70" />
+                                    {/* Spinning visual - use random pool images */}
+                                    {[1, 2, 3, 4].map((_, idx) => {
+                                        const randomImg = pool[(colIndex + idx) % pool.length];
+                                        return randomImg ? (
+                                            <img key={idx} src={randomImg} alt="rolling" className="w-14 h-14 object-contain mx-auto filter grayscale opacity-70" />
                                         ) : (
                                             <span key={idx} className="text-4xl block">🧴</span>
-                                        )
-                                    ))}
+                                        );
+                                    })}
                                 </div>
                             )}
                         </div>
