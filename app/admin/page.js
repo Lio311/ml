@@ -38,6 +38,15 @@ export default async function AdminDashboard() {
             kpis.monthlyVisits = 0;
         }
 
+        // Coupons
+        try {
+            const couponsRes = await client.query('SELECT * FROM coupons ORDER BY created_at DESC LIMIT 20');
+            kpis.recentCoupons = couponsRes.rows;
+        } catch (e) {
+            console.warn("Coupons query failed", e);
+            kpis.recentCoupons = [];
+        }
+
     } finally {
         client.release();
     }
@@ -109,6 +118,55 @@ export default async function AdminDashboard() {
                             </div>
                         ))
                     )}
+                </div>
+            </div>
+
+            {/* Coupons Table */}
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden mt-8">
+                <div className="p-6 border-b flex justify-between items-center">
+                    <h3 className="font-bold">קופונים אחרונים (עגלות נטושות)</h3>
+                </div>
+                <div className="overflow-x-auto">
+                    <table className="w-full text-right" dir="rtl">
+                        <thead className="bg-gray-50 text-gray-500 text-sm">
+                            <tr>
+                                <th className="p-4">קוד</th>
+                                <th className="p-4">הנחה</th>
+                                <th className="p-4">מייל לקוח</th>
+                                <th className="p-4">סטטוס</th>
+                                <th className="p-4">נוצר בתאריך</th>
+                            </tr>
+                        </thead>
+                        <tbody className="divide-y">
+                            {kpis.recentCoupons && kpis.recentCoupons.map(coupon => (
+                                <tr key={coupon.id} className="hover:bg-gray-50">
+                                    <td className="p-4 font-mono font-bold text-blue-600">{coupon.code}</td>
+                                    <td className="p-4">{coupon.discount_percent}%</td>
+                                    <td className="p-4 text-sm">{coupon.email}</td>
+                                    <td className="p-4">
+                                        <span className={`px-2 py-1 rounded-full text-xs ${coupon.status === 'active' ? 'bg-green-100 text-green-800' :
+                                                coupon.status === 'redeemed' ? 'bg-gray-800 text-white' :
+                                                    'bg-red-100 text-red-800'
+                                            }`}>
+                                            {coupon.status === 'active' ? 'פעיל' :
+                                                coupon.status === 'redeemed' ? 'מומש' : 'פג תוקף'}
+                                        </span>
+                                    </td>
+                                    <td className="p-4 text-sm text-gray-500">
+                                        {new Date(coupon.created_at).toLocaleString('he-IL')}
+                                    </td>
+                                </tr>
+                            ))}
+                            {(!kpis.recentCoupons || kpis.recentCoupons.length === 0) && (
+                                <tr>
+                                    <td colSpan="5" className="p-8 text-center text-gray-500">
+                                        עדיין לא נוצרו קופונים...<br />
+                                        <span className="text-xs">(הקופונים נוצרים אוטומטית כשהמערכת מזהה עגלה נטושה)</span>
+                                    </td>
+                                </tr>
+                            )}
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
