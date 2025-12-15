@@ -18,17 +18,17 @@ export default function SlotMachineGame({ prize, onComplete, allImages = [] }) {
     const pool = allImages.length > 0 ? allImages : [prize.image_url];
 
     return (
-        <div className="flex flex-col items-center justify-center p-8">
-            <h3 className="text-2xl font-bold text-red-500 mb-8">מכונת המזל</h3>
+        <div className="flex flex-col items-center justify-center p-2">
+            <h3 className="text-xl font-bold text-red-500 mb-4">מכונת המזל</h3>
 
-            <div className="bg-gray-800 p-4 rounded-xl border-4 border-red-600 shadow-2xl flex gap-2">
+            <div className="bg-gray-800 p-3 rounded-xl border-4 border-red-600 shadow-2xl flex gap-2">
                 {/* 3 Slots. We assume they all land on the prize symbol for "Jackpot" feel */}
                 {[0, 1, 2].map((colIndex) => (
-                    <div key={colIndex} className="w-20 h-32 bg-white rounded overflow-hidden relative shadow-inner border border-gray-400">
+                    <div key={colIndex} className="w-20 h-28 bg-white rounded overflow-hidden relative shadow-inner border border-gray-400">
                         <div className={`flex flex-col items-center transition-transform duration-1000 ease-in-out ${spinning ? 'animate-slot-spin' : ''}`} style={{ transform: finished ? 'translateY(0)' : 'translateY(-10px)' }}>
                             {/* Visual strip simulation */}
                             {finished ? (
-                                <div className="h-32 flex flex-col items-center justify-center p-2">
+                                <div className="h-28 flex flex-col items-center justify-center p-2">
                                     {prize.image_url ? (
                                         <img src={prize.image_url} alt="Prize" className="w-full h-full object-contain" />
                                     ) : (
@@ -54,7 +54,7 @@ export default function SlotMachineGame({ prize, onComplete, allImages = [] }) {
             </div>
 
             {/* Interaction Area - Fixed Height to prevent layout shift */}
-            <div className="h-40 mt-8 w-full flex items-start justify-center">
+            <div className="h-24 mt-4 w-full flex items-start justify-center">
                 {!spinning && !finished && (
                     <button
                         onClick={handleSpin}
