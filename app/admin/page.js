@@ -1,4 +1,4 @@
-import pool from "../lib/db";
+import pool from "@/app/lib/db";
 import Link from "next/link";
 
 export default async function AdminDashboard() {
@@ -26,12 +26,17 @@ export default async function AdminDashboard() {
         kpis.pendingOrders = parseInt(pendingRes.rows[0].count);
 
         // Analytics: Monthly Visits
-        const visitsRes = await client.query(`
-            SELECT COUNT(*) FROM site_visits 
-            WHERE EXTRACT(MONTH FROM created_at) = EXTRACT(MONTH FROM CURRENT_DATE) 
-            AND EXTRACT(YEAR FROM created_at) = EXTRACT(YEAR FROM CURRENT_DATE)
-        `);
-        kpis.monthlyVisits = parseInt(visitsRes.rows[0].count || 0);
+        try {
+            const visitsRes = await client.query(`
+                SELECT COUNT(*) FROM site_visits 
+                WHERE EXTRACT(MONTH FROM created_at) = EXTRACT(MONTH FROM CURRENT_DATE) 
+                AND EXTRACT(YEAR FROM created_at) = EXTRACT(YEAR FROM CURRENT_DATE)
+            `);
+            kpis.monthlyVisits = parseInt(visitsRes.rows[0].count || 0);
+        } catch (err) {
+            console.warn("Analytics query failed (table might be missing):", err.message);
+            kpis.monthlyVisits = 0;
+        }
 
     } finally {
         client.release();
