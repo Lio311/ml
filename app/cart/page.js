@@ -266,7 +266,17 @@ export default function CartPage() {
                             {coupon && (
                                 <div className="flex justify-between text-lg text-green-600 font-bold">
                                     <span>קופון {coupon.code} ({coupon.discountPercent}%)</span>
-                                    <span>{Math.round((total / (1 - coupon.discountPercent / 100)) * (coupon.discountPercent / 100))}- ₪</span>
+                                    <span>
+                                        {(() => {
+                                            // Calculate coupon discount amount locally to match Context logic
+                                            let base = subtotal;
+                                            if (lotteryMode.active) base -= Math.round(base * 0.15);
+                                            else if (luckyPrize?.type === 'discount') base -= Math.round(base * luckyPrize.value);
+
+                                            const val = Math.round(base * (coupon.discountPercent / 100));
+                                            return val;
+                                        })()}- ₪
+                                    </span>
                                 </div>
                             )}
 
