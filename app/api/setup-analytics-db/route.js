@@ -12,7 +12,8 @@ export async function GET() {
                     created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
                 );
             `);
-            return NextResponse.json({ success: true, message: 'Analytics DB setup complete' });
+            console.log("Analytics DB Setup: Table 'site_visits' verified/created.");
+            return NextResponse.json({ success: true, message: 'Analytics DB setup complete: Table verified.' });
         } finally {
             client.release();
         }
