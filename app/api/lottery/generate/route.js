@@ -78,19 +78,20 @@ export async function POST(req) {
             for (let i = 0; i < MAX_ITERATIONS; i++) {
                 let currentBundle = [];
                 let currentSum = 0;
-                let usedBrands = new Set();
+                // let usedBrands = new Set(); // Removed constraint
 
                 const shuffled = [...candidates].sort(() => 0.5 - Math.random());
 
                 for (const item of shuffled) {
                     const price = Number(item.price);
 
-                    if (usedBrands.has(item.brand)) continue;
+                    // Allow same brand, just fill the budget!
+                    // if (usedBrands.has(item.brand)) continue;
 
                     if (currentSum + price <= targetAmount) {
                         currentBundle.push(item);
                         currentSum += price;
-                        usedBrands.add(item.brand);
+                        // usedBrands.add(item.brand);
                     }
                 }
 

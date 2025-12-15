@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import ShellGame from './games/ShellGame';
 import RouletteGame from './games/RouletteGame';
 import SlotMachineGame from './games/SlotMachineGame';
@@ -12,8 +12,12 @@ export default function LotteryGameContainer({ bundle, onFinish }) {
 
     const currentPrize = bundle[currentIndex];
 
-    // Cycle games: 0=Shell, 1=Roulette, 2=Slots
-    const gameType = currentIndex % 3;
+    const [currentGameType, setCurrentGameType] = useState(Math.floor(Math.random() * 3));
+
+    // Update random game when index changes
+    useEffect(() => {
+        setCurrentGameType(Math.floor(Math.random() * 3));
+    }, [currentIndex]);
 
     const handleGameComplete = () => {
         if (currentIndex < bundle.length - 1) {
@@ -66,9 +70,9 @@ export default function LotteryGameContainer({ bundle, onFinish }) {
             </div>
 
             <div className="min-h-[400px] flex items-center justify-center">
-                {gameType === 0 && <ShellGame prize={currentPrize} onComplete={handleGameComplete} />}
-                {gameType === 1 && <RouletteGame prize={currentPrize} onComplete={handleGameComplete} />}
-                {gameType === 2 && <SlotMachineGame prize={currentPrize} onComplete={handleGameComplete} />}
+                {currentGameType === 0 && <ShellGame prize={currentPrize} onComplete={handleGameComplete} />}
+                {currentGameType === 1 && <RouletteGame prize={currentPrize} onComplete={handleGameComplete} />}
+                {currentGameType === 2 && <SlotMachineGame prize={currentPrize} onComplete={handleGameComplete} />}
             </div>
         </div>
     );
