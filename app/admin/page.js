@@ -7,7 +7,8 @@ export default async function AdminDashboard() {
         totalOrders: 0,
         totalRevenue: 0,
         pendingOrders: 0,
-        recentOrders: []
+        recentOrders: [],
+        monthlyVisits: 0
     };
 
     try {
@@ -24,9 +25,19 @@ export default async function AdminDashboard() {
         const pendingRes = await client.query("SELECT COUNT(*) FROM orders WHERE status = 'pending'");
         kpis.pendingOrders = parseInt(pendingRes.rows[0].count);
 
+        // Analytics: Monthly Visits
+        const visitsRes = await client.query(`
+            SELECT COUNT(*) FROM site_visits 
+            WHERE EXTRACT(MONTH FROM created_at) = EXTRACT(MONTH FROM CURRENT_DATE) 
+            AND EXTRACT(YEAR FROM created_at) = EXTRACT(YEAR FROM CURRENT_DATE)
+        `);
+        kpis.monthlyVisits = parseInt(visitsRes.rows[0].count || 0);
+
     } finally {
         client.release();
     }
+
+    const currentMonth = new Date().toLocaleString('he-IL', { month: 'long', year: 'numeric' });
 
     return (
         <div>
@@ -45,6 +56,11 @@ export default async function AdminDashboard() {
                 <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
                     <div className="text-gray-500 text-sm font-bold uppercase mb-2">הזמנות ממתינות</div>
                     <div className="text-3xl font-bold text-orange-600">{kpis.pendingOrders}</div>
+                </div>
+                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                    <div className="text-gray-500 text-sm font-bold uppercase mb-2">כניסות לאתר</div>
+                    <div className="text-xl font-bold">חודש {currentMonth}: <span className="text-blue-600">{kpis.monthlyVisits}</span> כניסות</div>
+                    <div className="text-xs text-gray-400 mt-1">נספר לפי ביקורים ייחודיים</div>
                 </div>
             </div>
 

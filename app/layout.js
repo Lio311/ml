@@ -4,6 +4,7 @@ import { heIL } from "@clerk/localizations";
 import "./globals.css";
 import Header from "./components/Header";
 import Footer from "./components/Footer";
+import AnalyticsTracker from "./components/AnalyticsTracker";
 
 const assistant = Assistant({
   subsets: ["hebrew", "latin"],
@@ -35,6 +36,7 @@ export default function RootLayout({ children }) {
       <html lang="he" dir="rtl">
         <body className={assistant.className}>
           <CartProvider>
+            <AnalyticsTracker />
             <Header />
             <main className="min-h-screen">
               {children}
