@@ -3,6 +3,8 @@ import Link from "next/link";
 
 export const dynamic = 'force-dynamic';
 
+import { clerkClient } from "@clerk/nextjs/server";
+
 export default async function AdminDashboard() {
     const client = await pool.connect();
     let kpis = {
@@ -10,7 +12,8 @@ export default async function AdminDashboard() {
         totalRevenue: 0,
         pendingOrders: 0,
         recentOrders: [],
-        monthlyVisits: 0
+        monthlyVisits: 0,
+        totalUsers: 0
     };
 
     try {
@@ -25,22 +28,6 @@ export default async function AdminDashboard() {
         kpis.totalRevenue = parseInt(revRes.rows[0].sum || 0);
 
         // Samples Sold Query (Parse JSON in SQL is best, assuming JSONB or Text)
-        // Adjust syntax based on your DB (Postgres JSONB: element->>'name'). 
-        // If 'items' is text, we might need casting. Assuming it handles JSON.
-        // Simple fallback if complex SQL fails: fetch all items? No, that's heavy.
-        // Let's try to count by name pattern matching in JSON.
-        const samplesRes = await client.query(`
-            SELECT SUM( (item->>'quantity')::int ) as total_samples
-            FROM orders, jsonb_array_elements(items::jsonb) as item
-            WHERE item->>'name' LIKE '%דוגמית%' 
-            OR item->>'name' LIKE '%Sample%'
-            OR (item->>'isPrize')::boolean = true
-        `);
-        // Wait, "Sold Samples" might exclude prizes? User said "Samples Sold".
-        // Usually prizes are free?
-        // Let's stick to "name contains דוגמית".
-
-        // Samples Sold Query (Parse JSON in SQL is best, assuming JSONB or Text)
         // Refined Query:
         const samplesSoldRes = await client.query(`
              SELECT SUM((item->>'quantity')::int) as count 
@@ -49,14 +36,18 @@ export default async function AdminDashboard() {
         `);
         kpis.totalSamples = parseInt(samplesSoldRes.rows[0].count || 0);
 
-        // NOTE: totalOrders and totalRevenue were already fetched above in lines 19-23.
-        // We do NOT need to fetch them again.
-        // If they were removed by mistake in previous diff context quirks, we restore them here cleanly.
-        // But the error says "defined multiple times", meaning they exist TWICE.
-        // So I will just NOT re-declare them here.
-
         const pendingRes = await client.query("SELECT COUNT(*) FROM orders WHERE status = 'pending'");
         kpis.pendingOrders = parseInt(pendingRes.rows[0].count);
+
+        // Fetch Users Count from Clerk
+        try {
+            const clerk = await clerkClient();
+            const { totalCount } = await clerk.users.getUserList({ limit: 1 });
+            kpis.totalUsers = totalCount;
+        } catch (e) {
+            console.warn("Failed to fetch Clerk users count:", e);
+            kpis.totalUsers = 0;
+        }
 
         // Analytics: Monthly Visits
         try {
@@ -112,6 +103,10 @@ export default async function AdminDashboard() {
                     <div className="text-gray-500 text-sm font-bold uppercase mb-2">כניסות לאתר</div>
                     <div className="text-xl font-bold">חודש {currentMonth}: <span className="text-blue-600">{kpis.monthlyVisits}</span> כניסות</div>
                     <div className="text-xs text-gray-400 mt-1">נספר לפי ביקורים ייחודיים</div>
+                </div>
+                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                    <div className="text-gray-500 text-sm font-bold uppercase mb-2">משתמשים רשומים</div>
+                    <div className="text-3xl font-bold">{kpis.totalUsers}</div>
                 </div>
             </div>
 
