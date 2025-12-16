@@ -102,7 +102,7 @@ export default function ChatWidget() {
         }
 
         // 2. Recommendations / General Help (Existing specialized handler)
-        const recKeywords = ['המלצה', 'מומלץ', 'טובים', 'בושם טוב', 'recommend', 'גברים', 'נשים', 'תן לי', 'מה את', 'תמליץ', 'בסט', 'מובילים', 'נמכרים', 'פופולרי', 'הכי'];
+        const recKeywords = ['המלצה', 'מומלץ', 'טובים', 'בושם טוב', 'recommend', 'גברים', 'נשים', 'תן לי', 'תמליץ', 'בסט', 'מובילים', 'נמכרים', 'פופולרי', 'הכי', 'מה הולך', 'מה כדאי', 'מה מומלץ'];
         if (recKeywords.some(k => lowerText.includes(k))) {
             return {
                 id: Date.now(),
