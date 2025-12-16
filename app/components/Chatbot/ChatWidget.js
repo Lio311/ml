@@ -221,7 +221,7 @@ export default function ChatWidget() {
                                             href="/catalog?sort=bestsellers"
                                             className="mt-3 block text-center bg-black text-white py-2 px-4 rounded-xl text-xs font-bold hover:bg-gray-800 transition"
                                         >
-                                            🏆 לצפייה במוכרים ביותר
+                                            לצפייה במוכרים ביותר
                                         </Link>
                                     )}
 
