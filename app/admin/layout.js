@@ -26,7 +26,7 @@ export default async function AdminLayout({ children }) {
                         🏠 דשבורד
                     </Link>
                     <Link href="/admin/orders" className="block p-2 hover:bg-gray-800 rounded">
-                        📦 הזמנות
+                        📦 ניהול הזמנות
                     </Link>
                     <Link href="/admin/products" className="block p-2 hover:bg-gray-800 rounded">
                         🧴 ניהול מוצרים
