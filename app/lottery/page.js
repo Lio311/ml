@@ -77,20 +77,14 @@ export default function LotteryPage() {
     };
 
     return (
-        <div className="min-h-screen text-white flex flex-col items-center justify-start pt-4 p-4 relative overflow-x-hidden">
-
-            {/* Fixed Background Image (Solves iOS mobile issues) */}
-            <div
-                className="fixed inset-0 z-[-2]"
-                style={{
-                    backgroundImage: 'url(https://images.pexels.com/photos/24643920/pexels-photo-24643920/free-photo-of-interior-of-a-casino.jpeg)',
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                    backgroundRepeat: 'no-repeat',
-                }}
-            />
-            {/* Dark Overlay */}
-            <div className="fixed inset-0 z-[-1] bg-black/60" />
+        <div
+            className="min-h-screen text-white flex flex-col items-center justify-start pt-4 p-4 relative bg-scroll md:bg-fixed bg-no-repeat bg-cover bg-center"
+            style={{
+                backgroundImage: 'url(https://images.pexels.com/photos/24643920/pexels-photo-24643920/free-photo-of-interior-of-a-casino.jpeg)',
+            }}
+        >
+            {/* Dark Overlay for better text readability */}
+            <div className="absolute inset-0 bg-black/60 z-0"></div>
 
             <div className="relative z-10 w-full flex flex-col items-center">
                 {gameState === 'intro' && (

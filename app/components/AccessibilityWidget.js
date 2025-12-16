@@ -47,10 +47,9 @@ export default function AccessibilityWidget() {
                 aria-label="תפריט נגישות"
                 title="תפריט נגישות"
             >
-                {/* Clean Accessibility Icon (Person) */}
+                {/* Accessibility Icon (Open Hands / Classic) */}
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" viewBox="0 0 24 24" fill="currentColor">
-                    <circle cx="12" cy="4" r="2" />
-                    <path d="M19 7H5v2h5v13h2v-6h2v6h2V9h5z" />
+                    <path d="M20.5 6c-2.61.7-5.67 1-8.5 1s-5.89-.3-8.5-1L3 8c1.86.5 4 .83 6 .1v5.03c0 4.1 3.25 7.57 7.5 7.5s7.5-3.47 7.5-7.5V10l-3.5-4zM12 6c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z" />
                 </svg>
             </button>
 
