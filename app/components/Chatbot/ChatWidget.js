@@ -102,12 +102,12 @@ export default function ChatWidget() {
         }
 
         // 2. Recommendations / General Help
-        if (lowerText.includes('המלצה') || lowerText.includes('מומלץ') || lowerText.includes('טובים') || lowerText.includes('בושם טוב') || lowerText.includes('recommend') || lowerText.includes('גברים') || lowerText.includes('נשים')) {
+        if (lowerText.includes('המלצה') || lowerText.includes('מומלץ') || lowerText.includes('טובים') || lowerText.includes('בושם טוב') || lowerText.includes('recommend') || lowerText.includes('גברים') || lowerText.includes('נשים') || lowerText.includes('תן לי') || lowerText.includes('מה את')) {
             return {
                 id: Date.now(),
-                text: "שאלה מצוינת! 😍\nיש לנו המון בשמים מעולים. אני ממליץ/ה לנסות את ה-Bestsellers שלנו או להשתמש במערכת התאמת הניחוחות באתר!",
+                text: "בשמחה! 💖\nהכנתי לך רשימה של הבשמים הכי נמכרים ואהובים אצלנו באתר. שווה להציץ!",
                 sender: 'bot',
-                type: 'text'
+                type: 'bestsellers_link'
             };
         }
 
@@ -160,6 +160,10 @@ export default function ChatWidget() {
         };
     };
 
+    // Render nothing if user closed the widget completely (state could be persisted in localStorage)
+    const [isVisible, setIsVisible] = useState(true);
+    if (!isVisible) return null;
+
     return (
         <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end" style={{ direction: 'rtl' }}>
             {/* Chat Window */}
@@ -189,8 +193,8 @@ export default function ChatWidget() {
                         {messages.map((msg) => (
                             <div key={msg.id} className={`mb-4 flex ${msg.sender === 'bot' ? 'justify-start' : 'justify-end'}`}>
                                 <div className={`max-w-[85%] rounded-2xl p-3 text-sm shadow-sm ${msg.sender === 'bot'
-                                        ? 'bg-white text-gray-800 rounded-tr-none border border-gray-100'
-                                        : 'bg-black text-white rounded-tl-none'
+                                    ? 'bg-white text-gray-800 rounded-tr-none border border-gray-100'
+                                    : 'bg-black text-white rounded-tl-none'
                                     }`}>
                                     {msg.text && <div className="whitespace-pre-line">{msg.text}</div>}
 
@@ -208,6 +212,16 @@ export default function ChatWidget() {
                                                 </Link>
                                             ))}
                                         </div>
+                                    )}
+
+                                    {/* Bestsellers Link */}
+                                    {msg.type === 'bestsellers_link' && (
+                                        <Link
+                                            href="/catalog?sort=bestsellers"
+                                            className="mt-3 block text-center bg-black text-white py-2 px-4 rounded-xl text-xs font-bold hover:bg-gray-800 transition"
+                                        >
+                                            🏆 לצפייה במוכרים ביותר
+                                        </Link>
                                     )}
 
                                     {/* Instagram CTA */}
@@ -261,34 +275,47 @@ export default function ChatWidget() {
                 </div>
             )}
 
-            {/* Toggle Button */}
-            <button
-                onClick={() => setIsOpen(!isOpen)}
-                className="bg-black text-white w-14 h-14 rounded-full shadow-lg flex items-center justify-center hover:scale-110 transition-all duration-300 relative group"
-            >
-                {/* Notification Badge */}
+            {/* Toggle Button Container with Close Option */}
+            <div className="relative group">
+                {/* Close Button (X) - Always visible when chat is closed to allow hiding the widget,
+                    OR visible when chat is open too?
+                    User asked: "תשים כפתור X *על* הצאט בוט שיהיה אפשר להסתיר אותו"
+                    Interpretation: A way to remove the floating button from screen.
+                */}
                 {!isOpen && (
-                    <span className="absolute -top-1 -left-1 bg-red-500 w-4 h-4 rounded-full border-2 border-white"></span>
+                    <button
+                        onClick={(e) => { e.stopPropagation(); setIsVisible(false); }}
+                        className="absolute -top-2 -left-2 z-10 bg-gray-200 text-gray-600 rounded-full p-1 opacity-0 group-hover:opacity-100 transition shadow-sm hover:bg-red-500 hover:text-white"
+                        title="סגור צ'אט"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
+                            <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
+                        </svg>
+                    </button>
                 )}
 
-                {/* Icon Switch */}
-                {isOpen ? (
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                    </svg>
-                ) : (
-                    <div className="relative w-full h-full rounded-full overflow-hidden border-2 border-green-500">
-                        <img src={rep.image} alt="Support" className="w-full h-full object-cover" />
-                    </div>
-                )}
+                <button
+                    onClick={() => setIsOpen(!isOpen)}
+                    className="bg-black text-white w-14 h-14 rounded-full shadow-lg flex items-center justify-center hover:scale-110 transition-all duration-300"
+                >
+                    {/* Notification Badge */}
+                    {!isOpen && (
+                        <span className="absolute -top-1 -right-0 bg-red-500 w-4 h-4 rounded-full border-2 border-white"></span>
+                    )}
 
-                {/* Tooltip */}
-                {!isOpen && (
-                    <div className="absolute right-full mr-3 bg-white text-black text-xs font-bold py-2 px-3 rounded-lg shadow-md whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
-                        צריך עזרה?
-                    </div>
-                )}
-            </button>
+                    {/* Icon Switch */}
+                    {isOpen ? (
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                        </svg>
+                    ) : (
+                        <div className="relative w-full h-full rounded-full overflow-hidden border-2 border-green-500">
+                            <img src={rep.image} alt="Support" className="w-full h-full object-cover" />
+                        </div>
+                    )}
+                </button>
+            </div>
         </div>
     );
 }
+```

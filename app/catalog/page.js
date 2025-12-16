@@ -39,11 +39,7 @@ async function getProducts(search, brand, category, minPrice, maxPrice, sort, pa
     if (category) {
         const categories = Array.isArray(category) ? category : [category];
         if (categories.length > 0) {
-            // For categories (text), we used ILIKE before. If multiple, maybe OR ILIKE?
-            // "AND (category ILIKE $x OR category ILIKE $y ...)"
-            // Or just exact match if we trust the filter options? 
-            // The filter options come from DB. Let's use ILIKE for flexibility with multi-values.
-            const catConditions = categories.map((_, i) => `category ILIKE $${params.length + i + 1}`).join(' OR ');
+            const catConditions = categories.map((_, i) => `p.category ILIKE $${params.length + i + 1}`).join(' OR ');
             query += ` AND (${catConditions})`;
             params.push(...categories.map(c => `%${c}%`));
         }
@@ -51,12 +47,12 @@ async function getProducts(search, brand, category, minPrice, maxPrice, sort, pa
 
     if (minPrice) {
         params.push(minPrice);
-        query += ` AND price_10ml >= $${params.length}`;
+        query += ` AND p.price_10ml >= $${params.length}`;
     }
 
     if (maxPrice) {
         params.push(maxPrice);
-        query += ` AND price_10ml <= $${params.length}`;
+        query += ` AND p.price_10ml <= $${params.length}`;
     }
 
     // Get Total Count for Pagination
@@ -66,16 +62,19 @@ async function getProducts(search, brand, category, minPrice, maxPrice, sort, pa
     let orderBy = 'RANDOM()'; // Default: Random
     switch (sort) {
         case 'price_asc':
-            orderBy = 'price_10ml ASC';
+            orderBy = 'p.price_10ml ASC';
             break;
         case 'price_desc':
-            orderBy = 'price_10ml DESC';
+            orderBy = 'p.price_10ml DESC';
+            break;
+        case 'bestsellers':
+            orderBy = 'sales_count DESC NULLS LAST, p.name ASC';
             break;
         case 'oldest':
-            orderBy = 'id ASC';
+            orderBy = 'p.id ASC';
             break;
         case 'newest':
-            orderBy = 'id DESC';
+            orderBy = 'p.id DESC';
             break;
         case 'random':
         default:
