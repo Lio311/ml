@@ -48,6 +48,35 @@ export default function AboutPage() {
                     </p>
                 </div>
             </div>
+
+            {/* SEO: Organization Schema */}
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{
+                    __html: JSON.stringify({
+                        "@context": "https://schema.org",
+                        "@type": "Organization",
+                        "name": "ml_tlv",
+                        "url": "https://ml-tlv.vercel.app",
+                        "logo": "https://ml-tlv.vercel.app/logo_v3.png",
+                        "foundingDate": "2023",
+                        "address": {
+                            "@type": "PostalAddress",
+                            "addressLocality": "Tel Aviv",
+                            "addressCountry": "IL"
+                        },
+                        "sameAs": [
+                            "https://instagram.com/ml_tlv"
+                        ],
+                        "contactPoint": {
+                            "@type": "ContactPoint",
+                            "contactType": "customer support",
+                            "availableLanguage": ["Hebrew", "English"]
+                        }
+                    })
+                }}
+            />
         </div>
+        </div >
     );
 }
