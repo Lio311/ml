@@ -79,17 +79,25 @@ export default function LotteryPage() {
     return (
         <div className="min-h-screen text-white flex flex-col items-center justify-start pt-4 p-4 relative overflow-x-hidden">
 
-            {/* Fixed Background Image - Solves Mobile Jitter/Jumps */}
+            {/* Background Image Logic */}
+
+            {/* Mobile: Fixed Position Div (Solves Jitter) */}
             <div
-                className="fixed inset-0 z-[-2]"
+                className="fixed inset-0 z-[-2] md:hidden bg-cover bg-center bg-no-repeat"
                 style={{
                     backgroundImage: 'url(https://images.pexels.com/photos/24643920/pexels-photo-24643920/free-photo-of-interior-of-a-casino.jpeg)',
-                    backgroundSize: 'cover',
-                    backgroundPosition: 'center',
-                    backgroundRepeat: 'no-repeat',
                 }}
             />
-            {/* Dark Overlay */}
+
+            {/* Desktop: Absolute Div with bg-fixed (Parallax Effect) */}
+            <div
+                className="hidden md:block absolute inset-0 z-[-2] bg-cover bg-center bg-no-repeat bg-fixed h-full min-h-screen"
+                style={{
+                    backgroundImage: 'url(https://images.pexels.com/photos/24643920/pexels-photo-24643920/free-photo-of-interior-of-a-casino.jpeg)',
+                }}
+            />
+
+            {/* Dark Overlay (Shared) */}
             <div className="fixed inset-0 z-[-1] bg-black/60" />
 
             <div className="relative z-10 w-full flex flex-col items-center">
