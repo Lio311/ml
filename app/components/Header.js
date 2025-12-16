@@ -20,7 +20,7 @@ export default function Header() {
     return (
         <header className="sticky top-0 z-50 bg-white shadow-sm">
             {/* Top Bar - Black Promo Strip */}
-            <div className="bg-black text-white text-[10px] md:text-xs py-2 text-center tracking-widest uppercase">
+            <div className="hidden md:block bg-black text-white text-[10px] md:text-xs py-2 text-center tracking-widest uppercase">
                 משלוח בלוקר לכל הארץ ב-30 ₪
             </div>
 
