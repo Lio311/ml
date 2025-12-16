@@ -191,7 +191,7 @@ export default function ChatWidget() {
                     {/* Messages */}
                     <div className="flex-1 bg-gray-50 p-4 overflow-y-auto min-h-[300px]" ref={scrollRef}>
                         {messages.map((msg) => (
-                            <div key={msg.id} className={`mb-4 flex ${msg.sender === 'bot' ? 'justify-start' : 'justify-end'}`}>
+                            <div key={msg.id} className={`mb-2 flex ${msg.sender === 'bot' ? 'justify-start' : 'justify-end'}`}>
                                 <div className={`max-w-[85%] rounded-2xl p-3 text-sm shadow-sm ${msg.sender === 'bot'
                                     ? 'bg-white text-gray-800 rounded-tr-none border border-gray-100'
                                     : 'bg-black text-white rounded-tl-none'
@@ -214,14 +214,14 @@ export default function ChatWidget() {
                                         </div>
                                     )}
 
-                                    {/* FAQ Options (Quick Buttons) */}
+                                    {/* FAQ Options (Quick Buttons - Centered & Clean) */}
                                     {msg.type === 'faq_options' && (
-                                        <div className="mt-3 flex flex-wrap gap-2">
+                                        <div className="mt-4 flex flex-wrap gap-2 justify-center">
                                             {msg.options.map((opt, idx) => (
                                                 <button
                                                     key={idx}
                                                     onClick={() => handleQuickQuestion(opt)}
-                                                    className="bg-white border border-gray-300 text-gray-700 text-xs px-3 py-1.5 rounded-full hover:bg-black hover:text-white hover:border-black transition"
+                                                    className="bg-transparent border border-gray-200 hover:border-black text-gray-600 hover:text-black text-xs px-3 py-1.5 rounded-full transition-colors duration-300"
                                                 >
                                                     {opt}
                                                 </button>
