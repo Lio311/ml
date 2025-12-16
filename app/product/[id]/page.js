@@ -147,6 +147,32 @@ export default async function ProductPage(props) {
                             <StarRating productId={product.id} />
                         </div>
 
+                        {/* SEO: Structured Data */}
+                        <script
+                            type="application/ld+json"
+                            dangerouslySetInnerHTML={{
+                                __html: JSON.stringify({
+                                    "@context": "https://schema.org",
+                                    "@type": "Product",
+                                    "name": product.name,
+                                    "image": product.image_url,
+                                    "description": product.description || `Buy ${product.name} sample - Original Niche Perfume`,
+                                    "brand": {
+                                        "@type": "Brand",
+                                        "name": product.brand
+                                    },
+                                    "offers": {
+                                        "@type": "Offer",
+                                        "url": `${process.env.NEXT_PUBLIC_BASE_URL || 'https://ml-tlv.vercel.app'}/product/${product.id}`,
+                                        "priceCurrency": "ILS",
+                                        "price": product.price_10ml || product.price_5ml || product.price_2ml,
+                                        "availability": (product.stock && product.stock > 0) ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+                                        "itemCondition": "https://schema.org/NewCondition"
+                                    }
+                                })
+                            }}
+                        />
+
                         {product.logo_url && (
                             <div className="mb-6 w-32 h-16 flex items-center justify-start"> {/* Fixed container */}
                                 <Link href={`/catalog?brand=${encodeURIComponent(product.brand)}`} className="block w-full h-full relative">
