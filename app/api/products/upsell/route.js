@@ -44,7 +44,7 @@ export async function POST(req) {
                         FROM product_views v
                         JOIN products p ON v.product_id = p.id
                         WHERE v.user_id = $1 
-                        AND v.viewed_at > CURRENT_DATE -- Today only
+                        AND v.viewed_at > NOW() - INTERVAL '24 hours' -- Last 24 hours
                         AND p.stock > 0
                     `, [userId]);
 
