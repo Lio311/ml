@@ -343,17 +343,7 @@ export default function CartPage() {
                                 )}
                             </div>
 
-                            {/* Order Notes */}
-                            <div className="py-2">
-                                <label className="text-sm font-bold text-gray-700 mb-2 block">הערות להזמנה (אופציונלי):</label>
-                                <textarea
-                                    className="w-full p-3 border rounded-lg text-sm focus:ring-2 focus:ring-gray-900 outline-none resize-none bg-white"
-                                    rows="3"
-                                    placeholder="בקשות מיוחדות לימי הולדת / אריזה / שליח..."
-                                    value={notes}
-                                    onChange={(e) => setNotes(e.target.value)}
-                                ></textarea>
-                            </div>
+
 
                             <div className="flex justify-between text-lg">
                                 <span>משלוח</span>
@@ -413,6 +403,18 @@ export default function CartPage() {
                             <div className="flex justify-between text-xl font-bold pt-4 border-t">
                                 <span>סה״כ לתשלום</span>
                                 <span>{total} ₪</span>
+                            </div>
+
+                            {/* Order Notes (Moved) */}
+                            <div className="py-2">
+                                <label className="text-sm font-bold text-gray-700 mb-2 block">הערות להזמנה (אופציונלי):</label>
+                                <textarea
+                                    className="w-full p-3 border rounded-lg text-sm focus:ring-2 focus:ring-gray-900 outline-none resize-none bg-white"
+                                    rows="3"
+                                    placeholder="בקשות מיוחדות לימי הולדת / אריזה / שליח..."
+                                    value={notes}
+                                    onChange={(e) => setNotes(e.target.value)}
+                                ></textarea>
                             </div>
 
                             <div className="pt-4">

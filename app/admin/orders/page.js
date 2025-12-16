@@ -93,7 +93,7 @@ export default async function AdminOrdersPage() {
                                     <div className="text-xs text-gray-500">{order.customer_details?.email}</div>
                                     {order.notes && (
                                         <div className="mt-2 text-xs bg-yellow-50 p-2 rounded border border-yellow-200 text-gray-800 max-w-[200px] break-words">
-                                            <span className="font-bold block mb-1">📝 הערות:</span>
+                                            <span className="font-bold block mb-1">הערות:</span>
                                             {order.notes}
                                         </div>
                                     )}
@@ -110,7 +110,7 @@ export default async function AdminOrdersPage() {
                                     </ul>
                                 </td>
                                 <td className="p-4 font-bold">{order.total_amount} ₪</td>
-                                <td className="p-4 text-sm">
+                                <td className="p-4 text-sm text-center">
                                     {order.free_samples_count > 0 ? (
                                         <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs">
                                             {order.free_samples_count} דוגמיות
