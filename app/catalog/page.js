@@ -26,7 +26,7 @@ export async function generateMetadata(props) {
         const rawCat = Array.isArray(category) ? category[0] : category;
         const catName = rawCat ? decodeURIComponent(rawCat).trim() : '';
 
-        if (catName === 'אין בארץ') {
+        if (catName.includes('אין בארץ')) {
             title = "בשמים שאין בארץ | ml_tlv";
             description = "קולקציית בשמים נדירים שלא ניתן להשיג בארץ.";
         } else if (catName) {
