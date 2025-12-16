@@ -77,30 +77,20 @@ export default function LotteryPage() {
     };
 
     return (
-        <div className="min-h-screen text-white flex flex-col items-center justify-start pt-4 p-4 relative overflow-x-hidden">
-
-            {/* Background Image Logic */}
-
-            {/* Mobile: Fixed Position Div (Solves Jitter) - z-0 to be visible over body */}
-            <div
-                className="fixed inset-0 z-0 md:hidden bg-cover bg-center bg-no-repeat"
+        <div className="min-h-[100dvh] text-white flex flex-col items-center justify-start pt-20 pb-10 px-4 relative">
+            
+            {/* Universally Fixed Background (Solves all jitter/scroll issues) */}
+            <div 
+                className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat"
                 style={{
                     backgroundImage: 'url(https://images.pexels.com/photos/24643920/pexels-photo-24643920/free-photo-of-interior-of-a-casino.jpeg)',
                 }}
             />
 
-            {/* Desktop: Absolute Div with bg-fixed (Parallax Effect) - z-0 to be visible over body */}
-            <div
-                className="hidden md:block absolute inset-0 z-0 bg-cover bg-center bg-no-repeat bg-fixed h-full min-h-screen"
-                style={{
-                    backgroundImage: 'url(https://images.pexels.com/photos/24643920/pexels-photo-24643920/free-photo-of-interior-of-a-casino.jpeg)',
-                }}
-            />
+            {/* Dark Overlay */}
+            <div className="fixed inset-0 z-0 bg-black/60" />
 
-            {/* Dark Overlay (Shared) - z-0 acts as layer on top of bg images due to DOM order */}
-            <div className="fixed inset-0 z-0 bg-black/60 md:absolute md:h-full md:min-h-screen" />
-
-            <div className="relative z-10 w-full flex flex-col items-center">
+            <div className="relative z-10 w-full flex flex-col items-center max-w-4xl mx-auto space-y-8">
                 {gameState === 'intro' && (
                     <div className="max-w-3xl text-center space-y-6 animate-fade-in">
                         {/* Title Removed as per request */}
