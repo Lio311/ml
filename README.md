@@ -6,55 +6,59 @@ The ultimate Israeli destination for niche & boutique perfume samples (decants).
 - **Exclusive Collections**: Curated selection of high-end brands like Xerjoff, Roja, Creed, and more.
 - **Authentic Experience**: 100% original fragrances decanted into high-quality 2ml, 5ml, and 10ml bottles.
 
-### 🛍️ Shopping Experience
-- **Smart Cart**: Dynamic shopping cart with real-time updates.
-- **Tiered Bonuses**: Automatic free sample rewards based on cart value.
-- **Wishlist**: Save your favorite scents for later.
-- **Secure Checkout**: Streamlined order process.
+---
 
-### 🎨 User Interface
-- **Modern Design**: Clean, minimalist, and luxury-focused aesthetic.
-- **Mobile First**: Fully responsive layout optimized for all devices.
-- **Multi-language**: Partial support for Hebrew, English, and Russian.
-- **Accessibility**: RTL support and clear navigation.
+## 🚀 Key Features
+
+### 🛍️ Smart Shopping Experience
+- **Dynamic Cart**: Real-time total calculation with automatic bonus updates.
+- **Smart Bonuses System**:
+    - Over 300 ₪: 2 Free Samples 🎁
+    - Over 500 ₪: 4 Free Samples 🎁🎁
+    - Over 1000 ₪: 6 Free Samples 🎁🎁🎁
+- **Order Notes**: Add special requests directly in the cart (e.g., gift wrapping, delivery notes).
+- **Stock Management**: Prevents ordering out-of-stock items with precise ml tracking.
+- **Smart Upsell**: Suggests complementary products in the cart based on user history.
+- **Abandoned Cart Recovery**: Automatic email system with unique coupon generation to recover lost sales.
+
+### 🎲 Interactive Games (Lottery)
+- **7 Mini-Games**: Roulette, Slot Machine, Chicken Shooter, Truth or Dare, Speed Game, Memory Cards, and Shell Game.
+- **Smart Logic**:
+    - **Budget Control**: Set a budget (100-1500 ₪).
+    - **Value Guarantee**: Always receive 15% more value than paid.
+    - **Mystery Unboxing**: Interactive reveal of your curated perfume bundle.
+
+### 🤖 AI Support Chatbot ("Sarah")
+- **Smart Assistance**: Answers FAQs about tracking, shipping, and originality.
+- **Product Recommendations**: Analyzes user preferences to suggest scents.
+- **Return Logic**: Handles return policy queries with interactive options.
+- **Persona**: Rotates daily personas to keep interactions fresh.
+
+### 📊 Advanced Analytics & Admin
+- **Live Dashboard**:
+    - Real-time KPIs: Revenue, Samples Sold, Active Carts.
+    - Monthly Site Visits Tracker.
+    - Registered Users Counter.
+- **Order Management**: Full CRUD for orders with Hebrew status tracking (Pending, Processing, Shipped).
+- **Coupon Management**: Create, track, and expire discount codes.
+- **Bestsellers Algorithm**: Auto-updates "Popular" sorting based on real sales data.
+
+### 🎨 Visual & UX Excellence
+- **Accessibility**: Built-in widget for font resizing, high contrast, and readable fonts.
+- **Design System**: Glassmorphism, "Dancing Script" typography, and premium animations.
+- **Smart Search**: Real-time autocomplete search bar in the header.
+- **Responsive**: Mobile-first design optimized for all devices.
 
 ---
 
-## 🚀 Quick Start
+## 🛠️ Technical Stack
 
-### Installation
-
-1. **Clone the repository**
-   ```bash
-   git clone https://github.com/your-username/ml.git
-   cd ml/app
-   ```
-
-2. **Install dependencies**
-   ```bash
-   npm install
-   # or
-   yarn install
-   ```
-
-3. **Set up Environment Variables**
-   Create a `.env.local` file with the following:
-   ```env
-   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_...
-   CLERK_SECRET_KEY=sk_test_...
-   POSTGRES_URL=postgres://...
-   NEXT_PUBLIC_BASE_URL=http://localhost:3000
-   GMAIL_USER=your-email@gmail.com
-   GMAIL_APP_PASSWORD=your-app-password
-   ```
-
-4. **Run the application**
-   ```bash
-   npm run dev
-   ```
-
-5. **Open in browser**
-   The app will automatically open at `http://localhost:3000`
+- **Frontend**: Next.js 14 (App Router), React, Framer Motion
+- **Styling**: Tailwind CSS, PostCSS
+- **Database**: PostgreSQL (via `pg` pool)
+- **Authentication**: Clerk (`@clerk/nextjs`)
+- **Email**: Nodemailer (Gmail SMTP)
+- **Localization**: RTL support with Hebrew optimization
 
 ---
 
@@ -63,82 +67,43 @@ The ultimate Israeli destination for niche & boutique perfume samples (decants).
 ```
 ml/
 ├── app/
-│   ├── admin/              # Admin dashboard pages
-│   ├── api/                # Backend API routes (Orders, Users)
-│   ├── cart/               # Shopping cart logic
-│   ├── catalog/            # Product listing and filtering
-│   ├── components/         # Reusable UI components (Header, ProductCard)
-│   ├── context/            # Global state context (CartContext)
-│   ├── orders/             # User order history
-│   └── layout.js           # Root layout and providers
-├── public/                 # Static assets (images, icons)
-├── scripts/                # Database migration and setup scripts
-└── package.json            # Project dependencies
+│   ├── admin/              # Admin dashboard & Analytics
+│   ├── api/                # Backend API routes (Orders, Sync, Recovery)
+│   ├── cart/               # Shopping cart & Checkout Logic
+│   ├── catalog/            # Product listing with Smart Sorting
+│   ├── components/         # Chatbot, Header, Games, UI Elements
+│   ├── context/            # CartContext & AuthContext
+│   ├── data/               # Static Data (Chatbot Brain)
+│   └── lib/                # DB Connection & Email Utils
+├── public/                 # Static assets
+└── scripts/                # Database setup scripts
 ```
 
 ---
 
-## 🛠️ Technical Stack
+## 🚀 Quick Start
 
-- **Frontend**: Next.js 14 (App Router), React
-- **Styling**: Tailwind CSS, PostCSS
-- **Database**: PostgreSQL (via `pg` pool)
-- **Authentication**: Clerk (`@clerk/nextjs`)
-- **Localization**: Google Translate (Cookie-based integration)
-- **Deployment**: Vercel ready
+1. **Clone & Install**
+   ```bash
+   git clone https://github.com/Lio311/ml.git
+   cd ml/app
+   npm install
+   ```
 
----
+2. **Environment Setup**
+   Create `.env.local`:
+   ```env
+   NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_...
+   CLERK_SECRET_KEY=sk_test_...
+   DATABASE_URL=postgres://...
+   EMAIL_USER=...
+   EMAIL_PASS=...
+   ```
 
-## 🎯 Key Features
-
-### 🛒 Dynamic Cart & Bonuses
-- Real-time total calculation.
-- **Bonus Logic**:
-    - Over 300 ₪: 2 Free Samples
-    - Over 500 ₪: 4 Free Samples
-    - Over 1000 ₪: 6 Free Samples
-
-### 📦 Inventory Management
-- **Stock Tracking**: Precise milliliter-based stock management (Tracking total ML available).
-- **Auto-Block**: Prevents adding items to cart if stock is insufficient.
-- **Admin Controls**: Easy stock updates directly from the product edit page.
-
-### 👑 Admin Dashboard
-- **Product Management**: Create, edit, and delete products with stock control.
-- **Brands Management**: Manage brand logos and details.
-- **View Orders**: Comprehensive table with status management.
-- **Localised Statuses**: Hebrew status tracking (Pending, Processing, Shipped).
-
-### 🔍 Product Catalog
-- **Smart Filtering**: Multi-select support for Brands and Categories.
-- **Search**: Fast text-based search for products.
-- **Detailed Views**: High-quality images, descriptions, and stock status.
-
-### 🎲 Smart Lottery (Mystery Box)
-- **AI-Powered Curation**: Our unique algorithm builds the perfect bundle based on your budget.
-    - **Budget & Discount**: Set a budget (100-1500 ₪) and get 15% MORE value than you pay for.
-    - **Smart Limits**: Randomly selects between 1 to 10 items to ensure variety and value.
-- **7 Interactive Mini-Games**:
-    1.  **Roulette**: Casino-style wheel with a white ball.
-    2.  **Slot Machine**: Vegas-style spinning reels.
-    3.  **Shell Game**: Classic cup shuffle.
-    4.  **Chicken Shooter**: Arcade aim-and-shoot fun.
-    5.  **Truth or Dare**: Spin the bottle to find your scent.
-    6.  **Speed Game**: Test your reflexes.
-    7.  **Memory Cards**: Find the matching brand card.
-- **Premium Experience**: Fully responsive, red-themed, and glass-morphism UI.
-
----
-
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/NewFeature`)
-3. Commit your changes (`git commit -m 'Add NewFeature'`)
-4. Push to the branch (`git push origin feature/NewFeature`)
-5. Open a Pull Request
+3. **Run Locally**
+   ```bash
+   npm run dev
+   ```
 
 ---
 
