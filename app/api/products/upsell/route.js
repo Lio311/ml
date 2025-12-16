@@ -1,14 +1,8 @@
 import { NextResponse } from 'next/server';
 import pool from '../../../lib/db';
-
-export const dynamic = 'force-dynamic';
-
-import { NextResponse } from 'next/server';
-import pool from '../../../lib/db';
 import { auth } from '@clerk/nextjs/server';
 
 export const dynamic = 'force-dynamic';
-
 export async function POST(req) {
     let userId = null;
     try {
