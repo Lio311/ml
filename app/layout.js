@@ -1,4 +1,4 @@
-import { Assistant } from "next/font/google";
+import { Assistant, Great_Vibes } from "next/font/google";
 import { ClerkProvider } from '@clerk/nextjs';
 import { heIL } from "@clerk/localizations";
 import "./globals.css";
@@ -12,6 +12,12 @@ const assistant = Assistant({
   subsets: ["hebrew", "latin"],
   weight: ["300", "400", "600", "700"],
   variable: "--font-assistant",
+});
+
+const greatVibes = Great_Vibes({
+  subsets: ["latin"],
+  weight: "400",
+  variable: "--font-great-vibes",
 });
 
 export const metadata = {
@@ -36,7 +42,7 @@ export default function RootLayout({ children }) {
       }}
     >
       <html lang="he" dir="rtl">
-        <body className={assistant.className}>
+        <body className={`${assistant.className} ${greatVibes.variable}`}>
           <CartProvider>
             <AnalyticsTracker />
             <Header />
