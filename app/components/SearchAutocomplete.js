@@ -110,7 +110,7 @@ export default function SearchAutocomplete() {
                                         <img
                                             src={product.image}
                                             alt={product.name}
-                                            className="w-full h-full object-cover group-hover/item:scale-105 transition duration-500"
+                                            className="w-full h-full object-contain group-hover/item:scale-105 transition duration-500"
                                         />
                                     ) : (
                                         <div className="w-full h-full flex items-center justify-center text-xs text-gray-300">No Img</div>
