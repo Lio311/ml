@@ -1,10 +1,23 @@
 "use client";
 import { useCart } from "../../context/CartContext";
-import { useState } from "react";
+import { useUser } from "@clerk/nextjs";
+import { useState, useEffect } from "react";
 
 export default function ProductActionsClient({ product }) {
     const { addToCart, cartItems } = useCart();
     const [addedId, setAddedId] = useState(null);
+    const { isSignedIn } = useUser();
+
+    // Track View History
+    useEffect(() => {
+        if (isSignedIn && product?.id) {
+            fetch('/api/history/record', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ productId: product.id })
+            }).catch(err => console.error("Tracking failed", err));
+        }
+    }, [isSignedIn, product]);
 
     const handleAdd = (size, price) => {
         const stock = parseInt(product.stock) || 0;
