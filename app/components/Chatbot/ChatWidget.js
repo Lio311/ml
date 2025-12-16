@@ -15,29 +15,27 @@ const REPRESENTATIVES = [
 ];
 
 export default function ChatWidget() {
-    const [isOpen, setIsOpen] = useState(false);
-    const [rep, setRep] = useState(REPRESENTATIVES[0]);
-    const [messages, setMessages] = useState([]);
-    const [input, setInput] = useState("");
-    const [isTyping, setIsTyping] = useState(false);
-    const scrollRef = useRef(null);
-    const router = useRouter();
-
-    // Initialize Representative based on date
-    useEffect(() => {
+    // Helper to determine Rep of the Day (Synchronous)
+    const getDailyRep = () => {
         const today = new Date();
         const start = new Date(today.getFullYear(), 0, 0);
         const diff = today - start;
         const oneDay = 1000 * 60 * 60 * 24;
         const dayOfYear = Math.floor(diff / oneDay);
-
         const repIndex = dayOfYear % REPRESENTATIVES.length;
-        const selectedRep = REPRESENTATIVES[repIndex];
-        setRep(selectedRep);
+        return REPRESENTATIVES[repIndex];
+    };
 
+    const [isOpen, setIsOpen] = useState(false);
+
+    // Initialize Rep immediately to avoid flicker
+    const [rep] = useState(getDailyRep);
+
+    // Initialize Messages immediately based on the selected rep
+    const [messages, setMessages] = useState(() => {
+        const selectedRep = getDailyRep();
         const helpVerb = selectedRep.gender === 'female' ? 'יכולה' : 'יכול';
-
-        const initialMessages = [
+        return [
             { id: 1, text: `היי! 👋 אני ${selectedRep.name} מ-ml_tlv. איך אני ${helpVerb} לעזור לך היום?`, sender: 'bot', type: 'text' },
             {
                 id: 2,
@@ -52,9 +50,12 @@ export default function ChatWidget() {
                 ]
             }
         ];
+    });
 
-        setMessages(initialMessages);
-    }, []);
+    const [input, setInput] = useState("");
+    const [isTyping, setIsTyping] = useState(false);
+    const scrollRef = useRef(null);
+    const router = useRouter();
 
     // Auto-scroll to bottom of chat
     useEffect(() => {
