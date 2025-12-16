@@ -49,6 +49,17 @@ The ultimate Israeli destination for niche & boutique perfume samples (decants).
 - **Smart Search**: Real-time autocomplete search bar in the header.
 - **Responsive**: Mobile-first design optimized for all devices.
 
+### 📈 Advanced SEO Engine
+- **Dynamic Metadata**: 
+    - Auto-generates unique `<title>` and `<meta>` tags for every Brand and Category page (e.g., "בשמי Xerjoff | ml_tlv").
+    - "Smart Logic" for edge cases (e.g., "בשמים שאין בארץ").
+- **Sitemap 2.0**: 
+    - Automatically maps hundreds of dynamic URLs (Products, Brands, Categories) for Google.
+- **Rich Snippets (Schema.org)**:
+    - **Product Schema**: Price, Stock, and Description data for Google Shopping results.
+    - **Organization Schema**: Identity card for the business (Location, Logo, Support) in the Knowledge Graph.
+- **Canonicalization**: Prevents duplicate content penalties for filtered pages.
+
 ---
 
 ## 🛠️ Technical Stack
