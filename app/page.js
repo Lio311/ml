@@ -34,7 +34,7 @@ export default async function Home() {
 
       // Try to get orders count for samples estimation
       try {
-        const ordersRes = await client.query('SELECT items FROM orders');
+        const ordersRes = await client.query("SELECT items FROM orders WHERE status != 'cancelled'");
         const totalSamplesSold = ordersRes.rows.reduce((acc, row) => {
           const items = row.items || [];
           // items is array of objects { quantity: 1, ... }
