@@ -1,7 +1,7 @@
 import RequestsClient from "./RequestsClient";
 
 export const metadata = {
-    title: "בקשת תשלום | ml_tlv",
+    title: "בקשת בשמים | ml_tlv",
     robots: "noindex, nofollow",
 };
 
