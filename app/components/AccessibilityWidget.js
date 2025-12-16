@@ -47,8 +47,9 @@ export default function AccessibilityWidget() {
                 aria-label="תפריט נגישות"
                 title="תפריט נגישות"
             >
+                {/* Standard Accessibility Icon (Person with arms out) */}
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 2c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm9 7h-6v13h-2v-6h-2v6H9V9H1V7h6V1.24c-2-.16-4.9-1.59-5.55-4.24l-1.9 1.9-.7-1.4L2.85.5C5.05.5 8 2.5 8 2.5V7h13v2zM12 22c-4.97 0-9-4.03-9-9s4.03-9 9-9c4.97 0 9 4.03 9 9s-4.03 9-9 9zm1.25-13.88c-.37-.08-.75-.12-1.15-.12-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6c0-2.31-1.31-4.32-3.25-5.3l-.6.52v4.9z" />
+                    <path d="M12 2c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm9 7h-6v13h-2v-6h-2v6H9V9H1V7h6V1.24c-2-.16-4.9-1.59-5.55-4.24l-1.9 1.9-.7-1.4L2.85.5C5.05.5 8 2.5 8 2.5V7h13v2z" />
                 </svg>
             </button>
 

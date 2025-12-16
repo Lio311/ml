@@ -12,10 +12,14 @@ async function getProducts(search, brand, category, minPrice, maxPrice, sort, pa
     const LIMIT = 16;
     const OFFSET = (page - 1) * LIMIT;
 
+    // Use INNER JOIN for bestsellers to only show items that have sales
+    // Use LEFT JOIN for others to show all products
+    const joinType = sort === 'bestsellers' ? 'INNER JOIN' : 'LEFT JOIN';
+
     let query = `
     SELECT p.*, COALESCE(ps.sales_count, 0) as sales_count 
     FROM products p
-    LEFT JOIN product_sales ps ON p.id = ps.product_id
+    ${joinType} product_sales ps ON p.id = ps.product_id
     WHERE p.active = true
   `;
     const params = [];
@@ -154,7 +158,7 @@ export default async function CatalogPage(props) {
     const allBrands = await getBrands();
     const allCategories = await getCategories();
 
-    const pageTitle = sort === 'bestsellers' ? 'הנמכרים ביותר 🏆' : 'הקטלוג המלא';
+    const pageTitle = sort === 'bestsellers' ? 'הנמכרים ביותר' : 'הקטלוג המלא';
 
     return (
         <div className="container py-12">
