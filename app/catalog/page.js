@@ -7,6 +7,11 @@ import SortSelect from "./SortSelect";
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
+export const metadata = {
+    title: "הקטלוג | ml_tlv",
+    description: "כל דוגמיות הבשמים שלנו במקום אחד.",
+};
+
 // Server Component - Fetch data directly
 async function getProducts(search, brand, category, minPrice, maxPrice, sort, page = 1) {
     const LIMIT = 16;

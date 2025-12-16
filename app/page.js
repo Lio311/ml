@@ -13,7 +13,12 @@ const dancingScript = Dancing_Script({
   weight: "700", // Bold for impact
 });
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 0; // Force dynamic to show fresh stock
+
+export const metadata = {
+  title: "דף הבית | ml_tlv - דוגמיות בשמים",
+  description: "חנות דוגמיות בשמים הגדולה בישראל. נישה, בוטיק ודיזיינר במחירים משתלמים.",
+};
 
 export default async function Home() {
   let newArrivals = [];

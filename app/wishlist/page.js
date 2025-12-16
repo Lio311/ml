@@ -4,6 +4,11 @@ import ProductCard from "../components/ProductCard";
 import Link from "next/link";
 import { redirect } from 'next/navigation';
 
+export const metadata = {
+    title: "המועדפים שלי ❤️ | ml_tlv",
+    description: "רשימת המשאלות שלך.",
+};
+
 export default async function WishlistPage() {
     const { userId } = await auth();
 

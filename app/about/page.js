@@ -1,3 +1,8 @@
+export const metadata = {
+    title: "מי אנחנו | ml_tlv",
+    description: "הסיפור שלנו - איך הפכנו אהבה לבשמים לעסק של חוויות.",
+};
+
 export default function AboutPage() {
     return (
         <div className="min-h-screen bg-gray-50 py-20">

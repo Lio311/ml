@@ -4,6 +4,11 @@ import { useEffect, useState } from 'react';
 import { useUser } from '@clerk/nextjs';
 import Link from 'next/link';
 
+export const metadata = {
+    title: "ההזמנות שלי | ml_tlv",
+    description: "מעקב אחר הזמנות והיסטוריית רכישות.",
+};
+
 export default function OrdersPage() {
     const { isLoaded, isSignedIn } = useUser();
     const [orders, setOrders] = useState([]);
@@ -65,10 +70,10 @@ export default function OrdersPage() {
                                 <div className="text-left">
                                     <div className="font-bold text-xl">{order.total_amount} ₪</div>
                                     <div className={`text-sm px-2 py-1 rounded-full inline-block mt-1 ${order.status === 'pending' ? 'bg-orange-100 text-orange-800' :
-                                            order.status === 'processing' ? 'bg-blue-100 text-blue-800' :
-                                                order.status === 'shipped' ? 'bg-purple-100 text-purple-800' :
-                                                    order.status === 'completed' ? 'bg-green-100 text-green-800' :
-                                                        'bg-gray-100 text-gray-800'
+                                        order.status === 'processing' ? 'bg-blue-100 text-blue-800' :
+                                            order.status === 'shipped' ? 'bg-purple-100 text-purple-800' :
+                                                order.status === 'completed' ? 'bg-green-100 text-green-800' :
+                                                    'bg-gray-100 text-gray-800'
                                         }`}>
                                         {
                                             order.status === 'pending' ? 'ממתין' :

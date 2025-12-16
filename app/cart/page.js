@@ -8,6 +8,11 @@ import confetti from 'canvas-confetti';
 import { useRouter } from 'next/navigation';
 import LuckyWheel from "../components/LuckyWheel";
 
+export const metadata = {
+    title: "סל קניות | ml_tlv",
+    description: "סל הקניות שלך.",
+};
+
 export default function CartPage() {
     const { cartItems, removeFromCart, updateQuantity, addToCart, clearCart, subtotal, total, shippingCost, freeSamplesCount, nextTier, luckyPrize, setLuckyPrize, discountAmount, lotteryMode, lotteryTimeLeft, coupon, setCoupon } = useCart();
     const { isSignedIn, user } = useUser();

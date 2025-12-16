@@ -1,6 +1,11 @@
 import pool from "../../lib/db";
 import { revalidatePath } from "next/cache";
 
+export const metadata = {
+    title: "ניהול הזמנות | ml_tlv",
+    robots: "noindex, nofollow",
+};
+
 export default async function AdminOrdersPage() {
     const client = await pool.connect();
     let orders = [];

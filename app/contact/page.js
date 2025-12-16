@@ -2,6 +2,11 @@
 
 import { useState } from "react";
 
+export const metadata = {
+    title: "צור קשר | ml_tlv",
+    description: "דברו איתנו - שירות לקוחות, שאלות נפוצות ופניות עסקיות.",
+};
+
 export default function ContactPage() {
     const [status, setStatus] = useState(null); // null | 'loading' | 'success' | 'error'
 

@@ -5,6 +5,11 @@ export const dynamic = 'force-dynamic';
 
 import { clerkClient } from "@clerk/nextjs/server";
 
+export const metadata = {
+    title: "ניהול ראשי | ml_tlv",
+    robots: "noindex, nofollow",
+};
+
 export default async function AdminDashboard() {
     const client = await pool.connect();
     let kpis = {
