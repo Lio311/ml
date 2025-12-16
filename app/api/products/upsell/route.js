@@ -36,20 +36,24 @@ export async function POST(req) {
 
             // 2. History (Today) (If logged in and need more items)
             if (userId && recommendations.length < 3) {
-                const historyRes = await client.query(`
-                    SELECT DISTINCT ON (p.id) p.id, p.name, p.brand, p.model, p.image_url, p.price_2ml, p.price_5ml, p.price_10ml, p.stock
-                    FROM product_views v
-                    JOIN products p ON v.product_id = p.id
-                    WHERE v.user_id = $1 
-                    AND v.viewed_at > CURRENT_DATE -- Today only
-                    AND p.stock > 0
-                `, [userId]);
+                try {
+                    const historyRes = await client.query(`
+                        SELECT DISTINCT ON (p.id) p.id, p.name, p.brand, p.model, p.image_url, p.price_2ml, p.price_5ml, p.price_10ml, p.stock
+                        FROM product_views v
+                        JOIN products p ON v.product_id = p.id
+                        WHERE v.user_id = $1 
+                        AND v.viewed_at > CURRENT_DATE -- Today only
+                        AND p.stock > 0
+                    `, [userId]);
 
-                const historyItems = historyRes.rows.filter(p =>
-                    !excluded.includes(p.id) &&
-                    !recommendations.some(r => r.id === p.id) // Not already in recommendations
-                );
-                recommendations.push(...historyItems);
+                    const historyItems = historyRes.rows.filter(p =>
+                        !excluded.includes(p.id) &&
+                        !recommendations.some(r => r.id === p.id) // Not already in recommendations
+                    );
+                    recommendations.push(...historyItems);
+                } catch (err) {
+                    console.warn("History fetch failed (table likely missing), skipping:", err.message);
+                }
             }
 
             // 3. Random Fallback (Fill up to 3)
