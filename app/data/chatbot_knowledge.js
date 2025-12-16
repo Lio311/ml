@@ -16,7 +16,8 @@ export const chatbotKnowledge = [
     // --- Returns & Refunds ---
     {
         keywords: ['החזרה', 'להחזיר', 'ביטול', 'לבטל', 'החלפה', 'להחליף', 'לא אהבתי'],
-        answer: "אנחנו רוצים שתהיו מרוצים ב-100%! 💯\nניתן להחזיר או להחליף מוצר בתוך 14 יום מקבלת המשלוח, בתנאי שלא נעשה בו שימוש והוא באריזתו המקורית.\nצרו איתנו קשר בוואטסאפ לתיאום."
+        answer: "ככלל לא ניתן להחזיר דוגמיות שהוזמנו באתר. למקרים חריגים ניתן לפנות אלינו באינסטגרם או להשאיר פנייה בדף צור קשר.",
+        type: 'returns_options'
     },
     {
         keywords: ['פגום', 'שבור', 'הגיע שבור', 'תקול'],
@@ -30,7 +31,7 @@ export const chatbotKnowledge = [
     },
     {
         keywords: ['מקורי', 'זיוף', 'אמיתי', 'חיקוי'],
-        answer: "כל הבשמים באתר הם מקוריים ב-100%! ✅\nאנחנו עובדים ישירות מול היבואנים הרשמיים ומבטיחים איכות וטריות."
+        answer: "כל הבשמים באתר הם מקוריים ב-100%! ✅\nאנחנו עובדים ישירות מול היבואנים הרשמיים."
     },
     {
         keywords: ['עמיד', 'מחזיק מעמד', 'ריח חזק', 'עמידות', 'חזק'],
