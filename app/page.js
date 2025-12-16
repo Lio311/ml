@@ -58,7 +58,7 @@ export default async function Home() {
     <div className="flex flex-col min-h-screen">
 
       {/* Hero Section */}
-      <section className="relative h-[50vh] flex items-center justify-center bg-[#F8F5F2] text-center overflow-hidden">
+      <section className="relative h-[50vh] w-full m-0 p-0 overflow-hidden bg-black block">
         {/* Decorative Background Video */}
         <video
           autoPlay
