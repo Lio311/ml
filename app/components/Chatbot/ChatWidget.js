@@ -101,7 +101,7 @@ export default function ChatWidget() {
             };
         }
 
-        // 2. Recommendations / General Help
+        // 2. Recommendations / General Help (Existing specialized handler)
         const recKeywords = ['המלצה', 'מומלץ', 'טובים', 'בושם טוב', 'recommend', 'גברים', 'נשים', 'תן לי', 'מה את', 'תמליץ', 'בסט', 'מובילים', 'נמכרים', 'פופולרי', 'הכי'];
         if (recKeywords.some(k => lowerText.includes(k))) {
             return {
@@ -112,7 +112,7 @@ export default function ChatWidget() {
             };
         }
 
-        // 3. Product Search Intent (Improved)
+        // 3. Product Search Intent (Improved) - Existing handler
         // Check for specific keywords OR if the query is short enough to be a product name (2-3 words) and NOT a common sentence
         const isExample = lowerText.includes('יש לכם') || lowerText.includes('במלאי') || lowerText.includes('מחפש');
         const isShortQuery = text.split(' ').length <= 4 && text.length > 2;
