@@ -18,8 +18,13 @@ The ultimate Israeli destination for niche & boutique perfume samples (decants).
     - Over 1000 ₪: 6 Free Samples 🎁🎁🎁
 - **Order Notes**: Add special requests directly in the cart (e.g., gift wrapping, delivery notes).
 - **Stock Management**: Prevents ordering out-of-stock items with precise ml tracking.
-- **Smart Upsell**: Suggests complementary products in the cart based on user history.
-- **Abandoned Cart Recovery**: Automatic email system with unique coupon generation to recover lost sales.
+- **Smart Upsell Engine**: 
+    - AI-driven recommendation logic that pushes users to add more items.
+    - **Prioritization Algorithm**: 1. `Wishlist Items` → 2. `Recently Viewed Items` → 3. `Bestsellers`.
+- **Abandoned Cart Recovery (CRON)**: 
+    - Automated background task detecting inactive carts (1h+).
+    - Sends a personalized recovery email containing a **unique 5% discount coupon** to incentivize completion.
+- **Smart Delivery Notifications**: Fully automated email dispatch system for every status change (Order Received -> Processing -> Shipped with Tracking).
 
 ### 🎲 Interactive Games (Lottery)
 - **7 Mini-Games**: Roulette, Slot Machine, Chicken Shooter, Truth or Dare, Speed Game, Memory Cards, and Shell Game.
@@ -70,6 +75,7 @@ The ultimate Israeli destination for niche & boutique perfume samples (decants).
 - **Authentication**: Clerk (`@clerk/nextjs`)
 - **Email**: Nodemailer (Gmail SMTP)
 - **Localization**: RTL support with Hebrew optimization
+- **Background Tasks**: CRON Jobs (Vercel Cron) for Cart Recovery & Analytics Sync
 
 ---
 
