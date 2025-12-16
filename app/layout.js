@@ -42,7 +42,7 @@ export default function RootLayout({ children }) {
       }}
     >
       <html lang="he" dir="rtl">
-        <body className={`${assistant.className} ${dancingScript.variable}`}>
+        <body className={assistant.className}>
           <CartProvider>
             <AnalyticsTracker />
             <Header />

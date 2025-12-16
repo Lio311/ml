@@ -3,9 +3,15 @@ import Image from "next/image";
 import pool from "./lib/db";
 import ProductCard from "./components/ProductCard";
 import LiveStats from "./components/LiveStats";
+import { Dancing_Script } from "next/font/google";
 
 
 import BrandCarousel from "./components/BrandCarousel";
+
+const dancingScript = Dancing_Script({
+  subsets: ["latin"],
+  weight: "700", // Bold for impact
+});
 
 export const dynamic = 'force-dynamic';
 
@@ -75,7 +81,7 @@ export default async function Home() {
             <h2 className="text-xs md:text-sm font-sans tracking-[0.2em] uppercase mb-1 opacity-90 animate-fadeIn font-bold">
               Discover Your Signature Scent
             </h2>
-            <h1 className="text-4xl md:text-5xl mb-4 font-['var(--font-dancing-script)'] text-black leading-tight tracking-wide">
+            <h1 className={`${dancingScript.className} text-4xl md:text-6xl mb-4 text-black leading-tight tracking-wide`}>
               Niche & Boutique <br />
               Sample Collections
             </h1>
