@@ -5,10 +5,10 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
 const REPRESENTATIVES = [
-    { name: 'רון', role: 'שירות לקוחות', image: '/images/team/ron.jpg' },
-    { name: 'אריאל', role: 'שירות לקוחות', image: '/images/team/ariel.jpg' },
-    { name: 'קורל', role: 'שירות לקוחות', image: '/images/team/coral.jpg' },
-    { name: 'נטלי', role: 'שירות לקוחות', image: '/images/team/natalie.jpg' },
+    { name: 'רון', role: 'שירות לקוחות', image: '/images/team/ron.jpg', gender: 'male' },
+    { name: 'אריאל', role: 'שירות לקוחות', image: '/images/team/ariel.jpg', gender: 'male' },
+    { name: 'קורל', role: 'שירות לקוחות', image: '/images/team/coral.jpg', gender: 'female' },
+    { name: 'נטלי', role: 'שירות לקוחות', image: '/images/team/natalie.jpg', gender: 'female' },
 ];
 
 export default function ChatWidget() {
@@ -32,8 +32,9 @@ export default function ChatWidget() {
         const selectedRep = REPRESENTATIVES[repIndex];
         setRep(selectedRep);
 
+        const helpVerb = selectedRep.gender === 'female' ? 'יכולה' : 'יכול';
         setMessages([
-            { id: 1, text: `היי! 👋 אני ${selectedRep.name} מ-ml_tlv. איך אני יכול/ה לעזור לך היום?`, sender: 'bot', type: 'text' }
+            { id: 1, text: `היי! 👋 אני ${selectedRep.name} מ-ml_tlv. איך אני ${helpVerb} לעזור לך היום?`, sender: 'bot', type: 'text' }
         ]);
     }, []);
 

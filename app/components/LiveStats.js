@@ -33,14 +33,14 @@ function Counter({ end, duration = 2000, prefix = "" }) {
 
 export default function LiveStats({ stats }) {
     return (
-        <section className="bg-black text-white py-8 border-t border-gray-800">
+        <section className="bg-white text-black py-8 border-t border-gray-200 shadow-sm relative z-20">
             <div className="container mx-auto px-4">
-                <div className="grid grid-cols-3 gap-4 text-center divide-x divide-gray-800 rtl:divide-x-reverse">
+                <div className="grid grid-cols-3 gap-4 text-center divide-x divide-gray-200 rtl:divide-x-reverse">
                     <div className="flex flex-col items-center">
                         <span className="text-3xl md:text-4xl font-bold font-serif">
                             <Counter end={stats.brands} />
                         </span>
-                        <span className="text-xs md:text-sm uppercase tracking-widest text-gray-400 mt-1">
+                        <span className="text-xs md:text-sm uppercase tracking-widest text-gray-500 mt-1">
                             מותגים
                         </span>
                     </div>
@@ -48,7 +48,7 @@ export default function LiveStats({ stats }) {
                         <span className="text-3xl md:text-4xl font-bold font-serif">
                             <Counter end={stats.products} />
                         </span>
-                        <span className="text-xs md:text-sm uppercase tracking-widest text-gray-400 mt-1">
+                        <span className="text-xs md:text-sm uppercase tracking-widest text-gray-500 mt-1">
                             בשמים באתר
                         </span>
                     </div>
@@ -56,7 +56,7 @@ export default function LiveStats({ stats }) {
                         <span className="text-3xl md:text-4xl font-bold font-serif">
                             <Counter end={stats.samples} prefix="+" />
                         </span>
-                        <span className="text-xs md:text-sm uppercase tracking-widest text-gray-400 mt-1">
+                        <span className="text-xs md:text-sm uppercase tracking-widest text-gray-500 mt-1">
                             דוגמיות שנמכרו
                         </span>
                     </div>
