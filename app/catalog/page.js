@@ -7,10 +7,34 @@ import SortSelect from "./SortSelect";
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-export const metadata = {
-    title: "הקטלוג | ml_tlv",
-    description: "כל דוגמיות הבשמים שלנו במקום אחד.",
-};
+export async function generateMetadata(props) {
+    const searchParams = await props.searchParams;
+    const { q, brand, category } = searchParams;
+
+    let title = "הקטלוג | ml_tlv";
+    let description = "כל דוגמיות הבשמים שלנו במקום אחד.";
+
+    if (brand) {
+        const brandName = Array.isArray(brand) ? brand[0] : brand;
+        title = `בשמי ${brandName} | ml_tlv`;
+        description = `קולקציית דוגמיות ${brandName} המלאה שלנו.`;
+    } else if (category) {
+        const catName = Array.isArray(category) ? category[0] : category;
+        title = `בשמי ${catName} | ml_tlv`;
+        description = `מבחר בשמי ${catName} ייחודיים בדוגמיות.`;
+    } else if (q) {
+        title = `תוצאות חיפוש: ${q} | ml_tlv`;
+    }
+
+    return {
+        title,
+        description,
+        openGraph: {
+            title,
+            description,
+        }
+    };
+}
 
 // Server Component - Fetch data directly
 async function getProducts(search, brand, category, minPrice, maxPrice, sort, page = 1) {
