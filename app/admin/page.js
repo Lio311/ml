@@ -32,7 +32,12 @@ export default async function AdminDashboard() {
         const samplesSoldRes = await client.query(`
              SELECT SUM((item->>'quantity')::int) as count 
              FROM orders, jsonb_array_elements(items::jsonb) as item 
-             WHERE orders.status != 'cancelled' AND item->>'name' LIKE '%דוגמית%'
+             WHERE orders.status != 'cancelled' 
+             AND (
+                item->>'name' LIKE '%דוגמית%' 
+                OR item->>'name' ILIKE '%sample%'
+                OR item->>'size' IN ('2', '5', '10')
+             )
         `);
         kpis.totalSamples = parseInt(samplesSoldRes.rows[0].count || 0);
 

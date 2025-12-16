@@ -204,32 +204,60 @@ export default async function CatalogPage(props) {
 
                     {/* Pagination Controls */}
                     {totalPages > 1 && (
-                        <div className="mt-12 flex justify-center gap-2">
+                        <div className="mt-12 flex justify-center gap-2 flex-wrap" dir="ltr">
+                            {/* Previous Button */}
                             {page > 1 && (
                                 <Link
                                     href={{
                                         pathname: '/catalog',
                                         query: { ...searchParams, page: page - 1 }
                                     }}
-                                    className="btn btn-outline"
+                                    className="px-4 py-2 border rounded hover:bg-gray-100 transition"
                                 >
-                                    הקודם
+                                    Previous
                                 </Link>
                             )}
 
-                            <span className="flex items-center px-4 font-bold">
-                                {page} / {totalPages}
-                            </span>
+                            {/* Page Numbers */}
+                            {(() => {
+                                let start = Math.max(1, page - 1);
+                                let end = Math.min(totalPages, page + 1);
 
+                                // Adjust to always show 3 if possible
+                                if (page === 1) end = Math.min(totalPages, 3);
+                                if (page === totalPages) start = Math.max(1, totalPages - 2);
+
+                                const pages = [];
+                                for (let i = start; i <= end; i++) {
+                                    pages.push(i);
+                                }
+                                return pages.map(p => (
+                                    <Link
+                                        key={p}
+                                        href={{
+                                            pathname: '/catalog',
+                                            query: { ...searchParams, page: p }
+                                        }}
+                                        className={`w-10 h-10 flex items-center justify-center rounded border transition ${p === page
+                                                ? 'bg-black text-white border-black'
+                                                : 'bg-white hover:bg-gray-50'
+                                            }`}
+                                    >
+                                        {p}
+                                    </Link>
+                                ));
+                            })()}
+
+                            {/* Next Button */}
                             {page < totalPages && (
                                 <Link
                                     href={{
                                         pathname: '/catalog',
                                         query: { ...searchParams, page: page + 1 }
                                     }}
-                                    className="btn btn-outline"
+                                    className="px-4 py-2 border rounded hover:bg-gray-100 transition"
                                 >
-                                    הבא
+                                    Next
                                 </Link>
                             )}
                         </div>
