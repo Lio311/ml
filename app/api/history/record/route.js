@@ -15,6 +15,8 @@ export async function POST(req) {
             return NextResponse.json({ error: 'Product ID required' }, { status: 400 });
         }
 
+        console.log(`[History Tracking] Recording view for User: ${userId}, Product: ${productId}`);
+
         const client = await pool.connect();
         try {
             // Check if viewed recently (optional optimization, but simple insert is fine for now)
