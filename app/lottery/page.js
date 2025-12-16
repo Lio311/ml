@@ -81,24 +81,24 @@ export default function LotteryPage() {
 
             {/* Background Image Logic */}
 
-            {/* Mobile: Fixed Position Div (Solves Jitter) */}
+            {/* Mobile: Fixed Position Div (Solves Jitter) - z-0 to be visible over body */}
             <div
-                className="fixed inset-0 z-[-2] md:hidden bg-cover bg-center bg-no-repeat"
+                className="fixed inset-0 z-0 md:hidden bg-cover bg-center bg-no-repeat"
                 style={{
                     backgroundImage: 'url(https://images.pexels.com/photos/24643920/pexels-photo-24643920/free-photo-of-interior-of-a-casino.jpeg)',
                 }}
             />
 
-            {/* Desktop: Absolute Div with bg-fixed (Parallax Effect) */}
+            {/* Desktop: Absolute Div with bg-fixed (Parallax Effect) - z-0 to be visible over body */}
             <div
-                className="hidden md:block absolute inset-0 z-[-2] bg-cover bg-center bg-no-repeat bg-fixed h-full min-h-screen"
+                className="hidden md:block absolute inset-0 z-0 bg-cover bg-center bg-no-repeat bg-fixed h-full min-h-screen"
                 style={{
                     backgroundImage: 'url(https://images.pexels.com/photos/24643920/pexels-photo-24643920/free-photo-of-interior-of-a-casino.jpeg)',
                 }}
             />
 
-            {/* Dark Overlay (Shared) */}
-            <div className="fixed inset-0 z-[-1] bg-black/60" />
+            {/* Dark Overlay (Shared) - z-0 acts as layer on top of bg images due to DOM order */}
+            <div className="fixed inset-0 z-0 bg-black/60 md:absolute md:h-full md:min-h-screen" />
 
             <div className="relative z-10 w-full flex flex-col items-center">
                 {gameState === 'intro' && (
