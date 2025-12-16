@@ -47,10 +47,10 @@ export default function AccessibilityWidget() {
                 aria-label="תפריט נגישות"
                 title="תפריט נגישות"
             >
-                {/* Custom Accessibility Icon (Image) - User requested exact file */}
+                {/* Custom Accessibility Icon (Local File) */}
                 <div className="w-full h-full rounded-full overflow-hidden border-2 border-white/20">
                     <img
-                        src="https://accessibilityspark.com/wp-content/uploads/2021/06/153-1534140_apple-accessibility-icon-aka-vito-white-humanoid-help.jpg"
+                        src="/images/accessibility-icon.png"
                         alt="נגישות"
                         className="w-full h-full object-cover"
                     />
