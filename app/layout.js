@@ -6,6 +6,7 @@ import Header from "./components/Header";
 import Footer from "./components/Footer";
 import AnalyticsTracker from "./components/AnalyticsTracker";
 import ChatWidget from "./components/Chatbot/ChatWidget";
+import AccessibilityWidget from "./components/AccessibilityWidget";
 
 const assistant = Assistant({
   subsets: ["hebrew", "latin"],
@@ -44,6 +45,7 @@ export default function RootLayout({ children }) {
             </main>
             <Footer />
             <ChatWidget />
+            <AccessibilityWidget />
           </CartProvider>
         </body>
       </html>
