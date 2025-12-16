@@ -204,7 +204,7 @@ export default async function CatalogPage(props) {
 
                     {/* Pagination Controls */}
                     {totalPages > 1 && (
-                        <div className="mt-12 flex justify-center gap-2 flex-wrap" dir="ltr">
+                        <div className="mt-12 flex justify-center gap-2 flex-wrap" dir="rtl">
                             {/* Previous Button */}
                             {page > 1 && (
                                 <Link
@@ -214,7 +214,7 @@ export default async function CatalogPage(props) {
                                     }}
                                     className="px-4 py-2 border rounded hover:bg-gray-100 transition"
                                 >
-                                    Previous
+                                    הקודם
                                 </Link>
                             )}
 
@@ -239,8 +239,8 @@ export default async function CatalogPage(props) {
                                             query: { ...searchParams, page: p }
                                         }}
                                         className={`w-10 h-10 flex items-center justify-center rounded border transition ${p === page
-                                                ? 'bg-black text-white border-black'
-                                                : 'bg-white hover:bg-gray-50'
+                                            ? 'bg-black text-white border-black'
+                                            : 'bg-white hover:bg-gray-50'
                                             }`}
                                     >
                                         {p}
@@ -257,7 +257,7 @@ export default async function CatalogPage(props) {
                                     }}
                                     className="px-4 py-2 border rounded hover:bg-gray-100 transition"
                                 >
-                                    Next
+                                    הבא
                                 </Link>
                             )}
                         </div>
