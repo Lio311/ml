@@ -300,11 +300,6 @@ export default function ChatWidget() {
                     onClick={() => setIsOpen(!isOpen)}
                     className="bg-black text-white w-14 h-14 rounded-full shadow-lg flex items-center justify-center hover:scale-110 transition-all duration-300"
                 >
-                    {/* Notification Badge */}
-                    {!isOpen && (
-                        <span className="absolute -top-1 -right-0 bg-red-500 w-4 h-4 rounded-full border-2 border-white"></span>
-                    )}
-
                     {/* Icon Switch */}
                     {isOpen ? (
                         <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -314,6 +309,11 @@ export default function ChatWidget() {
                         <div className="relative w-full h-full rounded-full overflow-hidden border-2 border-green-500">
                             <img src={rep.image} alt="Support" className="w-full h-full object-cover" />
                         </div>
+                    )}
+
+                    {/* Online Status Badge - Green & Top Layer */}
+                    {!isOpen && (
+                        <span className="absolute top-0 right-0 bg-green-500 w-3.5 h-3.5 rounded-full border-2 border-white z-10"></span>
                     )}
                 </button>
             </div>

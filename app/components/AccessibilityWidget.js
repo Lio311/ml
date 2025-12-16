@@ -47,10 +47,14 @@ export default function AccessibilityWidget() {
                 aria-label="תפריט נגישות"
                 title="תפריט נגישות"
             >
-                {/* Accessibility Icon (Active Person - White on Blue) */}
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 text-white" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 2c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm4 14l-4-4-4 4-1.42-1.42L10 14.17v-3.76l-2.8-2.8L8.6 6.2l3.4 3.4 3.4-3.4 1.4 1.4-2.8 2.8v3.76l3.42 3.41L16 19z" />
-                </svg>
+                {/* Custom Accessibility Icon (Image) - User requested exact file */}
+                <div className="w-full h-full rounded-full overflow-hidden border-2 border-white/20">
+                    <img
+                        src="https://accessibilityspark.com/wp-content/uploads/2021/06/153-1534140_apple-accessibility-icon-aka-vito-white-humanoid-help.jpg"
+                        alt="נגישות"
+                        className="w-full h-full object-cover"
+                    />
+                </div>
             </button>
 
             {/* Close Button (X) - Allows hiding the widget */}
