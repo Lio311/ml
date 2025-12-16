@@ -43,25 +43,17 @@ export default function AccessibilityWidget() {
                 aria-label="תפריט נגישות"
                 title="תפריט נגישות"
             >
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 14l-7 7m0 0l-7-7m7 7V3" />
-                </svg>
-                {/* Simplified Accessibility Icon (Person in Circle/Wheelchair metaphor) */}
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6 absolute" fill="none" viewBox="0 0 24 24" stroke="currentColor" style={{ opacity: isOpen ? 0 : 1 }}>
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1" />
-                </svg>
-                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" viewBox="0 0 20 20" fill="currentColor" style={{ display: isOpen ? 'none' : 'block' }}>
-                    <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clipRule="evenodd" />
-                    {/* Better Icon: Standard Accessibility Icon */}
-                    <path d="M10 2a2 2 0 100 4 2 2 0 000-4zm2 5H8a1 1 0 00-1 1v2a1 1 0 001 1v6a1 1 0 002 0v-2h0v2a1 1 0 002 0V9a1 1 0 00-1-1z" />
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm9 7h-6v13h-2v-6h-2v6H9V9H1V7h6V1.24c-2-.16-4.9-1.59-5.55-4.24l-1.9 1.9-.7-1.4L2.85.5C5.05.5 8 2.5 8 2.5V7h13v2zM12 22c-4.97 0-9-4.03-9-9s4.03-9 9-9c4.97 0 9 4.03 9 9s-4.03 9-9 9zm1.25-13.88c-.37-.08-.75-.12-1.15-.12-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6c0-2.31-1.31-4.32-3.25-5.3l-.6.52v4.9z" />
+                    <path fill="none" d="M0 0h24v24H0z" />
                 </svg>
             </button>
 
             {/* Menu */}
             {isOpen && (
-                <div className="absolute bottom-16 left-0 w-64 bg-white rounded-lg shadow-xl border border-gray-200 p-4 animate-fade-in-up">
+                <div className="absolute bottom-16 left-0 w-64 bg-white rounded-lg shadow-xl border border-gray-200 p-4 animate-fade-in-up text-gray-900">
                     <div className="flex justify-between items-center mb-4 border-b pb-2">
-                        <h3 className="font-bold text-gray-800">כלי נגישות</h3>
+                        <h3 className="font-bold">כלי נגישות</h3>
                         <button onClick={resetSettings} className="text-xs text-red-500 hover:underline">איפוס</button>
                     </div>
 
@@ -70,15 +62,15 @@ export default function AccessibilityWidget() {
                         <div>
                             <label className="block text-sm text-gray-600 mb-1">גודל טקסט</label>
                             <div className="flex gap-2">
-                                <button onClick={() => setFontSize(Math.min(fontSize + 10, 150))} className="flex-1 bg-gray-100 hover:bg-gray-200 py-2 rounded text-lg font-bold">+</button>
-                                <button onClick={() => setFontSize(Math.max(fontSize - 10, 80))} className="flex-1 bg-gray-100 hover:bg-gray-200 py-2 rounded text-sm">-</button>
+                                <button onClick={() => setFontSize(Math.min(fontSize + 10, 150))} className="flex-1 bg-gray-100 hover:bg-gray-200 py-2 rounded text-lg font-bold text-black border">+</button>
+                                <button onClick={() => setFontSize(Math.max(fontSize - 10, 80))} className="flex-1 bg-gray-100 hover:bg-gray-200 py-2 rounded text-sm text-black border">-</button>
                             </div>
                         </div>
 
                         {/* Toggles */}
                         <button
                             onClick={() => setIsHighContrast(!isHighContrast)}
-                            className={`w-full flex justify-between items-center p-2 rounded ${isHighContrast ? 'bg-black text-yellow-400' : 'bg-gray-50 text-gray-800'}`}
+                            className={`w-full flex justify-between items-center p-2 rounded border transition-colors ${isHighContrast ? 'bg-black text-yellow-400 border-yellow-400 font-bold' : 'bg-gray-50 text-gray-800'}`}
                         >
                             <span>ניגודיות גבוהה</span>
                             <span>{isHighContrast ? 'פעיל' : 'כבוי'}</span>
@@ -86,7 +78,7 @@ export default function AccessibilityWidget() {
 
                         <button
                             onClick={() => setAreLinksHighlighted(!areLinksHighlighted)}
-                            className={`w-full flex justify-between items-center p-2 rounded ${areLinksHighlighted ? 'bg-yellow-100 ring-2 ring-yellow-400' : 'bg-gray-50 text-gray-800'}`}
+                            className={`w-full flex justify-between items-center p-2 rounded border transition-colors ${areLinksHighlighted ? 'bg-yellow-100 ring-2 ring-yellow-400 text-black' : 'bg-gray-50 text-gray-800'}`}
                         >
                             <span>הדגשת קישורים</span>
                             <span>{areLinksHighlighted ? 'פעיל' : 'כבוי'}</span>
@@ -97,17 +89,17 @@ export default function AccessibilityWidget() {
 
             <style jsx global>{`
                 .high-contrast {
-                    filter: contrast(120%);
+                    filter: invert(100%) hue-rotate(180deg) brightness(1.1) contrast(1.2);
                     background-color: #000 !important;
-                    color: #fff !important;
                 }
-                .high-contrast img {
-                    filter: brightness(80%);
+                .high-contrast img, .high-contrast video, .high-contrast iframe, .high-contrast .fixed {
+                    filter: invert(100%) hue-rotate(180deg);
                 }
                 .highlight-links a {
                     background-color: yellow !important;
                     color: black !important;
                     text-decoration: underline !important;
+                    font-weight: bold !important;
                 }
             `}</style>
         </div>

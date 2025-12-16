@@ -102,7 +102,8 @@ export default function ChatWidget() {
         }
 
         // 2. Recommendations / General Help
-        if (lowerText.includes('המלצה') || lowerText.includes('מומלץ') || lowerText.includes('טובים') || lowerText.includes('בושם טוב') || lowerText.includes('recommend') || lowerText.includes('גברים') || lowerText.includes('נשים') || lowerText.includes('תן לי') || lowerText.includes('מה את')) {
+        const recKeywords = ['המלצה', 'מומלץ', 'טובים', 'בושם טוב', 'recommend', 'גברים', 'נשים', 'תן לי', 'מה את', 'תמליץ', 'בסט', 'מובילים', 'נמכרים', 'פופולרי', 'הכי'];
+        if (recKeywords.some(k => lowerText.includes(k))) {
             return {
                 id: Date.now(),
                 text: "בשמחה! 💖\nהכנתי לך רשימה של הבשמים הכי נמכרים ואהובים אצלנו באתר. שווה להציץ!",
