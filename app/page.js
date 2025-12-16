@@ -75,7 +75,7 @@ export default async function Home() {
             <h2 className="text-xs md:text-sm font-sans tracking-[0.2em] uppercase mb-1 opacity-90 animate-fadeIn font-bold">
               Discover Your Signature Scent
             </h2>
-            <h1 className="text-4xl md:text-5xl mb-4 font-['var(--font-great-vibes)'] text-black leading-tight tracking-wide">
+            <h1 className="text-4xl md:text-5xl mb-4 font-['var(--font-dancing-script)'] text-black leading-tight tracking-wide">
               Niche & Boutique <br />
               Sample Collections
             </h1>
