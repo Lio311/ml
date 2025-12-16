@@ -64,10 +64,19 @@ export default function CartPage() {
     }, [freeSamplesCount]);
 
     // Fetch Upsell Suggestions
+    // Fetch Upsell Suggestions
     useEffect(() => {
         const fetchUpsell = async () => {
             try {
-                const res = await fetch('/api/products/upsell');
+                // Pass current cart IDs to exclude them from suggestions
+                const excludedIds = cartItems.map(item => item.id);
+
+                const res = await fetch('/api/products/upsell', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ excludedIds })
+                });
+
                 if (res.ok) {
                     const products = await res.json();
                     setUpsellProducts(products);
@@ -76,8 +85,10 @@ export default function CartPage() {
                 console.error("Failed to fetch upsell products", err);
             }
         };
-        fetchUpsell();
-    }, []);
+        if (cartItems.length > 0) {
+            fetchUpsell();
+        }
+    }, [cartItems.length]); // Re-fetch if cart item count changes (e.g. added something, maybe remove it from upsell)
 
     // Trigger Wheel if > 1200
     useEffect(() => {
