@@ -7,6 +7,7 @@ import Image from 'next/image';
 import { SignInButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs';
 import { useCart } from '../context/CartContext';
 import LanguageSwitcher from './LanguageSwitcher';
+import SearchAutocomplete from './SearchAutocomplete';
 
 export default function Header() {
     const { cartItems } = useCart();
@@ -57,22 +58,8 @@ export default function Header() {
                             </SignInButton>
                         </SignedOut>
 
-                        {/* Search Bar */}
-                        <form action="/catalog" method="get" className="relative group">
-                            <input
-                                type="text"
-                                name="q"
-                                placeholder="חיפוש..."
-                                value={searchQuery}
-                                onChange={(e) => setSearchQuery(e.target.value)}
-                                className={`border-b border-gray-300 py-1 px-2 text-sm focus:outline-none focus:border-black transition-all bg-transparent ${searchQuery.length > 0 ? 'w-48' : 'w-24 focus:w-48'}`}
-                            />
-                            <button type="submit" className="absolute left-0 top-1 text-gray-400 group-focus-within:text-black hover:text-black">
-                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                                </svg>
-                            </button>
-                        </form>
+                        {/* Search Bar - Smart Autocomplete */}
+                        <SearchAutocomplete />
                     </div>
 
                     {/* Desktop CENTER Group: Logo + Menu */}
