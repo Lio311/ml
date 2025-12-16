@@ -35,12 +35,12 @@ export default function ChatWidget() {
         setRep(selectedRep);
 
         const helpVerb = selectedRep.gender === 'female' ? 'יכולה' : 'יכול';
-        
+
         const initialMessages = [
             { id: 1, text: `היי! 👋 אני ${selectedRep.name} מ-ml_tlv. איך אני ${helpVerb} לעזור לך היום?`, sender: 'bot', type: 'text' },
-            { 
-                id: 2, 
-                type: 'faq_options', 
+            {
+                id: 2,
+                type: 'faq_options',
                 sender: 'bot',
                 options: [
                     "מה הבשמים הכי נמכרים?",
@@ -51,7 +51,7 @@ export default function ChatWidget() {
                 ]
             }
         ];
-        
+
         setMessages(initialMessages);
     }, []);
 
@@ -122,7 +122,7 @@ export default function ChatWidget() {
                 const cleanQuery = text.replace('יש לכם', '').replace('האם', '').replace('במלאי', '').replace('את', '').replace('יש', '').trim();
 
                 if (cleanQuery.length < 2) {
-                     return { id: Date.now(), text: "איזה בושם את/ה מחפש/ת? תרשום/י לי את השם ואבדוק מיד! 🔎", sender: 'bot', type: 'text' };
+                    return { id: Date.now(), text: "איזה בושם את/ה מחפש/ת? תרשום/י לי את השם ואבדוק מיד! 🔎", sender: 'bot', type: 'text' };
                 }
 
                 const res = await fetch(`/api/search/autocomplete?q=${encodeURIComponent(cleanQuery)}`);
