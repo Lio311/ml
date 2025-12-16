@@ -15,13 +15,24 @@ export async function generateMetadata(props) {
     let description = "כל דוגמיות הבשמים שלנו במקום אחד.";
 
     if (brand) {
-        const brandName = Array.isArray(brand) ? brand[0] : brand;
-        title = `בשמי ${brandName} | ml_tlv`;
-        description = `קולקציית דוגמיות ${brandName} המלאה שלנו.`;
+        const rawBrand = Array.isArray(brand) ? brand[0] : brand;
+        const brandName = rawBrand ? decodeURIComponent(rawBrand).trim() : '';
+
+        if (brandName) {
+            title = `בשמי ${brandName} | ml_tlv`;
+            description = `קולקציית דוגמיות ${brandName} המלאה שלנו.`;
+        }
     } else if (category) {
-        const catName = Array.isArray(category) ? category[0] : category;
-        title = `בשמי ${catName} | ml_tlv`;
-        description = `מבחר בשמי ${catName} ייחודיים בדוגמיות.`;
+        const rawCat = Array.isArray(category) ? category[0] : category;
+        const catName = rawCat ? decodeURIComponent(rawCat).trim() : '';
+
+        if (catName === 'אין בארץ') {
+            title = "בשמים שאין בארץ | ml_tlv";
+            description = "קולקציית בשמים נדירים שלא ניתן להשיג בארץ.";
+        } else if (catName) {
+            title = `בשמי ${catName} | ml_tlv`;
+            description = `מבחר בשמי ${catName} ייחודיים בדוגמיות.`;
+        }
     } else if (q) {
         title = `תוצאות חיפוש: ${q} | ml_tlv`;
     }
