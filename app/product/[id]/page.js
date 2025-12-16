@@ -24,7 +24,7 @@ export async function generateMetadata(props) {
     }
 
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://ml-tlv.vercel.app';
-    const title = `${product.name} | דוגמית בושם מקורי - ml_tlv`;
+    const title = `${product.name} | החל מ-${product.price_2ml}₪`;
     const description = product.description ? product.description.substring(0, 160) : `קנו דוגמית של ${product.name} באתר ml_tlv. בשמים מקוריים ומיוחדים.`;
     const imageUrl = product.image_url || `${baseUrl}/logo_v3.png`;
 
