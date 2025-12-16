@@ -42,10 +42,11 @@ export async function POST(req) {
                     const historyRes = await client.query(`
                         SELECT DISTINCT ON (p.id) p.id, p.name, p.brand, p.model, p.image_url, p.price_2ml, p.price_5ml, p.price_10ml, p.stock
                         FROM product_views v
-                        JOIN products p ON v.product_id = p.id
+                        JOIN products p ON v.product_id::text = p.id::text
                         WHERE v.user_id = $1 
                         AND v.viewed_at > NOW() - INTERVAL '24 hours' -- Last 24 hours
                         AND p.stock > 0
+                        ORDER BY p.id, v.viewed_at DESC
                     `, [userId]);
 
                     const historyItems = historyRes.rows.filter(p =>
