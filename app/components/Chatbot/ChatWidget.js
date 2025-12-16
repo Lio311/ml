@@ -239,13 +239,13 @@ export default function ChatWidget() {
                                                 rel="noopener noreferrer"
                                                 className="block w-full text-center bg-gradient-to-r from-purple-500 to-pink-500 text-white py-2 px-4 rounded-xl text-xs font-bold hover:opacity-90 transition"
                                             >
-                                                פנייה באינסטגרם 📸
+                                                פנייה באינסטגרם
                                             </a>
                                             <Link
                                                 href="/contact"
                                                 className="block w-full text-center bg-black text-white py-2 px-4 rounded-xl text-xs font-bold hover:bg-gray-800 transition"
                                             >
-                                                פנייה בדף צור קשר 📩
+                                                פנייה בדף צור קשר
                                             </Link>
                                         </div>
                                     )}
