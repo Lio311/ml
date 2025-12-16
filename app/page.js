@@ -58,14 +58,14 @@ export default async function Home() {
     <div className="flex flex-col min-h-screen">
 
       {/* Hero Section */}
-      <section className="relative h-[50dvh] w-full m-0 p-0 overflow-hidden bg-white block">
+      <section className="relative h-[40vh] md:h-[50vh] w-full m-0 p-0 overflow-hidden bg-white block">
         {/* Decorative Background Video - Scaled slightly to prevent black lines */}
         <video
           autoPlay
           loop
           muted
           playsInline
-          className="absolute inset-0 w-full h-full object-cover scale-[1.02]"
+          className="absolute inset-0 w-full h-full object-cover scale-[1.05]"
         >
           <source src="/hero-video.mp4" type="video/mp4" />
         </video>

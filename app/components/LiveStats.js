@@ -33,7 +33,7 @@ function Counter({ end, duration = 2000, prefix = "" }) {
 
 export default function LiveStats({ stats }) {
     return (
-        <section className="bg-black text-white py-8 border-t border-gray-800 relative z-20">
+        <section className="bg-black text-white py-4 border-t border-gray-800 relative z-20">
             <div className="container mx-auto px-4">
                 <div className="grid grid-cols-3 gap-4 text-center divide-x divide-gray-800 rtl:divide-x-reverse">
                     <div className="flex flex-col items-center">
