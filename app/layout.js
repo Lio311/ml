@@ -14,7 +14,7 @@ const assistant = Assistant({
 
 export const metadata = {
   title: "יוקרה בחתיכות קטנות",
-  description: "חנות דוגמיות בשמים הגדולה בישראל. בשמי נישה, בוטיק ועוד.",
+  description: "חנות דוגמיות בשמים בקונספט קצת שונה. מגוון בשמי בוטיק, נישה ודיזיינר במחירים הוגנים",
 };
 
 import { CartProvider } from "./context/CartContext";
