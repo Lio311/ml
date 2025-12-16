@@ -39,19 +39,18 @@ export default function AccessibilityWidget() {
             {/* Main Toggle Button */}
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="bg-blue-600 text-white w-12 h-12 rounded-full shadow-lg flex items-center justify-center hover:bg-blue-700 transition focus:outline-none focus:ring-4 focus:ring-blue-300"
+                className="bg-blue-600 text-white w-12 h-12 rounded-full shadow-lg flex items-center justify-center hover:bg-blue-700 transition focus:outline-none focus:ring-4 focus:ring-blue-300 relative z-50"
                 aria-label="תפריט נגישות"
                 title="תפריט נגישות"
             >
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" viewBox="0 0 24 24" fill="currentColor">
                     <path d="M12 2c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm9 7h-6v13h-2v-6h-2v6H9V9H1V7h6V1.24c-2-.16-4.9-1.59-5.55-4.24l-1.9 1.9-.7-1.4L2.85.5C5.05.5 8 2.5 8 2.5V7h13v2zM12 22c-4.97 0-9-4.03-9-9s4.03-9 9-9c4.97 0 9 4.03 9 9s-4.03 9-9 9zm1.25-13.88c-.37-.08-.75-.12-1.15-.12-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6c0-2.31-1.31-4.32-3.25-5.3l-.6.52v4.9z" />
-                    <path fill="none" d="M0 0h24v24H0z" />
                 </svg>
             </button>
 
             {/* Menu */}
             {isOpen && (
-                <div className="absolute bottom-16 left-0 w-64 bg-white rounded-lg shadow-xl border border-gray-200 p-4 animate-fade-in-up text-gray-900">
+                <div className="absolute bottom-16 left-0 w-64 bg-white rounded-lg shadow-xl border border-gray-200 p-4 animate-fade-in-up text-gray-900 z-50">
                     <div className="flex justify-between items-center mb-4 border-b pb-2">
                         <h3 className="font-bold">כלי נגישות</h3>
                         <button onClick={resetSettings} className="text-xs text-red-500 hover:underline">איפוס</button>
@@ -88,13 +87,35 @@ export default function AccessibilityWidget() {
             )}
 
             <style jsx global>{`
-                .high-contrast {
+                /* Apply High Contrast Filter ONLY to Main Content Areas */
+                .high-contrast header,
+                .high-contrast main,
+                .high-contrast footer {
                     filter: invert(100%) hue-rotate(180deg) brightness(1.1) contrast(1.2);
                     background-color: #000 !important;
                 }
-                .high-contrast img, .high-contrast video, .high-contrast iframe, .high-contrast .fixed {
+
+                /* Ensure images inside those areas are re-inverted to look normal */
+                .high-contrast header img,
+                .high-contrast main img,
+                .high-contrast footer img,
+                .high-contrast header video,
+                .high-contrast main video,
+                .high-contrast footer video {
                     filter: invert(100%) hue-rotate(180deg);
                 }
+
+                /* Explicitly style the widgets for High Contrast (No filter) */
+                .high-contrast button {
+                    border: 1px solid yellow !important;
+                }
+
+                /* Adjust Accessibility & Chat Widgets backgrounds/colors manually if needed */
+                .high-contrast .fixed {
+                   /* Ensure fixed elements like this widget remain visible */
+                   z-index: 100 !important;
+                }
+
                 .highlight-links a {
                     background-color: yellow !important;
                     color: black !important;
