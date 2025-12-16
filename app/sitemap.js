@@ -1,4 +1,4 @@
-import pool from '../lib/db';
+import pool from './lib/db';
 
 export default async function sitemap() {
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://ml-tlv.vercel.app';
