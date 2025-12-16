@@ -23,6 +23,9 @@ export default function CartPage() {
     const [couponError, setCouponError] = useState('');
     const [isValidatingCoupon, setIsValidatingCoupon] = useState(false);
 
+    // Order Notes State
+    const [notes, setNotes] = useState('');
+
     const handleApplyCoupon = async () => {
         if (!couponInput) return;
         setIsValidatingCoupon(true);
@@ -138,7 +141,8 @@ export default function CartPage() {
                 body: JSON.stringify({
                     items: cartItems,
                     total: total,
-                    freeSamples: freeSamplesCount
+                    freeSamples: freeSamplesCount,
+                    notes: notes
                 })
             });
 
@@ -337,6 +341,18 @@ export default function CartPage() {
                                         )}
                                     </div>
                                 )}
+                            </div>
+
+                            {/* Order Notes */}
+                            <div className="py-2">
+                                <label className="text-sm font-bold text-gray-700 mb-2 block">הערות להזמנה (אופציונלי):</label>
+                                <textarea
+                                    className="w-full p-3 border rounded-lg text-sm focus:ring-2 focus:ring-gray-900 outline-none resize-none bg-white"
+                                    rows="3"
+                                    placeholder="בקשות מיוחדות לימי הולדת / אריזה / שליח..."
+                                    value={notes}
+                                    onChange={(e) => setNotes(e.target.value)}
+                                ></textarea>
                             </div>
 
                             <div className="flex justify-between text-lg">

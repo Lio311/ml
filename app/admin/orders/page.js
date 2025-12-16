@@ -91,6 +91,12 @@ export default async function AdminOrdersPage() {
                                 <td className="p-4">
                                     <div className="font-bold">{order.customer_details?.name}</div>
                                     <div className="text-xs text-gray-500">{order.customer_details?.email}</div>
+                                    {order.notes && (
+                                        <div className="mt-2 text-xs bg-yellow-50 p-2 rounded border border-yellow-200 text-gray-800 max-w-[200px] break-words">
+                                            <span className="font-bold block mb-1">📝 הערות:</span>
+                                            {order.notes}
+                                        </div>
+                                    )}
                                 </td>
                                 <td className="p-4 text-sm">
                                     <ul className="space-y-1">

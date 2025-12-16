@@ -13,7 +13,7 @@ export async function POST(req) {
         }
 
         const body = await req.json();
-        const { items, total, freeSamples } = body;
+        const { items, total, freeSamples, notes } = body;
 
         if (!items || items.length === 0) {
             return NextResponse.json({ error: 'Cart is empty' }, { status: 400 });
@@ -33,10 +33,10 @@ export async function POST(req) {
             };
 
             const orderResult = await client.query(
-                `INSERT INTO orders (customer_details, total_amount, items, free_samples_count, status)
-         VALUES ($1, $2, $3, $4, 'pending')
+                `INSERT INTO orders (customer_details, total_amount, items, free_samples_count, status, notes)
+         VALUES ($1, $2, $3, $4, 'pending', $5)
          RETURNING id`,
-                [JSON.stringify(customerDetails), total, JSON.stringify(items), freeSamples]
+                [JSON.stringify(customerDetails), total, JSON.stringify(items), freeSamples, notes || '']
             );
 
             const orderId = orderResult.rows[0].id;
@@ -58,7 +58,7 @@ export async function POST(req) {
             // Send Confirmation Email (Async, don't block response)
             const userEmail = user?.emailAddresses[0]?.emailAddress;
             if (userEmail) {
-                const html = getOrderConfirmationTemplate(orderId, items, total, freeSamples);
+                const html = getOrderConfirmationTemplate(orderId, items, total, freeSamples, notes);
                 sendEmail(userEmail, `אישור הזמנה #${orderId} - ml_tlv`, html);
             }
 
