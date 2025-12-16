@@ -9,6 +9,56 @@ import FragrancePyramid from "../../components/FragrancePyramid";
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
+export async function generateMetadata(props) {
+    const params = await props.params;
+    const { id } = params;
+
+    const res = await pool.query(`SELECT * FROM products WHERE id = $1`, [id]);
+    const product = res.rows[0];
+
+    if (!product) {
+        return {
+            title: "מוצר לא נמצא | ml_tlv",
+            description: "הבושם שחיפשת לא נמצא.",
+        };
+    }
+
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://ml-tlv.vercel.app';
+    const title = `${product.name} | דוגמית בושם מקורי - ml_tlv`;
+    const description = product.description ? product.description.substring(0, 160) : `קנו דוגמית של ${product.name} באתר ml_tlv. בשמים מקוריים ומיוחדים.`;
+    const imageUrl = product.image_url || `${baseUrl}/logo_v3.png`;
+
+    return {
+        title: title,
+        description: description,
+        alternates: {
+            canonical: `${baseUrl}/product/${product.id}`,
+        },
+        openGraph: {
+            title: title,
+            description: description,
+            url: `${baseUrl}/product/${product.id}`,
+            siteName: 'ml_tlv',
+            images: [
+                {
+                    url: imageUrl,
+                    width: 800,
+                    height: 800,
+                    alt: product.name,
+                },
+            ],
+            locale: 'he_IL',
+            type: 'website',
+        },
+        twitter: {
+            card: 'summary_large_image',
+            title: title,
+            description: description,
+            images: [imageUrl],
+        },
+    };
+}
+
 export default async function ProductPage(props) {
     const params = await props.params;
     const { id } = params;
@@ -169,6 +219,41 @@ export default async function ProductPage(props) {
                                         "availability": (product.stock && product.stock > 0) ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
                                         "itemCondition": "https://schema.org/NewCondition"
                                     }
+                                })
+                            }}
+                        />
+                        <script
+                            type="application/ld+json"
+                            dangerouslySetInnerHTML={{
+                                __html: JSON.stringify({
+                                    "@context": "https://schema.org",
+                                    "@type": "BreadcrumbList",
+                                    "itemListElement": [
+                                        {
+                                            "@type": "ListItem",
+                                            "position": 1,
+                                            "name": "בית",
+                                            "item": "https://ml-tlv.vercel.app"
+                                        },
+                                        {
+                                            "@type": "ListItem",
+                                            "position": 2,
+                                            "name": "קטלוג",
+                                            "item": "https://ml-tlv.vercel.app/catalog"
+                                        },
+                                        {
+                                            "@type": "ListItem",
+                                            "position": 3,
+                                            "name": product.category || "כללי",
+                                            "item": `https://ml-tlv.vercel.app/catalog?category=${encodeURIComponent(product.category || '')}`
+                                        },
+                                        {
+                                            "@type": "ListItem",
+                                            "position": 4,
+                                            "name": product.name,
+                                            "item": `https://ml-tlv.vercel.app/product/${product.id}`
+                                        }
+                                    ]
                                 })
                             }}
                         />

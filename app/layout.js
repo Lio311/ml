@@ -52,6 +52,24 @@ export default function RootLayout({ children }) {
             <Footer />
             <ChatWidget />
             <AccessibilityWidget />
+
+            {/* SEO: Organization Schema */}
+            <script
+              type="application/ld+json"
+              dangerouslySetInnerHTML={{
+                __html: JSON.stringify({
+                  "@context": "https://schema.org",
+                  "@type": "Organization",
+                  "name": "ml_tlv",
+                  "url": "https://ml-tlv.vercel.app",
+                  "logo": "https://ml-tlv.vercel.app/logo_v3.png",
+                  "description": "Luxury Niche Perfume Samples in Israel",
+                  "sameAs": [
+                    "https://instagram.com/ml_tlv"
+                  ]
+                })
+              }}
+            />
           </CartProvider>
         </body>
       </html>
