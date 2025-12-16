@@ -13,14 +13,16 @@ async function getProducts(search, brand, category, minPrice, maxPrice, sort, pa
     const OFFSET = (page - 1) * LIMIT;
 
     let query = `
-    SELECT * FROM products 
-    WHERE active = true
+    SELECT p.*, COALESCE(ps.sales_count, 0) as sales_count 
+    FROM products p
+    LEFT JOIN product_sales ps ON p.id = ps.product_id
+    WHERE p.active = true
   `;
     const params = [];
 
     if (search) {
         params.push(`%${search}%`);
-        query += ` AND name ILIKE $${params.length}`;
+        query += ` AND p.name ILIKE $${params.length}`;
     }
 
     if (brand) {
@@ -31,7 +33,7 @@ async function getProducts(search, brand, category, minPrice, maxPrice, sort, pa
         if (brands.length > 0) {
             // "brand IN (...)"
             const placeHolders = brands.map((_, i) => `$${params.length + i + 1}`).join(', ');
-            query += ` AND brand IN (${placeHolders})`;
+            query += ` AND p.brand IN (${placeHolders})`;
             params.push(...brands);
         }
     }
@@ -152,9 +154,11 @@ export default async function CatalogPage(props) {
     const allBrands = await getBrands();
     const allCategories = await getCategories();
 
+    const pageTitle = sort === 'bestsellers' ? 'הנמכרים ביותר 🏆' : 'הקטלוג המלא';
+
     return (
         <div className="container py-12">
-            <h1 className="text-3xl font-serif font-bold mb-8 text-center">הקטלוג המלא</h1>
+            <h1 className="text-3xl font-serif font-bold mb-8 text-center">{pageTitle}</h1>
 
             <div className="flex flex-col md:flex-row gap-8">
 
