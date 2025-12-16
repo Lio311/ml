@@ -4,15 +4,38 @@ import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
+const REPRESENTATIVES = [
+    { name: 'רון', role: 'שירות לקוחות', image: '/images/team/ron.jpg' },
+    { name: 'אריאל', role: 'שירות לקוחות', image: '/images/team/ariel.jpg' },
+    { name: 'קורל', role: 'שירות לקוחות', image: '/images/team/coral.jpg' },
+    { name: 'נטלי', role: 'שירות לקוחות', image: '/images/team/natalie.jpg' },
+];
+
 export default function ChatWidget() {
     const [isOpen, setIsOpen] = useState(false);
-    const [messages, setMessages] = useState([
-        { id: 1, text: "היי! 👋 אני הבוט של ml_tlv. איך אני יכול לעזור לך היום?", sender: 'bot', type: 'text' }
-    ]);
+    const [rep, setRep] = useState(REPRESENTATIVES[0]);
+    const [messages, setMessages] = useState([]);
     const [input, setInput] = useState("");
     const [isTyping, setIsTyping] = useState(false);
     const scrollRef = useRef(null);
     const router = useRouter();
+
+    // Initialize Representative based on date
+    useEffect(() => {
+        const today = new Date();
+        const start = new Date(today.getFullYear(), 0, 0);
+        const diff = today - start;
+        const oneDay = 1000 * 60 * 60 * 24;
+        const dayOfYear = Math.floor(diff / oneDay);
+
+        const repIndex = dayOfYear % REPRESENTATIVES.length;
+        const selectedRep = REPRESENTATIVES[repIndex];
+        setRep(selectedRep);
+
+        setMessages([
+            { id: 1, text: `היי! 👋 אני ${selectedRep.name} מ-ml_tlv. איך אני יכול/ה לעזור לך היום?`, sender: 'bot', type: 'text' }
+        ]);
+    }, []);
 
     // Auto-scroll to bottom of chat
     useEffect(() => {
@@ -78,23 +101,49 @@ export default function ChatWidget() {
             };
         }
 
-        // 2. Product Search Intent
-        const isSearch = lowerText.startsWith('יש לכם') || lowerText.startsWith('מחפש') || lowerText.includes('בושם') || lowerText.length > 2; // Broad catch
+        // 2. Recommendations / General Help
+        if (lowerText.includes('המלצה') || lowerText.includes('מומלץ') || lowerText.includes('טובים') || lowerText.includes('בושם טוב') || lowerText.includes('recommend') || lowerText.includes('גברים') || lowerText.includes('נשים')) {
+            return {
+                id: Date.now(),
+                text: "שאלה מצוינת! 😍\nיש לנו המון בשמים מעולים. אני ממליץ/ה לנסות את ה-Bestsellers שלנו או להשתמש במערכת התאמת הניחוחות באתר!",
+                sender: 'bot',
+                type: 'text'
+            };
+        }
 
-        if (isSearch) {
+        // 3. Product Search Intent (Improved)
+        // Check for specific keywords OR if the query is short enough to be a product name (2-3 words) and NOT a common sentence
+        const isExample = lowerText.includes('יש לכם') || lowerText.includes('במלאי') || lowerText.includes('מחפש');
+        const isShortQuery = text.split(' ').length <= 4 && text.length > 2;
+
+        if (isExample || isShortQuery) {
             try {
-                // Extract search term - naive logic: take the whole phrase or try to clean it
-                // Better: just search the whole phrase as 'q'
-                const res = await fetch(`/api/search/autocomplete?q=${encodeURIComponent(text)}`);
+                // Remove common filler words to get the product name
+                const cleanQuery = text.replace('יש לכם', '').replace('האם', '').replace('במלאי', '').replace('את', '').replace('יש', '').trim();
+
+                if (cleanQuery.length < 2) {
+                    // If query was just "יש לכם?"
+                    return { id: Date.now(), text: "איזה בושם את/ה מחפש/ת? תרשום/י לי את השם ואבדוק מיד! 🔎", sender: 'bot', type: 'text' };
+                }
+
+                const res = await fetch(`/api/search/autocomplete?q=${encodeURIComponent(cleanQuery)}`);
                 const data = await res.json();
 
                 if (data.results && data.results.length > 0) {
                     return {
                         id: Date.now(),
-                        text: `מצאתי ${data.results.length} תוצאות עבורך:`,
+                        text: `מצאתי ${data.results.length} תוצאות עבור "${cleanQuery}":`,
                         sender: 'bot',
                         type: 'products',
                         data: data.results
+                    };
+                } else if (isExample) {
+                    // Clearly looking for something but not found
+                    return {
+                        id: Date.now(),
+                        text: `לא מצאתי את "${cleanQuery}" באתר כרגע... 😔\nאולי תרצה/י שנבדוק במחסן או נציע משהו דומה?`,
+                        sender: 'bot',
+                        type: 'fallback_instagram'
                     };
                 }
             } catch (e) {
@@ -102,10 +151,10 @@ export default function ChatWidget() {
             }
         }
 
-        // 3. Fallback -> Instagram Handoff
+        // 4. Fallback -> Instagram Handoff
         return {
             id: Date.now(),
-            text: "הממ... אני לא בטוח לגבי זה. 🤔\nאני אשמח לקשר אותך לנציג אנושי באינסטגרם שיוכל לעזור מיד!",
+            text: "הממ... שאלה טובה. 🤔\nבוא/י נעבור לאינסטגרם, שם אוכל לתת לך מענה מהיר ומדויק יותר!",
             sender: 'bot',
             type: 'fallback_instagram'
         };
@@ -116,16 +165,16 @@ export default function ChatWidget() {
             {/* Chat Window */}
             {isOpen && (
                 <div className="mb-4 w-80 md:w-96 bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden flex flex-col max-h-[500px] transition-all duration-300 transform origin-bottom-right">
-                    {/* Header */}
+                    {/* Header with Rep Info */}
                     <div className="bg-black text-white p-4 flex justify-between items-center">
-                        <div className="flex items-center gap-2">
-                            <div className="relative">
-                                <div className="w-2 h-2 bg-green-500 rounded-full absolute bottom-0 right-0 border border-black"></div>
-                                <span className="text-2xl">🤖</span>
+                        <div className="flex items-center gap-3">
+                            <div className="relative w-10 h-10 rounded-full overflow-hidden border-2 border-green-500">
+                                <img src={rep.image} alt={rep.name} className="w-full h-full object-cover" />
+                                <div className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full border border-white"></div>
                             </div>
                             <div>
-                                <h3 className="font-bold text-sm">ml_tlv Support</h3>
-                                <div className="text-[10px] opacity-75">Online Now</div>
+                                <h3 className="font-bold text-sm">{rep.name}</h3>
+                                <div className="text-[10px] opacity-75">{rep.role} • מחובר/ת כעת</div>
                             </div>
                         </div>
                         <button onClick={() => setIsOpen(false)} className="text-white hover:text-gray-300">
@@ -164,7 +213,7 @@ export default function ChatWidget() {
                                     {/* Instagram CTA */}
                                     {msg.type === 'fallback_instagram' && (
                                         <a
-                                            href="https://ig.me/m/ml_tlv"
+                                            href="https://instagram.com/ml_tlv"
                                             target="_blank"
                                             rel="noopener noreferrer"
                                             className="mt-3 flex items-center justify-center gap-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white py-2 px-4 rounded-full text-xs font-bold hover:opacity-90 transition transform hover:scale-105"
@@ -203,7 +252,8 @@ export default function ChatWidget() {
                             disabled={!input.trim()}
                             className="bg-black text-white w-10 h-10 rounded-full flex items-center justify-center disabled:opacity-50 hover:scale-105 transition"
                         >
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 transform rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            {/* Rotated -90 degrees (270) to point Left for RTL Send */}
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 transform -rotate-90" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
                             </svg>
                         </button>
@@ -227,9 +277,9 @@ export default function ChatWidget() {
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                     </svg>
                 ) : (
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-7 w-7" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
-                    </svg>
+                    <div className="relative w-full h-full rounded-full overflow-hidden border-2 border-green-500">
+                        <img src={rep.image} alt="Support" className="w-full h-full object-cover" />
+                    </div>
                 )}
 
                 {/* Tooltip */}
