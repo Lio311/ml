@@ -44,7 +44,7 @@ export default function AccessibilityWidget() {
                 title="תפריט נגישות"
             >
                 <svg xmlns="http://www.w3.org/2000/svg" className="h-6 w-6" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 2c1.1 0 2 .9 2 2s-.9 2-2 2-2-.9-2-2 .9-2 2-2zm9 7h-6v13h-2v-6h-2v6H9V9H1V7h6V1.24c-2-.16-4.9-1.59-5.55-4.24l-1.9 1.9-.7-1.4L2.85.5C5.05.5 8 2.5 8 2.5V7h13v2zM12 22c-4.97 0-9-4.03-9-9s4.03-9 9-9c4.97 0 9 4.03 9 9s-4.03 9-9 9zm1.25-13.88c-.37-.08-.75-.12-1.15-.12-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6c0-2.31-1.31-4.32-3.25-5.3l-.6.52v4.9z" />
+                    <path d="M19 13v-2c-1.54.02-3.09-.75-4.07-1.83l-1.29-1.43c-.17-.19-.38-.34-.61-.45-.01 0-.01-.01-.01-.02-.01H13c-.35-.2-.75-.3-1.19-.26C10.76 7.11 10 8.04 10 9.09V15c0 1.1.9 2 2 2h5v5h2v-5.5c0-1.1-.9-2-2-2h-3v-3.45c1.29 1.07 3.25 1.94 5 1.95zm-6.17 5c-.41 1.16-1.52 2-2.83 2-1.66 0-3-1.34-3-3 0-1.31.84-2.41 2-2.83V12.1a5 5 0 1 0 1.22 9.3 5.53 5.53 0 0 0 4.61-2.4M12 6c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z" />
                 </svg>
             </button>
 
@@ -87,35 +87,81 @@ export default function AccessibilityWidget() {
             )}
 
             <style jsx global>{`
-                /* Apply High Contrast Filter ONLY to Main Content Areas */
+                /* Robust Yellow-on-Black High Contrast Theme */
+                
+                /* Force Colors on Standard Elements */
+                .high-contrast,
+                .high-contrast body,
                 .high-contrast header,
+                .high-contrast nav,
                 .high-contrast main,
-                .high-contrast footer {
-                    filter: invert(100%) hue-rotate(180deg) brightness(1.1) contrast(1.2);
+                .high-contrast footer,
+                .high-contrast section,
+                .high-contrast article,
+                .high-contrast aside,
+                .high-contrast div:not([class*="fixed"]):not([class*="absolute"]),
+                .high-contrast span,
+                .high-contrast p,
+                .high-contrast h1, .high-contrast h2, .high-contrast h3, .high-contrast h4, .high-contrast h5, .high-contrast h6,
+                .high-contrast li,
+                .high-contrast table, .high-contrast th, .high-contrast td {
                     background-color: #000 !important;
+                    color: #FFD700 !important;
+                    border-color: #FFD700 !important;
+                    box-shadow: none !important;
+                    text-shadow: none !important;
                 }
 
-                /* Ensure images inside those areas are re-inverted to look normal */
-                .high-contrast header img,
-                .high-contrast main img,
-                .high-contrast footer img,
-                .high-contrast header video,
-                .high-contrast main video,
-                .high-contrast footer video {
-                    filter: invert(100%) hue-rotate(180deg);
+                /* Fix Inputs and Buttons */
+                .high-contrast a,
+                .high-contrast button:not([class*="fixed"]),
+                .high-contrast input,
+                .high-contrast select,
+                .high-contrast textarea {
+                    background-color: #000 !important;
+                    color: #FFD700 !important;
+                    border: 2px solid #FFD700 !important;
+                }
+                
+                /* SVGs inside High Contrast content */
+                .high-contrast header svg,
+                .high-contrast main svg,
+                .high-contrast footer svg,
+                .high-contrast nav svg {
+                     fill: #FFD700 !important;
+                     stroke: #FFD700 !important;
+                }
+                .high-contrast .no-fill-svg {
+                    fill: none !important;
                 }
 
-                /* Explicitly style the widgets for High Contrast (No filter) */
-                .high-contrast button {
-                    border: 1px solid yellow !important;
+                /* Ensure Images remain natural but with a border */
+                .high-contrast img {
+                    filter: none !important;
+                    border: 1px solid #FFD700 !important;
+                    opacity: 1 !important;
                 }
 
-                /* Adjust Accessibility & Chat Widgets backgrounds/colors manually if needed */
+                /* Layout Fixes for Header */
+                .high-contrast .sticky, 
                 .high-contrast .fixed {
-                   /* Ensure fixed elements like this widget remain visible */
-                   z-index: 100 !important;
+                    background-color: #000 !important;
+                    border-bottom: 2px solid #FFD700 !important; 
+                    z-index: 50 !important;
                 }
 
+                /* Fix Accessibility Widget Itself */
+                .high-contrast button[title="תפריט נגישות"] {
+                    background-color: #000 !important;
+                    color: #FFD700 !important;
+                    border: 2px solid #FFD700 !important;
+                }
+                 .high-contrast button[title="תפריט נגישות"] svg {
+                     fill: #FFD700 !important;
+                 }
+
+
+                /* Link Highlighting */
                 .highlight-links a {
                     background-color: yellow !important;
                     color: black !important;
