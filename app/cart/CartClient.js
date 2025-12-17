@@ -68,9 +68,17 @@ export default function CartClient() {
                 const data = await res.json();
                 const url = `${window.location.origin}/cart?share=${data.id}`;
 
-                navigator.clipboard.writeText(url).then(() => {
-                    alert("הקישור הועתק, מוזמנים לשתף!");
-                });
+                if (navigator.share) {
+                    navigator.share({
+                        title: 'הסל שלי ב-ml_tlv',
+                        text: 'בניתי אחלה סל, מה דעתך?',
+                        url: url
+                    }).catch(console.error);
+                } else {
+                    navigator.clipboard.writeText(url).then(() => {
+                        alert("הקישור הועתק, מוזמנים לשתף!");
+                    });
+                }
             } else {
                 alert("שגיאה ביצירת קישור לשיתוף");
             }
