@@ -60,14 +60,12 @@ export default function LotteryClient() {
             {/* Universally Fixed Background (Solves all jitter/scroll issues) */}
             <div className="fixed inset-0 z-0">
                 <Image
-                    src="/images/lottery-bg.jpg"
+                    src="/images/lottery-bg-opt.jpg"
                     alt="Casino Background"
                     fill
                     priority
-                    placeholder="blur"
-                    blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAMCAgMCAgMDAwMEAwMEBQgFBQQEBQoHBwYIDAoMDAsKCwsNDhIQDQ4RDgsLEBYQERMUFRUVDA8XGBYUGBIUFRT/2wBDAQMEBAUEBQkFBQkUDQsNFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBT/wAARCAAEAAQDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAf/xAAhEAABBAICAgMAAAAAAAAAAAABAAIDBBEFBiESMQcTIf/EABUBAQEAAAAAAAAAAAAAAAAAAAEE/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEQMSIf/aAAwDAQACEQMRAD8A0S0fUfJ4+xJCyGGRjXENL2nZH5yFKnvi2eH/2Q=="
-                    className="object-cover"
-                    quality={70}
+                    className="object-cover opacity-80"
+                    quality={60}
                 />
             </div>
 
