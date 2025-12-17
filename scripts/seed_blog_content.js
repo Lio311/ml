@@ -7,11 +7,11 @@ const pool = new Pool({
 });
 
 const IMAGES = [
-    '/images/blog/luxury-bottle.png',
-    '/images/blog/decant-process.png',
-    '/images/blog/ingredients.png',
-    '/images/blog/store-shelf.png',
-    '/images/blog/woman-smelling.png'
+    '/images/blog_assets/luxury-bottle.png',
+    '/images/blog_assets/decant-process.png',
+    '/images/blog_assets/ingredients.png',
+    '/images/blog_assets/store-shelf.png',
+    '/images/blog_assets/woman-smelling.png'
 ];
 
 const INTROS = [
