@@ -1,6 +1,5 @@
 import pool from '../lib/db';
-import Link from 'next/link';
-import Image from 'next/image';
+import BrandsClient from './BrandsClient';
 
 export const metadata = {
     title: "המותגים שלנו | ml_tlv",
@@ -20,9 +19,6 @@ export default async function BrandsPage() {
         console.error("Failed to fetch brands", e);
     }
 
-    // Group by First Letter for cleaner UI (optional, but requested "ABC list" in dropdown, maybe page should be grid primarily)
-    // User asked for: "Logos arranged beautifully on grey background with shadow".
-
     return (
         <div className="min-h-screen bg-gray-100 py-12">
             <div className="container mx-auto px-4">
@@ -34,34 +30,7 @@ export default async function BrandsPage() {
                     </p>
                 </div>
 
-                {brands.length === 0 ? (
-                    <p className="text-center text-gray-500">טוען מותגים...</p>
-                ) : (
-                    <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-6">
-                        {brands.map((brand) => (
-                            <Link
-                                key={brand.name}
-                                href={`/catalog?brand=${encodeURIComponent(brand.name)}`}
-                                className="group block bg-white rounded-xl p-8 shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 flex items-center justify-center h-40 relative overflow-hidden"
-                            >
-                                <div className="absolute inset-0 bg-gray-50 opacity-0 group-hover:opacity-10 transition-opacity"></div>
-                                <div className="relative w-full h-full flex items-center justify-center">
-                                    {/* Fallback to text if logo fails (handled by alt) but assuming logo exists per query */}
-                                    <Image
-                                        src={brand.logo_url}
-                                        alt={brand.name}
-                                        width={120}
-                                        height={120}
-                                        className="object-contain max-h-24 w-auto filter grayscale group-hover:grayscale-0 transition-all duration-500"
-                                    />
-                                </div>
-                                <span className="absolute bottom-2 text-[10px] text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity uppercase tracking-widest">
-                                    {brand.name}
-                                </span>
-                            </Link>
-                        ))}
-                    </div>
-                )}
+                <BrandsClient brands={brands} />
             </div>
         </div>
     );
