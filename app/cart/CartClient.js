@@ -427,7 +427,7 @@ export default function CartClient() {
                                 ) : (
                                     <SignInButton mode="modal">
                                         <button className="w-full py-4 text-xl font-bold text-white bg-black rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
-                                            התחבר כדי להזמין ✨
+                                            התחבר כדי להזמין
                                         </button>
                                     </SignInButton>
                                 )}
