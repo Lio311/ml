@@ -135,7 +135,7 @@ export default function Header({ brands = [] }) {
                                             {/* Footer Link */}
                                             <div className="p-4 bg-gray-50 border-t text-center">
                                                 <Link href="/brands" className="text-sm font-bold underline hover:text-red-600">
-                                                    לכל המותגים (עם לוגואים) &larr;
+                                                    לכל המותגים &larr;
                                                 </Link>
                                             </div>
                                         </div>
