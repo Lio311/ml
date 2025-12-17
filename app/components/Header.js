@@ -59,10 +59,7 @@ export default function Header({ brands = [] }) {
 
                     {/* Desktop RIGHT Group (RTL Start): Search + User */}
                     <div className="hidden md:flex items-center justify-start gap-4">
-                        {/* Search Bar - Smart Autocomplete */}
-                        <SearchAutocomplete />
-
-                        {/* User Icon (Rightmost) */}
+                        {/* User Icon (Rightmost in RTL) */}
                         <SignedIn>
                             <div className="flex items-center gap-2">
                                 <UserButton afterSignOutUrl="/" />
@@ -75,6 +72,9 @@ export default function Header({ brands = [] }) {
                                 </button>
                             </SignInButton>
                         </SignedOut>
+
+                        {/* Search Bar - Smart Autocomplete */}
+                        <SearchAutocomplete />
                     </div>
 
                     {/* Desktop CENTER Group: Logo + Menu */}
@@ -82,8 +82,8 @@ export default function Header({ brands = [] }) {
                         <Link href="/" className="block">
                             <Image src="/logo_v3.png" alt="ml." width={180} height={70} className="h-16 w-auto object-contain" priority />
                         </Link>
-                        <nav className="flex items-center gap-6 lg:gap-8 relative">
-                            <Link href="/" className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm ${pathname === '/' ? 'bg-black text-white' : 'text-gray-900 hover:bg-black hover:text-white'}`}>דף הבית</Link>
+                        <nav className="flex items-center gap-6 lg:gap-8 relative whitespace-nowrap">
+                            <Link href="/" className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm whitespace-nowrap ${pathname === '/' ? 'bg-black text-white' : 'text-gray-900 hover:bg-black hover:text-white'}`}>דף הבית</Link>
 
                             {/* Brands Dropdown Trigger */}
                             <div
@@ -93,7 +93,7 @@ export default function Header({ brands = [] }) {
                             >
                                 <Link
                                     href="/brands"
-                                    className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm ${pathname.startsWith('/brands') ? 'bg-black text-white' : 'text-gray-900 hover:bg-black hover:text-white'}`}
+                                    className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm whitespace-nowrap ${pathname.startsWith('/brands') ? 'bg-black text-white' : 'text-gray-900 hover:bg-black hover:text-white'}`}
                                 >
                                     מותגים
                                 </Link>
@@ -137,27 +137,24 @@ export default function Header({ brands = [] }) {
                                 </div>
                             </div>
 
-                            <Link href="/catalog" className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm ${pathname.startsWith('/catalog') ? 'bg-black text-white' : 'text-gray-900 hover:bg-black hover:text-white'}`}>קטלוג</Link>
-                            <Link href="/matching" className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm ${pathname === '/matching' ? 'bg-black text-white' : 'text-gray-900 hover:bg-black hover:text-white'}`}>התאמת מארזים</Link>
-                            <Link href="/requests" className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm ${pathname === '/requests' ? 'bg-black text-white' : 'text-gray-900 hover:bg-black hover:text-white'}`}>בקשת בשמים</Link>
-                            <Link href="/lottery" className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm text-red-600 hover:text-red-700 hover:bg-red-50`}>הגרלה</Link>
-                            <Link href="/contact" className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm ${pathname === '/contact' ? 'bg-black text-white' : 'text-gray-900 hover:bg-black hover:text-white'}`}>צור קשר</Link>
+                            <Link href="/catalog" className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm whitespace-nowrap ${pathname.startsWith('/catalog') ? 'bg-black text-white' : 'text-gray-900 hover:bg-black hover:text-white'}`}>קטלוג</Link>
+                            <Link href="/matching" className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm whitespace-nowrap ${pathname === '/matching' ? 'bg-black text-white' : 'text-gray-900 hover:bg-black hover:text-white'}`}>התאמת מארזים</Link>
+                            <Link href="/requests" className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm whitespace-nowrap ${pathname === '/requests' ? 'bg-black text-white' : 'text-gray-900 hover:bg-black hover:text-white'}`}>בקשת בשמים</Link>
+                            <Link href="/lottery" className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm whitespace-nowrap text-red-600 hover:text-red-700 hover:bg-red-50`}>הגרלה</Link>
+                            <Link href="/contact" className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm whitespace-nowrap ${pathname === '/contact' ? 'bg-black text-white' : 'text-gray-900 hover:bg-black hover:text-white'}`}>צור קשר</Link>
                         </nav>
                     </div>
 
                     {/* Desktop LEFT Group (RTL End): Orders + Wishlist + Cart */}
                     <div className="hidden md:flex items-center justify-end gap-6">
-                        {/* Cart */}
-                        <Link href="/cart" className="relative group" title="עגלה">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" width="22" height="22" className="group-hover:text-green-600 transition">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
-                            </svg>
-                            {cartCount > 0 && (
-                                <span className="absolute -top-2 -right-2 flex h-4 w-4 items-center justify-center rounded-full bg-black text-[10px] text-white font-bold">
-                                    {cartCount}
-                                </span>
-                            )}
-                        </Link>
+                        {/* Orders (Rightmost in this group) */}
+                        <SignedIn>
+                            <Link href="/orders" className="relative group" title="ההזמנות שלי">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 hover:text-blue-600 transition">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                                </svg>
+                            </Link>
+                        </SignedIn>
 
                         {/* Wishlist */}
                         <Link href="/wishlist" className="relative group" title="מועדפים">
@@ -172,14 +169,17 @@ export default function Header({ brands = [] }) {
                             )}
                         </Link>
 
-                        {/* Orders */}
-                        <SignedIn>
-                            <Link href="/orders" className="relative group" title="ההזמנות שלי">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 hover:text-blue-600 transition">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
-                                </svg>
-                            </Link>
-                        </SignedIn>
+                        {/* Cart (Leftmost in this group) */}
+                        <Link href="/cart" className="relative group" title="עגלה">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" width="22" height="22" className="group-hover:text-green-600 transition">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+                            </svg>
+                            {cartCount > 0 && (
+                                <span className="absolute -top-2 -right-2 flex h-4 w-4 items-center justify-center rounded-full bg-black text-[10px] text-white font-bold">
+                                    {cartCount}
+                                </span>
+                            )}
+                        </Link>
                     </div>
                 </div>
             </div>
