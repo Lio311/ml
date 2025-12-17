@@ -385,194 +385,196 @@ export default function CartClient() {
                         <div className="bg-gray-50 p-6 rounded-xl border space-y-6 sticky top-24">
                             <h2 className="text-xl font-bold border-b pb-4">סיכום הזמנה</h2>
 
-                            <div className="flex justify-between text-lg">
-                                <span>סכום ביניים</span>
-                                <span>{subtotal} ₪</span>
+                            <span>סכום ביניים</span>
+                            <div>
+                                <span className="block text-left">{subtotal} ₪</span>
+                                <span className="block text-xs text-gray-400 font-normal mt-0.5" dir="rtl">(סה״כ פריטים: {cartItems.reduce((acc, item) => acc + item.quantity, 0)})</span>
                             </div>
+                        </div>
 
-                            {lotteryMode.active && (
-                                <div className="flex justify-between text-lg text-yellow-600 font-bold">
-                                    <span>הנחת הגרלה (15%)</span>
-                                    <span>{discountAmount}- ₪</span>
+                        {lotteryMode.active && (
+                            <div className="flex justify-between text-lg text-yellow-600 font-bold">
+                                <span>הנחת הגרלה (15%)</span>
+                                <span>{discountAmount}- ₪</span>
+                            </div>
+                        )}
+
+                        {luckyPrize?.type === 'discount' && !lotteryMode.active && (
+                            <div className="flex justify-between text-lg text-green-600 font-bold">
+                                <span>הנחת גלגל המזל ({luckyPrize.value * 100}%)</span>
+                                <span>{Math.round(subtotal * luckyPrize.value)}- ₪</span>
+                            </div>
+                        )}
+
+                        {coupon && (
+                            <div className="flex justify-between text-lg text-green-600 font-bold">
+                                <span>קופון {coupon.code} ({coupon.discountPercent}%)</span>
+                                <span>
+                                    {(() => {
+                                        // Calculate coupon discount amount locally to match Context logic
+                                        let base = subtotal;
+                                        if (lotteryMode.active) base -= Math.round(base * 0.15);
+                                        else if (luckyPrize?.type === 'discount') base -= Math.round(base * luckyPrize.value);
+
+                                        const val = Math.round(base * (coupon.discountPercent / 100));
+                                        return val;
+                                    })()}- ₪
+                                </span>
+                            </div>
+                        )}
+
+                        {/* Coupon Section */}
+                        <div className="border-t border-b py-4">
+                            {coupon ? (
+                                <div className="flex justify-between items-center bg-green-50 p-3 rounded border border-green-200">
+                                    <div>
+                                        <div className="font-bold text-green-700">קופון {coupon.code}</div>
+                                        <div className="text-xs text-green-600">הנחה של {coupon.discountPercent}%</div>
+                                    </div>
+                                    <button
+                                        onClick={() => setCoupon(null)}
+                                        className="text-red-500 hover:bg-red-50 p-1 rounded"
+                                    >
+                                        ✕
+                                    </button>
+                                </div>
+                            ) : (
+                                <div className="flex flex-col gap-2">
+                                    <div className="flex gap-2">
+                                        <input
+                                            type="text"
+                                            placeholder="קוד קופון"
+                                            className={`input input-bordered flex-1 p-2 border rounded ${couponError ? 'border-red-500 bg-red-50 text-red-900 focus:ring-red-500' : ''}`}
+                                            value={couponInput}
+                                            onChange={(e) => {
+                                                setCouponInput(e.target.value.toUpperCase());
+                                                if (couponError) setCouponError(''); // clear error while typing
+                                            }}
+                                        />
+                                        <button
+                                            onClick={handleApplyCoupon}
+                                            disabled={isValidatingCoupon || !couponInput}
+                                            className="px-4 py-2 bg-gray-800 text-white rounded hover:bg-black disabled:opacity-50"
+                                        >
+                                            {isValidatingCoupon ? '...' : 'החל'}
+                                        </button>
+                                    </div>
+                                    {couponError && (
+                                        <div className="text-red-600 text-sm font-bold flex items-center gap-1">
+                                            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                                                <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                                            </svg>
+                                            {couponError}
+                                        </div>
+                                    )}
                                 </div>
                             )}
+                        </div>
 
-                            {luckyPrize?.type === 'discount' && !lotteryMode.active && (
-                                <div className="flex justify-between text-lg text-green-600 font-bold">
-                                    <span>הנחת גלגל המזל ({luckyPrize.value * 100}%)</span>
-                                    <span>{Math.round(subtotal * luckyPrize.value)}- ₪</span>
-                                </div>
-                            )}
 
-                            {coupon && (
-                                <div className="flex justify-between text-lg text-green-600 font-bold">
-                                    <span>קופון {coupon.code} ({coupon.discountPercent}%)</span>
-                                    <span>
-                                        {(() => {
-                                            // Calculate coupon discount amount locally to match Context logic
-                                            let base = subtotal;
-                                            if (lotteryMode.active) base -= Math.round(base * 0.15);
-                                            else if (luckyPrize?.type === 'discount') base -= Math.round(base * luckyPrize.value);
 
-                                            const val = Math.round(base * (coupon.discountPercent / 100));
-                                            return val;
-                                        })()}- ₪
+                        <div className="flex justify-between text-lg">
+                            <span>משלוח</span>
+                            <span>{shippingCost} ₪</span>
+                        </div>
+
+                        {/* Free Samples Logic */}
+                        <div className={`p-4 rounded border text-sm ${freeSamplesCount > 0 ? 'bg-blue-50 border-blue-100' : 'bg-orange-50 border-orange-100'}`}>
+                            {freeSamplesCount > 0 ? (
+                                <div className="text-blue-800 font-bold mb-1">
+                                    מגיע לך {freeSamplesCount} דוגמיות מתנה! 🎉
+                                    <br />
+                                    <span className="font-normal text-xs text-blue-600">
+                                        (הצוות יבחר אותן בקפידה עבורך)
                                     </span>
                                 </div>
-                            )}
-
-                            {/* Coupon Section */}
-                            <div className="border-t border-b py-4">
-                                {coupon ? (
-                                    <div className="flex justify-between items-center bg-green-50 p-3 rounded border border-green-200">
-                                        <div>
-                                            <div className="font-bold text-green-700">קופון {coupon.code}</div>
-                                            <div className="text-xs text-green-600">הנחה של {coupon.discountPercent}%</div>
-                                        </div>
-                                        <button
-                                            onClick={() => setCoupon(null)}
-                                            className="text-red-500 hover:bg-red-50 p-1 rounded"
-                                        >
-                                            ✕
-                                        </button>
-                                    </div>
-                                ) : (
-                                    <div className="flex flex-col gap-2">
-                                        <div className="flex gap-2">
-                                            <input
-                                                type="text"
-                                                placeholder="קוד קופון"
-                                                className={`input input-bordered flex-1 p-2 border rounded ${couponError ? 'border-red-500 bg-red-50 text-red-900 focus:ring-red-500' : ''}`}
-                                                value={couponInput}
-                                                onChange={(e) => {
-                                                    setCouponInput(e.target.value.toUpperCase());
-                                                    if (couponError) setCouponError(''); // clear error while typing
-                                                }}
-                                            />
-                                            <button
-                                                onClick={handleApplyCoupon}
-                                                disabled={isValidatingCoupon || !couponInput}
-                                                className="px-4 py-2 bg-gray-800 text-white rounded hover:bg-black disabled:opacity-50"
-                                            >
-                                                {isValidatingCoupon ? '...' : 'החל'}
-                                            </button>
-                                        </div>
-                                        {couponError && (
-                                            <div className="text-red-600 text-sm font-bold flex items-center gap-1">
-                                                <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
-                                                    <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
-                                                </svg>
-                                                {couponError}
-                                            </div>
-                                        )}
-                                    </div>
-                                )}
-                            </div>
-
-
-
-                            <div className="flex justify-between text-lg">
-                                <span>משלוח</span>
-                                <span>{shippingCost} ₪</span>
-                            </div>
-
-                            {/* Free Samples Logic */}
-                            <div className={`p-4 rounded border text-sm ${freeSamplesCount > 0 ? 'bg-blue-50 border-blue-100' : 'bg-orange-50 border-orange-100'}`}>
-                                {freeSamplesCount > 0 ? (
-                                    <div className="text-blue-800 font-bold mb-1">
-                                        מגיע לך {freeSamplesCount} דוגמיות מתנה! 🎉
-                                        <br />
-                                        <span className="font-normal text-xs text-blue-600">
-                                            (הצוות יבחר אותן בקפידה עבורך)
-                                        </span>
-                                    </div>
-                                ) : (
-                                    <div className="text-gray-800 font-medium">
-                                        חסר לך עוד <span className="font-bold text-orange-600">{nextTier} ₪</span> כדי לקבל <span className="font-bold">2 דוגמיות מתנה</span> 🎁
-                                    </div>
-                                )}
-
-                                {nextTier > 0 && freeSamplesCount > 0 && freeSamplesCount < 6 && (
-                                    <div className="mt-2 text-xs text-blue-600 border-t border-blue-200 pt-2 font-medium">
-                                        הוסף עוד {nextTier} ₪ וקבל עוד 2 דוגמיות!
-                                    </div>
-                                )}
-                            </div>
-
-                            {/* Recommendations / Upsell */}
-                            {recommendations.length > 0 && (
-                                <div className="space-y-3 pt-2">
-                                    <h4 className="text-sm font-bold text-gray-700">השלם את החסר בקלות:</h4>
-                                    <div className="space-y-2">
-                                        {recommendations.map(rec => (
-                                            <div key={rec.id} className="flex items-center gap-3 bg-white border p-2 rounded-lg shadow-sm hover:shadow-md transition">
-                                                <div className="w-10 h-10 bg-gray-50 rounded flex-shrink-0 flex items-center justify-center overflow-hidden">
-                                                    {rec.image_url ? <img src={rec.image_url} alt="" className="w-full h-full object-cover" /> : '🧴'}
-                                                </div>
-                                                <div className="flex-1 min-w-0">
-                                                    <div className="font-bold text-xs truncate">{rec.name}</div>
-                                                    <div className="text-xs text-gray-500">{rec.size} מ"ל • {rec.price} ₪</div>
-                                                </div>
-                                                <button
-                                                    onClick={() => addToCart(rec, rec.size, rec.price)}
-                                                    className="w-8 h-8 flex items-center justify-center bg-black text-white rounded-full hover:bg-gray-800 transition"
-                                                    title="הוסף לעגלה"
-                                                >
-                                                    +
-                                                </button>
-                                            </div>
-                                        ))}
-                                    </div>
+                            ) : (
+                                <div className="text-gray-800 font-medium">
+                                    חסר לך עוד <span className="font-bold text-orange-600">{nextTier} ₪</span> כדי לקבל <span className="font-bold">2 דוגמיות מתנה</span> 🎁
                                 </div>
                             )}
 
-                            <div className="flex justify-between text-xl font-bold pt-4 border-t">
-                                <span>סה״כ לתשלום</span>
-                                <span>{total} ₪</span>
-                            </div>
+                            {nextTier > 0 && freeSamplesCount > 0 && freeSamplesCount < 6 && (
+                                <div className="mt-2 text-xs text-blue-600 border-t border-blue-200 pt-2 font-medium">
+                                    הוסף עוד {nextTier} ₪ וקבל עוד 2 דוגמיות!
+                                </div>
+                            )}
+                        </div>
 
-                            {/* Order Notes (Moved) */}
-                            <div className="py-2">
-                                <label className="text-sm font-bold text-gray-700 mb-2 block">הערות להזמנה (אופציונלי):</label>
-                                <textarea
-                                    className="w-full p-3 border rounded-lg text-sm focus:ring-2 focus:ring-gray-900 outline-none resize-none bg-white"
-                                    rows="3"
-                                    placeholder="בקשות מיוחדות לימי הולדת / אריזה / שליח..."
-                                    value={notes}
-                                    onChange={(e) => setNotes(e.target.value)}
-                                ></textarea>
+                        {/* Recommendations / Upsell */}
+                        {recommendations.length > 0 && (
+                            <div className="space-y-3 pt-2">
+                                <h4 className="text-sm font-bold text-gray-700">השלם את החסר בקלות:</h4>
+                                <div className="space-y-2">
+                                    {recommendations.map(rec => (
+                                        <div key={rec.id} className="flex items-center gap-3 bg-white border p-2 rounded-lg shadow-sm hover:shadow-md transition">
+                                            <div className="w-10 h-10 bg-gray-50 rounded flex-shrink-0 flex items-center justify-center overflow-hidden">
+                                                {rec.image_url ? <img src={rec.image_url} alt="" className="w-full h-full object-cover" /> : '🧴'}
+                                            </div>
+                                            <div className="flex-1 min-w-0">
+                                                <div className="font-bold text-xs truncate">{rec.name}</div>
+                                                <div className="text-xs text-gray-500">{rec.size} מ"ל • {rec.price} ₪</div>
+                                            </div>
+                                            <button
+                                                onClick={() => addToCart(rec, rec.size, rec.price)}
+                                                className="w-8 h-8 flex items-center justify-center bg-black text-white rounded-full hover:bg-gray-800 transition"
+                                                title="הוסף לעגלה"
+                                            >
+                                                +
+                                            </button>
+                                        </div>
+                                    ))}
+                                </div>
                             </div>
+                        )}
 
-                            <div className="pt-4">
-                                {isSignedIn ? (
-                                    <button
-                                        onClick={handleCheckout}
-                                        disabled={isSubmitting}
-                                        className="btn btn-primary w-full py-4 text-lg shadow-lg hover:shadow-xl transition transform hover:-translate-y-0.5"
-                                    >
-                                        {isSubmitting ? 'מעבד...' : 'יצירת הזמנה'}
+                        <div className="flex justify-between text-xl font-bold pt-4 border-t">
+                            <span>סה״כ לתשלום</span>
+                            <span>{total} ₪</span>
+                        </div>
+
+                        {/* Order Notes (Moved) */}
+                        <div className="py-2">
+                            <label className="text-sm font-bold text-gray-700 mb-2 block">הערות להזמנה (אופציונלי):</label>
+                            <textarea
+                                className="w-full p-3 border rounded-lg text-sm focus:ring-2 focus:ring-gray-900 outline-none resize-none bg-white"
+                                rows="3"
+                                placeholder="בקשות מיוחדות לימי הולדת / אריזה / שליח..."
+                                value={notes}
+                                onChange={(e) => setNotes(e.target.value)}
+                            ></textarea>
+                        </div>
+
+                        <div className="pt-4">
+                            {isSignedIn ? (
+                                <button
+                                    onClick={handleCheckout}
+                                    disabled={isSubmitting}
+                                    className="btn btn-primary w-full py-4 text-lg shadow-lg hover:shadow-xl transition transform hover:-translate-y-0.5"
+                                >
+                                    {isSubmitting ? 'מעבד...' : 'יצירת הזמנה'}
+                                </button>
+                            ) : (
+                                <SignInButton mode="modal">
+                                    <button className="w-full py-4 text-xl font-bold text-white bg-black rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
+                                        התחבר כדי להזמין
                                     </button>
-                                ) : (
-                                    <SignInButton mode="modal">
-                                        <button className="w-full py-4 text-xl font-bold text-white bg-black rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
-                                            התחבר כדי להזמין
-                                        </button>
-                                    </SignInButton>
-                                )}
-                                <p className="text-xs text-center text-gray-500 mt-2">
-                                    * התשלום מתבצע מול נציג לאחר אישור ההזמנה
-                                </p>
-                            </div>
+                                </SignInButton>
+                            )}
+                            <p className="text-xs text-center text-gray-500 mt-2">
+                                * התשלום מתבצע מול נציג לאחר אישור ההזמנה
+                            </p>
                         </div>
                     </div>
                 </div>
-                {showWheel && (
-                    <LuckyWheel
-                        onWin={handleWin}
-                        onClose={() => { setShowWheel(false); setHasSeenWheel(true); }}
-                    />
-                )}
             </div>
+            {showWheel && (
+                <LuckyWheel
+                    onWin={handleWin}
+                    onClose={() => { setShowWheel(false); setHasSeenWheel(true); }}
+                />
+            )}
         </div>
+        </div >
     );
 }
