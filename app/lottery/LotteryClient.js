@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 import { useCart } from '../context/CartContext';
 import { useRouter } from 'next/navigation';
 import LotteryGameContainer from '../components/lottery/LotteryGameContainer';
@@ -57,12 +58,18 @@ export default function LotteryClient() {
         <div className="min-h-[100dvh] text-white flex flex-col items-center justify-start pt-20 pb-10 px-4 relative">
 
             {/* Universally Fixed Background (Solves all jitter/scroll issues) */}
-            <div
-                className="fixed inset-0 z-0 bg-cover bg-center bg-no-repeat"
-                style={{
-                    backgroundImage: 'url(https://images.pexels.com/photos/24643920/pexels-photo-24643920/free-photo-of-interior-of-a-casino.jpeg)',
-                }}
-            />
+            <div className="fixed inset-0 z-0">
+                <Image
+                    src="/images/lottery-bg.jpg"
+                    alt="Casino Background"
+                    fill
+                    priority
+                    placeholder="blur"
+                    blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAMCAgMCAgMDAwMEAwMEBQgFBQQEBQoHBwYIDAoMDAsKCwsNDhIQDQ4RDgsLEBYQERMUFRUVDA8XGBYUGBIUFRT/2wBDAQMEBAUEBQkFBQkUDQsNFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBQUFBT/wAARCAAEAAQDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAf/xAAhEAABBAICAgMAAAAAAAAAAAABAAIDBBEFBiESMQcTIf/EABUBAQEAAAAAAAAAAAAAAAAAAAEE/8QAGhEAAgIDAAAAAAAAAAAAAAAAAAECEQMSIf/aAAwDAQACEQMRAD8A0S0fUfJ4+xJCyGGRjXENL2nZH5yFKnvi2eH/2Q=="
+                    className="object-cover"
+                    quality={70}
+                />
+            </div>
 
             {/* Dark Overlay */}
             <div className="fixed inset-0 z-0 bg-black/60" />

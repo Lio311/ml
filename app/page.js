@@ -76,6 +76,8 @@ export default async function Home() {
           loop
           muted
           playsInline
+          preload="auto"
+          poster="/hero-decants.png"
           className="absolute inset-0 w-full h-full object-cover scale-[1.05]"
         >
           <source src="/hero-video.mp4" type="video/mp4" />

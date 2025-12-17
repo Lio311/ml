@@ -69,10 +69,26 @@ export default async function sitemap() {
             priority: 0.7,
         }));
 
+        // Blog Posts
+        const blogRes = await client.query('SELECT slug, updated_at FROM blog_posts');
+        const blogs = blogRes.rows.map((post) => ({
+            url: `${baseUrl}/blog/${post.slug}`,
+            lastModified: post.updated_at || new Date(),
+            changeFrequency: 'weekly',
+            priority: 0.8,
+        }));
+
+        const blogIndex = {
+            url: `${baseUrl}/blog`,
+            lastModified: new Date(),
+            changeFrequency: 'daily',
+            priority: 0.8,
+        };
+
         client.release();
+        return [...staticRoutes, blogIndex, ...products, ...brands, ...categories, ...blogs];
     } catch (error) {
         console.error("Sitemap generation error:", error);
+        return [...staticRoutes];
     }
-
-    return [...staticRoutes, ...products, ...brands, ...categories];
 }
