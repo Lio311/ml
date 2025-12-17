@@ -30,7 +30,7 @@ export default function Header({ brands = [] }) {
     const [searchQuery, setSearchQuery] = useState('');
 
     return (
-        <header className="sticky top-0 z-50 bg-black shadow-sm">
+        <header className="sticky top-0 z-50 bg-white shadow-sm">
             {/* Top Bar - Black Promo Strip */}
             <div className="hidden md:block bg-black text-white text-[10px] md:text-xs py-2 text-center tracking-widest uppercase">
                 משלוח בלוקר לכל הארץ ב-30 ₪
@@ -41,14 +41,13 @@ export default function Header({ brands = [] }) {
                 <div className="flex items-center justify-between">
 
 
-
                     {/* Mobile Menu Button (Visible on Mobile Only) */}
                     <div className="md:hidden z-20">
                         <button
                             className="p-2"
                             onClick={() => setIsMenuOpen(!isMenuOpen)}
                         >
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 text-white">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
                             </svg>
                         </button>
@@ -89,7 +88,7 @@ export default function Header({ brands = [] }) {
                                 <Image src="/logo_v3.png" alt="ml." width={180} height={70} className="h-16 w-auto object-contain" priority />
                             </Link>
                             <nav className="flex items-center gap-6 lg:gap-8 relative">
-                                <Link href="/" className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm ${pathname === '/' ? 'bg-white text-black' : 'text-white hover:bg-white hover:text-black'}`}>דף הבית</Link>
+                                <Link href="/" className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm ${pathname === '/' ? 'bg-black text-white' : 'text-gray-900 hover:bg-black hover:text-white'}`}>דף הבית</Link>
 
                                 {/* Brands Dropdown Trigger */}
                                 <div
@@ -99,7 +98,7 @@ export default function Header({ brands = [] }) {
                                 >
                                     <Link
                                         href="/brands"
-                                        className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm ${pathname.startsWith('/brands') ? 'bg-white text-black' : 'text-white hover:bg-white hover:text-black'}`}
+                                        className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm ${pathname.startsWith('/brands') ? 'bg-black text-white' : 'text-gray-900 hover:bg-black hover:text-white'}`}
                                     >
                                         מותגים
                                     </Link>
