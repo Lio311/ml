@@ -7,8 +7,16 @@ import Image from 'next/image';
 export default function BrandsClient({ brands }) {
     const [selectedLetter, setSelectedLetter] = useState(null);
 
-    // Alphabet for filter
-    const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split('');
+    // Alphabet and Available Letters Logic
+    const fullAlphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split('');
+
+    // Get unique first letters from brands
+    const availableLetters = new Set(
+        brands.map(b => b.name.trim().charAt(0).toUpperCase())
+    );
+
+    // Filter Alphabet
+    const visibleLetters = fullAlphabet.filter(letter => availableLetters.has(letter));
 
     // Filter Logic
     const filteredBrands = selectedLetter
@@ -18,23 +26,23 @@ export default function BrandsClient({ brands }) {
     return (
         <div>
             {/* A-Z Filter Controls */}
-            <div className="grid grid-cols-4 md:grid-cols-9 gap-2 mb-12" dir="ltr">
+            <div className="flex flex-wrap justify-center gap-2 mb-12" dir="ltr">
                 <button
                     onClick={() => setSelectedLetter(null)}
-                    className={`px-3 py-1 text-sm font-bold rounded-md transition-all ${selectedLetter === null
+                    className={`h-8 px-3 text-xs font-bold rounded flex items-center justify-center transition-all ${selectedLetter === null
                         ? 'bg-black text-white shadow-lg scale-110'
-                        : 'bg-white text-gray-700 hover:bg-gray-200'
+                        : 'bg-white text-gray-700 hover:bg-gray-200 border border-gray-200'
                         }`}
                 >
                     הכל
                 </button>
-                {alphabet.map(letter => (
+                {visibleLetters.map(letter => (
                     <button
                         key={letter}
                         onClick={() => setSelectedLetter(letter)}
-                        className={`px-3 py-1 text-sm font-bold rounded-md transition-all ${selectedLetter === letter
+                        className={`w-8 h-8 text-xs font-bold rounded flex items-center justify-center transition-all ${selectedLetter === letter
                             ? 'bg-black text-white shadow-lg scale-110'
-                            : 'bg-white text-gray-700 hover:bg-gray-200'
+                            : 'bg-white text-gray-700 hover:bg-gray-200 border border-gray-200'
                             }`}
                     >
                         {letter}
