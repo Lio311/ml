@@ -181,25 +181,31 @@ export default async function AdminDashboard() {
                             </tr>
                         </thead>
                         <tbody className="divide-y">
-                            {kpis.recentCoupons && kpis.recentCoupons.map(coupon => (
+                            {kpis.recentCoupons && kpis.recentCoupons.map(coupon => {
+                                const isExpired = coupon.expires_at && new Date(coupon.expires_at) < new Date();
+                                const displayStatus = isExpired ? 'expired' : coupon.status;
+                                
+                                return (
                                 <tr key={coupon.id} className="hover:bg-gray-50">
                                     <td className="p-4 font-mono font-bold text-blue-600">{coupon.code}</td>
                                     <td className="p-4">{coupon.discount_percent}%</td>
-                                    <td className="p-4 text-sm">{coupon.email}</td>
+                                    <td className="p-4 text-sm">{coupon.email || '-'}</td>
                                     <td className="p-4">
-                                        <span className={`px-2 py-1 rounded-full text-xs ${coupon.status === 'active' ? 'bg-green-100 text-green-800' :
-                                            coupon.status === 'redeemed' ? 'bg-gray-800 text-white' :
-                                                'bg-red-100 text-red-800'
-                                            }`}>
-                                            {coupon.status === 'active' ? 'פעיל' :
-                                                coupon.status === 'redeemed' ? 'מומש' : 'פג תוקף'}
+                                        <span className={`px-2 py-1 rounded-full text-xs ${
+                                            displayStatus === 'active' ? 'bg-green-100 text-green-800' :
+                                            displayStatus === 'redeemed' ? 'bg-gray-800 text-white' :
+                                            'bg-red-100 text-red-800'
+                                        }`}>
+                                            {displayStatus === 'active' ? 'פעיל' :
+                                             displayStatus === 'redeemed' ? 'מומש' : 'פג תוקף'}
                                         </span>
                                     </td>
                                     <td className="p-4 text-sm text-gray-500">
                                         {new Date(coupon.created_at).toLocaleString('he-IL')}
                                     </td>
                                 </tr>
-                            ))}
+                                );
+                            })}
                             {(!kpis.recentCoupons || kpis.recentCoupons.length === 0) && (
                                 <tr>
                                     <td colSpan="5" className="p-8 text-center text-gray-500">
