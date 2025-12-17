@@ -105,7 +105,7 @@ export default function CartClient() {
         const url = `${window.location.origin}/cart?share=${code}`;
 
         navigator.clipboard.writeText(url).then(() => {
-            alert("קישור לסל הועתק! 📋\nשלח אותו לחברים.");
+            alert("הקישור הועתק, מוזמנים לשתף!");
         });
     };
 
@@ -332,15 +332,18 @@ export default function CartClient() {
                     <h1 className="text-3xl font-bold">העגלה שלי</h1>
 
                     {cartItems.length > 0 && (
-                        <button
-                            onClick={handleShareCart}
-                            className="w-10 h-10 flex items-center justify-center bg-gray-100 hover:bg-green-100 text-gray-600 hover:text-green-600 rounded-full transition shadow-sm"
-                            title="שתף סל"
-                        >
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M7.217 10.907a2.25 2.25 0 1 0 0 2.186m0-2.186c.18.324.287.696.345 1.045m0 0h9.002c.06-.35.165-.72.345-1.045m0 9.002c-.18.324-.287.696-.345 1.045m0 0a2.25 2.25 0 1 0-.639 2.186m-8.623-2.186c.18.324.287.696.345 1.045m0 0a2.25 2.25 0 1 0-.639 2.186m0-2.186h9.002c.06.35.165.72.345 1.045M7.217 4.186a2.25 2.25 0 1 0 0 2.186m0-2.186c.18.324.287.696.345 1.045m0 0h9.002c.06-.35.165-.72.345-1.045m0 0a2.25 2.25 0 1 0-.639 2.186m-8.623-2.186c.18.324.287.696.345 1.045" />
-                            </svg>
-                        </button>
+                        <div className="flex items-center gap-2">
+                            <span className="text-black font-normal">שיתוף הסל</span>
+                            <button
+                                onClick={handleShareCart}
+                                className="w-10 h-10 flex items-center justify-center bg-gray-100 hover:bg-blue-50 text-gray-600 hover:text-blue-600 rounded-full transition shadow-sm"
+                                title="שתף סל"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-5 h-5">
+                                    <path fillRule="evenodd" d="M15.75 4.5a3 3 0 1 1 .825 2.066l-8.421 4.679a3.002 3.002 0 0 1 0 1.51l8.421 4.679a3 3 0 1 1-.729 1.31l-8.421-4.678a3 3 0 1 1 0-4.132l8.421-4.679a3 3 0 0 1-.096-.755Z" clipRule="evenodd" />
+                                </svg>
+                            </button>
+                        </div>
                     )}
                 </div>
 
