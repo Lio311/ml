@@ -87,7 +87,7 @@ export default function Header({ brands = [] }) {
 
                             {/* Brands Dropdown Trigger */}
                             <div
-                                className="relative group"
+                                className="group"
                                 onMouseEnter={() => setIsBrandsDropdownOpen(true)}
                                 onMouseLeave={() => setIsBrandsDropdownOpen(false)}
                             >
@@ -99,7 +99,7 @@ export default function Header({ brands = [] }) {
                                 </Link>
 
                                 {/* The Mega Menu Dropdown (ABC Dictionary) */}
-                                <div className={`absolute top-full w-[800px] bg-white text-black shadow-2xl border border-gray-100 rounded-b-xl overflow-hidden z-50 transition-all duration-300 origin-top transform -translate-x-[60%] left-1/2 ${isBrandsDropdownOpen ? 'opacity-100 scale-y-100' : 'opacity-0 scale-y-0 pointer-events-none'}`}>
+                                <div className={`absolute top-full w-[900px] bg-white text-black shadow-[0_30px_60px_-15px_rgba(0,0,0,0.3)] border border-gray-100 rounded-b-xl overflow-hidden z-50 transition-all duration-300 origin-top transform -translate-x-1/2 left-1/2 ${isBrandsDropdownOpen ? 'opacity-100 scale-y-100' : 'opacity-0 scale-y-0 pointer-events-none'}`}>
                                     <div className="flex flex-col max-h-[60vh]">
                                         {/* Scrollable Content */}
                                         <div className="overflow-y-auto p-6 custom-scrollbar text-right">
