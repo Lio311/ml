@@ -31,6 +31,9 @@ export default async function AdminLayout({ children }) {
                     <Link href="/admin/products" className="block p-2 hover:bg-gray-800 rounded">
                         🧴 ניהול מוצרים
                     </Link>
+                    <Link href="/admin/dictionary" className="block p-2 hover:bg-gray-800 rounded">
+                        📖 ניהול מילון חיפוש
+                    </Link>
                     <Link href="/admin/brands" className="block p-2 hover:bg-gray-800 rounded">
                         🏷️ ניהול מותגים (לוגואים)
                     </Link>

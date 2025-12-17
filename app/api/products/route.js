@@ -74,6 +74,18 @@ export async function POST(req) {
             const newProduct = res.rows[0];
             const newProductId = newProduct.id;
 
+            // --- Auto-Add to Dictionary ---
+            try {
+                await client.query(`
+                    INSERT INTO search_mappings (hebrew_term, english_term, type)
+                    VALUES ($1, $1, 'product')
+                    ON CONFLICT (hebrew_term) DO NOTHING
+                `, [brand + ' ' + model]);
+            } catch (dictErr) {
+                console.error("Dictionary auto-add failed:", dictErr);
+            }
+            // ------------------------------
+
             // --- Newsletter Feature ---
             // Fetch all users to notify them about the new product
             try {
@@ -154,6 +166,18 @@ export async function DELETE(req) {
             // Let's try Soft Delete first (active=false) and maybe "Archive"? 
             // No, user said "Delete".
             // Let's do Hard Delete. `DELETE FROM products WHERE id = $1`.
+
+            // Get product name before deleting to remove from dictionary? 
+            // Or just try to delete by English Term if we knew it? 
+            // We usually store product name as "Brand Model". 
+            // Let's fetch it first.
+            const prodRes = await client.query('SELECT brand, model FROM products WHERE id = $1', [id]);
+            if (prodRes.rows.length > 0) {
+                const { brand, model } = prodRes.rows[0];
+                const info = brand + ' ' + model;
+                // Delete from Dictionary
+                await client.query('DELETE FROM search_mappings WHERE english_term = $1 AND type = \'product\'', [info]);
+            }
 
             await client.query('DELETE FROM products WHERE id = $1', [id]);
             return NextResponse.json({ success: true });

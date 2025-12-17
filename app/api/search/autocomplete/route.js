@@ -12,7 +12,7 @@ export async function GET(req) {
         }
 
         // Map Hebrew to English if applicable
-        query = mapHebrewQuery(query);
+        query = await mapHebrewQuery(query);
 
         const client = await pool.connect();
         try {

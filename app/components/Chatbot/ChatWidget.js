@@ -8,22 +8,13 @@ import { useRouter } from 'next/navigation';
 import { chatbotKnowledge } from '../../data/chatbot_knowledge';
 
 const REPRESENTATIVES = [
-    { name: 'רון', role: 'שירות לקוחות', image: '/images/team/ron.jpg', gender: 'male' },
-    { name: 'אריאל', role: 'שירות לקוחות', image: '/images/team/ariel.jpg', gender: 'male' },
-    { name: 'קורל', role: 'שירות לקוחות', image: '/images/team/coral.jpg', gender: 'female' },
-    { name: 'נטלי', role: 'שירות לקוחות', image: '/images/team/natalie.jpg', gender: 'female' },
+    { name: 'רוני', role: 'שירות לקוחות', image: '/images/team/ron.jpg', gender: 'female' },
 ];
 
 export default function ChatWidget() {
     // Helper to determine Rep of the Day (Synchronous)
     const getDailyRep = () => {
-        const today = new Date();
-        const start = new Date(today.getFullYear(), 0, 0);
-        const diff = today - start;
-        const oneDay = 1000 * 60 * 60 * 24;
-        const dayOfYear = Math.floor(diff / oneDay);
-        const repIndex = dayOfYear % REPRESENTATIVES.length;
-        return REPRESENTATIVES[repIndex];
+        return REPRESENTATIVES[0];
     };
 
     const [isOpen, setIsOpen] = useState(false);

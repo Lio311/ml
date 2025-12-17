@@ -30,20 +30,7 @@ export async function generateMetadata(props) {
 // ...
 // ... I need to replace the component body to map the query.
 
-export default async function CatalogPage(props) {
-    const searchParams = await props.searchParams;
-    let search = searchParams?.q || '';
-    const brand = searchParams?.brand || '';
-    const category = searchParams?.category || '';
-    const minPrice = searchParams?.min || '';
-    const maxPrice = searchParams?.max || '';
-    const sort = searchParams?.sort || 'random';
-    const page = parseInt(searchParams?.page || '1');
-
-    // Map Hebrew Search
-    const mappedSearch = mapHebrewQuery(search);
-
-    const { products, totalPages } = await getProducts(mappedSearch, brand, category, minPrice, maxPrice, sort, page);
+async function getProducts(search, brand, category, minPrice, maxPrice, sort, page) {
     const LIMIT = 16;
     const OFFSET = (page - 1) * LIMIT;
 
@@ -62,16 +49,12 @@ export default async function CatalogPage(props) {
 
     if (search) {
         params.push(`%${search}%`);
-        query += ` AND p.name ILIKE $${params.length}`;
+        query += ` AND (p.name ILIKE $${params.length} OR p.brand ILIKE $${params.length} OR p.model ILIKE $${params.length} OR p.description ILIKE $${params.length})`;
     }
 
     if (brand) {
-        // If brand is array/string, format for IN clause or multiple ORs? 
-        // Best approach for Postgres: brand = ANY($2) if array, but node-postgres handles IN easily? 
-        // Actually, let's keep it simple. Iterate.
         const brands = Array.isArray(brand) ? brand : [brand];
         if (brands.length > 0) {
-            // "brand IN (...)"
             const placeHolders = brands.map((_, i) => `$${params.length + i + 1}`).join(', ');
             query += ` AND p.brand IN (${placeHolders})`;
             params.push(...brands);
@@ -101,7 +84,7 @@ export default async function CatalogPage(props) {
     const countQuery = `SELECT COUNT(*) FROM (${query}) AS total`;
 
     // Sorting Logic
-    let orderBy = 'RANDOM()'; // Default: Random
+    let orderBy = 'RANDOM()';
     switch (sort) {
         case 'price_asc':
             orderBy = 'p.price_10ml ASC';
@@ -120,14 +103,6 @@ export default async function CatalogPage(props) {
             break;
         case 'random':
         default:
-            // Fix: Use stable sort to prevent duplicates across pages
-            // If true randomness is needed per session, we needs a seed. 
-            // For now, consistent order is better than duplicates.
-            // Let's use 'id DESC' as default "default" instead of random, or if they insist on random look, maybe 'created_at desc'?
-            // User complained about "Perfume X appears on page 1 and 2". 
-            // Switching default to 'id DESC' (Newest) or 'views desc' is standard practice.
-            // If they really want shuffle, we'd need to pass a seed from client.
-            // Let's stick to ID DESC (Newest) as the "default" view.
             orderBy = 'id DESC';
             break;
     }
@@ -190,7 +165,9 @@ export default async function CatalogPage(props) {
     const sort = searchParams?.sort || 'random';
     const page = parseInt(searchParams?.page || '1');
 
-    const { products, totalPages } = await getProducts(search, brand, category, minPrice, maxPrice, sort, page);
+    const mappedSearch = mapHebrewQuery(search);
+
+    const { products, totalPages } = await getProducts(mappedSearch, brand, category, minPrice, maxPrice, sort, page);
     const allBrands = await getBrands();
     const allCategories = await getCategories();
 

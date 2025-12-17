@@ -1,101 +1,59 @@
-// Mapping of Hebrew search terms to English Brand/Product names
-export const HEBREW_MAPPING = {
-    // Brands
-    'שאנל': 'Chanel',
-    'דיור': 'Dior',
-    'קריד': 'Creed',
-    'טום פורד': 'Tom Ford',
-    'אמוואג': 'Amouage',
-    'אמוואז': 'Amouage',
-    'אמואג': 'Amouage',
-    'פרפום דה מארלי': 'Parfums de Marly',
-    'מארלי': 'Marly',
-    'מרלי': 'Marly',
-    'רוזה': 'Roja',
-    'רוז׳ה': 'Roja',
-    'רוג׳ה': 'Roja',
-    'זייר': 'Xerjoff',
-    'קסרג׳וף': 'Xerjoff',
-    'קסרגוף': 'Xerjoff',
-    'זרגוף': 'Xerjoff',
-    'זרג׳וף': 'Xerjoff',
-    'נרסיסו': 'Narciso',
-    'נרסיסו רודריגז': 'Narciso Rodriguez',
-    'גוצי': 'Gucci',
-    'גוצ׳י': 'Gucci',
-    'איב סאן לורן': 'Yves Saint Laurent',
-    'ysl': 'Yves Saint Laurent',
-    'הרמס': 'Hermes',
-    'ארמני': 'Armani',
-    'ורסאצ׳ה': 'Versace',
-    'ורסאצה': 'Versace',
-    'מונט דייל': 'Montale',
-    'מונטל': 'Montale',
-    'מייזון': 'Maison',
-    'פרנסיס': 'Francis',
-    'קורקדג׳יאן': 'Kurkdjian',
-    'קורקדיאן': 'Kurkdjian',
-    'בקרט': 'Baccarat',
-    'רוז': 'Rouge',
-    'אוונטוס': 'Aventus',
-    'סאווג': 'Sauvage',
-    'סוואג': 'Sauvage',
-    'בלו': 'Bleu',
-    'שאנל בלו': 'Bleu de Chanel',
-    'אלי': 'Elysium',
-    'אליסיום': 'Elysium',
-    'הרוד': 'Herod',
-    'לייטון': 'Layton',
-    'דלינה': 'Delina',
-    'פגסוס': 'Pegasus',
-    'קיליין': 'Kilian',
-    'קיליאן': 'Kilian',
-    'אינישיו': 'Initio',
-    'נישנה': 'Nishane',
-    'נישאנה': 'Nishane',
-    'ממו': 'Memo',
-    'בי י די קיי': 'BDK',
-    'בי די קיי': 'BDK',
-    'בידיקיי': 'BDK',
-    'גולדפילד': 'Goldfield',
-    'בנקס': 'Banks',
+import pool from '@/app/lib/db';
 
-    // General Terms
-    'בושם': 'Perfume',
-    'דוגמית': 'Sample',
-    'יוניסקס': 'Unisex',
-    'גבר': 'Men',
-    'אישה': 'Women',
-    'נשים': 'Women',
-    'גברים': 'Men'
-};
+let cache = null;
+let lastFetch = 0;
+const CACHE_DURATION = 1000 * 60 * 5; // 5 minutes
+
+export async function getHebrewMapping() {
+    if (cache && (Date.now() - lastFetch < CACHE_DURATION)) {
+        return cache;
+    }
+
+    try {
+        const client = await pool.connect();
+        try {
+            // Check if table exists first to avoid crashing if setup hasn't run
+            // Or just try query
+            const res = await client.query("SELECT hebrew_term, english_term FROM search_mappings");
+
+            const mapping = {};
+            res.rows.forEach(row => {
+                mapping[row.hebrew_term.toLowerCase()] = row.english_term;
+            });
+
+            cache = mapping;
+            lastFetch = Date.now();
+            return mapping;
+        } finally {
+            client.release();
+        }
+    } catch (e) {
+        console.error("Mapping fetch error (Table might not exist yet):", e);
+        // Fallback to minimal if DB fails or empty to prevent search crash
+        return {};
+    }
+}
 
 /**
  * Maps a potentially Hebrew query to an English search term.
- * Looks for exact matches or partial matches in the mapping.
+ * Looks for exact matches or partial matches in the mapping from DB.
  * @param {string} query 
- * @returns {string} The original query or the mapped English term.
+ * @returns {Promise<string>} The original query or the mapped English term.
  */
-export function mapHebrewQuery(query) {
+export async function mapHebrewQuery(query) {
     if (!query) return query;
     const lowerQuery = query.toLowerCase().trim();
 
+    const mapping = await getHebrewMapping();
+
     // 1. Direct Match
-    if (HEBREW_MAPPING[lowerQuery]) {
-        return HEBREW_MAPPING[lowerQuery];
+    if (mapping[lowerQuery]) {
+        return mapping[lowerQuery];
     }
 
-    // 2. Partial Scan (Simple) - if query contains a key
-    // This allows "שאנל בלו" to map to "Chanel" or similar if we wanted complex logic.
-    // For now, let's stick to direct word replacement?
-    // Let's iterate keys and see if any key is IN the query
-    for (const [hebrew, english] of Object.entries(HEBREW_MAPPING)) {
+    // 2. Partial Scan
+    for (const [hebrew, english] of Object.entries(mapping)) {
         if (lowerQuery.includes(hebrew)) {
-            // Replace the Hebrew part with English
-            // e.g. "בושם שאנל" -> "בושם Chanel" -> search likely handles mixed? 
-            // Better to return just the English term if it's the main intent?
-            // Or return the mapped term.
-            // Let's replace:
             return lowerQuery.replace(hebrew, english);
         }
     }
