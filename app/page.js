@@ -86,15 +86,16 @@ export default async function Home() {
         </div>
 
         <div className="absolute inset-0 z-10 container mx-auto flex items-center justify-center px-6 md:px-12">
-          <div className="max-w-lg text-black text-center bg-white/80 p-4 md:p-6 rounded-xl backdrop-blur-sm shadow-sm">
+          {/* Hero Content Box - Scaled down on Mobile */}
+          <div className="max-w-xs md:max-w-lg text-black text-center bg-white/80 p-4 md:p-6 rounded-xl backdrop-blur-sm shadow-sm transform scale-90 md:scale-100 origin-center">
             <h2 className="text-xs md:text-sm font-sans tracking-[0.2em] uppercase mb-1 opacity-90 animate-fadeIn font-bold">
               Discover Your Signature Scent
             </h2>
-            <h1 className={`${dancingScript.className} text-4xl md:text-6xl mb-4 text-black leading-tight tracking-wide`}>
+            <h1 className={`${dancingScript.className} text-3xl md:text-6xl mb-2 md:mb-4 text-black leading-tight tracking-wide`}>
               Niche & Boutique <br />
               Sample Collections
             </h1>
-            <p className="text-sm md:text-base text-gray-800 mb-4 font-light leading-relaxed">
+            <p className="text-xs md:text-base text-gray-800 mb-3 md:mb-4 font-light leading-relaxed">
               הדרך החכמה לגלות בשמי נישה יוקרתיים.
               <br />
               הזמינו דוגמיות 2 מ״ל, 5 מ״ל או 10 מ״ל לפני רכישת בקבוק מלא.

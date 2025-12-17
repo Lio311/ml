@@ -56,6 +56,12 @@ export default function SearchAutocomplete() {
         setIsOpen(false);
     };
 
+    // Detect Text Direction (Default RTL)
+    const isHebrew = /[\u0590-\u05FF]/.test(query);
+    const isEnglish = /^[A-Za-z]/.test(query);
+    const direction = isEnglish && !isHebrew ? 'ltr' : 'rtl';
+    const isRTL = direction === 'rtl';
+
     return (
         <div className="relative group w-full" ref={wrapperRef}>
             <form onSubmit={handleSubmit} className="relative">
@@ -67,12 +73,16 @@ export default function SearchAutocomplete() {
                     onFocus={() => {
                         if (query.length >= 2 && results.length > 0) setIsOpen(true);
                     }}
-                    className={`border-b border-gray-300 py-1 pl-8 pr-2 text-sm focus:outline-none focus:border-black transition-all bg-transparent w-20 focus:w-48 placeholder-gray-400 text-right`}
-                    dir="rtl"
+                    className={`border-b border-gray-300 py-1 text-sm focus:outline-none focus:border-black transition-all bg-transparent w-20 focus:w-48 placeholder-gray-400 
+                        ${isRTL ? 'text-right pl-8 pr-2' : 'text-left pr-8 pl-2'}`}
+                    dir={direction}
                 />
 
-                {/* Search Icon (Absolute Left) */}
-                <button type="submit" className="absolute left-1 top-1 text-gray-400 group-focus-within:text-black hover:text-black p-1">
+                {/* Search Icon (Dynamic Position - Always at 'End' of line) */}
+                <button
+                    type="submit"
+                    className={`absolute top-1 text-gray-400 group-focus-within:text-black hover:text-black p-1 ${isRTL ? 'left-1' : 'right-1'}`}
+                >
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                     </svg>
@@ -80,7 +90,7 @@ export default function SearchAutocomplete() {
 
 
                 {isLoading && (
-                    <div className="absolute right-0 top-2">
+                    <div className={`absolute top-2 ${isRTL ? 'left-0' : 'right-0'}`}>
                         <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-black"></div>
                     </div>
                 )}
