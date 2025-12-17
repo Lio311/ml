@@ -27,7 +27,20 @@ export const metadata = {
 
 import { CartProvider } from "./context/CartContext";
 
-export default function RootLayout({ children }) {
+import pool from "./lib/db";
+
+export default async function RootLayout({ children }) {
+  // Fetch Brands for Navigation (Server Side)
+  let brands = [];
+  try {
+    const client = await pool.connect();
+    const res = await client.query('SELECT name FROM brands WHERE logo_url IS NOT NULL ORDER BY name ASC');
+    brands = res.rows;
+    client.release();
+  } catch (e) {
+    console.error("Layout fetch error:", e);
+  }
+
   return (
     <ClerkProvider
       localization={heIL}
@@ -45,7 +58,7 @@ export default function RootLayout({ children }) {
         <body className={assistant.className}>
           <CartProvider>
             <AnalyticsTracker />
-            <Header />
+            <Header brands={brands} />
             <main className="min-h-screen">
               {children}
             </main>

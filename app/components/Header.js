@@ -9,15 +9,26 @@ import { useCart } from '../context/CartContext';
 import LanguageSwitcher from './LanguageSwitcher';
 import SearchAutocomplete from './SearchAutocomplete';
 
-export default function Header() {
+export default function Header({ brands = [] }) {
     const { cartItems } = useCart();
     const pathname = usePathname();
     const cartCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const [isBrandsDropdownOpen, setIsBrandsDropdownOpen] = useState(false);
+    const [isBrandsOpen, setIsBrandsOpen] = useState(false);
 
     const [searchQuery, setSearchQuery] = useState('');
 
     return (
+        // ... (keep existing JSX until nav) ...
+        // WARNING: The replace_file_content tool needs exact context. I will target the Header component definition and the nav section specifically.
+        // Better strategy: I will replace the component definition line to add props, and then replace the Nav section.
+        // This is done in 2 chunks to be safe.
+        // Chunk 1: Update signature and state
+        // Chunk 2: Update Nav logic
+        // Actually, I can do it in one if I am careful with context limits.
+        // Let's use multi_replace.
+
         <header className="sticky top-0 z-50 bg-white shadow-sm">
             {/* Top Bar - Black Promo Strip */}
             <div className="hidden md:block bg-black text-white text-[10px] md:text-xs py-2 text-center tracking-widest uppercase">
@@ -76,13 +87,48 @@ export default function Header() {
                             <Link href="/" className="block">
                                 <Image src="/logo_v3.png" alt="ml." width={180} height={70} className="h-16 w-auto object-contain" priority />
                             </Link>
-                            <nav className="flex items-center gap-6 lg:gap-8">
+                            <nav className="flex items-center gap-6 lg:gap-8 relative">
                                 <Link href="/" className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm ${pathname === '/' ? 'bg-black text-white' : 'text-gray-900 hover:bg-black hover:text-white'}`}>דף הבית</Link>
+
+                                {/* Brands Dropdown Trigger */}
+                                <div
+                                    className="relative group"
+                                    onMouseEnter={() => setIsBrandsDropdownOpen(true)}
+                                    onMouseLeave={() => setIsBrandsDropdownOpen(false)}
+                                >
+                                    <Link
+                                        href="/brands"
+                                        className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm ${pathname.startsWith('/brands') ? 'bg-black text-white' : 'text-gray-900 hover:bg-black hover:text-white'}`}
+                                    >
+                                        מותגים
+                                    </Link>
+
+                                    {/* The Mega Menu Dropdown */}
+                                    <div className={`absolute top-full right-0 w-[600px] bg-white text-black shadow-2xl border border-gray-100 rounded-b-xl p-6 grid grid-cols-4 gap-4 z-50 transition-all duration-300 origin-top ${isBrandsDropdownOpen ? 'opacity-100 scale-y-100' : 'opacity-0 scale-y-0 pointer-events-none'}`}>
+                                        {brands.length > 0 ? brands.map((brand) => (
+                                            <Link
+                                                key={brand.name}
+                                                href={`/catalog?brand=${encodeURIComponent(brand.name)}`}
+                                                className="text-xs hover:text-red-600 hover:font-bold transition-colors block py-1"
+                                            >
+                                                {brand.name}
+                                            </Link>
+                                        )) : (
+                                            <p className="col-span-4 text-center text-gray-400">טוען מותגים...</p>
+                                        )}
+                                        <div className="col-span-4 border-t mt-4 pt-4 text-center">
+                                            <Link href="/brands" className="text-sm font-bold underline hover:text-red-600">
+                                                לכל המותגים &larr;
+                                            </Link>
+                                        </div>
+                                    </div>
+                                </div>
+
                                 <Link href="/catalog" className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm ${pathname.startsWith('/catalog') ? 'bg-black text-white' : 'text-gray-900 hover:bg-black hover:text-white'}`}>קטלוג</Link>
                                 <Link href="/matching" className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm ${pathname === '/matching' ? 'bg-black text-white' : 'text-gray-900 hover:bg-black hover:text-white'}`}>התאמת מארזים</Link>
                                 <Link href="/requests" className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm ${pathname === '/requests' ? 'bg-black text-white' : 'text-gray-900 hover:bg-black hover:text-white'}`}>בקשת בשמים</Link>
                                 <Link href="/lottery" className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm text-red-600 hover:text-red-700 hover:bg-red-50`}>הגרלה</Link>
-                                <Link href="/about" className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm ${pathname === '/about' ? 'bg-black text-white' : 'text-gray-900 hover:bg-black hover:text-white'}`}>אודות</Link>
+                                {/* About Link Removed */}
                                 <Link href="/contact" className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm ${pathname === '/contact' ? 'bg-black text-white' : 'text-gray-900 hover:bg-black hover:text-white'}`}>צור קשר</Link>
                             </nav>
                         </div>
@@ -156,8 +202,8 @@ export default function Header() {
                         <Link href="/lottery" onClick={() => setIsMenuOpen(false)} className="border-b pb-4 text-red-600 font-bold">
                             הגרלת בשמים
                         </Link>
-                        <Link href="/about" onClick={() => setIsMenuOpen(false)} className="border-b pb-4">
-                            אודות
+                        <Link href="/brands" onClick={() => setIsMenuOpen(false)} className="border-b pb-4">
+                            מותגים
                         </Link>
                         <Link href="/contact" onClick={() => setIsMenuOpen(false)} className="border-b pb-4">
                             צור קשר
