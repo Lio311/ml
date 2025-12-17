@@ -1,5 +1,5 @@
-import pool from '../../../lib/db';
-import ProductCard from '../../../components/ProductCard';
+import pool from '../../lib/db';
+import ProductCard from '../../components/ProductCard';
 import Link from 'next/link';
 
 export const revalidate = 3600; // Cache for 1 hour

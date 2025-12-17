@@ -7,7 +7,7 @@ import AddToCartAdvanced from "../../components/ProductCard";
 import FragrancePyramid from "../../components/FragrancePyramid";
 
 export const dynamic = "force-dynamic";
-export const dynamic = "force-dynamic"; // Keep dynamic for stock checks but allow cache revalidation
+
 export const revalidate = 3600; // SEO Improvement: Cache for 1 hour
 
 export async function generateMetadata(props) {
