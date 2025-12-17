@@ -165,7 +165,7 @@ export default async function CatalogPage(props) {
     const sort = searchParams?.sort || 'random';
     const page = parseInt(searchParams?.page || '1');
 
-    const mappedSearch = mapHebrewQuery(search);
+    const mappedSearch = await mapHebrewQuery(search);
 
     const { products, totalPages } = await getProducts(mappedSearch, brand, category, minPrice, maxPrice, sort, page);
     const allBrands = await getBrands();
