@@ -22,19 +22,19 @@ export default function BrandsClient({ brands }) {
                 <button
                     onClick={() => setSelectedLetter(null)}
                     className={`px-3 py-1 text-sm font-bold rounded-md transition-all ${selectedLetter === null
-                            ? 'bg-black text-white shadow-lg scale-110'
-                            : 'bg-white text-gray-700 hover:bg-gray-200'
+                        ? 'bg-black text-white shadow-lg scale-110'
+                        : 'bg-white text-gray-700 hover:bg-gray-200'
                         }`}
                 >
-                    ALL
+                    הכל
                 </button>
                 {alphabet.map(letter => (
                     <button
                         key={letter}
                         onClick={() => setSelectedLetter(letter)}
                         className={`px-3 py-1 text-sm font-bold rounded-md transition-all ${selectedLetter === letter
-                                ? 'bg-black text-white shadow-lg scale-110'
-                                : 'bg-white text-gray-700 hover:bg-gray-200'
+                            ? 'bg-black text-white shadow-lg scale-110'
+                            : 'bg-white text-gray-700 hover:bg-gray-200'
                             }`}
                     >
                         {letter}
