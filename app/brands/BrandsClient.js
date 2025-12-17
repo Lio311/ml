@@ -18,7 +18,7 @@ export default function BrandsClient({ brands }) {
     return (
         <div>
             {/* A-Z Filter Controls */}
-            <div className="flex flex-wrap justify-center gap-2 mb-12 direction-ltr">
+            <div className="grid grid-cols-4 md:grid-cols-9 gap-2 mb-12" dir="ltr">
                 <button
                     onClick={() => setSelectedLetter(null)}
                     className={`px-3 py-1 text-sm font-bold rounded-md transition-all ${selectedLetter === null

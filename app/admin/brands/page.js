@@ -63,11 +63,11 @@ export default function AdminBrandsPage() {
             <p className="mb-4 text-gray-600">הזן קישורים ללוגואים של המותגים השונים. הלוגואים יוצגו בקרוסלה ובדפי המוצרים.</p>
 
             {/* A-Z Filter Controls */}
-            <div className="flex flex-wrap justify-center gap-2 mb-6 direction-ltr">
+            <div className="grid grid-cols-4 md:grid-cols-9 gap-2 mb-6" dir="ltr">
                 <button
                     onClick={() => setSelectedLetter(null)}
                     className={`px-3 py-1 text-sm font-bold rounded-md transition-all ${selectedLetter === null
-                            ? 'bg-black text-white shadow-lg scale-110'
+                            ? 'bg-black text-white shadow-lg'
                             : 'bg-white text-gray-700 hover:bg-gray-200 border'
                         }`}
                 >
@@ -78,8 +78,8 @@ export default function AdminBrandsPage() {
                         key={letter}
                         onClick={() => setSelectedLetter(letter)}
                         className={`px-3 py-1 text-sm font-bold rounded-md transition-all ${selectedLetter === letter
-                                ? 'bg-black text-white shadow-lg scale-110'
-                                : 'bg-white text-gray-700 hover:bg-gray-200 border'
+                            ? 'bg-black text-white shadow-lg scale-110'
+                            : 'bg-white text-gray-700 hover:bg-gray-200 border'
                             }`}
                     >
                         {letter}
