@@ -553,4 +553,3 @@ export default function CartClient() {
         </div>
     );
 }
-```
