@@ -1,63 +1,20 @@
 "use client";
 
-import { useState, useEffect } from 'react';
-import { useUser } from '@clerk/nextjs';
-import Link from 'next/link';
+import { useWishlist } from '../context/WishlistContext';
 
 export default function WishlistHeart({ productId }) {
-    const { isSignedIn, user } = useUser();
-    const [inWishlist, setInWishlist] = useState(false);
-    const [loading, setLoading] = useState(true);
-
-    useEffect(() => {
-        if (!isSignedIn) {
-            setLoading(false);
-            return;
-        }
-
-        // Check status on mount
-        fetch('/api/wishlist')
-            .then(res => res.json())
-            .then(data => {
-                if (data.wishlist && data.wishlist.includes(productId)) {
-                    setInWishlist(true);
-                }
-                setLoading(false);
-            })
-            .catch(() => setLoading(false));
-    }, [isSignedIn, productId]);
-
-    const toggleWishlist = async (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-
-        if (!isSignedIn) {
-            alert('עליך להתחבר כדי להוסיף למועדפים');
-            return;
-        }
-
-        const prevState = inWishlist;
-        setInWishlist(!prevState); // Optimistic Update
-
-        try {
-            const res = await fetch('/api/wishlist', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ productId })
-            });
-            const data = await res.json();
-            setInWishlist(data.inWishlist);
-        } catch (err) {
-            setInWishlist(prevState); // Revert
-            alert('שגיאה בעדכון מועדפים');
-        }
-    };
+    const { toggleWishlist, isInWishlist, loading } = useWishlist();
+    const inWishlist = isInWishlist(productId);
 
     if (loading) return null;
 
     return (
         <button
-            onClick={toggleWishlist}
+            onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                toggleWishlist(productId);
+            }}
             className={`transition-colors duration-200 ${inWishlist ? 'text-red-500' : 'text-gray-300 hover:text-red-400'}`}
             title={inWishlist ? "הסר מהמועדפים" : "הוסף למועדפים"}
         >

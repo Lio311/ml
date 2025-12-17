@@ -26,6 +26,7 @@ export const metadata = {
 };
 
 import { CartProvider } from "./context/CartContext";
+import { WishlistProvider } from "./context/WishlistContext";
 
 import pool from "./lib/db";
 
@@ -57,32 +58,34 @@ export default async function RootLayout({ children }) {
       <html lang="he" dir="rtl">
         <body className={assistant.className}>
           <CartProvider>
-            <AnalyticsTracker />
-            <Header brands={brands} />
-            <main className="min-h-screen">
-              {children}
-            </main>
-            <Footer />
-            <ChatWidget />
-            <AccessibilityWidget />
+            <WishlistProvider>
+              <AnalyticsTracker />
+              <Header brands={brands} />
+              <main className="min-h-screen">
+                {children}
+              </main>
+              <Footer />
+              <ChatWidget />
+              <AccessibilityWidget />
 
-            {/* SEO: Organization Schema */}
-            <script
-              type="application/ld+json"
-              dangerouslySetInnerHTML={{
-                __html: JSON.stringify({
-                  "@context": "https://schema.org",
-                  "@type": "Organization",
-                  "name": "ml_tlv",
-                  "url": "https://ml-tlv.vercel.app",
-                  "logo": "https://ml-tlv.vercel.app/logo_v3.png",
-                  "description": "Luxury Niche Perfume Samples in Israel",
-                  "sameAs": [
-                    "https://instagram.com/ml_tlv"
-                  ]
-                })
-              }}
-            />
+              {/* SEO: Organization Schema */}
+              <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{
+                  __html: JSON.stringify({
+                    "@context": "https://schema.org",
+                    "@type": "Organization",
+                    "name": "ml_tlv",
+                    "url": "https://ml-tlv.vercel.app",
+                    "logo": "https://ml-tlv.vercel.app/logo_v3.png",
+                    "description": "Luxury Niche Perfume Samples in Israel",
+                    "sameAs": [
+                      "https://instagram.com/ml_tlv"
+                    ]
+                  })
+                }}
+              />
+            </WishlistProvider>
           </CartProvider>
         </body>
       </html>

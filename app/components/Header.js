@@ -9,8 +9,11 @@ import { useCart } from '../context/CartContext';
 import LanguageSwitcher from './LanguageSwitcher';
 import SearchAutocomplete from './SearchAutocomplete';
 
+import { useWishlist } from '../context/WishlistContext';
+
 export default function Header({ brands = [] }) {
     const { cartItems } = useCart();
+    const { count: wishlistCount } = useWishlist();
     const pathname = usePathname();
     const cartCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -25,8 +28,6 @@ export default function Header({ brands = [] }) {
     }, {});
 
     const sortedLetters = Object.keys(groupedBrands).sort();
-    const [isBrandsOpen, setIsBrandsOpen] = useState(false);
-
     const [searchQuery, setSearchQuery] = useState('');
 
     return (
@@ -37,24 +38,142 @@ export default function Header({ brands = [] }) {
             </div>
 
             {/* Main Header */}
-            <div className="container mx-auto px-4 py-2 md:py-4 relative">
+            <div className="w-full px-6 py-2 md:py-4 relative">
                 <div className="flex items-center justify-between">
 
+                    {/* Desktop LEFT Group: Orders + Wishlist + Cart */}
+                    <div className="hidden md:flex items-center gap-6 z-20">
+                        {/* Cart */}
+                        <Link href="/cart" className="relative group" title="עגלה">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" width="22" height="22" className="group-hover:text-green-600 transition">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+                            </svg>
+                            {cartCount > 0 && (
+                                <span className="absolute -top-2 -right-2 flex h-4 w-4 items-center justify-center rounded-full bg-black text-[10px] text-white font-bold">
+                                    {cartCount}
+                                </span>
+                            )}
+                        </Link>
+
+                        {/* Wishlist */}
+                        <Link href="/wishlist" className="relative group" title="מועדפים">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 group-hover:text-red-500 transition">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+                            </svg>
+                            {/* Wishlist Count Badge */}
+                            {wishlistCount > 0 && (
+                                <span className="absolute -top-2 -right-2 flex h-4 w-4 items-center justify-center rounded-full bg-black text-[10px] text-white font-bold">
+                                    {wishlistCount}
+                                </span>
+                            )}
+                        </Link>
+
+                        {/* Orders */}
+                        <SignedIn>
+                            <Link href="/orders" className="relative group" title="ההזמנות שלי">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 hover:text-blue-600 transition">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                                </svg>
+                            </Link>
+                        </SignedIn>
+                    </div>
 
                     {/* Mobile Menu Button (Visible on Mobile Only) */}
                     <div className="md:hidden z-20">
-                        <button
-                            className="p-2"
-                            onClick={() => setIsMenuOpen(!isMenuOpen)}
-                        >
+                        <button className="p-2" onClick={() => setIsMenuOpen(!isMenuOpen)}>
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
                             </svg>
                         </button>
                     </div>
 
-                    {/* Desktop RIGHT Group: User + Search */}
-                    <div className="hidden md:flex items-center gap-4 z-20 absolute right-4">
+                    {/* Desktop CENTER Group: Logo + Menu */}
+                    <div className="flex-1 flex justify-center items-center absolute left-0 right-0 pointer-events-none">
+                        {/* Wrapper for pointer events to allow clicks on children */}
+                        <div className="pointer-events-auto flex flex-col items-center gap-2">
+                            {/* Mobile Logo Center */}
+                            <div className="md:hidden">
+                                <Link href="/" className="inline-block">
+                                    <Image src="/logo_v3.png" alt="ml." width={100} height={40} className="h-10 w-auto object-contain" priority />
+                                </Link>
+                            </div>
+
+                            {/* Desktop Menu */}
+                            <div className="hidden md:flex flex-col items-center gap-2">
+                                <Link href="/" className="block">
+                                    <Image src="/logo_v3.png" alt="ml." width={180} height={70} className="h-16 w-auto object-contain" priority />
+                                </Link>
+                                <nav className="flex items-center gap-6 lg:gap-8 relative">
+                                    <Link href="/" className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm ${pathname === '/' ? 'bg-black text-white' : 'text-gray-900 hover:bg-black hover:text-white'}`}>דף הבית</Link>
+
+                                    {/* Brands Dropdown Trigger */}
+                                    <div
+                                        className="relative group"
+                                        onMouseEnter={() => setIsBrandsDropdownOpen(true)}
+                                        onMouseLeave={() => setIsBrandsDropdownOpen(false)}
+                                    >
+                                        <Link
+                                            href="/brands"
+                                            className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm ${pathname.startsWith('/brands') ? 'bg-black text-white' : 'text-gray-900 hover:bg-black hover:text-white'}`}
+                                        >
+                                            מותגים
+                                        </Link>
+
+                                        {/* The Mega Menu Dropdown (ABC Dictionary) */}
+                                        <div className={`absolute top-full right-0 w-[800px] bg-white text-black shadow-2xl border border-gray-100 rounded-b-xl overflow-hidden z-50 transition-all duration-300 origin-top transform -translate-x-1/2 left-1/2 ${isBrandsDropdownOpen ? 'opacity-100 scale-y-100' : 'opacity-0 scale-y-0 pointer-events-none'}`}>
+                                            <div className="flex flex-col max-h-[60vh]">
+                                                {/* Scrollable Content */}
+                                                <div className="overflow-y-auto p-6 custom-scrollbar text-right">
+                                                    {brands.length === 0 ? (
+                                                        <p className="text-center text-gray-400">טוען מותגים...</p>
+                                                    ) : (
+                                                        <div className="columns-4 gap-8">
+                                                            {sortedLetters.map(letter => (
+                                                                <div key={letter} className="break-inside-avoid mb-6">
+                                                                    <h4 className="font-bold text-black border-b border-gray-200 mb-2 pb-1 text-lg sticky top-0 bg-white/95 backdrop-blur-sm">{letter}</h4>
+                                                                    <div className="flex flex-col gap-1">
+                                                                        {groupedBrands[letter].map(brand => (
+                                                                            <Link
+                                                                                key={brand.name}
+                                                                                href={`/brands/${encodeURIComponent(brand.name)}`}
+                                                                                className="text-xs text-gray-600 hover:text-black hover:font-bold transition-colors"
+                                                                            >
+                                                                                {brand.name}
+                                                                            </Link>
+                                                                        ))}
+                                                                    </div>
+                                                                </div>
+                                                            ))}
+                                                        </div>
+                                                    )}
+                                                </div>
+
+                                                {/* Footer Link */}
+                                                <div className="p-4 bg-gray-50 border-t text-center">
+                                                    <Link href="/brands" className="text-sm font-bold underline hover:text-red-600">
+                                                        לכל המותגים &larr;
+                                                    </Link>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <Link href="/catalog" className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm ${pathname.startsWith('/catalog') ? 'bg-black text-white' : 'text-gray-900 hover:bg-black hover:text-white'}`}>קטלוג</Link>
+                                    <Link href="/matching" className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm ${pathname === '/matching' ? 'bg-black text-white' : 'text-gray-900 hover:bg-black hover:text-white'}`}>התאמת מארזים</Link>
+                                    <Link href="/requests" className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm ${pathname === '/requests' ? 'bg-black text-white' : 'text-gray-900 hover:bg-black hover:text-white'}`}>בקשת בשמים</Link>
+                                    <Link href="/lottery" className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm text-red-600 hover:text-red-700 hover:bg-red-50`}>הגרלה</Link>
+                                    <Link href="/contact" className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm ${pathname === '/contact' ? 'bg-black text-white' : 'text-gray-900 hover:bg-black hover:text-white'}`}>צור קשר</Link>
+                                </nav>
+                            </div>
+                        </div>
+                    </div>
+
+
+                    {/* Desktop RIGHT Group: Search + User */}
+                    <div className="hidden md:flex items-center gap-4 z-20">
+                        {/* Search Bar - Smart Autocomplete */}
+                        <SearchAutocomplete />
+
                         {/* User Icon (Rightmost) */}
                         <SignedIn>
                             <div className="flex items-center gap-2">
@@ -68,136 +187,8 @@ export default function Header({ brands = [] }) {
                                 </button>
                             </SignInButton>
                         </SignedOut>
-
-                        {/* Search Bar - Smart Autocomplete */}
-                        <SearchAutocomplete />
                     </div>
 
-                    {/* Desktop CENTER Group: Logo + Menu */}
-                    <div className="flex-1 flex justify-center items-center">
-                        {/* Mobile Logo Center */}
-                        <div className="md:hidden absolute left-1/2 transform -translate-x-1/2">
-                            <Link href="/" className="inline-block">
-                                <Image src="/logo_v3.png" alt="ml." width={100} height={40} className="h-10 w-auto object-contain" priority />
-                            </Link>
-                        </div>
-
-                        {/* Desktop Menu */}
-                        <div className="hidden md:flex flex-col items-center gap-2">
-                            <Link href="/" className="block">
-                                <Image src="/logo_v3.png" alt="ml." width={180} height={70} className="h-16 w-auto object-contain" priority />
-                            </Link>
-                            <nav className="flex items-center gap-6 lg:gap-8 relative">
-                                <Link href="/" className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm ${pathname === '/' ? 'bg-black text-white' : 'text-gray-900 hover:bg-black hover:text-white'}`}>דף הבית</Link>
-
-                                {/* Brands Dropdown Trigger */}
-                                <div
-                                    className="relative group"
-                                    onMouseEnter={() => setIsBrandsDropdownOpen(true)}
-                                    onMouseLeave={() => setIsBrandsDropdownOpen(false)}
-                                >
-                                    <Link
-                                        href="/brands"
-                                        className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm ${pathname.startsWith('/brands') ? 'bg-black text-white' : 'text-gray-900 hover:bg-black hover:text-white'}`}
-                                    >
-                                        מותגים
-                                    </Link>
-
-                                    {/* The Mega Menu Dropdown (ABC Dictionary) */}
-                                    <div className={`absolute top-full right-0 w-[800px] bg-white text-black shadow-2xl border border-gray-100 rounded-b-xl overflow-hidden z-50 transition-all duration-300 origin-top ${isBrandsDropdownOpen ? 'opacity-100 scale-y-100' : 'opacity-0 scale-y-0 pointer-events-none'}`}>
-                                        <div className="flex flex-col max-h-[60vh]">
-                                            {/* Scrollable Content */}
-                                            <div className="overflow-y-auto p-6 custom-scrollbar">
-                                                {brands.length === 0 ? (
-                                                    <p className="text-center text-gray-400">טוען מותגים...</p>
-                                                ) : (
-                                                    <div className="columns-4 gap-8">
-                                                        {sortedLetters.map(letter => (
-                                                            <div key={letter} className="break-inside-avoid mb-6">
-                                                                <h4 className="font-bold text-black border-b border-gray-200 mb-2 pb-1 text-lg sticky top-0 bg-white/95 backdrop-blur-sm">{letter}</h4>
-                                                                <div className="flex flex-col gap-1">
-                                                                    {groupedBrands[letter].map(brand => (
-                                                                        <Link
-                                                                            key={brand.name}
-                                                                            href={`/brands/${encodeURIComponent(brand.name)}`}
-                                                                            className="text-xs text-gray-600 hover:text-black hover:font-bold transition-colors"
-                                                                        >
-                                                                            {brand.name}
-                                                                        </Link>
-                                                                    ))}
-                                                                </div>
-                                                            </div>
-                                                        ))}
-                                                    </div>
-                                                )}
-                                            </div>
-
-                                            {/* Footer Link */}
-                                            <div className="p-4 bg-gray-50 border-t text-center">
-                                                <Link href="/brands" className="text-sm font-bold underline hover:text-red-600">
-                                                    לכל המותגים &larr;
-                                                </Link>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <Link href="/catalog" className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm ${pathname.startsWith('/catalog') ? 'bg-black text-white' : 'text-gray-900 hover:bg-black hover:text-white'}`}>קטלוג</Link>
-                                <Link href="/matching" className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm ${pathname === '/matching' ? 'bg-black text-white' : 'text-gray-900 hover:bg-black hover:text-white'}`}>התאמת מארזים</Link>
-                                <Link href="/requests" className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm ${pathname === '/requests' ? 'bg-black text-white' : 'text-gray-900 hover:bg-black hover:text-white'}`}>בקשת בשמים</Link>
-                                <Link href="/lottery" className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm text-red-600 hover:text-red-700 hover:bg-red-50`}>הגרלה</Link>
-                                {/* About Link Removed */}
-                                <Link href="/contact" className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm ${pathname === '/contact' ? 'bg-black text-white' : 'text-gray-900 hover:bg-black hover:text-white'}`}>צור קשר</Link>
-                            </nav>
-                        </div>
-                    </div>
-
-                    {/* Desktop LEFT Group: Orders + Wishlist + Cart */}
-                    <div className="flex items-center gap-4 md:absolute md:left-4 z-20">
-
-                        {/* Orders (Moved here) */}
-                        <SignedIn>
-                            <Link href="/orders" className="relative group hidden md:block" title="ההזמנות שלי">
-                                <span className="sr-only">ההזמנות שלי</span>
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 hover:text-blue-600 transition">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
-                                </svg>
-                            </Link>
-                        </SignedIn>
-
-                        {/* Wishlist */}
-                        <Link href="/wishlist" className="relative group">
-                            <span className="sr-only">מועדפים</span>
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 group-hover:text-red-500 transition">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
-                            </svg>
-                        </Link>
-
-                        {/* Cart */}
-                        <Link href="/cart" className="relative group">
-                            <span className="sr-only">עגלה</span>
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" width="22" height="22" className="group-hover:text-green-600 transition">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
-                            </svg>
-                            {cartCount > 0 && (
-                                <span className="absolute -top-2 -right-2 flex h-4 w-4 items-center justify-center rounded-full bg-black text-[10px] text-white font-bold">
-                                    {cartCount}
-                                </span>
-                            )}
-                        </Link>
-
-                        {/* Mobile Auth (Hidden on Desktop) */}
-                        <SignedOut>
-                            <SignInButton mode="modal">
-                                <button className="md:hidden relative group">
-                                    <span className="sr-only">התחברות</span>
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
-                                    </svg>
-                                </button>
-                            </SignInButton>
-                        </SignedOut>
-                    </div>
                 </div>
             </div>
 
