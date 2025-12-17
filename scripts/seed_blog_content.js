@@ -185,8 +185,15 @@ async function seedBlog() {
             `;
 
             const excerpt = topic.desc || `מדריך מקיף ומידע חשוב על ${topic.t}. כל מה שרציתם לדעת.`;
-            const finalContent = generateArticleHTML(topic.t, excerpt, body, relevantImages);
-            const coverImage = relevantImages[0] || getUniqueImageFromDeck(); // Fallback to deck if no branding
+
+            // CRITICAL FIX: Always use a high-quality local asset for the cover (Grid Card)
+            // This prevents broken external links on the main blog page.
+            const coverImage = getUniqueImageFromDeck();
+
+            // Use specific product images ONLY inside the article content for flavor
+            const contentImages = [...relevantImages];
+
+            const finalContent = generateArticleHTML(topic.t, excerpt, body, contentImages);
 
             await client.query(`
                 INSERT INTO blog_posts (title, slug, excerpt, content, image_url, tags)
