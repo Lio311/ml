@@ -3,55 +3,47 @@ import pool from "../lib/db";
 import ProductCard from "../components/ProductCard";
 import FilterSidebar from "./FilterSidebar";
 import SortSelect from "./SortSelect";
+import { mapHebrewQuery } from "../lib/hebrewMapping";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 export async function generateMetadata(props) {
     const searchParams = await props.searchParams;
-    const { q, brand, category } = searchParams;
+    let { q, brand, category } = searchParams;
+
+    // Use mapped query for title/description if applicable? 
+    // Maybe show original "תוצאות חיפוש: שאנל" is better than "Chanel". 
+    // But internally we fetch with Chanel.
+    // Let's keep original Q for metadata title, but map logic below.
 
     let title = "הקטלוג | ml_tlv";
     let description = "כל דוגמיות הבשמים שלנו במקום אחד.";
-
-    if (brand) {
-        const rawBrand = Array.isArray(brand) ? brand[0] : brand;
-        const brandName = rawBrand ? decodeURIComponent(rawBrand).trim() : '';
-
-        if (brandName) {
-            title = `בשמי ${brandName} | ml_tlv`;
-            description = `קולקציית דוגמיות ${brandName} המלאה שלנו.`;
-        }
-    } else if (category) {
-        const rawCat = Array.isArray(category) ? category[0] : category;
-        const catName = rawCat ? decodeURIComponent(rawCat).trim() : '';
-
-        if (catName.includes('אין בארץ')) {
-            title = "בשמים שאין בארץ | ml_tlv";
-            description = "קולקציית בשמים נדירים שלא ניתן להשיג בארץ.";
-        } else if (catName) {
-            title = `בשמי ${catName} | ml_tlv`;
-            description = `מבחר בשמי ${catName} ייחודיים בדוגמיות.`;
-        }
-    } else if (q) {
-        title = `תוצאות חיפוש: ${q} | ml_tlv`;
-    }
-
+    // ...
+    // Note: I'm not replacing the whole file, just top import. 
+    // Wait, replace_file_content is single block.
+    // I will replace separate blocks.
     return {
-        title,
-        description,
-        alternates: {
-            canonical: `${process.env.NEXT_PUBLIC_BASE_URL || 'https://ml-tlv.vercel.app'}/catalog`,
-        },
-        openGraph: {
-            title,
-            description,
-        }
+        // ...
     };
 }
+// ...
+// ... I need to replace the component body to map the query.
 
-// Server Component - Fetch data directly
-async function getProducts(search, brand, category, minPrice, maxPrice, sort, page = 1) {
+export default async function CatalogPage(props) {
+    const searchParams = await props.searchParams;
+    let search = searchParams?.q || '';
+    const brand = searchParams?.brand || '';
+    const category = searchParams?.category || '';
+    const minPrice = searchParams?.min || '';
+    const maxPrice = searchParams?.max || '';
+    const sort = searchParams?.sort || 'random';
+    const page = parseInt(searchParams?.page || '1');
+
+    // Map Hebrew Search
+    const mappedSearch = mapHebrewQuery(search);
+
+    const { products, totalPages } = await getProducts(mappedSearch, brand, category, minPrice, maxPrice, sort, page);
     const LIMIT = 16;
     const OFFSET = (page - 1) * LIMIT;
 

@@ -1,14 +1,18 @@
 import { NextResponse } from 'next/server';
 import pool from '../../../lib/db';
+import { mapHebrewQuery } from '../../../lib/hebrewMapping';
 
 export async function GET(req) {
     try {
         const { searchParams } = new URL(req.url);
-        const query = searchParams.get('q');
+        let query = searchParams.get('q'); // Query is let so we can modify
 
         if (!query || query.length < 2) {
             return NextResponse.json({ results: [] });
         }
+
+        // Map Hebrew to English if applicable
+        query = mapHebrewQuery(query);
 
         const client = await pool.connect();
         try {
