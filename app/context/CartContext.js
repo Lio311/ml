@@ -75,6 +75,15 @@ export function CartProvider({ children }) {
         return () => clearInterval(interval);
     }, [lotteryMode]);
 
+    // Safety: Auto-unlock if cart is empty (e.g. after checkout or error)
+    useEffect(() => {
+        if (lotteryMode.active && cartItems.length === 0) {
+            setLotteryMode({ active: false, expiresAt: null });
+            setLotteryTimeLeft(null);
+            localStorage.removeItem("lotteryMode");
+        }
+    }, [cartItems, lotteryMode.active]);
+
     const startLottery = (items) => {
         // Clear cart and add lottery items
         const newCart = items.map(p => ({
