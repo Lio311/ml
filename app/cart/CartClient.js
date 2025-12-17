@@ -484,7 +484,7 @@ export default function CartClient() {
                                         {recommendations.map(rec => (
                                             <div key={rec.id} className="flex items-center gap-3 bg-white border p-2 rounded-lg shadow-sm hover:shadow-md transition">
                                                 <div className="w-10 h-10 bg-gray-50 rounded flex-shrink-0 flex items-center justify-center overflow-hidden">
-                                                    {rec.image_url ? <img src={rec.image_url} alt="" className="w-full h-full object-cover" /> : '🧴'}
+                                                    {rec.image_url ? <img src={rec.image_url} alt="" className="w-full h-full object-contain p-1" /> : '🧴'}
                                                 </div>
                                                 <div className="flex-1 min-w-0">
                                                     <div className="font-bold text-xs truncate">{rec.name}</div>
@@ -543,12 +543,14 @@ export default function CartClient() {
                         </div>
                     </div>
                 </div>
-                {showWheel && (
-                    <LuckyWheel
-                        onWin={handleWin}
-                        onClose={() => { setShowWheel(false); setHasSeenWheel(true); }}
-                    />
-                )}
             </div>
-            );
+            {showWheel && (
+                <LuckyWheel
+                    onWin={handleWin}
+                    onClose={() => { setShowWheel(false); setHasSeenWheel(true); }}
+                />
+            )}
+        </div>
+    );
 }
+```
