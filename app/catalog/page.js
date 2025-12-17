@@ -40,6 +40,9 @@ export async function generateMetadata(props) {
     return {
         title,
         description,
+        alternates: {
+            canonical: `${process.env.NEXT_PUBLIC_BASE_URL || 'https://ml-tlv.vercel.app'}/catalog`,
+        },
         openGraph: {
             title,
             description,

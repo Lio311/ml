@@ -14,8 +14,11 @@ export async function generateMetadata(props) {
     const params = await props.params;
     const { slug } = params;
 
-    const res = await pool.query(`SELECT * FROM products WHERE slug = $1`, [slug]);
+    const res = await pool.query(`SELECT * FROM products WHERE slug = $1 OR id::text = $1`, [slug]);
     const product = res.rows[0];
+
+    // If we found it by ID but the URL used ID, we should ideally redirect to Slug, 
+    // but for now let's just render to fix the 404.
 
     if (!product) {
         return {
@@ -68,7 +71,7 @@ export default async function ProductPage(props) {
         SELECT p.*, b.logo_url 
         FROM products p 
         LEFT JOIN brands b ON p.brand = b.name 
-        WHERE p.slug = $1
+        WHERE p.slug = $1 OR p.id::text = $1
     `, [slug]);
     const product = res.rows[0];
 
@@ -214,7 +217,7 @@ export default async function ProductPage(props) {
                                     },
                                     "offers": {
                                         "@type": "Offer",
-                                        "url": `${process.env.NEXT_PUBLIC_BASE_URL || 'https://ml-tlv.vercel.app'}/product/${product.slug || product.id}`,
+                                        "url": `${process.env.NEXT_PUBLIC_BASE_URL || 'https://ml-tlv.vercel.app'} / product / ${product.slug || product.id}`,
                                         "priceCurrency": "ILS",
                                         "price": product.price_10ml || product.price_5ml || product.price_2ml,
                                         "availability": (product.stock && product.stock > 0) ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
@@ -259,24 +262,26 @@ export default async function ProductPage(props) {
                             }}
                         />
 
-                        {product.logo_url && (
-                            <div className="mb-6 w-32 h-16 flex items-center justify-start"> {/* Fixed container */}
-                                <Link href={`/brands/${encodeURIComponent(product.brand)}`} className="block w-full h-full relative">
-                                    <img
-                                        src={product.logo_url}
-                                        alt={product.brand}
-                                        className="w-full h-full object-contain hover:opacity-80 transition-opacity"
-                                    />
-                                </Link>
-                            </div>
-                        )}
+                        {
+                            product.logo_url && (
+                                <div className="mb-6 w-32 h-16 flex items-center justify-start"> {/* Fixed container */}
+                                    <Link href={`/brands/${encodeURIComponent(product.brand)}`} className="block w-full h-full relative">
+                                        <img
+                                            src={product.logo_url}
+                                            alt={product.brand}
+                                            className="w-full h-full object-contain hover:opacity-80 transition-opacity"
+                                        />
+                                    </Link>
+                                </div>
+                            )
+                        }
 
                         <div className="text-lg text-gray-600 leading-relaxed">
                             {product.description || `תיאור מוצר מורחב יבוא כאן... ריחות של ${product.category} בשילוב תווים ייחודיים.`}
                         </div>
 
                         {/* Fragrance Pyramid Visualization removed from here */}
-                    </div>
+                    </div >
 
                     <div className="bg-gray-50 p-6 rounded-xl border">
                         <h3 className="font-bold mb-4">בחר גודל והוסף לסל:</h3>
@@ -298,20 +303,22 @@ export default async function ProductPage(props) {
                             base={product.base_notes}
                         />
                     </div>
-                </div>
-            </div>
+                </div >
+            </div >
 
-            {related.length > 0 && (
-                <div>
-                    <h2 className="text-2xl font-bold mb-8">אולי תאהב\י גם</h2>
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-                        {related.map(p => (
-                            <ProductCard key={p.id} product={p} />
-                        ))}
+            {
+                related.length > 0 && (
+                    <div>
+                        <h2 className="text-2xl font-bold mb-8">אולי תאהב\י גם</h2>
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                            {related.map(p => (
+                                <ProductCard key={p.id} product={p} />
+                            ))}
+                        </div>
                     </div>
-                </div>
-            )}
-        </div>
+                )
+            }
+        </div >
     );
 }
 
