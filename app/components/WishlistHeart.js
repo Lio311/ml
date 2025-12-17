@@ -6,7 +6,8 @@ export default function WishlistHeart({ productId }) {
     const { toggleWishlist, isInWishlist, loading } = useWishlist();
     const inWishlist = isInWishlist(productId);
 
-    if (loading) return null;
+    // Render immediately, don't wait for loading
+    // if (loading) return null;
 
     return (
         <button

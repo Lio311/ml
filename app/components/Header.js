@@ -38,11 +38,27 @@ export default function Header({ brands = [] }) {
             </div>
 
             {/* Main Header */}
-            <div className="w-full px-6 py-2 md:py-4 relative">
-                <div className="flex items-center justify-between">
+            <div className="w-full px-6 py-2 md:py-4 relative bg-white">
+                <div className="flex flex-col md:grid md:grid-cols-3 md:items-center">
+
+                    {/* Mobile Menu Button & Logo Row (Visible on Mobile Only) */}
+                    <div className="flex md:hidden justify-between items-center w-full z-20">
+                        <button className="p-2" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                            </svg>
+                        </button>
+
+                        <Link href="/" className="inline-block">
+                            <Image src="/logo_v3.png" alt="ml." width={100} height={40} className="h-10 w-auto object-contain" priority />
+                        </Link>
+
+                        {/* Placeholder for balance or Cart on mobile */}
+                        <div className="w-10"></div>
+                    </div>
 
                     {/* Desktop LEFT Group: Orders + Wishlist + Cart */}
-                    <div className="hidden md:flex items-center gap-6 z-20">
+                    <div className="hidden md:flex items-center justify-start gap-6">
                         {/* Cart */}
                         <Link href="/cart" className="relative group" title="עגלה">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" width="22" height="22" className="group-hover:text-green-600 transition">
@@ -78,99 +94,76 @@ export default function Header({ brands = [] }) {
                         </SignedIn>
                     </div>
 
-                    {/* Mobile Menu Button (Visible on Mobile Only) */}
-                    <div className="md:hidden z-20">
-                        <button className="p-2" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-                            </svg>
-                        </button>
-                    </div>
-
                     {/* Desktop CENTER Group: Logo + Menu */}
-                    <div className="flex-1 flex justify-center items-center absolute left-0 right-0 pointer-events-none">
-                        {/* Wrapper for pointer events to allow clicks on children */}
-                        <div className="pointer-events-auto flex flex-col items-center gap-2">
-                            {/* Mobile Logo Center */}
-                            <div className="md:hidden">
-                                <Link href="/" className="inline-block">
-                                    <Image src="/logo_v3.png" alt="ml." width={100} height={40} className="h-10 w-auto object-contain" priority />
+                    <div className="hidden md:flex flex-col items-center justify-center gap-2">
+                        <Link href="/" className="block">
+                            <Image src="/logo_v3.png" alt="ml." width={180} height={70} className="h-16 w-auto object-contain" priority />
+                        </Link>
+                        <nav className="flex items-center gap-6 lg:gap-8 relative">
+                            <Link href="/" className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm ${pathname === '/' ? 'bg-black text-white' : 'text-gray-900 hover:bg-black hover:text-white'}`}>דף הבית</Link>
+
+                            {/* Brands Dropdown Trigger */}
+                            <div
+                                className="relative group"
+                                onMouseEnter={() => setIsBrandsDropdownOpen(true)}
+                                onMouseLeave={() => setIsBrandsDropdownOpen(false)}
+                            >
+                                <Link
+                                    href="/brands"
+                                    className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm ${pathname.startsWith('/brands') ? 'bg-black text-white' : 'text-gray-900 hover:bg-black hover:text-white'}`}
+                                >
+                                    מותגים
                                 </Link>
-                            </div>
 
-                            {/* Desktop Menu */}
-                            <div className="hidden md:flex flex-col items-center gap-2">
-                                <Link href="/" className="block">
-                                    <Image src="/logo_v3.png" alt="ml." width={180} height={70} className="h-16 w-auto object-contain" priority />
-                                </Link>
-                                <nav className="flex items-center gap-6 lg:gap-8 relative">
-                                    <Link href="/" className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm ${pathname === '/' ? 'bg-black text-white' : 'text-gray-900 hover:bg-black hover:text-white'}`}>דף הבית</Link>
-
-                                    {/* Brands Dropdown Trigger */}
-                                    <div
-                                        className="relative group"
-                                        onMouseEnter={() => setIsBrandsDropdownOpen(true)}
-                                        onMouseLeave={() => setIsBrandsDropdownOpen(false)}
-                                    >
-                                        <Link
-                                            href="/brands"
-                                            className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm ${pathname.startsWith('/brands') ? 'bg-black text-white' : 'text-gray-900 hover:bg-black hover:text-white'}`}
-                                        >
-                                            מותגים
-                                        </Link>
-
-                                        {/* The Mega Menu Dropdown (ABC Dictionary) */}
-                                        <div className={`absolute top-full right-0 w-[800px] bg-white text-black shadow-2xl border border-gray-100 rounded-b-xl overflow-hidden z-50 transition-all duration-300 origin-top transform -translate-x-1/2 left-1/2 ${isBrandsDropdownOpen ? 'opacity-100 scale-y-100' : 'opacity-0 scale-y-0 pointer-events-none'}`}>
-                                            <div className="flex flex-col max-h-[60vh]">
-                                                {/* Scrollable Content */}
-                                                <div className="overflow-y-auto p-6 custom-scrollbar text-right">
-                                                    {brands.length === 0 ? (
-                                                        <p className="text-center text-gray-400">טוען מותגים...</p>
-                                                    ) : (
-                                                        <div className="columns-4 gap-8">
-                                                            {sortedLetters.map(letter => (
-                                                                <div key={letter} className="break-inside-avoid mb-6">
-                                                                    <h4 className="font-bold text-black border-b border-gray-200 mb-2 pb-1 text-lg sticky top-0 bg-white/95 backdrop-blur-sm">{letter}</h4>
-                                                                    <div className="flex flex-col gap-1">
-                                                                        {groupedBrands[letter].map(brand => (
-                                                                            <Link
-                                                                                key={brand.name}
-                                                                                href={`/brands/${encodeURIComponent(brand.name)}`}
-                                                                                className="text-xs text-gray-600 hover:text-black hover:font-bold transition-colors"
-                                                                            >
-                                                                                {brand.name}
-                                                                            </Link>
-                                                                        ))}
-                                                                    </div>
-                                                                </div>
-                                                            ))}
+                                {/* The Mega Menu Dropdown (ABC Dictionary) */}
+                                <div className={`absolute top-full right-0 w-[800px] bg-white text-black shadow-2xl border border-gray-100 rounded-b-xl overflow-hidden z-50 transition-all duration-300 origin-top transform -translate-x-1/2 left-1/2 ${isBrandsDropdownOpen ? 'opacity-100 scale-y-100' : 'opacity-0 scale-y-0 pointer-events-none'}`}>
+                                    <div className="flex flex-col max-h-[60vh]">
+                                        {/* Scrollable Content */}
+                                        <div className="overflow-y-auto p-6 custom-scrollbar text-right">
+                                            {brands.length === 0 ? (
+                                                <p className="text-center text-gray-400">טוען מותגים...</p>
+                                            ) : (
+                                                <div className="columns-4 gap-8">
+                                                    {sortedLetters.map(letter => (
+                                                        <div key={letter} className="break-inside-avoid mb-6">
+                                                            <h4 className="font-bold text-black border-b border-gray-200 mb-2 pb-1 text-lg sticky top-0 bg-white/95 backdrop-blur-sm">{letter}</h4>
+                                                            <div className="flex flex-col gap-1">
+                                                                {groupedBrands[letter].map(brand => (
+                                                                    <Link
+                                                                        key={brand.name}
+                                                                        href={`/brands/${encodeURIComponent(brand.name)}`}
+                                                                        className="text-xs text-gray-600 hover:text-black hover:font-bold transition-colors"
+                                                                    >
+                                                                        {brand.name}
+                                                                    </Link>
+                                                                ))}
+                                                            </div>
                                                         </div>
-                                                    )}
+                                                    ))}
                                                 </div>
+                                            )}
+                                        </div>
 
-                                                {/* Footer Link */}
-                                                <div className="p-4 bg-gray-50 border-t text-center">
-                                                    <Link href="/brands" className="text-sm font-bold underline hover:text-red-600">
-                                                        לכל המותגים &larr;
-                                                    </Link>
-                                                </div>
-                                            </div>
+                                        {/* Footer Link */}
+                                        <div className="p-4 bg-gray-50 border-t text-center">
+                                            <Link href="/brands" className="text-sm font-bold underline hover:text-red-600">
+                                                לכל המותגים &larr;
+                                            </Link>
                                         </div>
                                     </div>
-
-                                    <Link href="/catalog" className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm ${pathname.startsWith('/catalog') ? 'bg-black text-white' : 'text-gray-900 hover:bg-black hover:text-white'}`}>קטלוג</Link>
-                                    <Link href="/matching" className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm ${pathname === '/matching' ? 'bg-black text-white' : 'text-gray-900 hover:bg-black hover:text-white'}`}>התאמת מארזים</Link>
-                                    <Link href="/requests" className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm ${pathname === '/requests' ? 'bg-black text-white' : 'text-gray-900 hover:bg-black hover:text-white'}`}>בקשת בשמים</Link>
-                                    <Link href="/lottery" className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm text-red-600 hover:text-red-700 hover:bg-red-50`}>הגרלה</Link>
-                                    <Link href="/contact" className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm ${pathname === '/contact' ? 'bg-black text-white' : 'text-gray-900 hover:bg-black hover:text-white'}`}>צור קשר</Link>
-                                </nav>
+                                </div>
                             </div>
-                        </div>
+
+                            <Link href="/catalog" className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm ${pathname.startsWith('/catalog') ? 'bg-black text-white' : 'text-gray-900 hover:bg-black hover:text-white'}`}>קטלוג</Link>
+                            <Link href="/matching" className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm ${pathname === '/matching' ? 'bg-black text-white' : 'text-gray-900 hover:bg-black hover:text-white'}`}>התאמת מארזים</Link>
+                            <Link href="/requests" className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm ${pathname === '/requests' ? 'bg-black text-white' : 'text-gray-900 hover:bg-black hover:text-white'}`}>בקשת בשמים</Link>
+                            <Link href="/lottery" className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm text-red-600 hover:text-red-700 hover:bg-red-50`}>הגרלה</Link>
+                            <Link href="/contact" className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm ${pathname === '/contact' ? 'bg-black text-white' : 'text-gray-900 hover:bg-black hover:text-white'}`}>צור קשר</Link>
+                        </nav>
                     </div>
 
-
                     {/* Desktop RIGHT Group: Search + User */}
-                    <div className="hidden md:flex items-center gap-4 z-20">
+                    <div className="hidden md:flex items-center justify-end gap-4">
                         {/* Search Bar - Smart Autocomplete */}
                         <SearchAutocomplete />
 
@@ -188,7 +181,6 @@ export default function Header({ brands = [] }) {
                             </SignInButton>
                         </SignedOut>
                     </div>
-
                 </div>
             </div>
 
