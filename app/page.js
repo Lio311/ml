@@ -72,24 +72,14 @@ export default async function Home() {
       <section className="relative h-[40vh] md:h-[50vh] w-full m-0 p-0 overflow-hidden bg-white block">
         {/* Decorative Background Video - Scaled slightly to prevent black lines */}
         {/* Video Background Layer */}
-        <div className="absolute inset-0 w-full h-full overflow-hidden">
-          {/* 1. Static Image (Loads Instantly) */}
-          <Image
-            src="/hero-decants.png"
-            alt="Signature Scent"
-            fill
-            priority
-            className="object-cover scale-[1.05]"
-          />
-
-          {/* 2. Video Overlay (Fades in when ready - browser handles this naturally if autoplay works) */}
+        <div className="absolute inset-0 w-full h-full overflow-hidden bg-gray-100 animate-pulse">
           <video
             autoPlay
             loop
             muted
             playsInline
             preload="auto"
-            className="absolute inset-0 w-full h-full object-cover scale-[1.05] z-10"
+            className="absolute inset-0 w-full h-full object-cover scale-[1.05]"
           >
             <source src="/hero-video.mp4" type="video/mp4" />
           </video>
