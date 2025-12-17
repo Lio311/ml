@@ -60,7 +60,8 @@ async function getProducts(search, brand, category, minPrice, maxPrice, sort, pa
     SELECT p.*, COALESCE(ps.sales_count, 0) as sales_count 
     FROM products p
     ${joinType} product_sales ps ON p.id = ps.product_id
-    WHERE p.active = true
+    ${joinType} brands b ON p.brand = b.name
+    WHERE p.active = true AND p.stock > 0
   `;
     const params = [];
 

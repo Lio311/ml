@@ -27,8 +27,8 @@ export default async function Home() {
   try {
     const client = await pool.connect();
 
-    // Fetch New Arrivals
-    const res = await client.query('SELECT * FROM products ORDER BY id DESC LIMIT 4');
+    // Fetch New Arrivals (Only in stock)
+    const res = await client.query('SELECT * FROM products WHERE stock > 0 ORDER BY id DESC LIMIT 4');
     newArrivals = res.rows;
 
     // Fetch Stats

@@ -48,7 +48,11 @@ export default function MemoryGame({ prize, onComplete, allImages = [] }) {
         }
         else if (clickStep === 1) {
             // Click 2: Reveal Random (Mismatch)
-            newCards[index] = { ...newCards[index], status: 'revealed', content: getRandomImage(), type: 'image' };
+            // Fix: EXCLUDE the Prize Image to avoid duplicates
+            // Also exclude specifically based on card index if necessary, but prize exclusion is key.
+            // Wait, we need to ensure the random image is NOT the prize image.
+            const prizeImage = prize.image_url;
+            newCards[index] = { ...newCards[index], status: 'revealed', content: getRandomImage(prizeImage), type: 'image' };
             setCards(newCards);
             setClickStep(2);
 
@@ -61,11 +65,20 @@ export default function MemoryGame({ prize, onComplete, allImages = [] }) {
         }
         else if (clickStep === 2) {
             // Click 3: Reveal Random (Mismatch) -> Flip back
-            // Find the previously revealed random card to exclude it
             const previousRandom = cards.find(c => c.status === 'revealed' && c.type === 'image' && c.id !== index);
             const excludeContent = previousRandom ? previousRandom.content : null;
+            // Fix: Exclude BOTH the previous random card AND the Prize Image
+            // Implementing multi-exclusion if simple helper doesn't support it?
+            // Helper `getRandomImage` takes single exclude.
+            // Let's modify helper or pre-filter.
 
-            newCards[index] = { ...newCards[index], status: 'revealed', content: getRandomImage(excludeContent), type: 'image' };
+            // Inline logic for multi-exclusion:
+            let pool = allImages.filter(img => img !== prize.image_url && img !== excludeContent);
+            if (pool.length === 0) pool = allImages.filter(img => img !== prize.image_url); // Fallback
+
+            const randomImg = pool[Math.floor(Math.random() * pool.length)];
+
+            newCards[index] = { ...newCards[index], status: 'revealed', content: randomImg, type: 'image' };
             setCards(newCards);
             setClickStep(3);
 

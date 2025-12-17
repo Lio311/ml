@@ -43,12 +43,18 @@ export async function POST(req) {
 
             // 2. Update Stock
             for (const item of items) {
+                // Fix for "74-2" composite ID bug
+                let dbId = item.id;
+                if (typeof dbId === 'string' && dbId.includes('-')) {
+                    dbId = parseInt(dbId.split('-')[0]);
+                }
+
                 // Skip prizes (synthetic IDs) or non-numeric sizes (sets) if stock tracking is ML only
                 if (!item.isPrize && !isNaN(item.size)) {
                     const deduction = Number(item.size) * item.quantity;
                     await client.query(
                         `UPDATE products SET stock = stock - $1 WHERE id = $2`,
-                        [deduction, item.id]
+                        [deduction, dbId]
                     );
                 }
             }

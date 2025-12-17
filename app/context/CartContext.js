@@ -11,13 +11,29 @@ export function CartProvider({ children }) {
     // Load likely from local storage on mount (optional, skipping for MVP speed)
     // For persistence, we usually use localStorage.
 
+    // Load Cart and Lottery State from Local Storage
     useEffect(() => {
-        const saved = localStorage.getItem("cart");
-        if (saved) {
+        const savedCart = localStorage.getItem("cart");
+        if (savedCart) {
             try {
-                setCartItems(JSON.parse(saved));
+                setCartItems(JSON.parse(savedCart));
             } catch (e) {
                 console.error("Failed to parse cart", e);
+            }
+        }
+
+        const savedLottery = localStorage.getItem("lotteryMode");
+        if (savedLottery) {
+            try {
+                const parsed = JSON.parse(savedLottery);
+                // Check if expired while away
+                if (parsed.active && parsed.expiresAt > Date.now()) {
+                    setLotteryMode(parsed);
+                } else {
+                    localStorage.removeItem("lotteryMode");
+                }
+            } catch (e) {
+                console.error("Failed to parse lottery mode", e);
             }
         }
     }, []);
@@ -25,6 +41,15 @@ export function CartProvider({ children }) {
     // Lottery Mode State
     const [lotteryMode, setLotteryMode] = useState({ active: false, expiresAt: null });
     const [lotteryTimeLeft, setLotteryTimeLeft] = useState(null);
+
+    // Persist Lottery Mode
+    useEffect(() => {
+        if (lotteryMode.active) {
+            localStorage.setItem("lotteryMode", JSON.stringify(lotteryMode));
+        } else {
+            localStorage.removeItem("lotteryMode");
+        }
+    }, [lotteryMode]);
 
     // Derived State
     const isCartLocked = lotteryMode.active;
@@ -38,7 +63,8 @@ export function CartProvider({ children }) {
                 const diff = lotteryMode.expiresAt - now;
 
                 if (diff <= 0) {
-                    // Expired
+                    // Expired - Clear persistence
+                    localStorage.removeItem("lotteryMode");
                     setLotteryMode({ active: false, expiresAt: null });
                     setLotteryTimeLeft(null);
                 } else {
