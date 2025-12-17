@@ -41,6 +41,10 @@ export async function PUT(req, { params }) {
                 query += `, expires_at = $${idx++}`;
                 values.push(expires_at);
             }
+            if (body.email !== undefined) {
+                query += `, email = $${idx++}`;
+                values.push(body.email);
+            }
 
             query += ` WHERE id = $${idx}`;
             values.push(id);
