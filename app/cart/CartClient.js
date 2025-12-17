@@ -248,6 +248,16 @@ export default function CartClient() {
 
     const recommendations = getRecommendations();
 
+    if (isSubmitting) {
+        return (
+            <div className="container py-20 text-center flex flex-col items-center justify-center min-h-[60vh]">
+                <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-black mb-4"></div>
+                <h2 className="text-2xl font-bold animate-pulse">מעבד את ההזמנה שלך...</h2>
+                <p className="text-gray-500 mt-2">אנא המתן, מעביר אותך לאישור.</p>
+            </div>
+        );
+    }
+
     if (cartItems.length === 0) {
         return (
             <div className="container py-20 text-center">
