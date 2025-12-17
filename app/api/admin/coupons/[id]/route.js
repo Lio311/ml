@@ -29,7 +29,9 @@ export async function PUT(req, { params }) {
             // Note: usually we don't change code to avoid confusion, but we could if requested.
             // Here we stick to discount and expiry.
 
-            let query = 'UPDATE coupons SET updated_at = NOW()';
+            // Note: 'updated_at' column does not exist in schema, so we skip it.
+            // We start with a no-op update to simplify comma logic
+            let query = 'UPDATE coupons SET id = id';
             const values = [];
             let idx = 1;
 
