@@ -30,16 +30,7 @@ export default function Header({ brands = [] }) {
     const [searchQuery, setSearchQuery] = useState('');
 
     return (
-        // ... (keep existing JSX until nav) ...
-        // WARNING: The replace_file_content tool needs exact context. I will target the Header component definition and the nav section specifically.
-        // Better strategy: I will replace the component definition line to add props, and then replace the Nav section.
-        // This is done in 2 chunks to be safe.
-        // Chunk 1: Update signature and state
-        // Chunk 2: Update Nav logic
-        // Actually, I can do it in one if I am careful with context limits.
-        // Let's use multi_replace.
-
-        <header className="sticky top-0 z-50 bg-white shadow-sm">
+        <header className="sticky top-0 z-50 bg-black shadow-sm">
             {/* Top Bar - Black Promo Strip */}
             <div className="hidden md:block bg-black text-white text-[10px] md:text-xs py-2 text-center tracking-widest uppercase">
                 משלוח בלוקר לכל הארץ ב-30 ₪
@@ -57,7 +48,7 @@ export default function Header({ brands = [] }) {
                             className="p-2"
                             onClick={() => setIsMenuOpen(!isMenuOpen)}
                         >
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 text-white">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
                             </svg>
                         </button>
@@ -98,7 +89,7 @@ export default function Header({ brands = [] }) {
                                 <Image src="/logo_v3.png" alt="ml." width={180} height={70} className="h-16 w-auto object-contain" priority />
                             </Link>
                             <nav className="flex items-center gap-6 lg:gap-8 relative">
-                                <Link href="/" className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm ${pathname === '/' ? 'bg-black text-white' : 'text-gray-900 hover:bg-black hover:text-white'}`}>דף הבית</Link>
+                                <Link href="/" className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm ${pathname === '/' ? 'bg-white text-black' : 'text-white hover:bg-white hover:text-black'}`}>דף הבית</Link>
 
                                 {/* Brands Dropdown Trigger */}
                                 <div
@@ -108,7 +99,7 @@ export default function Header({ brands = [] }) {
                                 >
                                     <Link
                                         href="/brands"
-                                        className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm ${pathname.startsWith('/brands') ? 'bg-black text-white' : 'text-gray-900 hover:bg-black hover:text-white'}`}
+                                        className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm ${pathname.startsWith('/brands') ? 'bg-white text-black' : 'text-white hover:bg-white hover:text-black'}`}
                                     >
                                         מותגים
                                     </Link>
@@ -124,7 +115,7 @@ export default function Header({ brands = [] }) {
                                                     <div className="columns-4 gap-8">
                                                         {sortedLetters.map(letter => (
                                                             <div key={letter} className="break-inside-avoid mb-6">
-                                                                <h4 className="font-bold text-red-600 border-b border-red-100 mb-2 pb-1 text-lg sticky top-0 bg-white/95 backdrop-blur-sm">{letter}</h4>
+                                                                <h4 className="font-bold text-black border-b border-gray-200 mb-2 pb-1 text-lg sticky top-0 bg-white/95 backdrop-blur-sm">{letter}</h4>
                                                                 <div className="flex flex-col gap-1">
                                                                     {groupedBrands[letter].map(brand => (
                                                                         <Link

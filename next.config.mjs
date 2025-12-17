@@ -18,6 +18,18 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'www.fragrantica.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'www.cp-parfums.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'wp.logos-download.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'ipiccirilliperfumes.com',
+      },
     ],
   },
 };
