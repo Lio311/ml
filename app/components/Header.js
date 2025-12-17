@@ -187,6 +187,16 @@ export default function Header({ brands = [] }) {
             {/* Mobile Menu Overlay */}
             {isMenuOpen && (
                 <div className="fixed inset-0 z-40 bg-white pt-24 px-6 md:hidden">
+                    {/* Close Button (Anchored Top-Left) */}
+                    <button
+                        onClick={() => setIsMenuOpen(false)}
+                        className="absolute top-5 left-5 p-2 text-black hover:bg-gray-100 rounded-full transition-colors z-50"
+                        aria-label="סגור תפריט"
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
                     <div className="flex flex-col gap-6 text-xl font-bold text-center">
                         <Link href="/" onClick={() => setIsMenuOpen(false)} className="border-b pb-4">
                             דף הבית
