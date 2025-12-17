@@ -251,6 +251,28 @@ export default function CartClient() {
     if (cartItems.length === 0) {
         return (
             <div className="container py-20 text-center">
+                {sharedCart && (
+                    <div className="bg-blue-600 text-white p-4 rounded-xl mb-8 shadow-lg max-w-2xl mx-auto flex items-center justify-between animate-fade-in text-right" dir="rtl">
+                        <div>
+                            <h3 className="font-bold text-lg">קיבלת סל משותף! 🛍️</h3>
+                            <p className="text-sm opacity-90">הסל מכיל {sharedCart.length} פריטים. האם תרצה לטעון אותם?</p>
+                        </div>
+                        <div className="flex gap-2">
+                            <button
+                                onClick={() => { setSharedCart(null); router.replace('/cart'); }}
+                                className="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg text-sm transition"
+                            >
+                                התעלם
+                            </button>
+                            <button
+                                onClick={handleLoadSharedCart}
+                                className="px-4 py-2 bg-white text-blue-600 font-bold rounded-lg text-sm hover:scale-105 transition shadow"
+                            >
+                                טען סל
+                            </button>
+                        </div>
+                    </div>
+                )}
                 <h1 className="text-3xl font-bold mb-4">העגלה שלך ריקה</h1>
                 <p className="text-gray-500 mb-8">נראה שעדיין לא בחרת ריחות שווים...</p>
                 <Link href="/catalog" className="btn btn-primary">
