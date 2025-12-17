@@ -66,7 +66,7 @@ export default function ProductCard({ product }) {
                 </div>
             )}
 
-            <Link href={`/product/${product.id}`} className="block relative aspect-square bg-white overflow-hidden cursor-pointer p-2">
+            <Link href={`/product/${product.slug || product.id}`} className="block relative aspect-square bg-white overflow-hidden cursor-pointer p-2">
                 {product.image_url ? (
                     <img
                         src={product.image_url}
@@ -123,7 +123,7 @@ export default function ProductCard({ product }) {
                         </div>
                     </div>
 
-                    <Link href={`/product/${product.id}`} className={`block w-full text-center text-xs py-2 mt-3 rounded transition ${added ? 'bg-green-600 text-white' : 'bg-black text-white hover:bg-gray-800'}`}>
+                    <Link href={`/product/${product.slug || product.id}`} className={`block w-full text-center text-xs py-2 mt-3 rounded transition ${added ? 'bg-green-600 text-white' : 'bg-black text-white hover:bg-gray-800'}`}>
                         {added ? 'נוסף לסל!' : 'פרטים נוספים'}
                     </Link>
                 </div>
