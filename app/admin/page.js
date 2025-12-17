@@ -29,7 +29,7 @@ export default async function AdminDashboard() {
         const countRes = await client.query('SELECT COUNT(*) FROM orders');
         kpis.totalOrders = parseInt(countRes.rows[0].count);
 
-        const revRes = await client.query('SELECT SUM(total_amount) FROM orders');
+        const revRes = await client.query("SELECT SUM(total_amount) FROM orders WHERE status != 'cancelled'");
         kpis.totalRevenue = parseInt(revRes.rows[0].sum || 0);
 
         // Samples Sold Query (Parse JSON in SQL is best, assuming JSONB or Text)
