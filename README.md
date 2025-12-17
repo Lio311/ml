@@ -21,6 +21,9 @@ The ultimate Israeli destination for niche & boutique perfume samples (decants).
 - **Smart Upsell Engine**: 
     - AI-driven recommendation logic that pushes users to add more items.
     - **Prioritization Algorithm**: 1. `Wishlist Items` → 2. `Recently Viewed Items` → 3. `Bestsellers`.
+- **Smart Cart Sharing**:
+    - **Short Links**: Generates clean, database-backed URLs (e.g., `ml-tlv.com/cart?share=UUID`) instead of long encoded strings.
+    - **Universal Loading**: Works seamlessly for new users ('Cold Start'), showing a dedicated banner even if their current cart is empty.
 - **Abandoned Cart Recovery (CRON)**: 
     - Automated background task detecting inactive carts (1h+).
     - Sends a personalized recovery email containing a **unique 5% discount coupon** to incentivize completion.
@@ -45,7 +48,10 @@ The ultimate Israeli destination for niche & boutique perfume samples (decants).
     - Monthly Site Visits Tracker.
     - Registered Users Counter.
 - **Order Management**: Full CRUD for orders with Hebrew status tracking (Pending, Processing, Shipped).
-- **Coupon Management**: Create, track, and expire discount codes.
+- **Coupon Management 2.0**: 
+    - **Full Control**: Create, edit, and expire discount codes.
+    - **Targeted Logic**: Assign coupons to specific client emails for personalized offers.
+    - **Status Tracking**: Visual indicators for Active/Redeemed/Expired coupons.
 - **Bestsellers Algorithm**: Auto-updates "Popular" sorting based on real sales data.
 
 ### 🎨 Visual & UX Excellence
