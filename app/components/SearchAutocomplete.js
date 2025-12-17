@@ -67,21 +67,12 @@ export default function SearchAutocomplete() {
                     onFocus={() => {
                         if (query.length >= 2 && results.length > 0) setIsOpen(true);
                     }}
-                    className={`border-b border-gray-300 py-1 pr-8 pl-2 text-sm focus:outline-none focus:border-black transition-all bg-transparent w-24 focus:w-64 placeholder-gray-400 text-right`}
+                    className={`border-b border-gray-300 py-1 pl-8 pr-2 text-sm focus:outline-none focus:border-black transition-all bg-transparent w-20 focus:w-48 placeholder-gray-400 text-right`}
                     dir="rtl"
                 />
 
-                {/* Search Icon (Absolute Left to match Hebrew layout visually if needed, but usually right in RTL inputs. 
-                    However, original code had icon absolute left. 
-                    Let's stick to standard RTL: text starts right, icon usually on edge.
-                    I'll place icon on the Right for RTL input context, or keep it left as 'submit' button.
-                    Let's keep it Left as in original design for consistency, but user asked for RTL.
-                    If input is RTL, text is on right. Icon should probably be on Left (end of line) or Right (start of line).
-                    Let's place icon on the Right (Start) for aesthetic, or Left (End).
-                    Original had it absolute left.
-                */}
-                {/* Search Icon (Absolute Right for RTL) */}
-                <button type="submit" className="absolute right-0 top-1 text-gray-400 group-focus-within:text-black hover:text-black p-1">
+                {/* Search Icon (Absolute Left) */}
+                <button type="submit" className="absolute left-1 top-1 text-gray-400 group-focus-within:text-black hover:text-black p-1">
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                     </svg>
@@ -89,7 +80,7 @@ export default function SearchAutocomplete() {
 
 
                 {isLoading && (
-                    <div className="absolute left-0 top-2">
+                    <div className="absolute right-0 top-2">
                         <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-black"></div>
                     </div>
                 )}
