@@ -20,20 +20,19 @@ export default function CartClient() {
     const [hasSeenWheel, setHasSeenWheel] = useState(false);
     const [sharedCart, setSharedCart] = useState(null);
 
-    // Check for shared cart in URL
+    // Check for shared cart in URL (Short ID now)
     useEffect(() => {
-        const shareCode = searchParams.get('share');
-        if (shareCode) {
-            try {
-                // Decode: Base64 -> JSON
-                const decoded = atob(shareCode);
-                const items = JSON.parse(decoded);
-                if (Array.isArray(items) && items.length > 0) {
-                    setSharedCart(items);
-                }
-            } catch (e) {
-                console.error("Failed to parse shared cart", e);
-            }
+        const shareId = searchParams.get('share');
+        if (shareId) {
+            // Fetch from DB
+            fetch(`/api/cart/load?id=${shareId}`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data && Array.isArray(data)) {
+                        setSharedCart(data);
+                    }
+                })
+                .catch(err => console.error("Failed to load shared cart", err));
         }
     }, [searchParams]);
 
@@ -41,41 +40,10 @@ export default function CartClient() {
         if (!sharedCart) return;
         if (confirm("פעולה זו תחליף את הסל הנוכחי שלך בסל המשותף. האם להמשיך?")) {
             clearCart();
-            // We need to re-fetch full product details? 
-            // The share payload should contain basic info {id, size, quantity, price, image_url, name}.
-            // Current 'addToCart' expects full product object.
-            // Let's assume the payload HAS the details. If not, we'd need to fetch.
-            // For simple stateless, we'll encode minimal needed fields.
 
-            // Actually, addMultipleToCart expects {product, size, price, quantity} but logic inside iterates.
-            // Let's simplify: direct set or robust add.
-            // CartContext doesn't expose 'setCartItems' directly? No.
-            // addMultipleToCart logic:
-            /*
-            items.forEach(({ product, size, price }) => ...
-            */
-            // So we need to reconstruct the structure.
-
-            const formattedItems = sharedCart.map(i => ({
-                product: i, // The item itself serves as the product object
-                size: i.size,
-                price: i.price
-            }));
-
-            // Manually add each to respect quantity? 
-            // addMultipleToCart sets quantity=1. 
-            // We need a way to set exact cart.
-            // Ideally we'd validte stock, but for now let's just use the context logic.
-            // Hack: Clear then Add One by One? Or add logic to Context?
-            // Existing `addMultipleToCart` adds +1.
-
-            // Let's rely on standard addMultipleToCart for now, assuming quantities = 1 or we repeat?
-            // Better: loop and add.
-
+            // Re-add items. Logic assumes payload has ample info, or we rely on backend data being robust.
+            // Shared cart items structure: {id, size, quantity, ...}
             sharedCart.forEach(item => {
-                // Force add the item with specific quantity? 
-                // Context `addToCart` adds +1.
-                // We can loop `quantity` times? A bit hacky but works without changing Context again.
                 for (let k = 0; k < item.quantity; k++) {
                     addToCart(item, item.size, item.price);
                 }
@@ -86,27 +54,30 @@ export default function CartClient() {
         }
     };
 
-    const handleShareCart = () => {
+    const handleShareCart = async () => {
         if (cartItems.length === 0) return;
 
-        // Encode minimal fields to save URL space
-        // We include name/image/price so the receiver doesn't need to fetch DB immediately
-        const payload = cartItems.map(item => ({
-            id: item.id,
-            name: item.name,
-            image_url: item.image_url,
-            price: item.price,
-            size: item.size,
-            brand: item.brand,
-            quantity: item.quantity
-        }));
+        try {
+            const res = await fetch('/api/cart/share', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ items: cartItems })
+            });
 
-        const code = btoa(JSON.stringify(payload));
-        const url = `${window.location.origin}/cart?share=${code}`;
+            if (res.ok) {
+                const data = await res.json();
+                const url = `${window.location.origin}/cart?share=${data.id}`;
 
-        navigator.clipboard.writeText(url).then(() => {
-            alert("הקישור הועתק, מוזמנים לשתף!");
-        });
+                navigator.clipboard.writeText(url).then(() => {
+                    alert("הקישור הועתק, מוזמנים לשתף!");
+                });
+            } else {
+                alert("שגיאה ביצירת קישור לשיתוף");
+            }
+        } catch (e) {
+            console.error(e);
+            alert("שגיאה ביצירת קישור לשיתוף");
+        }
     };
 
     // Coupon State
