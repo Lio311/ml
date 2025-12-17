@@ -356,14 +356,14 @@ export default function CartClient() {
 
                     {/* Summary & Checkout */}
                     <div className="w-full lg:w-96 space-y-6">
-                        <div className="bg-gray-50 p-6 rounded-xl border space-y-6 sticky top-24">
+                        <div className="bg-white p-6 rounded-xl border shadow-xl space-y-6 sticky top-24">
                             <h2 className="text-xl font-bold border-b pb-4">סיכום הזמנה</h2>
 
                             <div className="flex justify-between items-center text-lg">
                                 <span>סכום ביניים</span>
-                                <div className="flex items-baseline gap-2">
-                                    <span className="font-bold">{subtotal} ₪</span>
-                                    <span className="text-sm text-gray-500 font-normal">(סה״כ: {cartItems.reduce((acc, item) => acc + item.quantity, 0)} פריטים)</span>
+                                <div className="flex items-center gap-2">
+                                    <span className="font-bold whitespace-nowrap">{subtotal} ₪</span>
+                                    <span className="text-sm text-gray-500 font-normal whitespace-nowrap" dir="rtl">(סה״כ: {cartItems.reduce((acc, item) => acc + item.quantity, 0)} פריטים)</span>
                                 </div>
                             </div>
                         </div>
