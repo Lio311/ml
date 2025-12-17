@@ -55,7 +55,7 @@ export default function LotteryClient() {
     };
 
     return (
-        <div className="min-h-[100dvh] text-white flex flex-col items-center justify-start pt-20 pb-10 px-4 relative">
+        <div className="min-h-[100dvh] bg-zinc-900 text-white flex flex-col items-center justify-start pt-20 pb-10 px-4 relative">
 
             {/* Universally Fixed Background (Solves all jitter/scroll issues) */}
             <div className="fixed inset-0 z-0">
