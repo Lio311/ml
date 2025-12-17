@@ -5,18 +5,109 @@ import Link from "next/link";
 import { useUser, SignInButton } from "@clerk/nextjs";
 import { useState, useEffect, useRef } from "react";
 import confetti from 'canvas-confetti';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import LuckyWheel from "../components/LuckyWheel";
 
 export default function CartClient() {
-    const { cartItems, removeFromCart, updateQuantity, addToCart, clearCart, subtotal, total, shippingCost, freeSamplesCount, nextTier, luckyPrize, setLuckyPrize, discountAmount, lotteryMode, lotteryTimeLeft, coupon, setCoupon } = useCart();
+    const { cartItems, removeFromCart, updateQuantity, addToCart, clearCart, addMultipleToCart, subtotal, total, shippingCost, freeSamplesCount, nextTier, luckyPrize, setLuckyPrize, discountAmount, lotteryMode, lotteryTimeLeft, coupon, setCoupon } = useCart();
     const { isSignedIn, user } = useUser();
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [upsellProducts, setUpsellProducts] = useState([]);
     const prevSamplesCount = useRef(freeSamplesCount);
     const router = useRouter();
+    const searchParams = useSearchParams();
     const [showWheel, setShowWheel] = useState(false);
     const [hasSeenWheel, setHasSeenWheel] = useState(false);
+    const [sharedCart, setSharedCart] = useState(null);
+
+    // Check for shared cart in URL
+    useEffect(() => {
+        const shareCode = searchParams.get('share');
+        if (shareCode) {
+            try {
+                // Decode: Base64 -> JSON
+                const decoded = atob(shareCode);
+                const items = JSON.parse(decoded);
+                if (Array.isArray(items) && items.length > 0) {
+                    setSharedCart(items);
+                }
+            } catch (e) {
+                console.error("Failed to parse shared cart", e);
+            }
+        }
+    }, [searchParams]);
+
+    const handleLoadSharedCart = () => {
+        if (!sharedCart) return;
+        if (confirm("פעולה זו תחליף את הסל הנוכחי שלך בסל המשותף. האם להמשיך?")) {
+            clearCart();
+            // We need to re-fetch full product details? 
+            // The share payload should contain basic info {id, size, quantity, price, image_url, name}.
+            // Current 'addToCart' expects full product object.
+            // Let's assume the payload HAS the details. If not, we'd need to fetch.
+            // For simple stateless, we'll encode minimal needed fields.
+
+            // Actually, addMultipleToCart expects {product, size, price, quantity} but logic inside iterates.
+            // Let's simplify: direct set or robust add.
+            // CartContext doesn't expose 'setCartItems' directly? No.
+            // addMultipleToCart logic:
+            /*
+            items.forEach(({ product, size, price }) => ...
+            */
+            // So we need to reconstruct the structure.
+
+            const formattedItems = sharedCart.map(i => ({
+                product: i, // The item itself serves as the product object
+                size: i.size,
+                price: i.price
+            }));
+
+            // Manually add each to respect quantity? 
+            // addMultipleToCart sets quantity=1. 
+            // We need a way to set exact cart.
+            // Ideally we'd validte stock, but for now let's just use the context logic.
+            // Hack: Clear then Add One by One? Or add logic to Context?
+            // Existing `addMultipleToCart` adds +1.
+
+            // Let's rely on standard addMultipleToCart for now, assuming quantities = 1 or we repeat?
+            // Better: loop and add.
+
+            sharedCart.forEach(item => {
+                // Force add the item with specific quantity? 
+                // Context `addToCart` adds +1.
+                // We can loop `quantity` times? A bit hacky but works without changing Context again.
+                for (let k = 0; k < item.quantity; k++) {
+                    addToCart(item, item.size, item.price);
+                }
+            });
+
+            setSharedCart(null);
+            router.replace('/cart'); // Clear URL
+        }
+    };
+
+    const handleShareCart = () => {
+        if (cartItems.length === 0) return;
+
+        // Encode minimal fields to save URL space
+        // We include name/image/price so the receiver doesn't need to fetch DB immediately
+        const payload = cartItems.map(item => ({
+            id: item.id,
+            name: item.name,
+            image_url: item.image_url,
+            price: item.price,
+            size: item.size,
+            brand: item.brand,
+            quantity: item.quantity
+        }));
+
+        const code = btoa(JSON.stringify(payload));
+        const url = `${window.location.origin}/cart?share=${code}`;
+
+        navigator.clipboard.writeText(url).then(() => {
+            alert("קישור לסל הועתק! 📋\nשלח אותו לחברים.");
+        });
+    };
 
     // Coupon State
     const [couponInput, setCouponInput] = useState('');
@@ -214,7 +305,44 @@ export default function CartClient() {
                         </div>
                     </div>
                 )}
-                <h1 className="text-3xl font-bold mb-8">העגלה שלי</h1>
+                {sharedCart && (
+                    <div className="bg-blue-600 text-white p-4 rounded-xl mb-8 shadow-lg flex items-center justify-between animate-fade-in">
+                        <div>
+                            <h3 className="font-bold text-lg">קיבלת סל משותף! 🛍️</h3>
+                            <p className="text-sm opacity-90">הסל מכיל {sharedCart.length} פריטים. האם תרצה לטעון אותם?</p>
+                        </div>
+                        <div className="flex gap-2">
+                            <button
+                                onClick={() => { setSharedCart(null); router.replace('/cart'); }}
+                                className="px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg text-sm transition"
+                            >
+                                התעלם
+                            </button>
+                            <button
+                                onClick={handleLoadSharedCart}
+                                className="px-4 py-2 bg-white text-blue-600 font-bold rounded-lg text-sm hover:scale-105 transition shadow"
+                            >
+                                טען סל
+                            </button>
+                        </div>
+                    </div>
+                )}
+
+                <div className="flex items-center justify-between mb-8">
+                    <h1 className="text-3xl font-bold">העגלה שלי</h1>
+
+                    {cartItems.length > 0 && (
+                        <button
+                            onClick={handleShareCart}
+                            className="w-10 h-10 flex items-center justify-center bg-gray-100 hover:bg-green-100 text-gray-600 hover:text-green-600 rounded-full transition shadow-sm"
+                            title="שתף סל"
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M7.217 10.907a2.25 2.25 0 1 0 0 2.186m0-2.186c.18.324.287.696.345 1.045m0 0h9.002c.06-.35.165-.72.345-1.045m0 9.002c-.18.324-.287.696-.345 1.045m0 0a2.25 2.25 0 1 0-.639 2.186m-8.623-2.186c.18.324.287.696.345 1.045m0 0a2.25 2.25 0 1 0-.639 2.186m0-2.186h9.002c.06.35.165.72.345 1.045M7.217 4.186a2.25 2.25 0 1 0 0 2.186m0-2.186c.18.324.287.696.345 1.045m0 0h9.002c.06-.35.165-.72.345-1.045m0 0a2.25 2.25 0 1 0-.639 2.186m-8.623-2.186c.18.324.287.696.345 1.045" />
+                            </svg>
+                        </button>
+                    )}
+                </div>
 
                 <div className="flex flex-col lg:flex-row gap-12">
                     {/* Items List */}
