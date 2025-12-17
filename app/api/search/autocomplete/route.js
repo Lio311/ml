@@ -16,7 +16,7 @@ export async function GET(req) {
             // Case insensitive (ILIKE)
             // Limit to 5 results for dropdown
             const res = await client.query(`
-                SELECT id, name, brand, model, image_url, price_2ml, price_5ml, price_10ml, stock
+                SELECT id, name, brand, model, image_url, price_2ml, price_5ml, price_10ml, stock, slug
                 FROM products 
                 WHERE active = true 
                 AND (
@@ -37,6 +37,7 @@ export async function GET(req) {
 
             const results = res.rows.map(product => ({
                 id: product.id,
+                slug: product.slug,
                 name: product.name,
                 brand: product.brand,
                 image: product.image_url,

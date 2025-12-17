@@ -100,7 +100,7 @@ export default function SearchAutocomplete() {
                         {results.map((product) => (
                             <Link
                                 key={product.id}
-                                href={`/product/${product.id}`}
+                                href={`/product/${product.slug || product.id}`}
                                 onClick={() => setIsOpen(false)}
                                 className="flex items-center gap-4 p-3 hover:bg-gray-50 transition group/item text-right"
                                 dir="rtl"

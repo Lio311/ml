@@ -22,7 +22,7 @@ export default function BrandCarousel({ brands }) {
                     {[...brands, ...brands, ...brands].map((brand, i) => (
                         <Link
                             key={`${brand.name}-${i}`}
-                            href={`/catalog?brand=${encodeURIComponent(brand.name)}`}
+                            href={`/brands/${encodeURIComponent(brand.name)}`}
                             className="flex items-center justify-center w-40 h-28 md:w-48 md:h-32 p-4 grayscale hover:grayscale-0 transition-all duration-300 hover:scale-105"
                         >
                             {brand.logo_url ? (

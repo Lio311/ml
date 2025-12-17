@@ -58,7 +58,7 @@ export default function BrandsClient({ brands }) {
                     {filteredBrands.map((brand) => (
                         <Link
                             key={brand.name}
-                            href={`/catalog?brand=${encodeURIComponent(brand.name)}`}
+                            href={`/brands/${encodeURIComponent(brand.name)}`}
                             className="group block bg-white rounded-xl p-8 shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 flex items-center justify-center h-40 relative overflow-hidden"
                         >
                             <div className="absolute inset-0 bg-gray-50 opacity-0 group-hover:opacity-10 transition-opacity"></div>

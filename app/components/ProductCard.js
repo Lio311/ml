@@ -82,7 +82,7 @@ export default function ProductCard({ product }) {
 
             <div className="p-4 flex-1 flex flex-col">
                 <div className="text-xs text-gray-500 mb-1 line-clamp-1">{product.category}</div>
-                <Link href={`/product/${product.id}`}>
+                <Link href={`/product/${product.slug || product.id}`}>
                     <h3 className="font-bold text-sm mb-2 line-clamp-2 min-h-[40px] hover:underline">{product.name}</h3>
                 </Link>
 

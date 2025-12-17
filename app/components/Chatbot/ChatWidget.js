@@ -204,7 +204,7 @@ export default function ChatWidget() {
                                     {msg.type === 'products' && (
                                         <div className="mt-3 flex gap-2 overflow-x-auto pb-2 scrollbar-thin scrollbar-thumb-gray-300">
                                             {msg.data.map(p => (
-                                                <Link key={p.id} href={`/product/${p.id}`} className="min-w-[120px] bg-white border rounded-lg p-2 flex flex-col items-center hover:shadow-md transition">
+                                                <Link key={p.id} href={`/product/${p.slug || p.id}`} className="min-w-[120px] bg-white border rounded-lg p-2 flex flex-col items-center hover:shadow-md transition">
                                                     <div className="w-20 h-20 relative mb-2">
                                                         <img src={p.image} alt={p.name} className="w-full h-full object-contain" />
                                                     </div>

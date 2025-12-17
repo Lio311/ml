@@ -7,13 +7,14 @@ import AddToCartAdvanced from "../../components/ProductCard";
 import FragrancePyramid from "../../components/FragrancePyramid";
 
 export const dynamic = "force-dynamic";
-export const revalidate = 0;
+export const dynamic = "force-dynamic"; // Keep dynamic for stock checks but allow cache revalidation
+export const revalidate = 3600; // SEO Improvement: Cache for 1 hour
 
 export async function generateMetadata(props) {
     const params = await props.params;
-    const { id } = params;
+    const { slug } = params;
 
-    const res = await pool.query(`SELECT * FROM products WHERE id = $1`, [id]);
+    const res = await pool.query(`SELECT * FROM products WHERE slug = $1`, [slug]);
     const product = res.rows[0];
 
     if (!product) {
@@ -32,12 +33,12 @@ export async function generateMetadata(props) {
         title: title,
         description: description,
         alternates: {
-            canonical: `${baseUrl}/product/${product.id}`,
+            canonical: `${baseUrl}/product/${product.slug}`,
         },
         openGraph: {
             title: title,
             description: description,
-            url: `${baseUrl}/product/${product.id}`,
+            url: `${baseUrl}/product/${product.slug}`,
             siteName: 'ml_tlv',
             images: [
                 {
@@ -61,14 +62,14 @@ export async function generateMetadata(props) {
 
 export default async function ProductPage(props) {
     const params = await props.params;
-    const { id } = params;
+    const { slug } = params;
 
     const res = await pool.query(`
         SELECT p.*, b.logo_url 
         FROM products p 
         LEFT JOIN brands b ON p.brand = b.name 
-        WHERE p.id = $1
-    `, [id]);
+        WHERE p.slug = $1
+    `, [slug]);
     const product = res.rows[0];
 
     if (!product) {
@@ -79,7 +80,7 @@ export default async function ProductPage(props) {
     // Optimally validation should happen in DB, but for ~200 items doing it in memory is fast and flexible for "Jaccard-like" similarity on text tags.
     let related = [];
     try {
-        const allProductsRes = await pool.query('SELECT id, name, brand, image_url, price_10ml, is_limited, stock, top_notes, middle_notes, base_notes, category FROM products WHERE id != $1 AND active = true', [id]);
+        const allProductsRes = await pool.query('SELECT id, slug, name, brand, image_url, price_10ml, is_limited, stock, top_notes, middle_notes, base_notes, category FROM products WHERE id != $1 AND active = true', [product.id]);
         const allProducts = allProductsRes.rows;
 
         const currentNotes = new Set([
@@ -213,7 +214,7 @@ export default async function ProductPage(props) {
                                     },
                                     "offers": {
                                         "@type": "Offer",
-                                        "url": `${process.env.NEXT_PUBLIC_BASE_URL || 'https://ml-tlv.vercel.app'}/product/${product.id}`,
+                                        "url": `${process.env.NEXT_PUBLIC_BASE_URL || 'https://ml-tlv.vercel.app'}/product/${product.slug || product.id}`,
                                         "priceCurrency": "ILS",
                                         "price": product.price_10ml || product.price_5ml || product.price_2ml,
                                         "availability": (product.stock && product.stock > 0) ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
@@ -251,7 +252,7 @@ export default async function ProductPage(props) {
                                             "@type": "ListItem",
                                             "position": 4,
                                             "name": product.name,
-                                            "item": `https://ml-tlv.vercel.app/product/${product.id}`
+                                            "item": `https://ml-tlv.vercel.app/product/${product.slug || product.id}`
                                         }
                                     ]
                                 })
@@ -260,7 +261,7 @@ export default async function ProductPage(props) {
 
                         {product.logo_url && (
                             <div className="mb-6 w-32 h-16 flex items-center justify-start"> {/* Fixed container */}
-                                <Link href={`/catalog?brand=${encodeURIComponent(product.brand)}`} className="block w-full h-full relative">
+                                <Link href={`/brands/${encodeURIComponent(product.brand)}`} className="block w-full h-full relative">
                                     <img
                                         src={product.logo_url}
                                         alt={product.brand}

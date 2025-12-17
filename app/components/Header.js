@@ -119,7 +119,7 @@ export default function Header({ brands = [] }) {
                                                                     {groupedBrands[letter].map(brand => (
                                                                         <Link
                                                                             key={brand.name}
-                                                                            href={`/catalog?brand=${encodeURIComponent(brand.name)}`}
+                                                                            href={`/brands/${encodeURIComponent(brand.name)}`}
                                                                             className="text-xs text-gray-600 hover:text-black hover:font-bold transition-colors"
                                                                         >
                                                                             {brand.name}

@@ -31,9 +31,9 @@ export default async function sitemap() {
         const client = await pool.connect();
 
         // Products
-        const productsRes = await client.query('SELECT id, updated_at FROM products WHERE active = true');
+        const productsRes = await client.query('SELECT id, slug, updated_at FROM products WHERE active = true');
         products = productsRes.rows.map((product) => ({
-            url: `${baseUrl}/product/${product.id}`,
+            url: `${baseUrl}/product/${product.slug || product.id}`,
             lastModified: product.updated_at || new Date(),
             changeFrequency: 'weekly',
             priority: 0.9,
@@ -44,7 +44,7 @@ export default async function sitemap() {
         brands = brandsRes.rows
             .filter(r => r.brand)
             .map((r) => ({
-                url: `${baseUrl}/catalog?brand=${encodeURIComponent(r.brand)}`,
+                url: `${baseUrl}/brands/${encodeURIComponent(r.brand)}`,
                 lastModified: new Date(),
                 changeFrequency: 'daily',
                 priority: 0.7,
