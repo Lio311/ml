@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import CartClient from "./CartClient";
 
 export const metadata = {
@@ -6,5 +7,9 @@ export const metadata = {
 };
 
 export default function CartPage() {
-    return <CartClient />;
+    return (
+        <Suspense fallback={<div className="min-h-screen flex items-center justify-center">טוען עגלה...</div>}>
+            <CartClient />
+        </Suspense>
+    );
 }
