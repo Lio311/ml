@@ -30,6 +30,14 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'ipiccirilliperfumes.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'aromadilamore.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'encrypted-tbn0.gstatic.com',
+      },
     ],
   },
 };
