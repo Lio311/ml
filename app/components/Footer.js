@@ -29,7 +29,6 @@ export default function Footer() {
                         <li><Link href="/terms">תקנון האתר</Link></li>
                         <li><Link href="/shipping">משלוחים והחזרות</Link></li>
                         <li><Link href="/privacy">מדיניות פרטיות</Link></li>
-                        <li><Link href="/blog">בלוג</Link></li>
                     </ul>
                 </div>
 
@@ -59,6 +58,12 @@ export default function Footer() {
                         </svg>
                         <span>@ml_tlv</span>
                     </a>
+
+                    <div className="mt-4">
+                        <Link href="/blog" className="text-gray-400 hover:text-white transition block">
+                            מגזין הבישום
+                        </Link>
+                    </div>
                 </div>
 
             </div>
