@@ -149,7 +149,7 @@ const TOPICS = [
     { t: "בשמים לאירועים מיוחדים וחתונות", s: "wedding-perfumes", kw: "wedding" },
     { t: "הכירו את Initio Parfums Prives", s: "initio-brand-intro", kw: "initio" },
     { t: "למה כדאי לנסות את Le Labo Santal 33?", s: "le-labo-santal-33-review", kw: "le labo" },
-    { t: "בשמי גורמן (Gourmand) - להריח כמו קינוח", s: "what-are-gourmand-perfumes", kw: "gourmand" },
+    { t: "בשמי גורמנד (Gourmand) - להריח כמו קינוח", s: "what-are-gourmand-perfumes", kw: "gourmand" },
     { t: "מה זה תווי בושם? ראש, לב ובסיס", s: "perfume-notes-explained", kw: "notes" },
     { t: "בשמים מומלצים למשרד ולעבודה", s: "office-friendly-perfumes", kw: "office" },
     { t: "Creed Green Irish Tweed - הקלאסיקה", s: "creed-git-review", kw: "creed" },

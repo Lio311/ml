@@ -6,6 +6,18 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'images.unsplash.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'fimgs.net',
+      },
+      {
+        protocol: 'https',
+        hostname: 'pimgs.net',
+      },
+      {
+        protocol: 'https',
+        hostname: 'www.fragrantica.com',
+      },
     ],
   },
 };

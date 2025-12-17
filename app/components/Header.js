@@ -15,6 +15,16 @@ export default function Header({ brands = [] }) {
     const cartCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isBrandsDropdownOpen, setIsBrandsDropdownOpen] = useState(false);
+
+    // Group Brands by Letter
+    const groupedBrands = brands.reduce((acc, brand) => {
+        const letter = brand.name.charAt(0).toUpperCase();
+        if (!acc[letter]) acc[letter] = [];
+        acc[letter].push(brand);
+        return acc;
+    }, {});
+
+    const sortedLetters = Object.keys(groupedBrands).sort();
     const [isBrandsOpen, setIsBrandsOpen] = useState(false);
 
     const [searchQuery, setSearchQuery] = useState('');
@@ -103,23 +113,41 @@ export default function Header({ brands = [] }) {
                                         מותגים
                                     </Link>
 
-                                    {/* The Mega Menu Dropdown */}
-                                    <div className={`absolute top-full right-0 w-[600px] bg-white text-black shadow-2xl border border-gray-100 rounded-b-xl p-6 grid grid-cols-4 gap-4 z-50 transition-all duration-300 origin-top ${isBrandsDropdownOpen ? 'opacity-100 scale-y-100' : 'opacity-0 scale-y-0 pointer-events-none'}`}>
-                                        {brands.length > 0 ? brands.map((brand) => (
-                                            <Link
-                                                key={brand.name}
-                                                href={`/catalog?brand=${encodeURIComponent(brand.name)}`}
-                                                className="text-xs hover:text-red-600 hover:font-bold transition-colors block py-1"
-                                            >
-                                                {brand.name}
-                                            </Link>
-                                        )) : (
-                                            <p className="col-span-4 text-center text-gray-400">טוען מותגים...</p>
-                                        )}
-                                        <div className="col-span-4 border-t mt-4 pt-4 text-center">
-                                            <Link href="/brands" className="text-sm font-bold underline hover:text-red-600">
-                                                לכל המותגים &larr;
-                                            </Link>
+                                    {/* The Mega Menu Dropdown (ABC Dictionary) */}
+                                    <div className={`absolute top-full right-0 w-[800px] bg-white text-black shadow-2xl border border-gray-100 rounded-b-xl overflow-hidden z-50 transition-all duration-300 origin-top ${isBrandsDropdownOpen ? 'opacity-100 scale-y-100' : 'opacity-0 scale-y-0 pointer-events-none'}`}>
+                                        <div className="flex flex-col max-h-[60vh]">
+                                            {/* Scrollable Content */}
+                                            <div className="overflow-y-auto p-6 custom-scrollbar">
+                                                {brands.length === 0 ? (
+                                                    <p className="text-center text-gray-400">טוען מותגים...</p>
+                                                ) : (
+                                                    <div className="columns-4 gap-8">
+                                                        {sortedLetters.map(letter => (
+                                                            <div key={letter} className="break-inside-avoid mb-6">
+                                                                <h4 className="font-bold text-red-600 border-b border-red-100 mb-2 pb-1 text-lg sticky top-0 bg-white/95 backdrop-blur-sm">{letter}</h4>
+                                                                <div className="flex flex-col gap-1">
+                                                                    {groupedBrands[letter].map(brand => (
+                                                                        <Link
+                                                                            key={brand.name}
+                                                                            href={`/catalog?brand=${encodeURIComponent(brand.name)}`}
+                                                                            className="text-xs text-gray-600 hover:text-black hover:font-bold transition-colors"
+                                                                        >
+                                                                            {brand.name}
+                                                                        </Link>
+                                                                    ))}
+                                                                </div>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                )}
+                                            </div>
+
+                                            {/* Footer Link */}
+                                            <div className="p-4 bg-gray-50 border-t text-center">
+                                                <Link href="/brands" className="text-sm font-bold underline hover:text-red-600">
+                                                    לכל המותגים (עם לוגואים) &larr;
+                                                </Link>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
