@@ -220,7 +220,13 @@ export function CartProvider({ children }) {
         );
     };
 
-    const clearCart = () => setCartItems([]);
+    const clearCart = () => {
+        setCartItems([]);
+        // Reset Lottery Mode on successful checkout (or manual clear)
+        setLotteryMode({ active: false, expiresAt: null });
+        setLotteryTimeLeft(null);
+        localStorage.removeItem("lotteryMode");
+    };
 
     const [luckyPrize, setLuckyPrize] = useState(null);
 
