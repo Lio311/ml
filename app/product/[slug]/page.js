@@ -1,12 +1,11 @@
 import pool from "../../lib/db";
 import Link from "next/link";
+import { redirect } from 'next/navigation';
 import ProductCard from "../../components/ProductCard";
 import StarRating from "../../components/StarRating";
 import WishlistHeart from "../../components/WishlistHeart";
 import AddToCartAdvanced from "../../components/ProductCard";
 import FragrancePyramid from "../../components/FragrancePyramid";
-
-export const dynamic = "force-dynamic";
 
 export const revalidate = 3600; // SEO Improvement: Cache for 1 hour
 
@@ -17,15 +16,16 @@ export async function generateMetadata(props) {
     const res = await pool.query(`SELECT * FROM products WHERE slug = $1 OR id::text = $1`, [slug]);
     const product = res.rows[0];
 
-    // If we found it by ID but the URL used ID, we should ideally redirect to Slug, 
-    // but for now let's just render to fix the 404.
-
     if (!product) {
         return {
             title: "מוצר לא נמצא | ml_tlv",
             description: "הבושם שחיפשת לא נמצא.",
         };
     }
+
+    // SEO: Redirect numeric ID links to Slug links (301)
+    // generateMetadata is called before page, so we can't redirect here easily without throwing.
+    // We let the Page component handle the redirect. Here we just return canonical.
 
     const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://ml-tlv.vercel.app';
     const title = `${product.name} | החל מ-${product.price_2ml}₪`;
@@ -77,6 +77,11 @@ export default async function ProductPage(props) {
 
     if (!product) {
         return <div className="p-20 text-center">מוצר לא נמצא</div>;
+    }
+
+    // SEO Redirect: If accessed via ID (or wrong slug case), redirect to canonical slug
+    if (product.slug && product.slug !== slug) {
+        redirect(`/product/${product.slug}`);
     }
 
     // Data for similarity - fetch all products to calculate score
