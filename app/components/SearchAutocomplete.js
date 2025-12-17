@@ -63,8 +63,9 @@ export default function SearchAutocomplete() {
     const isRTL = direction === 'rtl';
 
     return (
-        <div className="relative group w-full" ref={wrapperRef}>
-            <form onSubmit={handleSubmit} className="relative">
+
+        <div className="relative group inline-block" ref={wrapperRef}>
+            <form onSubmit={handleSubmit} className="relative flex items-center">
                 <input
                     type="text"
                     placeholder="חיפוש..."
@@ -78,20 +79,20 @@ export default function SearchAutocomplete() {
                     dir={direction}
                 />
 
-                {/* Search Icon (Dynamic Position - Always at 'End' of line) */}
+                {/* Search Icon (Always at "End" of input) */}
                 <button
                     type="submit"
-                    className={`absolute top-1 text-gray-400 group-focus-within:text-black hover:text-black p-1 ${isRTL ? 'left-1' : 'right-1'}`}
+                    className={`absolute top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-black hover:text-black p-1 ${isRTL ? 'left-0' : 'right-0'}`}
                 >
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                     </svg>
                 </button>
 
 
                 {isLoading && (
-                    <div className={`absolute top-2 ${isRTL ? 'left-0' : 'right-0'}`}>
-                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-black"></div>
+                    <div className={`absolute top-1/2 -translate-y-1/2 ${isRTL ? 'left-0' : 'right-0'}`}>
+                        <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-black"></div>
                     </div>
                 )}
             </form>
