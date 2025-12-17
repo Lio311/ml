@@ -55,9 +55,16 @@ export default async function AdminOrdersPage() {
                 for (const item of items) {
                     if (!item.isPrize && !isNaN(item.size)) {
                         const amountToRestore = Number(item.size) * item.quantity;
+
+                        // Fix for composite IDs (e.g. "74-2")
+                        let dbId = item.id;
+                        if (typeof dbId === 'string' && dbId.includes('-')) {
+                            dbId = parseInt(dbId.split('-')[0]);
+                        }
+
                         await client.query(
                             'UPDATE products SET stock = stock + $1 WHERE id = $2',
-                            [amountToRestore, item.id]
+                            [amountToRestore, dbId]
                         );
                     }
                 }
