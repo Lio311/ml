@@ -91,7 +91,7 @@ export default function SearchAutocomplete() {
 
 
                 {isLoading && (
-                    <div className={`absolute top-1/2 -translate-y-1/2 ${isRTL ? 'left-0' : 'right-0'}`}>
+                    <div className={`absolute top-1/2 -translate-y-1/2 ${isRTL ? 'left-6' : 'right-6'}`}>
                         <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-black"></div>
                     </div>
                 )}
