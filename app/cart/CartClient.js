@@ -520,26 +520,27 @@ export default function CartClient() {
                                 onChange={(e) => setNotes(e.target.value)}
                             ></textarea>
                         </div>
-                        <div className="pt-4 mt-auto">
-                            {isSignedIn ? (
-                                <button
-                                    onClick={handleCheckout}
-                                    disabled={isSubmitting}
-                                    className="btn btn-primary w-full py-4 text-lg shadow-lg hover:shadow-xl transition transform hover:-translate-y-0.5"
-                                >
-                                    {isSubmitting ? 'מעבד...' : 'יצירת הזמנה'}
+                    </div> {/* End of White Card */}
+
+                    <div className="pt-4 sticky top-[calc(6rem+400px)]">
+                        {isSignedIn ? (
+                            <button
+                                onClick={handleCheckout}
+                                disabled={isSubmitting}
+                                className="btn btn-primary w-full py-4 text-lg shadow-lg hover:shadow-xl transition transform hover:-translate-y-0.5"
+                            >
+                                {isSubmitting ? 'מעבד...' : 'יצירת הזמנה'}
+                            </button>
+                        ) : (
+                            <SignInButton mode="modal">
+                                <button className="w-full py-4 text-xl font-bold text-white bg-black rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
+                                    התחבר כדי להזמין
                                 </button>
-                            ) : (
-                                <SignInButton mode="modal">
-                                    <button className="w-full py-4 text-xl font-bold text-white bg-black rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
-                                        התחבר כדי להזמין
-                                    </button>
-                                </SignInButton>
-                            )}
-                            <p className="text-xs text-center text-gray-500 mt-2">
-                                * התשלום מתבצע מול נציג לאחר אישור ההזמנה
-                            </p>
-                        </div>
+                            </SignInButton>
+                        )}
+                        <p className="text-xs text-center text-gray-500 mt-2">
+                            * התשלום מתבצע מול נציג לאחר אישור ההזמנה
+                        </p>
                     </div>
                 </div>
             </div>
