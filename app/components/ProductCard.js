@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useCart } from "../context/CartContext";
 import { useState } from "react";
 
@@ -35,8 +36,13 @@ export default function ProductCard({ product }) {
         setTimeout(() => setAdded(false), 2000);
     };
 
+    const router = useRouter();
+
     return (
-        <div className="group border rounded-lg overflow-hidden hover:shadow-xl transition bg-white flex flex-col h-full relative">
+        <div
+            className="group border rounded-lg overflow-hidden hover:shadow-xl transition bg-white flex flex-col h-full relative"
+            onMouseEnter={() => router.prefetch(`/product/${product.slug || product.id}`)}
+        >
             <div className="absolute top-2 left-2 z-10">
                 <WishlistHeart productId={product.id} />
             </div>

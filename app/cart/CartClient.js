@@ -493,27 +493,50 @@ export default function CartClient() {
                                 <span>{shippingCost} ₪</span>
                             </div>
 
-                            {/* Free Samples Logic */}
-                            <div className={`p-4 rounded border text-sm ${freeSamplesCount > 0 ? 'bg-blue-50 border-blue-100' : 'bg-orange-50 border-orange-100'}`}>
-                                {freeSamplesCount > 0 ? (
-                                    <div className="text-blue-800 font-bold mb-1">
-                                        מגיע לך {freeSamplesCount} דוגמיות מתנה! 🎉
-                                        <br />
-                                        <span className="font-normal text-xs text-blue-600">
-                                            (הצוות יבחר אותן בקפידה עבורך)
-                                        </span>
-                                    </div>
-                                ) : (
-                                    <div className="text-gray-800 font-medium">
-                                        חסר לך עוד <span className="font-bold text-orange-600">{nextTier} ₪</span> כדי לקבל <span className="font-bold">2 דוגמיות מתנה</span> 🎁
-                                    </div>
-                                )}
+                            {/* Free Samples Progress Bar */}
+                            <div className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
+                                <h3 className="font-bold text-gray-900 mb-2 flex items-center gap-2">
+                                    <span>🎁</span>
+                                    {freeSamplesCount === 6 ? (
+                                        <span className="text-green-600">הגעת למקסימום דוגמיות! (6)</span>
+                                    ) : (
+                                        <span>דוגמיות מתנה</span>
+                                    )}
+                                </h3>
 
-                                {nextTier > 0 && freeSamplesCount > 0 && freeSamplesCount < 6 && (
-                                    <div className="mt-2 text-xs text-blue-600 border-t border-blue-200 pt-2 font-medium">
-                                        הוסף עוד {nextTier} ₪ וקבל עוד 2 דוגמיות!
-                                    </div>
-                                )}
+                                <div className="relative h-4 bg-gray-100 rounded-full overflow-hidden mb-2">
+                                    {/* Progress Fill */}
+                                    <div
+                                        className="absolute top-0 right-0 h-full bg-gradient-to-l from-blue-500 to-purple-600 transition-all duration-1000 ease-out rounded-full"
+                                        style={{ width: `${Math.min(100, (subtotal / 1000) * 100)}%` }}
+                                    ></div>
+
+                                    {/* Markers */}
+                                    <div className="absolute top-0 right-[30%] h-full w-0.5 bg-white/50 z-10" title="300₪ - 2 דוגמיות"></div>
+                                    <div className="absolute top-0 right-[50%] h-full w-0.5 bg-white/50 z-10" title="500₪ - 4 דוגמיות"></div>
+                                </div>
+
+                                <div className="flex justify-between text-[10px] text-gray-400 font-medium px-1">
+                                    <span className={subtotal >= 0 ? "text-gray-900 font-bold" : ""}>0</span>
+                                    <span className={subtotal >= 300 ? "text-blue-600 font-bold" : ""}>300 (2)</span>
+                                    <span className={subtotal >= 500 ? "text-purple-600 font-bold" : ""}>500 (4)</span>
+                                    <span className={subtotal >= 1000 ? "text-green-600 font-bold" : ""}>1000 (6)</span>
+                                </div>
+
+                                <div className="mt-3 text-xs text-center">
+                                    {freeSamplesCount === 0 && (
+                                        <span className="text-gray-500">עוד <span className="font-bold text-black">{300 - subtotal} ₪</span> ל-2 דוגמיות ראשונות!</span>
+                                    )}
+                                    {freeSamplesCount === 2 && (
+                                        <span className="text-blue-600">יש לך 2 דוגמיות. עוד <span className="font-bold">{500 - subtotal} ₪</span> ל-4 דוגמיות!</span>
+                                    )}
+                                    {freeSamplesCount === 4 && (
+                                        <span className="text-purple-600">וואו! 4 דוגמיות שלך. עוד <span className="font-bold">{1000 - subtotal} ₪</span> ל-6 דוגמיות!</span>
+                                    )}
+                                    {freeSamplesCount === 6 && (
+                                        <span className="text-green-600 font-bold">פינקנו אותך ב-6 דוגמיות! תהנה! 🎉</span>
+                                    )}
+                                </div>
                             </div>
 
                             {/* Recommendations / Upsell */}
