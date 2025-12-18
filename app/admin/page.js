@@ -65,6 +65,28 @@ export default async function AdminDashboard() {
         `);
         kpis.totalSamples = parseInt(samplesSoldRes.rows[0].count || 0);
 
+        // Fetch Samples Breakdown (2ml, 5ml, 10ml)
+        const samplesBreakdownRes = await client.query(`
+             SELECT item->>'size' as size, SUM((item->>'quantity')::int) as count 
+             FROM orders, jsonb_array_elements(items::jsonb) as item 
+             WHERE orders.status != 'cancelled' 
+             AND (
+                item->>'name' LIKE '%דוגמית%' 
+                OR item->>'name' ILIKE '%sample%'
+                OR item->>'size' IN ('2', '5', '10')
+             )
+             GROUP BY size
+        `);
+        kpis.samplesBreakdown = { '2': 0, '5': 0, '10': 0 };
+        samplesBreakdownRes.rows.forEach(r => {
+            // Clean size string (remove 'ml' etc if exists, though data seems to be clean numbers per previous steps)
+            const sizeKey = r.size?.replace(/[^0-9]/g, '');
+            if (kpis.samplesBreakdown[sizeKey] !== undefined) {
+                kpis.samplesBreakdown[sizeKey] += parseInt(r.count || 0);
+            }
+        });
+
+
         // Fetch Expenses
         let totalMonthlyExpenses = 0;
         try {
@@ -332,13 +354,13 @@ export default async function AdminDashboard() {
                         <div className="flex justify-between items-center border-b border-gray-50 pb-2">
                             <span className="text-blue-600 font-bold">הכנסות</span>
                             <div className="text-right">
-                                <span className="text-2xl font-bold text-blue-700 dir-ltr">₪ {kpis.totalRevenue}</span>
+                                <span className="text-2xl font-bold text-blue-700 dir-ltr">{kpis.totalRevenue} ₪</span>
                             </div>
                         </div>
                         <div className="flex justify-between items-center">
                             <span className="text-red-600 font-bold">הוצאות</span>
                             <div className="text-right">
-                                <span className="text-2xl font-bold text-red-700 dir-ltr">₪ {kpis.totalExpenses}</span>
+                                <span className="text-2xl font-bold text-red-700 dir-ltr">{kpis.totalExpenses} ₪</span>
                                 <div className="text-[10px] text-gray-400">כולל יחסי שנתי</div>
                             </div>
                         </div>
@@ -357,7 +379,14 @@ export default async function AdminDashboard() {
                 </div>
                 <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
                     <div className="text-gray-500 text-sm font-bold uppercase mb-2">דוגמיות שנמכרו</div>
-                    <div className="text-3xl font-bold">{kpis.totalSamples}</div>
+                    <div className="flex justify-between items-end">
+                        <div className="text-3xl font-bold">{kpis.totalSamples}</div>
+                        <div className="text-xs text-gray-500 text-left">
+                            <div>2 מ״ל: <span className="font-bold text-black">{kpis.samplesBreakdown['2']}</span></div>
+                            <div>5 מ״ל: <span className="font-bold text-black">{kpis.samplesBreakdown['5']}</span></div>
+                            <div>10 מ״ל: <span className="font-bold text-black">{kpis.samplesBreakdown['10']}</span></div>
+                        </div>
+                    </div>
                 </div>
                 <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
                     <div className="text-gray-500 text-sm font-bold uppercase mb-2">הזמנות סה״כ</div>
