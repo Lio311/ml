@@ -17,14 +17,12 @@ export default async function AdminDashboard() {
     let kpis = {
         totalOrders: 0,
         totalRevenue: 0,
-        pendingOrders: 0,
-        recentOrders: [],
-        monthlyVisits: 0,
         totalUsers: 0,
         orderChartData: [],
         revenueChartData: [],
         topBrands: [],
-        topSizes: []
+        topSizes: [],
+        monthlyProfit: 0
     };
 
     try {
@@ -50,9 +48,6 @@ export default async function AdminDashboard() {
         `);
         kpis.totalSamples = parseInt(samplesSoldRes.rows[0].count || 0);
 
-        const pendingRes = await client.query("SELECT COUNT(*) FROM orders WHERE status = 'pending'");
-        kpis.pendingOrders = parseInt(pendingRes.rows[0].count);
-
         // Fetch Users Count from Clerk
         try {
             const clerk = await clerkClient();
@@ -61,6 +56,54 @@ export default async function AdminDashboard() {
         } catch (e) {
             console.warn("Failed to fetch Clerk users count:", e);
             kpis.totalUsers = 0;
+        }
+
+        // Monthly Profit Calculation
+        try {
+            const monthlyOrdersRes = await client.query(`
+                SELECT items FROM orders 
+                WHERE status != 'cancelled' 
+                AND EXTRACT(MONTH FROM created_at) = EXTRACT(MONTH FROM CURRENT_DATE)
+                AND EXTRACT(YEAR FROM created_at) = EXTRACT(YEAR FROM CURRENT_DATE)
+            `);
+
+            const productsRes = await client.query('SELECT id, cost_price, original_size FROM products');
+            const productMap = {};
+            productsRes.rows.forEach(p => {
+                productMap[p.id] = {
+                    cost: parseFloat(p.cost_price || 0),
+                    size: parseFloat(p.original_size || 100)
+                };
+            });
+
+            let monthlyProfit = 0;
+            monthlyOrdersRes.rows.forEach(order => {
+                const items = typeof order.items === 'string' ? JSON.parse(order.items) : order.items;
+                items.forEach(item => {
+                    let dbId = item.id;
+                    if (typeof dbId === 'string' && dbId.includes('-')) {
+                        dbId = parseInt(dbId.split('-')[0]);
+                    }
+
+                    const prodInfo = productMap[dbId];
+                    if (prodInfo && prodInfo.size > 0) {
+                        const itemPrice = parseFloat(item.price || 0);
+                        const soldSize = parseFloat(item.size || 2); // Default to 2ml if missing
+                        const quantity = parseInt(item.quantity || 1);
+
+                        // itemCost = (cost / originalSize) * soldSize * quantity
+                        const itemCost = (prodInfo.cost / prodInfo.size) * soldSize * quantity;
+                        monthlyProfit += (itemPrice * quantity) - itemCost;
+                    } else {
+                        // If product missing or size is 0, count full price as profit (e.g. digital products or prizes)
+                        monthlyProfit += parseFloat(item.price || 0) * (item.quantity || 1);
+                    }
+                });
+            });
+            kpis.monthlyProfit = Math.round(monthlyProfit);
+        } catch (profitErr) {
+            console.error("Profit calculation failed:", profitErr);
+            kpis.monthlyProfit = 0;
         }
 
         // Analytics: Monthly Visits
@@ -187,6 +230,7 @@ export default async function AdminDashboard() {
             <AnalyticsTables
                 topBrands={kpis.topBrands}
                 topSizes={kpis.topSizes}
+                monthName={new Date().toLocaleString('he-IL', { month: 'long' })}
             />
 
             {/* Cards */}
@@ -195,6 +239,10 @@ export default async function AdminDashboard() {
                     <div className="text-gray-500 text-sm font-bold uppercase mb-2">הכנסות</div>
                     <div className="text-3xl font-bold">{kpis.totalRevenue} ₪</div>
                 </div>
+                <div className="bg-white p-6 rounded-xl shadow-sm border border-green-200 bg-green-50/10">
+                    <div className="text-green-600 text-sm font-bold uppercase mb-2">רווח (החודש)</div>
+                    <div className="text-3xl font-bold text-green-700">{kpis.monthlyProfit} ₪</div>
+                </div>
                 <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
                     <div className="text-gray-500 text-sm font-bold uppercase mb-2">דוגמיות שנמכרו</div>
                     <div className="text-3xl font-bold">{kpis.totalSamples}</div>
@@ -202,10 +250,6 @@ export default async function AdminDashboard() {
                 <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
                     <div className="text-gray-500 text-sm font-bold uppercase mb-2">הזמנות סה״כ</div>
                     <div className="text-3xl font-bold">{kpis.totalOrders}</div>
-                </div>
-                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-                    <div className="text-gray-500 text-sm font-bold uppercase mb-2">הזמנות ממתינות</div>
-                    <div className="text-3xl font-bold">{kpis.pendingOrders}</div>
                 </div>
                 <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
                     <div className="text-gray-500 text-sm font-bold uppercase mb-2">כניסות לאתר</div>

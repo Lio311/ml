@@ -33,7 +33,9 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
             top_notes: product.top_notes || '',
             middle_notes: product.middle_notes || '',
             base_notes: product.base_notes || '',
-            in_lottery: product.in_lottery ?? true
+            in_lottery: product.in_lottery ?? true,
+            cost_price: product.cost_price || 0,
+            original_size: product.original_size || 100
         });
     };
 
@@ -54,7 +56,9 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
             top_notes: '',
             middle_notes: '',
             base_notes: '',
-            in_lottery: true
+            in_lottery: true,
+            cost_price: 0,
+            original_size: 100
         });
     };
 
@@ -291,6 +295,30 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                 className="border p-2 rounded w-full bg-gray-50"
                             />
                         </div>
+                        <div className="md:col-span-3 mt-2 grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label className="text-sm text-gray-500 font-bold text-red-600">מחיר עלות (ש״ח) *</label>
+                                <input
+                                    type="number"
+                                    required
+                                    value={editForm.cost_price}
+                                    onChange={e => setEditForm({ ...editForm, cost_price: Number(e.target.value) })}
+                                    className="border p-2 rounded w-full bg-red-50"
+                                    placeholder="לדוגמה: 50"
+                                />
+                            </div>
+                            <div>
+                                <label className="text-sm text-gray-500 font-bold text-red-600">גודל מקור (מ״ל) *</label>
+                                <input
+                                    type="number"
+                                    required
+                                    value={editForm.original_size}
+                                    onChange={e => setEditForm({ ...editForm, original_size: Number(e.target.value) })}
+                                    className="border p-2 rounded w-full bg-red-50"
+                                    placeholder="לדוגמה: 50"
+                                />
+                            </div>
+                        </div>
                         <div className="md:col-span-3 mt-2">
                             <label className="text-sm text-gray-500 font-bold">מלאי (מ״ל)</label>
                             <input
@@ -444,6 +472,24 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                             value={editForm.stock}
                                             onChange={e => setEditForm({ ...editForm, stock: Number(e.target.value) })}
                                             className="border p-2 rounded w-full bg-yellow-50 font-bold"
+                                        />
+                                    </div>
+                                    <div className="md:col-span-1">
+                                        <label className="text-xs text-blue-600 font-bold">עלות (ש״ח)</label>
+                                        <input
+                                            type="number"
+                                            value={editForm.cost_price}
+                                            onChange={e => setEditForm({ ...editForm, cost_price: Number(e.target.value) })}
+                                            className="border p-1 rounded w-full bg-blue-50 text-xs"
+                                        />
+                                    </div>
+                                    <div className="md:col-span-1">
+                                        <label className="text-xs text-blue-600 font-bold">גודל מקור</label>
+                                        <input
+                                            type="number"
+                                            value={editForm.original_size}
+                                            onChange={e => setEditForm({ ...editForm, original_size: Number(e.target.value) })}
+                                            className="border p-1 rounded w-full bg-blue-50 text-xs"
                                         />
                                     </div>
                                 </div>

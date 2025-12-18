@@ -40,13 +40,26 @@ export async function GET(req) {
 export async function PUT(req) {
     try {
         const body = await req.json();
-        const { id, brand, model, price_2ml, price_5ml, price_10ml, image_url, category, description, top_notes, middle_notes, base_notes, in_lottery, name_he } = body;
+        const {
+            id, brand, model, price_2ml, price_5ml, price_10ml, image_url, 
+            category, description, stock, top_notes, middle_notes, base_notes, 
+            in_lottery, name_he, cost_price, original_size
+        } = body;
 
         const client = await pool.connect();
         try {
             await client.query(
-                `UPDATE products SET brand = $1, model = $2, price_2ml = $3, price_5ml = $4, price_10ml = $5, image_url = $6, category = $7, description = $8, stock = $9, top_notes = $10, middle_notes = $11, base_notes = $12, name = $13, in_lottery = $15, name_he = $16 WHERE id = $14`,
-                [brand, model, price_2ml, price_5ml, price_10ml, image_url, category, description, body.stock || 0, top_notes, middle_notes, base_notes, brand + ' ' + model, id, in_lottery ?? true, name_he]
+                `UPDATE products 
+                 SET brand = $1, model = $2, price_2ml = $3, price_5ml = $4, price_10ml = $5, 
+                     image_url = $6, category = $7, description = $8, stock = $9, 
+                     top_notes = $10, middle_notes = $11, base_notes = $12, 
+                     name = $13, in_lottery = $14, name_he = $15, cost_price = $16, original_size = $17
+                 WHERE id = $18`,
+                [
+                    brand, model, price_2ml, price_5ml, price_10ml, image_url, 
+                    category, description, stock || 0, top_notes, middle_notes, base_notes, 
+                    brand + ' ' + model, in_lottery ?? true, name_he, cost_price, original_size, id
+                ]
             );
             return NextResponse.json({ success: true });
         } finally {
@@ -61,15 +74,24 @@ export async function PUT(req) {
 export async function POST(req) {
     try {
         const body = await req.json();
-        const { brand, model, price_2ml, price_5ml, price_10ml, image_url, category, description, top_notes, middle_notes, base_notes, in_lottery, name_he } = body;
+        const {
+            brand, model, price_2ml, price_5ml, price_10ml, image_url, 
+            category, description, stock, top_notes, middle_notes, base_notes, 
+            in_lottery, name_he, cost_price, original_size
+        } = body;
 
         const client = await pool.connect();
         try {
             const res = await client.query(
-                `INSERT INTO products (name, category, brand, model, price_2ml, price_5ml, price_10ml, image_url, description, stock, top_notes, middle_notes, base_notes, in_lottery, name_he) 
-                 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15) 
+                `INSERT INTO products 
+                 (name, category, brand, model, price_2ml, price_5ml, price_10ml, image_url, 
+                  description, stock, top_notes, middle_notes, base_notes, in_lottery, name_he, cost_price, original_size) 
+                 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17) 
                  RETURNING id`,
-                [brand + ' ' + model, category || 'General', brand, model, price_2ml, price_5ml, price_10ml, image_url, description, body.stock || 0, top_notes, middle_notes, base_notes, in_lottery ?? true, name_he]
+                [
+                    brand + ' ' + model, category || 'General', brand, model, price_2ml, price_5ml, price_10ml, image_url, 
+                    description, stock || 0, top_notes, middle_notes, base_notes, in_lottery ?? true, name_he, cost_price, original_size
+                ]
             );
             const newProduct = res.rows[0];
             const newProductId = newProduct.id;

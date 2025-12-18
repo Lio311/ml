@@ -1,12 +1,12 @@
 import React from 'react';
 
-export default function AnalyticsTables({ topBrands, topSizes }) {
+export default function AnalyticsTables({ topBrands, topSizes, monthName }) {
     return (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
             {/* Top Brands Table */}
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
                 <div className="p-6 border-b bg-gray-50/50">
-                    <h3 className="font-bold text-gray-800 text-lg">חמשת המותגים הכי מוכרים (החודש)</h3>
+                    <h3 className="font-bold text-gray-800 text-lg">חמשת המותגים הכי מוכרים - {monthName}</h3>
                 </div>
                 <div className="overflow-x-auto">
                     <table className="w-full text-right" dir="rtl">
@@ -36,7 +36,7 @@ export default function AnalyticsTables({ topBrands, topSizes }) {
                             ) : (
                                 <tr>
                                     <td colSpan="2" className="p-8 text-center text-gray-400 text-sm italic">
-                                        אין עדיין נתוני מכירות לחודש זה...
+                                        אין עדיין נתוני מכירות ל{monthName}...
                                     </td>
                                 </tr>
                             )}
@@ -48,7 +48,7 @@ export default function AnalyticsTables({ topBrands, topSizes }) {
             {/* Top Sizes Table */}
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
                 <div className="p-6 border-b bg-gray-50/50">
-                    <h3 className="font-bold text-gray-800 text-lg">הגדלים הכי מוכרים (החודש)</h3>
+                    <h3 className="font-bold text-gray-800 text-lg">הגדלים הכי מוכרים - {monthName}</h3>
                 </div>
                 <div className="overflow-x-auto">
                     <table className="w-full text-right" dir="rtl">
@@ -76,7 +76,7 @@ export default function AnalyticsTables({ topBrands, topSizes }) {
                             ) : (
                                 <tr>
                                     <td colSpan="2" className="p-8 text-center text-gray-400 text-sm italic">
-                                        אין עדיין נתוני מכירות לחודש זה...
+                                        אין עדיין נתוני מכירות ל{monthName}...
                                     </td>
                                 </tr>
                             )}
