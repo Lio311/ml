@@ -7,6 +7,8 @@ import Footer from "./components/Footer";
 import AnalyticsTracker from "./components/AnalyticsTracker";
 import ChatWidget from "./components/Chatbot/ChatWidget";
 import AccessibilityWidget from "./components/AccessibilityWidget";
+import GoogleAnalytics from "./components/GoogleAnalytics";
+import MicrosoftClarity from "./components/MicrosoftClarity";
 
 const assistant = Assistant({
   subsets: ["hebrew", "latin"],
@@ -99,6 +101,9 @@ export default async function RootLayout({ children }) {
 
               <ChatWidget />
               <AccessibilityWidget />
+
+              <GoogleAnalytics />
+              <MicrosoftClarity />
 
               {/* SEO: Organization Schema */}
               <script
