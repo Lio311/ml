@@ -3,38 +3,50 @@
 import { useState, useEffect } from 'react';
 
 export default function LiveVisitorCounter() {
-    const [count, setCount] = useState(1);
-    const [isClient, setIsClient] = useState(false);
+    const [count, setCount] = useState(null);
 
     useEffect(() => {
-        setIsClient(true);
-        // Initial random count between 18 and 32
-        setCount(Math.floor(Math.random() * (32 - 18 + 1)) + 18);
+        // 1. Get or Create Visitor ID
+        let visitorId = localStorage.getItem('visitor_id');
+        if (!visitorId) {
+            visitorId = Math.random().toString(36).substring(2) + Date.now().toString(36);
+            localStorage.setItem('visitor_id', visitorId);
+        }
 
-        const interval = setInterval(() => {
-            // Randomly fluctuate by -2 to +3
-            setCount(prev => {
-                const change = Math.floor(Math.random() * 6) - 2;
-                const newCount = prev + change;
-                // Keep within realistic bounds for a niche site
-                if (newCount < 12) return 12;
-                if (newCount > 45) return 45;
-                return newCount;
-            });
-        }, 5000); // Update every 5 seconds
+        const fetchCount = async () => {
+            try {
+                const res = await fetch('/api/visitors/heartbeat', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ visitorId })
+                });
+                if (res.ok) {
+                    const data = await res.json();
+                    setCount(data.count);
+                }
+            } catch (error) {
+                console.error("Visitor count error", error);
+            }
+        };
+
+        // Initial fetch
+        fetchCount();
+
+        // Poll every 10 seconds
+        const interval = setInterval(fetchCount, 10000);
 
         return () => clearInterval(interval);
     }, []);
 
-    if (!isClient) return null;
+    if (!count) return null;
 
     return (
-        <div className="flex items-center gap-2 bg-gray-50 px-3 py-1.5 rounded-full border border-gray-100 shadow-sm animate-fade-in mx-2">
-            <span className="relative flex h-2.5 w-2.5">
+        <div className="flex items-center gap-2 px-3 py-0.5 rounded-full animate-fade-in mx-2 bg-white/10 border border-white/20">
+            <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-green-500"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
             </span>
-            <span className="text-xs font-bold text-gray-700 tabular-nums">
+            <span className="text-[10px] mobile:text-[10px] font-medium text-white tabular-nums tracking-wide">
                 {count} צופים כרגע
             </span>
         </div>

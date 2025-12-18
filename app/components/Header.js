@@ -66,8 +66,12 @@ export default function Header({ brands = [] }) {
             )}
 
             {/* Top Bar - Black Promo Strip */}
-            <div className="hidden md:block bg-black text-white text-[10px] md:text-xs py-2 text-center tracking-widest uppercase">
-                משלוח בלוקר לכל הארץ ב-30 ₪
+            <div className="hidden md:flex justify-between items-center bg-black text-white text-[10px] md:text-xs py-1 px-4 tracking-widest uppercase">
+                <div className="flex-1"></div> {/* Spacer Left */}
+                <div className="text-center font-bold">משלוח בלוקר לכל הארץ ב-30 ₪</div>
+                <div className="flex-1 flex justify-end">
+                    <LiveVisitorCounter />
+                </div>
             </div>
 
             {/* Main Header */}
@@ -151,7 +155,6 @@ export default function Header({ brands = [] }) {
 
                     {/* Desktop RIGHT Group (RTL Start): Search + User */}
                     <div className="hidden md:flex items-center justify-start gap-4">
-                        <LiveVisitorCounter />
                         {/* User Icon (Rightmost in RTL) */}
                         <SignedIn>
                             <div className="flex items-center gap-2">
