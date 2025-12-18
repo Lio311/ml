@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 
-export default function SearchAutocomplete() {
+export default function SearchAutocomplete({ fullWidth = false, onSelect }) {
     const [query, setQuery] = useState('');
     const [results, setResults] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
@@ -64,8 +64,9 @@ export default function SearchAutocomplete() {
 
     return (
 
-        <div className="relative group inline-block" ref={wrapperRef}>
-            <form onSubmit={handleSubmit} className="relative flex items-center">
+        <div className={`relative group ${fullWidth ? 'flex-1' : 'inline-block'}`} ref={wrapperRef}>
+            <form onSubmit={handleSubmit} className="relative flex items-center w-full">
+
                 <input
                     type="text"
                     placeholder="חיפוש..."
@@ -74,8 +75,10 @@ export default function SearchAutocomplete() {
                     onFocus={() => {
                         if (query.length >= 2 && results.length > 0) setIsOpen(true);
                     }}
-                    className={`border-b border-gray-300 py-1 text-sm focus:outline-none focus:border-black transition-all bg-transparent w-20 focus:w-48 placeholder-gray-400 
+                    className={`border-b border-gray-300 py-1 text-sm focus:outline-none focus:border-black transition-all bg-transparent placeholder-gray-400 
+                        ${fullWidth ? 'w-full' : 'w-20 focus:w-48'}
                         ${isRTL ? 'text-right pl-8 pr-2' : 'text-left pr-8 pl-2'}`}
+
                     dir={direction}
                 />
 
@@ -105,7 +108,10 @@ export default function SearchAutocomplete() {
                             <Link
                                 key={product.id}
                                 href={`/product/${product.slug || product.id}`}
-                                onClick={() => setIsOpen(false)}
+                                onClick={() => {
+                                    setIsOpen(false);
+                                    if (onSelect) onSelect();
+                                }}
                                 className="flex items-center gap-4 p-3 hover:bg-gray-50 transition group/item text-right"
                                 dir="rtl"
                             >
@@ -134,11 +140,15 @@ export default function SearchAutocomplete() {
                     </div>
                     <Link
                         href={`/catalog?q=${encodeURIComponent(query)}`}
-                        onClick={() => setIsOpen(false)}
+                        onClick={() => {
+                            setIsOpen(false);
+                            if (onSelect) onSelect();
+                        }}
                         className="block bg-gray-50 p-3 text-center text-xs font-bold text-blue-600 hover:underline border-t"
                     >
                         צפה בכל התוצאות ({results.length}+)
                     </Link>
+
                 </div>
             )}
         </div>

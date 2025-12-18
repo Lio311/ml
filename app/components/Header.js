@@ -51,8 +51,9 @@ export default function Header({ brands = [] }) {
                 <div className="absolute inset-x-0 top-full bg-white shadow-xl p-4 border-t z-[60] animate-in slide-in-from-top duration-300">
                     <div className="flex items-center gap-2">
                         <div className="flex-1">
-                            <SearchAutocomplete onSelect={() => setIsSearchOpen(false)} />
+                            <SearchAutocomplete fullWidth={true} onSelect={() => setIsSearchOpen(false)} />
                         </div>
+
                         <button
                             onClick={() => setIsSearchOpen(false)}
                             className="p-2 text-gray-500 hover:text-black font-bold text-sm"
