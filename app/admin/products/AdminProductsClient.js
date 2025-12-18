@@ -584,7 +584,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                                     title="רווח ל-1 מ״ל"
                                                     dir="ltr"
                                                 >
-                                                    {isNegative ? `-${Math.abs(profitPerMl)}` : profitPerMl} ₪
+                                                    ₪ {isNegative ? `-${Math.abs(profitPerMl)}` : profitPerMl}
                                                 </div>
                                             );
                                         })()}
