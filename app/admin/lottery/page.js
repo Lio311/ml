@@ -2,13 +2,19 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { useUser } from "@clerk/nextjs";
+
 
 export default function LotteryAdminPage() {
+    const { user } = useUser();
     const router = useRouter();
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState("");
     const [filter, setFilter] = useState("all"); // all, in_lottery, not_in_lottery
+    const [currentPage, setCurrentPage] = useState(1);
+    const itemsPerPage = 10;
+
 
     // Fetch products
     useEffect(() => {
@@ -74,6 +80,16 @@ export default function LotteryAdminPage() {
         return matchesSearch && matchesFilter;
     });
 
+    const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
+    const paginatedProducts = filteredProducts.slice(
+        (currentPage - 1) * itemsPerPage,
+        currentPage * itemsPerPage
+    );
+
+    const currentUserRole = user?.publicMetadata?.role;
+    const canEdit = currentUserRole === 'admin' || user?.emailAddresses[0]?.emailAddress === 'lior31197@gmail.com';
+
+
     if (loading) return <div className="p-8 text-center">טוען נתונים...</div>;
 
     return (
@@ -124,8 +140,9 @@ export default function LotteryAdminPage() {
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-200">
-                        {filteredProducts.map(product => (
+                        {paginatedProducts.map(product => (
                             <tr key={product.id} className="hover:bg-gray-50 trantision">
+
                                 <td className="p-4">
                                     {product.image_url ? (
                                         <img src={product.image_url} alt={product.model} className="w-12 h-12 object-cover rounded shadow-sm border" />
@@ -148,11 +165,14 @@ export default function LotteryAdminPage() {
                                 <td className="p-4 text-center">
                                     <button
                                         onClick={() => toggleLotteryStatus(product.id, product.in_lottery ?? true)}
+                                        disabled={!canEdit}
                                         className={`
                                             relative inline-flex h-8 w-16 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-black
                                             ${(product.in_lottery ?? true) ? 'bg-green-500' : 'bg-gray-300'}
+                                            ${!canEdit ? 'opacity-50 cursor-not-allowed' : ''}
                                         `}
                                     >
+
                                         <span
                                             className={`
                                                 inline-block h-6 w-6 transform rounded-full bg-white transition-transform
@@ -174,6 +194,30 @@ export default function LotteryAdminPage() {
                     </div>
                 )}
             </div>
+
+            {/* Pagination Controls */}
+            {totalPages > 1 && (
+                <div className="flex justify-center items-center gap-4 mt-6">
+                    <button
+                        onClick={() => setCurrentPage(p => Math.max(1, p - 1))}
+                        disabled={currentPage === 1}
+                        className="px-4 py-2 bg-white border rounded disabled:opacity-50 hover:bg-gray-50"
+                    >
+                        הקודם
+                    </button>
+                    <span className="text-gray-600 font-bold">
+                        עמוד {currentPage} מתוך {totalPages}
+                    </span>
+                    <button
+                        onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))}
+                        disabled={currentPage === totalPages}
+                        className="px-4 py-2 bg-white border rounded disabled:opacity-50 hover:bg-gray-50"
+                    >
+                        הבא
+                    </button>
+                </div>
+            )}
+
         </div>
     );
 }

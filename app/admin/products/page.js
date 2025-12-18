@@ -1,5 +1,7 @@
 import pool from "../../lib/db";
 import AdminProductsClient from "./AdminProductsClient";
+import { currentUser } from "@clerk/nextjs/server";
+
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -70,6 +72,10 @@ export default async function AdminProductsPage(props) {
         client.release();
     }
 
+    const user = await currentUser();
+    const canEdit = user?.publicMetadata?.role === 'admin' || user?.emailAddresses[0]?.emailAddress === 'lior31197@gmail.com';
+
+
     return (
         <AdminProductsClient
             products={products}
@@ -81,7 +87,9 @@ export default async function AdminProductsPage(props) {
             currentLetter={letter}
             currentView={view}
             currentSort={sort}
+            canEdit={canEdit}
         />
+
     );
 }
 

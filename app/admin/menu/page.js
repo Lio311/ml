@@ -1,12 +1,17 @@
 "use client";
 
 import { useState, useEffect } from 'react';
+import { useUser } from "@clerk/nextjs";
+
 
 export default function AdminMenuPage() {
     const [menu, setMenu] = useState([]);
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [message, setMessage] = useState('');
+    const { user } = useUser();
+    const canEdit = user?.publicMetadata?.role === 'admin' || user?.emailAddresses[0]?.emailAddress === 'lior31197@gmail.com';
+
 
     useEffect(() => {
         fetchMenu();
@@ -80,24 +85,31 @@ export default function AdminMenuPage() {
                                 <td className="px-6 py-4 text-sm font-medium text-center">{item.id}</td>
                                 <td className="px-6 py-4 text-center">
                                     <button
-                                        onClick={() => handleToggle(item.id)}
+                                        onClick={() => canEdit && handleToggle(item.id)}
+                                        disabled={!canEdit}
                                         className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all ${item.visible
                                             ? 'bg-green-100 text-green-700 hover:bg-green-200'
                                             : 'bg-red-100 text-red-700 hover:bg-red-200'
-                                            }`}
+                                            } ${!canEdit ? 'opacity-50 cursor-not-allowed' : ''}`}
                                     >
                                         {item.visible ? 'מוצג' : 'מוסתר'}
                                     </button>
                                 </td>
+
                                 <td className="px-6 py-4 text-center">
-                                    <input
-                                        type="text"
-                                        value={item.label}
-                                        onChange={(e) => handleLabelChange(item.id, e.target.value)}
-                                        className="border border-gray-300 rounded px-3 py-1.5 w-full text-sm focus:ring-2 focus:ring-black outline-none text-center"
-                                        placeholder="שם העמוד בתפריט..."
-                                    />
+                                    {canEdit ? (
+                                        <input
+                                            type="text"
+                                            value={item.label}
+                                            onChange={(e) => handleLabelChange(item.id, e.target.value)}
+                                            className="border border-gray-300 rounded px-3 py-1.5 w-full text-sm focus:ring-2 focus:ring-black outline-none text-center"
+                                            placeholder="שם העמוד בתפריט..."
+                                        />
+                                    ) : (
+                                        <span className="text-gray-700 text-sm font-bold">{item.label}</span>
+                                    )}
                                 </td>
+
                             </tr>
                         ))}
                     </tbody>
@@ -107,11 +119,12 @@ export default function AdminMenuPage() {
             <div className="mt-8 flex items-center justify-between">
                 <button
                     onClick={handleSave}
-                    disabled={saving}
-                    className="bg-black text-white px-8 py-3 rounded-xl font-bold hover:bg-gray-800 transition-all shadow-md hover:shadow-lg disabled:bg-gray-400"
+                    disabled={saving || !canEdit}
+                    className="bg-black text-white px-8 py-3 rounded-xl font-bold hover:bg-gray-800 transition-all shadow-md hover:shadow-lg disabled:bg-gray-400 disabled:cursor-not-allowed"
                 >
-                    {saving ? 'שומר...' : 'שמור שינויים'}
+                    {saving ? 'שומר...' : (canEdit ? 'שמור שינויים' : 'אין הרשאת עריכה')}
                 </button>
+
 
                 {message && (
                     <span className={`text-sm font-bold ${message.includes('שגיאה') ? 'text-red-600' : 'text-green-600'}`}>

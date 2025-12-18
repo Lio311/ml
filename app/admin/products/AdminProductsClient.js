@@ -4,7 +4,8 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import TagInput from "../../components/TagInput";
 
-export default function AdminProductsClient({ products, initialSearch, totalProducts, filteredCount, currentPage, totalPages, currentLetter, currentView, currentSort }) {
+export default function AdminProductsClient({ products, initialSearch, totalProducts, filteredCount, currentPage, totalPages, currentLetter, currentView, currentSort, canEdit }) {
+
     const router = useRouter();
     const [editingId, setEditingId] = useState(null);
     const [editForm, setEditForm] = useState({});
@@ -194,10 +195,13 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                 </div>
 
                 <div className="flex gap-4">
-                    <button onClick={startCreate} className="bg-blue-600 text-white px-4 py-2 rounded font-bold hover:bg-blue-700 transition">
-                        + מוצר חדש
-                    </button>
+                    {canEdit && (
+                        <button onClick={startCreate} className="bg-blue-600 text-white px-4 py-2 rounded font-bold hover:bg-blue-700 transition">
+                            + מוצר חדש
+                        </button>
+                    )}
                     <form onSubmit={handleSearch} className="flex gap-2 w-full md:w-auto">
+
                         <input
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
@@ -595,7 +599,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                         )
                         }
 
-                        {editingId !== product.id && (
+                        {editingId !== product.id && canEdit && (
                             <div className="flex gap-2 w-full md:w-auto">
                                 <button onClick={() => startEdit(product)} className="bg-blue-600 text-white px-4 py-1.5 rounded text-xs hover:bg-blue-700 font-bold transition whitespace-nowrap">
                                     עדכן
@@ -605,6 +609,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                 </button>
                             </div>
                         )}
+
 
                     </div >
                 ))}

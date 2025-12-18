@@ -1,6 +1,8 @@
 
 import pool from "../../lib/db";
 import { revalidatePath } from "next/cache";
+import { currentUser } from "@clerk/nextjs/server";
+
 
 export default async function AdminRequestsPage() {
     const client = await pool.connect();
@@ -12,9 +14,17 @@ export default async function AdminRequestsPage() {
         client.release();
     }
 
+    const user = await currentUser();
+    const canEdit = user?.publicMetadata?.role === 'admin' || user?.emailAddresses[0]?.emailAddress === 'lior31197@gmail.com';
+
     async function deleteRequest(formData) {
         "use server";
+        const user = await currentUser();
+        const canEdit = user?.publicMetadata?.role === 'admin' || user?.emailAddresses[0]?.emailAddress === 'lior31197@gmail.com';
+        if (!canEdit) throw new Error("Unauthorized");
+
         const id = formData.get("id");
+
         const client = await pool.connect();
         try {
             await client.query('DELETE FROM perfume_requests WHERE id = $1', [id]);
@@ -26,7 +36,12 @@ export default async function AdminRequestsPage() {
 
     async function updateRequest(formData) {
         "use server";
+        const user = await currentUser();
+        const canEdit = user?.publicMetadata?.role === 'admin' || user?.emailAddresses[0]?.emailAddress === 'lior31197@gmail.com';
+        if (!canEdit) throw new Error("Unauthorized");
+
         const id = formData.get("id");
+
         const brand = formData.get("brand");
         const model = formData.get("model");
 
@@ -63,23 +78,32 @@ export default async function AdminRequestsPage() {
 
                                 {/* Brand Input (Centered) */}
                                 <td className="p-4 text-center">
-                                    <input
-                                        form={`update-${req.id}`}
-                                        name="brand"
-                                        defaultValue={req.brand}
-                                        className="border rounded px-2 py-1 text-sm w-32 text-center"
-                                    />
+                                    {canEdit ? (
+                                        <input
+                                            form={`update-${req.id}`}
+                                            name="brand"
+                                            defaultValue={req.brand}
+                                            className="border rounded px-2 py-1 text-sm w-32 text-center"
+                                        />
+                                    ) : (
+                                        <span className="text-gray-700">{req.brand}</span>
+                                    )}
                                 </td>
 
                                 {/* Model Input (Centered) */}
                                 <td className="p-4 text-center">
-                                    <input
-                                        form={`update-${req.id}`}
-                                        name="model"
-                                        defaultValue={req.model}
-                                        className="border rounded px-2 py-1 text-sm w-32 text-center"
-                                    />
+                                    {canEdit ? (
+                                        <input
+                                            form={`update-${req.id}`}
+                                            name="model"
+                                            defaultValue={req.model}
+                                            className="border rounded px-2 py-1 text-sm w-32 text-center"
+                                        />
+                                    ) : (
+                                        <span className="text-gray-700">{req.model}</span>
+                                    )}
                                 </td>
+
 
                                 <td className="p-4 text-xs text-gray-400 text-center">
                                     {new Date(req.created_at).toLocaleString('he-IL')}
@@ -93,24 +117,30 @@ export default async function AdminRequestsPage() {
                                         <input type="hidden" name="id" value={req.id} />
                                     </form>
 
-                                    <button
-                                        form={`update-${req.id}`}
-                                        type="submit"
-                                        className="bg-blue-600 text-white px-3 py-1 rounded text-xs hover:bg-blue-700"
-                                    >
-                                        עדכן
-                                    </button>
+                                    {canEdit && (
+                                        <>
+                                            <button
+                                                form={`update-${req.id}`}
+                                                type="submit"
+                                                className="bg-blue-600 text-white px-3 py-1 rounded text-xs hover:bg-blue-700"
+                                            >
+                                                עדכן
+                                            </button>
 
-                                    <form action={deleteRequest}>
-                                        <input type="hidden" name="id" value={req.id} />
-                                        <button
-                                            type="submit"
-                                            className="text-red-500 hover:text-red-700 text-xs font-bold border border-red-200 px-3 py-1 rounded hover:bg-red-50"
-                                        >
-                                            מחק
-                                        </button>
-                                    </form>
+                                            <form action={deleteRequest}>
+                                                <input type="hidden" name="id" value={req.id} />
+                                                <button
+                                                    type="submit"
+                                                    className="text-red-500 hover:text-red-700 text-xs font-bold border border-red-200 px-3 py-1 rounded hover:bg-red-50"
+                                                >
+                                                    מחק
+                                                </button>
+                                            </form>
+                                        </>
+                                    )}
+                                    {!canEdit && <span className="text-gray-400 text-xs">צפייה בלבד</span>}
                                 </td>
+
                             </tr>
                         ))}
                     </tbody>

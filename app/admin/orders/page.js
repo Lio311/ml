@@ -1,5 +1,7 @@
 import pool from "../../lib/db";
 import { revalidatePath } from "next/cache";
+import { currentUser } from "@clerk/nextjs/server";
+
 
 export const metadata = {
     title: "ניהול הזמנות | ml_tlv",
@@ -16,9 +18,23 @@ export default async function AdminOrdersPage() {
         client.release();
     }
 
+    const user = await currentUser();
+    const email = user?.emailAddresses[0]?.emailAddress;
+    const role = user?.publicMetadata?.role;
+    const isSuperAdmin = email === 'lior31197@gmail.com';
+    const canEdit = isSuperAdmin || role === 'admin';
+
     async function updateStatus(formData) {
         "use server";
+        const user = await currentUser();
+        const role = user?.publicMetadata?.role;
+        const email = user?.emailAddresses[0]?.emailAddress;
+        if (email !== 'lior31197@gmail.com' && role !== 'admin') {
+            throw new Error("Unauthorized");
+        }
+
         const orderId = formData.get("orderId");
+
         const status = formData.get("status");
 
         const client = await pool.connect();
@@ -44,7 +60,15 @@ export default async function AdminOrdersPage() {
 
     async function deleteOrder(formData) {
         "use server";
+        const user = await currentUser();
+        const role = user?.publicMetadata?.role;
+        const email = user?.emailAddresses[0]?.emailAddress;
+        if (email !== 'lior31197@gmail.com' && role !== 'admin') {
+            throw new Error("Unauthorized");
+        }
+
         const orderId = formData.get("orderId");
+
 
         const client = await pool.connect();
         try {
@@ -150,29 +174,36 @@ export default async function AdminOrdersPage() {
                                     </span>
                                 </td>
                                 <td className="p-4">
-                                    <form action={updateStatus} className="flex gap-2">
-                                        <input type="hidden" name="orderId" value={order.id} />
-                                        <select name="status" defaultValue={order.status} className="border rounded px-2 py-1 text-sm bg-white">
-                                            <option value="pending">ממתין</option>
-                                            <option value="processing">בטיפול</option>
-                                            <option value="shipped">נשלח</option>
-                                            <option value="completed">הושלם</option>
-                                            <option value="cancelled">בוטל</option>
-                                        </select>
-                                        <button type="submit" className="bg-black text-white px-3 py-1 rounded text-sm hover:bg-gray-800">
-                                            שמור
-                                        </button>
-                                    </form>
-                                    <form action={deleteOrder} className="mt-1">
-                                        <input type="hidden" name="orderId" value={order.id} />
-                                        <button
-                                            type="submit"
-                                            className="text-red-500 text-xs underline hover:text-red-700"
-                                        >
-                                            מחק הזמנה
-                                        </button>
-                                    </form>
+                                    {canEdit ? (
+                                        <>
+                                            <form action={updateStatus} className="flex gap-2">
+                                                <input type="hidden" name="orderId" value={order.id} />
+                                                <select name="status" defaultValue={order.status} className="border rounded px-2 py-1 text-sm bg-white">
+                                                    <option value="pending">ממתין</option>
+                                                    <option value="processing">בטיפול</option>
+                                                    <option value="shipped">נשלח</option>
+                                                    <option value="completed">הושלם</option>
+                                                    <option value="cancelled">בוטל</option>
+                                                </select>
+                                                <button type="submit" className="bg-black text-white px-3 py-1 rounded text-sm hover:bg-gray-800">
+                                                    שמור
+                                                </button>
+                                            </form>
+                                            <form action={deleteOrder} className="mt-1">
+                                                <input type="hidden" name="orderId" value={order.id} />
+                                                <button
+                                                    type="submit"
+                                                    className="text-red-500 text-xs underline hover:text-red-700"
+                                                >
+                                                    מחק הזמנה
+                                                </button>
+                                            </form>
+                                        </>
+                                    ) : (
+                                        <span className="text-gray-400 text-sm">צפייה בלבד</span>
+                                    )}
                                 </td>
+
                             </tr>
                         ))}
                     </tbody>

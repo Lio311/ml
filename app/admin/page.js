@@ -5,7 +5,9 @@ import AnalyticsTables from "../components/admin/AnalyticsTables";
 
 export const dynamic = 'force-dynamic';
 
-import { clerkClient } from "@clerk/nextjs/server";
+import { clerkClient, currentUser } from "@clerk/nextjs/server";
+import { redirect } from "next/navigation";
+
 
 export const metadata = {
     title: "ניהול ראשי | ml_tlv",
@@ -13,7 +15,15 @@ export const metadata = {
 };
 
 export default async function AdminDashboard() {
+    // RBAC: Warehouse Redirect
+    const user = await currentUser();
+    const role = user?.publicMetadata?.role;
+    if (role === 'warehouse') {
+        redirect("/admin/orders");
+    }
+
     const client = await pool.connect();
+
     let kpis = {
         totalOrders: 0,
         totalRevenue: 0,
@@ -35,7 +45,12 @@ export default async function AdminDashboard() {
         const countRes = await client.query('SELECT COUNT(*) FROM orders');
         kpis.totalOrders = parseInt(countRes.rows[0].count);
 
-        const revRes = await client.query("SELECT SUM(total_amount) FROM orders WHERE status != 'cancelled'");
+        const revRes = await client.query(`
+            SELECT SUM(total_amount) FROM orders 
+            WHERE status != 'cancelled'
+            AND EXTRACT(MONTH FROM created_at) = EXTRACT(MONTH FROM CURRENT_DATE)
+            AND EXTRACT(YEAR FROM created_at) = EXTRACT(YEAR FROM CURRENT_DATE)
+        `);
         kpis.totalRevenue = parseInt(revRes.rows[0].sum || 0);
 
         const samplesSoldRes = await client.query(`
@@ -49,6 +64,36 @@ export default async function AdminDashboard() {
              )
         `);
         kpis.totalSamples = parseInt(samplesSoldRes.rows[0].count || 0);
+
+        // Fetch Expenses
+        let totalMonthlyExpenses = 0;
+        try {
+            // Get monthly expenses for CURRENT MONTH
+            const monthlyExpRes = await client.query(`
+                SELECT SUM(amount) FROM expenses 
+                WHERE type = 'monthly'
+                AND EXTRACT(MONTH FROM date) = EXTRACT(MONTH FROM CURRENT_DATE)
+                AND EXTRACT(YEAR FROM date) = EXTRACT(YEAR FROM CURRENT_DATE)
+            `);
+            const monthlySum = parseFloat(monthlyExpRes.rows[0].sum || 0);
+
+            // Get yearly expenses (amortized)
+            // Logic: Any yearly expense is divided by 12 and applied to each month.
+            // Assumption: Yearly expenses apply indefinitely or we strictly look at "active" ones?
+            // Simplified User Request: "If expense is yearly, divide amount by 12 and clean from each month".
+            // Implementation: Sum ALL yearly expenses and divide by 12.
+            // Or better: Sum yearly expenses from THIS YEAR? User said "yearly", implying recurring.
+            // Let's take all 'yearly' expenses created in the last 12 months? Or just all 'yearly'?
+            // Given "Management table where I insert expenses", likely he inserts "Insurance 2024" as yearly.
+            // Let's fetch ALL yearly expenses and divide by 12.
+            const yearlyExpRes = await client.query("SELECT SUM(amount) FROM expenses WHERE type = 'yearly'");
+            const yearlySum = parseFloat(yearlyExpRes.rows[0].sum || 0);
+
+            totalMonthlyExpenses = monthlySum + (yearlySum / 12);
+        } catch (e) {
+            console.warn("Expenses query failed:", e);
+        }
+
 
         // Fetch Users Count from Clerk
         try {
@@ -102,7 +147,13 @@ export default async function AdminDashboard() {
                 const orderProfit = (parseFloat(order.total_amount) || 0) - orderItemsCost;
                 monthlyProfit += orderProfit;
             });
+
+            // Deduct Expenses from Profit
+            monthlyProfit -= totalMonthlyExpenses;
+
             kpis.monthlyProfit = Math.round(monthlyProfit);
+            kpis.totalExpenses = Math.round(totalMonthlyExpenses);
+
         } catch (profitErr) {
             console.error("Profit calculation failed:", profitErr);
             kpis.monthlyProfit = 0;
@@ -283,7 +334,13 @@ export default async function AdminDashboard() {
                     </div>
                     <div className={`text-3xl font-bold ${kpis.monthlyProfit < 0 ? 'text-red-700' : 'text-green-700'}`} dir="ltr">
                         ₪ {kpis.monthlyProfit < 0 ? `-${Math.abs(kpis.monthlyProfit)}` : kpis.monthlyProfit}
+                        ₪ {kpis.monthlyProfit < 0 ? `-${Math.abs(kpis.monthlyProfit)}` : kpis.monthlyProfit}
                     </div>
+                </div>
+                <div className="bg-white p-6 rounded-xl shadow-sm border border-red-100 text-right">
+                    <div className="text-red-500 text-sm font-bold uppercase mb-2">הוצאות ({currentMonthLabel})</div>
+                    <div className="text-3xl font-bold text-red-700" dir="ltr">₪ {kpis.totalExpenses}</div>
+                    <div className="text-xs text-gray-400 mt-1">כולל יחסי שנתי</div>
                 </div>
                 <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
                     <div className="text-gray-500 text-sm font-bold uppercase mb-2">דוגמיות שנמכרו</div>
