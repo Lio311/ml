@@ -570,7 +570,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                             (product.stock || 0) <= 50 ? 'bg-orange-100 text-orange-800' :
                                                 'bg-green-100 text-green-800'
                                             }`}>
-                                            מלאי: {product.stock || 0}
+                                            מלאי: {product.stock || 0} מ״ל
                                         </div>
                                         {(() => {
                                             const profitPerMl = Math.round((product.price_2ml / 2) - ((product.cost_price || 0) / (product.original_size || 100)));
@@ -578,8 +578,8 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                             return (
                                                 <div
                                                     className={`font-mono text-xs px-2 py-0.5 rounded shadow-sm border ${isNegative
-                                                            ? 'bg-red-50 text-red-700 border-red-200'
-                                                            : 'bg-green-50 text-green-700 border-green-200'
+                                                        ? 'bg-red-50 text-red-700 border-red-200'
+                                                        : 'bg-green-50 text-green-700 border-green-200'
                                                         }`}
                                                     title="רווח ל-1 מ״ל"
                                                     dir="ltr"
