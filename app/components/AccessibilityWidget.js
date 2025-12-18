@@ -1,196 +1,365 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
+
+// --- Icons (Inline SVGs for performance & no deps) ---
+const Icons = {
+    Accessibility: () => (
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6">
+            <circle cx="12" cy="12" r="10" />
+            <path d="m4.93 4.93 14.14 14.14" className="opacity-0" />
+            <path d="M12 2A10 10 0 1 0 12 22A10 10 0 1 0 12 2z" />
+            <path d="M12 6v6" />
+            <path d="M12 18h.01" />
+            <path d="m8 8 8 8" className="opacity-0" />
+            {/* Person Icon */}
+            <circle cx="12" cy="7" r="2" />
+            <path d="M10 11h4v7h-4z" />
+            <path d="M6 11h4" />
+            <path d="M14 11h4" />
+        </svg>
+    ),
+    Text: () => <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5"><path d="M4 7V4h16v3" /><path d="M9 20h6" /><path d="M12 4v16" /></svg>,
+    Font: () => <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5"><path d="M19 10c0-3.9-3.1-7-7-7S5 6.1 5 10c0 1.2.3 2.3.9 3.2L12 22l6.1-8.8c.6-.9.9-2 .9-3.2Z" /><circle cx="12" cy="10" r="3" /></svg>,
+    Link: () => <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" /><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" /></svg>,
+    Header: () => <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5"><path d="M6 4v16" /><path d="M18 4v16" /><path d="M6 12h12" /></svg>,
+    Contrast: () => <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5"><circle cx="12" cy="12" r="10" /><path d="M12 18a6 6 0 0 0 0-12v12z" /></svg>,
+    Invert: () => <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5"><path d="M12 20v2" /><path d="M12 2v2" /><path d="M20 12h2" /><path d="M2 12h2" /><path d="m4.93 4.93 1.41 1.41" /><path d="m17.66 17.66 1.41 1.41" /><path d="m4.93 19.07 1.41-1.41" /><path d="m17.66 6.34 1.41-1.41" /></svg>,
+    Eye: () => <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" /><circle cx="12" cy="12" r="3" /></svg>,
+    Cursor: () => <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5"><path d="m3 3 7.07 16.97 2.51-7.39 7.39-2.51L3 3z" /></svg>,
+    Stop: () => <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5"><circle cx="12" cy="12" r="10" /><path d="M9 9h6v6H9z" /></svg>,
+    Close: () => <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-4 h-4"><path d="M18 6 6 18" /><path d="m6 6 12 12" /></svg>,
+    Guide: () => <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="w-5 h-5"><path d="M5 12h14" /><path d="M5 18h14" /><path d="M5 6h14" /></svg>,
+};
+
+
+const STORAGE_KEY = 'accessibility_settings_v1';
+
+const DEFAULT_SETTINGS = {
+    fontSize: 100, // percentage
+    readableFont: false,
+    highlightLinks: false,
+    highlightHeaders: false,
+    highContrast: false,
+    invertColors: false,
+    monochrome: false,
+    bigCursor: false,
+    stopAnimations: false,
+    readingGuide: false,
+};
 
 export default function AccessibilityWidget() {
     const [isOpen, setIsOpen] = useState(false);
-    const [fontSize, setFontSize] = useState(100); // Percentage
-    const [isHighContrast, setIsHighContrast] = useState(false);
-    const [areLinksHighlighted, setAreLinksHighlighted] = useState(false);
+    const [settings, setSettings] = useState(DEFAULT_SETTINGS);
+    const [readingGuideY, setReadingGuideY] = useState(0);
+
+    // --- Initialization & Persistence ---
+    useEffect(() => {
+        const saved = localStorage.getItem(STORAGE_KEY);
+        if (saved) {
+            setSettings(JSON.parse(saved));
+        }
+    }, []);
 
     useEffect(() => {
-        // Apply Font Size
-        document.documentElement.style.fontSize = `${fontSize}%`;
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
+        applySettings();
+    }, [settings]);
 
-        // Apply High Contrast
-        if (isHighContrast) {
-            document.body.classList.add('high-contrast');
-        } else {
-            document.body.classList.remove('high-contrast');
-        }
+    // --- DOM Manipulation Side Effects ---
+    const applySettings = () => {
+        // 1. Text Scale
+        document.documentElement.style.fontSize = `${settings.fontSize}%`;
 
-        // Apply Link Highlight
-        if (areLinksHighlighted) {
-            document.body.classList.add('highlight-links');
-        } else {
-            document.body.classList.remove('highlight-links');
-        }
+        // 2. Class Toggles (Global Helper Classes)
+        const body = document.body;
 
-    }, [fontSize, isHighContrast, areLinksHighlighted]);
+        // Helper to toggle class based on condition
+        const toggle = (cls, condition) => condition ? body.classList.add(cls) : body.classList.remove(cls);
 
-    const resetSettings = () => {
-        setFontSize(100);
-        setIsHighContrast(false);
-        setAreLinksHighlighted(false);
+        toggle('acc-readable-font', settings.readableFont);
+        toggle('acc-highlight-links', settings.highlightLinks);
+        toggle('acc-highlight-headers', settings.highlightHeaders);
+        toggle('acc-high-contrast', settings.highContrast);
+        toggle('acc-invert', settings.invertColors);
+        toggle('acc-monochrome', settings.monochrome);
+        toggle('acc-big-cursor', settings.bigCursor);
+        toggle('acc-stop-animations', settings.stopAnimations);
     };
 
-    const [isVisible, setIsVisible] = useState(true);
-    if (!isVisible) return null;
+    // --- Reading Guide Logic ---
+    useEffect(() => {
+        if (!settings.readingGuide) return;
+
+        const handleMouseMove = (e) => {
+            setReadingGuideY(e.clientY);
+        };
+        window.addEventListener('mousemove', handleMouseMove);
+        return () => window.removeEventListener('mousemove', handleMouseMove);
+    }, [settings.readingGuide]);
+
+    // --- Handlers ---
+    const toggleSetting = (key) => {
+        setSettings(prev => ({ ...prev, [key]: !prev[key] }));
+    };
+
+    const adjustFontSize = (delta) => {
+        setSettings(prev => ({
+            ...prev,
+            fontSize: Math.min(200, Math.max(100, prev.fontSize + delta))
+        }));
+    };
+
+    const resetAll = () => {
+        setSettings(DEFAULT_SETTINGS);
+    };
 
     return (
-        <div className="fixed bottom-6 left-6 z-50 font-sans group" style={{ direction: 'rtl' }}>
-
-            {/* Main Toggle Button */}
-            <button
-                onClick={() => setIsOpen(!isOpen)}
-                className="bg-blue-600 text-white w-12 h-12 rounded-full shadow-lg flex items-center justify-center hover:bg-blue-700 transition focus:outline-none focus:ring-4 focus:ring-blue-300 relative z-50"
-                aria-label="תפריט נגישות"
-                title="תפריט נגישות"
-            >
-                {/* Custom Accessibility Icon (Local File) */}
-                <div className="w-full h-full rounded-full overflow-hidden border-2 border-white/20">
-                    <img
-                        src="/images/accessibility-icon.png"
-                        alt="נגישות"
-                        className="w-full h-full object-cover"
-                    />
-                </div>
-            </button>
-
-            {/* Close Button (X) - Allows hiding the widget */}
-            {!isOpen && (
-                <button
-                    onClick={(e) => { e.stopPropagation(); setIsVisible(false); }}
-                    className="absolute -top-2 -right-2 z-[60] bg-gray-200 text-gray-600 rounded-full p-1 opacity-0 group-hover:opacity-100 transition shadow-sm hover:bg-red-500 hover:text-white"
-                    title="סגור כלי נגישות"
-                >
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-3 w-3" viewBox="0 0 20 20" fill="currentColor">
-                        <path fillRule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clipRule="evenodd" />
-                    </svg>
-                </button>
-            )}
-
-            {/* Menu */}
-            {isOpen && (
-                <div className="absolute bottom-16 left-0 w-64 bg-white rounded-lg shadow-xl border border-gray-200 p-4 animate-fade-in-up text-gray-900 z-50">
-                    <div className="flex justify-between items-center mb-4 border-b pb-2">
-                        <h3 className="font-bold">כלי נגישות</h3>
-                        <button onClick={resetSettings} className="text-xs text-red-500 hover:underline">איפוס</button>
-                    </div>
-
-                    <div className="space-y-4">
-                        {/* Font Size */}
-                        <div>
-                            <label className="block text-sm text-gray-600 mb-1">גודל טקסט</label>
-                            <div className="flex gap-2">
-                                <button onClick={() => setFontSize(Math.min(fontSize + 10, 150))} className="flex-1 bg-gray-100 hover:bg-gray-200 py-2 rounded text-lg font-bold text-black border">+</button>
-                                <button onClick={() => setFontSize(Math.max(fontSize - 10, 80))} className="flex-1 bg-gray-100 hover:bg-gray-200 py-2 rounded text-sm text-black border">-</button>
-                            </div>
-                        </div>
-
-                        {/* Toggles */}
-                        <button
-                            onClick={() => setIsHighContrast(!isHighContrast)}
-                            className={`w-full flex justify-between items-center p-2 rounded border transition-colors ${isHighContrast ? 'bg-black text-yellow-400 border-yellow-400 font-bold' : 'bg-gray-50 text-gray-800'}`}
-                        >
-                            <span>ניגודיות גבוהה</span>
-                            <span>{isHighContrast ? 'פעיל' : 'כבוי'}</span>
-                        </button>
-
-                        <button
-                            onClick={() => setAreLinksHighlighted(!areLinksHighlighted)}
-                            className={`w-full flex justify-between items-center p-2 rounded border transition-colors ${areLinksHighlighted ? 'bg-yellow-100 ring-2 ring-yellow-400 text-black' : 'bg-gray-50 text-gray-800'}`}
-                        >
-                            <span>הדגשת קישורים</span>
-                            <span>{areLinksHighlighted ? 'פעיל' : 'כבוי'}</span>
-                        </button>
-                    </div>
-                </div>
-            )}
-
+        <>
+            {/* Global Style Injection */}
             <style jsx global>{`
-                /* Robust Yellow-on-Black High Contrast Theme */
+                /* --- Accessibility Styles --- */
                 
-                /* Force Colors on Standard Elements */
-                .high-contrast,
-                .high-contrast body,
-                .high-contrast header,
-                .high-contrast nav,
-                .high-contrast main,
-                .high-contrast footer,
-                .high-contrast section,
-                .high-contrast article,
-                .high-contrast aside,
-                .high-contrast div:not([class*="fixed"]):not([class*="absolute"]),
-                .high-contrast span,
-                .high-contrast p,
-                .high-contrast h1, .high-contrast h2, .high-contrast h3, .high-contrast h4, .high-contrast h5, .high-contrast h6,
-                .high-contrast li,
-                .high-contrast table, .high-contrast th, .high-contrast td {
-                    background-color: #000 !important;
-                    color: #FFD700 !important;
-                    border-color: #FFD700 !important;
-                    box-shadow: none !important;
-                    text-shadow: none !important;
+                /* Readable Font */
+                .acc-readable-font * {
+                    font-family: Arial, Helvetica, sans-serif !important;
                 }
 
-                /* Fix Inputs and Buttons */
-                .high-contrast a,
-                .high-contrast button:not([class*="fixed"]),
-                .high-contrast input,
-                .high-contrast select,
-                .high-contrast textarea {
-                    background-color: #000 !important;
-                    color: #FFD700 !important;
-                    border: 2px solid #FFD700 !important;
-                }
-                
-                /* SVGs inside High Contrast content */
-                .high-contrast header svg,
-                .high-contrast main svg,
-                .high-contrast footer svg,
-                .high-contrast nav svg {
-                     fill: #FFD700 !important;
-                     stroke: #FFD700 !important;
-                }
-                .high-contrast .no-fill-svg {
-                    fill: none !important;
-                }
-
-                /* Ensure Images remain natural but with a border */
-                .high-contrast img {
-                    filter: none !important;
-                    border: 1px solid #FFD700 !important;
-                    opacity: 1 !important;
-                }
-
-                /* Layout Fixes for Header */
-                .high-contrast .sticky, 
-                .high-contrast .fixed {
-                    background-color: #000 !important;
-                    border-bottom: 2px solid #FFD700 !important; 
-                    z-index: 50 !important;
-                }
-
-                /* Fix Accessibility Widget Itself */
-                .high-contrast button[title="תפריט נגישות"] {
-                    background-color: #000 !important;
-                    color: #FFD700 !important;
-                    border: 2px solid #FFD700 !important;
-                }
-                 .high-contrast button[title="תפריט נגישות"] svg {
-                     fill: #FFD700 !important;
-                 }
-
-
-                /* Link Highlighting */
-                .highlight-links a {
-                    background-color: yellow !important;
-                    color: black !important;
+                /* Highlight Links */
+                .acc-highlight-links a {
+                    background-color: #ffeb3b !important; /* Yellow */
+                    color: #000 !important;
                     text-decoration: underline !important;
                     font-weight: bold !important;
                 }
+
+                /* Highlight Headers */
+                .acc-highlight-headers h1, .acc-highlight-headers h2, .acc-highlight-headers h3, .acc-highlight-headers h4, .acc-highlight-headers h5, .acc-highlight-headers h6 {
+                    background-color: #e0f7fa !important; /* Cyan Light */
+                    color: #006064 !important;
+                    border-bottom: 3px solid #0097a7 !important;
+                    padding: 4px !important;
+                }
+
+                /* High Contrast (Dark Mode like) */
+                .acc-high-contrast {
+                    filter: contrast(120%); 
+                    background-color: #000 !important;
+                    color: #fff !important;
+                }
+                .acc-high-contrast * {
+                    background-color: #000 !important;
+                    color: #ff0 !important; /* Yellow Text */
+                    border-color: #fff !important;
+                }
+                .acc-high-contrast img, .acc-high-contrast video {
+                    filter: grayscale(100%) !important;
+                    opacity: 0.8;
+                }
+                .acc-high-contrast a {
+                    color: #0ff !important; /* Cyan Links */
+                    text-decoration: underline;
+                }
+                
+                /* Invert Colors */
+                .acc-invert {
+                    filter: invert(100%);
+                }
+                .acc-invert img, .acc-invert video {
+                    filter: invert(100%) !important; /* Re-invert media to look normal */
+                }
+
+                /* Monochrome */
+                .acc-monochrome {
+                    filter: grayscale(100%);
+                }
+
+                /* Big Cursor */
+                .acc-big-cursor, .acc-big-cursor * {
+                    cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewport="0 0 48 48" style="fill:black;stroke:white;stroke-width:2px;"><path d="M7,2l12,36l6-16l16-6L7,2z"></path></svg>') 0 0, auto !important;
+                }
+
+                /* Stop Animations */
+                .acc-stop-animations *, .acc-stop-animations *:before, .acc-stop-animations *:after {
+                    animation: none !important;
+                    transition: none !important;
+                }
             `}</style>
-        </div>
+
+            {/* Reading Guide Overlay */}
+            {settings.readingGuide && (
+                <div
+                    className="fixed left-0 w-full h-8 bg-yellow-400/30 border-t-2 border-b-2 border-red-500 pointer-events-none z-[10000]"
+                    style={{ top: readingGuideY - 16 }}
+                />
+            )}
+
+            {/* Trigger Button */}
+            <div className="fixed bottom-8 left-8 z-[9999] font-sans rtl group">
+                <button
+                    onClick={() => setIsOpen(!isOpen)}
+                    className={`w-14 h-14 rounded-full shadow-2xl flex items-center justify-center transition-all duration-300 transform hover:scale-110 focus:outline-none focus:ring-4 focus:ring-offset-2
+                        ${isOpen ? 'bg-blue-700 ring-blue-400' : 'bg-blue-600 ring-blue-300'}
+                    `}
+                    aria-label="פתח תפריט נגישות"
+                >
+                    <div className="text-white">
+                        {/* Custom Accessibility Icon */}
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="white" className="w-8 h-8">
+                            <circle cx="12" cy="7" r="2" />
+                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" opacity=".3" />
+                            <path d="M14 11h4v7h-2.5v-3h-1v3H12v-3.5l-2.5 3.5L8.2 13.1l2.3-3.1H10V11H6v-1.5h2.5V7H10V5h4v2h1.5v2.5H14V11z" />
+                        </svg>
+                    </div>
+
+                    {/* Pulsing Effect when closed */}
+                    {!isOpen && <span className="absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-20 animate-ping"></span>}
+                </button>
+
+                {/* The Widget Panel */}
+                {isOpen && (
+                    <div
+                        className="absolute bottom-20 left-0 w-[340px] md:w-[400px] bg-white/95 backdrop-blur-xl border border-white/20 rounded-2xl shadow-2xl overflow-hidden animate-fade-in-up origin-bottom-left"
+                        dir="rtl"
+                    >
+                        {/* Header */}
+                        <div className="bg-gray-50/80 p-4 border-b flex justify-between items-center">
+                            <h2 className="text-lg font-bold text-gray-800 flex items-center gap-2">
+                                <span className="bg-blue-100 text-blue-600 p-1 rounded-md"><Icons.Accessibility /></span>
+                                תפריט נגישות
+                            </h2>
+                            <button onClick={() => setIsOpen(false)} className="text-gray-400 hover:text-red-500 transition p-1 rounded-full hover:bg-gray-200">
+                                <Icons.Close />
+                            </button>
+                        </div>
+
+                        <div className="p-4 max-h-[70vh] overflow-y-auto custom-scrollbar">
+
+                            {/* Text Size Slider Area */}
+                            <div className="mb-6 bg-blue-50/50 p-4 rounded-xl border border-blue-100">
+                                <div className="flex justify-between mb-2">
+                                    <span className="text-sm font-bold text-gray-700">הגדלת טקסט</span>
+                                    <span className="text-sm font-bold text-blue-600">{settings.fontSize}%</span>
+                                </div>
+                                <div className="flex items-center gap-3">
+                                    <button onClick={() => adjustFontSize(-10)} className="w-10 h-10 bg-white shadow-sm rounded-lg flex items-center justify-center font-bold text-gray-600 hover:bg-gray-50">-</button>
+                                    <div className="flex-1 h-2 bg-gray-200 rounded-full overflow-hidden">
+                                        <div className="h-full bg-blue-600 transition-all duration-300" style={{ width: `${(settings.fontSize - 100)}%` }}></div>
+                                    </div>
+                                    <button onClick={() => adjustFontSize(10)} className="w-10 h-10 bg-white shadow-sm rounded-lg flex items-center justify-center font-bold text-gray-600 hover:bg-gray-50">+</button>
+                                </div>
+                            </div>
+
+                            {/* Grid of Features */}
+                            <div className="grid grid-cols-2 gap-3">
+                                <FeatureTile
+                                    label="גופן קריא"
+                                    icon={<Icons.Font />}
+                                    active={settings.readableFont}
+                                    onClick={() => toggleSetting('readableFont')}
+                                />
+                                <FeatureTile
+                                    label="הדגשת קישורים"
+                                    icon={<Icons.Link />}
+                                    active={settings.highlightLinks}
+                                    onClick={() => toggleSetting('highlightLinks')}
+                                />
+                                <FeatureTile
+                                    label="הדגשת כותרות"
+                                    icon={<Icons.Header />}
+                                    active={settings.highlightHeaders}
+                                    onClick={() => toggleSetting('highlightHeaders')}
+                                />
+                                <FeatureTile
+                                    label="ניגודיות גבוהה"
+                                    icon={<Icons.Contrast />}
+                                    active={settings.highContrast}
+                                    onClick={() => {
+                                        // Exclusive modes check
+                                        if (!settings.highContrast) {
+                                            setSettings(s => ({ ...s, highContrast: true, invertColors: false, monochrome: false }));
+                                        } else {
+                                            toggleSetting('highContrast');
+                                        }
+                                    }}
+                                />
+                                <FeatureTile
+                                    label="ניגודיות הפוכה"
+                                    icon={<Icons.Invert />}
+                                    active={settings.invertColors}
+                                    onClick={() => {
+                                        if (!settings.invertColors) {
+                                            setSettings(s => ({ ...s, highContrast: false, invertColors: true, monochrome: false }));
+                                        } else {
+                                            toggleSetting('invertColors');
+                                        }
+                                    }}
+                                />
+                                <FeatureTile
+                                    label="מונוכרום"
+                                    icon={<Icons.Eye />}
+                                    active={settings.monochrome}
+                                    onClick={() => {
+                                        if (!settings.monochrome) {
+                                            setSettings(s => ({ ...s, highContrast: false, invertColors: false, monochrome: true }));
+                                        } else {
+                                            toggleSetting('monochrome');
+                                        }
+                                    }}
+                                />
+                                <FeatureTile
+                                    label="סמן ענק"
+                                    icon={<Icons.Cursor />}
+                                    active={settings.bigCursor}
+                                    onClick={() => toggleSetting('bigCursor')}
+                                />
+                                <FeatureTile
+                                    label="עצור אנימציות"
+                                    icon={<Icons.Stop />}
+                                    active={settings.stopAnimations}
+                                    onClick={() => toggleSetting('stopAnimations')}
+                                />
+                                <FeatureTile
+                                    label="מדריך קריאה"
+                                    icon={<Icons.Guide />}
+                                    active={settings.readingGuide}
+                                    onClick={() => toggleSetting('readingGuide')}
+                                />
+                            </div>
+                        </div>
+
+                        {/* Footer */}
+                        <div className="bg-gray-50 p-4 border-t flex justify-between items-center text-xs text-gray-500">
+                            <a href="/accessibility" className="hover:underline hover:text-blue-600">הצהרת נגישות</a>
+                            <button onClick={resetAll} className="flex items-center gap-1 text-red-500 hover:bg-red-50 px-2 py-1 rounded transition">
+                                <svg xmlns="http://www.w3.org/2000/svg" className="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8" /><path d="M3 3v5h5" /></svg>
+                                איפוס הגדרות
+                            </button>
+                        </div>
+                    </div>
+                )}
+            </div>
+        </>
+    );
+}
+
+// Sub-component for Tiles
+function FeatureTile({ label, icon, active, onClick }) {
+    return (
+        <button
+            onClick={onClick}
+            className={`
+                flex flex-col items-center justify-center gap-2 p-3 rounded-xl border transition-all duration-200
+                ${active
+                    ? 'bg-blue-600 text-white border-blue-600 shadow-md transform scale-[1.02]'
+                    : 'bg-white text-gray-600 border-gray-100 hover:border-blue-300 hover:bg-blue-50'
+                }
+            `}
+        >
+            <div className={`${active ? 'text-white' : 'text-blue-500'}`}>
+                {icon}
+            </div>
+            <span className="text-xs font-bold">{label}</span>
+        </button>
     );
 }

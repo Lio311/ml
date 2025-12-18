@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import AdminFilterBar from "@/app/components/admin/AdminFilterBar";
 
 export default function AdminBrandsPage() {
     const [brands, setBrands] = useState([]);
@@ -49,8 +50,6 @@ export default function AdminBrandsPage() {
     };
 
     const [selectedLetter, setSelectedLetter] = useState(null);
-    const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split('');
-
     const filteredBrands = selectedLetter
         ? brands.filter(brand => brand.name.trim().toLowerCase().startsWith(selectedLetter.toLowerCase()))
         : brands;
@@ -63,29 +62,10 @@ export default function AdminBrandsPage() {
             <p className="mb-4 text-gray-600">הזן קישורים ללוגואים של המותגים השונים. הלוגואים יוצגו בקרוסלה ובדפי המוצרים.</p>
 
             {/* A-Z Filter Controls */}
-            <div className="grid grid-cols-4 md:grid-cols-9 gap-2 mb-6" dir="ltr">
-                <button
-                    onClick={() => setSelectedLetter(null)}
-                    className={`px-3 py-1 text-sm font-bold rounded-md transition-all ${selectedLetter === null
-                            ? 'bg-black text-white shadow-lg'
-                            : 'bg-white text-gray-700 hover:bg-gray-200 border'
-                        }`}
-                >
-                    הכל
-                </button>
-                {alphabet.map(letter => (
-                    <button
-                        key={letter}
-                        onClick={() => setSelectedLetter(letter)}
-                        className={`px-3 py-1 text-sm font-bold rounded-md transition-all ${selectedLetter === letter
-                            ? 'bg-black text-white shadow-lg scale-110'
-                            : 'bg-white text-gray-700 hover:bg-gray-200 border'
-                            }`}
-                    >
-                        {letter}
-                    </button>
-                ))}
-            </div>
+            <AdminFilterBar
+                selectedLetter={selectedLetter}
+                onSelect={setSelectedLetter}
+            />
 
             <div className="bg-white rounded-lg shadow border overflow-hidden">
                 <table className="w-full text-center border-collapse">

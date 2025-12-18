@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import AdminFilterBar from "@/app/components/admin/AdminFilterBar";
 
 export default function DictionaryManagement() {
     const [mappings, setMappings] = useState([]);
@@ -170,23 +171,11 @@ export default function DictionaryManagement() {
             </div>
 
             {/* A-Z Filters */}
-            <div className="flex flex-wrap gap-2 mb-8 justify-center md:justify-start">
-                <button
-                    onClick={() => { setFilterLetter(null); setPage(1); }}
-                    className={`px-3 py-1 rounded text-sm font-bold border transition ${filterLetter === null ? 'bg-black text-white border-black' : 'bg-white text-black border-gray-300 hover:border-black'}`}
-                >
-                    הכל
-                </button>
-                {alphabet.map(letter => (
-                    <button
-                        key={letter}
-                        onClick={() => { setFilterLetter(letter); setPage(1); }}
-                        className={`w-8 h-8 flex items-center justify-center rounded text-sm font-bold border transition ${filterLetter === letter ? 'bg-black text-white border-black' : 'bg-white text-black border-gray-300 hover:border-black'}`}
-                    >
-                        {letter}
-                    </button>
-                ))}
-            </div>
+            {/* A-Z Filters */}
+            <AdminFilterBar
+                selectedLetter={filterLetter}
+                onSelect={(letter) => { setFilterLetter(letter); setPage(1); }}
+            />
 
             {/* Table */}
             <div className="bg-white rounded-lg shadow overflow-hidden mb-6">
