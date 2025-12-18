@@ -50,9 +50,16 @@ export default function AdminBrandsPage() {
     };
 
     const [selectedLetter, setSelectedLetter] = useState(null);
+    const [page, setPage] = useState(1);
+    const ITEMS_PER_PAGE = 10;
+
     const filteredBrands = selectedLetter
         ? brands.filter(brand => brand.name.trim().toLowerCase().startsWith(selectedLetter.toLowerCase()))
         : brands;
+
+    // Pagination Logic
+    const totalPages = Math.ceil(filteredBrands.length / ITEMS_PER_PAGE);
+    const paginatedBrands = filteredBrands.slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE);
 
     if (loading) return <div className="p-8">Loading...</div>;
 
@@ -64,10 +71,10 @@ export default function AdminBrandsPage() {
             {/* A-Z Filter Controls */}
             <AdminFilterBar
                 selectedLetter={selectedLetter}
-                onSelect={setSelectedLetter}
+                onSelect={(letter) => { setSelectedLetter(letter); setPage(1); }}
             />
 
-            <div className="bg-white rounded-lg shadow border overflow-hidden">
+            <div className="bg-white rounded-lg shadow border overflow-hidden mb-6">
                 <table className="w-full text-center border-collapse">
                     <thead className="bg-gray-50">
                         <tr>
@@ -78,12 +85,12 @@ export default function AdminBrandsPage() {
                         </tr>
                     </thead>
                     <tbody>
-                        {filteredBrands.length === 0 ? (
+                        {paginatedBrands.length === 0 ? (
                             <tr>
-                                <td colSpan="4" className="p-8 text-gray-500">לא נמצאו מותגים באות {selectedLetter}</td>
+                                <td colSpan="4" className="p-8 text-gray-500">לא נמצאו מותגים {selectedLetter ? `באות ${selectedLetter}` : ''}</td>
                             </tr>
                         ) : (
-                            filteredBrands.map(brand => (
+                            paginatedBrands.map(brand => (
                                 <tr key={brand.id} className="border-b hover:bg-gray-50">
                                     <td className="p-4 font-bold text-center">{brand.name}</td>
                                     <td className="p-4 text-center">
@@ -130,6 +137,29 @@ export default function AdminBrandsPage() {
                     </tbody>
                 </table>
             </div>
+
+            {/* Pagination Controls */}
+            {totalPages > 1 && (
+                <div className="flex justify-center items-center gap-4 mb-12">
+                    <button
+                        onClick={() => setPage(p => Math.max(1, p - 1))}
+                        disabled={page === 1}
+                        className="px-4 py-2 border rounded hover:bg-gray-100 disabled:opacity-50 transition"
+                    >
+                        הקודם
+                    </button>
+                    <span className="text-sm font-bold text-gray-600">
+                        עמוד {page} מתוך {totalPages}
+                    </span>
+                    <button
+                        onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                        disabled={page === totalPages}
+                        className="px-4 py-2 border rounded hover:bg-gray-100 disabled:opacity-50 transition"
+                    >
+                        הבא
+                    </button>
+                </div>
+            )}
         </div>
     );
 }
