@@ -25,7 +25,7 @@ function Counter({ end, duration = 2000, prefix = "" }) {
     }, [end, duration]);
 
     return (
-        <span>
+        <span dir="ltr">
             {prefix}{count.toLocaleString()}
         </span>
     );

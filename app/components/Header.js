@@ -75,21 +75,15 @@ export default function Header({ brands = [] }) {
 
                     {/* Mobile Header Icons Container (Visible on Mobile Only) */}
                     <div className="flex md:hidden justify-between items-center w-full z-20">
-                        {/* Hamburger */}
-                        <button className="p-2" onClick={() => setIsMenuOpen(!isMenuOpen)}>
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
-                            </svg>
-                        </button>
-
-                        {/* Logo */}
-                        <Link href="/" className="inline-block absolute left-1/2 transform -translate-x-1/2">
-                            <Image src="/logo_v3.png" alt="ml." width={100} height={40} className="h-10 w-auto object-contain" priority />
-                        </Link>
-
-                        {/* Right Icons: Search, User, Wishlist, Cart */}
                         <div className="flex items-center gap-1">
-                            {/* Search */}
+                            {/* Hamburger */}
+                            <button className="p-2" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                                </svg>
+                            </button>
+
+                            {/* Search (Moved here) */}
                             <button
                                 onClick={() => setIsSearchOpen(!isSearchOpen)}
                                 className={`p-2 transition-colors ${isSearchOpen ? 'text-black' : 'text-gray-700'}`}
@@ -98,6 +92,17 @@ export default function Header({ brands = [] }) {
                                     <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
                                 </svg>
                             </button>
+                        </div>
+
+
+                        {/* Logo */}
+                        <Link href="/" className="inline-block absolute left-1/2 transform -translate-x-1/2">
+                            <Image src="/logo_v3.png" alt="ml." width={100} height={40} className="h-10 w-auto object-contain" priority />
+                        </Link>
+
+                        {/* Right Icons: User, Wishlist, Cart (Search moved to left) */}
+                        <div className="flex items-center gap-1">
+
 
                             {/* User Area */}
                             <div className="flex items-center">
