@@ -324,9 +324,28 @@ export default async function AdminDashboard() {
 
             {/* Cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 text-right">
-                    <div className="text-gray-500 text-sm font-bold uppercase mb-2">הכנסות ({currentMonthLabel})</div>
-                    <div className="text-3xl font-bold" dir="ltr">₪ {kpis.totalRevenue}</div>
+                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                    <div className="flex justify-between items-center mb-4">
+                        <div className="text-gray-500 text-sm font-bold uppercase">תזרים ({currentMonthLabel})</div>
+                    </div>
+                    <div className="space-y-4">
+                        <div className="flex justify-between items-center border-b border-gray-50 pb-2">
+                            <span className="text-blue-600 font-bold">הכנסות</span>
+                            <div className="text-right">
+                                <span className="text-2xl font-bold text-blue-700 dir-ltr">₪ {kpis.totalRevenue}</span>
+                            </div>
+                        </div>
+                        <div className="flex justify-between items-center">
+                            <span className="text-red-600 font-bold">הוצאות</span>
+                            <div className="text-right">
+                                <span className="text-2xl font-bold text-red-700 dir-ltr">₪ {kpis.totalExpenses}</span>
+                                <div className="text-[10px] text-gray-400">כולל יחסי שנתי</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div className="mt-2 text-[10px] text-gray-400 text-center bg-gray-50 p-1 rounded">
+                        * הכנסות נטו (אחרי הנחות/קופונים)
+                    </div>
                 </div>
                 <div className={`p-6 rounded-xl shadow-sm border text-right bg-white ${kpis.monthlyProfit < 0 ? 'border-red-200' : 'border-green-200'}`}>
                     <div className={`${kpis.monthlyProfit < 0 ? 'text-red-600' : 'text-green-600'} text-sm font-bold uppercase mb-2`}>
@@ -334,13 +353,7 @@ export default async function AdminDashboard() {
                     </div>
                     <div className={`text-3xl font-bold ${kpis.monthlyProfit < 0 ? 'text-red-700' : 'text-green-700'}`} dir="ltr">
                         ₪ {kpis.monthlyProfit < 0 ? `-${Math.abs(kpis.monthlyProfit)}` : kpis.monthlyProfit}
-                        ₪ {kpis.monthlyProfit < 0 ? `-${Math.abs(kpis.monthlyProfit)}` : kpis.monthlyProfit}
                     </div>
-                </div>
-                <div className="bg-white p-6 rounded-xl shadow-sm border border-red-100 text-right">
-                    <div className="text-red-500 text-sm font-bold uppercase mb-2">הוצאות ({currentMonthLabel})</div>
-                    <div className="text-3xl font-bold text-red-700" dir="ltr">₪ {kpis.totalExpenses}</div>
-                    <div className="text-xs text-gray-400 mt-1">כולל יחסי שנתי</div>
                 </div>
                 <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
                     <div className="text-gray-500 text-sm font-bold uppercase mb-2">דוגמיות שנמכרו</div>
