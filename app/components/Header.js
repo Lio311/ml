@@ -18,6 +18,7 @@ export default function Header({ brands = [] }) {
     const cartCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isBrandsDropdownOpen, setIsBrandsDropdownOpen] = useState(false);
+    const [isSearchOpen, setIsSearchOpen] = useState(false);
 
     // Group Brands by Letter
     const groupedBrands = brands.reduce((acc, brand) => {
@@ -45,6 +46,23 @@ export default function Header({ brands = [] }) {
 
     return (
         <header className="sticky top-0 z-50 bg-white shadow-sm">
+            {/* Search Overlay (Hidden by default) */}
+            {isSearchOpen && (
+                <div className="absolute inset-x-0 top-full bg-white shadow-xl p-4 border-t z-[60] animate-in slide-in-from-top duration-300">
+                    <div className="flex items-center gap-2">
+                        <div className="flex-1">
+                            <SearchAutocomplete onSelect={() => setIsSearchOpen(false)} />
+                        </div>
+                        <button
+                            onClick={() => setIsSearchOpen(false)}
+                            className="p-2 text-gray-500 hover:text-black font-bold text-sm"
+                        >
+                            ביטול
+                        </button>
+                    </div>
+                </div>
+            )}
+
             {/* Top Bar - Black Promo Strip */}
             <div className="hidden md:block bg-black text-white text-[10px] md:text-xs py-2 text-center tracking-widest uppercase">
                 משלוח בלוקר לכל הארץ ב-30 ₪
@@ -54,20 +72,74 @@ export default function Header({ brands = [] }) {
             <div className="w-full px-6 py-2 md:py-4 relative bg-white">
                 <div className="flex flex-col md:grid md:grid-cols-3 md:items-center">
 
-                    {/* Mobile Menu Button & Logo Row (Visible on Mobile Only) */}
+                    {/* Mobile Header Icons Container (Visible on Mobile Only) */}
                     <div className="flex md:hidden justify-between items-center w-full z-20">
+                        {/* Hamburger */}
                         <button className="p-2" onClick={() => setIsMenuOpen(!isMenuOpen)}>
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
                             </svg>
                         </button>
 
-                        <Link href="/" className="inline-block">
+                        {/* Logo */}
+                        <Link href="/" className="inline-block absolute left-1/2 transform -translate-x-1/2">
                             <Image src="/logo_v3.png" alt="ml." width={100} height={40} className="h-10 w-auto object-contain" priority />
                         </Link>
 
-                        {/* Placeholder for balance or Cart on mobile */}
-                        <div className="w-10"></div>
+                        {/* Right Icons: Search, User, Wishlist, Cart */}
+                        <div className="flex items-center gap-1">
+                            {/* Search */}
+                            <button
+                                onClick={() => setIsSearchOpen(!isSearchOpen)}
+                                className={`p-2 transition-colors ${isSearchOpen ? 'text-black' : 'text-gray-700'}`}
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                                </svg>
+                            </button>
+
+                            {/* User Area */}
+                            <div className="flex items-center">
+                                <SignedIn>
+                                    <div className="scale-75">
+                                        <UserButton afterSignOutUrl="/" />
+                                    </div>
+                                </SignedIn>
+                                <SignedOut>
+                                    <SignInButton mode="modal">
+                                        <button className="p-2 text-gray-700">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0zM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                                            </svg>
+                                        </button>
+                                    </SignInButton>
+                                </SignedOut>
+                            </div>
+
+                            {/* Wishlist */}
+                            <Link href="/wishlist" className="p-2 text-gray-700 relative">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12z" />
+                                </svg>
+                                {wishlistCount > 0 && (
+                                    <span className="absolute top-1 right-1 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-black text-[8px] text-white font-bold">
+                                        {wishlistCount}
+                                    </span>
+                                )}
+                            </Link>
+
+                            {/* Cart */}
+                            <Link href="/cart" className="p-2 text-gray-700 relative">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+                                </svg>
+                                {cartCount > 0 && (
+                                    <span className="absolute top-1 right-1 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-black text-[8px] text-white font-bold">
+                                        {cartCount}
+                                    </span>
+                                )}
+                            </Link>
+                        </div>
                     </div>
 
                     {/* Desktop RIGHT Group (RTL Start): Search + User */}
@@ -208,7 +280,7 @@ export default function Header({ brands = [] }) {
 
             {/* Mobile Menu Overlay */}
             {isMenuOpen && (
-                <div className="fixed inset-0 z-40 bg-white pt-24 px-6 md:hidden">
+                <div className="fixed inset-0 z-[70] bg-white pt-24 px-6 md:hidden">
                     {/* Close Button (Anchored Top-Left) */}
                     <button
                         onClick={() => setIsMenuOpen(false)}

@@ -178,6 +178,14 @@ a {
   text-align: center !important;
 }
 
+/* Force LTR for the OTP digits container */
+.cl-otpCodeFieldInputs {
+  direction: ltr !important;
+  flex-direction: row !important;
+  justify-content: center !important;
+}
+
+
 /* Fix for standard inputs that might hold numbers/codes */
 input[name="code"],
 input[autocomplete="one-time-code"] {
