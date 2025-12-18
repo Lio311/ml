@@ -178,7 +178,7 @@ export default async function ProductPage(props) {
                     {product.image_url ? (
                         <img
                             src={product.image_url}
-                            alt={product.name}
+                            alt={`${product.name} ${product.name_he ? ' - ' + product.name_he : ''}`}
                             className="w-full h-full object-contain"
                         />
                     ) : (

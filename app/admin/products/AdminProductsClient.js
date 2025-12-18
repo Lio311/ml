@@ -22,11 +22,11 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
         setEditForm({
             brand: product.brand || '',
             model: product.model || '',
+            name_he: product.name_he || '',
             price_2ml: product.price_2ml || 0,
             price_5ml: product.price_5ml || 0,
             price_10ml: product.price_10ml || 0,
             image_url: product.image_url || '',
-            category: product.category || '',
             category: product.category || '',
             description: product.description || '',
             stock: product.stock || 0,
@@ -43,6 +43,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
         setEditForm({
             brand: '',
             model: '',
+            name_he: '',
             price_2ml: 0,
             price_5ml: 0,
             price_10ml: 0,
@@ -243,6 +244,15 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                 className="border p-2 rounded w-full bg-gray-50"
                             />
                         </div>
+                        <div className="md:col-span-2">
+                            <label className="text-sm text-gray-500 font-bold">שם בעברית (ל-SEO)</label>
+                            <input
+                                value={editForm.name_he}
+                                onChange={e => setEditForm({ ...editForm, name_he: e.target.value })}
+                                className="border p-2 rounded w-full bg-blue-50"
+                                placeholder="לדוגמה: קריד אוונטוס..."
+                            />
+                        </div>
                         <div>
                             <label className="text-sm text-gray-500">קטגוריות (לחץ Enter להוספה)</label>
                             <TagInput
@@ -380,6 +390,15 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                             value={editForm.model}
                                             onChange={e => setEditForm({ ...editForm, model: e.target.value })}
                                             className="border p-2 rounded w-full bg-gray-50"
+                                        />
+                                    </div>
+                                    <div className="md:col-span-2">
+                                        <label className="text-xs text-gray-500 font-bold">שם בעברית</label>
+                                        <input
+                                            value={editForm.name_he}
+                                            onChange={e => setEditForm({ ...editForm, name_he: e.target.value })}
+                                            className="border p-2 rounded w-full bg-blue-50"
+                                            placeholder="עברית..."
                                         />
                                     </div>
                                     <div className="md:col-span-1">
