@@ -55,21 +55,14 @@ export default async function RootLayout({ children }) {
         },
         elements: {
           formButtonPrimary__icon: {
-            transform: 'rotate(180deg)'
+            transform: 'rotate(180deg) !important'
           },
           otpCodeFieldInput: {
-            direction: 'ltr',
-            textAlign: 'center'
-          },
-          formFieldInput: {
-            // Ensure inputs with numeric codes are LTR
-            '&[name="code"]': {
-              direction: 'ltr',
-              textAlign: 'center'
-            }
+            direction: 'ltr !important',
+            textAlign: 'center !important'
           },
           identityPreviewText: {
-            direction: 'ltr'
+            direction: 'ltr !important'
           }
         }
       }}

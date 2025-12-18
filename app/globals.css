@@ -164,3 +164,23 @@ a {
 .grid-cols-responsive {
   grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
 }
+
+.cl-formButtonPrimary svg,
+.cl-formButtonPrimary__icon,
+.cl-backLink svg {
+  transform: rotate(180deg) !important;
+}
+
+.cl-otpCodeFieldInput,
+.cl-formFieldInput[name="code"],
+.cl-identityPreviewText {
+  direction: ltr !important;
+  text-align: center !important;
+}
+
+/* Fix for standard inputs that might hold numbers/codes */
+input[name="code"],
+input[autocomplete="one-time-code"] {
+  direction: ltr !important;
+  text-align: center !important;
+}
