@@ -3,8 +3,10 @@
 import { useEffect, useState } from 'react';
 import { useUser } from '@clerk/nextjs';
 import Link from 'next/link';
+import { useCart } from '../context/CartContext';
 
 export default function OrdersClient() {
+    const { addToCart } = useCart();
     const { isLoaded, isSignedIn } = useUser();
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -107,9 +109,25 @@ export default function OrdersClient() {
                                             </div>
                                         </div>
 
-                                        {/* Price */}
-                                        <div className="font-medium text-gray-900">
-                                            {item.price * item.quantity} ₪
+                                        <div className="font-medium text-gray-900 flex flex-col items-end gap-2">
+                                            <div>{item.price * item.quantity} ₪</div>
+                                            <button
+                                                onClick={() => {
+                                                    // Add to cart (assuming item has id, name, etc)
+                                                    addToCart({
+                                                        id: item.id,
+                                                        name: item.name,
+                                                        image_url: item.image_url,
+                                                        // Use old stock or standard default? 
+                                                        // We'll trust backend validation at checkout.
+                                                        stock: item.stock || 20
+                                                    }, item.size, item.price);
+                                                    alert('המוצר נוסף לסל בהצלחה! 🛒');
+                                                }}
+                                                className="text-xs bg-black text-white px-3 py-1.5 rounded hover:bg-gray-800 transition shadow-sm flex items-center gap-1"
+                                            >
+                                                <span>↻</span> הזמן שוב
+                                            </button>
                                         </div>
                                     </div>
                                 ))}
