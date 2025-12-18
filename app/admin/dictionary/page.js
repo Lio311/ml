@@ -170,12 +170,12 @@ export default function DictionaryManagement() {
             </div>
 
             {/* A-Z Filters */}
-            <div className="flex flex-wrap gap-2 mb-8 justify-center md:justify-start" dir="ltr">
+            <div className="flex flex-wrap gap-2 mb-8 justify-center md:justify-start">
                 <button
                     onClick={() => { setFilterLetter(null); setPage(1); }}
                     className={`px-3 py-1 rounded text-sm font-bold border transition ${filterLetter === null ? 'bg-black text-white border-black' : 'bg-white text-black border-gray-300 hover:border-black'}`}
                 >
-                    ALL
+                    הכל
                 </button>
                 {alphabet.map(letter => (
                     <button
