@@ -4,6 +4,8 @@ import Link from 'next/link';
 
 export default function AdminCouponsPage() {
     const [coupons, setCoupons] = useState([]);
+    const [page, setPage] = useState(1);
+    const ITEMS_PER_PAGE = 5;
     const [loading, setLoading] = useState(true);
     const [showModal, setShowModal] = useState(false);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -159,13 +161,38 @@ export default function AdminCouponsPage() {
                         ) : coupons.length === 0 ? (
                             <tr><td colSpan="6" className="p-8 text-center text-gray-500">אין קופונים במערכת</td></tr>
                         ) : (
-                            coupons.map(coupon => (
-                                <CouponRow key={coupon.id} coupon={coupon} onDelete={handleDelete} onEdit={handleEdit} />
-                            ))
+                            coupons
+                                .slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE)
+                                .map(coupon => (
+                                    <CouponRow key={coupon.id} coupon={coupon} onDelete={handleDelete} onEdit={handleEdit} />
+                                ))
                         )}
                     </tbody>
                 </table>
             </div>
+
+            {/* Pagination Controls */}
+            {Math.ceil(coupons.length / ITEMS_PER_PAGE) > 1 && (
+                <div className="flex justify-center items-center gap-4 mt-8 mb-12">
+                    <button
+                        onClick={() => setPage(p => Math.max(1, p - 1))}
+                        disabled={page === 1}
+                        className="px-4 py-2 border rounded hover:bg-gray-100 disabled:opacity-50 transition"
+                    >
+                        הקודם
+                    </button>
+                    <span className="text-sm font-bold text-gray-600">
+                        עמוד {page} מתוך {Math.ceil(coupons.length / ITEMS_PER_PAGE)}
+                    </span>
+                    <button
+                        onClick={() => setPage(p => Math.min(Math.ceil(coupons.length / ITEMS_PER_PAGE), p + 1))}
+                        disabled={page === Math.ceil(coupons.length / ITEMS_PER_PAGE)}
+                        className="px-4 py-2 border rounded hover:bg-gray-100 disabled:opacity-50 transition"
+                    >
+                        הבא
+                    </button>
+                </div>
+            )}
 
             {/* Modal */}
             {showModal && (

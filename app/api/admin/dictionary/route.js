@@ -40,6 +40,34 @@ export async function POST(req) {
     }
 }
 
+export async function PUT(req) {
+    try {
+        const { id, hebrew, english, type } = await req.json();
+        if (!id || !hebrew || !english) return NextResponse.json({ error: "Missing fields" }, { status: 400 });
+
+        const client = await pool.connect();
+        try {
+            const result = await client.query(
+                `UPDATE search_mappings 
+                 SET hebrew_term = $1, english_term = $2, type = $3 
+                 WHERE id = $4 
+                 RETURNING *`,
+                [hebrew, english, type || 'general', id]
+            );
+
+            if (result.rowCount === 0) {
+                return NextResponse.json({ error: "Item not found" }, { status: 404 });
+            }
+
+            return NextResponse.json(result.rows[0]);
+        } finally {
+            client.release();
+        }
+    } catch (error) {
+        return NextResponse.json({ error: error.message }, { status: 500 });
+    }
+}
+
 export async function DELETE(req) {
     try {
         const { id } = await req.json();
