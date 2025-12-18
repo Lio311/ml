@@ -1,6 +1,7 @@
 import pool from "@/app/lib/db";
 import Link from "next/link";
 import DashboardCharts from "../components/admin/DashboardCharts";
+import AnalyticsTables from "../components/admin/AnalyticsTables";
 
 export const dynamic = 'force-dynamic';
 
@@ -21,7 +22,9 @@ export default async function AdminDashboard() {
         monthlyVisits: 0,
         totalUsers: 0,
         orderChartData: [],
-        revenueChartData: []
+        revenueChartData: [],
+        topBrands: [],
+        topSizes: []
     };
 
     try {
@@ -127,6 +130,36 @@ export default async function AdminDashboard() {
             });
         }
 
+        // Top Brands Query (Current Month)
+        const topBrandsRes = await client.query(`
+            SELECT 
+                item->>'brand' as name,
+                SUM(((item->>'price')::numeric) * (item->>'quantity')::int) as sales
+            FROM orders, jsonb_array_elements(items::jsonb) as item
+            WHERE status != 'cancelled'
+            AND EXTRACT(MONTH FROM created_at) = EXTRACT(MONTH FROM CURRENT_DATE)
+            AND EXTRACT(YEAR FROM created_at) = EXTRACT(YEAR FROM CURRENT_DATE)
+            GROUP BY name
+            ORDER BY sales DESC
+            LIMIT 5
+        `);
+        kpis.topBrands = topBrandsRes.rows;
+
+        // Top Sizes Query (Current Month)
+        const topSizesRes = await client.query(`
+            SELECT 
+                item->>'size' as size,
+                SUM(((item->>'price')::numeric) * (item->>'quantity')::int) as sales
+            FROM orders, jsonb_array_elements(items::jsonb) as item
+            WHERE status != 'cancelled'
+            AND EXTRACT(MONTH FROM created_at) = EXTRACT(MONTH FROM CURRENT_DATE)
+            AND EXTRACT(YEAR FROM created_at) = EXTRACT(YEAR FROM CURRENT_DATE)
+            AND item->>'size' IS NOT NULL
+            GROUP BY size
+            ORDER BY sales DESC
+        `);
+        kpis.topSizes = topSizesRes.rows;
+
         // Coupons
         try {
             const couponsRes = await client.query('SELECT * FROM coupons ORDER BY created_at DESC LIMIT 20');
@@ -149,6 +182,11 @@ export default async function AdminDashboard() {
             <DashboardCharts
                 orderData={kpis.orderChartData}
                 revenueData={kpis.revenueChartData}
+            />
+
+            <AnalyticsTables
+                topBrands={kpis.topBrands}
+                topSizes={kpis.topSizes}
             />
 
             {/* Cards */}
@@ -252,8 +290,8 @@ export default async function AdminDashboard() {
                                         <td className="p-4 text-sm">{coupon.email || '-'}</td>
                                         <td className="p-4">
                                             <span className={`px-2 py-1 rounded-full text-xs ${displayStatus === 'active' ? 'bg-green-100 text-green-800' :
-                                                    displayStatus === 'redeemed' ? 'bg-gray-800 text-white' :
-                                                        'bg-red-100 text-red-800'
+                                                displayStatus === 'redeemed' ? 'bg-gray-800 text-white' :
+                                                    'bg-red-100 text-red-800'
                                                 }`}>
                                                 {displayStatus === 'active' ? 'פעיל' :
                                                     displayStatus === 'redeemed' ? 'מומש' : 'פג תוקף'}
