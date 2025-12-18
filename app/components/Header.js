@@ -67,11 +67,11 @@ export default function Header({ brands = [] }) {
 
             {/* Top Bar - Black Promo Strip */}
             <div className="hidden md:flex justify-between items-center bg-black text-white text-[10px] md:text-xs py-1 px-4 tracking-widest uppercase">
-                <div className="flex-1"></div> {/* Spacer Left */}
-                <div className="text-center font-bold">משלוח בלוקר לכל הארץ ב-30 ₪</div>
-                <div className="flex-1 flex justify-end">
+                <div className="flex-1 flex justify-start">
                     <LiveVisitorCounter />
                 </div>
+                <div className="text-center font-bold">משלוח בלוקר לכל הארץ ב-30 ₪</div>
+                <div className="flex-1"></div>
             </div>
 
             {/* Main Header */}
