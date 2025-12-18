@@ -233,7 +233,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                     <h3 className="text-xl font-bold mb-4">יצירת מוצר חדש</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                         <div>
-                            <label className="text-sm text-gray-500">מותג</label>
+                            <label className="text-sm font-bold">מותג</label>
                             <input
                                 value={editForm.brand}
                                 onChange={e => setEditForm({ ...editForm, brand: e.target.value })}
@@ -241,7 +241,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                             />
                         </div>
                         <div>
-                            <label className="text-sm text-gray-500">דגם</label>
+                            <label className="text-sm font-bold">דגם</label>
                             <input
                                 value={editForm.model}
                                 onChange={e => setEditForm({ ...editForm, model: e.target.value })}
@@ -249,7 +249,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                             />
                         </div>
                         <div className="md:col-span-2">
-                            <label className="text-sm text-gray-500 font-bold">שם בעברית (ל-SEO)</label>
+                            <label className="text-sm font-bold">שם בעברית (ל-SEO)</label>
                             <input
                                 value={editForm.name_he}
                                 onChange={e => setEditForm({ ...editForm, name_he: e.target.value })}
@@ -258,7 +258,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                             />
                         </div>
                         <div>
-                            <label className="text-sm text-gray-500">קטגוריות (לחץ Enter להוספה)</label>
+                            <label className="text-sm font-bold">קטגוריות (לחץ Enter להוספה)</label>
                             <TagInput
                                 tags={editForm.category ? editForm.category.split(',').filter(Boolean) : []}
                                 onChange={(newTags) => setEditForm({ ...editForm, category: newTags.join(',') })}
@@ -269,7 +269,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                         <div>
-                            <label className="text-sm text-gray-500">2 מ״ל</label>
+                            <label className="text-sm font-bold">2 מ״ל</label>
                             <input
                                 type="number"
                                 value={editForm.price_2ml}
@@ -278,7 +278,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                             />
                         </div>
                         <div>
-                            <label className="text-sm text-gray-500">5 מ״ל</label>
+                            <label className="text-sm font-bold">5 מ״ל</label>
                             <input
                                 type="number"
                                 value={editForm.price_5ml}
@@ -287,7 +287,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                             />
                         </div>
                         <div>
-                            <label className="text-sm text-gray-500">10 מ״ל</label>
+                            <label className="text-sm font-bold">10 מ״ל</label>
                             <input
                                 type="number"
                                 value={editForm.price_10ml}
@@ -297,7 +297,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                         </div>
                         <div className="md:col-span-3 mt-2 grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
-                                <label className="text-sm text-gray-500 font-bold text-red-600">מחיר עלות (ש״ח) *</label>
+                                <label className="text-sm font-bold">מחיר עלות (ש״ח) *</label>
                                 <input
                                     type="number"
                                     required
@@ -308,7 +308,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                 />
                             </div>
                             <div>
-                                <label className="text-sm text-gray-500 font-bold text-red-600">גודל מקור (מ״ל) *</label>
+                                <label className="text-sm font-bold">גודל מקור (מ״ל) *</label>
                                 <input
                                     type="number"
                                     required
@@ -320,7 +320,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                             </div>
                         </div>
                         <div className="md:col-span-3 mt-2">
-                            <label className="text-sm text-gray-500 font-bold">מלאי (מ״ל)</label>
+                            <label className="text-sm font-bold">מלאי (מ״ל)</label>
                             <input
                                 type="number"
                                 value={editForm.stock}
@@ -332,7 +332,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                     </div>
 
                     <div className="mb-4">
-                        <label className="text-sm text-gray-500">קישור לתמונה (Image URL)</label>
+                        <label className="text-sm font-bold">קישור לתמונה (Image URL)</label>
                         <input
                             value={editForm.image_url || ''}
                             onChange={e => setEditForm({ ...editForm, image_url: e.target.value })}
@@ -343,7 +343,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                         <div>
-                            <label className="text-sm text-gray-500">תווים עליונים</label>
+                            <label className="text-sm font-bold">תווים עליונים</label>
                             <TagInput
                                 tags={editForm.top_notes ? editForm.top_notes.split(',').filter(Boolean) : []}
                                 onChange={(newTags) => setEditForm({ ...editForm, top_notes: newTags.join(',') })}
@@ -352,7 +352,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                             />
                         </div>
                         <div>
-                            <label className="text-sm text-gray-500">תווי לב</label>
+                            <label className="text-sm font-bold">תווי לב</label>
                             <TagInput
                                 tags={editForm.middle_notes ? editForm.middle_notes.split(',').filter(Boolean) : []}
                                 onChange={(newTags) => setEditForm({ ...editForm, middle_notes: newTags.join(',') })}
@@ -361,7 +361,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                             />
                         </div>
                         <div>
-                            <label className="text-sm text-gray-500">תווי בסיס</label>
+                            <label className="text-sm font-bold">תווי בסיס</label>
                             <TagInput
                                 tags={editForm.base_notes ? editForm.base_notes.split(',').filter(Boolean) : []}
                                 onChange={(newTags) => setEditForm({ ...editForm, base_notes: newTags.join(',') })}
@@ -372,7 +372,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                     </div>
 
                     <div className="mb-4">
-                        <label className="text-sm text-gray-500">תיאור מוצר</label>
+                        <label className="text-sm font-bold">תיאור מוצר</label>
                         <textarea
                             value={editForm.description || ''}
                             onChange={e => setEditForm({ ...editForm, description: e.target.value })}
@@ -387,7 +387,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                             onChange={e => setEditForm({ ...editForm, in_lottery: e.target.checked })}
                             className="w-5 h-5 accent-red-600 cursor-pointer"
                         />
-                        <label className="text-sm font-bold text-gray-700 select-none">לכלול במאגר ההגרלות? (רנדומלי)</label>
+                        <label className="text-sm font-bold select-none">לכלול במאגר ההגרלות? (רנדומלי)</label>
                     </div>
                     <div className="flex gap-2 justify-end">
                         <button onClick={handleCancel} className="bg-gray-200 text-black px-6 py-2 rounded font-bold">ביטול</button>
@@ -405,7 +405,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                             <div className="flex-1 w-full flex flex-col gap-4">
                                 <div className="grid grid-cols-1 md:grid-cols-7 gap-2">
                                     <div className="md:col-span-1">
-                                        <label className="text-xs text-gray-500">מותג</label>
+                                        <label className="text-xs font-bold">מותג</label>
                                         <input
                                             value={editForm.brand}
                                             onChange={e => setEditForm({ ...editForm, brand: e.target.value })}
@@ -413,7 +413,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                         />
                                     </div>
                                     <div className="md:col-span-1">
-                                        <label className="text-xs text-gray-500">דגם</label>
+                                        <label className="text-xs font-bold">דגם</label>
                                         <input
                                             value={editForm.model}
                                             onChange={e => setEditForm({ ...editForm, model: e.target.value })}
@@ -421,7 +421,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                         />
                                     </div>
                                     <div className="md:col-span-2">
-                                        <label className="text-xs text-gray-500 font-bold">שם בעברית</label>
+                                        <label className="text-xs font-bold">שם בעברית</label>
                                         <input
                                             value={editForm.name_he}
                                             onChange={e => setEditForm({ ...editForm, name_he: e.target.value })}
@@ -430,7 +430,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                         />
                                     </div>
                                     <div className="md:col-span-1">
-                                        <label className="text-xs text-gray-500">קטגוריות (לחץ Enter להוספה)</label>
+                                        <label className="text-xs font-bold">קטגוריות</label>
                                         <TagInput
                                             tags={editForm.category ? editForm.category.split(',').filter(Boolean) : []}
                                             onChange={(newTags) => setEditForm({ ...editForm, category: newTags.join(',') })}
@@ -439,7 +439,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                         />
                                     </div>
                                     <div>
-                                        <label className="text-xs text-gray-500">2 מ״ל</label>
+                                        <label className="text-xs font-bold">2 מ״ל</label>
                                         <input
                                             type="number"
                                             value={editForm.price_2ml}
@@ -448,7 +448,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                         />
                                     </div>
                                     <div>
-                                        <label className="text-xs text-gray-500">5 מ״ל</label>
+                                        <label className="text-xs font-bold">5 מ״ל</label>
                                         <input
                                             type="number"
                                             value={editForm.price_5ml}
@@ -457,7 +457,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                         />
                                     </div>
                                     <div>
-                                        <label className="text-xs text-gray-500">10 מ״ל</label>
+                                        <label className="text-xs font-bold">10 מ״ל</label>
                                         <input
                                             type="number"
                                             value={editForm.price_10ml}
@@ -466,7 +466,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                         />
                                     </div>
                                     <div>
-                                        <label className="text-xs text-gray-500 text-red-600 font-bold">מלאי (מ״ל)</label>
+                                        <label className="text-xs font-bold">מלאי (מ״ל)</label>
                                         <input
                                             type="number"
                                             value={editForm.stock}
@@ -475,7 +475,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                         />
                                     </div>
                                     <div className="md:col-span-1">
-                                        <label className="text-xs text-blue-600 font-bold">עלות (ש״ח)</label>
+                                        <label className="text-xs font-bold">עלות (ש״ח)</label>
                                         <input
                                             type="number"
                                             value={editForm.cost_price}
@@ -484,7 +484,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                         />
                                     </div>
                                     <div className="md:col-span-1">
-                                        <label className="text-xs text-blue-600 font-bold">גודל מקור</label>
+                                        <label className="text-xs font-bold">גודל מקור</label>
                                         <input
                                             type="number"
                                             value={editForm.original_size}
@@ -497,7 +497,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
 
 
                                 <div>
-                                    <label className="text-xs text-gray-500">קישור לתמונה</label>
+                                    <label className="text-xs font-bold">קישור לתמונה</label>
                                     <input
                                         value={editForm.image_url || ''}
                                         onChange={e => setEditForm({ ...editForm, image_url: e.target.value })}
@@ -506,7 +506,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                     />
                                 </div>
                                 <div>
-                                    <label className="text-xs text-gray-500">תיאור</label>
+                                    <label className="text-xs font-bold">תיאור</label>
                                     <textarea
                                         value={editForm.description || ''}
                                         onChange={e => setEditForm({ ...editForm, description: e.target.value })}
@@ -515,7 +515,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                 </div>
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
                                     <div>
-                                        <label className="text-xs text-gray-500">עליונים</label>
+                                        <label className="text-xs font-bold">עליונים</label>
                                         <TagInput
                                             tags={editForm.top_notes ? editForm.top_notes.split(',').filter(Boolean) : []}
                                             onChange={(newTags) => setEditForm({ ...editForm, top_notes: newTags.join(',') })}
@@ -524,7 +524,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                         />
                                     </div>
                                     <div>
-                                        <label className="text-xs text-gray-500">לב</label>
+                                        <label className="text-xs font-bold">לב</label>
                                         <TagInput
                                             tags={editForm.middle_notes ? editForm.middle_notes.split(',').filter(Boolean) : []}
                                             onChange={(newTags) => setEditForm({ ...editForm, middle_notes: newTags.join(',') })}
@@ -533,7 +533,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                         />
                                     </div>
                                     <div>
-                                        <label className="text-xs text-gray-500">בסיס</label>
+                                        <label className="text-xs font-bold">בסיס</label>
                                         <TagInput
                                             tags={editForm.base_notes ? editForm.base_notes.split(',').filter(Boolean) : []}
                                             onChange={(newTags) => setEditForm({ ...editForm, base_notes: newTags.join(',') })}
@@ -549,7 +549,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                         onChange={e => setEditForm({ ...editForm, in_lottery: e.target.checked })}
                                         className="w-4 h-4 accent-red-600 cursor-pointer"
                                     />
-                                    <label className="text-xs font-bold text-gray-700 select-none">לכלול במאגר ההגרלות? (רנדומלי)</label>
+                                    <label className="text-xs font-bold select-none">לכלול במאגר ההגרלות? (רנדומלי)</label>
                                 </div>
                                 <div className="flex gap-2 justify-end mt-4">
                                     <button onClick={handleSave} className="bg-green-600 text-white px-4 py-2 rounded text-sm font-bold flex-1 md:flex-none">שמור</button>
@@ -572,8 +572,8 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                             }`}>
                                             מלאי: {product.stock || 0}
                                         </div>
-                                        <div className="font-mono text-xs bg-gray-50 px-2 py-0.5 rounded shadow-sm border">
-                                            {product.price_10ml} ₪
+                                        <div className="font-mono text-xs bg-green-50 text-green-700 px-2 py-0.5 rounded shadow-sm border border-green-200" title="רווח ל-1 מ״ל">
+                                            {Math.round((product.price_2ml / 2) - ((product.cost_price || 0) / (product.original_size || 100)))} ₪
                                         </div>
                                     </div>
                                     <div className="text-gray-600 text-sm">{product.model}</div>
