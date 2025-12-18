@@ -1,5 +1,6 @@
 import pool from "@/app/lib/db";
 import Link from "next/link";
+import DashboardCharts from "../components/admin/DashboardCharts";
 
 export const dynamic = 'force-dynamic';
 
@@ -18,7 +19,9 @@ export default async function AdminDashboard() {
         pendingOrders: 0,
         recentOrders: [],
         monthlyVisits: 0,
-        totalUsers: 0
+        totalUsers: 0,
+        orderChartData: [],
+        revenueChartData: []
     };
 
     try {
@@ -32,8 +35,6 @@ export default async function AdminDashboard() {
         const revRes = await client.query("SELECT SUM(total_amount) FROM orders WHERE status != 'cancelled'");
         kpis.totalRevenue = parseInt(revRes.rows[0].sum || 0);
 
-        // Samples Sold Query (Parse JSON in SQL is best, assuming JSONB or Text)
-        // Refined Query:
         const samplesSoldRes = await client.query(`
              SELECT SUM((item->>'quantity')::int) as count 
              FROM orders, jsonb_array_elements(items::jsonb) as item 
@@ -72,6 +73,60 @@ export default async function AdminDashboard() {
             kpis.monthlyVisits = 0;
         }
 
+        // Chart Data Calculation
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = now.getMonth() + 1;
+
+        const currentMonthRes = await client.query(`
+            SELECT 
+                EXTRACT(DAY FROM created_at) as day,
+                COUNT(*) as orders,
+                SUM(total_amount) as revenue
+            FROM orders
+            WHERE status != 'cancelled'
+            AND EXTRACT(MONTH FROM created_at) = $1
+            AND EXTRACT(YEAR FROM created_at) = $2
+            GROUP BY day
+            ORDER BY day
+        `, [month, year]);
+
+        const prevDate = new Date();
+        prevDate.setMonth(prevDate.getMonth() - 1);
+        const prevYear = prevDate.getFullYear();
+        const prevMonth = prevDate.getMonth() + 1;
+
+        const prevMonthRes = await client.query(`
+            SELECT 
+                EXTRACT(DAY FROM created_at) as day,
+                COUNT(*) as orders,
+                SUM(total_amount) as revenue
+            FROM orders
+            WHERE status != 'cancelled'
+            AND EXTRACT(MONTH FROM created_at) = $1
+            AND EXTRACT(YEAR FROM created_at) = $2
+            GROUP BY day
+            ORDER BY day
+        `, [prevMonth, prevYear]);
+
+        const daysInMonth = new Date(year, month, 0).getDate();
+        for (let i = 1; i <= daysInMonth; i++) {
+            const curDay = currentMonthRes.rows.find(r => parseInt(r.day) === i);
+            const prevDay = prevMonthRes.rows.find(r => parseInt(r.day) === i);
+
+            kpis.orderChartData.push({
+                day: i,
+                current: curDay ? parseInt(curDay.orders) : 0,
+                previous: prevDay ? parseInt(prevDay.orders) : 0
+            });
+
+            kpis.revenueChartData.push({
+                day: i,
+                current: curDay ? parseFloat(curDay.revenue || 0) : 0,
+                previous: prevDay ? parseFloat(prevDay.revenue || 0) : 0
+            });
+        }
+
         // Coupons
         try {
             const couponsRes = await client.query('SELECT * FROM coupons ORDER BY created_at DESC LIMIT 20');
@@ -85,11 +140,16 @@ export default async function AdminDashboard() {
         client.release();
     }
 
-    const currentMonth = new Date().toLocaleString('he-IL', { month: 'long', year: 'numeric' });
+    const currentMonthLabel = new Date().toLocaleString('he-IL', { month: 'long', year: 'numeric' });
 
     return (
         <div>
             <h1 className="text-3xl font-bold mb-8">לוח בקרה</h1>
+
+            <DashboardCharts
+                orderData={kpis.orderChartData}
+                revenueData={kpis.revenueChartData}
+            />
 
             {/* Cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
@@ -111,7 +171,7 @@ export default async function AdminDashboard() {
                 </div>
                 <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
                     <div className="text-gray-500 text-sm font-bold uppercase mb-2">כניסות לאתר</div>
-                    <div className="text-xl font-bold">חודש {currentMonth}: <span className="text-blue-600">{kpis.monthlyVisits}</span> כניסות</div>
+                    <div className="text-xl font-bold">חודש {currentMonthLabel}: <span className="text-blue-600">{kpis.monthlyVisits}</span> כניסות</div>
                     <div className="text-xs text-gray-400 mt-1">נספר לפי ביקורים ייחודיים</div>
                 </div>
                 <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
@@ -184,26 +244,25 @@ export default async function AdminDashboard() {
                             {kpis.recentCoupons && kpis.recentCoupons.map(coupon => {
                                 const isExpired = coupon.expires_at && new Date(coupon.expires_at) < new Date();
                                 const displayStatus = isExpired ? 'expired' : coupon.status;
-                                
+
                                 return (
-                                <tr key={coupon.id} className="hover:bg-gray-50">
-                                    <td className="p-4 font-mono font-bold text-blue-600">{coupon.code}</td>
-                                    <td className="p-4">{coupon.discount_percent}%</td>
-                                    <td className="p-4 text-sm">{coupon.email || '-'}</td>
-                                    <td className="p-4">
-                                        <span className={`px-2 py-1 rounded-full text-xs ${
-                                            displayStatus === 'active' ? 'bg-green-100 text-green-800' :
-                                            displayStatus === 'redeemed' ? 'bg-gray-800 text-white' :
-                                            'bg-red-100 text-red-800'
-                                        }`}>
-                                            {displayStatus === 'active' ? 'פעיל' :
-                                             displayStatus === 'redeemed' ? 'מומש' : 'פג תוקף'}
-                                        </span>
-                                    </td>
-                                    <td className="p-4 text-sm text-gray-500">
-                                        {new Date(coupon.created_at).toLocaleString('he-IL')}
-                                    </td>
-                                </tr>
+                                    <tr key={coupon.id} className="hover:bg-gray-50">
+                                        <td className="p-4 font-mono font-bold text-blue-600">{coupon.code}</td>
+                                        <td className="p-4">{coupon.discount_percent}%</td>
+                                        <td className="p-4 text-sm">{coupon.email || '-'}</td>
+                                        <td className="p-4">
+                                            <span className={`px-2 py-1 rounded-full text-xs ${displayStatus === 'active' ? 'bg-green-100 text-green-800' :
+                                                    displayStatus === 'redeemed' ? 'bg-gray-800 text-white' :
+                                                        'bg-red-100 text-red-800'
+                                                }`}>
+                                                {displayStatus === 'active' ? 'פעיל' :
+                                                    displayStatus === 'redeemed' ? 'מומש' : 'פג תוקף'}
+                                            </span>
+                                        </td>
+                                        <td className="p-4 text-sm text-gray-500">
+                                            {new Date(coupon.created_at).toLocaleString('he-IL')}
+                                        </td>
+                                    </tr>
                                 );
                             })}
                             {(!kpis.recentCoupons || kpis.recentCoupons.length === 0) && (
