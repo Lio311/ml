@@ -6,6 +6,8 @@ import StarRating from "../../components/StarRating";
 import WishlistHeart from "../../components/WishlistHeart";
 import AddToCartAdvanced from "../../components/ProductCard";
 import FragrancePyramid from "../../components/FragrancePyramid";
+import ShareButton from "../../components/ShareButton";
+
 
 export const revalidate = 3600; // SEO Improvement: Cache for 1 hour
 
@@ -189,12 +191,17 @@ export default async function ProductPage(props) {
                         <WishlistHeart productId={product.id} />
                     </div>
 
+                    <div className="absolute top-4 right-4 z-10">
+                        <ShareButton name={product.name} />
+                    </div>
+
                     {product.is_limited && (
-                        <span className="absolute top-4 right-4 bg-red-600 text-white text-sm font-bold px-3 py-1 rounded-full animate-pulse">
+                        <span className="absolute top-16 right-4 bg-red-600 text-white text-sm font-bold px-3 py-1 rounded-full animate-pulse z-10 shadow-sm border border-red-500">
                             מלאי מוגבל
                         </span>
                     )}
                 </div>
+
 
                 {/* Details */}
                 <div className="w-full md:w-1/2 space-y-8">
