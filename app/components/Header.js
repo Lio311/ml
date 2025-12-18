@@ -8,6 +8,7 @@ import { SignInButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs';
 import { useCart } from '../context/CartContext';
 import LanguageSwitcher from './LanguageSwitcher';
 import SearchAutocomplete from './SearchAutocomplete';
+import LiveVisitorCounter from './LiveVisitorCounter';
 
 import { useWishlist } from '../context/WishlistContext';
 
@@ -150,6 +151,7 @@ export default function Header({ brands = [] }) {
 
                     {/* Desktop RIGHT Group (RTL Start): Search + User */}
                     <div className="hidden md:flex items-center justify-start gap-4">
+                        <LiveVisitorCounter />
                         {/* User Icon (Rightmost in RTL) */}
                         <SignedIn>
                             <div className="flex items-center gap-2">
