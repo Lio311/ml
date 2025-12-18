@@ -69,32 +69,32 @@ export default function AdminMenuPage() {
                 <table className="w-full text-right border-collapse">
                     <thead className="bg-gray-50 border-b border-gray-200">
                         <tr>
-                            <th className="px-6 py-4 font-bold text-gray-700">שם העמוד</th>
-                            <th className="px-6 py-4 font-bold text-gray-700">סטטוס תצוגה</th>
-                            <th className="px-6 py-4 font-bold text-gray-700">שינוי שם</th>
+                            <th className="px-6 py-4 font-bold text-gray-700 text-center">שם העמוד</th>
+                            <th className="px-6 py-4 font-bold text-gray-700 text-center">סטטוס תצוגה</th>
+                            <th className="px-6 py-4 font-bold text-gray-700 text-center">שינוי שם</th>
                         </tr>
                     </thead>
                     <tbody>
                         {menu.map((item) => (
                             <tr key={item.id} className="border-b border-gray-100 hover:bg-gray-50/50 transition">
-                                <td className="px-6 py-4 text-sm font-medium">{item.id}</td>
-                                <td className="px-6 py-4">
+                                <td className="px-6 py-4 text-sm font-medium text-center">{item.id}</td>
+                                <td className="px-6 py-4 text-center">
                                     <button
                                         onClick={() => handleToggle(item.id)}
                                         className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all ${item.visible
-                                                ? 'bg-green-100 text-green-700 hover:bg-green-200'
-                                                : 'bg-red-100 text-red-700 hover:bg-red-200'
+                                            ? 'bg-green-100 text-green-700 hover:bg-green-200'
+                                            : 'bg-red-100 text-red-700 hover:bg-red-200'
                                             }`}
                                     >
                                         {item.visible ? 'מוצג' : 'מוסתר'}
                                     </button>
                                 </td>
-                                <td className="px-6 py-4">
+                                <td className="px-6 py-4 text-center">
                                     <input
                                         type="text"
                                         value={item.label}
                                         onChange={(e) => handleLabelChange(item.id, e.target.value)}
-                                        className="border border-gray-300 rounded px-3 py-1.5 w-full text-sm focus:ring-2 focus:ring-black outline-none"
+                                        className="border border-gray-300 rounded px-3 py-1.5 w-full text-sm focus:ring-2 focus:ring-black outline-none text-center"
                                         placeholder="שם העמוד בתפריט..."
                                     />
                                 </td>

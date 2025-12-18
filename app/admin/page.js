@@ -319,11 +319,11 @@ export default async function AdminDashboard() {
                     <table className="w-full text-right" dir="rtl">
                         <thead className="bg-gray-50 text-gray-500 text-sm">
                             <tr>
-                                <th className="p-4">קוד</th>
-                                <th className="p-4">הנחה</th>
-                                <th className="p-4">מייל לקוח</th>
-                                <th className="p-4">סטטוס</th>
-                                <th className="p-4">נוצר בתאריך</th>
+                                <th className="p-4 text-center">קוד</th>
+                                <th className="p-4 text-center">הנחה</th>
+                                <th className="p-4 text-center">מייל לקוח</th>
+                                <th className="p-4 text-center">סטטוס</th>
+                                <th className="p-4 text-center">נוצר בתאריך</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y">
@@ -333,10 +333,10 @@ export default async function AdminDashboard() {
 
                                 return (
                                     <tr key={coupon.id} className="hover:bg-gray-50">
-                                        <td className="p-4 font-mono font-bold text-blue-600">{coupon.code}</td>
-                                        <td className="p-4">{coupon.discount_percent}%</td>
-                                        <td className="p-4 text-sm">{coupon.email || '-'}</td>
-                                        <td className="p-4">
+                                        <td className="p-4 font-mono font-bold text-blue-600 text-center">{coupon.code}</td>
+                                        <td className="p-4 text-center">{coupon.discount_percent}%</td>
+                                        <td className="p-4 text-sm text-center">{coupon.email || '-'}</td>
+                                        <td className="p-4 text-center">
                                             <span className={`px-2 py-1 rounded-full text-xs ${displayStatus === 'active' ? 'bg-green-100 text-green-800' :
                                                 displayStatus === 'redeemed' ? 'bg-gray-800 text-white' :
                                                     'bg-red-100 text-red-800'
@@ -345,7 +345,7 @@ export default async function AdminDashboard() {
                                                     displayStatus === 'redeemed' ? 'מומש' : 'פג תוקף'}
                                             </span>
                                         </td>
-                                        <td className="p-4 text-sm text-gray-500">
+                                        <td className="p-4 text-sm text-gray-500 text-center">
                                             {new Date(coupon.created_at).toLocaleString('he-IL')}
                                         </td>
                                     </tr>
