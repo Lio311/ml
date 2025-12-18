@@ -513,7 +513,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                         ) : (
                             <div className="flex-1 flex items-center gap-4 w-full">
                                 {product.image_url ? (
-                                    <img src={product.image_url} alt={product.model} className="w-10 h-10 object-cover rounded" />
+                                    <img src={product.image_url} alt={product.model} className="w-10 h-10 object-contain rounded" />
                                 ) : (
                                     <div className="hidden md:flex w-10 h-10 bg-gray-100 rounded items-center justify-center text-lg">🧴</div>
                                 )}
