@@ -175,7 +175,7 @@ export default function AdminExpensesPage() {
                                                 {expense.type === 'yearly' ? 'שנתי' : 'חודשי'}
                                             </span>
                                         </td>
-                                        <td className="p-3 text-center dir-ltr font-bold">₪ {parseFloat(expense.amount).toLocaleString()}</td>
+                                        <td className="p-3 text-center font-bold" dir="ltr">₪ {parseFloat(expense.amount).toLocaleString()}</td>
                                         <td className="p-3 text-center">
                                             {canEdit && (
                                                 <button onClick={() => handleDelete(expense.id)} className="text-red-500 hover:text-red-700 transition">
