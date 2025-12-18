@@ -3,7 +3,7 @@ import Script from "next/script";
 
 export default function GoogleAnalytics() {
     // REPLACE 'G-XXXXXXXXXX' WITH YOUR ACTUAL GA4 MEASUREMENT ID
-    const GA_ID = process.env.NEXT_PUBLIC_GA_ID || 'G-XXXXXXXXXX';
+    const GA_ID = process.env.NEXT_PUBLIC_GA_ID || 'G-5TX379QR9Q';
 
     return (
         <>

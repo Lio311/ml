@@ -3,7 +3,7 @@ import Script from "next/script";
 
 export default function MicrosoftClarity() {
     // REPLACE 'YOUR_CLARITY_ID' WITH YOUR ACTUAL PROJECT ID FROM CLARITY SETTINGS
-    const CLARITY_ID = process.env.NEXT_PUBLIC_CLARITY_ID || 'YOUR_CLARITY_ID';
+    const CLARITY_ID = process.env.NEXT_PUBLIC_CLARITY_ID || 'unornggtws';
 
     return (
         <Script id="microsoft-clarity" strategy="afterInteractive">
