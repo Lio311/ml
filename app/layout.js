@@ -23,6 +23,22 @@ const dancingScript = Dancing_Script({
 export const metadata = {
   title: "יוקרה בחתיכות קטנות",
   description: "חנות דוגמיות בשמים בקונספט קצת שונה. מגוון בשמי בוטיק, נישה ודיזיינר במחירים הוגנים",
+  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || 'https://ml-tlv.vercel.app'),
+  openGraph: {
+    title: "ml_tlv | דוגמיות בשמים",
+    description: "חנות דוגמיות בשמים הגדולה בישראל",
+    url: 'https://ml-tlv.vercel.app',
+    siteName: 'ml_tlv',
+    images: [
+      {
+        url: '/logo_v3.png',
+        width: 800,
+        height: 600,
+      },
+    ],
+    locale: 'he_IL',
+    type: 'website',
+  },
 };
 
 import { CartProvider } from "./context/CartContext";
