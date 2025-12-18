@@ -377,15 +377,15 @@ export default async function AdminDashboard() {
                         ₪ {kpis.monthlyProfit < 0 ? `-${Math.abs(kpis.monthlyProfit)}` : kpis.monthlyProfit}
                     </div>
                 </div>
-                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-                    <div className="text-gray-500 text-sm font-bold uppercase mb-2">דוגמיות שנמכרו</div>
-                    <div className="flex justify-between items-end">
-                        <div className="text-3xl font-bold">{kpis.totalSamples}</div>
-                        <div className="text-xs text-gray-500 text-left">
-                            <div>2 מ״ל: <span className="font-bold text-black">{kpis.samplesBreakdown['2']}</span></div>
-                            <div>5 מ״ל: <span className="font-bold text-black">{kpis.samplesBreakdown['5']}</span></div>
-                            <div>10 מ״ל: <span className="font-bold text-black">{kpis.samplesBreakdown['10']}</span></div>
-                        </div>
+                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 flex flex-col justify-between">
+                    <div>
+                        <div className="text-gray-500 text-sm font-bold uppercase mb-2">דוגמיות שנמכרו</div>
+                        <div className="text-4xl font-bold mb-4">{kpis.totalSamples}</div>
+                    </div>
+                    <div className="text-xs text-gray-500 bg-gray-50 p-2 rounded w-full">
+                        <div className="flex justify-between mb-1"><span>2 מ״ל:</span> <span className="font-bold text-black">{kpis.samplesBreakdown['2']}</span></div>
+                        <div className="flex justify-between mb-1"><span>5 מ״ל:</span> <span className="font-bold text-black">{kpis.samplesBreakdown['5']}</span></div>
+                        <div className="flex justify-between"><span>10 מ״ל:</span> <span className="font-bold text-black">{kpis.samplesBreakdown['10']}</span></div>
                     </div>
                 </div>
                 <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
