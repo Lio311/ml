@@ -128,6 +128,8 @@ export default async function AdminDashboard() {
         }
 
         // Monthly Profit Calculation
+        const brandStats = {};
+        const sizeStats = {};
         try {
             const monthlyOrdersRes = await client.query(`
                 SELECT total_amount, items FROM orders 
@@ -146,8 +148,7 @@ export default async function AdminDashboard() {
             });
 
             let monthlyProfit = 0;
-            const brandStats = {};
-            const sizeStats = {};
+            // Removed scope-local stats
 
             monthlyOrdersRes.rows.forEach(order => {
                 const items = typeof order.items === 'string' ? JSON.parse(order.items) : order.items;
