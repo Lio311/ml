@@ -23,11 +23,11 @@ const dancingScript = Dancing_Script({
 export const metadata = {
   title: "יוקרה בחתיכות קטנות",
   description: "חנות דוגמיות בשמים בקונספט קצת שונה. מגוון בשמי בוטיק, נישה ודיזיינר במחירים הוגנים",
-  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || 'https://ml-tlv.vercel.app'),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || 'https://ml-tlv.com'),
   openGraph: {
     title: "ml_tlv | דוגמיות בשמים",
     description: "חנות דוגמיות בשמים הגדולה בישראל",
-    url: 'https://ml-tlv.vercel.app',
+    url: 'https://ml-tlv.com',
     siteName: 'ml_tlv',
     images: [
       {
@@ -108,8 +108,8 @@ export default async function RootLayout({ children }) {
                     "@context": "https://schema.org",
                     "@type": "Organization",
                     "name": "ml_tlv",
-                    "url": "https://ml-tlv.vercel.app",
-                    "logo": "https://ml-tlv.vercel.app/logo_v3.png",
+                    "url": "https://ml-tlv.com",
+                    "logo": "https://ml-tlv.com/logo_v3.png",
                     "description": "Luxury Niche Perfume Samples in Israel",
                     "sameAs": [
                       "https://instagram.com/ml_tlv"

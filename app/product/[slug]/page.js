@@ -30,7 +30,7 @@ export async function generateMetadata(props) {
     // generateMetadata is called before page, so we can't redirect here easily without throwing.
     // We let the Page component handle the redirect. Here we just return canonical.
 
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://ml-tlv.vercel.app';
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://ml-tlv.com';
     const title = `${product.name} | החל מ-${product.price_2ml}₪`;
     const description = product.description ? product.description.substring(0, 160) : `קנו דוגמית של ${product.name} באתר ml_tlv. בשמים מקוריים ומיוחדים.`;
     const imageUrl = product.image_url || `${baseUrl}/logo_v3.png`;
@@ -233,7 +233,7 @@ export default async function ProductPage(props) {
                                     },
                                     "offers": {
                                         "@type": "Offer",
-                                        "url": `${process.env.NEXT_PUBLIC_BASE_URL || 'https://ml-tlv.vercel.app'} / product / ${product.slug || product.id}`,
+                                        "url": `${process.env.NEXT_PUBLIC_BASE_URL || 'https://ml-tlv.com'}/product/${product.slug || product.id}`,
                                         "priceCurrency": "ILS",
                                         "price": product.price_10ml || product.price_5ml || product.price_2ml,
                                         "availability": (product.stock && product.stock > 0) ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
@@ -253,25 +253,25 @@ export default async function ProductPage(props) {
                                             "@type": "ListItem",
                                             "position": 1,
                                             "name": "בית",
-                                            "item": "https://ml-tlv.vercel.app"
+                                            "item": "https://ml-tlv.com"
                                         },
                                         {
                                             "@type": "ListItem",
                                             "position": 2,
                                             "name": "קטלוג",
-                                            "item": "https://ml-tlv.vercel.app/catalog"
+                                            "item": "https://ml-tlv.com/catalog"
                                         },
                                         {
                                             "@type": "ListItem",
                                             "position": 3,
                                             "name": product.category || "כללי",
-                                            "item": `https://ml-tlv.vercel.app/catalog?category=${encodeURIComponent(product.category || '')}`
+                                            "item": `https://ml-tlv.com/catalog?category=${encodeURIComponent(product.category || '')}`
                                         },
                                         {
                                             "@type": "ListItem",
                                             "position": 4,
                                             "name": product.name,
-                                            "item": `https://ml-tlv.vercel.app/product/${product.slug || product.id}`
+                                            "item": `https://ml-tlv.com/product/${product.slug || product.id}`
                                         }
                                     ]
                                 })
