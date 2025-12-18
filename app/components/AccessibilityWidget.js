@@ -53,25 +53,29 @@ export default function AccessibilityWidget() {
 
     // --- DOM Manipulation Side Effects ---
     const applySettings = () => {
-        // 1. Text Scale
-        // Apply only to :not(.acc-widget-ignore) elements via class injection if needed, 
-        // but font-size on root usually affects everything using rem. 
-        // To strictly exclude the widget from scaling, we can enforce a fixed pixel font size on the widget.
+        // 1. Text Scale (Apply to root, widget is protected by fixed size)
         document.documentElement.style.fontSize = `${settings.fontSize}%`;
 
-        // 2. Class Toggles (Global Helper Classes)
-        const body = document.body;
+        // 2. Target Container for Content Filters
+        const contentContainer = document.getElementById('site-content');
+        if (!contentContainer) return;
 
-        const toggle = (cls, condition) => condition ? body.classList.add(cls) : body.classList.remove(cls);
+        // Helper to toggle class on the content container
+        const toggleContent = (cls, condition) => condition ? contentContainer.classList.add(cls) : contentContainer.classList.remove(cls);
 
-        toggle('acc-readable-font', settings.readableFont);
-        toggle('acc-highlight-links', settings.highlightLinks);
-        toggle('acc-highlight-headers', settings.highlightHeaders);
-        toggle('acc-high-contrast', settings.highContrast);
-        toggle('acc-invert', settings.invertColors);
-        toggle('acc-monochrome', settings.monochrome);
-        toggle('acc-big-cursor', settings.bigCursor);
-        toggle('acc-stop-animations', settings.stopAnimations);
+        // Helper to toggle class on body (for cursor/animations that can be global)
+        const toggleBody = (cls, condition) => condition ? document.body.classList.add(cls) : document.body.classList.remove(cls);
+
+
+        toggleContent('acc-readable-font', settings.readableFont);
+        toggleContent('acc-highlight-links', settings.highlightLinks);
+        toggleContent('acc-highlight-headers', settings.highlightHeaders);
+        toggleContent('acc-high-contrast', settings.highContrast);
+        toggleContent('acc-invert', settings.invertColors);
+        toggleContent('acc-monochrome', settings.monochrome);
+
+        toggleBody('acc-big-cursor', settings.bigCursor);
+        toggleBody('acc-stop-animations', settings.stopAnimations);
     };
 
     // --- Reading Guide Logic ---
@@ -102,100 +106,85 @@ export default function AccessibilityWidget() {
     };
 
     return (
-        <div className="acc-widget-ignore">
+        <div className="acc-widget-root">
             {/* Global Style Injection */}
             <style jsx global>{`
-                /* --- Accessibility Styles --- */
+                /* --- Accessibility Styles (Scoped to #site-content where possible) --- */
                 
-                /* Readable Font - Exclude the widget */
-                .acc-readable-font :not(.acc-widget-ignore) *:not(.acc-widget-ignore) {
+                /* Readable Font */
+                #site-content.acc-readable-font * {
                     font-family: Arial, Helvetica, sans-serif !important;
                 }
 
-                /* Highlight Links - Exclude the widget */
-                .acc-highlight-links :not(.acc-widget-ignore) a:not(.acc-widget-ignore) {
+                /* Highlight Links */
+                #site-content.acc-highlight-links a {
                     background-color: #ffeb3b !important; /* Yellow */
                     color: #000 !important;
                     text-decoration: underline !important;
                     font-weight: bold !important;
                 }
 
-                /* Highlight Headers - Exclude the widget */
-                .acc-highlight-headers :not(.acc-widget-ignore) h1, 
-                .acc-highlight-headers :not(.acc-widget-ignore) h2, 
-                .acc-highlight-headers :not(.acc-widget-ignore) h3, 
-                .acc-highlight-headers :not(.acc-widget-ignore) h4, 
-                .acc-highlight-headers :not(.acc-widget-ignore) h5, 
-                .acc-highlight-headers :not(.acc-widget-ignore) h6 {
+                /* Highlight Headers */
+                #site-content.acc-highlight-headers h1, 
+                #site-content.acc-highlight-headers h2, 
+                #site-content.acc-highlight-headers h3, 
+                #site-content.acc-highlight-headers h4, 
+                #site-content.acc-highlight-headers h5, 
+                #site-content.acc-highlight-headers h6 {
                     background-color: #e0f7fa !important; /* Cyan Light */
                     color: #006064 !important;
                     border-bottom: 3px solid #0097a7 !important;
                     padding: 4px !important;
                 }
 
-                /* High Contrast (Dark Mode like) - Exclude widget */
-                .acc-high-contrast {
+                /* High Contrast */
+                #site-content.acc-high-contrast {
                     filter: contrast(120%); 
                     background-color: #000 !important;
                     color: #fff !important;
                 }
-                .acc-high-contrast *:not(.acc-widget-ignore):not(.acc-widget-ignore *) {
+                #site-content.acc-high-contrast * {
                     background-color: #000 !important;
                     color: #ff0 !important; /* Yellow Text */
                     border-color: #fff !important;
                 }
-                /* Use specific override for widget in high contrast to be sure */
-                .acc-high-contrast .acc-widget-ignore {
-                    filter: none !important;
-                    background-color: transparent !important;
-                    color: initial !important;
-                }
-
-                .acc-high-contrast img:not(.acc-widget-ignore img), 
-                .acc-high-contrast video:not(.acc-widget-ignore video) {
+                #site-content.acc-high-contrast img, 
+                #site-content.acc-high-contrast video {
                     filter: grayscale(100%) !important;
                     opacity: 0.8;
                 }
-                .acc-high-contrast a:not(.acc-widget-ignore a) {
+                #site-content.acc-high-contrast a {
                     color: #0ff !important; /* Cyan Links */
                     text-decoration: underline;
                 }
                 
-                /* Invert Colors - Exclude Widget */
-                .acc-invert {
+                /* Invert Colors */
+                #site-content.acc-invert {
                     filter: invert(100%);
                 }
-                /* Re-invert widget to make it look normal */
-                .acc-invert .acc-widget-ignore {
-                    filter: invert(100%) !important;
-                }
-                .acc-invert img:not(.acc-widget-ignore img), 
-                .acc-invert video:not(.acc-widget-ignore video) {
-                    filter: invert(100%) !important; /* Re-invert media */
+                #site-content.acc-invert img, 
+                #site-content.acc-invert video {
+                    filter: invert(100%) !important; /* Re-invert to look normal */
                 }
 
-                /* Monochrome - Exclude Widget */
-                .acc-monochrome {
+                /* Monochrome */
+                #site-content.acc-monochrome {
                     filter: grayscale(100%);
                 }
-                .acc-monochrome .acc-widget-ignore {
-                    filter: grayscale(0%) !important;
-                }
 
-                /* Big Cursor - Everywhere is fine, but maybe not on widget if requested? User said "except that menu" for actions generally */
-                .acc-big-cursor, .acc-big-cursor * {
+                /* Big Cursor (Global on Body) */
+                body.acc-big-cursor, body.acc-big-cursor * {
                     cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewport="0 0 48 48" style="fill:black;stroke:white;stroke-width:2px;"><path d="M7,2l12,36l6-16l16-6L7,2z"></path></svg>') 0 0, auto !important;
                 }
 
-                /* Stop Animations - Exclude Widget */
-                .acc-stop-animations *:not(.acc-widget-ignore):not(.acc-widget-ignore *) {
+                /* Stop Animations (Global on Body) */
+                body.acc-stop-animations *, body.acc-stop-animations *:before, body.acc-stop-animations *:after {
                     animation: none !important;
                     transition: none !important;
                 }
                 
-                /* Widget Protection Styles */
-                .acc-widget-ignore {
-                     /* Ensure widget fonts don't scale wildly with global em/rem if they inherit from root */
+                /* Widget Protection Helper (Optional if inherited props leak) */
+                .acc-widget-root {
                      font-size: 16px !important; 
                      line-height: 1.5 !important;
                 }

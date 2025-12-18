@@ -60,11 +60,15 @@ export default async function RootLayout({ children }) {
           <CartProvider>
             <WishlistProvider>
               <AnalyticsTracker />
-              <Header brands={brands} />
-              <main className="min-h-screen">
-                {children}
-              </main>
-              <Footer />
+
+              <div id="site-content">
+                <Header brands={brands} />
+                <main className="min-h-screen">
+                  {children}
+                </main>
+                <Footer />
+              </div>
+
               <ChatWidget />
               <AccessibilityWidget />
 
