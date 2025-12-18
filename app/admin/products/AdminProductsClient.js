@@ -237,7 +237,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                             <input
                                 value={editForm.brand}
                                 onChange={e => setEditForm({ ...editForm, brand: e.target.value })}
-                                className="border p-2 rounded w-full bg-gray-50"
+                                className="border p-2 rounded w-full bg-white"
                             />
                         </div>
                         <div>
@@ -245,7 +245,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                             <input
                                 value={editForm.model}
                                 onChange={e => setEditForm({ ...editForm, model: e.target.value })}
-                                className="border p-2 rounded w-full bg-gray-50"
+                                className="border p-2 rounded w-full bg-white"
                             />
                         </div>
                         <div className="md:col-span-2">
@@ -253,7 +253,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                             <input
                                 value={editForm.name_he}
                                 onChange={e => setEditForm({ ...editForm, name_he: e.target.value })}
-                                className="border p-2 rounded w-full bg-blue-50"
+                                className="border p-2 rounded w-full bg-white"
                                 placeholder="לדוגמה: קריד אוונטוס..."
                             />
                         </div>
@@ -274,7 +274,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                 type="number"
                                 value={editForm.price_2ml}
                                 onChange={e => setEditForm({ ...editForm, price_2ml: Number(e.target.value) })}
-                                className="border p-2 rounded w-full bg-gray-50"
+                                className="border p-2 rounded w-full bg-white"
                             />
                         </div>
                         <div>
@@ -283,7 +283,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                 type="number"
                                 value={editForm.price_5ml}
                                 onChange={e => setEditForm({ ...editForm, price_5ml: Number(e.target.value) })}
-                                className="border p-2 rounded w-full bg-gray-50"
+                                className="border p-2 rounded w-full bg-white"
                             />
                         </div>
                         <div>
@@ -292,7 +292,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                 type="number"
                                 value={editForm.price_10ml}
                                 onChange={e => setEditForm({ ...editForm, price_10ml: Number(e.target.value) })}
-                                className="border p-2 rounded w-full bg-gray-50"
+                                className="border p-2 rounded w-full bg-white"
                             />
                         </div>
                         <div className="md:col-span-3 mt-2 grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -303,7 +303,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                     required
                                     value={editForm.cost_price}
                                     onChange={e => setEditForm({ ...editForm, cost_price: Number(e.target.value) })}
-                                    className="border p-2 rounded w-full bg-red-50"
+                                    className="border p-2 rounded w-full bg-white"
                                     placeholder="לדוגמה: 50"
                                 />
                             </div>
@@ -314,7 +314,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                     required
                                     value={editForm.original_size}
                                     onChange={e => setEditForm({ ...editForm, original_size: Number(e.target.value) })}
-                                    className="border p-2 rounded w-full bg-red-50"
+                                    className="border p-2 rounded w-full bg-white"
                                     placeholder="לדוגמה: 50"
                                 />
                             </div>
@@ -325,7 +325,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                 type="number"
                                 value={editForm.stock}
                                 onChange={e => setEditForm({ ...editForm, stock: Number(e.target.value) })}
-                                className="border p-2 rounded w-full bg-gray-50 bg-yellow-50"
+                                className="border p-2 rounded w-full bg-white"
                                 placeholder="לדוגמה: 100"
                             />
                         </div>
@@ -336,7 +336,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                         <input
                             value={editForm.image_url || ''}
                             onChange={e => setEditForm({ ...editForm, image_url: e.target.value })}
-                            className="border p-2 rounded w-full bg-gray-50 text-left"
+                            className="border p-2 rounded w-full bg-white text-left"
                             dir="ltr"
                             placeholder="/products/image.png or https://..."
                         />
@@ -376,7 +376,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                         <textarea
                             value={editForm.description || ''}
                             onChange={e => setEditForm({ ...editForm, description: e.target.value })}
-                            className="border p-2 rounded w-full bg-gray-50 h-24"
+                            className="border p-2 rounded w-full bg-white h-24"
                             placeholder="תיאור מלא של הבושם, תווים, וכו'..."
                         />
                     </div>
@@ -409,7 +409,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                         <input
                                             value={editForm.brand}
                                             onChange={e => setEditForm({ ...editForm, brand: e.target.value })}
-                                            className="border p-2 rounded w-full bg-gray-50"
+                                            className="border p-2 rounded w-full bg-white"
                                         />
                                     </div>
                                     <div className="md:col-span-1">
@@ -417,7 +417,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                         <input
                                             value={editForm.model}
                                             onChange={e => setEditForm({ ...editForm, model: e.target.value })}
-                                            className="border p-2 rounded w-full bg-gray-50"
+                                            className="border p-2 rounded w-full bg-white"
                                         />
                                     </div>
                                     <div className="md:col-span-2">
@@ -425,7 +425,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                         <input
                                             value={editForm.name_he}
                                             onChange={e => setEditForm({ ...editForm, name_he: e.target.value })}
-                                            className="border p-2 rounded w-full bg-blue-50"
+                                            className="border p-2 rounded w-full bg-white"
                                             placeholder="עברית..."
                                         />
                                     </div>
@@ -444,7 +444,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                             type="number"
                                             value={editForm.price_2ml}
                                             onChange={e => setEditForm({ ...editForm, price_2ml: Number(e.target.value) })}
-                                            className="border p-2 rounded w-full bg-gray-50"
+                                            className="border p-2 rounded w-full bg-white"
                                         />
                                     </div>
                                     <div>
@@ -453,7 +453,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                             type="number"
                                             value={editForm.price_5ml}
                                             onChange={e => setEditForm({ ...editForm, price_5ml: Number(e.target.value) })}
-                                            className="border p-2 rounded w-full bg-gray-50"
+                                            className="border p-2 rounded w-full bg-white"
                                         />
                                     </div>
                                     <div>
@@ -462,7 +462,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                             type="number"
                                             value={editForm.price_10ml}
                                             onChange={e => setEditForm({ ...editForm, price_10ml: Number(e.target.value) })}
-                                            className="border p-2 rounded w-full bg-gray-50"
+                                            className="border p-2 rounded w-full bg-white"
                                         />
                                     </div>
                                     <div>
@@ -471,7 +471,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                             type="number"
                                             value={editForm.stock}
                                             onChange={e => setEditForm({ ...editForm, stock: Number(e.target.value) })}
-                                            className="border p-2 rounded w-full bg-yellow-50 font-bold"
+                                            className="border p-2 rounded w-full bg-white"
                                         />
                                     </div>
                                     <div className="md:col-span-1">
@@ -480,7 +480,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                             type="number"
                                             value={editForm.cost_price}
                                             onChange={e => setEditForm({ ...editForm, cost_price: Number(e.target.value) })}
-                                            className="border p-1 rounded w-full bg-blue-50 text-xs"
+                                            className="border p-2 rounded w-full bg-white"
                                         />
                                     </div>
                                     <div className="md:col-span-1">
@@ -489,7 +489,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                             type="number"
                                             value={editForm.original_size}
                                             onChange={e => setEditForm({ ...editForm, original_size: Number(e.target.value) })}
-                                            className="border p-1 rounded w-full bg-blue-50 text-xs"
+                                            className="border p-2 rounded w-full bg-white"
                                         />
                                     </div>
                                 </div>
@@ -501,7 +501,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                     <input
                                         value={editForm.image_url || ''}
                                         onChange={e => setEditForm({ ...editForm, image_url: e.target.value })}
-                                        className="border p-2 rounded w-full bg-gray-50 text-left"
+                                        className="border p-2 rounded w-full bg-white text-left"
                                         dir="ltr"
                                     />
                                 </div>
@@ -510,7 +510,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                     <textarea
                                         value={editForm.description || ''}
                                         onChange={e => setEditForm({ ...editForm, description: e.target.value })}
-                                        className="border p-2 rounded w-full bg-gray-50 h-20 text-sm"
+                                        className="border p-2 rounded w-full bg-white h-20 text-sm"
                                     />
                                 </div>
                                 <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
@@ -572,9 +572,22 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                             }`}>
                                             מלאי: {product.stock || 0}
                                         </div>
-                                        <div className="font-mono text-xs bg-green-50 text-green-700 px-2 py-0.5 rounded shadow-sm border border-green-200" title="רווח ל-1 מ״ל">
-                                            {Math.round((product.price_2ml / 2) - ((product.cost_price || 0) / (product.original_size || 100)))} ₪
-                                        </div>
+                                        {(() => {
+                                            const profitPerMl = Math.round((product.price_2ml / 2) - ((product.cost_price || 0) / (product.original_size || 100)));
+                                            const isNegative = profitPerMl < 0;
+                                            return (
+                                                <div
+                                                    className={`font-mono text-xs px-2 py-0.5 rounded shadow-sm border ${isNegative
+                                                            ? 'bg-red-50 text-red-700 border-red-200'
+                                                            : 'bg-green-50 text-green-700 border-green-200'
+                                                        }`}
+                                                    title="רווח ל-1 מ״ל"
+                                                    dir="ltr"
+                                                >
+                                                    {isNegative ? `-${Math.abs(profitPerMl)}` : profitPerMl} ₪
+                                                </div>
+                                            );
+                                        })()}
                                     </div>
                                     <div className="text-gray-600 text-sm">{product.model}</div>
                                 </div>
@@ -587,7 +600,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                 <button onClick={() => startEdit(product)} className="bg-blue-600 text-white px-4 py-1.5 rounded text-xs hover:bg-blue-700 font-bold transition whitespace-nowrap">
                                     עדכן
                                 </button>
-                                <button onClick={() => handleDelete(product.id)} className="text-red-500 hover:text-red-700 text-xs font-bold border border-red-200 px-4 py-1.5 rounded hover:bg-red-50 transition">
+                                <button onClick={() => handleDelete(product.id)} className="text-red-500 hover:text-red-700 text-xs font-bold border border-red-200 px-4 py-1.5 rounded hover:bg-white transition">
                                     מחק
                                 </button>
                             </div>
