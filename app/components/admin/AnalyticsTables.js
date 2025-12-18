@@ -13,7 +13,7 @@ export default function AnalyticsTables({ topBrands, topSizes, monthName }) {
                         <thead className="bg-gray-50 text-gray-500 text-xs uppercase font-bold">
                             <tr>
                                 <th className="p-4">שם המותג</th>
-                                <th className="p-4 text-left">מכירות ברוטו (ש״ח)*</th>
+                                <th className="p-4 text-left">מכירות (ש״ח)</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100">
@@ -42,9 +42,6 @@ export default function AnalyticsTables({ topBrands, topSizes, monthName }) {
                             )}
                         </tbody>
                     </table>
-                    <div className="bg-gray-50 text-[10px] text-gray-400 p-2 text-center">
-                        * לפי שווי פריט בעת ההזמנה (לפני הנחות/קופונים)
-                    </div>
                 </div>
             </div>
 
@@ -58,7 +55,7 @@ export default function AnalyticsTables({ topBrands, topSizes, monthName }) {
                         <thead className="bg-gray-50 text-gray-500 text-xs uppercase font-bold">
                             <tr>
                                 <th className="p-4">גודל דוגמית (מ״ל)</th>
-                                <th className="p-4 text-left">מכירות ברוטו (ש״ח)*</th>
+                                <th className="p-4 text-left">מכירות (ש״ח)</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100">

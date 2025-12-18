@@ -146,27 +146,65 @@ export default async function AdminDashboard() {
             });
 
             let monthlyProfit = 0;
+            const brandStats = {};
+            const sizeStats = {};
+
             monthlyOrdersRes.rows.forEach(order => {
                 const items = typeof order.items === 'string' ? JSON.parse(order.items) : order.items;
                 let orderItemsCost = 0;
+                let orderGrossSales = 0;
 
+                // 1. Calculate Gross Sales for this order (to find discount ratio)
                 items.forEach(item => {
+                    const price = parseFloat(item.price || 0);
+                    const quantity = parseInt(item.quantity || 1);
+                    orderGrossSales += price * quantity;
+                });
+
+                // 2. Calculate Discount Ratio (Net / Gross)
+                // If Gross is 0, ratio is 0. If Total > Gross (e.g. shipping), ratio > 1 (distributes shipping).
+                // If Total < Gross (coupon), ratio < 1.
+                const orderNetTotal = parseFloat(order.total_amount) || 0;
+                const ratio = orderGrossSales > 0 ? (orderNetTotal / orderGrossSales) : 0;
+
+                // 3. Process Items for Profit & Stats
+                items.forEach(item => {
+                    // Profit Cost Logic
                     let dbId = item.id;
                     if (typeof dbId === 'string' && dbId.includes('-')) {
                         dbId = parseInt(dbId.split('-')[0]);
                     }
 
                     const prodInfo = productMap[dbId];
+                    const soldSize = parseFloat(item.size || 2);
+                    const quantity = parseInt(item.quantity || 1);
+
                     if (prodInfo && prodInfo.size > 0) {
-                        const soldSize = parseFloat(item.size || 2); // Default to 2ml if missing
-                        const quantity = parseInt(item.quantity || 1);
                         const itemCost = (prodInfo.cost / prodInfo.size) * soldSize * quantity;
                         orderItemsCost += itemCost;
                     }
+
+                    // Aggregations (Net Sales)
+                    const itemGross = parseFloat(item.price || 0) * quantity;
+                    const itemNet = itemGross * ratio;
+
+                    // Brand Stats
+                    if (item.brand) {
+                        if (!brandStats[item.brand]) brandStats[item.brand] = 0;
+                        brandStats[item.brand] += itemNet;
+                    }
+
+                    // Size Stats
+                    if (item.size) {
+                        // Normalize size key (remove letters if any, though likely clean)
+                        const sizeKey = item.size.toString();
+                        if (!sizeStats[sizeKey]) sizeStats[sizeKey] = 0;
+                        sizeStats[sizeKey] += itemNet;
+                    }
                 });
 
-                // Profit of this order = Total paid by customer - Cost of products
-                const orderProfit = (parseFloat(order.total_amount) || 0) - orderItemsCost;
+                // Profit of this order
+                const orderProfit = orderNetTotal - orderItemsCost;
                 monthlyProfit += orderProfit;
             });
 
@@ -282,35 +320,16 @@ export default async function AdminDashboard() {
             });
         }
 
-        // Top Brands Query (Current Month)
-        const topBrandsRes = await client.query(`
-            SELECT 
-                item->>'brand' as name,
-                SUM(((item->>'price')::numeric) * (item->>'quantity')::int) as sales
-            FROM orders, jsonb_array_elements(items::jsonb) as item
-            WHERE status != 'cancelled'
-            AND EXTRACT(MONTH FROM created_at) = EXTRACT(MONTH FROM CURRENT_DATE)
-            AND EXTRACT(YEAR FROM created_at) = EXTRACT(YEAR FROM CURRENT_DATE)
-            GROUP BY name
-            ORDER BY sales DESC
-            LIMIT 5
-        `);
-        kpis.topBrands = topBrandsRes.rows;
+        // Top Brands Processing (from JS aggregation)
+        kpis.topBrands = Object.entries(brandStats)
+            .map(([name, sales]) => ({ name, sales }))
+            .sort((a, b) => b.sales - a.sales)
+            .slice(0, 5);
 
-        // Top Sizes Query (Current Month)
-        const topSizesRes = await client.query(`
-            SELECT 
-                item->>'size' as size,
-                SUM(((item->>'price')::numeric) * (item->>'quantity')::int) as sales
-            FROM orders, jsonb_array_elements(items::jsonb) as item
-            WHERE status != 'cancelled'
-            AND EXTRACT(MONTH FROM created_at) = EXTRACT(MONTH FROM CURRENT_DATE)
-            AND EXTRACT(YEAR FROM created_at) = EXTRACT(YEAR FROM CURRENT_DATE)
-            AND item->>'size' IS NOT NULL
-            GROUP BY size
-            ORDER BY sales DESC
-        `);
-        kpis.topSizes = topSizesRes.rows;
+        // Top Sizes Processing (from JS aggregation)
+        kpis.topSizes = Object.entries(sizeStats)
+            .map(([size, sales]) => ({ size, sales }))
+            .sort((a, b) => b.sales - a.sales);
 
         // Coupons
         try {
