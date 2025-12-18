@@ -6,52 +6,33 @@ export async function GET() {
         const client = await pool.connect();
         try {
             await client.query(`
-                CREATE TABLE IF NOT EXISTS search_mappings (
+                CREATE TABLE IF NOT EXISTS site_settings (
                     id SERIAL PRIMARY KEY,
-                    hebrew_term VARCHAR(255) UNIQUE NOT NULL,
-                    english_term VARCHAR(255) NOT NULL,
-                    type VARCHAR(50) DEFAULT 'general',
-                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                    key VARCHAR(255) UNIQUE NOT NULL,
+                    value JSONB NOT NULL,
+                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
                 );
             `);
 
-            // Seed Data
-            const initialMappings = {
-                // Brands
-                'שאנל': 'Chanel', 'דיור': 'Dior', 'קריד': 'Creed', 'טום פורד': 'Tom Ford',
-                'אמוואג': 'Amouage', 'אמוואז': 'Amouage', 'אמואג': 'Amouage',
-                'פרפום דה מארלי': 'Parfums de Marly', 'מארלי': 'Marly', 'מרלי': 'Marly',
-                'רוזה': 'Roja', 'רוז׳ה': 'Roja', 'רוג׳ה': 'Roja',
-                'זייר': 'Xerjoff', 'קסרג׳וף': 'Xerjoff', 'קסרגוף': 'Xerjoff', 'זרגוף': 'Xerjoff', 'זרג׳וף': 'Xerjoff',
-                'נרסיסו': 'Narciso', 'נרסיסו רודריגז': 'Narciso Rodriguez',
-                'גוצי': 'Gucci', 'גוצ׳י': 'Gucci',
-                'איב סאן לורן': 'Yves Saint Laurent', 'ysl': 'Yves Saint Laurent',
-                'הרמס': 'Hermes', 'ארמני': 'Armani', 'ורסאצ׳ה': 'Versace', 'ורסאצה': 'Versace',
-                'מונט דייל': 'Montale', 'מונטל': 'Montale',
-                'מייזון': 'Maison', 'פרנסיס': 'Francis', 'קורקדג׳יאן': 'Kurkdjian', 'קורקדיאן': 'Kurkdjian',
-                'בקרט': 'Baccarat', 'רוז': 'Rouge',
-                'אוונטוס': 'Aventus', 'סאווג': 'Sauvage', 'סוואג': 'Sauvage',
-                'בלו': 'Bleu', 'שאנל בלו': 'Bleu de Chanel',
-                'אלי': 'Elysium', 'אליסיום': 'Elysium',
-                'הרוד': 'Herod', 'לייטון': 'Layton', 'דלינה': 'Delina', 'פגסוס': 'Pegasus',
-                'קיליין': 'Kilian', 'קיליאן': 'Kilian',
-                'אינישיו': 'Initio', 'נישנה': 'Nishane', 'נישאנה': 'Nishane',
-                'ממו': 'Memo', 'בי י די קיי': 'BDK', 'בי די קיי': 'BDK', 'בידיקיי': 'BDK',
-                'גולדפילד': 'Goldfield', 'בנקס': 'Banks',
-                // General
-                'בושם': 'Perfume', 'דוגמית': 'Sample', 'יוניסקס': 'Unisex',
-                'גבר': 'Men', 'אישה': 'Women', 'נשים': 'Women', 'גברים': 'Men'
-            };
+            // Seed Menu Data
+            const defaultMenu = [
+                { id: 'home', label: 'דף הבית', path: '/', visible: true, order: 1 },
+                { id: 'brands', label: 'מותגים', path: '/brands', visible: true, order: 2 },
+                { id: 'catalog', label: 'קטלוג', path: '/catalog', visible: true, order: 3 },
+                { id: 'matching', label: 'התאמת מארזים', path: '/matching', visible: true, order: 4 },
+                { id: 'requests', label: 'בקשת בשמים', path: '/requests', visible: true, order: 5 },
+                { id: 'lottery', label: 'הגרלה', path: '/lottery', visible: true, order: 6, isRed: true },
+                { id: 'contact', label: 'צור קשר', path: '/contact', visible: true, order: 7 }
+            ];
 
-            for (const [hebrew, english] of Object.entries(initialMappings)) {
-                await client.query(`
-                    INSERT INTO search_mappings (hebrew_term, english_term)
-                    VALUES ($1, $2)
-                    ON CONFLICT (hebrew_term) DO NOTHING
-                `, [hebrew, english]);
-            }
-            
-            return NextResponse.json({ message: "Table 'search_mappings' created and seeded successfully." });
+            await client.query(`
+                INSERT INTO site_settings (key, value)
+                VALUES ('main_menu', $1)
+                ON CONFLICT (key) DO NOTHING
+            `, [JSON.stringify(defaultMenu)]);
+
+            return NextResponse.json({ message: "Database tables ('search_mappings', 'site_settings') created and seeded successfully." });
         } finally {
             client.release();
         }

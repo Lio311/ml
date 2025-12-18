@@ -28,7 +28,20 @@ export default function Header({ brands = [] }) {
     }, {});
 
     const sortedLetters = Object.keys(groupedBrands).sort();
-    const [searchQuery, setSearchQuery] = useState('');
+    const [menu, setMenu] = useState([]);
+
+    useEffect(() => {
+        const fetchSettings = async () => {
+            try {
+                const res = await fetch('/api/admin/settings');
+                const data = await res.json();
+                if (data.menu) setMenu(data.menu.sort((a, b) => a.order - b.order));
+            } catch (error) {
+                console.error('Header: Error fetching menu settings', error);
+            }
+        };
+        fetchSettings();
+    }, []);
 
     return (
         <header className="sticky top-0 z-50 bg-white shadow-sm">
@@ -83,65 +96,74 @@ export default function Header({ brands = [] }) {
                             <Image src="/logo_v3.png" alt="ml." width={180} height={70} className="h-16 w-auto object-contain" priority />
                         </Link>
                         <nav className="flex items-center gap-6 lg:gap-8 relative whitespace-nowrap">
-                            <Link href="/" className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm whitespace-nowrap ${pathname === '/' ? 'bg-black text-white' : 'text-gray-900 hover:bg-black hover:text-white'}`}>דף הבית</Link>
+                            {menu.filter(item => item.visible).map(item => {
+                                // Special case: Brands dropdown
+                                if (item.id === 'brands') {
+                                    return (
+                                        <div
+                                            key={item.id}
+                                            className="group"
+                                            onMouseEnter={() => setIsBrandsDropdownOpen(true)}
+                                            onMouseLeave={() => setIsBrandsDropdownOpen(false)}
+                                        >
+                                            <Link
+                                                href="/brands"
+                                                className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm whitespace-nowrap ${pathname.startsWith('/brands') ? 'bg-black text-white' : 'text-gray-900 hover:bg-black hover:text-white'}`}
+                                            >
+                                                {item.label}
+                                            </Link>
 
-                            {/* Brands Dropdown Trigger */}
-                            <div
-                                className="group"
-                                onMouseEnter={() => setIsBrandsDropdownOpen(true)}
-                                onMouseLeave={() => setIsBrandsDropdownOpen(false)}
-                            >
-                                <Link
-                                    href="/brands"
-                                    className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm whitespace-nowrap ${pathname.startsWith('/brands') ? 'bg-black text-white' : 'text-gray-900 hover:bg-black hover:text-white'}`}
-                                >
-                                    מותגים
-                                </Link>
-
-                                {/* The Mega Menu Dropdown (ABC Dictionary) */}
-                                <div className={`absolute top-full w-[900px] bg-white text-black shadow-[0_30px_60px_-15px_rgba(0,0,0,0.3)] border border-gray-100 rounded-b-xl overflow-hidden z-50 transition-all duration-300 origin-top transform -translate-x-1/2 left-1/2 ${isBrandsDropdownOpen ? 'opacity-100 scale-y-100' : 'opacity-0 scale-y-0 pointer-events-none'}`}>
-                                    <div className="flex flex-col max-h-[60vh]">
-                                        {/* Scrollable Content */}
-                                        <div className="overflow-y-auto p-6 custom-scrollbar text-right">
-                                            {brands.length === 0 ? (
-                                                <p className="text-center text-gray-400">טוען מותגים...</p>
-                                            ) : (
-                                                <div className="columns-4 gap-8">
-                                                    {sortedLetters.map(letter => (
-                                                        <div key={letter} className="break-inside-avoid mb-6">
-                                                            <h4 className="font-bold text-black border-b border-gray-200 mb-2 pb-1 text-lg sticky top-0 bg-white/95 backdrop-blur-sm">{letter}</h4>
-                                                            <div className="flex flex-col gap-1">
-                                                                {groupedBrands[letter].map(brand => (
-                                                                    <Link
-                                                                        key={brand.name}
-                                                                        href={`/brands/${encodeURIComponent(brand.name)}`}
-                                                                        className="text-xs text-gray-600 hover:text-black hover:font-bold transition-colors"
-                                                                    >
-                                                                        {brand.name}
-                                                                    </Link>
+                                            {/* The Mega Menu Dropdown */}
+                                            <div className={`absolute top-full w-[900px] bg-white text-black shadow-[0_30px_60px_-15px_rgba(0,0,0,0.3)] border border-gray-100 rounded-b-xl overflow-hidden z-50 transition-all duration-300 origin-top transform -translate-x-1/2 left-1/2 ${isBrandsDropdownOpen ? 'opacity-100 scale-y-100' : 'opacity-0 scale-y-0 pointer-events-none'}`}>
+                                                <div className="flex flex-col max-h-[60vh]">
+                                                    <div className="overflow-y-auto p-6 custom-scrollbar text-right">
+                                                        {brands.length === 0 ? (
+                                                            <p className="text-center text-gray-400">טוען מותגים...</p>
+                                                        ) : (
+                                                            <div className="columns-4 gap-8">
+                                                                {sortedLetters.map(letter => (
+                                                                    <div key={letter} className="break-inside-avoid mb-6">
+                                                                        <h4 className="font-bold text-black border-b border-gray-200 mb-2 pb-1 text-lg sticky top-0 bg-white/95 backdrop-blur-sm">{letter}</h4>
+                                                                        <div className="flex flex-col gap-1">
+                                                                            {groupedBrands[letter].map(brand => (
+                                                                                <Link
+                                                                                    key={brand.name}
+                                                                                    href={`/brands/${encodeURIComponent(brand.name)}`}
+                                                                                    className="text-xs text-gray-600 hover:text-black hover:font-bold transition-colors"
+                                                                                >
+                                                                                    {brand.name}
+                                                                                </Link>
+                                                                            ))}
+                                                                        </div>
+                                                                    </div>
                                                                 ))}
                                                             </div>
-                                                        </div>
-                                                    ))}
+                                                        )}
+                                                    </div>
+                                                    <div className="p-4 bg-gray-50 border-t text-center">
+                                                        <Link href="/brands" className="text-sm font-bold underline hover:text-red-600">
+                                                            לכל המותגים &larr;
+                                                        </Link>
+                                                    </div>
                                                 </div>
-                                            )}
+                                            </div>
                                         </div>
+                                    );
+                                }
 
-                                        {/* Footer Link */}
-                                        <div className="p-4 bg-gray-50 border-t text-center">
-                                            <Link href="/brands" className="text-sm font-bold underline hover:text-red-600">
-                                                לכל המותגים &larr;
-                                            </Link>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <Link href="/catalog" className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm whitespace-nowrap ${pathname.startsWith('/catalog') ? 'bg-black text-white' : 'text-gray-900 hover:bg-black hover:text-white'}`}>קטלוג</Link>
-                            <Link href="/matching" className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm whitespace-nowrap ${pathname === '/matching' ? 'bg-black text-white' : 'text-gray-900 hover:bg-black hover:text-white'}`}>התאמת מארזים</Link>
-                            <Link href="/requests" className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm whitespace-nowrap ${pathname === '/requests' ? 'bg-black text-white' : 'text-gray-900 hover:bg-black hover:text-white'}`}>בקשת בשמים</Link>
-                            <Link href="/lottery" className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm whitespace-nowrap text-red-600 hover:text-red-700 hover:bg-red-50`}>הגרלה</Link>
-                            <Link href="/contact" className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm whitespace-nowrap ${pathname === '/contact' ? 'bg-black text-white' : 'text-gray-900 hover:bg-black hover:text-white'}`}>צור קשר</Link>
+                                return (
+                                    <Link
+                                        key={item.id}
+                                        href={item.path}
+                                        className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm whitespace-nowrap ${pathname === item.path
+                                            ? (item.isRed ? 'bg-red-600 text-white' : 'bg-black text-white')
+                                            : (item.isRed ? 'text-red-600 hover:text-red-700 hover:bg-red-50' : 'text-gray-900 hover:bg-black hover:text-white')
+                                            }`}
+                                    >
+                                        {item.label}
+                                    </Link>
+                                );
+                            })}
                         </nav>
                     </div>
 
@@ -197,28 +219,17 @@ export default function Header({ brands = [] }) {
                             <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                         </svg>
                     </button>
-                    <div className="flex flex-col gap-6 text-xl font-bold text-center">
-                        <Link href="/" onClick={() => setIsMenuOpen(false)} className="border-b pb-4">
-                            דף הבית
-                        </Link>
-                        <Link href="/catalog" onClick={() => setIsMenuOpen(false)} className="border-b pb-4">
-                            קטלוג
-                        </Link>
-                        <Link href="/matching" onClick={() => setIsMenuOpen(false)} className="border-b pb-4">
-                            התאמת מארזים
-                        </Link>
-                        <Link href="/requests" onClick={() => setIsMenuOpen(false)} className="border-b pb-4">
-                            בקשת בשמים
-                        </Link>
-                        <Link href="/lottery" onClick={() => setIsMenuOpen(false)} className="border-b pb-4 text-red-600 font-bold">
-                            הגרלת בשמים
-                        </Link>
-                        <Link href="/brands" onClick={() => setIsMenuOpen(false)} className="border-b pb-4">
-                            מותגים
-                        </Link>
-                        <Link href="/contact" onClick={() => setIsMenuOpen(false)} className="border-b pb-4">
-                            צור קשר
-                        </Link>
+                    <div className="flex flex-col gap-6 text-xl font-bold text-center overflow-y-auto max-h-[70vh] custom-scrollbar">
+                        {menu.filter(item => item.visible).map(item => (
+                            <Link
+                                key={item.id}
+                                href={item.path}
+                                onClick={() => setIsMenuOpen(false)}
+                                className={`border-b pb-4 ${item.isRed ? 'text-red-600 font-bold' : ''}`}
+                            >
+                                {item.label}
+                            </Link>
+                        ))}
                         <button onClick={() => setIsMenuOpen(false)} className="mt-8 text-sm text-gray-500 underline">
                             סגור תפריט
                         </button>

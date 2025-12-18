@@ -235,11 +235,11 @@ export default async function AdminDashboard() {
 
             {/* Cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 text-right">
                     <div className="text-gray-500 text-sm font-bold uppercase mb-2">הכנסות ({currentMonthLabel})</div>
                     <div className="text-3xl font-bold" dir="ltr">₪ {kpis.totalRevenue}</div>
                 </div>
-                <div className={`p-6 rounded-xl shadow-sm border ${kpis.monthlyProfit < 0 ? 'bg-red-50/10 border-red-200' : 'bg-green-50/10 border-green-200'}`}>
+                <div className={`p-6 rounded-xl shadow-sm border text-right ${kpis.monthlyProfit < 0 ? 'bg-red-50/10 border-red-200' : 'bg-green-50/10 border-green-200'}`}>
                     <div className={`${kpis.monthlyProfit < 0 ? 'text-red-600' : 'text-green-600'} text-sm font-bold uppercase mb-2`}>
                         רווח ({currentMonthLabel})
                     </div>

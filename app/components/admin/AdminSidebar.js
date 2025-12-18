@@ -19,6 +19,7 @@ export default function AdminSidebar() {
         { href: "/admin/coupons", label: "🎟️ ניהול קופונים" },
         { href: "/admin/requests", label: "🗳️ ניהול בקשות" },
         { href: "/admin/lottery", label: "🎰 ניהול הגרלות" },
+        { href: "/admin/menu", label: "🗺️ ניהול תפריט ראשי" },
     ];
 
     return (
@@ -31,8 +32,8 @@ export default function AdminSidebar() {
                         key={item.href}
                         href={item.href}
                         className={`block p-2 rounded transition-colors ${isActive(item.href)
-                                ? "bg-white text-black font-bold"
-                                : "hover:bg-gray-800 text-gray-300"
+                            ? "bg-white text-black font-bold"
+                            : "hover:bg-gray-800 text-gray-300"
                             }`}
                     >
                         {item.label}
