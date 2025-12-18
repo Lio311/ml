@@ -48,6 +48,12 @@ The ultimate Israeli destination for niche & boutique perfume samples (decants).
     - Monthly Site Visits Tracker.
     - Registered Users Counter.
 - **Order Management**: Full CRUD for orders with Hebrew status tracking (Pending, Processing, Shipped).
+- **Pro Dictionary Management**:
+    - **Hebrew Mapping**: Advanced alias system mapping Hebrew searches ("בושם יקר") to English DB queries.
+    - **Bulk Editing**: Optimized UI for managing hundreds of aliases.
+- **Pro Brands Management**:
+    - **Pagination**: Client-side pagination (10/page) for better performance.
+    - **A-Z Filtering**: Interactive alphabet sort bars across the admin panel.
 - **Coupon Management 2.0**: 
     - **Full Control**: Create, edit, and expire discount codes.
     - **Targeted Logic**: Assign coupons to specific client emails for personalized offers.
@@ -55,20 +61,25 @@ The ultimate Israeli destination for niche & boutique perfume samples (decants).
 - **Bestsellers Algorithm**: Auto-updates "Popular" sorting based on real sales data.
 
 ### 🎨 Visual & UX Excellence
-- **Accessibility**: Built-in widget for font resizing, high contrast, and readable fonts.
+- **Accessibility 2.0 (Pro)**: 
+    - **Isolated Architecture**: Widget UI is immune to site-wide filters (Contrast/Invert).
+    - **WCAG Compliant Tools**: Text scale, Readable Font, Highlight Links/Headers, Reading Guide.
+    - **Dedicated Page**: Full Accessibility Statement (`/accessibility`).
 - **Design System**: Glassmorphism, "Dancing Script" typography, and premium animations.
-- **Smart Search**: Real-time autocomplete search bar in the header.
-- **Responsive**: Mobile-first design optimized for all devices.
+- **Smart Search**: Real-time autocomplete search bar with **bi-directional RTL support** and Hebrew mapping.
+- **Responsive**: Mobile-first design optimized for all devices with "Mobile Hero" optimization.
 
 ### 📈 Advanced SEO Engine
 - **Dynamic Metadata**: 
-    - Auto-generates unique `<title>` and `<meta>` tags for every Brand and Category page (e.g., "בשמי Xerjoff | ml_tlv").
-    - "Smart Logic" for edge cases (e.g., "בשמים שאין בארץ").
+    - Auto-generates unique `<title>` and `<meta>` tags for every Brand and Category page.
+- **Hebrew Optimization**:
+    - **Alt Text Strategy**: Database support for `name_he` to generate `English Name - Hebrew Name` alt tags.
+    - **Breadcrumbs Schema**: JSON-LD structured data for rich search results.
 - **Sitemap 2.0**: 
     - Automatically maps hundreds of dynamic URLs (Products, Brands, Categories) for Google.
 - **Rich Snippets (Schema.org)**:
     - **Product Schema**: Price, Stock, and Description data for Google Shopping results.
-    - **Organization Schema**: Identity card for the business (Location, Logo, Support) in the Knowledge Graph.
+    - **Organization Schema**: Identity card for the business in the Knowledge Graph.
 - **Canonicalization**: Prevents duplicate content penalties for filtered pages.
 
 ---
