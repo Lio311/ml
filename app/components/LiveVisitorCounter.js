@@ -41,12 +41,12 @@ export default function LiveVisitorCounter() {
     if (!count) return null;
 
     return (
-        <div className="flex items-center gap-2 px-3 py-0.5 rounded-full animate-fade-in mx-2 bg-white/10 border border-white/20">
+        <div className="flex items-center gap-2 px-3 py-0.5 rounded-full animate-fade-in mx-2 bg-white/90 shadow-sm">
             <span className="relative flex h-2 w-2">
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
             </span>
-            <span className="text-[10px] mobile:text-[10px] font-medium text-white tabular-nums tracking-wide">
+            <span className="text-[10px] mobile:text-[10px] font-bold text-gray-900 tabular-nums tracking-wide">
                 {count} צופים כרגע
             </span>
         </div>
