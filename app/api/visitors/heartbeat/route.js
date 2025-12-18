@@ -1,9 +1,27 @@
 import { NextResponse } from 'next/server';
 import pool from '../../../lib/db';
 
+const isAnalyticsBot = (ua) => {
+    if (!ua) return true;
+    ua = ua.toLowerCase();
+    // Block all crawlers/spiders for analytics purposes (Google, Bing, Yahoo, etc.)
+    const bots = ['bot', 'spider', 'crawl', 'slurp', 'mediapartners'];
+    return bots.some(b => ua.includes(b));
+};
+
 export async function POST(req) {
     try {
         const { visitorId } = await req.json();
+        const ua = req.headers.get('user-agent');
+
+        if (!visitorId || isAnalyticsBot(ua)) {
+            // Return current count without updating (silent ignore)
+            // Or just return error? Standard is to just act normal but don't record.
+
+            // To be safe and fast, let's just return "ok" logic but skip DB insert if bot.
+            // But we need to return the count for the UI (if a bot is rendering it?)
+            // If a bot is rendering, we can just return existing count.
+        }
 
         if (!visitorId) {
             return NextResponse.json({ error: 'Missing visitorId' }, { status: 400 });
@@ -19,13 +37,15 @@ export async function POST(req) {
                 );
             `);
 
-            // 1. Upsert Visitor (Update last_seen)
-            await client.query(`
-                INSERT INTO active_visitors (visitor_id, last_seen)
-                VALUES ($1, NOW())
-                ON CONFLICT (visitor_id) 
-                DO UPDATE SET last_seen = NOW()
-            `, [visitorId]);
+            // 1. Upsert Visitor (Only if REAL user)
+            if (visitorId && !isAnalyticsBot(ua)) {
+                await client.query(`
+                    INSERT INTO active_visitors (visitor_id, last_seen)
+                    VALUES ($1, NOW())
+                    ON CONFLICT (visitor_id) 
+                    DO UPDATE SET last_seen = NOW()
+                `, [visitorId]);
+            }
 
             // 2. Count active visitors in last 5 minutes (Real-time window)
             // We use a broader window (5 min) because people read/browse without clicking constantly.
