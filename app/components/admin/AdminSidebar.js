@@ -4,23 +4,26 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { SignOutButton } from "@clerk/nextjs";
 
-export default function AdminSidebar() {
+export default function AdminSidebar({ role = 'customer' }) {
     const pathname = usePathname();
 
     const isActive = (path) => pathname === path;
 
-    const navItems = [
-        { href: "/admin", label: "🏠 דשבורד" },
-        { href: "/admin/orders", label: "📦 ניהול הזמנות" },
-        { href: "/admin/products", label: "🧴 ניהול מוצרים" },
-        { href: "/admin/dictionary", label: "📖 ניהול מילון חיפוש" },
-        { href: "/admin/brands", label: "🏷️ ניהול מותגים (לוגואים)" },
-        { href: "/admin/users", label: "👥 ניהול משתמשים" },
-        { href: "/admin/coupons", label: "🎟️ ניהול קופונים" },
-        { href: "/admin/requests", label: "🗳️ ניהול בקשות" },
-        { href: "/admin/lottery", label: "🎰 ניהול הגרלות" },
-        { href: "/admin/menu", label: "🗺️ ניהול תפריט ראשי" },
+    const allNavItems = [
+        { href: "/admin", label: "🏠 דשבורד", roles: ['admin', 'deputy'] },
+        { href: "/admin/orders", label: "📦 ניהול הזמנות", roles: ['admin', 'deputy', 'warehouse'] },
+        { href: "/admin/products", label: "🧴 ניהול מוצרים", roles: ['admin', 'deputy'] },
+        { href: "/admin/dictionary", label: "📖 ניהול מילון חיפוש", roles: ['admin', 'deputy'] },
+        { href: "/admin/brands", label: "🏷️ ניהול מותגים (לוגואים)", roles: ['admin', 'deputy'] },
+        { href: "/admin/users", label: "👥 ניהול משתמשים", roles: ['admin', 'deputy'] },
+        { href: "/admin/coupons", label: "🎟️ ניהול קופונים", roles: ['admin', 'deputy'] },
+        { href: "/admin/requests", label: "🗳️ ניהול בקשות", roles: ['admin', 'deputy'] },
+        { href: "/admin/lottery", label: "🎰 ניהול הגרלות", roles: ['admin', 'deputy'] },
+        { href: "/admin/menu", label: "🗺️ ניהול תפריט ראשי", roles: ['admin', 'deputy'] },
     ];
+
+    const navItems = allNavItems.filter(item => item.roles.includes(role));
+
 
     return (
         <aside className="w-64 bg-black text-white p-6 flex flex-col hidden md:flex h-screen sticky top-0">
