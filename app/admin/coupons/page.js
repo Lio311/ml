@@ -332,7 +332,7 @@ function CouponRow({ coupon, onDelete, onEdit }) {
             <td className="p-4 flex gap-2 justify-center">
                 <button
                     onClick={() => onEdit(coupon)}
-                    className="text-blue-500 hover:bg-blue-50 p-2 rounded opacity-0 group-hover:opacity-100 transition"
+                    className="text-blue-500 hover:bg-blue-50 p-2 rounded transition"
                     title="ערוך"
                 >
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
@@ -341,7 +341,7 @@ function CouponRow({ coupon, onDelete, onEdit }) {
                 </button>
                 <button
                     onClick={() => onDelete(coupon.id)}
-                    className="text-red-500 hover:bg-red-50 p-2 rounded opacity-0 group-hover:opacity-100 transition"
+                    className="text-red-500 hover:bg-red-50 p-2 rounded transition"
                     title="מחק"
                 >
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">

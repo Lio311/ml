@@ -182,11 +182,11 @@ export default function DictionaryManagement() {
                 <table className="w-full text-right">
                     <thead className="bg-gray-50 border-b">
                         <tr>
-                            <th className="p-4 font-semibold text-gray-600">עברית</th>
-                            <th className="p-4 font-semibold text-gray-600">אנגלית</th>
-                            <th className="p-4 font-semibold text-gray-600">סוג</th>
-                            <th className="p-4 font-semibold text-gray-600">תאריך הוספה</th>
-                            <th className="p-4 font-semibold text-gray-600">פעולות</th>
+                            <th className="p-4 font-semibold text-gray-600 text-center">עברית</th>
+                            <th className="p-4 font-semibold text-gray-600 text-center">אנגלית</th>
+                            <th className="p-4 font-semibold text-gray-600 text-center">סוג</th>
+                            <th className="p-4 font-semibold text-gray-600 text-center">תאריך הוספה</th>
+                            <th className="p-4 font-semibold text-gray-600 text-center">פעולות</th>
                         </tr>
                     </thead>
                     <tbody className="divide-y">
@@ -198,7 +198,7 @@ export default function DictionaryManagement() {
                             </td></tr>
                         ) : (
                             paginatedMappings.map((item) => (
-                                <tr key={item.id} className="hover:bg-gray-50">
+                                <tr key={item.id} className="hover:bg-gray-50 text-center">
                                     <td className="p-4 font-bold">{item.hebrew_term}</td>
                                     <td className="p-4" dir="ltr">{item.english_term}</td>
                                     <td className="p-4">

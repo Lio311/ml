@@ -517,18 +517,20 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                 ) : (
                                     <div className="hidden md:flex w-10 h-10 bg-gray-100 rounded items-center justify-center text-lg">🧴</div>
                                 )}
-                                <div className="flex-1">
-                                    <div className="font-bold text-lg">{product.brand}</div>
-                                    <div className="text-gray-600">{product.model}</div>
-                                </div>
-                                <div className={`font-bold text-sm px-3 py-1 rounded shadow-sm ${(product.stock || 0) <= 20 ? 'bg-red-100 text-red-800' :
-                                    (product.stock || 0) <= 50 ? 'bg-orange-100 text-orange-800' :
-                                        'bg-green-100 text-green-800'
-                                    }`}>
-                                    מלאי: {product.stock || 0}
-                                </div>
-                                <div className="font-mono text-sm bg-gray-50 px-3 py-1 rounded shadow-sm">
-                                    {product.price_10ml} ₪
+                                <div className="flex-1 flex flex-col">
+                                    <div className="flex items-center gap-3">
+                                        <div className="font-bold text-lg">{product.brand}</div>
+                                        <div className={`font-bold text-xs px-2 py-0.5 rounded shadow-sm ${(product.stock || 0) <= 20 ? 'bg-red-100 text-red-800' :
+                                            (product.stock || 0) <= 50 ? 'bg-orange-100 text-orange-800' :
+                                                'bg-green-100 text-green-800'
+                                            }`}>
+                                            מלאי: {product.stock || 0}
+                                        </div>
+                                        <div className="font-mono text-xs bg-gray-50 px-2 py-0.5 rounded shadow-sm border">
+                                            {product.price_10ml} ₪
+                                        </div>
+                                    </div>
+                                    <div className="text-gray-600 text-sm">{product.model}</div>
                                 </div>
                             </div>
                         )
@@ -536,10 +538,10 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
 
                         {editingId !== product.id && (
                             <div className="flex gap-2 w-full md:w-auto">
-                                <button onClick={() => startEdit(product)} className="border-2 border-black text-black hover:bg-black hover:text-white px-6 py-1.5 rounded text-sm font-bold transition w-full md:w-auto">
-                                    ערוך
+                                <button onClick={() => startEdit(product)} className="bg-blue-600 text-white px-4 py-1.5 rounded text-xs hover:bg-blue-700 font-bold transition whitespace-nowrap">
+                                    עדכן
                                 </button>
-                                <button onClick={() => handleDelete(product.id)} className="border-2 border-red-500 text-red-500 hover:bg-red-500 hover:text-white px-4 py-1.5 rounded text-sm font-bold transition w-full md:w-auto">
+                                <button onClick={() => handleDelete(product.id)} className="text-red-500 hover:text-red-700 text-xs font-bold border border-red-200 px-4 py-1.5 rounded hover:bg-red-50 transition">
                                     מחק
                                 </button>
                             </div>
