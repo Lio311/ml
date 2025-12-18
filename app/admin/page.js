@@ -239,9 +239,13 @@ export default async function AdminDashboard() {
                     <div className="text-gray-500 text-sm font-bold uppercase mb-2">הכנסות ({currentMonthLabel})</div>
                     <div className="text-3xl font-bold">{kpis.totalRevenue} ₪</div>
                 </div>
-                <div className="bg-white p-6 rounded-xl shadow-sm border border-green-200 bg-green-50/10">
-                    <div className="text-green-600 text-sm font-bold uppercase mb-2">רווח ({currentMonthLabel})</div>
-                    <div className="text-3xl font-bold text-green-700">{kpis.monthlyProfit} ₪</div>
+                <div className={`p-6 rounded-xl shadow-sm border ${kpis.monthlyProfit < 0 ? 'bg-red-50/10 border-red-200' : 'bg-green-50/10 border-green-200'}`}>
+                    <div className={`${kpis.monthlyProfit < 0 ? 'text-red-600' : 'text-green-600'} text-sm font-bold uppercase mb-2`}>
+                        רווח ({currentMonthLabel})
+                    </div>
+                    <div className={`text-3xl font-bold ${kpis.monthlyProfit < 0 ? 'text-red-700' : 'text-green-700'}`} dir="ltr">
+                        {kpis.monthlyProfit < 0 ? `-${Math.abs(kpis.monthlyProfit)}` : kpis.monthlyProfit} ₪
+                    </div>
                 </div>
                 <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
                     <div className="text-gray-500 text-sm font-bold uppercase mb-2">דוגמיות שנמכרו</div>
