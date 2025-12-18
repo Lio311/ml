@@ -46,17 +46,19 @@ const CustomTooltip = ({ active, payload, label, prefix = "" }) => {
     return null;
 };
 
-export default function DashboardCharts({ orderData, revenueData }) {
+export default function DashboardCharts({ orderData, revenueData, visitsData }) {
+    const [rightChartMode, setRightChartMode] = React.useState('revenue'); // 'revenue' | 'orders'
+
     return (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
-            {/* Orders Chart */}
+            {/* Daily Visits Chart (New Left Chart) */}
             <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
                 <div className="flex justify-between items-center mb-6" dir="rtl">
-                    <h3 className="text-lg font-bold text-gray-800">הזמנות</h3>
+                    <h3 className="text-lg font-bold text-gray-800">כניסות לאתר</h3>
                 </div>
                 <div className="h-[320px] w-full">
                     <ResponsiveContainer width="100%" height="100%">
-                        <LineChart data={orderData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                        <LineChart data={visitsData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
                             <XAxis
                                 dataKey="day"
@@ -78,9 +80,9 @@ export default function DashboardCharts({ orderData, revenueData }) {
                                 name="החודש עד התאריך הנוכחי"
                                 type="monotone"
                                 dataKey="current"
-                                stroke="#3b82f6"
+                                stroke="#8b5cf6" // Purple for visits
                                 strokeWidth={4}
-                                dot={{ r: 4, fill: '#3b82f6', strokeWidth: 2, stroke: '#fff' }}
+                                dot={{ r: 4, fill: '#8b5cf6', strokeWidth: 2, stroke: '#fff' }}
                                 activeDot={{ r: 6, strokeWidth: 0 }}
                                 connectNulls
                             />
@@ -88,7 +90,7 @@ export default function DashboardCharts({ orderData, revenueData }) {
                                 name="חודש קודם"
                                 type="monotone"
                                 dataKey="previous"
-                                stroke="#10b981"
+                                stroke="#d1d5db"
                                 strokeWidth={3}
                                 strokeDasharray="6 6"
                                 dot={false}
@@ -100,14 +102,30 @@ export default function DashboardCharts({ orderData, revenueData }) {
                 </div>
             </div>
 
-            {/* Revenue Chart */}
+            {/* Configurable Chart (Revenue OR Orders) */}
             <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
                 <div className="flex justify-between items-center mb-6" dir="rtl">
-                    <h3 className="text-lg font-bold text-gray-800">מכירות רשת</h3>
+                    <h3 className="text-lg font-bold text-gray-800">
+                        {rightChartMode === 'revenue' ? 'מכירות רשת' : 'הזמנות'}
+                    </h3>
+                    <div className="flex bg-gray-100 p-1 rounded-lg">
+                        <button
+                            onClick={() => setRightChartMode('orders')}
+                            className={`px-3 py-1 text-xs font-bold rounded-md transition ${rightChartMode === 'orders' ? 'bg-white shadow text-black' : 'text-gray-500 hover:text-black'}`}
+                        >
+                            הזמנות
+                        </button>
+                        <button
+                            onClick={() => setRightChartMode('revenue')}
+                            className={`px-3 py-1 text-xs font-bold rounded-md transition ${rightChartMode === 'revenue' ? 'bg-white shadow text-black' : 'text-gray-500 hover:text-black'}`}
+                        >
+                            הכנסות
+                        </button>
+                    </div>
                 </div>
                 <div className="h-[320px] w-full">
                     <ResponsiveContainer width="100%" height="100%">
-                        <LineChart data={revenueData} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
+                        <LineChart data={rightChartMode === 'revenue' ? revenueData : orderData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
                             <XAxis
                                 dataKey="day"
@@ -122,9 +140,9 @@ export default function DashboardCharts({ orderData, revenueData }) {
                                 axisLine={false}
                                 tick={{ fill: '#9ca3af' }}
                                 orientation="left"
-                                tickFormatter={(value) => `₪${value >= 1000 ? (value / 1000).toFixed(1) + 'k' : value}`}
+                                tickFormatter={rightChartMode === 'revenue' ? ((value) => `₪${value >= 1000 ? (value / 1000).toFixed(1) + 'k' : value}`) : undefined}
                             />
-                            <Tooltip content={<CustomTooltip prefix="₪" />} cursor={{ stroke: '#f3f4f6', strokeWidth: 2 }} />
+                            <Tooltip content={<CustomTooltip prefix={rightChartMode === 'revenue' ? "₪" : ""} />} cursor={{ stroke: '#f3f4f6', strokeWidth: 2 }} />
                             <Legend content={<CustomLegend />} />
                             <Line
                                 name="החודש עד התאריך הנוכחי"

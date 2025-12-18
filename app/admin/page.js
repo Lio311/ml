@@ -22,8 +22,10 @@ export default async function AdminDashboard() {
         revenueChartData: [],
         topBrands: [],
         topSizes: [],
-        monthlyProfit: 0
+        monthlyProfit: 0,
+        visitsChartData: []
     };
+
 
     try {
         // KPI Queries
@@ -155,10 +157,44 @@ export default async function AdminDashboard() {
             ORDER BY day
         `, [prevMonth, prevYear]);
 
+        // Visits Chart Data Fetching
+        const currentMonthVisitsRes = await client.query(`
+            SELECT 
+                EXTRACT(DAY FROM created_at) as day,
+                COUNT(*) as count
+            FROM site_visits
+            WHERE EXTRACT(MONTH FROM created_at) = $1
+            AND EXTRACT(YEAR FROM created_at) = $2
+            GROUP BY day
+            ORDER BY day
+        `, [month, year]);
+
+        const prevMonthVisitsRes = await client.query(`
+            SELECT 
+                EXTRACT(DAY FROM created_at) as day,
+                COUNT(*) as count
+            FROM site_visits
+            WHERE EXTRACT(MONTH FROM created_at) = $1
+            AND EXTRACT(YEAR FROM created_at) = $2
+            GROUP BY day
+            ORDER BY day
+        `, [prevMonth, prevYear]);
+
+
         const daysInMonth = new Date(year, month, 0).getDate();
         for (let i = 1; i <= daysInMonth; i++) {
             const curDay = currentMonthRes.rows.find(r => parseInt(r.day) === i);
             const prevDay = prevMonthRes.rows.find(r => parseInt(r.day) === i);
+
+            const curVisits = currentMonthVisitsRes.rows.find(r => parseInt(r.day) === i);
+            const prevVisits = prevMonthVisitsRes.rows.find(r => parseInt(r.day) === i);
+
+            kpis.visitsChartData.push({
+                day: i,
+                current: curVisits ? parseInt(curVisits.count) : 0,
+                previous: prevVisits ? parseInt(prevVisits.count) : 0
+            });
+
 
             kpis.orderChartData.push({
                 day: i,
@@ -225,7 +261,9 @@ export default async function AdminDashboard() {
             <DashboardCharts
                 orderData={kpis.orderChartData}
                 revenueData={kpis.revenueChartData}
+                visitsData={kpis.visitsChartData}
             />
+
 
             <AnalyticsTables
                 topBrands={kpis.topBrands}
