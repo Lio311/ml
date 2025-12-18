@@ -4,6 +4,9 @@ import { useState, useEffect } from "react";
 
 export default function DictionaryManagement() {
     const [mappings, setMappings] = useState([]);
+    const [page, setPage] = useState(1);
+    const [filterLetter, setFilterLetter] = useState(null);
+    const ITEMS_PER_PAGE = 10;
     const [loading, setLoading] = useState(true);
     const [formData, setFormData] = useState({ hebrew: "", english: "", type: "general" });
     const [status, setStatus] = useState("");
@@ -17,6 +20,8 @@ export default function DictionaryManagement() {
             const res = await fetch("/api/admin/dictionary");
             if (res.ok) {
                 const data = await res.json();
+                // Sort alphabetically by English term
+                data.sort((a, b) => a.english_term.localeCompare(b.english_term));
                 setMappings(data);
             }
         } catch (error) {
@@ -67,6 +72,19 @@ export default function DictionaryManagement() {
             console.error("Failed to delete", error);
         }
     };
+
+
+
+    // Filter Logic
+    const filteredMappings = filterLetter
+        ? mappings.filter(m => m.english_term.trim().toUpperCase().startsWith(filterLetter))
+        : mappings;
+
+    // Pagination Logic
+    const totalPages = Math.ceil(filteredMappings.length / ITEMS_PER_PAGE);
+    const paginatedMappings = filteredMappings.slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE);
+
+    const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split('');
 
     return (
         <div className="max-w-4xl mx-auto">
@@ -122,8 +140,29 @@ export default function DictionaryManagement() {
                 {status === "error" && <p className="text-red-600 mt-2 text-sm">שגיאה בשמירה (אולי המונח קיים?)</p>}
             </div>
 
+            {/* A-Z Filters */}
+            <div className="bg-white p-4 rounded-lg shadow mb-6 overflow-x-auto">
+                <div className="flex flex-wrap gap-2 justify-center" dir="ltr">
+                    <button
+                        onClick={() => { setFilterLetter(null); setPage(1); }}
+                        className={`px-3 py-1 text-sm font-bold rounded transition-colors ${filterLetter === null ? 'bg-black text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
+                    >
+                        ALL
+                    </button>
+                    {alphabet.map(letter => (
+                        <button
+                            key={letter}
+                            onClick={() => { setFilterLetter(letter); setPage(1); }}
+                            className={`w-8 h-8 flex items-center justify-center text-sm font-bold rounded transition-colors ${filterLetter === letter ? 'bg-black text-white' : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}`}
+                        >
+                            {letter}
+                        </button>
+                    ))}
+                </div>
+            </div>
+
             {/* Table */}
-            <div className="bg-white rounded-lg shadow overflow-hidden">
+            <div className="bg-white rounded-lg shadow overflow-hidden mb-6">
                 <table className="w-full text-right">
                     <thead className="bg-gray-50 border-b">
                         <tr>
@@ -137,17 +176,19 @@ export default function DictionaryManagement() {
                     <tbody className="divide-y">
                         {loading ? (
                             <tr><td colSpan="5" className="p-8 text-center text-gray-500">טוען נתונים...</td></tr>
-                        ) : mappings.length === 0 ? (
-                            <tr><td colSpan="5" className="p-8 text-center text-gray-500">אין נתונים במילון.</td></tr>
+                        ) : paginatedMappings.length === 0 ? (
+                            <tr><td colSpan="5" className="p-8 text-center text-gray-500">
+                                {filterLetter ? `אין תוצאות באות ${filterLetter}` : 'אין נתונים במילון.'}
+                            </td></tr>
                         ) : (
-                            mappings.map((item) => (
+                            paginatedMappings.map((item) => (
                                 <tr key={item.id} className="hover:bg-gray-50">
                                     <td className="p-4 font-bold">{item.hebrew_term}</td>
                                     <td className="p-4" dir="ltr">{item.english_term}</td>
                                     <td className="p-4">
                                         <span className={`px-2 py-1 rounded text-xs font-bold ${item.type === 'brand' ? 'bg-blue-100 text-blue-800' :
-                                                item.type === 'product' ? 'bg-green-100 text-green-800' :
-                                                    'bg-gray-100 text-gray-800'
+                                            item.type === 'product' ? 'bg-green-100 text-green-800' :
+                                                'bg-gray-100 text-gray-800'
                                             }`}>
                                             {item.type === 'brand' ? 'מותג' : item.type === 'product' ? 'מוצר' : 'כללי'}
                                         </span>
@@ -170,6 +211,29 @@ export default function DictionaryManagement() {
                     </tbody>
                 </table>
             </div>
+
+            {/* Pagination Controls */}
+            {totalPages > 1 && (
+                <div className="flex justify-center items-center gap-4 mb-12" dir="ltr">
+                    <button
+                        onClick={() => setPage(p => Math.max(1, p - 1))}
+                        disabled={page === 1}
+                        className="px-4 py-2 border rounded hover:bg-gray-100 disabled:opacity-50 transition"
+                    >
+                        Prev
+                    </button>
+                    <span className="text-sm font-bold">
+                        Page {page} of {totalPages}
+                    </span>
+                    <button
+                        onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                        disabled={page === totalPages}
+                        className="px-4 py-2 border rounded hover:bg-gray-100 disabled:opacity-50 transition"
+                    >
+                        Next
+                    </button>
+                </div>
+            )}
         </div>
     );
 }
