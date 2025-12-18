@@ -78,13 +78,13 @@ export default function AdminUsersPage() {
 
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
                 <div className="overflow-x-auto">
-                    <table className="w-full text-right" dir="rtl">
+                    <table className="w-full text-center" dir="rtl">
                         <thead className="bg-gray-50 text-gray-500 text-sm">
                             <tr>
-                                <th className="p-4">משתמש</th>
-                                <th className="p-4">אימייל</th>
-                                <th className="p-4">נוצר בתאריך</th>
-                                <th className="p-4">תפקיד נוכחי</th>
+                                <th className="p-4 text-center">משתמש</th>
+                                <th className="p-4 text-center">אימייל</th>
+                                <th className="p-4 text-center">נוצר בתאריך</th>
+                                <th className="p-4 text-center">תפקיד נוכחי</th>
                                 <th className="p-4 text-center">פעולות</th>
                             </tr>
                         </thead>
@@ -105,6 +105,7 @@ export default function AdminUsersPage() {
                                         </span>
                                     </td>
                                     <td className="p-4 text-center">
+
                                         {canEdit ? (
                                             <select
                                                 value={u.role}
