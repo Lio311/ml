@@ -36,6 +36,25 @@ The ultimate Israeli destination for niche & boutique perfume samples (decants).
     - **Value Guarantee**: Always receive 15% more value than paid.
     - **Mystery Unboxing**: Interactive reveal of your curated perfume bundle.
 
+- [ ] **Marketing Automation & Analytics**
+    - [x] Google Analytics 4 Integration
+    - [x] Microsoft Clarity Integration
+    - [x] Sentry Error Tracking Integration
+    - [ ] Newsletter subscription popup (10% off)
+    - [ ] "Frequently Bought Together" algorithm
+
+### 🛡️ Analytics & Security Suite
+- **Live Visitor Counter**:
+    - **Real-Time Tracking**: Database-backed counter showing active unique visitors (5 min window).
+    - **Visual Indicator**: Pulsing green badge in the top bar implies high traffic.
+    - **Bot Filtering**: Smart logic filters out crawlers (Google, Bing) to show only human users.
+- **Bot Protection (Middleware)**:
+    - **Aggressive Blocker**: Automatically blocks harmful commercial scrapers (Ahrefs, Semrush, MJ12) at the edge.
+- **Full Observability Stack**:
+    - **Google Analytics 4**: Traffic sources and conversion tracking.
+    - **Microsoft Clarity**: Session recordings and heatmaps.
+    - **Sentry**: Real-time error monitoring and performance tracing.
+
 ### 🤖 AI Support Chatbot ("Sarah")
 - **Smart Assistance**: Answers FAQs about tracking, shipping, and originality.
 - **Product Recommendations**: Analyzes user preferences to suggest scents.
