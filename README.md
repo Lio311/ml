@@ -36,10 +36,6 @@ The ultimate Israeli destination for niche & boutique perfume samples (decants).
     - **Value Guarantee**: Always receive 15% more value than paid.
     - **Mystery Unboxing**: Interactive reveal of your curated perfume bundle.
 
-- [ ] **Marketing Automation & Analytics**
-    - [x] Google Analytics 4 Integration
-    - [x] Microsoft Clarity Integration
-    - [x] Sentry Error Tracking Integration
 
 ### 🛡️ Analytics & Security Suite
 - **Live Visitor Counter**:
