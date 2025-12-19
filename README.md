@@ -40,8 +40,6 @@ The ultimate Israeli destination for niche & boutique perfume samples (decants).
     - [x] Google Analytics 4 Integration
     - [x] Microsoft Clarity Integration
     - [x] Sentry Error Tracking Integration
-    - [ ] Newsletter subscription popup (10% off)
-    - [ ] "Frequently Bought Together" algorithm
 
 ### 🛡️ Analytics & Security Suite
 - **Live Visitor Counter**:
