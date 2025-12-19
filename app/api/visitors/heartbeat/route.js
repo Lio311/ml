@@ -1,6 +1,9 @@
 import { NextResponse } from 'next/server';
 import pool from '../../../lib/db';
 
+export const dynamic = 'force-dynamic';
+
+
 const isAnalyticsBot = (ua) => {
     if (!ua) return true;
     ua = ua.toLowerCase();
@@ -64,8 +67,8 @@ export async function POST(req) {
             // However, verify if "count" is string or number in pg.
             const realCount = parseInt(countRes.rows[0].count);
 
-            // Minimum 5 to avoid "lonely" feel?
-            const displayCount = Math.max(5, realCount);
+            // Return REAL count (no fake floor)
+            const displayCount = realCount;
 
             return NextResponse.json({ count: displayCount });
         } finally {
