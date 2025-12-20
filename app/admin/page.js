@@ -145,33 +145,43 @@ export default async function AdminDashboard() {
 
         // Fetch Users Count & Chart Data from Clerk
         // Fetch Users Count & Chart Data from Clerk
+        // Fetch Users Count & Chart Data
         let usersChartData = [];
+        let rawUsersData = [];
+
         try {
-            const clerk = await clerkClient();
-            // Fetch last 500 users to generate chart data
-            // Removing orderBy as it might cause issues in some SDK versions
-            const userListResponse = await clerk.users.getUserList({ limit: 500 });
-
-            // Handle different SDK response structures
-            const usersData = Array.isArray(userListResponse) ? userListResponse : (userListResponse.data || []);
-
-            // Try to get accurate count, fallback to list length
+            // OPTION 1: Try Local DB First (Fastest/Safest)
+            // The user believes data is in DB. We try to query it.
+            const dbUsersRes = await client.query('SELECT created_at FROM users ORDER BY created_at DESC LIMIT 500');
+            rawUsersData = dbUsersRes.rows.map(r => ({ createdAt: r.created_at }));
+            kpis.totalUsers = parseInt((await client.query('SELECT COUNT(*) FROM users')).rows[0].count);
+        } catch (dbErr) {
+            // OPTION 2: Fallback to Clerk API if local table doesn't exist
+            console.warn("Local users table not found, falling back to Clerk API", dbErr.message);
             try {
-                kpis.totalUsers = await clerk.users.getCount();
-            } catch (cntErr) {
-                console.warn("clerk.users.getCount failed, using list length", cntErr);
-                kpis.totalUsers = usersData.length;
+                const clerk = await clerkClient();
+                const userListResponse = await clerk.users.getUserList({ limit: 100 }); // Limited to 100 for stability
+                const fetchedUsers = Array.isArray(userListResponse) ? userListResponse : (userListResponse.data || []);
+                rawUsersData = fetchedUsers.map(u => ({ createdAt: u.createdAt }));
+
+                try {
+                    kpis.totalUsers = await clerk.users.getCount();
+                } catch (cErr) {
+                    kpis.totalUsers = rawUsersData.length;
+                }
+            } catch (clerkErr) {
+                console.error("Clerk API failed:", clerkErr);
+                rawUsersData = [];
             }
+        }
 
-            // Process User Chart Data
-            // We need to group by day for current month and previous month
-            // Re-using 'year', 'month', 'prevYear', 'prevMonth', 'daysInMonth' from above
-
-            // Initialize daily counts
+        // Process User Chart Data
+        try {
             const currentMonthUsers = {};
             const prevMonthUsers = {};
 
-            usersData.forEach(u => {
+            rawUsersData.forEach(u => {
+                if (!u.createdAt) return;
                 const date = new Date(u.createdAt);
                 const dYear = date.getFullYear();
                 const dMonth = date.getMonth() + 1;
@@ -184,7 +194,6 @@ export default async function AdminDashboard() {
                 }
             });
 
-            // Populate array
             for (let i = 1; i <= daysInMonth; i++) {
                 usersChartData.push({
                     day: i,
@@ -192,11 +201,8 @@ export default async function AdminDashboard() {
                     previous: prevMonthUsers[i] || 0
                 });
             }
-
-        } catch (e) {
-            console.error("Failed to fetch Clerk users count/data:", e);
-            kpis.totalUsers = 0;
-            // Ensure chart data is empty but valid
+        } catch (procErr) {
+            console.error("User chart processing error:", procErr);
             usersChartData = [];
         }
 
