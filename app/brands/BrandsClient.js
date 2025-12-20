@@ -27,15 +27,6 @@ export default function BrandsClient({ brands }) {
         <div>
             {/* A-Z Filter Controls */}
             <div className="flex flex-wrap justify-center gap-2 mb-12" dir="ltr">
-                <button
-                    onClick={() => setSelectedLetter(null)}
-                    className={`h-8 px-3 text-xs font-bold rounded flex items-center justify-center transition-all ${selectedLetter === null
-                        ? 'bg-black text-white shadow-lg scale-110'
-                        : 'bg-white text-gray-700 hover:bg-gray-200 border border-gray-200'
-                        }`}
-                >
-                    הכל
-                </button>
                 {visibleLetters.map(letter => (
                     <button
                         key={letter}
@@ -48,6 +39,15 @@ export default function BrandsClient({ brands }) {
                         {letter}
                     </button>
                 ))}
+                <button
+                    onClick={() => setSelectedLetter(null)}
+                    className={`h-8 px-3 text-xs font-bold rounded flex items-center justify-center transition-all ${selectedLetter === null
+                        ? 'bg-black text-white shadow-lg scale-110'
+                        : 'bg-white text-gray-700 hover:bg-gray-200 border border-gray-200'
+                        }`}
+                >
+                    הכל
+                </button>
             </div>
 
             {/* Results Grid */}
