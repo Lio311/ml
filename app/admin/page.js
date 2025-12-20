@@ -466,18 +466,24 @@ export default async function AdminDashboard() {
                         </div>
                     </div>
                 </div>
-                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
                     <div className="text-gray-500 text-sm font-bold uppercase mb-2">הזמנות סה״כ</div>
-                    <div className="text-3xl font-bold">{kpis.totalOrders}</div>
+                    <div className="text-3xl font-bold mb-4">{kpis.totalOrders}</div>
+                    <div className="text-xs text-center border-t pt-2 mt-2">
+                        <Link href="/admin/orders" className="text-blue-500 hover:text-blue-700 font-medium">לניהול הזמנות &rarr;</Link>
+                    </div>
                 </div>
                 <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
                     <div className="text-gray-500 text-sm font-bold uppercase mb-2">כניסות לאתר</div>
                     <div className="text-xl font-bold">חודש {currentMonthLabel}: <span className="text-blue-600">{kpis.monthlyVisits}</span> כניסות</div>
                     <div className="text-xs text-gray-400 mt-1">נספר לפי ביקורים ייחודיים</div>
                 </div>
-                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
                     <div className="text-gray-500 text-sm font-bold uppercase mb-2">משתמשים רשומים</div>
-                    <div className="text-3xl font-bold">{kpis.totalUsers}</div>
+                    <div className="text-3xl font-bold mb-4">{kpis.totalUsers}</div>
+                    <div className="text-xs text-center border-t pt-2 mt-2">
+                        <Link href="/admin/users" className="text-blue-500 hover:text-blue-700 font-medium">לניהול משתמשים &rarr;</Link>
+                    </div>
                 </div>
             </div>
 
