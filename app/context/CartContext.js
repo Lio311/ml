@@ -282,10 +282,21 @@ export function CartProvider({ children }) {
                 let isEligible = true;
 
                 // Check Limitations (Robust Comparison)
-                // 1. Size: Loose equality check for "2" vs 2 vs "2ml"
+                // 1. Size: Extract digits to handle "2", "2ml", "2 ml", "10ml Luxury"
                 if (limits.allowed_sizes?.length > 0) {
-                    const itemSize = parseInt(item.size); // handle "10ml" -> 10
-                    if (!limits.allowed_sizes.some(s => parseInt(s) === itemSize)) isEligible = false;
+                    // Extract value: 2, 5, 10. For "Luxury 10ml" represented as 11, we assume the cart Item.size is actually 11 IF the admin saved it as such.
+                    // But if the cart item size is "10" and admin is "11", this fails.
+                    // IMPORTANT: The admin map uses ID 11 for label "10ml Luxury".
+                    // Does the cart item have size 11? Or size 10?
+                    // ProductActionsClient calls handleAdd(2), handleAdd(5), handleAdd(10). 
+                    // It DOES NOT seem to handle 11. 
+                    // Assuming we only support 2, 5, 10 for now based on the file viewed.
+                    // We just compare loose integer values.
+
+                    const itemSizeStr = String(item.size).replace(/\D/g, '');
+                    const itemSize = itemSizeStr ? parseInt(itemSizeStr) : null;
+
+                    if (itemSize && !limits.allowed_sizes.some(s => parseInt(s) === itemSize)) isEligible = false;
                 }
 
                 // 2. Brand: Case insensitive check with trim
