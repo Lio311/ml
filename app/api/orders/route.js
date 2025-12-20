@@ -59,9 +59,14 @@ export async function POST(req) {
 
                     // --- BOTTLE INVENTORY DEDUCTION ---
                     // Deduct 1 bottle of this size for each unit quantity
-                    // e.g. 2x 5ml = 2 bottles of 5ml
-                    const bottleSize = Number(item.size);
-                    if ([2, 5, 10].includes(bottleSize)) {
+                    let bottleSize = Number(item.size);
+
+                    // Luxury Bottle Logic: 10ml & Price >= 300 -> Size 11
+                    if (bottleSize === 10 && item.price >= 300) {
+                        bottleSize = 11;
+                    }
+
+                    if ([2, 5, 10, 11].includes(bottleSize)) {
                         await client.query(
                             `UPDATE bottle_inventory SET quantity = quantity - $1 WHERE size = $2`,
                             [item.quantity, bottleSize]
