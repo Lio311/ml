@@ -601,8 +601,8 @@ export default async function AdminDashboard() {
             {/* Coupons Table */}
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden mt-8">
                 <div className="p-6 border-b flex justify-between items-center">
-                    <h3 className="font-bold">קופונים אחרונים (עגלות נטושות)</h3>
-                    <Link href="/admin/coupons" className="text-blue-600 text-sm hover:underline">לניהול קופונים מלא &gt;</Link>
+                    <h3 className="font-bold">קופונים אחרונים</h3>
+                    <Link href="/admin/coupons" className="text-blue-600 text-sm hover:underline">לניהול קופונים מלא</Link>
                 </div>
                 <div className="overflow-x-auto">
                     <table className="w-full text-right" dir="rtl">
