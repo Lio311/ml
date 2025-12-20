@@ -286,29 +286,28 @@ export function CartProvider({ children }) {
     // Apply Coupon (on items only)
     // Apply Coupon (on eligible items only)
     if (coupon) {
-        const limits = coupon.limitations || {};
+        let limits = coupon.limitations || {};
+        // Defensive: Parse if string (though pg usually returns object)
+        if (typeof limits === 'string') {
+            try {
+                limits = JSON.parse(limits);
+            } catch (e) {
+                console.error("Failed to parse coupon limitations", e);
+                limits = {};
+            }
+        }
+
+        console.log("Checking Coupon Limits:", limits);
 
         // 0. Check User Affiliation (Shayichut)
+        let isValidUser = true; // Default true if no user filter
         if (limits.allowed_users?.length > 0) {
-            // Need user email
-            // We have 'user' from useUser() hook available?
-            // Yes, let's verify if we extracted it properly from hook inside CartProvider.
-            // Wait, we used `useUser` hook inside `CartProvider` but only for syncCart effect.
-            // We need to access it here.
-
-            // Note: `user` object is available in scope because we calle `const { user } = useUser();` at line 116.
             const userEmail = user?.primaryEmailAddress?.emailAddress;
-
-            if (!userEmail || !limits.allowed_users.includes(userEmail)) {
-                // Coupon not valid for this user
-                // Maybe we should show an error or just ignore it?
-                // Current logic: ignore it (no discount).
-                // We can also set error message in state if we want UI feedback.
-            } else {
-                isValidUser = true;
+            // Case insensitive email check
+            if (!userEmail || !limits.allowed_users.some(u => u.trim().toLowerCase() === userEmail.trim().toLowerCase())) {
+                console.log("Coupon invalid for user:", userEmail);
+                isValidUser = false;
             }
-        } else {
-            isValidUser = true;
         }
 
         if (isValidUser) {

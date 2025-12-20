@@ -19,6 +19,7 @@ export default function AdminCouponsPage() {
     // Data for selectors
     const [products, setProducts] = useState([]);
     const [brands, setBrands] = useState([]);
+    const [usersList, setUsersList] = useState([]); // Users for Shayichut
 
     // Edit State
     const [editingId, setEditingId] = useState(null);
@@ -31,9 +32,10 @@ export default function AdminCouponsPage() {
         email: '',
         // Limitations
         allowed_sizes: [],
-        allowed_categories: [],
+        allowed_categories: [], // Reverted to Categories
         allowed_brands: [],
         allowed_products: [], // IDs
+        allowed_users: [], // New User Affiliation
         min_cart_total: 0
     });
 
@@ -44,15 +46,19 @@ export default function AdminCouponsPage() {
 
     const fetchAuxData = async () => {
         try {
-            const [prodRes, brandRes] = await Promise.all([
-                fetch('/api/products?limit=1000'), // Valid endpoint
-                fetch('/api/brands')
+            const [prodRes, brandRes, userRes] = await Promise.all([
+                fetch('/api/products?limit=1000'),
+                fetch('/api/brands'),
+                fetch('/api/admin/users') // Reuse existing users endpoint (GET)
             ]);
+
             if (prodRes.ok) {
                 const data = await prodRes.json();
                 setProducts(data.products || []);
             }
             if (brandRes.ok) setBrands(await brandRes.json());
+            if (userRes.ok) setUsersList(await userRes.json());
+
         } catch (e) {
             console.error("Failed to load aux data", e);
         }
@@ -100,6 +106,7 @@ export default function AdminCouponsPage() {
             allowed_categories: limits.allowed_categories || [],
             allowed_brands: limits.allowed_brands || [],
             allowed_products: limits.allowed_products || [],
+            allowed_users: limits.allowed_users || [],
             min_cart_total: limits.min_cart_total || 0
         });
         setShowModal(true);
@@ -121,6 +128,7 @@ export default function AdminCouponsPage() {
                     allowed_categories: formData.allowed_categories.length > 0 ? formData.allowed_categories : null,
                     allowed_brands: formData.allowed_brands.length > 0 ? formData.allowed_brands : null,
                     allowed_products: formData.allowed_products.length > 0 ? formData.allowed_products : null,
+                    allowed_users: formData.allowed_users.length > 0 ? formData.allowed_users : null,
                     min_cart_total: Number(formData.min_cart_total) || 0
                 }
             };
@@ -154,7 +162,7 @@ export default function AdminCouponsPage() {
         setEditingId(null);
         setFormData({
             code: '', discount_percent: 5, expires_in_hours: '', email: '',
-            allowed_sizes: [], allowed_categories: [], allowed_brands: [], allowed_products: [], min_cart_total: 0
+            allowed_sizes: [], allowed_categories: [], allowed_brands: [], allowed_products: [], allowed_users: [], min_cart_total: 0
         });
     };
 
