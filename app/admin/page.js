@@ -189,10 +189,12 @@ export default async function AdminDashboard() {
             for (let i = 1; i <= daysInMonth; i++) {
                 usersChartData.push({
                     day: i,
-                    current: currentMonthUsers[i] || 0,
-                    previous: prevMonthUsers[i] || 0
+                    current: Number(currentMonthUsers[i]) || 0,
+                    previous: Number(prevMonthUsers[i]) || 0
                 });
             }
+            // Firewall: Ensure Data is Pure JSON (no Dates/Undefined) to prevent Next.js Client Prop Error
+            usersChartData = JSON.parse(JSON.stringify(usersChartData));
         } catch (procErr) {
             console.error("User chart processing error:", procErr);
             usersChartData = [];
@@ -451,7 +453,7 @@ export default async function AdminDashboard() {
                 orderData={kpis.orderChartData}
                 revenueData={kpis.revenueChartData}
                 visitsData={kpis.visitsChartData}
-            // usersData={usersChartData} // Temporarily disabled for debugging
+                usersData={usersChartData}
             />
             {/* 
             <div className="bg-yellow-50 p-4 rounded text-center mb-8 border border-yellow-200 text-yellow-800">
