@@ -445,11 +445,15 @@ export default async function AdminDashboard() {
         <div>
             <h1 className="text-3xl font-bold mb-8">לוח בקרה</h1>
 
+            {/* 
+             * User Chart Data Removed per user request to fix crash 
+             */}
+
             <DashboardCharts
                 orderData={kpis.orderChartData}
                 revenueData={kpis.revenueChartData}
                 visitsData={kpis.visitsChartData}
-                usersData={usersChartData}
+            // usersData={usersChartData} // Removed
             />
             {/* 
             <div className="bg-yellow-50 p-4 rounded text-center mb-8 border border-yellow-200 text-yellow-800">

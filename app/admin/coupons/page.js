@@ -275,7 +275,8 @@ export default function AdminCouponsPage() {
             {/* Modal */}
             {showModal && (
                 <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 overflow-y-auto py-10">
-                    <div className="bg-white p-8 rounded-xl w-full max-w-5xl shadow-2xl relative">
+                    {/* Added mr-64 to shift left and not hide sidebar */}
+                    <div className="bg-white p-8 rounded-xl w-full max-w-5xl shadow-2xl relative mr-64">
                         <button
                             onClick={() => setShowModal(false)}
                             className="absolute top-4 left-4 text-gray-400 hover:text-gray-600"
