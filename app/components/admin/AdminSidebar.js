@@ -32,7 +32,7 @@ export default function AdminSidebar({ role = 'customer' }) {
             <div className="mb-6">
                 <h2 className="text-2xl font-bold mb-2">ml_tlv Admin</h2>
                 <Link href="/" className="inline-flex items-center text-gray-400 hover:text-white text-sm transition-colors">
-                    <span className="ml-1">←</span> חזרה לאתר
+                    חזרה לאתר <span className="mr-1">←</span>
                 </Link>
             </div>
 
