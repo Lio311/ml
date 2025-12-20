@@ -281,11 +281,27 @@ export function CartProvider({ children }) {
             cartItems.forEach(item => {
                 let isEligible = true;
 
-                // Check Limitations
-                if (limits.allowed_sizes?.length > 0 && !limits.allowed_sizes.includes(parseInt(item.size))) isEligible = false;
-                if (limits.allowed_brands?.length > 0 && !limits.allowed_brands.includes(item.brand)) isEligible = false;
-                if (limits.allowed_categories?.length > 0 && !limits.allowed_categories.includes(item.category)) isEligible = false;
-                if (limits.allowed_products?.length > 0 && !limits.allowed_products.includes(item.id)) isEligible = false;
+                // Check Limitations (Robust Comparison)
+                // 1. Size: Loose equality check for "2" vs 2 vs "2ml"
+                if (limits.allowed_sizes?.length > 0) {
+                    const itemSize = parseInt(item.size); // handle "10ml" -> 10
+                    if (!limits.allowed_sizes.some(s => parseInt(s) === itemSize)) isEligible = false;
+                }
+
+                // 2. Brand: Case insensitive check
+                if (limits.allowed_brands?.length > 0) {
+                    if (!item.brand || !limits.allowed_brands.some(b => b.toLowerCase() === item.brand.toLowerCase())) isEligible = false;
+                }
+
+                // 3. Category: Case insensitive check
+                if (limits.allowed_categories?.length > 0) {
+                    if (!item.category || !limits.allowed_categories.some(c => c.toLowerCase() === item.category.toLowerCase())) isEligible = false;
+                }
+
+                // 4. Products: ID String comparison
+                if (limits.allowed_products?.length > 0) {
+                    if (!limits.allowed_products.some(pid => String(pid) === String(item.id))) isEligible = false;
+                }
 
                 if (isEligible) {
                     eligibleSum += (item.price * item.quantity);

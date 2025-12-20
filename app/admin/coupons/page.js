@@ -2,6 +2,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useUser } from "@clerk/nextjs";
+import ObjectTagInput from '@/app/components/ObjectTagInput';
 
 
 export default function AdminCouponsPage() {
@@ -349,41 +350,26 @@ export default function AdminCouponsPage() {
                                     </div>
                                 </div>
 
-                                {/* Brands */}
+                                {/* Brands - Using Tag Search */}
                                 <div className="mb-4">
                                     <label className="block text-sm font-bold mb-2">תקף למותגים ספציפיים:</label>
-                                    <div className="max-h-32 overflow-y-auto border p-2 rounded bg-gray-50 grid grid-cols-2 gap-2">
-                                        {brands.map(b => (
-                                            <label key={b.id} className="flex items-center gap-2">
-                                                <input
-                                                    type="checkbox"
-                                                    checked={formData.allowed_brands.includes(b.name)}
-                                                    onChange={() => toggleSelection('allowed_brands', b.name)}
-                                                />
-                                                <span className="text-sm truncate">{b.name}</span>
-                                            </label>
-                                        ))}
-                                    </div>
+                                    <ObjectTagInput
+                                        options={brands.map(b => ({ id: b.name, label: b.name }))}
+                                        value={formData.allowed_brands}
+                                        onChange={(newVal) => setFormData(prev => ({ ...prev, allowed_brands: newVal }))}
+                                        placeholder="חפש מותג..."
+                                    />
                                 </div>
 
-                                {/* Products (Searchable or List) */}
+                                {/* Products - Using Tag Search */}
                                 <div className="mb-4">
                                     <label className="block text-sm font-bold mb-2">תקף למוצרים ספציפיים:</label>
-                                    <div className="max-h-40 overflow-y-auto border p-2 rounded bg-gray-50 space-y-1">
-                                        {products.map(p => (
-                                            <label key={p.id} className="flex items-center gap-2 border-b last:border-0 pb-1">
-                                                <input
-                                                    type="checkbox"
-                                                    checked={formData.allowed_products.includes(p.id)}
-                                                    onChange={() => toggleSelection('allowed_products', p.id)}
-                                                />
-                                                <div className="text-xs">
-                                                    <div className="font-bold">{p.name}</div>
-                                                    <div className="text-gray-500">{p.brand}</div>
-                                                </div>
-                                            </label>
-                                        ))}
-                                    </div>
+                                    <ObjectTagInput
+                                        options={products.map(p => ({ id: p.id, label: p.name, subLabel: p.brand }))}
+                                        value={formData.allowed_products}
+                                        onChange={(newVal) => setFormData(prev => ({ ...prev, allowed_products: newVal }))}
+                                        placeholder="חפש מוצר..."
+                                    />
                                 </div>
                             </div>
 
