@@ -112,8 +112,18 @@ export default async function AdminDashboard() {
             const yearlySum = parseFloat(yearlyExpRes.rows[0].sum || 0);
 
             totalMonthlyExpenses = monthlySum + (yearlySum / 12);
+            totalMonthlyExpenses = monthlySum + (yearlySum / 12);
         } catch (e) {
             console.warn("Expenses query failed:", e);
+        }
+
+        // Fetch Bottle Inventory Summary
+        try {
+            const bottleInvRes = await client.query('SELECT size, quantity FROM bottle_inventory ORDER BY size ASC');
+            kpis.bottleInventory = bottleInvRes.rows;
+        } catch (e) {
+            console.warn("Bottle Inventory query failed:", e);
+            kpis.bottleInventory = [];
         }
 
 
@@ -383,24 +393,47 @@ export default async function AdminDashboard() {
                                 <span className="text-2xl font-bold text-blue-700 dir-ltr">{kpis.totalRevenue} ₪</span>
                             </div>
                         </div>
-                        <div className="flex justify-between items-center">
+                        <div className="flex justify-between items-center border-b border-gray-50 pb-2">
                             <span className="text-red-600 font-bold">הוצאות</span>
                             <div className="text-right">
                                 <span className="text-2xl font-bold text-red-700 dir-ltr">{kpis.totalExpenses} ₪</span>
                                 <div className="text-[10px] text-gray-400">כולל יחסי שנתי</div>
                             </div>
                         </div>
+                        <div className="flex justify-between items-center bg-gray-50 p-2 rounded">
+                            <span className={`${kpis.monthlyProfit < 0 ? 'text-red-600' : 'text-green-600'} font-bold`}>רווח</span>
+                            <div className="text-right">
+                                <span className={`text-2xl font-bold ${kpis.monthlyProfit < 0 ? 'text-red-700' : 'text-green-700'} dir-ltr`}>
+                                    {kpis.monthlyProfit < 0 ? '-' : ''}{Math.abs(kpis.monthlyProfit)} ₪
+                                </span>
+                            </div>
+                        </div>
                     </div>
-                    <div className="mt-2 text-[10px] text-gray-400 text-center bg-gray-50 p-1 rounded">
-                        * הכנסות נטו (אחרי הנחות/קופונים)
+                    <div className="mt-2 text-[10px] text-gray-400 text-center">
+                        * הכנסות נטו (אחרי הנחות) פחות עלות סחורה שנמכרה והוצאות
                     </div>
                 </div>
-                <div className={`p-6 rounded-xl shadow-sm border text-right bg-white ${kpis.monthlyProfit < 0 ? 'border-red-200' : 'border-green-200'}`}>
-                    <div className={`${kpis.monthlyProfit < 0 ? 'text-red-600' : 'text-green-600'} text-sm font-bold uppercase mb-2`}>
-                        רווח ({currentMonthLabel})
+
+                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 flex flex-col justify-between">
+                    <div>
+                        <div className="text-gray-500 text-sm font-bold uppercase mb-2">מלאי בקבוקנים (פנוי)</div>
+                        <div className="space-y-3 mt-4">
+                            {/* Inventory Summary */}
+                            {kpis.bottleInventory && kpis.bottleInventory.map(item => (
+                                <div key={item.size} className="flex justify-between items-center border-b border-gray-50 pb-1">
+                                    <span className="font-bold text-gray-700">{item.size === 11 ? '10 מ"ל יוקרתי' : `${item.size} מ"ל`}</span>
+                                    <span className={`font-mono font-bold ${item.quantity < 20 ? 'text-red-600' : 'text-green-600'}`}>
+                                        {item.quantity}
+                                    </span>
+                                </div>
+                            ))}
+                            {(!kpis.bottleInventory || kpis.bottleInventory.length === 0) && (
+                                <div className="text-center text-gray-400 text-sm">אין נתונים</div>
+                            )}
+                        </div>
                     </div>
-                    <div className={`text-3xl font-bold ${kpis.monthlyProfit < 0 ? 'text-red-700' : 'text-green-700'}`} dir="ltr">
-                        ₪ {kpis.monthlyProfit < 0 ? `-${Math.abs(kpis.monthlyProfit)}` : kpis.monthlyProfit}
+                    <div className="text-xs text-gray-400 mt-2 text-center">
+                        <Link href="/admin/inventory" className="text-blue-500 hover:underline">לניהול המלאי המלא</Link>
                     </div>
                 </div>
                 <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 flex flex-col justify-between">
