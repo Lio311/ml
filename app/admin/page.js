@@ -301,9 +301,7 @@ export default async function AdminDashboard() {
         }
 
         // Chart Data Calculation
-        const now = new Date();
-        const year = now.getFullYear();
-        const month = now.getMonth() + 1;
+
 
         const currentMonthRes = await client.query(`
             SELECT 
@@ -318,10 +316,7 @@ export default async function AdminDashboard() {
             ORDER BY day
         `, [month, year]);
 
-        const prevDate = new Date();
-        prevDate.setMonth(prevDate.getMonth() - 1);
-        const prevYear = prevDate.getFullYear();
-        const prevMonth = prevDate.getMonth() + 1;
+
 
         const prevMonthRes = await client.query(`
             SELECT 
@@ -360,7 +355,7 @@ export default async function AdminDashboard() {
         `, [prevMonth, prevYear]);
 
 
-        const daysInMonth = new Date(year, month, 0).getDate();
+
         for (let i = 1; i <= daysInMonth; i++) {
             const curDay = currentMonthRes.rows.find(r => parseInt(r.day) === i);
             const prevDay = prevMonthRes.rows.find(r => parseInt(r.day) === i);
