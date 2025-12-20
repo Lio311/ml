@@ -88,43 +88,21 @@ export default async function AdminDashboard() {
         });
 
 
-        // Fetch Expenses
+        // Date Handling for Charts & Stats
+        const now = new Date();
+        const year = now.getFullYear();
+        const month = now.getMonth() + 1;
+
+        // Previous Month Calculation
+        const prevDate = new Date();
+        prevDate.setMonth(prevDate.getMonth() - 1);
+        const prevYear = prevDate.getFullYear();
+        const prevMonth = prevDate.getMonth() + 1;
+
+        const daysInMonth = new Date(year, month, 0).getDate();
+
+        // 1. Fetch Expenses
         let totalMonthlyExpenses = 0;
-        // ... (Skipping unchanged lines) ...
-        {/* Samples Sold */ }
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 relative overflow-hidden group hover:shadow-md transition-shadow">
-            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 to-pink-500"></div>
-            <div className="flex justify-between items-start mb-2">
-                <div className="text-gray-500 text-sm font-bold uppercase flex items-center gap-2">
-                    <FlaskConical className="w-4 h-4 text-purple-500" />
-                    דוגמיות שנמכרו
-                </div>
-            </div>
-
-            <div className="flex items-baseline gap-2 mb-6">
-                <span className="text-4xl font-bold text-gray-900">{kpis.totalSamples}</span>
-                <span className="text-xs text-gray-400 font-medium">יחידות</span>
-            </div>
-
-            <div className="grid grid-cols-2 gap-2">
-                <div className="flex flex-col items-center bg-purple-50 p-2 rounded-lg border border-purple-100">
-                    <span className="text-[10px] text-purple-600 font-bold mb-1">2 מ״ל</span>
-                    <span className="font-black text-lg text-purple-800 leading-none">{kpis.samplesBreakdown['2']}</span>
-                </div>
-                <div className="flex flex-col items-center bg-pink-50 p-2 rounded-lg border border-pink-100">
-                    <span className="text-[10px] text-pink-600 font-bold mb-1">5 מ״ל</span>
-                    <span className="font-black text-lg text-pink-800 leading-none">{kpis.samplesBreakdown['5']}</span>
-                </div>
-                <div className="flex flex-col items-center bg-blue-50 p-2 rounded-lg border border-blue-100">
-                    <span className="text-[10px] text-blue-600 font-bold mb-1">10 מ״ל</span>
-                    <span className="font-black text-lg text-blue-800 leading-none">{kpis.samplesBreakdown['10']}</span>
-                </div>
-                <div className="flex flex-col items-center bg-amber-50 p-2 rounded-lg border border-amber-100">
-                    <span className="text-[10px] text-amber-600 font-bold mb-1">10 מ״ל יוקרתי</span>
-                    <span className="font-black text-lg text-amber-800 leading-none">{kpis.samplesBreakdown['11']}</span>
-                </div>
-            </div>
-        </div>
         try {
             // Get monthly expenses for CURRENT MONTH
             const monthlyExpRes = await client.query(`
@@ -136,18 +114,9 @@ export default async function AdminDashboard() {
             const monthlySum = parseFloat(monthlyExpRes.rows[0].sum || 0);
 
             // Get yearly expenses (amortized)
-            // Logic: Any yearly expense is divided by 12 and applied to each month.
-            // Assumption: Yearly expenses apply indefinitely or we strictly look at "active" ones?
-            // Simplified User Request: "If expense is yearly, divide amount by 12 and clean from each month".
-            // Implementation: Sum ALL yearly expenses and divide by 12.
-            // Or better: Sum yearly expenses from THIS YEAR? User said "yearly", implying recurring.
-            // Let's take all 'yearly' expenses created in the last 12 months? Or just all 'yearly'?
-            // Given "Management table where I insert expenses", likely he inserts "Insurance 2024" as yearly.
-            // Let's fetch ALL yearly expenses and divide by 12.
             const yearlyExpRes = await client.query("SELECT SUM(amount) FROM expenses WHERE type = 'yearly'");
             const yearlySum = parseFloat(yearlyExpRes.rows[0].sum || 0);
 
-            totalMonthlyExpenses = monthlySum + (yearlySum / 12);
             totalMonthlyExpenses = monthlySum + (yearlySum / 12);
         } catch (e) {
             console.warn("Expenses query failed:", e);
