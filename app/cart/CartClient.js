@@ -109,7 +109,75 @@ export default function CartClient() {
             });
             const data = await res.json();
             if (res.ok) {
-                setCoupon({ code: data.code, discountPercent: data.discountPercent });
+                const couponData = data;
+
+                // Pre-validate against current cart
+                let limits = couponData.limitations || {};
+                if (typeof limits === 'string') {
+                    try { limits = JSON.parse(limits); } catch (e) { limits = {}; }
+                }
+
+                // Check 0: Allowed Users
+                if (limits.allowed_users?.length > 0) {
+                    const userEmail = user?.primaryEmailAddress?.emailAddress;
+                    if (!userEmail || !limits.allowed_users.some(u => u.trim().toLowerCase() === userEmail.trim().toLowerCase())) {
+                        setCouponError('הקופון הזה אינו תקף עבור המשתמש שלך');
+                        setCoupon(null);
+                        return; // Stop
+                    }
+                }
+
+                // Check 1: Min Total
+                // Use subtotal (or total? context uses subtotal usually). 
+                // We have access to 'subtotal' from useCart.
+                if (limits.min_cart_total && subtotal < limits.min_cart_total) {
+                    setCouponError(`הקופון תקף בקנייה מעל ${limits.min_cart_total} ₪`);
+                    setCoupon(null);
+                    return;
+                }
+
+                // Check 2: At least one item matches eligibility
+                // If the coupon has ANY item-specific filters, check if at least one item matches.
+                const hasItemFilters = (limits.allowed_sizes?.length > 0) ||
+                    (limits.allowed_brands?.length > 0) ||
+                    (limits.allowed_categories?.length > 0) ||
+                    (limits.allowed_products?.length > 0);
+
+                if (hasItemFilters) {
+                    let hasMatch = false;
+                    cartItems.forEach(item => {
+                        let isItemEligible = true;
+
+                        if (limits.allowed_sizes?.length > 0) {
+                            const sizeStr = String(item.size).replace(/\D/g, '');
+                            const sizeInt = sizeStr ? parseInt(sizeStr) : null;
+                            if (sizeInt && !limits.allowed_sizes.some(s => parseInt(s) === sizeInt)) isItemEligible = false;
+                        }
+                        if (limits.allowed_brands?.length > 0) {
+                            if (!item.brand || !limits.allowed_brands.some(b => b.trim().toLowerCase() === item.brand.trim().toLowerCase())) isItemEligible = false;
+                        }
+                        if (limits.allowed_categories?.length > 0) {
+                            if (!item.category || !limits.allowed_categories.some(c => c.trim().toLowerCase() === item.category.trim().toLowerCase())) isItemEligible = false;
+                        }
+                        if (limits.allowed_products?.length > 0) {
+                            if (!item.id || !limits.allowed_products.some(pid => String(pid).trim() === String(item.id).trim())) isItemEligible = false;
+                        }
+
+                        if (isItemEligible) hasMatch = true;
+                    });
+
+                    if (!hasMatch) {
+                        setCouponError('הקופון הזה אינו תקף לפריטים שבסל');
+                        setCoupon(null);
+                        return;
+                    }
+                }
+
+                setCoupon({
+                    code: data.code,
+                    discountPercent: data.discountPercent,
+                    limitations: limits // IMPORTANT: Pass parsed or raw limitations
+                });
                 setCouponInput('');
                 // Success feedback handled by UI showing the applied coupon
             } else {
