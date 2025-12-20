@@ -49,7 +49,7 @@ export async function PUT(req, { params }) {
             }
             if (body.limitations !== undefined) {
                 query += `, limitations = $${idx++}`;
-                values.push(body.limitations);
+                values.push(JSON.stringify(body.limitations));
             }
 
             query += ` WHERE id = $${idx}`;

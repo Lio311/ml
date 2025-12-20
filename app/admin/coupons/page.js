@@ -258,7 +258,7 @@ export default function AdminCouponsPage() {
             {/* Modal */}
             {showModal && (
                 <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 overflow-y-auto py-10">
-                    <div className="bg-white p-8 rounded-xl w-full max-w-4xl shadow-2xl relative">
+                    <div className="bg-white p-8 rounded-xl w-full max-w-5xl shadow-2xl relative">
                         <button
                             onClick={() => setShowModal(false)}
                             className="absolute top-4 left-4 text-gray-400 hover:text-gray-600"
@@ -268,130 +268,136 @@ export default function AdminCouponsPage() {
                         <h2 className="text-xl font-bold mb-6">{editingId ? 'עריכת קופון' : 'יצירת קופון חדש'}</h2>
                         <form onSubmit={handleSave} className="space-y-6">
 
-                            {/* Basic Info */}
-                            <div className="grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded-lg">
-                                <div className="col-span-2">
-                                    <label className="block text-sm font-bold mb-1">קוד קופון</label>
-                                    <div className="flex gap-2">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                {/* Left Column: Basic Info */}
+                                <div className="space-y-4">
+                                    <h3 className="font-bold text-lg text-gray-800 border-b pb-2 mb-4">פרטים כלליים</h3>
+
+                                    <div>
+                                        <label className="block text-sm font-bold mb-1">קוד קופון</label>
+                                        <div className="flex gap-2">
+                                            <input
+                                                type="text"
+                                                required
+                                                disabled={!!editingId}
+                                                className="input border p-2 rounded w-full disabled:bg-gray-200"
+                                                value={formData.code}
+                                                onChange={e => setFormData({ ...formData, code: e.target.value.toUpperCase() })}
+                                            />
+                                            {!editingId && <button type="button" onClick={generateCode} className="text-sm text-blue-600 font-bold whitespace-nowrap">ג'נרט</button>}
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <label className="block text-sm font-bold mb-1">הנחה (%)</label>
                                         <input
-                                            type="text"
+                                            type="number"
                                             required
-                                            disabled={!!editingId}
-                                            className="input border p-2 rounded w-full disabled:bg-gray-200"
-                                            value={formData.code}
-                                            onChange={e => setFormData({ ...formData, code: e.target.value.toUpperCase() })}
+                                            min="1" max="100"
+                                            className="input border p-2 rounded w-full"
+                                            value={formData.discount_percent}
+                                            onChange={e => setFormData({ ...formData, discount_percent: e.target.value })}
                                         />
-                                        {!editingId && <button type="button" onClick={generateCode} className="text-sm text-blue-600 font-bold whitespace-nowrap">ג'נרט</button>}
+                                    </div>
+
+                                    <div>
+                                        <label className="block text-sm font-bold mb-1">{editingId ? 'הארך תוקף (שעות)' : 'תוקף (שעות)'}</label>
+                                        <input
+                                            type="number"
+                                            min="1"
+                                            placeholder={editingId ? "הזן כדי לעדכן" : "ללא הגבלה"}
+                                            className="input border p-2 rounded w-full"
+                                            value={formData.expires_in_hours}
+                                            onChange={e => setFormData({ ...formData, expires_in_hours: e.target.value })}
+                                        />
+                                    </div>
+
+                                    <div>
+                                        <label className="block text-sm font-bold mb-1">מינימום סל (בש"ח)</label>
+                                        <input
+                                            type="number"
+                                            min="0"
+                                            className="input border p-2 rounded w-full"
+                                            value={formData.min_cart_total}
+                                            onChange={e => setFormData({ ...formData, min_cart_total: e.target.value })}
+                                        />
                                     </div>
                                 </div>
-                                <div>
-                                    <label className="block text-sm font-bold mb-1">הנחה (%)</label>
-                                    <input
-                                        type="number"
-                                        required
-                                        min="1" max="100"
-                                        className="input border p-2 rounded w-full"
-                                        value={formData.discount_percent}
-                                        onChange={e => setFormData({ ...formData, discount_percent: e.target.value })}
-                                    />
-                                </div>
-                                <div>
-                                    <label className="block text-sm font-bold mb-1">{editingId ? 'הארך תוקף (שעות)' : 'תוקף (שעות)'}</label>
-                                    <input
-                                        type="number"
-                                        min="1"
-                                        placeholder={editingId ? "הזן כדי לעדכן" : "ללא הגבלה"}
-                                        className="input border p-2 rounded w-full"
-                                        value={formData.expires_in_hours}
-                                        onChange={e => setFormData({ ...formData, expires_in_hours: e.target.value })}
-                                    />
-                                </div>
-                                <div className="col-span-2">
-                                    <label className="block text-sm font-bold mb-1">מינימום סל (בש"ח)</label>
-                                    <input
-                                        type="number"
-                                        min="0"
-                                        className="input border p-2 rounded w-full"
-                                        value={formData.min_cart_total}
-                                        onChange={e => setFormData({ ...formData, min_cart_total: e.target.value })}
-                                    />
+
+                                {/* Right Column: Advanced Filters */}
+                                <div className="space-y-4 bg-gray-50 p-6 rounded-xl">
+                                    <h3 className="font-bold text-lg text-gray-800 border-b pb-2 mb-4">הגבלות ופילטרים (אופציונלי)</h3>
+
+                                    {/* Categories */}
+                                    <div>
+                                        <label className="block text-sm font-bold mb-2">תקף לקטגוריות:</label>
+                                        <div className="flex gap-3 flex-wrap">
+                                            {['men', 'women', 'unisex'].map(c => (
+                                                <label key={c} className="flex items-center gap-2 bg-white px-3 py-1 rounded cursor-pointer border hover:border-black transition">
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={formData.allowed_categories.includes(c)}
+                                                        onChange={() => toggleSelection('allowed_categories', c)}
+                                                    />
+                                                    <span className="text-sm">
+                                                        {c === 'men' ? 'גברים' : c === 'women' ? 'נשים' : 'יוניסקס'}
+                                                    </span>
+                                                </label>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    {/* Sizes */}
+                                    <div>
+                                        <label className="block text-sm font-bold mb-2">תקף לגדלים:</label>
+                                        <div className="flex gap-3 flex-wrap">
+                                            {[2, 5, 10, 11].map(s => (
+                                                <label key={s} className="flex items-center gap-2 bg-white px-3 py-1 rounded cursor-pointer border hover:border-black transition">
+                                                    <input
+                                                        type="checkbox"
+                                                        checked={formData.allowed_sizes.includes(s)}
+                                                        onChange={() => toggleSelection('allowed_sizes', s)}
+                                                    />
+                                                    <span className="text-sm">{s === 11 ? '10 מ"ל יוקרתי' : s + ' מ"ל'}</span>
+                                                </label>
+                                            ))}
+                                        </div>
+                                    </div>
+
+                                    {/* User Affiliation */}
+                                    <div>
+                                        <label className="block text-sm font-bold mb-2">שייכות (משתמשים):</label>
+                                        <ObjectTagInput
+                                            options={usersList.map(u => ({ id: u.email, label: `${u.firstName || ''} ${u.lastName || ''}`, subLabel: u.email }))}
+                                            value={formData.allowed_users}
+                                            onChange={(newVal) => setFormData(prev => ({ ...prev, allowed_users: newVal }))}
+                                            placeholder="חפש משתמש..."
+                                        />
+                                    </div>
+
+                                    {/* Brands */}
+                                    <div>
+                                        <label className="block text-sm font-bold mb-2">מותגים ספציפיים:</label>
+                                        <ObjectTagInput
+                                            options={brands.map(b => ({ id: b.name, label: b.name }))}
+                                            value={formData.allowed_brands}
+                                            onChange={(newVal) => setFormData(prev => ({ ...prev, allowed_brands: newVal }))}
+                                            placeholder="חפש מותג..."
+                                        />
+                                    </div>
+
+                                    {/* Products */}
+                                    <div>
+                                        <label className="block text-sm font-bold mb-2">מוצרים ספציפיים:</label>
+                                        <ObjectTagInput
+                                            options={products.map(p => ({ id: p.id, label: p.name, subLabel: p.brand }))}
+                                            value={formData.allowed_products}
+                                            onChange={(newVal) => setFormData(prev => ({ ...prev, allowed_products: newVal }))}
+                                            placeholder="חפש מוצר..."
+                                        />
+                                    </div>
                                 </div>
                             </div>
-
-                            {/* Advanced Filters */}
-                            <div className="border-t pt-4">
-                                <h3 className="font-bold mb-4 text-gray-700">הגבלות מתקדמות (אופציונלי)</h3>
-
-                                {/* Sizes */}
-                                <div className="mb-4">
-                                    <label className="block text-sm font-bold mb-2">תקף לגדלים:</label>
-                                    <div className="flex gap-3 flex-wrap">
-                                        {[2, 5, 10, 11].map(s => (
-                                            <label key={s} className="flex items-center gap-2 bg-gray-50 px-3 py-1 rounded cursor-pointer border hover:border-black transition">
-                                                <input
-                                                    type="checkbox"
-                                                    checked={formData.allowed_sizes.includes(s)}
-                                                    onChange={() => toggleSelection('allowed_sizes', s)}
-                                                />
-                                                <span className="text-sm">{s === 11 ? '10 מ"ל יוקרתי' : s + ' מ"ל'}</span>
-                                            </label>
-                                        ))}
-                                    </div>
-                                </div>
-
-                                {/* Categories */}
-                                <div className="mb-4">
-                                    <label className="block text-sm font-bold mb-2">תקף לקטגוריות:</label>
-                                    <div className="flex gap-3 flex-wrap">
-                                        {['men', 'women', 'unisex'].map(c => (
-                                            <label key={c} className="flex items-center gap-2 bg-gray-50 px-3 py-1 rounded cursor-pointer border hover:border-black transition">
-                                                <input
-                                                    type="checkbox"
-                                                    checked={formData.allowed_categories.includes(c)}
-                                                    onChange={() => toggleSelection('allowed_categories', c)}
-                                                />
-                                                <span className="text-sm">
-                                                    {c === 'men' ? 'גברים' : c === 'women' ? 'נשים' : 'יוניסקס'}
-                                                </span>
-                                            </label>
-                                        ))}
-                                    </div>
-                                </div>
-
-                                {/* User Affiliation (Shayichut) */}
-                                <div className="mb-4">
-                                    <label className="block text-sm font-bold mb-2">שייכות (משתמשים ספציפיים):</label>
-                                    <ObjectTagInput
-                                        options={usersList.map(u => ({ id: u.email, label: `${u.firstName || ''} ${u.lastName || ''}`, subLabel: u.email }))}
-                                        value={formData.allowed_users}
-                                        onChange={(newVal) => setFormData(prev => ({ ...prev, allowed_users: newVal }))}
-                                        placeholder="חפש משתמש..."
-                                    />
-                                </div>
-
-                                {/* Brands - Using Tag Search */}
-                                <div className="mb-4">
-                                    <label className="block text-sm font-bold mb-2">תקף למותגים ספציפיים:</label>
-                                    <ObjectTagInput
-                                        options={brands.map(b => ({ id: b.name, label: b.name }))}
-                                        value={formData.allowed_brands}
-                                        onChange={(newVal) => setFormData(prev => ({ ...prev, allowed_brands: newVal }))}
-                                        placeholder="חפש מותג..."
-                                    />
-                                </div>
-
-                                {/* Products - Using Tag Search */}
-                                <div className="mb-4">
-                                    <label className="block text-sm font-bold mb-2">תקף למוצרים ספציפיים:</label>
-                                    <ObjectTagInput
-                                        options={products.map(p => ({ id: p.id, label: p.name, subLabel: p.brand }))}
-                                        value={formData.allowed_products}
-                                        onChange={(newVal) => setFormData(prev => ({ ...prev, allowed_products: newVal }))}
-                                        placeholder="חפש מוצר..."
-                                    />
-                                </div>
-                            </div>
-
 
                             <div className="flex justify-end gap-3 mt-8 border-t pt-4">
                                 <button type="button" onClick={() => setShowModal(false)} className="px-4 py-2 hover:bg-gray-100 rounded">ביטול</button>

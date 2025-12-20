@@ -44,7 +44,7 @@ export async function POST(req) {
             await client.query(`
                 INSERT INTO coupons (code, discount_percent, expires_at, status, email, limitations)
                 VALUES ($1, $2, $3, 'active', $4, $5)
-            `, [code, discountValue, expires_at, email || null, limitations || null]);
+            `, [code, discountValue, expires_at, email || null, limitations ? JSON.stringify(limitations) : null]);
 
             return NextResponse.json({ success: true });
         } finally {
