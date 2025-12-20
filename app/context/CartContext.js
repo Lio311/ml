@@ -288,135 +288,159 @@ export function CartProvider({ children }) {
     if (coupon) {
         const limits = coupon.limitations || {};
 
-        // 1. Check Min Total
-        const cartTotalForMinCheck = subtotal; // Using subtotal before other discounts? Usually strictly subtotal.
-        if (limits.min_cart_total && cartTotalForMinCheck < limits.min_cart_total) {
-            // If requirement not met, 0 discount.
-            // Ideally should warn user, but for now just 0. 
-            // The UI might show "Coupon Active" but 0 discount if they drop below.
+        // 0. Check User Affiliation (Shayichut)
+        if (limits.allowed_users?.length > 0) {
+            // Need user email
+            // We have 'user' from useUser() hook available?
+            // Yes, let's verify if we extracted it properly from hook inside CartProvider.
+            // Wait, we used `useUser` hook inside `CartProvider` but only for syncCart effect.
+            // We need to access it here.
+
+            // Note: `user` object is available in scope because we calle `const { user } = useUser();` at line 116.
+            const userEmail = user?.primaryEmailAddress?.emailAddress;
+
+            if (!userEmail || !limits.allowed_users.includes(userEmail)) {
+                // Coupon not valid for this user
+                // Maybe we should show an error or just ignore it?
+                // Current logic: ignore it (no discount).
+                // We can also set error message in state if we want UI feedback.
+            } else {
+                isValidUser = true;
+            }
         } else {
-            // 2. Calculate Discount on Eligible Items
-            let eligibleSum = 0;
-
-            cartItems.forEach(item => {
-                let isEligible = true;
-
-                // Check Limitations (Robust Comparison)
-                // 1. Size: Extract digits to handle "2", "2ml", "2 ml", "10ml Luxury"
-                if (limits.allowed_sizes?.length > 0) {
-                    // Extract value: 2, 5, 10. For "Luxury 10ml" represented as 11, we assume the cart Item.size is actually 11 IF the admin saved it as such.
-                    // But if the cart item size is "10" and admin is "11", this fails.
-                    // IMPORTANT: The admin map uses ID 11 for label "10ml Luxury".
-                    // Does the cart item have size 11? Or size 10?
-                    // ProductActionsClient calls handleAdd(2), handleAdd(5), handleAdd(10). 
-                    // It DOES NOT seem to handle 11. 
-                    // Assuming we only support 2, 5, 10 for now based on the file viewed.
-                    // We just compare loose integer values.
-
-                    const itemSizeStr = String(item.size).replace(/\D/g, '');
-                    const itemSize = itemSizeStr ? parseInt(itemSizeStr) : null;
-
-                    if (itemSize && !limits.allowed_sizes.some(s => parseInt(s) === itemSize)) isEligible = false;
-                }
-
-                // 2. Brand: Case insensitive check with trim
-                if (limits.allowed_brands?.length > 0) {
-                    if (!item.brand || !limits.allowed_brands.some(b => b.trim().toLowerCase() === item.brand.trim().toLowerCase())) isEligible = false;
-                }
-
-                // 3. Category: Case insensitive check with trim
-                if (limits.allowed_categories?.length > 0) {
-                    if (!item.category || !limits.allowed_categories.some(c => c.trim().toLowerCase() === item.category.trim().toLowerCase())) isEligible = false;
-                }
-
-                // 4. Products: ID String comparison
-                if (limits.allowed_products?.length > 0) {
-                    if (!limits.allowed_products.some(pid => String(pid) === String(item.id))) isEligible = false;
-                }
-
-                if (isEligible) {
-                    eligibleSum += (item.price * item.quantity);
-                }
-            });
-
-            // Adjust eligible sum if previous discounts (like Lottery/Lucky) are proportional?
-            // Currently Lucky Prize applies to 'priceAfterDiscounts' (Global).
-            // Complexity: If Lucky Prize reduced the TOTAL by 10%, and Coupon applies to specific items...
-            // Standard approach: Apply Coupon to the Item Price, then deduct from Total.
-            // HERE: We calculated 'priceAfterDiscounts' which might already be reduced by Lucky Prize.
-            // If we calculate coupon off the original item price, we might double dip?
-            // User requested: "Simple".
-            // Let's assume Coupon applies to the Current Net Price of those items.
-            // But we don't track per-item net price easily here.
-            // SIMPLIFICATION: Calculate ratio of eligible/total and apply coupon to that portion of 'priceAfterDiscounts'.
-
-            const ratio = subtotal > 0 ? (eligibleSum / subtotal) : 0;
-            const eligibleNet = priceAfterDiscounts * ratio;
-
-            const couponDiscount = Math.round(eligibleNet * (coupon.discountPercent / 100));
-            discountAmount += couponDiscount;
-            priceAfterDiscounts -= couponDiscount;
+            isValidUser = true;
         }
+
+        if (isValidUser) {
+            // 1. Check Min Total
+            const cartTotalForMinCheck = subtotal; // Using subtotal before other discounts? Usually strictly subtotal.
+            if (limits.min_cart_total && cartTotalForMinCheck < limits.min_cart_total) {
+                // If requirement not met, 0 discount.
+                // Ideally should warn user, but for now just 0. 
+                // The UI might show "Coupon Active" but 0 discount if they drop below.
+            } else {
+                // 2. Calculate Discount on Eligible Items
+                let eligibleSum = 0;
+
+                cartItems.forEach(item => {
+                    let isEligible = true;
+
+                    // Check Limitations (Robust Comparison)
+                    // 1. Size: Extract digits to handle "2", "2ml", "2 ml", "10ml Luxury"
+                    if (limits.allowed_sizes?.length > 0) {
+                        // Extract value: 2, 5, 10. For "Luxury 10ml" represented as 11, we assume the cart Item.size is actually 11 IF the admin saved it as such.
+                        // But if the cart item size is "10" and admin is "11", this fails.
+                        // IMPORTANT: The admin map uses ID 11 for label "10ml Luxury".
+                        // Does the cart item have size 11? Or size 10?
+                        // ProductActionsClient calls handleAdd(2), handleAdd(5), handleAdd(10). 
+                        // It DOES NOT seem to handle 11. 
+                        // Assuming we only support 2, 5, 10 for now based on the file viewed.
+                        // We just compare loose integer values.
+
+                        const itemSizeStr = String(item.size).replace(/\D/g, '');
+                        const itemSize = itemSizeStr ? parseInt(itemSizeStr) : null;
+
+                        if (itemSize && !limits.allowed_sizes.some(s => parseInt(s) === itemSize)) isEligible = false;
+                    }
+
+                    // 2. Brand: Case insensitive check with trim
+                    if (limits.allowed_brands?.length > 0) {
+                        if (!item.brand || !limits.allowed_brands.some(b => b.trim().toLowerCase() === item.brand.trim().toLowerCase())) isEligible = false;
+                    }
+
+                    // 3. Category: Case insensitive check with trim
+                    if (limits.allowed_categories?.length > 0) {
+                        if (!item.category || !limits.allowed_categories.some(c => c.trim().toLowerCase() === item.category.trim().toLowerCase())) isEligible = false;
+                    }
+
+                    // 4. Products: ID String comparison
+                    if (limits.allowed_products?.length > 0) {
+                        if (!limits.allowed_products.some(pid => String(pid) === String(item.id))) isEligible = false;
+                    }
+
+                    if (isEligible) {
+                        eligibleSum += (item.price * item.quantity);
+                    }
+                });
+
+                // Adjust eligible sum if previous discounts (like Lottery/Lucky) are proportional?
+                // Currently Lucky Prize applies to 'priceAfterDiscounts' (Global).
+                // Complexity: If Lucky Prize reduced the TOTAL by 10%, and Coupon applies to specific items...
+                // Standard approach: Apply Coupon to the Item Price, then deduct from Total.
+                // HERE: We calculated 'priceAfterDiscounts' which might already be reduced by Lucky Prize.
+                // If we calculate coupon off the original item price, we might double dip?
+                // User requested: "Simple".
+                // Let's assume Coupon applies to the Current Net Price of those items.
+                // But we don't track per-item net price easily here.
+                // SIMPLIFICATION: Calculate ratio of eligible/total and apply coupon to that portion of 'priceAfterDiscounts'.
+
+                const ratio = subtotal > 0 ? (eligibleSum / subtotal) : 0;
+                const eligibleNet = priceAfterDiscounts * ratio;
+
+                const couponDiscount = Math.round(eligibleNet * (coupon.discountPercent / 100));
+                discountAmount += couponDiscount;
+                priceAfterDiscounts -= couponDiscount;
+            }
+        }
+
+        let total = priceAfterDiscounts + shippingCost;
+
+        let freeSamplesCount = 0;
+        let nextTier = 0;
+
+        if (subtotal >= 1000) {
+            freeSamplesCount = 6;
+            nextTier = 0; // Max tier
+        } else if (subtotal >= 500) {
+            freeSamplesCount = 4;
+            nextTier = 1000 - subtotal;
+        } else if (subtotal >= 300) {
+            freeSamplesCount = 2;
+            nextTier = 500 - subtotal;
+        } else {
+            freeSamplesCount = 0;
+            nextTier = 300 - subtotal;
+        }
+
+        // Auto remove prize if below 1200 (Logic restored)
+        useEffect(() => {
+            if (subtotal < 1200 && luckyPrize) {
+                setLuckyPrize(null);
+                // Also remove any prize items from the cart
+                setCartItems(prev => prev.filter(item => !item.isPrize));
+            }
+        }, [subtotal, luckyPrize]);
+
+        return (
+            <CartContext.Provider
+                value={{
+                    cartItems,
+                    addToCart,
+                    addMultipleToCart,
+                    removeFromCart,
+                    updateQuantity,
+                    clearCart,
+                    subtotal,
+                    freeSamplesCount,
+                    nextTier,
+                    shippingCost,
+                    total,
+                    luckyPrize,
+                    setLuckyPrize,
+                    discountAmount,
+                    coupon,
+                    setCoupon,
+                    // Lottery Exports
+                    startLottery,
+                    cancelLottery,
+                    isCartLocked,
+                    lotteryTimeLeft,
+                    lotteryMode
+                }}
+            >
+                {children}
+            </CartContext.Provider>
+        );
     }
 
-    let total = priceAfterDiscounts + shippingCost;
-
-    let freeSamplesCount = 0;
-    let nextTier = 0;
-
-    if (subtotal >= 1000) {
-        freeSamplesCount = 6;
-        nextTier = 0; // Max tier
-    } else if (subtotal >= 500) {
-        freeSamplesCount = 4;
-        nextTier = 1000 - subtotal;
-    } else if (subtotal >= 300) {
-        freeSamplesCount = 2;
-        nextTier = 500 - subtotal;
-    } else {
-        freeSamplesCount = 0;
-        nextTier = 300 - subtotal;
-    }
-
-    // Auto remove prize if below 1200 (Logic restored)
-    useEffect(() => {
-        if (subtotal < 1200 && luckyPrize) {
-            setLuckyPrize(null);
-            // Also remove any prize items from the cart
-            setCartItems(prev => prev.filter(item => !item.isPrize));
-        }
-    }, [subtotal, luckyPrize]);
-
-    return (
-        <CartContext.Provider
-            value={{
-                cartItems,
-                addToCart,
-                addMultipleToCart,
-                removeFromCart,
-                updateQuantity,
-                clearCart,
-                subtotal,
-                freeSamplesCount,
-                nextTier,
-                shippingCost,
-                total,
-                luckyPrize,
-                setLuckyPrize,
-                discountAmount,
-                coupon,
-                setCoupon,
-                // Lottery Exports
-                startLottery,
-                cancelLottery,
-                isCartLocked,
-                lotteryTimeLeft,
-                lotteryMode
-            }}
-        >
-            {children}
-        </CartContext.Provider>
-    );
-}
-
-export const useCart = () => useContext(CartContext);
+    export const useCart = () => useContext(CartContext);

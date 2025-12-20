@@ -331,18 +331,33 @@ export default function AdminCouponsPage() {
                                     </div>
                                 </div>
 
-                                {/* Categories (Shayichut) */}
+                                {/* Categories */}
                                 <div className="mb-4">
-                                    <label className="block text-sm font-bold mb-2">שייכות (קטגוריה):</label>
+                                    <label className="block text-sm font-bold mb-2">תקף לקטגוריות:</label>
+                                    <div className="flex gap-3 flex-wrap">
+                                        {['men', 'women', 'unisex'].map(c => (
+                                            <label key={c} className="flex items-center gap-2 bg-gray-50 px-3 py-1 rounded cursor-pointer border hover:border-black transition">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={formData.allowed_categories.includes(c)}
+                                                    onChange={() => toggleSelection('allowed_categories', c)}
+                                                />
+                                                <span className="text-sm">
+                                                    {c === 'men' ? 'גברים' : c === 'women' ? 'נשים' : 'יוניסקס'}
+                                                </span>
+                                            </label>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                {/* User Affiliation (Shayichut) */}
+                                <div className="mb-4">
+                                    <label className="block text-sm font-bold mb-2">שייכות (משתמשים ספציפיים):</label>
                                     <ObjectTagInput
-                                        options={[
-                                            { id: 'men', label: 'גברים' },
-                                            { id: 'women', label: 'נשים' },
-                                            { id: 'unisex', label: 'יוניסקס' }
-                                        ]}
-                                        value={formData.allowed_categories}
-                                        onChange={(newVal) => setFormData(prev => ({ ...prev, allowed_categories: newVal }))}
-                                        placeholder="חפש שייכות..."
+                                        options={usersList.map(u => ({ id: u.email, label: `${u.firstName || ''} ${u.lastName || ''}`, subLabel: u.email }))}
+                                        value={formData.allowed_users}
+                                        onChange={(newVal) => setFormData(prev => ({ ...prev, allowed_users: newVal }))}
+                                        placeholder="חפש משתמש..."
                                     />
                                 </div>
 
