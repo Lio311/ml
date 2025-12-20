@@ -72,6 +72,14 @@ export async function POST(req) {
                 updated_at = NOW()
         `, [id, email, first_name, last_name, role, createdDate]);
 
+            // 1.1 Insert Notification if New User
+            if (eventType === 'user.created') {
+                await client.query(
+                    `INSERT INTO notifications (type, message, is_read) VALUES ($1, $2, $3)`,
+                    ['user', `משתמש חדש נרשם: ${first_name || ''} ${last_name || ''}`, false]
+                );
+            }
+
             console.log(`Webhook processed: Synced user ${id} (${email})`);
         } catch (dbErr) {
             console.error("Webhook DB Error:", dbErr);

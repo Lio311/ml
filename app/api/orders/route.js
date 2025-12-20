@@ -58,10 +58,18 @@ export async function POST(req) {
                 // Skip prizes (synthetic IDs) or non-numeric sizes (sets) if stock tracking is ML only
                 if (!item.isPrize && !isNaN(item.size)) {
                     const deduction = Number(item.size) * item.quantity;
-                    await client.query(
-                        `UPDATE products SET stock = stock - $1 WHERE id = $2`,
+                    const stockRes = await client.query(
+                        `UPDATE products SET stock = stock - $1 WHERE id = $2 RETURNING stock, name_he`,
                         [deduction, dbId]
                     );
+
+                    // Check Low Stock for Product
+                    if (stockRes.rows[0] && stockRes.rows[0].stock < 500) { // 500ml threshold (approx 10 bottles)
+                        await client.query(
+                            `INSERT INTO notifications (type, message, is_read) VALUES ($1, $2, $3)`,
+                            ['warning', `מלאי נמוך למוצר: ${stockRes.rows[0].name_he} (נותרו ${stockRes.rows[0].stock} מ"ל)`, false]
+                        );
+                    }
 
                     // --- BOTTLE INVENTORY DEDUCTION ---
                     // Deduct 1 bottle of this size for each unit quantity
@@ -73,10 +81,19 @@ export async function POST(req) {
                     }
 
                     if ([2, 5, 10, 11].includes(bottleSize)) {
-                        await client.query(
-                            `UPDATE bottle_inventory SET quantity = quantity - $1 WHERE size = $2`,
+                        const bottleRes = await client.query(
+                            `UPDATE bottle_inventory SET quantity = quantity - $1 WHERE size = $2 RETURNING quantity`,
                             [item.quantity, bottleSize]
                         );
+
+                        // Check Low Stock for Bottles
+                        if (bottleRes.rows[0] && bottleRes.rows[0].quantity < 20) {
+                            const sizeLabel = bottleSize === 11 ? '10ml (יוקרתי)' : `${bottleSize}ml`;
+                            await client.query(
+                                `INSERT INTO notifications (type, message, is_read) VALUES ($1, $2, $3)`,
+                                ['warning', `מלאי בקבוקים נמוך: ${sizeLabel} (נותרו ${bottleRes.rows[0].quantity})`, false]
+                            );
+                        }
                     }
                 }
             }
