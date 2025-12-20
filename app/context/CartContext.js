@@ -244,10 +244,30 @@ export function CartProvider({ children }) {
 
     const [coupon, setCoupon] = useState(null);
 
-    // Calculations
+    // Persistence for Coupon
+    useEffect(() => {
+        const savedCoupon = localStorage.getItem("coupon");
+        if (savedCoupon) {
+            try {
+                setCoupon(JSON.parse(savedCoupon));
+            } catch (e) {
+                console.error("Failed to parse saved coupon", e);
+            }
+        }
+    }, []);
+
+    useEffect(() => {
+        if (coupon) {
+            localStorage.setItem("coupon", JSON.stringify(coupon));
+        } else {
+            localStorage.removeItem("coupon");
+        }
+    }, [coupon]);
+
     // Calculations
     const shippingCost = 30; // Fixed shipping cost
     const subtotal = cartItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
 
     let priceAfterDiscounts = subtotal;
     let discountAmount = 0;

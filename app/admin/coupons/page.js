@@ -331,23 +331,19 @@ export default function AdminCouponsPage() {
                                     </div>
                                 </div>
 
-                                {/* Categories */}
+                                {/* Categories (Shayichut) */}
                                 <div className="mb-4">
-                                    <label className="block text-sm font-bold mb-2">תקף לקטגוריות:</label>
-                                    <div className="flex gap-3 flex-wrap">
-                                        {['men', 'women', 'unisex'].map(c => (
-                                            <label key={c} className="flex items-center gap-2 bg-gray-50 px-3 py-1 rounded cursor-pointer border hover:border-black transition">
-                                                <input
-                                                    type="checkbox"
-                                                    checked={formData.allowed_categories.includes(c)}
-                                                    onChange={() => toggleSelection('allowed_categories', c)}
-                                                />
-                                                <span className="text-sm">
-                                                    {c === 'men' ? 'גברים' : c === 'women' ? 'נשים' : 'יוניסקס'}
-                                                </span>
-                                            </label>
-                                        ))}
-                                    </div>
+                                    <label className="block text-sm font-bold mb-2">שייכות (קטגוריה):</label>
+                                    <ObjectTagInput
+                                        options={[
+                                            { id: 'men', label: 'גברים' },
+                                            { id: 'women', label: 'נשים' },
+                                            { id: 'unisex', label: 'יוניסקס' }
+                                        ]}
+                                        value={formData.allowed_categories}
+                                        onChange={(newVal) => setFormData(prev => ({ ...prev, allowed_categories: newVal }))}
+                                        placeholder="חפש שייכות..."
+                                    />
                                 </div>
 
                                 {/* Brands - Using Tag Search */}
