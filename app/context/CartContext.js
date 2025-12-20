@@ -323,41 +323,47 @@ export function CartProvider({ children }) {
 
                 cartItems.forEach(item => {
                     let isEligible = true;
+                    // Debug Log
+                    // console.log(`Checking Item ${item.name} (ID: ${item.id}, Brand: ${item.brand}, Size: ${item.size})`);
 
                     // Check Limitations (Robust Comparison)
                     // 1. Size: Extract digits to handle "2", "2ml", "2 ml", "10ml Luxury"
                     if (limits.allowed_sizes?.length > 0) {
-                        // Extract value: 2, 5, 10. For "Luxury 10ml" represented as 11, we assume the cart Item.size is actually 11 IF the admin saved it as such.
-                        // But if the cart item size is "10" and admin is "11", this fails.
-                        // IMPORTANT: The admin map uses ID 11 for label "10ml Luxury".
-                        // Does the cart item have size 11? Or size 10?
-                        // ProductActionsClient calls handleAdd(2), handleAdd(5), handleAdd(10). 
-                        // It DOES NOT seem to handle 11. 
-                        // Assuming we only support 2, 5, 10 for now based on the file viewed.
-                        // We just compare loose integer values.
-
                         const itemSizeStr = String(item.size).replace(/\D/g, '');
                         const itemSize = itemSizeStr ? parseInt(itemSizeStr) : null;
-
-                        if (itemSize && !limits.allowed_sizes.some(s => parseInt(s) === itemSize)) isEligible = false;
+                        if (itemSize && !limits.allowed_sizes.some(s => parseInt(s) === itemSize)) {
+                            // console.log(`  -> Failed Size Check (Allowed: ${limits.allowed_sizes})`);
+                            isEligible = false;
+                        }
                     }
 
                     // 2. Brand: Case insensitive check with trim
                     if (limits.allowed_brands?.length > 0) {
-                        if (!item.brand || !limits.allowed_brands.some(b => b.trim().toLowerCase() === item.brand.trim().toLowerCase())) isEligible = false;
+                        if (!item.brand || !limits.allowed_brands.some(b => b.trim().toLowerCase() === item.brand.trim().toLowerCase())) {
+                            // console.log(`  -> Failed Brand Check (Allowed: ${limits.allowed_brands})`);
+                            isEligible = false;
+                        }
                     }
 
                     // 3. Category: Case insensitive check with trim
                     if (limits.allowed_categories?.length > 0) {
-                        if (!item.category || !limits.allowed_categories.some(c => c.trim().toLowerCase() === item.category.trim().toLowerCase())) isEligible = false;
+                        if (!item.category || !limits.allowed_categories.some(c => c.trim().toLowerCase() === item.category.trim().toLowerCase())) {
+                            // console.log(`  -> Failed Category Check (Allowed: ${limits.allowed_categories})`);
+                            isEligible = false;
+                        }
                     }
 
                     // 4. Products: ID String comparison
                     if (limits.allowed_products?.length > 0) {
-                        if (!limits.allowed_products.some(pid => String(pid) === String(item.id))) isEligible = false;
+                        // Check if item.id exists and matches one of the allowed IDs (compared as strings)
+                        if (!item.id || !limits.allowed_products.some(pid => String(pid).trim() === String(item.id).trim())) {
+                            // console.log(`  -> Failed Product Check (Allowed IDs: ${limits.allowed_products})`);
+                            isEligible = false;
+                        }
                     }
 
                     if (isEligible) {
+                        // console.log("  -> ITEM ELIGIBLE");
                         eligibleSum += (item.price * item.quantity);
                     }
                 });

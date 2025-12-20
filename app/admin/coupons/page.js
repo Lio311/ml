@@ -176,8 +176,25 @@ export default function AdminCouponsPage() {
         setFormData(prev => ({ ...prev, code: `SALE-${random}` }));
     };
 
+    // Enforce Hierarchy: Product > Brand/Category
+    // If specific products are selected, clear brands and categories
+    useEffect(() => {
+        if (formData.allowed_products.length > 0) {
+            if (formData.allowed_brands.length > 0 || formData.allowed_categories.length > 0) {
+                setFormData(prev => ({
+                    ...prev,
+                    allowed_brands: [],
+                    allowed_categories: []
+                }));
+            }
+        }
+    }, [formData.allowed_products]);
+
     // Helper for multi-select
     const toggleSelection = (field, value) => {
+        // Prevent selecting categories if products are selected
+        if (field === 'allowed_categories' && formData.allowed_products.length > 0) return;
+
         setFormData(prev => {
             const current = prev[field];
             if (current.includes(value)) {
@@ -329,8 +346,11 @@ export default function AdminCouponsPage() {
                                     <h3 className="font-bold text-lg text-gray-800 border-b pb-2 mb-4">הגבלות ופילטרים (אופציונלי)</h3>
 
                                     {/* Categories */}
-                                    <div>
-                                        <label className="block text-sm font-bold mb-2">תקף לקטגוריות:</label>
+                                    <div className={`mb-4 ${formData.allowed_products.length > 0 ? 'opacity-50 pointer-events-none' : ''}`}>
+                                        <label className="block text-sm font-bold mb-2">
+                                            תקף לקטגוריות:
+                                            {formData.allowed_products.length > 0 && <span className="text-xs text-red-500 mr-2">(מבוטל בגלל בחירת מוצרים ספציפיים)</span>}
+                                        </label>
                                         <div className="flex gap-3 flex-wrap">
                                             {['men', 'women', 'unisex'].map(c => (
                                                 <label key={c} className="flex items-center gap-2 bg-white px-3 py-1 rounded cursor-pointer border hover:border-black transition">
@@ -338,6 +358,7 @@ export default function AdminCouponsPage() {
                                                         type="checkbox"
                                                         checked={formData.allowed_categories.includes(c)}
                                                         onChange={() => toggleSelection('allowed_categories', c)}
+                                                        disabled={formData.allowed_products.length > 0}
                                                     />
                                                     <span className="text-sm">
                                                         {c === 'men' ? 'גברים' : c === 'women' ? 'נשים' : 'יוניסקס'}
@@ -376,8 +397,11 @@ export default function AdminCouponsPage() {
                                     </div>
 
                                     {/* Brands */}
-                                    <div>
-                                        <label className="block text-sm font-bold mb-2">מותגים ספציפיים:</label>
+                                    <div className={`mb-4 ${formData.allowed_products.length > 0 ? 'opacity-50 pointer-events-none' : ''}`}>
+                                        <label className="block text-sm font-bold mb-2">
+                                            מותגים ספציפיים:
+                                            {formData.allowed_products.length > 0 && <span className="text-xs text-red-500 mr-2">(מבוטל בגלל בחירת מוצרים ספציפיים)</span>}
+                                        </label>
                                         <ObjectTagInput
                                             options={brands.map(b => ({ id: b.name, label: b.name }))}
                                             value={formData.allowed_brands}
