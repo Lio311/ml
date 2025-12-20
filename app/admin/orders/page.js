@@ -54,8 +54,14 @@ export default async function AdminOrdersPage() {
                 const items = order.items;
                 for (const item of items) {
                     if (!item.isPrize && !isNaN(item.size)) {
-                        const bottleSize = Number(item.size);
-                        if ([2, 5, 10].includes(bottleSize)) {
+                        let bottleSize = Number(item.size);
+
+                        // Luxury Bottle Logic: 10ml & Price >= 300 -> Size 11
+                        if (bottleSize === 10 && item.price >= 300) {
+                            bottleSize = 11;
+                        }
+
+                        if ([2, 5, 10, 11].includes(bottleSize)) {
                             await client.query(
                                 'UPDATE bottle_inventory SET quantity = quantity + $1 WHERE size = $2',
                                 [item.quantity, bottleSize]
@@ -77,8 +83,14 @@ export default async function AdminOrdersPage() {
                 const items = order.items;
                 for (const item of items) {
                     if (!item.isPrize && !isNaN(item.size)) {
-                        const bottleSize = Number(item.size);
-                        if ([2, 5, 10].includes(bottleSize)) {
+                        let bottleSize = Number(item.size);
+
+                        // Luxury Bottle Logic: 10ml & Price >= 300 -> Size 11
+                        if (bottleSize === 10 && item.price >= 300) {
+                            bottleSize = 11;
+                        }
+
+                        if ([2, 5, 10, 11].includes(bottleSize)) {
                             await client.query(
                                 'UPDATE bottle_inventory SET quantity = quantity - $1 WHERE size = $2',
                                 [item.quantity, bottleSize]
@@ -143,8 +155,14 @@ export default async function AdminOrdersPage() {
                         );
 
                         // --- RESTORE BOTTLE INVENTORY ---
-                        const bottleSize = Number(item.size);
-                        if ([2, 5, 10].includes(bottleSize)) {
+                        let bottleSize = Number(item.size);
+
+                        // Luxury Bottle Logic: 10ml & Price >= 300 -> Size 11
+                        if (bottleSize === 10 && item.price >= 300) {
+                            bottleSize = 11;
+                        }
+
+                        if ([2, 5, 10, 11].includes(bottleSize)) {
                             await client.query(
                                 'UPDATE bottle_inventory SET quantity = quantity + $1 WHERE size = $2',
                                 [item.quantity, bottleSize]
