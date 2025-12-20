@@ -494,13 +494,59 @@ export default function CartClient() {
                                     <span>קופון {coupon.code} ({coupon.discountPercent}%)</span>
                                     <span>
                                         {(() => {
-                                            // Calculate coupon discount amount locally to match Context logic
-                                            let base = subtotal;
-                                            if (lotteryMode.active) base -= Math.round(base * 0.15);
-                                            else if (luckyPrize?.type === 'discount') base -= Math.round(base * luckyPrize.value);
+                                            if (!coupon) return 0;
 
-                                            const val = Math.round(base * (coupon.discountPercent / 100));
-                                            return val;
+                                            // Robust calculation matching Context/Server logic
+                                            let limits = coupon.limitations || {};
+                                            // Handle potential string limitation (defensive)
+                                            if (typeof limits === 'string') {
+                                                try { limits = JSON.parse(limits); } catch (e) { limits = {}; }
+                                            }
+
+                                            // Should match logic in CartContext
+                                            let eligibleSum = 0;
+                                            cartItems.forEach(item => {
+                                                let isEligible = true;
+
+                                                if (limits.allowed_sizes?.length > 0) {
+                                                    const sizeStr = String(item.size).replace(/\D/g, '');
+                                                    const sizeInt = sizeStr ? parseInt(sizeStr) : null;
+                                                    if (sizeInt && !limits.allowed_sizes.some(s => parseInt(s) === sizeInt)) isEligible = false;
+                                                }
+                                                if (limits.allowed_brands?.length > 0) {
+                                                    if (!item.brand || !limits.allowed_brands.some(b => b.trim().toLowerCase() === item.brand.trim().toLowerCase())) isEligible = false;
+                                                }
+                                                if (limits.allowed_categories?.length > 0) {
+                                                    if (!item.category || !limits.allowed_categories.some(c => c.trim().toLowerCase() === item.category.trim().toLowerCase())) isEligible = false;
+                                                }
+                                                if (limits.allowed_products?.length > 0) {
+                                                    if (!item.id || !limits.allowed_products.some(pid => String(pid).trim() === String(item.id).trim())) isEligible = false;
+                                                }
+
+                                                if (isEligible) {
+                                                    eligibleSum += (item.price * item.quantity);
+                                                }
+                                            });
+
+                                            // Calculate proportional discount if other discounts exist? 
+                                            // For simplicity and user expectation: Discount is % of the ELIGIBLE AMOUNT.
+                                            // If Lottery is active, Lottery discount (15%) is already applied to subtotal?
+                                            // Yes: priceAfterDiscounts is `subtotal * 0.85`.
+                                            // If we take 5% of eligible sum (original price), we might be "double dipping" or "stacking" nicely.
+                                            // Usually coupons don't stack with Lottery.
+                                            // But if they do, we should probably apply to the Net price.
+                                            // However, `discountAmount` in Context sums them up.
+                                            // Let's stick to the ratio approach used in Context to ensure the TOTAL matches exactly.
+
+                                            const base = subtotal;
+                                            let currentNet = base;
+                                            if (lotteryMode.active) currentNet -= Math.round(base * 0.15);
+                                            else if (luckyPrize?.type === 'discount') currentNet -= Math.round(base * luckyPrize.value);
+
+                                            const ratio = base > 0 ? (eligibleSum / base) : 0;
+                                            const eligibleNet = currentNet * ratio;
+
+                                            return Math.round(eligibleNet * (coupon.discountPercent / 100));
                                         })()}- ₪
                                     </span>
                                 </div>
