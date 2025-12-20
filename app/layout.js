@@ -2,13 +2,10 @@ import { Assistant, Dancing_Script } from "next/font/google";
 import { ClerkProvider } from '@clerk/nextjs';
 import { heIL } from "@clerk/localizations";
 import "./globals.css";
-import Header from "./components/Header";
-import Footer from "./components/Footer";
 import AnalyticsTracker from "./components/AnalyticsTracker";
-import ChatWidget from "./components/Chatbot/ChatWidget";
-import AccessibilityWidget from "./components/AccessibilityWidget";
 import GoogleAnalytics from "./components/GoogleAnalytics";
 import MicrosoftClarity from "./components/MicrosoftClarity";
+import ClientLayout from "./components/ClientLayout";
 
 const assistant = Assistant({
   subsets: ["hebrew", "latin"],
@@ -91,16 +88,12 @@ export default async function RootLayout({ children }) {
             <WishlistProvider>
               <AnalyticsTracker />
 
-              <div id="site-content">
-                <Header brands={brands} />
-                <main className="min-h-screen">
-                  {children}
-                </main>
-                <Footer />
-              </div>
+              <ClientLayout brands={brands}>
+                {children}
+              </ClientLayout>
 
-              <ChatWidget />
-              <AccessibilityWidget />
+              <GoogleAnalytics />
+              <MicrosoftClarity />
 
               <GoogleAnalytics />
               <MicrosoftClarity />
