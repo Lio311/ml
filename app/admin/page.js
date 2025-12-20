@@ -209,27 +209,19 @@ export default async function AdminDashboard() {
             const sizeConsumption = { '2': 0, '5': 0, '10': 0, '11': 0 };
 
             last30DaysRes.rows.forEach(order => {
-                let items = [];
-                try {
-                    items = typeof order.items === 'string' ? JSON.parse(order.items) : order.items;
-                } catch (e) { items = []; }
-
-                if (Array.isArray(items)) {
-                    items.forEach(item => {
-                        const s = item.size ? item.size.toString() : '10';
-                        const sKey = s.replace(/[^0-9]/g, '');
-                        if (sizeConsumption[sKey] !== undefined) {
-                            sizeConsumption[sKey] += parseInt(item.quantity || 1);
-                        }
-                    });
-                }
+                const items = typeof order.items === 'string' ? JSON.parse(order.items) : order.items;
+                items.forEach(item => {
+                    const s = item.size ? item.size.toString() : '10';
+                    const sKey = s.replace(/[^0-9]/g, '');
+                    if (sizeConsumption[sKey] !== undefined) {
+                        sizeConsumption[sKey] += parseInt(item.quantity || 1);
+                    }
+                });
             });
 
             // Calculate Days Left
             (kpis.bottleInventory || []).forEach(inv => {
-                if (!inv || !inv.size) return; // Skip invalid entries
-
-                const sKey = inv.size.toString().replace(/[^0-9]/g, '');
+                const sKey = inv.size.replace(/[^0-9]/g, '');
                 const quantity = parseInt(inv.quantity || 0);
                 const usage30Days = sizeConsumption[sKey] || 0;
                 const dailyRate = usage30Days / 30;
@@ -494,22 +486,23 @@ export default async function AdminDashboard() {
         <div>
             <h1 className="text-3xl font-bold mb-8">לוח בקרה</h1>
 
-            {/* Insights removed per user request */}
             {/* <InventoryForecast forecasts={forecasts} /> */}
 
             <DashboardCharts
-                orderData={JSON.parse(JSON.stringify(kpis.orderChartData || []))}
-                revenueData={JSON.parse(JSON.stringify(kpis.revenueChartData || []))}
-                visitsData={JSON.parse(JSON.stringify(kpis.visitsChartData || []))}
-                usersData={JSON.parse(JSON.stringify(usersChartData || []))}
+                orderData={kpis.orderChartData}
+                revenueData={kpis.revenueChartData}
+                visitsData={kpis.visitsChartData}
+                // usersData={usersChartData} // Causing 500 error - disabling
+                usersData={[
+                    { day: 1, current: 0, previous: 0 }
+                ]} // Safety Fallback
             />
 
 
             <AnalyticsTables
-                recentOrders={JSON.parse(JSON.stringify(kpis.recentOrders || []))}
                 topBrands={kpis.topBrands}
                 topSizes={kpis.topSizes}
-                recentCoupons={JSON.parse(JSON.stringify(kpis.recentCoupons || []))}
+                monthName={currentMonthLabel}
             />
 
             {/* Cards */}
