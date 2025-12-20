@@ -332,27 +332,33 @@ export default async function AdminDashboard() {
         `, [prevMonth, prevYear]);
 
         // Visits Chart Data Fetching
-        const currentMonthVisitsRes = await client.query(`
-            SELECT 
-                EXTRACT(DAY FROM created_at) as day,
-                COUNT(*) as count
-            FROM site_visits
-            WHERE EXTRACT(MONTH FROM created_at) = $1
-            AND EXTRACT(YEAR FROM created_at) = $2
-            GROUP BY day
-            ORDER BY day
-        `, [month, year]);
+        let currentMonthVisitsRes = { rows: [] };
+        let prevMonthVisitsRes = { rows: [] };
+        try {
+            currentMonthVisitsRes = await client.query(`
+                SELECT 
+                    EXTRACT(DAY FROM created_at) as day,
+                    COUNT(*) as count
+                FROM site_visits
+                WHERE EXTRACT(MONTH FROM created_at) = $1
+                AND EXTRACT(YEAR FROM created_at) = $2
+                GROUP BY day
+                ORDER BY day
+            `, [month, year]);
 
-        const prevMonthVisitsRes = await client.query(`
-            SELECT 
-                EXTRACT(DAY FROM created_at) as day,
-                COUNT(*) as count
-            FROM site_visits
-            WHERE EXTRACT(MONTH FROM created_at) = $1
-            AND EXTRACT(YEAR FROM created_at) = $2
-            GROUP BY day
-            ORDER BY day
-        `, [prevMonth, prevYear]);
+            prevMonthVisitsRes = await client.query(`
+                SELECT 
+                    EXTRACT(DAY FROM created_at) as day,
+                    COUNT(*) as count
+                FROM site_visits
+                WHERE EXTRACT(MONTH FROM created_at) = $1
+                AND EXTRACT(YEAR FROM created_at) = $2
+                GROUP BY day
+                ORDER BY day
+            `, [prevMonth, prevYear]);
+        } catch (e) {
+            console.warn("Failed to fetch visits for chart:", e);
+        }
 
 
 
