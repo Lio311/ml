@@ -2,6 +2,7 @@ import pool from "@/app/lib/db";
 import Link from "next/link";
 import DashboardCharts from "../components/admin/DashboardCharts";
 import AnalyticsTables from "../components/admin/AnalyticsTables";
+import { FlaskConical, TrendingUp, ShoppingBag, Users, Eye } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
 
@@ -436,15 +437,33 @@ export default async function AdminDashboard() {
                         <Link href="/admin/inventory" className="text-blue-500 hover:underline">לניהול המלאי המלא</Link>
                     </div>
                 </div>
-                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 flex flex-col justify-between">
-                    <div>
-                        <div className="text-gray-500 text-sm font-bold uppercase mb-2">דוגמיות שנמכרו</div>
-                        <div className="text-4xl font-bold mb-4">{kpis.totalSamples}</div>
+                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 relative overflow-hidden group hover:shadow-md transition-shadow">
+                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 to-pink-500"></div>
+                    <div className="flex justify-between items-start mb-2">
+                        <div className="text-gray-500 text-sm font-bold uppercase flex items-center gap-2">
+                            <FlaskConical className="w-4 h-4 text-purple-500" />
+                            דוגמיות שנמכרו
+                        </div>
                     </div>
-                    <div className="text-xs text-gray-500 bg-gray-50 p-2 rounded w-full">
-                        <div className="flex justify-between mb-1"><span>2 מ״ל:</span> <span className="font-bold text-black">{kpis.samplesBreakdown['2']}</span></div>
-                        <div className="flex justify-between mb-1"><span>5 מ״ל:</span> <span className="font-bold text-black">{kpis.samplesBreakdown['5']}</span></div>
-                        <div className="flex justify-between"><span>10 מ״ל:</span> <span className="font-bold text-black">{kpis.samplesBreakdown['10']}</span></div>
+
+                    <div className="flex items-baseline gap-2 mb-6">
+                        <span className="text-4xl font-bold text-gray-900">{kpis.totalSamples}</span>
+                        <span className="text-xs text-gray-400 font-medium">יחידות</span>
+                    </div>
+
+                    <div className="grid grid-cols-3 gap-2">
+                        <div className="flex flex-col items-center bg-purple-50 p-2 rounded-lg border border-purple-100">
+                            <span className="text-[10px] text-purple-600 font-bold mb-1">2 מ״ל</span>
+                            <span className="font-black text-lg text-purple-800 leading-none">{kpis.samplesBreakdown['2']}</span>
+                        </div>
+                        <div className="flex flex-col items-center bg-pink-50 p-2 rounded-lg border border-pink-100">
+                            <span className="text-[10px] text-pink-600 font-bold mb-1">5 מ״ל</span>
+                            <span className="font-black text-lg text-pink-800 leading-none">{kpis.samplesBreakdown['5']}</span>
+                        </div>
+                        <div className="flex flex-col items-center bg-blue-50 p-2 rounded-lg border border-blue-100">
+                            <span className="text-[10px] text-blue-600 font-bold mb-1">10 מ״ל</span>
+                            <span className="font-black text-lg text-blue-800 leading-none">{kpis.samplesBreakdown['10']}</span>
+                        </div>
                     </div>
                 </div>
                 <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
