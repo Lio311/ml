@@ -508,9 +508,10 @@ export default async function AdminDashboard() {
 
 
             <AnalyticsTables
+                recentOrders={JSON.parse(JSON.stringify(kpis.recentOrders || []))}
                 topBrands={kpis.topBrands}
                 topSizes={kpis.topSizes}
-                monthName={currentMonthLabel}
+                recentCoupons={JSON.parse(JSON.stringify(kpis.recentCoupons || []))}
             />
 
             {/* Cards */}
