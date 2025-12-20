@@ -497,13 +497,10 @@ export default async function AdminDashboard() {
             <InventoryForecast forecasts={forecasts} />
 
             <DashboardCharts
-                orderData={kpis.orderChartData}
-                revenueData={kpis.revenueChartData}
-                visitsData={kpis.visitsChartData}
-                // usersData={usersChartData} // Causing 500 error - disabling
-                usersData={[
-                    { day: 1, current: 0, previous: 0 }
-                ]} // Safety Fallback
+                orderData={JSON.parse(JSON.stringify(kpis.orderChartData || []))}
+                revenueData={JSON.parse(JSON.stringify(kpis.revenueChartData || []))}
+                visitsData={JSON.parse(JSON.stringify(kpis.visitsChartData || []))}
+                usersData={JSON.parse(JSON.stringify(usersChartData || []))}
             />
 
 
