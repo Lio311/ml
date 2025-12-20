@@ -23,7 +23,7 @@ export default async function AdminDashboard() {
         redirect("/admin/orders");
     }
 
-    const client = await pool.connect();
+    let client = null;
 
     let kpis = {
         totalOrders: 0,
@@ -44,6 +44,8 @@ export default async function AdminDashboard() {
 
 
     try {
+        client = await pool.connect();
+
         // KPI Queries
         const ordersRes = await client.query('SELECT * FROM orders ORDER BY created_at DESC LIMIT 3');
         kpis.recentOrders = ordersRes.rows;
@@ -424,7 +426,9 @@ export default async function AdminDashboard() {
         console.error("Critical Admin Dashboard Error:", err);
         // Error is caught, page will render with default/partial kpis
     } finally {
-        client.release();
+        if (client) {
+            client.release();
+        }
     }
 
     const currentMonthLabel = new Date().toLocaleString('he-IL', { month: 'long' });
