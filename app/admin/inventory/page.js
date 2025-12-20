@@ -244,7 +244,7 @@ export default function AdminInventoryPage() {
                                                 <td className="p-3 font-bold">{typeLabel}</td>
                                                 <td className="p-3 text-green-600 ltr" dir="ltr">+{h.quantity}</td>
                                                 <td className="p-3 text-gray-500 truncate max-w-[100px]" title={h.notes}>{h.notes || '-'}</td>
-                                                <td className="p-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                <td className="p-3 flex gap-2">
                                                     <button
                                                         onClick={() => handleEditClick(h)}
                                                         className="text-blue-500 hover:bg-blue-50 p-1 rounded"
