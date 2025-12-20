@@ -96,6 +96,76 @@ export default function CartClient() {
     // Order Notes State
     const [notes, setNotes] = useState('');
 
+    // Auto-Validate Coupon on Cart Change
+    useEffect(() => {
+        if (!coupon) return;
+
+        let limits = coupon.limitations || {};
+        // Defensive parse (should be object already from state but safe)
+        if (typeof limits === 'string') {
+            try { limits = JSON.parse(limits); } catch (e) { limits = {}; }
+        }
+
+        let isValid = true;
+        let rejectReason = '';
+
+        // Check 0: Allowed Users
+        if (limits.allowed_users?.length > 0) {
+            const userEmail = user?.primaryEmailAddress?.emailAddress;
+            if (!userEmail || !limits.allowed_users.some(u => u.trim().toLowerCase() === userEmail.trim().toLowerCase())) {
+                isValid = false;
+                rejectReason = 'הקופון הוסר: אינו תקף למשתמש זה';
+            }
+        }
+
+        // Check 1: Min Total
+        if (isValid && limits.min_cart_total && subtotal < limits.min_cart_total) {
+            isValid = false;
+            rejectReason = `הקופון הוסר: תקף בקנייה מעל ${limits.min_cart_total} ₪`;
+        }
+
+        // Check 2: Item Eligibility (At least one must match)
+        const hasItemFilters = (limits.allowed_sizes?.length > 0) ||
+            (limits.allowed_brands?.length > 0) ||
+            (limits.allowed_categories?.length > 0) ||
+            (limits.allowed_products?.length > 0);
+
+        if (isValid && hasItemFilters) {
+            let hasMatch = false;
+            cartItems.forEach(item => {
+                let isItemEligible = true;
+                if (limits.allowed_sizes?.length > 0) {
+                    const sizeStr = String(item.size).replace(/\D/g, '');
+                    const sizeInt = sizeStr ? parseInt(sizeStr) : null;
+                    if (sizeInt && !limits.allowed_sizes.some(s => parseInt(s) === sizeInt)) isItemEligible = false;
+                }
+                if (limits.allowed_brands?.length > 0) {
+                    if (!item.brand || !limits.allowed_brands.some(b => b.trim().toLowerCase() === item.brand.trim().toLowerCase())) isItemEligible = false;
+                }
+                if (limits.allowed_categories?.length > 0) {
+                    if (!item.category || !limits.allowed_categories.some(c => c.trim().toLowerCase() === item.category.trim().toLowerCase())) isItemEligible = false;
+                }
+                if (limits.allowed_products?.length > 0) {
+                    if (!item.id || !limits.allowed_products.some(pid => String(pid).trim() === String(item.id).trim())) isItemEligible = false;
+                }
+
+                if (isItemEligible) hasMatch = true;
+            });
+
+            if (!hasMatch) {
+                isValid = false;
+                rejectReason = 'הקופון הוסר: אין פריטים תואמים בסל';
+            }
+        }
+
+        // Action
+        if (!isValid) {
+            setCoupon(null);
+            setCouponError(rejectReason);
+        }
+
+    }, [cartItems, subtotal, user, coupon, setCoupon]);
+
     const handleApplyCoupon = async () => {
         if (!couponInput) return;
         setIsValidatingCoupon(true);
