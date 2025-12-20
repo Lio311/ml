@@ -221,7 +221,9 @@ export default async function AdminDashboard() {
 
             // Calculate Days Left
             (kpis.bottleInventory || []).forEach(inv => {
-                const sKey = inv.size.replace(/[^0-9]/g, '');
+                if (!inv || !inv.size) return; // Skip invalid entries
+
+                const sKey = inv.size.toString().replace(/[^0-9]/g, '');
                 const quantity = parseInt(inv.quantity || 0);
                 const usage30Days = sizeConsumption[sKey] || 0;
                 const dailyRate = usage30Days / 30;
