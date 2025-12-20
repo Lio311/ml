@@ -48,10 +48,10 @@ export default async function AdminLayout({ children }) {
                         <Link href="/admin/orders">הזמנות</Link>
                         {(isSuperAdmin || role === 'admin' || role === 'deputy') && (
                             <>
-                                <Link href="/admin/products">מוצרים</Link>
                                 <Link href="/admin/users">משתמשים</Link>
-                                <Link href="/admin/inventory">מלאי</Link>
+                                <Link href="/admin/inventory">בקבוקונים</Link>
                                 <Link href="/admin/requests">בקשות</Link>
+                                <Link href="/admin/products">מוצרים</Link>
                             </>
                         )}
                     </div>

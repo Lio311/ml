@@ -12,15 +12,15 @@ export default function AdminSidebar({ role = 'customer' }) {
     const allNavItems = [
         { href: "/admin", label: "🏠 דשבורד", roles: ['admin', 'deputy'] },
         { href: "/admin/orders", label: "📦 ניהול הזמנות", roles: ['admin', 'deputy', 'warehouse'] },
-        { href: "/admin/products", label: "🧴 ניהול מוצרים", roles: ['admin', 'deputy'] },
-        { href: "/admin/dictionary", label: "📖 ניהול מילון חיפוש", roles: ['admin', 'deputy'] },
-        { href: "/admin/brands", label: "🏷️ ניהול מותגים (לוגואים)", roles: ['admin', 'deputy'] },
         { href: "/admin/users", label: "👥 ניהול משתמשים", roles: ['admin', 'deputy'] },
-        { href: "/admin/coupons", label: "🎟️ ניהול קופונים", roles: ['admin', 'deputy'] },
+        { href: "/admin/inventory", label: "🧪 ניהול בקבוקונים", roles: ['admin', 'deputy'] },
         { href: "/admin/requests", label: "🗳️ ניהול בקשות", roles: ['admin', 'deputy'] },
+        { href: "/admin/products", label: "🧴 ניהול מוצרים", roles: ['admin', 'deputy'] },
+        { href: "/admin/brands", label: "🏷️ ניהול מותגים (לוגואים)", roles: ['admin', 'deputy'] },
+        { href: "/admin/coupons", label: "🎟️ ניהול קופונים", roles: ['admin', 'deputy'] },
         { href: "/admin/lottery", label: "🎰 ניהול הגרלות", roles: ['admin', 'deputy'] },
+        { href: "/admin/dictionary", label: "📖 ניהול מילון חיפוש", roles: ['admin', 'deputy'] },
         { href: "/admin/menu", label: "🗺️ ניהול תפריט ראשי", roles: ['admin', 'deputy'] },
-        { href: "/admin/inventory", label: "🧪 ניהול מלאי בקבוקנים", roles: ['admin', 'deputy'] },
         { href: "/admin/expenses", label: "💸 ניהול הוצאות", roles: ['admin', 'deputy'] },
     ];
 
