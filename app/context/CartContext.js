@@ -288,14 +288,14 @@ export function CartProvider({ children }) {
                     if (!limits.allowed_sizes.some(s => parseInt(s) === itemSize)) isEligible = false;
                 }
 
-                // 2. Brand: Case insensitive check
+                // 2. Brand: Case insensitive check with trim
                 if (limits.allowed_brands?.length > 0) {
-                    if (!item.brand || !limits.allowed_brands.some(b => b.toLowerCase() === item.brand.toLowerCase())) isEligible = false;
+                    if (!item.brand || !limits.allowed_brands.some(b => b.trim().toLowerCase() === item.brand.trim().toLowerCase())) isEligible = false;
                 }
 
-                // 3. Category: Case insensitive check
+                // 3. Category: Case insensitive check with trim
                 if (limits.allowed_categories?.length > 0) {
-                    if (!item.category || !limits.allowed_categories.some(c => c.toLowerCase() === item.category.toLowerCase())) isEligible = false;
+                    if (!item.category || !limits.allowed_categories.some(c => c.trim().toLowerCase() === item.category.trim().toLowerCase())) isEligible = false;
                 }
 
                 // 4. Products: ID String comparison
