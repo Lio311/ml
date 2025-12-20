@@ -1,6 +1,8 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { SignOutButton } from "@clerk/nextjs";
 export default function AdminSidebar({ role = 'customer' }) {
     const pathname = usePathname();
 
