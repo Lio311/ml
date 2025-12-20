@@ -29,12 +29,17 @@ export default async function AdminDashboard() {
         totalOrders: 0,
         totalRevenue: 0,
         totalUsers: 0,
+        totalSamples: 0,
         orderChartData: [],
         revenueChartData: [],
         topBrands: [],
         topSizes: [],
         monthlyProfit: 0,
-        visitsChartData: []
+        visitsChartData: [],
+        recentOrders: [],
+        bottleInventory: [],
+        recentCoupons: [],
+        samplesBreakdown: { '2': 0, '5': 0, '10': 0, '11': 0 }
     };
 
 
@@ -415,6 +420,9 @@ export default async function AdminDashboard() {
             kpis.recentCoupons = [];
         }
 
+    } catch (err) {
+        console.error("Critical Admin Dashboard Error:", err);
+        // Error is caught, page will render with default/partial kpis
     } finally {
         client.release();
     }
