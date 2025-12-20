@@ -492,10 +492,7 @@ export default async function AdminDashboard() {
                 orderData={kpis.orderChartData}
                 revenueData={kpis.revenueChartData}
                 visitsData={kpis.visitsChartData}
-                // usersData={usersChartData} // Real data disabled by user request
-                usersData={[
-                    { day: 1, current: 0, previous: 0 }
-                ]} // Safety Fallback
+                usersData={usersChartData}
             />
 
 
