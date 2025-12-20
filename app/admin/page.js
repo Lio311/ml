@@ -156,23 +156,9 @@ export default async function AdminDashboard() {
             rawUsersData = dbUsersRes.rows.map(r => ({ createdAt: r.created_at }));
             kpis.totalUsers = parseInt((await client.query('SELECT COUNT(*) FROM users')).rows[0].count);
         } catch (dbErr) {
-            // OPTION 2: Fallback to Clerk API if local table doesn't exist
-            console.warn("Local users table not found, falling back to Clerk API", dbErr.message);
-            try {
-                const clerk = await clerkClient();
-                const userListResponse = await clerk.users.getUserList({ limit: 100 }); // Limited to 100 for stability
-                const fetchedUsers = Array.isArray(userListResponse) ? userListResponse : (userListResponse.data || []);
-                rawUsersData = fetchedUsers.map(u => ({ createdAt: u.createdAt }));
-
-                try {
-                    kpis.totalUsers = await clerk.users.getCount();
-                } catch (cErr) {
-                    kpis.totalUsers = rawUsersData.length;
-                }
-            } catch (clerkErr) {
-                console.error("Clerk API failed:", clerkErr);
-                rawUsersData = [];
-            }
+            console.error("Local users table query failed:", dbErr);
+            rawUsersData = [];
+            kpis.totalUsers = 0;
         }
 
         // Process User Chart Data
