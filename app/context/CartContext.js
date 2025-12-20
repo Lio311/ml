@@ -264,13 +264,52 @@ export function CartProvider({ children }) {
     }
 
     // Apply Coupon (on items only)
+    // Apply Coupon (on eligible items only)
     if (coupon) {
-        // Coupon applies to the current price including previous discounts (compounding)
-        // OR original price? Standard e-commerce usually compounds or blocks stacking.
-        // Given existing logic allowed stacking, we keep it but calculate off the goods value.
-        const couponDiscount = Math.round(priceAfterDiscounts * (coupon.discountPercent / 100));
-        discountAmount += couponDiscount;
-        priceAfterDiscounts -= couponDiscount;
+        const limits = coupon.limitations || {};
+
+        // 1. Check Min Total
+        const cartTotalForMinCheck = subtotal; // Using subtotal before other discounts? Usually strictly subtotal.
+        if (limits.min_cart_total && cartTotalForMinCheck < limits.min_cart_total) {
+            // If requirement not met, 0 discount.
+            // Ideally should warn user, but for now just 0. 
+            // The UI might show "Coupon Active" but 0 discount if they drop below.
+        } else {
+            // 2. Calculate Discount on Eligible Items
+            let eligibleSum = 0;
+
+            cartItems.forEach(item => {
+                let isEligible = true;
+
+                // Check Limitations
+                if (limits.allowed_sizes?.length > 0 && !limits.allowed_sizes.includes(parseInt(item.size))) isEligible = false;
+                if (limits.allowed_brands?.length > 0 && !limits.allowed_brands.includes(item.brand)) isEligible = false;
+                if (limits.allowed_categories?.length > 0 && !limits.allowed_categories.includes(item.category)) isEligible = false;
+                if (limits.allowed_products?.length > 0 && !limits.allowed_products.includes(item.id)) isEligible = false;
+
+                if (isEligible) {
+                    eligibleSum += (item.price * item.quantity);
+                }
+            });
+
+            // Adjust eligible sum if previous discounts (like Lottery/Lucky) are proportional?
+            // Currently Lucky Prize applies to 'priceAfterDiscounts' (Global).
+            // Complexity: If Lucky Prize reduced the TOTAL by 10%, and Coupon applies to specific items...
+            // Standard approach: Apply Coupon to the Item Price, then deduct from Total.
+            // HERE: We calculated 'priceAfterDiscounts' which might already be reduced by Lucky Prize.
+            // If we calculate coupon off the original item price, we might double dip?
+            // User requested: "Simple".
+            // Let's assume Coupon applies to the Current Net Price of those items.
+            // But we don't track per-item net price easily here.
+            // SIMPLIFICATION: Calculate ratio of eligible/total and apply coupon to that portion of 'priceAfterDiscounts'.
+
+            const ratio = subtotal > 0 ? (eligibleSum / subtotal) : 0;
+            const eligibleNet = priceAfterDiscounts * ratio;
+
+            const couponDiscount = Math.round(eligibleNet * (coupon.discountPercent / 100));
+            discountAmount += couponDiscount;
+            priceAfterDiscounts -= couponDiscount;
+        }
     }
 
     let total = priceAfterDiscounts + shippingCost;

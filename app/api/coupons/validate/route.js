@@ -26,7 +26,8 @@ export async function POST(req) {
             return NextResponse.json({
                 success: true,
                 discountPercent: coupon.discount_percent,
-                code: coupon.code
+                code: coupon.code,
+                limitations: coupon.limitations || {}
             });
         } finally {
             client.release();

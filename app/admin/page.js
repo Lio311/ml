@@ -334,7 +334,13 @@ export default async function AdminDashboard() {
 
         // Coupons
         try {
-            const couponsRes = await client.query('SELECT * FROM coupons ORDER BY created_at DESC LIMIT 20');
+            const couponsRes = await client.query(`
+                SELECT * FROM coupons 
+                WHERE status = 'active' 
+                AND (expires_at IS NULL OR expires_at > NOW())
+                ORDER BY created_at DESC 
+                LIMIT 20
+            `);
             kpis.recentCoupons = couponsRes.rows;
         } catch (e) {
             console.warn("Coupons query failed", e);

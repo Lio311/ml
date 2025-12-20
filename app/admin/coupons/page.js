@@ -15,6 +15,9 @@ export default function AdminCouponsPage() {
     const { user } = useUser();
     const canEdit = user?.publicMetadata?.role === 'admin' || user?.emailAddresses[0]?.emailAddress === 'lior31197@gmail.com';
 
+    // Data for selectors
+    const [products, setProducts] = useState([]);
+    const [brands, setBrands] = useState([]);
 
     // Edit State
     const [editingId, setEditingId] = useState(null);
@@ -24,12 +27,35 @@ export default function AdminCouponsPage() {
         code: '',
         discount_percent: 5,
         expires_in_hours: '',
-        email: ''
+        email: '',
+        // Limitations
+        allowed_sizes: [],
+        allowed_categories: [],
+        allowed_brands: [],
+        allowed_products: [], // IDs
+        min_cart_total: 0
     });
 
     useEffect(() => {
         fetchCoupons();
+        fetchAuxData();
     }, []);
+
+    const fetchAuxData = async () => {
+        try {
+            const [prodRes, brandRes] = await Promise.all([
+                fetch('/api/products?limit=1000'), // Valid endpoint
+                fetch('/api/brands')
+            ]);
+            if (prodRes.ok) {
+                const data = await prodRes.json();
+                setProducts(data.products || []);
+            }
+            if (brandRes.ok) setBrands(await brandRes.json());
+        } catch (e) {
+            console.error("Failed to load aux data", e);
+        }
+    };
 
     const fetchCoupons = async () => {
         setLoading(true);
@@ -61,23 +87,19 @@ export default function AdminCouponsPage() {
     const handleEdit = (coupon) => {
         setEditingId(coupon.id);
 
-        let expiresInHours = '';
-        if (coupon.expires_at) {
-            // Calculate approximate hours left or original duration? 
-            // Usually simpler to just show what's there? 
-            // But the API expects "expires_in_hours" to ADD time to now? 
-            // Wait, my PUT API accepts "expires_at" timestamp directly.
-            // But my Form inputs "hours".
-            // So if editing, I should probably ask for "Extend by X hours" or "Set new Date"?
-            // Keeping it simple: If editing, "expires_in_hours" will be treated as "Set expiry to NOW + X hours".
-            // So I leave it empty initially.
-        }
+        // Parse limitations
+        const limits = coupon.limitations || {};
 
         setFormData({
             code: coupon.code,
             discount_percent: coupon.discount_percent,
-            expires_in_hours: '', // Reset, user enters new duration if they want to change
-            email: coupon.email || ''
+            expires_in_hours: '',
+            email: coupon.email || '',
+            allowed_sizes: limits.allowed_sizes || [],
+            allowed_categories: limits.allowed_categories || [],
+            allowed_brands: limits.allowed_brands || [],
+            allowed_products: limits.allowed_products || [],
+            min_cart_total: limits.min_cart_total || 0
         });
         setShowModal(true);
     };
@@ -89,15 +111,21 @@ export default function AdminCouponsPage() {
             const url = editingId ? `/api/admin/coupons/${editingId}` : '/api/admin/coupons';
             const method = editingId ? 'PUT' : 'POST';
 
-            // Prepare Body
-            // If editing, we only send what changed or everything?
-            // The API handles full updates? 
-            // My PUT API takes { discount_percent, expires_at }
-            // So I need to convert expires_in_hours to expires_at IS provided.
+            let payload = {
+                code: formData.code,
+                discount_percent: Number(formData.discount_percent),
+                email: formData.email,
+                limitations: {
+                    allowed_sizes: formData.allowed_sizes.length > 0 ? formData.allowed_sizes : null,
+                    allowed_categories: formData.allowed_categories.length > 0 ? formData.allowed_categories : null,
+                    allowed_brands: formData.allowed_brands.length > 0 ? formData.allowed_brands : null,
+                    allowed_products: formData.allowed_products.length > 0 ? formData.allowed_products : null,
+                    min_cart_total: Number(formData.min_cart_total) || 0
+                }
+            };
 
-            let payload = { ...formData };
-            if (payload.expires_in_hours) {
-                payload.expires_at = new Date(Date.now() + payload.expires_in_hours * 60 * 60 * 1000);
+            if (formData.expires_in_hours) {
+                payload.expires_at = new Date(Date.now() + formData.expires_in_hours * 60 * 60 * 1000);
             }
 
             const res = await fetch(url, {
@@ -123,7 +151,10 @@ export default function AdminCouponsPage() {
 
     const resetForm = () => {
         setEditingId(null);
-        setFormData({ code: '', discount_percent: 5, expires_in_hours: '', email: '' });
+        setFormData({
+            code: '', discount_percent: 5, expires_in_hours: '', email: '',
+            allowed_sizes: [], allowed_categories: [], allowed_brands: [], allowed_products: [], min_cart_total: 0
+        });
     };
 
     const openCreateModal = () => {
@@ -131,10 +162,21 @@ export default function AdminCouponsPage() {
         setShowModal(true);
     };
 
-    // Auto-generate code
     const generateCode = () => {
         const random = Math.random().toString(36).substring(2, 8).toUpperCase();
         setFormData(prev => ({ ...prev, code: `SALE-${random}` }));
+    };
+
+    // Helper for multi-select
+    const toggleSelection = (field, value) => {
+        setFormData(prev => {
+            const current = prev[field];
+            if (current.includes(value)) {
+                return { ...prev, [field]: current.filter(v => v !== value) };
+            } else {
+                return { ...prev, [field]: [...current, value] };
+            }
+        });
     };
 
     return (
@@ -159,7 +201,7 @@ export default function AdminCouponsPage() {
                             <th className="p-4 text-center">קוד קופון</th>
                             <th className="p-4 text-center">הנחה</th>
                             <th className="p-4 text-center">תוקף (שעון עצר)</th>
-                            <th className="p-4 text-center">משויך ל-</th>
+                            <th className="p-4 text-center">הגבלות</th>
                             <th className="p-4 text-center">סטטוס</th>
                             <th className="p-4 text-center">פעולות</th>
                         </tr>
@@ -206,65 +248,147 @@ export default function AdminCouponsPage() {
 
             {/* Modal */}
             {showModal && (
-                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-                    <div className="bg-white p-8 rounded-xl w-full max-w-md shadow-2xl">
+                <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 overflow-y-auto py-10">
+                    <div className="bg-white p-8 rounded-xl w-full max-w-2xl shadow-2xl relative">
+                        <button
+                            onClick={() => setShowModal(false)}
+                            className="absolute top-4 left-4 text-gray-400 hover:text-gray-600"
+                        >
+                            ✕
+                        </button>
                         <h2 className="text-xl font-bold mb-6">{editingId ? 'עריכת קופון' : 'יצירת קופון חדש'}</h2>
-                        <form onSubmit={handleSave} className="space-y-4">
-                            <div>
-                                <label className="block text-sm font-bold mb-1">קוד קופון</label>
-                                <div className="flex gap-2">
-                                    <input
-                                        type="text"
-                                        required
-                                        disabled={!!editingId} // Disable code edit
-                                        className="input border p-2 rounded w-full disabled:bg-gray-100 placeholder-right"
-                                        value={formData.code}
-                                        onChange={e => setFormData({ ...formData, code: e.target.value.toUpperCase() })}
-                                    />
-                                    {!editingId && <button type="button" onClick={generateCode} className="text-sm text-blue-600 font-bold whitespace-nowrap">ג'נרט</button>}
-                                </div>
-                            </div>
+                        <form onSubmit={handleSave} className="space-y-6">
 
-                            <div className="grid grid-cols-2 gap-4">
+                            {/* Basic Info */}
+                            <div className="grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded-lg">
+                                <div className="col-span-2">
+                                    <label className="block text-sm font-bold mb-1">קוד קופון</label>
+                                    <div className="flex gap-2">
+                                        <input
+                                            type="text"
+                                            required
+                                            disabled={!!editingId}
+                                            className="input border p-2 rounded w-full disabled:bg-gray-200"
+                                            value={formData.code}
+                                            onChange={e => setFormData({ ...formData, code: e.target.value.toUpperCase() })}
+                                        />
+                                        {!editingId && <button type="button" onClick={generateCode} className="text-sm text-blue-600 font-bold whitespace-nowrap">ג'נרט</button>}
+                                    </div>
+                                </div>
                                 <div>
-                                    <label className="block text-sm font-bold mb-1">אחוז הנחה</label>
+                                    <label className="block text-sm font-bold mb-1">הנחה (%)</label>
                                     <input
                                         type="number"
                                         required
                                         min="1" max="100"
-                                        className="input border p-2 rounded w-full text-center"
+                                        className="input border p-2 rounded w-full"
                                         value={formData.discount_percent}
                                         onChange={e => setFormData({ ...formData, discount_percent: e.target.value })}
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-bold mb-1">
-                                        {editingId ? 'הארך תוקף (שעות)' : 'תוקף (שעות)'}
-                                    </label>
+                                    <label className="block text-sm font-bold mb-1">{editingId ? 'הארך תוקף (שעות)' : 'תוקף (שעות)'}</label>
                                     <input
                                         type="number"
                                         min="1"
                                         placeholder={editingId ? "הזן כדי לעדכן" : "ללא הגבלה"}
-                                        className="input border p-2 rounded w-full text-center"
+                                        className="input border p-2 rounded w-full"
                                         value={formData.expires_in_hours}
                                         onChange={e => setFormData({ ...formData, expires_in_hours: e.target.value })}
                                     />
-                                    {!editingId && <span className="text-xs text-gray-400 block text-center mt-1">השאר ריק לתמיד</span>}
+                                </div>
+                                <div className="col-span-2">
+                                    <label className="block text-sm font-bold mb-1">מינימום סל (בש"ח)</label>
+                                    <input
+                                        type="number"
+                                        min="0"
+                                        className="input border p-2 rounded w-full"
+                                        value={formData.min_cart_total}
+                                        onChange={e => setFormData({ ...formData, min_cart_total: e.target.value })}
+                                    />
                                 </div>
                             </div>
 
-                            <div>
-                                <label className="block text-sm font-bold mb-1">מייל לקוח (ורסיאני)</label>
-                                <input
-                                    type="email"
-                                    placeholder="אופציונלי - לשיוך אישי"
-                                    className="input border p-2 rounded w-full"
-                                    value={formData.email}
-                                    onChange={e => setFormData({ ...formData, email: e.target.value })}
-                                />
+                            {/* Advanced Filters */}
+                            <div className="border-t pt-4">
+                                <h3 className="font-bold mb-4 text-gray-700">הגבלות מתקדמות (אופציונלי)</h3>
+
+                                {/* Sizes */}
+                                <div className="mb-4">
+                                    <label className="block text-sm font-bold mb-2">תקף לגדלים:</label>
+                                    <div className="flex gap-3 flex-wrap">
+                                        {[2, 5, 10, 11].map(s => (
+                                            <label key={s} className="flex items-center gap-2 bg-gray-50 px-3 py-1 rounded cursor-pointer border hover:border-black transition">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={formData.allowed_sizes.includes(s)}
+                                                    onChange={() => toggleSelection('allowed_sizes', s)}
+                                                />
+                                                <span className="text-sm">{s === 11 ? '10 מ"ל יוקרתי' : s + ' מ"ל'}</span>
+                                            </label>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                {/* Categories */}
+                                <div className="mb-4">
+                                    <label className="block text-sm font-bold mb-2">תקף לקטגוריות:</label>
+                                    <div className="flex gap-3 flex-wrap">
+                                        {['men', 'women', 'unisex'].map(c => (
+                                            <label key={c} className="flex items-center gap-2 bg-gray-50 px-3 py-1 rounded cursor-pointer border hover:border-black transition">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={formData.allowed_categories.includes(c)}
+                                                    onChange={() => toggleSelection('allowed_categories', c)}
+                                                />
+                                                <span className="text-sm">
+                                                    {c === 'men' ? 'גברים' : c === 'women' ? 'נשים' : 'יוניסקס'}
+                                                </span>
+                                            </label>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                {/* Brands */}
+                                <div className="mb-4">
+                                    <label className="block text-sm font-bold mb-2">תקף למותגים ספציפיים:</label>
+                                    <div className="max-h-32 overflow-y-auto border p-2 rounded bg-gray-50 grid grid-cols-2 gap-2">
+                                        {brands.map(b => (
+                                            <label key={b.id} className="flex items-center gap-2">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={formData.allowed_brands.includes(b.name)}
+                                                    onChange={() => toggleSelection('allowed_brands', b.name)}
+                                                />
+                                                <span className="text-sm truncate">{b.name}</span>
+                                            </label>
+                                        ))}
+                                    </div>
+                                </div>
+
+                                {/* Products (Searchable or List) */}
+                                <div className="mb-4">
+                                    <label className="block text-sm font-bold mb-2">תקף למוצרים ספציפיים:</label>
+                                    <div className="max-h-40 overflow-y-auto border p-2 rounded bg-gray-50 space-y-1">
+                                        {products.map(p => (
+                                            <label key={p.id} className="flex items-center gap-2 border-b last:border-0 pb-1">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={formData.allowed_products.includes(p.id)}
+                                                    onChange={() => toggleSelection('allowed_products', p.id)}
+                                                />
+                                                <div className="text-xs">
+                                                    <div className="font-bold">{p.name}</div>
+                                                    <div className="text-gray-500">{p.brand}</div>
+                                                </div>
+                                            </label>
+                                        ))}
+                                    </div>
+                                </div>
                             </div>
 
-                            <div className="flex justify-end gap-3 mt-8">
+
+                            <div className="flex justify-end gap-3 mt-8 border-t pt-4">
                                 <button type="button" onClick={() => setShowModal(false)} className="px-4 py-2 hover:bg-gray-100 rounded">ביטול</button>
                                 <button
                                     type="submit"
@@ -319,6 +443,7 @@ function CouponRow({ coupon, onDelete, onEdit, canEdit }) {
     // Determine status logic per user request
     const isActive = coupon.status === 'active' && !isExpired;
     const isRedeemed = coupon.status === 'redeemed';
+    const hasLimitations = coupon.limitations && Object.values(coupon.limitations).some(v => Array.isArray(v) ? v.length > 0 : !!v);
 
     return (
         <tr className="hover:bg-gray-50 transition group">
@@ -333,7 +458,9 @@ function CouponRow({ coupon, onDelete, onEdit, canEdit }) {
                     <span className="text-gray-400">תמיד</span>
                 )}
             </td>
-            <td className="p-4 text-sm text-center">{coupon.email || '-'}</td>
+            <td className="p-4 text-center text-xs text-gray-500 max-w-[150px] truncate">
+                {hasLimitations ? 'מחובר לפילטרים' : 'כל האתר'}
+            </td>
             <td className="p-4 text-center">
                 <span className={`px-2 py-1 rounded-full text-xs font-bold inline-block min-w-[60px] ${isActive ? 'bg-green-100 text-green-800 border border-green-200' : 'bg-red-100 text-red-800 border border-red-200'
                     }`}>
@@ -348,18 +475,14 @@ function CouponRow({ coupon, onDelete, onEdit, canEdit }) {
                             className="text-blue-500 hover:bg-blue-50 p-2 rounded transition"
                             title="ערוך"
                         >
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
-                            </svg>
+                            <Edit2Icon />
                         </button>
                         <button
                             onClick={() => onDelete(coupon.id)}
                             className="text-red-500 hover:bg-red-50 p-2 rounded transition"
                             title="מחק"
                         >
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
-                            </svg>
+                            <TrashIcon />
                         </button>
                     </>
                 ) : (
@@ -369,4 +492,20 @@ function CouponRow({ coupon, onDelete, onEdit, canEdit }) {
 
         </tr>
     );
+}
+
+function Edit2Icon() {
+    return (
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+            <path strokeLinecap="round" strokeLinejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+        </svg>
+    )
+}
+
+function TrashIcon() {
+    return (
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+            <path strokeLinecap="round" strokeLinejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
+        </svg>
+    )
 }

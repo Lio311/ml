@@ -47,6 +47,10 @@ export async function PUT(req, { params }) {
                 query += `, email = $${idx++}`;
                 values.push(body.email);
             }
+            if (body.limitations !== undefined) {
+                query += `, limitations = $${idx++}`;
+                values.push(body.limitations);
+            }
 
             query += ` WHERE id = $${idx}`;
             values.push(id);
