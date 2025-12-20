@@ -445,17 +445,17 @@ export default async function AdminDashboard() {
         <div>
             <h1 className="text-3xl font-bold mb-8">לוח בקרה</h1>
 
-            {/* 
             <DashboardCharts
                 orderData={kpis.orderChartData}
                 revenueData={kpis.revenueChartData}
                 visitsData={kpis.visitsChartData}
                 usersData={usersChartData}
             />
-            */}
+            {/* 
             <div className="bg-yellow-50 p-4 rounded text-center mb-8 border border-yellow-200 text-yellow-800">
                 הגרפים נוטרלו זמנית לטובת בדיקת יציבות המערכת
             </div>
+            */}
 
 
             <AnalyticsTables
