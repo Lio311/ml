@@ -56,8 +56,22 @@ export default function NotificationBell() {
 
             {isOpen && (
                 <div className="absolute left-0 mt-2 w-80 bg-white rounded-xl shadow-2xl border border-gray-100 overflow-hidden text-right" dir="rtl">
-                    <div className="p-3 bg-gray-50 border-b border-gray-100 font-bold text-xs text-gray-500">
-                        התראות אחרונות
+                    <div className="p-3 bg-gray-50 border-b border-gray-100 font-bold text-xs text-gray-500 flex justify-between items-center">
+                        <span>התראות אחרונות</span>
+                        <button
+                            onClick={async (e) => {
+                                e.stopPropagation();
+                                if (!confirm('לנקות את כל ההתראות?')) return;
+                                try {
+                                    await fetch('/api/admin/notifications', { method: 'DELETE' });
+                                    setNotifications([]);
+                                    setUnreadCount(0);
+                                } catch (err) { console.error(err); }
+                            }}
+                            className="text-red-500 hover:text-red-700 hover:bg-red-50 px-2 py-1 rounded transition"
+                        >
+                            נקה הכל
+                        </button>
                     </div>
                     <div className="max-h-[300px] overflow-y-auto">
                         {(!notifications || notifications.length === 0) ? (

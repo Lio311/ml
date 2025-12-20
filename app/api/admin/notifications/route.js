@@ -28,3 +28,17 @@ export async function GET() {
         if (client) client.release();
     }
 }
+
+export async function DELETE() {
+    let client;
+    try {
+        client = await pool.connect();
+        await client.query('DELETE FROM notifications');
+        return NextResponse.json({ success: true });
+    } catch (err) {
+        console.error("Notifications clear error:", err);
+        return NextResponse.json({ error: 'Internal Error' }, { status: 500 });
+    } finally {
+        if (client) client.release();
+    }
+}
