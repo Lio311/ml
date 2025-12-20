@@ -80,9 +80,9 @@ export default function DashboardCharts({ orderData, revenueData, visitsData }) 
                                 name="החודש עד התאריך הנוכחי"
                                 type="monotone"
                                 dataKey="current"
-                                stroke="#8b5cf6" // Purple for visits
+                                stroke="#ef4444" // Red for current visits
                                 strokeWidth={4}
-                                dot={{ r: 4, fill: '#8b5cf6', strokeWidth: 2, stroke: '#fff' }}
+                                dot={{ r: 4, fill: '#ef4444', strokeWidth: 2, stroke: '#fff' }}
                                 activeDot={{ r: 6, strokeWidth: 0 }}
                                 connectNulls
                             />
@@ -90,7 +90,7 @@ export default function DashboardCharts({ orderData, revenueData, visitsData }) 
                                 name="חודש קודם"
                                 type="monotone"
                                 dataKey="previous"
-                                stroke="#d1d5db"
+                                stroke="#f97316" // Orange for previous visits
                                 strokeWidth={3}
                                 strokeDasharray="6 6"
                                 dot={false}
@@ -106,7 +106,7 @@ export default function DashboardCharts({ orderData, revenueData, visitsData }) 
             <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
                 <div className="flex justify-between items-center mb-6" dir="rtl">
                     <h3 className="text-lg font-bold text-gray-800">
-                        {rightChartMode === 'revenue' ? 'מכירות רשת' : 'הזמנות'}
+                        {rightChartMode === 'revenue' ? 'מכירות' : 'הזמנות'}
                     </h3>
                     <div className="flex bg-gray-100 p-1 rounded-lg">
                         <button
@@ -148,9 +148,9 @@ export default function DashboardCharts({ orderData, revenueData, visitsData }) 
                                 name="החודש עד התאריך הנוכחי"
                                 type="monotone"
                                 dataKey="current"
-                                stroke="#3b82f6"
+                                stroke="#10b981" // Green for current sales/orders
                                 strokeWidth={4}
-                                dot={{ r: 4, fill: '#3b82f6', strokeWidth: 2, stroke: '#fff' }}
+                                dot={{ r: 4, fill: '#10b981', strokeWidth: 2, stroke: '#fff' }}
                                 activeDot={{ r: 6, strokeWidth: 0 }}
                                 connectNulls
                             />
@@ -158,7 +158,7 @@ export default function DashboardCharts({ orderData, revenueData, visitsData }) 
                                 name="חודש קודם"
                                 type="monotone"
                                 dataKey="previous"
-                                stroke="#10b981"
+                                stroke="#3b82f6" // Blue for previous sales/orders
                                 strokeWidth={3}
                                 strokeDasharray="6 6"
                                 dot={false}
