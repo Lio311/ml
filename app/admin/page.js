@@ -446,9 +446,7 @@ export default async function AdminDashboard() {
         <div>
             <h1 className="text-3xl font-bold mb-8">לוח בקרה</h1>
 
-            {/* 
-             * User Chart Data Removed per user request to fix crash 
-             */}
+            <InventoryForecast forecasts={forecasts} />
 
             <DashboardCharts
                 orderData={kpis.orderChartData}
