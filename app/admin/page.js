@@ -494,7 +494,8 @@ export default async function AdminDashboard() {
         <div>
             <h1 className="text-3xl font-bold mb-8">לוח בקרה</h1>
 
-            <InventoryForecast forecasts={forecasts} />
+            {/* Insights removed per user request */}
+            {/* <InventoryForecast forecasts={forecasts} /> */}
 
             <DashboardCharts
                 orderData={JSON.parse(JSON.stringify(kpis.orderChartData || []))}
