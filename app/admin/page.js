@@ -59,7 +59,7 @@ export default async function AdminDashboard() {
              FROM orders, jsonb_array_elements(items::jsonb) as item 
              WHERE orders.status != 'cancelled' 
              AND (
-                OR item->>'name' LIKE '%דוגמית%' 
+                item->>'name' LIKE '%דוגמית%' 
                 OR item->>'name' ILIKE '%sample%'
                 OR item->>'size' IN ('2', '5', '10', '11')
              )
