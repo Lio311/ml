@@ -45,6 +45,56 @@ export default async function AdminOrdersPage() {
 
             await client.query('UPDATE orders SET status = $1 WHERE id = $2', [status, orderId]);
 
+            // --- BOTTLE INVENTORY LOGIC FOR STATUS CHANGE ---
+            const oldStatus = order.status;
+            const newStatus = status;
+
+            // 1. If Cancelling: RESTORE Stock
+            if (newStatus === 'cancelled' && oldStatus !== 'cancelled') {
+                const items = order.items;
+                for (const item of items) {
+                    if (!item.isPrize && !isNaN(item.size)) {
+                        const bottleSize = Number(item.size);
+                        if ([2, 5, 10].includes(bottleSize)) {
+                            await client.query(
+                                'UPDATE bottle_inventory SET quantity = quantity + $1 WHERE size = $2',
+                                [item.quantity, bottleSize]
+                            );
+                        }
+                    }
+                }
+                // Restore Free Samples
+                if (order.free_samples_count > 0) {
+                    await client.query(
+                        'UPDATE bottle_inventory SET quantity = quantity + $1 WHERE size = 2',
+                        [order.free_samples_count]
+                    );
+                }
+            }
+
+            // 2. If Un-Cancelling (Restoring): DEDUCT Stock again
+            if (oldStatus === 'cancelled' && newStatus !== 'cancelled') {
+                const items = order.items;
+                for (const item of items) {
+                    if (!item.isPrize && !isNaN(item.size)) {
+                        const bottleSize = Number(item.size);
+                        if ([2, 5, 10].includes(bottleSize)) {
+                            await client.query(
+                                'UPDATE bottle_inventory SET quantity = quantity - $1 WHERE size = $2',
+                                [item.quantity, bottleSize]
+                            );
+                        }
+                    }
+                }
+                // Deduct Free Samples
+                if (order.free_samples_count > 0) {
+                    await client.query(
+                        'UPDATE bottle_inventory SET quantity = quantity - $1 WHERE size = 2',
+                        [order.free_samples_count]
+                    );
+                }
+            }
+
             // Send Email Notification
             const { sendEmail, getStatusUpdateTemplate } = require('../../../lib/email'); // Dynamic import for server action
             if (order && order.customer_details?.email) {
@@ -86,11 +136,29 @@ export default async function AdminOrdersPage() {
                             dbId = parseInt(dbId.split('-')[0]);
                         }
 
+
                         await client.query(
                             'UPDATE products SET stock = stock + $1 WHERE id = $2',
                             [amountToRestore, dbId]
                         );
+
+                        // --- RESTORE BOTTLE INVENTORY ---
+                        const bottleSize = Number(item.size);
+                        if ([2, 5, 10].includes(bottleSize)) {
+                            await client.query(
+                                'UPDATE bottle_inventory SET quantity = quantity + $1 WHERE size = $2',
+                                [item.quantity, bottleSize]
+                            );
+                        }
                     }
+                }
+
+                // --- RESTORE FREE SAMPLES (2ml) ---
+                if (res.rows[0].free_samples_count > 0) {
+                    await client.query(
+                        'UPDATE bottle_inventory SET quantity = quantity + $1 WHERE size = 2',
+                        [res.rows[0].free_samples_count]
+                    );
                 }
             }
 

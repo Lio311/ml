@@ -56,7 +56,26 @@ export async function POST(req) {
                         `UPDATE products SET stock = stock - $1 WHERE id = $2`,
                         [deduction, dbId]
                     );
+
+                    // --- BOTTLE INVENTORY DEDUCTION ---
+                    // Deduct 1 bottle of this size for each unit quantity
+                    // e.g. 2x 5ml = 2 bottles of 5ml
+                    const bottleSize = Number(item.size);
+                    if ([2, 5, 10].includes(bottleSize)) {
+                        await client.query(
+                            `UPDATE bottle_inventory SET quantity = quantity - $1 WHERE size = $2`,
+                            [item.quantity, bottleSize]
+                        );
+                    }
                 }
+            }
+
+            // --- FREE SAMPLES DEDUCTION (2ml) ---
+            if (freeSamples && freeSamples > 0) {
+                await client.query(
+                    `UPDATE bottle_inventory SET quantity = quantity - $1 WHERE size = 2`,
+                    [freeSamples] // Assuming free samples are always 2ml
+                );
             }
 
             await client.query('COMMIT');

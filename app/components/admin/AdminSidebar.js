@@ -20,6 +20,7 @@ export default function AdminSidebar({ role = 'customer' }) {
         { href: "/admin/requests", label: "🗳️ ניהול בקשות", roles: ['admin', 'deputy'] },
         { href: "/admin/lottery", label: "🎰 ניהול הגרלות", roles: ['admin', 'deputy'] },
         { href: "/admin/menu", label: "🗺️ ניהול תפריט ראשי", roles: ['admin', 'deputy'] },
+        { href: "/admin/inventory", label: "🧪 ניהול מלאי בקבוקנים", roles: ['admin', 'deputy'] },
         { href: "/admin/expenses", label: "💸 ניהול הוצאות", roles: ['admin', 'deputy'] },
     ];
 

@@ -50,6 +50,7 @@ export default async function AdminLayout({ children }) {
                             <>
                                 <Link href="/admin/products">מוצרים</Link>
                                 <Link href="/admin/users">משתמשים</Link>
+                                <Link href="/admin/inventory">מלאי</Link>
                                 <Link href="/admin/requests">בקשות</Link>
                             </>
                         )}
