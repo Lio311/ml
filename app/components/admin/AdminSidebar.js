@@ -29,9 +29,14 @@ export default function AdminSidebar({ role = 'customer' }) {
 
     return (
         <aside className="w-64 bg-black text-white p-6 flex flex-col hidden md:flex h-screen sticky top-0">
-            <h2 className="text-2xl font-bold mb-10">ml_tlv Admin</h2>
+            <div className="mb-6">
+                <h2 className="text-2xl font-bold mb-2">ml_tlv Admin</h2>
+                <Link href="/" className="inline-flex items-center text-gray-400 hover:text-white text-sm transition-colors">
+                    <span className="ml-1">←</span> חזרה לאתר
+                </Link>
+            </div>
 
-            <nav className="flex-1 space-y-4">
+            <nav className="flex-1 space-y-2 overflow-y-auto">
                 {navItems.map((item) => (
                     <Link
                         key={item.href}
@@ -46,12 +51,11 @@ export default function AdminSidebar({ role = 'customer' }) {
                 ))}
             </nav>
 
-            <div>
-                <Link href="/" className="block p-2 text-gray-400 hover:text-white text-sm mb-4">
-                    חזרה לאתר ↗
-                </Link>
+            <div className="pt-4 border-t border-gray-800">
                 <SignOutButton>
-                    <button className="text-red-400 text-sm hover:underline text-right w-full">התנתק</button>
+                    <button className="text-red-400 text-sm hover:underline w-full text-right flex items-center gap-2">
+                        <span>התנתק</span>
+                    </button>
                 </SignOutButton>
             </div>
         </aside>
