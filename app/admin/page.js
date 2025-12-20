@@ -2,7 +2,7 @@ import pool from "@/app/lib/db";
 import Link from "next/link";
 import DashboardCharts from "../components/admin/DashboardCharts";
 import AnalyticsTables from "../components/admin/AnalyticsTables";
-import { FlaskConical, TrendingUp, ShoppingBag, Users, Eye } from 'lucide-react';
+import { FlaskConical, TrendingUp, ShoppingBag, Users, Eye, Wallet, Package, ShoppingCart } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
 

@@ -36,19 +36,21 @@ export default function AdminSidebar({ role = 'customer' }) {
                 </Link>
             </div>
 
-            <nav className="flex-1 space-y-2 overflow-y-auto">
-                {navItems.map((item) => (
-                    <Link
-                        key={item.href}
-                        href={item.href}
-                        className={`block p-2 rounded transition-colors ${isActive(item.href)
-                            ? "bg-white text-black font-bold"
-                            : "hover:bg-gray-800 text-gray-300"
-                            }`}
-                    >
-                        {item.label}
-                    </Link>
-                ))}
+            <nav className="flex-1 space-y-2 overflow-y-auto custom-scrollbar" dir="ltr">
+                <div dir="rtl" className="pl-2">
+                    {navItems.map((item) => (
+                        <Link
+                            key={item.href}
+                            href={item.href}
+                            className={`block p-2 rounded transition-colors ${isActive(item.href)
+                                ? "bg-white text-black font-bold"
+                                : "hover:bg-gray-800 text-gray-300"
+                                }`}
+                        >
+                            {item.label}
+                        </Link>
+                    ))}
+                </div>
             </nav>
 
             <div className="pt-4 border-t border-gray-800">
