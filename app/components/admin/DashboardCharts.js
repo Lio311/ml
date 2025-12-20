@@ -119,7 +119,7 @@ export default function DashboardCharts({ orderData, revenueData, visitsData }) 
                             onClick={() => setRightChartMode('revenue')}
                             className={`px-3 py-1 text-xs font-bold rounded-md transition ${rightChartMode === 'revenue' ? 'bg-white shadow text-black' : 'text-gray-500 hover:text-black'}`}
                         >
-                            הכנסות
+                            מכירות
                         </button>
                     </div>
                 </div>
