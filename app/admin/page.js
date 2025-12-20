@@ -492,7 +492,10 @@ export default async function AdminDashboard() {
                 orderData={kpis.orderChartData}
                 revenueData={kpis.revenueChartData}
                 visitsData={kpis.visitsChartData}
-                usersData={usersChartData}
+                // usersData={usersChartData} // Causing 500 error - disabling
+                usersData={[
+                    { day: 1, current: 0, previous: 0 }
+                ]} // Safety Fallback
             />
 
 
