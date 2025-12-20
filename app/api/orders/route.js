@@ -41,6 +41,12 @@ export async function POST(req) {
 
             const orderId = orderResult.rows[0].id;
 
+            // 1.1 Insert Notification for Admin
+            await client.query(
+                `INSERT INTO notifications (type, message, is_read) VALUES ($1, $2, $3)`,
+                ['info', `הזמנה חדשה! #${orderId} - ${user.firstName} ${user.lastName}`, false]
+            );
+
             // 2. Update Stock
             for (const item of items) {
                 // Fix for "74-2" composite ID bug
