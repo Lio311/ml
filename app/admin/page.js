@@ -163,15 +163,60 @@ export default async function AdminDashboard() {
         }
 
 
-        // Fetch Users Count from Clerk
+        // Fetch Users Count & Chart Data from Clerk
+        let usersChartData = [];
         try {
             const clerk = await clerkClient();
-            const { totalCount } = await clerk.users.getUserList({ limit: 1 });
-            kpis.totalUsers = totalCount;
+            // Fetch last 500 users to generate chart data
+            const userList = await clerk.users.getUserList({ limit: 500, orderBy: '-created_at' });
+            kpis.totalUsers = await clerk.users.getCount(); // Get accurate total count
+
+            // Process User Chart Data
+            // We need to group by day for current month and previous month
+            // Re-using 'year', 'month', 'prevYear', 'prevMonth', 'daysInMonth' from above
+
+            const usersData = userList.data || userList;
+
+            // Initialize daily counts
+            const currentMonthUsers = {};
+            const prevMonthUsers = {};
+
+            usersData.forEach(u => {
+                const date = new Date(u.createdAt);
+                const dYear = date.getFullYear();
+                const dMonth = date.getMonth() + 1;
+                const dDay = date.getDate();
+
+                if (dYear === year && dMonth === month) {
+                    currentMonthUsers[dDay] = (currentMonthUsers[dDay] || 0) + 1;
+                } else if (dYear === prevYear && dMonth === prevMonth) {
+                    prevMonthUsers[dDay] = (prevMonthUsers[dDay] || 0) + 1;
+                }
+            });
+
+            // Populate array
+            for (let i = 1; i <= daysInMonth; i++) {
+                // Ensure the day exists in the existing loop or create a new one?
+                // The loop at line 343 iterates 1..daysInMonth and pushes to kpis.visitsChartData etc.
+                // We should add to a new array here or merge into the loop?
+                // Merging into the loop below is better for cleaner code, but I can't easily inject into the middle of the function via replace_file_content if I don't target the whole block.
+                // So I will create a separate array here and push to it.
+                usersChartData.push({
+                    day: i,
+                    current: currentMonthUsers[i] || 0,
+                    previous: prevMonthUsers[i] || 0
+                });
+            }
+
         } catch (e) {
-            console.warn("Failed to fetch Clerk users count:", e);
+            console.warn("Failed to fetch Clerk users count/data:", e);
             kpis.totalUsers = 0;
         }
+
+        // ... Existing Monthly Profit Calculation ... 
+
+        // Update DashboardCharts props below
+
 
         // Monthly Profit Calculation
         const brandStats = {};
@@ -407,6 +452,7 @@ export default async function AdminDashboard() {
                 orderData={kpis.orderChartData}
                 revenueData={kpis.revenueChartData}
                 visitsData={kpis.visitsChartData}
+                usersData={usersChartData}
             />
 
 
