@@ -164,18 +164,28 @@ export default async function AdminDashboard() {
 
 
         // Fetch Users Count & Chart Data from Clerk
+        // Fetch Users Count & Chart Data from Clerk
         let usersChartData = [];
         try {
             const clerk = await clerkClient();
             // Fetch last 500 users to generate chart data
-            const userList = await clerk.users.getUserList({ limit: 500, orderBy: '-created_at' });
-            kpis.totalUsers = await clerk.users.getCount(); // Get accurate total count
+            // Removing orderBy as it might cause issues in some SDK versions
+            const userListResponse = await clerk.users.getUserList({ limit: 500 });
+
+            // Handle different SDK response structures
+            const usersData = Array.isArray(userListResponse) ? userListResponse : (userListResponse.data || []);
+
+            // Try to get accurate count, fallback to list length
+            try {
+                kpis.totalUsers = await clerk.users.getCount();
+            } catch (cntErr) {
+                console.warn("clerk.users.getCount failed, using list length", cntErr);
+                kpis.totalUsers = usersData.length;
+            }
 
             // Process User Chart Data
             // We need to group by day for current month and previous month
             // Re-using 'year', 'month', 'prevYear', 'prevMonth', 'daysInMonth' from above
-
-            const usersData = userList.data || userList;
 
             // Initialize daily counts
             const currentMonthUsers = {};
@@ -196,11 +206,6 @@ export default async function AdminDashboard() {
 
             // Populate array
             for (let i = 1; i <= daysInMonth; i++) {
-                // Ensure the day exists in the existing loop or create a new one?
-                // The loop at line 343 iterates 1..daysInMonth and pushes to kpis.visitsChartData etc.
-                // We should add to a new array here or merge into the loop?
-                // Merging into the loop below is better for cleaner code, but I can't easily inject into the middle of the function via replace_file_content if I don't target the whole block.
-                // So I will create a separate array here and push to it.
                 usersChartData.push({
                     day: i,
                     current: currentMonthUsers[i] || 0,
@@ -209,8 +214,10 @@ export default async function AdminDashboard() {
             }
 
         } catch (e) {
-            console.warn("Failed to fetch Clerk users count/data:", e);
+            console.error("Failed to fetch Clerk users count/data:", e);
             kpis.totalUsers = 0;
+            // Ensure chart data is empty but valid
+            usersChartData = [];
         }
 
         // ... Existing Monthly Profit Calculation ... 
