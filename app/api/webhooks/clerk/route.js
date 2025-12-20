@@ -2,7 +2,7 @@
 import { Webhook } from 'svix';
 import { headers } from 'next/headers';
 import { NextResponse } from 'next/server';
-import pool from '../../../../lib/db';
+import pool from '../../../lib/db';
 
 export async function POST(req) {
     // You can find this in the Clerk Dashboard -> Webhooks -> choose the webhook
