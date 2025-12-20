@@ -496,11 +496,7 @@ export default async function AdminDashboard() {
                 usersData={[
                     { day: 1, current: 0, previous: 0 }
                 ]} // Safety Fallback
-                {/* 
-            <div className="bg-yellow-50 p-4 rounded text-center mb-8 border border-yellow-200 text-yellow-800">
-                הגרפים נוטרלו זמנית לטובת בדיקת יציבות המערכת
-            </div>
-            */}
+            />
 
 
             <AnalyticsTables
