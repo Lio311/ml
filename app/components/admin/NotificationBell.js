@@ -60,14 +60,14 @@ export default function NotificationBell() {
                         התראות אחרונות
                     </div>
                     <div className="max-h-[300px] overflow-y-auto">
-                        {notifications.length === 0 ? (
+                        {(!notifications || notifications.length === 0) ? (
                             <div className="p-4 text-center text-gray-400 text-sm">אין התראות חדשות</div>
                         ) : (
                             notifications.map(n => (
                                 <div key={n.id} className={`p-3 border-b border-gray-50 hover:bg-gray-50 transition border-l-4 ${n.type === 'order' ? 'border-l-green-500' : 'border-l-blue-500'}`}>
                                     <p className="text-sm text-gray-800">{n.message}</p>
                                     <p className="text-[10px] text-gray-400 mt-1">
-                                        {new Date(n.created_at).toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' })}
+                                        {n.created_at ? new Date(n.created_at).toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' }) : ''}
                                     </p>
                                 </div>
                             ))
