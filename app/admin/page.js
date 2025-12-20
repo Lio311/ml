@@ -152,6 +152,10 @@ export default async function AdminDashboard() {
 
         // Process User Chart Data via SQL (Robust)
         try {
+            // Restore Total Users Count (Accidentally removed)
+            const countResUsers = await client.query('SELECT COUNT(*) FROM users');
+            kpis.totalUsers = parseInt(countResUsers.rows[0].count);
+
             // Fetch Current Month Users Grouped by Day
             const userCurrentMonthRes = await client.query(`
                 SELECT 
@@ -189,6 +193,52 @@ export default async function AdminDashboard() {
         } catch (procErr) {
             console.error("User chart SQL processing error:", procErr);
             usersChartData = [];
+        }
+
+        // Inventory Forecasting Logic
+        let forecasts = [];
+        try {
+            // Get Sales for last 30 days
+            const last30DaysRes = await client.query(`
+                SELECT items FROM orders 
+                WHERE status != 'cancelled' 
+                AND created_at > NOW() - INTERVAL '30 days'
+            `);
+
+            // Calculate Daily Consumption Rate per Size
+            const sizeConsumption = { '2': 0, '5': 0, '10': 0, '11': 0 };
+
+            last30DaysRes.rows.forEach(order => {
+                const items = typeof order.items === 'string' ? JSON.parse(order.items) : order.items;
+                items.forEach(item => {
+                    const s = item.size ? item.size.toString() : '10';
+                    const sKey = s.replace(/[^0-9]/g, '');
+                    if (sizeConsumption[sKey] !== undefined) {
+                        sizeConsumption[sKey] += parseInt(item.quantity || 1);
+                    }
+                });
+            });
+
+            // Calculate Days Left
+            kpis.bottleInventory.forEach(inv => {
+                const sKey = inv.size.replace(/[^0-9]/g, '');
+                const quantity = parseInt(inv.quantity || 0);
+                const usage30Days = sizeConsumption[sKey] || 0;
+                const dailyRate = usage30Days / 30;
+
+                const daysLeft = dailyRate > 0 ? Math.round(quantity / dailyRate) : 9999;
+
+                forecasts.push({
+                    name: `בקבוקי ${inv.size} מ"ל`,
+                    daysLeft,
+                    dailyRate,
+                    quantity
+                });
+            });
+
+            forecasts.sort((a, b) => a.daysLeft - b.daysLeft);
+        } catch (fcErr) {
+            console.warn("Forecast calculation failed", fcErr);
         }
 
         // ... Existing Monthly Profit Calculation ... 
@@ -442,10 +492,7 @@ export default async function AdminDashboard() {
                 orderData={kpis.orderChartData}
                 revenueData={kpis.revenueChartData}
                 visitsData={kpis.visitsChartData}
-                // usersData={usersChartData} // Real data causing crash
-                usersData={[
-                    { day: 1, current: 0, previous: 0 }
-                ]} // Safety Fallback
+                usersData={usersChartData}
             />
             {/* 
             <div className="bg-yellow-50 p-4 rounded text-center mb-8 border border-yellow-200 text-yellow-800">
