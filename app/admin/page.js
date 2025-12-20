@@ -16,12 +16,9 @@ export const metadata = {
 };
 
 export default async function AdminDashboard() {
-    // RBAC: Warehouse Redirect
-    const user = await currentUser();
-    const role = user?.publicMetadata?.role;
-    if (role === 'warehouse') {
-        redirect("/admin/orders");
-    }
+    // Moved auth check inside try block for safety
+    let user = null;
+    let role = null;
 
     let client = null;
 
@@ -44,6 +41,13 @@ export default async function AdminDashboard() {
 
 
     try {
+        // Safe Auth Check
+        user = await currentUser();
+        role = user?.publicMetadata?.role;
+        if (role === 'warehouse') {
+            redirect("/admin/orders");
+        }
+
         client = await pool.connect();
 
         // KPI Queries
