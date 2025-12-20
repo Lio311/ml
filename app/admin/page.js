@@ -150,54 +150,44 @@ export default async function AdminDashboard() {
         let usersChartData = [];
         let rawUsersData = [];
 
+        // Process User Chart Data via SQL (Robust)
         try {
-            // OPTION 1: Try Local DB First (Fastest/Safest)
-            // The user believes data is in DB. We try to query it.
-            const dbUsersRes = await client.query('SELECT created_at FROM users ORDER BY created_at DESC LIMIT 500');
-            rawUsersData = dbUsersRes.rows.map(r => ({ createdAt: r.created_at }));
-            kpis.totalUsers = parseInt((await client.query('SELECT COUNT(*) FROM users')).rows[0].count);
-        } catch (dbErr) {
-            console.error("Local users table query failed:", dbErr);
-            rawUsersData = [];
-            kpis.totalUsers = 0;
-        }
+            // Fetch Current Month Users Grouped by Day
+            const userCurrentMonthRes = await client.query(`
+                SELECT 
+                    EXTRACT(DAY FROM created_at) as day,
+                    COUNT(*) as count
+                FROM users
+                WHERE EXTRACT(MONTH FROM created_at) = $1
+                AND EXTRACT(YEAR FROM created_at) = $2
+                GROUP BY day
+                ORDER BY day
+            `, [month, year]);
 
-        // Process User Chart Data
-        try {
-            const currentMonthUsers = {};
-            const prevMonthUsers = {};
-
-            // Debug logging for User Chart
-            console.log("Admin Chart Debug: Processing", rawUsersData.length, "users for", month, "/", year);
-            if (rawUsersData.length > 0) {
-                console.log("Sample user date:", rawUsersData[0]?.createdAt);
-            }
-
-            rawUsersData.forEach(u => {
-                if (!u.createdAt) return;
-                const date = new Date(u.createdAt);
-                const dYear = date.getFullYear();
-                const dMonth = date.getMonth() + 1;
-                const dDay = date.getDate();
-
-                if (dYear === year && dMonth === month) {
-                    currentMonthUsers[dDay] = (currentMonthUsers[dDay] || 0) + 1;
-                } else if (dYear === prevYear && dMonth === prevMonth) {
-                    prevMonthUsers[dDay] = (prevMonthUsers[dDay] || 0) + 1;
-                }
-            });
+            // Fetch Previous Month Users Grouped by Day
+            const userPrevMonthRes = await client.query(`
+                SELECT 
+                    EXTRACT(DAY FROM created_at) as day,
+                    COUNT(*) as count
+                FROM users
+                WHERE EXTRACT(MONTH FROM created_at) = $1
+                AND EXTRACT(YEAR FROM created_at) = $2
+                GROUP BY day
+                ORDER BY day
+            `, [prevMonth, prevYear]);
 
             for (let i = 1; i <= daysInMonth; i++) {
+                const curDay = userCurrentMonthRes.rows.find(r => parseInt(r.day) === i);
+                const prevDay = userPrevMonthRes.rows.find(r => parseInt(r.day) === i);
+
                 usersChartData.push({
                     day: i,
-                    current: Number(currentMonthUsers[i]) || 0,
-                    previous: Number(prevMonthUsers[i]) || 0
+                    current: curDay ? parseInt(curDay.count) : 0,
+                    previous: prevDay ? parseInt(prevDay.count) : 0
                 });
             }
-            // Firewall: Ensure Data is Pure JSON (no Dates/Undefined) to prevent Next.js Client Prop Error
-            usersChartData = JSON.parse(JSON.stringify(usersChartData));
         } catch (procErr) {
-            console.error("User chart processing error:", procErr);
+            console.error("User chart SQL processing error:", procErr);
             usersChartData = [];
         }
 
@@ -452,10 +442,7 @@ export default async function AdminDashboard() {
                 orderData={kpis.orderChartData}
                 revenueData={kpis.revenueChartData}
                 visitsData={kpis.visitsChartData}
-                // usersData={usersChartData} // Real data causing crash
-                usersData={[
-                    { day: 1, current: 0, previous: 0 }
-                ]} // Safety Fallback
+                usersData={usersChartData}
             />
             {/* 
             <div className="bg-yellow-50 p-4 rounded text-center mb-8 border border-yellow-200 text-yellow-800">
