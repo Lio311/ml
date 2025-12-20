@@ -381,65 +381,66 @@ export function CartProvider({ children }) {
                 priceAfterDiscounts -= couponDiscount;
             }
         }
-
-        let total = priceAfterDiscounts + shippingCost;
-
-        let freeSamplesCount = 0;
-        let nextTier = 0;
-
-        if (subtotal >= 1000) {
-            freeSamplesCount = 6;
-            nextTier = 0; // Max tier
-        } else if (subtotal >= 500) {
-            freeSamplesCount = 4;
-            nextTier = 1000 - subtotal;
-        } else if (subtotal >= 300) {
-            freeSamplesCount = 2;
-            nextTier = 500 - subtotal;
-        } else {
-            freeSamplesCount = 0;
-            nextTier = 300 - subtotal;
-        }
-
-        // Auto remove prize if below 1200 (Logic restored)
-        useEffect(() => {
-            if (subtotal < 1200 && luckyPrize) {
-                setLuckyPrize(null);
-                // Also remove any prize items from the cart
-                setCartItems(prev => prev.filter(item => !item.isPrize));
-            }
-        }, [subtotal, luckyPrize]);
-
-        return (
-            <CartContext.Provider
-                value={{
-                    cartItems,
-                    addToCart,
-                    addMultipleToCart,
-                    removeFromCart,
-                    updateQuantity,
-                    clearCart,
-                    subtotal,
-                    freeSamplesCount,
-                    nextTier,
-                    shippingCost,
-                    total,
-                    luckyPrize,
-                    setLuckyPrize,
-                    discountAmount,
-                    coupon,
-                    setCoupon,
-                    // Lottery Exports
-                    startLottery,
-                    cancelLottery,
-                    isCartLocked,
-                    lotteryTimeLeft,
-                    lotteryMode
-                }}
-            >
-                {children}
-            </CartContext.Provider>
-        );
     }
 
-    export const useCart = () => useContext(CartContext);
+    let total = priceAfterDiscounts + shippingCost;
+
+    let freeSamplesCount = 0;
+    let nextTier = 0;
+
+    if (subtotal >= 1000) {
+        freeSamplesCount = 6;
+        nextTier = 0; // Max tier
+    } else if (subtotal >= 500) {
+        freeSamplesCount = 4;
+        nextTier = 1000 - subtotal;
+    } else if (subtotal >= 300) {
+        freeSamplesCount = 2;
+        nextTier = 500 - subtotal;
+    } else {
+        freeSamplesCount = 0;
+        nextTier = 300 - subtotal;
+    }
+
+    // Auto remove prize if below 1200 (Logic restored)
+    useEffect(() => {
+        if (subtotal < 1200 && luckyPrize) {
+            setLuckyPrize(null);
+            // Also remove any prize items from the cart
+            setCartItems(prev => prev.filter(item => !item.isPrize));
+        }
+    }, [subtotal, luckyPrize]);
+
+    return (
+        <CartContext.Provider
+            value={{
+                cartItems,
+                addToCart,
+                addMultipleToCart,
+                removeFromCart,
+                updateQuantity,
+                clearCart,
+                subtotal,
+                freeSamplesCount,
+                nextTier,
+                shippingCost,
+                total,
+                luckyPrize,
+                setLuckyPrize,
+                discountAmount,
+                coupon,
+                setCoupon,
+                // Lottery Exports
+                startLottery,
+                cancelLottery,
+                isCartLocked,
+                lotteryTimeLeft,
+                lotteryMode
+            }}
+        >
+            {children}
+        </CartContext.Provider>
+    );
+}
+
+export const useCart = () => useContext(CartContext);
