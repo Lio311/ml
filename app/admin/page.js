@@ -180,6 +180,12 @@ export default async function AdminDashboard() {
             const currentMonthUsers = {};
             const prevMonthUsers = {};
 
+            // Debug logging for User Chart
+            console.log("Admin Chart Debug: Processing", rawUsersData.length, "users for", month, "/", year);
+            if (rawUsersData.length > 0) {
+                console.log("Sample user date:", rawUsersData[0]?.createdAt);
+            }
+
             rawUsersData.forEach(u => {
                 if (!u.createdAt) return;
                 const date = new Date(u.createdAt);

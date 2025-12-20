@@ -124,9 +124,9 @@ export default function DashboardCharts({ orderData, revenueData, visitsData, us
                                         name="החודש עד התאריך הנוכחי"
                                         type="monotone"
                                         dataKey="current"
-                                        stroke="#8b5cf6" // Purple for current users
+                                        stroke="#ef4444" // Red for current (same as visits)
                                         strokeWidth={4}
-                                        dot={{ r: 4, fill: '#8b5cf6', strokeWidth: 2, stroke: '#fff' }}
+                                        dot={{ r: 4, fill: '#ef4444', strokeWidth: 2, stroke: '#fff' }}
                                         activeDot={{ r: 6, strokeWidth: 0 }}
                                         connectNulls
                                     />
@@ -134,7 +134,7 @@ export default function DashboardCharts({ orderData, revenueData, visitsData, us
                                         name="חודש קודם"
                                         type="monotone"
                                         dataKey="previous"
-                                        stroke="#a78bfa" // Light Purple for previous users
+                                        stroke="#f97316" // Orange for previous (same as visits)
                                         strokeWidth={3}
                                         strokeDasharray="6 6"
                                         dot={false}
