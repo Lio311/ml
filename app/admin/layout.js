@@ -11,7 +11,7 @@ export default async function AdminLayout({ children }) {
 
     try {
         user = await currentUser();
-        email = user?.emailAddresses[0]?.emailAddress;
+        email = user?.emailAddresses?.[0]?.emailAddress;
         role = user?.publicMetadata?.role;
     } catch (err) {
         console.error("Layout Auth Error:", err);
