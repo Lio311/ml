@@ -59,9 +59,9 @@ export default async function AdminDashboard() {
              FROM orders, jsonb_array_elements(items::jsonb) as item 
              WHERE orders.status != 'cancelled' 
              AND (
-                item->>'name' LIKE '%דוגמית%' 
+                OR item->>'name' LIKE '%דוגמית%' 
                 OR item->>'name' ILIKE '%sample%'
-                OR item->>'size' IN ('2', '5', '10')
+                OR item->>'size' IN ('2', '5', '10', '11')
              )
         `);
         kpis.totalSamples = parseInt(samplesSoldRes.rows[0].count || 0);
@@ -74,11 +74,11 @@ export default async function AdminDashboard() {
              AND (
                 item->>'name' LIKE '%דוגמית%' 
                 OR item->>'name' ILIKE '%sample%'
-                OR item->>'size' IN ('2', '5', '10')
+                OR item->>'size' IN ('2', '5', '10', '11')
              )
              GROUP BY size
         `);
-        kpis.samplesBreakdown = { '2': 0, '5': 0, '10': 0 };
+        kpis.samplesBreakdown = { '2': 0, '5': 0, '10': 0, '11': 0 };
         samplesBreakdownRes.rows.forEach(r => {
             // Clean size string (remove 'ml' etc if exists, though data seems to be clean numbers per previous steps)
             const sizeKey = r.size?.replace(/[^0-9]/g, '');
@@ -90,6 +90,41 @@ export default async function AdminDashboard() {
 
         // Fetch Expenses
         let totalMonthlyExpenses = 0;
+        // ... (Skipping unchanged lines) ...
+        {/* Samples Sold */ }
+        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 relative overflow-hidden group hover:shadow-md transition-shadow">
+            <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 to-pink-500"></div>
+            <div className="flex justify-between items-start mb-2">
+                <div className="text-gray-500 text-sm font-bold uppercase flex items-center gap-2">
+                    <FlaskConical className="w-4 h-4 text-purple-500" />
+                    דוגמיות שנמכרו
+                </div>
+            </div>
+
+            <div className="flex items-baseline gap-2 mb-6">
+                <span className="text-4xl font-bold text-gray-900">{kpis.totalSamples}</span>
+                <span className="text-xs text-gray-400 font-medium">יחידות</span>
+            </div>
+
+            <div className="grid grid-cols-2 gap-2">
+                <div className="flex flex-col items-center bg-purple-50 p-2 rounded-lg border border-purple-100">
+                    <span className="text-[10px] text-purple-600 font-bold mb-1">2 מ״ל</span>
+                    <span className="font-black text-lg text-purple-800 leading-none">{kpis.samplesBreakdown['2']}</span>
+                </div>
+                <div className="flex flex-col items-center bg-pink-50 p-2 rounded-lg border border-pink-100">
+                    <span className="text-[10px] text-pink-600 font-bold mb-1">5 מ״ל</span>
+                    <span className="font-black text-lg text-pink-800 leading-none">{kpis.samplesBreakdown['5']}</span>
+                </div>
+                <div className="flex flex-col items-center bg-blue-50 p-2 rounded-lg border border-blue-100">
+                    <span className="text-[10px] text-blue-600 font-bold mb-1">10 מ״ל</span>
+                    <span className="font-black text-lg text-blue-800 leading-none">{kpis.samplesBreakdown['10']}</span>
+                </div>
+                <div className="flex flex-col items-center bg-amber-50 p-2 rounded-lg border border-amber-100">
+                    <span className="text-[10px] text-amber-600 font-bold mb-1">10 מ״ל יוקרתי</span>
+                    <span className="font-black text-lg text-amber-800 leading-none">{kpis.samplesBreakdown['11']}</span>
+                </div>
+            </div>
+        </div>
         try {
             // Get monthly expenses for CURRENT MONTH
             const monthlyExpRes = await client.query(`
