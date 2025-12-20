@@ -40,7 +40,7 @@ export default async function AdminDashboard() {
 
     try {
         // KPI Queries
-        const ordersRes = await client.query('SELECT * FROM orders ORDER BY created_at DESC LIMIT 5');
+        const ordersRes = await client.query('SELECT * FROM orders ORDER BY created_at DESC LIMIT 3');
         kpis.recentOrders = ordersRes.rows;
 
         const countRes = await client.query('SELECT COUNT(*) FROM orders');
