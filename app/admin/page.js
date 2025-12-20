@@ -454,7 +454,12 @@ export default async function AdminDashboard() {
                 orderData={kpis.orderChartData}
                 revenueData={kpis.revenueChartData}
                 visitsData={kpis.visitsChartData}
-            // usersData={usersChartData} // Temporarily disabled - causing 500 error
+                // usersData={usersChartData} // Original Data (Commented Out)
+                usersData={[
+                    { day: 1, current: 5, previous: 2 },
+                    { day: 10, current: 8, previous: 3 },
+                    { day: 20, current: 12, previous: 10 }
+                ]} // HARDCODED TEST DATA
             />
             {/* 
             <div className="bg-yellow-50 p-4 rounded text-center mb-8 border border-yellow-200 text-yellow-800">
