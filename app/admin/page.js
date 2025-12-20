@@ -486,15 +486,17 @@ export default async function AdminDashboard() {
         <div>
             <h1 className="text-3xl font-bold mb-8">לוח בקרה</h1>
 
-            <InventoryForecast forecasts={forecasts} />
+            {/* <InventoryForecast forecasts={forecasts} /> */}
 
             <DashboardCharts
                 orderData={kpis.orderChartData}
                 revenueData={kpis.revenueChartData}
                 visitsData={kpis.visitsChartData}
-                usersData={usersChartData}
-            />
-            {/* 
+                // usersData={usersChartData} // Real data disabled by user request
+                usersData={[
+                    { day: 1, current: 0, previous: 0 }
+                ]} // Safety Fallback
+                {/* 
             <div className="bg-yellow-50 p-4 rounded text-center mb-8 border border-yellow-200 text-yellow-800">
                 הגרפים נוטרלו זמנית לטובת בדיקת יציבות המערכת
             </div>
