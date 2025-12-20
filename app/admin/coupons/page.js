@@ -258,7 +258,7 @@ export default function AdminCouponsPage() {
             {/* Modal */}
             {showModal && (
                 <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 overflow-y-auto py-10">
-                    <div className="bg-white p-8 rounded-xl w-full max-w-2xl shadow-2xl relative">
+                    <div className="bg-white p-8 rounded-xl w-full max-w-4xl shadow-2xl relative">
                         <button
                             onClick={() => setShowModal(false)}
                             className="absolute top-4 left-4 text-gray-400 hover:text-gray-600"
@@ -448,7 +448,14 @@ function CouponRow({ coupon, onDelete, onEdit, canEdit }) {
     // Determine status logic per user request
     const isActive = coupon.status === 'active' && !isExpired;
     const isRedeemed = coupon.status === 'redeemed';
-    const hasLimitations = coupon.limitations && Object.values(coupon.limitations).some(v => Array.isArray(v) ? v.length > 0 : !!v);
+    const limits = coupon.limitations || {};
+    const activeFilters = [];
+    if (limits.allowed_sizes?.length > 0) activeFilters.push('גודל');
+    if (limits.allowed_categories?.length > 0) activeFilters.push('קטגוריה');
+    if (limits.allowed_brands?.length > 0) activeFilters.push('מותג');
+    if (limits.allowed_products?.length > 0) activeFilters.push('מוצר');
+    if (limits.allowed_users?.length > 0) activeFilters.push('שייכות');
+    if (limits.min_cart_total > 0) activeFilters.push('מינימום סל');
 
     return (
         <tr className="hover:bg-gray-50 transition group">
@@ -463,8 +470,8 @@ function CouponRow({ coupon, onDelete, onEdit, canEdit }) {
                     <span className="text-gray-400">תמיד</span>
                 )}
             </td>
-            <td className="p-4 text-center text-xs text-gray-500 max-w-[150px] truncate">
-                {hasLimitations ? 'מחובר לפילטרים' : 'כל האתר'}
+            <td className="p-4 text-center text-xs text-gray-500 max-w-[200px] truncate" title={activeFilters.join(', ')}>
+                {activeFilters.length > 0 ? activeFilters.join(', ') : 'כל האתר'}
             </td>
             <td className="p-4 text-center">
                 <span className={`px-2 py-1 rounded-full text-xs font-bold inline-block min-w-[60px] ${isActive ? 'bg-green-100 text-green-800 border border-green-200' : 'bg-red-100 text-red-800 border border-red-200'
