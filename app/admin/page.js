@@ -220,7 +220,7 @@ export default async function AdminDashboard() {
             });
 
             // Calculate Days Left
-            kpis.bottleInventory.forEach(inv => {
+            (kpis.bottleInventory || []).forEach(inv => {
                 const sKey = inv.size.replace(/[^0-9]/g, '');
                 const quantity = parseInt(inv.quantity || 0);
                 const usage30Days = sizeConsumption[sKey] || 0;
@@ -486,16 +486,13 @@ export default async function AdminDashboard() {
         <div>
             <h1 className="text-3xl font-bold mb-8">לוח בקרה</h1>
 
-            {/* <InventoryForecast forecasts={forecasts} /> */}
+            <InventoryForecast forecasts={forecasts} />
 
             <DashboardCharts
                 orderData={kpis.orderChartData}
                 revenueData={kpis.revenueChartData}
                 visitsData={kpis.visitsChartData}
-                // usersData={usersChartData} // Real data disabled
-                usersData={[
-                    { day: 1, current: 0, previous: 0 }
-                ]} // Safety Fallback
+                usersData={usersChartData}
             />
             {/* 
             <div className="bg-yellow-50 p-4 rounded text-center mb-8 border border-yellow-200 text-yellow-800">
