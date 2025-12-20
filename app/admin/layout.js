@@ -48,7 +48,12 @@ export default async function AdminLayout({ children }) {
             <AdminSidebar role={isSuperAdmin ? 'admin' : role} />
 
             {/* Main Content */}
-            <main className="flex-1 p-8 overflow-y-auto h-screen">
+            <main className="flex-1 p-8 overflow-y-auto h-screen relative">
+                {/* Notification Bell - Top Left */}
+                <div className="absolute top-6 left-6 z-20">
+                    <NotificationBell />
+                </div>
+
                 {/* Mobile Header (visible only on small screens) */}
                 <header className="md:hidden flex justify-between items-center mb-8 bg-white p-4 rounded shadow">
                     <span className="font-bold">Admin Panel</span>

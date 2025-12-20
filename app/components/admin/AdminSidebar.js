@@ -1,11 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { SignOutButton } from "@clerk/nextjs";
-
-import NotificationBell from './NotificationBell';
-
 export default function AdminSidebar({ role = 'customer' }) {
     const pathname = usePathname();
 
@@ -31,14 +26,11 @@ export default function AdminSidebar({ role = 'customer' }) {
 
     return (
         <aside className="w-64 bg-black text-white p-6 flex flex-col hidden md:flex h-screen sticky top-0">
-            <div className="mb-6 flex items-center justify-between">
-                <div>
-                    <h2 className="text-2xl font-bold mb-2">ml_tlv Admin</h2>
-                    <Link href="/" className="inline-flex items-center text-gray-400 hover:text-white text-sm transition-colors">
-                        חזרה לאתר <span className="mr-1">←</span>
-                    </Link>
-                </div>
-                <NotificationBell />
+            <div className="mb-6">
+                <h2 className="text-2xl font-bold mb-2">ml_tlv Admin</h2>
+                <Link href="/" className="inline-flex items-center text-gray-400 hover:text-white text-sm transition-colors">
+                    חזרה לאתר <span className="mr-1">←</span>
+                </Link>
             </div>
 
             <nav className="flex-1 space-y-2 overflow-y-auto custom-scrollbar" dir="ltr">
