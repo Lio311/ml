@@ -427,6 +427,10 @@ export default async function AdminDashboard() {
         }
 
     } catch (err) {
+        // Rethrow redirect errors (Next.js internals)
+        if (err.digest?.startsWith('NEXT_REDIRECT')) {
+            throw err;
+        }
         console.error("Critical Admin Dashboard Error:", err);
         // Error is caught, page will render with default/partial kpis
     } finally {

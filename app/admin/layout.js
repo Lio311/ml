@@ -5,12 +5,19 @@ import { SignOutButton } from "@clerk/nextjs";
 import AdminSidebar from "../components/admin/AdminSidebar";
 
 export default async function AdminLayout({ children }) {
-    const user = await currentUser();
+    let user = null;
+    let role = null;
+    let email = null;
 
-
-    // Role-Based Access Control (RBAC)
-    const email = user.emailAddresses[0]?.emailAddress;
-    const role = user.publicMetadata?.role;
+    try {
+        user = await currentUser();
+        email = user?.emailAddresses[0]?.emailAddress;
+        role = user?.publicMetadata?.role;
+    } catch (err) {
+        console.error("Layout Auth Error:", err);
+        // If auth fails entirely, redirect to home or login
+        redirect("/");
+    }
 
     // 1. Super Admin Failsafe (Always allowed)
     const isSuperAdmin = email === 'lior31197@gmail.com';
