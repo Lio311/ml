@@ -418,22 +418,27 @@ export default async function AdminDashboard() {
 
             {/* Cards */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
-                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-                    <div className="flex justify-between items-center mb-4">
-                        <div className="text-gray-500 text-sm font-bold uppercase">תזרים ({currentMonthLabel})</div>
+
+                {/* Cash Flow */}
+                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 relative overflow-hidden group hover:shadow-md transition-shadow">
+                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-green-500 to-emerald-500"></div>
+                    <div className="flex justify-between items-start mb-4">
+                        <div className="text-gray-500 text-sm font-bold uppercase flex items-center gap-2">
+                            <Wallet className="w-4 h-4 text-green-500" />
+                            תזרים ({currentMonthLabel})
+                        </div>
                     </div>
-                    <div className="space-y-4">
+                    <div className="space-y-3">
                         <div className="flex justify-between items-center border-b border-gray-50 pb-2">
-                            <span className="text-blue-600 font-bold">הכנסות</span>
+                            <span className="text-blue-600 font-bold text-sm">הכנסות</span>
                             <div className="text-right">
-                                <span className="text-2xl font-bold text-blue-700 dir-ltr">{kpis.totalRevenue} ₪</span>
+                                <span className="text-xl font-bold text-blue-700 dir-ltr">{kpis.totalRevenue} ₪</span>
                             </div>
                         </div>
                         <div className="flex justify-between items-center border-b border-gray-50 pb-2">
-                            <span className="text-red-600 font-bold">הוצאות</span>
+                            <span className="text-red-600 font-bold text-sm">הוצאות</span>
                             <div className="text-right">
-                                <span className="text-2xl font-bold text-red-700 dir-ltr">{kpis.totalExpenses} ₪</span>
-                                <div className="text-[10px] text-gray-400">כולל יחסי שנתי</div>
+                                <span className="text-xl font-bold text-red-700 dir-ltr">{kpis.totalExpenses} ₪</span>
                             </div>
                         </div>
                         <div className="flex justify-between items-center bg-gray-50 p-2 rounded">
@@ -450,14 +455,18 @@ export default async function AdminDashboard() {
                     </div>
                 </div>
 
-                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 flex flex-col justify-between">
+                {/* Bottle Inventory */}
+                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 relative overflow-hidden group hover:shadow-md transition-shadow flex flex-col justify-between">
+                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-amber-500 to-orange-500"></div>
                     <div>
-                        <div className="text-gray-500 text-sm font-bold uppercase mb-2">מלאי בקבוקנים (פנוי)</div>
-                        <div className="space-y-3 mt-4">
-                            {/* Inventory Summary */}
+                        <div className="text-gray-500 text-sm font-bold uppercase mb-4 flex items-center gap-2">
+                            <Package className="w-4 h-4 text-amber-500" />
+                            מלאי בקבוקנים (פנוי)
+                        </div>
+                        <div className="space-y-3">
                             {kpis.bottleInventory && kpis.bottleInventory.map(item => (
-                                <div key={item.size} className="flex justify-between items-center border-b border-gray-50 pb-1">
-                                    <span className="font-bold text-gray-700">{item.size === 11 ? '10 מ"ל יוקרתי' : `${item.size} מ"ל`}</span>
+                                <div key={item.size} className="flex justify-between items-center border-b border-gray-50 pb-1 last:border-0">
+                                    <span className="font-bold text-gray-700 text-sm">{item.size === 11 ? '10 מ"ל יוקרתי' : `${item.size} מ"ל`}</span>
                                     <span className={`font-mono font-bold ${item.quantity < 20 ? 'text-red-600' : 'text-green-600'}`}>
                                         {item.quantity}
                                     </span>
@@ -468,10 +477,12 @@ export default async function AdminDashboard() {
                             )}
                         </div>
                     </div>
-                    <div className="text-xs text-gray-400 mt-2 text-center">
-                        <Link href="/admin/inventory" className="text-blue-500 hover:underline">לניהול המלאי המלא</Link>
+                    <div className="text-xs text-gray-400 mt-4 text-center border-t pt-2">
+                        <Link href="/admin/inventory" className="text-blue-500 hover:text-blue-600 hover:underline transition-colors">לניהול המלאי המלא</Link>
                     </div>
                 </div>
+
+                {/* Samples Sold */}
                 <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 relative overflow-hidden group hover:shadow-md transition-shadow">
                     <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 to-pink-500"></div>
                     <div className="flex justify-between items-start mb-2">
@@ -486,7 +497,7 @@ export default async function AdminDashboard() {
                         <span className="text-xs text-gray-400 font-medium">יחידות</span>
                     </div>
 
-                    <div className="grid grid-cols-3 gap-2">
+                    <div className="grid grid-cols-2 gap-2">
                         <div className="flex flex-col items-center bg-purple-50 p-2 rounded-lg border border-purple-100">
                             <span className="text-[10px] text-purple-600 font-bold mb-1">2 מ״ל</span>
                             <span className="font-black text-lg text-purple-800 leading-none">{kpis.samplesBreakdown['2']}</span>
@@ -499,25 +510,47 @@ export default async function AdminDashboard() {
                             <span className="text-[10px] text-blue-600 font-bold mb-1">10 מ״ל</span>
                             <span className="font-black text-lg text-blue-800 leading-none">{kpis.samplesBreakdown['10']}</span>
                         </div>
+                        <div className="flex flex-col items-center bg-amber-50 p-2 rounded-lg border border-amber-100">
+                            <span className="text-[10px] text-amber-600 font-bold mb-1">10 מ״ל יוקרתי</span>
+                            <span className="font-black text-lg text-amber-800 leading-none">{kpis.samplesBreakdown['11']}</span>
+                        </div>
                     </div>
                 </div>
-                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
-                    <div className="text-gray-500 text-sm font-bold uppercase mb-2">הזמנות סה״כ</div>
+
+                {/* Total Orders */}
+                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 relative overflow-hidden group hover:shadow-md transition-shadow">
+                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-cyan-500"></div>
+                    <div className="text-gray-500 text-sm font-bold uppercase mb-2 flex items-center gap-2">
+                        <ShoppingCart className="w-4 h-4 text-blue-500" />
+                        הזמנות סה״כ
+                    </div>
                     <div className="text-3xl font-bold mb-4">{kpis.totalOrders}</div>
                     <div className="text-xs text-center border-t pt-2 mt-2">
-                        <Link href="/admin/orders" className="text-blue-500 hover:text-blue-700 font-medium">לניהול הזמנות &rarr;</Link>
+                        <Link href="/admin/orders" className="text-blue-500 hover:text-blue-600 hover:underline transition-colors">לניהול הזמנות</Link>
                     </div>
                 </div>
-                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-                    <div className="text-gray-500 text-sm font-bold uppercase mb-2">כניסות לאתר</div>
-                    <div className="text-xl font-bold">חודש {currentMonthLabel}: <span className="text-blue-600">{kpis.monthlyVisits}</span> כניסות</div>
-                    <div className="text-xs text-gray-400 mt-1">נספר לפי ביקורים ייחודיים</div>
+
+                {/* Site Visits */}
+                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 relative overflow-hidden group hover:shadow-md transition-shadow">
+                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-sky-400 to-indigo-400"></div>
+                    <div className="text-gray-500 text-sm font-bold uppercase mb-2 flex items-center gap-2">
+                        <Eye className="w-4 h-4 text-sky-500" />
+                        כניסות לאתר
+                    </div>
+                    <div className="text-xl font-bold mb-1">חודש {currentMonthLabel}: <span className="text-blue-600">{kpis.monthlyVisits}</span> כניסות</div>
+                    <div className="text-xs text-gray-400">נספר לפי ביקורים ייחודיים</div>
                 </div>
-                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-shadow">
-                    <div className="text-gray-500 text-sm font-bold uppercase mb-2">משתמשים רשומים</div>
+
+                {/* Registered Users */}
+                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 relative overflow-hidden group hover:shadow-md transition-shadow">
+                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-500 to-purple-600"></div>
+                    <div className="text-gray-500 text-sm font-bold uppercase mb-2 flex items-center gap-2">
+                        <Users className="w-4 h-4 text-indigo-500" />
+                        משתמשים רשומים
+                    </div>
                     <div className="text-3xl font-bold mb-4">{kpis.totalUsers}</div>
                     <div className="text-xs text-center border-t pt-2 mt-2">
-                        <Link href="/admin/users" className="text-blue-500 hover:text-blue-700 font-medium">לניהול משתמשים &rarr;</Link>
+                        <Link href="/admin/users" className="text-blue-500 hover:text-blue-600 hover:underline transition-colors">לניהול משתמשים</Link>
                     </div>
                 </div>
             </div>
