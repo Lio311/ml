@@ -209,14 +209,20 @@ export default async function AdminDashboard() {
             const sizeConsumption = { '2': 0, '5': 0, '10': 0, '11': 0 };
 
             last30DaysRes.rows.forEach(order => {
-                const items = typeof order.items === 'string' ? JSON.parse(order.items) : order.items;
-                items.forEach(item => {
-                    const s = item.size ? item.size.toString() : '10';
-                    const sKey = s.replace(/[^0-9]/g, '');
-                    if (sizeConsumption[sKey] !== undefined) {
-                        sizeConsumption[sKey] += parseInt(item.quantity || 1);
-                    }
-                });
+                let items = [];
+                try {
+                    items = typeof order.items === 'string' ? JSON.parse(order.items) : order.items;
+                } catch (e) { items = []; }
+
+                if (Array.isArray(items)) {
+                    items.forEach(item => {
+                        const s = item.size ? item.size.toString() : '10';
+                        const sKey = s.replace(/[^0-9]/g, '');
+                        if (sizeConsumption[sKey] !== undefined) {
+                            sizeConsumption[sKey] += parseInt(item.quantity || 1);
+                        }
+                    });
+                }
             });
 
             // Calculate Days Left
