@@ -4,15 +4,26 @@ import { revalidatePath } from "next/cache";
 import { currentUser } from "@clerk/nextjs/server";
 
 
-export default async function AdminRequestsPage() {
+export default async function AdminRequestsPage({ searchParams }) {
+    const page = parseInt(searchParams?.page || 1);
+    const limit = 10;
+    const offset = (page - 1) * limit;
+
     const client = await pool.connect();
     let requests = [];
+    let totalRequests = 0;
     try {
-        const res = await client.query('SELECT * FROM perfume_requests ORDER BY created_at DESC');
-        requests = res.rows;
+        const [reqRes, countRes] = await Promise.all([
+            client.query('SELECT * FROM perfume_requests ORDER BY created_at DESC LIMIT $1 OFFSET $2', [limit, offset]),
+            client.query('SELECT COUNT(*) FROM perfume_requests')
+        ]);
+        requests = reqRes.rows;
+        totalRequests = parseInt(countRes.rows[0].count);
     } finally {
         client.release();
     }
+
+    const totalPages = Math.ceil(totalRequests / limit);
 
     const user = await currentUser();
     const canEdit = user?.publicMetadata?.role === 'admin' || user?.emailAddresses[0]?.emailAddress === 'lior31197@gmail.com';
@@ -146,6 +157,27 @@ export default async function AdminRequestsPage() {
                     </tbody>
                 </table>
             </div>
+
+            {/* Pagination Controls */}
+            {totalPages > 1 && (
+                <div className="flex justify-center items-center gap-4 mt-8 mb-4" dir="rtl">
+                    <a
+                        href={`/admin/requests?page=${Math.max(1, page - 1)}`}
+                        className={`px-4 py-2 border rounded hover:bg-gray-100 transition ${page === 1 ? 'opacity-50 pointer-events-none' : ''}`}
+                    >
+                        הקודם
+                    </a>
+                    <span className="text-sm font-bold text-gray-600">
+                        עמוד {page} מתוך {totalPages}
+                    </span>
+                    <a
+                        href={`/admin/requests?page=${Math.min(totalPages, page + 1)}`}
+                        className={`px-4 py-2 border rounded hover:bg-gray-100 transition ${page === totalPages ? 'opacity-50 pointer-events-none' : ''}`}
+                    >
+                        הבא
+                    </a>
+                </div>
+            )}
         </div>
     );
 }

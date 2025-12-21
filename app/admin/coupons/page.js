@@ -8,7 +8,7 @@ import ObjectTagInput from '@/app/components/ObjectTagInput';
 export default function AdminCouponsPage() {
     const [coupons, setCoupons] = useState([]);
     const [page, setPage] = useState(1);
-    const ITEMS_PER_PAGE = 5;
+    const ITEMS_PER_PAGE = 10;
     const [loading, setLoading] = useState(true);
     const [showModal, setShowModal] = useState(false);
 
