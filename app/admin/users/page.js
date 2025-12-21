@@ -67,10 +67,9 @@ export default function AdminUsersPage() {
     const currentUserRole = user?.publicMetadata?.role;
     const canEdit = currentUserRole === 'admin' || user?.emailAddresses[0]?.emailAddress === 'lior31197@gmail.com';
 
-    return (
+    // Pagination Logic
     const [currentPage, setCurrentPage] = useState(1);
     const USERS_PER_PAGE = 10;
-
     const totalPages = Math.ceil(users.length / USERS_PER_PAGE);
     const paginatedUsers = users.slice((currentPage - 1) * USERS_PER_PAGE, currentPage * USERS_PER_PAGE);
 
