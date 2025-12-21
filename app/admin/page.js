@@ -52,53 +52,59 @@ export default async function AdminDashboard() {
 
         client = await pool.connect();
 
-        // KPI Queries
-        const ordersRes = await client.query('SELECT * FROM orders ORDER BY created_at DESC LIMIT 3');
-        kpis.recentOrders = ordersRes.rows;
+        // KPI Queries - Protected
+        try {
+            const ordersRes = await client.query('SELECT * FROM orders ORDER BY created_at DESC LIMIT 3');
+            kpis.recentOrders = ordersRes.rows || [];
 
-        const countRes = await client.query('SELECT COUNT(*) FROM orders');
-        kpis.totalOrders = parseInt(countRes.rows[0].count);
+            const countRes = await client.query('SELECT COUNT(*) FROM orders');
+            kpis.totalOrders = Number(countRes.rows[0]?.count || 0);
 
-        const revRes = await client.query(`
-            SELECT SUM(total_amount) FROM orders 
-            WHERE status != 'cancelled'
-            AND EXTRACT(MONTH FROM created_at) = EXTRACT(MONTH FROM CURRENT_DATE)
-            AND EXTRACT(YEAR FROM created_at) = EXTRACT(YEAR FROM CURRENT_DATE)
-        `);
-        kpis.totalRevenue = parseInt(revRes.rows[0].sum || 0);
+            const revRes = await client.query(`
+                SELECT SUM(total_amount) FROM orders 
+                WHERE status != 'cancelled'
+                AND EXTRACT(MONTH FROM created_at) = EXTRACT(MONTH FROM CURRENT_DATE)
+                AND EXTRACT(YEAR FROM created_at) = EXTRACT(YEAR FROM CURRENT_DATE)
+            `);
+            kpis.totalRevenue = Number(revRes.rows[0]?.sum || 0);
 
-        const samplesSoldRes = await client.query(`
-             SELECT SUM((item->>'quantity')::int) as count 
-             FROM orders, jsonb_array_elements(items::jsonb) as item 
-             WHERE orders.status != 'cancelled' 
-             AND (
-                item->>'name' LIKE '%דוגמית%' 
-                OR item->>'name' ILIKE '%sample%'
-                OR item->>'size' IN ('2', '5', '10', '11')
-             )
-        `);
-        kpis.totalSamples = parseInt(samplesSoldRes.rows[0].count || 0);
+            const samplesSoldRes = await client.query(`
+                 SELECT SUM((item->>'quantity')::int) as count 
+                 FROM orders, jsonb_array_elements(items::jsonb) as item 
+                 WHERE orders.status != 'cancelled' 
+                 AND (
+                    item->>'name' LIKE '%דוגמית%' 
+                    OR item->>'name' ILIKE '%sample%'
+                    OR item->>'size' IN ('2', '5', '10', '11')
+                 )
+            `);
+            kpis.totalSamples = Number(samplesSoldRes.rows[0]?.count || 0);
 
-        // Fetch Samples Breakdown (2ml, 5ml, 10ml)
-        const samplesBreakdownRes = await client.query(`
-             SELECT item->>'size' as size, SUM((item->>'quantity')::int) as count 
-             FROM orders, jsonb_array_elements(items::jsonb) as item 
-             WHERE orders.status != 'cancelled' 
-             AND (
-                item->>'name' LIKE '%דוגמית%' 
-                OR item->>'name' ILIKE '%sample%'
-                OR item->>'size' IN ('2', '5', '10', '11')
-             )
-             GROUP BY size
-        `);
-        kpis.samplesBreakdown = { '2': 0, '5': 0, '10': 0, '11': 0 };
-        samplesBreakdownRes.rows.forEach(r => {
-            // Clean size string (remove 'ml' etc if exists, though data seems to be clean numbers per previous steps)
-            const sizeKey = r.size?.replace(/[^0-9]/g, '');
-            if (kpis.samplesBreakdown[sizeKey] !== undefined) {
-                kpis.samplesBreakdown[sizeKey] += parseInt(r.count || 0);
-            }
-        });
+            // Fetch Samples Breakdown (2ml, 5ml, 10ml)
+            const samplesBreakdownRes = await client.query(`
+                 SELECT item->>'size' as size, SUM((item->>'quantity')::int) as count 
+                 FROM orders, jsonb_array_elements(items::jsonb) as item 
+                 WHERE orders.status != 'cancelled' 
+                 AND (
+                    item->>'name' LIKE '%דוגמית%' 
+                    OR item->>'name' ILIKE '%sample%'
+                    OR item->>'size' IN ('2', '5', '10', '11')
+                 )
+                 GROUP BY size
+            `);
+            kpis.samplesBreakdown = { '2': 0, '5': 0, '10': 0, '11': 0 };
+            samplesBreakdownRes.rows.forEach(r => {
+                if (r.size) {
+                    const sizeKey = r.size.toString().replace(/[^0-9]/g, '');
+                    if (kpis.samplesBreakdown[sizeKey] !== undefined) {
+                        kpis.samplesBreakdown[sizeKey] += Number(r.count || 0);
+                    }
+                }
+            });
+        } catch (kpiErr) {
+            console.error("Critical KPI Query Error:", kpiErr);
+            // Proceed with default zero values
+        }
 
 
         // Date Handling for Charts & Stats
@@ -124,11 +130,11 @@ export default async function AdminDashboard() {
                 AND EXTRACT(MONTH FROM date) = EXTRACT(MONTH FROM CURRENT_DATE)
                 AND EXTRACT(YEAR FROM date) = EXTRACT(YEAR FROM CURRENT_DATE)
             `);
-            const monthlySum = parseFloat(monthlyExpRes.rows[0].sum || 0);
+            const monthlySum = Number(monthlyExpRes.rows[0]?.sum || 0);
 
             // Get yearly expenses (amortized)
             const yearlyExpRes = await client.query("SELECT SUM(amount) FROM expenses WHERE type = 'yearly'");
-            const yearlySum = parseFloat(yearlyExpRes.rows[0].sum || 0);
+            const yearlySum = Number(yearlyExpRes.rows[0]?.sum || 0);
 
             totalMonthlyExpenses = monthlySum + (yearlySum / 12);
         } catch (e) {
