@@ -16,7 +16,6 @@ export const metadata = {
 };
 
 export default async function AdminDashboard() {
-    // 1. אבטחה והרשאות
     const user = await currentUser();
     const role = user?.publicMetadata?.role;
     if (role === 'warehouse') redirect("/admin/orders");
@@ -26,7 +25,6 @@ export default async function AdminDashboard() {
     const month = now.getMonth() + 1;
     const daysInMonth = new Date(year, month, 0).getDate();
 
-    // אתחול אובייקט ברירת מחדל
     let kpis = {
         totalOrders: 0,
         totalRevenue: 0,
@@ -48,22 +46,10 @@ export default async function AdminDashboard() {
     };
 
     try {
-        // 2. שליפת נתונים במקביל למניעת עומס וקריסה
         const [
-            ordersRes,
-            countRes,
-            revRes,
-            samplesSoldRes,
-            samplesBreakdownRes,
-            bottleInvRes,
-            expensesRes,
-            yearlyExpRes,
-            visitsCountRes,
-            couponsRes,
-            productsRes,
-            usersCountRes,
-            registrationsRes,
-            last30DaysSalesRes
+            ordersRes, countRes, revRes, samplesSoldRes, samplesBreakdownRes,
+            bottleInvRes, expensesRes, yearlyExpRes, visitsCountRes, couponsRes,
+            productsRes, usersCountRes, registrationsRes, last30DaysSalesRes
         ] = await Promise.all([
             pool.query('SELECT * FROM orders ORDER BY created_at DESC LIMIT 3'),
             pool.query('SELECT COUNT(*) FROM orders'),
@@ -81,7 +67,7 @@ export default async function AdminDashboard() {
             pool.query(`SELECT items FROM orders WHERE status != 'cancelled' AND created_at > NOW() - INTERVAL '30 days'`)
         ]);
 
-        // מיפוי נתונים ראשוני
+        // מיפוי KPI
         kpis.recentOrders = ordersRes.rows;
         kpis.totalOrders = parseInt(countRes.rows[0]?.count || 0);
         kpis.totalRevenue = parseFloat(revRes.rows[0]?.sum || 0);
@@ -98,34 +84,30 @@ export default async function AdminDashboard() {
             return { day: d, count: found ? found.count : 0 };
         });
 
-        // 3. תיקון חיזוי מלאי - מניעת השגיאה dailyRate.toFixed
+        // חיזוי מלאי - כאן היה התיקון הקריטי למניעת השגיאה dailyRate.toFixed
         const consumption30Days = { '2': 0, '5': 0, '10': 0, '11': 0 };
         last30DaysSalesRes.rows.forEach(order => {
-            const items = typeof order.items === 'string' ? JSON.parse(order.items || '[]') : (order.items || []);
+            const items = typeof order.items === 'string' ? JSON.parse(order.items || '[]') : order.items;
             items.forEach(item => {
                 const sKey = item.size?.toString().replace(/[^0-9]/g, '');
-                if (consumption30Days[sKey] !== undefined) {
-                    consumption30Days[sKey] += parseInt(item.quantity || 1);
-                }
+                if (consumption30Days[sKey] !== undefined) consumption30Days[sKey] += parseInt(item.quantity || 1);
             });
         });
 
         kpis.forecasts = kpis.bottleInventory.map(inv => {
             const sKey = inv.size?.toString().replace(/[^0-9]/g, '');
-            const totalConsum = consumption30Days[sKey] || 0;
-            const dailyRate = Number(totalConsum) / 30;
-            // הגנה: אם הערך אינו מספר תקין, קבע כ-0
-            const safeDailyRate = isNaN(dailyRate) ? 0 : dailyRate;
+            const dailyRate = (consumption30Days[sKey] || 0) / 30;
+            const safeDailyRate = isNaN(dailyRate) ? 0 : dailyRate; // הגנה מ-NaN
 
             return {
                 name: `${inv.size} מ"ל`,
                 daysLeft: safeDailyRate > 0 ? Math.round(Number(inv.quantity || 0) / safeDailyRate) : 999,
-                dailyRate: safeDailyRate.toFixed(1), // עכשיו זה בטוח
+                dailyRate: Number(safeDailyRate).toFixed(1), // עכשיו זה לא יקרוס לעולם
                 quantity: inv.quantity || 0
             };
         }).sort((a, b) => a.daysLeft - b.daysLeft);
 
-        // 4. חישוב רווח וסטטיסטיקות (מותגים/גדלים)
+        // חישוב רווח וסטטיסטיקות
         const productMap = {};
         productsRes.rows.forEach(p => { productMap[p.id] = { cost: parseFloat(p.cost_price || 0), size: parseFloat(p.original_size || 1) }; });
 
@@ -136,7 +118,7 @@ export default async function AdminDashboard() {
 
         monthlyOrders.rows.forEach(order => {
             try {
-                const items = typeof order.items === 'string' ? JSON.parse(order.items || '[]') : (order.items || []);
+                const items = typeof order.items === 'string' ? JSON.parse(order.items || '[]') : order.items;
                 let orderGross = items.reduce((sum, i) => sum + (parseFloat(i.price || 0) * parseInt(i.quantity || 1)), 0);
                 const ratio = orderGross > 0 ? (parseFloat(order.total_amount) / orderGross) : 0;
 
@@ -156,31 +138,21 @@ export default async function AdminDashboard() {
         const yearlyAmortized = parseFloat(yearlyExpRes.rows[0]?.sum || 0) / 12;
         kpis.totalExpenses = Math.round(monthlyExp + yearlyAmortized);
         kpis.monthlyProfit = Math.round(kpis.totalRevenue - totalItemsCost - kpis.totalExpenses);
-        kpis.topBrands = Object.entries(brandStats).map(([name, sales]) => ({ name, sales })).sort((a, b) => b.sales - a.sales).slice(0, 5);
-        kpis.topSizes = Object.entries(sizeStats).map(([size, sales]) => ({ size, sales })).sort((a, b) => b.sales - a.sales);
 
-        // גרף מכירות יומי
+        // הכנת גרף מכירות
         const salesChartRes = await pool.query(`SELECT EXTRACT(DAY FROM created_at)::int as day, COUNT(*) as orders, SUM(total_amount) as revenue FROM orders WHERE status != 'cancelled' AND EXTRACT(MONTH FROM created_at) = $1 AND EXTRACT(YEAR FROM created_at) = $2 GROUP BY day ORDER BY day`, [month, year]);
         for (let i = 1; i <= daysInMonth; i++) {
-            const dayData = salesChartRes.rows.find(r => r.day === i);
-            kpis.orderChartData.push({ day: i, current: dayData ? dayData.orders : 0, previous: 0 });
-            kpis.revenueChartData.push({ day: i, current: dayData ? parseFloat(dayData.revenue) : 0, previous: 0 });
+            const d = salesChartRes.rows.find(r => r.day === i);
+            kpis.orderChartData.push({ day: i, current: d ? d.orders : 0, previous: 0 });
+            kpis.revenueChartData.push({ day: i, current: d ? parseFloat(d.revenue) : 0, previous: 0 });
         }
 
-        samplesBreakdownRes.rows.forEach(r => {
-            const sKey = r.size?.toString().replace(/[^0-9]/g, '');
-            if (kpis.samplesBreakdown[sKey] !== undefined) kpis.samplesBreakdown[sKey] = parseInt(r.count);
-        });
-
-    } catch (err) { console.error("Admin Dashboard Critical Error:", err); }
-
-    const currentMonthLabel = new Date().toLocaleString('he-IL', { month: 'long' });
+    } catch (err) { console.error("Critical Dashboard Error:", err); }
 
     return (
         <div className="p-4 md:p-8 max-w-7xl mx-auto space-y-8" dir="rtl">
-            <h1 className="text-3xl font-bold">לוח בקרה - {currentMonthLabel}</h1>
+            <h1 className="text-3xl font-bold">לוח בקרה - ניהול</h1>
 
-            {/* חיזוי מלאי */}
             <InventoryForecast forecasts={kpis.forecasts} />
 
             <DashboardCharts
@@ -192,7 +164,6 @@ export default async function AdminDashboard() {
 
             <UserRegistrationsChart data={kpis.userRegistrationData} />
 
-            {/* כרטיסי KPI */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
                     <div className="flex items-center gap-2 text-gray-500 text-xs font-bold mb-2"><Wallet className="w-4 h-4 text-green-500" /> רווח נטו</div>
@@ -212,10 +183,7 @@ export default async function AdminDashboard() {
                 </div>
             </div>
 
-            <AnalyticsTables topBrands={kpis.topBrands} topSizes={kpis.topSizes} monthName={currentMonthLabel} />
-
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                {/* הזמנות אחרונות */}
                 <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
                     <div className="p-4 border-b bg-gray-50 font-bold flex justify-between">
                         <span>הזמנות אחרונות</span>
@@ -223,7 +191,7 @@ export default async function AdminDashboard() {
                     </div>
                     <div className="divide-y">
                         {kpis.recentOrders.map(order => (
-                            <div key={order.id} className="p-4 flex justify-between items-center hover:bg-gray-50">
+                            <div key={order.id} className="p-4 flex justify-between items-center hover:bg-gray-50 transition-colors">
                                 <span className="text-sm font-bold">#{order.id} | {order.customer_details?.name}</span>
                                 <span className="text-sm font-bold">{order.total_amount} ₪</span>
                             </div>
@@ -231,12 +199,8 @@ export default async function AdminDashboard() {
                     </div>
                 </div>
 
-                {/* קופונים אחרונים */}
                 <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                    <div className="p-4 border-b bg-gray-50 font-bold flex justify-between">
-                        <span>קופונים פעילים</span>
-                        <Link href="/admin/coupons" className="text-xs text-blue-600 font-normal">הכל</Link>
-                    </div>
+                    <div className="p-4 border-b bg-gray-50 font-bold">קופונים פעילים</div>
                     <table className="w-full text-right text-sm">
                         <tbody className="divide-y">
                             {kpis.recentCoupons.map(coupon => (
