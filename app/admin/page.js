@@ -147,52 +147,16 @@ export default async function AdminDashboard() {
         // Fetch Users Count & Chart Data from Clerk
         // Fetch Users Count & Chart Data
         // Fetch Users Count & Chart Data
-        // Initialize with safe default structure (31 days of zeros) to prevent undefined/null errors downstream
-        let usersChartData = Array.from({ length: 31 }, (_, i) => ({ day: i + 1, current: 0, previous: 0 }));
+        // Initialize empty to prevent crashes - Logic removed per user request
+        let usersChartData = [];
 
+        // Restore Total Users Count
         try {
-            // Restore Total Users Count
             const countResUsers = await client.query('SELECT COUNT(*) FROM users');
             kpis.totalUsers = countResUsers.rows[0]?.count ? Number(countResUsers.rows[0].count) : 0;
-
-            // Fetch Current Month - Using robust DATE casting
-            const userCurrentMonthRes = await client.query(`
-                SELECT 
-                    EXTRACT(DAY FROM created_at::date) as day,
-                    COUNT(*) as count
-                FROM users
-                WHERE EXTRACT(MONTH FROM created_at::date) = $1
-                AND EXTRACT(YEAR FROM created_at::date) = $2
-                GROUP BY day
-            `, [month, year]);
-
-            // Fetch Previous Month - Using robust DATE casting
-            const userPrevMonthRes = await client.query(`
-                SELECT 
-                    EXTRACT(DAY FROM created_at::date) as day,
-                    COUNT(*) as count
-                FROM users
-                WHERE EXTRACT(MONTH FROM created_at::date) = $1
-                AND EXTRACT(YEAR FROM created_at::date) = $2
-                GROUP BY day
-            `, [prevMonth, prevYear]);
-
-            // Map results safely
-            usersChartData = usersChartData.map(item => {
-                const dayMatch = userCurrentMonthRes.rows.find(r => Number(r.day) === item.day);
-                const prevMatch = userPrevMonthRes.rows.find(r => Number(r.day) === item.day);
-
-                return {
-                    day: item.day,
-                    current: dayMatch ? Number(dayMatch.count) : 0,
-                    previous: prevMatch ? Number(prevMatch.count) : 0
-                };
-            });
-
-        } catch (procErr) {
-            console.error("❌ USER CHART ERROR:", procErr);
-            // On error, usersChartData remains the safe zero-filled array
-            kpis.totalUsers = kpis.totalUsers || 0;
+        } catch (e) {
+            console.error("Failed to count users", e);
+            kpis.totalUsers = 0;
         }
 
         // Inventory Forecasting Logic
