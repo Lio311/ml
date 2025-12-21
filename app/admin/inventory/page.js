@@ -13,6 +13,8 @@ export default function AdminInventoryPage() {
     const [quantity, setQuantity] = useState('');
     const [notes, setNotes] = useState('');
     const [editingId, setEditingId] = useState(null); // ID of item being edited
+    const [page, setPage] = useState(1);
+    const ITEMS_PER_PAGE = 10;
 
     useEffect(() => {
         fetchData();
@@ -236,7 +238,7 @@ export default function AdminInventoryPage() {
                                 ) : history.length === 0 ? (
                                     <tr><td colSpan="5" className="text-center p-4 text-gray-500">אין עדיין רכישות</td></tr>
                                 ) : (
-                                    history.map((h) => {
+                                    history.slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE).map((h) => {
                                         const typeLabel = BOTTLE_Types.find(t => t.id === h.size)?.label || h.size;
                                         return (
                                             <tr key={h.id} className="hover:bg-gray-50 group">
@@ -267,6 +269,28 @@ export default function AdminInventoryPage() {
                             </tbody>
                         </table>
                     </div>
+                    {/* Pagination Controls */}
+                    {Math.ceil(history.length / ITEMS_PER_PAGE) > 1 && (
+                        <div className="flex justify-center items-center gap-4 mt-6">
+                            <button
+                                onClick={() => setPage(p => Math.max(1, p - 1))}
+                                disabled={page === 1}
+                                className="px-4 py-2 border rounded hover:bg-gray-100 disabled:opacity-50 transition"
+                            >
+                                הקודם
+                            </button>
+                            <span className="text-sm font-bold text-gray-600">
+                                עמוד {page} מתוך {Math.ceil(history.length / ITEMS_PER_PAGE)}
+                            </span>
+                            <button
+                                onClick={() => setPage(p => Math.min(Math.ceil(history.length / ITEMS_PER_PAGE), p + 1))}
+                                disabled={page === Math.ceil(history.length / ITEMS_PER_PAGE)}
+                                className="px-4 py-2 border rounded hover:bg-gray-100 disabled:opacity-50 transition"
+                            >
+                                הבא
+                            </button>
+                        </div>
+                    )}
                 </div>
             </div>
         </div>
