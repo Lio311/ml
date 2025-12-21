@@ -8,6 +8,7 @@ export default function AdminUsersPage() {
     const [users, setUsers] = useState([]);
     const [loading, setLoading] = useState(true);
     const [updating, setUpdating] = useState(null);
+    const [currentPage, setCurrentPage] = useState(1);
 
     // Fetch Users
     useEffect(() => {
@@ -68,10 +69,11 @@ export default function AdminUsersPage() {
     const canEdit = currentUserRole === 'admin' || user?.emailAddresses[0]?.emailAddress === 'lior31197@gmail.com';
 
     // Pagination Logic
-    const [currentPage, setCurrentPage] = useState(1);
     const USERS_PER_PAGE = 10;
     const totalPages = Math.ceil(users.length / USERS_PER_PAGE);
     const paginatedUsers = users.slice((currentPage - 1) * USERS_PER_PAGE, currentPage * USERS_PER_PAGE);
+
+    if (loading) return <div className="p-8 text-center text-gray-500">טוען משתמשים...</div>;
 
     return (
         <div>
