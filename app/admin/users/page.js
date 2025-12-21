@@ -68,12 +68,17 @@ export default function AdminUsersPage() {
     const canEdit = currentUserRole === 'admin' || user?.emailAddresses[0]?.emailAddress === 'lior31197@gmail.com';
 
     return (
+    const [currentPage, setCurrentPage] = useState(1);
+    const USERS_PER_PAGE = 10;
+
+    const totalPages = Math.ceil(users.length / USERS_PER_PAGE);
+    const paginatedUsers = users.slice((currentPage - 1) * USERS_PER_PAGE, currentPage * USERS_PER_PAGE);
+
+    return (
         <div>
             <div className="flex justify-between items-center mb-6">
                 <h1 className="text-3xl font-bold">ניהול זהויות והרשאות</h1>
-                <div className="text-sm text-gray-500">
-                    סה״כ {users.length} משתמשים
-                </div>
+                {/* Total count removed from here to prevent overlap */}
             </div>
 
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
@@ -89,7 +94,7 @@ export default function AdminUsersPage() {
                             </tr>
                         </thead>
                         <tbody className="divide-y">
-                            {users.map(u => (
+                            {paginatedUsers.map(u => (
                                 <tr key={u.id} className="hover:bg-gray-50">
                                     <td className="p-4">
                                         <div className="font-bold">{u.firstName} {u.lastName}</div>
@@ -125,8 +130,44 @@ export default function AdminUsersPage() {
                                     </td>
                                 </tr>
                             ))}
+                            {paginatedUsers.length === 0 && (
+                                <tr>
+                                    <td colSpan="5" className="p-8 text-center text-gray-400">
+                                        לא נמצאו משתמשים...
+                                    </td>
+                                </tr>
+                            )}
                         </tbody>
                     </table>
+                </div>
+
+                {/* Footer with Pagination and Total Count */}
+                <div className="p-4 border-t bg-gray-50 flex justify-between items-center" dir="rtl">
+                    <div className="text-sm text-gray-500 font-medium">
+                        סה״כ {users.length} משתמשים
+                        <span className="mx-2 text-gray-300">|</span>
+                        מציג {((currentPage - 1) * USERS_PER_PAGE) + 1} - {Math.min(currentPage * USERS_PER_PAGE, users.length)}
+                    </div>
+
+                    <div className="flex gap-2">
+                        <button
+                            onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
+                            disabled={currentPage === 1}
+                            className="px-3 py-1 text-sm bg-white border rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            הקודם
+                        </button>
+                        <div className="px-3 py-1 text-sm bg-white border rounded font-bold text-gray-700">
+                            {currentPage} / {totalPages || 1}
+                        </div>
+                        <button
+                            onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
+                            disabled={currentPage === totalPages}
+                            className="px-3 py-1 text-sm bg-white border rounded hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+                        >
+                            הבא
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
