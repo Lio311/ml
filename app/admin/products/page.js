@@ -13,8 +13,8 @@ export default async function AdminProductsPage(props) {
     const view = searchParams?.view || 'all'; // 'all', 'out_of_stock', 'stock_list'
     const sort = searchParams?.sort || 'default'; // 'stock_asc', 'stock_desc'
     const page = Number(searchParams?.page) || 1;
-    // Show all products (limit 1000) for stock list, otherwise regular pagination (limit 10)
-    const limit = view === 'stock_list' ? 1000 : 10;
+    // Show all products (limit 1000) for stock list, otherwise regular pagination (limit 5)
+    const limit = view === 'stock_list' ? 1000 : 5;
     const offset = (page - 1) * limit;
 
     let products = [];

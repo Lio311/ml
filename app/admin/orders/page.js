@@ -10,7 +10,7 @@ export const metadata = {
 
 export default async function AdminOrdersPage({ searchParams }) {
     const page = Number(searchParams?.page) || 1;
-    const LIMIT = 10;
+    const LIMIT = 1;
     const offset = (page - 1) * LIMIT;
 
     const client = await pool.connect();
@@ -204,7 +204,6 @@ export default async function AdminOrdersPage({ searchParams }) {
         <div>
             <div className="flex justify-between items-center mb-8">
                 <h1 className="text-3xl font-bold">ניהול הזמנות</h1>
-                <div className="text-gray-500">עמוד {page} מתוך {totalPages}</div>
             </div>
 
             <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
