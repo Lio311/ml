@@ -3,6 +3,7 @@ import Link from "next/link";
 import DashboardCharts from "../components/admin/DashboardCharts";
 import AnalyticsTables from "../components/admin/AnalyticsTables";
 import InventoryForecast from "../components/admin/InventoryForecast";
+import UserRegistrationsChart from "../components/admin/UserRegistrationsChart";
 import { FlaskConical, TrendingUp, ShoppingBag, Users, Eye, Wallet, Package, ShoppingCart } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
@@ -150,13 +151,31 @@ export default async function AdminDashboard() {
         // Initialize empty to prevent crashes - Logic removed per user request
         let usersChartData = [];
 
-        // Restore Total Users Count
+        // NEW: Safe User Chart Fetching Logic
+        let userRegistrationData = [];
         try {
-            const countResUsers = await client.query('SELECT COUNT(*) FROM users');
-            kpis.totalUsers = countResUsers.rows[0]?.count ? Number(countResUsers.rows[0].count) : 0;
-        } catch (e) {
-            console.error("Failed to count users", e);
-            kpis.totalUsers = 0;
+            const userChartRes = await client.query(`
+                SELECT 
+                    EXTRACT(DAY FROM created_at::date)::int as day,
+                    COUNT(*)::int as count
+                FROM users
+                WHERE EXTRACT(MONTH FROM created_at::date) = $1
+                AND EXTRACT(YEAR FROM created_at::date) = $2
+                GROUP BY day
+                ORDER BY day ASC
+            `, [month, year]);
+
+            // Fill in missing days for a complete graph
+            userRegistrationData = Array.from({ length: daysInMonth }, (_, i) => {
+                const d = i + 1;
+                const found = userChartRes.rows.find(r => r.day === d);
+                return { day: d, count: found ? Number(found.count) : 0 };
+            });
+
+        } catch (err) {
+            console.error("Error fetching user registration chart:", err);
+            // Fallback to empty array to prevent crash
+            userRegistrationData = [];
         }
 
         // Inventory Forecasting Logic
@@ -456,8 +475,13 @@ export default async function AdminDashboard() {
                 orderData={kpis.orderChartData}
                 revenueData={kpis.revenueChartData}
                 visitsData={kpis.visitsChartData}
-                usersData={usersChartData}
+                usersData={[]}
             />
+
+            {/* New Separated User Chart */}
+            <div className="mt-6">
+                <UserRegistrationsChart data={userRegistrationData} />
+            </div>
 
 
             <AnalyticsTables
