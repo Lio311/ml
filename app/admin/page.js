@@ -159,6 +159,7 @@ export default async function AdminDashboard() {
 
         // NEW: Safe User Chart Fetching Logic
         let userRegistrationData = [];
+        /*
         try {
             const userChartRes = await client.query(`
                 SELECT 
@@ -183,6 +184,7 @@ export default async function AdminDashboard() {
             // Fallback to empty array to prevent crash
             userRegistrationData = [];
         }
+        */
 
         // Inventory Forecasting Logic
         let forecasts = [];
