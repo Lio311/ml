@@ -116,21 +116,18 @@ export default function AdminMenuPage() {
                 </table>
             </div>
 
-            <div className="mt-8 flex items-center justify-end">
-                <div className="flex items-center gap-4">
-                    {message && (
-                        <span className={`text-sm font-bold ${message.includes('שגיאה') ? 'text-red-600' : 'text-green-600'}`}>
-                            {message}
-                        </span>
-                    )}
-                    <button
-                        onClick={handleSave}
-                        disabled={saving || !canEdit}
-                        className="bg-black text-white px-8 py-3 rounded-xl font-bold hover:bg-gray-800 transition-all shadow-md hover:shadow-lg disabled:bg-gray-400 disabled:cursor-not-allowed"
-                    >
-                        {saving ? 'שומר...' : (canEdit ? 'שמור שינויים' : 'אין הרשאת עריכה')}
-                    </button>
+            <div className="mt-8 flex items-center">
+                <div className="flex-1 text-sm font-bold text-green-600">
+                    {message}
                 </div>
+
+                <button
+                    onClick={handleSave}
+                    disabled={saving || !canEdit}
+                    className="bg-black text-white px-8 py-3 rounded-xl font-bold hover:bg-gray-800 transition-all shadow-md hover:shadow-lg disabled:bg-gray-400 disabled:cursor-not-allowed"
+                >
+                    {saving ? 'שומר...' : (canEdit ? 'שמור שינויים' : 'אין הרשאת עריכה')}
+                </button>
             </div>
         </div>
     );

@@ -1,167 +1,134 @@
-'use client';
+import pool from "../../../lib/db";
+import { currentUser } from "@clerk/nextjs/server";
+import Link from "next/link";
+import UserRoleSelect from "./UserRoleSelect";
 
-import { useState, useEffect } from "react";
-import { useUser } from "@clerk/nextjs";
+export const metadata = {
+    title: "ניהול זהויות | ml_tlv",
+    robots: "noindex, nofollow",
+};
 
-export default function AdminUsersPage() {
-    const { user } = useUser();
-    const [users, setUsers] = useState([]);
-    const [loading, setLoading] = useState(true);
-    const [updating, setUpdating] = useState(null);
+export default async function AdminUsersPage({ searchParams }) {
+    const page = Number(searchParams?.page) || 1;
+    const LIMIT = 10;
+    const offset = (page - 1) * LIMIT;
 
-    // State
-    const [page, setPage] = useState(1);
-    const ITEMS_PER_PAGE = 10;
+    const user = await currentUser();
+    const currentUserRole = user?.publicMetadata?.role;
+    const currentUserEmail = user?.emailAddresses[0]?.emailAddress;
+    const canEdit = currentUserRole === 'admin' || currentUserEmail === 'lior31197@gmail.com';
 
-    // Fetch Users
-    useEffect(() => {
-        fetch('/api/admin/users')
-            .then(res => res.json())
-            .then(data => {
-                setUsers(data);
-                setLoading(false);
-            })
-            .catch(err => {
-                console.error(err);
-                setLoading(false);
-            });
-    }, []);
+    let users = [];
+    let totalUsers = 0;
 
-    const handleRoleUpdate = async (userId, newRole) => {
-        if (!confirm(`האם אתה בטוח שברצונך לשנות את הרשאת המשתמש ל-${newRole}?`)) return;
+    const client = await pool.connect();
+    try {
+        // Fetch Users with specific Role Priority sorting and Pagination
+        const [usersRes, countRes] = await Promise.all([
+            client.query(`
+                SELECT id, first_name, last_name, email, role, created_at 
+                FROM users 
+                ORDER BY 
+                    CASE role 
+                        WHEN 'admin' THEN 1 
+                        WHEN 'deputy' THEN 2 
+                        WHEN 'warehouse' THEN 3 
+                        ELSE 4 
+                    END ASC, 
+                    created_at DESC
+                LIMIT $1 OFFSET $2
+            `, [LIMIT, offset]),
+            client.query('SELECT COUNT(*) FROM users')
+        ]);
 
-        setUpdating(userId);
-        try {
-            const res = await fetch('/api/admin/users', {
-                method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ userId, role: newRole })
-            });
+        users = usersRes.rows.map(u => ({
+            id: u.id,
+            firstName: u.first_name,
+            lastName: u.last_name,
+            email: u.email,
+            role: u.role || 'customer',
+            createdAt: u.created_at
+        }));
 
-            if (res.ok) {
-                setUsers(prev => prev.map(u => u.id === userId ? { ...u, role: newRole } : u));
-                alert("ההרשאה עודכנה בהצלחה");
-            } else {
-                alert("שגיאה בעדכון ההרשאה");
-            }
-        } catch (e) {
-            console.error(e);
-            alert("שגיאה בעדכון ההרשאה");
-        } finally {
-            setUpdating(null);
-        }
-    };
+        totalUsers = parseInt(countRes.rows[0].count);
+    } finally {
+        client.release();
+    }
 
-    const roleLabels = {
-        'admin': 'מנהל',
-        'deputy': 'סגן מנהל',
-        'warehouse': 'מחסנאי',
-        'customer': 'לקוח'
-    };
-
-    const roleColors = {
-        'admin': 'bg-red-100 text-red-800 border-red-200',
-        'deputy': 'bg-purple-100 text-purple-800 border-purple-200',
-        'warehouse': 'bg-orange-100 text-orange-800 border-orange-200',
-        'customer': 'bg-gray-100 text-gray-800 border-gray-200'
-    };
-
-    if (loading) return <div className="p-8 text-center text-gray-500">טוען משתמשים...</div>;
-
-    const totalPages = Math.ceil(users.length / ITEMS_PER_PAGE);
-    const displayedUsers = users.slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE);
+    const totalPages = Math.ceil(totalUsers / LIMIT);
 
     return (
-        <div className="p-8 max-w-5xl mx-auto" dir="rtl">
-            <h1 className="text-3xl font-bold mb-8">ניהול זהויות והרשאות</h1>
-
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                <table className="w-full text-right border-collapse">
-                    <thead className="bg-gray-50 border-b border-gray-200">
-                        <tr>
-                            <th className="px-6 py-4 font-bold text-gray-700">משתמש</th>
-                            <th className="px-6 py-4 font-bold text-gray-700">אימייל</th>
-                            <th className="px-6 py-4 font-bold text-gray-700 text-center">נוצר בתאריך</th>
-                            <th className="px-6 py-4 font-bold text-gray-700 text-center">תפקיד נוכחי</th>
-                            <th className="px-6 py-4 font-bold text-gray-700 text-center">פעולות</th>
-                        </tr>
-                    </thead>
-                    <tbody className="divide-y divide-gray-100">
-                        {displayedUsers.map((u) => (
-                            <tr key={u.id} className="hover:bg-gray-50/50 transition duration-150">
-                                <td className="px-6 py-4">
-                                    <div className="font-bold text-gray-900">{u.firstName} {u.lastName}</div>
-                                    <div className="text-xs text-gray-400 font-mono mt-0.5">{u.id}</div>
-                                </td>
-                                <td className="px-6 py-4 text-gray-600 font-mono text-sm">
-                                    {u.email}
-                                </td>
-                                <td className="px-6 py-4 text-center text-gray-500 text-sm">
-                                    {new Date(u.createdAt).toLocaleDateString('he-IL')}
-                                </td>
-                                <td className="px-6 py-4 text-center">
-                                    <span className={`px-3 py-1 rounded-full text-xs font-bold shadow-sm inline-block min-w-[80px] ${u.role === 'admin' ? 'bg-red-100 text-red-700 border border-red-200' :
-                                        u.role === 'warehouse' ? 'bg-orange-100 text-orange-700 border border-orange-200' :
-                                            'bg-gray-100 text-gray-700 border border-gray-200'
-                                        }`}>
-                                        {u.role === 'admin' ? 'מנהל' :
-                                            u.role === 'warehouse' ? 'מחסנאי' :
-                                                'לקוח'}
-                                    </span>
-                                </td>
-                                <td className="px-6 py-4 text-center">
-                                    {user?.publicMetadata?.role === 'admin' && ( // Only admins can edit
-                                        <div className="flex items-center justify-center gap-2">
-                                            <select
-                                                disabled={updating === u.id}
-                                                className="border border-gray-300 rounded-lg px-3 py-1.5 text-sm focus:ring-2 focus:ring-black outline-none bg-white cursor-pointer hover:border-gray-400 transition"
-                                                defaultValue=""
-                                                onChange={(e) => {
-                                                    if (e.target.value) handleRoleUpdate(u.id, e.target.value);
-                                                    e.target.value = ""; // Reset select
-                                                }}
-                                            >
-                                                <option value="" disabled>פעולות</option>
-                                                {u.role !== 'admin' && <option value="admin">👮‍♂️ מנהל</option>}
-                                                {u.role !== 'warehouse' && <option value="warehouse">📦 מחסנאי</option>}
-                                                {u.role !== 'customer' && <option value="customer">👤 לקוח</option>}
-                                            </select>
-                                            {updating === u.id && <span className="text-xs text-gray-500 animate-pulse">מעדכן...</span>}
-                                        </div>
-                                    )}
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
-                </table>
+        <div>
+            <div className="flex justify-between items-center mb-6">
+                <h1 className="text-3xl font-bold">ניהול זהויות והרשאות</h1>
             </div>
 
-            {/* Pagination & Count Footer */}
-            <div className="flex justify-between items-center mt-6 mb-12">
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                <div className="overflow-x-auto">
+                    <table className="w-full text-center" dir="rtl">
+                        <thead className="bg-gray-50 text-gray-500 text-sm">
+                            <tr>
+                                <th className="p-4 text-center">משתמש</th>
+                                <th className="p-4 text-center">אימייל</th>
+                                <th className="p-4 text-center">נוצר בתאריך</th>
+                                <th className="p-4 text-center">תפקיד נוכחי</th>
+                            </tr>
+                        </thead>
+                        <tbody className="divide-y">
+                            {users.map(u => (
+                                <tr key={u.id} className="hover:bg-gray-50">
+                                    <td className="p-4">
+                                        <div className="font-bold">{u.firstName} {u.lastName}</div>
+                                        <div className="text-xs text-gray-400 font-mono">{u.id}</div>
+                                    </td>
+                                    <td className="p-4 text-sm">{u.email}</td>
+                                    <td className="p-4 text-sm text-gray-500">
+                                        {new Date(u.createdAt).toLocaleDateString('he-IL')}
+                                    </td>
+                                    <td className="p-4 flex justify-center">
+                                        <UserRoleSelect
+                                            userId={u.id}
+                                            initialRole={u.role}
+                                            canEdit={canEdit}
+                                        />
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            {/* Pagination & Count */}
+            <div className="flex justify-between items-end mt-4">
+                {/* Pagination Controls */}
                 <div className="flex items-center gap-4">
-                    {totalPages > 1 && (
-                        <>
-                            <button
-                                onClick={() => setPage(p => Math.max(1, p - 1))}
-                                disabled={page === 1}
-                                className="px-4 py-2 border rounded hover:bg-gray-100 disabled:opacity-50"
-                            >
-                                הקודם
-                            </button>
-                            <span>עמוד {page} מתוך {totalPages}</span>
-                            <button
-                                onClick={() => setPage(p => Math.min(totalPages, p + 1))}
-                                disabled={page === totalPages}
-                                className="px-4 py-2 border rounded hover:bg-gray-100 disabled:opacity-50"
-                            >
-                                הבא
-                            </button>
-                        </>
+                    {page > 1 && (
+                        <Link
+                            href={`/admin/users?page=${page - 1}`}
+                            className="px-4 py-2 bg-white border rounded shadow-sm hover:bg-gray-50 text-sm"
+                        >
+                            הקודם
+                        </Link>
+                    )}
+
+                    <span className="text-gray-600 text-sm">
+                        עמוד {page} מתוך {totalPages}
+                    </span>
+
+                    {page < totalPages && (
+                        <Link
+                            href={`/admin/users?page=${page + 1}`}
+                            className="px-4 py-2 bg-white border rounded shadow-sm hover:bg-gray-50 text-sm"
+                        >
+                            הבא
+                        </Link>
                     )}
                 </div>
 
-                <div className="text-gray-500 text-sm font-bold">
-                    סה״כ {users.length} משתמשים
+                {/* Total Count (Bottom Right) */}
+                <div className="text-sm text-gray-500 font-medium">
+                    סה״כ {totalUsers} משתמשים
                 </div>
             </div>
         </div>

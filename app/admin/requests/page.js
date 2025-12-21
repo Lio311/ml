@@ -2,19 +2,21 @@
 import pool from "../../lib/db";
 import { revalidatePath } from "next/cache";
 import { currentUser } from "@clerk/nextjs/server";
+import Link from "next/link";
 
 
 export default async function AdminRequestsPage({ searchParams }) {
-    const page = parseInt(searchParams?.page || 1);
-    const limit = 10;
-    const offset = (page - 1) * limit;
+    const page = Number(searchParams?.page) || 1;
+    const LIMIT = 10;
+    const offset = (page - 1) * LIMIT;
 
     const client = await pool.connect();
     let requests = [];
     let totalRequests = 0;
+
     try {
         const [reqRes, countRes] = await Promise.all([
-            client.query('SELECT * FROM perfume_requests ORDER BY created_at DESC LIMIT $1 OFFSET $2', [limit, offset]),
+            client.query('SELECT * FROM perfume_requests ORDER BY created_at DESC LIMIT $1 OFFSET $2', [LIMIT, offset]),
             client.query('SELECT COUNT(*) FROM perfume_requests')
         ]);
         requests = reqRes.rows;
@@ -23,7 +25,7 @@ export default async function AdminRequestsPage({ searchParams }) {
         client.release();
     }
 
-    const totalPages = Math.ceil(totalRequests / limit);
+    const totalPages = Math.ceil(totalRequests / LIMIT);
 
     const user = await currentUser();
     const canEdit = user?.publicMetadata?.role === 'admin' || user?.emailAddresses[0]?.emailAddress === 'lior31197@gmail.com';
@@ -67,7 +69,10 @@ export default async function AdminRequestsPage({ searchParams }) {
 
     return (
         <div className="p-6">
-            <h1 className="text-3xl font-bold mb-8">ניהול בקשות בשמים</h1>
+            <div className="flex justify-between items-center mb-8">
+                <h1 className="text-3xl font-bold">ניהול בקשות בשמים</h1>
+                <div className="text-gray-500">עמוד {page} מתוך {totalPages}</div>
+            </div>
 
             <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
                 <table className="w-full text-right">
@@ -159,25 +164,29 @@ export default async function AdminRequestsPage({ searchParams }) {
             </div>
 
             {/* Pagination Controls */}
-            {totalPages > 1 && (
-                <div className="flex justify-center items-center gap-4 mt-8 mb-4" dir="rtl">
-                    <a
-                        href={`/admin/requests?page=${Math.max(1, page - 1)}`}
-                        className={`px-4 py-2 border rounded hover:bg-gray-100 transition ${page === 1 ? 'opacity-50 pointer-events-none' : ''}`}
+            <div className="flex justify-center items-center gap-4 mt-8">
+                {page > 1 && (
+                    <Link
+                        href={`/admin/requests?page=${page - 1}`}
+                        className="px-4 py-2 bg-white border rounded shadow-sm hover:bg-gray-50"
                     >
                         הקודם
-                    </a>
-                    <span className="text-sm font-bold text-gray-600">
-                        עמוד {page} מתוך {totalPages}
-                    </span>
-                    <a
-                        href={`/admin/requests?page=${Math.min(totalPages, page + 1)}`}
-                        className={`px-4 py-2 border rounded hover:bg-gray-100 transition ${page === totalPages ? 'opacity-50 pointer-events-none' : ''}`}
+                    </Link>
+                )}
+
+                <span className="text-gray-600">
+                    עמוד {page} מתוך {totalPages}
+                </span>
+
+                {page < totalPages && (
+                    <Link
+                        href={`/admin/requests?page=${page + 1}`}
+                        className="px-4 py-2 bg-white border rounded shadow-sm hover:bg-gray-50"
                     >
                         הבא
-                    </a>
-                </div>
-            )}
+                    </Link>
+                )}
+            </div>
         </div>
     );
 }

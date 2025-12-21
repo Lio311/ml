@@ -82,7 +82,7 @@ export default function AdminExpensesPage() {
     }, {});
 
     return (
-        <div className="p-8 w-full mx-auto" dir="rtl">
+        <div className="p-8 w-full" dir="rtl">
             <div className="flex justify-between items-center mb-8">
                 <h1 className="text-3xl font-bold">ניהול הוצאות</h1>
             </div>
