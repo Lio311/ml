@@ -58,18 +58,13 @@ export async function PUT(request) {
             return NextResponse.json({ error: "Invalid role" }, { status: 400 });
         }
 
-        // 1. Update Clerk (Source of Auth Truth) - Try/Catch to handle manual users
-        try {
-            const clerk = await clerkClient();
-            await clerk.users.updateUserMetadata(userId, {
-                publicMetadata: {
-                    role: role
-                }
-            });
-        } catch (clerkErr) {
-            console.warn(`Clerk update failed for user ${userId} (might be manual user):`, clerkErr.message);
-            // Continue to update local DB anyway
-        }
+        // 1. Update Clerk (Source of Auth Truth)
+        const clerk = await clerkClient();
+        await clerk.users.updateUserMetadata(userId, {
+            publicMetadata: {
+                role: role
+            }
+        });
 
         // 2. Update Local DB (Source of Dashboard Truth)
         await client.query('UPDATE users SET role = $1, updated_at = NOW() WHERE id = $2', [role, userId]);
