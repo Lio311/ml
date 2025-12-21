@@ -9,7 +9,7 @@ export default function DictionaryManagement() {
     const [mappings, setMappings] = useState([]);
     const [page, setPage] = useState(1);
     const [filterLetter, setFilterLetter] = useState(null);
-    const ITEMS_PER_PAGE = 10;
+    const ITEMS_PER_PAGE = 6;
     const [loading, setLoading] = useState(true);
     const [formData, setFormData] = useState({ hebrew: "", english: "", type: "general" });
     const [editingId, setEditingId] = useState(null);
@@ -264,7 +264,7 @@ export default function DictionaryManagement() {
                     >
                         הקודם
                     </button>
-                    <span className="text-sm font-bold text-gray-600">
+                    <span className="text-sm text-gray-600">
                         עמוד {page} מתוך {totalPages}
                     </span>
                     <button

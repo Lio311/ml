@@ -13,7 +13,7 @@ export default function LotteryAdminPage() {
     const [searchTerm, setSearchTerm] = useState("");
     const [filter, setFilter] = useState("all"); // all, in_lottery, not_in_lottery
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 10;
+    const itemsPerPage = 5;
 
 
     // Fetch products
@@ -205,7 +205,7 @@ export default function LotteryAdminPage() {
                     >
                         הקודם
                     </button>
-                    <span className="text-gray-600 font-bold">
+                    <span className="text-gray-600">
                         עמוד {currentPage} מתוך {totalPages}
                     </span>
                     <button

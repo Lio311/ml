@@ -8,7 +8,7 @@ import ObjectTagInput from '@/app/components/ObjectTagInput';
 export default function AdminCouponsPage() {
     const [coupons, setCoupons] = useState([]);
     const [page, setPage] = useState(1);
-    const ITEMS_PER_PAGE = 10;
+    const ITEMS_PER_PAGE = 6;
     const [loading, setLoading] = useState(true);
     const [showModal, setShowModal] = useState(false);
 
@@ -205,6 +205,8 @@ export default function AdminCouponsPage() {
         });
     };
 
+    const totalPages = Math.ceil(coupons.length / ITEMS_PER_PAGE);
+
     return (
         <div className="container mx-auto py-8 text-right" dir="rtl">
             <div className="flex justify-between items-center mb-8">
@@ -250,7 +252,7 @@ export default function AdminCouponsPage() {
             </div>
 
             {/* Pagination Controls */}
-            {Math.ceil(coupons.length / ITEMS_PER_PAGE) > 1 && (
+            {totalPages > 1 && (
                 <div className="flex justify-center items-center gap-4 mt-8 mb-12">
                     <button
                         onClick={() => setPage(p => Math.max(1, p - 1))}
@@ -259,12 +261,12 @@ export default function AdminCouponsPage() {
                     >
                         הקודם
                     </button>
-                    <span className="text-sm font-bold text-gray-600">
-                        עמוד {page} מתוך {Math.ceil(coupons.length / ITEMS_PER_PAGE)}
+                    <span className="text-sm text-gray-600">
+                        עמוד {page} מתוך {totalPages}
                     </span>
                     <button
-                        onClick={() => setPage(p => Math.min(Math.ceil(coupons.length / ITEMS_PER_PAGE), p + 1))}
-                        disabled={page === Math.ceil(coupons.length / ITEMS_PER_PAGE)}
+                        onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                        disabled={page === totalPages}
                         className="px-4 py-2 border rounded hover:bg-gray-100 disabled:opacity-50 transition"
                     >
                         הבא

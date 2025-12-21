@@ -56,7 +56,7 @@ export default function AdminBrandsPage() {
 
     const [selectedLetter, setSelectedLetter] = useState(null);
     const [page, setPage] = useState(1);
-    const ITEMS_PER_PAGE = 10;
+    const ITEMS_PER_PAGE = 5;
 
     const filteredBrands = selectedLetter
         ? brands.filter(brand => brand.name.trim().toLowerCase().startsWith(selectedLetter.toLowerCase()))
@@ -166,7 +166,7 @@ export default function AdminBrandsPage() {
                     >
                         הקודם
                     </button>
-                    <span className="text-sm font-bold text-gray-600">
+                    <span className="text-sm text-gray-600">
                         עמוד {page} מתוך {totalPages}
                     </span>
                     <button
