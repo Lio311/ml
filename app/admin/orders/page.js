@@ -249,7 +249,8 @@ export default async function AdminOrdersPage() {
                                     </td>
 
                                 </tr>
-                            ))}
+                            );
+                        })}
                     </tbody>
                 </table>
             </div>
