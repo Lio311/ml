@@ -145,11 +145,12 @@ export default async function AdminDashboard() {
 
 
         // Fetch Users Count & Chart Data from Clerk
-        // Fetch Users Count & Chart Data from Clerk
+        // Fetch Users Count & Chart Data
         // Fetch Users Count & Chart Data
         // Initialize with safe default structure (31 days of zeros) to prevent undefined/null errors downstream
         let usersChartData = Array.from({ length: 31 }, (_, i) => ({ day: i + 1, current: 0, previous: 0 }));
 
+        /* 
         try {
             // Restore Total Users Count
             const countResUsers = await client.query('SELECT COUNT(*) FROM users');
@@ -183,7 +184,7 @@ export default async function AdminDashboard() {
             usersChartData = usersChartData.map(item => {
                 const dayMatch = userCurrentMonthRes.rows.find(r => Number(r.day) === item.day);
                 const prevMatch = userPrevMonthRes.rows.find(r => Number(r.day) === item.day);
-
+                
                 return {
                     day: item.day,
                     current: dayMatch ? Number(dayMatch.count) : 0,
@@ -195,8 +196,9 @@ export default async function AdminDashboard() {
         } catch (procErr) {
             console.error("❌ CRITICAL ERROR PROCESSING USER CHART:", procErr);
             // On error, usersChartData remains the safe zero-filled array created at start
-            kpis.totalUsers = kpis.totalUsers || 0;
+            kpis.totalUsers = kpis.totalUsers || 0; 
         }
+        */
 
         // Inventory Forecasting Logic
         let forecasts = [];
