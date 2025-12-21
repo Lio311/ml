@@ -495,7 +495,7 @@ export default async function AdminDashboard() {
                 orderData={kpis.orderChartData}
                 revenueData={kpis.revenueChartData}
                 visitsData={kpis.visitsChartData}
-                usersData={usersChartData}
+                usersData={[]} // Temporarily DISABLING User Chart to fix 500 Crash
             />
 
 
