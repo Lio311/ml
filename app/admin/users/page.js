@@ -8,9 +8,10 @@ export const metadata = {
     robots: "noindex, nofollow",
 };
 
-export default async function AdminUsersPage({ searchParams }) {
+export default async function AdminUsersPage(props) {
+    const searchParams = await props.searchParams;
     const page = Number(searchParams?.page) || 1;
-    const LIMIT = 10;
+    const LIMIT = 3;
     const offset = (page - 1) * LIMIT;
 
     const user = await currentUser();
@@ -100,33 +101,33 @@ export default async function AdminUsersPage({ searchParams }) {
             </div>
 
             {/* Pagination & Count */}
-            <div className="flex justify-between items-end mt-4">
-                {/* Pagination Controls */}
-                <div className="flex items-center gap-4">
-                    {page > 1 && (
+            <div className="flex justify-between items-center mt-8">
+                {/* Brand Style Pagination */}
+                {totalPages > 1 && (
+                    <div className="flex justify-center items-center gap-4">
                         <Link
-                            href={`/admin/users?page=${page - 1}`}
-                            className="px-4 py-2 bg-white border rounded shadow-sm hover:bg-gray-50 text-sm"
+                            href={`/admin/users?page=${Math.max(1, page - 1)}`}
+                            className={`px-4 py-2 border rounded hover:bg-gray-100 transition ${page === 1 ? 'opacity-50 pointer-events-none' : ''}`}
+                            aria-disabled={page === 1}
                         >
                             הקודם
                         </Link>
-                    )}
 
-                    <span className="text-gray-600 text-sm">
-                        עמוד {page} מתוך {totalPages}
-                    </span>
+                        <span className="text-sm text-gray-600">
+                            עמוד {page} מתוך {totalPages}
+                        </span>
 
-                    {page < totalPages && (
                         <Link
-                            href={`/admin/users?page=${page + 1}`}
-                            className="px-4 py-2 bg-white border rounded shadow-sm hover:bg-gray-50 text-sm"
+                            href={`/admin/users?page=${Math.min(totalPages, page + 1)}`}
+                            className={`px-4 py-2 border rounded hover:bg-gray-100 transition ${page === totalPages ? 'opacity-50 pointer-events-none' : ''}`}
+                            aria-disabled={page === totalPages}
                         >
                             הבא
                         </Link>
-                    )}
-                </div>
+                    </div>
+                )}
 
-                {/* Total Count (Bottom Right) */}
+                {/* Total Count - Force Left if needed or keep Right if Flex allows, here it's space-between so it goes right. */}
                 <div className="text-sm text-gray-500 font-medium">
                     סה״כ {totalUsers} משתמשים
                 </div>

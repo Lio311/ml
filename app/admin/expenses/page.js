@@ -73,7 +73,15 @@ export default function AdminExpensesPage() {
         }
     };
 
-    const groupedExpenses = expenses.reduce((groups, expense) => {
+    const ITEMS_PER_PAGE = 5;
+    const [page, setPage] = useState(1);
+
+    // Pagination Logic: Slice expenses first, then group them.
+    // NOTE: This paginate Items, not Groups. So a group might be split across pages.
+    const paginatedExpenses = expenses.slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE);
+    const totalPages = Math.ceil(expenses.length / ITEMS_PER_PAGE);
+
+    const groupedExpenses = paginatedExpenses.reduce((groups, expense) => {
         const date = new Date(expense.date);
         const key = `${date.toLocaleString('he-IL', { month: 'long' })} ${date.getFullYear()}`;
         if (!groups[key]) groups[key] = [];
@@ -191,6 +199,29 @@ export default function AdminExpensesPage() {
                     </div>
                 ))}
             </div>
+
+            {/* Pagination Controls */}
+            {totalPages > 1 && (
+                <div className="flex justify-center items-center gap-4 mt-8">
+                    <button
+                        onClick={() => setPage(p => Math.max(1, p - 1))}
+                        disabled={page === 1}
+                        className="px-4 py-2 border rounded hover:bg-gray-100 disabled:opacity-50 transition"
+                    >
+                        הקודם
+                    </button>
+                    <span className="text-sm text-gray-600">
+                        עמוד {page} מתוך {totalPages}
+                    </span>
+                    <button
+                        onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+                        disabled={page === totalPages}
+                        className="px-4 py-2 border rounded hover:bg-gray-100 disabled:opacity-50 transition"
+                    >
+                        הבא
+                    </button>
+                </div>
+            )}
         </div>
     );
 }

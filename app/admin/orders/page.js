@@ -8,7 +8,8 @@ export const metadata = {
     robots: "noindex, nofollow",
 };
 
-export default async function AdminOrdersPage({ searchParams }) {
+export default async function AdminOrdersPage(props) {
+    const searchParams = await props.searchParams;
     const page = Number(searchParams?.page) || 1;
     const LIMIT = 1;
     const offset = (page - 1) * LIMIT;
@@ -46,7 +47,6 @@ export default async function AdminOrdersPage({ searchParams }) {
         }
 
         const orderId = formData.get("orderId");
-
         const status = formData.get("status");
 
         const client = await pool.connect();
@@ -143,7 +143,6 @@ export default async function AdminOrdersPage({ searchParams }) {
 
         const orderId = formData.get("orderId");
 
-
         const client = await pool.connect();
         try {
             // 1. Get items to restore stock
@@ -159,7 +158,6 @@ export default async function AdminOrdersPage({ searchParams }) {
                         if (typeof dbId === 'string' && dbId.includes('-')) {
                             dbId = parseInt(dbId.split('-')[0]);
                         }
-
 
                         await client.query(
                             'UPDATE products SET stock = stock + $1 WHERE id = $2',
@@ -310,30 +308,30 @@ export default async function AdminOrdersPage({ searchParams }) {
                 </table>
             </div>
 
-            {/* Pagination Controls */}
-            <div className="flex justify-center items-center gap-4 mt-8">
-                {page > 1 && (
+            {/* Pagination Controls - Brand Style */}
+            {totalPages > 1 && (
+                <div className="flex justify-center items-center gap-4 mt-8">
                     <Link
-                        href={`/admin/orders?page=${page - 1}`}
-                        className="px-4 py-2 bg-white border rounded shadow-sm hover:bg-gray-50"
+                        href={`/admin/orders?page=${Math.max(1, page - 1)}`}
+                        className={`px-4 py-2 border rounded hover:bg-gray-100 transition ${page === 1 ? 'opacity-50 pointer-events-none' : ''}`}
+                        aria-disabled={page === 1}
                     >
                         הקודם
                     </Link>
-                )}
 
-                <span className="text-gray-600">
-                    עמוד {page} מתוך {totalPages}
-                </span>
+                    <span className="text-sm text-gray-600">
+                        עמוד {page} מתוך {totalPages}
+                    </span>
 
-                {page < totalPages && (
                     <Link
-                        href={`/admin/orders?page=${page + 1}`}
-                        className="px-4 py-2 bg-white border rounded shadow-sm hover:bg-gray-50"
+                        href={`/admin/orders?page=${Math.min(totalPages, page + 1)}`}
+                        className={`px-4 py-2 border rounded hover:bg-gray-100 transition ${page === totalPages ? 'opacity-50 pointer-events-none' : ''}`}
+                        aria-disabled={page === totalPages}
                     >
                         הבא
                     </Link>
-                )}
-            </div>
+                </div>
+            )}
         </div>
     );
 }
