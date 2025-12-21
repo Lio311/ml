@@ -50,6 +50,29 @@ export async function POST(req) {
     }
 }
 
+export async function PUT(req) {
+    const user = await currentUser();
+    const role = user?.publicMetadata?.role;
+    if (role !== 'admin' && user?.emailAddresses[0]?.emailAddress !== 'lior31197@gmail.com') {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
+    }
+
+    const { id, description, amount, type, date } = await req.json();
+
+    const client = await pool.connect();
+    try {
+        const res = await client.query(
+            'UPDATE expenses SET description = $1, amount = $2, type = $3, date = $4 WHERE id = $5 RETURNING *',
+            [description, amount, type, date, id]
+        );
+        return NextResponse.json(res.rows[0]);
+    } catch (error) {
+        return NextResponse.json({ error: 'Failed to update expense' }, { status: 500 });
+    } finally {
+        client.release();
+    }
+}
+
 export async function DELETE(req) {
     const user = await currentUser();
     const role = user?.publicMetadata?.role;
