@@ -147,16 +147,17 @@ export default async function AdminDashboard() {
         // Fetch Users Count & Chart Data from Clerk
         // Fetch Users Count & Chart Data from Clerk
         // Fetch Users Count & Chart Data
-        let usersChartData = [];
-        let rawUsersData = [];
+        // Initialize with safe default structure (31 days of zeros) to prevent undefined/null errors downstream
+        let usersChartData = Array.from({ length: 31 }, (_, i) => ({ day: i + 1, current: 0, previous: 0 }));
 
-        // Process User Chart Data via SQL (Robust)
         try {
-            // Restore Total Users Count (Accidentally removed)
+            // Restore Total Users Count
             const countResUsers = await client.query('SELECT COUNT(*) FROM users');
-            kpis.totalUsers = parseInt(countResUsers.rows[0].count);
+            kpis.totalUsers = countResUsers.rows[0]?.count ? Number(countResUsers.rows[0].count) : 0;
 
-            // Fetch Current Month Users Grouped by Day
+            console.log("Fetching User Chart Data...");
+
+            // Fetch Current Month
             const userCurrentMonthRes = await client.query(`
                 SELECT 
                     EXTRACT(DAY FROM created_at) as day,
@@ -165,10 +166,9 @@ export default async function AdminDashboard() {
                 WHERE EXTRACT(MONTH FROM created_at) = $1
                 AND EXTRACT(YEAR FROM created_at) = $2
                 GROUP BY day
-                ORDER BY day
             `, [month, year]);
 
-            // Fetch Previous Month Users Grouped by Day
+            // Fetch Previous Month
             const userPrevMonthRes = await client.query(`
                 SELECT 
                     EXTRACT(DAY FROM created_at) as day,
@@ -177,22 +177,25 @@ export default async function AdminDashboard() {
                 WHERE EXTRACT(MONTH FROM created_at) = $1
                 AND EXTRACT(YEAR FROM created_at) = $2
                 GROUP BY day
-                ORDER BY day
             `, [prevMonth, prevYear]);
 
-            for (let i = 1; i <= daysInMonth; i++) {
-                const curDay = userCurrentMonthRes.rows.find(r => parseInt(r.day) === i);
-                const prevDay = userPrevMonthRes.rows.find(r => parseInt(r.day) === i);
+            // Map results to chart data
+            usersChartData = usersChartData.map(item => {
+                const dayMatch = userCurrentMonthRes.rows.find(r => Number(r.day) === item.day);
+                const prevMatch = userPrevMonthRes.rows.find(r => Number(r.day) === item.day);
 
-                usersChartData.push({
-                    day: i,
-                    current: curDay ? parseInt(curDay.count) : 0,
-                    previous: prevDay ? parseInt(prevDay.count) : 0
-                });
-            }
+                return {
+                    day: item.day,
+                    current: dayMatch ? Number(dayMatch.count) : 0,
+                    previous: prevMatch ? Number(prevMatch.count) : 0
+                };
+            });
+            console.log("✅ User chart data processed successfully");
+
         } catch (procErr) {
-            console.error("User chart SQL processing error:", procErr);
-            usersChartData = [];
+            console.error("❌ CRITICAL ERROR PROCESSING USER CHART:", procErr);
+            // On error, usersChartData remains the safe zero-filled array created at start
+            kpis.totalUsers = kpis.totalUsers || 0;
         }
 
         // Inventory Forecasting Logic
