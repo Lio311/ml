@@ -101,8 +101,8 @@ export default async function AdminUsersPage(props) {
             </div>
 
             {/* Pagination & Count */}
-            <div className="flex justify-between items-center mt-8">
-                {/* Brand Style Pagination */}
+            <div className="flex flex-col items-center gap-4 mt-8 relative">
+                {/* Brand Style Pagination - Centered */}
                 {totalPages > 1 && (
                     <div className="flex justify-center items-center gap-4">
                         <Link
@@ -127,8 +127,8 @@ export default async function AdminUsersPage(props) {
                     </div>
                 )}
 
-                {/* Total Count - Force Left if needed or keep Right if Flex allows, here it's space-between so it goes right. */}
-                <div className="text-sm text-gray-500 font-medium">
+                {/* Total Count - Absolute positioned to bottom right or kept separate if mobile */}
+                <div className="text-sm text-gray-500 font-medium md:absolute md:right-0 md:bottom-2">
                     סה״כ {totalUsers} משתמשים
                 </div>
             </div>

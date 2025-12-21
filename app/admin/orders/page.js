@@ -11,7 +11,7 @@ export const metadata = {
 export default async function AdminOrdersPage(props) {
     const searchParams = await props.searchParams;
     const page = Number(searchParams?.page) || 1;
-    const LIMIT = 1;
+    const LIMIT = 5;
     const offset = (page - 1) * LIMIT;
 
     const client = await pool.connect();
