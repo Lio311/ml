@@ -1,4 +1,4 @@
-import pool from "../../../lib/db";
+import pool from "../../lib/db";
 import { currentUser } from "@clerk/nextjs/server";
 import Link from "next/link";
 import UserRoleSelect from "./UserRoleSelect";
