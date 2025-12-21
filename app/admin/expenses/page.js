@@ -7,6 +7,8 @@ import { useUser } from "@clerk/nextjs";
 export default function AdminExpensesPage() {
     const [expenses, setExpenses] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [formData, setFormData] = useState({ description: "", amount: "", type: "monthly", date: "" });
+    const [isSubmitting, setIsSubmitting] = useState(false);
     const [editingId, setEditingId] = useState(null);
     const { user } = useUser();
     const canEdit = user?.publicMetadata?.role === 'admin' || user?.emailAddresses[0]?.emailAddress === 'lior31197@gmail.com';
