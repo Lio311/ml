@@ -150,55 +150,50 @@ export default async function AdminDashboard() {
         // Initialize with safe default structure (31 days of zeros) to prevent undefined/null errors downstream
         let usersChartData = Array.from({ length: 31 }, (_, i) => ({ day: i + 1, current: 0, previous: 0 }));
 
-        /* 
         try {
             // Restore Total Users Count
             const countResUsers = await client.query('SELECT COUNT(*) FROM users');
             kpis.totalUsers = countResUsers.rows[0]?.count ? Number(countResUsers.rows[0].count) : 0;
 
-            console.log("Fetching User Chart Data...");
-
-            // Fetch Current Month
+            // Fetch Current Month - Using robust DATE casting
             const userCurrentMonthRes = await client.query(`
                 SELECT 
-                    EXTRACT(DAY FROM created_at) as day,
+                    EXTRACT(DAY FROM created_at::date) as day,
                     COUNT(*) as count
                 FROM users
-                WHERE EXTRACT(MONTH FROM created_at) = $1
-                AND EXTRACT(YEAR FROM created_at) = $2
+                WHERE EXTRACT(MONTH FROM created_at::date) = $1
+                AND EXTRACT(YEAR FROM created_at::date) = $2
                 GROUP BY day
             `, [month, year]);
 
-            // Fetch Previous Month
+            // Fetch Previous Month - Using robust DATE casting
             const userPrevMonthRes = await client.query(`
                 SELECT 
-                    EXTRACT(DAY FROM created_at) as day,
+                    EXTRACT(DAY FROM created_at::date) as day,
                     COUNT(*) as count
                 FROM users
-                WHERE EXTRACT(MONTH FROM created_at) = $1
-                AND EXTRACT(YEAR FROM created_at) = $2
+                WHERE EXTRACT(MONTH FROM created_at::date) = $1
+                AND EXTRACT(YEAR FROM created_at::date) = $2
                 GROUP BY day
             `, [prevMonth, prevYear]);
 
-            // Map results to chart data
+            // Map results safely
             usersChartData = usersChartData.map(item => {
                 const dayMatch = userCurrentMonthRes.rows.find(r => Number(r.day) === item.day);
                 const prevMatch = userPrevMonthRes.rows.find(r => Number(r.day) === item.day);
-                
+
                 return {
                     day: item.day,
                     current: dayMatch ? Number(dayMatch.count) : 0,
                     previous: prevMatch ? Number(prevMatch.count) : 0
                 };
             });
-            console.log("✅ User chart data processed successfully");
 
         } catch (procErr) {
-            console.error("❌ CRITICAL ERROR PROCESSING USER CHART:", procErr);
-            // On error, usersChartData remains the safe zero-filled array created at start
-            kpis.totalUsers = kpis.totalUsers || 0; 
+            console.error("❌ USER CHART ERROR:", procErr);
+            // On error, usersChartData remains the safe zero-filled array
+            kpis.totalUsers = kpis.totalUsers || 0;
         }
-        */
 
         // Inventory Forecasting Logic
         let forecasts = [];
@@ -497,7 +492,7 @@ export default async function AdminDashboard() {
                 orderData={kpis.orderChartData}
                 revenueData={kpis.revenueChartData}
                 visitsData={kpis.visitsChartData}
-                usersData={[]} // Temporarily DISABLING User Chart to fix 500 Crash
+                usersData={usersChartData}
             />
 
 
