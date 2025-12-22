@@ -30,7 +30,7 @@ export const metadata = {
     siteName: 'ml_tlv',
     images: [
       {
-        url: '/logo_v3.png',
+        url: '/logo_v5.png',
         width: 800,
         height: 600,
       },
