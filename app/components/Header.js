@@ -102,7 +102,7 @@ export default function Header({ brands = [] }) {
 
                         {/* Logo */}
                         <Link href="/" className="inline-block absolute left-1/2 transform -translate-x-1/2">
-                            <Image src="/logo_v3.png" alt="ml." width={100} height={40} className="h-10 w-auto object-contain" priority />
+                            <Image src="/logo_v5.png" alt="ml." width={100} height={40} className="h-10 w-auto object-contain" priority />
                         </Link>
 
                         {/* Right Icons: User, Wishlist, Cart (Search moved to left) */}
@@ -176,7 +176,7 @@ export default function Header({ brands = [] }) {
                     {/* Desktop CENTER Group: Logo + Menu */}
                     <div className="hidden md:flex flex-col items-center justify-center gap-2">
                         <Link href="/" className="block">
-                            <Image src="/logo_v3.png" alt="ml." width={180} height={70} className="h-16 w-auto object-contain" priority />
+                            <Image src="/logo_v5.png" alt="ml." width={180} height={70} className="h-16 w-auto object-contain" priority />
                         </Link>
                         <nav className="flex items-center gap-6 lg:gap-8 relative whitespace-nowrap">
                             {menu.filter(item => item.visible).map(item => {
