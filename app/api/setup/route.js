@@ -1,7 +1,12 @@
 import { NextResponse } from 'next/server';
 import pool from '../../lib/db';
+import { checkAdmin } from '../../lib/admin';
 
 export async function GET() {
+    const isAdmin = await checkAdmin();
+    if (!isAdmin) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
+    }
     try {
         const client = await pool.connect();
 
