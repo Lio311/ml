@@ -9,8 +9,25 @@ const { clerkClient } = require('@clerk/nextjs/server');
 
 // c:/Users/Lior/OneDrive - mail.tau.ac.il/Desktop/ml/app/app/api/admin/seed-role/route.js
 import { NextResponse } from 'next/server';
+import { checkAdmin } from '@/app/lib/admin';
 
 export async function GET() {
+    // Security: Only allow if explicitly authorized or in dev mode? 
+    // Better to just block it now that setup is done.
+    // Or require a secret.
+    // Let's require the Admin Email to be the one requesting? No, currentUser() might not be working if I am using it to setup.
+    // I will disable this route by default or protect it.
+
+    // Protect with CRON_SECRET or similar "God Mode" secret if needed, or checkAdmin.
+    // Since it seeds ADMIN role, checking isAdmin is circular if you aren't invalid.
+    // But if you are already admin, you don't need it.
+    // This script is dangerous. I will protect it with a hard requirement for a specific secret query param.
+    // Or just checkAdmin() assuming it's for 'repairing' other users.
+
+    // Let's use checkAdmin.
+    const isAdmin = await checkAdmin();
+    if (!isAdmin) return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
+
     try {
         const client = await clerkClient();
         console.log("Searching for user...");

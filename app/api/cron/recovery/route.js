@@ -3,9 +3,10 @@ import pool from '@/app/lib/db';
 import nodemailer from 'nodemailer';
 
 export async function GET(req) {
-    // Basic Security: Check for CRON_SECRET if desired, but for now open (or manual trigger).
-    // const authHeader = req.headers.get('authorization');
-    // if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) { ... }
+    const authHeader = req.headers.get('authorization');
+    if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
 
     try {
         const client = await pool.connect();
