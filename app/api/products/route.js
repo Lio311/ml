@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import pool from '../../lib/db';
 import { clerkClient } from '@clerk/nextjs/server';
 import { sendEmail, getNewProductTemplate } from '../../../lib/email';
+import { checkAdmin } from '../../lib/admin';
 
 export async function GET(req) {
     try {
@@ -39,6 +40,10 @@ export async function GET(req) {
 
 export async function PUT(req) {
     try {
+        const isAdmin = await checkAdmin();
+        if (!isAdmin) {
+            return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
+        }
         const body = await req.json();
         const {
             id, brand, model, price_2ml, price_5ml, price_10ml, image_url,
@@ -82,6 +87,10 @@ export async function PUT(req) {
 
 export async function POST(req) {
     try {
+        const isAdmin = await checkAdmin();
+        if (!isAdmin) {
+            return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
+        }
         const body = await req.json();
         const {
             brand, model, price_2ml, price_5ml, price_10ml, image_url,
@@ -160,6 +169,10 @@ export async function POST(req) {
 
 export async function DELETE(req) {
     try {
+        const isAdmin = await checkAdmin();
+        if (!isAdmin) {
+            return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
+        }
         const { searchParams } = new URL(req.url);
         const id = searchParams.get('id');
 

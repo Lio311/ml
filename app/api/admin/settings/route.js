@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import pool from '@/app/lib/db';
+import { checkAdmin } from '@/app/lib/admin';
 
 const DEFAULT_MENU = [
     { id: 'home', label: 'דף הבית', path: '/', visible: true, order: 1 },
@@ -51,6 +52,10 @@ export async function GET() {
 
 export async function POST(req) {
     try {
+        const isAdmin = await checkAdmin();
+        if (!isAdmin) {
+            return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
+        }
         const { menu } = await req.json();
         const client = await pool.connect();
         try {
