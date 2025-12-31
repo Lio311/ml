@@ -41,8 +41,8 @@ export async function PUT(req) {
     try {
         const body = await req.json();
         const {
-            id, brand, model, price_2ml, price_5ml, price_10ml, image_url, 
-            category, description, stock, top_notes, middle_notes, base_notes, 
+            id, brand, model, price_2ml, price_5ml, price_10ml, image_url,
+            category, description, stock, top_notes, middle_notes, base_notes,
             in_lottery, name_he, cost_price, original_size
         } = body;
 
@@ -56,11 +56,20 @@ export async function PUT(req) {
                      name = $13, in_lottery = $14, name_he = $15, cost_price = $16, original_size = $17
                  WHERE id = $18`,
                 [
-                    brand, model, price_2ml, price_5ml, price_10ml, image_url, 
-                    category, description, stock || 0, top_notes, middle_notes, base_notes, 
+                    brand, model, price_2ml, price_5ml, price_10ml, image_url,
+                    category, description, stock || 0, top_notes, middle_notes, base_notes,
                     brand + ' ' + model, in_lottery ?? true, name_he, cost_price, original_size, id
                 ]
             );
+
+            // Ensure brand exists in brands table
+            if (brand) {
+                await client.query(`
+                    INSERT INTO brands (name) VALUES ($1)
+                    ON CONFLICT (name) DO NOTHING
+                `, [brand]);
+            }
+
             return NextResponse.json({ success: true });
         } finally {
             client.release();
@@ -75,8 +84,8 @@ export async function POST(req) {
     try {
         const body = await req.json();
         const {
-            brand, model, price_2ml, price_5ml, price_10ml, image_url, 
-            category, description, stock, top_notes, middle_notes, base_notes, 
+            brand, model, price_2ml, price_5ml, price_10ml, image_url,
+            category, description, stock, top_notes, middle_notes, base_notes,
             in_lottery, name_he, cost_price, original_size
         } = body;
 
@@ -89,10 +98,19 @@ export async function POST(req) {
                  VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17) 
                  RETURNING id`,
                 [
-                    brand + ' ' + model, category || 'General', brand, model, price_2ml, price_5ml, price_10ml, image_url, 
+                    brand + ' ' + model, category || 'General', brand, model, price_2ml, price_5ml, price_10ml, image_url,
                     description, stock || 0, top_notes, middle_notes, base_notes, in_lottery ?? true, name_he, cost_price, original_size
                 ]
             );
+
+            // Ensure brand exists in brands table
+            if (brand) {
+                await client.query(`
+                    INSERT INTO brands (name) VALUES ($1)
+                    ON CONFLICT (name) DO NOTHING
+                `, [brand]);
+            }
+
             const newProduct = res.rows[0];
             const newProductId = newProduct.id;
 
