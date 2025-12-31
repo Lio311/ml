@@ -31,6 +31,7 @@ export const metadata = {
     title: 'ml_tlv',
   },
   icons: {
+    icon: '/ml_v4.png',
     apple: '/apple-touch-icon.png',
   },
   viewport: {
