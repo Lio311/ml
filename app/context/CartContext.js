@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useState, useEffect } from "react";
 import { useUser } from "@clerk/nextjs";
+import toast from 'react-hot-toast';
 
 const CartContext = createContext();
 
@@ -137,7 +138,7 @@ export function CartProvider({ children }) {
 
     const addToCart = (product, size, price) => {
         if (isCartLocked) {
-            alert("העגלה נעולה בזמן שהגרלת הבשמים פעילה!");
+            toast.error("העגלה נעולה בזמן שהגרלת הבשמים פעילה!");
             return;
         }
         setCartItems((prev) => {
@@ -157,7 +158,7 @@ export function CartProvider({ children }) {
 
     const addMultipleToCart = (items) => {
         if (isCartLocked) {
-            alert("העגלה נעולה בזמן שהגרלת הבשמים פעילה!");
+            toast.error("העגלה נעולה בזמן שהגרלת הבשמים פעילה!");
             return;
         }
         setCartItems((prev) => {
@@ -183,7 +184,7 @@ export function CartProvider({ children }) {
 
     const removeFromCart = (id, size) => {
         if (isCartLocked) {
-            alert("העגלה נעולה בזמן שהגרלת הבשמים פעילה!");
+            toast.error("העגלה נעולה בזמן שהגרלת הבשמים פעילה!");
             return;
         }
         setCartItems((prev) => prev.filter((item) => !(item.id === id && item.size === size)));
@@ -191,7 +192,7 @@ export function CartProvider({ children }) {
 
     const updateQuantity = (id, size, quantity) => {
         if (isCartLocked) {
-            alert("העגלה נעולה בזמן שהגרלת הבשמים פעילה!");
+            toast.error("העגלה נעולה בזמן שהגרלת הבשמים פעילה!");
             return;
         }
         if (quantity < 1) {
@@ -219,7 +220,7 @@ export function CartProvider({ children }) {
                     // However, for the specific bug reported: "In cart, I can add infinite", usually means just pressing + on that item.
 
                     if (totalMlRequested > stock) {
-                        alert(`לא ניתן להוסיף: נותרו ${stock} מ״ל במלאי`);
+                        toast.error(`לא ניתן להוסיף: נותרו ${stock} מ״ל במלאי`);
                         return item; // Do not update
                     }
                     return { ...item, quantity };

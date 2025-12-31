@@ -3,6 +3,8 @@ import { useCart } from "../../context/CartContext";
 import { useUser } from "@clerk/nextjs";
 import { useState, useEffect } from "react";
 
+import toast from 'react-hot-toast';
+
 export default function ProductActionsClient({ product }) {
     const { addToCart, cartItems } = useCart();
     const [addedId, setAddedId] = useState(null);
@@ -32,11 +34,12 @@ export default function ProductActionsClient({ product }) {
         }, 0);
 
         if (currentInCart + size > stock) {
-            alert(`לא ניתן להוסיף לסל: נותרו ${stock} מ״ל במלאי (יש לך כבר ${currentInCart} מ״ל בסל)`);
+            toast.error(`לא ניתן להוסיף לסל: נותרו ${stock} מ״ל במלאי (יש לך כבר ${currentInCart} מ״ל בסל)`);
             return;
         }
 
         addToCart(product, size, price);
+        toast.success(`נוסף לסל: ${product.name} (${size} מ"ל)`);
         setAddedId(size);
         setTimeout(() => setAddedId(null), 2000);
     };
