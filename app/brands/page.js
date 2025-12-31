@@ -12,7 +12,7 @@ export default async function BrandsPage() {
     let brands = [];
     try {
         const client = await pool.connect();
-        const res = await client.query('SELECT name, logo_url FROM brands WHERE logo_url IS NOT NULL ORDER BY LOWER(name) ASC');
+        const res = await client.query('SELECT name, logo_url FROM brands ORDER BY LOWER(name) ASC');
         brands = res.rows;
         client.release();
     } catch (e) {

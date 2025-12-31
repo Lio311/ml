@@ -70,16 +70,24 @@ export default function BrandsClient({ brands }) {
                             className="group block bg-white rounded-xl p-8 shadow-md hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1 flex items-center justify-center h-40 relative overflow-hidden"
                         >
                             <div className="absolute inset-0 bg-gray-50 opacity-0 group-hover:opacity-10 transition-opacity"></div>
-                            <div className="relative w-full h-full flex items-center justify-center">
-                                <img
-                                    src={brand.logo_url}
-                                    alt={brand.name}
-                                    className="object-contain max-h-24 w-auto filter grayscale group-hover:grayscale-0 transition-all duration-500"
-                                />
+                            <div className="relative w-full h-full flex items-center justify-center p-4 text-center">
+                                {brand.logo_url ? (
+                                    <img
+                                        src={brand.logo_url}
+                                        alt={brand.name}
+                                        className="object-contain max-h-24 w-auto filter grayscale group-hover:grayscale-0 transition-all duration-500"
+                                    />
+                                ) : (
+                                    <span className="text-sm font-bold text-gray-800 uppercase tracking-wider group-hover:text-black transition-colors">
+                                        {brand.name}
+                                    </span>
+                                )}
                             </div>
-                            <span className="absolute bottom-2 text-[10px] text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity uppercase tracking-widest">
-                                {brand.name}
-                            </span>
+                            {brand.logo_url && (
+                                <span className="absolute bottom-2 text-[10px] text-gray-400 opacity-0 group-hover:opacity-100 transition-opacity uppercase tracking-widest">
+                                    {brand.name}
+                                </span>
+                            )}
                         </Link>
                     ))}
                 </div>
