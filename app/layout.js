@@ -62,6 +62,8 @@ import { WishlistProvider } from "./context/WishlistContext";
 
 import pool from "./lib/db";
 
+import { Toaster } from 'react-hot-toast';
+
 export default async function RootLayout({ children }) {
   // Fetch Brands for Navigation (Server Side)
   let brands = [];
@@ -104,6 +106,7 @@ export default async function RootLayout({ children }) {
           <CartProvider>
             <WishlistProvider>
               <AnalyticsTracker />
+              <Toaster position="top-center" toastOptions={{ duration: 3000 }} />
 
               <ClientLayout brands={brands}>
                 {children}

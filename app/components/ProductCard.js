@@ -8,6 +8,8 @@ import { useState } from "react";
 
 import WishlistHeart from "./WishlistHeart";
 
+import toast from 'react-hot-toast';
+
 export default function ProductCard({ product }) {
     const { addToCart, cartItems } = useCart();
     const [added, setAdded] = useState(false);
@@ -27,11 +29,12 @@ export default function ProductCard({ product }) {
         }, 0);
 
         if (currentInCart + size > stock) {
-            alert(`לא ניתן להוסיף לסל: נותרו ${stock} מ״ל במלאי (יש לך כבר ${currentInCart} מ״ל בסל)`);
+            toast.error(`לא ניתן להוסיף לסל: נותרו ${stock} מ״ל במלאי (יש לך כבר ${currentInCart} מ״ל בסל)`);
             return;
         }
 
         addToCart(product, size, price);
+        toast.success(`נוסף לסל: ${product.name} (${size} מ"ל)`);
         setAdded(true);
         setTimeout(() => setAdded(false), 2000);
     };
