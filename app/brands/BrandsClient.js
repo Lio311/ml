@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
+
 
 export default function BrandsClient({ brands }) {
     const [selectedLetter, setSelectedLetter] = useState(null);
@@ -71,11 +71,9 @@ export default function BrandsClient({ brands }) {
                         >
                             <div className="absolute inset-0 bg-gray-50 opacity-0 group-hover:opacity-10 transition-opacity"></div>
                             <div className="relative w-full h-full flex items-center justify-center">
-                                <Image
+                                <img
                                     src={brand.logo_url}
                                     alt={brand.name}
-                                    width={120}
-                                    height={120}
                                     className="object-contain max-h-24 w-auto filter grayscale group-hover:grayscale-0 transition-all duration-500"
                                 />
                             </div>
