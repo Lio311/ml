@@ -47,7 +47,9 @@ export default async function AdminDashboard() {
     const year = now.getFullYear();
     const month = now.getMonth() + 1;
 
+    // Fix: Handle end-of-month edge cases (e.g., March 31 -> Feb 31 -> March 3)
     const prevDate = new Date();
+    prevDate.setDate(1); // Safely move to the 1st of the month
     prevDate.setMonth(prevDate.getMonth() - 1);
     const prevYear = prevDate.getFullYear();
     const prevMonth = prevDate.getMonth() + 1;
