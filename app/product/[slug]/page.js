@@ -1,6 +1,6 @@
 import pool from "../../lib/db";
 import Link from "next/link";
-import Image from "next/image";
+
 import { redirect } from 'next/navigation';
 import ProductCard from "../../components/ProductCard";
 import StarRating from "../../components/StarRating";
@@ -179,13 +179,10 @@ export default async function ProductPage(props) {
                 {/* Image */}
                 <div className="w-full md:w-1/2 aspect-square bg-white rounded-xl flex items-center justify-center relative overflow-hidden shadow-sm p-24 group">
                     {product.image_url ? (
-                        <Image
+                        <img
                             src={product.image_url}
                             alt={`${product.name} ${product.name_he ? ' - ' + product.name_he : ''}`}
-                            fill
-                            sizes="(max-width: 768px) 100vw, 50vw"
-                            className="object-contain p-8 md:p-12 hover:scale-105 transition-transform duration-500"
-                            priority
+                            className="w-full h-full object-contain p-8 md:p-12 hover:scale-105 transition-transform duration-500"
                         />
                     ) : (
                         <div className="text-6xl text-gray-300">🧴</div>
