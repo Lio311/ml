@@ -4,9 +4,10 @@ export async function checkAdmin() {
     const user = await currentUser();
     if (!user) return false;
 
-    // Super Admin Hardcoded
+    // Super Admin from Env
     const email = user.emailAddresses?.[0]?.emailAddress;
-    if (email === 'lior31197@gmail.com') return true;
+    const adminEmail = process.env.ADMIN_EMAIL || 'lior31197@gmail.com'; // Fallback for dev convenience, but best to set env
+    if (email === adminEmail) return true;
 
     // Role Based
     const role = user.publicMetadata?.role;
