@@ -29,7 +29,7 @@ export default function ProductCard({ product }) {
         }, 0);
 
         if (currentInCart + size > stock) {
-            toast.error(`לא ניתן להוסיף לסל: נותרו ${stock} מ״ל במלאי (יש לך כבר ${currentInCart} מ״ל בסל)`);
+            toast.error("לא ניתן להוסיף את המוצר, אזל המלאי!");
             return;
         }
 

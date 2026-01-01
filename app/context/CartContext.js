@@ -220,7 +220,7 @@ export function CartProvider({ children }) {
                     // However, for the specific bug reported: "In cart, I can add infinite", usually means just pressing + on that item.
 
                     if (totalMlRequested > stock) {
-                        toast.error(`לא ניתן להוסיף: נותרו ${stock} מ״ל במלאי`);
+                        toast.error("לא ניתן להוסיף את המוצר, אזל המלאי!");
                         return item; // Do not update
                     }
                     return { ...item, quantity };
