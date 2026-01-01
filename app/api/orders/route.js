@@ -67,6 +67,10 @@ export async function POST(req) {
                 }
             }
 
+            // Add shipping cost (fixed 30 ₪)
+            const shippingCost = 30;
+            calculatedTotal += shippingCost;
+
             // Verify Total (Allow 1 shekel diff for rounding?)
             if (Math.abs(calculatedTotal - total) > 1) {
                 throw new Error(`Total amount mismatch. Calculated: ${calculatedTotal}, Received: ${total}`);
