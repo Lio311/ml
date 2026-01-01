@@ -2,13 +2,11 @@
 
 import { createContext, useContext, useState, useEffect } from "react";
 import { useUser } from "@clerk/nextjs";
-import { usePathname } from "next/navigation";
 import toast from 'react-hot-toast';
 
 const CartContext = createContext();
 
 export function CartProvider({ children }) {
-    const pathname = usePathname();
     const [cartItems, setCartItems] = useState([]);
 
     // Load likely from local storage on mount (optional, skipping for MVP speed)
@@ -159,9 +157,7 @@ export function CartProvider({ children }) {
                         return Array.from(itemMap.values());
                     });
 
-                    if (!pathname?.startsWith('/admin')) {
-                        toast.success("סל הקניות סונכרן!");
-                    }
+                    toast.success("סל הקניות סונכרן!");
                 }
             } catch (err) {
                 console.error("Failed to fetch server cart:", err);
