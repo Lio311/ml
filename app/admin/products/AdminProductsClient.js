@@ -118,7 +118,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
 
     const deleteProduct = async (id) => {
         try {
-            const res = await fetch(`/api/admin/products?id=${id}`, { method: 'DELETE' });
+            const res = await fetch(`/api/products?id=${id}`, { method: 'DELETE' });
             if (res.ok) {
                 toast.success('המוצר נמחק בהצלחה');
                 router.refresh();

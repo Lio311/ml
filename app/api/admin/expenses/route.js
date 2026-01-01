@@ -80,7 +80,8 @@ export async function DELETE(req) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
     }
 
-    const { id } = await req.json();
+    const { searchParams } = new URL(req.url);
+    const id = searchParams.get('id');
 
     const client = await pool.connect();
     try {

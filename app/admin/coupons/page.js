@@ -108,7 +108,7 @@ export default function AdminCouponsPage() {
         if (loading) return;
         setLoading(true);
         try {
-            const res = await fetch(`/api/admin/coupons?id=${id}`, { method: 'DELETE' });
+            const res = await fetch(`/api/admin/coupons/${id}`, { method: 'DELETE' });
             if (res.ok) {
                 toast.success('הקופון נמחק בהצלחה');
                 fetchCoupons();

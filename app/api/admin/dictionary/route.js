@@ -70,7 +70,8 @@ export async function PUT(req) {
 
 export async function DELETE(req) {
     try {
-        const { id } = await req.json();
+        const { searchParams } = new URL(req.url);
+        const id = searchParams.get('id');
         if (!id) return NextResponse.json({ error: "Missing ID" }, { status: 400 });
 
         const client = await pool.connect();
