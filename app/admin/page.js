@@ -101,7 +101,10 @@ export default async function AdminDashboard() {
             prevMonthRes,
             currentMonthVisitsRes,
             prevMonthVisitsRes,
-            couponsRes
+            couponsRes,
+            revAllTimeRes,
+            expAllTimeRes,
+            cogsAllTimeRes
         ] = await Promise.all([
             // 1. Recent Orders
             pool.query('SELECT * FROM orders ORDER BY created_at DESC LIMIT 3'),
@@ -285,11 +288,9 @@ export default async function AdminDashboard() {
         // Cumulative Data
         // Note: The Promise.all array index must match the added queries.
         // We added 3 queries at the end (Indices 20, 21, 22 if 0-based and we had 20 items before [0-19])
-        // Let's verify existing Promise.all structure. It had 20 items (0-19: couponsRes).
-        // So:
-        const totalRevenueAllTime = parseFloat(arguments[0][20]?.rows[0]?.sum || 0);
-        const totalExpensesAllTime = parseFloat(arguments[0][21]?.rows[0]?.sum || 0);
-        const totalCOGSAllTime = parseFloat(arguments[0][22]?.rows[0]?.sum || 0);
+        const totalRevenueAllTime = parseFloat(revAllTimeRes.rows[0]?.sum || 0);
+        const totalExpensesAllTime = parseFloat(expAllTimeRes.rows[0]?.sum || 0);
+        const totalCOGSAllTime = parseFloat(cogsAllTimeRes.rows[0]?.sum || 0);
 
         kpis.cumulativeProfit = Math.round(totalRevenueAllTime - totalExpensesAllTime - totalCOGSAllTime);
 
@@ -499,7 +500,7 @@ export default async function AdminDashboard() {
                             <span className="text-blue-600 font-bold text-sm">הכנסות</span>
                             <div className="text-right">
                                 <span className="text-xl font-bold text-blue-700">
-                                    ₪ <span dir="ltr" className="inline-block">{kpis.totalRevenue.toLocaleString()}</span>
+                                    <span dir="ltr" className="inline-block">{kpis.totalRevenue.toLocaleString()}</span> ₪
                                 </span>
                             </div>
                         </div>
@@ -507,7 +508,7 @@ export default async function AdminDashboard() {
                             <span className="text-red-600 font-bold text-sm">הוצאות</span>
                             <div className="text-right">
                                 <span className="text-xl font-bold text-red-700">
-                                    ₪ <span dir="ltr" className="inline-block">{kpis.totalExpenses.toLocaleString()}</span>
+                                    <span dir="ltr" className="inline-block">{kpis.totalExpenses.toLocaleString()}</span> ₪
                                 </span>
                             </div>
                         </div>
@@ -515,7 +516,7 @@ export default async function AdminDashboard() {
                             <span className={`${kpis.monthlyProfit < 0 ? 'text-red-600' : 'text-green-600'} font-bold`}>רווח</span>
                             <div className="text-right">
                                 <span className={`text-2xl font-bold ${kpis.monthlyProfit < 0 ? 'text-red-700' : 'text-green-700'}`}>
-                                    ₪ <span dir="ltr" className="inline-block">{kpis.monthlyProfit.toLocaleString()}</span>
+                                    <span dir="ltr" className="inline-block">{kpis.monthlyProfit.toLocaleString()}</span> ₪
                                 </span>
                             </div>
                         </div>
@@ -524,7 +525,7 @@ export default async function AdminDashboard() {
                             <span className="text-gray-500 font-bold text-xs">רווח מצטבר (מאז ומעולם)</span>
                             <div className="text-right">
                                 <span className={`text-sm font-bold ${kpis.cumulativeProfit < 0 ? 'text-red-600' : 'text-green-600'}`}>
-                                    ₪ <span dir="ltr" className="inline-block">{kpis.cumulativeProfit ? kpis.cumulativeProfit.toLocaleString() : '0'}</span>
+                                    <span dir="ltr" className="inline-block">{kpis.cumulativeProfit ? kpis.cumulativeProfit.toLocaleString() : '0'}</span> ₪
                                 </span>
                             </div>
                         </div>
