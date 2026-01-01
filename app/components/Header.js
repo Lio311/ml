@@ -173,7 +173,7 @@ export default function Header({ brands = [], menu = [] }) {
                             <Image src="/logo_v5.png" alt="ml." width={180} height={70} className="h-16 w-auto object-contain" priority />
                         </Link>
                         <nav className="flex items-center gap-6 lg:gap-8 relative whitespace-nowrap">
-                            {menu.map(item => {
+                            {menu.filter(item => item.visible).map(item => {
                                 // Special case: Brands dropdown
                                 if (item.id === 'brands') {
                                     return (
