@@ -468,20 +468,24 @@ export default async function AdminDashboard() {
                         <div className="flex justify-between items-center border-b border-gray-50 pb-2">
                             <span className="text-blue-600 font-bold text-sm">הכנסות</span>
                             <div className="text-right">
-                                <span className="text-xl font-bold text-blue-700 dir-ltr">{kpis.totalRevenue} ₪</span>
+                                <span className="text-xl font-bold text-blue-700">
+                                    ₪ <span dir="ltr" className="inline-block">{kpis.totalRevenue.toLocaleString()}</span>
+                                </span>
                             </div>
                         </div>
                         <div className="flex justify-between items-center border-b border-gray-50 pb-2">
                             <span className="text-red-600 font-bold text-sm">הוצאות</span>
                             <div className="text-right">
-                                <span className="text-xl font-bold text-red-700 dir-ltr">{kpis.totalExpenses} ₪</span>
+                                <span className="text-xl font-bold text-red-700">
+                                    ₪ <span dir="ltr" className="inline-block">{kpis.totalExpenses.toLocaleString()}</span>
+                                </span>
                             </div>
                         </div>
                         <div className="flex justify-between items-center bg-gray-50 p-2 rounded">
                             <span className={`${kpis.monthlyProfit < 0 ? 'text-red-600' : 'text-green-600'} font-bold`}>רווח</span>
                             <div className="text-right">
-                                <span className={`text-2xl font-bold ${kpis.monthlyProfit < 0 ? 'text-red-700' : 'text-green-700'} dir-ltr`}>
-                                    {kpis.monthlyProfit < 0 ? '-' : ''}{Math.abs(kpis.monthlyProfit)} ₪
+                                <span className={`text-2xl font-bold ${kpis.monthlyProfit < 0 ? 'text-red-700' : 'text-green-700'}`}>
+                                    ₪ <span dir="ltr" className="inline-block">{kpis.monthlyProfit.toLocaleString()}</span>
                                 </span>
                             </div>
                         </div>
