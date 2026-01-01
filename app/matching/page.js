@@ -6,6 +6,9 @@ export const metadata = {
     description: 'אשף התאמת בשמים אישי - בנה את המארז המושלם בשבילך',
 };
 
+// Force dynamic rendering to avoid build timeout
+export const dynamic = 'force-dynamic';
+
 export default async function MatchingPage() {
     // Fetch all unique notes for the tag selector
     // We can do this on the server to pass initial data

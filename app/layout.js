@@ -74,9 +74,15 @@ export default async function RootLayout({ children }) {
     const brandsRes = await client.query('SELECT name FROM brands ORDER BY LOWER(name) ASC');
     brands = brandsRes.rows;
 
-    const settingsRes = await client.query("SELECT value FROM settings WHERE key = 'menu'");
-    if (settingsRes.rows.length > 0) {
-      menu = settingsRes.rows[0].value.sort((a, b) => a.order - b.order);
+    // Try to load menu from settings table (may not exist)
+    try {
+      const settingsRes = await client.query("SELECT value FROM settings WHERE key = 'menu'");
+      if (settingsRes.rows.length > 0) {
+        menu = settingsRes.rows[0].value.sort((a, b) => a.order - b.order);
+      }
+    } catch (settingsErr) {
+      // Settings table doesn't exist or query failed - menu stays empty
+      console.warn("Could not load menu from settings:", settingsErr.message);
     }
 
     client.release();
