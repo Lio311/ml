@@ -57,6 +57,7 @@ export async function POST(req) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
         }
         const { menu } = await req.json();
+        console.log('Received menu to save:', JSON.stringify(menu));
         const client = await pool.connect();
         try {
             await ensureTable(client);
@@ -65,6 +66,7 @@ export async function POST(req) {
                 VALUES ('main_menu', $1)
                 ON CONFLICT (key) DO UPDATE SET value = $1, updated_at = CURRENT_TIMESTAMP
             `, [JSON.stringify(menu)]);
+            console.log('Menu saved successfully');
             return NextResponse.json({ success: true });
         } finally {
             client.release();

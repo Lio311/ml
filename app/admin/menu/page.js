@@ -46,15 +46,20 @@ export default function AdminMenuPage() {
     const handleSave = async () => {
         setSaving(true);
         setMessage('');
+        console.log('Saving menu:', menu);
         try {
             const res = await fetch('/api/admin/settings', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ menu })
             });
+            const data = await res.json();
+            console.log('Save response:', data);
             if (res.ok) {
                 setMessage('השינויים נשמרו בהצלחה!');
                 setTimeout(() => setMessage(''), 3000);
+            } else {
+                setMessage(`שגיאה: ${data.error || 'לא ידוע'}`);
             }
         } catch (error) {
             console.error('Save Menu Error:', error);
