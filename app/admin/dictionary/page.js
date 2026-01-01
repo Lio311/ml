@@ -3,9 +3,11 @@
 import { useState, useEffect } from "react";
 import AdminFilterBar from "@/app/components/admin/AdminFilterBar";
 import { useUser } from "@clerk/nextjs";
+import toast from 'react-hot-toast';
 
 
 export default function DictionaryManagement() {
+    // Force rebuild: Fix toast import
     const [mappings, setMappings] = useState([]);
     const [page, setPage] = useState(1);
     const [filterLetter, setFilterLetter] = useState(null);
