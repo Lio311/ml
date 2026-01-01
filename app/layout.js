@@ -84,12 +84,12 @@ export default async function RootLayout({ children }) {
       // Fallback to hardcoded menu if settings table doesn't exist yet
       console.warn("Could not load menu from settings, using fallback:", settingsErr.message);
       menu = [
-        { id: 1, label: 'מותגים', path: '/brands', order: 1, isDropdown: true },
-        { id: 2, label: 'קטגוריות', path: '/categories', order: 2 },
-        { id: 3, label: 'הגרלת בשמים', path: '/lottery', order: 3, isRed: true },
-        { id: 4, label: 'התאמת מארזים', path: '/matching', order: 4 },
-        { id: 5, label: 'אודות', path: '/about', order: 5 },
-        { id: 6, label: 'צור קשר', path: '/contact', order: 6 },
+        { id: 'brands', label: 'מותגים', path: '/brands', order: 1, visible: true },
+        { id: 'categories', label: 'קטגוריות', path: '/categories', order: 2, visible: true },
+        { id: 'lottery', label: 'הגרלת בשמים', path: '/lottery', order: 3, isRed: true, visible: true },
+        { id: 'matching', label: 'התאמת מארזים', path: '/matching', order: 4, visible: true },
+        { id: 'about', label: 'אודות', path: '/about', order: 5, visible: true },
+        { id: 'contact', label: 'צור קשר', path: '/contact', order: 6, visible: true },
       ];
     }
 
