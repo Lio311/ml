@@ -23,8 +23,38 @@ export default function UserRoleSelect({ userId, initialRole, canEdit }) {
         'customer': 'לקוח'
     };
 
-    const handleRoleUpdate = async (newRole) => {
-        if (!confirm(`האם אתה בטוח שברצונך לשנות את הרשאת המשתמש ל-${newRole}?`)) return;
+    const handleRoleUpdate = (newRole) => {
+        toast((t) => (
+            <div className="flex flex-col gap-2">
+                <p className="font-medium text-sm">האם אתה בטוח שברצונך לשנות את הרשאת המשתמש ל-{newRole}?</p>
+                <div className="flex gap-2 justify-end">
+                    <button
+                        onClick={() => {
+                            toast.dismiss(t.id);
+                            updateRole(newRole);
+                        }}
+                        className="bg-black text-white text-xs px-3 py-1.5 rounded hover:bg-gray-800 transition"
+                    >
+                        כן, שנה
+                    </button>
+                    <button
+                        onClick={() => {
+                            toast.dismiss(t.id);
+                            // We need to reset the select if they cancel, but state isn't updated yet so just dismiss
+                            setRole(initialRole); // Visual reset
+                        }}
+                        className="bg-gray-100 text-gray-700 text-xs px-3 py-1.5 rounded hover:bg-gray-200 transition border"
+                    >
+                        ביטול
+                    </button>
+                </div>
+            </div>
+        ), { duration: 5000, position: 'top-center' });
+
+    };
+
+    const updateRole = async (newRole) => {
+
 
         setUpdating(true);
         try {
