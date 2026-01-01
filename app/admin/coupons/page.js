@@ -7,6 +7,7 @@ import toast from 'react-hot-toast';
 
 
 export default function AdminCouponsPage() {
+    // Force rebuild: Fix toast import and API caching issues
     const [coupons, setCoupons] = useState([]);
     const [page, setPage] = useState(1);
     const ITEMS_PER_PAGE = 6;
