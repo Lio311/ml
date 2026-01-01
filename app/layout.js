@@ -74,15 +74,24 @@ export default async function RootLayout({ children }) {
     const brandsRes = await client.query('SELECT name FROM brands ORDER BY LOWER(name) ASC');
     brands = brandsRes.rows;
 
-    // Hardcoded menu (instead of loading from settings table)
-    menu = [
-      { id: 1, label: 'מותגים', path: '/brands', order: 1, isDropdown: true },
-      { id: 2, label: 'קטגוריות', path: '/categories', order: 2 },
-      { id: 3, label: 'הגרלת בשמים', path: '/lottery', order: 3, isRed: true },
-      { id: 4, label: 'התאמת מארזים', path: '/matching', order: 4 },
-      { id: 5, label: 'אודות', path: '/about', order: 5 },
-      { id: 6, label: 'צור קשר', path: '/contact', order: 6 },
-    ];
+    // Load menu from settings table
+    try {
+      const settingsRes = await client.query("SELECT value FROM settings WHERE key = 'menu'");
+      if (settingsRes.rows.length > 0) {
+        menu = settingsRes.rows[0].value.sort((a, b) => a.order - b.order);
+      }
+    } catch (settingsErr) {
+      // Fallback to hardcoded menu if settings table doesn't exist yet
+      console.warn("Could not load menu from settings, using fallback:", settingsErr.message);
+      menu = [
+        { id: 1, label: 'מותגים', path: '/brands', order: 1, isDropdown: true },
+        { id: 2, label: 'קטגוריות', path: '/categories', order: 2 },
+        { id: 3, label: 'הגרלת בשמים', path: '/lottery', order: 3, isRed: true },
+        { id: 4, label: 'התאמת מארזים', path: '/matching', order: 4 },
+        { id: 5, label: 'אודות', path: '/about', order: 5 },
+        { id: 6, label: 'צור קשר', path: '/contact', order: 6 },
+      ];
+    }
 
     client.release();
   } catch (e) {
