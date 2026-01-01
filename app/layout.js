@@ -76,7 +76,7 @@ export default async function RootLayout({ children }) {
 
     // Load menu from settings table
     try {
-      const settingsRes = await client.query("SELECT value FROM settings WHERE key = 'menu'");
+      const settingsRes = await client.query("SELECT value FROM site_settings WHERE key = 'menu'");
       if (settingsRes.rows.length > 0) {
         menu = settingsRes.rows[0].value.sort((a, b) => a.order - b.order);
       }
