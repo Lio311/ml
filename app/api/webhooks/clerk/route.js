@@ -80,7 +80,7 @@ export async function POST(req) {
                 );
             }
 
-            console.log(`Webhook processed: Synced user ${id} (${email})`);
+            // console.log(`Webhook processed: Synced user ${id} (${email})`);
         } catch (dbErr) {
             console.error("Webhook DB Error:", dbErr);
             return new NextResponse('DB Error', { status: 500 });

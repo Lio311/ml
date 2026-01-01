@@ -6,7 +6,7 @@ import Footer from "./Footer";
 import ChatWidget from "./Chatbot/ChatWidget";
 import AccessibilityWidget from "./AccessibilityWidget";
 
-export default function ClientLayout({ children, brands }) {
+export default function ClientLayout({ children, brands, menu }) {
     const pathname = usePathname();
     const isAdmin = pathname?.startsWith('/admin');
 
@@ -25,7 +25,7 @@ export default function ClientLayout({ children, brands }) {
     return (
         <>
             <div id="site-content">
-                <Header brands={brands} />
+                <Header brands={brands} menu={menu} />
                 <main className="min-h-screen">
                     {children}
                 </main>

@@ -32,12 +32,12 @@ export async function POST(req) {
                 // Filter out excluded
                 const wishlistItems = wishlistRes.rows.filter(p => !excluded.includes(p.id));
                 recommendations.push(...wishlistItems);
-                console.log(`[Upsell] Wishlist items found: ${wishlistItems.length}`);
+                // console.log(`[Upsell] Wishlist items found: ${wishlistItems.length}`);
             }
 
             // 2. History (Today) (If logged in and need more items)
             if (userId && recommendations.length < 3) {
-                console.log(`[Upsell] Fetching history... Slots remaining: ${3 - recommendations.length}`);
+                // console.log(`[Upsell] Fetching history... Slots remaining: ${3 - recommendations.length}`);
                 try {
                     const historyRes = await client.query(`
                         SELECT DISTINCT ON (p.id) p.id, p.name, p.brand, p.model, p.image_url, p.price_2ml, p.price_5ml, p.price_10ml, p.stock
@@ -53,7 +53,7 @@ export async function POST(req) {
                         !excluded.includes(p.id) &&
                         !recommendations.some(r => r.id === p.id) // Not already in recommendations
                     );
-                    console.log(`[Upsell] History items found: ${historyItems.length}`);
+                    // console.log(`[Upsell] History items found: ${historyItems.length}`);
                     recommendations.push(...historyItems);
                 } catch (err) {
                     console.warn("History fetch failed (table likely missing), skipping:", err.message);

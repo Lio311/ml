@@ -123,13 +123,24 @@ export async function POST(req) {
             }
         } else {
             // Normal Logic: Randomized Greedy
-            const MAX_ITERATIONS = 2000;
+            // Optimization: Reduce iterations and use efficient shuffle
+            const MAX_ITERATIONS = 500;
+
+            // Fisher-Yates Shuffle
+            const shuffle = (array) => {
+                for (let i = array.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [array[i], array[j]] = [array[j], array[i]];
+                }
+                return array;
+            };
+
             for (let i = 0; i < MAX_ITERATIONS; i++) {
                 let currentBundle = [];
                 let currentSum = 0;
 
-                // Shuffle candidates
-                const shuffled = [...candidates].sort(() => 0.5 - Math.random());
+                // Create a shallow copy to shuffle
+                const shuffled = shuffle([...candidates]);
 
                 for (const item of shuffled) {
                     const price = item.price;
@@ -141,13 +152,13 @@ export async function POST(req) {
                     }
                 }
 
-                // Scoring Logic: Just Maximize Total Value (Min 1, Max 10)
+                // Scoring Logic: Just Maximize Total Value
                 if (currentSum > bestSum) {
                     bestSum = currentSum;
                     bestBundle = currentBundle;
                 }
 
-                // Optimization: Stop if we are close to budget
+                // Optimization: Stop if we are very close to budget (less than 5 NIS left)
                 if (targetAmount - currentSum < 5) break;
             }
 

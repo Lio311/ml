@@ -114,13 +114,63 @@ export function CartProvider({ children }) {
     }, [cartItems]);
 
     // Sync Cart to DB for Abandoned Cart Recovery (Logged-in users only)
+    // Sync Cart to DB for Abandoned Cart Recovery (Logged-in users only)
     const { user } = useUser();
+
+    // 1. On Login: Fetch Server Cart and Merge
     useEffect(() => {
         if (!user?.primaryEmailAddress?.emailAddress) return;
 
-        // Don't sync empty carts? 
-        // Actually empty cart means they cleared it, so we should sync "empty" to stop recovery!
-        // But if they just logged out? No, user is null.
+        const fetchServerCart = async () => {
+            try {
+                const res = await fetch(`/api/cart/sync?email=${encodeURIComponent(user.primaryEmailAddress.emailAddress)}`);
+                const data = await res.json();
+
+                if (data.items && Array.isArray(data.items) && data.items.length > 0) {
+                    setCartItems(prev => {
+                        // Merge Logic:
+                        // 1. Create a map of existing items
+                        const itemMap = new Map();
+
+                        // Add local items
+                        prev.forEach(item => {
+                            const key = `${item.id}-${item.size}`;
+                            itemMap.set(key, { ...item });
+                        });
+
+                        // Merge server items
+                        data.items.forEach(serverItem => {
+                            const key = `${serverItem.id}-${serverItem.size}`;
+                            if (itemMap.has(key)) {
+                                // If exists locally, we can either sum quantity or keep max.
+                                // Summing is safer for "I added X on mobile and Y on desktop".
+                                // But if it's the SAME item added before sync, might double count?
+                                // Better: Keep local if modified recently? Hard to know.
+                                // Let's Sum for now, safest to avoid data loss.
+                                const localParams = itemMap.get(key);
+                                itemMap.set(key, { ...localParams, quantity: Math.max(localParams.quantity, serverItem.quantity) }); // Keep Max to be safe against double additions of same intent
+                            } else {
+                                itemMap.set(key, serverItem);
+                            }
+                        });
+
+                        return Array.from(itemMap.values());
+                    });
+
+                    toast.success("סל הקניות סונכרן!");
+                }
+            } catch (err) {
+                console.error("Failed to fetch server cart:", err);
+            }
+        };
+
+        fetchServerCart();
+    }, [user?.primaryEmailAddress?.emailAddress]);
+
+
+    // 2. On Change: Sync TO Server (Debounced)
+    useEffect(() => {
+        if (!user?.primaryEmailAddress?.emailAddress) return;
 
         const syncCart = setTimeout(() => {
             fetch('/api/cart/sync', {

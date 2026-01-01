@@ -31,3 +31,28 @@ export async function POST(req) {
         return NextResponse.json({ error: 'Sync failed' }, { status: 500 });
     }
 }
+
+export async function GET(req) {
+    try {
+        const { searchParams } = new URL(req.url);
+        const email = searchParams.get('email');
+
+        if (!email) {
+            return NextResponse.json({ error: 'Email required' }, { status: 400 });
+        }
+
+        const client = await pool.connect();
+        try {
+            const res = await client.query('SELECT items FROM abandoned_carts WHERE email = $1', [email]);
+            if (res.rows.length === 0) {
+                return NextResponse.json({ items: [] });
+            }
+            return NextResponse.json({ items: res.rows[0].items || [] });
+        } finally {
+            client.release();
+        }
+    } catch (error) {
+        console.error('Cart Fetch Error:', error);
+        return NextResponse.json({ error: 'Fetch failed' }, { status: 500 });
+    }
+}

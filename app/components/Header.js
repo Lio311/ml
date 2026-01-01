@@ -12,7 +12,7 @@ import LiveVisitorCounter from './LiveVisitorCounter';
 
 import { useWishlist } from '../context/WishlistContext';
 
-export default function Header({ brands = [] }) {
+export default function Header({ brands = [], menu = [] }) {
     const { cartItems } = useCart();
     const { count: wishlistCount } = useWishlist();
     const pathname = usePathname();
@@ -30,20 +30,7 @@ export default function Header({ brands = [] }) {
     }, {});
 
     const sortedLetters = Object.keys(groupedBrands).sort();
-    const [menu, setMenu] = useState([]);
 
-    useEffect(() => {
-        const fetchSettings = async () => {
-            try {
-                const res = await fetch('/api/admin/settings');
-                const data = await res.json();
-                if (data.menu) setMenu(data.menu.sort((a, b) => a.order - b.order));
-            } catch (error) {
-                console.error('Header: Error fetching menu settings', error);
-            }
-        };
-        fetchSettings();
-    }, []);
 
     return (
         <header className="sticky top-0 z-50 bg-white shadow-sm">
@@ -197,39 +184,41 @@ export default function Header({ brands = [] }) {
                                             </Link>
 
                                             {/* The Mega Menu Dropdown */}
-                                            <div className={`absolute top-full w-[900px] bg-white text-black shadow-[0_30px_60px_-15px_rgba(0,0,0,0.3)] border border-gray-100 rounded-b-xl overflow-hidden z-50 transition-all duration-300 origin-top transform -translate-x-1/2 left-1/2 ${isBrandsDropdownOpen ? 'opacity-100 scale-y-100' : 'opacity-0 scale-y-0 pointer-events-none'}`}>
-                                                <div className="flex flex-col max-h-[60vh]">
-                                                    <div className="overflow-y-auto p-6 custom-scrollbar text-right">
-                                                        {brands.length === 0 ? (
-                                                            <p className="text-center text-gray-400">טוען מותגים...</p>
-                                                        ) : (
-                                                            <div className="columns-4 gap-8">
-                                                                {sortedLetters.map(letter => (
-                                                                    <div key={letter} className="break-inside-avoid mb-6">
-                                                                        <h4 className="font-bold text-black border-b border-gray-200 mb-2 pb-1 text-lg sticky top-0 bg-white/95 backdrop-blur-sm">{letter}</h4>
-                                                                        <div className="flex flex-col gap-1">
-                                                                            {groupedBrands[letter].map(brand => (
-                                                                                <Link
-                                                                                    key={brand.name}
-                                                                                    href={`/brands/${encodeURIComponent(brand.name)}`}
-                                                                                    className="text-xs text-gray-600 hover:text-black hover:font-bold transition-colors"
-                                                                                >
-                                                                                    {brand.name}
-                                                                                </Link>
-                                                                            ))}
+                                            {isBrandsDropdownOpen && (
+                                                <div className="absolute top-full w-[900px] bg-white text-black shadow-[0_30px_60px_-15px_rgba(0,0,0,0.3)] border border-gray-100 rounded-b-xl overflow-hidden z-50 transition-all duration-300 origin-top transform -translate-x-1/2 left-1/2 animate-in fade-in zoom-in-95 duration-200">
+                                                    <div className="flex flex-col max-h-[60vh]">
+                                                        <div className="overflow-y-auto p-6 custom-scrollbar text-right">
+                                                            {brands.length === 0 ? (
+                                                                <p className="text-center text-gray-400">טוען מותגים...</p>
+                                                            ) : (
+                                                                <div className="columns-4 gap-8">
+                                                                    {sortedLetters.map(letter => (
+                                                                        <div key={letter} className="break-inside-avoid mb-6">
+                                                                            <h4 className="font-bold text-black border-b border-gray-200 mb-2 pb-1 text-lg sticky top-0 bg-white/95 backdrop-blur-sm">{letter}</h4>
+                                                                            <div className="flex flex-col gap-1">
+                                                                                {groupedBrands[letter].map(brand => (
+                                                                                    <Link
+                                                                                        key={brand.name}
+                                                                                        href={`/brands/${encodeURIComponent(brand.name)}`}
+                                                                                        className="text-xs text-gray-600 hover:text-black hover:font-bold transition-colors"
+                                                                                    >
+                                                                                        {brand.name}
+                                                                                    </Link>
+                                                                                ))}
+                                                                            </div>
                                                                         </div>
-                                                                    </div>
-                                                                ))}
-                                                            </div>
-                                                        )}
-                                                    </div>
-                                                    <div className="p-4 bg-gray-50 border-t text-center">
-                                                        <Link href="/brands" className="text-sm font-bold underline hover:text-red-600">
-                                                            לכל המותגים &larr;
-                                                        </Link>
+                                                                    ))}
+                                                                </div>
+                                                            )}
+                                                        </div>
+                                                        <div className="p-4 bg-gray-50 border-t text-center">
+                                                            <Link href="/brands" className="text-sm font-bold underline hover:text-red-600">
+                                                                לכל המותגים &larr;
+                                                            </Link>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
+                                            )}
                                         </div>
                                     );
                                 }

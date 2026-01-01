@@ -14,8 +14,13 @@ export default function ProductCard({ product }) {
     const { addToCart, cartItems } = useCart();
     const [added, setAdded] = useState(false);
 
-    // Default to lowest price/size for display if needed, 
-    // currently the design showed 3 lines.
+    useEffect(() => {
+        let timer;
+        if (added) {
+            timer = setTimeout(() => setAdded(false), 2000);
+        }
+        return () => clearTimeout(timer);
+    }, [added]);
 
     const handleAdd = (size, price) => {
         const stock = product.stock || 0;
@@ -36,7 +41,6 @@ export default function ProductCard({ product }) {
         addToCart(product, size, price);
         toast.success(`נוסף לסל: ${product.name} (${size} מ"ל)`);
         setAdded(true);
-        setTimeout(() => setAdded(false), 2000);
     };
 
     const router = useRouter();
@@ -96,41 +100,47 @@ export default function ProductCard({ product }) {
                 </Link>
 
                 <div className="mt-auto space-y-2">
-                    <div className="flex items-center justify-between text-xs text-gray-600">
-                        <span>2 מ״ל</span>
-                        <div className="flex items-center gap-2">
-                            <span className="font-bold">{product.price_2ml} ₪</span>
-                            <button
-                                onClick={() => handleAdd(2, product.price_2ml)}
-                                className="bg-gray-100 hover:bg-black hover:text-white w-6 h-6 rounded flex items-center justify-center transition"
-                                title="הוסף לסל"
-                            >+</button>
+                    {Number(product.price_2ml) > 0 && (
+                        <div className="flex items-center justify-between text-xs text-gray-600">
+                            <span>2 מ״ל</span>
+                            <div className="flex items-center gap-2">
+                                <span className="font-bold">{product.price_2ml} ₪</span>
+                                <button
+                                    onClick={() => handleAdd(2, product.price_2ml)}
+                                    className="bg-gray-100 hover:bg-black hover:text-white w-6 h-6 rounded flex items-center justify-center transition"
+                                    title="הוסף לסל"
+                                >+</button>
+                            </div>
                         </div>
-                    </div>
+                    )}
 
-                    <div className="flex items-center justify-between text-xs text-gray-600">
-                        <span>5 מ״ל</span>
-                        <div className="flex items-center gap-2">
-                            <span className="font-bold">{product.price_5ml} ₪</span>
-                            <button
-                                onClick={() => handleAdd(5, product.price_5ml)}
-                                className="bg-gray-100 hover:bg-black hover:text-white w-6 h-6 rounded flex items-center justify-center transition"
-                                title="הוסף לסל"
-                            >+</button>
+                    {Number(product.price_5ml) > 0 && (
+                        <div className="flex items-center justify-between text-xs text-gray-600">
+                            <span>5 מ״ל</span>
+                            <div className="flex items-center gap-2">
+                                <span className="font-bold">{product.price_5ml} ₪</span>
+                                <button
+                                    onClick={() => handleAdd(5, product.price_5ml)}
+                                    className="bg-gray-100 hover:bg-black hover:text-white w-6 h-6 rounded flex items-center justify-center transition"
+                                    title="הוסף לסל"
+                                >+</button>
+                            </div>
                         </div>
-                    </div>
+                    )}
 
-                    <div className="flex items-center justify-between text-xs text-gray-600">
-                        <span>10 מ״ל</span>
-                        <div className="flex items-center gap-2">
-                            <span className="font-bold">{product.price_10ml} ₪</span>
-                            <button
-                                onClick={() => handleAdd(10, product.price_10ml)}
-                                className="bg-gray-100 hover:bg-black hover:text-white w-6 h-6 rounded flex items-center justify-center transition"
-                                title="הוסף לסל"
-                            >+</button>
+                    {Number(product.price_10ml) > 0 && (
+                        <div className="flex items-center justify-between text-xs text-gray-600">
+                            <span>10 מ״ל</span>
+                            <div className="flex items-center gap-2">
+                                <span className="font-bold">{product.price_10ml} ₪</span>
+                                <button
+                                    onClick={() => handleAdd(10, product.price_10ml)}
+                                    className="bg-gray-100 hover:bg-black hover:text-white w-6 h-6 rounded flex items-center justify-center transition"
+                                    title="הוסף לסל"
+                                >+</button>
+                            </div>
                         </div>
-                    </div>
+                    )}
 
                     <Link href={`/product/${product.slug || product.id}`} className={`block w-full text-center text-xs py-2 mt-3 rounded transition ${added ? 'bg-green-600 text-white' : 'bg-black text-white hover:bg-gray-800'}`}>
                         {added ? 'נוסף לסל!' : 'פרטים נוספים'}

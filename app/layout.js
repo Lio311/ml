@@ -65,12 +65,19 @@ import pool from "./lib/db";
 import { Toaster } from 'react-hot-toast';
 
 export default async function RootLayout({ children }) {
-  // Fetch Brands for Navigation (Server Side)
+  // Fetch Brands and Menu for Navigation (Server Side)
   let brands = [];
+  let menu = [];
   try {
     const client = await pool.connect();
-    const res = await client.query('SELECT name FROM brands ORDER BY LOWER(name) ASC');
-    brands = res.rows;
+    const brandsRes = await client.query('SELECT name FROM brands ORDER BY LOWER(name) ASC');
+    brands = brandsRes.rows;
+
+    const settingsRes = await client.query("SELECT value FROM settings WHERE key = 'menu'");
+    if (settingsRes.rows.length > 0) {
+      menu = settingsRes.rows[0].value.sort((a, b) => a.order - b.order);
+    }
+
     client.release();
   } catch (e) {
     console.error("Layout fetch error:", e);
@@ -108,12 +115,9 @@ export default async function RootLayout({ children }) {
               <AnalyticsTracker />
               <Toaster position="top-center" toastOptions={{ duration: 3000 }} />
 
-              <ClientLayout brands={brands}>
+              <ClientLayout brands={brands} menu={menu}>
                 {children}
               </ClientLayout>
-
-              <GoogleAnalytics />
-              <MicrosoftClarity />
 
               <GoogleAnalytics />
               <MicrosoftClarity />
