@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import TagInput from "../../components/TagInput";
+import toast from 'react-hot-toast';
 
 export default function AdminProductsClient({ products, initialSearch, totalProducts, filteredCount, currentPage, totalPages, currentLetter, currentView, currentSort, canEdit }) {
 
@@ -78,10 +79,10 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                 setIsCreating(false);
                 router.refresh();
             } else {
-                alert('שגיאה בשמירה');
+                toast.error('שגיאה בשמירה');
             }
         } catch (e) {
-            alert('שגיאה בתקשורת');
+            toast.error('שגיאה בתקשורת');
         }
     };
 
@@ -101,10 +102,10 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
             if (res.ok) {
                 router.refresh();
             } else {
-                alert('שגיאה במחיקה');
+                toast.error('שגיאה במחיקה');
             }
         } catch (e) {
-            alert('שגיאה בתקשורת');
+            toast.error('שגיאה בתקשורת');
         }
     };
 

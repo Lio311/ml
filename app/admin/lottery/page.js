@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
+import toast from 'react-hot-toast';
 
 
 export default function LotteryAdminPage() {
@@ -65,7 +66,7 @@ export default function LotteryAdminPage() {
                 throw new Error("Failed to update");
             }
         } catch (error) {
-            alert("שגיאה בעדכון סטטוס");
+            toast.error("שגיאה בעדכון סטטוס");
             // Revert
             setProducts(prev => prev.map(p => p.id === productId ? { ...p, in_lottery: currentStatus } : p));
         }

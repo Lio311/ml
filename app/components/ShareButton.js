@@ -1,5 +1,7 @@
 "use client";
 
+import toast from 'react-hot-toast';
+
 export default function ShareButton({ name }) {
     const handleShare = (e) => {
         e.preventDefault();
@@ -15,7 +17,7 @@ export default function ShareButton({ name }) {
             }).catch(console.error);
         } else {
             navigator.clipboard.writeText(url).then(() => {
-                alert("הקישור הועתק, מוזמנים לשתף!");
+                toast.success("הקישור הועתק, מוזמנים לשתף!");
             });
         }
     };

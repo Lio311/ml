@@ -2,10 +2,8 @@
 
 import { useState } from 'react';
 import { useCart } from '../context/CartContext';
-import TagInput from '../components/TagInput'; // We might need to adjust TagInput to be a selector, or use a custom one. 
-// Actually TagInput is designed for creating new tags. For selection from list, we might want a slightly different UI 
-// but TagInput with suggestions works too. Let's build a simple multi-select for now or reuse TagInput if it supports "suggestions only".
-// For now, I'll build a custom simple selector for notes.
+import TagInput from '../components/TagInput'; // ...
+import toast from 'react-hot-toast';
 
 export default function SmartMatchingClient({ initialNotes }) {
     const { addMultipleToCart } = useCart();
@@ -83,7 +81,7 @@ export default function SmartMatchingClient({ initialNotes }) {
             console.error(e);
             setLoading(false);
             setStep(1); // Go back on error
-            alert("שגיאה בחישוב המארז. אנא נסה שוב.");
+            toast.error("שגיאה בחישוב המארז. אנא נסה שוב.");
         }
     };
 
@@ -98,7 +96,7 @@ export default function SmartMatchingClient({ initialNotes }) {
 
         addMultipleToCart(itemsToAdd);
 
-        alert(`נוספו ${itemsToAdd.length} מוצרים לסל בהצלחה!`);
+        toast.success(`נוספו ${itemsToAdd.length} מוצרים לסל בהצלחה!`);
     };
 
     const resetWizard = () => {

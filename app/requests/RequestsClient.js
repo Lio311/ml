@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useUser } from '@clerk/nextjs';
+import toast from 'react-hot-toast';
 
 export default function RequestsClient() {
     const { user, isLoaded } = useUser();
@@ -48,7 +49,7 @@ export default function RequestsClient() {
             });
 
             if (res.status === 409) {
-                alert('לא ניתן לבקש את אותו מוצר פעמיים');
+                toast.error('לא ניתן לבקש את אותו מוצר פעמיים');
                 setLoading(false);
                 return;
             }
@@ -65,7 +66,7 @@ export default function RequestsClient() {
 
             setSubmitted(true);
         } catch (err) {
-            alert('שגיאה בשליחה, נסה שוב');
+            toast.error('שגיאה בשליחה, נסה שוב');
         } finally {
             setLoading(false);
         }

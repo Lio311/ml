@@ -2,6 +2,7 @@
 
 import { createContext, useContext, useState, useEffect } from "react";
 import { useUser } from "@clerk/nextjs";
+import toast from 'react-hot-toast';
 
 const WishlistContext = createContext();
 
@@ -44,7 +45,7 @@ export function WishlistProvider({ children }) {
 
     const toggleWishlist = async (productId) => {
         if (!isSignedIn) {
-            alert('עליך להתחבר כדי להוסיף למועדפים');
+            toast.error('עליך להתחבר כדי להוסיף למועדפים');
             return false;
         }
 
@@ -76,7 +77,7 @@ export function WishlistProvider({ children }) {
             } else {
                 removeFromWishlist(productId);
             }
-            alert('שגיאה בעדכון מועדפים');
+            toast.error('שגיאה בעדכון מועדפים');
             return isCurrentlyIn;
         }
     };

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { useUser } from '@clerk/nextjs';
+import toast from 'react-hot-toast';
 
 export default function StarRating({ productId, readOnly = false }) {
     const { isSignedIn } = useUser();
@@ -33,7 +34,7 @@ export default function StarRating({ productId, readOnly = false }) {
     const handleRating = async (newRating) => {
         if (readOnly) return;
         if (!isSignedIn) {
-            alert('עליך להתחבר כדי לדרג');
+            toast.error('עליך להתחבר כדי לדרג');
             return;
         }
 
@@ -53,7 +54,7 @@ export default function StarRating({ productId, readOnly = false }) {
                     setCount(stats.count);
                 });
         } catch (e) {
-            alert('שגיאה בשמירת הדירוג');
+            toast.error('שגיאה בשמירת הדירוג');
         }
     };
 

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import toast from 'react-hot-toast';
 
 export default function UserRoleSelect({ userId, initialRole, canEdit }) {
     const [role, setRole] = useState(initialRole);
@@ -35,14 +36,14 @@ export default function UserRoleSelect({ userId, initialRole, canEdit }) {
 
             if (res.ok) {
                 setRole(newRole);
-                alert("ההרשאה עודכנה בהצלחה");
+                toast.success("ההרשאה עודכנה בהצלחה");
                 router.refresh(); // Refresh server components to reflect changes if necessary
             } else {
-                alert("שגיאה בעדכון ההרשאה");
+                toast.error("שגיאה בעדכון ההרשאה");
             }
         } catch (e) {
             console.error(e);
-            alert("שגיאה בעדכון ההרשאה");
+            toast.error("שגיאה בעדכון ההרשאה");
         } finally {
             setUpdating(false);
         }

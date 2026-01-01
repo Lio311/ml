@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect } from 'react';
 import { Package, Plus, History, AlertTriangle, CheckCircle, Trash2, Edit2, X } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 export default function AdminInventoryPage() {
     const [inventory, setInventory] = useState([]);
@@ -60,10 +61,10 @@ export default function AdminInventoryPage() {
             });
 
             if (res.ok) {
-                alert('הרשומה נמחקה והמלאי עודכן!');
+                toast.success('הרשומה נמחקה והמלאי עודכן!');
                 fetchData();
             } else {
-                alert('שגיאה במחיקה');
+                toast.error('שגיאה במחיקה');
             }
         } catch (error) {
             console.error('Delete error', error);
@@ -89,15 +90,15 @@ export default function AdminInventoryPage() {
             });
 
             if (res.ok) {
-                alert(editingId ? 'הרשומה עודכנה בהצלחה!' : 'המלאי עודכן בהצלחה!');
+                toast.success(editingId ? 'הרשומה עודכנה בהצלחה!' : 'המלאי עודכן בהצלחה!');
                 handleCancelEdit(); // Reset form
                 fetchData(); // Refresh
             } else {
-                alert('שגיאה בעדכון');
+                toast.error('שגיאה בעדכון');
             }
         } catch (error) {
             console.error(error);
-            alert('שגיאה בתקשורת');
+            toast.error('שגיאה בתקשורת');
         } finally {
             setSubmitting(false);
         }

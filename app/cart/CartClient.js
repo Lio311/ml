@@ -7,6 +7,7 @@ import { useState, useEffect, useRef } from "react";
 import confetti from 'canvas-confetti';
 import { useRouter, useSearchParams } from 'next/navigation';
 import LuckyWheel from "../components/LuckyWheel";
+import toast from 'react-hot-toast';
 
 export default function CartClient() {
     const { cartItems, removeFromCart, updateQuantity, addToCart, clearCart, addMultipleToCart, subtotal, total, shippingCost, freeSamplesCount, nextTier, luckyPrize, setLuckyPrize, discountAmount, lotteryMode, lotteryTimeLeft, coupon, setCoupon } = useCart();
@@ -76,15 +77,15 @@ export default function CartClient() {
                     }).catch(console.error);
                 } else {
                     navigator.clipboard.writeText(url).then(() => {
-                        alert("הקישור הועתק, מוזמנים לשתף!");
+                        toast.success("הקישור הועתק, מוזמנים לשתף!");
                     });
                 }
             } else {
-                alert("שגיאה ביצירת קישור לשיתוף");
+                toast.error("שגיאה ביצירת קישור לשיתוף");
             }
         } catch (e) {
             console.error(e);
-            alert("שגיאה ביצירת קישור לשיתוף");
+            toast.error("שגיאה ביצירת קישור לשיתוף");
         }
     };
 
@@ -357,12 +358,12 @@ export default function CartClient() {
                 router.push('/checkout/success');
             } else {
                 const data = await res.json();
-                alert(`אירעה שגיאה לצערי: ${data.error}`);
+                toast.error(`אירעה שגיאה לצערי: ${data.error}`);
                 setIsSubmitting(false);
             }
         } catch (e) {
             console.error(e);
-            alert('אירעה שגיאה. בדוק חיבור לרשת.');
+            toast.error('אירעה שגיאה. בדוק חיבור לרשת.');
             setIsSubmitting(false);
         }
     };

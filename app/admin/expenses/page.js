@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from 'next/link';
 import { useUser } from "@clerk/nextjs";
+import toast from 'react-hot-toast';
 
 export default function AdminExpensesPage() {
     const [expenses, setExpenses] = useState([]);
@@ -49,10 +50,10 @@ export default function AdminExpensesPage() {
                 fetchExpenses();
                 resetForm();
             } else {
-                alert("Failed to save expense");
+                toast.error("Failed to save expense");
             }
         } catch (error) {
-            alert("Error saving expense");
+            toast.error("Error saving expense");
         } finally {
             setIsSubmitting(false);
         }

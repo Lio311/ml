@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useUser } from "@clerk/nextjs";
 import ObjectTagInput from '@/app/components/ObjectTagInput';
+import toast from 'react-hot-toast';
 
 
 export default function AdminCouponsPage() {
@@ -86,7 +87,7 @@ export default function AdminCouponsPage() {
                 setCoupons(prev => prev.filter(c => c.id !== id));
             }
         } catch (err) {
-            alert('שגיאה במחיקה');
+            toast.error('שגיאה במחיקה');
         }
     };
 
@@ -149,10 +150,10 @@ export default function AdminCouponsPage() {
                 resetForm();
                 fetchCoupons();
             } else {
-                alert(data.error || 'שגיאה');
+                toast.error(data.error || 'שגיאה');
             }
         } catch (err) {
-            alert('שגיאה');
+            toast.error('שגיאה');
         } finally {
             setIsSubmitting(false);
         }

@@ -36,7 +36,7 @@ export default function LotteryClient() {
                 setDistractorImages(data.distractorImages || []);
                 setGameState('playing');
             } else {
-                alert('לא הצלחנו למצוא קומבינציה מתאימה לתקציב, נסה לשנות תקציב');
+                toast.error('לא הצלחנו למצוא קומבינציה מתאימה לתקציב, נסה לשנות תקציב');
                 setGameState('intro');
             }
         } catch (e) {

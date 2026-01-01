@@ -122,7 +122,7 @@ export default function OrdersClient() {
                                                         // We'll trust backend validation at checkout.
                                                         stock: item.stock || 20
                                                     }, item.size, item.price);
-                                                    alert('המוצר נוסף לסל בהצלחה!');
+                                                    toast.success('המוצר נוסף לסל בהצלחה!');
                                                 }}
                                                 className="text-xs bg-black text-white px-3 py-1.5 rounded hover:bg-gray-800 transition shadow-sm flex items-center gap-1"
                                             >
