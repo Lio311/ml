@@ -70,10 +70,10 @@ export default async function sitemap() {
         }));
 
         // Blog Posts
-        const blogRes = await client.query('SELECT slug, updated_at FROM blog_posts');
+        const blogRes = await client.query('SELECT slug, created_at FROM blog_posts');
         const blogs = blogRes.rows.map((post) => ({
             url: `${baseUrl}/blog/${post.slug}`,
-            lastModified: post.updated_at || new Date(),
+            lastModified: post.created_at || new Date(),
             changeFrequency: 'weekly',
             priority: 0.8,
         }));
