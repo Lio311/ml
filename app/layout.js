@@ -79,6 +79,9 @@ export default async function RootLayout({ children }) {
       const settingsRes = await client.query("SELECT value FROM site_settings WHERE key = 'menu'");
       if (settingsRes.rows.length > 0) {
         menu = settingsRes.rows[0].value.sort((a, b) => a.order - b.order);
+        console.log('Menu loaded from DB:', JSON.stringify(menu));
+      } else {
+        console.warn('No menu found in site_settings');
       }
     } catch (settingsErr) {
       // Fallback to hardcoded menu if settings table doesn't exist yet
