@@ -77,11 +77,19 @@ export default async function RootLayout({ children }) {
     // Load menu from settings table
     try {
       const settingsRes = await client.query("SELECT value FROM site_settings WHERE key = 'menu'");
-      if (settingsRes.rows.length > 0) {
+      if (settingsRes.rows.length > 0 && settingsRes.rows[0].value && settingsRes.rows[0].value.length > 0) {
         menu = settingsRes.rows[0].value.sort((a, b) => a.order - b.order);
         console.log('Menu loaded from DB:', JSON.stringify(menu));
       } else {
-        console.warn('No menu found in site_settings');
+        console.warn('No menu found in site_settings, using fallback');
+        menu = [
+          { id: 'brands', label: 'מותגים', path: '/brands', order: 1, visible: true },
+          { id: 'categories', label: 'קטגוריות', path: '/categories', order: 2, visible: true },
+          { id: 'lottery', label: 'הגרלת בשמים', path: '/lottery', order: 3, isRed: true, visible: true },
+          { id: 'matching', label: 'התאמת מארזים', path: '/matching', order: 4, visible: true },
+          { id: 'about', label: 'אודות', path: '/about', order: 5, visible: true },
+          { id: 'contact', label: 'צור קשר', path: '/contact', order: 6, visible: true },
+        ];
       }
     } catch (settingsErr) {
       // Fallback to hardcoded menu if settings table doesn't exist yet
