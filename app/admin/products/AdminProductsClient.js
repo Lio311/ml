@@ -91,20 +91,42 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
         setIsCreating(false);
     };
 
-    const handleDelete = async (id) => {
-        if (!confirm('האם אתה בטוח שברצונך למחוק מוצר זה?')) return;
+    const handleDelete = (id) => {
+        toast((t) => (
+            <div className="flex flex-col gap-2">
+                <p className="font-medium text-sm">האם אתה בטוח שברצונך למחוק מוצר זה?</p>
+                <div className="flex gap-2 justify-end">
+                    <button
+                        onClick={() => {
+                            toast.dismiss(t.id);
+                            deleteProduct(id);
+                        }}
+                        className="bg-red-600 text-white text-xs px-3 py-1.5 rounded hover:bg-red-700 transition"
+                    >
+                        כן, מחק
+                    </button>
+                    <button
+                        onClick={() => toast.dismiss(t.id)}
+                        className="bg-gray-100 text-gray-700 text-xs px-3 py-1.5 rounded hover:bg-gray-200 transition border"
+                    >
+                        ביטול
+                    </button>
+                </div>
+            </div>
+        ), { duration: 5000, position: 'top-center' });
+    };
 
+    const deleteProduct = async (id) => {
         try {
-            const res = await fetch(`/api/products?id=${id}`, {
-                method: 'DELETE'
-            });
-
+            const res = await fetch(`/api/admin/products?id=${id}`, { method: 'DELETE' });
             if (res.ok) {
+                toast.success('המוצר נמחק בהצלחה');
                 router.refresh();
             } else {
-                toast.error('שגיאה במחיקה');
+                toast.error('שגיאה במחיקת המוצר');
             }
         } catch (e) {
+            console.error(e);
             toast.error('שגיאה בתקשורת');
         }
     };
@@ -167,13 +189,13 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                     onClick={() => router.push('/admin/products?view=out_of_stock')}
                     className={`pb-2 px-4 font-bold transition ${currentView === 'out_of_stock' ? 'border-b-2 border-red-600 text-red-600' : 'text-gray-500 hover:text-red-600'}`}
                 >
-                    חסרים במלאי ⚠️
+                    חסרים במלאי
                 </button>
                 <button
                     onClick={() => router.push('/admin/products?view=stock_list')}
                     className={`pb-2 px-4 font-bold transition ${currentView === 'stock_list' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-500 hover:text-blue-600'}`}
                 >
-                    דו״ח מלאי 📊
+                    דו״ח מלאי
                 </button>
             </div>
 
@@ -566,7 +588,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                 {product.image_url ? (
                                     <img src={product.image_url} alt={product.model} className="w-10 h-10 object-contain rounded" />
                                 ) : (
-                                    <div className="hidden md:flex w-10 h-10 bg-gray-100 rounded items-center justify-center text-lg">🧴</div>
+                                    <div className="hidden md:flex w-10 h-10 bg-gray-100 rounded items-center justify-center text-lg"></div>
                                 )}
                                 <div className="flex-1 flex flex-col">
                                     <div className="flex items-center gap-3">

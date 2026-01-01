@@ -72,7 +72,7 @@ export default function AdminInventoryPage() {
                     </button>
                 </div>
             </div>
-        ), { duration: 5000, position: 'top-center', icon: '🗑️' });
+        ), { duration: 5000, position: 'top-center' });
     };
 
     const executeDelete = async (id) => {

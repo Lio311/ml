@@ -59,19 +59,42 @@ export default function AdminExpensesPage() {
         }
     };
 
-    const handleDelete = async (id) => {
-        if (!confirm("Are you sure?")) return;
+    const handleDelete = (id) => {
+        toast((t) => (
+            <div className="flex flex-col gap-2">
+                <p className="font-medium text-sm">האם אתה בטוח שברצונך למחוק הוצאה זו?</p>
+                <div className="flex gap-2 justify-end">
+                    <button
+                        onClick={() => {
+                            toast.dismiss(t.id);
+                            deleteExpense(id);
+                        }}
+                        className="bg-red-600 text-white text-xs px-3 py-1.5 rounded hover:bg-red-700 transition"
+                    >
+                        כן, מחק
+                    </button>
+                    <button
+                        onClick={() => toast.dismiss(t.id)}
+                        className="bg-gray-100 text-gray-700 text-xs px-3 py-1.5 rounded hover:bg-gray-200 transition border"
+                    >
+                        ביטול
+                    </button>
+                </div>
+            </div>
+        ), { duration: 5000, position: 'top-center' });
+    };
+
+    const deleteExpense = async (id) => {
         try {
-            const res = await fetch('/api/admin/expenses', {
-                method: 'DELETE',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ id })
-            });
+            const res = await fetch(`/api/admin/expenses?id=${id}`, { method: 'DELETE' });
             if (res.ok) {
-                setExpenses(prev => prev.filter(e => e.id !== id));
+                toast.success('ההוצאה נמחקה');
+                fetchExpenses();
+            } else {
+                toast.error('שגיאה במחיקה');
             }
-        } catch (error) {
-            console.error(error);
+        } catch (e) {
+            toast.error('שגיאה בתקשורת');
         }
     };
 

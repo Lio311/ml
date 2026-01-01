@@ -78,21 +78,42 @@ export default function DictionaryManagement() {
         setStatus("");
     };
 
-    const handleDelete = async (id) => {
-        if (!confirm("האם אתה בטוח שברצונך למחוק מונח זה?")) return;
+    const handleDelete = (id) => {
+        toast((t) => (
+            <div className="flex flex-col gap-2">
+                <p className="font-medium text-sm">האם אתה בטוח שברצונך למחוק מונח זה?</p>
+                <div className="flex gap-2 justify-end">
+                    <button
+                        onClick={() => {
+                            toast.dismiss(t.id);
+                            deleteTerm(id);
+                        }}
+                        className="bg-red-600 text-white text-xs px-3 py-1.5 rounded hover:bg-red-700 transition"
+                    >
+                        כן, מחק
+                    </button>
+                    <button
+                        onClick={() => toast.dismiss(t.id)}
+                        className="bg-gray-100 text-gray-700 text-xs px-3 py-1.5 rounded hover:bg-gray-200 transition border"
+                    >
+                        ביטול
+                    </button>
+                </div>
+            </div>
+        ), { duration: 5000, position: 'top-center' });
+    };
 
+    const deleteTerm = async (id) => {
         try {
-            const res = await fetch("/api/admin/dictionary", {
-                method: "DELETE",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ id }),
-            });
-
+            const res = await fetch(`/api/admin/dictionary?id=${id}`, { method: 'DELETE' });
             if (res.ok) {
+                toast.success('נמחק בהצלחה');
                 fetchMappings();
+            } else {
+                toast.error('שגיאה במחיקה');
             }
         } catch (error) {
-            console.error("Failed to delete", error);
+            toast.error('שגיאה בתקשורת');
         }
     };
 

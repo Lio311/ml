@@ -79,15 +79,47 @@ export default function AdminCouponsPage() {
         }
     };
 
-    const handleDelete = async (id) => {
-        if (!confirm('האם אתה בטוח שברצונך למחוק קופון זה?')) return;
+    const handleDelete = (id) => {
+        toast((t) => (
+            <div className="flex flex-col gap-2">
+                <p className="font-medium text-sm">האם אתה בטוח שברצונך למחוק קופון זה?</p>
+                <div className="flex gap-2 justify-end">
+                    <button
+                        onClick={() => {
+                            toast.dismiss(t.id);
+                            deleteCoupon(id);
+                        }}
+                        className="bg-red-600 text-white text-xs px-3 py-1.5 rounded hover:bg-red-700 transition"
+                    >
+                        כן, מחק
+                    </button>
+                    <button
+                        onClick={() => toast.dismiss(t.id)}
+                        className="bg-gray-100 text-gray-700 text-xs px-3 py-1.5 rounded hover:bg-gray-200 transition border"
+                    >
+                        ביטול
+                    </button>
+                </div>
+            </div>
+        ), { duration: 5000, position: 'top-center' });
+    };
+
+    const deleteCoupon = async (id) => {
+        if (loading) return;
+        setLoading(true);
         try {
-            const res = await fetch(`/api/admin/coupons/${id}`, { method: 'DELETE' });
+            const res = await fetch(`/api/admin/coupons?id=${id}`, { method: 'DELETE' });
             if (res.ok) {
-                setCoupons(prev => prev.filter(c => c.id !== id));
+                toast.success('הקופון נמחק בהצלחה');
+                fetchCoupons();
+            } else {
+                toast.error('שגיאה במחיקת הקופון');
             }
-        } catch (err) {
-            toast.error('שגיאה במחיקה');
+        } catch (error) {
+            console.error(error);
+            toast.error('שגיאה בתקשורת');
+        } finally {
+            setLoading(false);
         }
     };
 
