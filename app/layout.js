@@ -19,12 +19,19 @@ const dancingScript = Dancing_Script({
   variable: "--font-dancing-script",
 });
 
+export const viewport = {
+  themeColor: '#000000',
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+  userScalable: true,
+};
+
 export const metadata = {
   title: "יוקרה בחתיכות קטנות",
   description: "חנות דוגמיות בשמים בקונספט קצת שונה. מגוון בשמי בוטיק, נישה ודיזיינר במחירים הוגנים",
   metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || 'https://ml-tlv.com'),
   manifest: '/manifest.json',
-  themeColor: '#000000',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',
@@ -33,12 +40,6 @@ export const metadata = {
   icons: {
     icon: '/ml_v4.png',
     apple: '/apple-touch-icon.png',
-  },
-  viewport: {
-    width: 'device-width',
-    initialScale: 1,
-    maximumScale: 5,
-    userScalable: true,
   },
   openGraph: {
     title: "ml_tlv | דוגמיות בשמים",
