@@ -53,9 +53,7 @@ export default function AdminBrandsPage() {
         } catch (error) {
             toast.error("Error saving");
         }
-    } catch (error) {
-        toast.error("Error saving");
-    }
+    };
 };
 
 const [selectedLetter, setSelectedLetter] = useState(null);
