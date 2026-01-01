@@ -5,6 +5,8 @@ import { SignOutButton } from "@clerk/nextjs";
 import AdminSidebar from "../components/admin/AdminSidebar";
 import NotificationBell from "../components/admin/NotificationBell";
 
+export const dynamic = 'force-dynamic';
+
 export default async function AdminLayout({ children }) {
     let user = null;
     let role = null;

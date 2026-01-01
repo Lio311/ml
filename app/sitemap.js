@@ -31,10 +31,10 @@ export default async function sitemap() {
         const client = await pool.connect();
 
         // Products
-        const productsRes = await client.query('SELECT id, slug, updated_at FROM products WHERE active = true');
+        const productsRes = await client.query('SELECT id, slug, created_at FROM products WHERE active = true');
         products = productsRes.rows.map((product) => ({
             url: `${baseUrl}/product/${product.slug || product.id}`,
-            lastModified: product.updated_at || new Date(),
+            lastModified: product.created_at || new Date(),
             changeFrequency: 'weekly',
             priority: 0.9,
         }));
