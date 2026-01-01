@@ -8,7 +8,8 @@ import AccessibilityWidget from "./AccessibilityWidget";
 
 export default function ClientLayout({ children, brands, menu }) {
     const pathname = usePathname();
-    const isAdmin = pathname?.startsWith('/admin');
+    // Only hide header if we're DEFINITELY in admin (defensive check)
+    const isAdmin = pathname && typeof pathname === 'string' && pathname.startsWith('/admin');
 
     if (isAdmin) {
         return (
