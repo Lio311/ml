@@ -79,9 +79,9 @@ export default async function RootLayout({ children }) {
       const settingsRes = await client.query("SELECT value FROM site_settings WHERE key = 'main_menu'");
       if (settingsRes.rows.length > 0 && settingsRes.rows[0].value && settingsRes.rows[0].value.length > 0) {
         menu = settingsRes.rows[0].value.sort((a, b) => a.order - b.order);
-        console.log('Menu loaded from DB:', JSON.stringify(menu));
+
       } else {
-        console.warn('No menu found in site_settings, using fallback');
+
         menu = [
           { id: 'brands', label: 'מותגים', path: '/brands', order: 1, visible: true },
           { id: 'categories', label: 'קטגוריות', path: '/categories', order: 2, visible: true },
@@ -93,7 +93,7 @@ export default async function RootLayout({ children }) {
       }
     } catch (settingsErr) {
       // Fallback to hardcoded menu if settings table doesn't exist yet
-      console.warn("Could not load menu from settings, using fallback:", settingsErr.message);
+
       menu = [
         { id: 'brands', label: 'מותגים', path: '/brands', order: 1, visible: true },
         { id: 'categories', label: 'קטגוריות', path: '/categories', order: 2, visible: true },

@@ -21,13 +21,6 @@ export default function Header({ brands = [], menu = [] }) {
     const [isBrandsDropdownOpen, setIsBrandsDropdownOpen] = useState(false);
     const [isSearchOpen, setIsSearchOpen] = useState(false);
 
-    // Debug: Log menu prop
-    useEffect(() => {
-        console.log('Header received menu:', menu);
-        console.log('Menu length:', menu.length);
-        console.log('Visible menu items:', menu.filter(item => item.visible));
-    }, [menu]);
-
     // Group Brands by Letter
     const groupedBrands = brands.reduce((acc, brand) => {
         const letter = brand.name.charAt(0).toUpperCase();
