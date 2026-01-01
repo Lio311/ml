@@ -157,10 +157,7 @@ export function CartProvider({ children }) {
                         return Array.from(itemMap.values());
                     });
 
-                    // Only show toast if not in admin interface
-                    if (typeof window !== 'undefined' && !window.location.pathname.startsWith('/admin')) {
-                        toast.success("סל הקניות סונכרן!");
-                    }
+                    toast.success("סל הקניות סונכרן!");
                 }
             } catch (err) {
                 console.error("Failed to fetch server cart:", err);
