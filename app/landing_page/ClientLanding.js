@@ -4,7 +4,7 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ChevronDown, Menu, X, ArrowLeft, ShoppingBag, Star, Sparkles } from 'lucide-react'
-import { Button } from '../components/ui/button' // Our new created button
+import { Button } from '@/components/ui/button'
 import ProductCard from '../components/ProductCard'
 import BrandCarousel from '../components/BrandCarousel'
 import LiveStats from '../components/LiveStats'
@@ -15,7 +15,7 @@ export default function ClientLanding({ newArrivals, stats }) {
     const [isScrolling, setIsScrolling] = useState(false)
     const containerRef = useRef(null)
 
-    // Define our sections mapping
+    // Updated sections mapping: Removed 'stats' and 'brands', merged them.
     const sections = [
         {
             id: 'hero',
@@ -23,17 +23,8 @@ export default function ClientLanding({ newArrivals, stats }) {
             title: 'Niche & Boutique',
             subtitle: 'Sample Collections',
             description: 'הדרך החכמה לגלות בשמי נישה יוקרתיים. הזמינו דוגמיות לפני רכישת בקבוק מלא.',
-            bgColor: 'from-slate-900 via-slate-800 to-slate-900', // Overridden by video
+            bgColor: 'from-slate-900 via-slate-800 to-slate-900',
             textColor: 'text-black',
-        },
-        {
-            id: 'stats',
-            type: 'stats',
-            title: 'LIVE STATS',
-            subtitle: 'המספרים שלנו מדברים',
-            description: 'אנחנו גאים להיות קהילת הבישום הגדולה בישראל.',
-            bgColor: 'from-zinc-900 via-zinc-800 to-zinc-900',
-            textColor: 'text-white',
         },
         {
             id: 'new-arrivals',
@@ -41,25 +32,17 @@ export default function ClientLanding({ newArrivals, stats }) {
             title: 'חדש על המדף',
             subtitle: 'הניחוחות שכולם מדברים עליהם',
             description: '',
-            bgColor: 'from-white via-gray-50 to-white', // Light theme for products
+            bgColor: 'from-white via-gray-50 to-white',
             textColor: 'text-gray-900',
         },
         {
             id: 'bonuses',
-            type: 'bonuses',
+            type: 'bonuses', // Includes Brands now
             title: 'הבונוסים שלנו',
             subtitle: 'מפנקים אתכם בכל הזמנה',
             description: 'ככל שסכום ההזמנה גבוה יותר, כך תקבלו יותר מתנות.',
             bgColor: 'from-black via-zinc-900 to-black',
             textColor: 'text-white',
-        },
-        {
-            id: 'brands',
-            type: 'brands',
-            title: 'המותגים שלנו',
-            subtitle: 'השמות הגדולים בעולם',
-            bgColor: 'from-white via-gray-100 to-white',
-            textColor: 'text-black',
         },
         {
             id: 'collections',
@@ -74,23 +57,19 @@ export default function ClientLanding({ newArrivals, stats }) {
     // Scroll Logic
     const touchStart = useRef(null)
 
-    // Throttled scroll handler
     const handleWheel = (e) => {
         if (isScrolling) return
 
-        // Check if we are inside a scrollable div (like product grid)
-        // If content overflows and we are not at edge, don't switch section
         const target = e.target;
         const scrollable = target.closest('.scrollable-content');
         if (scrollable) {
             const atTop = scrollable.scrollTop === 0;
             const atBottom = Math.abs(scrollable.scrollHeight - scrollable.scrollTop - scrollable.clientHeight) < 1;
 
-            if (e.deltaY > 0 && !atBottom) return; // Allow natural scroll down
-            if (e.deltaY < 0 && !atTop) return; // Allow natural scroll up
+            if (e.deltaY > 0 && !atBottom) return;
+            if (e.deltaY < 0 && !atTop) return;
         }
 
-        // Just small threshold to prevent accidental triggers
         if (Math.abs(e.deltaY) < 20) return;
 
         setIsScrolling(true)
@@ -126,10 +105,6 @@ export default function ClientLanding({ newArrivals, stats }) {
     useEffect(() => {
         const container = containerRef.current
         if (!container) return
-        // Passive false is important for preventing default scroll
-        // But we want to allow default ONLY if we decided not to switch sections in handleWheel, 
-        // however preventing default is usually needed to stop the page from scrolling normally.
-        // For full page snap, we usually want to prevent default.
         window.addEventListener('wheel', handleWheel, { passive: false })
         window.addEventListener('touchstart', handleTouchStart, { passive: true })
         window.addEventListener('touchend', handleTouchEnd, { passive: true })
@@ -153,12 +128,10 @@ export default function ClientLanding({ newArrivals, stats }) {
                         className="flex items-center gap-2"
                     >
                         <Link href="/">
-                            {/* Assuming logo exists */}
                             <span className="text-2xl font-bold tracking-widest uppercase mix-blend-difference text-white">ML_TLV</span>
                         </Link>
                     </motion.div>
 
-                    {/* Desktop Menu */}
                     <div className="hidden md:flex items-center gap-6">
                         <Link href="/catalog">
                             <Button variant="ghost" className="text-white hover:bg-white/10 rounded-full px-6 mix-blend-difference">
@@ -177,7 +150,6 @@ export default function ClientLanding({ newArrivals, stats }) {
                         </Link>
                     </div>
 
-                    {/* Mobile Menu Toggle */}
                     <button
                         onClick={() => setIsMenuOpen(!isMenuOpen)}
                         className="md:hidden text-white p-2 mix-blend-difference z-50"
@@ -187,7 +159,6 @@ export default function ClientLanding({ newArrivals, stats }) {
                 </div>
             </nav>
 
-            {/* Mobile Menu Overlay */}
             <AnimatePresence>
                 {isMenuOpen && (
                     <motion.div
@@ -207,7 +178,6 @@ export default function ClientLanding({ newArrivals, stats }) {
             </AnimatePresence>
 
 
-            {/* Section Indicators (Dots) */}
             <div className="fixed left-8 top-1/2 -translate-y-1/2 z-50 hidden md:flex flex-col gap-3 mix-blend-difference">
                 {sections.map((section, index) => (
                     <button
@@ -218,7 +188,6 @@ export default function ClientLanding({ newArrivals, stats }) {
                 ))}
             </div>
 
-            {/* Main Content Carousel */}
             <div
                 className="h-full transition-transform duration-1000 ease-in-out"
                 style={{ transform: `translateY(-${currentSection * 100}vh)` }}
@@ -234,7 +203,6 @@ export default function ClientLanding({ newArrivals, stats }) {
                 ))}
             </div>
 
-            {/* Scroll Hint */}
             {currentSection < sections.length - 1 && (
                 <motion.div
                     initial={{ opacity: 0 }}
@@ -255,10 +223,8 @@ export default function ClientLanding({ newArrivals, stats }) {
     )
 }
 
-// Sub-component for individual sections
 function Section({ section, isActive, newArrivals, stats }) {
 
-    // Helper to render content based on type
     const renderContent = () => {
         switch (section.type) {
             case 'hero':
@@ -270,68 +236,66 @@ function Section({ section, isActive, newArrivals, stats }) {
                             </video>
                             <div className="absolute inset-0 bg-black/10" />
                         </div>
-                        <div className="relative z-10 text-center max-w-4xl mx-auto px-4">
-                            <motion.h2
-                                initial={{ opacity: 0, y: 20 }}
-                                animate={isActive ? { opacity: 1, y: 0 } : {}}
-                                transition={{ delay: 0.3 }}
-                                className="text-sm md:text-lg tracking-[0.3em] font-light uppercase mb-4 text-white drop-shadow-lg"
-                            >
-                                {section.title}
-                            </motion.h2>
-                            <motion.h1
-                                initial={{ opacity: 0, scale: 0.9 }}
-                                animate={isActive ? { opacity: 1, scale: 1 } : {}}
-                                transition={{ delay: 0.5, duration: 0.8 }}
-                                className="text-5xl md:text-8xl font-bold mb-6 text-white drop-shadow-2xl"
-                            >
-                                {section.subtitle}
-                            </motion.h1>
-                            <motion.p
-                                initial={{ opacity: 0 }}
-                                animate={isActive ? { opacity: 1 } : {}}
-                                transition={{ delay: 0.7 }}
-                                className="text-lg md:text-xl text-white/90 mb-8 max-w-2xl mx-auto font-light leading-relaxed drop-shadow-md"
-                            >
-                                {section.description}
-                            </motion.p>
+                        <div className="relative z-10 w-full h-full flex flex-col justify-center">
+                            <div className="text-center max-w-4xl mx-auto px-4 mb-20 md:mb-32"> {/* Added MB to push content up */}
+                                <motion.h2
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={isActive ? { opacity: 1, y: 0 } : {}}
+                                    transition={{ delay: 0.3 }}
+                                    className="text-sm md:text-lg tracking-[0.3em] font-light uppercase mb-4 text-white drop-shadow-lg"
+                                >
+                                    {section.title}
+                                </motion.h2>
+                                <motion.h1
+                                    initial={{ opacity: 0, scale: 0.9 }}
+                                    animate={isActive ? { opacity: 1, scale: 1 } : {}}
+                                    transition={{ delay: 0.5, duration: 0.8 }}
+                                    className="text-5xl md:text-8xl font-bold mb-6 text-white drop-shadow-2xl"
+                                >
+                                    {section.subtitle}
+                                </motion.h1>
+                                <motion.p
+                                    initial={{ opacity: 0 }}
+                                    animate={isActive ? { opacity: 1 } : {}}
+                                    transition={{ delay: 0.7 }}
+                                    className="text-lg md:text-xl text-white/90 mb-8 max-w-2xl mx-auto font-light leading-relaxed drop-shadow-md"
+                                >
+                                    {section.description}
+                                </motion.p>
+                                <motion.div
+                                    initial={{ opacity: 0, y: 20 }}
+                                    animate={isActive ? { opacity: 1, y: 0 } : {}}
+                                    transition={{ delay: 0.9 }}
+                                >
+                                    <Link href="/catalog">
+                                        <Button size="lg" className="bg-white text-black hover:bg-gray-200 rounded-full px-12 py-8 text-xl tracking-wider uppercase transition-all hover:scale-105 border-0">
+                                            Shop Now
+                                        </Button>
+                                    </Link>
+                                </motion.div>
+                            </div>
+
+                            {/* Live Stats Integrated Here at Bottom of Hero */}
                             <motion.div
-                                initial={{ opacity: 0, y: 20 }}
+                                initial={{ opacity: 0, y: 50 }}
                                 animate={isActive ? { opacity: 1, y: 0 } : {}}
-                                transition={{ delay: 0.9 }}
+                                transition={{ delay: 1.2 }}
+                                className="absolute bottom-0 left-0 right-0 z-20"
                             >
-                                <Link href="/catalog">
-                                    <Button size="lg" className="bg-white text-black hover:bg-gray-200 rounded-full px-12 py-8 text-xl tracking-wider uppercase transition-all hover:scale-105 border-0">
-                                        Shop Now
-                                    </Button>
-                                </Link>
+                                <LiveStats stats={stats} />
                             </motion.div>
                         </div>
                     </>
                 );
-            case 'stats':
-                return (
-                    <div className="container mx-auto px-4 relative z-10 h-full flex flex-col justify-center items-center">
-                        <div className="text-center mb-16">
-                            <motion.h2 className="text-4xl md:text-6xl font-bold text-white mb-4">{section.title}</motion.h2>
-                            <p className="text-white/60 text-xl">{section.subtitle}</p>
-                        </div>
-                        <div className="w-full max-w-5xl transform scale-110 md:scale-125">
-                            {/* We just wrap LiveStats or reimplement its visual here. LiveStats is fairly self contained. */}
-                            <LiveStats stats={stats} />
-                        </div>
-                    </div>
-                );
             case 'products':
                 return (
-                    <div className="container mx-auto px-4 h-full flex flex-col justify-center relative z-10">
-                        <div className="text-center mb-12">
+                    <div className="container mx-auto px-4 h-full flex flex-col justify-center relative z-10 pt-20"> {/* Added padding top */}
+                        <div className="text-center mb-8 shrink-0">
                             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-2">{section.title}</h2>
                             <div className="w-20 h-1 bg-black mx-auto" />
                         </div>
-                        {/* Scrollable content container if grid overflows */}
-                        <div className="scrollable-content overflow-y-auto max-h-[70vh] p-2">
-                            <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+                        <div className="scrollable-content overflow-y-auto overflow-x-hidden p-4 md:p-8 flex-1">
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 pb-20">
                                 {newArrivals.map(product => (
                                     <div key={product.id} className="transform transition-all active:scale-95">
                                         <ProductCard product={product} />
@@ -339,7 +303,8 @@ function Section({ section, isActive, newArrivals, stats }) {
                                 ))}
                             </div>
                         </div>
-                        <div className="text-center mt-8">
+                        {/* Button moved inside scrollable area or kept fixed? Kept fixed for visibility */}
+                        <div className="text-center pb-8 pt-4 shrink-0 bg-white/80 backdrop-blur-sm absolute bottom-0 left-0 right-0 w-full">
                             <Link href="/catalog">
                                 <Button className="rounded-full px-8 bg-black text-white hover:bg-gray-800">לכל הקטלוג</Button>
                             </Link>
@@ -348,49 +313,51 @@ function Section({ section, isActive, newArrivals, stats }) {
                 );
             case 'bonuses':
                 return (
-                    <div className="container mx-auto px-4 h-full flex flex-col justify-center relative z-10">
-                        <div className="text-center mb-16 text-white">
-                            <h2 className="text-4xl md:text-6xl font-bold mb-4">{section.title}</h2>
-                            <p className="text-xl text-white/70">{section.description}</p>
+                    <div className="container mx-auto px-4 h-full flex flex-col justify-center relative z-10 scrollable-content overflow-y-auto">
+                        {/* Bonuses Content */}
+                        <div className="mt-20 mb-12">
+                            <div className="text-center mb-16 text-white">
+                                <h2 className="text-4xl md:text-6xl font-bold mb-4">{section.title}</h2>
+                                <p className="text-xl text-white/70">{section.description}</p>
+                            </div>
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto w-full px-4">
+                                {[
+                                    { price: 300, gift: '2 דוגמיות', label: 'Basic' },
+                                    { price: 500, gift: '4 דוגמיות', label: 'Popular', highlight: true },
+                                    { price: 1000, gift: '6 דוגמיות', label: 'Premium' },
+                                ].map((tier, i) => (
+                                    <motion.div
+                                        key={i}
+                                        initial={{ opacity: 0, y: 50 }}
+                                        animate={isActive ? { opacity: 1, y: 0 } : {}}
+                                        transition={{ delay: 0.2 + (i * 0.1) }}
+                                        className={`relative p-8 rounded-2xl border ${tier.highlight ? 'bg-white/10 border-white scale-105 shadow-2xl shadow-white/10' : 'bg-zinc-900/50 border-zinc-700'}`}
+                                    >
+                                        {tier.highlight && <span className="absolute top-0 right-0 bg-white text-black text-xs font-bold px-3 py-1 rounded-bl-lg rounded-tr-lg">מומלץ</span>}
+                                        <h3 className="text-lg text-gray-400 mb-2 font-bold">בקנייה מעל {tier.price} ₪</h3>
+                                        <div className="text-3xl md:text-4xl font-black text-white mb-2">{tier.gift}</div>
+                                        <div className="text-sm text-gray-500">בגודל 2 מ"ל במתנה</div>
+                                    </motion.div>
+                                ))}
+                            </div>
                         </div>
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-6xl mx-auto w-full">
-                            {/* Bonuses Cards hardcoded from Page.js */}
-                            {[
-                                { price: 300, gift: '2 דוגמיות', label: 'Basic' },
-                                { price: 500, gift: '4 דוגמיות', label: 'Popular', highlight: true },
-                                { price: 1000, gift: '6 דוגמיות', label: 'Premium' },
-                            ].map((tier, i) => (
-                                <motion.div
-                                    key={i}
-                                    initial={{ opacity: 0, y: 50 }}
-                                    animate={isActive ? { opacity: 1, y: 0 } : {}}
-                                    transition={{ delay: 0.2 + (i * 0.1) }}
-                                    className={`relative p-8 rounded-2xl border ${tier.highlight ? 'bg-white/10 border-white scale-105 shadow-2xl shadow-white/10' : 'bg-zinc-900/50 border-zinc-700'}`}
-                                >
-                                    {tier.highlight && <span className="absolute top-0 right-0 bg-white text-black text-xs font-bold px-3 py-1 rounded-bl-lg rounded-tr-lg">מומלץ</span>}
-                                    <h3 className="text-lg text-gray-400 mb-2 font-bold">בקנייה מעל {tier.price} ₪</h3>
-                                    <div className="text-3xl md:text-4xl font-black text-white mb-2">{tier.gift}</div>
-                                    <div className="text-sm text-gray-500">בגודל 2 מ"ל במתנה</div>
-                                </motion.div>
-                            ))}
-                        </div>
-                    </div>
-                );
-            case 'brands':
-                return (
-                    <div className="h-full flex flex-col justify-center relative z-10 bg-white/50 backdrop-blur-sm">
-                        <div className="container mx-auto text-center mb-12">
-                            <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-2">{section.title}</h2>
-                            <p className="text-gray-500">{section.subtitle}</p>
-                        </div>
-                        <div className="w-full grayscale hover:grayscale-0 transition-all duration-500">
-                            <BrandCarousel brands={stats.allBrands} />
+
+                        {/* Merged Brands Content */}
+                        <div className="mb-20">
+                            <div className="container mx-auto text-center mb-10">
+                                <h2 className="text-2xl md:text-3xl font-serif font-medium text-white tracking-widest uppercase">המותגים שלנו</h2>
+                                <div className="w-12 h-0.5 bg-white/50 mx-auto mt-4"></div>
+                            </div>
+                            {/* Make brand carousel white text friendly if needed, or wrap in white container */}
+                            <div className="bg-white/5 rounded-2xl p-4 backdrop-blur-sm">
+                                <BrandCarousel brands={stats.allBrands} />
+                            </div>
                         </div>
                     </div>
                 );
             case 'collections':
                 return (
-                    <div className="container mx-auto px-4 h-full flex flex-col justify-center relative z-10">
+                    <div className="container mx-auto px-4 h-full flex flex-col justify-center relative z-10 pt-20">
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 h-[60vh]">
                             {[
                                 { title: 'EXCLUSIVE', img: '/collection-exclusive.png', link: 'נדיר' },
@@ -412,9 +379,7 @@ function Section({ section, isActive, newArrivals, stats }) {
                                 </Link>
                             ))}
                         </div>
-                        <div className="mt-12 text-center text-gray-400 text-sm">
-                            <p>© 2026 ML_TLV. כל הזכויות שמורות.</p>
-                        </div>
+                        {/* Footer Text Removed */}
                     </div>
                 );
             default:
@@ -425,7 +390,6 @@ function Section({ section, isActive, newArrivals, stats }) {
 
     return (
         <div className={`h-screen w-full relative overflow-hidden bg-gradient-to-br ${section.bgColor} flex items-center justify-center`}>
-            {/* Background Pattern logic from design */}
             {section.id !== 'hero' && (
                 <div className="absolute inset-0 opacity-[0.03] pointer-events-none">
                     <div className="absolute inset-0" style={{ backgroundImage: 'radial-gradient(circle at 2px 2px, black 1px, transparent 0)', backgroundSize: '40px 40px' }} />
