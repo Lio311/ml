@@ -51,6 +51,14 @@ export default function ClientLanding({ newArrivals, stats }) {
             subtitle: 'בחרו את הסגנון שלכם',
             bgColor: 'from-slate-50 via-white to-slate-50',
             textColor: 'text-black',
+        },
+        {
+            id: 'footer',
+            type: 'footer',
+            title: 'יצירת קשר',
+            subtitle: '',
+            bgColor: 'from-zinc-950 to-black',
+            textColor: 'text-white/60',
         }
     ]
 
@@ -118,6 +126,15 @@ export default function ClientLanding({ newArrivals, stats }) {
 
     return (
         <div ref={containerRef} className="h-screen w-full overflow-hidden relative" dir="rtl">
+            <style jsx global>{`
+                .no-scrollbar::-webkit-scrollbar {
+                    display: none;
+                }
+                .no-scrollbar {
+                    -ms-overflow-style: none;
+                    scrollbar-width: none;
+                }
+            `}</style>
 
             {/* Navigation */}
             <nav className="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
@@ -143,11 +160,7 @@ export default function ClientLanding({ newArrivals, stats }) {
                                 כניסה
                             </Button>
                         </Link>
-                        <Link href="/cart">
-                            <Button className="bg-white text-black hover:bg-gray-100 rounded-full px-6 shadow-xl transition-all hover:scale-105 border-0">
-                                סל קניות <ShoppingBag size={16} className="mr-2" />
-                            </Button>
-                        </Link>
+                        {/* Cart Link Removed */}
                     </div>
 
                     <button
@@ -237,7 +250,7 @@ function Section({ section, isActive, newArrivals, stats }) {
                             <div className="absolute inset-0 bg-black/10" />
                         </div>
                         <div className="relative z-10 w-full h-full flex flex-col justify-center">
-                            <div className="text-center max-w-4xl mx-auto px-4 mb-20 md:mb-32"> {/* Added MB to push content up */}
+                            <div className="text-center max-w-4xl mx-auto px-4 mb-20 md:mb-32">
                                 <motion.h2
                                     initial={{ opacity: 0, y: 20 }}
                                     animate={isActive ? { opacity: 1, y: 0 } : {}}
@@ -275,7 +288,6 @@ function Section({ section, isActive, newArrivals, stats }) {
                                 </motion.div>
                             </div>
 
-                            {/* Live Stats Integrated Here at Bottom of Hero */}
                             <motion.div
                                 initial={{ opacity: 0, y: 50 }}
                                 animate={isActive ? { opacity: 1, y: 0 } : {}}
@@ -289,13 +301,13 @@ function Section({ section, isActive, newArrivals, stats }) {
                 );
             case 'products':
                 return (
-                    <div className="container mx-auto px-4 h-full flex flex-col justify-center relative z-10 pt-20"> {/* Added padding top */}
-                        <div className="text-center mb-8 shrink-0">
+                    <div className="container mx-auto px-4 h-full flex flex-col justify-center relative z-10 pt-16">
+                        <div className="text-center mb-6 shrink-0">
                             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-2">{section.title}</h2>
                             <div className="w-20 h-1 bg-black mx-auto" />
                         </div>
-                        <div className="no-scrollbar overflow-y-auto overflow-x-hidden p-4 md:p-8 flex-1 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-                            <div className="grid grid-cols-2 md:grid-cols-4 gap-6 pb-20">
+                        <div className="no-scrollbar overflow-y-auto overflow-x-hidden p-2 flex-1 w-full max-w-[95vw] mx-auto">
+                            <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 pb-12">
                                 {newArrivals.map(product => (
                                     <div key={product.id} className="transform transition-all active:scale-95">
                                         <ProductCard product={product} />
@@ -303,20 +315,21 @@ function Section({ section, isActive, newArrivals, stats }) {
                                 ))}
                             </div>
                         </div>
-                        {/* Button moved inside scrollable area or kept fixed? Kept fixed for visibility */}
-                        <div className="text-center pb-8 pt-4 shrink-0 bg-white/80 backdrop-blur-sm absolute bottom-0 left-0 right-0 w-full">
-                            <Link href="/catalog">
-                                <Button className="rounded-full px-8 bg-black text-white hover:bg-gray-800">לכל הקטלוג</Button>
-                            </Link>
+                        <div className="text-center pb-8 pt-4 shrink-0 absolute bottom-0 left-0 right-0 w-full pointer-events-none">
+                            <div className="pointer-events-auto inline-block">
+                                <Link href="/catalog">
+                                    <Button className="rounded-full px-8 bg-black text-white hover:bg-gray-800 shadow-xl">לכל הקטלוג</Button>
+                                </Link>
+                            </div>
                         </div>
                     </div>
                 );
             case 'bonuses':
                 return (
-                    <div className="container mx-auto px-4 h-full flex flex-col justify-center relative z-10 no-scrollbar overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-                        {/* Bonuses Content */}
-                        <div className="mt-20 mb-12">
-                            <div className="text-center mb-16 text-white">
+                    <div className="h-full flex flex-col relative z-10 no-scrollbar overflow-y-auto">
+                        {/* Bonuses Content - Centered */}
+                        <div className="container mx-auto px-4 flex-1 flex flex-col justify-center min-h-[60vh] py-10">
+                            <div className="text-center mb-10 text-white">
                                 <h2 className="text-4xl md:text-6xl font-bold mb-4">{section.title}</h2>
                                 <p className="text-xl text-white/70">{section.description}</p>
                             </div>
@@ -342,14 +355,14 @@ function Section({ section, isActive, newArrivals, stats }) {
                             </div>
                         </div>
 
-                        {/* Merged Brands Content */}
-                        <div className="mb-20">
-                            <div className="container mx-auto text-center mb-10">
-                                <h2 className="text-2xl md:text-3xl font-serif font-medium text-white tracking-widest uppercase">המותגים שלנו</h2>
-                                <div className="w-12 h-0.5 bg-white/50 mx-auto mt-4"></div>
+                        {/* Brands Content - Bottom Full Width Strip */}
+                        <div className="w-full bg-white py-12 mt-auto">
+                            <div className="container mx-auto text-center mb-8">
+                                <h2 className="text-3xl md:text-4xl font-serif font-medium text-black tracking-widest uppercase">המותגים שלנו</h2>
+                                <div className="w-12 h-0.5 bg-black/50 mx-auto mt-4"></div>
                             </div>
-                            {/* Make brand carousel white text friendly if needed, or wrap in white container */}
-                            <div className="bg-white/5 rounded-2xl p-4 backdrop-blur-sm">
+                            <div className="w-full px-4">
+                                {/* Assuming BrandCarousel can handle dark content or we just put it on white */}
                                 <BrandCarousel brands={stats.allBrands} />
                             </div>
                         </div>
