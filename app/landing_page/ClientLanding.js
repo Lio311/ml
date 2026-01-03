@@ -61,7 +61,7 @@ export default function ClientLanding({ newArrivals, stats }) {
         if (isScrolling) return
 
         const target = e.target;
-        const scrollable = target.closest('.scrollable-content');
+        const scrollable = target.closest('.no-scrollbar');
         if (scrollable) {
             const atTop = scrollable.scrollTop === 0;
             const atBottom = Math.abs(scrollable.scrollHeight - scrollable.scrollTop - scrollable.clientHeight) < 1;
