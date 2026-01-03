@@ -230,7 +230,7 @@ function Section({ section, isActive, newArrivals, stats }) {
             case 'hero':
                 return (
                     <>
-                        <div className="absolute inset-0 z-0">
+                        <div className="absolute inset-x-0 bottom-0 top-24 z-0">
                             <video autoPlay loop muted playsInline className="w-full h-full object-cover opacity-90">
                                 <source src="/hero-video.mp4" type="video/mp4" />
                             </video>
