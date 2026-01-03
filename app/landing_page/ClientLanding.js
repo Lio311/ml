@@ -294,7 +294,7 @@ function Section({ section, isActive, newArrivals, stats }) {
                             <h2 className="text-4xl md:text-5xl font-bold text-gray-900 mb-2">{section.title}</h2>
                             <div className="w-20 h-1 bg-black mx-auto" />
                         </div>
-                        <div className="scrollable-content overflow-y-auto overflow-x-hidden p-4 md:p-8 flex-1">
+                        <div className="no-scrollbar overflow-y-auto overflow-x-hidden p-4 md:p-8 flex-1 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
                             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 pb-20">
                                 {newArrivals.map(product => (
                                     <div key={product.id} className="transform transition-all active:scale-95">
@@ -313,7 +313,7 @@ function Section({ section, isActive, newArrivals, stats }) {
                 );
             case 'bonuses':
                 return (
-                    <div className="container mx-auto px-4 h-full flex flex-col justify-center relative z-10 scrollable-content overflow-y-auto">
+                    <div className="container mx-auto px-4 h-full flex flex-col justify-center relative z-10 no-scrollbar overflow-y-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
                         {/* Bonuses Content */}
                         <div className="mt-20 mb-12">
                             <div className="text-center mb-16 text-white">
@@ -379,7 +379,33 @@ function Section({ section, isActive, newArrivals, stats }) {
                                 </Link>
                             ))}
                         </div>
-                        {/* Footer Text Removed */}
+                    </div>
+                );
+            case 'footer':
+                return (
+                    <div className="container mx-auto px-4 h-full flex flex-col justify-center relative z-10 text-center">
+                        <div className="mb-12">
+                            <span className="text-4xl font-bold tracking-widest uppercase text-white mb-4 block">ML_TLV</span>
+                            <p className="text-white/60 max-w-md mx-auto">חיו את הרגע, עצבו את הזיכרון. בשמי נישה יוקרתיים שנבחרו בקפידה עבורכם.</p>
+                        </div>
+
+                        <div className="flex justify-center gap-8 mb-12">
+                            {['אינסטגרם', 'פייסבוק', 'טיקטוק', 'וואטסאפ'].map((social, i) => (
+                                <a key={i} href="#" className="text-white/40 hover:text-white transition-colors border-b border-transparent hover:border-white pb-1">
+                                    {social}
+                                </a>
+                            ))}
+                        </div>
+
+                        <div className="flex flex-col md:flex-row justify-center items-center gap-8 text-sm text-white/30">
+                            <Link href="/terms" className="hover:text-white/60">תקנון</Link>
+                            <Link href="/privacy" className="hover:text-white/60">מדיניות פרטיות</Link>
+                            <Link href="/shipping" className="hover:text-white/60">משלוחים והחזרות</Link>
+                        </div>
+
+                        <div className="mt-12 text-white/20 text-xs">
+                            <p>© 2026 ML_TLV. כל הזכויות שמורות.</p>
+                        </div>
                     </div>
                 );
             default:
