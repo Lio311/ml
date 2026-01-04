@@ -48,7 +48,7 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
     const [brandsParticles, setBrandsParticles] = useState([]);
 
     useEffect(() => {
-        setCollectionsParticles([...Array(640)].map(() => ({
+        setCollectionsParticles([...Array(500)].map(() => ({
             width: Math.random() * 30 + 10,
             height: Math.random() * 30 + 10,
             duration: Math.random() * 15 + 15,
