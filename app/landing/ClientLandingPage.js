@@ -185,21 +185,23 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
                 </section>
 
                 {/* SECTION 2: NEW ARRIVALS */}
-                <section className="h-screen w-full relative flex flex-col justify-start items-center bg-white text-black p-4 pt-24 md:pt-32">
+                <section className="min-h-screen w-full relative flex flex-col justify-center items-center bg-white text-black p-4 py-20">
                     <div className="container mx-auto px-4 text-center flex flex-col items-center relative">
 
                         {/* Title */}
-                        <div className="shrink-0 mb-4 relative z-20">
+                        <div className="shrink-0 mb-10 relative z-20">
                             <h2 className="text-2xl tracking-[0.2em] uppercase mb-2 font-bold">חדש על המדף</h2>
                             <div className="w-10 h-0.5 bg-black mx-auto"></div>
                         </div>
 
                         {/* Grid Container */}
                         <div className="shrink-0 w-full flex justify-center z-10">
-                            <div className="grid grid-cols-2 md:grid-cols-4 gap-0 w-full max-w-xl">
+                            {/* Wider grid (max-w-5xl) and gap-4 to prevent crowding */}
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 w-full max-w-5xl">
                                 {newArrivals.slice(0, 4).map((product) => (
-                                    <div key={product.id} className="flex justify-center h-40 md:h-48 items-start">
-                                        <div className="transform scale-[0.65] origin-top w-full">
+                                    /* Fixed height container h-[320px] to reserve space for the scaled card */
+                                    <div key={product.id} className="flex justify-center items-start h-[280px] md:h-[320px] overflow-visible">
+                                        <div className="transform scale-[0.70] origin-top w-full flex justify-center">
                                             <ProductCard product={product} />
                                         </div>
                                     </div>
@@ -207,9 +209,9 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
                             </div>
                         </div>
 
-                        {/* Button Container */}
-                        <div className="shrink-0 -mt-4 relative z-30">
-                            <Link href="/catalog" className="inline-block bg-black text-white px-8 py-3 rounded-full text-sm font-bold tracking-widest uppercase hover:bg-gray-800 transition shadow-lg">
+                        {/* Button Container - Natural flow with positive margin */}
+                        <div className="shrink-0 mt-4 relative z-30">
+                            <Link href="/catalog" className="inline-block bg-black text-white px-10 py-3 rounded-full text-sm font-bold tracking-widest uppercase hover:bg-gray-800 transition shadow-lg hover:scale-105 duration-300">
                                 צפייה בכל המוצרים
                             </Link>
                         </div>
