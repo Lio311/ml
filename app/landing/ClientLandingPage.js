@@ -48,7 +48,7 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
     const [brandsParticles, setBrandsParticles] = useState([]);
 
     useEffect(() => {
-        setCollectionsParticles([...Array(20)].map(() => ({
+        setCollectionsParticles([...Array(150)].map(() => ({
             width: Math.random() * 30 + 10,
             height: Math.random() * 30 + 10,
             duration: Math.random() * 15 + 15,
@@ -56,7 +56,7 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
             initialY: Math.random() * 100
         })));
 
-        setBrandsParticles([...Array(15)].map(() => ({
+        setBrandsParticles([...Array(100)].map(() => ({
             width: Math.random() * 30 + 10,
             height: Math.random() * 30 + 10,
             duration: Math.random() * 15 + 15,
@@ -208,11 +208,11 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
                 </section>
 
                 {/* SECTION 2: NEW ARRIVALS */}
-                <section className="min-h-screen w-full relative flex flex-col justify-center items-center bg-white text-black p-4 py-20">
+                <section className="min-h-screen w-full relative flex flex-col justify-start items-center bg-white text-black p-4 pt-24 md:pt-32">
                     <div className="container mx-auto px-4 text-center flex flex-col items-center relative">
 
                         {/* Title */}
-                        <div className="shrink-0 mb-10 relative z-20">
+                        <div className="shrink-0 mb-6 relative z-20">
                             <h2 className="text-2xl tracking-[0.2em] uppercase mb-2 font-bold">חדש על המדף</h2>
                             <div className="w-10 h-0.5 bg-black mx-auto"></div>
                         </div>
@@ -222,8 +222,8 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
                             {/* Wider grid (max-w-5xl) and gap-4 to prevent crowding */}
                             <div className="grid grid-cols-2 md:grid-cols-4 gap-4 w-full max-w-5xl">
                                 {newArrivals.slice(0, 4).map((product) => (
-                                    /* Fixed height container h-[320px] to reserve space for the scaled card */
-                                    <div key={product.id} className="flex justify-center items-start h-[280px] md:h-[320px] overflow-visible">
+                                    /* Fixed height container h-[220px] to match scale, removing excess whitespace */
+                                    <div key={product.id} className="flex justify-center items-start h-[220px] md:h-[260px] overflow-visible">
                                         <div className="transform scale-[0.70] origin-top w-full flex justify-center">
                                             <ProductCard product={product} />
                                         </div>
@@ -232,8 +232,8 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
                             </div>
                         </div>
 
-                        {/* Button Container - Natural flow with positive margin */}
-                        <div className="shrink-0 mt-4 relative z-30">
+                        {/* Button Container */}
+                        <div className="shrink-0 mt-2 relative z-30">
                             <Link href="/catalog" className="inline-block bg-black text-white px-10 py-3 rounded-full text-sm font-bold tracking-widest uppercase hover:bg-gray-800 transition shadow-lg hover:scale-105 duration-300">
                                 צפייה בכל המוצרים
                             </Link>
