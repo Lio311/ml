@@ -4,16 +4,17 @@ import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
-import { ArrowLeft, Menu, X, ChevronDown } from 'lucide-react';
+import { Menu, X, ChevronDown, ArrowLeft } from 'lucide-react';
 import ProductCard from '../components/ProductCard';
 import BrandCarousel from '../components/BrandCarousel';
 import LiveStats from '../components/LiveStats';
+import { Button } from '../components/ui/button';
 
 export default function ClientLiquidLanding({ newArrivals, stats }) {
     const [currentSection, setCurrentSection] = useState(0);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const containerRef = useRef(null);
-    const sectionsCount = 5; // Hero, New Arrivals, Bonuses, Brands, Collections
+    const sectionsCount = 6; // Hero, New Arrivals, Bonuses, Brands, Collections, Footer
 
     // Handle Scroll
     useEffect(() => {
@@ -56,42 +57,19 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
             animate={{ opacity: 1, x: 0 }}
             exit={{ opacity: 0, x: '100%' }}
             transition={{ duration: 0.5, ease: "easeInOut" }}
-            className="fixed inset-0 z-50 bg-[#15161b] text-white flex flex-col md:flex-row dir-ltr"
+            className="fixed inset-0 z-50 bg-black text-white flex flex-col md:flex-row dir-rtl"
         >
-            <div className="w-full md:w-1/2 p-12 flex flex-col justify-center bg-[#15161b] border-r border-gray-800">
-                <button onClick={() => setIsMenuOpen(false)} className="absolute top-8 right-8 md:left-8 md:right-auto text-white">
-                    <X size={32} />
-                </button>
+            <button onClick={() => setIsMenuOpen(false)} className="absolute top-6 left-6 z-50 text-white">
+                <X size={32} />
+            </button>
 
-                <h2 className="text-4xl font-bold mb-8 leading-tight">
-                    We create experiences.<br />
-                    <span className="text-[#ff4015]">Solid & Lasting.</span>
-                </h2>
-
-                <div className="space-y-6 text-gray-400">
-                    <p>ML TLV is a premiere boutique for exclusive fragrances.</p>
-                    <div className="flex flex-col gap-2 mt-8">
-                        <div className="text-sm uppercase tracking-wide text-[#ff4015]">Contact Us</div>
-                        <a href="mailto:support@ml-tlv.com" className="text-2xl font-light hover:text-white transition">support@ml-tlv.com</a>
-                        <a href="tel:+972500000000" className="text-2xl font-light hover:text-white transition">+972 50 000 0000</a>
-                    </div>
-                </div>
-            </div>
-
-            <div className="w-full md:w-1/2 overflow-y-auto bg-[#1a1c20] p-12 flex flex-col justify-center">
-                <div className="space-y-4">
-                    {[
-                        { title: "Home", num: "01", link: "/" },
-                        { title: "New Arrivals", num: "02", link: "/products" },
-                        { title: "Brands", num: "03", link: "/brands" },
-                        { title: "Samples", num: "04", link: "/samples" },
-                    ].map((item, i) => (
-                        <Link href={item.link} key={i} className="group flex items-center gap-6 p-4 hover:bg-white/5 transition border-b border-white/10">
-                            <span className="text-sm font-bold text-[#ff4015]">{item.num}</span>
-                            <span className="text-3xl font-bold text-white group-hover:translate-x-2 transition">{item.title}</span>
-                        </Link>
-                    ))}
-                </div>
+            <div className="w-full h-full flex flex-col items-center justify-center p-8">
+                <nav className="flex flex-col gap-8 text-center">
+                    <Link href="/" onClick={() => setIsMenuOpen(false)} className="text-4xl font-bold hover:text-gray-300 transition">דף הבית</Link>
+                    <Link href="/catalog" onClick={() => setIsMenuOpen(false)} className="text-4xl font-bold hover:text-gray-300 transition">קטלוג</Link>
+                    <Link href="/brands" onClick={() => setIsMenuOpen(false)} className="text-4xl font-bold hover:text-gray-300 transition">מותגים</Link>
+                    <Link href="/contact" onClick={() => setIsMenuOpen(false)} className="text-4xl font-bold hover:text-gray-300 transition">צור קשר</Link>
+                </nav>
             </div>
         </motion.div>
     );
@@ -100,19 +78,19 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
         <div className="bg-black text-white h-screen overflow-hidden font-sans dir-rtl" style={{ direction: 'rtl' }}>
             <style jsx global>{`
                 body, html { overflow: hidden; height: 100%; }
+                .custom-scrollbar::-webkit-scrollbar { width: 4px; }
+                .custom-scrollbar::-webkit-scrollbar-thumb { background: #555; border-radius: 4px; }
             `}</style>
 
             {/* Header / Nav Trigger */}
             <header className="fixed top-0 left-0 w-full z-40 p-6 flex justify-between items-center mix-blend-difference text-white">
-                <div className="text-2xl font-bold tracking-tighter">ML TLV</div>
+                <div className="text-2xl font-bold tracking-tighter">ml_tlv</div>
                 <button
                     onClick={() => setIsMenuOpen(true)}
                     className="flex items-center gap-2 group"
                 >
-                    <span className="hidden md:block text-sm uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity">Menu</span>
-                    <div className="w-10 h-10 border border-white/20 rounded-full flex items-center justify-center group-hover:bg-white group-hover:text-black transition">
-                        <Menu size={20} />
-                    </div>
+                    <span className="hidden md:block text-sm uppercase tracking-widest font-bold">תפריט</span>
+                    <Menu size={24} />
                 </button>
             </header>
 
@@ -127,181 +105,190 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
                 transition={{ duration: 0.8, ease: [0.6, 0.05, -0.01, 0.9] }}
             >
                 {/* SECTION 1: HERO */}
-                <section className="h-screen w-full relative flex items-center justify-center overflow-hidden">
+                <section className="h-screen w-full relative flex items-center justify-center overflow-hidden bg-white">
                     <div className="absolute inset-0 z-0">
                         <video
-                            src="https://res.cloudinary.com/dtsuvx8dz/video/upload/v1706985537/perfume-video_pr8i0h.mp4"
+                            src="/hero-video.mp4"
                             autoPlay muted loop playsInline
-                            className="w-full h-full object-cover opacity-60"
+                            className="w-full h-full object-cover scale-[1.05]"
                         />
-                        <div className="absolute inset-0 bg-black/40"></div>
+                        {/* Overlay just like homepage? Page.js doesn't have a dark overlay in code, but bg-gray-100 animate-pulse behind it. 
+                             Wait, homepage code has `absolute inset-0 z-10 container ... text-black`.
+                             The video is styled with `scale-[1.05]`.
+                             The content box has `bg-white/80 p-4 md:p-6 rounded-xl backdrop-blur-sm`.
+                         */}
                     </div>
 
-                    <div className="relative z-10 text-center text-white p-4 max-w-4xl">
-                        <motion.h2
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ delay: 0.2 }}
-                            className="text-sm md:text-lg tracking-[0.3em] font-light uppercase mb-4 drop-shadow-lg"
-                        >
+                    <div className="relative z-10 text-center text-black bg-white/80 p-8 rounded-xl backdrop-blur-sm shadow-sm max-w-lg mx-4">
+                        <h2 className="text-sm tracking-[0.2em] uppercase mb-2 font-bold opacity-90">
                             Discover Your Signature Scent
-                        </motion.h2>
-                        <motion.h1
-                            initial={{ y: 50, opacity: 0 }}
-                            animate={{ y: 0, opacity: 1 }}
-                            transition={{ delay: 0.4, duration: 0.8 }}
-                            className="text-5xl md:text-8xl font-black mb-6 tracking-tighter leading-tight"
-                        >
+                        </h2>
+                        <h1 className="text-4xl md:text-6xl font-bold mb-4 leading-tight font-serif">
                             Niche & Boutique <br /> Sample Collections
-                        </motion.h1>
-                        <motion.p
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: 1 }}
-                            transition={{ delay: 0.6 }}
-                            className="text-lg md:text-xl font-light text-gray-200 mb-8 leading-relaxed"
-                        >
+                        </h1>
+                        <p className="text-base md:text-lg mb-6 font-light leading-relaxed text-gray-800">
                             הדרך החכמה לגלות בשמי נישה יוקרתיים.<br />
                             הזמינו דוגמיות 2 מ״ל, 5 מ״ל או 10 מ״ל לפני רכישת בקבוק מלא.
-                        </motion.p>
-
-                        <Link href="/catalog">
-                            <button className="bg-white text-black px-12 py-4 rounded-full text-lg font-bold uppercase tracking-widest hover:bg-gray-200 transition">
-                                SHOP NOW
-                            </button>
+                        </p>
+                        <Link href="/catalog" className="inline-block border border-black px-8 py-3 text-sm font-bold tracking-widest hover:bg-black hover:text-white transition duration-300 uppercase">
+                            Shop Now
                         </Link>
                     </div>
 
                     <div className="absolute bottom-0 left-0 w-full z-20">
+                        {/* LiveStats from components */}
                         <LiveStats stats={stats} />
+                    </div>
+
+                    <div className="absolute bottom-20 left-1/2 -translate-x-1/2 animate-bounce text-white drop-shadow-md z-20 pointer-events-none">
+                        <ChevronDown size={32} />
                     </div>
                 </section>
 
                 {/* SECTION 2: NEW ARRIVALS */}
-                <section className="h-screen w-full relative flex flex-col md:flex-row bg-[#1a1617] text-white">
-                    <div className="w-full md:w-1/2 bg-[url('https://liquid.co.il/wp-content/uploads/2021/01/bg-8.jpg')] bg-cover bg-center relative hidden md:block">
-                        <div className="absolute inset-0 bg-black/50"></div>
-                        <div className="absolute bottom-12 left-12 text-white p-8 border-l-4 border-[#ff4015]">
-                            <h3 className="text-4xl font-bold mb-2">New Arrivals</h3>
-                            <p className="opacity-70">Check out the latest additions to our collection.</p>
-                        </div>
-                    </div>
-                    <div className="w-full md:w-1/2 p-8 md:p-16 flex flex-col justify-center bg-[#1a1617] h-full">
-                        <div className="mb-4 flex items-center gap-4 text-white">
-                            <span className="text-sm font-bold">02.</span>
-                            <div className="h-[2px] w-12 bg-white"></div>
-                            <span className="text-sm uppercase tracking-wide">Fresh Cuts</span>
-                        </div>
-                        <h2 className="text-4xl md:text-6xl font-bold mb-8 text-white">
-                            חדש על המדף
-                        </h2>
+                <section className="h-screen w-full relative flex flex-col justify-center items-center bg-white text-black p-4">
+                    <div className="container mx-auto px-4 text-center">
+                        <h2 className="text-3xl tracking-[0.2em] uppercase mb-3 font-bold">חדש על המדף</h2>
+                        <div className="w-10 h-0.5 bg-black mx-auto mb-8"></div>
 
-                        <div className="grid grid-cols-2 gap-4 overflow-y-auto max-h-[60vh] pr-2 custom-scrollbar">
+                        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-h-[60vh] overflow-y-auto custom-scrollbar p-2">
                             {newArrivals.slice(0, 4).map((product) => (
-                                <div key={product.id} className="h-auto">
+                                <div key={product.id} className="h-full">
                                     <ProductCard product={product} />
                                 </div>
                             ))}
                         </div>
 
-                        <Link href="/catalog" className="mt-8 self-start text-sm uppercase tracking-widest border-b border-white pb-2 hover:text-[#ff4015] hover:border-[#ff4015] transition">
+                        <Link href="/catalog" className="inline-block mt-8 bg-black text-white px-8 py-3 rounded-full font-bold tracking-widest uppercase hover:bg-gray-800 transition shadow-md">
                             צפייה בכל המוצרים
                         </Link>
                     </div>
                 </section>
 
                 {/* SECTION 3: BONUSES */}
-                <section className="h-screen w-full relative flex flex-col bg-[#e9eef3] justify-center items-center">
-                    <div className="container mx-auto px-4 text-center z-10">
-                        <div className="mb-6 flex items-center justify-center gap-4 text-[#15161b]">
-                            <span className="text-sm font-bold">03.</span>
-                            <div className="h-[2px] w-12 bg-[#15161b]"></div>
-                            <span className="text-sm uppercase tracking-wide">Rewards</span>
-                        </div>
-                        <h2 className="text-5xl md:text-7xl font-bold mb-4 text-[#15161b]">הבונוסים שלנו</h2>
-                        <p className="text-xl md:text-2xl text-gray-600 mb-12 max-w-2xl mx-auto">
+                <section className="h-screen w-full relative flex flex-col justify-center items-center bg-black text-white p-4">
+                    <div className="container mx-auto px-4 text-center">
+                        <h2 className="text-3xl font-bold mb-2">הבונוסים שלנו</h2>
+                        <p className="text-gray-400 mb-8 max-w-2xl mx-auto">
                             ככל שסכום ההזמנה גבוה יותר, כך אנחנו מפנקים יותר.
+                            <br />
+                            <span className="text-xs text-gray-500">* הדוגמיות נבחרות על ידי הצוות שלנו בהתאם למלאי ולטעם שלכם.</span>
                         </p>
 
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
                             {/* Tier 1 */}
-                            <div className="bg-white p-8 rounded-xl shadow-lg border border-gray-100 flex flex-col items-center justify-center">
-                                <div className="text-lg font-bold text-gray-500 mb-2">בקנייה מעל 300 ₪</div>
-                                <div className="text-4xl font-black mb-4 text-[#15161b]">2 דוגמיות</div>
-                                <div className="text-sm text-gray-400 uppercase tracking-wide">מתנה</div>
+                            <div className="bg-zinc-900 p-8 rounded-xl border border-zinc-800 text-center transition hover:-translate-y-2 hover:shadow-xl hover:shadow-zinc-800/50">
+                                <div className="text-lg font-bold text-gray-400 mb-2">בקנייה מעל 300 ₪</div>
+                                <div className="text-3xl font-bold mb-4 text-white">2 דוגמיות מתנה</div>
+                                <div className="text-sm text-gray-500">בגודל 2 מ״ל</div>
                             </div>
 
                             {/* Tier 2 */}
-                            <div className="bg-[#15161b] text-white p-10 rounded-xl shadow-2xl border-2 border-[#ff4015] transform scale-105 relative">
-                                <span className="absolute top-0 right-0 bg-[#ff4015] text-white text-xs px-3 py-1 font-bold rounded-bl-lg">POPULAR</span>
-                                <div className="text-lg font-bold text-gray-400 mb-2">בקנייה מעל 500 ₪</div>
-                                <div className="text-5xl font-black mb-4">4 דוגמיות</div>
-                                <div className="text-sm text-gray-400 uppercase tracking-wide">מתנה</div>
+                            <div className="bg-zinc-900 p-8 rounded-xl border-2 border-white text-center relative shadow-xl transform md:-translate-y-4 transition hover:-translate-y-6 hover:shadow-white/20">
+                                <div className="absolute top-0 right-0 bg-white text-black text-xs px-3 py-1 rounded-bl-lg rounded-tr-xl font-bold">מומלץ</div>
+                                <div className="text-lg font-bold text-gray-300 mb-2">בקנייה מעל 500 ₪</div>
+                                <div className="text-3xl font-bold mb-4 text-white">4 דוגמיות מתנה</div>
+                                <div className="text-sm text-gray-500">בגודל 2 מ״ל</div>
                             </div>
 
                             {/* Tier 3 */}
-                            <div className="bg-white p-8 rounded-xl shadow-lg border border-gray-100 flex flex-col items-center justify-center">
-                                <div className="text-lg font-bold text-gray-500 mb-2">בקנייה מעל 1000 ₪</div>
-                                <div className="text-4xl font-black mb-4 text-[#15161b]">6 דוגמיות</div>
-                                <div className="text-sm text-gray-400 uppercase tracking-wide">מתנה</div>
+                            <div className="bg-zinc-900 p-8 rounded-xl border border-zinc-800 text-center transition hover:-translate-y-2 hover:shadow-xl hover:shadow-zinc-800/50">
+                                <div className="text-lg font-bold text-gray-400 mb-2">בקנייה מעל 1000 ₪</div>
+                                <div className="text-3xl font-bold mb-4 text-white">6 דוגמיות מתנה</div>
+                                <div className="text-sm text-gray-500">בגודל 2 מ״ל</div>
                             </div>
                         </div>
                     </div>
-                    {/* Background Blob */}
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-gradient-to-tr from-[#ff4015]/10 to-transparent rounded-full blur-3xl -z-0"></div>
                 </section>
 
                 {/* SECTION 4: BRANDS */}
-                <section className="h-screen w-full relative bg-[#1d1d20] text-white flex flex-col justify-center">
-                    <div className="container mx-auto px-12 mb-12">
-                        <div className="mb-6 flex items-center gap-4">
-                            <span className="text-sm font-bold">04.</span>
-                            <div className="h-[2px] w-12 bg-white"></div>
-                            <span className="text-sm uppercase tracking-wide">Curated</span>
-                        </div>
-                        <h2 className="text-5xl md:text-6xl font-bold">המותגים המובילים</h2>
-                    </div>
-
-                    <div className="w-full bg-white py-24">
+                <section className="h-screen w-full relative flex flex-col justify-center bg-white text-black p-4">
+                    {/* Used BrandCarousel component which has its own padding/layout. We assume it fits decently. */}
+                    <div className="w-full">
                         <BrandCarousel brands={stats.allBrands} />
                     </div>
                 </section>
 
                 {/* SECTION 5: COLLECTIONS */}
-                <section className="h-screen w-full relative flex flex-col bg-black text-white p-8 md:p-12 justify-center">
-                    <div className="container mx-auto h-full flex flex-col">
-                        <div className="mb-8 shrink-0">
-                            <div className="mb-4 flex items-center gap-4">
-                                <span className="text-sm font-bold">05.</span>
-                                <div className="h-[2px] w-12 bg-white"></div>
-                                <span className="text-sm uppercase tracking-wide">Explore</span>
-                            </div>
-                            <h2 className="text-5xl md:text-7xl font-bold">קולקציות</h2>
-                        </div>
+                <section className="h-screen w-full relative flex flex-col justify-center items-center bg-white text-black p-4">
+                    <div className="container mx-auto px-4 h-full flex flex-col justify-center">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 h-[70vh]">
+                            {/* Collection 1 */}
+                            <Link href="/catalog?category=נדיר" className="group relative w-full h-full overflow-hidden rounded-lg">
+                                <Image src="/collection-exclusive.png" alt="Exclusive" fill className="object-cover transition-transform duration-700 group-hover:scale-110" />
+                                <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition-colors" />
+                                <div className="absolute inset-0 flex flex-col items-center justify-center text-white text-center p-6">
+                                    <span className="text-sm tracking-[0.2em] uppercase mb-2">The Most</span>
+                                    <h3 className="text-3xl font-serif font-medium mb-4">EXCLUSIVE<br />FRAGRANCES</h3>
+                                    <div className="w-8 h-0.5 bg-white mb-4" />
+                                    <span className="opacity-0 group-hover:opacity-100 transition-opacity">Shop Collection</span>
+                                </div>
+                            </Link>
 
-                        <div className="flex-1 grid grid-cols-1 md:grid-cols-3 gap-6 overflow-hidden pb-12">
-                            {[
-                                { title: 'EXCLUSIVE FRAGRANCES', subtitle: 'The Most', img: '/collection-exclusive.png', link: 'נדיר' },
-                                { title: 'SUMMER SCENTS', subtitle: 'The Best', img: '/collection-summer.png', link: 'קיץ' },
-                                { title: 'DATE NIGHT ESSENTIALS', subtitle: 'Choose your favorite', img: '/collection-datenight.png', link: 'ערב' },
-                            ].map((col, i) => (
-                                <Link href={`/catalog?category=${col.link}`} key={i} className="relative group overflow-hidden rounded-2xl w-full h-full block">
-                                    <div className="relative w-full h-full bg-gray-900 border border-white/10">
-                                        <Image
-                                            src={col.img}
-                                            alt={col.title}
-                                            fill
-                                            className="object-cover transition-transform duration-700 group-hover:scale-110 opacity-70 group-hover:opacity-100"
-                                        />
-                                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
-                                        <div className="absolute bottom-0 left-0 w-full p-8 text-center">
-                                            <span className="text-xs tracking-[0.2em] uppercase mb-2 block text-gray-300">{col.subtitle}</span>
-                                            <h3 className="text-2xl md:text-3xl font-serif font-bold mb-4">{col.title.replace('FRAGRANCES', '').replace('SCENTS', '').replace('ESSENTIALS', '')}</h3>
-                                            <span className="inline-block px-6 py-2 border border-white/30 rounded-full text-xs uppercase tracking-widest hover:bg-white hover:text-black transition">Shop Now</span>
-                                        </div>
-                                    </div>
-                                </Link>
-                            ))}
+                            {/* Collection 2 */}
+                            <Link href="/catalog?category=קיץ" className="group relative w-full h-full overflow-hidden rounded-lg">
+                                <Image src="/collection-summer.png" alt="Summer" fill className="object-cover transition-transform duration-700 group-hover:scale-110" />
+                                <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors" />
+                                <div className="absolute inset-0 flex flex-col items-center justify-center text-white text-center p-6">
+                                    <span className="text-sm tracking-[0.2em] uppercase mb-2">The Best</span>
+                                    <h3 className="text-3xl font-serif font-medium mb-4">SUMMER<br />SCENTS</h3>
+                                    <div className="w-8 h-0.5 bg-white mb-4" />
+                                    <span className="opacity-0 group-hover:opacity-100 transition-opacity">Shop Collection</span>
+                                </div>
+                            </Link>
+
+                            {/* Collection 3 */}
+                            <Link href="/catalog?category=ערב" className="group relative w-full h-full overflow-hidden rounded-lg">
+                                <Image src="/collection-datenight.png" alt="Date Night" fill className="object-cover transition-transform duration-700 group-hover:scale-110" />
+                                <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition-colors" />
+                                <div className="absolute inset-0 flex flex-col items-center justify-center text-white text-center p-6">
+                                    <span className="text-sm tracking-[0.2em] uppercase mb-2">Choose your favorite</span>
+                                    <h3 className="text-3xl font-serif font-medium mb-4">DATE NIGHT<br />ESSENTIALS</h3>
+                                    <div className="w-8 h-0.5 bg-white mb-4" />
+                                    <span className="opacity-0 group-hover:opacity-100 transition-opacity">Shop Collection</span>
+                                </div>
+                            </Link>
                         </div>
+                    </div>
+                </section>
+
+                {/* SECTION 6: FOOTER */}
+                <section className="h-screen w-full relative flex flex-col justify-center items-center bg-black text-white p-4">
+                    {/* Copied from Footer.js Structure */}
+                    <div className="container grid grid-cols-1 md:grid-cols-4 gap-8 text-center md:text-right mb-12">
+                        <div>
+                            <h3 className="text-lg font-bold mb-4">ml_tlv</h3>
+                            <p className="text-sm text-gray-400">
+                                דוגמיות בשמים יוקרתיות במחירים הוגנים.
+                                <br />
+                                נבחרו בקפידה כדי שתמצאו את הריח שלכם.
+                            </p>
+                        </div>
+                        <div>
+                            <h3 className="text-lg font-bold mb-4">שירות לקוחות</h3>
+                            <ul className="space-y-2 text-sm text-gray-400">
+                                <li><Link href="/about" className="hover:text-white">אודות</Link></li>
+                                <li><Link href="/faq" className="hover:text-white">שאלות ותשובות</Link></li>
+                                <li><Link href="/contact" className="hover:text-white">צור קשר</Link></li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 className="text-lg font-bold mb-4">מידע ונהלים</h3>
+                            <ul className="space-y-2 text-sm text-gray-400">
+                                <li><Link href="/terms" className="hover:text-white">תקנון האתר</Link></li>
+                                <li><Link href="/shipping" className="hover:text-white">משלוחים והחזרות</Link></li>
+                                <li><Link href="/privacy" className="hover:text-white">מדיניות פרטיות</Link></li>
+                            </ul>
+                        </div>
+                        <div>
+                            <h3 className="text-lg font-bold mb-4">עקבו אחרינו</h3>
+                            <a href="https://instagram.com/ml_tlv" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-gray-400 hover:text-white transition justify-center md:justify-start">
+                                <span>@ml_tlv</span>
+                            </a>
+                        </div>
+                    </div>
+                    <div className="container pt-4 border-t border-gray-800 text-center text-xs text-gray-500">
+                        © 2024 ml_tlv. כל הזכויות שמורות.
                     </div>
                 </section>
 
