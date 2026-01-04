@@ -122,34 +122,36 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
                 transition={{ duration: 0.8, ease: [0.6, 0.05, -0.01, 0.9] }}
             >
                 {/* SECTION 1: HERO */}
-                <section className="h-screen w-full relative flex items-center justify-center overflow-hidden bg-white">
-                    {/* Video Reduced Height */}
-                    <div className="absolute top-0 left-0 w-full h-[70%] z-0">
-                        <video
-                            src="/hero-video.mp4"
-                            autoPlay muted loop playsInline
-                            className="w-full h-full object-cover"
-                        />
+                <section className="h-screen w-full flex flex-col bg-white overflow-hidden">
+                    {/* Video Area - 60% Height */}
+                    <div className="relative w-full h-[60%] flex items-center justify-center overflow-hidden">
+                        <div className="absolute inset-0 z-0">
+                            <video
+                                src="/hero-video.mp4"
+                                autoPlay muted loop playsInline
+                                className="w-full h-full object-cover"
+                            />
+                        </div>
+
+                        <div className="relative z-10 text-center text-black bg-white/80 p-6 rounded-xl backdrop-blur-sm shadow-sm max-w-lg mx-4">
+                            <h2 className="text-xs tracking-[0.2em] uppercase mb-2 font-bold opacity-90">
+                                Discover Your Signature Scent
+                            </h2>
+                            <h1 className="text-3xl md:text-5xl font-bold mb-3 leading-tight font-serif">
+                                Niche & Boutique <br /> Sample Collections
+                            </h1>
+                            <p className="text-sm md:text-base mb-4 font-light leading-relaxed text-gray-800">
+                                הדרך החכמה לגלות בשמי נישה יוקרתיים.<br />
+                                הזמינו דוגמיות 2 מ״ל, 5 מ״ל או 10 מ״ל לפני רכישת בקבוק מלא.
+                            </p>
+                            <Link href="/catalog" className="inline-block border border-black px-6 py-2 text-xs font-bold tracking-widest hover:bg-black hover:text-white transition duration-300 uppercase">
+                                Shop Now
+                            </Link>
+                        </div>
                     </div>
 
-                    <div className="relative z-10 text-center text-black bg-white/80 p-6 rounded-xl backdrop-blur-sm shadow-sm max-w-lg mx-4 mt-[-10vh]">
-                        <h2 className="text-xs tracking-[0.2em] uppercase mb-2 font-bold opacity-90">
-                            Discover Your Signature Scent
-                        </h2>
-                        <h1 className="text-3xl md:text-5xl font-bold mb-3 leading-tight font-serif">
-                            Niche & Boutique <br /> Sample Collections
-                        </h1>
-                        <p className="text-sm md:text-base mb-4 font-light leading-relaxed text-gray-800">
-                            הדרך החכמה לגלות בשמי נישה יוקרתיים.<br />
-                            הזמינו דוגמיות 2 מ״ל, 5 מ״ל או 10 מ״ל לפני רכישת בקבוק מלא.
-                        </p>
-                        <Link href="/catalog" className="inline-block border border-black px-6 py-2 text-xs font-bold tracking-widest hover:bg-black hover:text-white transition duration-300 uppercase">
-                            Shop Now
-                        </Link>
-                    </div>
-
-                    <div className="absolute bottom-0 left-0 w-full z-20 h-[30%] flex items-end pb-8 bg-white">
-                        {/* LiveStats positioned in the white space below video */}
+                    {/* Stats Area - 40% Height (Attached to video) */}
+                    <div className="w-full h-[40%] flex items-start justify-center pt-8 bg-white relative z-20">
                         <div className="w-full">
                             <LiveStats stats={stats} />
                         </div>
