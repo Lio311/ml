@@ -16,7 +16,7 @@ export default async function LandingPage() {
         const client = await pool.connect();
 
         // Fetch New Arrivals
-        const res = await client.query('SELECT * FROM products WHERE stock > 0 ORDER BY created_at DESC LIMIT 5');
+        const res = await client.query('SELECT * FROM products WHERE stock > 0 ORDER BY created_at DESC LIMIT 6');
         newArrivals = res.rows;
 
         // Fetch Stats

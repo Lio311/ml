@@ -215,9 +215,9 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
 
                         {/* Grid Container */}
                         <div className="shrink-0 w-full flex justify-center z-10">
-                            {/* Wider grid (max-w-6xl) for 5 items and gap-4 */}
-                            <div className="grid grid-cols-2 md:grid-cols-5 gap-4 w-full max-w-6xl">
-                                {newArrivals.slice(0, 5).map((product) => (
+                            {/* Wider grid (max-w-7xl) for 6 items and gap-2 to fit them all */}
+                            <div className="grid grid-cols-2 md:grid-cols-6 gap-2 w-full max-w-7xl">
+                                {newArrivals.slice(0, 6).map((product) => (
                                     /* Fixed height container h-[220px] to match scale, removing excess whitespace */
                                     <div key={product.id} className="flex justify-center items-start h-[220px] md:h-[260px] overflow-visible">
                                         <div className="transform scale-[0.70] origin-top w-full flex justify-center">
@@ -229,8 +229,8 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
                         </div>
 
                         {/* Button Container */}
-                        {/* Pushed down significantly to compensate for the massive lift of the content above */}
-                        <div className="shrink-0 mt-48 relative z-30">
+                        {/* Raised button position (mt-24 instead of mt-48) */}
+                        <div className="shrink-0 mt-24 relative z-30">
                             <Link href="/catalog" className="inline-block bg-black text-white px-10 py-3 rounded-full text-sm font-bold tracking-widest uppercase hover:bg-gray-800 transition shadow-lg hover:scale-105 duration-300">
                                 צפייה בכל המוצרים
                             </Link>
