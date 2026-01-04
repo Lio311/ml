@@ -48,7 +48,7 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
     const [brandsParticles, setBrandsParticles] = useState([]);
 
     useEffect(() => {
-        setCollectionsParticles([...Array(150)].map(() => ({
+        setCollectionsParticles([...Array(800)].map(() => ({
             width: Math.random() * 30 + 10,
             height: Math.random() * 30 + 10,
             duration: Math.random() * 15 + 15,
@@ -56,13 +56,8 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
             initialY: Math.random() * 100
         })));
 
-        setBrandsParticles([...Array(100)].map(() => ({
-            width: Math.random() * 30 + 10,
-            height: Math.random() * 30 + 10,
-            duration: Math.random() * 15 + 15,
-            initialX: Math.random() * 100,
-            initialY: Math.random() * 100
-        })));
+        // Removed particles from Brands section as per "only here" request
+        setBrandsParticles([]);
     }, []);
 
     // Handle Scroll
@@ -430,39 +425,7 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
                     {/* Brands Part - White Background - 40% Height - Zero Gap */}
                     <div className="h-[40%] bg-white text-black flex flex-col justify-center relative overflow-hidden">
                         {/* Animated Particles Background for Brands too */}
-                        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                            {brandsParticles.map((p, i) => (
-                                <motion.div
-                                    key={i}
-                                    className="absolute top-0 left-0 opacity-20 pointer-events-none"
-                                    initial={{
-                                        x: p.initialX + "vw",
-                                        y: p.initialY + "vh",
-                                        rotate: 0
-                                    }}
-                                    animate={{
-                                        x: [
-                                            Math.random() * 100 + "vw",
-                                            Math.random() * 100 + "vw",
-                                            Math.random() * 100 + "vw",
-                                        ],
-                                        y: [
-                                            Math.random() * 100 + "vh",
-                                            Math.random() * 100 + "vh",
-                                            Math.random() * 100 + "vh",
-                                        ],
-                                        rotate: [0, -180, -360]
-                                    }}
-                                    transition={{
-                                        duration: p.duration,
-                                        repeat: Infinity,
-                                        ease: "linear",
-                                    }}
-                                >
-                                    <Molecule size={p.width} color="black" />
-                                </motion.div>
-                            ))}
-                        </div>
+                        {/* Particles removed from Brands section */}
                         <div className="w-full flex-1 flex items-center relative z-10">
                             <BrandCarousel brands={stats.allBrands} />
                         </div>
