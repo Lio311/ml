@@ -203,11 +203,11 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
                 </section>
 
                 {/* SECTION 2: NEW ARRIVALS */}
-                <section className="min-h-screen w-full relative flex flex-col justify-start items-center bg-white text-black p-4 pt-12 md:pt-20">
+                <section className="min-h-screen w-full relative flex flex-col justify-start items-center bg-white text-black p-4 pt-2 md:pt-4">
                     <div className="container mx-auto px-4 text-center flex flex-col items-center relative">
 
                         {/* Title */}
-                        {/* Pushed up by reducing section pt */}
+                        {/* Pushed up maximally */}
                         <div className="shrink-0 mb-6 relative z-20">
                             <h2 className="text-2xl tracking-[0.2em] uppercase mb-2 font-bold">חדש על המדף</h2>
                             <div className="w-10 h-0.5 bg-black mx-auto"></div>
@@ -229,8 +229,8 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
                         </div>
 
                         {/* Button Container */}
-                        {/* Pushed down to compensate for section pt reduction, keeping it in absolute position relative to bottom */}
-                        <div className="shrink-0 mt-32 relative z-30">
+                        {/* Pushed down significantly to compensate for the massive lift of the content above */}
+                        <div className="shrink-0 mt-48 relative z-30">
                             <Link href="/catalog" className="inline-block bg-black text-white px-10 py-3 rounded-full text-sm font-bold tracking-widest uppercase hover:bg-gray-800 transition shadow-lg hover:scale-105 duration-300">
                                 צפייה בכל המוצרים
                             </Link>
