@@ -220,7 +220,7 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
                                 {newArrivals.slice(0, 6).map((product) => (
                                     /* Fixed height container h-[220px] to match scale, removing excess whitespace */
                                     <div key={product.id} className="flex justify-center items-start h-[220px] md:h-[260px] overflow-visible">
-                                        <div className="transform scale-[0.70] origin-top w-full flex justify-center">
+                                        <div className="transform scale-[0.80] origin-top w-full flex justify-center">
                                             <ProductCard product={product} />
                                         </div>
                                     </div>
@@ -229,8 +229,8 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
                         </div>
 
                         {/* Button Container */}
-                        {/* Raised button position (mt-24 instead of mt-48) */}
-                        <div className="shrink-0 mt-24 relative z-30">
+                        {/* Raised button position further (mt-12 instead of mt-24) */}
+                        <div className="shrink-0 mt-12 relative z-30">
                             <Link href="/catalog" className="inline-block bg-black text-white px-10 py-3 rounded-full text-sm font-bold tracking-widest uppercase hover:bg-gray-800 transition shadow-lg hover:scale-105 duration-300">
                                 צפייה בכל המוצרים
                             </Link>
