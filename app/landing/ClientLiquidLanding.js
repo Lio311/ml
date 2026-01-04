@@ -164,21 +164,29 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
 
                 {/* SECTION 2: NEW ARRIVALS */}
                 <section className="h-screen w-full relative flex flex-col justify-center items-center bg-white text-black p-4">
-                    <div className="container mx-auto px-4 text-center">
-                        <h2 className="text-3xl tracking-[0.2em] uppercase mb-3 font-bold">חדש על המדף</h2>
-                        <div className="w-10 h-0.5 bg-black mx-auto mb-8"></div>
-
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-6 max-h-[60vh] overflow-y-auto custom-scrollbar p-2">
-                            {newArrivals.slice(0, 4).map((product) => (
-                                <div key={product.id} className="h-full">
-                                    <ProductCard product={product} />
-                                </div>
-                            ))}
+                    <div className="container mx-auto px-4 text-center h-full flex flex-col justify-center">
+                        <div className="shrink-0 mb-2">
+                            <h2 className="text-2xl tracking-[0.2em] uppercase mb-2 font-bold">חדש על המדף</h2>
+                            <div className="w-8 h-0.5 bg-black mx-auto"></div>
                         </div>
 
-                        <Link href="/catalog" className="inline-block mt-8 bg-black text-white px-8 py-3 rounded-full font-bold tracking-widest uppercase hover:bg-gray-800 transition shadow-md">
-                            צפייה בכל המוצרים
-                        </Link>
+                        <div className="flex-1 min-h-0 flex items-center justify-center py-2">
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 w-full max-w-6xl max-h-full">
+                                {newArrivals.slice(0, 4).map((product) => (
+                                    <div key={product.id} className="h-full flex flex-col justify-center">
+                                        <div className="transform scale-90 origin-center h-full">
+                                            <ProductCard product={product} />
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div className="shrink-0 mt-4">
+                            <Link href="/catalog" className="inline-block bg-black text-white px-8 py-3 rounded-full font-bold tracking-widest uppercase hover:bg-gray-800 transition shadow-md">
+                                צפייה בכל המוצרים
+                            </Link>
+                        </div>
                     </div>
                 </section>
 
