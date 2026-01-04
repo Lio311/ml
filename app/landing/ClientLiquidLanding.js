@@ -123,57 +123,53 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
             >
                 {/* SECTION 1: HERO */}
                 <section className="h-screen w-full relative flex items-center justify-center overflow-hidden bg-white">
-                    <div className="absolute top-[-20%] left-0 w-full h-[140%] z-0">
+                    {/* Video Reduced Height */}
+                    <div className="absolute top-0 left-0 w-full h-[70%] z-0">
                         <video
                             src="/hero-video.mp4"
                             autoPlay muted loop playsInline
                             className="w-full h-full object-cover"
                         />
-                    </div>    {/* Overlay just like homepage? Page.js doesn't have a dark overlay in code, but bg-gray-100 animate-pulse behind it.
-                             Wait, homepage code has `absolute inset-0 z-10 container ... text-black`.
-                             The video is styled with `scale-[1.05]`.
-                             The content box has `bg-white/80 p-4 md:p-6 rounded-xl backdrop-blur-sm`.
-                         */}
+                    </div>
 
-                    <div className="relative z-10 text-center text-black bg-white/80 p-8 rounded-xl backdrop-blur-sm shadow-sm max-w-lg mx-4">
-                        <h2 className="text-sm tracking-[0.2em] uppercase mb-2 font-bold opacity-90">
+                    <div className="relative z-10 text-center text-black bg-white/80 p-6 rounded-xl backdrop-blur-sm shadow-sm max-w-lg mx-4 mt-[-10vh]">
+                        <h2 className="text-xs tracking-[0.2em] uppercase mb-2 font-bold opacity-90">
                             Discover Your Signature Scent
                         </h2>
-                        <h1 className="text-4xl md:text-6xl font-bold mb-4 leading-tight font-serif">
+                        <h1 className="text-3xl md:text-5xl font-bold mb-3 leading-tight font-serif">
                             Niche & Boutique <br /> Sample Collections
                         </h1>
-                        <p className="text-base md:text-lg mb-6 font-light leading-relaxed text-gray-800">
+                        <p className="text-sm md:text-base mb-4 font-light leading-relaxed text-gray-800">
                             הדרך החכמה לגלות בשמי נישה יוקרתיים.<br />
                             הזמינו דוגמיות 2 מ״ל, 5 מ״ל או 10 מ״ל לפני רכישת בקבוק מלא.
                         </p>
-                        <Link href="/catalog" className="inline-block border border-black px-8 py-3 text-sm font-bold tracking-widest hover:bg-black hover:text-white transition duration-300 uppercase">
+                        <Link href="/catalog" className="inline-block border border-black px-6 py-2 text-xs font-bold tracking-widest hover:bg-black hover:text-white transition duration-300 uppercase">
                             Shop Now
                         </Link>
                     </div>
 
-                    <div className="absolute bottom-0 left-0 w-full z-20">
-                        {/* LiveStats from components */}
-                        <LiveStats stats={stats} />
-                    </div>
-
-                    <div className="absolute bottom-20 left-1/2 -translate-x-1/2 animate-bounce text-white drop-shadow-md z-20 pointer-events-none">
-                        <ChevronDown size={32} />
+                    <div className="absolute bottom-0 left-0 w-full z-20 h-[30%] flex items-end pb-8 bg-white">
+                        {/* LiveStats positioned in the white space below video */}
+                        <div className="w-full">
+                            <LiveStats stats={stats} />
+                        </div>
                     </div>
                 </section>
 
                 {/* SECTION 2: NEW ARRIVALS */}
                 <section className="h-screen w-full relative flex flex-col justify-center items-center bg-white text-black p-4">
                     <div className="container mx-auto px-4 text-center h-full flex flex-col justify-center">
-                        <div className="shrink-0 mb-2">
-                            <h2 className="text-2xl tracking-[0.2em] uppercase mb-2 font-bold">חדש על המדף</h2>
+                        <div className="shrink-0 mb-1">
+                            <h2 className="text-xl tracking-[0.2em] uppercase mb-1 font-bold">חדש על המדף</h2>
                             <div className="w-8 h-0.5 bg-black mx-auto"></div>
                         </div>
 
-                        <div className="flex-1 min-h-0 flex items-center justify-center py-2">
-                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 w-full max-w-6xl max-h-full">
+                        <div className="flex-1 min-h-0 flex items-center justify-center py-1">
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-2 w-full max-w-6xl max-h-full">
                                 {newArrivals.slice(0, 4).map((product) => (
                                     <div key={product.id} className="h-full flex flex-col justify-center">
-                                        <div className="transform scale-90 origin-center h-full">
+                                        {/* Reduced scale further to 75% */}
+                                        <div className="transform scale-75 origin-center h-full">
                                             <ProductCard product={product} />
                                         </div>
                                     </div>
@@ -181,8 +177,8 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
                             </div>
                         </div>
 
-                        <div className="shrink-0 mt-4">
-                            <Link href="/catalog" className="inline-block bg-black text-white px-8 py-3 rounded-full font-bold tracking-widest uppercase hover:bg-gray-800 transition shadow-md">
+                        <div className="shrink-0 mt-2">
+                            <Link href="/catalog" className="inline-block bg-black text-white px-6 py-2 rounded-full text-sm font-bold tracking-widest uppercase hover:bg-gray-800 transition shadow-md">
                                 צפייה בכל המוצרים
                             </Link>
                         </div>
