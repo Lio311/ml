@@ -182,7 +182,7 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
                             </div>
                         </div>
 
-                        <div className="shrink-0 -mt-8 relative z-30">
+                        <div className="shrink-0 -mt-24 md:-mt-32 relative z-30">
                             <Link href="/catalog" className="inline-block bg-black text-white px-8 py-3 rounded-full text-sm font-bold tracking-widest uppercase hover:bg-gray-800 transition shadow-lg">
                                 צפייה בכל המוצרים
                             </Link>
