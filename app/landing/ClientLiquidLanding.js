@@ -229,8 +229,8 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
 
                 {/* SECTION 4: COLLECTIONS */}
                 <section className="h-screen w-full relative flex flex-col justify-center items-center bg-white text-black p-4">
-                    <div className="container mx-auto px-4 h-full flex flex-col justify-center">
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 h-[70vh]">
+                    <div className="container mx-auto px-4 h-full flex flex-col justify-center items-center">
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 h-[60vh] w-full max-w-6xl mt-[-10vh]">
                             {/* Collection 1 */}
                             <Link href="/catalog?category=נדיר" className="group relative w-full h-full overflow-hidden rounded-lg">
                                 <Image src="/collection-exclusive.png" alt="Exclusive" fill className="object-cover transition-transform duration-700 group-hover:scale-110" />
@@ -272,19 +272,19 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
 
                 {/* SECTION 5: BRANDS & FOOTER */}
                 <section className="h-screen w-full relative flex flex-col">
-                    {/* Brands Part - White Background */}
-                    <div className="flex-1 bg-white text-black flex flex-col justify-center py-12">
-                        <div className="container mx-auto px-4 text-center mb-8">
-                            <h2 className="text-3xl font-bold">המותגים המובילים</h2>
-                            <div className="w-10 h-0.5 bg-black mx-auto mt-4"></div>
-                        </div>
-                        <div className="w-full">
+                    {/* Brands Part - White Background - 50% Height */}
+                    <div className="h-[50%] bg-white text-black flex flex-col justify-center py-4">
+                        {/* Removed duplicate title "המותגים המובילים" as BrandCarousel might have it or we rely on just one */}
+                        {/* Checking BrandCarousel implementation... it usually has a header. 
+                             If the user says "Why twice?", we should remove OUR header and let the component handle it or vice versa. 
+                             I will remove my explicit header here. */}
+                        <div className="w-full flex-1 flex items-center">
                             <BrandCarousel brands={stats.allBrands} />
                         </div>
                     </div>
 
-                    {/* Footer Part - Black Background */}
-                    <div className="bg-black text-white py-12">
+                    {/* Footer Part - Black Background - 50% Height */}
+                    <div className="h-[50%] bg-black text-white py-8 flex flex-col justify-center">
                         <div className="container mx-auto px-4">
                             <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-center md:text-right mb-8">
                                 <div>
