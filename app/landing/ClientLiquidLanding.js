@@ -144,12 +144,12 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
                             <h1 className={`${dancingScript.className} text-4xl md:text-6xl font-bold mb-3 leading-tight`}>
                                 Niche & Boutique <br /> Sample Collections
                             </h1>
-                            <p className="text-sm md:text-base mb-4 font-light leading-relaxed text-gray-800">
+                            <p className="text-sm md:text-base mb-6 font-light leading-relaxed text-gray-800">
                                 הדרך החכמה לגלות בשמי נישה יוקרתיים.<br />
                                 הזמינו דוגמיות 2 מ״ל, 5 מ״ל או 10 מ״ל לפני רכישת בקבוק מלא.
                             </p>
-                            <Link href="/catalog" className="inline-block border border-black px-6 py-2 text-xs font-bold tracking-widest hover:bg-black hover:text-white transition duration-300 uppercase">
-                                Shop Now
+                            <Link href="/catalog" className="inline-block bg-white text-black px-8 py-3 rounded-full font-bold text-lg shadow-lg hover:bg-gray-100 transition-transform hover:scale-105 duration-300">
+                                קנית אותי, בוא נתחיל
                             </Link>
                         </div>
                     </div>
@@ -192,36 +192,35 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
                 </section>
 
                 {/* SECTION 3: BONUSES */}
-                <section className="h-screen w-full relative flex flex-col justify-center items-center bg-black text-white p-4 pb-32">
-                    <div className="container mx-auto px-4 text-center">
+                <section className="h-screen w-full relative flex flex-col justify-center items-center bg-black text-white overflow-hidden p-4">
+                    <div className="container mx-auto px-4 text-center pb-32">
                         <h2 className="text-3xl font-bold mb-2">הבונוסים שלנו</h2>
-                        <p className="text-gray-400 mb-8 max-w-2xl mx-auto">
-                            ככל שסכום ההזמנה גבוה יותר, כך אנחנו מפנקים יותר.
-                            <br />
-                            <span className="text-xs text-gray-500">* הדוגמיות נבחרות על ידי הצוות שלנו בהתאם למלאי ולטעם שלכם.</span>
-                        </p>
+                        <p className="text-gray-400 mb-2 text-sm">ככל שסכום ההזמנה גבוה יותר, כך אנחנו מפנקים יותר.</p>
+                        <p className="text-gray-500 text-xs mb-8">* הדוגמיות נבחרות על ידי הצוות שלנו בהתאם למלאי ולטעם שלכם.</p>
 
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
                             {/* Tier 1 */}
-                            <div className="bg-zinc-900 p-8 rounded-xl border border-zinc-800 text-center transition hover:-translate-y-2 hover:shadow-xl hover:shadow-zinc-800/50">
-                                <div className="text-lg font-bold text-gray-400 mb-2">בקנייה מעל 300 ₪</div>
-                                <div className="text-3xl font-bold mb-4 text-white">2 דוגמיות מתנה</div>
-                                <div className="text-sm text-gray-500">בגודל 2 מ״ל</div>
+                            <div className="bg-white/5 border border-white/10 rounded-xl p-6 backdrop-blur-sm">
+                                <span className="block text-gray-400 text-sm mb-2">בקנייה מעל 300 ₪</span>
+                                <h3 className="text-2xl font-bold mb-2">2 דוגמיות מתנה</h3>
+                                <p className="text-gray-500 text-sm">בגודל 2 מ״ל</p>
                             </div>
 
-                            {/* Tier 2 */}
-                            <div className="bg-zinc-900 p-8 rounded-xl border-2 border-white text-center relative shadow-xl transform md:-translate-y-4 transition hover:-translate-y-6 hover:shadow-white/20">
-                                <div className="absolute top-0 right-0 bg-white text-black text-xs px-3 py-1 rounded-bl-lg rounded-tr-xl font-bold">מומלץ</div>
-                                <div className="text-lg font-bold text-gray-300 mb-2">בקנייה מעל 500 ₪</div>
-                                <div className="text-3xl font-bold mb-4 text-white">4 דוגמיות מתנה</div>
-                                <div className="text-sm text-gray-500">בגודל 2 מ״ל</div>
+                            {/* Tier 2 - Highlighted */}
+                            <div className="bg-white/10 border border-white/30 rounded-xl p-8 transform scale-105 shadow-2xl relative">
+                                <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-white text-black px-3 py-1 rounded-full text-xs font-bold">
+                                    מומלץ
+                                </div>
+                                <span className="block text-gray-300 text-sm mb-2">בקנייה מעל 500 ₪</span>
+                                <h3 className="text-3xl font-bold mb-2">4 דוגמיות מתנה</h3>
+                                <p className="text-gray-400 text-sm">בגודל 2 מ״ל</p>
                             </div>
 
                             {/* Tier 3 */}
-                            <div className="bg-zinc-900 p-8 rounded-xl border border-zinc-800 text-center transition hover:-translate-y-2 hover:shadow-xl hover:shadow-zinc-800/50">
-                                <div className="text-lg font-bold text-gray-400 mb-2">בקנייה מעל 1000 ₪</div>
-                                <div className="text-3xl font-bold mb-4 text-white">6 דוגמיות מתנה</div>
-                                <div className="text-sm text-gray-500">בגודל 2 מ״ל</div>
+                            <div className="bg-white/5 border border-white/10 rounded-xl p-6 backdrop-blur-sm">
+                                <span className="block text-gray-400 text-sm mb-2">בקנייה מעל 1000 ₪</span>
+                                <h3 className="text-2xl font-bold mb-2">6 דוגמיות מתנה</h3>
+                                <p className="text-gray-500 text-sm">בגודל 2 מ״ל</p>
                             </div>
                         </div>
                     </div>
@@ -230,7 +229,8 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
                 {/* SECTION 4: COLLECTIONS */}
                 <section className="h-screen w-full relative flex flex-col justify-center items-center bg-white text-black p-4">
                     <div className="container mx-auto px-4 h-full flex flex-col justify-center items-center">
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 h-[60vh] w-full max-w-6xl mt-[-10vh]">
+                        {/* Shrunken and lifted grid */}
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 h-[50vh] w-full max-w-6xl mt-[-15vh]">
                             {/* Collection 1 */}
                             <Link href="/catalog?category=נדיר" className="group relative w-full h-full overflow-hidden rounded-lg">
                                 <Image src="/collection-exclusive.png" alt="Exclusive" fill className="object-cover transition-transform duration-700 group-hover:scale-110" />
@@ -272,12 +272,8 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
 
                 {/* SECTION 5: BRANDS & FOOTER */}
                 <section className="h-screen w-full relative flex flex-col">
-                    {/* Brands Part - White Background - 50% Height */}
-                    <div className="h-[50%] bg-white text-black flex flex-col justify-center py-4">
-                        {/* Removed duplicate title "המותגים המובילים" as BrandCarousel might have it or we rely on just one */}
-                        {/* Checking BrandCarousel implementation... it usually has a header. 
-                             If the user says "Why twice?", we should remove OUR header and let the component handle it or vice versa. 
-                             I will remove my explicit header here. */}
+                    {/* Brands Part - White Background - 50% Height - Zero Gap */}
+                    <div className="h-[50%] bg-white text-black flex flex-col justify-center">
                         <div className="w-full flex-1 flex items-center">
                             <BrandCarousel brands={stats.allBrands} />
                         </div>
