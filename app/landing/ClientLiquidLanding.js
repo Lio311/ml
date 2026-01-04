@@ -1,10 +1,10 @@
 'use client';
 
 import { useState, useRef, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, useScroll, useTransform, useSpring } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
-import { Menu, X, ChevronDown, ArrowLeft } from 'lucide-react';
+import { ArrowLeft, ArrowRight, ShoppingBag, Star, Menu, X, ChevronDown, Instagram } from 'lucide-react';
 import ProductCard from '../components/ProductCard';
 import BrandCarousel from '../components/BrandCarousel';
 import LiveStats from '../components/LiveStats';
@@ -228,22 +228,28 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
                             <div className="w-24 h-1 bg-gradient-to-r from-transparent via-white to-transparent mx-auto rounded-full opacity-70"></div>
                         </motion.div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto perspective-1000">
-                            {/* Tier 1 */}
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto perspective-1000" dir="rtl">
+                            {/* Tier 1 - Left in RTL (Highest? No, 300 is Lowest. 300 should be Rightmost in visual RTL flow)
+                                In standard RTL Grid: Col 1 is Right. Col 2 Middle. Col 3 Left.
+                                So we want 300 ₪ (Lowest) at Col 1 (Right).
+                            */}
+
+                            {/* Tier: 300 NIS */}
                             <motion.div
                                 whileHover={{ scale: 1.05, rotateY: 5, z: 50 }}
-                                initial={{ opacity: 0, x: -50 }}
+                                initial={{ opacity: 0, x: 50 }}
                                 whileInView={{ opacity: 1, x: 0 }}
                                 transition={{ type: "spring", stiffness: 100, delay: 0.1 }}
                                 className="group relative bg-white/5 border border-white/10 p-8 rounded-2xl backdrop-blur-xl shadow-2xl hover:bg-white/10 transition-all duration-500 flex flex-col items-center border-t-white/20 border-l-white/20"
                             >
                                 <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                                 <div className="text-4xl mb-4 opacity-50 group-hover:opacity-100 transition-opacity">✨</div>
-                                <h3 className="text-2xl font-bold mb-2 text-white">בקנייה מעל 299 ₪</h3>
-                                <p className="text-gray-300 text-lg group-hover:text-white transition-colors">משלוח חינם עד הבית</p>
+                                <h3 className="text-2xl font-bold mb-2 text-white">בקנייה מעל 300 ₪</h3>
+                                <p className="text-gray-300 text-lg group-hover:text-white transition-colors">2 דוגמיות מתנה</p>
+                                <p className="text-white/60 text-xs mt-4 group-hover:text-white/80 transition-colors">*בגודל 2 מ"ל</p>
                             </motion.div>
 
-                            {/* Tier 2 - Highlighted */}
+                            {/* Tier: 500 NIS - Highlighted */}
                             <motion.div
                                 whileHover={{ scale: 1.1, rotateY: 0, z: 80 }}
                                 initial={{ opacity: 0, y: 50 }}
@@ -256,23 +262,23 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
                                 </div>
                                 <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                                 <div className="text-5xl mb-6 opacity-80 group-hover:opacity-100 transition-all group-hover:scale-110 duration-500">🎁</div>
-                                <h3 className="text-3xl font-bold mb-3 text-white">בקנייה מעל 399 ₪</h3>
-                                <p className="text-gray-200 text-xl font-medium group-hover:text-white transition-colors">דוגמית מתנה לבחירה</p>
+                                <h3 className="text-3xl font-bold mb-3 text-white">בקנייה מעל 500 ₪</h3>
+                                <p className="text-gray-200 text-xl font-medium group-hover:text-white transition-colors">4 דוגמיות מתנה</p>
                                 <p className="text-white/60 text-xs mt-4 group-hover:text-white/80 transition-colors">*בגודל 2 מ"ל</p>
                             </motion.div>
 
-                            {/* Tier 3 */}
+                            {/* Tier: 1000 NIS */}
                             <motion.div
                                 whileHover={{ scale: 1.05, rotateY: -5, z: 50 }}
-                                initial={{ opacity: 0, x: 50 }}
+                                initial={{ opacity: 0, x: -50 }}
                                 whileInView={{ opacity: 1, x: 0 }}
                                 transition={{ type: "spring", stiffness: 100, delay: 0.3 }}
                                 className="group relative bg-white/5 border border-white/10 p-8 rounded-2xl backdrop-blur-xl shadow-2xl hover:bg-white/10 transition-all duration-500 flex flex-col items-center border-t-white/20 border-l-white/20"
                             >
                                 <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                                 <div className="text-4xl mb-4 opacity-50 group-hover:opacity-100 transition-opacity">💎</div>
-                                <h3 className="text-2xl font-bold mb-2 text-white">בקנייה מעל 499 ₪</h3>
-                                <p className="text-gray-300 text-lg group-hover:text-white transition-colors">2 דוגמיות מתנה לבחירה</p>
+                                <h3 className="text-2xl font-bold mb-2 text-white">בקנייה מעל 1000 ₪</h3>
+                                <p className="text-gray-300 text-lg group-hover:text-white transition-colors">6 דוגמיות מתנה</p>
                                 <p className="text-white/60 text-xs mt-4 group-hover:text-white/80 transition-colors">*בגודל 2 מ"ל</p>
                             </motion.div>
                         </div>
