@@ -328,7 +328,7 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
                         {collectionsParticles.map((p, i) => (
                             <motion.div
                                 key={i}
-                                className="absolute bg-gray-500 rounded-full opacity-100"
+                                className="absolute bg-black rounded-full opacity-20 top-0 left-0"
                                 initial={{
                                     width: p.width,
                                     height: p.height,
@@ -407,7 +407,7 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
                             {brandsParticles.map((p, i) => (
                                 <motion.div
                                     key={i}
-                                    className="absolute bg-gray-500 rounded-full opacity-100"
+                                    className="absolute bg-black rounded-full opacity-20 top-0 left-0"
                                     initial={{
                                         width: p.width,
                                         height: p.height,
