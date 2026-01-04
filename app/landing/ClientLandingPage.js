@@ -203,7 +203,7 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
                 </section>
 
                 {/* SECTION 2: NEW ARRIVALS */}
-                <section className="min-h-screen w-full relative flex flex-col justify-start items-center bg-white text-black p-4 pt-2 md:pt-4">
+                <section className="min-h-screen w-full relative flex flex-col justify-start items-center bg-white text-black p-4 pt-0">
                     <div className="container mx-auto px-4 text-center flex flex-col items-center relative">
 
                         {/* Title */}
@@ -215,9 +215,9 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
 
                         {/* Grid Container */}
                         <div className="shrink-0 w-full flex justify-center z-10">
-                            {/* Wider grid (max-w-5xl) and gap-4 to prevent crowding */}
-                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 w-full max-w-5xl">
-                                {newArrivals.slice(0, 4).map((product) => (
+                            {/* Wider grid (max-w-6xl) for 5 items and gap-4 */}
+                            <div className="grid grid-cols-2 md:grid-cols-5 gap-4 w-full max-w-6xl">
+                                {newArrivals.slice(0, 5).map((product) => (
                                     /* Fixed height container h-[220px] to match scale, removing excess whitespace */
                                     <div key={product.id} className="flex justify-center items-start h-[220px] md:h-[260px] overflow-visible">
                                         <div className="transform scale-[0.70] origin-top w-full flex justify-center">
