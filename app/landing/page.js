@@ -4,7 +4,7 @@ import ClientLandingPage from './ClientLandingPage';
 export const revalidate = 3600;
 
 export const metadata = {
-    title: "Landing Page | ml_tlv",
+    title: "דף הבית | ml_tlv",
     description: "Niche & Boutique Sample Collections",
 };
 

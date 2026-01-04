@@ -14,6 +14,29 @@ import { Dancing_Script } from 'next/font/google';
 
 const dancingScript = Dancing_Script({ subsets: ['latin'] });
 
+const Molecule = ({ size = 40, color = "currentColor", className = "" }) => (
+    <svg
+        width={size}
+        height={size}
+        viewBox="0 0 100 100"
+        fill="none"
+        stroke={color}
+        strokeWidth="5"
+        className={className}
+        xmlns="http://www.w3.org/2000/svg"
+    >
+        {/* Hexagonal Structure roughly mimicking the user's image */}
+        <circle cx="20" cy="50" r="6" fill={color} stroke="none" />
+        <circle cx="50" cy="30" r="6" fill={color} stroke="none" />
+        <circle cx="80" cy="50" r="6" fill={color} stroke="none" />
+        <circle cx="50" cy="70" r="6" fill={color} stroke="none" />
+
+        <path d="M20 50 L50 30 L80 50 L50 70 Z" strokeLinecap="round" strokeLinejoin="round" />
+        <line x1="50" y1="30" x2="50" y2="10" strokeLinecap="round" />
+        <circle cx="50" cy="10" r="6" fill={color} stroke="none" />
+    </svg>
+);
+
 export default function ClientLiquidLanding({ newArrivals, stats }) {
     const [currentSection, setCurrentSection] = useState(0);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -330,12 +353,11 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
                         {collectionsParticles.map((p, i) => (
                             <motion.div
                                 key={i}
-                                className="absolute bg-black rounded-full opacity-20 top-0 left-0"
+                                className="absolute top-0 left-0 opacity-20 pointer-events-none"
                                 initial={{
-                                    width: p.width,
-                                    height: p.height,
                                     x: p.initialX + "vw",
                                     y: p.initialY + "vh",
+                                    rotate: 0
                                 }}
                                 animate={{
                                     x: [
@@ -348,13 +370,16 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
                                         Math.random() * 100 + "vh",
                                         Math.random() * 100 + "vh",
                                     ],
+                                    rotate: [0, 180, 360]
                                 }}
                                 transition={{
                                     duration: p.duration,
                                     repeat: Infinity,
                                     ease: "linear",
                                 }}
-                            />
+                            >
+                                <Molecule size={p.width} color="black" />
+                            </motion.div>
                         ))}
                     </div>
 
@@ -409,12 +434,11 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
                             {brandsParticles.map((p, i) => (
                                 <motion.div
                                     key={i}
-                                    className="absolute bg-black rounded-full opacity-20 top-0 left-0"
+                                    className="absolute top-0 left-0 opacity-20 pointer-events-none"
                                     initial={{
-                                        width: p.width,
-                                        height: p.height,
                                         x: p.initialX + "vw",
                                         y: p.initialY + "vh",
+                                        rotate: 0
                                     }}
                                     animate={{
                                         x: [
@@ -427,13 +451,16 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
                                             Math.random() * 100 + "vh",
                                             Math.random() * 100 + "vh",
                                         ],
+                                        rotate: [0, -180, -360]
                                     }}
                                     transition={{
                                         duration: p.duration,
                                         repeat: Infinity,
                                         ease: "linear",
                                     }}
-                                />
+                                >
+                                    <Molecule size={p.width} color="black" />
+                                </motion.div>
                             ))}
                         </div>
                         <div className="w-full flex-1 flex items-center relative z-10">
