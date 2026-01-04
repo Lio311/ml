@@ -348,11 +348,11 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
                     </div>
 
                     {/* Footer Part - Black Background - 60% Height */}
-                    <div className="h-[60%] bg-black text-white pt-12 md:pt-16 pb-8 flex flex-col justify-start">
+                    <div className="h-[60%] bg-black text-white pt-8 md:pt-10 pb-4 flex flex-col justify-start">
                         <div className="container mx-auto px-4">
-                            <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-center md:text-right mb-12">
+                            <div className="grid grid-cols-1 md:grid-cols-4 gap-6 text-center md:text-right mb-6">
                                 <div>
-                                    <h3 className="text-lg font-bold mb-4 text-white">ml_tlv</h3>
+                                    <h3 className="text-lg font-bold mb-3 text-white">ml_tlv</h3>
                                     <p className="text-sm text-gray-400 leading-relaxed">
                                         דוגמיות בשמים יוקרתיות במחירים הוגנים.
                                         <br />
@@ -360,23 +360,23 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
                                     </p>
                                 </div>
                                 <div>
-                                    <h3 className="text-lg font-bold mb-4 text-white">שירות לקוחות</h3>
-                                    <ul className="space-y-3 text-sm text-gray-400">
+                                    <h3 className="text-lg font-bold mb-3 text-white">שירות לקוחות</h3>
+                                    <ul className="space-y-2 text-sm text-gray-400">
                                         <li><Link href="/about" className="hover:text-white transition-colors">אודות</Link></li>
                                         <li><Link href="/faq" className="hover:text-white transition-colors">שאלות ותשובות</Link></li>
                                         <li><Link href="/contact" className="hover:text-white transition-colors">צור קשר</Link></li>
                                     </ul>
                                 </div>
                                 <div>
-                                    <h3 className="text-lg font-bold mb-4 text-white">מידע ונהלים</h3>
-                                    <ul className="space-y-3 text-sm text-gray-400">
+                                    <h3 className="text-lg font-bold mb-3 text-white">מידע ונהלים</h3>
+                                    <ul className="space-y-2 text-sm text-gray-400">
                                         <li><Link href="/terms" className="hover:text-white transition-colors">תקנון האתר</Link></li>
                                         <li><Link href="/shipping" className="hover:text-white transition-colors">משלוחים והחזרות</Link></li>
                                         <li><Link href="/privacy" className="hover:text-white transition-colors">מדיניות פרטיות</Link></li>
                                     </ul>
                                 </div>
                                 <div>
-                                    <h3 className="text-lg font-bold mb-4 text-white">עקבו אחרינו</h3>
+                                    <h3 className="text-lg font-bold mb-3 text-white">עקבו אחרינו</h3>
                                     <a href="https://instagram.com/ml_tlv" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-3 text-gray-400 hover:text-white transition-colors justify-center md:justify-start group">
                                         <span className="p-2 bg-white/10 rounded-full group-hover:bg-white/20 transition-colors">
                                             <Instagram size={20} />
@@ -385,7 +385,7 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
                                     </a>
                                 </div>
                             </div>
-                            <div className="pt-8 border-t border-gray-800 text-center text-sm text-gray-500">
+                            <div className="pt-4 border-t border-gray-800 text-center text-sm text-gray-500">
                                 © 2024 ml_tlv. כל הזכויות שמורות.
                             </div>
                         </div>
