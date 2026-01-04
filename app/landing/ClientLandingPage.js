@@ -439,17 +439,24 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
                                         <li><Link href="/terms" className="hover:text-white transition-colors">תקנון האתר</Link></li>
                                         <li><Link href="/shipping" className="hover:text-white transition-colors">משלוחים והחזרות</Link></li>
                                         <li><Link href="/privacy" className="hover:text-white transition-colors">מדיניות פרטיות</Link></li>
-                                        <li><Link href="/magazine" className="hover:text-white transition-colors">מגזין הבישום</Link></li>
                                     </ul>
                                 </div>
                                 <div>
                                     <h3 className="text-lg font-bold mb-3 text-white">עקבו אחרינו</h3>
-                                    <a href="https://instagram.com/ml_tlv" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-3 text-gray-400 hover:text-white transition-colors justify-center md:justify-start group">
-                                        <span className="p-2 bg-white/10 rounded-full group-hover:bg-white/20 transition-colors">
-                                            <Instagram size={20} />
-                                        </span>
-                                        <span>@ml_tlv</span>
-                                    </a>
+                                    <div className="flex flex-col gap-3">
+                                        <a href="https://instagram.com/ml_tlv" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-3 text-gray-400 hover:text-white transition-colors justify-center md:justify-start group">
+                                            <span className="p-2 bg-white/10 rounded-full group-hover:bg-white/20 transition-colors">
+                                                <Instagram size={20} />
+                                            </span>
+                                            <span>@ml_tlv</span>
+                                        </a>
+                                        <Link href="/magazine" className="inline-flex items-center gap-3 text-gray-400 hover:text-white transition-colors justify-center md:justify-start group">
+                                            <span className="p-2 bg-white/10 rounded-full group-hover:bg-white/20 transition-colors">
+                                                <Sparkles size={20} />
+                                            </span>
+                                            <span>מגזין הבישום</span>
+                                        </Link>
+                                    </div>
                                 </div>
                             </div>
                             <div className="pt-4 border-t border-gray-800 text-center text-sm text-gray-500">
