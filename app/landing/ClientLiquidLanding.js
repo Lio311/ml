@@ -14,7 +14,7 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
     const [currentSection, setCurrentSection] = useState(0);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const containerRef = useRef(null);
-    const sectionsCount = 6; // Hero, New Arrivals, Bonuses, Brands, Collections, Footer
+    const sectionsCount = 5; // Hero, New Arrivals, Bonuses, Collections, Brands+Footer
 
     // Handle Scroll
     useEffect(() => {
@@ -225,15 +225,7 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
                     </div>
                 </section>
 
-                {/* SECTION 4: BRANDS */}
-                <section className="h-screen w-full relative flex flex-col justify-center bg-white text-black p-4">
-                    {/* Used BrandCarousel component which has its own padding/layout. We assume it fits decently. */}
-                    <div className="w-full">
-                        <BrandCarousel brands={stats.allBrands} />
-                    </div>
-                </section>
-
-                {/* SECTION 5: COLLECTIONS */}
+                {/* SECTION 4: COLLECTIONS */}
                 <section className="h-screen w-full relative flex flex-col justify-center items-center bg-white text-black p-4">
                     <div className="container mx-auto px-4 h-full flex flex-col justify-center">
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 h-[70vh]">
@@ -276,43 +268,58 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
                     </div>
                 </section>
 
-                {/* SECTION 6: FOOTER */}
-                <section className="h-screen w-full relative flex flex-col justify-center items-center bg-black text-white p-4">
-                    {/* Copied from Footer.js Structure */}
-                    <div className="container grid grid-cols-1 md:grid-cols-4 gap-8 text-center md:text-right mb-12">
-                        <div>
-                            <h3 className="text-lg font-bold mb-4">ml_tlv</h3>
-                            <p className="text-sm text-gray-400">
-                                דוגמיות בשמים יוקרתיות במחירים הוגנים.
-                                <br />
-                                נבחרו בקפידה כדי שתמצאו את הריח שלכם.
-                            </p>
+                {/* SECTION 5: BRANDS & FOOTER */}
+                <section className="h-screen w-full relative flex flex-col">
+                    {/* Brands Part - White Background */}
+                    <div className="flex-1 bg-white text-black flex flex-col justify-center py-12">
+                        <div className="container mx-auto px-4 text-center mb-8">
+                            <h2 className="text-3xl font-bold">המותגים המובילים</h2>
+                            <div className="w-10 h-0.5 bg-black mx-auto mt-4"></div>
                         </div>
-                        <div>
-                            <h3 className="text-lg font-bold mb-4">שירות לקוחות</h3>
-                            <ul className="space-y-2 text-sm text-gray-400">
-                                <li><Link href="/about" className="hover:text-white">אודות</Link></li>
-                                <li><Link href="/faq" className="hover:text-white">שאלות ותשובות</Link></li>
-                                <li><Link href="/contact" className="hover:text-white">צור קשר</Link></li>
-                            </ul>
-                        </div>
-                        <div>
-                            <h3 className="text-lg font-bold mb-4">מידע ונהלים</h3>
-                            <ul className="space-y-2 text-sm text-gray-400">
-                                <li><Link href="/terms" className="hover:text-white">תקנון האתר</Link></li>
-                                <li><Link href="/shipping" className="hover:text-white">משלוחים והחזרות</Link></li>
-                                <li><Link href="/privacy" className="hover:text-white">מדיניות פרטיות</Link></li>
-                            </ul>
-                        </div>
-                        <div>
-                            <h3 className="text-lg font-bold mb-4">עקבו אחרינו</h3>
-                            <a href="https://instagram.com/ml_tlv" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-gray-400 hover:text-white transition justify-center md:justify-start">
-                                <span>@ml_tlv</span>
-                            </a>
+                        <div className="w-full">
+                            <BrandCarousel brands={stats.allBrands} />
                         </div>
                     </div>
-                    <div className="container pt-4 border-t border-gray-800 text-center text-xs text-gray-500">
-                        © 2024 ml_tlv. כל הזכויות שמורות.
+
+                    {/* Footer Part - Black Background */}
+                    <div className="bg-black text-white py-12">
+                        <div className="container mx-auto px-4">
+                            <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-center md:text-right mb-8">
+                                <div>
+                                    <h3 className="text-lg font-bold mb-4">ml_tlv</h3>
+                                    <p className="text-sm text-gray-400">
+                                        דוגמיות בשמים יוקרתיות במחירים הוגנים.
+                                        <br />
+                                        נבחרו בקפידה כדי שתמצאו את הריח שלכם.
+                                    </p>
+                                </div>
+                                <div>
+                                    <h3 className="text-lg font-bold mb-4">שירות לקוחות</h3>
+                                    <ul className="space-y-2 text-sm text-gray-400">
+                                        <li><Link href="/about" className="hover:text-white">אודות</Link></li>
+                                        <li><Link href="/faq" className="hover:text-white">שאלות ותשובות</Link></li>
+                                        <li><Link href="/contact" className="hover:text-white">צור קשר</Link></li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h3 className="text-lg font-bold mb-4">מידע ונהלים</h3>
+                                    <ul className="space-y-2 text-sm text-gray-400">
+                                        <li><Link href="/terms" className="hover:text-white">תקנון האתר</Link></li>
+                                        <li><Link href="/shipping" className="hover:text-white">משלוחים והחזרות</Link></li>
+                                        <li><Link href="/privacy" className="hover:text-white">מדיניות פרטיות</Link></li>
+                                    </ul>
+                                </div>
+                                <div>
+                                    <h3 className="text-lg font-bold mb-4">עקבו אחרינו</h3>
+                                    <a href="https://instagram.com/ml_tlv" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-gray-400 hover:text-white transition justify-center md:justify-start">
+                                        <span>@ml_tlv</span>
+                                    </a>
+                                </div>
+                            </div>
+                            <div className="pt-4 border-t border-gray-800 text-center text-xs text-gray-500">
+                                © 2024 ml_tlv. כל הזכויות שמורות.
+                            </div>
+                        </div>
                     </div>
                 </section>
 
