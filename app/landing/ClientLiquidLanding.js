@@ -201,7 +201,7 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
                                 x: [0, 100, 0],
                                 y: [0, -50, 0]
                             }}
-                            transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                            transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
                             className="absolute -top-1/2 -left-1/2 w-[150vw] h-[150vw] bg-gradient-to-br from-purple-900/30 via-blue-900/20 to-transparent rounded-full blur-3xl opacity-50 mix-blend-screen"
                         />
                         <motion.div
@@ -211,17 +211,17 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
                                 x: [0, -100, 0],
                                 y: [0, 100, 0]
                             }}
-                            transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
+                            transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
                             className="absolute -bottom-1/2 -right-1/2 w-[150vw] h-[150vw] bg-gradient-to-tl from-indigo-900/30 via-pink-900/20 to-transparent rounded-full blur-3xl opacity-50 mix-blend-screen"
                         />
                     </div>
 
-                    <div className="container mx-auto px-4 text-center pb-12 relative z-10">
+                    <div className="container mx-auto px-4 text-center pb-20 relative z-10 -mt-16">
                         <motion.div
                             initial={{ opacity: 0, y: 50 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.8 }}
-                            className="shrink-0 mb-12"
+                            className="shrink-0 mb-8"
                         >
                             <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-white via-gray-200 to-gray-500 drop-shadow-lg tracking-[0.1em] uppercase">הבונוסים שלנו</h2>
                             <p className="text-gray-300 text-lg mb-2">ככל שסכום ההזמנה גבוה יותר, כך אנחנו מפנקים יותר</p>
@@ -229,11 +229,6 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
                         </motion.div>
 
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto perspective-1000" dir="rtl">
-                            {/* Tier 1 - Left in RTL (Highest? No, 300 is Lowest. 300 should be Rightmost in visual RTL flow)
-                                In standard RTL Grid: Col 1 is Right. Col 2 Middle. Col 3 Left.
-                                So we want 300 ₪ (Lowest) at Col 1 (Right).
-                            */}
-
                             {/* Tier: 300 NIS */}
                             <motion.div
                                 whileHover={{ scale: 1.05, rotateY: 5, z: 50 }}
@@ -295,8 +290,41 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
                 </section>
 
                 {/* SECTION 4: COLLECTIONS */}
-                <section className="h-screen w-full relative flex flex-col justify-center items-center bg-white text-black p-4">
-                    <div className="container mx-auto px-4 h-full flex flex-col justify-center items-center">
+                <section className="h-screen w-full relative flex flex-col justify-center items-center bg-white text-black p-4 overflow-hidden">
+                    {/* Animated Particles Background */}
+                    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                        {[...Array(20)].map((_, i) => (
+                            <motion.div
+                                key={i}
+                                className="absolute bg-gray-200 rounded-full opacity-30"
+                                initial={{
+                                    width: Math.random() * 20 + 10,
+                                    height: Math.random() * 20 + 10,
+                                    x: Math.random() * 100 + "vw",
+                                    y: Math.random() * 100 + "vh",
+                                }}
+                                animate={{
+                                    x: [
+                                        Math.random() * 100 + "vw",
+                                        Math.random() * 100 + "vw",
+                                        Math.random() * 100 + "vw",
+                                    ],
+                                    y: [
+                                        Math.random() * 100 + "vh",
+                                        Math.random() * 100 + "vh",
+                                        Math.random() * 100 + "vh",
+                                    ],
+                                }}
+                                transition={{
+                                    duration: Math.random() * 10 + 20,
+                                    repeat: Infinity,
+                                    ease: "linear",
+                                }}
+                            />
+                        ))}
+                    </div>
+
+                    <div className="container mx-auto px-4 relative z-10 h-full flex flex-col justify-center items-center">
                         {/* Shrunken and lifted grid */}
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 h-[50vh] w-full max-w-6xl mt-[-15vh]">
                             {/* Collection 1 */}
@@ -341,8 +369,40 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
                 {/* SECTION 5: BRANDS & FOOTER */}
                 <section className="h-screen w-full relative flex flex-col">
                     {/* Brands Part - White Background - 40% Height - Zero Gap */}
-                    <div className="h-[40%] bg-white text-black flex flex-col justify-center">
-                        <div className="w-full flex-1 flex items-center">
+                    <div className="h-[40%] bg-white text-black flex flex-col justify-center relative overflow-hidden">
+                        {/* Animated Particles Background for Brands too */}
+                        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                            {[...Array(15)].map((_, i) => (
+                                <motion.div
+                                    key={i}
+                                    className="absolute bg-gray-200 rounded-full opacity-30"
+                                    initial={{
+                                        width: Math.random() * 15 + 5,
+                                        height: Math.random() * 15 + 5,
+                                        x: Math.random() * 100 + "vw",
+                                        y: Math.random() * 100 + "vh",
+                                    }}
+                                    animate={{
+                                        x: [
+                                            Math.random() * 100 + "vw",
+                                            Math.random() * 100 + "vw",
+                                            Math.random() * 100 + "vw",
+                                        ],
+                                        y: [
+                                            Math.random() * 100 + "vh",
+                                            Math.random() * 100 + "vh",
+                                            Math.random() * 100 + "vh",
+                                        ],
+                                    }}
+                                    transition={{
+                                        duration: Math.random() * 10 + 20,
+                                        repeat: Infinity,
+                                        ease: "linear",
+                                    }}
+                                />
+                            ))}
+                        </div>
+                        <div className="w-full flex-1 flex items-center relative z-10">
                             <BrandCarousel brands={stats.allBrands} />
                         </div>
                     </div>
