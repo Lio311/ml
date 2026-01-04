@@ -5,6 +5,26 @@ import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowLeft, Menu, X, ChevronDown } from 'lucide-react';
+import ProductCard from '../components/ProductCard';
+import BrandCarousel from '../components/BrandCarousel';
+
+function Counter({ end, duration = 2000, prefix = "" }) {
+    const [count, setCount] = useState(0);
+
+    useEffect(() => {
+        let startTime = null;
+        const step = (timestamp) => {
+            if (!startTime) startTime = timestamp;
+            const progress = Math.min((timestamp - startTime) / duration, 1);
+            const easeOutQuad = (t) => t * (2 - t);
+            setCount(Math.floor(easeOutQuad(progress) * end));
+            if (progress < 1) window.requestAnimationFrame(step);
+        };
+        window.requestAnimationFrame(step);
+    }, [end, duration]);
+
+    return <span>{prefix}{count.toLocaleString()}</span>;
+}
 
 export default function ClientLiquidLanding({ newArrivals, stats }) {
     const [currentSection, setCurrentSection] = useState(0);
@@ -179,15 +199,15 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
                         <div className="h-[1px] w-full bg-[#15161b]/20 mb-8"></div>
                         <div className="grid grid-cols-2 gap-8">
                             <div>
-                                <div className="text-4xl font-bold">{stats.products}</div>
+                                <div className="text-4xl font-bold"><Counter end={stats.products} /></div>
                                 <div className="text-sm uppercase opacity-70">Unique Scents</div>
                             </div>
                             <div>
-                                <div className="text-4xl font-bold">{stats.brands}</div>
+                                <div className="text-4xl font-bold"><Counter end={stats.brands} /></div>
                                 <div className="text-sm uppercase opacity-70">Global Brands</div>
                             </div>
                             <div>
-                                <div className="text-4xl font-bold">{stats.samples}+</div>
+                                <div className="text-4xl font-bold"><Counter end={stats.samples} prefix="+" /></div>
                                 <div className="text-sm uppercase opacity-70">Samples Sold</div>
                             </div>
                         </div>
@@ -217,21 +237,17 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
                         </h2>
                         <div className="h-[1px] w-full bg-white/20 mb-8"></div>
 
-                        <div className="space-y-4">
-                            {newArrivals.slice(0, 3).map((product) => (
-                                <div key={product.id} className="flex justify-between items-center p-4 border border-white/10 hover:bg-white/5 transition cursor-pointer group">
-                                    <div>
-                                        <div className="font-bold text-lg">{product.name}</div>
-                                        <div className="text-xs text-gray-500">{product.brand}</div>
-                                    </div>
-                                    <ArrowLeft className="opacity-0 group-hover:opacity-100 transition -translate-x-2 group-hover:translate-x-0" />
+                        <div className="grid grid-cols-2 gap-6">
+                            {newArrivals.slice(0, 4).map((product) => (
+                                <div key={product.id} className="h-full">
+                                    <ProductCard product={product} />
                                 </div>
                             ))}
                         </div>
 
-                        <button className="mt-8 px-8 py-4 bg-[#ff4015] text-white font-bold uppercase tracking-wider hover:bg-[#d52700] transition self-start flex items-center gap-4">
+                        <Link href="/catalog" className="mt-8 px-8 py-4 bg-[#ff4015] text-white font-bold uppercase tracking-wider hover:bg-[#d52700] transition self-start flex items-center gap-4 inline-block">
                             View All <ArrowLeft size={16} />
-                        </button>
+                        </Link>
                     </div>
                 </section>
 
@@ -249,13 +265,28 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
                             <p className="text-2xl md:text-3xl font-light mb-12 opacity-90">
                                 Get free samples with every order over ₪300.
                             </p>
-                            <div className="flex flex-wrap justify-center gap-4">
-                                {[1, 2, 3].map((num) => (
-                                    <div key={num} className="w-40 h-40 border-2 border-white/30 rounded-full flex flex-col items-center justify-center backdrop-blur-sm">
-                                        <span className="text-4xl font-bold">{num}</span>
-                                        <span className="text-xs uppercase">Sample</span>
-                                    </div>
-                                ))}
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
+                                {/* Tier 1 */}
+                                <div className="bg-white/10 backdrop-blur-md p-8 rounded-xl border border-white/20 text-center relative overflow-hidden hover:bg-white/20 transition duration-300">
+                                    <div className="text-lg font-bold text-white/80 mb-2">בקנייה מעל 300 ₪</div>
+                                    <div className="text-3xl font-bold mb-4 text-white">2 דוגמיות מתנה</div>
+                                    <div className="text-sm text-white/60">בגודל 2 מ״ל</div>
+                                </div>
+
+                                {/* Tier 2 */}
+                                <div className="bg-white/20 backdrop-blur-md p-8 rounded-xl border-2 border-white text-center relative shadow-xl transform md:-translate-y-4 hover:-translate-y-6 transition duration-300">
+                                    <div className="absolute top-0 right-0 bg-white text-[#f7572b] text-xs px-3 py-1 rounded-bl-lg rounded-tr-xl font-bold">מומלץ</div>
+                                    <div className="text-lg font-bold text-white/90 mb-2">בקנייה מעל 500 ₪</div>
+                                    <div className="text-3xl font-bold mb-4 text-white">4 דוגמיות מתנה</div>
+                                    <div className="text-sm text-white/80">בגודל 2 מ״ל</div>
+                                </div>
+
+                                {/* Tier 3 */}
+                                <div className="bg-white/10 backdrop-blur-md p-8 rounded-xl border border-white/20 text-center relative overflow-hidden hover:bg-white/20 transition duration-300">
+                                    <div className="text-lg font-bold text-white/80 mb-2">בקנייה מעל 1000 ₪</div>
+                                    <div className="text-3xl font-bold mb-4 text-white">6 דוגמיות מתנה</div>
+                                    <div className="text-sm text-white/60">בגודל 2 מ״ל</div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -273,23 +304,8 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
                     </div>
 
                     <div className="flex-1 overflow-hidden relative">
-                        <div className="absolute inset-0 flex items-center">
-                            {/* Marquee effect */}
-                            <motion.div
-                                animate={{ x: ["0%", "-50%"] }}
-                                transition={{ repeat: Infinity, duration: 20, ease: "linear" }}
-                                className="flex gap-20 px-20 whitespace-nowrap"
-                            >
-                                {[...stats.allBrands, ...stats.allBrands].map((brand, i) => (
-                                    <div key={i} className="flex flex-col items-center justify-center w-64 h-64 bg-white/5 border border-white/10 rounded-lg shrink-0">
-                                        {brand.logo_url ? (
-                                            <img src={brand.logo_url} alt={brand.name} className="max-w-[70%] max-h-[70%] grayscale hover:grayscale-0 transition duration-500" />
-                                        ) : (
-                                            <span className="text-2xl font-bold text-gray-500">{brand.name}</span>
-                                        )}
-                                    </div>
-                                ))}
-                            </motion.div>
+                        <div className="absolute inset-0 flex items-center bg-white">
+                            <BrandCarousel brands={stats.allBrands} />
                         </div>
                     </div>
                 </section>
