@@ -99,18 +99,33 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
             <div className="w-full md:w-1/2 overflow-y-auto bg-[#1a1c20]">
                 {/* Project Links Style Menu */}
                 <div className="grid grid-cols-1">
-                    {[
-                        { title: "Home", color: "#f6bb00", num: "01", link: "/" },
-                        { title: "New Arrivals", color: "#ff4015", num: "02", link: "/products" },
-                        { title: "Brands", color: "#f7572b", num: "03", link: "/brands" },
-                        { title: "Samples", color: "#ed2c64", num: "04", link: "/samples" },
-                    ].map((item, i) => (
-                        <Link href={item.link} key={i} className="group relative h-40 flex items-center px-12 border-b border-gray-800 hover:bg-white/5 transition overflow-hidden">
-                            <div className="absolute inset-0 opacity-0 group-hover:opacity-10 transition duration-500" style={{ backgroundColor: item.color }}></div>
-                            <span className="text-xs font-bold px-2 py-1 mr-6 rounded text-black" style={{ backgroundColor: item.color }}>{item.num}</span>
-                            <span className="text-3xl font-bold text-white group-hover:translate-x-4 transition duration-300">{item.title}</span>
-                        </Link>
-                    ))}
+                    <div className="flex-1 min-h-0 grid grid-cols-1 md:grid-cols-3 gap-4 overflow-hidden">
+                        {[
+                            { title: 'EXCLUSIVE FRAGRANCES', subtitle: 'The Most', img: '/collection-exclusive.png', link: 'נדיר' },
+                            { title: 'SUMMER SCENTS', subtitle: 'The Best', img: '/collection-summer.png', link: 'קיץ' },
+                            { title: 'DATE NIGHT ESSENTIALS', subtitle: 'Choose your favorite', img: '/collection-datenight.png', link: 'ערב' },
+                        ].map((col, i) => (
+                            <Link href={`/catalog?category=${col.link}`} key={i} className="relative group overflow-hidden rounded-2xl w-full h-full block">
+                                <div className="relative w-full h-full bg-gray-200">
+                                    <Image
+                                        src={col.img}
+                                        alt={col.title}
+                                        fill
+                                        className="object-cover transition-transform duration-700 group-hover:scale-110"
+                                    />
+                                    <div className="absolute inset-0 bg-black/30 group-hover:bg-black/50 transition-colors" />
+                                    <div className="absolute inset-0 flex flex-col items-center justify-center text-white z-10 text-center p-4">
+                                        <span className="text-xs md:text-sm tracking-[0.2em] uppercase mb-2">{col.subtitle}</span>
+                                        <h3 className="text-2xl md:text-3xl font-serif font-medium tracking-wide leading-tight mb-4">{col.title.split(' ').map((line, k) => <span key={k} className="block">{line}</span>)}</h3>
+                                        <div className="w-8 h-0.5 bg-white mb-4" />
+                                        <span className="text-xs font-bold underline decoration-1 underline-offset-4 opacity-0 group-hover:opacity-100 transition-opacity transform translate-y-4 group-hover:translate-y-0 duration-300">
+                                            Shop Collection
+                                        </span>
+                                    </div>
+                                </div>
+                            </Link>
+                        ))}
+                    </div>
                 </div>
             </div>
         </motion.div>
@@ -169,14 +184,11 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
                         >
                             MAKING <br /> SCENTS.
                         </motion.h1>
-                        <motion.p
-                            initial={{ opacity: 0 }}
-                            animate={{ opacity: currentSection === 0 ? 1 : 0 }}
-                            transition={{ delay: 0.6 }}
-                            className="text-xl md:text-2xl font-light text-gray-300"
-                        >
-                            Premium Fragrance Experience
-                        </motion.p>
+                        {/* 1. Header (Fixed Height) */}
+                        <div className="text-center mb-4 shrink-0 px-4">
+                            <h2 className="text-3xl md:text-5xl font-bold mb-2 text-white">הבונוסים שלנו</h2>
+                            <p className="text-lg text-white/60">ככל שסכום ההזמנה גבוה יותר, כך אנחנו מפנקים יותר.</p>
+                        </div>
                     </div>
 
                     <div className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce">
@@ -187,159 +199,135 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
 
                 {/* SECTION 2: STATS (Liquid Style Split) */}
                 <section className="h-screen w-full relative flex flex-col md:flex-row bg-[#e9eef3] text-[#15161b]">
-                    <div className="w-full md:w-1/2 p-12 md:p-24 flex flex-col justify-center relative z-10">
-                        <div className="mb-6 flex items-center gap-4">
-                            <span className="text-sm font-bold">01.</span>
-                            <div className="h-[2px] w-12 bg-[#15161b]"></div>
-                            <span className="text-sm uppercase tracking-wide">Live Data</span>
-                        </div>
-                        <h2 className="text-5xl md:text-7xl font-bold mb-8 leading-none">
-                            Vital <br /> Statistics
-                        </h2>
-                        <div className="h-[1px] w-full bg-[#15161b]/20 mb-8"></div>
-                        <div className="grid grid-cols-2 gap-8">
-                            <div>
-                                <div className="text-4xl font-bold"><Counter end={stats.products} /></div>
-                                <div className="text-sm uppercase opacity-70">Unique Scents</div>
+                </div>
+                {/* Visual Side */}
+                <div className="w-full md:w-1/2 bg-[#dadddf] relative overflow-hidden">
+                    {/* Abstract visual/image placeholder */}
+                    <div className="absolute inset-0 flex items-center justify-center opacity-10">
+                        <span className="text-[20rem] font-bold">ML</span>
+                    </div>
+                </div>
+            </section>
+
+            {/* SECTION 3: NEW ARRIVALS */}
+            <section className="h-screen w-full relative flex flex-col md:flex-row bg-[#1a1617] text-white">
+                <div className="w-full md:w-1/2 bg-[url('https://liquid.co.il/wp-content/uploads/2021/01/bg-8.jpg')] bg-cover bg-center relative">
+                    <div className="absolute inset-0 bg-black/50"></div>
+                </div>
+                <div className="w-full md:w-1/2 p-12 md:p-24 flex flex-col justify-center bg-[#1a1617]">
+                    <div className="mb-6 flex items-center gap-4 text-white">
+                        <span className="text-sm font-bold">02.</span>
+                        <div className="h-[2px] w-12 bg-white"></div>
+                        <span className="text-sm uppercase tracking-wide">Fresh Cuts</span>
+                    </div>
+                    <h2 className="text-5xl md:text-7xl font-bold mb-8 leading-none text-white">
+                        New <br /> Arrivals
+                    </h2>
+                    <div className="h-[1px] w-full bg-white/20 mb-8"></div>
+
+                    <div className="grid grid-cols-2 gap-6">
+                        {newArrivals.slice(0, 4).map((product) => (
+                            <div key={product.id} className="h-full">
+                                <ProductCard product={product} />
                             </div>
-                            <div>
-                                <div className="text-4xl font-bold"><Counter end={stats.brands} /></div>
-                                <div className="text-sm uppercase opacity-70">Global Brands</div>
-                            </div>
-                            <div>
-                                <div className="text-4xl font-bold"><Counter end={stats.samples} prefix="+" /></div>
-                                <div className="text-sm uppercase opacity-70">Samples Sold</div>
-                            </div>
-                        </div>
-                    </div>
-                    {/* Visual Side */}
-                    <div className="w-full md:w-1/2 bg-[#dadddf] relative overflow-hidden">
-                        {/* Abstract visual/image placeholder */}
-                        <div className="absolute inset-0 flex items-center justify-center opacity-10">
-                            <span className="text-[20rem] font-bold">ML</span>
-                        </div>
-                    </div>
-                </section>
-
-                {/* SECTION 3: NEW ARRIVALS */}
-                <section className="h-screen w-full relative flex flex-col md:flex-row bg-[#1a1617] text-white">
-                    <div className="w-full md:w-1/2 bg-[url('https://liquid.co.il/wp-content/uploads/2021/01/bg-8.jpg')] bg-cover bg-center relative">
-                        <div className="absolute inset-0 bg-black/50"></div>
-                    </div>
-                    <div className="w-full md:w-1/2 p-12 md:p-24 flex flex-col justify-center bg-[#1a1617]">
-                        <div className="mb-6 flex items-center gap-4 text-white">
-                            <span className="text-sm font-bold">02.</span>
-                            <div className="h-[2px] w-12 bg-white"></div>
-                            <span className="text-sm uppercase tracking-wide">Fresh Cuts</span>
-                        </div>
-                        <h2 className="text-5xl md:text-7xl font-bold mb-8 leading-none text-white">
-                            New <br /> Arrivals
-                        </h2>
-                        <div className="h-[1px] w-full bg-white/20 mb-8"></div>
-
-                        <div className="grid grid-cols-2 gap-6">
-                            {newArrivals.slice(0, 4).map((product) => (
-                                <div key={product.id} className="h-full">
-                                    <ProductCard product={product} />
-                                </div>
-                            ))}
-                        </div>
-
-                        <Link href="/catalog" className="mt-8 px-8 py-4 bg-[#ff4015] text-white font-bold uppercase tracking-wider hover:bg-[#d52700] transition self-start flex items-center gap-4 inline-block">
-                            View All <ArrowLeft size={16} />
-                        </Link>
-                    </div>
-                </section>
-
-                {/* SECTION 4: BONUSES (Liquid Color Pop) */}
-                <section className="h-screen w-full relative flex flex-col md:flex-row bg-[#e9eef3]">
-                    <div className="w-full h-full flex flex-col justify-center items-center p-12 text-center relative overflow-hidden">
-                        <div className="absolute inset-0 bg-[#f7572b] z-0"></div> {/* Orange/Red bg */}
-                        <div className="relative z-10 text-white max-w-4xl">
-                            <div className="mb-6 flex items-center justify-center gap-4">
-                                <span className="text-sm font-bold">03.</span>
-                                <div className="h-[2px] w-12 bg-white"></div>
-                                <span className="text-sm uppercase tracking-wide">Rewards</span>
-                            </div>
-                            <h2 className="text-6xl md:text-9xl font-bold mb-4">FREE <br /> SAMPLES</h2>
-                            <p className="text-2xl md:text-3xl font-light mb-12 opacity-90">
-                                Get free samples with every order over ₪300.
-                            </p>
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
-                                {/* Tier 1 */}
-                                <div className="bg-white/10 backdrop-blur-md p-8 rounded-xl border border-white/20 text-center relative overflow-hidden hover:bg-white/20 transition duration-300">
-                                    <div className="text-lg font-bold text-white/80 mb-2">בקנייה מעל 300 ₪</div>
-                                    <div className="text-3xl font-bold mb-4 text-white">2 דוגמיות מתנה</div>
-                                    <div className="text-sm text-white/60">בגודל 2 מ״ל</div>
-                                </div>
-
-                                {/* Tier 2 */}
-                                <div className="bg-white/20 backdrop-blur-md p-8 rounded-xl border-2 border-white text-center relative shadow-xl transform md:-translate-y-4 hover:-translate-y-6 transition duration-300">
-                                    <div className="absolute top-0 right-0 bg-white text-[#f7572b] text-xs px-3 py-1 rounded-bl-lg rounded-tr-xl font-bold">מומלץ</div>
-                                    <div className="text-lg font-bold text-white/90 mb-2">בקנייה מעל 500 ₪</div>
-                                    <div className="text-3xl font-bold mb-4 text-white">4 דוגמיות מתנה</div>
-                                    <div className="text-sm text-white/80">בגודל 2 מ״ל</div>
-                                </div>
-
-                                {/* Tier 3 */}
-                                <div className="bg-white/10 backdrop-blur-md p-8 rounded-xl border border-white/20 text-center relative overflow-hidden hover:bg-white/20 transition duration-300">
-                                    <div className="text-lg font-bold text-white/80 mb-2">בקנייה מעל 1000 ₪</div>
-                                    <div className="text-3xl font-bold mb-4 text-white">6 דוגמיות מתנה</div>
-                                    <div className="text-sm text-white/60">בגודל 2 מ״ל</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                {/* SECTION 5: BRANDS */}
-                <section className="h-screen w-full relative bg-[#1d1d20] text-white flex flex-col">
-                    <div className="p-12 md:p-24 pb-0">
-                        <div className="mb-6 flex items-center gap-4">
-                            <span className="text-sm font-bold">04.</span>
-                            <div className="h-[2px] w-12 bg-white"></div>
-                            <span className="text-sm uppercase tracking-wide">Curated</span>
-                        </div>
-                        <h2 className="text-5xl md:text-6xl font-bold">Our Brands</h2>
-                    </div>
-
-                    <div className="flex-1 overflow-hidden relative">
-                        <div className="absolute inset-0 flex items-center bg-white">
-                            <BrandCarousel brands={stats.allBrands} />
-                        </div>
-                    </div>
-                </section>
-
-                {/* SECTION 6: FOOTER / COLLECTIONS */}
-                <section className="h-screen w-full relative flex flex-col bg-black text-white p-12 md:p-24 justify-between">
-                    <div>
-                        <div className="mb-6 flex items-center gap-4">
-                            <span className="text-sm font-bold">05.</span>
-                            <div className="h-[2px] w-12 bg-white"></div>
-                            <span className="text-sm uppercase tracking-wide">Explore</span>
-                        </div>
-                        <h2 className="text-5xl md:text-7xl font-bold mb-12">Start Your <br /> Journey.</h2>
-                    </div>
-
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-                        {['Men', 'Women', 'Unisex'].map((col) => (
-                            <Link href={`/collections/${col.toLowerCase()}`} key={col} className="h-48 border border-white/20 flex items-center justify-center text-3xl font-bold uppercase tracking-widest hover:bg-white hover:text-black transition duration-500">
-                                {col}
-                            </Link>
                         ))}
                     </div>
 
-                    <div className="border-t border-white/20 pt-8 flex justify-between items-end">
-                        <div>
-                            <p className="text-gray-500 text-sm">© 2024 ML TLV. All rights reserved.</p>
+                    <Link href="/catalog" className="mt-8 px-8 py-4 bg-[#ff4015] text-white font-bold uppercase tracking-wider hover:bg-[#d52700] transition self-start flex items-center gap-4 inline-block">
+                        View All <ArrowLeft size={16} />
+                    </Link>
+                </div>
+            </section>
+
+            {/* SECTION 4: BONUSES (Liquid Color Pop) */}
+            <section className="h-screen w-full relative flex flex-col md:flex-row bg-[#e9eef3]">
+                <div className="w-full h-full flex flex-col justify-center items-center p-12 text-center relative overflow-hidden">
+                    <div className="absolute inset-0 bg-[#f7572b] z-0"></div> {/* Orange/Red bg */}
+                    <div className="relative z-10 text-white max-w-4xl">
+                        <div className="mb-6 flex items-center justify-center gap-4">
+                            <span className="text-sm font-bold">03.</span>
+                            <div className="h-[2px] w-12 bg-white"></div>
+                            <span className="text-sm uppercase tracking-wide">Rewards</span>
                         </div>
-                        <div className="text-right">
-                            <p className="text-2xl font-bold">studio@liquid.co.il</p> {/* Left as homage or placeholder */}
+                        <h2 className="text-6xl md:text-9xl font-bold mb-4">FREE <br /> SAMPLES</h2>
+                        <p className="text-2xl md:text-3xl font-light mb-12 opacity-90">
+                            Get free samples with every order over ₪300.
+                        </p>
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full">
+                            {/* Tier 1 */}
+                            <div className="bg-white/10 backdrop-blur-md p-8 rounded-xl border border-white/20 text-center relative overflow-hidden hover:bg-white/20 transition duration-300">
+                                <div className="text-lg font-bold text-white/80 mb-2">בקנייה מעל 300 ₪</div>
+                                <div className="text-3xl font-bold mb-4 text-white">2 דוגמיות מתנה</div>
+                                <div className="text-sm text-white/60">בגודל 2 מ״ל</div>
+                            </div>
+
+                            {/* Tier 2 */}
+                            <div className="bg-white/20 backdrop-blur-md p-8 rounded-xl border-2 border-white text-center relative shadow-xl transform md:-translate-y-4 hover:-translate-y-6 transition duration-300">
+                                <div className="absolute top-0 right-0 bg-white text-[#f7572b] text-xs px-3 py-1 rounded-bl-lg rounded-tr-xl font-bold">מומלץ</div>
+                                <div className="text-lg font-bold text-white/90 mb-2">בקנייה מעל 500 ₪</div>
+                                <div className="text-3xl font-bold mb-4 text-white">4 דוגמיות מתנה</div>
+                                <div className="text-sm text-white/80">בגודל 2 מ״ל</div>
+                            </div>
+
+                            {/* Tier 3 */}
+                            <div className="bg-white/10 backdrop-blur-md p-8 rounded-xl border border-white/20 text-center relative overflow-hidden hover:bg-white/20 transition duration-300">
+                                <div className="text-lg font-bold text-white/80 mb-2">בקנייה מעל 1000 ₪</div>
+                                <div className="text-3xl font-bold mb-4 text-white">6 דוגמיות מתנה</div>
+                                <div className="text-sm text-white/60">בגודל 2 מ״ל</div>
+                            </div>
                         </div>
                     </div>
-                </section>
+                </div>
+            </section>
 
-            </motion.div>
-        </div>
+            {/* SECTION 5: BRANDS */}
+            <section className="h-screen w-full relative bg-[#1d1d20] text-white flex flex-col">
+                <div className="p-12 md:p-24 pb-0">
+                    <div className="mb-6 flex items-center gap-4">
+                        <span className="text-sm font-bold">04.</span>
+                        <div className="h-[2px] w-12 bg-white"></div>
+                        <span className="text-sm uppercase tracking-wide">Curated</span>
+                    </div>
+                    <h2 className="text-5xl md:text-6xl font-bold">Our Brands</h2>
+                </div>
+
+                <div className="flex-1 overflow-hidden relative">
+                    <div className="absolute inset-0 flex items-center bg-white">
+                        <BrandCarousel brands={stats.allBrands} />
+                    </div>
+                </div>
+            </section>
+
+            {/* SECTION 6: FOOTER / COLLECTIONS */}
+            <section className="h-screen w-full relative flex flex-col bg-black text-white p-12 md:p-24 justify-between">
+                <div>
+                    <div className="mb-6 flex items-center gap-4">
+                        <span className="text-sm font-bold">05.</span>
+                        <div className="h-[2px] w-12 bg-white"></div>
+                        <span className="text-sm uppercase tracking-wide">Explore</span>
+                    </div>
+                    <h2 className="text-5xl md:text-7xl font-bold mb-12">Start Your <br /> Journey.</h2>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    {['Men', 'Women', 'Unisex'].map((col) => (
+                        <Link href={`/collections/${col.toLowerCase()}`} key={col} className="h-48 border border-white/20 flex items-center justify-center text-3xl font-bold uppercase tracking-widest hover:bg-white hover:text-black transition duration-500">
+                            {col}
+                        </Link>
+                    ))}
+                </div>
+
+                <div className="border-t border-white/20 pt-8 flex justify-between items-end">
+                    <div>
+                        <p className="text-gray-500 text-sm">© 2024 ML TLV. All rights reserved.</p>
+                    </div>
+                    <div className="text-right">
+                        <p className="text-2xl font-bold">studio@liquid.co.il</p> {/* Left as homage or placeholder */}
+                    </div>
+                </div>
+            </section>
+
+        </motion.div>
+        </div >
     );
 }
