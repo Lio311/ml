@@ -164,17 +164,17 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
 
                 {/* SECTION 2: NEW ARRIVALS */}
                 <section className="h-screen w-full relative flex flex-col justify-center items-center bg-white text-black p-4">
-                    <div className="container mx-auto px-4 text-center h-full flex flex-col justify-start pt-24">
+                    <div className="container mx-auto px-4 text-center h-full flex flex-col justify-start pt-12">
                         <div className="shrink-0 mb-1">
                             <h2 className="text-xl tracking-[0.2em] uppercase mb-1 font-bold">חדש על המדף</h2>
                             <div className="w-8 h-0.5 bg-black mx-auto"></div>
                         </div>
 
                         <div className="flex-1 min-h-0 flex items-start justify-center py-0">
-                            <div className="grid grid-cols-2 md:grid-cols-4 gap-2 w-full max-w-6xl max-h-full">
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-1 w-full max-w-6xl max-h-full">
                                 {newArrivals.slice(0, 4).map((product) => (
-                                    <div key={product.id} className="h-full flex flex-col justify-start">
-                                        {/* Reduced scale further to 75% */}
+                                    <div key={product.id} className="h-full flex flex-col justify-start -mb-24">
+                                        {/* Reduced scale further to 75% and added negative margin to pull button up */}
                                         <div className="transform scale-75 origin-top h-full">
                                             <ProductCard product={product} />
                                         </div>
@@ -183,7 +183,7 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
                             </div>
                         </div>
 
-                        <div className="shrink-0 mt-2">
+                        <div className="shrink-0 mt-0 relative z-10">
                             <Link href="/catalog" className="inline-block bg-black text-white px-6 py-2 rounded-full text-sm font-bold tracking-widest uppercase hover:bg-gray-800 transition shadow-md">
                                 צפייה בכל המוצרים
                             </Link>
