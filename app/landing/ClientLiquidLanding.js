@@ -83,15 +83,32 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
             `}</style>
 
             {/* Header / Nav Trigger */}
-            <header className="fixed top-0 left-0 w-full z-40 p-6 flex justify-between items-center mix-blend-difference text-white">
-                <div className="text-2xl font-bold tracking-tighter">ml_tlv</div>
-                <button
-                    onClick={() => setIsMenuOpen(true)}
-                    className="flex items-center gap-2 group"
-                >
-                    <span className="hidden md:block text-sm uppercase tracking-widest font-bold">תפריט</span>
-                    <Menu size={24} />
-                </button>
+            <header className="fixed top-0 left-0 w-full z-40 px-6 py-4 flex justify-between items-center bg-white border-b border-gray-100 text-black">
+                <Link href="/">
+                    <span className="text-3xl font-serif font-bold tracking-tight text-black">ml-tlv.</span>
+                </Link>
+
+                {/* Desktop Nav - Matching Homepage */}
+                <div className="hidden md:flex items-center gap-8 text-sm font-bold tracking-wide">
+                    <Link href="/">דף הבית</Link>
+                    <Link href="/brands">מותגים</Link>
+                    <Link href="/catalog">קטלוג</Link>
+                    <Link href="/matching">התאמת מארזים</Link>
+                    <Link href="/request">בקשת בשמים</Link>
+                    <Link href="/contact">צור קשר</Link>
+                </div>
+
+                <div className="flex items-center gap-4">
+                    {/* Icons placeholder matching image */}
+                    <button className="p-2"><div className="w-5 h-5 border border-black rounded-full text-[10px] flex items-center justify-center">L</div></button>
+                    <button className="p-2 hidden md:block">🔍</button>
+                    <button
+                        onClick={() => setIsMenuOpen(true)}
+                        className="md:hidden flex items-center gap-2"
+                    >
+                        <Menu size={24} />
+                    </button>
+                </div>
             </header>
 
             <AnimatePresence>
@@ -106,11 +123,11 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
             >
                 {/* SECTION 1: HERO */}
                 <section className="h-screen w-full relative flex items-center justify-center overflow-hidden bg-white">
-                    <div className="absolute inset-0 z-0">
+                    <div className="absolute top-[-100px] left-0 w-full h-[calc(100%+100px)] z-0">
                         <video
                             src="/hero-video.mp4"
                             autoPlay muted loop playsInline
-                            className="w-full h-full object-cover scale-[1.05]"
+                            className="w-full h-full object-cover"
                         />
                         {/* Overlay just like homepage? Page.js doesn't have a dark overlay in code, but bg-gray-100 animate-pulse behind it. 
                              Wait, homepage code has `absolute inset-0 z-10 container ... text-black`.
