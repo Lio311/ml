@@ -321,37 +321,35 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
                 <section className="h-screen w-full relative flex flex-col justify-center items-center bg-white text-black p-4 overflow-hidden">
                     {/* Animated Particles Background */}
                     <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                            {collectionsParticles.map((p, i) => (
-                                <motion.div
-                                    key={i}
-                                    className="absolute bg-gray-500 rounded-full opacity-100"
-                                    initial={{
-                                        width: p.width,
-                                        height: p.height,
-                                        x: p.initialX + "vw",
-                                        y: p.initialY + "vh",
-                                    }}
-                                    animate={{
-                                        x: [
-                                            Math.random() * 100 + "vw",
-                                            Math.random() * 100 + "vw",
-                                            Math.random() * 100 + "vw",
-                                        ],
-                                        y: [
-                                            Math.random() * 100 + "vh",
-                                            Math.random() * 100 + "vh",
-                                            Math.random() * 100 + "vh",
-                                        ],
-                                    }}
-                                    transition={{
-                                        duration: p.duration,
-                                        repeat: Infinity,
-                                        ease: "linear",
-                                    }}
-                                />
-                            ))}
-                        </div>
+                        {collectionsParticles.map((p, i) => (
+                            <motion.div
+                                key={i}
+                                className="absolute bg-gray-500 rounded-full opacity-100"
+                                initial={{
+                                    width: p.width,
+                                    height: p.height,
+                                    x: p.initialX + "vw",
+                                    y: p.initialY + "vh",
+                                }}
+                                animate={{
+                                    x: [
+                                        Math.random() * 100 + "vw",
+                                        Math.random() * 100 + "vw",
+                                        Math.random() * 100 + "vw",
+                                    ],
+                                    y: [
+                                        Math.random() * 100 + "vh",
+                                        Math.random() * 100 + "vh",
+                                        Math.random() * 100 + "vh",
+                                    ],
+                                }}
+                                transition={{
+                                    duration: p.duration,
+                                    repeat: Infinity,
+                                    ease: "linear",
+                                }}
+                            />
+                        ))}
                     </div>
 
                     <div className="container mx-auto px-4 relative z-10 h-full flex flex-col justify-center items-center">
