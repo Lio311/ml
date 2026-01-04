@@ -1,4 +1,4 @@
-import pool from '../../lib/db';
+import pool from '../lib/db';
 import ClientLandingV2 from './ClientLandingV2';
 
 export const metadata = {
