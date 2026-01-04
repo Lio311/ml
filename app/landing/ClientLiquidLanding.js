@@ -272,49 +272,49 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
 
                 {/* SECTION 5: BRANDS & FOOTER */}
                 <section className="h-screen w-full relative flex flex-col">
-                    {/* Brands Part - White Background - 50% Height - Zero Gap */}
-                    <div className="h-[50%] bg-white text-black flex flex-col justify-center">
+                    {/* Brands Part - White Background - 40% Height - Zero Gap */}
+                    <div className="h-[40%] bg-white text-black flex flex-col justify-center">
                         <div className="w-full flex-1 flex items-center">
                             <BrandCarousel brands={stats.allBrands} />
                         </div>
                     </div>
 
-                    {/* Footer Part - Black Background - 50% Height */}
-                    <div className="h-[50%] bg-black text-white py-8 flex flex-col justify-center">
+                    {/* Footer Part - Black Background - 60% Height */}
+                    <div className="h-[60%] bg-black text-white py-4 flex flex-col justify-center">
                         <div className="container mx-auto px-4">
-                            <div className="grid grid-cols-1 md:grid-cols-4 gap-8 text-center md:text-right mb-8">
+                            <div className="grid grid-cols-1 md:grid-cols-4 gap-4 text-center md:text-right mb-4">
                                 <div>
-                                    <h3 className="text-lg font-bold mb-4">ml_tlv</h3>
-                                    <p className="text-sm text-gray-400">
+                                    <h3 className="text-lg font-bold mb-2">ml_tlv</h3>
+                                    <p className="text-xs text-gray-400">
                                         דוגמיות בשמים יוקרתיות במחירים הוגנים.
                                         <br />
                                         נבחרו בקפידה כדי שתמצאו את הריח שלכם.
                                     </p>
                                 </div>
                                 <div>
-                                    <h3 className="text-lg font-bold mb-4">שירות לקוחות</h3>
-                                    <ul className="space-y-2 text-sm text-gray-400">
+                                    <h3 className="text-lg font-bold mb-2">שירות לקוחות</h3>
+                                    <ul className="space-y-1 text-xs text-gray-400">
                                         <li><Link href="/about" className="hover:text-white">אודות</Link></li>
                                         <li><Link href="/faq" className="hover:text-white">שאלות ותשובות</Link></li>
                                         <li><Link href="/contact" className="hover:text-white">צור קשר</Link></li>
                                     </ul>
                                 </div>
                                 <div>
-                                    <h3 className="text-lg font-bold mb-4">מידע ונהלים</h3>
-                                    <ul className="space-y-2 text-sm text-gray-400">
+                                    <h3 className="text-lg font-bold mb-2">מידע ונהלים</h3>
+                                    <ul className="space-y-1 text-xs text-gray-400">
                                         <li><Link href="/terms" className="hover:text-white">תקנון האתר</Link></li>
                                         <li><Link href="/shipping" className="hover:text-white">משלוחים והחזרות</Link></li>
                                         <li><Link href="/privacy" className="hover:text-white">מדיניות פרטיות</Link></li>
                                     </ul>
                                 </div>
                                 <div>
-                                    <h3 className="text-lg font-bold mb-4">עקבו אחרינו</h3>
+                                    <h3 className="text-lg font-bold mb-2">עקבו אחרינו</h3>
                                     <a href="https://instagram.com/ml_tlv" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-gray-400 hover:text-white transition justify-center md:justify-start">
                                         <span>@ml_tlv</span>
                                     </a>
                                 </div>
                             </div>
-                            <div className="pt-4 border-t border-gray-800 text-center text-xs text-gray-500">
+                            <div className="pt-2 border-t border-gray-800 text-center text-xs text-gray-500">
                                 © 2024 ml_tlv. כל הזכויות שמורות.
                             </div>
                         </div>
