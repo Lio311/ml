@@ -302,10 +302,10 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
                         {[...Array(20)].map((_, i) => (
                             <motion.div
                                 key={i}
-                                className="absolute bg-gray-200 rounded-full opacity-30"
+                                className="absolute bg-gray-500 rounded-full opacity-100"
                                 initial={{
-                                    width: Math.random() * 20 + 10,
-                                    height: Math.random() * 20 + 10,
+                                    width: Math.random() * 30 + 10,
+                                    height: Math.random() * 30 + 10,
                                     x: Math.random() * 100 + "vw",
                                     y: Math.random() * 100 + "vh",
                                 }}
@@ -322,7 +322,7 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
                                     ],
                                 }}
                                 transition={{
-                                    duration: Math.random() * 10 + 20,
+                                    duration: Math.random() * 15 + 15,
                                     repeat: Infinity,
                                     ease: "linear",
                                 }}
@@ -381,10 +381,10 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
                             {[...Array(15)].map((_, i) => (
                                 <motion.div
                                     key={i}
-                                    className="absolute bg-gray-400 rounded-full opacity-60"
+                                    className="absolute bg-gray-500 rounded-full opacity-100"
                                     initial={{
-                                        width: Math.random() * 15 + 5,
-                                        height: Math.random() * 15 + 5,
+                                        width: Math.random() * 30 + 10,
+                                        height: Math.random() * 30 + 10,
                                         x: Math.random() * 100 + "vw",
                                         y: Math.random() * 100 + "vh",
                                     }}
@@ -401,7 +401,7 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
                                         ],
                                     }}
                                     transition={{
-                                        duration: Math.random() * 10 + 20,
+                                        duration: Math.random() * 15 + 15,
                                         repeat: Infinity,
                                         ease: "linear",
                                     }}
