@@ -154,8 +154,8 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
                         </div>
                     </div>
 
-                    {/* Stats Area - 40% Height (Attached to video) */}
-                    <div className="w-full h-[40%] flex items-start justify-center pt-8 bg-white relative z-20">
+                    {/* Stats Area - 40% Height (Attached to video, Black Background to match) */}
+                    <div className="w-full h-[40%] flex items-start justify-center bg-black relative z-20">
                         <div className="w-full">
                             <LiveStats stats={stats} />
                         </div>
@@ -164,18 +164,17 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
 
                 {/* SECTION 2: NEW ARRIVALS */}
                 <section className="h-screen w-full relative flex flex-col justify-center items-center bg-white text-black p-4">
-                    <div className="container mx-auto px-4 text-center h-full flex flex-col justify-start pt-12">
-                        <div className="shrink-0 mb-1">
-                            <h2 className="text-xl tracking-[0.2em] uppercase mb-1 font-bold">חדש על המדף</h2>
-                            <div className="w-8 h-0.5 bg-black mx-auto"></div>
+                    <div className="container mx-auto px-4 text-center h-full flex flex-col justify-between pt-16 pb-8">
+                        <div className="shrink-0">
+                            <h2 className="text-2xl tracking-[0.2em] uppercase mb-4 font-bold">חדש על המדף</h2>
+                            <div className="w-10 h-0.5 bg-black mx-auto"></div>
                         </div>
 
-                        <div className="flex-1 min-h-0 flex items-start justify-center py-0">
-                            <div className="grid grid-cols-2 md:grid-cols-4 gap-1 w-full max-w-6xl max-h-full">
+                        <div className="flex-1 min-h-0 flex items-center justify-center">
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 w-full max-w-7xl">
                                 {newArrivals.slice(0, 4).map((product) => (
-                                    <div key={product.id} className="h-full flex flex-col justify-start -mb-24">
-                                        {/* Reduced scale further to 75% and added negative margin to pull button up */}
-                                        <div className="transform scale-75 origin-top h-full">
+                                    <div key={product.id} className="flex justify-center">
+                                        <div className="transform scale-90 origin-center">
                                             <ProductCard product={product} />
                                         </div>
                                     </div>
@@ -183,8 +182,8 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
                             </div>
                         </div>
 
-                        <div className="shrink-0 mt-0 relative z-10">
-                            <Link href="/catalog" className="inline-block bg-black text-white px-6 py-2 rounded-full text-sm font-bold tracking-widest uppercase hover:bg-gray-800 transition shadow-md">
+                        <div className="shrink-0">
+                            <Link href="/catalog" className="inline-block bg-black text-white px-8 py-3 rounded-full text-sm font-bold tracking-widest uppercase hover:bg-gray-800 transition shadow-lg">
                                 צפייה בכל המוצרים
                             </Link>
                         </div>
@@ -240,7 +239,7 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
                             >
                                 <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                                 <div className="text-4xl mb-4 opacity-50 group-hover:opacity-100 transition-opacity">✨</div>
-                                <h3 className="text-2xl font-bold mb-2 text-white">בקנייה מעל 299₪</h3>
+                                <h3 className="text-2xl font-bold mb-2 text-white">בקנייה מעל 299 ₪</h3>
                                 <p className="text-gray-300 text-lg group-hover:text-white transition-colors">משלוח חינם עד הבית</p>
                             </motion.div>
 
@@ -257,7 +256,7 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
                                 </div>
                                 <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                                 <div className="text-5xl mb-6 opacity-80 group-hover:opacity-100 transition-all group-hover:scale-110 duration-500">🎁</div>
-                                <h3 className="text-3xl font-bold mb-3 text-white">בקנייה מעל 399₪</h3>
+                                <h3 className="text-3xl font-bold mb-3 text-white">בקנייה מעל 399 ₪</h3>
                                 <p className="text-gray-200 text-xl font-medium group-hover:text-white transition-colors">דוגמית מתנה לבחירה</p>
                                 <p className="text-white/60 text-xs mt-4 group-hover:text-white/80 transition-colors">*בגודל 2 מ"ל</p>
                             </motion.div>
@@ -272,7 +271,7 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
                             >
                                 <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                                 <div className="text-4xl mb-4 opacity-50 group-hover:opacity-100 transition-opacity">💎</div>
-                                <h3 className="text-2xl font-bold mb-2 text-white">בקנייה מעל 499₪</h3>
+                                <h3 className="text-2xl font-bold mb-2 text-white">בקנייה מעל 499 ₪</h3>
                                 <p className="text-gray-300 text-lg group-hover:text-white transition-colors">2 דוגמיות מתנה לבחירה</p>
                                 <p className="text-white/60 text-xs mt-4 group-hover:text-white/80 transition-colors">*בגודל 2 מ"ל</p>
                             </motion.div>
