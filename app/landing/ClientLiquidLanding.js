@@ -190,7 +190,7 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
                 </section>
 
                 {/* SECTION 3: BONUSES */}
-                <section className="h-screen w-full relative flex flex-col justify-center items-center bg-black text-white p-4">
+                <section className="h-screen w-full relative flex flex-col justify-center items-center bg-black text-white p-4 pb-32">
                     <div className="container mx-auto px-4 text-center">
                         <h2 className="text-3xl font-bold mb-2">הבונוסים שלנו</h2>
                         <p className="text-gray-400 mb-8 max-w-2xl mx-auto">
