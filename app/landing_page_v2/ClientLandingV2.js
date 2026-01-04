@@ -54,12 +54,6 @@ export default function ClientLandingV2({ newArrivals, stats }) {
             bgColor: 'from-slate-50 via-slate-100 to-white',
             textColor: 'text-black',
             accentColor: 'slate'
-        },
-        {
-            id: 'footer',
-            type: 'footer',
-            title: 'יצירת קשר',
-            bgColor: 'hidden' // Special case for footer handling
         }
     ]
 
