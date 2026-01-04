@@ -20,6 +20,28 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
     const containerRef = useRef(null);
     const sectionsCount = 5; // Hero, New Arrivals, Bonuses, Collections, Brands+Footer
 
+    // Generate particles only on client to avoid hydration mismatch
+    const [collectionsParticles, setCollectionsParticles] = useState([]);
+    const [brandsParticles, setBrandsParticles] = useState([]);
+
+    useEffect(() => {
+        setCollectionsParticles([...Array(20)].map(() => ({
+            width: Math.random() * 30 + 10,
+            height: Math.random() * 30 + 10,
+            duration: Math.random() * 15 + 15,
+            initialX: Math.random() * 100,
+            initialY: Math.random() * 100
+        })));
+
+        setBrandsParticles([...Array(15)].map(() => ({
+            width: Math.random() * 30 + 10,
+            height: Math.random() * 30 + 10,
+            duration: Math.random() * 15 + 15,
+            initialX: Math.random() * 100,
+            initialY: Math.random() * 100
+        })));
+    }, []);
+
     // Handle Scroll
     useEffect(() => {
         const handleWheel = (e) => {
@@ -299,35 +321,37 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
                 <section className="h-screen w-full relative flex flex-col justify-center items-center bg-white text-black p-4 overflow-hidden">
                     {/* Animated Particles Background */}
                     <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                        {[...Array(20)].map((_, i) => (
-                            <motion.div
-                                key={i}
-                                className="absolute bg-gray-500 rounded-full opacity-100"
-                                initial={{
-                                    width: Math.random() * 30 + 10,
-                                    height: Math.random() * 30 + 10,
-                                    x: Math.random() * 100 + "vw",
-                                    y: Math.random() * 100 + "vh",
-                                }}
-                                animate={{
-                                    x: [
-                                        Math.random() * 100 + "vw",
-                                        Math.random() * 100 + "vw",
-                                        Math.random() * 100 + "vw",
-                                    ],
-                                    y: [
-                                        Math.random() * 100 + "vh",
-                                        Math.random() * 100 + "vh",
-                                        Math.random() * 100 + "vh",
-                                    ],
-                                }}
-                                transition={{
-                                    duration: Math.random() * 15 + 15,
-                                    repeat: Infinity,
-                                    ease: "linear",
-                                }}
-                            />
-                        ))}
+                        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                            {collectionsParticles.map((p, i) => (
+                                <motion.div
+                                    key={i}
+                                    className="absolute bg-gray-500 rounded-full opacity-100"
+                                    initial={{
+                                        width: p.width,
+                                        height: p.height,
+                                        x: p.initialX + "vw",
+                                        y: p.initialY + "vh",
+                                    }}
+                                    animate={{
+                                        x: [
+                                            Math.random() * 100 + "vw",
+                                            Math.random() * 100 + "vw",
+                                            Math.random() * 100 + "vw",
+                                        ],
+                                        y: [
+                                            Math.random() * 100 + "vh",
+                                            Math.random() * 100 + "vh",
+                                            Math.random() * 100 + "vh",
+                                        ],
+                                    }}
+                                    transition={{
+                                        duration: p.duration,
+                                        repeat: Infinity,
+                                        ease: "linear",
+                                    }}
+                                />
+                            ))}
+                        </div>
                     </div>
 
                     <div className="container mx-auto px-4 relative z-10 h-full flex flex-col justify-center items-center">
@@ -378,15 +402,15 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
                     <div className="h-[40%] bg-white text-black flex flex-col justify-center relative overflow-hidden">
                         {/* Animated Particles Background for Brands too */}
                         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                            {[...Array(15)].map((_, i) => (
+                            {brandsParticles.map((p, i) => (
                                 <motion.div
                                     key={i}
                                     className="absolute bg-gray-500 rounded-full opacity-100"
                                     initial={{
-                                        width: Math.random() * 30 + 10,
-                                        height: Math.random() * 30 + 10,
-                                        x: Math.random() * 100 + "vw",
-                                        y: Math.random() * 100 + "vh",
+                                        width: p.width,
+                                        height: p.height,
+                                        x: p.initialX + "vw",
+                                        y: p.initialY + "vh",
                                     }}
                                     animate={{
                                         x: [
@@ -401,7 +425,7 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
                                         ],
                                     }}
                                     transition={{
-                                        duration: Math.random() * 15 + 15,
+                                        duration: p.duration,
                                         repeat: Infinity,
                                         ease: "linear",
                                     }}
