@@ -164,17 +164,17 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
 
                 {/* SECTION 2: NEW ARRIVALS */}
                 <section className="h-screen w-full relative flex flex-col justify-center items-center bg-white text-black p-4">
-                    <div className="container mx-auto px-4 text-center h-full flex flex-col justify-between pt-16 pb-8">
+                    <div className="container mx-auto px-4 text-center h-full flex flex-col justify-between pt-8 pb-4">
                         <div className="shrink-0">
-                            <h2 className="text-2xl tracking-[0.2em] uppercase mb-4 font-bold">חדש על המדף</h2>
+                            <h2 className="text-2xl tracking-[0.2em] uppercase mb-2 font-bold">חדש על המדף</h2>
                             <div className="w-10 h-0.5 bg-black mx-auto"></div>
                         </div>
 
                         <div className="flex-1 min-h-0 flex items-center justify-center">
-                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 w-full max-w-7xl">
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-1 w-full max-w-7xl">
                                 {newArrivals.slice(0, 4).map((product) => (
                                     <div key={product.id} className="flex justify-center">
-                                        <div className="transform scale-90 origin-center">
+                                        <div className="transform scale-75 origin-center">
                                             <ProductCard product={product} />
                                         </div>
                                     </div>
@@ -182,7 +182,7 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
                             </div>
                         </div>
 
-                        <div className="shrink-0">
+                        <div className="shrink-0 -mt-12 md:-mt-16">
                             <Link href="/catalog" className="inline-block bg-black text-white px-8 py-3 rounded-full text-sm font-bold tracking-widest uppercase hover:bg-gray-800 transition shadow-lg">
                                 צפייה בכל המוצרים
                             </Link>
@@ -433,6 +433,7 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
                                         <li><Link href="/terms" className="hover:text-white transition-colors">תקנון האתר</Link></li>
                                         <li><Link href="/shipping" className="hover:text-white transition-colors">משלוחים והחזרות</Link></li>
                                         <li><Link href="/privacy" className="hover:text-white transition-colors">מדיניות פרטיות</Link></li>
+                                        <li><Link href="/magazine" className="hover:text-white transition-colors">מגזין הבישום</Link></li>
                                     </ul>
                                 </div>
                                 <div>
