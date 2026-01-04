@@ -4,7 +4,7 @@ import { useState, useRef, useEffect } from 'react';
 import { motion, useScroll, useTransform, useSpring, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import Image from 'next/image';
-import { ArrowLeft, ArrowRight, ShoppingBag, Star, Menu, X, ChevronDown, Instagram } from 'lucide-react';
+import { ArrowLeft, ArrowRight, ShoppingBag, Star, Menu, X, ChevronDown, Instagram, Gift, Sparkles, Diamond } from 'lucide-react';
 import ProductCard from '../components/ProductCard';
 import BrandCarousel from '../components/BrandCarousel';
 import LiveStats from '../components/LiveStats';
@@ -201,7 +201,7 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
                                 x: [0, 100, 0],
                                 y: [0, -50, 0]
                             }}
-                            transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+                            transition={{ duration: 6, repeat: Infinity, ease: "linear" }}
                             className="absolute -top-1/2 -left-1/2 w-[150vw] h-[150vw] bg-gradient-to-br from-purple-900/30 via-blue-900/20 to-transparent rounded-full blur-3xl opacity-50 mix-blend-screen"
                         />
                         <motion.div
@@ -211,7 +211,7 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
                                 x: [0, -100, 0],
                                 y: [0, 100, 0]
                             }}
-                            transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
+                            transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
                             className="absolute -bottom-1/2 -right-1/2 w-[150vw] h-[150vw] bg-gradient-to-tl from-indigo-900/30 via-pink-900/20 to-transparent rounded-full blur-3xl opacity-50 mix-blend-screen"
                         />
                     </div>
@@ -238,7 +238,9 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
                                 className="group relative bg-white/5 border border-white/10 p-8 rounded-2xl backdrop-blur-xl shadow-2xl hover:bg-white/10 transition-all duration-500 flex flex-col items-center border-t-white/20 border-l-white/20"
                             >
                                 <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                                <div className="text-4xl mb-4 opacity-50 group-hover:opacity-100 transition-opacity">✨</div>
+                                <div className="mb-4 text-white/50 group-hover:text-white transition-colors">
+                                    <Sparkles size={48} strokeWidth={1} />
+                                </div>
                                 <h3 className="text-2xl font-bold mb-2 text-white">בקנייה מעל 300 ₪</h3>
                                 <p className="text-gray-300 text-lg group-hover:text-white transition-colors">2 דוגמיות מתנה</p>
                                 <p className="text-white/60 text-xs mt-4 group-hover:text-white/80 transition-colors">*בגודל 2 מ"ל</p>
@@ -256,7 +258,9 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
                                     מומלץ
                                 </div>
                                 <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                                <div className="text-5xl mb-6 opacity-80 group-hover:opacity-100 transition-all group-hover:scale-110 duration-500">🎁</div>
+                                <div className="mb-6 text-white/80 group-hover:text-white transition-colors group-hover:scale-110 duration-500">
+                                    <Gift size={64} strokeWidth={1} />
+                                </div>
                                 <h3 className="text-3xl font-bold mb-3 text-white">בקנייה מעל 500 ₪</h3>
                                 <p className="text-gray-200 text-xl font-medium group-hover:text-white transition-colors">4 דוגמיות מתנה</p>
                                 <p className="text-white/60 text-xs mt-4 group-hover:text-white/80 transition-colors">*בגודל 2 מ"ל</p>
@@ -271,7 +275,9 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
                                 className="group relative bg-white/5 border border-white/10 p-8 rounded-2xl backdrop-blur-xl shadow-2xl hover:bg-white/10 transition-all duration-500 flex flex-col items-center border-t-white/20 border-l-white/20"
                             >
                                 <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                                <div className="text-4xl mb-4 opacity-50 group-hover:opacity-100 transition-opacity">💎</div>
+                                <div className="mb-4 text-white/50 group-hover:text-white transition-colors">
+                                    <Diamond size={48} strokeWidth={1} />
+                                </div>
                                 <h3 className="text-2xl font-bold mb-2 text-white">בקנייה מעל 1000 ₪</h3>
                                 <p className="text-gray-300 text-lg group-hover:text-white transition-colors">6 דוגמיות מתנה</p>
                                 <p className="text-white/60 text-xs mt-4 group-hover:text-white/80 transition-colors">*בגודל 2 מ"ל</p>
