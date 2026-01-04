@@ -191,38 +191,101 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
                     </div>
                 </section>
 
-                {/* SECTION 3: BONUSES */}
-                <section className="h-screen w-full relative flex flex-col justify-center items-center bg-black text-white overflow-hidden p-4">
-                    <div className="container mx-auto px-4 text-center pb-32">
-                        <h2 className="text-3xl font-bold mb-2">הבונוסים שלנו</h2>
-                        <p className="text-gray-400 mb-2 text-sm">ככל שסכום ההזמנה גבוה יותר, כך אנחנו מפנקים יותר.</p>
-                        <p className="text-gray-500 text-xs mb-8">* הדוגמיות נבחרות על ידי הצוות שלנו בהתאם למלאי ולטעם שלכם.</p>
+                {/* SECTION 3: BONUSES - LIQUID 3D DESIGN */}
+                <section className="h-screen w-full relative flex flex-col justify-center items-center bg-black overflow-hidden perspective-1000">
+                    {/* Liquid Animated Background */}
+                    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+                        <motion.div
+                            animate={{
+                                scale: [1, 1.2, 1],
+                                rotate: [0, 90, 0],
+                                x: [0, 100, 0],
+                                y: [0, -50, 0]
+                            }}
+                            transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                            className="absolute -top-1/2 -left-1/2 w-[150vw] h-[150vw] bg-gradient-to-br from-purple-900/30 via-blue-900/20 to-transparent rounded-full blur-3xl opacity-50 mix-blend-screen"
+                        />
+                        <motion.div
+                            animate={{
+                                scale: [1, 1.5, 1],
+                                rotate: [0, -60, 0],
+                                x: [0, -100, 0],
+                                y: [0, 100, 0]
+                            }}
+                            transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
+                            className="absolute -bottom-1/2 -right-1/2 w-[150vw] h-[150vw] bg-gradient-to-tl from-indigo-900/30 via-pink-900/20 to-transparent rounded-full blur-3xl opacity-50 mix-blend-screen"
+                        />
+                    </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto">
+                    <div className="container mx-auto px-4 text-center pb-12 relative z-10">
+                        <motion.div
+                            initial={{ opacity: 0, y: 50 }}
+                            whileInView={{ opacity: 1, y: 0 }}
+                            transition={{ duration: 0.8 }}
+                            className="shrink-0 mb-12"
+                        >
+                            <h2 className="text-4xl md:text-5xl font-bold mb-4 bg-clip-text text-transparent bg-gradient-to-r from-white via-gray-200 to-gray-500 drop-shadow-lg tracking-[0.1em] uppercase">הבונוסים שלנו</h2>
+                            <p className="text-gray-300 text-lg mb-2">ככל שסכום ההזמנה גבוה יותר, כך אנחנו מפנקים יותר</p>
+                            <div className="w-24 h-1 bg-gradient-to-r from-transparent via-white to-transparent mx-auto rounded-full opacity-70"></div>
+                        </motion.div>
+
+                        <div className="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto perspective-1000">
                             {/* Tier 1 */}
-                            <div className="bg-white/5 border border-white/10 rounded-xl p-6 backdrop-blur-sm">
-                                <span className="block text-gray-400 text-sm mb-2">בקנייה מעל 300 ₪</span>
-                                <h3 className="text-2xl font-bold mb-2">2 דוגמיות מתנה</h3>
-                                <p className="text-gray-500 text-sm">בגודל 2 מ״ל</p>
-                            </div>
+                            <motion.div
+                                whileHover={{ scale: 1.05, rotateY: 5, z: 50 }}
+                                initial={{ opacity: 0, x: -50 }}
+                                whileInView={{ opacity: 1, x: 0 }}
+                                transition={{ type: "spring", stiffness: 100, delay: 0.1 }}
+                                className="group relative bg-white/5 border border-white/10 p-8 rounded-2xl backdrop-blur-xl shadow-2xl hover:bg-white/10 transition-all duration-500 flex flex-col items-center border-t-white/20 border-l-white/20"
+                            >
+                                <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                                <div className="text-4xl mb-4 opacity-50 group-hover:opacity-100 transition-opacity">✨</div>
+                                <h3 className="text-2xl font-bold mb-2 text-white">בקנייה מעל 299₪</h3>
+                                <p className="text-gray-300 text-lg group-hover:text-white transition-colors">משלוח חינם עד הבית</p>
+                            </motion.div>
 
                             {/* Tier 2 - Highlighted */}
-                            <div className="bg-white/10 border border-white/30 rounded-xl p-8 transform scale-105 shadow-2xl relative">
-                                <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-white text-black px-3 py-1 rounded-full text-xs font-bold">
+                            <motion.div
+                                whileHover={{ scale: 1.1, rotateY: 0, z: 80 }}
+                                initial={{ opacity: 0, y: 50 }}
+                                whileInView={{ opacity: 1, y: 0 }}
+                                transition={{ type: "spring", stiffness: 100, delay: 0.2 }}
+                                className="group relative bg-gradient-to-br from-white/10 to-white/5 border border-white/30 p-10 rounded-2xl backdrop-blur-2xl shadow-[0_0_50px_rgba(255,255,255,0.1)] hover:shadow-[0_0_80px_rgba(255,255,255,0.2)] transition-all duration-500 flex flex-col items-center transform scale-105 z-10 border-t-white/40 border-l-white/40"
+                            >
+                                <div className="absolute -top-4 bg-gradient-to-r from-white via-gray-200 to-white text-black px-6 py-1 rounded-full text-sm font-bold tracking-widest shadow-lg uppercase">
                                     מומלץ
                                 </div>
-                                <span className="block text-gray-300 text-sm mb-2">בקנייה מעל 500 ₪</span>
-                                <h3 className="text-3xl font-bold mb-2">4 דוגמיות מתנה</h3>
-                                <p className="text-gray-400 text-sm">בגודל 2 מ״ל</p>
-                            </div>
+                                <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                                <div className="text-5xl mb-6 opacity-80 group-hover:opacity-100 transition-all group-hover:scale-110 duration-500">🎁</div>
+                                <h3 className="text-3xl font-bold mb-3 text-white">בקנייה מעל 399₪</h3>
+                                <p className="text-gray-200 text-xl font-medium group-hover:text-white transition-colors">דוגמית מתנה לבחירה</p>
+                                <p className="text-white/60 text-xs mt-4 group-hover:text-white/80 transition-colors">*בגודל 2 מ"ל</p>
+                            </motion.div>
 
                             {/* Tier 3 */}
-                            <div className="bg-white/5 border border-white/10 rounded-xl p-6 backdrop-blur-sm">
-                                <span className="block text-gray-400 text-sm mb-2">בקנייה מעל 1000 ₪</span>
-                                <h3 className="text-2xl font-bold mb-2">6 דוגמיות מתנה</h3>
-                                <p className="text-gray-500 text-sm">בגודל 2 מ״ל</p>
-                            </div>
+                            <motion.div
+                                whileHover={{ scale: 1.05, rotateY: -5, z: 50 }}
+                                initial={{ opacity: 0, x: 50 }}
+                                whileInView={{ opacity: 1, x: 0 }}
+                                transition={{ type: "spring", stiffness: 100, delay: 0.3 }}
+                                className="group relative bg-white/5 border border-white/10 p-8 rounded-2xl backdrop-blur-xl shadow-2xl hover:bg-white/10 transition-all duration-500 flex flex-col items-center border-t-white/20 border-l-white/20"
+                            >
+                                <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent rounded-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+                                <div className="text-4xl mb-4 opacity-50 group-hover:opacity-100 transition-opacity">💎</div>
+                                <h3 className="text-2xl font-bold mb-2 text-white">בקנייה מעל 499₪</h3>
+                                <p className="text-gray-300 text-lg group-hover:text-white transition-colors">2 דוגמיות מתנה לבחירה</p>
+                                <p className="text-white/60 text-xs mt-4 group-hover:text-white/80 transition-colors">*בגודל 2 מ"ל</p>
+                            </motion.div>
                         </div>
+
+                        <motion.p
+                            initial={{ opacity: 0 }}
+                            whileInView={{ opacity: 1 }}
+                            transition={{ delay: 0.8, duration: 1 }}
+                            className="text-gray-500 text-xs mt-12 opacity-50"
+                        >
+                            * הדוגמיות נבחרות על ידי הצוות שלנו בהתאם למלאי ולטעם שלכם במידה ולא צוין אחרת.
+                        </motion.p>
                     </div>
                 </section>
 
