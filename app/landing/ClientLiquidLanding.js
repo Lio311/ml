@@ -123,18 +123,17 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
             >
                 {/* SECTION 1: HERO */}
                 <section className="h-screen w-full relative flex items-center justify-center overflow-hidden bg-white">
-                    <div className="absolute top-[-100px] left-0 w-full h-[calc(100%+100px)] z-0">
+                    <div className="absolute top-[-20%] left-0 w-full h-[140%] z-0">
                         <video
                             src="/hero-video.mp4"
                             autoPlay muted loop playsInline
                             className="w-full h-full object-cover"
                         />
-                        {/* Overlay just like homepage? Page.js doesn't have a dark overlay in code, but bg-gray-100 animate-pulse behind it. 
+                    </div>    {/* Overlay just like homepage? Page.js doesn't have a dark overlay in code, but bg-gray-100 animate-pulse behind it.
                              Wait, homepage code has `absolute inset-0 z-10 container ... text-black`.
                              The video is styled with `scale-[1.05]`.
                              The content box has `bg-white/80 p-4 md:p-6 rounded-xl backdrop-blur-sm`.
                          */}
-                    </div>
 
                     <div className="relative z-10 text-center text-black bg-white/80 p-8 rounded-xl backdrop-blur-sm shadow-sm max-w-lg mx-4">
                         <h2 className="text-sm tracking-[0.2em] uppercase mb-2 font-bold opacity-90">
