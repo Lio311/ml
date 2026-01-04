@@ -10,6 +10,10 @@ import BrandCarousel from '../components/BrandCarousel';
 import LiveStats from '../components/LiveStats';
 import { Button } from '../components/ui/button';
 
+import { Dancing_Script } from 'next/font/google';
+
+const dancingScript = Dancing_Script({ subsets: ['latin'] });
+
 export default function ClientLiquidLanding({ newArrivals, stats }) {
     const [currentSection, setCurrentSection] = useState(0);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -137,7 +141,7 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
                             <h2 className="text-xs tracking-[0.2em] uppercase mb-2 font-bold opacity-90">
                                 Discover Your Signature Scent
                             </h2>
-                            <h1 className="text-3xl md:text-5xl font-bold mb-3 leading-tight font-serif">
+                            <h1 className={`${dancingScript.className} text-4xl md:text-6xl font-bold mb-3 leading-tight`}>
                                 Niche & Boutique <br /> Sample Collections
                             </h1>
                             <p className="text-sm md:text-base mb-4 font-light leading-relaxed text-gray-800">
@@ -160,18 +164,18 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
 
                 {/* SECTION 2: NEW ARRIVALS */}
                 <section className="h-screen w-full relative flex flex-col justify-center items-center bg-white text-black p-4">
-                    <div className="container mx-auto px-4 text-center h-full flex flex-col justify-center">
+                    <div className="container mx-auto px-4 text-center h-full flex flex-col justify-start pt-24">
                         <div className="shrink-0 mb-1">
                             <h2 className="text-xl tracking-[0.2em] uppercase mb-1 font-bold">חדש על המדף</h2>
                             <div className="w-8 h-0.5 bg-black mx-auto"></div>
                         </div>
 
-                        <div className="flex-1 min-h-0 flex items-center justify-center py-1">
+                        <div className="flex-1 min-h-0 flex items-start justify-center py-0">
                             <div className="grid grid-cols-2 md:grid-cols-4 gap-2 w-full max-w-6xl max-h-full">
                                 {newArrivals.slice(0, 4).map((product) => (
-                                    <div key={product.id} className="h-full flex flex-col justify-center">
+                                    <div key={product.id} className="h-full flex flex-col justify-start">
                                         {/* Reduced scale further to 75% */}
-                                        <div className="transform scale-75 origin-center h-full">
+                                        <div className="transform scale-75 origin-top h-full">
                                             <ProductCard product={product} />
                                         </div>
                                     </div>
