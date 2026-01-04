@@ -1,14 +1,14 @@
 import pool from '../lib/db';
-import ClientLiquidLanding from './ClientLiquidLanding';
+import ClientLandingPage from './ClientLandingPage';
 
 export const revalidate = 3600;
 
 export const metadata = {
-    title: "Liquid Studio Style Landing | ml_tlv",
-    description: "Making Solid UX - Perfume Edition",
+    title: "Landing Page | ml_tlv",
+    description: "Niche & Boutique Sample Collections",
 };
 
-export default async function LiquidLandingPage() {
+export default async function LandingPage() {
     let newArrivals = [];
     let stats = { brands: 0, products: 0, samples: 500, allBrands: [] };
 
@@ -54,7 +54,7 @@ export default async function LiquidLandingPage() {
     }
 
     return (
-        <ClientLiquidLanding
+        <ClientLandingPage
             newArrivals={newArrivals}
             stats={stats}
         />
