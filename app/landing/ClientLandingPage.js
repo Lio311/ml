@@ -448,7 +448,7 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
                                             <span className="p-2 bg-white/10 rounded-full group-hover:bg-white/20 transition-colors">
                                                 <Instagram size={20} />
                                             </span>
-                                            <span>@ml_tlv</span>
+                                            <span>ml_tlv@</span>
                                         </a>
                                         <Link href="/magazine" className="inline-flex items-center gap-3 text-gray-400 hover:text-white transition-colors justify-center md:justify-start group">
                                             <span className="p-2 bg-white/10 rounded-full group-hover:bg-white/20 transition-colors">

@@ -317,7 +317,7 @@ function Section({ section, isActive, newArrivals, stats }) {
                                 <div className="flex flex-col gap-4">
                                     <h4 className="font-bold text-lg mb-2 text-white">עקבו אחרינו</h4>
                                     <a href="#" className="hover:text-primary transition-colors flex items-center justify-center gap-2 text-gray-400 hover:text-white">
-                                        <span>@ml_tlv</span>
+                                        <span>ml_tlv@</span>
                                     </a>
                                 </div>
 
