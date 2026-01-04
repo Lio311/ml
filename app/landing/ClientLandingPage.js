@@ -381,7 +381,7 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
                             {[...Array(15)].map((_, i) => (
                                 <motion.div
                                     key={i}
-                                    className="absolute bg-gray-200 rounded-full opacity-30"
+                                    className="absolute bg-gray-400 rounded-full opacity-60"
                                     initial={{
                                         width: Math.random() * 15 + 5,
                                         height: Math.random() * 15 + 5,
