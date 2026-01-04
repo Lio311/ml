@@ -120,7 +120,7 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
                     <Link href="/brands">מותגים</Link>
                     <Link href="/catalog">קטלוג</Link>
                     <Link href="/matching">התאמת מארזים</Link>
-                    <Link href="/request">בקשת בשמים</Link>
+                    <Link href="/requests">בקשת בשמים</Link>
                     <Link href="/contact">צור קשר</Link>
                 </div>
 
@@ -185,17 +185,20 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
                 </section>
 
                 {/* SECTION 2: NEW ARRIVALS */}
-                <section className="h-screen w-full relative flex flex-col justify-center items-center bg-white text-black p-4">
-                    <div className="container mx-auto px-4 text-center h-full flex flex-col justify-center items-center relative py-12">
-                        <div className="shrink-0 mb-12 relative z-20">
+                <section className="h-screen w-full relative flex flex-col justify-start items-center bg-white text-black p-4 pt-24 md:pt-32">
+                    <div className="container mx-auto px-4 text-center flex flex-col items-center relative">
+
+                        {/* Title */}
+                        <div className="shrink-0 mb-4 relative z-20">
                             <h2 className="text-2xl tracking-[0.2em] uppercase mb-2 font-bold">חדש על המדף</h2>
                             <div className="w-10 h-0.5 bg-black mx-auto"></div>
                         </div>
 
+                        {/* Grid Container */}
                         <div className="shrink-0 w-full flex justify-center z-10">
-                            <div className="grid grid-cols-2 md:grid-cols-4 gap-0 w-full max-w-3xl">
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-0 w-full max-w-xl">
                                 {newArrivals.slice(0, 4).map((product) => (
-                                    <div key={product.id} className="flex justify-center h-48 md:h-64 items-start">
+                                    <div key={product.id} className="flex justify-center h-40 md:h-48 items-start">
                                         <div className="transform scale-[0.65] origin-top w-full">
                                             <ProductCard product={product} />
                                         </div>
@@ -204,7 +207,8 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
                             </div>
                         </div>
 
-                        <div className="shrink-0 -mt-24 md:-mt-32 relative z-30">
+                        {/* Button Container */}
+                        <div className="shrink-0 -mt-4 relative z-30">
                             <Link href="/catalog" className="inline-block bg-black text-white px-8 py-3 rounded-full text-sm font-bold tracking-widest uppercase hover:bg-gray-800 transition shadow-lg">
                                 צפייה בכל המוצרים
                             </Link>
@@ -472,7 +476,7 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
                                             </span>
                                             <span>ml_tlv@</span>
                                         </a>
-                                        <Link href="/magazine" className="inline-flex items-center gap-3 text-gray-400 hover:text-white transition-colors justify-center md:justify-start group">
+                                        <Link href="/blog" className="inline-flex items-center gap-3 text-gray-400 hover:text-white transition-colors justify-center md:justify-start group">
                                             <span>מגזין הבישום</span>
                                         </Link>
                                     </div>
