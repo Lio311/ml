@@ -8,24 +8,10 @@ export default function BonusesSection() {
     return (
         <section className="min-h-screen w-full relative flex flex-col justify-center items-center bg-black overflow-hidden perspective-1000 py-20">
             {/* Liquid Animated Background */}
-            {/* Liquid Animated Background - Optimized */}
+            {/* Static Background - High Performance */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                <motion.div
-                    animate={{
-                        opacity: [0.2, 0.4, 0.2],
-                        scale: [1, 1.05, 1],
-                    }}
-                    transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
-                    className="absolute -top-[20%] -left-[20%] w-[120vw] h-[120vw] bg-gradient-to-br from-purple-900/20 via-blue-900/10 to-transparent rounded-full blur-3xl mix-blend-screen"
-                />
-                <motion.div
-                    animate={{
-                        opacity: [0.2, 0.4, 0.2],
-                        scale: [1, 1.05, 1],
-                    }}
-                    transition={{ duration: 15, repeat: Infinity, ease: "easeInOut", delay: 2 }}
-                    className="absolute -bottom-[20%] -right-[20%] w-[120vw] h-[120vw] bg-gradient-to-tl from-indigo-900/20 via-pink-900/10 to-transparent rounded-full blur-3xl mix-blend-screen"
-                />
+                <div className="absolute top-[-20%] left-[-20%] w-[140%] h-[140%] bg-[radial-gradient(circle_at_center,rgba(88,28,135,0.15),transparent_60%)] blur-3xl opacity-60" />
+                <div className="absolute bottom-[-20%] right-[-20%] w-[140%] h-[140%] bg-[radial-gradient(circle_at_center,rgba(49,46,129,0.15),transparent_60%)] blur-3xl opacity-60" />
             </div>
 
             <div className="container mx-auto px-4 text-center relative z-10">
