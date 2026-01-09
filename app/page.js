@@ -4,6 +4,7 @@ import pool from "./lib/db";
 import ProductCard from "./components/ProductCard";
 import LiveStats from "./components/LiveStats";
 import { Dancing_Script } from "next/font/google";
+import BonusesSection from "./components/BonusesSection";
 
 
 import BrandCarousel from "./components/BrandCarousel";
@@ -129,47 +130,8 @@ export default async function Home() {
       </section>
 
       {/* Free Samples Logic Visualization */}
-      <section className="py-12 bg-black text-white border-t border-gray-900">
-        <div className="container">
-          <h2 className="text-3xl font-bold mb-2 text-center text-white">הבונוסים שלנו</h2>
-          <p className="text-center text-gray-400 mb-8 max-w-2xl mx-auto">
-            ככל שסכום ההזמנה גבוה יותר, כך אנחנו מפנקים יותר.
-            <br />
-            <span className="text-xs text-gray-500">* הדוגמיות נבחרות על ידי הצוות שלנו בהתאם למלאי ולטעם שלכם.</span>
-          </p>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {/* Tier 1 */}
-            <div className="bg-zinc-900 p-8 rounded-xl border border-zinc-800 text-center relative overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:shadow-xl hover:shadow-zinc-800/50">
-              <div className="text-lg font-bold text-gray-400 mb-2">בקנייה מעל 300 ₪</div>
-              <div className="text-3xl font-bold mb-4 text-white">2 דוגמיות מתנה</div>
-              <div className="text-sm text-gray-500">בגודל 2 מ״ל</div>
-            </div>
-
-            {/* Tier 2 */}
-            <div className="bg-zinc-900 p-8 rounded-xl border-2 border-white text-center relative shadow-xl transform md:-translate-y-4 transition-all duration-300 hover:-translate-y-6 hover:shadow-2xl hover:shadow-white/20">
-              <div className="absolute top-0 right-0 bg-white text-black text-xs px-3 py-1 rounded-bl-lg rounded-tr-xl font-bold">מומלץ</div>
-              <div className="text-lg font-bold text-gray-300 mb-2">בקנייה מעל 500 ₪</div>
-              <div className="text-3xl font-bold mb-4 text-white">4 דוגמיות מתנה</div>
-              <div className="text-sm text-gray-500">בגודל 2 מ״ל</div>
-            </div>
-
-            {/* Tier 3 */}
-            <div className="bg-zinc-900 p-8 rounded-xl border border-zinc-800 text-center relative overflow-hidden transition-all duration-300 hover:-translate-y-2 hover:shadow-xl hover:shadow-zinc-800/50">
-              <div className="text-lg font-bold text-gray-400 mb-2">בקנייה מעל 1000 ₪</div>
-              <div className="text-3xl font-bold mb-4 text-white">6 דוגמיות מתנה</div>
-              <div className="text-sm text-gray-500">בגודל 2 מ״ל</div>
-            </div>
-          </div>
-
-          <div className="text-center mt-8">
-            <Link href="/catalog" className="btn bg-white text-black hover:bg-gray-200 px-12 py-4 text-xl font-bold rounded-lg transition">
-              קניתי אותי, בוא נתחיל
-            </Link>
-          </div>
-
-        </div>
-      </section>
+      {/* Free Samples Logic Visualization (Redesigned) */}
+      <BonusesSection />
 
       <BrandCarousel brands={stats.allBrands} />
 
