@@ -8,26 +8,23 @@ export default function BonusesSection() {
     return (
         <section className="min-h-screen w-full relative flex flex-col justify-center items-center bg-black overflow-hidden perspective-1000 py-20">
             {/* Liquid Animated Background */}
+            {/* Liquid Animated Background - Optimized */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
                 <motion.div
                     animate={{
-                        scale: [1, 1.2, 1],
-                        rotate: [0, 90, 0],
-                        x: [0, 100, 0],
-                        y: [0, -50, 0]
+                        opacity: [0.2, 0.4, 0.2],
+                        scale: [1, 1.05, 1],
                     }}
-                    transition={{ duration: 6, repeat: Infinity, ease: "linear" }}
-                    className="absolute -top-1/2 -left-1/2 w-[150vw] h-[150vw] bg-gradient-to-br from-purple-900/30 via-blue-900/20 to-transparent rounded-full blur-3xl opacity-50 mix-blend-screen"
+                    transition={{ duration: 12, repeat: Infinity, ease: "easeInOut" }}
+                    className="absolute -top-[20%] -left-[20%] w-[120vw] h-[120vw] bg-gradient-to-br from-purple-900/20 via-blue-900/10 to-transparent rounded-full blur-3xl mix-blend-screen"
                 />
                 <motion.div
                     animate={{
-                        scale: [1, 1.5, 1],
-                        rotate: [0, -60, 0],
-                        x: [0, -100, 0],
-                        y: [0, 100, 0]
+                        opacity: [0.2, 0.4, 0.2],
+                        scale: [1, 1.05, 1],
                     }}
-                    transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
-                    className="absolute -bottom-1/2 -right-1/2 w-[150vw] h-[150vw] bg-gradient-to-tl from-indigo-900/30 via-pink-900/20 to-transparent rounded-full blur-3xl opacity-50 mix-blend-screen"
+                    transition={{ duration: 15, repeat: Infinity, ease: "easeInOut", delay: 2 }}
+                    className="absolute -bottom-[20%] -right-[20%] w-[120vw] h-[120vw] bg-gradient-to-tl from-indigo-900/20 via-pink-900/10 to-transparent rounded-full blur-3xl mix-blend-screen"
                 />
             </div>
 
