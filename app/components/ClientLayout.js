@@ -23,21 +23,6 @@ export default function ClientLayout({ children, brands, menu }) {
         );
     }
 
-    // Hide Header/Footer for Homepage as it uses ClientLandingPage with its own layout
-    if (pathname === '/') {
-        return (
-            <>
-                <div id="site-content">
-                    <main className="h-screen w-full">
-                        {children}
-                    </main>
-                </div>
-                <ChatWidget />
-                <AccessibilityWidget />
-            </>
-        );
-    }
-
     return (
         <>
             <div id="site-content">
