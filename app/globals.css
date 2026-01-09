@@ -206,3 +206,9 @@ input[autocomplete="one-time-code"] {
   background-color: white;
   border-radius: 20px;
 }
+
+@media screen and (max-width: 768px) {
+  input, select, textarea {
+    font-size: 16px !important;
+  }
+}
