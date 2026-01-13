@@ -37,10 +37,6 @@ export const metadata = {
     statusBarStyle: 'black-translucent',
     title: 'ml_tlv',
   },
-  icons: {
-    icon: '/ml_v4.png',
-    apple: '/apple-touch-icon.png',
-  },
   openGraph: {
     title: "ml_tlv | דוגמיות בשמים",
     description: "חנות דוגמיות בשמים הגדולה בישראל",
