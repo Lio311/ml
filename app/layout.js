@@ -30,7 +30,10 @@ export const viewport = {
 export const metadata = {
   title: "יוקרה בחתיכות קטנות",
   description: "חנות דוגמיות בשמים בקונספט קצת שונה. מגוון בשמי בוטיק, נישה ודיזיינר במחירים הוגנים",
-  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || 'https://ml-tlv.com'),
+  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || 'https://www.ml-tlv.com'),
+  alternates: {
+    canonical: './',
+  },
   manifest: '/manifest.json',
   appleWebApp: {
     capable: true,

@@ -1,7 +1,7 @@
 import pool from './lib/db';
 
 export default async function sitemap() {
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://ml-tlv.com';
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.ml-tlv.com';
 
     // 1. Static Routes (Expanded)
     const staticRoutes = [
