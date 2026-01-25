@@ -351,6 +351,7 @@ export default function AdminCouponsPage() {
                                             className="input border p-2 rounded w-full"
                                             value={formData.discount_percent}
                                             onChange={e => setFormData({ ...formData, discount_percent: e.target.value })}
+                                            onWheel={(e) => e.target.blur()}
                                         />
                                     </div>
 
@@ -363,6 +364,7 @@ export default function AdminCouponsPage() {
                                             className="input border p-2 rounded w-full"
                                             value={formData.expires_in_hours}
                                             onChange={e => setFormData({ ...formData, expires_in_hours: e.target.value })}
+                                            onWheel={(e) => e.target.blur()}
                                         />
                                     </div>
 
@@ -374,6 +376,7 @@ export default function AdminCouponsPage() {
                                             className="input border p-2 rounded w-full"
                                             value={formData.min_cart_total}
                                             onChange={e => setFormData({ ...formData, min_cart_total: e.target.value })}
+                                            onWheel={(e) => e.target.blur()}
                                         />
                                     </div>
                                 </div>

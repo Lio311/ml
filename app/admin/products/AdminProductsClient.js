@@ -301,6 +301,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                 type="number"
                                 value={editForm.price_2ml}
                                 onChange={e => setEditForm({ ...editForm, price_2ml: Number(e.target.value) })}
+                                onWheel={(e) => e.target.blur()}
                                 className="border p-2 rounded w-full bg-white"
                             />
                         </div>
@@ -310,6 +311,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                 type="number"
                                 value={editForm.price_5ml}
                                 onChange={e => setEditForm({ ...editForm, price_5ml: Number(e.target.value) })}
+                                onWheel={(e) => e.target.blur()}
                                 className="border p-2 rounded w-full bg-white"
                             />
                         </div>
@@ -319,6 +321,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                 type="number"
                                 value={editForm.price_10ml}
                                 onChange={e => setEditForm({ ...editForm, price_10ml: Number(e.target.value) })}
+                                onWheel={(e) => e.target.blur()}
                                 className="border p-2 rounded w-full bg-white"
                             />
                         </div>
@@ -330,6 +333,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                     required
                                     value={editForm.cost_price}
                                     onChange={e => setEditForm({ ...editForm, cost_price: Number(e.target.value) })}
+                                    onWheel={(e) => e.target.blur()}
                                     className="border p-2 rounded w-full bg-white"
                                     placeholder="לדוגמה: 50"
                                 />
@@ -341,6 +345,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                     required
                                     value={editForm.original_size}
                                     onChange={e => setEditForm({ ...editForm, original_size: Number(e.target.value) })}
+                                    onWheel={(e) => e.target.blur()}
                                     className="border p-2 rounded w-full bg-white"
                                     placeholder="לדוגמה: 50"
                                 />
@@ -352,6 +357,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                 type="number"
                                 value={editForm.stock}
                                 onChange={e => setEditForm({ ...editForm, stock: Number(e.target.value) })}
+                                onWheel={(e) => e.target.blur()}
                                 className="border p-2 rounded w-full bg-white"
                                 placeholder="לדוגמה: 100"
                             />
@@ -471,6 +477,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                             type="number"
                                             value={editForm.price_2ml}
                                             onChange={e => setEditForm({ ...editForm, price_2ml: Number(e.target.value) })}
+                                            onWheel={(e) => e.target.blur()}
                                             className="border p-2 rounded w-full bg-white"
                                         />
                                     </div>
@@ -480,6 +487,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                             type="number"
                                             value={editForm.price_5ml}
                                             onChange={e => setEditForm({ ...editForm, price_5ml: Number(e.target.value) })}
+                                            onWheel={(e) => e.target.blur()}
                                             className="border p-2 rounded w-full bg-white"
                                         />
                                     </div>
@@ -489,6 +497,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                             type="number"
                                             value={editForm.price_10ml}
                                             onChange={e => setEditForm({ ...editForm, price_10ml: Number(e.target.value) })}
+                                            onWheel={(e) => e.target.blur()}
                                             className="border p-2 rounded w-full bg-white"
                                         />
                                     </div>
@@ -498,6 +507,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                             type="number"
                                             value={editForm.stock}
                                             onChange={e => setEditForm({ ...editForm, stock: Number(e.target.value) })}
+                                            onWheel={(e) => e.target.blur()}
                                             className="border p-2 rounded w-full bg-white"
                                         />
                                     </div>
@@ -507,6 +517,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                             type="number"
                                             value={editForm.cost_price}
                                             onChange={e => setEditForm({ ...editForm, cost_price: Number(e.target.value) })}
+                                            onWheel={(e) => e.target.blur()}
                                             className="border p-2 rounded w-full bg-white"
                                         />
                                     </div>
@@ -516,6 +527,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                             type="number"
                                             value={editForm.original_size}
                                             onChange={e => setEditForm({ ...editForm, original_size: Number(e.target.value) })}
+                                            onWheel={(e) => e.target.blur()}
                                             className="border p-2 rounded w-full bg-white"
                                         />
                                     </div>

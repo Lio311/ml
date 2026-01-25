@@ -200,6 +200,7 @@ export default function AdminInventoryPage() {
                                 type="number"
                                 value={quantity}
                                 onChange={(e) => setQuantity(e.target.value)}
+                                onWheel={(e) => e.target.blur()}
                                 placeholder="לדוגמה: 100"
                                 className="w-full border rounded-lg p-2 focus:ring-2 focus:ring-black outline-none"
                                 required

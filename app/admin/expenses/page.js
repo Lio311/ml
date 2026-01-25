@@ -168,6 +168,7 @@ export default function AdminExpensesPage() {
                                 className="input border p-2 rounded w-full text-center"
                                 value={formData.amount}
                                 onChange={e => setFormData({ ...formData, amount: e.target.value })}
+                                onWheel={(e) => e.target.blur()}
                             />
                         </div>
                         <div className="w-full md:w-40">
