@@ -71,7 +71,9 @@ export default async function ProductPage(props) {
     const { slug } = params;
 
     const res = await pool.query(`
-        SELECT p.*, b.logo_url 
+        SELECT p.*, b.logo_url,
+        (SELECT AVG(rating) FROM reviews WHERE product_id = p.id) as average_rating,
+        (SELECT COUNT(*) FROM reviews WHERE product_id = p.id) as review_count
         FROM products p 
         LEFT JOIN brands b ON p.brand = b.name 
         WHERE p.slug = $1 OR p.id::text = $1
@@ -173,6 +175,70 @@ export default async function ProductPage(props) {
         }
     }
 
+    // Format dates for Schema
+    const nextYear = new Date().getFullYear() + 1;
+    const priceValidUntil = `${nextYear}-12-31`;
+
+    const jsonLd = {
+        "@context": "https://schema.org",
+        "@type": "Product",
+        "name": product.name,
+        "image": product.image_url,
+        "description": product.description || `Buy ${product.name} sample - Original Niche Perfume`,
+        "brand": {
+            "@type": "Brand",
+            "name": product.brand
+        },
+        "offers": {
+            "@type": "Offer",
+            "url": `${process.env.NEXT_PUBLIC_BASE_URL || 'https://ml-tlv.com'}/product/${product.slug || product.id}`,
+            "priceCurrency": "ILS",
+            "price": product.price_10ml || product.price_5ml || product.price_2ml,
+            "availability": (product.stock && product.stock > 0) ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+            "itemCondition": "https://schema.org/NewCondition",
+            "priceValidUntil": priceValidUntil,
+            "shippingDetails": {
+                "@type": "OfferShippingDetails",
+                "shippingRate": {
+                    "@type": "MonetaryAmount",
+                    "value": 30,
+                    "currency": "ILS"
+                },
+                "deliveryTime": {
+                    "@type": "ShippingDeliveryTime",
+                    "handlingTime": {
+                        "@type": "QuantitativeValue",
+                        "minValue": 1,
+                        "maxValue": 2,
+                        "unitCode": "DAY"
+                    },
+                    "transitTime": {
+                        "@type": "QuantitativeValue",
+                        "minValue": 3,
+                        "maxValue": 5,
+                        "unitCode": "DAY"
+                    }
+                }
+            },
+            "hasMerchantReturnPolicy": {
+                "@type": "MerchantReturnPolicy",
+                "applicableCountry": "IL",
+                "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+                "merchantReturnDays": 14,
+                "returnMethod": "https://schema.org/ReturnByMail"
+            }
+        }
+    };
+
+    // Add AggregateRating only if there are reviews
+    if (parseInt(product.review_count) > 0) {
+        jsonLd.aggregateRating = {
+            "@type": "AggregateRating",
+            "ratingValue": parseFloat(product.average_rating || 0).toFixed(1),
+            "reviewCount": product.review_count
+        };
+    }
+
     return (
         <div className="container py-12">
             <div className="flex flex-col md:flex-row items-start gap-12 mb-20">
@@ -218,25 +284,7 @@ export default async function ProductPage(props) {
                         <script
                             type="application/ld+json"
                             dangerouslySetInnerHTML={{
-                                __html: JSON.stringify({
-                                    "@context": "https://schema.org",
-                                    "@type": "Product",
-                                    "name": product.name,
-                                    "image": product.image_url,
-                                    "description": product.description || `Buy ${product.name} sample - Original Niche Perfume`,
-                                    "brand": {
-                                        "@type": "Brand",
-                                        "name": product.brand
-                                    },
-                                    "offers": {
-                                        "@type": "Offer",
-                                        "url": `${process.env.NEXT_PUBLIC_BASE_URL || 'https://ml-tlv.com'}/product/${product.slug || product.id}`,
-                                        "priceCurrency": "ILS",
-                                        "price": product.price_10ml || product.price_5ml || product.price_2ml,
-                                        "availability": (product.stock && product.stock > 0) ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
-                                        "itemCondition": "https://schema.org/NewCondition"
-                                    }
-                                })
+                                __html: JSON.stringify(jsonLd)
                             }}
                         />
                         <script
