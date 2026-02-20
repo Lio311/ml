@@ -162,7 +162,7 @@ export default async function CatalogPage(props) {
     const category = searchParams?.category || '';
     const minPrice = searchParams?.min || '';
     const maxPrice = searchParams?.max || '';
-    const sort = searchParams?.sort || 'random';
+    const sort = searchParams?.sort || 'newest';
     const page = parseInt(searchParams?.page || '1');
 
     const mappedSearch = await mapHebrewQuery(search);
