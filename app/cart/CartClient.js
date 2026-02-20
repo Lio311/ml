@@ -20,6 +20,11 @@ export default function CartClient() {
     const [showWheel, setShowWheel] = useState(false);
     const [hasSeenWheel, setHasSeenWheel] = useState(false);
     const [sharedCart, setSharedCart] = useState(null);
+    const [isSelfPickup, setIsSelfPickup] = useState(false);
+
+    // Effective shipping cost based on delivery method
+    const effectiveShipping = isSelfPickup ? 0 : shippingCost;
+    const effectiveTotal = total - shippingCost + effectiveShipping;
 
     // Check for shared cart in URL (Short ID now)
     useEffect(() => {
@@ -347,9 +352,10 @@ export default function CartClient() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     items: cartItems,
-                    total: total,
+                    total: effectiveTotal,
                     freeSamples: freeSamplesCount,
-                    notes: notes
+                    notes: notes,
+                    deliveryMethod: isSelfPickup ? 'self_pickup' : 'mail'
                 })
             });
 
@@ -673,9 +679,22 @@ export default function CartClient() {
 
 
 
-                            <div className="flex justify-between text-lg">
-                                <span>משלוח</span>
-                                <span>{shippingCost} ₪</span>
+                            {/* Delivery Method Selection */}
+                            <div className="border rounded-xl overflow-hidden">
+                                <button
+                                    onClick={() => setIsSelfPickup(false)}
+                                    className={`w-full flex justify-between items-center px-4 py-3 text-sm font-bold transition ${!isSelfPickup ? 'bg-black text-white' : 'bg-white text-gray-700 hover:bg-gray-50'}`}
+                                >
+                                    <span>משלוח בדואר</span>
+                                    <span>{shippingCost} ₪</span>
+                                </button>
+                                <button
+                                    onClick={() => setIsSelfPickup(true)}
+                                    className={`w-full flex justify-between items-center px-4 py-3 text-sm font-bold transition border-t ${isSelfPickup ? 'bg-black text-white' : 'bg-white text-gray-700 hover:bg-gray-50'}`}
+                                >
+                                    <span>⬆️ איסוף עצמי (תל אביב)</span>
+                                    <span className="text-green-500">חינם</span>
+                                </button>
                             </div>
 
                             {/* Free Samples Progress Bar */}
@@ -753,7 +772,7 @@ export default function CartClient() {
 
                             <div className="flex justify-between text-xl font-bold pt-4 border-t">
                                 <span>סה״כ לתשלום</span>
-                                <span>{total} ₪</span>
+                                <span>{effectiveTotal} ₪</span>
                             </div>
 
                             {/* Order Notes (Moved) */}

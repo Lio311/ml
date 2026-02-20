@@ -57,7 +57,7 @@ export default function Header({ brands = [], menu = [] }) {
                 <div className="flex-1 flex justify-start">
                     <LiveVisitorCounter />
                 </div>
-                <div className="text-center font-bold">משלוח בלוקר לכל הארץ ב-30 ₪</div>
+                <div className="text-center font-bold">משלוח בדואר לכל הארץ ב-30 ₪</div>
                 <div className="flex-1"></div>
             </div>
 
