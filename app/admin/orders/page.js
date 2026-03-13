@@ -120,7 +120,7 @@ export default async function AdminOrdersPage(props) {
             }
 
             // Send Email Notification
-            const { sendEmail, getStatusUpdateTemplate } = require('../../../lib/email'); // Dynamic import for server action
+            const { sendEmail, getStatusUpdateTemplate } = require('../../lib/email'); // Dynamic import for server action
             if (order && order.customer_details?.email) {
                 const html = getStatusUpdateTemplate(orderId, status, order.customer_details.name);
                 await sendEmail(order.customer_details.email, `עדכון סטטוס הזמנה #${orderId} - ml`, html);

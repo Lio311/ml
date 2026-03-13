@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { auth, currentUser } from '@clerk/nextjs/server';
 import pool from '../../lib/db';
-import { sendEmail, getOrderConfirmationTemplate, getAdminNewOrderTemplate } from '../../../lib/email';
+import { sendEmail, getOrderConfirmationTemplate, getAdminNewOrderTemplate } from '../../lib/email';
 
 export async function POST(req) {
     try {

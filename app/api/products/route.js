@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import pool from '../../lib/db';
 import { clerkClient } from '@clerk/nextjs/server';
-import { sendEmail, getNewProductTemplate } from '../../../lib/email';
+import { sendEmail, getNewProductTemplate } from '../../lib/email';
 import { checkAdmin } from '../../lib/admin';
 
 export async function GET(req) {
