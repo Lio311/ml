@@ -28,15 +28,19 @@ export async function POST() {
             const createdDate = new Date(user.createdAt);
 
             await client.query(`
-                INSERT INTO users (id, email, first_name, last_name, role, created_at, updated_at)
-                VALUES ($1, $2, $3, $4, $5, $6, NOW())
+                INSERT INTO users (id, email, first_name, last_name, role, phone, created_at, updated_at)
+                VALUES ($1, $2, $3, $4, $5, $6, $7, NOW())
                 ON CONFLICT (email) DO UPDATE SET
                     id = EXCLUDED.id,
                     first_name = EXCLUDED.first_name,
                     last_name = EXCLUDED.last_name,
                     role = EXCLUDED.role,
+                    phone = CASE 
+                        WHEN users.phone IS NOT NULL AND users.phone != '' THEN users.phone 
+                        ELSE EXCLUDED.phone 
+                    END,
                     updated_at = NOW()
-            `, [id, email, firstName, lastName, role, createdDate]);
+            `, [id, email, firstName, lastName, role, '', createdDate]);
             
             syncedCount++;
         }
