@@ -2,6 +2,7 @@ import pool from "../../lib/db";
 import { currentUser } from "@clerk/nextjs/server";
 import Link from "next/link";
 import UserRoleSelect from "./UserRoleSelect";
+import SyncUsersButton from "./SyncUsersButton";
 
 export const metadata = {
     title: "ניהול זהויות | ml_tlv",
@@ -62,6 +63,7 @@ export default async function AdminUsersPage(props) {
         <div>
             <div className="flex justify-between items-center mb-6">
                 <h1 className="text-3xl font-bold">ניהול זהויות והרשאות</h1>
+                <SyncUsersButton />
             </div>
 
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
