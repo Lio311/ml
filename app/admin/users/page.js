@@ -28,7 +28,7 @@ export default async function AdminUsersPage(props) {
         // Fetch Users with specific Role Priority sorting and Pagination
         const [usersRes, countRes] = await Promise.all([
             client.query(`
-                SELECT id, first_name, last_name, email, role, created_at 
+                SELECT id, first_name, last_name, email, phone, role, created_at 
                 FROM users 
                 ORDER BY 
                     CASE role 
@@ -48,6 +48,7 @@ export default async function AdminUsersPage(props) {
             firstName: u.first_name,
             lastName: u.last_name,
             email: u.email,
+            phone: u.phone,
             role: u.role || 'customer',
             createdAt: u.created_at
         }));
@@ -84,7 +85,16 @@ export default async function AdminUsersPage(props) {
                                         <div className="font-bold">{u.firstName} {u.lastName}</div>
                                         <div className="text-xs text-gray-400 font-mono">{u.id}</div>
                                     </td>
-                                    <td className="p-4 text-sm">{u.email}</td>
+                                    <td className="p-4 text-sm">
+                                        <div>{u.email}</div>
+                                        {u.phone && (
+                                            <div className="text-xs text-gray-500 font-bold mt-1">
+                                                <a href={`tel:${u.phone}`} className="hover:underline text-blue-600">
+                                                    {u.phone}
+                                                </a>
+                                            </div>
+                                        )}
+                                    </td>
                                     <td className="p-4 text-sm text-gray-500">
                                         {new Date(u.createdAt).toLocaleDateString('he-IL')}
                                     </td>

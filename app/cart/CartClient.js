@@ -104,6 +104,22 @@ export default function CartClient() {
     const [phoneNumber, setPhoneNumber] = useState('');
     const [phoneError, setPhoneError] = useState('');
 
+    // Fetch Persisted Phone Number
+    useEffect(() => {
+        const fetchPersonalPhone = async () => {
+            try {
+                const res = await fetch('/api/user/phone');
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.phone) setPhoneNumber(data.phone);
+                }
+            } catch (e) {
+                console.error("Failed to fetch user phone:", e);
+            }
+        };
+        fetchPersonalPhone();
+    }, []);
+
     // Auto-Validate Coupon on Cart Change
     useEffect(() => {
         if (!coupon) return;
