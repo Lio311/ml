@@ -227,6 +227,14 @@ export default async function AdminOrdersPage(props) {
                                 <td className="p-4">
                                     <div className="font-bold">{order.customer_details?.name}</div>
                                     <div className="text-xs text-gray-500">{order.customer_details?.email}</div>
+                                    {order.customer_details?.phone && (
+                                        <div className="text-xs font-bold text-gray-700 mt-1 flex items-center gap-1">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-3 h-3">
+                                                <path fillRule="evenodd" d="M2 3.5A1.5 1.5 0 013.5 2h1.148a1.5 1.5 0 011.465 1.175l.716 3.223a1.5 1.5 0 01-1.052 1.767l-.933.267c-.41.117-.643.555-.48.95a11.542 11.542 0 006.254 6.254c.395.163.833-.07.95-.48l.267-.933a1.5 1.5 0 011.767-1.052l3.223.716A1.5 1.5 0 0118 15.352V16.5a1.5 1.5 0 01-1.5 1.5H15c-1.149 0-2.261-.15-3.326-.43a13.006 13.006 0 01-9.244-9.244A13.006 13.006 0 012 5V3.5z" clipRule="evenodd" />
+                                            </svg>
+                                            <a href={`tel:${order.customer_details.phone}`} className="hover:underline">{order.customer_details.phone}</a>
+                                        </div>
+                                    )}
                                     {order.notes && (
                                         <div className="mt-2 text-xs bg-yellow-50 p-2 rounded border border-yellow-200 text-gray-800 max-w-[200px] break-words">
                                             <span className="font-bold block mb-1">הערות:</span>
