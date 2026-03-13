@@ -30,8 +30,8 @@ export async function POST() {
             await client.query(`
                 INSERT INTO users (id, email, first_name, last_name, role, created_at, updated_at)
                 VALUES ($1, $2, $3, $4, $5, $6, NOW())
-                ON CONFLICT (id) DO UPDATE SET
-                    email = EXCLUDED.email,
+                ON CONFLICT (email) DO UPDATE SET
+                    id = EXCLUDED.id,
                     first_name = EXCLUDED.first_name,
                     last_name = EXCLUDED.last_name,
                     role = EXCLUDED.role,
