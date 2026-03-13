@@ -84,12 +84,12 @@ export async function POST(req) {
                 const adminEmail = process.env.ADMIN_EMAIL || 'lior31197@gmail.com';
                 const userObj = { first_name, last_name, email };
                 const adminHtml = getAdminNewUserTemplate(userObj);
-                sendEmail(adminEmail, `משתמש חדש הצטרף למשפחה! ✨`, adminHtml);
+                await sendEmail(adminEmail, `משתמש חדש הצטרף למשפחה! ✨`, adminHtml);
 
                 // Send Customer Welcome Email
                 if (email) {
                     const welcomeHtml = getUserWelcomeTemplate(first_name);
-                    sendEmail(email, `ברוכים הבאים ל-ml_tlv! ✨`, welcomeHtml);
+                    await sendEmail(email, `ברוכים הבאים ל-ml_tlv! ✨`, welcomeHtml);
                 }
             }
 

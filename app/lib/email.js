@@ -72,7 +72,7 @@ export const getNewProductTemplate = (product) => {
                     </ul>
                 </div>
 
-                <a href="${process.env.NEXT_PUBLIC_BASE_URL || 'https://ml-tlv.vercel.app'}/product/${product.id}" style="background-color: #000; color: #fff; padding: 15px 30px; text-decoration: none; border-radius: 30px; font-weight: bold; display: inline-block;">
+                <a href="${'https://www.ml-tlv.com'}/product/${product.id}" style="background-color: #000; color: #fff; padding: 15px 30px; text-decoration: none; border-radius: 30px; font-weight: bold; display: inline-block;">
                     לרכישה ופרטים נוספים
                 </a>
             </div>
@@ -168,7 +168,7 @@ export const getStatusUpdateTemplate = (orderId, status, customerName) => {
             <p>${messageBody}</p>
             
             <div style="margin-top: 30px;">
-                <a href="${process.env.NEXT_PUBLIC_BASE_URL || 'https://ml-tlv.vercel.app'}/orders" style="background-color: #000; color: #fff; padding: 10px 20px; text-decoration: none; border-radius: 5px;">
+                <a href="${'https://www.ml-tlv.com'}/orders" style="background-color: #000; color: #fff; padding: 10px 20px; text-decoration: none; border-radius: 5px;">
                     לצפייה בפרטי ההזמנה
                 </a>
             </div>
@@ -189,7 +189,7 @@ export const getAdminNewOrderTemplate = (orderId, customerName, total, items) =>
             <p><strong>סכום:</strong> ${total} ₪</p>
             <p><strong>פריטים:</strong></p>
             <ul>${itemsHtml}</ul>
-            <p><a href="${process.env.NEXT_PUBLIC_BASE_URL || 'https://ml-tlv.vercel.app'}/admin/orders">לצפייה בניהול הזמנות</a></p>
+            <p><a href="${'https://www.ml-tlv.com'}/admin/orders">לצפייה בניהול הזמנות</a></p>
         </div>
     `;
 };
@@ -200,7 +200,7 @@ export const getAdminNewUserTemplate = (user) => {
             <h2>משתמש חדש נרשם למערכת! ✨</h2>
             <p><strong>שם:</strong> ${user.first_name} ${user.last_name}</p>
             <p><strong>אימייל:</strong> ${user.email}</p>
-            <p><a href="${process.env.NEXT_PUBLIC_BASE_URL || 'https://ml-tlv.vercel.app'}/admin/users">לצפייה בניהול משתמשים</a></p>
+            <p><a href="${'https://www.ml-tlv.com'}/admin/users">לצפייה בניהול משתמשים</a></p>
         </div>
     `;
 };
@@ -227,7 +227,7 @@ export const getUserWelcomeTemplate = (customerName) => {
             </div>
             
             <div style="text-align: center; margin-top: 30px;">
-                <a href="${process.env.NEXT_PUBLIC_BASE_URL || 'https://ml-tlv.vercel.app'}/catalog" style="background-color: #000; color: #fff; padding: 15px 30px; text-decoration: none; border-radius: 30px; font-weight: bold; display: inline-block;">
+                <a href="${'https://www.ml-tlv.com'}/catalog" style="background-color: #000; color: #fff; padding: 15px 30px; text-decoration: none; border-radius: 30px; font-weight: bold; display: inline-block;">
                     בואו נתחיל להריח...
                 </a>
             </div>

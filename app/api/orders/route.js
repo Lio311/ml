@@ -188,12 +188,12 @@ export async function POST(req) {
 
             if (userEmail) {
                 const html = getOrderConfirmationTemplate(orderId, items, total, freeSamples, notes);
-                sendEmail(userEmail, `אישור הזמנה #${orderId} - ml_tlv`, html);
+                await sendEmail(userEmail, `אישור הזמנה #${orderId} - ml_tlv`, html);
             }
 
             // Send Admin Alert
             const adminHtml = getAdminNewOrderTemplate(orderId, `${user.firstName} ${user.lastName}`, total, items);
-            sendEmail(adminEmail, `חם מהתנור! הזמנה חדשה #${orderId} 🔥`, adminHtml);
+            await sendEmail(adminEmail, `חם מהתנור! הזמנה חדשה #${orderId} 🔥`, adminHtml);
 
             return NextResponse.json({ success: true, orderId });
 
