@@ -13,7 +13,7 @@ export async function POST(req) {
         }
 
         const body = await req.json();
-        const { items, total, freeSamples, notes, deliveryMethod } = body;
+        const { items, total, freeSamples, notes, deliveryMethod, phoneNumber } = body;
 
         if (!items || items.length === 0) {
             return NextResponse.json({ error: 'Cart is empty' }, { status: 400 });
@@ -103,6 +103,7 @@ export async function POST(req) {
                 clerk_id: userId,
                 name: `${user.firstName} ${user.lastName}`,
                 email: user.emailAddresses[0]?.emailAddress,
+                phone: phoneNumber || '',
             };
 
             const orderResult = await client.query(
@@ -187,12 +188,12 @@ export async function POST(req) {
             const adminEmail = process.env.ADMIN_EMAIL || 'lior31197@gmail.com';
 
             if (userEmail) {
-                const html = getOrderConfirmationTemplate(orderId, items, total, freeSamples, notes);
+                const html = getOrderConfirmationTemplate(orderId, items, total, freeSamples, notes, deliveryMethod || 'mail', shippingCost);
                 await sendEmail(userEmail, `אישור הזמנה #${orderId} - ml_tlv`, html);
             }
 
             // Send Admin Alert
-            const adminHtml = getAdminNewOrderTemplate(orderId, `${user.firstName} ${user.lastName}`, total, items);
+            const adminHtml = getAdminNewOrderTemplate(orderId, `${user.firstName} ${user.lastName}`, total, items, deliveryMethod || 'mail', shippingCost, phoneNumber);
             await sendEmail(adminEmail, `חם מהתנור! הזמנה חדשה #${orderId} 🔥`, adminHtml);
 
             return NextResponse.json({ success: true, orderId });

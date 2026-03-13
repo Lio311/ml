@@ -83,7 +83,7 @@ export const getNewProductTemplate = (product) => {
     `;
 };
 
-export const getOrderConfirmationTemplate = (orderId, items, total, freeSamples, notes) => {
+export const getOrderConfirmationTemplate = (orderId, items, total, freeSamples, notes, deliveryMethod, shippingCost) => {
     const itemsHtml = items.map(item => `
         <tr>
             <td style="padding: 8px; border-bottom: 1px solid #ddd;">${item.name} (${item.size} מ"ל)</td>
@@ -91,6 +91,9 @@ export const getOrderConfirmationTemplate = (orderId, items, total, freeSamples,
             <td style="padding: 8px; border-bottom: 1px solid #ddd;">${item.price} ₪</td>
         </tr>
     `).join('');
+
+    const deliveryText = deliveryMethod === 'self_pickup' ? 'איסוף עצמי (תל אביב)' : 'משלוח בדואר';
+    const shippingCostText = shippingCost === 0 ? 'חינם' : `${shippingCost} ₪`;
 
     return `
         <div dir="rtl" style="font-family: 'Open Sans', 'Open Sans Hebrew', Arial, sans-serif; color: #333;">
@@ -111,10 +114,12 @@ export const getOrderConfirmationTemplate = (orderId, items, total, freeSamples,
                 </tbody>
             </table>
             
-            <p style="margin-top: 20px;">
-                <strong>סה"כ לתשלום: ${total} ₪</strong>
-                ${freeSamples > 0 ? `<br><span style="color: green;">+ ${freeSamples} דוגמיות מתנה עלינו! 🎁</span>` : ''}
-            </p>
+            <div style="margin-top: 20px; padding: 15px; background-color: #f9f9f9; border-radius: 8px;">
+                <p style="margin: 5px 0;"><strong>שיטת משלוח:</strong> ${deliveryText}</p>
+                <p style="margin: 5px 0;"><strong>עלות משלוח:</strong> ${shippingCostText}</p>
+                <p style="margin: 5px 0; font-size: 18px;"><strong>סה"כ לתשלום: ${total} ₪</strong></p>
+                ${freeSamples > 0 ? `<p style="margin: 5px 0; color: green; font-weight: bold;">+ ${freeSamples} דוגמיות מתנה עלינו! 🎁</p>` : ''}
+            </div>
 
             ${notes ? `
             <div style="background-color: #fffde7; padding: 15px; border: 1px solid #fff9c4; border-radius: 8px; margin-top: 20px; font-size: 14px;">
@@ -123,7 +128,7 @@ export const getOrderConfirmationTemplate = (orderId, items, total, freeSamples,
             </div>
             ` : ''}
             
-            <p>אנחנו מטפלים בהזמנה וכבר נצור קשר לתיאום תשלום ומשלוח.</p>
+            <p style="margin-top: 20px;">אנחנו מטפלים בהזמנה וכבר נצור קשר לתיאום תשלום ומשלוח.</p>
             
             <hr style="margin: 30px 0; border: 0; border-top: 1px solid #eee;">
             <p style="font-size: 12px; color: #999;">ml - יוקרה בחתיכות קטנות</p>
@@ -179,14 +184,19 @@ export const getStatusUpdateTemplate = (orderId, status, customerName) => {
     `;
 };
 
-export const getAdminNewOrderTemplate = (orderId, customerName, total, items) => {
+export const getAdminNewOrderTemplate = (orderId, customerName, total, items, deliveryMethod, shippingCost, phoneNumber) => {
     const itemsHtml = items.map(item => `<li>${item.name} (${item.size}ml) x${item.quantity}</li>`).join('');
+    const deliveryText = deliveryMethod === 'self_pickup' ? 'איסוף עצמי (תל אביב)' : 'משלוח בדואר';
+    
     return `
         <div dir="rtl" style="font-family: Arial, sans-serif;">
             <h2>הזמנה חדשה באתר! 🎉</h2>
             <p><strong>מספר הזמנה:</strong> #${orderId}</p>
             <p><strong>לקוח:</strong> ${customerName}</p>
-            <p><strong>סכום:</strong> ${total} ₪</p>
+            <p><strong>טלפון:</strong> ${phoneNumber || 'לא הוזן'}</p>
+            <p><strong>שיטת משלוח:</strong> ${deliveryText}</p>
+            <p><strong>עלות משלוח:</strong> ${shippingCost} ₪</p>
+            <p><strong>סה"כ סופי:</strong> ${total} ₪</p>
             <p><strong>פריטים:</strong></p>
             <ul>${itemsHtml}</ul>
             <p><a href="${'https://www.ml-tlv.com'}/admin/orders">לצפייה בניהול הזמנות</a></p>
