@@ -213,6 +213,7 @@ export default async function AdminOrdersPage(props) {
                             <th className="p-4 w-96">תכולת ההזמנה</th>
                             <th className="p-4">סכום</th>
                             <th className="p-4">בונוסים</th>
+                            <th className="p-4">שיטה</th>
                             <th className="p-4">תאריך</th>
                             <th className="p-4">סטטוס</th>
                             <th className="p-4">פעולות</th>
@@ -250,6 +251,19 @@ export default async function AdminOrdersPage(props) {
                                             {order.free_samples_count} דוגמיות
                                         </span>
                                     ) : '-'}
+                                </td>
+                                <td className="p-4 text-center">
+                                    {order.delivery_method === 'self_pickup' ? (
+                                        <span className="inline-flex flex-col items-center text-xs text-green-700 bg-green-50 px-2 py-1 rounded border border-green-200" title="איסוף עצמי">
+                                            <span>📍</span>
+                                            <span className="font-bold">איסוף</span>
+                                        </span>
+                                    ) : (
+                                        <span className="inline-flex flex-col items-center text-xs text-blue-700 bg-blue-50 px-2 py-1 rounded border border-blue-200" title="משלוח בדואר">
+                                            <span>📦</span>
+                                            <span className="font-bold">משלוח</span>
+                                        </span>
+                                    )}
                                 </td>
                                 <td className="p-4 text-sm text-gray-500">
                                     {new Date(order.created_at).toLocaleString('he-IL')}

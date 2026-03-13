@@ -13,7 +13,7 @@ export async function POST(req) {
         }
 
         const body = await req.json();
-        const { items, total, freeSamples, notes } = body;
+        const { items, total, freeSamples, notes, deliveryMethod } = body;
 
         if (!items || items.length === 0) {
             return NextResponse.json({ error: 'Cart is empty' }, { status: 400 });
@@ -67,8 +67,8 @@ export async function POST(req) {
                 }
             }
 
-            // Add shipping cost (fixed 30 ₪)
-            const shippingCost = 30;
+            // Add shipping cost (0 for self_pickup, 30 for mail)
+            const shippingCost = deliveryMethod === 'self_pickup' ? 0 : 30;
             calculatedTotal += shippingCost;
 
             // Verify Total (Allow 1 shekel diff for rounding?)
@@ -106,10 +106,10 @@ export async function POST(req) {
             };
 
             const orderResult = await client.query(
-                `INSERT INTO orders (customer_details, total_amount, items, free_samples_count, status, notes)
-         VALUES ($1, $2, $3, $4, 'pending', $5)
+                `INSERT INTO orders (customer_details, total_amount, items, free_samples_count, status, notes, delivery_method)
+         VALUES ($1, $2, $3, $4, 'pending', $5, $6)
          RETURNING id`,
-                [JSON.stringify(customerDetails), total, JSON.stringify(items), freeSamples, notes || '']
+                [JSON.stringify(customerDetails), total, JSON.stringify(items), freeSamples, notes || '', deliveryMethod || 'mail']
             );
 
             const orderId = orderResult.rows[0].id;
