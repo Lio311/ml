@@ -1,5 +1,6 @@
 "use client";
 
+// Logic for daily Instagram popup
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Instagram, MessageCircle } from 'lucide-react';
