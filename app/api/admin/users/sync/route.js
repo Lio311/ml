@@ -1,6 +1,6 @@
 import { clerkClient } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
-import pool from '../../../../../lib/db';
+import pool from '../../../../lib/db';
 
 export const dynamic = 'force-dynamic';
 

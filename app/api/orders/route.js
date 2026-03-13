@@ -77,6 +77,26 @@ export async function POST(req) {
             }
             // ----------------------------------
 
+            // --- JIT USER SYNC ---
+            // Ensure the user exists in our local DB before creating the order
+            const clerkEmail = user.emailAddresses[0]?.emailAddress || '';
+            const clerkFirstName = user.firstName || '';
+            const clerkLastName = user.lastName || '';
+            const clerkRole = user.publicMetadata?.role || 'customer';
+            const clerkCreatedAt = new Date(user.createdAt);
+
+            await client.query(`
+                INSERT INTO users (id, email, first_name, last_name, role, created_at, updated_at)
+                VALUES ($1, $2, $3, $4, $5, $6, NOW())
+                ON CONFLICT (id) DO UPDATE SET
+                    email = EXCLUDED.email,
+                    first_name = EXCLUDED.first_name,
+                    last_name = EXCLUDED.last_name,
+                    role = EXCLUDED.role,
+                    updated_at = NOW()
+            `, [userId, clerkEmail, clerkFirstName, clerkLastName, clerkRole, clerkCreatedAt]);
+            // ---------------------
+
             // 1. Create Order
             // We save minimal user info snapshot for the order record
             const customerDetails = {
