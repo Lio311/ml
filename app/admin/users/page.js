@@ -12,7 +12,7 @@ export const metadata = {
 export default async function AdminUsersPage(props) {
     const searchParams = await props.searchParams;
     const page = Number(searchParams?.page) || 1;
-    const LIMIT = 5;
+    const LIMIT = 10;
     const offset = (page - 1) * LIMIT;
 
     const user = await currentUser();
