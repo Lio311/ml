@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { auth, currentUser } from '@clerk/nextjs/server';
 import pool from '../../lib/db';
-import { sendEmail, getOrderConfirmationTemplate } from '../../../lib/email';
+import { sendEmail, getOrderConfirmationTemplate, getAdminNewOrderTemplate } from '../../../lib/email';
 
 export async function POST(req) {
     try {
@@ -184,10 +184,16 @@ export async function POST(req) {
 
             // Send Confirmation Email (Async, don't block response)
             const userEmail = user?.emailAddresses[0]?.emailAddress;
+            const adminEmail = process.env.ADMIN_EMAIL || 'lior31197@gmail.com';
+
             if (userEmail) {
                 const html = getOrderConfirmationTemplate(orderId, items, total, freeSamples, notes);
                 sendEmail(userEmail, `אישור הזמנה #${orderId} - ml_tlv`, html);
             }
+
+            // Send Admin Alert
+            const adminHtml = getAdminNewOrderTemplate(orderId, `${user.firstName} ${user.lastName}`, total, items);
+            sendEmail(adminEmail, `חם מהתנור! הזמנה חדשה #${orderId} 🔥`, adminHtml);
 
             return NextResponse.json({ success: true, orderId });
 

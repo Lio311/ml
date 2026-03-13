@@ -3,6 +3,7 @@ import { Webhook } from 'svix';
 import { headers } from 'next/headers';
 import { NextResponse } from 'next/server';
 import pool from '../../../lib/db';
+import { sendEmail, getAdminNewUserTemplate } from '../../../lib/email';
 
 export async function POST(req) {
     // You can find this in the Clerk Dashboard -> Webhooks -> choose the webhook
@@ -78,6 +79,12 @@ export async function POST(req) {
                     `INSERT INTO notifications (type, message, is_read) VALUES ($1, $2, $3)`,
                     ['user', `משתמש חדש נרשם: ${first_name || ''} ${last_name || ''}`, false]
                 );
+
+                // Send Admin Email Alert
+                const adminEmail = process.env.ADMIN_EMAIL || 'lior31197@gmail.com';
+                const userObj = { first_name, last_name, email };
+                const adminHtml = getAdminNewUserTemplate(userObj);
+                sendEmail(adminEmail, `משתמש חדש הצטרף למשפחה! ✨`, adminHtml);
             }
 
             // console.log(`Webhook processed: Synced user ${id} (${email})`);
