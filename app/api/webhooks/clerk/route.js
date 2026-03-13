@@ -3,7 +3,7 @@ import { Webhook } from 'svix';
 import { headers } from 'next/headers';
 import { NextResponse } from 'next/server';
 import pool from '../../../lib/db';
-import { sendEmail, getAdminNewUserTemplate } from '../../../lib/email';
+import { sendEmail, getAdminNewUserTemplate, getUserWelcomeTemplate } from '../../../lib/email';
 
 export async function POST(req) {
     // You can find this in the Clerk Dashboard -> Webhooks -> choose the webhook
@@ -85,6 +85,12 @@ export async function POST(req) {
                 const userObj = { first_name, last_name, email };
                 const adminHtml = getAdminNewUserTemplate(userObj);
                 sendEmail(adminEmail, `משתמש חדש הצטרף למשפחה! ✨`, adminHtml);
+
+                // Send Customer Welcome Email
+                if (email) {
+                    const welcomeHtml = getUserWelcomeTemplate(first_name);
+                    sendEmail(email, `ברוכים הבאים ל-ml_tlv! ✨`, welcomeHtml);
+                }
             }
 
             // console.log(`Webhook processed: Synced user ${id} (${email})`);
