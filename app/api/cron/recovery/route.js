@@ -48,7 +48,7 @@ export async function GET(req) {
                     SELECT id FROM coupons 
                     WHERE email = $1 
                     AND code LIKE 'SAVE5-%' 
-                    AND created_at > NOW() - INTERVAL '30 days'
+                    AND created_at > NOW() - INTERVAL '7 days'
                 `, [cart.email]);
 
                 if (existingCoupons.rows.length > 0) {
