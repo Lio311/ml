@@ -254,12 +254,20 @@ export default async function AdminOrdersPage(props) {
                                     </ul>
                                 </td>
                                 <td className="p-4 font-bold">{order.total_amount} ₪</td>
-                                <td className="p-4 text-sm text-center">
-                                    {order.free_samples_count > 0 ? (
-                                        <span className="bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs">
-                                            {order.free_samples_count} דוגמיות
-                                        </span>
-                                    ) : '-'}
+                                <td className="p-4">
+                                    <div className="flex justify-center">
+                                        {order.free_samples_count > 0 ? (
+                                            <div className="inline-flex flex-col items-center bg-blue-50 border border-blue-100 px-4 py-2 rounded-xl shadow-sm hover:shadow-md transition-all group pointer-events-none">
+                                                <div className="flex items-center gap-1.5">
+                                                    <span className="text-xl group-hover:scale-110 transition-transform">🎁</span>
+                                                    <span className="text-lg font-black text-blue-900 leading-none">{order.free_samples_count}</span>
+                                                </div>
+                                                <span className="text-[10px] font-black text-blue-500 uppercase tracking-widest mt-0.5">דוגמיות</span>
+                                            </div>
+                                        ) : (
+                                            <span className="text-gray-300 font-light">—</span>
+                                        )}
+                                    </div>
                                 </td>
                                 <td className="p-4 text-center">
                                     {order.delivery_method === 'self_pickup' ? (
