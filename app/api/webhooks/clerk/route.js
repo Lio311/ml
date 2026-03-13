@@ -51,11 +51,13 @@ export async function POST(req) {
 
     // Handle the event
     const eventType = evt.type;
+    console.log(`[Clerk Webhook] Received event: ${eventType}`);
 
     if (eventType === 'user.created' || eventType === 'user.updated') {
         const { id, email_addresses, first_name, last_name, public_metadata, created_at } = evt.data;
         const email = email_addresses?.[0]?.email_address || '';
         const role = public_metadata?.role || 'customer';
+        console.log(`[Clerk Webhook] Processing user: ${email} (${eventType})`);
 
         // Clerk sends timestamps in ms
         const createdDate = new Date(created_at);
@@ -91,6 +93,9 @@ export async function POST(req) {
                     const welcomeHtml = getUserWelcomeTemplate(first_name);
                     await sendEmail(email, `ברוכים הבאים ל-ml_tlv! ✨`, welcomeHtml);
                 }
+                console.log(`[Clerk Webhook] Successfully processed new user: ${email}`);
+            } else {
+                console.log(`[Clerk Webhook] Successfully updated user: ${email}`);
             }
 
             // console.log(`Webhook processed: Synced user ${id} (${email})`);
