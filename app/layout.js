@@ -30,9 +30,9 @@ export const viewport = {
 export const metadata = {
   title: "יוקרה בחתיכות קטנות",
   description: "חנות דוגמיות בשמים בקונספט קצת שונה. מגוון בשמי בוטיק, נישה ודיזיינר במחירים הוגנים",
-  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || 'https://www.ml-tlv.com'),
+  metadataBase: new URL('https://www.ml-tlv.com'),
   alternates: {
-    canonical: './',
+    canonical: '/',
   },
   manifest: '/manifest.json',
   appleWebApp: {
@@ -43,7 +43,7 @@ export const metadata = {
   openGraph: {
     title: "ml_tlv | דוגמיות בשמים",
     description: "חנות דוגמיות בשמים הגדולה בישראל",
-    url: 'https://ml-tlv.com',
+    url: 'https://www.ml-tlv.com',
     siteName: 'ml_tlv',
     images: [
       {
@@ -155,8 +155,8 @@ export default async function RootLayout({ children }) {
                     "@context": "https://schema.org",
                     "@type": "Organization",
                     "name": "ml_tlv",
-                    "url": "https://ml-tlv.com",
-                    "logo": "https://ml-tlv.com/logo_v3.png",
+                    "url": "https://www.ml-tlv.com",
+                    "logo": "https://www.ml-tlv.com/logo_v3.png",
                     "description": "Luxury Niche Perfume Samples in Israel",
                     "sameAs": [
                       "https://instagram.com/ml_tlv"

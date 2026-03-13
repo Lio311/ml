@@ -12,9 +12,13 @@ export async function generateMetadata({ params }) {
     return {
         title: `${article.title} | ml_tlv`,
         description: article.excerpt,
+        alternates: {
+            canonical: `https://www.ml-tlv.com/blog/${slug}`,
+        },
         openGraph: {
             title: article.title,
             description: article.excerpt,
+            url: `https://www.ml-tlv.com/blog/${slug}`,
             type: 'article',
             publishedTime: article.created_at
         }
@@ -51,8 +55,36 @@ export default async function BlogPost({ params }) {
                 <span>/</span>
                 <Link href="/blog" className="hover:underline">מגזין</Link>
                 <span>/</span>
-                <span className="font-bold text-black truncate max-w-[200px]">{article.title}</span>
             </nav>
+            
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{
+                    __html: JSON.stringify({
+                        "@context": "https://schema.org",
+                        "@type": "BlogPosting",
+                        "headline": article.title,
+                        "description": article.excerpt,
+                        "datePublished": article.created_at,
+                        "author": {
+                            "@type": "Organization",
+                            "name": "ml_tlv"
+                        },
+                        "publisher": {
+                            "@type": "Organization",
+                            "name": "ml_tlv",
+                            "logo": {
+                                "@type": "ImageObject",
+                                "url": "https://www.ml-tlv.com/logo_v3.png"
+                            }
+                        },
+                        "mainEntityOfPage": {
+                            "@type": "WebPage",
+                            "@id": `https://www.ml-tlv.com/blog/${slug}`
+                        }
+                    })
+                }}
+            />
 
             <article className="bg-white p-8 md:p-12 rounded-2xl shadow-sm border border-gray-100">
                 <header className="mb-8 border-b pb-8">

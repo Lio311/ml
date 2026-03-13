@@ -30,7 +30,7 @@ export async function generateMetadata(props) {
     // generateMetadata is called before page, so we can't redirect here easily without throwing.
     // We let the Page component handle the redirect. Here we just return canonical.
 
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://ml-tlv.com';
+    const baseUrl = 'https://www.ml-tlv.com';
     const title = `${product.name} | החל מ-${product.price_2ml}₪`;
     const description = product.description ? product.description.substring(0, 160) : `קנו דוגמית של ${product.name} באתר ml_tlv. בשמים מקוריים ומיוחדים.`;
     const imageUrl = product.image_url || `${baseUrl}/logo_v3.png`;
@@ -298,7 +298,7 @@ export default async function ProductPage(props) {
                                             "@type": "ListItem",
                                             "position": 1,
                                             "name": "בית",
-                                            "item": "https://ml-tlv.com"
+                                            "item": "https://www.ml-tlv.com"
                                         },
                                         {
                                             "@type": "ListItem",
