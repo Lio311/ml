@@ -2,6 +2,7 @@ import pool from "../../lib/db";
 import { revalidatePath } from "next/cache";
 import { currentUser } from "@clerk/nextjs/server";
 import Link from "next/link";
+import DeleteOrderButton from "./DeleteOrderButton";
 
 export const metadata = {
     title: "ניהול הזמנות | ml_tlv",
@@ -301,15 +302,7 @@ export default async function AdminOrdersPage(props) {
                                                     שמור
                                                 </button>
                                             </form>
-                                            <form action={deleteOrder} className="mt-1">
-                                                <input type="hidden" name="orderId" value={order.id} />
-                                                <button
-                                                    type="submit"
-                                                    className="text-red-500 text-xs underline hover:text-red-700"
-                                                >
-                                                    מחק הזמנה
-                                                </button>
-                                            </form>
+                                            <DeleteOrderButton orderId={order.id} deleteAction={deleteOrder} />
                                         </>
                                     ) : (
                                         <span className="text-gray-400 text-sm">צפייה בלבד</span>
