@@ -348,7 +348,7 @@ export default function CartClient() {
     const validatePhone = (phone) => {
         if (!phone) return "מספר טלפון הוא שדה חובה";
         const cleanPhone = phone.replace(/\D/g, '');
-        if (!cleanPhone.startsWith('0')) return "מספר טלפון חייב להתחיל ב-0";
+        if (!cleanPhone.startsWith('05')) return "מספר טלפון חייב להתחיל ב-05";
         if (cleanPhone.length !== 10) return "מספר טלפון חייב להכיל 10 ספרות";
         return "";
     };
@@ -839,7 +839,7 @@ export default function CartClient() {
                                             if (phoneError) setPhoneError('');
                                         }}
                                     />
-                                    {phoneNumber.length === 10 && !phoneError && (
+                                    {validatePhone(phoneNumber) === "" && (
                                         <div className="absolute right-3 top-1/2 -translate-y-1/2 text-green-500">
                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5">
                                                 <path fillRule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.857-9.809a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4.001-5.5Z" clipRule="evenodd" />
