@@ -80,7 +80,7 @@ export default function CartClient() {
             clearCart();
             sharedCart.forEach(item => {
                 for (let k = 0; k < item.quantity; k++) {
-                    addToCart(item, item.size, item.price);
+                    addToCart(item, item.size, item.price, item.vendorId || 'main', item.vendorName || 'האתר הרשמי');
                 }
             });
             setSharedCart(null);
@@ -89,12 +89,15 @@ export default function CartClient() {
     };
 
     const handleShareCart = async () => {
-        if (cartItems.length === 0) return;
+        if (activeItems.length === 0) {
+            toast.error("הסל הנוכחי ריק ולכן לא ניתן לשתף אותו");
+            return;
+        }
         try {
             const res = await fetch('/api/cart/share', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ items: cartItems })
+                body: JSON.stringify({ items: activeItems })
             });
             if (res.ok) {
                 const data = await res.json();
