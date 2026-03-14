@@ -7,78 +7,73 @@ import toast from "react-hot-toast";
 export default function CatalogProductActions({ item, slug }) {
     const { addToCart, cartItems } = useCatalogCart();
     const prices = item.prices || {};
-    const sizeKeys = Object.keys(prices);
-    const [selectedSize, setSelectedSize] = useState(sizeKeys.length > 0 ? sizeKeys[0] : null);
+    const [addedSize, setAddedSize] = useState(null);
 
-    const activePrice = selectedSize ? prices[selectedSize] : item.price;
-    const cartItemId = selectedSize ? `${item.id}_${selectedSize}` : item.id;
-    const inCart = cartItems.find(i => i.id === cartItemId);
-
-    const handleAddToCart = () => {
-        if (!activePrice) {
+    const handleAddToCart = (size, price) => {
+        if (!price) {
             toast.error("מחיר לא מוגדר");
             return;
         }
+
+        const cartItemId = `${item.id}_${size}`;
 
         addToCart(
             {
                 ...item,
                 id: cartItemId,
                 originalId: item.id,
-                size: selectedSize || '1',
-                price: activePrice
+                size: size,
+                price: price
             },
-            selectedSize || '1',
-            activePrice,
-            item.catalog_id, // Pass the catalog ID as vendorId
-            item.catalog_name || 'ספק חיצוני' // Pass vendor name
+            size,
+            price,
+            item.catalog_id,
+            item.catalog_name || 'ספק חיצוני'
         );
-        toast.success("נוסף לסל!");
+        toast.success(`נוסף לסל: ${item.fragrance_name} (${size})`);
+        setAddedSize(size);
+        setTimeout(() => setAddedSize(null), 2000);
     };
 
+    const sizeEntries = Object.entries(prices);
+
+    if (sizeEntries.length === 0) {
+        return <p className="text-gray-400 text-sm">אין מחיר זמין</p>;
+    }
+
     return (
-        <div className="space-y-6">
-            <div className="flex items-baseline gap-2">
-                <span className="text-4xl font-black text-gray-900">{activePrice} ₪</span>
-                {selectedSize && <span className="text-gray-500 font-medium">ל-{selectedSize}</span>}
+        <div className="space-y-4">
+            <h3 className="font-bold text-gray-900 text-lg text-right">בחר גודל והוסף לסל:</h3>
+            <div className="space-y-3">
+                {sizeEntries.map(([size, price]) => {
+                    const cartItemId = `${item.id}_${size}`;
+                    const inCart = cartItems.find(i => i.id === cartItemId);
+                    const isAdded = addedSize === size;
+
+                    return (
+                        <div
+                            key={size}
+                            onClick={() => !inCart && handleAddToCart(size, price)}
+                            className={`flex items-center justify-between p-3 border rounded-lg bg-white transition cursor-pointer group ${inCart ? 'border-green-300 bg-green-50' : 'hover:border-black'}`}
+                        >
+                            <span className="font-bold text-gray-900" dir="ltr">{size}</span>
+                            <div className="flex items-center gap-4">
+                                <span className="text-gray-700 font-medium">{price} ₪</span>
+                                <button
+                                    type="button"
+                                    className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-lg transition-all ${
+                                        inCart ? 'bg-green-500 text-white' :
+                                        isAdded ? 'bg-green-500 text-white scale-110' :
+                                        'bg-black text-white hover:bg-gray-800 group-hover:scale-110'
+                                    }`}
+                                >
+                                    {inCart || isAdded ? '✓' : '+'}
+                                </button>
+                            </div>
+                        </div>
+                    );
+                })}
             </div>
-
-            {sizeKeys.length > 0 && (
-                <div className="space-y-3">
-                    <p className="text-xs font-bold text-gray-500 uppercase tracking-widest">בחר גודל:</p>
-                    <div className="flex flex-wrap gap-2">
-                        {sizeKeys.map((size) => (
-                            <button
-                                key={size}
-                                onClick={() => setSelectedSize(size)}
-                                className={`px-4 py-2 rounded-xl border-2 font-bold transition-all ${selectedSize === size ? 'border-black bg-black text-white' : 'border-gray-200 bg-white text-gray-600 hover:border-black hover:bg-gray-50'}`}
-                            >
-                                {size}
-                            </button>
-                        ))}
-                    </div>
-                </div>
-            )}
-
-            <button
-                onClick={handleAddToCart}
-                className={`w-full py-4 rounded-2xl font-bold text-lg transition-all shadow-lg active:scale-[0.98] flex items-center justify-center gap-3 ${inCart ? 'bg-gray-100 text-gray-500 cursor-default' : 'bg-black text-white hover:bg-gray-800'}`}
-            >
-                {inCart ? (
-                    <>
-                        <span>כבר בסל ({inCart.quantity})</span>
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
-                        </svg>
-                    </>
-                ) : (
-                    <>
-                        <span>הוסף לסל הקניות</span>
-                        <span className="text-2xl leading-none">+</span>
-                    </>
-                )}
-            </button>
-            
             <p className="text-center text-xs text-gray-400">המחיר כולל מע״מ. משלוח מחושב בקופה.</p>
         </div>
     );
