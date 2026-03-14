@@ -16,7 +16,8 @@ export default function CartClient() {
         subtotal, total, shippingCost, freeSamplesCount, nextTier,
         luckyPrize, setLuckyPrize, discountAmount,
         lotteryMode, lotteryTimeLeft,
-        coupon, setCoupon, isMainVendor, totalItemsCount, vendorConfig
+        coupon, setCoupon, isMainVendor, totalItemsCount, vendorConfig,
+        isSelfPickup, setIsSelfPickup
     } = useCart();
 
     const { isSignedIn, user } = useUser();
@@ -28,21 +29,9 @@ export default function CartClient() {
     const [showWheel, setShowWheel] = useState(false);
     const [hasSeenWheel, setHasSeenWheel] = useState(false);
     const [sharedCart, setSharedCart] = useState(null);
-    const [isSelfPickup, setIsSelfPickup] = useState(false);
 
-    useEffect(() => {
-        if (!isMainVendor && vendorConfig) {
-            if (vendorConfig.delivery_active && !vendorConfig.self_pickup_active) {
-                setIsSelfPickup(false);
-            } else if (!vendorConfig.delivery_active && vendorConfig.self_pickup_active) {
-                setIsSelfPickup(true);
-            } else if (!vendorConfig.delivery_active && !vendorConfig.self_pickup_active) {
-                setIsSelfPickup(false); // default fallback
-            }
-        } else {
-             setIsSelfPickup(false); // default for main vendor
-        }
-    }, [isMainVendor, vendorConfig]);
+    // Initial self-pickup state is now managed by CartContext based on vendorConfig
+    // No redundant useEffect needed here for isSelfPickup initialization
 
     // Grouping all items by vendor for the selection UI
     const vendorBuckets = useMemo(() => {
@@ -72,9 +61,8 @@ export default function CartClient() {
         }
     }, [cartItems.length, activeItems.length, vendorBuckets, setActiveVendorId]);
 
-    // Effective shipping cost based on delivery method
-    const effectiveShipping = isSelfPickup ? 0 : shippingCost;
-    const effectiveTotal = total - (isMainVendor ? shippingCost : 0) + effectiveShipping;
+    // Use total directly from context as it handles shipping/discounts based on shared isSelfPickup
+    const effectiveTotal = total;
 
     // Check for shared cart in URL
     useEffect(() => {
@@ -689,7 +677,7 @@ export default function CartClient() {
                                     {/* Delivery Method */}
                                     {(isMainVendor || vendorConfig?.delivery_active || vendorConfig?.self_pickup_active) && (
                                         <div className="space-y-2">
-                                            <p className="text-xs font-bold text-gray-500 uppercase tracking-widest">שיטת אספקה</p>
+                                            <p className="text-xs font-bold text-gray-500 uppercase tracking-widest text-right">שיטת אספקה</p>
                                             <div className="grid grid-cols-2 gap-3">
                                                 {(isMainVendor || vendorConfig?.delivery_active) && (
                                                     <button
@@ -700,7 +688,7 @@ export default function CartClient() {
                                                             <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
                                                         </svg>
                                                         <span className="text-xs font-bold leading-tight">משלוח</span>
-                                                        <span className={`text-xs font-bold ${!isSelfPickup ? 'text-gray-300' : 'text-gray-400'}`}>{shippingCost} ₪</span>
+                                                        <span className={`text-xs font-bold ${!isSelfPickup ? 'text-gray-300' : 'text-gray-400'}`}>{isMainVendor ? 30 : (vendorConfig?.delivery_price || 0)} ₪</span>
                                                     </button>
                                                 )}
                                                 {(isMainVendor || vendorConfig?.self_pickup_active) && (
@@ -720,6 +708,17 @@ export default function CartClient() {
                                             {isSelfPickup && (
                                                 <p className="text-xs text-gray-500 text-center pt-1">כתובת איסוף — יצורף פרטים עם אישור ההזמנה</p>
                                             )}
+                                        </div>
+                                    )}
+
+                                    {/* Free Samples Promo for Catalog */}
+                                    {!isMainVendor && freeSamplesCount > 0 && (
+                                        <div className="bg-green-50 border border-green-100 p-4 rounded-xl flex items-center gap-3 animate-bounce">
+                                            <div className="bg-green-600 text-white w-10 h-10 rounded-full flex items-center justify-center text-xl">🎁</div>
+                                            <div>
+                                                <p className="text-green-900 font-bold text-sm">הטבה מחכה לך!</p>
+                                                <p className="text-green-700 text-xs font-medium">מגיע לך {freeSamplesCount} דוגמיות חינם בהזמנה זו!</p>
+                                            </div>
                                         </div>
                                     )}
 

@@ -14,6 +14,7 @@ export function CartProvider({ children }) {
     const [luckyPrize, setLuckyPrize] = useState(null);
     const [coupon, setCoupon] = useState(null);
     const [vendorConfig, setVendorConfig] = useState(null);
+    const [isSelfPickup, setIsSelfPickup] = useState(false);
 
     const { user } = useUser();
 
@@ -86,6 +87,20 @@ export function CartProvider({ children }) {
             setVendorConfig(null);
         }
     }, [activeVendorId, isMainVendor]);
+
+    // Initialize isSelfPickup based on config
+    useEffect(() => {
+        if (!isMainVendor && vendorConfig) {
+            if (vendorConfig.delivery_active && !vendorConfig.self_pickup_active) {
+                setIsSelfPickup(false);
+            } else if (!vendorConfig.delivery_active && vendorConfig.self_pickup_active) {
+                setIsSelfPickup(true);
+            }
+        } else if (isMainVendor) {
+            // Main vendor doesn't really use this shared state for buttons yet, but let's default it
+            // Actually, keep it false as default for main
+        }
+    }, [isMainVendor, vendorConfig]);
 
     // Timer Interval for Lottery
     useEffect(() => {
@@ -268,7 +283,10 @@ export function CartProvider({ children }) {
         }
     }
 
-    const shippingCost = Number(isMainVendor ? 30 : (vendorConfig?.delivery_active ? (vendorConfig.delivery_price || 0) : 0));
+    const shippingCost = Number(isMainVendor 
+        ? (isSelfPickup ? 0 : 30) 
+        : (vendorConfig?.delivery_active ? (isSelfPickup ? 0 : (vendorConfig.delivery_price || 0)) : 0)
+    );
     const total = Number(priceAfterDiscounts) + shippingCost;
 
     let freeSamplesCount = 0;
@@ -302,7 +320,7 @@ export function CartProvider({ children }) {
             subtotal, totalItemsCount, freeSamplesCount, nextTier, shippingCost, total,
             luckyPrize, setLuckyPrize, discountAmount, coupon, setCoupon,
             startLottery, cancelLottery, isCartLocked, lotteryTimeLeft, lotteryMode, 
-            isMainVendor, vendorConfig
+            isMainVendor, vendorConfig, isSelfPickup, setIsSelfPickup
         }}>
             {children}
         </CartContext.Provider>

@@ -5,7 +5,7 @@ import { sendEmail, getOrderConfirmationTemplate, getAdminNewOrderTemplate } fro
 
 export async function POST(req, { params }) {
     try {
-        const { id: catalogId } = params;
+        const { id: catalogId } = await params;
         const { userId } = await auth();
         const user = await currentUser();
 
@@ -25,12 +25,12 @@ export async function POST(req, { params }) {
         try {
             await client.query('BEGIN');
 
-            // Fetch catalog info (Support both ID and Slug)
+            // Fetch catalog info (Support both ID and Slug, case-insensitive for slug)
             let catRes;
             if (!isNaN(catalogId)) {
-                catRes = await client.query('SELECT id, name, contact_email FROM user_catalogs WHERE id = $1 OR slug = $2', [catalogId, catalogId]);
+                catRes = await client.query('SELECT id, name, contact_email FROM user_catalogs WHERE id = $1 OR slug ILIKE $2', [catalogId, catalogId]);
             } else {
-                catRes = await client.query('SELECT id, name, contact_email FROM user_catalogs WHERE slug = $1', [catalogId]);
+                catRes = await client.query('SELECT id, name, contact_email FROM user_catalogs WHERE slug ILIKE $1', [catalogId]);
             }
 
             if (catRes.rows.length === 0) {

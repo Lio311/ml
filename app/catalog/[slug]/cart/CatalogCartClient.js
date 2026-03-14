@@ -9,7 +9,8 @@ import toast from 'react-hot-toast';
 export default function CatalogCartClient({ slug }) {
     const { 
         cartItems, removeFromCart, updateQuantity, clearActiveVendorCart, 
-        setActiveVendorId, activeItems, subtotal, vendorConfig, freeSamplesCount 
+        setActiveVendorId, activeItems, subtotal, vendorConfig, freeSamplesCount,
+        total, isSelfPickup, setIsSelfPickup
     } = useCart();
     
     const [catalogInfo, setCatalogInfo] = useState(null);
@@ -19,7 +20,6 @@ export default function CatalogCartClient({ slug }) {
     const [notes, setNotes] = useState('');
     const [phoneNumber, setPhoneNumber] = useState('');
     const [phoneError, setPhoneError] = useState('');
-    const [isSelfPickup, setIsSelfPickup] = useState(false);
 
     // Fetch catalog info and sync active vendor
     useEffect(() => {
@@ -37,10 +37,9 @@ export default function CatalogCartClient({ slug }) {
         fetchCat();
     }, [slug, setActiveVendorId]);
 
-    // Use items and calculations from CartContext (scoped by activeVendorId=slug)
+    // Use calculations from CartContext
     const catalogCartItems = activeItems;
-    const shippingCost = Number(isSelfPickup ? 0 : (vendorConfig?.delivery_price || 0));
-    const effectiveTotal = Number(subtotal) + shippingCost;
+    const effectiveTotal = total;
 
     const validatePhone = (phone) => {
         if (!phone) return "מספר טלפון הוא שדה חובה";
