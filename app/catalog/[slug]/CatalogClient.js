@@ -32,7 +32,7 @@ function CollapsibleSection({ title, children }) {
 
 // ─── Catalog Product Card (IDENTICAL to main site ProductCard.js) ─────
 function CatalogProductCard({ item, slug, catalogId, catalogName }) {
-    const { addToCart } = useCart();
+    const { addToCart, setActiveVendorId } = useCart();
     const [added, setAdded] = useState(false);
 
     useEffect(() => {
@@ -48,7 +48,7 @@ function CatalogProductCard({ item, slug, catalogId, catalogName }) {
             { ...item, id: `${item.id}_${size}`, originalId: item.id, size, price, stock: 9999 },
             size,
             price,
-            catalogId,
+            slug,
             catalogName
         );
         toast.success(`נוסף לסל: ${item.fragrance_name} (${size} מ"ל)`);
@@ -148,6 +148,7 @@ export default function CatalogClient({ slug }) {
                     const data = await res.json();
                     setCatalog(data.catalog);
                     setItems(data.items);
+                    setActiveVendorId(slug);
                 } else {
                     setError("הקטלוג לא נמצא או שאינו זמין.");
                 }

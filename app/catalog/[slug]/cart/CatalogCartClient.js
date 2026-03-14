@@ -7,7 +7,10 @@ import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 
 export default function CatalogCartClient({ slug }) {
-    const { cartItems, removeFromCart, updateQuantity, clearActiveVendorCart, setActiveVendorId } = useCart();
+    const { 
+        cartItems, removeFromCart, updateQuantity, clearActiveVendorCart, 
+        setActiveVendorId, activeItems, subtotal, vendorConfig, freeSamplesCount 
+    } = useCart();
     
     const [catalogInfo, setCatalogInfo] = useState(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -18,7 +21,7 @@ export default function CatalogCartClient({ slug }) {
     const [phoneError, setPhoneError] = useState('');
     const [isSelfPickup, setIsSelfPickup] = useState(false);
 
-    // Fetch catalog info to get catalogId
+    // Fetch catalog info and sync active vendor
     useEffect(() => {
         const fetchCat = async () => {
              try {
@@ -26,22 +29,17 @@ export default function CatalogCartClient({ slug }) {
                 if (res.ok) {
                     const data = await res.json();
                     setCatalogInfo(data.catalog);
-                    // Set this catalog as the active vendor
-                    if (data.catalog?.id) setActiveVendorId(data.catalog.id);
+                    // Ensure context has the correct config loaded via slug
+                    setActiveVendorId(slug);
                 }
              } catch(e) {}
         };
         fetchCat();
     }, [slug, setActiveVendorId]);
 
-    // Filter cart items belonging to this catalog
-    const catalogId = catalogInfo?.id;
-    const catalogCartItems = catalogId
-        ? cartItems.filter(item => (item.vendorId || 'main') === catalogId)
-        : cartItems.filter(item => (item.vendorId || 'main') === slug);
-
-    const subtotal = catalogCartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
-    const shippingCost = Number(isSelfPickup ? 0 : (catalogInfo?.delivery_price || 0));
+    // Use items and calculations from CartContext (scoped by activeVendorId=slug)
+    const catalogCartItems = activeItems;
+    const shippingCost = Number(isSelfPickup ? 0 : (vendorConfig?.delivery_price || 0));
     const effectiveTotal = Number(subtotal) + shippingCost;
 
     const validatePhone = (phone) => {
@@ -166,11 +164,11 @@ export default function CatalogCartClient({ slug }) {
                     </div>
 
                     {/* Delivery Method Selection */}
-                    {(catalogInfo?.delivery_active || catalogInfo?.self_pickup_active) && (
+                    {(vendorConfig?.delivery_active || vendorConfig?.self_pickup_active) && (
                         <div className="space-y-4 mb-8">
                             <p className="text-xs font-bold text-gray-400 uppercase tracking-widest text-right">שיטת אספקה</p>
                             <div className="grid grid-cols-2 gap-4">
-                                {catalogInfo.delivery_active && (
+                                {vendorConfig.delivery_active && (
                                     <button 
                                         onClick={() => setIsSelfPickup(false)} 
                                         className={`flex flex-col items-center gap-2 p-5 rounded-2xl border-2 transition-all duration-300 ${!isSelfPickup ? 'border-black bg-black text-white shadow-xl scale-[1.02]' : 'border-gray-100 bg-white text-gray-500 hover:border-gray-200'}`}
@@ -179,10 +177,10 @@ export default function CatalogCartClient({ slug }) {
                                             <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
                                         </svg>
                                         <span className="text-sm font-bold">משלוח</span>
-                                        <span className={`text-xs ${!isSelfPickup ? 'text-gray-300' : 'text-gray-900'} font-bold`}>{catalogInfo.delivery_price} ₪</span>
+                                        <span className={`text-xs ${!isSelfPickup ? 'text-gray-300' : 'text-gray-900'} font-bold`}>{vendorConfig.delivery_price} ₪</span>
                                     </button>
                                 )}
-                                {catalogInfo.self_pickup_active && (
+                                {vendorConfig.self_pickup_active && (
                                     <button 
                                         onClick={() => setIsSelfPickup(true)} 
                                         className={`flex flex-col items-center gap-2 p-5 rounded-2xl border-2 transition-all duration-300 ${isSelfPickup ? 'border-black bg-black text-white shadow-xl scale-[1.02]' : 'border-gray-100 bg-white text-gray-500 hover:border-gray-200'}`}
@@ -195,6 +193,17 @@ export default function CatalogCartClient({ slug }) {
                                         <span className="text-xs font-bold text-green-600">חינם</span>
                                     </button>
                                 )}
+                            </div>
+                        </div>
+                    )}
+
+                    {/* Free Samples Promo */}
+                    {freeSamplesCount > 0 && (
+                        <div className="bg-green-50 border border-green-100 p-4 rounded-2xl mb-8 flex items-center gap-3 animate-bounce">
+                            <div className="bg-green-600 text-white w-10 h-10 rounded-full flex items-center justify-center text-xl">🎁</div>
+                            <div>
+                                <p className="text-green-900 font-bold text-sm">הטבה מחכה לך!</p>
+                                <p className="text-green-700 text-xs font-medium">מגיע לך {freeSamplesCount} דוגמיות חינם בהזמנה זו!</p>
                             </div>
                         </div>
                     )}
