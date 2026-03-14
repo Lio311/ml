@@ -2,6 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { Package, Plus, History, AlertTriangle, CheckCircle, Trash2, Edit2, X } from 'lucide-react';
 import toast from 'react-hot-toast';
+import CustomDropdown from '../../components/ui/CustomDropdown';
 
 export default function AdminInventoryPage() {
     const [inventory, setInventory] = useState([]);
@@ -183,15 +184,12 @@ export default function AdminInventoryPage() {
                     <form onSubmit={handleSubmit} className="space-y-4">
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">סוג בקבוק</label>
-                            <select
+                            <CustomDropdown
+                                options={BOTTLE_Types.map(t => ({ value: String(t.id), label: t.label }))}
                                 value={size}
-                                onChange={(e) => setSize(e.target.value)}
-                                className="w-full border rounded-lg p-2 focus:ring-2 focus:ring-black outline-none bg-white"
-                            >
-                                {BOTTLE_Types.map(t => (
-                                    <option key={t.id} value={t.id}>{t.label}</option>
-                                ))}
-                            </select>
+                                onChange={setSize}
+                                fullWidth
+                            />
                         </div>
 
                         <div>

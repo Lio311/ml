@@ -4,6 +4,7 @@ import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import toast from "react-hot-toast";
 import { useCart } from "../../context/CartContext";
+import CustomDropdown from "../../components/ui/CustomDropdown";
 
 const ITEMS_PER_PAGE = 16;
 
@@ -340,16 +341,17 @@ export default function CatalogClient({ slug }) {
                                 {search && <span onClick={() => { setSearch(''); setSearchInput(''); }} className="bg-black text-white text-xs px-2 py-0.5 rounded cursor-pointer hover:bg-gray-700">חיפוש: {search} ✕</span>}
                             </div>
                         </div>
-                        <select
+                        <CustomDropdown
+                            options={[
+                                { value: 'newest', label: 'מין לפי: חדש ביותר' },
+                                { value: 'price_asc', label: 'מחיר: נמוך לגבוה' },
+                                { value: 'price_desc', label: 'מחיר: גבוה לנמוך' },
+                                { value: 'name_az', label: 'שם מותג: א-ת' },
+                            ]}
                             value={sortBy}
-                            onChange={e => { setSortBy(e.target.value); setCurrentPage(1); }}
-                            className="border rounded p-2 text-sm bg-white focus:outline-none focus:ring-1 focus:ring-black"
-                        >
-                            <option value="newest">מין לפי: חדש ביותר</option>
-                            <option value="price_asc">מחיר: נמוך לגבוה</option>
-                            <option value="price_desc">מחיר: גבוה לנמוך</option>
-                            <option value="name_az">שם מותג: א-ת</option>
-                        </select>
+                            onChange={(v) => { setSortBy(v); setCurrentPage(1); }}
+                            className="!text-sm"
+                        />
                     </div>
 
                     {/* Grid */}

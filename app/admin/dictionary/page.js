@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import AdminFilterBar from "@/app/components/admin/AdminFilterBar";
 import { useUser } from "@clerk/nextjs";
 import toast from 'react-hot-toast';
+import CustomDropdown from '../../components/ui/CustomDropdown';
 
 
 export default function DictionaryManagement() {
@@ -166,15 +167,16 @@ export default function DictionaryManagement() {
                         </div>
                         <div className="w-full md:w-32">
                             <label className="block text-sm font-medium text-gray-700 mb-1">סוג</label>
-                            <select
+                            <CustomDropdown
+                                options={[
+                                    { value: 'general', label: 'כללי' },
+                                    { value: 'brand', label: 'מותג' },
+                                    { value: 'product', label: 'מוצר' },
+                                ]}
                                 value={formData.type}
-                                onChange={(e) => setFormData({ ...formData, type: e.target.value })}
-                                className="w-full border rounded p-2"
-                            >
-                                <option value="general">כללי</option>
-                                <option value="brand">מותג</option>
-                                <option value="product">מוצר</option>
-                            </select>
+                                onChange={(v) => setFormData({ ...formData, type: v })}
+                                fullWidth
+                            />
                         </div>
                         <div className="flex gap-2">
                             {editingId && (

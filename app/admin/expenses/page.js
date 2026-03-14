@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from 'next/link';
 import { useUser } from "@clerk/nextjs";
 import toast from 'react-hot-toast';
+import CustomDropdown from '../../components/ui/CustomDropdown';
 
 export default function AdminExpensesPage() {
     const [expenses, setExpenses] = useState([]);
@@ -173,14 +174,15 @@ export default function AdminExpensesPage() {
                         </div>
                         <div className="w-full md:w-40">
                             <label className="block text-sm font-bold mb-1">סוג</label>
-                            <select
-                                className="input border p-2 rounded w-full"
+                            <CustomDropdown
+                                options={[
+                                    { value: 'monthly', label: 'חודשי (חד פעמי)' },
+                                    { value: 'yearly', label: 'שנתי (מתחלק ל-12)' },
+                                ]}
                                 value={formData.type}
-                                onChange={e => setFormData({ ...formData, type: e.target.value })}
-                            >
-                                <option value="monthly">חודשי (חד פעמי)</option>
-                                <option value="yearly">שנתי (מתחלק ל-12)</option>
-                            </select>
+                                onChange={(v) => setFormData({ ...formData, type: v })}
+                                fullWidth
+                            />
                         </div>
                         <div className="w-full md:w-40">
                             <label className="block text-sm font-bold mb-1">תאריך</label>
