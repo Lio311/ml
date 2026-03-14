@@ -257,11 +257,9 @@ export default async function AdminOrdersPage(props) {
                                 <td className="p-4">
                                     <div className="flex justify-center">
                                         {order.free_samples_count > 0 ? (
-                                            <div className="inline-flex items-center gap-1.5 bg-blue-50 border border-blue-100 px-3 py-1.5 rounded-xl shadow-sm hover:shadow-md transition-all group pointer-events-none">
-                                                <span className="text-sm font-black text-blue-900 leading-none">
-                                                    {order.free_samples_count} דוגמיות
-                                                </span>
-                                                <span className="text-xl group-hover:scale-110 transition-transform">🎁</span>
+                                            <div className="inline-flex flex-col items-center text-xs text-blue-700 bg-blue-50 px-2 py-1 rounded border border-blue-200 min-w-[60px]" title="דוגמיות מתנה">
+                                                <span>🎁</span>
+                                                <span className="font-bold">{order.free_samples_count} דוגמיות</span>
                                             </div>
                                         ) : (
                                             <span className="text-gray-300 font-light">—</span>
