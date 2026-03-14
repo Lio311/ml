@@ -68,6 +68,7 @@ export function CartProvider({ children }) {
     // Fetch Custom Vendor Config securely
     useEffect(() => {
         if (!isMainVendor && activeVendorId) {
+            // console.log("Fetching config for vendor:", activeVendorId);
             fetch(`/api/user-catalogs/public-by-slug/${activeVendorId}`)
                 .then(res => res.json())
                 .then(data => {
@@ -77,7 +78,10 @@ export function CartProvider({ children }) {
                         setVendorConfig(null);
                     }
                 })
-                .catch(err => console.error("Failed to fetch vendor config:", err));
+                .catch(err => {
+                    console.error("Failed to fetch vendor config:", err);
+                    setVendorConfig(null);
+                });
         } else {
             setVendorConfig(null);
         }
