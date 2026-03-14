@@ -5,6 +5,8 @@ import Link from "next/link";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import TagInput from "../../components/TagInput";
+import CustomDropdown from "../../components/ui/CustomDropdown";
+import { X } from "lucide-react";
 
 function OrdersTab({ catalogId }) {
     const [orders, setOrders] = useState([]);
@@ -102,22 +104,18 @@ function OrdersTab({ catalogId }) {
                                             )}
                                         </td>
                                         <td className="p-4 text-center">
-                                            <select
+                                            <CustomDropdown
+                                                options={[
+                                                    { value: 'pending', label: 'ממתין', icon: <div className="w-2 h-2 rounded-full bg-orange-500" /> },
+                                                    { value: 'processing', label: 'בטיפול', icon: <div className="w-2 h-2 rounded-full bg-blue-500" /> },
+                                                    { value: 'shipped', label: 'נשלח אליכם', icon: <div className="w-2 h-2 rounded-full bg-purple-500" /> },
+                                                    { value: 'completed', label: 'הושלם', icon: <div className="w-2 h-2 rounded-full bg-green-500" /> },
+                                                    { value: 'cancelled', label: 'בוטל', icon: <div className="w-2 h-2 rounded-full bg-gray-500" /> },
+                                                ]}
                                                 value={order.status}
-                                                onChange={(e) => handleStatusChange(order.id, e.target.value)}
-                                                className={`p-2 border rounded-lg font-bold text-xs outline-none transition-colors select-none cursor-pointer
-                                                    ${order.status === 'pending' ? 'bg-orange-100 text-orange-800 border-orange-200' :
-                                                    order.status === 'processing' ? 'bg-blue-100 text-blue-800 border-blue-200' :
-                                                    order.status === 'shipped' ? 'bg-purple-100 text-purple-800 border-purple-200' :
-                                                    order.status === 'completed' ? 'bg-green-100 text-green-800 border-green-200' :
-                                                    'bg-gray-100 text-gray-800 border-gray-200'}`}
-                                            >
-                                                <option value="pending" className="bg-white text-black">ממתין</option>
-                                                <option value="processing" className="bg-white text-black">בטיפול</option>
-                                                <option value="shipped" className="bg-white text-black">נשלח אליכם</option>
-                                                <option value="completed" className="bg-white text-black">הושלם (נאסף/נמסר)</option>
-                                                <option value="cancelled" className="bg-white text-black">בוטל</option>
-                                            </select>
+                                                onChange={(val) => handleStatusChange(order.id, val)}
+                                                variant="status"
+                                            />
                                         </td>
                                     </tr>
                                 );
@@ -446,6 +444,7 @@ export default function CatalogManagerClient({ catalogId }) {
             base_notes: item.base_notes || "",
             gender: item.gender || "",
             category: item.category || "",
+            stock_ml: item.stock_ml ?? "",
             sizes: {
                 "2ml": { enabled: !!item.prices?.["2ml"], price: item.prices?.["2ml"] || "" },
                 "5ml": { enabled: !!item.prices?.["5ml"], price: item.prices?.["5ml"] || "" },
@@ -477,7 +476,8 @@ export default function CatalogManagerClient({ catalogId }) {
                     middle_notes: editItemData.middle_notes,
                     base_notes: editItemData.base_notes,
                     gender: editItemData.gender,
-                    category: editItemData.category
+                    category: editItemData.category,
+                    stock_ml: Number(editItemData.stock_ml) || 0
                 })
             });
 
@@ -768,8 +768,16 @@ export default function CatalogManagerClient({ catalogId }) {
                                 ) : (
                                     <div className="grid grid-cols-1 gap-4">
                                         {editSampleTiers.map((tier, idx) => (
-                                            <div key={idx} className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm flex flex-col md:flex-row items-center gap-4 relative group">
-                                                <div className="flex-1 grid grid-cols-1 sm:grid-cols-3 gap-4 w-full">
+                                            <div key={idx} className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm relative">
+                                                <button 
+                                                    type="button" 
+                                                    onClick={() => setEditSampleTiers(editSampleTiers.filter((_, i) => i !== idx))}
+                                                    className="absolute top-1/2 -translate-y-1/2 -right-3 w-7 h-7 bg-white border border-gray-200 shadow-sm rounded-full flex items-center justify-center text-gray-300 hover:text-red-500 hover:border-red-200 hover:shadow-red-100 transition-all z-10"
+                                                    title="הסר מדרגה"
+                                                >
+                                                    <X className="w-4 h-4" />
+                                                </button>
+                                                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 w-full">
                                                     <div className="space-y-1">
                                                         <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">בקנייה מעל</label>
                                                         <div className="relative">
@@ -818,17 +826,6 @@ export default function CatalogManagerClient({ catalogId }) {
                                                         />
                                                     </div>
                                                 </div>
-
-                                                <button 
-                                                    type="button" 
-                                                    onClick={() => setEditSampleTiers(editSampleTiers.filter((_, i) => i !== idx))}
-                                                    className="text-gray-300 hover:text-red-500 p-2 transition self-center md:self-auto"
-                                                    title="הסר מדרגה"
-                                                >
-                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                                                    </svg>
-                                                </button>
                                             </div>
                                         ))}
                                     </div>
@@ -874,12 +871,18 @@ export default function CatalogManagerClient({ catalogId }) {
                             <div className="grid grid-cols-2 gap-3">
                                 <div>
                                     <label className="block text-xs font-bold text-gray-500 uppercase mb-1">מגדר</label>
-                                    <select required value={editingItemId ? editItemData.gender : newItemGender} onChange={(e) => editingItemId ? setEditItemData({...editItemData, gender: e.target.value}) : setNewItemGender(e.target.value)} className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-black outline-none text-sm appearance-none bg-white">
-                                        <option value="">בחר מגדר</option>
-                                        <option value="Unisex">Unisex</option>
-                                        <option value="Men">Men</option>
-                                        <option value="Women">Women</option>
-                                    </select>
+                                    <CustomDropdown
+                                        options={[
+                                            { value: '', label: 'בחר מגדר' },
+                                            { value: 'Unisex', label: 'Unisex' },
+                                            { value: 'Men', label: 'Men' },
+                                            { value: 'Women', label: 'Women' },
+                                        ]}
+                                        value={editingItemId ? editItemData.gender : newItemGender}
+                                        onChange={(v) => editingItemId ? setEditItemData({...editItemData, gender: v}) : setNewItemGender(v)}
+                                        fullWidth
+                                        className="!text-sm !py-2 !rounded-lg !bg-white"
+                                    />
                                 </div>
                                 <div>
                                     <label className="block text-xs font-bold text-gray-500 uppercase mb-1">קטגוריות (לחץ Enter להוספה)</label>
@@ -1069,28 +1072,28 @@ export default function CatalogManagerClient({ catalogId }) {
                         </h2>
                         {items.length > 0 && (
                             <div className="flex items-center gap-2 text-sm flex-wrap">
-                                {/* Gender Filter */}
-                                <select
+                                <CustomDropdown
+                                    options={[
+                                        { value: 'הכל', label: 'כל המגדרים' },
+                                        { value: 'Unisex', label: 'Unisex' },
+                                        { value: 'Men', label: 'Men' },
+                                        { value: 'Women', label: 'Women' },
+                                    ]}
                                     value={filterGender}
-                                    onChange={(e) => { setFilterGender(e.target.value); setCurrentPage(1); }}
-                                    className="p-1.5 border rounded-lg text-sm bg-white focus:ring-1 focus:ring-black outline-none"
-                                >
-                                    <option value="הכל">כל המגדרים</option>
-                                    <option value="Unisex">Unisex</option>
-                                    <option value="Men">Men</option>
-                                    <option value="Women">Women</option>
-                                </select>
-                                {/* Sort */}
-                                <select
+                                    onChange={(v) => { setFilterGender(v); setCurrentPage(1); }}
+                                    className="!text-sm !py-1.5 !rounded-xl !bg-gray-50 !border-transparent"
+                                />
+                                <CustomDropdown
+                                    options={[
+                                        { value: 'newest', label: 'חדש ביותר' },
+                                        { value: 'price_asc', label: 'מחיר: נמוך לגבוה' },
+                                        { value: 'price_desc', label: 'מחיר: גבוה לנמוך' },
+                                        { value: 'name_asc', label: 'שם א-ת' },
+                                    ]}
                                     value={sortBy}
-                                    onChange={(e) => { setSortBy(e.target.value); setCurrentPage(1); }}
-                                    className="p-1.5 border rounded-lg text-sm bg-white focus:ring-1 focus:ring-black outline-none"
-                                >
-                                    <option value="newest">חדש ביותר</option>
-                                    <option value="price_asc">מחיר: נמוך לגבוה</option>
-                                    <option value="price_desc">מחיר: גבוה לנמוך</option>
-                                    <option value="name_asc">שם א-ת</option>
-                                </select>
+                                    onChange={(v) => { setSortBy(v); setCurrentPage(1); }}
+                                    className="!text-sm !py-1.5 !rounded-xl !bg-gray-50 !border-transparent"
+                                />
                             </div>
                         )}
                     </div>
