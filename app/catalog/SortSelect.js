@@ -1,33 +1,34 @@
-"use client";
+import CustomDropdown from "../components/ui/CustomDropdown";
+import { ArrowUpDown, Clock, TrendingDown, TrendingUp } from "lucide-react";
 
-import { useRouter, useSearchParams } from "next/navigation";
+const SORT_OPTIONS = [
+    { value: "newest", label: "חדש ביותר", icon: <Clock className="w-4 h-4" /> },
+    { value: "oldest", label: "ישן ביותר", icon: <Clock className="w-4 h-4 opacity-50" /> },
+    { value: "price_asc", label: "מחיר: מהנמוך לגבוה", icon: <TrendingUp className="w-4 h-4" /> },
+    { value: "price_desc", label: "מחיר: מהגבוה לנמוך", icon: <TrendingDown className="w-4 h-4" /> },
+];
 
 export default function SortSelect() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const currentSort = searchParams.get("sort") || "newest";
 
-    const handleSortChange = (e) => {
-        const newSort = e.target.value;
+    const handleSortChange = (newSort) => {
         const params = new URLSearchParams(searchParams);
         params.set("sort", newSort);
-        params.delete("page"); // Reset to page 1 on sort change
+        params.delete("page");
         router.push(`/catalog?${params.toString()}`);
     };
 
     return (
-        <div className="flex items-center gap-2">
-            <span className="text-sm text-gray-500 font-bold hidden md:inline">מיון לפי:</span>
-            <select
+        <div className="flex items-center gap-3">
+            <span className="text-xs text-gray-400 font-black uppercase tracking-widest hidden md:inline">מיון לפי</span>
+            <CustomDropdown 
+                options={SORT_OPTIONS}
                 value={currentSort}
                 onChange={handleSortChange}
-                className="border p-2 rounded text-sm bg-white focus:outline-none focus:border-black"
-            >
-                <option value="newest">חדש ביותר</option>
-                <option value="oldest">ישן ביותר</option>
-                <option value="price_asc">מחיר: מהנמוך לגבוה</option>
-                <option value="price_desc">מחיר: מהגבוה לנמוך</option>
-            </select>
+                className="!bg-gray-50 !border-transparent !rounded-xl"
+            />
         </div>
     );
 }

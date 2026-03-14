@@ -768,7 +768,7 @@ export default function CatalogManagerClient({ catalogId }) {
                                 ) : (
                                     <div className="grid grid-cols-1 gap-4">
                                         {editSampleTiers.map((tier, idx) => (
-                                            <div key={idx} className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm flex flex-col md:flex-row items-start md:items-center gap-4 relative group">
+                                            <div key={idx} className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm flex flex-col md:flex-row items-center gap-4 relative group">
                                                 <div className="flex-1 grid grid-cols-1 sm:grid-cols-3 gap-4 w-full">
                                                     <div className="space-y-1">
                                                         <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">בקנייה מעל</label>

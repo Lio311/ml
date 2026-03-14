@@ -2,7 +2,16 @@
 
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useState, useEffect } from 'react';
-import PriceFilter from './PriceFilter'; // Re-use existing price filter or integrate here
+import PriceFilter from './PriceFilter';
+import CustomDropdown from '../components/ui/CustomDropdown';
+import { User, Users, UserRound, UserRoundSearch } from 'lucide-react';
+
+const GENDER_OPTIONS = [
+    { value: 'all', label: 'כל המגדרים', icon: <Users className="w-4 h-4" /> },
+    { value: 'men', label: 'גברים', icon: <User className="w-4 h-4" /> },
+    { value: 'women', label: 'נשים', icon: <User className="w-4 h-4 text-pink-500" /> },
+    { value: 'unisex', label: 'יוניסקס', icon: <UserRound className="w-4 h-4 text-blue-500" /> },
+];
 
 export default function FilterSidebar({ allBrands, allCategories, minPrice, maxPrice }) {
     const router = useRouter();
@@ -64,6 +73,10 @@ export default function FilterSidebar({ allBrands, allCategories, minPrice, maxP
         if (updates.q !== undefined) updateArrayParam('q', updates.q);
         if (updates.brand !== undefined) updateArrayParam('brand', updates.brand);
         if (updates.category !== undefined) updateArrayParam('category', updates.category);
+        if (updates.gender !== undefined) {
+            if (updates.gender === null) params.delete('gender');
+            else params.set('gender', updates.gender);
+        }
         if (updates.resetPage) params.set('page', '1');
 
         router.push(`/catalog?${params.toString()}`);
@@ -73,6 +86,18 @@ export default function FilterSidebar({ allBrands, allCategories, minPrice, maxP
 
     return (
         <aside className="w-full md:w-64 space-y-6">
+
+            {/* Gender Filter */}
+            <div className="bg-gray-50 p-4 rounded-lg border">
+                <h3 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-3">מגדר</h3>
+                <CustomDropdown 
+                    options={GENDER_OPTIONS}
+                    value={searchParams.get('gender') || 'all'}
+                    onChange={(val) => applyFilters({ gender: val === 'all' ? null : val, resetPage: true })}
+                    fullWidth
+                    className="!bg-white !border-gray-100 !rounded-xl"
+                />
+            </div>
 
             {/* Search - Always Visible */}
             <div className="bg-gray-50 p-4 rounded-lg border">

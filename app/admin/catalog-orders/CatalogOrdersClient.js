@@ -4,71 +4,15 @@ import toast from "react-hot-toast";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, Check, Trash2, AlertCircle } from "lucide-react";
 
-const STATUS_CONFIG = {
-    pending: { label: 'ממתין', color: 'bg-orange-100 text-orange-800 border-orange-200' },
-    processing: { label: 'בטיפול', color: 'bg-blue-100 text-blue-800 border-blue-200' },
-    shipped: { label: 'נשלח בדואר', color: 'bg-purple-100 text-purple-800 border-purple-200' },
-    completed: { label: 'נמסר/הושלם', color: 'bg-green-100 text-green-800 border-green-200' },
-    cancelled: { label: 'בוטל', color: 'bg-gray-100 text-gray-800 border-gray-200' },
-};
+import CustomDropdown from "../../components/ui/CustomDropdown";
 
-function StatusDropdown({ currentStatus, onStatusChange }) {
-    const [isOpen, setIsOpen] = useState(false);
-    const dropdownRef = useRef(null);
-
-    useEffect(() => {
-        const handleClickOutside = (event) => {
-            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
-                setIsOpen(false);
-            }
-        };
-        document.addEventListener("mousedown", handleClickOutside);
-        return () => document.removeEventListener("mousedown", handleClickOutside);
-    }, []);
-
-    const config = STATUS_CONFIG[currentStatus] || STATUS_CONFIG.pending;
-
-    return (
-        <div className="relative inline-block text-right" ref={dropdownRef}>
-            <button
-                onClick={() => setIsOpen(!isOpen)}
-                className={`flex items-center gap-2 px-3 py-1.5 rounded-xl font-bold text-xs border transition-all shadow-sm ${config.color} hover:shadow-md active:scale-95`}
-            >
-                <span>{config.label}</span>
-                <ChevronDown className={`w-3 h-3 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />
-            </button>
-
-            <AnimatePresence>
-                {isOpen && (
-                    <motion.div
-                        initial={{ opacity: 0, y: -10, scale: 0.95 }}
-                        animate={{ opacity: 1, y: 0, scale: 1 }}
-                        exit={{ opacity: 0, y: -10, scale: 0.95 }}
-                        className="absolute z-50 mt-2 w-44 bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden"
-                    >
-                        <div className="py-1">
-                            {Object.entries(STATUS_CONFIG).map(([key, value]) => (
-                                <button
-                                    key={key}
-                                    onClick={() => {
-                                        onStatusChange(key);
-                                        setIsOpen(false);
-                                    }}
-                                    className={`w-full flex items-center justify-between px-4 py-2.5 text-sm font-medium transition-colors hover:bg-gray-50 ${currentStatus === key ? 'text-black bg-gray-50/50' : 'text-gray-600 hover:text-black'}`}
-                                >
-                                    <span>{value.label}</span>
-                                    {currentStatus === key && (
-                                        <Check className="w-4 h-4 text-emerald-500" />
-                                    )}
-                                </button>
-                            ))}
-                        </div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
-        </div>
-    );
-}
+const STATUS_OPTIONS = [
+    { value: 'pending', label: 'ממתין', color: 'bg-orange-50 text-orange-700 border-orange-100', icon: <div className="w-2 h-2 rounded-full bg-orange-500" /> },
+    { value: 'processing', label: 'בטיפול', color: 'bg-blue-50 text-blue-700 border-blue-100', icon: <div className="w-2 h-2 rounded-full bg-blue-500" /> },
+    { value: 'shipped', label: 'נשלח בדואר', color: 'bg-purple-50 text-purple-700 border-purple-100', icon: <div className="w-2 h-2 rounded-full bg-purple-500" /> },
+    { value: 'completed', label: 'נמסר/הושלם', color: 'bg-green-50 text-green-700 border-green-100', icon: <div className="w-2 h-2 rounded-full bg-green-500" /> },
+    { value: 'cancelled', label: 'בוטל', color: 'bg-gray-50 text-gray-700 border-gray-100', icon: <div className="w-2 h-2 rounded-full bg-gray-500" /> },
+];
 
 function ConfirmationModal({ isOpen, onClose, onConfirm, title, message }) {
     return (
@@ -204,7 +148,7 @@ export default function CatalogOrdersClient() {
                 <span className="bg-blue-600 text-white px-4 py-1.5 rounded-full text-sm font-bold shadow-md">{orders.length} הזמנות צד ג'</span>
             </div>
             
-            <div className="overflow-x-auto">
+            <div className="overflow-x-visible pb-40">
                 <table className="w-full text-sm">
                     <thead className="bg-gray-50 text-gray-500 border-b whitespace-nowrap">
                         <tr>
@@ -263,9 +207,12 @@ export default function CatalogOrdersClient() {
                                         </div>
                                     </td>
                                     <td className="p-4 text-center">
-                                        <StatusDropdown 
-                                            currentStatus={order.status} 
-                                            onStatusChange={(newStatus) => handleStatusChange(order.id, newStatus)} 
+                                        <CustomDropdown 
+                                            options={STATUS_OPTIONS}
+                                            value={order.status}
+                                            onChange={(newStatus) => handleStatusChange(order.id, newStatus)}
+                                            variant="status"
+                                            className="!py-1.5 !px-3 !rounded-xl"
                                         />
                                         {order.delivery_method === 'self_pickup' && (
                                             <div className="mt-2 text-[10px] font-bold text-green-700 uppercase bg-green-50 rounded p-1 inline-block">איסוף עצמי</div>
