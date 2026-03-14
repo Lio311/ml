@@ -98,7 +98,7 @@ export default function Header({ brands = [], menu = [] }) {
                             <SignedIn>
                                 <Link href="/my-catalogs" className="p-1.5 text-gray-700 hover:text-yellow-600 transition" title="ניהול הקטלוגים שלי">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 21v-7.5l-3-3l-3 3V21m15-10.5V18a2.25 2.25 0 0 1-2.25 2.25H4.25A2.25 2.25 0 0 1 2 18v-7.5C2 6 6 2 12 2s10 4 10 8.5Z" />
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 21V16.5m-9-13.5c-1.1 0-2 .9-2 2v13.5c0 1.1.9 2 2 2h15c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2H4.5ZM6.75 6.75h10.5M6.75 10.5h10.5M6.75 14.25h10.5" />
                                     </svg>
                                 </Link>
                                 <Link href="/orders" className="p-1.5 text-gray-700" title="ההזמנות שלי">
@@ -248,7 +248,7 @@ export default function Header({ brands = [], menu = [] }) {
                         <SignedIn>
                             <Link href="/my-catalogs" className="relative group" title="ניהול הקטלוגים שלי">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 hover:text-yellow-600 transition">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 21v-7.5l-3-3l-3 3V21m15-10.5V18a2.25 2.25 0 0 1-2.25 2.25H4.25A2.25 2.25 0 0 1 2 18v-7.5C2 6 6 2 12 2s10 4 10 8.5Z" />
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 21V16.5m-9-13.5c-1.1 0-2 .9-2 2v13.5c0 1.1.9 2 2 2h15c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2H4.5ZM6.75 6.75h10.5M6.75 10.5h10.5M6.75 14.25h10.5" />
                                 </svg>
                             </Link>
                             <Link href="/orders" className="relative group" title="ההזמנות שלי">
