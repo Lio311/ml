@@ -257,9 +257,9 @@ export default async function AdminOrdersPage(props) {
                                 <td className="p-4">
                                     <div className="flex justify-center">
                                         {order.free_samples_count > 0 ? (
-                                            <div className="inline-flex flex-col items-center text-xs text-black bg-gray-50 px-2 py-1 rounded border border-gray-200 min-w-[60px]" title="דוגמיות מתנה">
+                                            <div className="inline-flex flex-col items-center text-xs text-black bg-gray-50 px-2 py-1 rounded border border-gray-200 min-w-[70px]" title="דוגמיות מתנה">
                                                 <span>🎁</span>
-                                                <span className="font-bold">{order.free_samples_count} דוגמיות</span>
+                                                <span className="font-bold whitespace-nowrap">{order.free_samples_count} דוגמיות</span>
                                             </div>
                                         ) : (
                                             <span className="text-gray-300 font-light">—</span>
