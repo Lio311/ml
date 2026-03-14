@@ -105,7 +105,7 @@ export default function MyCatalogsClient() {
                         <div>
                            <label className="block text-sm font-medium text-gray-700 mb-1">קישור אישי (אנגלית ומספרים בלבד)</label>
                             <div className="flex items-center text-left" dir="ltr">
-                                <span className="bg-gray-100 p-3 rounded-l-lg border border-r-0 text-gray-500 text-sm">mltlv.io/catalog/</span>
+                                <span className="bg-gray-100 p-3 rounded-l-lg border border-r-0 text-gray-500 text-sm">ml-tlv.com/catalog/</span>
                                 <input 
                                     type="text" 
                                     required
@@ -247,7 +247,7 @@ export default function MyCatalogsClient() {
                                 </p>
                                 
                                 <div className="bg-gray-50 p-3 rounded-lg mb-4 text-xs font-mono text-left break-all border group-hover:bg-gray-100 transition" dir="ltr">
-                                    /catalog/{catalog.slug}
+                                    ml-tlv.com/catalog/{catalog.slug}
                                 </div>
 
                                 <div className="flex items-center justify-between mt-auto pt-4 border-t">
