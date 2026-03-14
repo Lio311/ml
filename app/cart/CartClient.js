@@ -349,28 +349,61 @@ export default function CartClient() {
                                      )}
 
                                     {/* Samples Progress */}
-                                    <div className="p-4 bg-gray-50 rounded-xl border">
-                                        <div className="flex justify-between text-xs font-bold mb-2">
-                                            <span>מתנות מהאתר 🎁</span>
-                                            <span>{freeSamplesCount}/6</span>
+                                    <div className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
+                                        <h3 className="font-bold text-gray-900 mb-2 flex items-center gap-2">
+                                            <span>🎁</span>
+                                            {freeSamplesCount === 6 ? (
+                                                <span className="text-green-600">קיבלת את כל הדוגמיות! (6)</span>
+                                            ) : (
+                                                <span>דוגמיות חינם</span>
+                                            )}
+                                        </h3>
+                                        <div className="relative h-4 bg-gray-100 rounded-full overflow-hidden mb-2">
+                                            <div
+                                                className="absolute top-0 right-0 h-full bg-gradient-to-l from-blue-500 to-purple-600 transition-all duration-1000 ease-out rounded-full"
+                                                style={{ width: `${Math.min(100, (subtotal / 1000) * 100)}%` }}
+                                            ></div>
+                                            <div className="absolute top-0 right-[30%] h-full w-0.5 bg-white/50 z-10"></div>
+                                            <div className="absolute top-0 right-[50%] h-full w-0.5 bg-white/50 z-10"></div>
                                         </div>
-                                        <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
-                                            <div className="h-full bg-blue-600 transition-all" style={{ width: `${(subtotal/1000)*100}%` }}></div>
+                                        <div className="flex justify-between text-[10px] text-gray-400 font-medium px-1">
+                                            <span className={subtotal >= 0 ? "text-gray-900 font-bold" : ""}>0</span>
+                                            <span className={subtotal >= 300 ? "text-blue-600 font-bold" : ""}>300 (2)</span>
+                                            <span className={subtotal >= 500 ? "text-purple-600 font-bold" : ""}>500 (4)</span>
+                                            <span className={subtotal >= 1000 ? "text-green-600 font-bold" : ""}>1000 (6)</span>
                                         </div>
-                                        {nextTier > 0 && <p className="text-[10px] text-center mt-2">רק עוד {nextTier} ₪ למתנה הבאה!</p>}
+                                        <div className="mt-3 text-xs text-center">
+                                            {freeSamplesCount === 0 && <span className="text-gray-500">עוד <span className="font-bold text-black">{300 - subtotal} ₪</span> ל-2 דוגמיות חינם!</span>}
+                                            {freeSamplesCount === 2 && <span className="text-blue-600">יש לך 2 דוגמיות. עוד <span className="font-bold">{500 - subtotal} ₪</span> ל-4 דוגמיות!</span>}
+                                            {freeSamplesCount === 4 && <span className="text-purple-600">וואו! 4 דוגמיות שלך. עוד <span className="font-bold">{1000 - subtotal} ₪</span> ל-6 דוגמיות!</span>}
+                                            {freeSamplesCount === 6 && <span className="text-green-600 font-bold">פינקנו אותך ב-6 דוגמיות! תהנה! 🎉</span>}
+                                        </div>
                                     </div>
                                     
                                     {/* Upsells */}
                                     {recommendations.length > 0 && (
-                                        <div className="space-y-2">
-                                            <p className="text-xs font-bold">הוספות מהירות:</p>
-                                            {recommendations.map(p => (
-                                                <button key={p.id} onClick={() => addToCart(p, p.size, p.price)} className="w-full flex items-center gap-2 p-2 border rounded hover:bg-gray-50 transition text-right">
-                                                    <span className="flex-1 text-xs truncate"> {p.name} ({p.size}מ"ל) </span>
-                                                    <span className="font-bold text-xs">{p.price} ₪</span>
-                                                    <span className="text-blue-600 font-bold">+</span>
-                                                </button>
-                                            ))}
+                                        <div className="space-y-3 pt-2">
+                                            <h4 className="text-sm font-bold text-gray-700">השלם את החסר בקלות:</h4>
+                                            <div className="space-y-2">
+                                                {recommendations.map(rec => (
+                                                    <div key={rec.id} className="flex items-center gap-3 bg-white border p-2 rounded-lg shadow-sm hover:shadow-md transition">
+                                                        <div className="w-10 h-10 bg-gray-50 rounded flex-shrink-0 flex items-center justify-center overflow-hidden">
+                                                            {rec.image_url ? <img src={rec.image_url} alt="" className="w-full h-full object-contain p-1" /> : '🧴'}
+                                                        </div>
+                                                        <div className="flex-1 min-w-0">
+                                                            <div className="font-bold text-xs truncate">{rec.name}</div>
+                                                            <div className="text-xs text-gray-500">{rec.size} מ"ל • {rec.price} ₪</div>
+                                                        </div>
+                                                        <button
+                                                            onClick={() => addToCart(rec, rec.size, rec.price)}
+                                                            className="w-8 h-8 flex items-center justify-center bg-black text-white rounded-full hover:bg-gray-800 transition"
+                                                            title="הוסף לעגלה"
+                                                        >
+                                                            +
+                                                        </button>
+                                                    </div>
+                                                ))}
+                                            </div>
                                         </div>
                                     )}
                                 </div>
@@ -378,59 +411,71 @@ export default function CartClient() {
 
                             {isMainVendor && (
                                 <div className="space-y-4 mb-4">
-                                     <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest text-center">שיטת אספקה</p>
+                                     <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">שיטת אספקה</p>
                                      <div className="grid grid-cols-2 gap-3">
                                         <button 
                                             onClick={() => setIsSelfPickup(false)} 
-                                            className={`flex flex-col items-center gap-1 p-3 rounded-2xl border-2 transition-all duration-300 ${!isSelfPickup ? 'border-black bg-black text-white shadow-lg scale-105' : 'border-gray-100 bg-gray-50 text-gray-500 hover:border-gray-200'}`}
+                                            className={`relative flex flex-col items-center gap-2 p-4 rounded-xl border-2 transition-all duration-200 text-center ${!isSelfPickup ? 'border-black bg-black text-white shadow-md' : 'border-gray-200 bg-white text-gray-600 hover:border-gray-400'}`}
                                         >
-                                            <span className="text-sm font-black">משלוח</span>
-                                            <span className="text-[10px] opacity-70">30 ₪</span>
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
+                                            </svg>
+                                            <span className="text-xs font-bold leading-tight">משלוח בדואר</span>
+                                            <span className={`text-xs font-bold ${!isSelfPickup ? 'text-gray-300' : 'text-gray-400'}`}>{shippingCost} ₪</span>
                                         </button>
                                         <button 
                                             onClick={() => setIsSelfPickup(true)} 
-                                            className={`flex flex-col items-center gap-1 p-3 rounded-2xl border-2 transition-all duration-300 ${isSelfPickup ? 'border-black bg-black text-white shadow-lg scale-105' : 'border-gray-100 bg-gray-50 text-gray-500 hover:border-gray-200'}`}
+                                            className={`relative flex flex-col items-center gap-2 p-4 rounded-xl border-2 transition-all duration-200 text-center ${isSelfPickup ? 'border-black bg-black text-white shadow-md' : 'border-gray-200 bg-white text-gray-600 hover:border-gray-400'}`}
                                         >
-                                            <span className="text-sm font-black">איסוף עצמי</span>
-                                            <span className="text-[10px] font-bold text-green-500">חינם</span>
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
+                                            </svg>
+                                            <span className="text-xs font-bold leading-tight">איסוף עצמי</span>
+                                            <span className={`text-xs font-bold ${isSelfPickup ? 'text-green-400' : 'text-green-600'}`}>חינם</span>
                                         </button>
                                      </div>
+                                     {isSelfPickup && (
+                                         <p className="text-xs text-gray-500 text-center pt-1">כתובת איסוף — יצורף פרטים עם אישור ההזמנה</p>
+                                     )}
                                 </div>
                             )}
 
                             <div className="pt-4 border-t space-y-4">
-                                <textarea value={notes} onChange={e => setNotes(e.target.value)} className="w-full p-3 border rounded-lg text-sm bg-gray-50" rows="2" placeholder="הערות להזמנה..."></textarea>
+                                <textarea value={notes} onChange={e => setNotes(e.target.value)} className="w-full p-3 border rounded-lg text-sm focus:ring-2 focus:ring-gray-900 outline-none resize-none bg-white" rows="3" placeholder="בקשות מיוחדות לימי הולדת / אריזה / שליח..."></textarea>
                                 <div className="space-y-1.5 text-right">
-                                    <label className="block text-sm font-bold text-gray-700">
+                                    <label className="block text-sm font-bold text-gray-700 flex items-center gap-1">
                                         מספר טלפון (חובה) <span className="text-red-500">*</span>
                                     </label>
                                     <div className="relative">
                                         <input 
+                                            type="tel"
+                                            maxLength="10"
                                             value={phoneNumber} 
-                                            onChange={e => setPhoneNumber(e.target.value)} 
-                                            className="w-full p-3 pr-10 border-2 border-gray-900 rounded-xl font-mono tracking-widest text-lg bg-white focus:ring-2 focus:ring-black focus:outline-none transition-all" 
-                                            placeholder="05..."
+                                            onChange={e => { const val = e.target.value.replace(/\D/g, ''); setPhoneNumber(val); if (phoneError) setPhoneError(''); }} 
+                                            className={`w-full p-3 border rounded-lg text-lg font-mono focus:ring-2 outline-none bg-white transition-all ${phoneError ? 'border-red-500 bg-red-50 focus:ring-red-500' : 'focus:ring-gray-900 border-gray-200'}`}
+                                            placeholder="05XXXXXXXX"
                                             dir="ltr"
                                         />
-                                        {phoneNumber.length >= 10 && (
+                                        {validatePhone(phoneNumber) === "" && (
                                             <div className="absolute right-3 top-1/2 -translate-y-1/2 text-green-500">
-                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
-                                                    <path fillRule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clipRule="evenodd" />
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5">
+                                                    <path fillRule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.857-9.809a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4.001-5.5Z" clipRule="evenodd" />
                                                 </svg>
                                             </div>
                                         )}
                                     </div>
-                                    <p className="text-[10px] text-gray-400 font-medium">נשתמש במספר זה רק לתיאום המשלוח והתשלום.</p>
-                                    {phoneError && <p className="text-red-500 text-xs font-bold text-center mt-1">{phoneError}</p>}
+                                    <p className="text-[10px] text-gray-400 mt-1">נשתמש במספר זה רק לתיאום המשלוח והתשלום.</p>
+                                    {phoneError && <p className="text-red-600 text-xs font-bold mt-1">{phoneError}</p>}
                                 </div>
                             </div>
 
-                            <div className="flex justify-between text-2xl font-black pt-4 border-t">
-                                <span>סה״כ</span>
+                            <div className="flex justify-between text-xl font-bold pt-4 border-t">
+                                <span>סה״כ לתשלום</span>
                                 <span>{effectiveTotal} ₪</span>
                             </div>
 
-                            <button onClick={handleCheckout} disabled={isSubmitting} className="w-full py-5 bg-black text-white text-xl rounded-2xl font-black shadow-2xl hover:bg-gray-900 transition active:scale-95 disabled:opacity-50">
+                            <button onClick={handleCheckout} disabled={isSubmitting} className="w-full py-4 bg-black text-white text-lg rounded-xl font-black shadow-lg hover:bg-gray-900 transition hover:shadow-xl transform hover:-translate-y-0.5 active:scale-95 disabled:opacity-50">
                                 {isSubmitting ? 'מעבד...' : 'שלח הזמנה'}
                             </button>
                         </div>
