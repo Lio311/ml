@@ -400,8 +400,29 @@ export default function CartClient() {
 
                             <div className="pt-4 border-t space-y-4">
                                 <textarea value={notes} onChange={e => setNotes(e.target.value)} className="w-full p-3 border rounded-lg text-sm bg-gray-50" rows="2" placeholder="הערות להזמנה..."></textarea>
-                                <input value={phoneNumber} onChange={e => setPhoneNumber(e.target.value)} className="w-full p-3 border rounded-lg font-mono text-center tracking-widest text-lg" placeholder="מספר טלפון לתיאום" />
-                                {phoneError && <p className="text-red-500 text-xs font-bold text-center">{phoneError}</p>}
+                                <div className="space-y-1.5 text-right">
+                                    <label className="block text-sm font-bold text-gray-700">
+                                        מספר טלפון (חובה) <span className="text-red-500">*</span>
+                                    </label>
+                                    <div className="relative">
+                                        <input 
+                                            value={phoneNumber} 
+                                            onChange={e => setPhoneNumber(e.target.value)} 
+                                            className="w-full p-3 pr-10 border-2 border-gray-900 rounded-xl font-mono tracking-widest text-lg bg-white focus:ring-2 focus:ring-black focus:outline-none transition-all" 
+                                            placeholder="05..."
+                                            dir="ltr"
+                                        />
+                                        {phoneNumber.length >= 10 && (
+                                            <div className="absolute right-3 top-1/2 -translate-y-1/2 text-green-500">
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
+                                                    <path fillRule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm13.36-1.814a.75.75 0 1 0-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 0 0-1.06 1.06l2.25 2.25a.75.75 0 0 0 1.14-.094l3.75-5.25Z" clipRule="evenodd" />
+                                                </svg>
+                                            </div>
+                                        )}
+                                    </div>
+                                    <p className="text-[10px] text-gray-400 font-medium">נשתמש במספר זה רק לתיאום המשלוח והתשלום.</p>
+                                    {phoneError && <p className="text-red-500 text-xs font-bold text-center mt-1">{phoneError}</p>}
+                                </div>
                             </div>
 
                             <div className="flex justify-between text-2xl font-black pt-4 border-t">
