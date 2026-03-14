@@ -154,35 +154,42 @@ export function CartProvider({ children }) {
         }
 
         setCartItems((prev) => {
-            // STOCK CHECK (ML-based for catalogs, Unit-based for main)
+            // helper: parse size that may be '10ml' or 10
+            const parseSizeML = (s) => parseFloat(String(s)) || 0;
+
+            // STOCK CHECK (ML-based for catalogs, ML-based for main too)
             if (vendorId !== 'main') {
                 if (product.stock_ml !== undefined) {
                     const stockLimit = Number(product.stock_ml) || 0;
-                    // Calculate current volume for this perfume (originalId) in cart
+                    // Current ML volume for this perfume already in cart
                     const currentVolumeInCart = prev.reduce((sum, item) => {
                         if (item.vendorId === vendorId && (item.originalId === product.originalId || item.id === product.id)) {
-                            return sum + (Number(item.quantity) * Number(item.size));
+                            return sum + (Number(item.quantity) * parseSizeML(item.size));
                         }
                         return sum;
                     }, 0);
-                    
-                    const addedVolume = Number(size) || 0;
+                    const addedVolume = parseSizeML(size);
                     if (currentVolumeInCart + addedVolume > stockLimit) {
                         toast.error(`לא ניתן להוסיף - המלאי מוגבל ל-${stockLimit} מ"ל סה"כ!`);
                         return prev;
                     }
                 }
             } else {
-                // Main vendor unit-based stock check
-                const existingInCart = prev.find(item => item.id === product.id && (item.vendorId || 'main') === 'main');
-                const stock = parseInt(product.stock);
-                if (!isNaN(stock)) {
-                    const newQuantity = existingInCart ? existingInCart.quantity + 1 : 1;
-                    if (stock === 0) {
-                        toast.error("המוצר אזל מהמלאי!");
-                        return prev;
-                    }
-                    if (newQuantity > stock) {
+                // Main vendor: stock is total ML available for this product
+                const stockML = parseFloat(String(product.stock)) || 0;
+                if (stockML === 0) {
+                    toast.error("המוצר אזל מהמלאי!");
+                    return prev;
+                }
+                if (stockML > 0) {
+                    const addedML = parseSizeML(size);
+                    const currentML = prev.reduce((sum, item) => {
+                        if (item.id === product.id && (item.vendorId || 'main') === 'main') {
+                            return sum + (Number(item.quantity) * parseSizeML(item.size));
+                        }
+                        return sum;
+                    }, 0);
+                    if (currentML + addedML > stockML) {
                         toast.error("אזל המלאי!");
                         return prev;
                     }
@@ -227,33 +234,41 @@ export function CartProvider({ children }) {
             if (!itemToUpdate) return prev;
 
             // STOCK CHECK
+            const parseSizeML = (s) => parseFloat(String(s)) || 0;
+
             if (vendorId !== 'main') {
                 if (itemToUpdate.stock_ml !== undefined) {
                     const stockLimit = Number(itemToUpdate.stock_ml) || 0;
                     const otherItemsVolume = prev.reduce((sum, item) => {
-                        // Skip the item we are updating
-                        if (item.vendorId === vendorId && 
-                            (item.originalId === itemToUpdate.originalId || item.id === itemToUpdate.id) && 
+                        if (item.vendorId === vendorId &&
+                            (item.originalId === itemToUpdate.originalId || item.id === itemToUpdate.id) &&
                             !(item.id === id && item.size === size)) {
-                            return sum + (Number(item.quantity) * Number(item.size));
+                            return sum + (Number(item.quantity) * parseSizeML(item.size));
                         }
                         return sum;
                     }, 0);
-
-                    const newVolume = otherItemsVolume + (Number(quantity) * Number(size));
+                    const newVolume = otherItemsVolume + (Number(quantity) * parseSizeML(size));
                     if (newVolume > stockLimit) {
                         toast.error(`המלאי מוגבל ל-${stockLimit} מ"ל!`);
                         return prev;
                     }
                 }
             } else {
-                const stock = parseInt(itemToUpdate.stock);
-                if (!isNaN(stock)) {
-                    if (stock === 0) {
-                        toast.error("המוצר אזל מהמלאי!");
-                        return prev;
-                    }
-                    if (quantity > stock) {
+                const stockML = parseFloat(String(itemToUpdate.stock)) || 0;
+                if (stockML === 0) {
+                    toast.error("המוצר אזל מהמלאי!");
+                    return prev;
+                }
+                if (stockML > 0) {
+                    const newML = Number(quantity) * parseSizeML(size);
+                    const otherML = prev.reduce((sum, item) => {
+                        if (item.id === id && item.size === size && (item.vendorId || 'main') === vendorId) return sum;
+                        if (item.id === itemToUpdate.id && (item.vendorId || 'main') === 'main') {
+                            return sum + (Number(item.quantity) * parseSizeML(item.size));
+                        }
+                        return sum;
+                    }, 0);
+                    if (otherML + newML > stockML) {
                         toast.error("המלאי מוגבל!");
                         return prev;
                     }

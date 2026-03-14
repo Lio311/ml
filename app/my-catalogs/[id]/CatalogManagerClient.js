@@ -731,9 +731,9 @@ export default function CatalogManagerClient({ catalogId }) {
                                                     value={editDeliveryPrice}
                                                     onChange={(e) => setEditDeliveryPrice(e.target.value)}
                                                     onWheel={(e) => e.target.blur()}
-                                                    className="w-32 p-3 border rounded-lg focus:ring-1 focus:ring-black outline-none text-sm pl-8"
+                                                    className="w-32 p-3 pl-10 bg-gray-50 border-transparent rounded-xl focus:bg-white focus:border-black focus:ring-0 transition outline-none font-bold [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                                                 />
-                                                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none">₪</span>
+                                                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 font-bold pointer-events-none">₪</span>
                                             </div>
                                         </div>
                                     )}
