@@ -20,7 +20,7 @@ export default async function CatalogsInfoPage() {
                         הקם <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-400 to-yellow-200">חנות וירטואלית</span> משלך בדקות
                     </h1>
                     <p className="text-lg md:text-xl text-gray-300 mb-8 max-w-2xl mx-auto leading-relaxed">
-                        פלטפורמה בלעדית למשתמשי ml_tlv: הוסף מוצרים משלך, שלח קישור אישי ללקוחות וקבל הזמנות ישירות אליך - הכל בחינם!
+                        פלטפורמה בלעדית למשתמשי ml_tlv: הוסף מוצרים משלך, שלח קישור אישי ללקוחות וקבל הזמנות ישירות אליך - בחינם!
                     </p>
                     
                     <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
