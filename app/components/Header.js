@@ -96,7 +96,12 @@ export default function Header({ brands = [], menu = [] }) {
                         <div className="flex items-center gap-0">
                             {/* Personal Area (Redirects to orders or sign-in) */}
                             <SignedIn>
-                                <Link href="/orders" className="p-1.5 text-gray-700" title="אזור אישי">
+                                <Link href="/my-catalogs" className="p-1.5 text-gray-700 hover:text-yellow-600 transition" title="ניהול הקטלוגים שלי">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 21v-7.5l-3-3l-3 3V21m15-10.5V18a2.25 2.25 0 0 1-2.25 2.25H4.25A2.25 2.25 0 0 1 2 18v-7.5C2 6 6 2 12 2s10 4 10 8.5Z" />
+                                    </svg>
+                                </Link>
+                                <Link href="/orders" className="p-1.5 text-gray-700" title="ההזמנות שלי">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
                                     </svg>
@@ -241,6 +246,11 @@ export default function Header({ brands = [], menu = [] }) {
                     <div className="hidden md:flex items-center justify-end gap-6">
                         {/* Orders (Rightmost in this group) */}
                         <SignedIn>
+                            <Link href="/my-catalogs" className="relative group" title="ניהול הקטלוגים שלי">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 hover:text-yellow-600 transition">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 21v-7.5l-3-3l-3 3V21m15-10.5V18a2.25 2.25 0 0 1-2.25 2.25H4.25A2.25 2.25 0 0 1 2 18v-7.5C2 6 6 2 12 2s10 4 10 8.5Z" />
+                                </svg>
+                            </Link>
                             <Link href="/orders" className="relative group" title="ההזמנות שלי">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 hover:text-blue-600 transition">
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
@@ -291,11 +301,14 @@ export default function Header({ brands = [], menu = [] }) {
                     </button>
                     <div className="flex flex-col gap-6 text-xl font-bold text-center overflow-y-auto max-h-[70vh] custom-scrollbar">
                         {/* Clerk UserButton at Top Center */}
-                        <div className="flex justify-center py-4">
+                        <div className="flex justify-center items-center gap-4 py-4">
                             <SignedIn>
                                 <div className="p-1">
                                     <UserButton afterSignOutUrl="/" appearance={{ elements: { userButtonAvatarBox: "w-12 h-12" } }} />
                                 </div>
+                                <Link href="/my-catalogs" onClick={() => setIsMenuOpen(false)} className="bg-yellow-400 text-black px-4 py-2 rounded-full text-sm font-bold shadow-sm">
+                                    הקטלוגים שלי
+                                </Link>
                             </SignedIn>
                         </div>
 
