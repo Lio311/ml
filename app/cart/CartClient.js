@@ -30,6 +30,16 @@ export default function CartClient() {
     const [sharedCart, setSharedCart] = useState(null);
     const [isSelfPickup, setIsSelfPickup] = useState(false);
 
+    // Safety: If current vendor bucket is empty but cart has items, switch to the first non-empty vendor
+    useEffect(() => {
+        if (cartItems.length > 0 && activeItems.length === 0) {
+            const firstVendorWithItems = vendorBuckets?.find(v => v.items.length > 0);
+            if (firstVendorWithItems) {
+                setActiveVendorId(firstVendorWithItems.id);
+            }
+        }
+    }, [cartItems.length, activeItems.length, vendorBuckets, setActiveVendorId]);
+
     // Grouping all items by vendor for the selection UI
     const vendorBuckets = useMemo(() => {
         const buckets = {};
@@ -253,15 +263,15 @@ export default function CartClient() {
 
                 {/* Vendor Selector */}
                 {vendorBuckets.length > 1 && (
-                    <div className="mb-8 p-1 bg-white rounded-2xl border shadow-sm flex gap-1 sticky top-20 z-40 overflow-x-auto no-scrollbar">
+                    <div className="mb-6 flex flex-wrap gap-2 sticky top-20 z-40 bg-gray-50/80 backdrop-blur-md py-4">
                         {vendorBuckets.map(vendor => (
                             <button
                                 key={vendor.id}
                                 onClick={() => setActiveVendorId(vendor.id)}
-                                className={`flex-1 min-w-[120px] p-4 rounded-xl transition-all duration-300 flex flex-col items-center gap-1 ${activeVendorId === vendor.id ? 'bg-black text-white shadow-lg scale-[1.02]' : 'bg-transparent text-gray-500 hover:bg-gray-50'}`}
+                                className={`px-4 py-2 rounded-full transition-all duration-300 flex items-center gap-2 border ${activeVendorId === vendor.id ? 'bg-black text-white border-black shadow-md' : 'bg-white text-gray-500 border-gray-200 hover:border-gray-300'}`}
                             >
-                                <span className="font-bold text-sm whitespace-nowrap">{vendor.name}</span>
-                                <span className={`text-[10px] ${activeVendorId === vendor.id ? 'text-gray-300' : 'text-gray-400'}`}>{vendor.items.length} פריטים</span>
+                                <span className="font-bold text-xs whitespace-nowrap">{vendor.name}</span>
+                                <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${activeVendorId === vendor.id ? 'bg-white/20' : 'bg-gray-100'}`}>{vendor.items.length}</span>
                             </button>
                         ))}
                     </div>
