@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import toast from "react-hot-toast";
 
 export default function AdminCatalogsClient() {
@@ -97,7 +98,13 @@ export default function AdminCatalogsClient() {
                                             </svg>
                                         </a>
                                     </td>
-                                    <td className="p-4 text-center">
+                                    <td className="p-4 text-center flex items-center justify-center gap-2">
+                                        <Link 
+                                            href={`/admin/catalogs/${catalog.id}`}
+                                            className="text-blue-500 hover:bg-blue-50 px-3 py-1 rounded transition text-sm font-bold"
+                                        >
+                                            נהל מוצרים
+                                        </Link>
                                         <button 
                                             onClick={() => handleDelete(catalog.id)}
                                             className="text-red-500 hover:bg-red-50 px-3 py-1 rounded transition text-sm font-bold"
