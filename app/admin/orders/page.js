@@ -3,6 +3,7 @@ import { revalidatePath } from "next/cache";
 import { currentUser } from "@clerk/nextjs/server";
 import Link from "next/link";
 import DeleteOrderButton from "./DeleteOrderButton";
+import AdminOrderStatusSelect from "./AdminOrderStatusSelect";
 
 export const metadata = {
     title: "ניהול הזמנות | ml_tlv",
@@ -21,8 +22,8 @@ export default async function AdminOrdersPage(props) {
 
     try {
         const [ordersRes, countRes] = await Promise.all([
-            client.query('SELECT * FROM orders ORDER BY created_at DESC LIMIT $1 OFFSET $2', [LIMIT, offset]),
-            client.query('SELECT COUNT(*) FROM orders')
+            client.query('SELECT * FROM orders WHERE catalog_id IS NULL ORDER BY created_at DESC LIMIT $1 OFFSET $2', [LIMIT, offset]),
+            client.query('SELECT COUNT(*) FROM orders WHERE catalog_id IS NULL')
         ]);
         orders = ordersRes.rows;
         totalOrders = parseInt(countRes.rows[0].count);
@@ -37,101 +38,6 @@ export default async function AdminOrdersPage(props) {
     const role = user?.publicMetadata?.role;
     const isSuperAdmin = email === 'lior31197@gmail.com';
     const canEdit = isSuperAdmin || role === 'admin';
-
-    async function updateStatus(formData) {
-        "use server";
-        const user = await currentUser();
-        const role = user?.publicMetadata?.role;
-        const email = user?.emailAddresses[0]?.emailAddress;
-        if (email !== 'lior31197@gmail.com' && role !== 'admin') {
-            throw new Error("Unauthorized");
-        }
-
-        const orderId = formData.get("orderId");
-        const status = formData.get("status");
-
-        const client = await pool.connect();
-        try {
-            // Get order details first to send email
-            const res = await client.query('SELECT * FROM orders WHERE id = $1', [orderId]);
-            const order = res.rows[0];
-
-            await client.query('UPDATE orders SET status = $1 WHERE id = $2', [status, orderId]);
-
-            // --- BOTTLE INVENTORY LOGIC FOR STATUS CHANGE ---
-            const oldStatus = order.status;
-            const newStatus = status;
-
-            // 1. If Cancelling: RESTORE Stock
-            if (newStatus === 'cancelled' && oldStatus !== 'cancelled') {
-                const items = order.items;
-                for (const item of items) {
-                    if (!item.isPrize && !isNaN(item.size)) {
-                        let bottleSize = Number(item.size);
-
-                        // Luxury Bottle Logic: 10ml & Price >= 300 -> Size 11
-                        if (bottleSize === 10 && item.price >= 300) {
-                            bottleSize = 11;
-                        }
-
-                        if ([2, 5, 10, 11].includes(bottleSize)) {
-                            await client.query(
-                                'UPDATE bottle_inventory SET quantity = quantity + $1 WHERE size = $2',
-                                [item.quantity, bottleSize]
-                            );
-                        }
-                    }
-                }
-                // Restore Free Samples
-                if (order.free_samples_count > 0) {
-                    await client.query(
-                        'UPDATE bottle_inventory SET quantity = quantity + $1 WHERE size = 2',
-                        [order.free_samples_count]
-                    );
-                }
-            }
-
-            // 2. If Un-Cancelling (Restoring): DEDUCT Stock again
-            if (oldStatus === 'cancelled' && newStatus !== 'cancelled') {
-                const items = order.items;
-                for (const item of items) {
-                    if (!item.isPrize && !isNaN(item.size)) {
-                        let bottleSize = Number(item.size);
-
-                        // Luxury Bottle Logic: 10ml & Price >= 300 -> Size 11
-                        if (bottleSize === 10 && item.price >= 300) {
-                            bottleSize = 11;
-                        }
-
-                        if ([2, 5, 10, 11].includes(bottleSize)) {
-                            await client.query(
-                                'UPDATE bottle_inventory SET quantity = quantity - $1 WHERE size = $2',
-                                [item.quantity, bottleSize]
-                            );
-                        }
-                    }
-                }
-                // Deduct Free Samples
-                if (order.free_samples_count > 0) {
-                    await client.query(
-                        'UPDATE bottle_inventory SET quantity = quantity - $1 WHERE size = 2',
-                        [order.free_samples_count]
-                    );
-                }
-            }
-
-            // Send Email Notification
-            const { sendEmail, getStatusUpdateTemplate } = require('../../lib/email'); // Dynamic import for server action
-            if (order && order.customer_details?.email) {
-                const html = getStatusUpdateTemplate(orderId, status, order.customer_details.name);
-                await sendEmail(order.customer_details.email, `עדכון סטטוס הזמנה #${orderId} - ml`, html);
-            }
-
-        } finally {
-            client.release();
-        }
-        revalidatePath("/admin/orders");
-    }
 
     async function deleteOrder(formData) {
         "use server";
@@ -216,7 +122,7 @@ export default async function AdminOrdersPage(props) {
                             <th className="p-4 text-center">בונוסים</th>
                             <th className="p-4 text-center">שיטה</th>
                             <th className="p-4 text-center">תאריך</th>
-                            <th className="p-4 text-center">סטטוס</th>
+                            <th className="p-4 text-center w-48">סטטוס</th>
                             <th className="p-4 text-center">פעולות</th>
                         </tr>
                     </thead>
@@ -307,24 +213,7 @@ export default async function AdminOrdersPage(props) {
                                     <div className="flex flex-col items-center gap-2">
                                         {canEdit ? (
                                             <>
-                                                <form action={updateStatus} className="flex gap-2">
-                                                    <input type="hidden" name="orderId" value={order.id} />
-                                                    <select name="status" defaultValue={order.status} className={`rounded-2xl font-bold text-xs border px-4 py-2.5 shadow-sm cursor-pointer outline-none appearance-none transition-all
-                                                        ${order.status === 'pending' ? 'bg-orange-50 text-orange-700 border-orange-100' :
-                                                        order.status === 'processing' ? 'bg-blue-50 text-blue-700 border-blue-100' :
-                                                        order.status === 'shipped' ? 'bg-purple-50 text-purple-700 border-purple-100' :
-                                                        order.status === 'completed' ? 'bg-green-50 text-green-700 border-green-100' :
-                                                        'bg-gray-50 text-gray-700 border-gray-100'}`}>
-                                                        <option value="pending">ממתין</option>
-                                                        <option value="processing">בטיפול</option>
-                                                        <option value="shipped">נשלח</option>
-                                                        <option value="completed">הושלם</option>
-                                                        <option value="cancelled">בוטל</option>
-                                                    </select>
-                                                    <button type="submit" className="bg-black text-white px-3 py-1 rounded-xl text-sm hover:bg-gray-800 font-bold shadow-sm transition-all active:scale-95">
-                                                        שמור
-                                                    </button>
-                                                </form>
+                                                <AdminOrderStatusSelect orderId={order.id} initialStatus={order.status} />
                                                 <DeleteOrderButton orderId={order.id} deleteAction={deleteOrder} />
                                             </>
                                         ) : (
