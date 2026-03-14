@@ -20,8 +20,14 @@ export default function CatalogManagerClient({ catalogId }) {
     // Add Item State
     const [newItemName, setNewItemName] = useState("");
     const [newItemDesc, setNewItemDesc] = useState("");
-    const [newItemPrice, setNewItemPrice] = useState("");
     const [newItemImage, setNewItemImage] = useState("");
+    // Replaced single price with size options
+    const [newItemSizes, setNewItemSizes] = useState({
+        "5ml": { enabled: false, price: "" },
+        "10ml": { enabled: false, price: "" },
+        "50ml": { enabled: false, price: "" },
+        "100ml": { enabled: false, price: "" }
+    });
     const [isAddingItem, setIsAddingItem] = useState(false);
 
     const router = useRouter();
@@ -113,6 +119,22 @@ export default function CatalogManagerClient({ catalogId }) {
 
     const handleAddItem = async (e) => {
         e.preventDefault();
+        
+        // Build prices object
+        const prices = {};
+        let hasPrice = false;
+        Object.entries(newItemSizes).forEach(([size, data]) => {
+            if (data.enabled && data.price) {
+                prices[size] = parseInt(data.price);
+                hasPrice = true;
+            }
+        });
+
+        if (!hasPrice) {
+            toast.error("יש לבחור לפחות גודל אחד ולהזין מסיר");
+            return;
+        }
+
         setIsAddingItem(true);
         try {
             const res = await fetch(`/api/user-catalogs/${catalogId}/items`, {
@@ -121,7 +143,7 @@ export default function CatalogManagerClient({ catalogId }) {
                 body: JSON.stringify({
                     name: newItemName,
                     description: newItemDesc,
-                    price: parseInt(newItemPrice),
+                    prices: prices, // send the json object
                     image_url: newItemImage || null
                 })
             });
@@ -130,7 +152,12 @@ export default function CatalogManagerClient({ catalogId }) {
                 toast.success("מוצר נוסף בהצלחה!");
                 setNewItemName("");
                 setNewItemDesc("");
-                setNewItemPrice("");
+                setNewItemSizes({
+                    "5ml": { enabled: false, price: "" },
+                    "10ml": { enabled: false, price: "" },
+                    "50ml": { enabled: false, price: "" },
+                    "100ml": { enabled: false, price: "" }
+                });
                 setNewItemImage("");
                 fetchCatalogData(); // refresh items
             } else {
@@ -246,8 +273,38 @@ export default function CatalogManagerClient({ catalogId }) {
                                 <input type="text" required value={newItemName} onChange={(e) => setNewItemName(e.target.value)} className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-black outline-none" placeholder="למשל: בושם טום פורד" />
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">מחיר (בשקלים)</label>
-                                <input type="number" required min="0" value={newItemPrice} onChange={(e) => setNewItemPrice(e.target.value)} className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-black outline-none" placeholder="350" />
+                                <label className="block text-sm font-medium text-gray-700 mb-2">גדלים ומחירים זמינים</label>
+                                <div className="space-y-2 border p-3 rounded-lg bg-white">
+                                    {Object.entries(newItemSizes).map(([size, data]) => (
+                                        <div key={size} className="flex items-center gap-3">
+                                            <label className="flex items-center gap-2 cursor-pointer w-20">
+                                                <input 
+                                                    type="checkbox"
+                                                    checked={data.enabled}
+                                                    onChange={(e) => setNewItemSizes(prev => ({
+                                                        ...prev,
+                                                        [size]: { ...prev[size], enabled: e.target.checked }
+                                                    }))}
+                                                    className="w-4 h-4 text-black border-gray-300 rounded focus:ring-black"
+                                                />
+                                                <span className="text-sm font-medium" dir="ltr">{size}</span>
+                                            </label>
+                                            <input 
+                                                type="number" 
+                                                min="1" 
+                                                disabled={!data.enabled}
+                                                value={data.price}
+                                                onChange={(e) => setNewItemSizes(prev => ({
+                                                    ...prev,
+                                                    [size]: { ...prev[size], price: e.target.value }
+                                                }))}
+                                                className="w-full p-2 border rounded focus:ring-1 focus:ring-black outline-none disabled:bg-gray-100 disabled:opacity-50 text-sm" 
+                                                placeholder={`מחיר ל-${size} (₪)`} 
+                                            />
+                                        </div>
+                                    ))}
+                                </div>
+                                <p className="text-xs text-gray-500 mt-1">בחר אילו גדלים תרצה להציע עבור המוצר ומה המחיר של כל אחד.</p>
                             </div>
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-1">קישור לתמונה (URL)</label>
@@ -297,8 +354,21 @@ export default function CatalogManagerClient({ catalogId }) {
                                         </button>
                                     </div>
                                     <div className="p-4 flex flex-col flex-grow">
-                                        <h3 className="font-bold text-lg leading-tight mb-1">{item.name}</h3>
-                                        <div className="text-xl font-black text-black mb-2">{item.price} ₪</div>
+                                        <h3 className="font-bold text-lg leading-tight mb-3">{item.name}</h3>
+                                        
+                                        {/* Display Prices */}
+                                        <div className="space-y-1 mb-3">
+                                            {item.prices && Object.entries(item.prices).map(([size, price]) => (
+                                                 <div key={size} className="flex justify-between items-center bg-gray-50 px-2 py-1 rounded text-sm border border-gray-100">
+                                                     <span className="font-medium text-gray-600" dir="ltr">{size}</span>
+                                                     <span className="font-bold">{price} ₪</span>
+                                                 </div>
+                                            ))}
+                                            {!item.prices && item.price && (
+                                                <div className="text-xl font-black text-black">{item.price} ₪</div>
+                                            )}
+                                        </div>
+
                                         {item.description && (
                                             <p className="text-sm text-gray-500 line-clamp-2 mt-auto">{item.description}</p>
                                         )}

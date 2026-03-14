@@ -10,6 +10,7 @@ export default function CatalogClient({ slug }) {
     const [items, setItems] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [selectedSizes, setSelectedSizes] = useState({});
 
     const { addToCart, cartItems, totalItems } = useCatalogCart();
 
@@ -34,6 +35,13 @@ export default function CatalogClient({ slug }) {
 
         if (slug) fetchCatalog();
     }, [slug]);
+
+    const handleSizeSelect = (itemId, size, price) => {
+        setSelectedSizes(prev => ({
+            ...prev,
+            [itemId]: { size, price }
+        }));
+    };
 
     if (isLoading) {
         return <div className="text-center py-20 text-xl animate-pulse">טוען קטלוג...</div>;
@@ -97,7 +105,33 @@ export default function CatalogClient({ slug }) {
                                 </div>
                                 <div className="p-5 flex flex-col flex-grow">
                                     <h3 className="text-xl font-bold mb-1 text-gray-900 leading-tight">{item.name}</h3>
-                                    <div className="text-2xl font-black text-black mb-3">{item.price} ₪</div>
+                                    
+                                    {/* Size Options or Single Price */}
+                                    {item.prices && Object.keys(item.prices).length > 0 ? (
+                                        <div className="mb-3">
+                                            <div className="text-2xl font-black text-black mb-2">
+                                                {selectedSizes[item.id]?.price || Object.values(item.prices)[0]} ₪
+                                            </div>
+                                            <div className="flex flex-wrap gap-2 text-sm mt-2 font-mono">
+                                                {Object.entries(item.prices).map(([size, price], index) => {
+                                                    const isSelected = selectedSizes[item.id]?.size === size || (!selectedSizes[item.id] && index === 0);
+                                                    return (
+                                                        <button
+                                                            key={size}
+                                                            onClick={() => handleSizeSelect(item.id, size, price)}
+                                                            className={`px-3 py-1 rounded border transition-colors ${isSelected ? 'bg-black text-white border-black' : 'bg-gray-50 text-gray-700 border-gray-200 hover:border-black hover:bg-white'}`}
+                                                            dir="ltr"
+                                                        >
+                                                            {size}
+                                                        </button>
+                                                    );
+                                                })}
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <div className="text-2xl font-black text-black mb-3">{item.price} ₪</div>
+                                    )}
+
                                     {item.description && (
                                         <p className="text-sm text-gray-600 mb-6 line-clamp-3 leading-relaxed flex-grow">
                                             {item.description}
@@ -106,8 +140,28 @@ export default function CatalogClient({ slug }) {
                                     
                                     <button 
                                         onClick={() => {
-                                            addToCart(item);
-                                            toast.success("נוסף לסל!");
+                                            const defaultSizeStr = item.prices ? Object.keys(item.prices)[0] : null;
+                                            const defaultPrice = item.prices ? Object.values(item.prices)[0] : item.price;
+                                            
+                                            const sizeStr = selectedSizes[item.id]?.size || defaultSizeStr || '1';
+                                            const activePrice = selectedSizes[item.id]?.price || defaultPrice;
+
+                                            // Unique ID logic for cart
+                                            const cartItemId = item.prices ? `${item.id}_${sizeStr}` : item.id;
+                                            const inCartItem = cartItems.find(i => i.id === cartItemId);
+
+                                            if (inCartItem) {
+                                                // Already in cart, do nothing or redirect to cart
+                                            } else {
+                                                addToCart({
+                                                    ...item,
+                                                    id: cartItemId, // override ID to make it size-specific
+                                                    originalId: item.id, // keep track of true db id
+                                                    size: sizeStr,
+                                                    price: activePrice
+                                                });
+                                                toast.success("נוסף לסל!");
+                                            }
                                         }}
                                         className="mt-auto w-full py-3 rounded-xl font-bold transition-all border-2 border-black flex items-center justify-center gap-2 group/btn"
                                         style={inCart ? { backgroundColor: 'black', color: 'white' } : { backgroundColor: 'white', color: 'black' }}

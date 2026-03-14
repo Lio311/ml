@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
-import pool from '../../../lib/db';
+import pool from '@/app/lib/db';
 
 // Get all catalogs for current user
 export async function GET() {
@@ -32,7 +32,7 @@ export async function POST(req) {
         }
 
         const body = await req.json();
-        const { name, description, contact_email, slug } = body;
+        const { name, description, contact_email, slug, image_url } = body;
 
         if (!name || !contact_email || !slug) {
             return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
@@ -52,9 +52,9 @@ export async function POST(req) {
             }
 
             const res = await client.query(
-                `INSERT INTO user_catalogs (user_id, slug, name, description, contact_email) 
-                 VALUES ($1, $2, $3, $4, $5) RETURNING *`,
-                [userId, slug, name, description, contact_email]
+                `INSERT INTO user_catalogs (user_id, slug, name, description, contact_email, image_url) 
+                 VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
+                [userId, slug, name, description, contact_email, image_url || null]
             );
 
             return NextResponse.json(res.rows[0]);

@@ -15,6 +15,7 @@ export default function MyCatalogsClient() {
     const [slug, setSlug] = useState("");
     const [description, setDescription] = useState("");
     const [email, setEmail] = useState("");
+    const [imageUrl, setImageUrl] = useState("");
 
     const router = useRouter();
 
@@ -52,7 +53,8 @@ export default function MyCatalogsClient() {
                     name,
                     slug: slug.toLowerCase().replace(/[^a-z0-9-]/g, '-'),
                     description,
-                    contact_email: email
+                    contact_email: email,
+                    image_url: imageUrl || null
                 })
             });
 
@@ -62,6 +64,7 @@ export default function MyCatalogsClient() {
                 setSlug("");
                 setDescription("");
                 setEmail("");
+                setImageUrl("");
                 fetchCatalogs(); // Refresh the list
             } else {
                 const data = await res.json();
@@ -125,6 +128,17 @@ export default function MyCatalogsClient() {
                             />
                         </div>
                         <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">תמונת לוגו / פרופיל החנות (שורת URL)</label>
+                            <input 
+                                type="url" 
+                                value={imageUrl}
+                                onChange={(e) => setImageUrl(e.target.value)}
+                                className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-black outline-none text-left"
+                                dir="ltr"
+                                placeholder="https://..."
+                            />
+                        </div>
+                        <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">תיאור קצר (אופציונלי)</label>
                             <textarea 
                                 value={description}
@@ -157,7 +171,18 @@ export default function MyCatalogsClient() {
                         {catalogs.map((catalog) => (
                             <div key={catalog.id} className="bg-white p-6 rounded-xl shadow-md border hover:border-black transition-all flex flex-col h-full relative overflow-hidden group">
                                 <div className="absolute top-0 right-0 w-full h-1 bg-gradient-to-r from-gray-400 to-black"></div>
-                                <h3 className="text-xl font-bold mb-2">{catalog.name}</h3>
+                                <div className="flex items-center gap-4 mb-4">
+                                    {catalog.image_url ? (
+                                        <div className="w-12 h-12 rounded-full overflow-hidden border bg-gray-50 flex-shrink-0">
+                                            <img src={catalog.image_url} alt={catalog.name} className="w-full h-full object-cover" />
+                                        </div>
+                                    ) : (
+                                        <div className="w-12 h-12 rounded-full border bg-gray-50 flex items-center justify-center text-xl flex-shrink-0">
+                                            🏪
+                                        </div>
+                                    )}
+                                    <h3 className="text-xl font-bold">{catalog.name}</h3>
+                                </div>
                                 <p className="text-sm text-gray-500 mb-4 line-clamp-2 flex-grow">
                                     {catalog.description || "ללא תיאור"}
                                 </p>

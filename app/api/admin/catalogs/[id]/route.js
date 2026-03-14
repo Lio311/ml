@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
-import pool from '../../../../../lib/db';
+import pool from '@/app/lib/db';
 
 export async function DELETE(req, { params }) {
     try {

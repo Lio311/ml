@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import { auth } from '@clerk/nextjs/server';
-import pool from '../../../../lib/db';
+import pool from '@/app/lib/db';
 
 export async function GET(req, { params }) {
     try {
@@ -38,7 +38,7 @@ export async function PUT(req, { params }) {
         }
 
         const body = await req.json();
-        const { name, description, contact_email, slug } = body;
+        const { name, description, contact_email, slug, image_url } = body;
 
         if (!name || !contact_email || !slug) {
             return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
@@ -64,9 +64,9 @@ export async function PUT(req, { params }) {
             }
 
             const res = await client.query(
-                `UPDATE user_catalogs SET name = $1, description = $2, contact_email = $3, slug = $4 
-                 WHERE id = $5 AND user_id = $6 RETURNING *`,
-                [name, description, contact_email, slug, id, userId]
+                `UPDATE user_catalogs SET name = $1, description = $2, contact_email = $3, slug = $4, image_url = $5
+                 WHERE id = $6 AND user_id = $7 RETURNING *`,
+                [name, description, contact_email, slug, image_url || null, id, userId]
             );
 
             return NextResponse.json(res.rows[0]);

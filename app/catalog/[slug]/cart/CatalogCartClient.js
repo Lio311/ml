@@ -67,7 +67,7 @@ export default function CatalogCartClient({ slug }) {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    items: cartItems.map(i => ({...i, size: 1})), // Catalog products don't strictly use site sizes atm. Send size = 1 to fulfill orders api requirements
+                    items: cartItems.map(i => ({...i})), // The size is already in `i.size` from the catalog client
                     total: effectiveTotal,
                     freeSamples: 0, // No free samples for custom catalogs by default
                     notes: notes,
@@ -135,6 +135,9 @@ export default function CatalogCartClient({ slug }) {
 
                         <div className="flex-1 min-w-0">
                             <h3 className="font-bold text-lg leading-tight truncate">{item.name}</h3>
+                            {item.size && item.size !== '1' && (
+                                <p className="text-sm text-gray-500 font-mono mt-1" dir="ltr">{item.size}</p>
+                            )}
                             <div className="text-sm font-black mt-2 text-black">{item.price} ₪</div>
                         </div>
 
