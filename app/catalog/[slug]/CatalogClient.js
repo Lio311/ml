@@ -92,7 +92,7 @@ function CatalogProductCard({ item, slug, catalogId, catalogName }) {
                 <div className="text-xs text-gray-500 mb-1 line-clamp-1">{(item.category || '').split(',')[0]}</div>
                 <Link href={`/catalog/${slug}/product/${item.id}`}>
                     <h3 className="font-bold text-sm mb-2 line-clamp-2 min-h-[40px] hover:underline">
-                        <span className="text-gray-400 font-semibold text-[10px] mr-1">{item.brand}</span>
+                        <span className="mr-1">{item.brand}</span>
                         {item.fragrance_name}
                     </h3>
                 </Link>
