@@ -88,7 +88,7 @@ export default function MyCatalogsClient() {
             {/* Left: Create New Catalog Form */}
             <div className="w-full lg:w-1/3">
                 <div className="bg-white p-6 rounded-xl shadow-lg border border-gray-100 sticky top-24">
-                    <h2 className="text-xl font-bold mb-6 text-gray-800">צור קטלוג חדש ✨</h2>
+                    <h2 className="text-xl font-bold mb-6 text-gray-800">צור קטלוג חדש</h2>
                     <form onSubmit={handleCreate} className="space-y-4">
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">שם הקטלוג (יוצג למבקרים)</label>
