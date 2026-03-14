@@ -632,9 +632,9 @@ export default function CartClient() {
                                 </div>
                             )}
 
-                            {isMainVendor && (
-                                <div className="space-y-4">
-                                    {/* Coupon Section */}
+                            <div className="space-y-4">
+                                {/* Coupon Section (Main Vendor Only) */}
+                                {isMainVendor && (
                                     <div className="border-t border-b py-4">
                                         {coupon ? (
                                             <div className="flex justify-between items-center bg-green-50 p-3 rounded border border-green-200">
@@ -673,62 +673,110 @@ export default function CartClient() {
                                             </div>
                                         )}
                                     </div>
+                                )}
 
-                                    {/* Delivery Method */}
-                                    {(isMainVendor || vendorConfig?.delivery_active || vendorConfig?.self_pickup_active) && (
-                                        <div className="space-y-2">
-                                            <p className="text-xs font-bold text-gray-500 uppercase tracking-widest text-right">שיטת אספקה</p>
-                                            <div className="grid grid-cols-2 gap-3">
-                                                {(isMainVendor || vendorConfig?.delivery_active) && (
-                                                    <button
-                                                        onClick={() => setIsSelfPickup(false)}
-                                                        className={`relative flex flex-col items-center gap-2 p-4 rounded-xl border-2 transition-all duration-200 text-center ${!isSelfPickup ? 'border-black bg-black text-white shadow-md' : 'border-gray-200 bg-white text-gray-600 hover:border-gray-400'}`}
-                                                    >
-                                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                                                            <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
-                                                        </svg>
-                                                        <span className="text-xs font-bold leading-tight">משלוח</span>
-                                                        <span className={`text-xs font-bold ${!isSelfPickup ? 'text-gray-300' : 'text-gray-400'}`}>{isMainVendor ? 30 : (vendorConfig?.delivery_price || 0)} ₪</span>
-                                                    </button>
-                                                )}
-                                                {(isMainVendor || vendorConfig?.self_pickup_active) && (
-                                                    <button
-                                                        onClick={() => setIsSelfPickup(true)}
-                                                        className={`relative flex flex-col items-center gap-2 p-4 rounded-xl border-2 transition-all duration-200 text-center ${isSelfPickup ? 'border-black bg-black text-white shadow-md' : 'border-gray-200 bg-white text-gray-600 hover:border-gray-400'}`}
-                                                    >
-                                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                                                            <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-                                                            <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
-                                                        </svg>
-                                                        <span className="text-xs font-bold leading-tight">איסוף עצמי</span>
-                                                        <span className={`text-xs font-bold ${isSelfPickup ? 'text-green-400' : 'text-green-600'}`}>חינם</span>
-                                                    </button>
-                                                )}
-                                            </div>
-                                            {isSelfPickup && (
-                                                <p className="text-xs text-gray-500 text-center pt-1">כתובת איסוף — יצורף פרטים עם אישור ההזמנה</p>
+                                {/* Delivery Method */}
+                                {(isMainVendor || vendorConfig?.delivery_active || vendorConfig?.self_pickup_active) && (
+                                    <div className="space-y-2">
+                                        <p className="text-xs font-bold text-gray-500 uppercase tracking-widest text-right">שיטת אספקה</p>
+                                        <div className="grid grid-cols-2 gap-3">
+                                            {(isMainVendor || vendorConfig?.delivery_active) && (
+                                                <button
+                                                    onClick={() => setIsSelfPickup(false)}
+                                                    className={`relative flex flex-col items-center gap-2 p-4 rounded-xl border-2 transition-all duration-200 text-center ${!isSelfPickup ? 'border-black bg-black text-white shadow-md' : 'border-gray-200 bg-white text-gray-600 hover:border-gray-400'}`}
+                                                >
+                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
+                                                    </svg>
+                                                    <span className="text-xs font-bold leading-tight">משלוח</span>
+                                                    <span className={`text-xs font-bold ${!isSelfPickup ? 'text-gray-300' : 'text-gray-400'}`}>{isMainVendor ? 30 : (vendorConfig?.delivery_price || 0)} ₪</span>
+                                                </button>
+                                            )}
+                                            {(isMainVendor || vendorConfig?.self_pickup_active) && (
+                                                <button
+                                                    onClick={() => setIsSelfPickup(true)}
+                                                    className={`relative flex flex-col items-center gap-2 p-4 rounded-xl border-2 transition-all duration-200 text-center ${isSelfPickup ? 'border-black bg-black text-white shadow-md' : 'border-gray-200 bg-white text-gray-600 hover:border-gray-400'}`}
+                                                >
+                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                                                        <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
+                                                    </svg>
+                                                    <span className="text-xs font-bold leading-tight">איסוף עצמי</span>
+                                                    <span className={`text-xs font-bold ${isSelfPickup ? 'text-green-400' : 'text-green-600'}`}>חינם</span>
+                                                </button>
                                             )}
                                         </div>
-                                    )}
+                                        {isSelfPickup && (
+                                            <p className="text-xs text-gray-500 text-center pt-1">כתובת איסוף — יצורף פרטים עם אישור ההזמנה</p>
+                                        )}
+                                    </div>
+                                )}
 
-                                    {/* Free Samples Promo for Catalog */}
-                                    {!isMainVendor && freeSamplesCount > 0 && (
-                                        <div className="bg-green-50 border border-green-100 p-4 rounded-xl flex items-center gap-3 animate-bounce">
-                                            <div className="bg-green-600 text-white w-10 h-10 rounded-full flex items-center justify-center text-xl">🎁</div>
-                                            <div>
-                                                <p className="text-green-900 font-bold text-sm">הטבה מחכה לך!</p>
-                                                <p className="text-green-700 text-xs font-medium">מגיע לך {freeSamplesCount} דוגמיות חינם בהזמנה זו!</p>
-                                            </div>
+                                {/* Free Samples Promo for Catalog */}
+                                {!isMainVendor && freeSamplesCount > 0 && (
+                                    <div className="bg-green-50 border border-green-100 p-4 rounded-xl flex items-center gap-3 animate-bounce">
+                                        <div className="bg-green-600 text-white w-10 h-10 rounded-full flex items-center justify-center text-xl">🎁</div>
+                                        <div>
+                                            <p className="text-green-900 font-bold text-sm">הטבה מחכה לך!</p>
+                                            <p className="text-green-700 text-xs font-medium">מגיע לך {freeSamplesCount} דוגמיות חינם בהזמנה זו!</p>
                                         </div>
-                                    )}
+                                    </div>
+                                )}
 
-                                    {/* Free Samples Progress Bar */}
-                                    {isMainVendor ? (
+                                {/* Free Samples Progress Bar */}
+                                {isMainVendor ? (
+                                    <div className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
+                                        <h3 className="font-bold text-gray-900 mb-2 flex items-center gap-2 text-right justify-start">
+                                            <span>🎁</span>
+                                            {freeSamplesCount === 6 ? (
+                                                <span className="text-green-600">קיבלת את כל הדוגמיות! (6)</span>
+                                            ) : (
+                                                <span>דוגמיות חינם</span>
+                                            )}
+                                        </h3>
+
+                                        <div className="relative h-4 bg-gray-100 rounded-full overflow-hidden mb-2">
+                                            <div
+                                                className="absolute top-0 right-0 h-full bg-gradient-to-l from-blue-500 to-purple-600 transition-all duration-1000 ease-out rounded-full"
+                                                style={{ width: `${Math.min(100, (subtotal / 1000) * 100)}%` }}
+                                            ></div>
+                                            <div className="absolute top-0 right-[30%] h-full w-0.5 bg-white/50 z-10" title="300₪ - 2 דוגמיות"></div>
+                                            <div className="absolute top-0 right-[50%] h-full w-0.5 bg-white/50 z-10" title="500₪ - 4 דוגמיות"></div>
+                                        </div>
+
+                                        <div className="flex justify-between text-[10px] text-gray-400 font-medium px-1 flex-row-reverse">
+                                            <span className={subtotal >= 0 ? "text-gray-900 font-bold" : ""}>0</span>
+                                            <span className={subtotal >= 300 ? "text-blue-600 font-bold" : ""}>300 (2)</span>
+                                            <span className={subtotal >= 500 ? "text-purple-600 font-bold" : ""}>500 (4)</span>
+                                            <span className={subtotal >= 1000 ? "text-green-600 font-bold" : ""}>1000 (6)</span>
+                                        </div>
+
+                                        <div className="mt-3 text-xs text-center font-bold">
+                                            {freeSamplesCount === 0 && <span className="text-gray-500">עוד <span className="font-bold text-black">{300 - subtotal} ₪</span> ל-2 דוגמיות חינם!</span>}
+                                            {freeSamplesCount === 2 && <span className="text-blue-600">יש לך 2 דוגמיות. עוד <span className="font-bold">{500 - subtotal} ₪</span> ל-4 דוגמיות!</span>}
+                                            {freeSamplesCount === 4 && <span className="text-purple-600">וואו! 4 דוגמיות שלך. עוד <span className="font-bold">{1000 - subtotal} ₪</span> ל-6 דוגמיות!</span>}
+                                            {freeSamplesCount === 6 && <span className="text-green-600 font-bold">פינקנו אותך ב-6 דוגמיות! תהנה! 🎉</span>}
+                                        </div>
+                                    </div>
+                                ) : (vendorConfig?.sample_tiers) ? (() => {
+                                    let tiers = [];
+                                    try {
+                                        tiers = typeof vendorConfig.sample_tiers === 'string' ? JSON.parse(vendorConfig.sample_tiers) : (vendorConfig.sample_tiers || []);
+                                    } catch (e) { tiers = []; }
+
+                                    if (tiers.length === 0) return null;
+
+                                    const sortedTiers = [...tiers].sort((a, b) => a.min_sum - b.min_sum);
+                                    const maxTierSum = sortedTiers[sortedTiers.length - 1].min_sum;
+                                    const currentTier = sortedTiers.filter(t => subtotal >= t.min_sum).reverse()[0];
+                                    const nextTierObj = sortedTiers.find(t => subtotal < t.min_sum);
+
+                                    return (
                                         <div className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
-                                            <h3 className="font-bold text-gray-900 mb-2 flex items-center gap-2">
+                                            <h3 className="font-bold text-gray-900 mb-2 flex items-center gap-2 text-right justify-start">
                                                 <span>🎁</span>
-                                                {freeSamplesCount === 6 ? (
-                                                    <span className="text-green-600">קיבלת את כל הדוגמיות! (6)</span>
+                                                {currentTier ? (
+                                                    <span className="text-green-600">קיבלת {currentTier.sample_count} דוגמיות חינם!</span>
                                                 ) : (
                                                     <span>דוגמיות חינם</span>
                                                 )}
@@ -736,65 +784,69 @@ export default function CartClient() {
 
                                             <div className="relative h-4 bg-gray-100 rounded-full overflow-hidden mb-2">
                                                 <div
-                                                    className="absolute top-0 right-0 h-full bg-gradient-to-l from-blue-500 to-purple-600 transition-all duration-1000 ease-out rounded-full"
-                                                    style={{ width: `${Math.min(100, (subtotal / 1000) * 100)}%` }}
+                                                    className="absolute top-0 right-0 h-full bg-gradient-to-l from-green-400 to-emerald-600 transition-all duration-1000 ease-out rounded-full"
+                                                    style={{ width: `${Math.min(100, (subtotal / maxTierSum) * 100)}%` }}
                                                 ></div>
-                                                <div className="absolute top-0 right-[30%] h-full w-0.5 bg-white/50 z-10" title="300₪ - 2 דוגמיות"></div>
-                                                <div className="absolute top-0 right-[50%] h-full w-0.5 bg-white/50 z-10" title="500₪ - 4 דוגמיות"></div>
-                                            </div>
-
-                                            <div className="flex justify-between text-[10px] text-gray-400 font-medium px-1">
-                                                <span className={subtotal >= 0 ? "text-gray-900 font-bold" : ""}>0</span>
-                                                <span className={subtotal >= 300 ? "text-blue-600 font-bold" : ""}>300 (2)</span>
-                                                <span className={subtotal >= 500 ? "text-purple-600 font-bold" : ""}>500 (4)</span>
-                                                <span className={subtotal >= 1000 ? "text-green-600 font-bold" : ""}>1000 (6)</span>
-                                            </div>
-
-                                            <div className="mt-3 text-xs text-center">
-                                                {freeSamplesCount === 0 && <span className="text-gray-500">עוד <span className="font-bold text-black">{300 - subtotal} ₪</span> ל-2 דוגמיות חינם!</span>}
-                                                {freeSamplesCount === 2 && <span className="text-blue-600">יש לך 2 דוגמיות. עוד <span className="font-bold">{500 - subtotal} ₪</span> ל-4 דוגמיות!</span>}
-                                                {freeSamplesCount === 4 && <span className="text-purple-600">וואו! 4 דוגמיות שלך. עוד <span className="font-bold">{1000 - subtotal} ₪</span> ל-6 דוגמיות!</span>}
-                                                {freeSamplesCount === 6 && <span className="text-green-600 font-bold">פינקנו אותך ב-6 דוגמיות! תהנה! 🎉</span>}
-                                            </div>
-                                        </div>
-                                    ) : (vendorConfig?.sample_tiers && (freeSamplesCount > 0 || nextTier > 0)) ? (
-                                        <div className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm text-center">
-                                            <h3 className="font-bold text-gray-900 mb-2 flex flex-col items-center justify-center gap-2">
-                                                <span className="text-2xl">🎁</span>
-                                                {freeSamplesCount > 0 && <span className="text-green-600">סל זה כולל {freeSamplesCount} דוגמיות מתנה!</span>}
-                                            </h3>
-                                            {nextTier > 0 && <p className="text-xs font-bold text-gray-500 bg-gray-50 p-2 rounded">הוסף עוד {nextTier} ₪ כדי לשדרג את כמות הדוגמיות!</p>}
-                                        </div>
-                                    ) : null}
-
-                                    {/* Recommendations / Upsell */}
-                                    {recommendations.length > 0 && (
-                                        <div className="space-y-3 pt-2">
-                                            <h4 className="text-sm font-bold text-gray-700">השלם את החסר בקלות:</h4>
-                                            <div className="space-y-2">
-                                                {recommendations.map(rec => (
-                                                    <div key={rec.id} className="flex items-center gap-3 bg-white border p-2 rounded-lg shadow-sm hover:shadow-md transition">
-                                                        <div className="w-10 h-10 bg-gray-50 rounded flex-shrink-0 flex items-center justify-center overflow-hidden">
-                                                            {rec.image_url ? <img src={rec.image_url} alt="" className="w-full h-full object-contain p-1" /> : '🧴'}
-                                                        </div>
-                                                        <div className="flex-1 min-w-0">
-                                                            <div className="font-bold text-xs truncate">{rec.name}</div>
-                                                            <div className="text-xs text-gray-500">{rec.size} מ"ל • {rec.price} ₪</div>
-                                                        </div>
-                                                        <button
-                                                            onClick={() => addToCart(rec, rec.size, rec.price)}
-                                                            className="w-8 h-8 flex items-center justify-center bg-black text-white rounded-full hover:bg-gray-800 transition"
-                                                            title="הוסף לעגלה"
-                                                        >
-                                                            +
-                                                        </button>
-                                                    </div>
+                                                {sortedTiers.map((t, idx) => (
+                                                    <div
+                                                        key={idx}
+                                                        className="absolute top-0 h-full w-0.5 bg-white/50 z-10"
+                                                        style={{ right: `${(t.min_sum / maxTierSum) * 100}%` }}
+                                                        title={`${t.min_sum}₪ - ${t.sample_count} דוגמיות`}
+                                                    ></div>
                                                 ))}
                                             </div>
+
+                                            <div className="flex justify-between text-[10px] text-gray-400 font-medium px-1 flex-row-reverse">
+                                                <span className="text-gray-900 font-bold">0</span>
+                                                {sortedTiers.map((t, idx) => (
+                                                    <span key={idx} className={subtotal >= t.min_sum ? "text-emerald-600 font-bold" : ""}>
+                                                        {t.min_sum} ({t.sample_count})
+                                                    </span>
+                                                ))}
+                                            </div>
+
+                                            <div className="mt-3 text-xs text-center font-bold">
+                                                {nextTierObj ? (
+                                                    <span className="text-emerald-600">
+                                                        {currentTier ? `יש לך ${currentTier.sample_count} דוגמיות. ` : ""}
+                                                        עוד <span className="font-bold text-black">{nextTierObj.min_sum - subtotal} ₪</span> ל-{nextTierObj.sample_count} דוגמיות!
+                                                    </span>
+                                                ) : (
+                                                    <span className="text-green-600 font-bold">פינקנו אותך ב-{currentTier?.sample_count} דוגמיות! תהנה! 🎉</span>
+                                                )}
+                                            </div>
                                         </div>
-                                    )}
-                                </div>
-                            )}
+                                    );
+                                })() : null}
+
+                                {/* Recommendations / Upsell */}
+                                 {recommendations.length > 0 && (
+                                     <div className="space-y-3 pt-2">
+                                         <h4 className="text-sm font-bold text-gray-700">השלם את החסר בקלות:</h4>
+                                         <div className="space-y-2">
+                                             {recommendations.map(rec => (
+                                                 <div key={rec.id} className="flex items-center gap-3 bg-white border p-2 rounded-lg shadow-sm hover:shadow-md transition">
+                                                     <div className="w-10 h-10 bg-gray-50 rounded flex-shrink-0 flex items-center justify-center overflow-hidden">
+                                                         {rec.image_url ? <img src={rec.image_url} alt="" className="w-full h-full object-contain p-1" /> : '🧴'}
+                                                     </div>
+                                                     <div className="flex-1 min-w-0">
+                                                         <div className="font-bold text-xs truncate">{rec.name}</div>
+                                                         <div className="text-xs text-gray-500">{rec.size} מ"ל • {rec.price} ₪</div>
+                                                     </div>
+                                                     <button
+                                                         onClick={() => addToCart(rec, rec.size, rec.price)}
+                                                         className="w-8 h-8 flex items-center justify-center bg-black text-white rounded-full hover:bg-gray-800 transition"
+                                                         title="הוסף לעגלה"
+                                                     >
+                                                         +
+                                                     </button>
+                                                 </div>
+                                             ))}
+                                         </div>
+                                     </div>
+                                 )}
+                             </div>
 
                             {/* Total */}
                             <div className="flex justify-between text-xl font-bold pt-4 border-t">
