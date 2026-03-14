@@ -17,11 +17,13 @@ export default function CatalogManagerClient({ catalogId }) {
     const [editDesc, setEditDesc] = useState("");
     const [editEmail, setEditEmail] = useState("");
     const [editImage, setEditImage] = useState("");
+    const [editImageInputType, setEditImageInputType] = useState("file");
 
     // Add Item State
     const [newItemName, setNewItemName] = useState("");
     const [newItemDesc, setNewItemDesc] = useState("");
     const [newItemImage, setNewItemImage] = useState("");
+    const [newItemImageInputType, setNewItemImageInputType] = useState("file");
     // Replaced single price with size options
     const [newItemSizes, setNewItemSizes] = useState({
         "5ml": { enabled: false, price: "" },
@@ -251,29 +253,58 @@ export default function CatalogManagerClient({ catalogId }) {
                             </div>
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">תמונת לוגו (תמונה או קישור)</label>
-                            <input 
-                                type="url" 
-                                value={editImage} 
-                                onChange={(e) => setEditImage(e.target.value)} 
-                                className="w-full p-2 border rounded focus:ring-1 focus:ring-black outline-none text-left" 
-                                dir="ltr" 
-                                placeholder="https://..." 
-                            />
-                            <div className="mt-2 text-xs flex items-center gap-2">
-                                <label className="cursor-pointer bg-gray-100 text-gray-700 px-3 py-1.5 rounded hover:bg-gray-200 transition font-medium border border-gray-200 outline-none">
-                                    העלה תמונה מהמחשב
-                                    <input type="file" className="hidden" accept="image/png, image/jpeg, image/webp" onChange={(e) => {
-                                        const file = e.target.files[0];
-                                        if (file) {
-                                            if (file.size > 2 * 1024 * 1024) { return toast.error("קובץ גדול מדי. מקסימום 2MB."); }
-                                            const reader = new FileReader();
-                                            reader.onloadend = () => setEditImage(reader.result);
-                                            reader.readAsDataURL(file);
-                                        }
-                                    }}/>
-                                </label>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">תמונת לוגו / פרופיל החנות</label>
+                            
+                            <div className="flex bg-gray-100 p-1 rounded-lg mb-3">
+                                <button 
+                                    type="button"
+                                    onClick={() => setEditImageInputType("file")}
+                                    className={`flex-1 text-sm py-1.5 rounded-md transition ${editImageInputType === "file" ? 'bg-white shadow-sm font-bold text-black' : 'text-gray-500 hover:text-black'}`}
+                                >
+                                    העלאה מהמחשב
+                                </button>
+                                <button 
+                                    type="button"
+                                    onClick={() => setEditImageInputType("url")}
+                                    className={`flex-1 text-sm py-1.5 rounded-md transition ${editImageInputType === "url" ? 'bg-white shadow-sm font-bold text-black' : 'text-gray-500 hover:text-black'}`}
+                                >
+                                    קישור לתמונה
+                                </button>
                             </div>
+
+                            {editImageInputType === "file" ? (
+                                <div className="mt-2 text-xs flex mt-3 items-center gap-2">
+                                    <label className="w-full flex flex-col items-center justify-center h-20 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 bg-white transition-colors">
+                                        <div className="flex flex-col items-center justify-center">
+                                            <p className="mb-1 text-sm text-gray-500"><span className="font-semibold text-black">בחר תמונה מהמחשב</span></p>
+                                        </div>
+                                        <input type="file" className="hidden" accept="image/png, image/jpeg, image/webp" onChange={(e) => {
+                                            const file = e.target.files[0];
+                                            if (file) {
+                                                if (file.size > 2 * 1024 * 1024) { return toast.error("קובץ גדול מדי. מקסימום 2MB."); }
+                                                const reader = new FileReader();
+                                                reader.onloadend = () => setEditImage(reader.result);
+                                                reader.readAsDataURL(file);
+                                            }
+                                        }}/>
+                                    </label>
+                                </div>
+                            ) : (
+                                <input 
+                                    type="url" 
+                                    value={editImage} 
+                                    onChange={(e) => setEditImage(e.target.value)} 
+                                    className="w-full p-2 mt-2 border rounded focus:ring-1 focus:ring-black outline-none text-left" 
+                                    dir="ltr" 
+                                    placeholder="https://..." 
+                                />
+                            )}
+                            {editImage && (
+                                <div className="mt-2">
+                                    <p className="text-xs text-gray-500 mb-2">תצוגה מקדימה:</p>
+                                    <img src={editImage} alt="Preview" className="w-16 h-16 object-cover rounded-md border border-gray-200 shadow-sm" />
+                                </div>
+                            )}
                         </div>
                         <div className="md:col-span-2">
                             <label className="block text-sm font-medium text-gray-700 mb-1">תיאור</label>
@@ -335,22 +366,44 @@ export default function CatalogManagerClient({ catalogId }) {
                                 <p className="text-xs text-gray-500 mt-1">בחר אילו גדלים תרצה להציע עבור המוצר ומה המחיר של כל אחד.</p>
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">תמונת מוצר (תמונה או קישור)</label>
-                                <input type="url" value={newItemImage} onChange={(e) => setNewItemImage(e.target.value)} className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-black outline-none text-left" dir="ltr" placeholder="https://..." />
-                                <div className="mt-2 flex flex-col sm:flex-row items-start sm:items-center gap-3">
-                                    <label className="cursor-pointer text-xs bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition font-medium border border-gray-200">
-                                        בחר תמונה מהמחשב (PNG, JPG)
-                                        <input type="file" className="hidden" accept="image/png, image/jpeg, image/webp" onChange={(e) => {
-                                            const file = e.target.files[0];
-                                            if (file) {
-                                                if (file.size > 2 * 1024 * 1024) { return toast.error("קובץ גדול מדי. עד 2MB."); }
-                                                const reader = new FileReader();
-                                                reader.onloadend = () => setNewItemImage(reader.result);
-                                                reader.readAsDataURL(file);
-                                            }
-                                        }}/>
-                                    </label>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">תמונת מוצר</label>
+
+                                <div className="flex bg-gray-100 p-1 rounded-lg mb-3">
+                                    <button 
+                                        type="button"
+                                        onClick={() => setNewItemImageInputType("file")}
+                                        className={`flex-1 text-sm py-1.5 rounded-md transition ${newItemImageInputType === "file" ? 'bg-white shadow-sm font-bold text-black' : 'text-gray-500 hover:text-black'}`}
+                                    >
+                                        העלאה מהמחשב
+                                    </button>
+                                    <button 
+                                        type="button"
+                                        onClick={() => setNewItemImageInputType("url")}
+                                        className={`flex-1 text-sm py-1.5 rounded-md transition ${newItemImageInputType === "url" ? 'bg-white shadow-sm font-bold text-black' : 'text-gray-500 hover:text-black'}`}
+                                    >
+                                        קישור לתמונה
+                                    </button>
                                 </div>
+
+                                {newItemImageInputType === "file" ? (
+                                    <div className="mt-2 flex flex-col sm:flex-row items-start sm:items-center gap-3">
+                                        <label className="w-full flex flex-col items-center justify-center h-20 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 bg-white transition-colors">
+                                            <span className="text-sm font-semibold text-gray-700">בחר תמונה מהמחשב</span>
+                                            <input type="file" className="hidden" accept="image/png, image/jpeg, image/webp" onChange={(e) => {
+                                                const file = e.target.files[0];
+                                                if (file) {
+                                                    if (file.size > 2 * 1024 * 1024) { return toast.error("קובץ גדול מדי. עד 2MB."); }
+                                                    const reader = new FileReader();
+                                                    reader.onloadend = () => setNewItemImage(reader.result);
+                                                    reader.readAsDataURL(file);
+                                                }
+                                            }}/>
+                                        </label>
+                                    </div>
+                                ) : (
+                                    <input type="url" value={newItemImage} onChange={(e) => setNewItemImage(e.target.value)} className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-black outline-none text-left" dir="ltr" placeholder="https://..." />
+                                )}
+
                                 {newItemImage && (
                                     <div className="mt-3">
                                         <img src={newItemImage} alt="Preview" className="w-20 h-20 object-cover rounded-md border border-gray-200 shadow-sm block" />

@@ -16,6 +16,7 @@ export default function MyCatalogsClient() {
     const [description, setDescription] = useState("");
     const [email, setEmail] = useState("");
     const [imageUrl, setImageUrl] = useState("");
+    const [imageInputType, setImageInputType] = useState("file"); 
 
     const router = useRouter();
 
@@ -129,45 +130,64 @@ export default function MyCatalogsClient() {
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">תמונת לוגו / פרופיל החנות</label>
-                            <div className="flex flex-col gap-3">
-                                <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 bg-white transition-colors">
-                                    <div className="flex flex-col items-center justify-center pt-5 pb-6">
-                                        <svg className="w-8 h-8 mb-3 text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
-                                            <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/>
-                                        </svg>
-                                        <p className="mb-1 text-sm text-gray-500"><span className="font-semibold text-black">לחץ כאן לבחירת תמונה מהמחשב</span></p>
-                                        <p className="text-xs text-gray-400">PNG, JPG, WEBP</p>
-                                    </div>
-                                    <input 
-                                        type="file" 
-                                        className="hidden" 
-                                        accept="image/png, image/jpeg, image/webp" 
-                                        onChange={(e) => {
-                                            const file = e.target.files[0];
-                                            if (file) {
-                                                if (file.size > 2 * 1024 * 1024) {
-                                                    toast.error("קובץ גדול מדי. המקסימום הוא 2MB.");
-                                                    return;
-                                                }
-                                                const reader = new FileReader();
-                                                reader.onloadend = () => {
-                                                    setImageUrl(reader.result);
-                                                };
-                                                reader.readAsDataURL(file);
-                                            }
-                                        }} 
-                                    />
-                                </label>
+                            
+                            <div className="flex bg-gray-100 p-1 rounded-lg mb-3">
+                                <button 
+                                    type="button"
+                                    onClick={() => setImageInputType("file")}
+                                    className={`flex-1 text-sm py-1.5 rounded-md transition ${imageInputType === "file" ? 'bg-white shadow-sm font-bold text-black' : 'text-gray-500 hover:text-black'}`}
+                                >
+                                    העלאה מהמחשב
+                                </button>
+                                <button 
+                                    type="button"
+                                    onClick={() => setImageInputType("url")}
+                                    className={`flex-1 text-sm py-1.5 rounded-md transition ${imageInputType === "url" ? 'bg-white shadow-sm font-bold text-black' : 'text-gray-500 hover:text-black'}`}
+                                >
+                                    קישור לתמונה
+                                </button>
+                            </div>
 
-                                <div className="text-center text-gray-400 text-sm">— או ע"י קישור —</div>
-                                <input 
-                                    type="url" 
-                                    value={imageUrl}
-                                    onChange={(e) => setImageUrl(e.target.value)}
-                                    className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-black outline-none text-left"
-                                    dir="ltr"
-                                    placeholder="https://..."
-                                />
+                            <div className="flex flex-col gap-3">
+                                {imageInputType === "file" ? (
+                                    <label className="flex flex-col items-center justify-center w-full h-32 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 bg-white transition-colors">
+                                        <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                                            <svg className="w-8 h-8 mb-3 text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
+                                                <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/>
+                                            </svg>
+                                            <p className="mb-1 text-sm text-gray-500"><span className="font-semibold text-black">לחץ כאן לבחירת תמונה מהמחשב</span></p>
+                                            <p className="text-xs text-gray-400">PNG, JPG, WEBP</p>
+                                        </div>
+                                        <input 
+                                            type="file" 
+                                            className="hidden" 
+                                            accept="image/png, image/jpeg, image/webp" 
+                                            onChange={(e) => {
+                                                const file = e.target.files[0];
+                                                if (file) {
+                                                    if (file.size > 2 * 1024 * 1024) {
+                                                        toast.error("קובץ גדול מדי. המקסימום הוא 2MB.");
+                                                        return;
+                                                    }
+                                                    const reader = new FileReader();
+                                                    reader.onloadend = () => {
+                                                        setImageUrl(reader.result);
+                                                    };
+                                                    reader.readAsDataURL(file);
+                                                }
+                                            }} 
+                                        />
+                                    </label>
+                                ) : (
+                                    <input 
+                                        type="url" 
+                                        value={imageUrl}
+                                        onChange={(e) => setImageUrl(e.target.value)}
+                                        className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-black outline-none text-left"
+                                        dir="ltr"
+                                        placeholder="https://..."
+                                    />
+                                )}
 
                                 {imageUrl && (
                                     <div className="mt-2">
