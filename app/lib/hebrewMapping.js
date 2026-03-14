@@ -1,4 +1,4 @@
-import pool from '@/app/lib/db';
+import pool from './db.js';
 
 let cache = null;
 let lastFetch = 0;
@@ -46,17 +46,21 @@ export async function mapHebrewQuery(query) {
 
     const mapping = await getHebrewMapping();
 
-    // 1. Direct Match
-    if (mapping[lowerQuery]) {
-        return mapping[lowerQuery];
+    // Direct Match (High Priority)
+    if (mapping[lowerQuery] !== undefined) {
+        return mapping[lowerQuery].trim();
     }
 
-    // 2. Partial Scan
-    for (const [hebrew, english] of Object.entries(mapping)) {
-        if (lowerQuery.includes(hebrew)) {
-            return lowerQuery.replace(hebrew, english);
+    // Sequential Replacements (Sorted by length descending to match specific terms first)
+    let currentResult = lowerQuery;
+    const sortedMappings = Object.entries(mapping).sort((a, b) => b[0].length - a[0].length);
+
+    for (const [hebrew, english] of sortedMappings) {
+        if (currentResult.includes(hebrew)) {
+            // Use split/join for global replace without complex regex issues
+            currentResult = currentResult.split(hebrew).join(english);
         }
     }
 
-    return query;
+    return currentResult.trim();
 }
