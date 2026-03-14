@@ -175,10 +175,17 @@ export function CartProvider({ children }) {
             } else {
                 // Main vendor unit-based stock check
                 const existingInCart = prev.find(item => item.id === product.id && (item.vendorId || 'main') === 'main');
-                const stock = parseInt(product.stock) || 0;
-                if (stock > 0 && (existingInCart ? existingInCart.quantity + 1 : 1) > stock) {
-                    toast.error("אזל המלאי!");
-                    return prev;
+                const stock = parseInt(product.stock);
+                if (!isNaN(stock)) {
+                    const newQuantity = existingInCart ? existingInCart.quantity + 1 : 1;
+                    if (stock === 0) {
+                        toast.error("המוצר אזל מהמלאי!");
+                        return prev;
+                    }
+                    if (newQuantity > stock) {
+                        toast.error("אזל המלאי!");
+                        return prev;
+                    }
                 }
             }
 
@@ -240,10 +247,16 @@ export function CartProvider({ children }) {
                     }
                 }
             } else {
-                const stock = parseInt(itemToUpdate.stock) || 0;
-                if (stock > 0 && quantity > stock) {
-                    toast.error("המלאי מוגבל!");
-                    return prev;
+                const stock = parseInt(itemToUpdate.stock);
+                if (!isNaN(stock)) {
+                    if (stock === 0) {
+                        toast.error("המוצר אזל מהמלאי!");
+                        return prev;
+                    }
+                    if (quantity > stock) {
+                        toast.error("המלאי מוגבל!");
+                        return prev;
+                    }
                 }
             }
 
