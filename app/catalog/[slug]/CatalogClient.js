@@ -30,81 +30,103 @@ function CollapsibleSection({ title, children }) {
     );
 }
 
-// ─── Catalog Product Card (mirroring ProductCard style) ───────────────
+// ─── Catalog Product Card (IDENTICAL to main site ProductCard.js) ─────
 function CatalogProductCard({ item, slug, catalogId, catalogName }) {
-    const { addToCart, cartItems } = useCatalogCart();
-    const [selectedSize, setSelectedSize] = useState(null);
+    const { addToCart } = useCatalogCart();
+    const [added, setAdded] = useState(false);
 
-    const prices = item.prices || {};
-    const sizeEntries = Object.entries(prices);
-    const firstSize = sizeEntries[0]?.[0] || null;
-    const firstPrice = sizeEntries[0]?.[1] || item.price || 0;
-    const activeSize = selectedSize || firstSize;
-    const activePrice = activeSize ? prices[activeSize] : firstPrice;
+    useEffect(() => {
+        let timer;
+        if (added) {
+            timer = setTimeout(() => setAdded(false), 2000);
+        }
+        return () => clearTimeout(timer);
+    }, [added]);
 
-    const cartItemId = activeSize ? `${item.id}_${activeSize}` : String(item.id);
-    const inCart = cartItems.find(i => i.id === cartItemId);
-
-    const handleAddToCart = (e) => {
-        e.preventDefault();
-        e.stopPropagation();
-        if (inCart) return;
+    const handleAdd = (size, price) => {
         addToCart(
-            { ...item, id: cartItemId, originalId: item.id, size: activeSize, price: activePrice },
-            activeSize || '1',
-            activePrice,
+            { ...item, id: `${item.id}_${size}`, originalId: item.id, size, price },
+            size,
+            price,
             catalogId,
             catalogName
         );
-        toast.success("נוסף לסל!");
+        toast.success(`נוסף לסל: ${item.fragrance_name} (${size} מ"ל)`);
+        setAdded(true);
     };
 
+    const sizeEntries = Object.entries(item.prices || {});
+
     return (
-        <div className="bg-white rounded-xl border border-gray-100 shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden flex flex-col group">
-            <Link href={`/catalog/${slug}/product/${item.id}`} className="block relative bg-gray-50 overflow-hidden" style={{ aspectRatio: '1' }}>
+        <div className="group border rounded-lg overflow-hidden hover:shadow-xl transition bg-white flex flex-col h-full relative">
+            {/* Wishlist Heart (Placeholder/Decoration for visual consistency) */}
+            <div className="absolute top-2 left-2 z-10 opacity-30 pointer-events-none">
+                <div className="w-8 h-8 rounded-full bg-white/80 flex items-center justify-center border shadow-sm">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 text-gray-400">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
+                    </svg>
+                </div>
+            </div>
+
+            {item.gender && (
+                <div className="absolute top-2 right-2 z-10 text-[10px] leading-3 font-bold bg-gray-900 text-white px-2 py-1 rounded shadow-sm text-center uppercase tracking-wide">
+                    {item.gender}
+                </div>
+            )}
+
+            <Link href={`/catalog/${slug}/product/${item.id}`} className="block relative aspect-square bg-white overflow-hidden cursor-pointer p-2">
                 {item.image_url ? (
-                    <img src={item.image_url} alt={item.name || `${item.brand} ${item.fragrance_name}`} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                    <img
+                        src={item.image_url}
+                        alt={item.fragrance_name}
+                        className="w-full h-full object-contain group-hover:scale-110 transition duration-700"
+                    />
                 ) : (
-                    <div className="w-full h-full flex items-center justify-center text-5xl opacity-10">🧴</div>
-                )}
-                {item.gender && (
-                    <span className="absolute top-2 right-2 bg-gray-900 text-white text-[10px] font-bold px-2 py-0.5 rounded-full uppercase tracking-wide">{item.gender}</span>
+                    <div className="absolute inset-0 flex items-center justify-center text-gray-300 text-4xl group-hover:scale-105 transition duration-500">
+                        🧴
+                    </div>
                 )}
             </Link>
 
-            <div className="p-3 flex flex-col flex-grow">
-                <Link href={`/catalog/${slug}/product/${item.id}`} className="block mb-2">
-                    <div className="text-xs text-gray-400 uppercase tracking-wide font-semibold mb-0.5">{item.brand}</div>
-                    <h3 className="font-bold text-gray-900 text-sm leading-tight line-clamp-2">{item.fragrance_name}</h3>
+            <div className="p-4 flex-1 flex flex-col">
+                <div className="text-xs text-gray-500 mb-1 line-clamp-1">{(item.category || '').split(',')[0]}</div>
+                <Link href={`/catalog/${slug}/product/${item.id}`}>
+                    <h3 className="font-bold text-sm mb-2 line-clamp-2 min-h-[40px] hover:underline">
+                        <span className="text-gray-400 font-semibold block text-[10px] mb-0.5">{item.brand}</span>
+                        {item.fragrance_name}
+                    </h3>
                 </Link>
 
-                {/* Size + Price rows */}
-                <div className="space-y-1 mb-3 mt-auto">
+                <div className="mt-auto space-y-2">
                     {sizeEntries.length > 0 ? sizeEntries.map(([size, price]) => (
-                        <div
-                            key={size}
-                            onClick={() => setSelectedSize(size)}
-                            className={`flex items-center justify-between px-2 py-1 rounded border text-xs cursor-pointer transition ${activeSize === size ? 'border-black bg-gray-900 text-white' : 'border-gray-200 hover:border-gray-400'}`}
-                            dir="ltr"
-                        >
-                            <span className="font-bold">{size}</span>
-                            <span>{price} ₪</span>
+                        <div key={size} className="flex items-center justify-between text-xs text-gray-600">
+                            <span>{size} מ״ל</span>
+                            <div className="flex items-center gap-2">
+                                <span className="font-bold">{price} ₪</span>
+                                <button
+                                    onClick={(e) => { e.preventDefault(); handleAdd(size, price); }}
+                                    className="bg-gray-100 hover:bg-black hover:text-white w-6 h-6 rounded flex items-center justify-center transition"
+                                    title="הוסף לסל"
+                                >+</button>
+                            </div>
                         </div>
                     )) : (
-                        <div className="text-sm font-bold text-gray-900">{firstPrice} ₪</div>
+                        <div className="flex items-center justify-between text-xs text-gray-600">
+                            <span>1 מ״ל</span>
+                            <div className="flex items-center gap-2">
+                                <span className="font-bold">{item.price || 0} ₪</span>
+                                <button
+                                    onClick={(e) => { e.preventDefault(); handleAdd('1', item.price); }}
+                                    className="bg-gray-100 hover:bg-black hover:text-white w-6 h-6 rounded flex items-center justify-center transition"
+                                >+</button>
+                            </div>
+                        </div>
                     )}
-                </div>
 
-                <button
-                    onClick={handleAddToCart}
-                    className={`w-full py-2 rounded-lg font-bold text-sm transition-all flex items-center justify-center gap-1 ${inCart ? 'bg-gray-100 text-gray-500' : 'bg-black text-white hover:bg-gray-800'}`}
-                >
-                    {inCart ? (
-                        <><span>בסל ({inCart.quantity})</span><span>✓</span></>
-                    ) : (
-                        <><span>הוסף לסל</span><span className="text-base">+</span></>
-                    )}
-                </button>
+                    <Link href={`/catalog/${slug}/product/${item.id}`} className={`block w-full text-center text-xs py-2 mt-3 rounded transition ${added ? 'bg-green-600 text-white' : 'bg-black text-white hover:bg-gray-800'}`}>
+                        {added ? 'נוסף לסל!' : 'פרטים נוספים'}
+                    </Link>
+                </div>
             </div>
         </div>
     );
