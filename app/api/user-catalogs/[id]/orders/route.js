@@ -79,13 +79,15 @@ export async function POST(req, { params }) {
 
             // 1.1 Decrease stock_ml for each item
             for (const item of items) {
+                // item.id may be composite like "4_10ml" — use originalId for real DB id
+                const dbItemId = item.originalId || parseInt(String(item.id)) || null;
                 // item.size may be "10ml" or 10 — parseFloat handles both
                 const sizeNum = parseFloat(String(item.size)) || 0;
                 const volumeDeduction = (Number(item.quantity) || 1) * sizeNum;
-                if (volumeDeduction > 0 && item.id) {
+                if (volumeDeduction > 0 && dbItemId) {
                     await client.query(
                         'UPDATE user_catalog_items SET stock_ml = GREATEST(0, stock_ml - $1) WHERE id = $2 AND catalog_id = $3',
-                        [volumeDeduction, item.id, actualCatalogId]
+                        [volumeDeduction, dbItemId, actualCatalogId]
                     );
                 }
             }
