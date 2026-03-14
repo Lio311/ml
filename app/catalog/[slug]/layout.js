@@ -6,7 +6,7 @@ export default async function CatalogLayout({ children, params }) {
     
     return (
         <CatalogCartProvider catalogSlug={slug}>
-            <div className="min-h-screen bg-gray-50 flex flex-col">
+            <div className="min-h-screen bg-white flex flex-col">
                 {children}
             </div>
         </CatalogCartProvider>

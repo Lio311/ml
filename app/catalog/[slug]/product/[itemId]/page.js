@@ -86,7 +86,7 @@ export default async function CatalogProductPage({ params }) {
                     </div>
 
                     {/* Price + Add to Cart */}
-                    <div className="bg-white p-6 rounded-xl">
+                    <div className="space-y-6">
                         <CatalogProductActions item={item} slug={slug} />
 
                         {/* Fragrance Pyramid */}
@@ -99,7 +99,7 @@ export default async function CatalogProductPage({ params }) {
                 </div>
 
                 {/* RIGHT: Product Image */}
-                <div className="w-full md:w-1/2 aspect-square bg-white rounded-xl flex items-center justify-center relative overflow-hidden shadow-sm p-24 group">
+                <div className="w-full md:w-1/2 aspect-square flex items-center justify-center relative overflow-hidden p-8 md:p-12 group">
                     {item.image_url ? (
                         <img
                             src={item.image_url}
