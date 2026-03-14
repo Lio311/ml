@@ -9,6 +9,7 @@ export default function CatalogManagerClient({ catalogId }) {
     const [catalog, setCatalog] = useState(null);
     const [items, setItems] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [availableNotes, setAvailableNotes] = useState([]);
     
     // Edit Catalog State
     const [isEditing, setIsEditing] = useState(false);
@@ -107,6 +108,20 @@ export default function CatalogManagerClient({ catalogId }) {
 
     useEffect(() => {
         fetchCatalogData();
+        
+        // Fetch available notes for autocomplete
+        const fetchNotes = async () => {
+            try {
+                const res = await fetch("/api/fragrance-notes");
+                if (res.ok) {
+                    const data = await res.json();
+                    setAvailableNotes(data);
+                }
+            } catch (error) {
+                console.error("Error fetching notes for autocomplete:", error);
+            }
+        };
+        fetchNotes();
     }, [catalogId]);
 
     const handleUpdateCatalog = async (e) => {
@@ -485,13 +500,42 @@ export default function CatalogManagerClient({ catalogId }) {
                                 </div>
                             </div>
 
-                            <div>
-                                <label className="block text-xs font-bold text-gray-500 uppercase mb-2">תווי הבושם (באנגלית)</label>
+                             <div>
+                                <label className="block text-xs font-bold text-gray-500 uppercase mb-2">תגיות הבושם (באנגלית)</label>
                                 <div className="space-y-2">
-                                    <input type="text" required value={editingItemId ? editItemData.top_notes : newItemTopNotes} onChange={(e) => editingItemId ? setEditItemData({...editItemData, top_notes: e.target.value}) : setNewItemTopNotes(e.target.value)} className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-black outline-none text-sm" placeholder="תווים עליונים..." />
-                                    <input type="text" required value={editingItemId ? editItemData.middle_notes : newItemMiddleNotes} onChange={(e) => editingItemId ? setEditItemData({...editItemData, middle_notes: e.target.value}) : setNewItemMiddleNotes(e.target.value)} className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-black outline-none text-sm" placeholder="תווי אמצע..." />
-                                    <input type="text" required value={editingItemId ? editItemData.base_notes : newItemBaseNotes} onChange={(e) => editingItemId ? setEditItemData({...editItemData, base_notes: e.target.value}) : setNewItemBaseNotes(e.target.value)} className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-black outline-none text-sm" placeholder="תווי בסיס..." />
+                                    <input 
+                                        type="text" 
+                                        required 
+                                        value={editingItemId ? editItemData.top_notes : newItemTopNotes} 
+                                        onChange={(e) => editingItemId ? setEditItemData({...editItemData, top_notes: e.target.value}) : setNewItemTopNotes(e.target.value)} 
+                                        className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-black outline-none text-sm" 
+                                        placeholder="תגיות עליונות..." 
+                                        list="fragranceNotesDataList"
+                                    />
+                                    <input 
+                                        type="text" 
+                                        required 
+                                        value={editingItemId ? editItemData.middle_notes : newItemMiddleNotes} 
+                                        onChange={(e) => editingItemId ? setEditItemData({...editItemData, middle_notes: e.target.value}) : setNewItemMiddleNotes(e.target.value)} 
+                                        className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-black outline-none text-sm" 
+                                        placeholder="תגיות אמצע..." 
+                                        list="fragranceNotesDataList"
+                                    />
+                                    <input 
+                                        type="text" 
+                                        required 
+                                        value={editingItemId ? editItemData.base_notes : newItemBaseNotes} 
+                                        onChange={(e) => editingItemId ? setEditItemData({...editItemData, base_notes: e.target.value}) : setNewItemBaseNotes(e.target.value)} 
+                                        className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-black outline-none text-sm" 
+                                        placeholder="תגיות בסיס..." 
+                                        list="fragranceNotesDataList"
+                                    />
                                 </div>
+                                <datalist id="fragranceNotesDataList">
+                                    {availableNotes.map(note => (
+                                        <option key={note} value={note} />
+                                    ))}
+                                </datalist>
                             </div>
 
                             <div>
@@ -640,7 +684,7 @@ export default function CatalogManagerClient({ catalogId }) {
 
                                         <div className="mt-auto pt-3 border-t grid grid-cols-1 gap-1">
                                             <div className="text-[10px] text-gray-500">
-                                                <span className="font-bold text-gray-900">Notes: </span> 
+                                                <span className="font-bold text-gray-900">תגיות: </span> 
                                                 <span className="truncate block" title={item.top_notes}>{item.top_notes}</span>
                                             </div>
                                             <div className="flex justify-between items-center text-[10px]">
