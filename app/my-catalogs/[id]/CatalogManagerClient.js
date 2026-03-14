@@ -711,11 +711,11 @@ export default function CatalogManagerClient({ catalogId }) {
                                     <p className="text-sm text-gray-500 italic bg-gray-50 p-4 rounded-xl text-center">אין מדרגות מוגדרות. לקוחות לא יקבלו דוגמיות חינם.</p>
                                 ) : (
                                     editSampleTiers.map((tier, idx) => (
-                                        <div key={idx} className="flex flex-col sm:flex-row gap-3 bg-gray-50 p-3 rounded-lg border border-gray-200 items-start sm:items-center relative">
+                                        <div key={idx} className="flex flex-col sm:flex-row gap-3 bg-gray-50 p-3 rounded-lg border border-gray-200 items-start sm:items-end">
                                             <button 
                                                 type="button" 
                                                 onClick={() => setEditSampleTiers(editSampleTiers.filter((_, i) => i !== idx))}
-                                                className="absolute top-2 left-2 text-red-400 hover:text-red-600 sm:static sm:order-last"
+                                                className="text-red-400 hover:text-red-600 p-2 sm:order-last"
                                                 title="הסר מדרגה"
                                             >
                                                 ✕
