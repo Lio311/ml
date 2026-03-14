@@ -41,9 +41,8 @@ export default function CatalogCartClient({ slug }) {
         : cartItems.filter(item => (item.vendorId || 'main') === slug);
 
     const subtotal = catalogCartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
-    const shippingCost = 30;
-    const effectiveShipping = isSelfPickup ? 0 : shippingCost;
-    const effectiveTotal = subtotal + effectiveShipping;
+    const shippingCost = Number(isSelfPickup ? 0 : (catalogInfo?.delivery_price || 0));
+    const effectiveTotal = Number(subtotal) + shippingCost;
 
     const validatePhone = (phone) => {
         if (!phone) return "מספר טלפון הוא שדה חובה";
@@ -167,19 +166,38 @@ export default function CatalogCartClient({ slug }) {
                     </div>
 
                     {/* Delivery Method Selection */}
-                    <div className="space-y-4 mb-8">
-                        <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">שיטת אספקה</p>
-                        <div className="grid grid-cols-2 gap-4">
-                            <button onClick={() => setIsSelfPickup(false)} className={`flex flex-col items-center gap-1 p-4 rounded-2xl border-2 transition-all duration-300 hover:scale-[1.02] ${!isSelfPickup ? 'border-black bg-black text-white shadow-lg' : 'border-gray-100 bg-gray-50 text-gray-500 hover:border-gray-200'}`}>
-                                <span className="text-sm font-black">משלוח</span>
-                                <span className="text-xs opacity-70">{shippingCost} ₪</span>
-                            </button>
-                            <button onClick={() => setIsSelfPickup(true)} className={`flex flex-col items-center gap-1 p-4 rounded-2xl border-2 transition-all duration-300 hover:scale-[1.02] ${isSelfPickup ? 'border-black bg-black text-white shadow-lg' : 'border-gray-100 bg-gray-50 text-gray-500 hover:border-gray-200'}`}>
-                                <span className="text-sm font-black">איסוף עצמי</span>
-                                <span className="text-xs font-bold text-green-500 uppercase">בחינם</span>
-                            </button>
+                    {(catalogInfo?.delivery_active || catalogInfo?.self_pickup_active) && (
+                        <div className="space-y-4 mb-8">
+                            <p className="text-xs font-bold text-gray-400 uppercase tracking-widest text-right">שיטת אספקה</p>
+                            <div className="grid grid-cols-2 gap-4">
+                                {catalogInfo.delivery_active && (
+                                    <button 
+                                        onClick={() => setIsSelfPickup(false)} 
+                                        className={`flex flex-col items-center gap-2 p-5 rounded-2xl border-2 transition-all duration-300 ${!isSelfPickup ? 'border-black bg-black text-white shadow-xl scale-[1.02]' : 'border-gray-100 bg-white text-gray-500 hover:border-gray-200'}`}
+                                    >
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 0 1-2.25 2.25h-15a2.25 2.25 0 0 1-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0 0 19.5 4.5h-15a2.25 2.25 0 0 0-2.25 2.25m19.5 0v.243a2.25 2.25 0 0 1-1.07 1.916l-7.5 4.615a2.25 2.25 0 0 1-2.36 0L3.32 8.91a2.25 2.25 0 0 1-1.07-1.916V6.75" />
+                                        </svg>
+                                        <span className="text-sm font-bold">משלוח</span>
+                                        <span className={`text-xs ${!isSelfPickup ? 'text-gray-300' : 'text-gray-900'} font-bold`}>{catalogInfo.delivery_price} ₪</span>
+                                    </button>
+                                )}
+                                {catalogInfo.self_pickup_active && (
+                                    <button 
+                                        onClick={() => setIsSelfPickup(true)} 
+                                        className={`flex flex-col items-center gap-2 p-5 rounded-2xl border-2 transition-all duration-300 ${isSelfPickup ? 'border-black bg-black text-white shadow-xl scale-[1.02]' : 'border-gray-100 bg-white text-gray-500 hover:border-gray-200'}`}
+                                    >
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1 1 15 0Z" />
+                                        </svg>
+                                        <span className="text-sm font-bold">איסוף עצמי</span>
+                                        <span className="text-xs font-bold text-green-600">חינם</span>
+                                    </button>
+                                )}
+                            </div>
                         </div>
-                    </div>
+                    )}
 
                     {/* Total */}
                     <div className="bg-gray-50 p-6 rounded-3xl mb-8">

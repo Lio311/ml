@@ -258,8 +258,8 @@ export function CartProvider({ children }) {
         }
     }
 
-    const shippingCost = isMainVendor ? 30 : (vendorConfig?.delivery_active ? (vendorConfig.delivery_price || 0) : 0);
-    const total = priceAfterDiscounts + shippingCost;
+    const shippingCost = Number(isMainVendor ? 30 : (vendorConfig?.delivery_active ? (vendorConfig.delivery_price || 0) : 0));
+    const total = Number(priceAfterDiscounts) + shippingCost;
 
     let freeSamplesCount = 0;
     let nextTier = 0;
