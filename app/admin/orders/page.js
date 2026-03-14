@@ -209,18 +209,18 @@ export default async function AdminOrdersPage(props) {
                 <table className="w-full text-right">
                     <thead className="bg-gray-50 border-b">
                         <tr>
-                            <th className="p-4">#</th>
-                            <th className="p-4">לקוח</th>
-                            <th className="p-4 w-96">תכולת ההזמנה</th>
-                            <th className="p-4">סכום</th>
-                            <th className="p-4">בונוסים</th>
-                            <th className="p-4">שיטה</th>
-                            <th className="p-4">תאריך</th>
-                            <th className="p-4">סטטוס</th>
-                            <th className="p-4">פעולות</th>
+                            <th className="p-4 text-center">#</th>
+                            <th className="p-4 text-center">לקוח</th>
+                            <th className="p-4 text-center w-96">תכולת ההזמנה</th>
+                            <th className="p-4 text-center w-28">סכום</th>
+                            <th className="p-4 text-center">בונוסים</th>
+                            <th className="p-4 text-center">שיטה</th>
+                            <th className="p-4 text-center">תאריך</th>
+                            <th className="p-4 text-center">סטטוס</th>
+                            <th className="p-4 text-center">פעולות</th>
                         </tr>
                     </thead>
-                    <tbody className="divide-y">
+                    <tbody className="divide-y text-center">
                         {orders.map((order) => (
                             <tr key={order.id} className="hover:bg-gray-50">
                                 <td className="p-4 font-bold">{order.id}</td>
@@ -228,7 +228,7 @@ export default async function AdminOrdersPage(props) {
                                     <div className="font-bold">{order.customer_details?.name}</div>
                                     <div className="text-xs text-gray-500">{order.customer_details?.email}</div>
                                     {order.customer_details?.phone && (
-                                        <div className="text-xs font-bold text-gray-700 mt-1 flex items-center gap-1">
+                                        <div className="text-xs font-bold text-gray-700 mt-1 flex items-center justify-center gap-1">
                                             <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-3 h-3">
                                                 <path fillRule="evenodd" d="M2 3.5A1.5 1.5 0 013.5 2h1.148a1.5 1.5 0 011.465 1.175l.716 3.223a1.5 1.5 0 01-1.052 1.767l-.933.267c-.41.117-.643.555-.48.95a11.542 11.542 0 006.254 6.254c.395.163.833-.07.95-.48l.267-.933a1.5 1.5 0 011.767-1.052l3.223.716A1.5 1.5 0 0118 15.352V16.5a1.5 1.5 0 01-1.5 1.5H15c-1.149 0-2.261-.15-3.326-.43a13.006 13.006 0 01-9.244-9.244A13.006 13.006 0 012 5V3.5z" clipRule="evenodd" />
                                             </svg>
@@ -236,16 +236,16 @@ export default async function AdminOrdersPage(props) {
                                         </div>
                                     )}
                                     {order.notes && (
-                                        <div className="mt-2 text-xs bg-yellow-50 p-2 rounded border border-yellow-200 text-gray-800 max-w-[200px] break-words">
-                                            <span className="font-bold block mb-1">הערות:</span>
+                                        <div className="mt-2 text-xs bg-yellow-50 p-2 rounded border border-yellow-200 text-gray-800 max-w-[200px] break-words mx-auto">
+                                            <span className="font-bold block mb-1 text-right">הערות:</span>
                                             {order.notes}
                                         </div>
                                     )}
                                 </td>
-                                <td className="p-4 text-sm">
+                                <td className="p-4 text-sm text-right">
                                     <ul className="space-y-1">
                                         {order.items?.map((item, idx) => (
-                                            <li key={idx} className="flex gap-2 text-gray-700">
+                                            <li key={idx} className="flex gap-2 text-gray-700 justify-end">
                                                 <span className="font-bold whitespace-nowrap">{item.quantity}x</span>
                                                 <span>{item.name}</span>
                                                 <span className="text-gray-500 whitespace-nowrap" dir="ltr">{item.size.toString().includes('ml') ? item.size : `${item.size} ml`}</span>
@@ -253,7 +253,7 @@ export default async function AdminOrdersPage(props) {
                                         ))}
                                     </ul>
                                 </td>
-                                <td className="p-4 font-bold">{order.total_amount} ₪</td>
+                                <td className="p-4 font-bold whitespace-nowrap">{order.total_amount} ₪</td>
                                 <td className="p-4">
                                     <div className="flex justify-center">
                                         {order.free_samples_count > 0 ? (
@@ -266,60 +266,66 @@ export default async function AdminOrdersPage(props) {
                                         )}
                                     </div>
                                 </td>
-                                <td className="p-4 text-center">
-                                    {order.delivery_method === 'self_pickup' ? (
-                                        <span className="inline-flex flex-col items-center text-xs text-green-700 bg-green-50 px-2 py-1 rounded border border-green-200" title="איסוף עצמי">
-                                            <span>📍</span>
-                                            <span className="font-bold">איסוף</span>
-                                        </span>
-                                    ) : (
-                                        <span className="inline-flex flex-col items-center text-xs text-blue-700 bg-blue-50 px-2 py-1 rounded border border-blue-200" title="משלוח בדואר">
-                                            <span>📦</span>
-                                            <span className="font-bold">משלוח</span>
-                                        </span>
-                                    )}
+                                <td className="p-4">
+                                    <div className="flex justify-center">
+                                        {order.delivery_method === 'self_pickup' ? (
+                                            <span className="inline-flex flex-col items-center text-xs text-green-700 bg-green-50 px-2 py-1 rounded border border-green-200" title="איסוף עצמי">
+                                                <span>📍</span>
+                                                <span className="font-bold">איסוף</span>
+                                            </span>
+                                        ) : (
+                                            <span className="inline-flex flex-col items-center text-xs text-blue-700 bg-blue-50 px-2 py-1 rounded border border-blue-200" title="משלוח בדואר">
+                                                <span>📦</span>
+                                                <span className="font-bold">משלוח</span>
+                                            </span>
+                                        )}
+                                    </div>
                                 </td>
                                 <td className="p-4 text-sm text-gray-500">
                                     {new Date(order.created_at).toLocaleString('he-IL')}
                                 </td>
                                 <td className="p-4">
-                                    <span className={`text-xs px-2 py-1 rounded-full ${order.status === 'pending' ? 'bg-orange-100 text-orange-800' :
-                                        order.status === 'processing' ? 'bg-blue-100 text-blue-800' :
-                                            order.status === 'shipped' ? 'bg-purple-100 text-purple-800' :
-                                                order.status === 'completed' ? 'bg-green-100 text-green-800' :
-                                                    'bg-gray-100 text-gray-800'
-                                        }`}>
-                                        {
-                                            order.status === 'pending' ? 'ממתין' :
-                                                order.status === 'processing' ? 'בטיפול' :
-                                                    order.status === 'shipped' ? 'נשלח' :
-                                                        order.status === 'completed' ? 'הושלם' :
-                                                            order.status === 'cancelled' ? 'בוטל' :
-                                                                order.status
-                                        }
-                                    </span>
+                                    <div className="flex justify-center">
+                                        <span className={`text-xs px-2 py-1 rounded-full ${order.status === 'pending' ? 'bg-orange-100 text-orange-800' :
+                                            order.status === 'processing' ? 'bg-blue-100 text-blue-800' :
+                                                order.status === 'shipped' ? 'bg-purple-100 text-purple-800' :
+                                                    order.status === 'completed' ? 'bg-green-100 text-green-800' :
+                                                        'bg-gray-100 text-gray-800'
+                                            }`}>
+                                            {
+                                                order.status === 'pending' ? 'ממתין' :
+                                                    order.status === 'processing' ? 'בטיפול' :
+                                                        order.status === 'shipped' ? 'נשלח' :
+                                                            order.status === 'completed' ? 'הושלם' :
+                                                                order.status === 'cancelled' ? 'בוטל' :
+                                                                    order.status
+                                            }
+                                        </span>
+                                    </div>
                                 </td>
                                 <td className="p-4">
-                                    {canEdit ? (
-                                        <>
-                                            <form action={updateStatus} className="flex gap-2">
-                                                <input type="hidden" name="orderId" value={order.id} />
-                                                <select name="status" defaultValue={order.status} className="border rounded px-2 py-1 text-sm bg-white">
-                                                    <option value="pending">ממתין</option>
-                                                    <option value="processing">בטיפול</option>
-                                                    <option value="shipped">נשלח</option>
-                                                    <option value="completed">הושלם</option>
-                                                    <option value="cancelled">בוטל</option>
-                                                </select>
-                                                <button type="submit" className="bg-black text-white px-3 py-1 rounded text-sm hover:bg-gray-800">
-                                                    שמור
-                                                </button>
-                                            </form>
-                                            <DeleteOrderButton orderId={order.id} deleteAction={deleteOrder} />
-                                        </>
-                                    ) : (
-                                        <span className="text-gray-400 text-sm">צפייה בלבד</span>
-                                    )}
+                                    <div className="flex flex-col items-center gap-2">
+                                        {canEdit ? (
+                                            <>
+                                                <form action={updateStatus} className="flex gap-2">
+                                                    <input type="hidden" name="orderId" value={order.id} />
+                                                    <select name="status" defaultValue={order.status} className="border rounded px-2 py-1 text-sm bg-white">
+                                                        <option value="pending">ממתין</option>
+                                                        <option value="processing">בטיפול</option>
+                                                        <option value="shipped">נשלח</option>
+                                                        <option value="completed">הושלם</option>
+                                                        <option value="cancelled">בוטל</option>
+                                                    </select>
+                                                    <button type="submit" className="bg-black text-white px-3 py-1 rounded text-sm hover:bg-gray-800">
+                                                        שמור
+                                                    </button>
+                                                </form>
+                                                <DeleteOrderButton orderId={order.id} deleteAction={deleteOrder} />
+                                            </>
+                                        ) : (
+                                            <span className="text-gray-400 text-sm">צפייה בלבד</span>
+                                        )}
+                                    </div>
                                 </td>
 
                             </tr>
