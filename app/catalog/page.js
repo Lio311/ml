@@ -12,8 +12,8 @@ export async function generateMetadata(props) {
     const searchParams = await props.searchParams;
     const { q, brand, category } = searchParams;
 
-    let title = "הקטלוג | ml_tlv";
-    let description = "כל דוגמיות הבשמים שלנו במקום אחד. מגוון בשמי נישה ובוטיק.";
+    let title = "קטלוג דוגמיות בשמים ודיקאנטים | ml_tlv";
+    let description = "כל דוגמיות הבשמים, הדיקאנטים ודוגמיות היוקרה שלנו במקום אחד. מצאו את הריח הבא שלכם.";
 
     if (brand) title = `${brand} | ml_tlv`;
     if (category) title = `${category} | ml_tlv`;

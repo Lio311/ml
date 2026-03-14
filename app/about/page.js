@@ -13,7 +13,7 @@ export default function AboutPage() {
                     </p>
                     <p>
                         אנחנו מאמינים שלמצוא את "הריח שלך" זה מסע, לא סתם רכישה. לכן הקמנו את הפלטפורמה הזו -
-                        כדי לאפשר לכם להתנסות בבשמים האיכותיים, המיוחדים והיקרים ביותר בעולם, במחירים נגישים ובכמויות קטנות.
+                        כדי לאפשר לכם להתנסות בבשמי נישה ובוטיק, <strong>דוגמיות יוקרה</strong> ודיקאנטים האיכותיים ביותר בעולם, במחירים נגישים ובכמויות קטנות.
                     </p>
                     <p>
                         הקולקציה שלנו כוללת מותגים כמו Xerjoff, Roja, Creed, Amouage ועוד רבים וטובים.
@@ -56,7 +56,8 @@ export default function AboutPage() {
                     __html: JSON.stringify({
                         "@context": "https://schema.org",
                         "@type": "Organization",
-                        "name": "ml_tlv",
+                        "name": "ml_tlv - דוגמיות בשמים ודיקאנטים",
+                        "description": "חנות דוגמיות בשמים, דיקאנטים ודוגמיות יוקרה הגדולה בישראל. בשמי נישה ובוטיק מקוריים (דיקנטים, דקנטים, דקאנטים).",
                         "url": "https://www.ml-tlv.com",
                         "logo": "https://www.ml-tlv.com/logo_v5.png",
                         "foundingDate": "2023",

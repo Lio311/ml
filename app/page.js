@@ -17,8 +17,8 @@ const dancingScript = Dancing_Script({
 export const revalidate = 0; // Force dynamic to show fresh stock immediately
 
 export const metadata = {
-  title: "דף הבית | ml_tlv - דוגמיות בשמים",
-  description: "חנות דוגמיות בשמים הגדולה בישראל. נישה, בוטיק ודיזיינר במחירים משתלמים.",
+  title: "דוגמיות בשמים ודיקאנטים | ml_tlv - דוגמיות יוקרה",
+  description: "חנות דוגמיות בשמים ודיקאנטים הגדולה בישראל. מגוון דוגמיות יוקרה, נישה ובוטיק במחירים משתלמים ומשלוח מהיר.",
 };
 
 export default async function Home() {
@@ -99,7 +99,9 @@ export default async function Home() {
             <p className="text-xs md:text-base text-gray-800 mb-3 md:mb-4 font-light leading-relaxed">
               הדרך החכמה לגלות בשמי נישה יוקרתיים.
               <br />
-              הזמינו דוגמיות 2 מ״ל, 5 מ״ל או 10 מ״ל לפני רכישת בקבוק מלא.
+              מגוון <strong>דוגמיות יוקרה ודיקאנטים</strong> (דיקנטים) של הבשמים הנחשקים בעולם.
+              <br />
+              הזמינו דוגמיות לפני רכישת בקבוק מלא.
             </p>
             <Link href="/catalog" className="inline-block border text-black border-black px-6 py-2 text-xs md:text-sm font-bold tracking-widest hover:bg-black hover:text-white transition duration-300 uppercase">
               Shop Now
