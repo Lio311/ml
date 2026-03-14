@@ -21,7 +21,7 @@ export async function GET(req, { params }) {
             const catalog = catalogRes.rows[0];
 
             // Fetch Items
-            const itemsRes = await client.query('SELECT id, name, description, price, image_url FROM user_catalog_items WHERE catalog_id = $1 ORDER BY created_at DESC', [catalog.id]);
+            const itemsRes = await client.query('SELECT id, name, description, price, prices, image_url FROM user_catalog_items WHERE catalog_id = $1 ORDER BY created_at DESC', [catalog.id]);
 
             return NextResponse.json({
                 catalog: catalog,

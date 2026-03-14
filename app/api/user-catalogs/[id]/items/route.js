@@ -42,10 +42,10 @@ export async function POST(req, { params }) {
         }
 
         const body = await req.json();
-        const { name, description, price, image_url } = body;
+        const { name, description, prices, image_url } = body;
 
-        if (!name || price === undefined || price === null || price < 0) {
-            return NextResponse.json({ error: 'Missing required fields or invalid price' }, { status: 400 });
+        if (!name || !prices || Object.keys(prices).length === 0) {
+            return NextResponse.json({ error: 'Missing required fields or invalid prices' }, { status: 400 });
         }
 
         const client = await pool.connect();
@@ -57,9 +57,9 @@ export async function POST(req, { params }) {
              }
 
             const res = await client.query(
-                `INSERT INTO user_catalog_items (catalog_id, name, description, price, image_url) 
+                `INSERT INTO user_catalog_items (catalog_id, name, description, prices, image_url) 
                  VALUES ($1, $2, $3, $4, $5) RETURNING *`,
-                [id, name, description, price, image_url]
+                [id, name, description, JSON.stringify(prices), image_url]
             );
 
             return NextResponse.json(res.rows[0]);
