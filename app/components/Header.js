@@ -14,6 +14,8 @@ import { useWishlist } from '../context/WishlistContext';
 
 export default function Header({ brands = [], menu = [] }) {
     const { totalItemsCount: cartCount } = useCart();
+    const { count: wishlistCount } = useWishlist();
+    const pathname = usePathname();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isBrandsDropdownOpen, setIsBrandsDropdownOpen] = useState(false);
     const [isSearchOpen, setIsSearchOpen] = useState(false);
