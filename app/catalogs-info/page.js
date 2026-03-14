@@ -69,54 +69,66 @@ export default async function CatalogsInfoPage() {
             </section>
 
             {/* How It Works Section */}
-            <section id="how-it-works" className="py-12 px-4 bg-white/50">
+            <section id="how-it-works" className="py-16 px-4 bg-black text-white">
                  <div className="container max-w-4xl mx-auto">
-                    <h2 className="text-3xl font-black mb-10 text-center">איך זה עובד?</h2>
+                    <h2 className="text-3xl font-black mb-16 text-center">איך זה עובד?</h2>
                     
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div className="flex gap-4 items-start p-6 bg-white rounded-2xl border border-gray-100 shadow-sm">
-                            <span className="flex-shrink-0 w-10 h-10 bg-black text-white rounded-full flex items-center justify-center font-bold">1</span>
-                            <div>
-                                <h3 className="font-bold text-lg mb-1">הרשמה ופתיחת קטלוג</h3>
-                                <p className="text-gray-500 text-sm leading-relaxed">התחבר לאתר, גש ל"הקטלוגים שלי" בתפריט האישי ובחר שם וקישור לחנות.</p>
+                    <div className="space-y-12 relative before:absolute before:inset-0 before:ml-5 before:-translate-x-px md:before:mx-auto md:before:translate-x-0 before:h-full before:w-0.5 before:bg-gradient-to-b before:from-transparent before:via-gray-800 before:to-transparent">
+                        
+                        <div className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group">
+                            <div className="flex items-center justify-center w-10 h-10 rounded-full border border-gray-800 bg-white text-black shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 shadow font-bold z-10">
+                                1
+                            </div>
+                            <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-zinc-900 border border-zinc-800 rounded-xl p-6 shadow-sm">
+                                <h3 className="font-bold text-xl mb-2">הרשמה ופתיחת קטלוג</h3>
+                                <p className="text-gray-400 text-sm leading-relaxed">התחבר לאתר, גש ל"הקטלוגים שלי" בתפריט האישי ובחר שם וקישור לחנות. הזן את האימייל שאליו תרצה לקבל פניות.</p>
                             </div>
                         </div>
-                        <div className="flex gap-4 items-start p-6 bg-white rounded-2xl border border-gray-100 shadow-sm">
-                            <span className="flex-shrink-0 w-10 h-10 bg-black text-white rounded-full flex items-center justify-center font-bold">2</span>
-                            <div>
-                                <h3 className="font-bold text-lg mb-1">הוספת מוצרים</h3>
-                                <p className="text-gray-500 text-sm leading-relaxed">הוסף את הפריטים שאתה רוצה למכור. קבע שם, מחיר ותמונה לכל מוצר.</p>
+
+                        <div className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group">
+                            <div className="flex items-center justify-center w-10 h-10 rounded-full border border-gray-800 bg-white text-black shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 shadow font-bold z-10">
+                                2
+                            </div>
+                            <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-zinc-900 border border-zinc-800 rounded-xl p-6 shadow-sm">
+                                <h3 className="font-bold text-xl mb-2">הוספת מוצרים</h3>
+                                <p className="text-gray-400 text-sm leading-relaxed">דרך ממשק נוח, תוכל להוסיף את הפריטים שאתה רוצה למכור. קבע שם, מחיר ותמונה לכל מוצר.</p>
                             </div>
                         </div>
-                        <div className="flex gap-4 items-start p-6 bg-white rounded-2xl border border-gray-100 shadow-sm">
-                            <span className="flex-shrink-0 w-10 h-10 bg-black text-white rounded-full flex items-center justify-center font-bold">3</span>
-                            <div>
-                                <h3 className="font-bold text-lg mb-1">שיתוף ומכירה</h3>
-                                <p className="text-gray-500 text-sm leading-relaxed">העסק את הקישור ושלח ללקוחות. יש להם עגלת קניות נפרדת ונוחה.</p>
+
+                         <div className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group">
+                            <div className="flex items-center justify-center w-10 h-10 rounded-full border border-gray-800 bg-white text-black shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 shadow font-bold z-10">
+                                3
+                            </div>
+                            <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-zinc-900 border border-zinc-800 rounded-xl p-6 shadow-sm">
+                                <h3 className="font-bold text-xl mb-2">שיתוף ומכירה</h3>
+                                <p className="text-gray-400 text-sm leading-relaxed">העתק את הקישור אישי ושלח ללקוחות. יש להם עגלת קניות נפרדת ועמוד סיכום הזמנה נוח.</p>
                             </div>
                         </div>
-                        <div className="flex gap-4 items-start p-6 bg-yellow-400 rounded-2xl border border-black shadow-[4px_4px_0px_rgba(0,0,0,1)]">
-                            <span className="flex-shrink-0 w-10 h-10 bg-black text-white rounded-full flex items-center justify-center font-bold">4</span>
-                            <div>
-                                <h3 className="font-bold text-lg mb-1">סגירת העסקה</h3>
-                                <p className="text-black/80 text-sm leading-relaxed font-medium">קבל מייל עם פרטי ההזמנה וצור קשר עם הלקוח לסיום התשלום אופליין.</p>
+
+                        <div className="relative flex items-center justify-between md:justify-normal md:odd:flex-row-reverse group">
+                            <div className="flex items-center justify-center w-10 h-10 rounded-full border border-black bg-yellow-400 text-black shrink-0 md:order-1 md:group-odd:-translate-x-1/2 md:group-even:translate-x-1/2 shadow font-bold z-10">
+                                4
+                            </div>
+                            <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] border-2 border-yellow-400 bg-yellow-400/10 rounded-xl p-6 shadow-sm">
+                                <h3 className="font-bold text-xl mb-2 text-yellow-400">קבלת הזמנות וסגירת עסקה</h3>
+                                <p className="text-gray-300 text-sm leading-relaxed">בכל הזמנה שלקוח מבצע, תקבל מיד מייל עם כל פרטי הלקוח וההזמנה שלו. מכאן, אתה מתקשר מולו לסיום התשלום אופליין!</p>
                             </div>
                         </div>
+
                     </div>
                  </div>
             </section>
 
              {/* CTA Bottom */}
-             <section className="bg-black text-white py-16 text-center px-4">
+             <section className="bg-yellow-400 text-black py-16 text-center px-4">
                  <h2 className="text-3xl font-black mb-6">מוכן לפתוח את החנות שלך?</h2>
                  {userId ? (
-                    <Link href="/my-catalogs" className="inline-block px-10 py-4 bg-yellow-400 text-black rounded-full font-black text-lg hover:scale-105 transition-transform overflow-hidden relative group">
+                    <Link href="/my-catalogs" className="inline-block px-10 py-4 bg-black text-white rounded-full font-black text-lg hover:scale-105 transition-transform overflow-hidden relative group">
                         <span className="relative z-10">בוא נתחיל עכשיו!</span>
-                        <div className="absolute inset-0 h-full w-full scale-0 rounded-full transition-all duration-300 ease-out group-hover:scale-100 group-hover:bg-white z-0"></div>
-                        <span className="relative z-10 hidden group-hover:inline ml-2">🚀</span>
+                        <div className="absolute inset-0 h-full w-full scale-0 rounded-full transition-all duration-300 ease-out group-hover:scale-100 group-hover:bg-zinc-800 z-0"></div>
                     </Link>
                 ) : (
-                    <Link href="/sign-up" className="inline-block px-10 py-4 bg-yellow-400 text-black rounded-full font-black text-lg hover:scale-105 transition-transform">
+                    <Link href="/sign-up" className="inline-block px-10 py-4 bg-black text-white rounded-full font-black text-lg hover:scale-105 transition-transform">
                         הירשם והתחל למכור
                     </Link>
                 )}
