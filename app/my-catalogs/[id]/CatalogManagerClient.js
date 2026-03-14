@@ -20,18 +20,27 @@ export default function CatalogManagerClient({ catalogId }) {
     const [editImageInputType, setEditImageInputType] = useState("file");
 
     // Add Item State
-    const [newItemName, setNewItemName] = useState("");
+    const [newItemBrand, setNewItemBrand] = useState("");
+    const [newItemFragranceName, setNewItemFragranceName] = useState("");
     const [newItemDesc, setNewItemDesc] = useState("");
     const [newItemImage, setNewItemImage] = useState("");
     const [newItemImageInputType, setNewItemImageInputType] = useState("file");
-    // Replaced single price with size options
+    const [newItemTopNotes, setNewItemTopNotes] = useState("");
+    const [newItemMiddleNotes, setNewItemMiddleNotes] = useState("");
+    const [newItemBaseNotes, setNewItemBaseNotes] = useState("");
+    const [newItemGender, setNewItemGender] = useState("");
+    const [newItemCategory, setNewItemCategory] = useState("");
+    
     const [newItemSizes, setNewItemSizes] = useState({
+        "2ml": { enabled: false, price: "" },
         "5ml": { enabled: false, price: "" },
-        "10ml": { enabled: false, price: "" },
-        "50ml": { enabled: false, price: "" },
-        "100ml": { enabled: false, price: "" }
+        "10ml": { enabled: false, price: "" }
     });
-    const [isAddingItem, setIsAddingItem] = useState(false);
+    const [isSubmittingItem, setIsSubmittingItem] = useState(false);
+    
+    // Item Editing State
+    const [editingItemId, setEditingItemId] = useState(null);
+    const [editItemData, setEditItemData] = useState(null);
 
     const router = useRouter();
 
@@ -125,7 +134,6 @@ export default function CatalogManagerClient({ catalogId }) {
     const handleAddItem = async (e) => {
         e.preventDefault();
         
-        // Build prices object
         const prices = {};
         let hasPrice = false;
         Object.entries(newItemSizes).forEach(([size, data]) => {
@@ -136,35 +144,51 @@ export default function CatalogManagerClient({ catalogId }) {
         });
 
         if (!hasPrice) {
-            toast.error("יש לבחור לפחות גודל אחד ולהזין מסיר");
+            toast.error("יש לבחור לפחות גודל אחד ולהזין מחיר");
             return;
         }
 
-        setIsAddingItem(true);
+        if (!newItemImage) {
+            toast.error("יש להוסיף תמונת מוצר");
+            return;
+        }
+
+        setIsSubmittingItem(true);
         try {
             const res = await fetch(`/api/user-catalogs/${catalogId}/items`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
-                    name: newItemName,
+                    brand: newItemBrand,
+                    fragrance_name: newItemFragranceName,
                     description: newItemDesc,
-                    prices: prices, // send the json object
-                    image_url: newItemImage || null
+                    prices: prices,
+                    image_url: newItemImage,
+                    top_notes: newItemTopNotes,
+                    middle_notes: newItemMiddleNotes,
+                    base_notes: newItemBaseNotes,
+                    gender: newItemGender,
+                    category: newItemCategory
                 })
             });
 
             if (res.ok) {
                 toast.success("מוצר נוסף בהצלחה!");
-                setNewItemName("");
+                setNewItemBrand("");
+                setNewItemFragranceName("");
                 setNewItemDesc("");
                 setNewItemSizes({
+                    "2ml": { enabled: false, price: "" },
                     "5ml": { enabled: false, price: "" },
-                    "10ml": { enabled: false, price: "" },
-                    "50ml": { enabled: false, price: "" },
-                    "100ml": { enabled: false, price: "" }
+                    "10ml": { enabled: false, price: "" }
                 });
                 setNewItemImage("");
-                fetchCatalogData(); // refresh items
+                setNewItemTopNotes("");
+                setNewItemMiddleNotes("");
+                setNewItemBaseNotes("");
+                setNewItemGender("");
+                setNewItemCategory("");
+                fetchCatalogData();
             } else {
                 const err = await res.json();
                 toast.error(err.error || "שגיאה בהוספת מוצר");
@@ -173,7 +197,72 @@ export default function CatalogManagerClient({ catalogId }) {
             console.error(error);
             toast.error("שגיאה");
         } finally {
-            setIsAddingItem(false);
+            setIsSubmittingItem(false);
+        }
+    };
+
+    const handleStartEdit = (item) => {
+        setEditingItemId(item.id);
+        setEditItemData({
+            brand: item.brand || "",
+            fragrance_name: item.fragrance_name || "",
+            description: item.description || "",
+            image_url: item.image_url || "",
+            imageInputType: "url",
+            top_notes: item.top_notes || "",
+            middle_notes: item.middle_notes || "",
+            base_notes: item.base_notes || "",
+            gender: item.gender || "",
+            category: item.category || "",
+            sizes: {
+                "2ml": { enabled: !!item.prices?.["2ml"], price: item.prices?.["2ml"] || "" },
+                "5ml": { enabled: !!item.prices?.["5ml"], price: item.prices?.["5ml"] || "" },
+                "10ml": { enabled: !!item.prices?.["10ml"], price: item.prices?.["10ml"] || "" }
+            }
+        });
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    const handleUpdateItem = async (e) => {
+        e.preventDefault();
+        const prices = {};
+        Object.entries(editItemData.sizes).forEach(([size, data]) => {
+            if (data.enabled && data.price) prices[size] = parseInt(data.price);
+        });
+
+        setIsSubmittingItem(true);
+        try {
+            const res = await fetch(`/api/user-catalogs/${catalogId}/items/${editingItemId}`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    brand: editItemData.brand,
+                    fragrance_name: editItemData.fragrance_name,
+                    description: editItemData.description,
+                    prices: prices,
+                    image_url: editItemData.image_url,
+                    top_notes: editItemData.top_notes,
+                    middle_notes: editItemData.middle_notes,
+                    base_notes: editItemData.base_notes,
+                    gender: editItemData.gender,
+                    category: editItemData.category
+                })
+            });
+
+            if (res.ok) {
+                toast.success("מוצר עודכן בהצלחה!");
+                setEditingItemId(null);
+                setEditItemData(null);
+                fetchCatalogData();
+            } else {
+                const err = await res.json();
+                toast.error(err.error || "שגיאה בעדכון");
+            }
+        } catch (error) {
+            console.error(error);
+            toast.error("שגיאה");
+        } finally {
+            setIsSubmittingItem(false);
         }
     };
 
@@ -319,31 +408,75 @@ export default function CatalogManagerClient({ catalogId }) {
 
             
             <div className="flex flex-col lg:flex-row gap-8">
-                {/* Add Custom Item Form */}
+                {/* Form: Add or Edit Item */}
                 <div className="w-full lg:w-1/3">
                     <div className="bg-gray-50 p-6 rounded-xl border border-gray-200 sticky top-24">
                         <h2 className="text-lg font-bold mb-4 flex items-center gap-2">
-                            <span className="bg-green-100 text-green-700 w-8 h-8 flex items-center justify-center rounded-full text-xl">+</span>
-                            הוסף מוצר חדש
+                            <span className={`w-8 h-8 flex items-center justify-center rounded-full text-xl ${editingItemId ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700'}`}>
+                                {editingItemId ? '✎' : '+'}
+                            </span>
+                            {editingItemId ? 'ערוך מוצר' : 'הוסף מוצר חדש'}
+                            {editingItemId && (
+                                <button onClick={() => { setEditingItemId(null); setEditItemData(null); }} className="text-xs font-normal text-gray-500 underline mr-auto hover:text-black transition">ביטול</button>
+                            )}
                         </h2>
-                        <form onSubmit={handleAddItem} className="space-y-4">
-                            <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">שם המוצר</label>
-                                <input type="text" required value={newItemName} onChange={(e) => setNewItemName(e.target.value)} className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-black outline-none" placeholder="למשל: בושם טום פורד" />
+                        <form onSubmit={editingItemId ? handleUpdateItem : handleAddItem} className="space-y-4">
+                            <div className="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Brand Name (English)</label>
+                                    <input type="text" required value={editingItemId ? editItemData.brand : newItemBrand} onChange={(e) => editingItemId ? setEditItemData({...editItemData, brand: e.target.value}) : setNewItemBrand(e.target.value)} className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-black outline-none text-sm" placeholder="e.g. Tom Ford" />
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Fragrance Name (English)</label>
+                                    <input type="text" required value={editingItemId ? editItemData.fragrance_name : newItemFragranceName} onChange={(e) => editingItemId ? setEditItemData({...editItemData, fragrance_name: e.target.value}) : setNewItemFragranceName(e.target.value)} className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-black outline-none text-sm" placeholder="e.g. Lost Cherry" />
+                                </div>
                             </div>
+
+                            <div className="grid grid-cols-2 gap-3">
+                                <div>
+                                    <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Gender</label>
+                                    <select required value={editingItemId ? editItemData.gender : newItemGender} onChange={(e) => editingItemId ? setEditItemData({...editItemData, gender: e.target.value}) : setNewItemGender(e.target.value)} className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-black outline-none text-sm appearance-none bg-white">
+                                        <option value="">בחר מגדר</option>
+                                        <option value="Unisex">Unisex</option>
+                                        <option value="Men">Men</option>
+                                        <option value="Women">Women</option>
+                                    </select>
+                                </div>
+                                <div>
+                                    <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Category</label>
+                                    <input type="text" required value={editingItemId ? editItemData.category : newItemCategory} onChange={(e) => editingItemId ? setEditItemData({...editItemData, category: e.target.value}) : setNewItemCategory(e.target.value)} className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-black outline-none text-sm" placeholder="e.g. Amber Floral" />
+                                </div>
+                            </div>
+
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-2">גדלים ומחירים זמינים</label>
+                                <label className="block text-xs font-bold text-gray-500 uppercase mb-2">Fragrance Notes (English)</label>
+                                <div className="space-y-2">
+                                    <input type="text" required value={editingItemId ? editItemData.top_notes : newItemTopNotes} onChange={(e) => editingItemId ? setEditItemData({...editItemData, top_notes: e.target.value}) : setNewItemTopNotes(e.target.value)} className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-black outline-none text-sm" placeholder="Top: Cherry, Bitter Almond..." />
+                                    <input type="text" required value={editingItemId ? editItemData.middle_notes : newItemMiddleNotes} onChange={(e) => editingItemId ? setEditItemData({...editItemData, middle_notes: e.target.value}) : setNewItemMiddleNotes(e.target.value)} className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-black outline-none text-sm" placeholder="Middle: Sour Cherry, Damask Rose..." />
+                                    <input type="text" required value={editingItemId ? editItemData.base_notes : newItemBaseNotes} onChange={(e) => editingItemId ? setEditItemData({...editItemData, base_notes: e.target.value}) : setNewItemBaseNotes(e.target.value)} className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-black outline-none text-sm" placeholder="Base: Vanilla, Tonka Bean..." />
+                                </div>
+                            </div>
+
+                            <div>
+                                <label className="block text-xs font-bold text-gray-500 uppercase mb-2">Sizes & Prices (₪)</label>
                                 <div className="space-y-2 border p-3 rounded-lg bg-white">
-                                    {Object.entries(newItemSizes).map(([size, data]) => (
+                                    {Object.entries(editingItemId ? editItemData.sizes : newItemSizes).map(([size, data]) => (
                                         <div key={size} className="flex items-center gap-3">
                                             <label className="flex items-center gap-2 cursor-pointer w-20">
                                                 <input 
                                                     type="checkbox"
                                                     checked={data.enabled}
-                                                    onChange={(e) => setNewItemSizes(prev => ({
-                                                        ...prev,
-                                                        [size]: { ...prev[size], enabled: e.target.checked }
-                                                    }))}
+                                                    onChange={(e) => {
+                                                        const newState = e.target.checked;
+                                                        if (editingItemId) {
+                                                            setEditItemData({
+                                                                ...editItemData,
+                                                                sizes: { ...editItemData.sizes, [size]: { ...editItemData.sizes[size], enabled: newState } }
+                                                            });
+                                                        } else {
+                                                            setNewItemSizes(prev => ({ ...prev, [size]: { ...prev[size], enabled: newState } }));
+                                                        }
+                                                    }}
                                                     className="w-4 h-4 text-black border-gray-300 rounded focus:ring-black"
                                                 />
                                                 <span className="text-sm font-medium" dir="ltr">{size}</span>
@@ -351,72 +484,64 @@ export default function CatalogManagerClient({ catalogId }) {
                                             <input 
                                                 type="number" 
                                                 min="1" 
+                                                required={data.enabled}
                                                 disabled={!data.enabled}
                                                 value={data.price}
-                                                onChange={(e) => setNewItemSizes(prev => ({
-                                                    ...prev,
-                                                    [size]: { ...prev[size], price: e.target.value }
-                                                }))}
+                                                onChange={(e) => {
+                                                    const val = e.target.value;
+                                                    if (editingItemId) {
+                                                        setEditItemData({
+                                                            ...editItemData,
+                                                            sizes: { ...editItemData.sizes, [size]: { ...editItemData.sizes[size], price: val } }
+                                                        });
+                                                    } else {
+                                                        setNewItemSizes(prev => ({ ...prev, [size]: { ...prev[size], price: val } }));
+                                                    }
+                                                }}
                                                 className="w-full p-2 border rounded focus:ring-1 focus:ring-black outline-none disabled:bg-gray-100 disabled:opacity-50 text-sm" 
-                                                placeholder={`מחיר ל-${size} (₪)`} 
+                                                placeholder={`Price for ${size}`} 
                                             />
                                         </div>
                                     ))}
                                 </div>
-                                <p className="text-xs text-gray-500 mt-1">בחר אילו גדלים תרצה להציע עבור המוצר ומה המחיר של כל אחד.</p>
                             </div>
+
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">תמונת מוצר</label>
-
-                                <div className="flex bg-gray-100 p-1 rounded-lg mb-3">
-                                    <button 
-                                        type="button"
-                                        onClick={() => setNewItemImageInputType("file")}
-                                        className={`flex-1 text-sm py-1.5 rounded-md transition ${newItemImageInputType === "file" ? 'bg-white shadow-sm font-bold text-black' : 'text-gray-500 hover:text-black'}`}
-                                    >
-                                        העלאה מהמחשב
-                                    </button>
-                                    <button 
-                                        type="button"
-                                        onClick={() => setNewItemImageInputType("url")}
-                                        className={`flex-1 text-sm py-1.5 rounded-md transition ${newItemImageInputType === "url" ? 'bg-white shadow-sm font-bold text-black' : 'text-gray-500 hover:text-black'}`}
-                                    >
-                                        קישור לתמונה
-                                    </button>
-                                </div>
-
-                                {newItemImageInputType === "file" ? (
-                                    <div className="mt-2 flex flex-col sm:flex-row items-start sm:items-center gap-3">
-                                        <label className="w-full flex flex-col items-center justify-center h-20 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 bg-white transition-colors">
-                                            <span className="text-sm font-semibold text-gray-700">בחר תמונה מהמחשב</span>
-                                            <input type="file" className="hidden" accept="image/png, image/jpeg, image/webp" onChange={(e) => {
+                                <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Product Image</label>
+                                {((editingItemId && editItemData.imageInputType === "file") || (!editingItemId && newItemImageInputType === "file")) ? (
+                                    <div className="flex flex-col gap-2">
+                                        <label className="w-full flex flex-col items-center justify-center h-20 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 bg-white transition-colors relative overflow-hidden">
+                                            {(editingItemId ? editItemData.image_url : newItemImage) ? (
+                                                <img src={editingItemId ? editItemData.image_url : newItemImage} alt="Preview" className="absolute inset-0 w-full h-full object-cover opacity-50" />
+                                            ) : null}
+                                            <span className="text-xs font-semibold text-gray-700 z-10">בחר תמונה מהמחשב</span>
+                                            <input type="file" className="hidden" accept="image/*" onChange={(e) => {
                                                 const file = e.target.files[0];
                                                 if (file) {
-                                                    if (file.size > 2 * 1024 * 1024) { return toast.error("קובץ גדול מדי. עד 2MB."); }
+                                                    if (file.size > 2 * 1024 * 1024) return toast.error("File too large (max 2MB)");
                                                     const reader = new FileReader();
-                                                    reader.onloadend = () => setNewItemImage(reader.result);
+                                                    reader.onloadend = () => editingItemId ? setEditItemData({...editItemData, image_url: reader.result}) : setNewItemImage(reader.result);
                                                     reader.readAsDataURL(file);
                                                 }
                                             }}/>
                                         </label>
+                                        <button type="button" onClick={() => editingItemId ? setEditItemData({...editItemData, imageInputType: "url"}) : setNewItemImageInputType("url")} className="text-[10px] text-blue-600 underline text-right">השתמש בקישור במקום</button>
                                     </div>
                                 ) : (
-                                    <input type="url" value={newItemImage} onChange={(e) => setNewItemImage(e.target.value)} className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-black outline-none text-left" dir="ltr" placeholder="https://..." />
-                                )}
-
-                                {newItemImage && (
-                                    <div className="mt-3">
-                                        <img src={newItemImage} alt="Preview" className="w-20 h-20 object-cover rounded-md border border-gray-200 shadow-sm block" />
+                                    <div className="flex flex-col gap-2">
+                                        <input type="url" required value={editingItemId ? editItemData.image_url : newItemImage} onChange={(e) => editingItemId ? setEditItemData({...editItemData, image_url: e.target.value}) : setNewItemImage(e.target.value)} className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-black outline-none text-sm text-left" dir="ltr" placeholder="https://..." />
+                                        <button type="button" onClick={() => editingItemId ? setEditItemData({...editItemData, imageInputType: "file"}) : setNewItemImageInputType("file")} className="text-[10px] text-blue-600 underline text-right">העלה קובץ במקום</button>
                                     </div>
                                 )}
                             </div>
+
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">תיאור</label>
-                                <textarea value={newItemDesc} onChange={(e) => setNewItemDesc(e.target.value)} className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-black outline-none resize-none h-20" placeholder="פירוט על המוצר..." />
+                                <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Description (English/Hebrew)</label>
+                                <textarea required value={editingItemId ? editItemData.description : newItemDesc} onChange={(e) => editingItemId ? setEditItemData({...editItemData, description: e.target.value}) : setNewItemDesc(e.target.value)} className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-black outline-none resize-none h-20 text-sm" placeholder="Tell us more about this fragrance..." />
                             </div>
                             
-                            <button type="submit" disabled={isAddingItem} className="w-full py-3 bg-black text-white rounded-lg font-bold hover:bg-gray-800 transition shadow disabled:opacity-50">
-                                {isAddingItem ? 'מוסיף...' : 'הוסף לקטלוג'}
+                            <button type="submit" disabled={isSubmittingItem} className="w-full py-3 bg-black text-white rounded-lg font-bold hover:bg-gray-800 transition shadow disabled:opacity-50">
+                                {isSubmittingItem ? 'מעבד...' : (editingItemId ? 'עדכן מוצר' : 'הוסף לקטלוג')}
                             </button>
                         </form>
                     </div>
@@ -424,53 +549,68 @@ export default function CatalogManagerClient({ catalogId }) {
 
                 {/* Products List */}
                 <div className="w-full lg:w-2/3">
-                    <h2 className="text-2xl font-bold mb-6">המוצרים בקטלוג ({items.length})</h2>
+                    <h2 className="text-2xl font-bold mb-6 flex items-center justify-between">
+                        <span>המוצרים בקטלוג ({items.length})</span>
+                    </h2>
                     
                     {items.length === 0 ? (
                         <div className="bg-white border-2 border-dashed border-gray-200 rounded-xl p-12 text-center flex flex-col items-center justify-center">
                             <div className="text-4xl mb-3 opacity-50">🛍️</div>
                             <h3 className="text-lg font-bold text-gray-700 mb-1">הקטלוג שלך ריק</h3>
-                            <p className="text-gray-500 text-sm">התחל להוסיף מוצרים משלך בטופס מימין כדי שהלקוחות יוכלו לרכוש.</p>
+                            <p className="text-gray-500 text-sm">התחל להוסיף מוצרים משלך בטופס מימין.</p>
                         </div>
                     ) : (
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                             {items.map(item => (
-                                <div key={item.id} className="bg-white border rounded-xl overflow-hidden shadow-sm hover:shadow-md transition flex flex-col group">
+                                <div key={item.id} className="bg-white border rounded-xl overflow-hidden shadow-sm hover:shadow-md transition flex flex-col group relative">
                                     <div className="h-40 bg-gray-100 flex items-center justify-center overflow-hidden relative">
                                         {item.image_url ? (
                                             <img src={item.image_url} alt={item.name} className="w-full h-full object-cover" />
                                         ) : (
                                             <div className="text-4xl opacity-20">📦</div>
                                         )}
-                                        <button 
-                                            onClick={() => handleDeleteItem(item.id)}
-                                            className="absolute top-2 right-2 bg-white/90 text-red-500 p-2 rounded-full opacity-0 group-hover:opacity-100 hover:bg-red-50 hover:scale-110 transition shadow"
-                                            title="מחק מוצר"
-                                        >
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
-                                                <path strokeLinecap="round" strokeLinejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
-                                            </svg>
-                                        </button>
+                                        <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <button 
+                                                onClick={() => handleStartEdit(item)}
+                                                className="bg-white text-blue-600 p-2 rounded-full hover:bg-blue-50 hover:scale-110 transition shadow border border-blue-100"
+                                                title="ערוך מוצר"
+                                            >
+                                                ✎
+                                            </button>
+                                            <button 
+                                                onClick={() => handleDeleteItem(item.id)}
+                                                className="bg-white text-red-500 p-2 rounded-full hover:bg-red-50 hover:scale-110 transition shadow border border-red-100"
+                                                title="מחק מוצר"
+                                            >
+                                                ✕
+                                            </button>
+                                        </div>
                                     </div>
                                     <div className="p-4 flex flex-col flex-grow">
-                                        <h3 className="font-bold text-lg leading-tight mb-3">{item.name}</h3>
+                                        <div className="mb-2">
+                                            <div className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">{item.brand}</div>
+                                            <h3 className="font-bold text-lg leading-tight">{item.fragrance_name}</h3>
+                                        </div>
                                         
-                                        {/* Display Prices */}
-                                        <div className="space-y-1 mb-3">
+                                        <div className="flex flex-wrap gap-1 mb-3">
                                             {item.prices && Object.entries(item.prices).map(([size, price]) => (
-                                                 <div key={size} className="flex justify-between items-center bg-gray-50 px-2 py-1 rounded text-sm border border-gray-100">
-                                                     <span className="font-medium text-gray-600" dir="ltr">{size}</span>
-                                                     <span className="font-bold">{price} ₪</span>
+                                                 <div key={size} className="bg-gray-50 px-2 py-1 rounded text-[10px] border border-gray-100 flex flex-col items-center min-w-[45px]">
+                                                     <span className="text-gray-400 font-bold" dir="ltr">{size}</span>
+                                                     <span className="font-bold text-black">{price} ₪</span>
                                                  </div>
                                             ))}
-                                            {!item.prices && item.price && (
-                                                <div className="text-xl font-black text-black">{item.price} ₪</div>
-                                            )}
                                         </div>
 
-                                        {item.description && (
-                                            <p className="text-sm text-gray-500 line-clamp-2 mt-auto">{item.description}</p>
-                                        )}
+                                        <div className="mt-auto pt-3 border-t grid grid-cols-1 gap-1">
+                                            <div className="text-[10px] text-gray-500">
+                                                <span className="font-bold text-gray-900">Notes: </span> 
+                                                <span className="truncate block" title={item.top_notes}>{item.top_notes}</span>
+                                            </div>
+                                            <div className="flex justify-between items-center text-[10px]">
+                                                <span className="px-1.5 py-0.5 bg-gray-100 rounded text-gray-600 font-medium">{item.gender}</span>
+                                                <span className="text-gray-400">{item.category}</span>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             ))}

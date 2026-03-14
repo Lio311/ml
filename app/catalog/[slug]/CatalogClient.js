@@ -96,15 +96,17 @@ export default function CatalogClient({ slug }) {
                         
                         return (
                             <div key={item.id} className="bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col group relative">
-                                <div className="h-64 bg-gray-50 flex items-center justify-center overflow-hidden relative">
+                                <Link href={`/catalog/${slug}/product/${item.id}`} className="block h-64 bg-gray-50 flex items-center justify-center overflow-hidden relative">
                                     {item.image_url ? (
                                         <img src={item.image_url} alt={item.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
                                     ) : (
                                         <div className="text-6xl opacity-10">🛍️</div>
                                     )}
-                                </div>
+                                </Link>
                                 <div className="p-5 flex flex-col flex-grow">
-                                    <h3 className="text-xl font-bold mb-1 text-gray-900 leading-tight">{item.name}</h3>
+                                    <Link href={`/catalog/${slug}/product/${item.id}`} className="block group/title">
+                                        <h3 className="text-xl font-bold mb-1 text-gray-900 leading-tight group-hover/title:text-blue-600 transition-colors">{item.name}</h3>
+                                    </Link>
                                     
                                     {/* Size Options or Single Price */}
                                     {item.prices && Object.keys(item.prices).length > 0 ? (

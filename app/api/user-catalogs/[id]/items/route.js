@@ -42,10 +42,21 @@ export async function POST(req, { params }) {
         }
 
         const body = await req.json();
-        const { name, description, prices, image_url } = body;
+        const { 
+            brand, 
+            fragrance_name, 
+            description, 
+            prices, 
+            image_url,
+            top_notes,
+            middle_notes,
+            base_notes,
+            gender,
+            category
+        } = body;
 
-        if (!name || !prices || Object.keys(prices).length === 0) {
-            return NextResponse.json({ error: 'Missing required fields or invalid prices' }, { status: 400 });
+        if (!brand || !fragrance_name || !description || !prices || !image_url || !top_notes || !middle_notes || !base_notes || !gender || !category || Object.keys(prices).length === 0) {
+            return NextResponse.json({ error: 'כל השדות הם חובה' }, { status: 400 });
         }
 
         const client = await pool.connect();
@@ -57,9 +68,12 @@ export async function POST(req, { params }) {
              }
 
             const res = await client.query(
-                `INSERT INTO user_catalog_items (catalog_id, name, description, prices, image_url) 
-                 VALUES ($1, $2, $3, $4, $5) RETURNING *`,
-                [id, name, description, JSON.stringify(prices), image_url]
+                `INSERT INTO user_catalog_items (
+                    catalog_id, brand, fragrance_name, name, description, prices, image_url, 
+                    top_notes, middle_notes, base_notes, gender, category
+                ) 
+                 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) RETURNING *`,
+                [id, brand, fragrance_name, `${brand} ${fragrance_name}`, description, JSON.stringify(prices), image_url, top_notes, middle_notes, base_notes, gender, category]
             );
 
             return NextResponse.json(res.rows[0]);

@@ -56,14 +56,14 @@ export default function AdminCatalogsClient() {
     return (
         <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
             <div className="overflow-x-auto">
-                <table className="w-full text-right border-collapse">
+                <table className="w-full border-collapse">
                     <thead>
                         <tr className="bg-gray-100 border-b">
-                            <th className="p-4 font-bold text-gray-700">מזהה</th>
-                            <th className="p-4 font-bold text-gray-700">שם הקטלוג / חנות</th>
+                            <th className="p-4 font-bold text-gray-700 text-center">מזהה</th>
+                            <th className="p-4 font-bold text-gray-700 text-center">שם הקטלוג / חנות</th>
                             <th className="p-4 font-bold text-gray-700 text-center">מספר פריטים</th>
-                            <th className="p-4 font-bold text-gray-700">אימייל התקשרות</th>
-                            <th className="p-4 font-bold text-gray-700 text-left">קישור</th>
+                            <th className="p-4 font-bold text-gray-700 text-center">אימייל התקשרות</th>
+                            <th className="p-4 font-bold text-gray-700 text-center">קישור</th>
                             <th className="p-4 font-bold text-gray-700 text-center">פעולות</th>
                         </tr>
                     </thead>
@@ -75,20 +75,20 @@ export default function AdminCatalogsClient() {
                         ) : (
                             catalogs.map((catalog) => (
                                 <tr key={catalog.id} className="border-b hover:bg-gray-50 transition-colors">
-                                    <td className="p-4 font-mono text-xs text-gray-500">{catalog.id}</td>
-                                    <td className="p-4 font-bold">{catalog.name}</td>
+                                    <td className="p-4 font-mono text-xs text-gray-500 text-center">{catalog.id}</td>
+                                    <td className="p-4 font-bold text-center">{catalog.name}</td>
                                     <td className="p-4 text-center">
                                         <span className="inline-block bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs font-bold">
                                             {catalog.total_items}
                                         </span>
                                     </td>
-                                    <td className="p-4" dir="ltr">{catalog.contact_email}</td>
-                                    <td className="p-4 text-left">
+                                    <td className="p-4 text-center" dir="ltr">{catalog.contact_email}</td>
+                                    <td className="p-4 text-center">
                                         <a 
                                             href={`/catalog/${catalog.slug}`} 
                                             target="_blank" 
                                             rel="noopener noreferrer"
-                                            className="text-blue-500 hover:underline text-sm font-mono flex items-center justify-end gap-1"
+                                            className="text-blue-500 hover:underline text-sm font-mono flex items-center justify-center gap-1"
                                             dir="ltr"
                                         >
                                             /{catalog.slug}
