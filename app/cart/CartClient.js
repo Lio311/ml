@@ -431,7 +431,7 @@ export default function CartClient() {
                             </div>
 
                             <button onClick={handleCheckout} disabled={isSubmitting} className="w-full py-5 bg-black text-white text-xl rounded-2xl font-black shadow-2xl hover:bg-gray-900 transition active:scale-95 disabled:opacity-50">
-                                {isSubmitting ? 'מעבד...' : 'שלח הזמנה לספק זה'}
+                                {isSubmitting ? 'מעבד...' : 'שלח הזמנה'}
                             </button>
                         </div>
                     </div>

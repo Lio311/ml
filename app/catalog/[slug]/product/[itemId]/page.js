@@ -72,8 +72,10 @@ export default async function CatalogProductPage({ params }) {
 
                         {/* Brand + Name */}
                         <div className="text-right">
-                            <h1 className="text-4xl font-bold mb-2">{item.fragrance_name}</h1>
-                            <div className="text-gray-500 mb-4 text-lg">{item.brand}</div>
+                            <h1 className="text-4xl font-bold mb-4">
+                                <span className="text-gray-400 text-2xl font-semibold">{item.brand}</span>{' '}
+                                {item.fragrance_name}
+                            </h1>
                         </div>
 
                         {/* Description */}

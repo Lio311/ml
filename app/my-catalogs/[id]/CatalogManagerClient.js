@@ -12,6 +12,7 @@ export default function CatalogManagerClient({ catalogId }) {
     const [items, setItems] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [availableNotes, setAvailableNotes] = useState([]);
+    const [availableCategories, setAvailableCategories] = useState([]);
     
     // Edit Catalog State
     const [isEditing, setIsEditing] = useState(false);
@@ -132,6 +133,20 @@ export default function CatalogManagerClient({ catalogId }) {
             }
         };
         fetchNotes();
+
+        // Fetch available categories from main site products
+        const fetchCategories = async () => {
+            try {
+                const res = await fetch("/api/categories");
+                if (res.ok) {
+                    const data = await res.json();
+                    setAvailableCategories(data);
+                }
+            } catch (error) {
+                console.error("Error fetching categories for autocomplete:", error);
+            }
+        };
+        fetchCategories();
     }, [catalogId]);
 
     const handleUpdateCatalog = async (e) => {
@@ -505,8 +520,13 @@ export default function CatalogManagerClient({ catalogId }) {
                                     </select>
                                 </div>
                                 <div>
-                                    <label className="block text-xs font-bold text-gray-500 uppercase mb-1">קטגוריה</label>
-                                    <input type="text" required value={editingItemId ? editItemData.category : newItemCategory} onChange={(e) => editingItemId ? setEditItemData({...editItemData, category: e.target.value}) : setNewItemCategory(e.target.value)} className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-black outline-none text-sm" placeholder="למשל: Amber Floral" />
+                                    <label className="block text-xs font-bold text-gray-500 uppercase mb-1">קטגוריות (לחץ Enter להוספה)</label>
+                                    <TagInput
+                                        tags={(editingItemId ? editItemData.category : newItemCategory).split(',').map(t => t.trim()).filter(Boolean)}
+                                        onChange={(newTags) => editingItemId ? setEditItemData({...editItemData, category: newTags.join(',')}) : setNewItemCategory(newTags.join(','))}
+                                        suggestions={availableCategories}
+                                        placeholder="הוסף קטגוריה (למשל: יוניסקס)"
+                                    />
                                 </div>
                             </div>
 
