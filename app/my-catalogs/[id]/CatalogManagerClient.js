@@ -4,6 +4,8 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import TagInput from "../../components/TagInput";
+
 
 export default function CatalogManagerClient({ catalogId }) {
     const [catalog, setCatalog] = useState(null);
@@ -510,41 +512,37 @@ export default function CatalogManagerClient({ catalogId }) {
 
                              <div>
                                 <label className="block text-xs font-bold text-gray-500 uppercase mb-2">תגיות הבושם (באנגלית)</label>
-                                <div className="space-y-2">
-                                    <input 
-                                        type="text" 
-                                        required 
-                                        value={editingItemId ? editItemData.top_notes : newItemTopNotes} 
-                                        onChange={(e) => editingItemId ? setEditItemData({...editItemData, top_notes: e.target.value}) : setNewItemTopNotes(e.target.value)} 
-                                        className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-black outline-none text-sm" 
-                                        placeholder="תגיות עליונות..." 
-                                        list="fragranceNotesDataList"
-                                    />
-                                    <input 
-                                        type="text" 
-                                        required 
-                                        value={editingItemId ? editItemData.middle_notes : newItemMiddleNotes} 
-                                        onChange={(e) => editingItemId ? setEditItemData({...editItemData, middle_notes: e.target.value}) : setNewItemMiddleNotes(e.target.value)} 
-                                        className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-black outline-none text-sm" 
-                                        placeholder="תגיות אמצע..." 
-                                        list="fragranceNotesDataList"
-                                    />
-                                    <input 
-                                        type="text" 
-                                        required 
-                                        value={editingItemId ? editItemData.base_notes : newItemBaseNotes} 
-                                        onChange={(e) => editingItemId ? setEditItemData({...editItemData, base_notes: e.target.value}) : setNewItemBaseNotes(e.target.value)} 
-                                        className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-black outline-none text-sm" 
-                                        placeholder="תגיות בסיס..." 
-                                        list="fragranceNotesDataList"
-                                    />
+                                <div className="space-y-3">
+                                    <div>
+                                        <label className="text-xs text-gray-400 mb-1 block">תגיות עליונות</label>
+                                        <TagInput
+                                            tags={(editingItemId ? editItemData.top_notes : newItemTopNotes).split(',').map(t => t.trim()).filter(Boolean)}
+                                            onChange={(newTags) => editingItemId ? setEditItemData({...editItemData, top_notes: newTags.join(',')}) : setNewItemTopNotes(newTags.join(','))}
+                                            suggestions={availableNotes}
+                                            placeholder="למשל: יסמין, ורד..."
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="text-xs text-gray-400 mb-1 block">תגיות לב (אמצע)</label>
+                                        <TagInput
+                                            tags={(editingItemId ? editItemData.middle_notes : newItemMiddleNotes).split(',').map(t => t.trim()).filter(Boolean)}
+                                            onChange={(newTags) => editingItemId ? setEditItemData({...editItemData, middle_notes: newTags.join(',')}) : setNewItemMiddleNotes(newTags.join(','))}
+                                            suggestions={availableNotes}
+                                            placeholder="למשל: וניל, עץ..."
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="text-xs text-gray-400 mb-1 block">תגיות בסיס</label>
+                                        <TagInput
+                                            tags={(editingItemId ? editItemData.base_notes : newItemBaseNotes).split(',').map(t => t.trim()).filter(Boolean)}
+                                            onChange={(newTags) => editingItemId ? setEditItemData({...editItemData, base_notes: newTags.join(',')}) : setNewItemBaseNotes(newTags.join(','))}
+                                            suggestions={availableNotes}
+                                            placeholder="למשל: מאסק, אמבר..."
+                                        />
+                                    </div>
                                 </div>
-                                <datalist id="fragranceNotesDataList">
-                                    {availableNotes.map(note => (
-                                        <option key={note} value={note} />
-                                    ))}
-                                </datalist>
                             </div>
+
 
                             <div>
                                 <label className="block text-xs font-bold text-gray-500 uppercase mb-2">גדלים ומחירים (₪)</label>
@@ -772,10 +770,20 @@ export default function CatalogManagerClient({ catalogId }) {
                                                         )}
 
                                                         {/* Gender & Category badges */}
-                                                        <div className="flex gap-2 flex-wrap mb-3">
+                                                        <div className="flex gap-2 flex-wrap mb-2">
                                                             {item.gender && <span className="text-xs px-2 py-0.5 bg-gray-100 rounded-full text-gray-600">{item.gender}</span>}
                                                             {item.category && <span className="text-xs px-2 py-0.5 bg-gray-100 rounded-full text-gray-600">{item.category}</span>}
                                                         </div>
+
+                                                        {/* Notes tags */}
+                                                        {(item.top_notes || item.middle_notes || item.base_notes) && (
+                                                            <div className="flex flex-wrap gap-1 mb-3">
+                                                                {[...(item.top_notes||'').split(','), ...(item.middle_notes||'').split(','), ...(item.base_notes||'').split(',')]
+                                                                    .map(t => t.trim()).filter(Boolean).slice(0, 8).map(tag => (
+                                                                    <span key={tag} className="text-[10px] px-1.5 py-0.5 bg-amber-50 text-amber-700 rounded border border-amber-100">{tag}</span>
+                                                                ))}
+                                                            </div>
+                                                        )}
 
                                                         {/* Edit shortcut button */}
                                                         <button
