@@ -10,21 +10,37 @@ export const revalidate = 0;
 
 export async function generateMetadata(props) {
     const searchParams = await props.searchParams;
-    let { q, brand, category } = searchParams;
-
-    // Use mapped query for title/description if applicable? 
-    // Maybe show original "תוצאות חיפוש: שאנל" is better than "Chanel". 
-    // But internally we fetch with Chanel.
-    // Let's keep original Q for metadata title, but map logic below.
+    const { q, brand, category } = searchParams;
 
     let title = "הקטלוג | ml_tlv";
-    let description = "כל דוגמיות הבשמים שלנו במקום אחד.";
-    // ...
-    // Note: I'm not replacing the whole file, just top import. 
-    // Wait, replace_file_content is single block.
-    // I will replace separate blocks.
+    let description = "כל דוגמיות הבשמים שלנו במקום אחד. מגוון בשמי נישה ובוטיק.";
+
+    if (brand) title = `${brand} | ml_tlv`;
+    if (category) title = `${category} | ml_tlv`;
+    if (q) title = `חיפוש: ${q} | ml_tlv`;
+
+    const baseUrl = 'https://www.ml-tlv.com';
+    const params = new URLSearchParams();
+    if (q) params.set('q', q);
+    if (brand) params.set('brand', brand);
+    if (category) params.set('category', category);
+
+    const queryString = params.toString();
+    const canonical = queryString ? `${baseUrl}/catalog?${queryString}` : `${baseUrl}/catalog`;
+
     return {
-        // ...
+        title,
+        description,
+        alternates: {
+            canonical,
+        },
+        openGraph: {
+            title,
+            description,
+            url: canonical,
+            siteName: 'ml_tlv',
+            type: 'website',
+        },
     };
 }
 // ...

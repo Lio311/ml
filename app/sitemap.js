@@ -1,7 +1,7 @@
 import pool from './lib/db';
 
 export default async function sitemap() {
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.ml-tlv.com';
+    const baseUrl = 'https://www.ml-tlv.com';
 
     // 1. Static Routes (Expanded)
     const staticRoutes = [
@@ -70,9 +70,9 @@ export default async function sitemap() {
         }));
 
         // Blog Posts
-        const blogRes = await client.query('SELECT slug, created_at FROM blog_posts');
+        const blogRes = await client.query('SELECT id, slug, created_at FROM blog_posts');
         const blogs = blogRes.rows.map((post) => ({
-            url: `${baseUrl}/blog/${post.slug}`,
+            url: `${baseUrl}/blog/${post.slug || post.id}`,
             lastModified: post.created_at || new Date(),
             changeFrequency: 'weekly',
             priority: 0.8,

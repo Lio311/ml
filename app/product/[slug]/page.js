@@ -39,12 +39,12 @@ export async function generateMetadata(props) {
         title: title,
         description: description,
         alternates: {
-            canonical: `${baseUrl}/product/${product.slug}`,
+            canonical: `${baseUrl}/product/${product.slug || product.id}`,
         },
         openGraph: {
             title: title,
             description: description,
-            url: `${baseUrl}/product/${product.slug}`,
+            url: `${baseUrl}/product/${product.slug || product.id}`,
             siteName: 'ml_tlv',
             images: [
                 {
@@ -191,7 +191,7 @@ export default async function ProductPage(props) {
         },
         "offers": {
             "@type": "Offer",
-            "url": `${process.env.NEXT_PUBLIC_BASE_URL || 'https://ml-tlv.com'}/product/${product.slug || product.id}`,
+            "url": `https://www.ml-tlv.com/product/${product.slug || product.id}`,
             "priceCurrency": "ILS",
             "price": product.price_10ml || product.price_5ml || product.price_2ml,
             "availability": (product.stock && product.stock > 0) ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
@@ -310,13 +310,13 @@ export default async function ProductPage(props) {
                                             "@type": "ListItem",
                                             "position": 3,
                                             "name": product.category || "כללי",
-                                            "item": `https://ml-tlv.com/catalog?category=${encodeURIComponent(product.category || '')}`
+                                            "item": `https://www.ml-tlv.com/catalog?category=${encodeURIComponent(product.category || '')}`
                                         },
                                         {
                                             "@type": "ListItem",
                                             "position": 4,
                                             "name": product.name,
-                                            "item": `https://ml-tlv.com/product/${product.slug || product.id}`
+                                            "item": `https://www.ml-tlv.com/product/${product.slug || product.id}`
                                         }
                                     ]
                                 })

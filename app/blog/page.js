@@ -6,9 +6,13 @@ export const dynamic = 'force-dynamic';
 export const metadata = {
     title: 'מגזין הבישום | ml_tlv',
     description: 'כתבות, סקירות, מדריכים וטיפים על עולם הבישום, דוגמיות בשמים ומותגי נישה.',
+    alternates: {
+        canonical: 'https://www.ml-tlv.com/blog',
+    },
     openGraph: {
         title: 'מגזין הבישום | ml_tlv',
         description: 'הבלוג הרשמי של ml_tlv - כל המידע על עולם דוגמיות הבושם.',
+        url: 'https://www.ml-tlv.com/blog',
         type: 'website'
     }
 };
