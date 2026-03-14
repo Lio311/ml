@@ -68,6 +68,7 @@ export default async function AdminLayout({ children }) {
                                 <Link href="/admin/inventory">בקבוקונים</Link>
                                 <Link href="/admin/requests">בקשות</Link>
                                 <Link href="/admin/products">מוצרים</Link>
+                                <Link href="/admin/catalog-orders">הזמנות קטלוגים</Link>
                             </>
                         )}
                     </div>

@@ -13,6 +13,7 @@ export function CartProvider({ children }) {
     const [lotteryTimeLeft, setLotteryTimeLeft] = useState(null);
     const [luckyPrize, setLuckyPrize] = useState(null);
     const [coupon, setCoupon] = useState(null);
+    const [vendorConfig, setVendorConfig] = useState(null);
 
     const { user } = useUser();
 
@@ -63,6 +64,18 @@ export function CartProvider({ children }) {
     // Derived State
     const isCartLocked = lotteryMode.active;
     const isMainVendor = activeVendorId === 'main';
+
+    // Fetch Custom Vendor Config securely
+    useEffect(() => {
+        if (!isMainVendor && activeVendorId) {
+            fetch(`/api/user-catalogs/${activeVendorId}`)
+                .then(res => res.json())
+                .then(data => setVendorConfig(data))
+                .catch(err => console.error("Failed to fetch vendor config:", err));
+        } else {
+            setVendorConfig(null);
+        }
+    }, [activeVendorId, isMainVendor]);
 
     // Timer Interval for Lottery
     useEffect(() => {
@@ -245,7 +258,7 @@ export function CartProvider({ children }) {
         }
     }
 
-    const shippingCost = isMainVendor ? 30 : 0;
+    const shippingCost = isMainVendor ? 30 : (vendorConfig?.delivery_active ? (vendorConfig.delivery_price || 0) : 0);
     const total = priceAfterDiscounts + shippingCost;
 
     let freeSamplesCount = 0;
@@ -255,15 +268,31 @@ export function CartProvider({ children }) {
         else if (subtotal >= 500) { freeSamplesCount = 4; nextTier = 1000 - subtotal; }
         else if (subtotal >= 300) { freeSamplesCount = 2; nextTier = 500 - subtotal; }
         else { nextTier = 300 - subtotal; }
+    } else if (vendorConfig && vendorConfig.sample_tiers) {
+        let tiers = vendorConfig.sample_tiers;
+        if (typeof tiers === 'string') {
+            try { tiers = JSON.parse(tiers); } catch (e) { tiers = []; }
+        }
+        if (Array.isArray(tiers) && tiers.length > 0) {
+            // Find applicable tier
+            const sortedTiers = [...tiers].sort((a,b) => b.minAmount - a.minAmount);
+            const activeTier = sortedTiers.find(t => subtotal >= Number(t.minAmount));
+            if (activeTier) freeSamplesCount = Number(activeTier.samplesCount);
+            
+            // Find next tier limit
+            const nextT = [...tiers].sort((a,b) => a.minAmount - b.minAmount).find(t => Number(t.minAmount) > subtotal);
+            if (nextT) nextTier = Number(nextT.minAmount) - subtotal;
+        }
     }
 
     return (
         <CartContext.Provider value={{
             cartItems, activeVendorId, setActiveVendorId, activeItems,
-            addToCart, removeFromCart, updateQuantity, clearCart, clearActiveVendorCart,
+             addToCart, removeFromCart, updateQuantity, clearCart, clearActiveVendorCart,
             subtotal, totalItemsCount, freeSamplesCount, nextTier, shippingCost, total,
             luckyPrize, setLuckyPrize, discountAmount, coupon, setCoupon,
-            startLottery, cancelLottery, isCartLocked, lotteryTimeLeft, lotteryMode, isMainVendor
+            startLottery, cancelLottery, isCartLocked, lotteryTimeLeft, lotteryMode, 
+            isMainVendor, vendorConfig
         }}>
             {children}
         </CartContext.Provider>

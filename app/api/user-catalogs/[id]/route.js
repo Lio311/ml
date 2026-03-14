@@ -39,7 +39,10 @@ export async function PUT(req, context) {
         }
 
         const body = await req.json();
-        const { name, description, contact_email, slug, image_url } = body;
+        const { 
+            name, description, contact_email, slug, image_url, 
+            self_pickup_active, delivery_active, delivery_price, sample_tiers 
+        } = body;
 
         if (!name || !contact_email || !slug) {
             return NextResponse.json({ error: 'Missing required fields' }, { status: 400 });
@@ -65,9 +68,18 @@ export async function PUT(req, context) {
         }
 
         const res = await client.query(
-            `UPDATE user_catalogs SET name = $1, description = $2, contact_email = $3, slug = $4, image_url = $5
+            `UPDATE user_catalogs 
+             SET name = $1, description = $2, contact_email = $3, slug = $4, image_url = $5,
+                 self_pickup_active = COALESCE($8, self_pickup_active),
+                 delivery_active = COALESCE($9, delivery_active),
+                 delivery_price = COALESCE($10, delivery_price),
+                 sample_tiers = COALESCE($11, sample_tiers)
              WHERE id = $6 AND user_id = $7 RETURNING *`,
-            [name, description, contact_email, slug, image_url || null, id, userId]
+            [
+                name, description, contact_email, slug, image_url || null, id, userId,
+                self_pickup_active, delivery_active, delivery_price, 
+                sample_tiers ? JSON.stringify(sample_tiers) : null
+            ]
         );
 
         return NextResponse.json(res.rows[0]);

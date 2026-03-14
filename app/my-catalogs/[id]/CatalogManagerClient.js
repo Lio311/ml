@@ -6,6 +6,130 @@ import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import TagInput from "../../components/TagInput";
 
+function OrdersTab({ catalogId }) {
+    const [orders, setOrders] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+
+    const fetchOrders = async () => {
+        setIsLoading(true);
+        try {
+            const res = await fetch(`/api/user-catalogs/${catalogId}/orders/manage`);
+            if (res.ok) {
+                const data = await res.json();
+                setOrders(data);
+            }
+        } catch (e) {
+            console.error('Error fetching orders:', e);
+            toast.error('שגיאה בטעינת הזמנות');
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        fetchOrders();
+    }, [catalogId]);
+
+    const handleStatusChange = async (orderId, newStatus) => {
+        try {
+            const res = await fetch(`/api/user-catalogs/${catalogId}/orders/manage`, {
+                method: "PUT",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ orderId, status: newStatus })
+            });
+            if (res.ok) {
+                toast.success('סטטוס חבילה עודכן');
+                fetchOrders();
+            } else {
+                toast.error('שגיאה בעדכון סטטוס');
+            }
+        } catch (e) {
+            toast.error('שגיאה בעדכון סטטוס');
+        }
+    };
+
+    if (isLoading) return <div className="text-center py-10 animate-pulse">טוען הזמנות...</div>;
+
+    return (
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden text-right" dir="rtl">
+            <div className="p-6 border-b flex justify-between items-center bg-gray-50">
+                <h3 className="font-bold text-lg">הזמנות לקטלוג שלי</h3>
+                <span className="bg-black text-white px-3 py-1 rounded-full text-xs font-bold">{orders.length} הזמנות</span>
+            </div>
+            
+            <div className="overflow-x-auto">
+                <table className="w-full text-sm">
+                    <thead className="bg-gray-50 text-gray-500 border-b">
+                        <tr>
+                            <th className="p-4 text-right font-semibold">מספר הזמנה</th>
+                            <th className="p-4 text-right font-semibold">תאריך</th>
+                            <th className="p-4 text-right font-semibold">לקוח</th>
+                            <th className="p-4 text-right font-semibold">סכום</th>
+                            <th className="p-4 text-right font-semibold">פריטים</th>
+                            <th className="p-4 text-center font-semibold">סטטוס מול הלקוח</th>
+                        </tr>
+                    </thead>
+                    <tbody className="divide-y text-right">
+                        {orders.length === 0 ? (
+                            <tr>
+                                <td colSpan="6" className="p-10 text-center text-gray-500 text-lg">עדיין אין הזמנות לקטלוג זה.</td>
+                            </tr>
+                        ) : (
+                            orders.map(order => {
+                                const customer = typeof order.customer_details === 'string' ? JSON.parse(order.customer_details) : order.customer_details;
+                                const items = typeof order.items === 'string' ? JSON.parse(order.items) : order.items;
+                                
+                                return (
+                                    <tr key={order.id} className="hover:bg-gray-50/50 transition">
+                                        <td className="p-4 font-bold text-gray-700">#{order.id}</td>
+                                        <td className="p-4 text-gray-500">{new Date(order.created_at).toLocaleDateString('he-IL')}</td>
+                                        <td className="p-4">
+                                            <div className="font-bold">{customer?.name}</div>
+                                            <div className="text-xs text-gray-400">{customer?.email}</div>
+                                            <div className="text-xs text-gray-400">{customer?.phone}</div>
+                                        </td>
+                                        <td className="p-4 font-bold text-lg">{order.total_amount} ₪</td>
+                                        <td className="p-4 text-xs text-gray-500 max-w-[200px]">
+                                            <ul className="list-disc list-inside space-y-1">
+                                                {items.map((item, i) => (
+                                                    <li key={i} className="truncate">
+                                                        {item.quantity}x {item.name} ({item.size}ml)
+                                                    </li>
+                                                ))}
+                                            </ul>
+                                            {order.free_samples_count > 0 && (
+                                                <div className="mt-1 text-pink-500 font-bold">+ {order.free_samples_count} דוגמיות חינם</div>
+                                            )}
+                                        </td>
+                                        <td className="p-4 text-center">
+                                            <select
+                                                value={order.status}
+                                                onChange={(e) => handleStatusChange(order.id, e.target.value)}
+                                                className={`p-2 border rounded-lg font-bold text-xs outline-none transition-colors select-none cursor-pointer
+                                                    ${order.status === 'pending' ? 'bg-orange-100 text-orange-800 border-orange-200' :
+                                                    order.status === 'processing' ? 'bg-blue-100 text-blue-800 border-blue-200' :
+                                                    order.status === 'shipped' ? 'bg-purple-100 text-purple-800 border-purple-200' :
+                                                    order.status === 'completed' ? 'bg-green-100 text-green-800 border-green-200' :
+                                                    'bg-gray-100 text-gray-800 border-gray-200'}`}
+                                            >
+                                                <option value="pending" className="bg-white text-black">ממתין</option>
+                                                <option value="processing" className="bg-white text-black">בטיפול</option>
+                                                <option value="shipped" className="bg-white text-black">נשלח אליכם</option>
+                                                <option value="completed" className="bg-white text-black">הושלם (נאסף/נמסר)</option>
+                                                <option value="cancelled" className="bg-white text-black">בוטל</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                );
+                            })
+                        )}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    );
+}
+
 
 export default function CatalogManagerClient({ catalogId }) {
     const [catalog, setCatalog] = useState(null);
@@ -15,13 +139,21 @@ export default function CatalogManagerClient({ catalogId }) {
     const [availableCategories, setAvailableCategories] = useState([]);
     
     // Edit Catalog State
-    const [isEditing, setIsEditing] = useState(false);
     const [editName, setEditName] = useState("");
     const [editSlug, setEditSlug] = useState("");
     const [editDesc, setEditDesc] = useState("");
     const [editEmail, setEditEmail] = useState("");
     const [editImage, setEditImage] = useState("");
     const [editImageInputType, setEditImageInputType] = useState("file");
+    
+    // Shipping & Samples State
+    const [editSelfPickup, setEditSelfPickup] = useState(false);
+    const [editDeliveryActive, setEditDeliveryActive] = useState(false);
+    const [editDeliveryPrice, setEditDeliveryPrice] = useState(0);
+    const [editSampleTiers, setEditSampleTiers] = useState([]);
+
+    // Tabs
+    const [activeTab, setActiveTab] = useState("products");
 
     // Add Item State
     const [newItemBrand, setNewItemBrand] = useState("");
@@ -102,6 +234,20 @@ export default function CatalogManagerClient({ catalogId }) {
             setEditDesc(catData.description || "");
             setEditEmail(catData.contact_email);
             setEditImage(catData.image_url || "");
+            setEditSelfPickup(catData.self_pickup_active || false);
+            setEditDeliveryActive(catData.delivery_active || false);
+            setEditDeliveryPrice(catData.delivery_price || 0);
+            
+            // Handle sample tiers potentially being string or object
+            let parsedTiers = [];
+            if (catData.sample_tiers) {
+                if (typeof catData.sample_tiers === 'string') {
+                    try { parsedTiers = JSON.parse(catData.sample_tiers); } catch (e) {}
+                } else if (Array.isArray(catData.sample_tiers)) {
+                    parsedTiers = catData.sample_tiers;
+                }
+            }
+            setEditSampleTiers(parsedTiers);
 
             // Fetch Items
             const itemsRes = await fetch(`/api/user-catalogs/${catalogId}/items`);
@@ -169,13 +315,16 @@ export default function CatalogManagerClient({ catalogId }) {
                     slug: editSlug.toLowerCase().replace(/[^a-z0-9-]/g, '-'),
                     description: editDesc,
                     contact_email: editEmail,
-                    image_url: editImage || null
+                    image_url: editImage || null,
+                    self_pickup_active: editSelfPickup,
+                    delivery_active: editDeliveryActive,
+                    delivery_price: Number(editDeliveryPrice),
+                    sample_tiers: editSampleTiers
                 })
             });
 
             if (res.ok) {
-                toast.success("קטלוג עודכן בהצלחה!");
-                setIsEditing(false);
+                toast.success("הגדרות קטלוג עודכנו בהצלחה!");
                 fetchCatalogData();
             } else {
                 const ext = await res.json();
@@ -393,12 +542,6 @@ export default function CatalogManagerClient({ catalogId }) {
                 </div>
                 <div className="flex items-center gap-2">
                     <button 
-                        onClick={() => setIsEditing(!isEditing)}
-                        className={`px-4 py-2 rounded-lg text-sm font-bold border transition ${isEditing ? 'bg-black text-white border-black' : 'bg-white text-gray-700 hover:bg-gray-50'}`}
-                    >
-                        {isEditing ? 'סגור עריכה' : 'הגדרות קטלוג'}
-                    </button>
-                    <button 
                         onClick={handleDeleteCatalog}
                         className="px-4 py-2 rounded-lg text-sm font-bold bg-white text-red-500 border border-red-200 hover:bg-red-50 hover:border-red-300 transition"
                     >
@@ -407,8 +550,30 @@ export default function CatalogManagerClient({ catalogId }) {
                 </div>
             </div>
 
-            {/* Edit Catalog Form */}
-            {isEditing && (
+            {/* Tabs Navigation */}
+            <div className="flex border-b border-gray-200 overflow-x-auto no-scrollbar">
+                <button 
+                    onClick={() => setActiveTab('products')} 
+                    className={`px-6 py-3 font-bold text-sm whitespace-nowrap border-b-2 transition-colors ${activeTab === 'products' ? 'border-black text-black' : 'border-transparent text-gray-500 hover:text-gray-900'}`}
+                >
+                    מוצרים
+                </button>
+                <button 
+                    onClick={() => setActiveTab('settings')} 
+                    className={`px-6 py-3 font-bold text-sm whitespace-nowrap border-b-2 transition-colors ${activeTab === 'settings' ? 'border-black text-black' : 'border-transparent text-gray-500 hover:text-gray-900'}`}
+                >
+                    הגדרות ומשלוחים
+                </button>
+                <button 
+                    onClick={() => setActiveTab('orders')} 
+                    className={`px-6 py-3 font-bold text-sm whitespace-nowrap border-b-2 transition-colors ${activeTab === 'orders' ? 'border-black text-black' : 'border-transparent text-gray-500 hover:text-gray-900'}`}
+                >
+                    הזמנות
+                </button>
+            </div>
+
+            {/* Settings Tab */}
+            {activeTab === 'settings' && (
                 <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm animate-fade-in">
                     <h2 className="text-lg font-bold mb-4">הגדרות בסיסיות</h2>
                     <form onSubmit={handleUpdateCatalog} className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -485,14 +650,132 @@ export default function CatalogManagerClient({ catalogId }) {
                             <label className="block text-sm font-medium text-gray-700 mb-1">תיאור</label>
                             <textarea value={editDesc} onChange={(e) => setEditDesc(e.target.value)} className="w-full p-2 border rounded focus:ring-1 focus:ring-black outline-none resize-none h-20" />
                         </div>
-                        <div className="md:col-span-2 text-left">
-                            <button type="submit" className="px-6 py-2 bg-black text-white rounded font-bold hover:bg-gray-800 transition">שמור שינויים</button>
+
+                        {/* Shipping & Delivery */}
+                        <div className="md:col-span-2 border-t pt-6 mt-2">
+                            <h3 className="text-md font-bold mb-3">הגדרות משלוח</h3>
+                            <div className="flex flex-col gap-4 bg-gray-50 p-4 rounded-xl border border-gray-200">
+                                
+                                <label className="flex items-center gap-3 cursor-pointer">
+                                    <input 
+                                        type="checkbox" 
+                                        checked={editSelfPickup} 
+                                        onChange={(e) => setEditSelfPickup(e.target.checked)} 
+                                        className="w-5 h-5 text-black border-gray-300 rounded focus:ring-black"
+                                    />
+                                    <span className="text-sm font-medium">מאפשר איסוף עצמי (חינם)</span>
+                                </label>
+
+                                <div className="border-t border-gray-200 pt-4">
+                                    <label className="flex items-center gap-3 cursor-pointer mb-3">
+                                        <input 
+                                            type="checkbox" 
+                                            checked={editDeliveryActive} 
+                                            onChange={(e) => setEditDeliveryActive(e.target.checked)} 
+                                            className="w-5 h-5 text-black border-gray-300 rounded focus:ring-black"
+                                        />
+                                        <span className="text-sm font-medium">מציע משלוחים בעלות</span>
+                                    </label>
+                                    
+                                    {editDeliveryActive && (
+                                        <div className="pl-8 flex flex-col gap-1">
+                                            <label className="text-xs text-gray-500">עלות משלוח (₪)</label>
+                                            <input 
+                                                type="number" 
+                                                min="0"
+                                                value={editDeliveryPrice}
+                                                onChange={(e) => setEditDeliveryPrice(e.target.value)}
+                                                className="w-32 p-2 border rounded focus:ring-1 focus:ring-black outline-none text-sm"
+                                            />
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+
+                        {/* Free Samples Tiers */}
+                        <div className="md:col-span-2 border-t pt-6 mt-2">
+                             <div className="flex justify-between items-center mb-3">
+                                <h3 className="text-md font-bold">הטבות דוגמיות (2ml) לפי סכום רכישה</h3>
+                                <button 
+                                    type="button" 
+                                    onClick={() => setEditSampleTiers([...editSampleTiers, { minAmount: 100, samplesCount: 1, message: "" }])}
+                                    className="text-xs text-black border border-black hover:bg-black hover:text-white px-3 py-1 rounded-full transition"
+                                >
+                                    + הוסף מדרגה
+                                </button>
+                             </div>
+                             
+                             <div className="space-y-3">
+                                {editSampleTiers.length === 0 ? (
+                                    <p className="text-sm text-gray-500 italic bg-gray-50 p-4 rounded-xl text-center">אין מדרגות מוגדרות. לקוחות לא יקבלו דוגמיות חינם.</p>
+                                ) : (
+                                    editSampleTiers.map((tier, idx) => (
+                                        <div key={idx} className="flex flex-col sm:flex-row gap-3 bg-gray-50 p-3 rounded-lg border border-gray-200 items-start sm:items-center relative">
+                                            <button 
+                                                type="button" 
+                                                onClick={() => setEditSampleTiers(editSampleTiers.filter((_, i) => i !== idx))}
+                                                className="absolute top-2 left-2 text-red-400 hover:text-red-600 sm:static sm:order-last"
+                                                title="הסר מדרגה"
+                                            >
+                                                ✕
+                                            </button>
+                                            <div className="flex flex-col gap-1 w-full sm:w-1/4">
+                                                <label className="text-[10px] text-gray-500 font-bold uppercase">בקנייה מעל (₪)</label>
+                                                <input 
+                                                    type="number" 
+                                                    min="1"
+                                                    value={tier.minAmount}
+                                                    onChange={(e) => {
+                                                        const newTiers = [...editSampleTiers];
+                                                        newTiers[idx].minAmount = Number(e.target.value);
+                                                        setEditSampleTiers(newTiers);
+                                                    }}
+                                                    className="w-full p-2 text-sm border rounded outline-none focus:ring-1 focus:ring-black"
+                                                />
+                                            </div>
+                                            <div className="flex flex-col gap-1 w-full sm:w-1/4">
+                                                <label className="text-[10px] text-gray-500 font-bold uppercase">מספר דוגמיות עלינו</label>
+                                                <input 
+                                                    type="number" 
+                                                    min="1"
+                                                    value={tier.samplesCount}
+                                                    onChange={(e) => {
+                                                        const newTiers = [...editSampleTiers];
+                                                        newTiers[idx].samplesCount = Number(e.target.value);
+                                                        setEditSampleTiers(newTiers);
+                                                    }}
+                                                    className="w-full p-2 text-sm border rounded outline-none focus:ring-1 focus:ring-black"
+                                                />
+                                            </div>
+                                            <div className="flex flex-col gap-1 w-full sm:w-1/2">
+                                                <label className="text-[10px] text-gray-500 font-bold uppercase">הודעה (אופציונלי)</label>
+                                                <input 
+                                                    type="text" 
+                                                    placeholder="למשל: 3 דוגמיות מתנה עלינו!"
+                                                    value={tier.message || ""}
+                                                    onChange={(e) => {
+                                                        const newTiers = [...editSampleTiers];
+                                                        newTiers[idx].message = e.target.value;
+                                                        setEditSampleTiers(newTiers);
+                                                    }}
+                                                    className="w-full p-2 text-sm border rounded outline-none focus:ring-1 focus:ring-black"
+                                                />
+                                            </div>
+                                        </div>
+                                    ))
+                                )}
+                             </div>
+                        </div>
+
+                        <div className="md:col-span-2 text-left pt-4 mt-4 border-t">
+                            <button type="submit" className="px-8 py-3 bg-black text-white rounded-lg font-bold hover:bg-gray-800 transition">שמור הגדרות עריכה</button>
                         </div>
                     </form>
                 </div>
             )}
 
-            
+            {activeTab === 'products' && (
             <div className="flex flex-col lg:flex-row gap-8">
                 {/* Form: Add or Edit Item */}
                 <div className="w-full lg:w-1/3">
@@ -844,6 +1127,12 @@ export default function CatalogManagerClient({ catalogId }) {
                     })()}
                 </div>
             </div>
+            )}
+
+            {/* Orders Tab Placeholder */}
+            {activeTab === 'orders' && (
+                <OrdersTab catalogId={catalogId} />
+            )}
 
 
             {/* Confirm Modal */}
