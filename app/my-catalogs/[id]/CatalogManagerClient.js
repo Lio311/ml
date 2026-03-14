@@ -460,18 +460,18 @@ export default function CatalogManagerClient({ catalogId }) {
                         <form onSubmit={editingItemId ? handleUpdateItem : handleAddItem} className="space-y-4">
                             <div className="grid grid-cols-2 gap-3">
                                 <div>
-                                    <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Brand Name (English)</label>
-                                    <input type="text" required value={editingItemId ? editItemData.brand : newItemBrand} onChange={(e) => editingItemId ? setEditItemData({...editItemData, brand: e.target.value}) : setNewItemBrand(e.target.value)} className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-black outline-none text-sm" placeholder="e.g. Tom Ford" />
+                                    <label className="block text-xs font-bold text-gray-500 uppercase mb-1">שם המותג (באנגלית)</label>
+                                    <input type="text" required value={editingItemId ? editItemData.brand : newItemBrand} onChange={(e) => editingItemId ? setEditItemData({...editItemData, brand: e.target.value}) : setNewItemBrand(e.target.value)} className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-black outline-none text-sm" placeholder="למשל: Tom Ford" />
                                 </div>
                                 <div>
-                                    <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Fragrance Name (English)</label>
-                                    <input type="text" required value={editingItemId ? editItemData.fragrance_name : newItemFragranceName} onChange={(e) => editingItemId ? setEditItemData({...editItemData, fragrance_name: e.target.value}) : setNewItemFragranceName(e.target.value)} className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-black outline-none text-sm" placeholder="e.g. Lost Cherry" />
+                                    <label className="block text-xs font-bold text-gray-500 uppercase mb-1">דגם (באנגלית)</label>
+                                    <input type="text" required value={editingItemId ? editItemData.fragrance_name : newItemFragranceName} onChange={(e) => editingItemId ? setEditItemData({...editItemData, fragrance_name: e.target.value}) : setNewItemFragranceName(e.target.value)} className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-black outline-none text-sm" placeholder="למשל: Lost Cherry" />
                                 </div>
                             </div>
 
                             <div className="grid grid-cols-2 gap-3">
                                 <div>
-                                    <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Gender</label>
+                                    <label className="block text-xs font-bold text-gray-500 uppercase mb-1">מגדר</label>
                                     <select required value={editingItemId ? editItemData.gender : newItemGender} onChange={(e) => editingItemId ? setEditItemData({...editItemData, gender: e.target.value}) : setNewItemGender(e.target.value)} className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-black outline-none text-sm appearance-none bg-white">
                                         <option value="">בחר מגדר</option>
                                         <option value="Unisex">Unisex</option>
@@ -480,22 +480,22 @@ export default function CatalogManagerClient({ catalogId }) {
                                     </select>
                                 </div>
                                 <div>
-                                    <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Category</label>
-                                    <input type="text" required value={editingItemId ? editItemData.category : newItemCategory} onChange={(e) => editingItemId ? setEditItemData({...editItemData, category: e.target.value}) : setNewItemCategory(e.target.value)} className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-black outline-none text-sm" placeholder="e.g. Amber Floral" />
+                                    <label className="block text-xs font-bold text-gray-500 uppercase mb-1">קטגוריה</label>
+                                    <input type="text" required value={editingItemId ? editItemData.category : newItemCategory} onChange={(e) => editingItemId ? setEditItemData({...editItemData, category: e.target.value}) : setNewItemCategory(e.target.value)} className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-black outline-none text-sm" placeholder="למשל: Amber Floral" />
                                 </div>
                             </div>
 
                             <div>
-                                <label className="block text-xs font-bold text-gray-500 uppercase mb-2">Fragrance Notes (English)</label>
+                                <label className="block text-xs font-bold text-gray-500 uppercase mb-2">תווי הבושם (באנגלית)</label>
                                 <div className="space-y-2">
-                                    <input type="text" required value={editingItemId ? editItemData.top_notes : newItemTopNotes} onChange={(e) => editingItemId ? setEditItemData({...editItemData, top_notes: e.target.value}) : setNewItemTopNotes(e.target.value)} className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-black outline-none text-sm" placeholder="Top: Cherry, Bitter Almond..." />
-                                    <input type="text" required value={editingItemId ? editItemData.middle_notes : newItemMiddleNotes} onChange={(e) => editingItemId ? setEditItemData({...editItemData, middle_notes: e.target.value}) : setNewItemMiddleNotes(e.target.value)} className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-black outline-none text-sm" placeholder="Middle: Sour Cherry, Damask Rose..." />
-                                    <input type="text" required value={editingItemId ? editItemData.base_notes : newItemBaseNotes} onChange={(e) => editingItemId ? setEditItemData({...editItemData, base_notes: e.target.value}) : setNewItemBaseNotes(e.target.value)} className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-black outline-none text-sm" placeholder="Base: Vanilla, Tonka Bean..." />
+                                    <input type="text" required value={editingItemId ? editItemData.top_notes : newItemTopNotes} onChange={(e) => editingItemId ? setEditItemData({...editItemData, top_notes: e.target.value}) : setNewItemTopNotes(e.target.value)} className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-black outline-none text-sm" placeholder="תווים עליונים..." />
+                                    <input type="text" required value={editingItemId ? editItemData.middle_notes : newItemMiddleNotes} onChange={(e) => editingItemId ? setEditItemData({...editItemData, middle_notes: e.target.value}) : setNewItemMiddleNotes(e.target.value)} className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-black outline-none text-sm" placeholder="תווי אמצע..." />
+                                    <input type="text" required value={editingItemId ? editItemData.base_notes : newItemBaseNotes} onChange={(e) => editingItemId ? setEditItemData({...editItemData, base_notes: e.target.value}) : setNewItemBaseNotes(e.target.value)} className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-black outline-none text-sm" placeholder="תווי בסיס..." />
                                 </div>
                             </div>
 
                             <div>
-                                <label className="block text-xs font-bold text-gray-500 uppercase mb-2">Sizes & Prices (₪)</label>
+                                <label className="block text-xs font-bold text-gray-500 uppercase mb-2">גדלים ומחירים (₪)</label>
                                 <div className="space-y-2 border p-3 rounded-lg bg-white">
                                     {Object.entries(editingItemId ? editItemData.sizes : newItemSizes).map(([size, data]) => (
                                         <div key={size} className="flex items-center gap-3">
@@ -536,7 +536,7 @@ export default function CatalogManagerClient({ catalogId }) {
                                                     }
                                                 }}
                                                 className="w-full p-2 border rounded focus:ring-1 focus:ring-black outline-none disabled:bg-gray-100 disabled:opacity-50 text-sm" 
-                                                placeholder={`Price for ${size}`} 
+                                                placeholder={`מחיר עבור ${size}`} 
                                             />
                                         </div>
                                     ))}
@@ -544,7 +544,7 @@ export default function CatalogManagerClient({ catalogId }) {
                             </div>
 
                             <div>
-                                <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Product Image</label>
+                                <label className="block text-xs font-bold text-gray-500 uppercase mb-1">תמונת מוצר</label>
                                 {((editingItemId && editItemData.imageInputType === "file") || (!editingItemId && newItemImageInputType === "file")) ? (
                                     <div className="flex flex-col gap-2">
                                         <label className="w-full flex flex-col items-center justify-center h-20 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 bg-white transition-colors relative overflow-hidden">
@@ -573,8 +573,8 @@ export default function CatalogManagerClient({ catalogId }) {
                             </div>
 
                             <div>
-                                <label className="block text-xs font-bold text-gray-500 uppercase mb-1">Description (English/Hebrew)</label>
-                                <textarea required value={editingItemId ? editItemData.description : newItemDesc} onChange={(e) => editingItemId ? setEditItemData({...editItemData, description: e.target.value}) : setNewItemDesc(e.target.value)} className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-black outline-none resize-none h-20 text-sm" placeholder="Tell us more about this fragrance..." />
+                                <label className="block text-xs font-bold text-gray-500 uppercase mb-1">תיאור (אנגלית/עברית)</label>
+                                <textarea required value={editingItemId ? editItemData.description : newItemDesc} onChange={(e) => editingItemId ? setEditItemData({...editItemData, description: e.target.value}) : setNewItemDesc(e.target.value)} className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-black outline-none resize-none h-20 text-sm" placeholder="ספרו לנו עוד על הבושם..." />
                             </div>
                             
                             <button type="submit" disabled={isSubmittingItem} className="w-full py-3 bg-black text-white rounded-lg font-bold hover:bg-gray-800 transition shadow disabled:opacity-50">
