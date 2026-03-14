@@ -19,6 +19,7 @@ async function setupUserCatalogsTable() {
                 slug VARCHAR(255) UNIQUE NOT NULL,
                 name VARCHAR(255) NOT NULL,
                 description TEXT,
+                image_url TEXT,
                 contact_email VARCHAR(255) NOT NULL,
                 created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
             );

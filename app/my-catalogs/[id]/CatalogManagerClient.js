@@ -16,6 +16,7 @@ export default function CatalogManagerClient({ catalogId }) {
     const [editSlug, setEditSlug] = useState("");
     const [editDesc, setEditDesc] = useState("");
     const [editEmail, setEditEmail] = useState("");
+    const [editImage, setEditImage] = useState("");
 
     // Add Item State
     const [newItemName, setNewItemName] = useState("");
@@ -53,6 +54,7 @@ export default function CatalogManagerClient({ catalogId }) {
             setEditSlug(catData.slug);
             setEditDesc(catData.description || "");
             setEditEmail(catData.contact_email);
+            setEditImage(catData.image_url || "");
 
             // Fetch Items
             const itemsRes = await fetch(`/api/user-catalogs/${catalogId}/items`);
@@ -82,7 +84,8 @@ export default function CatalogManagerClient({ catalogId }) {
                     name: editName,
                     slug: editSlug.toLowerCase().replace(/[^a-z0-9-]/g, '-'),
                     description: editDesc,
-                    contact_email: editEmail
+                    contact_email: editEmail,
+                    image_url: editImage || null
                 })
             });
 
@@ -247,6 +250,31 @@ export default function CatalogManagerClient({ catalogId }) {
                                 <input type="text" required value={editSlug} onChange={(e) => setEditSlug(e.target.value)} className="w-full p-2 border rounded-r focus:ring-1 focus:ring-black outline-none" />
                             </div>
                         </div>
+                        <div>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">תמונת לוגו (תמונה או קישור)</label>
+                            <input 
+                                type="url" 
+                                value={editImage} 
+                                onChange={(e) => setEditImage(e.target.value)} 
+                                className="w-full p-2 border rounded focus:ring-1 focus:ring-black outline-none text-left" 
+                                dir="ltr" 
+                                placeholder="https://..." 
+                            />
+                            <div className="mt-2 text-xs flex items-center gap-2">
+                                <label className="cursor-pointer bg-gray-100 text-gray-700 px-3 py-1.5 rounded hover:bg-gray-200 transition font-medium border border-gray-200 outline-none">
+                                    העלה תמונה מהמחשב
+                                    <input type="file" className="hidden" accept="image/png, image/jpeg, image/webp" onChange={(e) => {
+                                        const file = e.target.files[0];
+                                        if (file) {
+                                            if (file.size > 2 * 1024 * 1024) { return toast.error("קובץ גדול מדי. מקסימום 2MB."); }
+                                            const reader = new FileReader();
+                                            reader.onloadend = () => setEditImage(reader.result);
+                                            reader.readAsDataURL(file);
+                                        }
+                                    }}/>
+                                </label>
+                            </div>
+                        </div>
                         <div className="md:col-span-2">
                             <label className="block text-sm font-medium text-gray-700 mb-1">תיאור</label>
                             <textarea value={editDesc} onChange={(e) => setEditDesc(e.target.value)} className="w-full p-2 border rounded focus:ring-1 focus:ring-black outline-none resize-none h-20" />
@@ -307,9 +335,27 @@ export default function CatalogManagerClient({ catalogId }) {
                                 <p className="text-xs text-gray-500 mt-1">בחר אילו גדלים תרצה להציע עבור המוצר ומה המחיר של כל אחד.</p>
                             </div>
                             <div>
-                                <label className="block text-sm font-medium text-gray-700 mb-1">קישור לתמונה (URL)</label>
+                                <label className="block text-sm font-medium text-gray-700 mb-1">תמונת מוצר (תמונה או קישור)</label>
                                 <input type="url" value={newItemImage} onChange={(e) => setNewItemImage(e.target.value)} className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-black outline-none text-left" dir="ltr" placeholder="https://..." />
-                                <p className="text-xs text-gray-500 mt-1">אופציונלי. הדבק קישור לתמונה קיימת ברשת.</p>
+                                <div className="mt-2 flex flex-col sm:flex-row items-start sm:items-center gap-3">
+                                    <label className="cursor-pointer text-xs bg-gray-100 text-gray-700 px-4 py-2 rounded-lg hover:bg-gray-200 transition font-medium border border-gray-200">
+                                        בחר תמונה מהמחשב (PNG, JPG)
+                                        <input type="file" className="hidden" accept="image/png, image/jpeg, image/webp" onChange={(e) => {
+                                            const file = e.target.files[0];
+                                            if (file) {
+                                                if (file.size > 2 * 1024 * 1024) { return toast.error("קובץ גדול מדי. עד 2MB."); }
+                                                const reader = new FileReader();
+                                                reader.onloadend = () => setNewItemImage(reader.result);
+                                                reader.readAsDataURL(file);
+                                            }
+                                        }}/>
+                                    </label>
+                                </div>
+                                {newItemImage && (
+                                    <div className="mt-3">
+                                        <img src={newItemImage} alt="Preview" className="w-20 h-20 object-cover rounded-md border border-gray-200 shadow-sm block" />
+                                    </div>
+                                )}
                             </div>
                             <div>
                                 <label className="block text-sm font-medium text-gray-700 mb-1">תיאור</label>
