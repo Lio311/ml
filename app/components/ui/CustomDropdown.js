@@ -1,5 +1,6 @@
 "use client";
-import { useState, useEffect, useRef, useCallback, createPortal } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
+import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { ChevronDown, Check } from "lucide-react";
 

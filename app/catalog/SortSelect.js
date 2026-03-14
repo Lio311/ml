@@ -1,17 +1,18 @@
+"use client";
+import { useRouter, useSearchParams } from "next/navigation";
 import CustomDropdown from "../components/ui/CustomDropdown";
-import { ArrowUpDown, Clock, TrendingDown, TrendingUp } from "lucide-react";
-
-const SORT_OPTIONS = [
-    { value: "newest", label: "חדש ביותר", icon: <Clock className="w-4 h-4" /> },
-    { value: "oldest", label: "ישן ביותר", icon: <Clock className="w-4 h-4 opacity-50" /> },
-    { value: "price_asc", label: "מחיר: מהנמוך לגבוה", icon: <TrendingUp className="w-4 h-4" /> },
-    { value: "price_desc", label: "מחיר: מהגבוה לנמוך", icon: <TrendingDown className="w-4 h-4" /> },
-];
 
 export default function SortSelect() {
     const router = useRouter();
     const searchParams = useSearchParams();
     const currentSort = searchParams.get("sort") || "newest";
+
+    const SORT_OPTIONS = [
+        { value: "newest", label: "חדש ביותר" },
+        { value: "oldest", label: "ישן ביותר" },
+        { value: "price_asc", label: "מחיר: מהנמוך לגבוה" },
+        { value: "price_desc", label: "מחיר: מהגבוה לנמוך" },
+    ];
 
     const handleSortChange = (newSort) => {
         const params = new URLSearchParams(searchParams);
