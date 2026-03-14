@@ -290,7 +290,7 @@ export default function CartClient() {
 
     // Confetti on sample unlocked
     useEffect(() => {
-        if (freeSamplesCount > prevSamplesCount.current) {
+        if (isMainVendor && freeSamplesCount > prevSamplesCount.current) {
             confetti({
                 particleCount: 100,
                 spread: 70,
@@ -299,7 +299,7 @@ export default function CartClient() {
             });
         }
         prevSamplesCount.current = freeSamplesCount;
-    }, [freeSamplesCount]);
+    }, [freeSamplesCount, isMainVendor]);
 
     // Upsell Products
     useEffect(() => {
@@ -497,7 +497,7 @@ export default function CartClient() {
                 </div>
 
                 {/* Vendor Selector */}
-                {vendorBuckets.length > 1 && (
+                {cartItems.length > 0 && vendorBuckets.length > 1 && (
                     <div className="mb-6 flex flex-wrap gap-2 sticky top-20 z-40 bg-gray-50/80 backdrop-blur-md py-4">
                         {vendorBuckets.map(vendor => (
                             <button
@@ -702,39 +702,41 @@ export default function CartClient() {
                                     </div>
 
                                     {/* Free Samples Progress Bar */}
-                                    <div className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
-                                        <h3 className="font-bold text-gray-900 mb-2 flex items-center gap-2">
-                                            <span>🎁</span>
-                                            {freeSamplesCount === 6 ? (
-                                                <span className="text-green-600">קיבלת את כל הדוגמיות! (6)</span>
-                                            ) : (
-                                                <span>דוגמיות חינם</span>
-                                            )}
-                                        </h3>
+                                    {isMainVendor && (
+                                        <div className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
+                                            <h3 className="font-bold text-gray-900 mb-2 flex items-center gap-2">
+                                                <span>🎁</span>
+                                                {freeSamplesCount === 6 ? (
+                                                    <span className="text-green-600">קיבלת את כל הדוגמיות! (6)</span>
+                                                ) : (
+                                                    <span>דוגמיות חינם</span>
+                                                )}
+                                            </h3>
 
-                                        <div className="relative h-4 bg-gray-100 rounded-full overflow-hidden mb-2">
-                                            <div
-                                                className="absolute top-0 right-0 h-full bg-gradient-to-l from-blue-500 to-purple-600 transition-all duration-1000 ease-out rounded-full"
-                                                style={{ width: `${Math.min(100, (subtotal / 1000) * 100)}%` }}
-                                            ></div>
-                                            <div className="absolute top-0 right-[30%] h-full w-0.5 bg-white/50 z-10" title="300₪ - 2 דוגמיות"></div>
-                                            <div className="absolute top-0 right-[50%] h-full w-0.5 bg-white/50 z-10" title="500₪ - 4 דוגמיות"></div>
-                                        </div>
+                                            <div className="relative h-4 bg-gray-100 rounded-full overflow-hidden mb-2">
+                                                <div
+                                                    className="absolute top-0 right-0 h-full bg-gradient-to-l from-blue-500 to-purple-600 transition-all duration-1000 ease-out rounded-full"
+                                                    style={{ width: `${Math.min(100, (subtotal / 1000) * 100)}%` }}
+                                                ></div>
+                                                <div className="absolute top-0 right-[30%] h-full w-0.5 bg-white/50 z-10" title="300₪ - 2 דוגמיות"></div>
+                                                <div className="absolute top-0 right-[50%] h-full w-0.5 bg-white/50 z-10" title="500₪ - 4 דוגמיות"></div>
+                                            </div>
 
-                                        <div className="flex justify-between text-[10px] text-gray-400 font-medium px-1">
-                                            <span className={subtotal >= 0 ? "text-gray-900 font-bold" : ""}>0</span>
-                                            <span className={subtotal >= 300 ? "text-blue-600 font-bold" : ""}>300 (2)</span>
-                                            <span className={subtotal >= 500 ? "text-purple-600 font-bold" : ""}>500 (4)</span>
-                                            <span className={subtotal >= 1000 ? "text-green-600 font-bold" : ""}>1000 (6)</span>
-                                        </div>
+                                            <div className="flex justify-between text-[10px] text-gray-400 font-medium px-1">
+                                                <span className={subtotal >= 0 ? "text-gray-900 font-bold" : ""}>0</span>
+                                                <span className={subtotal >= 300 ? "text-blue-600 font-bold" : ""}>300 (2)</span>
+                                                <span className={subtotal >= 500 ? "text-purple-600 font-bold" : ""}>500 (4)</span>
+                                                <span className={subtotal >= 1000 ? "text-green-600 font-bold" : ""}>1000 (6)</span>
+                                            </div>
 
-                                        <div className="mt-3 text-xs text-center">
-                                            {freeSamplesCount === 0 && <span className="text-gray-500">עוד <span className="font-bold text-black">{300 - subtotal} ₪</span> ל-2 דוגמיות חינם!</span>}
-                                            {freeSamplesCount === 2 && <span className="text-blue-600">יש לך 2 דוגמיות. עוד <span className="font-bold">{500 - subtotal} ₪</span> ל-4 דוגמיות!</span>}
-                                            {freeSamplesCount === 4 && <span className="text-purple-600">וואו! 4 דוגמיות שלך. עוד <span className="font-bold">{1000 - subtotal} ₪</span> ל-6 דוגמיות!</span>}
-                                            {freeSamplesCount === 6 && <span className="text-green-600 font-bold">פינקנו אותך ב-6 דוגמיות! תהנה! 🎉</span>}
+                                            <div className="mt-3 text-xs text-center">
+                                                {freeSamplesCount === 0 && <span className="text-gray-500">עוד <span className="font-bold text-black">{300 - subtotal} ₪</span> ל-2 דוגמיות חינם!</span>}
+                                                {freeSamplesCount === 2 && <span className="text-blue-600">יש לך 2 דוגמיות. עוד <span className="font-bold">{500 - subtotal} ₪</span> ל-4 דוגמיות!</span>}
+                                                {freeSamplesCount === 4 && <span className="text-purple-600">וואו! 4 דוגמיות שלך. עוד <span className="font-bold">{1000 - subtotal} ₪</span> ל-6 דוגמיות!</span>}
+                                                {freeSamplesCount === 6 && <span className="text-green-600 font-bold">פינקנו אותך ב-6 דוגמיות! תהנה! 🎉</span>}
+                                            </div>
                                         </div>
-                                    </div>
+                                    )}
 
                                     {/* Recommendations / Upsell */}
                                     {recommendations.length > 0 && (
@@ -840,7 +842,7 @@ export default function CartClient() {
                 </div>
             </div>
 
-            {showWheel && (
+            {isMainVendor && showWheel && (
                 <LuckyWheel
                     onWin={handleWin}
                     onClose={() => { setShowWheel(false); setHasSeenWheel(true); }}
