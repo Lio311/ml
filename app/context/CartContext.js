@@ -119,11 +119,27 @@ export function CartProvider({ children }) {
                 (item) => item.id === product.id && item.size === size && (item.vendorId || 'main') === vendorId
             );
             if (existing) {
+                // Stock check for main vendor
+                if (vendorId === 'main') {
+                    const stock = parseInt(product.stock) || 0;
+                    if (stock > 0 && existing.quantity + 1 > stock) {
+                        toast.error("לא ניתן להוסיף יותר — אזל המלאי!");
+                        return prev;
+                    }
+                }
                 return prev.map((item) =>
                     item.id === product.id && item.size === size && (item.vendorId || 'main') === vendorId
                         ? { ...item, ...product, quantity: item.quantity + 1, size, price, vendorId, vendorName }
                         : item
                 );
+            }
+            // Stock check for new item
+            if (vendorId === 'main') {
+                const stock = parseInt(product.stock) || 0;
+                if (stock > 0 && 1 > stock) {
+                    toast.error("המוצר אזל מהמלאי!");
+                    return prev;
+                }
             }
             return [...prev, { ...product, size, price, quantity: 1, vendorId, vendorName }];
         });
@@ -152,7 +168,7 @@ export function CartProvider({ children }) {
                 if (item.id === id && item.size === size && (item.vendorId || 'main') === vendorId) {
                     if (vendorId === 'main') {
                         const stock = parseInt(item.stock) || 0;
-                        if (quantity * size > stock) {
+                        if (stock > 0 && quantity > stock) {
                             toast.error("לא ניתן להוסיף את המוצר, אזל המלאי!");
                             return item;
                         }

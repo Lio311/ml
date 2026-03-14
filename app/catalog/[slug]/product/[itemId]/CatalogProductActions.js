@@ -1,11 +1,11 @@
 "use client";
 
 import { useState } from "react";
-import { useCatalogCart } from "../../CatalogCartContext";
+import { useCart } from "../../../../context/CartContext";
 import toast from "react-hot-toast";
 
 export default function CatalogProductActions({ item, slug }) {
-    const { addToCart, cartItems } = useCatalogCart();
+    const { addToCart, cartItems } = useCart();
     const prices = item.prices || {};
     const [addedSize, setAddedSize] = useState(null);
 
@@ -23,11 +23,12 @@ export default function CatalogProductActions({ item, slug }) {
                 id: cartItemId,
                 originalId: item.id,
                 size: size,
-                price: price
+                price: price,
+                stock: 9999 // catalog items don't have stock limits
             },
             size,
             price,
-            item.catalog_id,
+            item.catalog_id || slug,
             item.catalog_name || 'ספק חיצוני'
         );
         toast.success(`נוסף לסל: ${item.fragrance_name} (${size})`);

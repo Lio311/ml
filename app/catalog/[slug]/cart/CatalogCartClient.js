@@ -1,31 +1,24 @@
 "use client";
 
-import { useCatalogCart } from "../CatalogCartContext";
+import { useCart } from "../../../../context/CartContext";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 
 export default function CatalogCartClient({ slug }) {
-    const { cartItems, removeFromCart, updateQuantity, clearCart, subtotal, totalItems } = useCatalogCart();
+    const { cartItems, removeFromCart, updateQuantity, clearActiveVendorCart, setActiveVendorId } = useCart();
     
-    // Catalog specific details
     const [catalogInfo, setCatalogInfo] = useState(null);
-
     const [isSubmitting, setIsSubmitting] = useState(false);
     const router = useRouter();
 
-    // Order Notes State
     const [notes, setNotes] = useState('');
     const [phoneNumber, setPhoneNumber] = useState('');
     const [phoneError, setPhoneError] = useState('');
     const [isSelfPickup, setIsSelfPickup] = useState(false);
 
-    const shippingCost = 30;
-    const effectiveShipping = isSelfPickup ? 0 : shippingCost;
-    const effectiveTotal = subtotal + effectiveShipping;
-
-    // Fetch catalog id to send with order
+    // Fetch catalog info to get catalogId
     useEffect(() => {
         const fetchCat = async () => {
              try {
@@ -33,11 +26,24 @@ export default function CatalogCartClient({ slug }) {
                 if (res.ok) {
                     const data = await res.json();
                     setCatalogInfo(data.catalog);
+                    // Set this catalog as the active vendor
+                    if (data.catalog?.id) setActiveVendorId(data.catalog.id);
                 }
              } catch(e) {}
         };
         fetchCat();
-    }, [slug]);
+    }, [slug, setActiveVendorId]);
+
+    // Filter cart items belonging to this catalog
+    const catalogId = catalogInfo?.id;
+    const catalogCartItems = catalogId
+        ? cartItems.filter(item => (item.vendorId || 'main') === catalogId)
+        : cartItems.filter(item => (item.vendorId || 'main') === slug);
+
+    const subtotal = catalogCartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
+    const shippingCost = 30;
+    const effectiveShipping = isSelfPickup ? 0 : shippingCost;
+    const effectiveTotal = subtotal + effectiveShipping;
 
     const validatePhone = (phone) => {
         if (!phone) return "מספר טלפון הוא שדה חובה";
@@ -52,40 +58,30 @@ export default function CatalogCartClient({ slug }) {
 
     const handleCheckout = async () => {
         const pError = validatePhone(phoneNumber);
-        if (pError) {
-            setPhoneError(pError);
-            toast.error(pError);
-            return;
-        }
-
-        if (!catalogInfo) {
-             toast.error("שגיאה בטעינת הקטלוג");
-             return;
-        }
+        if (pError) { setPhoneError(pError); toast.error(pError); return; }
+        if (!catalogInfo) { toast.error("שגיאה בטעינת הקטלוג"); return; }
 
         setIsSubmitting(true);
-        // Create Order via API specific to catalog
         try {
-            const res = await fetch('/api/orders', {
+            const res = await fetch(`/api/user-catalogs/${catalogInfo.id}/orders`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
-                    items: cartItems.map(i => ({...i})),
+                    items: catalogCartItems,
                     total: effectiveTotal,
-                    freeSamples: 0,
-                    notes: notes,
+                    notes,
                     deliveryMethod: isSelfPickup ? 'self_pickup' : 'mail',
                     phoneNumber: phoneNumber.replace(/\D/g, ''),
-                    catalogId: catalogInfo.id
+                    activeVendorId: catalogInfo.id
                 })
             });
 
             if (res.ok) {
-                clearCart();
+                clearActiveVendorCart();
                 router.push('/checkout/success');
             } else {
                 const data = await res.json();
-                toast.error(`אירעה שגיאה לצערי: ${data.error}`);
+                toast.error(`אירעה שגיאה: ${data.error}`);
                 setIsSubmitting(false);
             }
         } catch (e) {
@@ -94,7 +90,6 @@ export default function CatalogCartClient({ slug }) {
             setIsSubmitting(false);
         }
     };
-
 
     if (isSubmitting) {
         return (
@@ -106,7 +101,7 @@ export default function CatalogCartClient({ slug }) {
         );
     }
 
-    if (cartItems.length === 0) {
+    if (catalogCartItems.length === 0) {
         return (
             <div className="container py-20 text-center">
                 <h1 className="text-3xl font-bold mb-4 font-sans uppercase tracking-widest">הסל ריק</h1>
@@ -127,7 +122,7 @@ export default function CatalogCartClient({ slug }) {
                     <div className="text-gray-400 font-bold uppercase tracking-tighter text-sm">{catalogInfo?.name}</div>
                 </div>
 
-                {cartItems.map((item) => (
+                {catalogCartItems.map((item) => (
                     <div key={item.id} className="flex items-center gap-6 border border-gray-100 p-5 rounded-3xl bg-white shadow-sm hover:shadow-md transition">
                         <div className="w-24 h-24 bg-gray-50 flex items-center justify-center rounded-2xl overflow-hidden relative border border-gray-100 flex-shrink-0">
                             {item.image_url ? (
@@ -146,12 +141,12 @@ export default function CatalogCartClient({ slug }) {
                         </div>
 
                         <div className="flex items-center gap-3 bg-gray-50 p-1.5 rounded-full">
-                            <button onClick={() => updateQuantity(item.id, item.quantity - 1)} className="w-8 h-8 rounded-full bg-white hover:bg-gray-200 transition shadow-sm border border-gray-100 flex items-center justify-center font-bold">-</button>
+                            <button onClick={() => updateQuantity(item.id, item.size, item.quantity - 1, catalogId || slug)} className="w-8 h-8 rounded-full bg-white hover:bg-gray-200 transition shadow-sm border border-gray-100 flex items-center justify-center font-bold">-</button>
                             <span className="w-8 text-center font-bold text-gray-900">{item.quantity}</span>
-                            <button onClick={() => updateQuantity(item.id, item.quantity + 1)} className="w-8 h-8 rounded-full bg-white hover:bg-gray-200 transition shadow-sm border border-gray-100 flex items-center justify-center font-bold">+</button>
+                            <button onClick={() => updateQuantity(item.id, item.size, item.quantity + 1, catalogId || slug)} className="w-8 h-8 rounded-full bg-white hover:bg-gray-200 transition shadow-sm border border-gray-100 flex items-center justify-center font-bold">+</button>
                         </div>
 
-                        <button onClick={() => removeFromCart(item.id)} className="text-red-300 p-2 hover:bg-red-50 hover:text-red-500 rounded-full transition" aria-label="Remove">
+                        <button onClick={() => removeFromCart(item.id, item.size, catalogId || slug)} className="text-red-300 p-2 hover:bg-red-50 hover:text-red-500 rounded-full transition" aria-label="Remove">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
                             </svg>
@@ -175,24 +170,18 @@ export default function CatalogCartClient({ slug }) {
                     <div className="space-y-4 mb-8">
                         <p className="text-xs font-bold text-gray-400 uppercase tracking-widest">שיטת אספקה</p>
                         <div className="grid grid-cols-2 gap-4">
-                            <button
-                                onClick={() => setIsSelfPickup(false)}
-                                className={`flex flex-col items-center gap-1 p-4 rounded-2xl border-2 transition-all duration-300 hover:scale-[1.02] ${!isSelfPickup ? 'border-black bg-black text-white shadow-lg' : 'border-gray-100 bg-gray-50 text-gray-500 hover:border-gray-200'}`}
-                            >
+                            <button onClick={() => setIsSelfPickup(false)} className={`flex flex-col items-center gap-1 p-4 rounded-2xl border-2 transition-all duration-300 hover:scale-[1.02] ${!isSelfPickup ? 'border-black bg-black text-white shadow-lg' : 'border-gray-100 bg-gray-50 text-gray-500 hover:border-gray-200'}`}>
                                 <span className="text-sm font-black">משלוח</span>
                                 <span className="text-xs opacity-70">{shippingCost} ₪</span>
                             </button>
-                            <button
-                                onClick={() => setIsSelfPickup(true)}
-                                className={`flex flex-col items-center gap-1 p-4 rounded-2xl border-2 transition-all duration-300 hover:scale-[1.02] ${isSelfPickup ? 'border-black bg-black text-white shadow-lg' : 'border-gray-100 bg-gray-50 text-gray-500 hover:border-gray-200'}`}
-                            >
+                            <button onClick={() => setIsSelfPickup(true)} className={`flex flex-col items-center gap-1 p-4 rounded-2xl border-2 transition-all duration-300 hover:scale-[1.02] ${isSelfPickup ? 'border-black bg-black text-white shadow-lg' : 'border-gray-100 bg-gray-50 text-gray-500 hover:border-gray-200'}`}>
                                 <span className="text-sm font-black">איסוף עצמי</span>
                                 <span className="text-xs font-bold text-green-500 uppercase">בחינם</span>
                             </button>
                         </div>
                     </div>
 
-                    {/* Total Area */}
+                    {/* Total */}
                     <div className="bg-gray-50 p-6 rounded-3xl mb-8">
                          <div className="flex justify-between items-center">
                             <span className="text-lg font-bold text-gray-600">סה״כ לתשלום</span>
@@ -200,25 +189,21 @@ export default function CatalogCartClient({ slug }) {
                         </div>
                     </div>
 
-                     {/* Details Form Area */}
-                     <div className="space-y-5 mb-8">
+                    {/* Form */}
+                    <div className="space-y-5 mb-8">
                         <div>
                             <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">מספר טלפון לתיאום <span className="text-red-500">*</span></label>
                             <input
                                 type="tel"
                                 required
                                 value={phoneNumber}
-                                onChange={(e) => {
-                                    setPhoneNumber(e.target.value);
-                                    if (phoneError) setPhoneError('');
-                                }}
+                                onChange={(e) => { setPhoneNumber(e.target.value); if (phoneError) setPhoneError(''); }}
                                 className={`w-full p-4 border-2 rounded-2xl focus:ring-0 focus:border-black outline-none transition-all font-bold text-center tracking-widest text-xl ${phoneError ? 'border-red-400 bg-red-50 text-red-900' : 'border-gray-100 bg-gray-50 focus:bg-white'}`}
                                 placeholder="050-0000000"
                                 dir="ltr"
                             />
                             {phoneError && <p className="text-red-500 text-xs mt-2 font-bold text-center">{phoneError}</p>}
                         </div>
-
                         <div>
                             <label className="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">הערות להזמנה</label>
                             <textarea

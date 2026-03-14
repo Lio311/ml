@@ -3,7 +3,7 @@
 import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import toast from "react-hot-toast";
-import { useCatalogCart } from "./CatalogCartContext";
+import { useCart } from "../../context/CartContext";
 
 const ITEMS_PER_PAGE = 16;
 
@@ -32,7 +32,7 @@ function CollapsibleSection({ title, children }) {
 
 // ─── Catalog Product Card (IDENTICAL to main site ProductCard.js) ─────
 function CatalogProductCard({ item, slug, catalogId, catalogName }) {
-    const { addToCart } = useCatalogCart();
+    const { addToCart } = useCart();
     const [added, setAdded] = useState(false);
 
     useEffect(() => {
@@ -45,7 +45,7 @@ function CatalogProductCard({ item, slug, catalogId, catalogName }) {
 
     const handleAdd = (size, price) => {
         addToCart(
-            { ...item, id: `${item.id}_${size}`, originalId: item.id, size, price },
+            { ...item, id: `${item.id}_${size}`, originalId: item.id, size, price, stock: 9999 },
             size,
             price,
             catalogId,
