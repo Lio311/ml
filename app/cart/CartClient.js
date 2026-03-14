@@ -30,16 +30,6 @@ export default function CartClient() {
     const [sharedCart, setSharedCart] = useState(null);
     const [isSelfPickup, setIsSelfPickup] = useState(false);
 
-    // Safety: If current vendor bucket is empty but cart has items, switch to the first non-empty vendor
-    useEffect(() => {
-        if (cartItems.length > 0 && activeItems.length === 0) {
-            const firstVendorWithItems = vendorBuckets?.find(v => v.items.length > 0);
-            if (firstVendorWithItems) {
-                setActiveVendorId(firstVendorWithItems.id);
-            }
-        }
-    }, [cartItems.length, activeItems.length, vendorBuckets, setActiveVendorId]);
-
     // Grouping all items by vendor for the selection UI
     const vendorBuckets = useMemo(() => {
         const buckets = {};
@@ -56,6 +46,16 @@ export default function CartClient() {
         });
         return Object.values(buckets);
     }, [cartItems]);
+
+    // Safety: If current vendor bucket is empty but cart has items, switch to the first non-empty vendor
+    useEffect(() => {
+        if (cartItems.length > 0 && activeItems.length === 0) {
+            const firstVendorWithItems = vendorBuckets?.find(v => v.items.length > 0);
+            if (firstVendorWithItems) {
+                setActiveVendorId(firstVendorWithItems.id);
+            }
+        }
+    }, [cartItems.length, activeItems.length, vendorBuckets, setActiveVendorId]);
 
     // Effective shipping cost based on delivery method
     const effectiveShipping = isSelfPickup ? 0 : shippingCost;
