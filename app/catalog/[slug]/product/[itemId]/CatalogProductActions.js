@@ -56,7 +56,7 @@ export default function CatalogProductActions({ item, slug }) {
                             onClick={() => !inCart && handleAddToCart(size, price)}
                             className={`flex items-center justify-between p-3 border rounded-lg bg-white transition cursor-pointer group ${inCart ? 'border-green-300 bg-green-50' : 'hover:border-black'}`}
                         >
-                            <span className="font-bold text-gray-900" dir="ltr">{size.replace(/ml/gi, '').trim()}</span>
+                            <span className="font-bold text-gray-900" dir="rtl">{size.replace(/ml/gi, '').trim()} מ"ל</span>
                             <div className="flex items-center gap-4">
                                 <span className="text-gray-700 font-medium">{price} ₪</span>
                                 <button
