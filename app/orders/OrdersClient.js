@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useUser } from '@clerk/nextjs';
 import Link from 'next/link';
 import { useCart } from '../context/CartContext';
+import OrderStatusTimeline from '../components/OrderStatusTimeline';
 
 export default function OrdersClient() {
     const { addToCart } = useCart();
@@ -93,6 +94,8 @@ export default function OrdersClient() {
                                     </div>
                                 </div>
                             </div>
+
+                            <OrderStatusTimeline status={order.status} />
 
                             <div className="divide-y">
                                 {order.items.map((item, idx) => (
