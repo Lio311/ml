@@ -245,7 +245,7 @@ export default async function AdminOrdersPage(props) {
                                 <td className="p-4 text-sm text-right">
                                     <ul className="space-y-1">
                                         {order.items?.map((item, idx) => (
-                                            <li key={idx} className="flex gap-2 text-gray-700 justify-end">
+                                            <li key={idx} className="flex gap-2 text-gray-700 justify-start">
                                                 <span className="font-bold whitespace-nowrap">{item.quantity}x</span>
                                                 <span>{item.name}</span>
                                                 <span className="text-gray-500 whitespace-nowrap" dir="ltr">{item.size.toString().includes('ml') ? item.size : `${item.size} ml`}</span>
