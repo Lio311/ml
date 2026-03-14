@@ -31,7 +31,15 @@ export default function CatalogManagerClient({ catalogId }) {
     const [newItemBaseNotes, setNewItemBaseNotes] = useState("");
     const [newItemGender, setNewItemGender] = useState("");
     const [newItemCategory, setNewItemCategory] = useState("");
-    
+
+    // Filter/Sort/Pagination State
+    const [filterGender, setFilterGender] = useState("הכל");
+    const [filterCategory, setFilterCategory] = useState("הכל");
+    const [sortBy, setSortBy] = useState("newest");
+    const [currentPage, setCurrentPage] = useState(1);
+    const [selectedSizes, setSelectedSizes] = useState({});
+    const ITEMS_PER_PAGE = 12;
+
     const [newItemSizes, setNewItemSizes] = useState({
         "2ml": { enabled: false, price: "" },
         "5ml": { enabled: false, price: "" },
@@ -630,75 +638,195 @@ export default function CatalogManagerClient({ catalogId }) {
 
                 {/* Products List */}
                 <div className="w-full lg:w-2/3">
-                    <h2 className="text-2xl font-bold mb-6 flex items-center justify-between">
-                        <span>המוצרים בקטלוג ({items.length})</span>
-                    </h2>
-                    
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
+                        <h2 className="text-2xl font-bold">
+                            המוצרים בקטלוג ({items.length})
+                        </h2>
+                        {items.length > 0 && (
+                            <div className="flex items-center gap-2 text-sm flex-wrap">
+                                {/* Gender Filter */}
+                                <select
+                                    value={filterGender}
+                                    onChange={(e) => { setFilterGender(e.target.value); setCurrentPage(1); }}
+                                    className="p-1.5 border rounded-lg text-sm bg-white focus:ring-1 focus:ring-black outline-none"
+                                >
+                                    <option value="הכל">כל המגדרים</option>
+                                    <option value="Unisex">Unisex</option>
+                                    <option value="Men">Men</option>
+                                    <option value="Women">Women</option>
+                                </select>
+                                {/* Sort */}
+                                <select
+                                    value={sortBy}
+                                    onChange={(e) => { setSortBy(e.target.value); setCurrentPage(1); }}
+                                    className="p-1.5 border rounded-lg text-sm bg-white focus:ring-1 focus:ring-black outline-none"
+                                >
+                                    <option value="newest">חדש ביותר</option>
+                                    <option value="price_asc">מחיר: נמוך לגבוה</option>
+                                    <option value="price_desc">מחיר: גבוה לנמוך</option>
+                                    <option value="name_asc">שם א-ת</option>
+                                </select>
+                            </div>
+                        )}
+                    </div>
+
                     {items.length === 0 ? (
                         <div className="bg-white border-2 border-dashed border-gray-200 rounded-xl p-12 text-center flex flex-col items-center justify-center">
                             <div className="text-4xl mb-3 opacity-50">🛍️</div>
                             <h3 className="text-lg font-bold text-gray-700 mb-1">הקטלוג שלך ריק</h3>
                             <p className="text-gray-500 text-sm">התחל להוסיף מוצרים משלך בטופס מימין.</p>
                         </div>
-                    ) : (
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            {items.map(item => (
-                                <div key={item.id} className="bg-white border rounded-xl overflow-hidden shadow-sm hover:shadow-md transition flex flex-col group relative">
-                                    <div className="h-40 bg-gray-100 flex items-center justify-center overflow-hidden relative">
-                                        {item.image_url ? (
-                                            <img src={item.image_url} alt={item.name} className="w-full h-full object-cover" />
-                                        ) : (
-                                            <div className="text-4xl opacity-20">📦</div>
-                                        )}
-                                        <div className="absolute top-2 right-2 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                            <button 
-                                                onClick={() => handleStartEdit(item)}
-                                                className="bg-white text-blue-600 p-2 rounded-full hover:bg-blue-50 hover:scale-110 transition shadow border border-blue-100"
-                                                title="ערוך מוצר"
-                                            >
-                                                ✎
-                                            </button>
-                                            <button 
-                                                onClick={() => handleDeleteItem(item.id)}
-                                                className="bg-white text-red-500 p-2 rounded-full hover:bg-red-50 hover:scale-110 transition shadow border border-red-100"
-                                                title="מחק מוצר"
-                                            >
-                                                ✕
-                                            </button>
-                                        </div>
+                    ) : (() => {
+                        // Apply filters
+                        let filtered = [...items];
+                        if (filterGender !== "הכל") filtered = filtered.filter(i => i.gender === filterGender);
+                        
+                        // Sort
+                        if (sortBy === "price_asc") filtered.sort((a, b) => (Object.values(a.prices||{})[0]||0) - (Object.values(b.prices||{})[0]||0));
+                        else if (sortBy === "price_desc") filtered.sort((a, b) => (Object.values(b.prices||{})[0]||0) - (Object.values(a.prices||{})[0]||0));
+                        else if (sortBy === "name_asc") filtered.sort((a, b) => (a.name||'').localeCompare(b.name||''));
+                        // "newest" is default (array order from DB)
+
+                        // Pagination
+                        const totalPages = Math.ceil(filtered.length / ITEMS_PER_PAGE);
+                        const paginated = filtered.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
+
+                        return (
+                            <>
+                                {filtered.length === 0 ? (
+                                    <div className="text-center py-12 text-gray-400">
+                                        <p>לא נמצאו מוצרים עם הסינון הנוכחי.</p>
+                                        <button onClick={() => { setFilterGender("הכל"); setFilterCategory("הכל"); }} className="text-black underline mt-2 text-sm">נקה סינון</button>
                                     </div>
-                                    <div className="p-4 flex flex-col flex-grow">
-                                        <div className="mb-2">
-                                            <div className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">{item.brand}</div>
-                                            <h3 className="font-bold text-lg leading-tight">{item.fragrance_name}</h3>
-                                        </div>
-                                        
-                                        <div className="flex flex-wrap gap-1 mb-3">
-                                            {item.prices && Object.entries(item.prices).map(([size, price]) => (
-                                                 <div key={size} className="bg-gray-50 px-2 py-1 rounded text-[10px] border border-gray-100 flex flex-col items-center min-w-[45px]">
-                                                     <span className="text-gray-400 font-bold" dir="ltr">{size}</span>
-                                                     <span className="font-bold text-black">{price} ₪</span>
-                                                 </div>
+                                ) : (
+                                    <>
+                                        {/* Results summary */}
+                                        <p className="text-sm text-gray-500 mb-4">
+                                            מציג {filtered.length} מוצרים {totalPages > 1 ? `(עמוד ${currentPage} מתוך ${totalPages})` : ''}
+                                        </p>
+
+                                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                                            {paginated.map(item => (
+                                                <div key={item.id} className="bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col group relative">
+                                                    {/* Admin Action Buttons */}
+                                                    <div className="absolute top-2 right-2 flex gap-1 z-10 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                        <button 
+                                                            onClick={() => handleStartEdit(item)}
+                                                            className="bg-white text-blue-600 p-2 rounded-full hover:bg-blue-50 hover:scale-110 transition shadow border border-blue-100"
+                                                            title="ערוך מוצר"
+                                                        >
+                                                            ✎
+                                                        </button>
+                                                        <button 
+                                                            onClick={() => handleDeleteItem(item.id)}
+                                                            className="bg-white text-red-500 p-2 rounded-full hover:bg-red-50 hover:scale-110 transition shadow border border-red-100"
+                                                            title="מחק מוצר"
+                                                        >
+                                                            ✕
+                                                        </button>
+                                                    </div>
+
+                                                    {/* Product Image */}
+                                                    <div className="h-56 bg-gray-50 flex items-center justify-center overflow-hidden relative">
+                                                        {item.image_url ? (
+                                                            <img src={item.image_url} alt={item.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
+                                                        ) : (
+                                                            <div className="text-6xl opacity-10">🛍️</div>
+                                                        )}
+                                                    </div>
+
+                                                    {/* Card Body */}
+                                                    <div className="p-5 flex flex-col flex-grow">
+                                                        <h3 className="text-xl font-bold mb-1 text-gray-900 leading-tight">
+                                                            {item.brand} {item.fragrance_name}
+                                                        </h3>
+
+                                                        {/* Size + Price Selector */}
+                                                        {item.prices && Object.keys(item.prices).length > 0 && (
+                                                            <div className="mb-3">
+                                                                <div className="text-2xl font-black text-black mb-2">
+                                                                    {selectedSizes[item.id]?.price || Object.values(item.prices)[0]} ₪
+                                                                </div>
+                                                                <div className="flex flex-wrap gap-2 text-sm font-mono">
+                                                                    {Object.entries(item.prices).map(([size, price], index) => {
+                                                                        const isSelected = selectedSizes[item.id]?.size === size || (!selectedSizes[item.id] && index === 0);
+                                                                        return (
+                                                                            <button
+                                                                                key={size}
+                                                                                onClick={() => setSelectedSizes(prev => ({ ...prev, [item.id]: { size, price } }))}
+                                                                                className={`px-3 py-1 rounded border transition-colors ${isSelected ? 'bg-black text-white border-black' : 'bg-gray-50 text-gray-700 border-gray-200 hover:border-black hover:bg-white'}`}
+                                                                                dir="ltr"
+                                                                            >
+                                                                                {size}
+                                                                            </button>
+                                                                        );
+                                                                    })}
+                                                                </div>
+                                                            </div>
+                                                        )}
+
+                                                        {item.description && (
+                                                            <p className="text-sm text-gray-600 mb-4 line-clamp-2 leading-relaxed flex-grow">
+                                                                {item.description}
+                                                            </p>
+                                                        )}
+
+                                                        {/* Gender & Category badges */}
+                                                        <div className="flex gap-2 flex-wrap mb-3">
+                                                            {item.gender && <span className="text-xs px-2 py-0.5 bg-gray-100 rounded-full text-gray-600">{item.gender}</span>}
+                                                            {item.category && <span className="text-xs px-2 py-0.5 bg-gray-100 rounded-full text-gray-600">{item.category}</span>}
+                                                        </div>
+
+                                                        {/* Edit shortcut button */}
+                                                        <button
+                                                            onClick={() => handleStartEdit(item)}
+                                                            className="mt-auto w-full py-2.5 rounded-xl font-bold transition-all border-2 border-black flex items-center justify-center gap-2 hover:bg-black hover:text-white bg-white text-black text-sm"
+                                                        >
+                                                            ✎ ערוך מוצר
+                                                        </button>
+                                                    </div>
+                                                </div>
                                             ))}
                                         </div>
 
-                                        <div className="mt-auto pt-3 border-t grid grid-cols-1 gap-1">
-                                            <div className="text-[10px] text-gray-500">
-                                                <span className="font-bold text-gray-900">תגיות: </span> 
-                                                <span className="truncate block" title={item.top_notes}>{item.top_notes}</span>
+                                        {/* Pagination */}
+                                        {totalPages > 1 && (
+                                            <div className="flex items-center justify-center gap-2 mt-8 flex-wrap">
+                                                {currentPage > 1 && (
+                                                    <button
+                                                        onClick={() => { setCurrentPage(p => p - 1); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                                                        className="px-4 py-2 border rounded-lg text-sm font-bold hover:bg-gray-50 transition"
+                                                    >
+                                                        הקודם
+                                                    </button>
+                                                )}
+                                                {Array.from({ length: totalPages }, (_, i) => i + 1).map(page => (
+                                                    <button
+                                                        key={page}
+                                                        onClick={() => { setCurrentPage(page); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                                                        className={`w-10 h-10 rounded-lg font-bold text-sm transition ${page === currentPage ? 'bg-black text-white' : 'border hover:bg-gray-50'}`}
+                                                    >
+                                                        {page}
+                                                    </button>
+                                                ))}
+                                                {currentPage < totalPages && (
+                                                    <button
+                                                        onClick={() => { setCurrentPage(p => p + 1); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                                                        className="px-4 py-2 border rounded-lg text-sm font-bold hover:bg-gray-50 transition"
+                                                    >
+                                                        הבא
+                                                    </button>
+                                                )}
                                             </div>
-                                            <div className="flex justify-between items-center text-[10px]">
-                                                <span className="px-1.5 py-0.5 bg-gray-100 rounded text-gray-600 font-medium">{item.gender}</span>
-                                                <span className="text-gray-400">{item.category}</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    )}
+                                        )}
+                                    </>
+                                )}
+                            </>
+                        );
+                    })()}
                 </div>
             </div>
+
 
             {/* Confirm Modal */}
             {confirmModal.isOpen && (
