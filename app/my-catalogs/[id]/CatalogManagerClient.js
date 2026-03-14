@@ -729,7 +729,7 @@ export default function CatalogManagerClient({ catalogId }) {
                                                 return (
                                                     <div key={item.id} className="group border rounded-lg overflow-hidden hover:shadow-xl transition bg-white flex flex-col h-full relative">
                                                         {/* Admin Action Buttons (Top Right) */}
-                                                        <div className="absolute top-2 right-2 flex gap-1 z-10 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                        <div className="absolute top-2 right-2 flex gap-1 z-10 transition-opacity">
                                                             <button 
                                                                 onClick={(e) => { e.preventDefault(); handleStartEdit(item); }}
                                                                 className="bg-white text-blue-600 w-8 h-8 rounded-full flex items-center justify-center hover:bg-blue-50 transition shadow border border-blue-100"
@@ -791,13 +791,6 @@ export default function CatalogManagerClient({ catalogId }) {
                                                                         </div>
                                                                     </div>
                                                                 )}
-
-                                                                <button
-                                                                    onClick={() => handleStartEdit(item)}
-                                                                    className="block w-full text-center text-xs py-2 mt-3 rounded transition bg-black text-white hover:bg-gray-800 flex items-center justify-center gap-2"
-                                                                >
-                                                                    ✎ ערוך מוצר
-                                                                </button>
                                                             </div>
                                                         </div>
                                                     </div>
