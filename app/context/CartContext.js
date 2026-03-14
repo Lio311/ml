@@ -231,8 +231,8 @@ export function CartProvider({ children }) {
 
     // Calculations
     const activeItems = cartItems.filter(item => (item.vendorId || 'main') === activeVendorId);
-    const subtotal = activeItems.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-    const totalItemsCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+    const subtotal = activeItems.reduce((sum, item) => sum + (Number(item.price) * item.quantity), 0);
+    const totalItemsCount = activeItems.reduce((sum, item) => sum + item.quantity, 0);
 
     let priceAfterDiscounts = subtotal;
     let discountAmount = 0;

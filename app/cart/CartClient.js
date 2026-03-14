@@ -583,7 +583,7 @@ export default function CartClient() {
                                 <span>סכום ביניים</span>
                                 <div className="flex items-center gap-2">
                                     <span className="font-bold whitespace-nowrap">{subtotal} ₪</span>
-                                    <span className="text-sm text-gray-500 font-normal whitespace-nowrap" dir="rtl">({cartItems.reduce((acc, item) => acc + item.quantity, 0)} פריטים)</span>
+                                    <span className="text-sm text-gray-500 font-normal whitespace-nowrap" dir="rtl">({totalItemsCount} {totalItemsCount === 1 ? 'פריט' : 'פריטים'})</span>
                                 </div>
                             </div>
 
