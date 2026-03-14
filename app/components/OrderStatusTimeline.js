@@ -33,16 +33,19 @@ export default function OrderStatusTimeline({ status }) {
     return (
         <div className="w-full py-8 px-2 mb-8">
             <div className="relative">
-                {/* Background Line */}
-                <div className="absolute top-1/2 right-0 w-full h-0.5 bg-gray-100 dark:bg-zinc-800 -translate-y-1/2 rounded-full" />
-                
-                {/* Progress Line */}
-                <motion.div 
-                    initial={{ width: 0 }}
-                    animate={{ width: `${progressPercentage}%` }}
-                    transition={{ duration: 1, ease: "easeOut" }}
-                    className="absolute top-1/2 right-0 h-0.5 bg-black dark:bg-white -translate-y-1/2 rounded-full shadow-[0_0_10px_rgba(0,0,0,0.1)]"
-                />
+                {/* Line Container (Centered on circles) */}
+                <div className="absolute top-1/2 right-6 left-6 -translate-y-1/2 h-1">
+                    {/* Background Line */}
+                    <div className="w-full h-full bg-gray-100 dark:bg-zinc-800 rounded-full" />
+                    
+                    {/* Progress Line */}
+                    <motion.div 
+                        initial={{ width: 0 }}
+                        animate={{ width: `${progressPercentage}%` }}
+                        transition={{ duration: 1, ease: "easeOut" }}
+                        className="absolute top-0 right-0 h-full bg-black dark:bg-white rounded-full shadow-[0_0_10px_rgba(0,0,0,0.1)]"
+                    />
+                </div>
 
                 {/* Steps */}
                 <div className="relative flex justify-between items-center w-full">
