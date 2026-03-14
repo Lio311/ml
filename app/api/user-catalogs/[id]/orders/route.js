@@ -25,11 +25,19 @@ export async function POST(req, { params }) {
         try {
             await client.query('BEGIN');
 
-            // Fetch catalog info
-            const catRes = await client.query('SELECT name, contact_email FROM user_catalogs WHERE id = $1', [catalogId]);
+            // Fetch catalog info (Support both ID and Slug)
+            let catRes;
+            if (!isNaN(catalogId)) {
+                catRes = await client.query('SELECT id, name, contact_email FROM user_catalogs WHERE id = $1 OR slug = $2', [catalogId, catalogId]);
+            } else {
+                catRes = await client.query('SELECT id, name, contact_email FROM user_catalogs WHERE slug = $1', [catalogId]);
+            }
+
             if (catRes.rows.length === 0) {
+                console.error(`Catalog lookup failed for identifier: ${catalogId}`);
                 return NextResponse.json({ error: 'Catalog not found' }, { status: 404 });
             }
+            const actualCatalogId = catRes.rows[0].id;
             const catalogOwnerEmail = catRes.rows[0].contact_email;
             const catalogName = catRes.rows[0].name;
 
@@ -64,7 +72,7 @@ export async function POST(req, { params }) {
                 `INSERT INTO orders (customer_details, total_amount, items, free_samples_count, status, notes, delivery_method, catalog_id)
                  VALUES ($1, $2, $3, $4, 'pending', $5, $6, $7)
                  RETURNING id`,
-                [JSON.stringify(customerDetails), total, JSON.stringify(items), freeSamples || 0, notes || '', deliveryMethod || 'mail', catalogId]
+                [JSON.stringify(customerDetails), total, JSON.stringify(items), freeSamples || 0, notes || '', deliveryMethod || 'mail', actualCatalogId]
             );
 
             const orderId = orderResult.rows[0].id;
