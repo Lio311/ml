@@ -65,11 +65,11 @@ export default function OrdersClient() {
                                         <span>{new Date(order.created_at).toLocaleDateString('he-IL')} בשעה {new Date(order.created_at).toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' })}</span>
                                         <span className="text-gray-300">•</span>
                                         {order.delivery_method === 'self_pickup' ? (
-                                            <span className="text-green-600 font-bold flex items-center gap-1">
+                                            <span className="text-black font-bold flex items-center gap-1">
                                                 <span>📍</span> איסוף עצמי
                                             </span>
                                         ) : (
-                                            <span className="text-blue-600 font-bold flex items-center gap-1">
+                                            <span className="text-black font-bold flex items-center gap-1">
                                                 <span>📦</span> משלוח בדואר
                                             </span>
                                         )}
@@ -77,21 +77,6 @@ export default function OrdersClient() {
                                 </div>
                                 <div className="text-left">
                                     <div className="font-bold text-xl">{order.total_amount} ₪</div>
-                                    <div className={`text-sm px-2 py-1 rounded-full inline-block mt-1 ${order.status === 'pending' ? 'bg-orange-100 text-orange-800' :
-                                        order.status === 'processing' ? 'bg-blue-100 text-blue-800' :
-                                            order.status === 'shipped' ? 'bg-purple-100 text-purple-800' :
-                                                order.status === 'completed' ? 'bg-green-100 text-green-800' :
-                                                    'bg-gray-100 text-gray-800'
-                                        }`}>
-                                        {
-                                            order.status === 'pending' ? 'ממתין' :
-                                                order.status === 'processing' ? 'בטיפול' :
-                                                    order.status === 'shipped' ? 'נשלח' :
-                                                        order.status === 'completed' ? 'הושלם' :
-                                                            order.status === 'cancelled' ? 'בוטל' :
-                                                                order.status
-                                        }
-                                    </div>
                                 </div>
                             </div>
 
@@ -147,7 +132,7 @@ export default function OrdersClient() {
                             </div>
 
                             {order.free_samples_count > 0 && (
-                                <div className="mt-4 text-sm text-blue-600 font-bold bg-blue-50 p-2 rounded">
+                                <div className="mt-4 text-sm text-black font-bold bg-gray-50 p-2 rounded border border-gray-100">
                                     🎁 כולל {order.free_samples_count} דוגמיות מתנה
                                 </div>
                             )}

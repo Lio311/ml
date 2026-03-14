@@ -257,7 +257,7 @@ export default async function AdminOrdersPage(props) {
                                 <td className="p-4">
                                     <div className="flex justify-center">
                                         {order.free_samples_count > 0 ? (
-                                            <div className="inline-flex flex-col items-center text-xs text-blue-700 bg-blue-50 px-2 py-1 rounded border border-blue-200 min-w-[60px]" title="דוגמיות מתנה">
+                                            <div className="inline-flex flex-col items-center text-xs text-black bg-gray-50 px-2 py-1 rounded border border-gray-200 min-w-[60px]" title="דוגמיות מתנה">
                                                 <span>🎁</span>
                                                 <span className="font-bold">{order.free_samples_count} דוגמיות</span>
                                             </div>
@@ -268,12 +268,12 @@ export default async function AdminOrdersPage(props) {
                                 </td>
                                 <td className="p-4 text-center">
                                     {order.delivery_method === 'self_pickup' ? (
-                                        <span className="inline-flex flex-col items-center text-xs text-green-700 bg-green-50 px-2 py-1 rounded border border-green-200" title="איסוף עצמי">
+                                        <span className="inline-flex flex-col items-center text-xs text-black bg-gray-50 px-2 py-1 rounded border border-gray-200" title="איסוף עצמי">
                                             <span>📍</span>
                                             <span className="font-bold">איסוף</span>
                                         </span>
                                     ) : (
-                                        <span className="inline-flex flex-col items-center text-xs text-blue-700 bg-blue-50 px-2 py-1 rounded border border-blue-200" title="משלוח בדואר">
+                                        <span className="inline-flex flex-col items-center text-xs text-black bg-gray-50 px-2 py-1 rounded border border-gray-200" title="משלוח בדואר">
                                             <span>📦</span>
                                             <span className="font-bold">משלוח</span>
                                         </span>
