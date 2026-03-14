@@ -21,6 +21,7 @@ export default function AdminSidebar({ role = 'customer' }) {
         { href: "/admin/lottery", label: "🎰 ניהול הגרלות", roles: ['admin', 'deputy'] },
         { href: "/admin/dictionary", label: "📖 ניהול מילון חיפוש", roles: ['admin', 'deputy'] },
         { href: "/admin/menu", label: "🗺️ ניהול תפריט ראשי", roles: ['admin', 'deputy'] },
+        { href: "/admin/catalogs", label: "🏪 ניהול קטלוגים", roles: ['admin', 'deputy'] },
     ];
 
     const navItems = allNavItems.filter(item => item.roles.includes(role));

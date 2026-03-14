@@ -60,7 +60,14 @@ export default function OrdersClient() {
                         <div key={order.id} className="border rounded-lg p-6 bg-white shadow-sm">
                             <div className="flex justify-between items-start mb-4 border-b pb-4">
                                 <div>
-                                    <div className="font-bold text-lg">הזמנה #{order.id}</div>
+                                    <div className="font-bold text-lg flex items-center gap-2">
+                                        הזמנה #{order.id}
+                                        {order.catalog_id && (
+                                            <span className="bg-yellow-100 text-yellow-800 text-xs px-2 py-0.5 rounded border border-yellow-200" title="הוזמן מקטלוג של משתמש">
+                                                ספק חיצוני
+                                            </span>
+                                        )}
+                                    </div>
                                     <div className="text-sm text-gray-500 flex items-center gap-2 mt-1">
                                         <span>{new Date(order.created_at).toLocaleDateString('he-IL')} בשעה {new Date(order.created_at).toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' })}</span>
                                         <span className="text-gray-300">•</span>

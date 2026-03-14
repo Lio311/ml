@@ -20,6 +20,7 @@ export default function Footer() {
                         <li><Link href="/about">אודות</Link></li>
                         <li><Link href="/faq">שאלות ותשובות</Link></li>
                         <li><Link href="/contact">צור קשר</Link></li>
+                        <li><Link href="/catalogs-info" className="text-yellow-400 font-bold">צור חנות משלך!</Link></li>
                     </ul>
                 </div>
 

@@ -23,6 +23,7 @@ export const metadata = {
 
 export default async function Home() {
   let newArrivals = [];
+  let topCatalogs = [];
   let stats = { brands: 0, products: 0, samples: 500 };
 
   try {
@@ -59,6 +60,26 @@ export default async function Home() {
       }
     } catch (e) {
       console.error("Stats error", e);
+    }
+
+    // Fetch Top Catalogs
+    try {
+      const topCatRes = await client.query(`
+          SELECT 
+              c.id, 
+              c.name, 
+              c.slug, 
+              c.description,
+              COUNT(o.id) as order_count
+          FROM user_catalogs c
+          LEFT JOIN orders o ON c.id = o.catalog_id
+          GROUP BY c.id
+          ORDER BY order_count DESC, c.created_at DESC
+          LIMIT 3
+      `);
+      topCatalogs = topCatRes.rows;
+    } catch (e) {
+      console.error("Top catalogs error", e);
     }
 
     client.release();
@@ -128,6 +149,41 @@ export default async function Home() {
           <Link href="/catalog" className="inline-block mt-8 mb-8 bg-black text-white px-8 py-3 rounded-full font-bold tracking-widest uppercase hover:bg-gray-800 transition shadow-md">
             צפייה בכל המוצרים
           </Link>
+        </div>
+      </section>
+
+      {/* Hot Catalogs Section */}
+      <section className="py-12 bg-gray-50 border-t border-b">
+        <div className="container mx-auto px-4 text-center">
+          <h2 className="text-3xl tracking-[0.2em] uppercase mb-3 font-bold text-black">הקטלוגים החמים</h2>
+          <div className="w-10 h-0.5 bg-yellow-400 mx-auto mb-6"></div>
+          <p className="text-gray-500 mb-10 max-w-2xl mx-auto">החנויות האישיות המובילות של חברי הקהילה שלנו. גלו קולקציות ייחודיות!</p>
+
+          {topCatalogs.length === 0 ? (
+             <div className="text-center py-12 bg-white rounded-2xl border border-gray-100 border-dashed max-w-3xl mx-auto">
+                 <div className="text-4xl mb-4 opacity-50">🏪</div>
+                 <h3 className="text-xl font-bold text-gray-400">עדיין אין קטלוגים פעילים</h3>
+                 <p className="text-gray-400 text-sm mt-2">היו הראשונים לפתוח חנות משלכם <Link href="/catalogs-info" className="underline hover:text-black">כאן</Link>.</p>
+             </div>
+          ) : (
+             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+                 {topCatalogs.map(cat => (
+                     <Link href={`/catalog/${cat.slug}`} key={cat.id} className="bg-white p-8 rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 group flex flex-col relative overflow-hidden">
+                          <div className="absolute top-0 right-0 w-full h-1 bg-gradient-to-r from-yellow-200 to-yellow-400 transform origin-right scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
+                          <div className="w-16 h-16 bg-yellow-50 text-yellow-600 rounded-full flex items-center justify-center text-2xl mx-auto mb-4 group-hover:scale-110 transition-transform">
+                              🔥
+                          </div>
+                          <h3 className="text-2xl font-bold mb-2 text-gray-900">{cat.name}</h3>
+                          {cat.description && <p className="text-gray-500 text-sm mb-6 line-clamp-2 flex-grow">{cat.description}</p>}
+                          
+                          <div className="mt-auto pt-4 border-t flex items-center justify-between text-sm font-bold">
+                              <span className="text-blue-600 group-hover:text-black transition-colors">כניסה לחנות &larr;</span>
+                              {cat.order_count > 0 && <span className="bg-gray-100 text-gray-500 px-2 py-1 rounded text-xs">{cat.order_count} רכישות</span>}
+                          </div>
+                     </Link>
+                 ))}
+             </div>
+          )}
         </div>
       </section>
 
