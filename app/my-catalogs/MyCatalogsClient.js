@@ -104,14 +104,14 @@ export default function MyCatalogsClient() {
                         </div>
                         <div>
                            <label className="block text-sm font-medium text-gray-700 mb-1">קישור אישי (אנגלית ומספרים בלבד)</label>
-                            <div className="flex items-center text-left" dir="ltr">
-                                <span className="bg-gray-100 p-3 rounded-l-lg border border-r-0 text-gray-400 text-xs whitespace-nowrap">ml-tlv.com/catalog/</span>
+                            <div className="flex items-center text-left h-12" dir="ltr">
+                                <span className="bg-gray-100 px-4 h-full flex items-center rounded-l-lg border border-r-0 text-gray-500 text-sm whitespace-nowrap flex-shrink-0">ml-tlv.com/catalog/</span>
                                 <input 
                                     type="text" 
                                     required
                                     value={slug}
                                     onChange={(e) => setSlug(e.target.value)}
-                                    className="w-full p-3 border rounded-r-lg focus:ring-2 focus:ring-black outline-none"
+                                    className="w-full h-full p-3 border rounded-r-lg focus:ring-2 focus:ring-black outline-none text-sm"
                                     placeholder="danny-shop"
                                 />
                             </div>

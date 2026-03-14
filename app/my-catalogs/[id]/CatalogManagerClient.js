@@ -587,9 +587,9 @@ export default function CatalogManagerClient({ catalogId }) {
                         </div>
                         <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">קישור אישי (Slug)</label>
-                            <div className="flex items-center text-left" dir="ltr">
-                                <span className="bg-gray-100 p-2 rounded-l border border-r-0 text-gray-500 text-sm">ml-tlv.com/catalog/</span>
-                                <input type="text" required value={editSlug} onChange={(e) => setEditSlug(e.target.value)} className="w-full p-2 border rounded-r focus:ring-1 focus:ring-black outline-none" />
+                            <div className="flex items-center text-left h-10" dir="ltr">
+                                <span className="bg-gray-100 px-3 h-full flex items-center rounded-l border border-r-0 text-gray-500 text-sm whitespace-nowrap flex-shrink-0">ml-tlv.com/catalog/</span>
+                                <input type="text" required value={editSlug} onChange={(e) => setEditSlug(e.target.value)} className="w-full h-full p-2 border rounded-r focus:ring-1 focus:ring-black outline-none text-sm" />
                             </div>
                         </div>
                         <div>
