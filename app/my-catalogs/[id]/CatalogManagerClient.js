@@ -768,17 +768,7 @@ export default function CatalogManagerClient({ catalogId }) {
                                 ) : (
                                     <div className="grid grid-cols-1 gap-4">
                                         {editSampleTiers.map((tier, idx) => (
-                                            <div key={idx} className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm flex flex-col md:flex-row items-center gap-4 relative group">
-                                                <button 
-                                                    type="button" 
-                                                    onClick={() => setEditSampleTiers(editSampleTiers.filter((_, i) => i !== idx))}
-                                                    className="absolute top-2 left-2 md:static text-gray-300 hover:text-red-500 p-2 transition"
-                                                >
-                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
-                                                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
-                                                    </svg>
-                                                </button>
-                                                
+                                            <div key={idx} className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm flex flex-col md:flex-row items-start md:items-center gap-4 relative group">
                                                 <div className="flex-1 grid grid-cols-1 sm:grid-cols-3 gap-4 w-full">
                                                     <div className="space-y-1">
                                                         <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">בקנייה מעל</label>
@@ -792,9 +782,9 @@ export default function CatalogManagerClient({ catalogId }) {
                                                                     newTiers[idx].minAmount = Number(e.target.value);
                                                                     setEditSampleTiers(newTiers);
                                                                 }}
-                                                                className="w-full p-3 bg-gray-50 border-transparent rounded-xl focus:bg-white focus:border-black focus:ring-0 transition outline-none font-bold"
+                                                                className="w-full p-3 pl-10 bg-gray-50 border-transparent rounded-xl focus:bg-white focus:border-black focus:ring-0 transition outline-none font-bold [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                                                             />
-                                                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">₪</span>
+                                                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 font-bold">₪</span>
                                                         </div>
                                                     </div>
                                                     
@@ -802,14 +792,14 @@ export default function CatalogManagerClient({ catalogId }) {
                                                         <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">מספר דוגמיות</label>
                                                         <input 
                                                             type="number" 
-                                                            min="1"
+                                                            min="1" 
                                                             value={tier.samplesCount}
                                                             onChange={(e) => {
                                                                 const newTiers = [...editSampleTiers];
                                                                 newTiers[idx].samplesCount = Number(e.target.value);
                                                                 setEditSampleTiers(newTiers);
                                                             }}
-                                                            className="w-full p-3 bg-gray-50 border-transparent rounded-xl focus:bg-white focus:border-black focus:ring-0 transition outline-none font-bold"
+                                                            className="w-full p-3 bg-gray-50 border-transparent rounded-xl focus:bg-white focus:border-black focus:ring-0 transition outline-none font-bold [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                                                         />
                                                     </div>
 
@@ -828,6 +818,17 @@ export default function CatalogManagerClient({ catalogId }) {
                                                         />
                                                     </div>
                                                 </div>
+
+                                                <button 
+                                                    type="button" 
+                                                    onClick={() => setEditSampleTiers(editSampleTiers.filter((_, i) => i !== idx))}
+                                                    className="text-gray-300 hover:text-red-500 p-2 transition self-center md:self-auto"
+                                                    title="הסר מדרגה"
+                                                >
+                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                                    </svg>
+                                                </button>
                                             </div>
                                         ))}
                                     </div>
