@@ -42,7 +42,31 @@ export default function CatalogManagerClient({ catalogId }) {
     const [editingItemId, setEditingItemId] = useState(null);
     const [editItemData, setEditItemData] = useState(null);
 
+    // Confirmation Modal State
+    const [confirmModal, setConfirmModal] = useState({
+        isOpen: false,
+        title: "",
+        message: "",
+        onConfirm: null,
+        confirmText: "אישור",
+        isDanger: false
+    });
+
     const router = useRouter();
+
+    const openConfirm = (title, message, onConfirm, confirmText = "אישור", isDanger = false) => {
+        setConfirmModal({
+            isOpen: true,
+            title,
+            message,
+            onConfirm: () => {
+                onConfirm();
+                setConfirmModal(prev => ({ ...prev, isOpen: false }));
+            },
+            confirmText,
+            isDanger
+        });
+    };
 
     const fetchCatalogData = async () => {
         setIsLoading(true);
@@ -115,20 +139,26 @@ export default function CatalogManagerClient({ catalogId }) {
     };
 
     const handleDeleteCatalog = async () => {
-        if (!confirm("האם אתה בטוח שברצונך למחוק קטלוג זה? כל המוצרים יימחקו לצמיתות.")) return;
-        
-        try {
-            const res = await fetch(`/api/user-catalogs/${catalogId}`, { method: "DELETE" });
-            if (res.ok) {
-                toast.success("קטלוג נמחק");
-                router.push("/my-catalogs");
-            } else {
-                toast.error("שגיאה במחיקת קטלוג");
-            }
-        } catch (e) {
-            console.error(e);
-            toast.error("שגיאה");
-        }
+        openConfirm(
+            "מחיקת קטלוג",
+            "האם אתה בטוח שברצונך למחוק קטלוג זה? כל המוצרים יימחקו לצמיתות.",
+            async () => {
+                try {
+                    const res = await fetch(`/api/user-catalogs/${catalogId}`, { method: "DELETE" });
+                    if (res.ok) {
+                        toast.success("קטלוג נמחק");
+                        router.push("/my-catalogs");
+                    } else {
+                        toast.error("שגיאה במחיקת קטלוג");
+                    }
+                } catch (e) {
+                    console.error(e);
+                    toast.error("שגיאה");
+                }
+            },
+            "מחק לצמיתות",
+            true
+        );
     };
 
     const handleAddItem = async (e) => {
@@ -267,19 +297,26 @@ export default function CatalogManagerClient({ catalogId }) {
     };
 
     const handleDeleteItem = async (itemId) => {
-        if (!confirm("למחוק מוצר זה מהקטלוג?")) return;
-        try {
-             const res = await fetch(`/api/user-catalogs/${catalogId}/items/${itemId}`, { method: "DELETE" });
-             if (res.ok) {
-                 toast.success("המוצר נמחק");
-                 setItems(items.filter(i => i.id !== itemId));
-             } else {
-                 toast.error("שגיאה במחיקה");
-             }
-        } catch (e) {
-            console.error(e);
-            toast.error("שגיאה");
-        }
+        openConfirm(
+            "מחיקת מוצר",
+            "למחוק מוצר זה מהקטלוג?",
+            async () => {
+                try {
+                    const res = await fetch(`/api/user-catalogs/${catalogId}/items/${itemId}`, { method: "DELETE" });
+                    if (res.ok) {
+                        toast.success("המוצר נמחק");
+                        setItems(items.filter(i => i.id !== itemId));
+                    } else {
+                        toast.error("שגיאה במחיקה");
+                    }
+                } catch (e) {
+                    console.error(e);
+                    toast.error("שגיאה");
+                }
+            },
+            "מחק מוצר",
+            true
+        );
     };
 
     if (isLoading || !catalog) {
@@ -618,6 +655,30 @@ export default function CatalogManagerClient({ catalogId }) {
                     )}
                 </div>
             </div>
+
+            {/* Confirm Modal */}
+            {confirmModal.isOpen && (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm animate-in fade-in duration-200">
+                    <div className="bg-white rounded-2xl shadow-2xl max-w-sm w-full p-6 animate-in zoom-in-95 duration-200">
+                        <h3 className="text-xl font-bold text-gray-900 mb-2">{confirmModal.title}</h3>
+                        <p className="text-gray-600 mb-6">{confirmModal.message}</p>
+                        <div className="flex gap-3 justify-end items-center">
+                            <button 
+                                onClick={() => setConfirmModal(prev => ({ ...prev, isOpen: false }))}
+                                className="px-4 py-2 text-sm font-bold text-gray-500 hover:text-black transition"
+                            >
+                                ביטול
+                            </button>
+                            <button 
+                                onClick={confirmModal.onConfirm}
+                                className={`px-6 py-2 text-sm font-bold text-white rounded-xl shadow-lg transition transform hover:-translate-y-0.5 active:scale-95 ${confirmModal.isDanger ? 'bg-red-500 hover:bg-red-600' : 'bg-black hover:bg-gray-800'}`}
+                            >
+                                {confirmModal.confirmText}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
 
         </div>
     );
