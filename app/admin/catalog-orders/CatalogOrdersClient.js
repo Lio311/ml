@@ -2,16 +2,18 @@
 import { useState, useEffect, useRef } from "react";
 import toast from "react-hot-toast";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronDown, Check, Trash2, AlertCircle } from "lucide-react";
+import { Trash2, AlertCircle } from "lucide-react";
 
 import CustomDropdown from "../../components/ui/CustomDropdown";
 
+const Dot = ({ color }) => <div className={`w-2 h-2 rounded-full ${color}`} />;
+
 const STATUS_OPTIONS = [
-    { value: 'pending', label: 'ממתין', color: 'bg-orange-50 text-orange-700 border-orange-100', icon: <div className="w-2 h-2 rounded-full bg-orange-500" /> },
-    { value: 'processing', label: 'בטיפול', color: 'bg-blue-50 text-blue-700 border-blue-100', icon: <div className="w-2 h-2 rounded-full bg-blue-500" /> },
-    { value: 'shipped', label: 'נשלח בדואר', color: 'bg-purple-50 text-purple-700 border-purple-100', icon: <div className="w-2 h-2 rounded-full bg-purple-500" /> },
-    { value: 'completed', label: 'נמסר/הושלם', color: 'bg-green-50 text-green-700 border-green-100', icon: <div className="w-2 h-2 rounded-full bg-green-500" /> },
-    { value: 'cancelled', label: 'בוטל', color: 'bg-gray-50 text-gray-700 border-gray-100', icon: <div className="w-2 h-2 rounded-full bg-gray-500" /> },
+    { value: 'pending', label: 'ממתין', color: 'bg-orange-50 text-orange-700 border-orange-100', icon: <Dot color="bg-orange-500" /> },
+    { value: 'processing', label: 'בטיפול', color: 'bg-blue-50 text-blue-700 border-blue-100', icon: <Dot color="bg-blue-500" /> },
+    { value: 'shipped', label: 'נשלח בדואר', color: 'bg-purple-50 text-purple-700 border-purple-100', icon: <Dot color="bg-purple-500" /> },
+    { value: 'completed', label: 'נמסר/הושלם', color: 'bg-green-50 text-green-700 border-green-100', icon: <Dot color="bg-green-500" /> },
+    { value: 'cancelled', label: 'בוטל', color: 'bg-gray-50 text-gray-700 border-gray-100', icon: <Dot color="bg-gray-500" /> },
 ];
 
 function ConfirmationModal({ isOpen, onClose, onConfirm, title, message }) {
