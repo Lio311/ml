@@ -370,7 +370,7 @@ export default function CatalogManagerClient({ catalogId }) {
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b pb-6">
                 <div>
                     <Link href="/my-catalogs" className="text-gray-500 hover:text-black hover:underline mb-2 inline-block text-sm">
-                        &larr; חזרה לקטלוגים שלי
+                        &rarr; חזרה לקטלוגים שלי
                     </Link>
                     <h1 className="text-3xl font-bold flex items-center gap-3">
                         {catalog.name}

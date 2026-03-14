@@ -160,7 +160,7 @@ export default function AdminCatalogItemsClient({ catalogId }) {
             <div className="flex items-center justify-between border-b pb-6">
                 <div>
                     <Link href="/admin/catalogs" className="text-gray-500 hover:text-black hover:underline mb-2 inline-block text-sm">
-                        &larr; חזרה לרשימת הקטלוגים
+                        &rarr; חזרה לרשימת הקטלוגים
                     </Link>
                     <h1 className="text-3xl font-bold">ניהול מוצרים בקטלוג</h1>
                     <p className="text-gray-500 text-sm mt-1">מזהה קטלוג: {catalogId}</p>
