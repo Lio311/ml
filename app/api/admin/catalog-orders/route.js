@@ -60,15 +60,50 @@ export async function PUT(req) {
 
         client = await pool.connect();
 
-        // Verify it's a catalog order
-        const check = await client.query('SELECT id FROM orders WHERE id = $1 AND catalog_id IS NOT NULL', [orderId]);
-        if (check.rows.length === 0) {
+        // Fetch order details
+        const orderRes = await client.query('SELECT status, items, catalog_id FROM orders WHERE id = $1 AND catalog_id IS NOT NULL', [orderId]);
+        if (orderRes.rows.length === 0) {
              return NextResponse.json({ error: 'Order not found or is not a catalog order' }, { status: 404 });
         }
 
-        await client.query('UPDATE orders SET status = $1 WHERE id = $2', [status, orderId]);
-        
-        return NextResponse.json({ success: true });
+        const oldStatus = orderRes.rows[0].status;
+        const items = typeof orderRes.rows[0].items === 'string' ? JSON.parse(orderRes.rows[0].items) : orderRes.rows[0].items;
+        const catalogId = orderRes.rows[0].catalog_id;
+
+        try {
+            await client.query('BEGIN');
+            
+            await client.query('UPDATE orders SET status = $1 WHERE id = $2', [status, orderId]);
+
+            // Stock restoration logic
+            if (status === 'cancelled' && oldStatus !== 'cancelled') {
+                for (const item of items) {
+                    const vol = (Number(item.quantity) || 1) * (Number(item.size) || 0);
+                    if (vol > 0 && item.id) {
+                        await client.query(
+                            'UPDATE user_catalog_items SET stock_ml = stock_ml + $1 WHERE id = $2 AND catalog_id = $3',
+                            [vol, item.id, catalogId]
+                        );
+                    }
+                }
+            } else if (oldStatus === 'cancelled' && status !== 'cancelled') {
+                for (const item of items) {
+                    const vol = (Number(item.quantity) || 1) * (Number(item.size) || 0);
+                    if (vol > 0 && item.id) {
+                        await client.query(
+                            'UPDATE user_catalog_items SET stock_ml = GREATEST(0, stock_ml - $1) WHERE id = $2 AND catalog_id = $3',
+                            [vol, item.id, catalogId]
+                        );
+                    }
+                }
+            }
+
+            await client.query('COMMIT');
+            return NextResponse.json({ success: true });
+        } catch (txErr) {
+            await client.query('ROLLBACK');
+            throw txErr;
+        }
     } catch (e) {
         console.error('Error updating catalog order status globally:', e);
         return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
@@ -99,15 +134,39 @@ export async function DELETE(req) {
 
         client = await pool.connect();
 
-        // Verify it's a catalog order before deleting
-        const check = await client.query('SELECT id FROM orders WHERE id = $1 AND catalog_id IS NOT NULL', [orderId]);
-        if (check.rows.length === 0) {
+        // Verify it's a catalog order and get details
+        const orderRes = await client.query('SELECT status, items, catalog_id FROM orders WHERE id = $1 AND catalog_id IS NOT NULL', [orderId]);
+        if (orderRes.rows.length === 0) {
             return NextResponse.json({ error: 'Order not found or is not a catalog order' }, { status: 404 });
         }
 
-        await client.query('DELETE FROM orders WHERE id = $1', [orderId]);
-        
-        return NextResponse.json({ success: true });
+        const { status, items, catalog_id } = orderRes.rows[0];
+        const parsedItems = typeof items === 'string' ? JSON.parse(items) : items;
+
+        try {
+            await client.query('BEGIN');
+
+            // Restore stock IF order was NOT already cancelled
+            if (status !== 'cancelled') {
+                for (const item of parsedItems) {
+                    const vol = (Number(item.quantity) || 1) * (Number(item.size) || 0);
+                    if (vol > 0 && item.id) {
+                        await client.query(
+                            'UPDATE user_catalog_items SET stock_ml = stock_ml + $1 WHERE id = $2 AND catalog_id = $3',
+                            [vol, item.id, catalog_id]
+                        );
+                    }
+                }
+            }
+
+            await client.query('DELETE FROM orders WHERE id = $1', [orderId]);
+            
+            await client.query('COMMIT');
+            return NextResponse.json({ success: true });
+        } catch (txErr) {
+            await client.query('ROLLBACK');
+            throw txErr;
+        }
     } catch (e) {
         console.error('Error deleting catalog order globally:', e);
         return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });

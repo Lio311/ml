@@ -166,6 +166,7 @@ export default function CatalogManagerClient({ catalogId }) {
     const [newItemBaseNotes, setNewItemBaseNotes] = useState("");
     const [newItemGender, setNewItemGender] = useState("");
     const [newItemCategory, setNewItemCategory] = useState("");
+    const [newItemStockMl, setNewItemStockMl] = useState("");
 
     // Filter/Sort/Pagination State
     const [filterGender, setFilterGender] = useState("הכל");
@@ -383,21 +384,24 @@ export default function CatalogManagerClient({ catalogId }) {
 
         setIsSubmittingItem(true);
         try {
+            const body = {
+                brand: newItemBrand,
+                fragrance_name: newItemFragranceName,
+                description: newItemDesc,
+                image_url: newItemImage,
+                top_notes: newItemTopNotes,
+                middle_notes: newItemMiddleNotes,
+                base_notes: newItemBaseNotes,
+                gender: newItemGender,
+                category: newItemCategory,
+                prices: prices,
+                stock_ml: Number(newItemStockMl) || 0
+            };
+
             const res = await fetch(`/api/user-catalogs/${catalogId}/items`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({
-                    brand: newItemBrand,
-                    fragrance_name: newItemFragranceName,
-                    description: newItemDesc,
-                    prices: prices,
-                    image_url: newItemImage,
-                    top_notes: newItemTopNotes,
-                    middle_notes: newItemMiddleNotes,
-                    base_notes: newItemBaseNotes,
-                    gender: newItemGender,
-                    category: newItemCategory
-                })
+                body: JSON.stringify(body)
             });
 
             if (res.ok) {
@@ -562,7 +566,13 @@ export default function CatalogManagerClient({ catalogId }) {
                     onClick={() => setActiveTab('settings')} 
                     className={`px-6 py-3 font-bold text-sm whitespace-nowrap border-b-2 transition-colors ${activeTab === 'settings' ? 'border-black text-black' : 'border-transparent text-gray-500 hover:text-gray-900'}`}
                 >
-                    הגדרות ומשלוחים
+                    הגדרות
+                </button>
+                <button 
+                    onClick={() => setActiveTab('shipping')} 
+                    className={`px-6 py-3 font-bold text-sm whitespace-nowrap border-b-2 transition-colors ${activeTab === 'shipping' ? 'border-black text-black' : 'border-transparent text-gray-500 hover:text-gray-900'}`}
+                >
+                    משלוחים
                 </button>
                 <button 
                     onClick={() => setActiveTab('orders')} 
@@ -575,8 +585,14 @@ export default function CatalogManagerClient({ catalogId }) {
             {/* Settings Tab */}
             {activeTab === 'settings' && (
                 <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm animate-fade-in">
-                    <h2 className="text-lg font-bold mb-4">הגדרות בסיסיות</h2>
-                    <form onSubmit={handleUpdateCatalog} className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <h2 className="text-lg font-bold mb-4 text-emerald-600 flex items-center gap-2">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M10.343 3.94c.09-.542.56-.94 1.11-.94h1.093c.55 0 1.02.398 1.11.94l.149.894c.07.424.384.764.78.93.398.164.855.142 1.205-.108l.737-.527a1.125 1.125 0 0 1 1.45.12l.773.774a1.125 1.125 0 0 1 .12 1.45l-.527.737c-.25.35-.273.806-.108 1.204.165.397.505.71.93.78l.894.15c.542.09.94.56.94 1.109v1.094c0 .55-.398 1.02-.94 1.11l-.894.149c-.424.07-.764.383-.93.78-.164.398-.142.854.108 1.204l.527.738a1.125 1.125 0 0 1-.12 1.45l-.774.773a1.125 1.125 0 0 1-1.449.12l-.738-.527c-.35-.25-.806-.273-1.203-.108-.397.165-.71.505-.781.929l-.149.894c-.09.542-.56.94-1.11.94h-1.094c-.55 0-1.019-.398-1.11-.94l-.148-.894c-.071-.424-.384-.764-.781-.93-.398-.164-.854-.142-1.204.108l-.738.527a1.125 1.125 0 0 1-1.45-.12l-.773-.774a1.125 1.125 0 0 1-.12-1.45l.527-.737c.25-.35.273-.806.108-1.204-.165-.397-.505-.71-.93-.78l-.894-.15a1.125 1.125 0 0 1-.94-1.11v-1.094c0-.55.398-1.02.94-1.11l.894-.149c.424-.07.765-.383.93-.78.164-.398.142-.854-.108-1.204l-.527-.738a1.125 1.125 0 0 1 .12-1.45l.774-.773a1.125 1.125 0 0 1 1.449-.12l.738.527c.35.25.806.273 1.204.108.397-.165.71-.505.78-.929l.15-.894Z" />
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                        </svg>
+                        הגדרות בסיסיות
+                    </h2>
+                    <form onSubmit={handleUpdateCatalog} className="grid grid-cols-1 md:grid-cols-2 gap-6">
                          <div>
                             <label className="block text-sm font-medium text-gray-700 mb-1">שם הקטלוג</label>
                             <input type="text" required value={editName} onChange={(e) => setEditName(e.target.value)} className="w-full p-2 border rounded focus:ring-1 focus:ring-black outline-none" />
@@ -599,94 +615,125 @@ export default function CatalogManagerClient({ catalogId }) {
                                 <button 
                                     type="button"
                                     onClick={() => setEditImageInputType("file")}
-                                    className={`flex-1 text-sm py-1.5 rounded-md transition ${editImageInputType === "file" ? 'bg-white shadow-sm font-bold text-black' : 'text-gray-500 hover:text-black'}`}
+                                    className={`flex-1 text-xs py-1.5 rounded-md transition ${editImageInputType === "file" ? 'bg-white shadow-sm font-bold text-black' : 'text-gray-500 hover:text-black'}`}
                                 >
                                     העלאה מהמחשב
                                 </button>
                                 <button 
                                     type="button"
                                     onClick={() => setEditImageInputType("url")}
-                                    className={`flex-1 text-sm py-1.5 rounded-md transition ${editImageInputType === "url" ? 'bg-white shadow-sm font-bold text-black' : 'text-gray-500 hover:text-black'}`}
+                                    className={`flex-1 text-xs py-1.5 rounded-md transition ${editImageInputType === "url" ? 'bg-white shadow-sm font-bold text-black' : 'text-gray-500 hover:text-black'}`}
                                 >
                                     קישור לתמונה
                                 </button>
                             </div>
 
-                            {editImageInputType === "file" ? (
-                                <div className="mt-2 text-xs flex mt-3 items-center gap-2">
-                                    <label className="w-full flex flex-col items-center justify-center h-20 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 bg-white transition-colors">
-                                        <div className="flex flex-col items-center justify-center">
-                                            <p className="mb-1 text-sm text-gray-500"><span className="font-semibold text-black">בחר תמונה מהמחשב</span></p>
+                            <div className="flex flex-col gap-3">
+                                {editImageInputType === "file" ? (
+                                    <label className="flex flex-col items-center justify-center w-full h-24 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 bg-white transition-colors">
+                                        <div className="flex flex-col items-center justify-center pt-2 pb-2">
+                                            <p className="text-xs text-gray-500"><span className="font-semibold text-black">בחר תמונה מהמחשב</span></p>
                                         </div>
-                                        <input type="file" className="hidden" accept="image/png, image/jpeg, image/webp" onChange={(e) => {
-                                            const file = e.target.files[0];
-                                            if (file) {
-                                                if (file.size > 2 * 1024 * 1024) { return toast.error("קובץ גדול מדי. מקסימום 2MB."); }
-                                                const reader = new FileReader();
-                                                reader.onloadend = () => setEditImage(reader.result);
-                                                reader.readAsDataURL(file);
-                                            }
-                                        }}/>
+                                        <input 
+                                            type="file" 
+                                            className="hidden" 
+                                            accept="image/png, image/jpeg, image/webp" 
+                                            onChange={(e) => {
+                                                const file = e.target.files[0];
+                                                if (file) {
+                                                    const reader = new FileReader();
+                                                    reader.onloadend = () => setEditImage(reader.result);
+                                                    reader.readAsDataURL(file);
+                                                }
+                                            }} 
+                                        />
                                     </label>
-                                </div>
-                            ) : (
-                                <input 
-                                    type="url" 
-                                    value={editImage} 
-                                    onChange={(e) => setEditImage(e.target.value)} 
-                                    className="w-full p-2 mt-2 border rounded focus:ring-1 focus:ring-black outline-none text-left" 
-                                    dir="ltr" 
-                                    placeholder="https://..." 
-                                />
-                            )}
-                            {editImage && (
-                                <div className="mt-2">
-                                    <p className="text-xs text-gray-500 mb-2">תצוגה מקדימה:</p>
-                                    <img src={editImage} alt="Preview" className="w-16 h-16 object-cover rounded-md border border-gray-200 shadow-sm" />
-                                </div>
-                            )}
+                                ) : (
+                                    <input 
+                                        type="url" 
+                                        value={editImage || ""}
+                                        onChange={(e) => setEditImage(e.target.value)}
+                                        className="w-full p-2 border rounded focus:ring-1 focus:ring-black outline-none text-left text-sm"
+                                        dir="ltr"
+                                        placeholder="https://..."
+                                    />
+                                )}
+
+                                {editImage && (
+                                    <div className="flex items-center gap-2">
+                                        <img src={editImage} alt="Preview" className="w-10 h-10 object-cover rounded border" />
+                                        <span className="text-[10px] text-gray-400">תצוגה מקדימה</span>
+                                    </div>
+                                )}
+                            </div>
                         </div>
+
                         <div className="md:col-span-2">
                             <label className="block text-sm font-medium text-gray-700 mb-1">תיאור</label>
                             <textarea value={editDesc} onChange={(e) => setEditDesc(e.target.value)} className="w-full p-2 border rounded focus:ring-1 focus:ring-black outline-none resize-none h-20" />
                         </div>
 
+                        <div className="md:col-span-2 text-left pt-4 mt-4 border-t">
+                            <button type="submit" className="px-8 py-3 bg-black text-white rounded-lg font-bold hover:bg-gray-800 transition">שמור הגדרות</button>
+                        </div>
+                    </form>
+                </div>
+            )}
+
+            {/* Shipping Tab */}
+            {activeTab === 'shipping' && (
+                <div className="bg-white p-6 rounded-xl border border-gray-200 shadow-sm animate-fade-in">
+                    <form onSubmit={handleUpdateCatalog} className="space-y-8">
                         {/* Shipping & Delivery */}
-                        <div className="md:col-span-2 border-t pt-6 mt-2">
-                            <h3 className="text-md font-bold mb-3">הגדרות משלוח</h3>
-                            <div className="flex flex-col gap-4 bg-gray-50 p-4 rounded-xl border border-gray-200">
+                        <div>
+                            <h2 className="text-lg font-bold mb-4 text-blue-600 flex items-center gap-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h1.125a1.125 1.125 0 0 0 1.125-1.125V11.06c0-.426-.242-.812-.614-1.026l-1.95-1.123a1.125 1.125 0 0 0-1.084 0l-1.95 1.123a1.125 1.125 0 0 0-.614 1.026v5.216C12.33 17.153 13.044 18 14.162 18H15m-1.41-11.41-1.091-1.091A1.125 1.125 0 0 0 11.5 5.25h-5.25a1.125 1.125 0 0 0-1.125 1.125v3" />
+                                </svg>
+                                אפשרויות משלוח
+                            </h2>
+                            <div className="flex flex-col gap-4 bg-gray-50 p-6 rounded-xl border border-gray-200">
                                 
-                                <label className="flex items-center gap-3 cursor-pointer">
+                                <label className="flex items-center gap-4 cursor-pointer p-2 hover:bg-white rounded-lg transition">
                                     <input 
                                         type="checkbox" 
                                         checked={editSelfPickup} 
                                         onChange={(e) => setEditSelfPickup(e.target.checked)} 
-                                        className="w-5 h-5 text-black border-gray-300 rounded focus:ring-black"
+                                        className="w-6 h-6 text-black border-gray-300 rounded focus:ring-black"
                                     />
-                                    <span className="text-sm font-medium">מאפשר איסוף עצמי (חינם)</span>
+                                    <div>
+                                        <div className="font-bold text-gray-900">מאפשר איסוף עצמי</div>
+                                        <div className="text-xs text-gray-500">הלקוח יכול להגיע לאסוף את ההזמנה ללא עלות.</div>
+                                    </div>
                                 </label>
 
-                                <div className="border-t border-gray-200 pt-4">
-                                    <label className="flex items-center gap-3 cursor-pointer mb-3">
+                                <div className="border-t border-gray-200 pt-4 mt-2">
+                                    <label className="flex items-center gap-4 cursor-pointer p-2 hover:bg-white rounded-lg transition mb-3">
                                         <input 
                                             type="checkbox" 
                                             checked={editDeliveryActive} 
                                             onChange={(e) => setEditDeliveryActive(e.target.checked)} 
-                                            className="w-5 h-5 text-black border-gray-300 rounded focus:ring-black"
+                                            className="w-6 h-6 text-black border-gray-300 rounded focus:ring-black"
                                         />
-                                        <span className="text-sm font-medium">מציע משלוחים בעלות</span>
+                                        <div>
+                                            <div className="font-bold text-gray-900">מציע משלוחים</div>
+                                            <div className="text-xs text-gray-500">משלוח עד הבית בעלות קבועה שתבחר.</div>
+                                        </div>
                                     </label>
                                     
                                     {editDeliveryActive && (
-                                        <div className="pl-8 flex flex-col gap-1">
-                                            <label className="text-xs text-gray-500">עלות משלוח (₪)</label>
-                                            <input 
-                                                type="number" 
-                                                min="0"
-                                                value={editDeliveryPrice}
-                                                onChange={(e) => setEditDeliveryPrice(e.target.value)}
-                                                className="w-32 p-2 border rounded focus:ring-1 focus:ring-black outline-none text-sm"
-                                            />
+                                        <div className="pl-12 flex items-center gap-3 mt-2">
+                                            <label className="text-sm font-bold text-gray-700">עלות משלוח:</label>
+                                            <div className="relative">
+                                                <input 
+                                                    type="number" 
+                                                    min="0"
+                                                    value={editDeliveryPrice}
+                                                    onChange={(e) => setEditDeliveryPrice(e.target.value)}
+                                                    className="w-32 p-3 border rounded-lg focus:ring-1 focus:ring-black outline-none text-sm pr-8"
+                                                />
+                                                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">₪</span>
+                                            </div>
                                         </div>
                                     )}
                                 </div>
@@ -694,82 +741,104 @@ export default function CatalogManagerClient({ catalogId }) {
                         </div>
 
                         {/* Free Samples Tiers */}
-                        <div className="md:col-span-2 border-t pt-6 mt-2">
-                             <div className="flex justify-between items-center mb-3">
-                                <h3 className="text-md font-bold">הטבות דוגמיות (2ml) לפי סכום רכישה</h3>
+                        <div className="border-t pt-8">
+                             <div className="flex justify-between items-center mb-4">
+                                <div>
+                                    <h2 className="text-lg font-bold text-purple-600 flex items-center gap-2">
+                                        <span className="text-xl">🧪</span>
+                                        הטבות דוגמיות (2ml)
+                                    </h2>
+                                    <p className="text-xs text-gray-500">הגדר מדרגות רכישה שבהן הלקוח יקבל דוגמיות מתנה.</p>
+                                </div>
                                 <button 
                                     type="button" 
                                     onClick={() => setEditSampleTiers([...editSampleTiers, { minAmount: 100, samplesCount: 1, message: "" }])}
-                                    className="text-xs text-black border border-black hover:bg-black hover:text-white px-3 py-1 rounded-full transition"
+                                    className="text-sm font-bold bg-black text-white px-5 py-2 rounded-xl shadow-lg hover:bg-gray-800 transition"
                                 >
                                     + הוסף מדרגה
                                 </button>
                              </div>
                              
-                             <div className="space-y-3">
+                             <div className="space-y-4">
                                 {editSampleTiers.length === 0 ? (
-                                    <p className="text-sm text-gray-500 italic bg-gray-50 p-4 rounded-xl text-center">אין מדרגות מוגדרות. לקוחות לא יקבלו דוגמיות חינם.</p>
+                                    <div className="bg-gray-50 border-2 border-dashed border-gray-100 rounded-2xl p-10 text-center">
+                                        <div className="text-4xl mb-3 opacity-20">🎁</div>
+                                        <p className="text-gray-400 font-medium">אין כרגע מדרגות הטבה מוגדרות.</p>
+                                    </div>
                                 ) : (
-                                    editSampleTiers.map((tier, idx) => (
-                                        <div key={idx} className="flex flex-col sm:flex-row gap-3 bg-gray-50 p-3 rounded-lg border border-gray-200 items-start sm:items-end">
-                                            <button 
-                                                type="button" 
-                                                onClick={() => setEditSampleTiers(editSampleTiers.filter((_, i) => i !== idx))}
-                                                className="text-red-400 hover:text-red-600 p-2 sm:order-last"
-                                                title="הסר מדרגה"
-                                            >
-                                                ✕
-                                            </button>
-                                            <div className="flex flex-col gap-1 w-full sm:w-1/4">
-                                                <label className="text-[10px] text-gray-500 font-bold uppercase">בקנייה מעל (₪)</label>
-                                                <input 
-                                                    type="number" 
-                                                    min="1"
-                                                    value={tier.minAmount}
-                                                    onChange={(e) => {
-                                                        const newTiers = [...editSampleTiers];
-                                                        newTiers[idx].minAmount = Number(e.target.value);
-                                                        setEditSampleTiers(newTiers);
-                                                    }}
-                                                    className="w-full p-2 text-sm border rounded outline-none focus:ring-1 focus:ring-black"
-                                                />
+                                    <div className="grid grid-cols-1 gap-4">
+                                        {editSampleTiers.map((tier, idx) => (
+                                            <div key={idx} className="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm flex flex-col md:flex-row items-center gap-4 relative group">
+                                                <button 
+                                                    type="button" 
+                                                    onClick={() => setEditSampleTiers(editSampleTiers.filter((_, i) => i !== idx))}
+                                                    className="absolute top-2 left-2 md:static text-gray-300 hover:text-red-500 p-2 transition"
+                                                >
+                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
+                                                        <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                                                    </svg>
+                                                </button>
+                                                
+                                                <div className="flex-1 grid grid-cols-1 sm:grid-cols-3 gap-4 w-full">
+                                                    <div className="space-y-1">
+                                                        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">בקנייה מעל</label>
+                                                        <div className="relative">
+                                                            <input 
+                                                                type="number" 
+                                                                min="1"
+                                                                value={tier.minAmount}
+                                                                onChange={(e) => {
+                                                                    const newTiers = [...editSampleTiers];
+                                                                    newTiers[idx].minAmount = Number(e.target.value);
+                                                                    setEditSampleTiers(newTiers);
+                                                                }}
+                                                                className="w-full p-3 bg-gray-50 border-transparent rounded-xl focus:bg-white focus:border-black focus:ring-0 transition outline-none font-bold"
+                                                            />
+                                                            <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400">₪</span>
+                                                        </div>
+                                                    </div>
+                                                    
+                                                    <div className="space-y-1">
+                                                        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">מספר דוגמיות</label>
+                                                        <input 
+                                                            type="number" 
+                                                            min="1"
+                                                            value={tier.samplesCount}
+                                                            onChange={(e) => {
+                                                                const newTiers = [...editSampleTiers];
+                                                                newTiers[idx].samplesCount = Number(e.target.value);
+                                                                setEditSampleTiers(newTiers);
+                                                            }}
+                                                            className="w-full p-3 bg-gray-50 border-transparent rounded-xl focus:bg-white focus:border-black focus:ring-0 transition outline-none font-bold"
+                                                        />
+                                                    </div>
+
+                                                    <div className="space-y-1">
+                                                        <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">הודעה אישית</label>
+                                                        <input 
+                                                            type="text" 
+                                                            placeholder="מזל טוב! מגיע לך מתנה..."
+                                                            value={tier.message || ""}
+                                                            onChange={(e) => {
+                                                                const newTiers = [...editSampleTiers];
+                                                                newTiers[idx].message = e.target.value;
+                                                                setEditSampleTiers(newTiers);
+                                                            }}
+                                                            className="w-full p-3 bg-gray-50 border-transparent rounded-xl focus:bg-white focus:border-black focus:ring-0 transition outline-none text-sm"
+                                                        />
+                                                    </div>
+                                                </div>
                                             </div>
-                                            <div className="flex flex-col gap-1 w-full sm:w-1/4">
-                                                <label className="text-[10px] text-gray-500 font-bold uppercase">מספר דוגמיות עלינו</label>
-                                                <input 
-                                                    type="number" 
-                                                    min="1"
-                                                    value={tier.samplesCount}
-                                                    onChange={(e) => {
-                                                        const newTiers = [...editSampleTiers];
-                                                        newTiers[idx].samplesCount = Number(e.target.value);
-                                                        setEditSampleTiers(newTiers);
-                                                    }}
-                                                    className="w-full p-2 text-sm border rounded outline-none focus:ring-1 focus:ring-black"
-                                                />
-                                            </div>
-                                            <div className="flex flex-col gap-1 w-full sm:w-1/2">
-                                                <label className="text-[10px] text-gray-500 font-bold uppercase">הודעה (אופציונלי)</label>
-                                                <input 
-                                                    type="text" 
-                                                    placeholder="למשל: 3 דוגמיות מתנה עלינו!"
-                                                    value={tier.message || ""}
-                                                    onChange={(e) => {
-                                                        const newTiers = [...editSampleTiers];
-                                                        newTiers[idx].message = e.target.value;
-                                                        setEditSampleTiers(newTiers);
-                                                    }}
-                                                    className="w-full p-2 text-sm border rounded outline-none focus:ring-1 focus:ring-black"
-                                                />
-                                            </div>
-                                        </div>
-                                    ))
+                                        ))}
+                                    </div>
                                 )}
                              </div>
                         </div>
 
-                        <div className="md:col-span-2 text-left pt-4 mt-4 border-t">
-                            <button type="submit" className="px-8 py-3 bg-black text-white rounded-lg font-bold hover:bg-gray-800 transition">שמור הגדרות עריכה</button>
+                        <div className="text-left pt-6 border-t flex justify-end">
+                            <button type="submit" className="px-10 py-4 bg-emerald-600 text-white rounded-2xl font-bold shadow-xl hover:bg-emerald-700 transition transform hover:-translate-y-1 active:scale-95">
+                                שמור הגדרות משלוח ודוגמיות
+                            </button>
                         </div>
                     </form>
                 </div>
@@ -820,6 +889,28 @@ export default function CatalogManagerClient({ catalogId }) {
                                         placeholder="הוסף קטגוריה (למשל: יוניסקס)"
                                     />
                                 </div>
+                            </div>
+
+                            {/* Inventory / Stock */}
+                            <div className="bg-white p-3 rounded-lg border border-gray-100 shadow-sm">
+                                <label className="block text-xs font-bold text-gray-500 uppercase mb-2 flex items-center gap-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 text-blue-500">
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z" />
+                                    </svg>
+                                    ניהול מלאי (במ"ל)
+                                </label>
+                                <div className="flex items-center gap-3">
+                                    <input 
+                                        type="number" 
+                                        min="0"
+                                        placeholder="כמה מ״ל יש בבקבוק?"
+                                        value={editingItemId ? editItemData.stock_ml : newItemStockMl}
+                                        onChange={(e) => editingItemId ? setEditItemData({...editItemData, stock_ml: e.target.value}) : setNewItemStockMl(e.target.value)}
+                                        className="w-full p-2 border rounded focus:ring-2 focus:ring-black outline-none text-sm font-bold"
+                                    />
+                                    <span className="text-xs text-gray-400 whitespace-nowrap">מ״ל סה״כ</span>
+                                </div>
+                                <p className="text-[10px] text-gray-400 mt-1">העגלה תחסום הזמנות שחורגות מכמות זו.</p>
                             </div>
 
                              <div>
@@ -902,6 +993,29 @@ export default function CatalogManagerClient({ catalogId }) {
                                             />
                                         </div>
                                     ))}
+                                </div>
+                                <div className="mt-4">
+                                    <label className="block text-xs font-bold text-gray-500 uppercase mb-1">מלאי זמין סה"כ (מ"ל)</label>
+                                    <div className="relative">
+                                        <input 
+                                            type="number" 
+                                            min="0"
+                                            value={editingItemId ? editItemData.stock_ml : newItemStockMl}
+                                            onChange={(e) => {
+                                                const val = e.target.value;
+                                                if (editingItemId) {
+                                                    setEditItemData({ ...editItemData, stock_ml: val });
+                                                } else {
+                                                    setNewItemStockMl(val);
+                                                }
+                                            }}
+                                            className="w-full p-2 border rounded-lg focus:ring-1 focus:ring-black outline-none text-sm pr-2 text-left" 
+                                            placeholder="כמה מ״ל יש לך סה״כ מהבושם הזה?" 
+                                            dir="ltr"
+                                        />
+                                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs">ml</span>
+                                    </div>
+                                    <p className="text-[10px] text-gray-400 mt-1">המלאי יקטן אוטומטית בכל הזמנה.</p>
                                 </div>
                             </div>
 
@@ -1083,6 +1197,13 @@ export default function CatalogManagerClient({ catalogId }) {
                                                                         </div>
                                                                     </div>
                                                                 )}
+                                                            </div>
+
+                                                            <div className="mt-3 pt-3 border-t border-gray-100 flex items-center justify-between">
+                                                                <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">מלאי זמין</span>
+                                                                <span className={`text-xs font-bold px-2 py-0.5 rounded ${Number(item.stock_ml) > 10 ? 'bg-emerald-50 text-emerald-600' : 'bg-rose-50 text-rose-600'}`}>
+                                                                    {item.stock_ml || 0} מ"ל
+                                                                </span>
                                                             </div>
                                                         </div>
                                                     </div>

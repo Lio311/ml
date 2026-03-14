@@ -52,7 +52,8 @@ export async function POST(req, { params }) {
             middle_notes,
             base_notes,
             gender,
-            category
+            category,
+            stock_ml
         } = body;
 
         if (!brand || !fragrance_name || !description || !prices || !image_url || !top_notes || !middle_notes || !base_notes || !gender || !category || Object.keys(prices).length === 0) {
@@ -70,10 +71,10 @@ export async function POST(req, { params }) {
             const res = await client.query(
                 `INSERT INTO user_catalog_items (
                     catalog_id, brand, fragrance_name, name, description, prices, image_url, 
-                    top_notes, middle_notes, base_notes, gender, category
+                    top_notes, middle_notes, base_notes, gender, category, stock_ml
                 ) 
-                 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12) RETURNING *`,
-                [id, brand, fragrance_name, `${brand} ${fragrance_name}`, description, JSON.stringify(prices), image_url, top_notes, middle_notes, base_notes, gender, category]
+                 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) RETURNING *`,
+                [id, brand, fragrance_name, `${brand} ${fragrance_name}`, description, JSON.stringify(prices), image_url, top_notes, middle_notes, base_notes, gender, category, Number(stock_ml) || 0]
             );
 
             return NextResponse.json(res.rows[0]);

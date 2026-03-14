@@ -60,15 +60,52 @@ export async function PUT(req, context) {
         }
 
         // Check order belongs to catalog
-        const orderRes = await client.query('SELECT id FROM orders WHERE id = $1 AND catalog_id = $2', [orderId, catalogId]);
+        const orderRes = await client.query('SELECT status, items, catalog_id FROM orders WHERE id = $1 AND catalog_id = $2', [orderId, catalogId]);
         if (orderRes.rows.length === 0) {
             return NextResponse.json({ error: 'Order not found for this catalog' }, { status: 404 });
         }
 
-        // Update status
-        await client.query('UPDATE orders SET status = $1 WHERE id = $2', [status, orderId]);
-        
-        return NextResponse.json({ success: true, message: 'Order status updated' });
+        const oldStatus = orderRes.rows[0].status;
+        const items = typeof orderRes.rows[0].items === 'string' ? JSON.parse(orderRes.rows[0].items) : orderRes.rows[0].items;
+
+        try {
+            await client.query('BEGIN');
+
+            // Update status
+            await client.query('UPDATE orders SET status = $1 WHERE id = $2', [status, orderId]);
+
+            // Handle Stock Logic
+            // Volume Restore: status moves TO cancelled (and was NOT already cancelled)
+            if (status === 'cancelled' && oldStatus !== 'cancelled') {
+                for (const item of items) {
+                    const volume = (Number(item.quantity) || 1) * (Number(item.size) || 0);
+                    if (volume > 0 && item.id) {
+                        await client.query(
+                            'UPDATE user_catalog_items SET stock_ml = stock_ml + $1 WHERE id = $2 AND catalog_id = $3',
+                            [volume, item.id, catalogId]
+                        );
+                    }
+                }
+            } 
+            // Volume Deduct: status moves FROM cancelled (back to something else)
+            else if (oldStatus === 'cancelled' && status !== 'cancelled') {
+                for (const item of items) {
+                    const volume = (Number(item.quantity) || 1) * (Number(item.size) || 0);
+                    if (volume > 0 && item.id) {
+                        await client.query(
+                            'UPDATE user_catalog_items SET stock_ml = GREATEST(0, stock_ml - $1) WHERE id = $2 AND catalog_id = $3',
+                            [volume, item.id, catalogId]
+                        );
+                    }
+                }
+            }
+
+            await client.query('COMMIT');
+            return NextResponse.json({ success: true, message: 'Order status updated' });
+        } catch (txErr) {
+            await client.query('ROLLBACK');
+            throw txErr;
+        }
     } catch (error) {
         console.error('Error updating catalog order status:', error);
         return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });

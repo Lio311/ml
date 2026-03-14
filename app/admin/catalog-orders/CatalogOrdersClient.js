@@ -1,11 +1,127 @@
-"use client";
-
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import toast from "react-hot-toast";
+import { motion, AnimatePresence } from "framer-motion";
+import { ChevronDown, Check, Trash2, AlertCircle } from "lucide-react";
+
+const STATUS_CONFIG = {
+    pending: { label: 'ממתין', color: 'bg-orange-100 text-orange-800 border-orange-200' },
+    processing: { label: 'בטיפול', color: 'bg-blue-100 text-blue-800 border-blue-200' },
+    shipped: { label: 'נשלח בדואר', color: 'bg-purple-100 text-purple-800 border-purple-200' },
+    completed: { label: 'נמסר/הושלם', color: 'bg-green-100 text-green-800 border-green-200' },
+    cancelled: { label: 'בוטל', color: 'bg-gray-100 text-gray-800 border-gray-200' },
+};
+
+function StatusDropdown({ currentStatus, onStatusChange }) {
+    const [isOpen, setIsOpen] = useState(false);
+    const dropdownRef = useRef(null);
+
+    useEffect(() => {
+        const handleClickOutside = (event) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+                setIsOpen(false);
+            }
+        };
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
+
+    const config = STATUS_CONFIG[currentStatus] || STATUS_CONFIG.pending;
+
+    return (
+        <div className="relative inline-block text-right" ref={dropdownRef}>
+            <button
+                onClick={() => setIsOpen(!isOpen)}
+                className={`flex items-center gap-2 px-3 py-1.5 rounded-xl font-bold text-xs border transition-all shadow-sm ${config.color} hover:shadow-md active:scale-95`}
+            >
+                <span>{config.label}</span>
+                <ChevronDown className={`w-3 h-3 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />
+            </button>
+
+            <AnimatePresence>
+                {isOpen && (
+                    <motion.div
+                        initial={{ opacity: 0, y: -10, scale: 0.95 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: -10, scale: 0.95 }}
+                        className="absolute z-50 mt-2 w-44 bg-white rounded-2xl shadow-2xl border border-gray-100 overflow-hidden"
+                    >
+                        <div className="py-1">
+                            {Object.entries(STATUS_CONFIG).map(([key, value]) => (
+                                <button
+                                    key={key}
+                                    onClick={() => {
+                                        onStatusChange(key);
+                                        setIsOpen(false);
+                                    }}
+                                    className={`w-full flex items-center justify-between px-4 py-2.5 text-sm font-medium transition-colors hover:bg-gray-50 ${currentStatus === key ? 'text-black bg-gray-50/50' : 'text-gray-600 hover:text-black'}`}
+                                >
+                                    <span>{value.label}</span>
+                                    {currentStatus === key && (
+                                        <Check className="w-4 h-4 text-emerald-500" />
+                                    )}
+                                </button>
+                            ))}
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
+        </div>
+    );
+}
+
+function ConfirmationModal({ isOpen, onClose, onConfirm, title, message }) {
+    return (
+        <AnimatePresence>
+            {isOpen && (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        onClick={onClose}
+                        className="absolute inset-0 bg-black/40 backdrop-blur-sm"
+                    />
+                    <motion.div
+                        initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        exit={{ opacity: 0, scale: 0.9, y: 20 }}
+                        className="relative bg-white rounded-[2rem] shadow-2xl w-full max-w-md overflow-hidden text-right border border-gray-100"
+                        dir="rtl"
+                    >
+                        <div className="p-8">
+                            <div className="flex items-center gap-4 mb-6">
+                                <div className="w-12 h-12 bg-red-50 rounded-2xl flex items-center justify-center text-red-500">
+                                    <AlertCircle className="w-6 h-6" />
+                                </div>
+                                <h3 className="text-xl font-black text-gray-900">{title}</h3>
+                            </div>
+                            <p className="text-gray-500 font-bold leading-relaxed mb-8">{message}</p>
+                            <div className="flex gap-3 justify-end">
+                                <button
+                                    onClick={onClose}
+                                    className="px-6 py-3 rounded-2xl font-bold text-gray-400 hover:bg-gray-100 transition-colors"
+                                >
+                                    ביטול
+                                </button>
+                                <button
+                                    onClick={onConfirm}
+                                    className="px-8 py-3 bg-red-600 text-white rounded-2xl font-black shadow-lg shadow-red-200 hover:bg-red-700 hover:shadow-red-300 transition-all transform hover:-translate-y-0.5 active:translate-y-0"
+                                >
+                                    מחיקה
+                                </button>
+                            </div>
+                        </div>
+                    </motion.div>
+                </div>
+            )}
+        </AnimatePresence>
+    );
+}
 
 export default function CatalogOrdersClient() {
     const [orders, setOrders] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [deleteModal, setDeleteModal] = useState({ isOpen: false, orderId: null });
 
     const fetchOrders = async () => {
         setIsLoading(true);
@@ -47,8 +163,9 @@ export default function CatalogOrdersClient() {
         }
     };
 
-    const handleDeleteOrder = async (orderId) => {
-        if (!window.confirm('האם אתה בטוח שברצונך למחוק את ההזמנה? פעולה זו אינה ניתנת לביטול.')) return;
+    const handleDeleteOrder = async () => {
+        const orderId = deleteModal.orderId;
+        if (!orderId) return;
 
         try {
             const res = await fetch(`/api/admin/catalog-orders?orderId=${orderId}`, {
@@ -56,6 +173,7 @@ export default function CatalogOrdersClient() {
             });
             if (res.ok) {
                 toast.success('הזמנה נמחקה בהצלחה');
+                setDeleteModal({ isOpen: false, orderId: null });
                 fetchOrders();
             } else {
                 toast.error('שגיאה במחיקת הזמנה');
@@ -108,13 +226,11 @@ export default function CatalogOrdersClient() {
                                         <div className="flex items-center gap-2">
                                             <span>#{order.id}</span>
                                             <button 
-                                                onClick={() => handleDeleteOrder(order.id)}
+                                                onClick={() => setDeleteModal({ isOpen: true, orderId: order.id })}
                                                 className="text-gray-300 hover:text-red-600 transition-colors p-1"
                                                 title="מחק הזמנה"
                                             >
-                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4">
-                                                    <path strokeLinecap="round" strokeLinejoin="round" d="m14.74 9-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 0 1-2.244 2.077H8.084a2.25 2.25 0 0 1-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 0 0-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 0 1 3.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 0 0-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 0 0-7.5 0" />
-                                                </svg>
+                                                <Trash2 className="w-4 h-4" />
                                             </button>
                                         </div>
                                     </td>
@@ -146,22 +262,10 @@ export default function CatalogOrdersClient() {
                                         </div>
                                     </td>
                                     <td className="p-4 text-center">
-                                        <select
-                                            value={order.status}
-                                            onChange={(e) => handleStatusChange(order.id, e.target.value)}
-                                            className={`p-2 border rounded-xl font-bold text-sm outline-none transition-colors select-none cursor-pointer w-[140px] shadow-sm
-                                                ${order.status === 'pending' ? 'bg-orange-100 text-orange-800 border-orange-200' :
-                                                order.status === 'processing' ? 'bg-blue-100 text-blue-800 border-blue-200' :
-                                                order.status === 'shipped' ? 'bg-purple-100 text-purple-800 border-purple-200' :
-                                                order.status === 'completed' ? 'bg-green-100 text-green-800 border-green-200' :
-                                                'bg-gray-100 text-gray-800 border-gray-200'}`}
-                                        >
-                                            <option value="pending" className="bg-white text-black">ממתין</option>
-                                            <option value="processing" className="bg-white text-black">בטיפול</option>
-                                            <option value="shipped" className="bg-white text-black">נשלח בדואר</option>
-                                            <option value="completed" className="bg-white text-black">נמסר/הושלם</option>
-                                            <option value="cancelled" className="bg-white text-black">בוטל</option>
-                                        </select>
+                                        <StatusDropdown 
+                                            currentStatus={order.status} 
+                                            onStatusChange={(newStatus) => handleStatusChange(order.id, newStatus)} 
+                                        />
                                         {order.delivery_method === 'self_pickup' && (
                                             <div className="mt-2 text-[10px] font-bold text-green-700 uppercase bg-green-50 rounded p-1 inline-block">איסוף עצמי</div>
                                         )}
@@ -172,6 +276,14 @@ export default function CatalogOrdersClient() {
                     </tbody>
                 </table>
             </div>
+
+            <ConfirmationModal 
+                isOpen={deleteModal.isOpen}
+                onClose={() => setDeleteModal({ isOpen: false, orderId: null })}
+                onConfirm={handleDeleteOrder}
+                title="מחיקת הזמנה"
+                message="האם אתה בטוח שברצונך למחוק את ההזמנה? פעולה זו אינה ניתנת לביטול."
+            />
         </div>
     );
 }

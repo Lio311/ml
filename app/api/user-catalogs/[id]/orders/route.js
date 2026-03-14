@@ -77,8 +77,17 @@ export async function POST(req, { params }) {
 
             const orderId = orderResult.rows[0].id;
 
-            // 1.1 Notification for catalog owner? 
-            // In a real system we'd have a catalog_notifications table or similar. For now, email is enough.
+            // 1.1 Decrease stock_ml for each item
+            for (const item of items) {
+                // volume_deduction = quantity * size (ml)
+                const volumeDeduction = (Number(item.quantity) || 1) * (Number(item.size) || 0);
+                if (volumeDeduction > 0 && item.id) {
+                    await client.query(
+                        'UPDATE user_catalog_items SET stock_ml = GREATEST(0, stock_ml - $1) WHERE id = $2 AND catalog_id = $3',
+                        [volumeDeduction, item.id, actualCatalogId]
+                    );
+                }
+            }
 
             await client.query('COMMIT');
 

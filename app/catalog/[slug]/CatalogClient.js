@@ -44,8 +44,14 @@ function CatalogProductCard({ item, slug, catalogId, catalogName }) {
     }, [added]);
 
     const handleAdd = (size, price) => {
+        const stockMl = Number(item.stock_ml) || 0;
+        if (stockMl <= 0) {
+            toast.error("המוצר אזל מהמלאי!");
+            return;
+        }
+
         addToCart(
-            { ...item, id: `${item.id}_${size}`, originalId: item.id, size, price, stock: 9999 },
+            { ...item, id: `${item.id}_${size}`, originalId: item.id, size, price, stock_ml: stockMl },
             size,
             price,
             slug,

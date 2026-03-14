@@ -766,17 +766,17 @@ export default function CartClient() {
 
                                     if (tiers.length === 0) return null;
 
-                                    const sortedTiers = [...tiers].sort((a, b) => a.min_sum - b.min_sum);
-                                    const maxTierSum = sortedTiers[sortedTiers.length - 1].min_sum;
-                                    const currentTier = sortedTiers.filter(t => subtotal >= t.min_sum).reverse()[0];
-                                    const nextTierObj = sortedTiers.find(t => subtotal < t.min_sum);
+                                    const sortedTiers = [...tiers].sort((a, b) => a.minAmount - b.minAmount);
+                                    const maxTierSum = sortedTiers[sortedTiers.length - 1].minAmount;
+                                    const currentTier = sortedTiers.filter(t => subtotal >= t.minAmount).reverse()[0];
+                                    const nextTierObj = sortedTiers.find(t => subtotal < t.minAmount);
 
                                     return (
                                         <div className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
                                             <h3 className="font-bold text-gray-900 mb-2 flex items-center gap-2 text-right justify-start">
                                                 <span>🎁</span>
                                                 {currentTier ? (
-                                                    <span className="text-green-600">קיבלת {currentTier.sample_count} דוגמיות חינם!</span>
+                                                    <span className="text-green-600">קיבלת {currentTier.samplesCount} דוגמיות חינם!</span>
                                                 ) : (
                                                     <span>דוגמיות חינם</span>
                                                 )}
@@ -791,8 +791,8 @@ export default function CartClient() {
                                                     <div
                                                         key={idx}
                                                         className="absolute top-0 h-full w-0.5 bg-white/50 z-10"
-                                                        style={{ right: `${(t.min_sum / maxTierSum) * 100}%` }}
-                                                        title={`${t.min_sum}₪ - ${t.sample_count} דוגמיות`}
+                                                        style={{ right: `${(t.minAmount / maxTierSum) * 100}%` }}
+                                                        title={`${t.minAmount}₪ - ${t.samplesCount} דוגמיות`}
                                                     ></div>
                                                 ))}
                                             </div>
@@ -800,8 +800,8 @@ export default function CartClient() {
                                             <div className="flex justify-between text-[10px] text-gray-400 font-medium px-1 flex-row-reverse">
                                                 <span className="text-gray-900 font-bold">0</span>
                                                 {sortedTiers.map((t, idx) => (
-                                                    <span key={idx} className={subtotal >= t.min_sum ? "text-emerald-600 font-bold" : ""}>
-                                                        {t.min_sum} ({t.sample_count})
+                                                    <span key={idx} className={subtotal >= t.minAmount ? "text-emerald-600 font-bold" : ""}>
+                                                        {t.minAmount} ({t.samplesCount})
                                                     </span>
                                                 ))}
                                             </div>
@@ -809,11 +809,11 @@ export default function CartClient() {
                                             <div className="mt-3 text-xs text-center font-bold">
                                                 {nextTierObj ? (
                                                     <span className="text-emerald-600">
-                                                        {currentTier ? `יש לך ${currentTier.sample_count} דוגמיות. ` : ""}
-                                                        עוד <span className="font-bold text-black">{nextTierObj.min_sum - subtotal} ₪</span> ל-{nextTierObj.sample_count} דוגמיות!
+                                                        {currentTier ? `יש לך ${currentTier.samplesCount} דוגמיות. ` : ""}
+                                                        עוד <span className="font-bold text-black">{nextTierObj.minAmount - subtotal} ₪</span> ל-{nextTierObj.samplesCount} דוגמיות!
                                                     </span>
                                                 ) : (
-                                                    <span className="text-green-600 font-bold">פינקנו אותך ב-{currentTier?.sample_count} דוגמיות! תהנה! 🎉</span>
+                                                    <span className="text-green-600 font-bold">פינקנו אותך ב-{currentTier?.samplesCount} דוגמיות! תהנה! 🎉</span>
                                                 )}
                                             </div>
                                         </div>

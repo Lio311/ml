@@ -152,32 +152,46 @@ export function CartProvider({ children }) {
             toast.error("העגלה נעולה בזמן שהגרלת הבשמים פעילה!");
             return;
         }
+
         setCartItems((prev) => {
-            const existing = prev.find(
-                (item) => item.id === product.id && item.size === size && (item.vendorId || 'main') === vendorId
-            );
-            if (existing) {
-                // Stock check for main vendor
-                if (vendorId === 'main') {
-                    const stock = parseInt(product.stock) || 0;
-                    if (stock > 0 && existing.quantity + 1 > stock) {
-                        toast.error("לא ניתן להוסיף יותר — אזל המלאי!");
+            // STOCK CHECK (ML-based for catalogs, Unit-based for main)
+            if (vendorId !== 'main') {
+                if (product.stock_ml !== undefined) {
+                    const stockLimit = Number(product.stock_ml) || 0;
+                    // Calculate current volume for this perfume (originalId) in cart
+                    const currentVolumeInCart = prev.reduce((sum, item) => {
+                        if (item.vendorId === vendorId && (item.originalId === product.originalId || item.id === product.id)) {
+                            return sum + (Number(item.quantity) * Number(item.size));
+                        }
+                        return sum;
+                    }, 0);
+                    
+                    const addedVolume = Number(size) || 0;
+                    if (currentVolumeInCart + addedVolume > stockLimit) {
+                        toast.error(`לא ניתן להוסיף - המלאי מוגבל ל-${stockLimit} מ"ל סה"כ!`);
                         return prev;
                     }
                 }
+            } else {
+                // Main vendor unit-based stock check
+                const existingInCart = prev.find(item => item.id === product.id && (item.vendorId || 'main') === 'main');
+                const stock = parseInt(product.stock) || 0;
+                if (stock > 0 && (existingInCart ? existingInCart.quantity + 1 : 1) > stock) {
+                    toast.error("אזל המלאי!");
+                    return prev;
+                }
+            }
+
+            const existing = prev.find(
+                (item) => item.id === product.id && item.size === size && (item.vendorId || 'main') === vendorId
+            );
+            
+            if (existing) {
                 return prev.map((item) =>
                     item.id === product.id && item.size === size && (item.vendorId || 'main') === vendorId
                         ? { ...item, ...product, quantity: item.quantity + 1, size, price, vendorId, vendorName }
                         : item
                 );
-            }
-            // Stock check for new item
-            if (vendorId === 'main') {
-                const stock = parseInt(product.stock) || 0;
-                if (stock > 0 && 1 > stock) {
-                    toast.error("המוצר אזל מהמלאי!");
-                    return prev;
-                }
             }
             return [...prev, { ...product, size, price, quantity: 1, vendorId, vendorName }];
         });
@@ -201,21 +215,45 @@ export function CartProvider({ children }) {
             return;
         }
 
-        setCartItems((prev) =>
-            prev.map((item) => {
-                if (item.id === id && item.size === size && (item.vendorId || 'main') === vendorId) {
-                    if (vendorId === 'main') {
-                        const stock = parseInt(item.stock) || 0;
-                        if (stock > 0 && quantity > stock) {
-                            toast.error("לא ניתן להוסיף את המוצר, אזל המלאי!");
-                            return item;
+        setCartItems((prev) => {
+            const itemToUpdate = prev.find(item => item.id === id && item.size === size && (item.vendorId || 'main') === vendorId);
+            if (!itemToUpdate) return prev;
+
+            // STOCK CHECK
+            if (vendorId !== 'main') {
+                if (itemToUpdate.stock_ml !== undefined) {
+                    const stockLimit = Number(itemToUpdate.stock_ml) || 0;
+                    const otherItemsVolume = prev.reduce((sum, item) => {
+                        // Skip the item we are updating
+                        if (item.vendorId === vendorId && 
+                            (item.originalId === itemToUpdate.originalId || item.id === itemToUpdate.id) && 
+                            !(item.id === id && item.size === size)) {
+                            return sum + (Number(item.quantity) * Number(item.size));
                         }
+                        return sum;
+                    }, 0);
+
+                    const newVolume = otherItemsVolume + (Number(quantity) * Number(size));
+                    if (newVolume > stockLimit) {
+                        toast.error(`המלאי מוגבל ל-${stockLimit} מ"ל!`);
+                        return prev;
                     }
+                }
+            } else {
+                const stock = parseInt(itemToUpdate.stock) || 0;
+                if (stock > 0 && quantity > stock) {
+                    toast.error("המלאי מוגבל!");
+                    return prev;
+                }
+            }
+
+            return prev.map((item) => {
+                if (item.id === id && item.size === size && (item.vendorId || 'main') === vendorId) {
                     return { ...item, quantity };
                 }
                 return item;
-            })
-        );
+            });
+        });
     };
 
     const clearActiveVendorCart = () => {
