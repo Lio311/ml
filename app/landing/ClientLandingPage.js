@@ -477,7 +477,7 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
                                 </div>
                             </div>
                             <div className="pt-4 border-t border-gray-800 text-center text-sm text-gray-500">
-                                © 2024 ml_tlv. כל הזכויות שמורות.
+                                © 2022 ml_tlv. כל הזכויות שמורות.
                             </div>
                         </div>
                     </div>

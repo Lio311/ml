@@ -68,7 +68,7 @@ export default function Footer() {
 
             </div>
             <div className="container mt-8 pt-4 border-t border-gray-800 text-center text-xs text-gray-500">
-                © 2024 ml_tlv. כל הזכויות שמורות.
+                © 2022 ml_tlv. כל הזכויות שמורות.
             </div>
         </footer>
     );
