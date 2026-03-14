@@ -34,7 +34,7 @@ export default function OrderStatusTimeline({ status }) {
         <div className="w-full py-8 px-2 mb-8">
             <div className="relative">
                 {/* Line Container (Centered on circles) */}
-                <div className="absolute top-1/2 right-6 left-6 -translate-y-1/2 h-1">
+                <div className="absolute top-6 right-6 left-6 -translate-y-1/2 h-1">
                     {/* Background Line */}
                     <div className="w-full h-full bg-gray-100 dark:bg-zinc-800 rounded-full" />
                     
