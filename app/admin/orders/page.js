@@ -309,14 +309,19 @@ export default async function AdminOrdersPage(props) {
                                             <>
                                                 <form action={updateStatus} className="flex gap-2">
                                                     <input type="hidden" name="orderId" value={order.id} />
-                                                    <select name="status" defaultValue={order.status} className="border rounded px-2 py-1 text-sm bg-white">
+                                                    <select name="status" defaultValue={order.status} className={`rounded-2xl font-bold text-xs border px-4 py-2.5 shadow-sm cursor-pointer outline-none appearance-none transition-all
+                                                        ${order.status === 'pending' ? 'bg-orange-50 text-orange-700 border-orange-100' :
+                                                        order.status === 'processing' ? 'bg-blue-50 text-blue-700 border-blue-100' :
+                                                        order.status === 'shipped' ? 'bg-purple-50 text-purple-700 border-purple-100' :
+                                                        order.status === 'completed' ? 'bg-green-50 text-green-700 border-green-100' :
+                                                        'bg-gray-50 text-gray-700 border-gray-100'}`}>
                                                         <option value="pending">ממתין</option>
                                                         <option value="processing">בטיפול</option>
                                                         <option value="shipped">נשלח</option>
                                                         <option value="completed">הושלם</option>
                                                         <option value="cancelled">בוטל</option>
                                                     </select>
-                                                    <button type="submit" className="bg-black text-white px-3 py-1 rounded text-sm hover:bg-gray-800">
+                                                    <button type="submit" className="bg-black text-white px-3 py-1 rounded-xl text-sm hover:bg-gray-800 font-bold shadow-sm transition-all active:scale-95">
                                                         שמור
                                                     </button>
                                                 </form>
