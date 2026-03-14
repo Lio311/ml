@@ -13,10 +13,7 @@ import LiveVisitorCounter from './LiveVisitorCounter';
 import { useWishlist } from '../context/WishlistContext';
 
 export default function Header({ brands = [], menu = [] }) {
-    const { cartItems } = useCart();
-    const { count: wishlistCount } = useWishlist();
-    const pathname = usePathname();
-    const cartCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
+    const { totalItemsCount: cartCount } = useCart();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isBrandsDropdownOpen, setIsBrandsDropdownOpen] = useState(false);
     const [isSearchOpen, setIsSearchOpen] = useState(false);

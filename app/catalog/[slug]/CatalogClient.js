@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import toast from "react-hot-toast";
-import { useCatalogCart } from "./CatalogCartContext";
+import { useCart } from "../../context/CartContext";
 
 export default function CatalogClient({ slug }) {
     const [catalog, setCatalog] = useState(null);
@@ -12,7 +12,7 @@ export default function CatalogClient({ slug }) {
     const [error, setError] = useState(null);
     const [selectedSizes, setSelectedSizes] = useState({});
 
-    const { addToCart, cartItems, totalItems } = useCatalogCart();
+    const { addToCart, cartItems } = useCart();
 
     useEffect(() => {
         const fetchCatalog = async () => {
@@ -155,13 +155,19 @@ export default function CatalogClient({ slug }) {
                                             if (inCartItem) {
                                                 // Already in cart, do nothing or redirect to cart
                                             } else {
-                                                addToCart({
-                                                    ...item,
-                                                    id: cartItemId, // override ID to make it size-specific
-                                                    originalId: item.id, // keep track of true db id
-                                                    size: sizeStr,
-                                                    price: activePrice
-                                                });
+                                                addToCart(
+                                                    {
+                                                        ...item,
+                                                        id: cartItemId, 
+                                                        originalId: item.id, 
+                                                        size: sizeStr,
+                                                        price: activePrice
+                                                    },
+                                                    sizeStr,
+                                                    activePrice,
+                                                    catalog.id, // vendorId
+                                                    catalog.name // vendorName
+                                                );
                                                 toast.success("נוסף לסל!");
                                             }
                                         }}

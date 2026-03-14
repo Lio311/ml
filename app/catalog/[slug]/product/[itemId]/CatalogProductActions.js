@@ -20,13 +20,19 @@ export default function CatalogProductActions({ item, slug }) {
             return;
         }
 
-        addToCart({
-            ...item,
-            id: cartItemId,
-            originalId: item.id,
-            size: selectedSize || '1',
-            price: activePrice
-        });
+        addToCart(
+            {
+                ...item,
+                id: cartItemId,
+                originalId: item.id,
+                size: selectedSize || '1',
+                price: activePrice
+            },
+            selectedSize || '1',
+            activePrice,
+            item.catalog_id, // Pass the catalog ID as vendorId
+            item.catalog_name || 'ספק חיצוני' // Pass vendor name
+        );
         toast.success("נוסף לסל!");
     };
 
