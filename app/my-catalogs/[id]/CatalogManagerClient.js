@@ -147,6 +147,15 @@ export default function CatalogManagerClient({ catalogId }) {
             }
         };
         fetchCategories();
+
+        // 🟢 Block mouse wheel from changing number input values
+        const handleWheel = (e) => {
+            if (document.activeElement.type === 'number') {
+                e.preventDefault();
+            }
+        };
+        document.addEventListener('wheel', handleWheel, { passive: false });
+        return () => document.removeEventListener('wheel', handleWheel);
     }, [catalogId]);
 
     const handleUpdateCatalog = async (e) => {
