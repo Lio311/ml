@@ -30,7 +30,7 @@ export default async function Home() {
     const client = await pool.connect();
 
     // Fetch New Arrivals (Only in stock)
-    const res = await client.query('SELECT * FROM products WHERE stock > 0 ORDER BY created_at DESC LIMIT 4');
+    const res = await client.query('SELECT * FROM products WHERE stock > 0 ORDER BY created_at DESC LIMIT 6');
     newArrivals = res.rows;
 
     // Fetch Stats
@@ -141,7 +141,7 @@ export default async function Home() {
           <h2 className="text-3xl tracking-[0.2em] uppercase mb-3 font-bold text-black">חדש על המדף</h2>
           <div className="w-10 h-0.5 bg-black mx-auto mb-6"></div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 md:gap-6">
             {newArrivals.map((product) => (
               <ProductCard key={product.id} product={product} />
             ))}
