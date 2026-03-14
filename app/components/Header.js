@@ -92,28 +92,26 @@ export default function Header({ brands = [], menu = [] }) {
                             <Image src="/logo_v5.png" alt="ml." width={100} height={40} className="h-10 w-auto object-contain" priority />
                         </Link>
 
-                        {/* Right Icons: User, Wishlist, Cart (Search moved to left) */}
+                        {/* Right Icons: User icon (Personal Area), Wishlist, Cart */}
                         <div className="flex items-center gap-1">
-
-
-                            {/* User Area */}
-                            <div className="flex items-center">
-                                <SignedIn>
-                                    <div className="scale-75">
-                                        <UserButton afterSignOutUrl="/" />
-                                    </div>
-                                </SignedIn>
-                                <SignedOut>
-                                    <SignInButton mode="modal">
-                                        <button className="p-2 text-gray-700">
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-                                                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0zM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
-                                            </svg>
-                                        </button>
-                                    </SignInButton>
-                                </SignedOut>
-                            </div>
-
+                            {/* Personal Area (Redirects to orders or sign-in) */}
+                            <SignedIn>
+                                <Link href="/orders" className="p-2 text-gray-700" title="אזור אישי">
+                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+                                        <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                                    </svg>
+                                </Link>
+                            </SignedIn>
+                            <SignedOut>
+                                <SignInButton mode="modal">
+                                    <button className="p-2 text-gray-700">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
+                                        </svg>
+                                    </button>
+                                </SignInButton>
+                            </SignedOut>
+                            
                             {/* Wishlist */}
                             <Link href="/wishlist" className="p-2 text-gray-700 relative">
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
@@ -292,6 +290,15 @@ export default function Header({ brands = [], menu = [] }) {
                         </svg>
                     </button>
                     <div className="flex flex-col gap-6 text-xl font-bold text-center overflow-y-auto max-h-[70vh] custom-scrollbar">
+                        {/* Clerk UserButton at Top Center */}
+                        <div className="flex justify-center mb-4">
+                            <SignedIn>
+                                <div className="scale-125">
+                                    <UserButton afterSignOutUrl="/" />
+                                </div>
+                            </SignedIn>
+                        </div>
+
                         {menu.filter(item => item.visible).map(item => (
                             <Link
                                 key={item.id}
