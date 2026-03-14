@@ -310,7 +310,7 @@ export default function CartClient() {
                                 <div className="text-3xl">🎒</div>
                                 <div>
                                     <p className="font-black text-lg">שאר הפריטים מחכים לך!</p>
-                                    <p className="text-sm">לאחר שתשלים את ההזמנה מ {activeItems[0]?.vendorName || 'ספק זה'} - תוכל לעבור לסל הבא.</p>
+                                    <p className="text-sm">לאחר שתשלים את ההזמנה מ-{activeItems[0]?.vendorName || 'ספק זה'} תוכל לעבור לסל הבא.</p>
                                 </div>
                             </div>
                         )}
