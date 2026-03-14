@@ -38,7 +38,7 @@ export default function CartClient() {
             if (!buckets[vId]) {
                 buckets[vId] = {
                     id: vId,
-                    name: item.vendorName || (vId === 'main' ? 'האתר הראשי' : 'ספק חיצוני'),
+                    name: item.vendorName || (vId === 'main' ? 'האתר הרשמי' : 'ספק חיצוני'),
                     items: []
                 };
             }
@@ -140,8 +140,11 @@ export default function CartClient() {
     const validatePhone = (phone) => {
         if (!phone) return "מספר טלפון הוא שדה חובה";
         const cleanPhone = phone.replace(/\D/g, '');
-        if (!cleanPhone.startsWith('05')) return "מספר טלפון חייב להתחיל ב-05";
-        if (cleanPhone.length !== 10) return "מספר טלפון חייב להכיל 10 ספרות";
+        if (cleanPhone.length < 9) return "מספר טלפון קצר מדי";
+        if (cleanPhone.length > 10) return "מספר טלפון ארוך מדי";
+        if (!/^05\d{8}$/.test(cleanPhone) && !/^0[23489]\d{7}$/.test(cleanPhone)) {
+             return "מספר טלפון לא תקין";
+        }
         return "";
     };
 
@@ -237,7 +240,7 @@ export default function CartClient() {
         <div className="min-h-screen bg-gray-50">
             <div className="container py-12">
                 <div className="flex items-center justify-between mb-8">
-                    <h1 className="text-3xl font-bold">העגלה הירושלמית שלי</h1>
+                    <h1 className="text-3xl font-bold">העגלה שלי</h1>
                     <div className="flex items-center gap-2">
                         <span className="text-black font-normal">שיתוף הסל</span>
                         <button onClick={handleShareCart} className="w-10 h-10 flex items-center justify-center bg-gray-100 rounded-full transition shadow-sm hover:bg-blue-50 text-gray-600 hover:text-blue-600">
@@ -297,7 +300,7 @@ export default function CartClient() {
                                 <div className="text-3xl">🎒</div>
                                 <div>
                                     <p className="font-black text-lg">שאר הפריטים מחכים לך!</p>
-                                    <p className="text-sm">לאחר שתשלים את ההזמנה מ {activeItems[0]?.vendorName || 'ספק זה'}, תוכל לעבור לסל הבא.</p>
+                                    <p className="text-sm">לאחר שתשלים את ההזמנה מ {activeItems[0]?.vendorName || 'ספק זה'} - תוכל לעבור לסל הבא.</p>
                                 </div>
                             </div>
                         )}
@@ -306,7 +309,7 @@ export default function CartClient() {
                     {/* Summary & Checkout */}
                     <div className="w-full lg:w-96 space-y-6">
                         <div className="bg-white p-6 rounded-xl border shadow-xl space-y-6 sticky top-24">
-                            <h2 className="text-xl font-bold border-b pb-4">סיכום הזמנה מאת: {activeItems[0]?.vendorName || 'ספק'}</h2>
+                            <h2 className="text-xl font-bold border-b pb-4">סיכום הזמנה</h2>
 
                             <div className="flex justify-between items-center text-lg font-bold">
                                 <span>סכום ביניים</span>
@@ -364,9 +367,24 @@ export default function CartClient() {
                             )}
 
                             {isMainVendor && (
-                                <div className="grid grid-cols-2 gap-2">
-                                    <button onClick={() => setIsSelfPickup(false)} className={`p-3 border rounded-xl text-xs font-bold ${!isSelfPickup ? 'bg-black text-white' : 'bg-white'}`}>משלוח (+30)</button>
-                                    <button onClick={() => setIsSelfPickup(true)} className={`p-3 border rounded-xl text-xs font-bold ${isSelfPickup ? 'bg-black text-white' : 'bg-white'}`}>איסוף עצמי (חינם)</button>
+                                <div className="space-y-4 mb-4">
+                                     <p className="text-[10px] font-bold text-gray-400 uppercase tracking-widest text-center">שיטת אספקה</p>
+                                     <div className="grid grid-cols-2 gap-3">
+                                        <button 
+                                            onClick={() => setIsSelfPickup(false)} 
+                                            className={`flex flex-col items-center gap-1 p-3 rounded-2xl border-2 transition-all duration-300 ${!isSelfPickup ? 'border-black bg-black text-white shadow-lg scale-105' : 'border-gray-100 bg-gray-50 text-gray-500 hover:border-gray-200'}`}
+                                        >
+                                            <span className="text-sm font-black">משלוח</span>
+                                            <span className="text-[10px] opacity-70">30 ₪</span>
+                                        </button>
+                                        <button 
+                                            onClick={() => setIsSelfPickup(true)} 
+                                            className={`flex flex-col items-center gap-1 p-3 rounded-2xl border-2 transition-all duration-300 ${isSelfPickup ? 'border-black bg-black text-white shadow-lg scale-105' : 'border-gray-100 bg-gray-50 text-gray-500 hover:border-gray-200'}`}
+                                        >
+                                            <span className="text-sm font-black">איסוף עצמי</span>
+                                            <span className="text-[10px] font-bold text-green-500">חינם</span>
+                                        </button>
+                                     </div>
                                 </div>
                             )}
 

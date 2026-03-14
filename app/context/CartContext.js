@@ -109,7 +109,7 @@ export function CartProvider({ children }) {
         return () => clearTimeout(syncCart);
     }, [cartItems, user]);
 
-    const addToCart = (product, size, price, vendorId = 'main', vendorName = 'האתר הראשי') => {
+    const addToCart = (product, size, price, vendorId = 'main', vendorName = 'האתר הרשמי') => {
         if (isCartLocked && vendorId === 'main') {
             toast.error("העגלה נעולה בזמן שהגרלת הבשמים פעילה!");
             return;
