@@ -344,7 +344,7 @@ export default async function ProductPage(props) {
                         {/* Fragrance Pyramid Visualization removed from here */}
                     </div >
 
-                    <div className="bg-gray-50 p-6 rounded-xl border">
+                    <div className="bg-white p-6 rounded-xl">
                         <h3 className="font-bold mb-4">בחר גודל והוסף לסל:</h3>
                         {/* Reusing ProductCard purely for logic is hacky, but consistent with requested "simple" flow. 
                             Ideally would be refactored, but for now we put a "Card" style adder or just the buttons.

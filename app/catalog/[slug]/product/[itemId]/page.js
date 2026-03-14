@@ -86,7 +86,7 @@ export default async function CatalogProductPage({ params }) {
                     </div>
 
                     {/* Price + Add to Cart */}
-                    <div className="bg-gray-50 p-6 rounded-xl border">
+                    <div className="bg-white p-6 rounded-xl">
                         <CatalogProductActions item={item} slug={slug} />
 
                         {/* Fragrance Pyramid */}
