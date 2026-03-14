@@ -724,97 +724,85 @@ export default function CatalogManagerClient({ catalogId }) {
                                         </p>
 
                                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-                                            {paginated.map(item => (
-                                                <div key={item.id} className="bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden flex flex-col group relative">
-                                                    {/* Admin Action Buttons */}
-                                                    <div className="absolute top-2 right-2 flex gap-1 z-10 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                        <button 
-                                                            onClick={() => handleStartEdit(item)}
-                                                            className="bg-white text-blue-600 p-2 rounded-full hover:bg-blue-50 hover:scale-110 transition shadow border border-blue-100"
-                                                            title="ערוך מוצר"
-                                                        >
-                                                            ✎
-                                                        </button>
-                                                        <button 
-                                                            onClick={() => handleDeleteItem(item.id)}
-                                                            className="bg-white text-red-500 p-2 rounded-full hover:bg-red-50 hover:scale-110 transition shadow border border-red-100"
-                                                            title="מחק מוצר"
-                                                        >
-                                                            ✕
-                                                        </button>
-                                                    </div>
-
-                                                    {/* Product Image */}
-                                                    <div className="h-56 bg-gray-50 flex items-center justify-center overflow-hidden relative">
-                                                        {item.image_url ? (
-                                                            <img src={item.image_url} alt={item.name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
-                                                        ) : (
-                                                            <div className="text-6xl opacity-10">🛍️</div>
-                                                        )}
-                                                    </div>
-
-                                                    {/* Card Body */}
-                                                    <div className="p-5 flex flex-col flex-grow">
-                                                        <h3 className="text-xl font-bold mb-1 text-gray-900 leading-tight">
-                                                            {item.brand} {item.fragrance_name}
-                                                        </h3>
-
-                                                        {/* Size + Price Selector */}
-                                                        {item.prices && Object.keys(item.prices).length > 0 && (
-                                                            <div className="mb-3">
-                                                                <div className="text-2xl font-black text-black mb-2">
-                                                                    {selectedSizes[item.id]?.price || Object.values(item.prices)[0]} ₪
-                                                                </div>
-                                                                <div className="flex flex-wrap gap-2 text-sm font-mono">
-                                                                    {Object.entries(item.prices).map(([size, price], index) => {
-                                                                        const isSelected = selectedSizes[item.id]?.size === size || (!selectedSizes[item.id] && index === 0);
-                                                                        return (
-                                                                            <button
-                                                                                key={size}
-                                                                                onClick={() => setSelectedSizes(prev => ({ ...prev, [item.id]: { size, price } }))}
-                                                                                className={`px-3 py-1 rounded border transition-colors ${isSelected ? 'bg-black text-white border-black' : 'bg-gray-50 text-gray-700 border-gray-200 hover:border-black hover:bg-white'}`}
-                                                                                dir="ltr"
-                                                                            >
-                                                                                {size}
-                                                                            </button>
-                                                                        );
-                                                                    })}
-                                                                </div>
-                                                            </div>
-                                                        )}
-
-                                                        {item.description && (
-                                                            <p className="text-sm text-gray-600 mb-4 line-clamp-2 leading-relaxed flex-grow">
-                                                                {item.description}
-                                                            </p>
-                                                        )}
-
-                                                        {/* Gender & Category badges */}
-                                                        <div className="flex gap-2 flex-wrap mb-2">
-                                                            {item.gender && <span className="text-xs px-2 py-0.5 bg-gray-100 rounded-full text-gray-600">{item.gender}</span>}
-                                                            {item.category && <span className="text-xs px-2 py-0.5 bg-gray-100 rounded-full text-gray-600">{item.category}</span>}
+                                            {paginated.map(item => {
+                                                const sizeEntries = Object.entries(item.prices || {});
+                                                return (
+                                                    <div key={item.id} className="group border rounded-lg overflow-hidden hover:shadow-xl transition bg-white flex flex-col h-full relative">
+                                                        {/* Admin Action Buttons (Top Right) */}
+                                                        <div className="absolute top-2 right-2 flex gap-1 z-10 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                            <button 
+                                                                onClick={(e) => { e.preventDefault(); handleStartEdit(item); }}
+                                                                className="bg-white text-blue-600 w-8 h-8 rounded-full flex items-center justify-center hover:bg-blue-50 transition shadow border border-blue-100"
+                                                                title="ערוך מוצר"
+                                                            >
+                                                                ✎
+                                                            </button>
+                                                            <button 
+                                                                onClick={(e) => { e.preventDefault(); handleDeleteItem(item.id); }}
+                                                                className="bg-white text-red-500 w-8 h-8 rounded-full flex items-center justify-center hover:bg-red-50 transition shadow border border-red-100"
+                                                                title="מחק מוצר"
+                                                            >
+                                                                ✕
+                                                            </button>
                                                         </div>
 
-                                                        {/* Notes tags */}
-                                                        {(item.top_notes || item.middle_notes || item.base_notes) && (
-                                                            <div className="flex flex-wrap gap-1 mb-3">
-                                                                {[...(item.top_notes||'').split(','), ...(item.middle_notes||'').split(','), ...(item.base_notes||'').split(',')]
-                                                                    .map(t => t.trim()).filter(Boolean).slice(0, 8).map(tag => (
-                                                                    <span key={tag} className="text-[10px] px-1.5 py-0.5 bg-amber-50 text-amber-700 rounded border border-amber-100">{tag}</span>
-                                                                ))}
+                                                        {item.gender && (
+                                                            <div className="absolute top-2 left-2 z-10 text-[10px] leading-3 font-bold bg-gray-900 text-white px-2 py-1 rounded shadow-sm text-center uppercase tracking-wide">
+                                                                {item.gender}
                                                             </div>
                                                         )}
 
-                                                        {/* Edit shortcut button */}
-                                                        <button
-                                                            onClick={() => handleStartEdit(item)}
-                                                            className="mt-auto w-full py-2.5 rounded-xl font-bold transition-all border-2 border-black flex items-center justify-center gap-2 hover:bg-black hover:text-white bg-white text-black text-sm"
-                                                        >
-                                                            ✎ ערוך מוצר
-                                                        </button>
+                                                        <Link href={`/catalog/${catalog.slug}/product/${item.id}`} className="block relative aspect-square bg-white overflow-hidden cursor-pointer p-2">
+                                                            {item.image_url ? (
+                                                                <img
+                                                                    src={item.image_url}
+                                                                    alt={item.fragrance_name}
+                                                                    className="w-full h-full object-contain group-hover:scale-110 transition duration-700"
+                                                                />
+                                                            ) : (
+                                                                <div className="absolute inset-0 flex items-center justify-center text-gray-300 text-4xl group-hover:scale-105 transition duration-500">
+                                                                    🧴
+                                                                </div>
+                                                            )}
+                                                        </Link>
+
+                                                        <div className="p-4 flex-1 flex flex-col">
+                                                            <div className="text-xs text-gray-500 mb-1 line-clamp-1">{(item.category || '').split(',')[0]}</div>
+                                                            <Link href={`/catalog/${catalog.slug}/product/${item.id}`}>
+                                                                <h3 className="font-bold text-sm mb-2 line-clamp-2 min-h-[40px] hover:underline">
+                                                                    <span className="mr-1">{item.brand}</span>
+                                                                    {item.fragrance_name}
+                                                                </h3>
+                                                            </Link>
+
+                                                            <div className="mt-auto space-y-2">
+                                                                {sizeEntries.length > 0 ? sizeEntries.map(([size, price]) => (
+                                                                    <div key={size} className="flex items-center justify-between text-xs text-gray-600">
+                                                                        <span>{size.replace(/ml/gi, '').trim()} מ״ל</span>
+                                                                        <div className="flex items-center gap-2">
+                                                                            <span className="font-bold">{price} ₪</span>
+                                                                        </div>
+                                                                    </div>
+                                                                )) : (
+                                                                    <div className="flex items-center justify-between text-xs text-gray-600">
+                                                                        <span>1 מ״ל</span>
+                                                                        <div className="flex items-center gap-2">
+                                                                            <span className="font-bold">{item.price || 0} ₪</span>
+                                                                        </div>
+                                                                    </div>
+                                                                )}
+
+                                                                <button
+                                                                    onClick={() => handleStartEdit(item)}
+                                                                    className="block w-full text-center text-xs py-2 mt-3 rounded transition bg-black text-white hover:bg-gray-800 flex items-center justify-center gap-2"
+                                                                >
+                                                                    ✎ ערוך מוצר
+                                                                </button>
+                                                            </div>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            ))}
+                                                );
+                                            })}
                                         </div>
 
                                         {/* Pagination */}

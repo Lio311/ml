@@ -59,14 +59,7 @@ function CatalogProductCard({ item, slug, catalogId, catalogName }) {
 
     return (
         <div className="group border rounded-lg overflow-hidden hover:shadow-xl transition bg-white flex flex-col h-full relative">
-            {/* Wishlist Heart (Placeholder/Decoration for visual consistency) */}
-            <div className="absolute top-2 left-2 z-10 opacity-30 pointer-events-none">
-                <div className="w-8 h-8 rounded-full bg-white/80 flex items-center justify-center border shadow-sm">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5 text-gray-400">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" />
-                    </svg>
-                </div>
-            </div>
+
 
             {item.gender && (
                 <div className="absolute top-2 right-2 z-10 text-[10px] leading-3 font-bold bg-gray-900 text-white px-2 py-1 rounded shadow-sm text-center uppercase tracking-wide">
@@ -100,7 +93,7 @@ function CatalogProductCard({ item, slug, catalogId, catalogName }) {
                 <div className="mt-auto space-y-2">
                     {sizeEntries.length > 0 ? sizeEntries.map(([size, price]) => (
                         <div key={size} className="flex items-center justify-between text-xs text-gray-600">
-                            <span>{size} מ״ל</span>
+                            <span>{size.replace(/ml/gi, '').trim()} מ״ל</span>
                             <div className="flex items-center gap-2">
                                 <span className="font-bold">{price} ₪</span>
                                 <button
