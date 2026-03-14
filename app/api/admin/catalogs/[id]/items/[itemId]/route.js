@@ -1,24 +1,17 @@
 import { NextResponse } from 'next/server';
-import { auth } from '@clerk/nextjs/server';
+import { checkAdmin } from '@/app/lib/admin';
 import pool from '@/app/lib/db';
 
 export async function PUT(req, context) {
     let client;
     try {
-        const { userId, sessionClaims } = await auth();
-        const params = await context.params;
-        const { id, itemId } = params;
-
-        if (!userId) {
-            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-        }
-
-        // Admin check
-        const role = sessionClaims?.metadata?.role;
-        const userEmail = sessionClaims?.email || '';
-        if (role !== 'admin' && userEmail !== 'lior31197@gmail.com') {
+        const isAdmin = await checkAdmin();
+        if (!isAdmin) {
             return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
         }
+
+        const params = await context.params;
+        const { id, itemId } = params;
 
         const body = await req.json();
         const { 
@@ -64,20 +57,13 @@ export async function PUT(req, context) {
 export async function DELETE(req, context) {
     let client;
     try {
-        const { userId, sessionClaims } = await auth();
-        const params = await context.params;
-        const { id, itemId } = params;
-
-        if (!userId) {
-            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-        }
-
-        // Admin check
-        const role = sessionClaims?.metadata?.role;
-        const userEmail = sessionClaims?.email || '';
-        if (role !== 'admin' && userEmail !== 'lior31197@gmail.com') {
+        const isAdmin = await checkAdmin();
+        if (!isAdmin) {
             return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
         }
+
+        const params = await context.params;
+        const { id, itemId } = params;
 
         client = await pool.connect();
         
