@@ -88,7 +88,7 @@ export async function GET(req) {
                                 <p style="margin: 5px 0 0 0; color: #666; font-size: 12px;">תקף ל-24 השעות הקרובות בלבד!</p>
                             </div>
                             <p>
-                                <a href="https://ml-tlv.vercel.app/cart" style="background: #000; color: #fff; padding: 10px 20px; text-decoration: none; border-radius: 5px;">
+                                <a href="https://www.ml-tlv.com/cart" style="background: #000; color: #fff; padding: 10px 20px; text-decoration: none; border-radius: 5px;">
                                     לחזרה לעגלה >>
                                 </a>
                             </p>

@@ -57,8 +57,8 @@ export default function AboutPage() {
                         "@context": "https://schema.org",
                         "@type": "Organization",
                         "name": "ml_tlv",
-                        "url": "https://ml-tlv.vercel.app",
-                        "logo": "https://ml-tlv.vercel.app/logo_v3.png",
+                        "url": "https://www.ml-tlv.com",
+                        "logo": "https://www.ml-tlv.com/logo_v5.png",
                         "foundingDate": "2023",
                         "address": {
                             "@type": "PostalAddress",
