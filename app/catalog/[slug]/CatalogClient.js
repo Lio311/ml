@@ -32,7 +32,7 @@ function CollapsibleSection({ title, children }) {
 
 // ─── Catalog Product Card (IDENTICAL to main site ProductCard.js) ─────
 function CatalogProductCard({ item, slug, catalogId, catalogName }) {
-    const { addToCart, setActiveVendorId } = useCart();
+    const { addToCart } = useCart();
     const [added, setAdded] = useState(false);
 
     useEffect(() => {
@@ -127,6 +127,7 @@ function CatalogProductCard({ item, slug, catalogId, catalogName }) {
 
 // ─── Main Component ───────────────────────────────────────────────────
 export default function CatalogClient({ slug }) {
+    const { setActiveVendorId } = useCart();
     const [catalog, setCatalog] = useState(null);
     const [items, setItems] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
