@@ -66,7 +66,8 @@ export default function CartClient() {
         if (cartItems.length > 0 && activeItems.length === 0) {
             const firstVendorWithItems = vendorBuckets?.find(v => v.items.length > 0);
             if (firstVendorWithItems) {
-                setActiveVendorId(firstVendorWithItems.id);
+                const vIdentifier = firstVendorWithItems.items[0]?.vendorId || 'main';
+                setActiveVendorId(vIdentifier);
             }
         }
     }, [cartItems.length, activeItems.length, vendorBuckets, setActiveVendorId]);

@@ -60,7 +60,7 @@ export default function CatalogCartClient({ slug }) {
 
         setIsSubmitting(true);
         try {
-            const res = await fetch(`/api/user-catalogs/${catalogInfo.id}/orders`, {
+            const res = await fetch(`/api/user-catalogs/${slug}/orders`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -69,7 +69,7 @@ export default function CatalogCartClient({ slug }) {
                     notes,
                     deliveryMethod: isSelfPickup ? 'self_pickup' : 'mail',
                     phoneNumber: phoneNumber.replace(/\D/g, ''),
-                    activeVendorId: catalogInfo.id
+                    activeVendorId: slug
                 })
             });
 
