@@ -531,7 +531,7 @@ export default function CartClient() {
 
                                 <div className="flex-1 min-w-0">
                                     <h3 className="font-bold truncate">{item.name}</h3>
-                                    <div className="text-sm text-gray-500">גודל: {item.size === 'set' ? 'סט' : `${item.size} מ"ל`}</div>
+                                    <div className="text-sm text-gray-500">גודל: {item.size === 'set' ? 'סט' : `${String(item.size).replace(/ml$/i, '')} מ"ל`}</div>
                                     <div className={`text-sm font-bold mt-1 ${item.isPrize ? 'text-green-600' : 'text-primary'}`}>{item.price} ₪ {item.isPrize && '(פרס)'}</div>
                                 </div>
 

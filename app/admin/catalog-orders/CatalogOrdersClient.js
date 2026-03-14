@@ -154,11 +154,12 @@ export default function CatalogOrdersClient() {
                 <table className="w-full text-sm">
                     <thead className="bg-gray-50 text-gray-500 border-b whitespace-nowrap">
                         <tr>
-                            <th className="p-4 text-right font-semibold">מס' הזמנה</th>
-                            <th className="p-4 text-right font-semibold">תאריך</th>
-                            <th className="p-4 text-right font-semibold">הזמנה מקטלוג</th>
-                            <th className="p-4 text-right font-semibold">לקוח</th>
-                            <th className="p-4 text-right font-semibold">סכום ופירוט פריטים</th>
+                            <th className="p-4 text-center font-semibold">מס' הזמנה</th>
+                            <th className="p-4 text-center font-semibold">תאריך</th>
+                            <th className="p-4 text-center font-semibold">הזמנה מקטלוג</th>
+                            <th className="p-4 text-center font-semibold">לקוח</th>
+                            <th className="p-4 text-center font-semibold">סכום ופריטים</th>
+                            <th className="p-4 text-center font-semibold">הערות</th>
                             <th className="p-4 text-center font-semibold">סטטוס משלוח</th>
                         </tr>
                     </thead>
@@ -190,23 +191,29 @@ export default function CatalogOrdersClient() {
                                         <div className="text-xs text-gray-400">{customer?.email}</div>
                                         <div className="text-xs text-gray-400">{customer?.phone}</div>
                                     </td>
-                                    <td className="p-4 font-bold text-lg">
+                                    <td className="p-4 text-center font-bold text-lg">
                                         <div className="mb-2">{order.total_amount} ₪</div>
-                                        <div className="text-xs text-gray-500 font-normal max-w-[250px] min-w-[200px]">
+                                        <div className="text-xs text-gray-500 font-normal max-w-[250px] min-w-[160px] text-right">
                                             <ul className="list-disc list-inside space-y-1">
                                                 {items.map((item, i) => (
                                                     <li key={i} className="truncate" title={item.name}>
-                                                        {item.quantity}x {item.name} ({item.size}ml)
+                                                        {item.quantity}x {item.name} ({String(item.size).replace(/ml$/i, '')} מ"ל)
                                                     </li>
                                                 ))}
                                             </ul>
                                             {order.free_samples_count > 0 && (
                                                 <div className="mt-1 text-pink-500 font-bold bg-pink-50 inline-block px-2 py-0.5 rounded shadow-sm">+ {order.free_samples_count} דוגמיות חינם</div>
                                             )}
-                                            {order.notes && (
-                                                <div className="mt-2 text-xs text-orange-600 bg-orange-50 p-2 rounded">הערה: {order.notes}</div>
-                                            )}
                                         </div>
+                                    </td>
+                                    <td className="p-4 text-center max-w-[180px]">
+                                        {(order.notes || customer?.notes) ? (
+                                            <div className="text-xs text-orange-700 bg-orange-50 border border-orange-100 p-2 rounded-lg text-right leading-relaxed">
+                                                {order.notes || customer?.notes}
+                                            </div>
+                                        ) : (
+                                            <span className="text-gray-300 text-xs">—</span>
+                                        )}
                                     </td>
                                     <td className="p-4 text-center">
                                         <CustomDropdown 
