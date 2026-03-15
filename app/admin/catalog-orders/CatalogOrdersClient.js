@@ -170,8 +170,8 @@ export default function CatalogOrdersClient() {
                             
                             return (
                                 <tr key={order.id} className="hover:bg-gray-50 transition">
-                                    <td className="p-4 font-bold text-gray-700">
-                                        <div className="flex items-center gap-2">
+                                    <td className="p-4 font-bold text-gray-700 text-center">
+                                        <div className="flex flex-col items-center gap-1">
                                             <span>#{order.id}</span>
                                             <button 
                                                 onClick={() => setDeleteModal({ isOpen: true, orderId: order.id })}
@@ -182,11 +182,11 @@ export default function CatalogOrdersClient() {
                                             </button>
                                         </div>
                                     </td>
-                                    <td className="p-4 text-gray-500 whitespace-nowrap">{new Date(order.created_at).toLocaleDateString('he-IL', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</td>
-                                    <td className="p-4">
+                                    <td className="p-4 text-gray-500 whitespace-nowrap text-center">{new Date(order.created_at).toLocaleDateString('he-IL', { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' })}</td>
+                                    <td className="p-4 text-center">
                                         <div className="font-bold text-blue-700 bg-blue-50 inline-block px-2 py-1 rounded">{order.catalog_name}</div>
                                     </td>
-                                    <td className="p-4 whitespace-nowrap">
+                                    <td className="p-4 whitespace-nowrap text-center">
                                         <div className="font-bold text-gray-800">{customer?.name}</div>
                                         <div className="text-xs text-gray-400">{customer?.email}</div>
                                         <div className="text-xs text-gray-400">{customer?.phone}</div>
@@ -216,16 +216,18 @@ export default function CatalogOrdersClient() {
                                         )}
                                     </td>
                                     <td className="p-4 text-center">
-                                        <CustomDropdown 
-                                            options={STATUS_OPTIONS}
-                                            value={order.status}
-                                            onChange={(newStatus) => handleStatusChange(order.id, newStatus)}
-                                            variant="status"
-                                            className="!py-1.5 !px-3 !rounded-xl"
-                                        />
-                                        {order.delivery_method === 'self_pickup' && (
-                                            <div className="mt-2 text-[10px] font-bold text-green-700 uppercase bg-green-50 rounded p-1 inline-block">איסוף עצמי</div>
-                                        )}
+                                        <div className="flex flex-col items-center gap-2">
+                                            <CustomDropdown 
+                                                options={STATUS_OPTIONS}
+                                                value={order.status}
+                                                onChange={(newStatus) => handleStatusChange(order.id, newStatus)}
+                                                variant="status"
+                                                className="!py-1.5 !px-3 !rounded-xl"
+                                            />
+                                            {order.delivery_method === 'self_pickup' && (
+                                                <div className="text-[10px] font-bold text-green-700 uppercase bg-green-50 rounded p-1 inline-block">איסוף עצמי</div>
+                                            )}
+                                        </div>
                                     </td>
                                 </tr>
                             );

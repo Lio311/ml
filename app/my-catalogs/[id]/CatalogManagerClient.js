@@ -63,11 +63,12 @@ function OrdersTab({ catalogId }) {
                 <table className="w-full text-sm">
                     <thead className="bg-gray-50 text-gray-500 border-b">
                         <tr>
-                            <th className="p-4 text-right font-semibold">מספר הזמנה</th>
-                            <th className="p-4 text-right font-semibold">תאריך</th>
-                            <th className="p-4 text-right font-semibold">לקוח</th>
-                            <th className="p-4 text-right font-semibold">סכום</th>
-                            <th className="p-4 text-right font-semibold">פריטים</th>
+                            <th className="p-4 text-center font-semibold text-gray-400">#</th>
+                            <th className="p-4 text-center font-semibold">תאריך</th>
+                            <th className="p-4 text-center font-semibold">לקוח</th>
+                            <th className="p-4 text-center font-semibold">סכום</th>
+                            <th className="p-4 text-center font-semibold">פריטים</th>
+                            <th className="p-4 text-center font-semibold">הערות</th>
                             <th className="p-4 text-center font-semibold">סטטוס מול הלקוח</th>
                         </tr>
                     </thead>
@@ -83,39 +84,54 @@ function OrdersTab({ catalogId }) {
                                 
                                 return (
                                     <tr key={order.id} className="hover:bg-gray-50/50 transition">
-                                        <td className="p-4 font-bold text-gray-700">#{order.id}</td>
-                                        <td className="p-4 text-gray-500">{new Date(order.created_at).toLocaleDateString('he-IL')}</td>
-                                        <td className="p-4">
+                                        <td className="p-4 font-bold text-gray-700 text-center">#{order.id}</td>
+                                        <td className="p-4 text-gray-500 text-center">{new Date(order.created_at).toLocaleDateString('he-IL')}</td>
+                                        <td className="p-4 text-center">
                                             <div className="font-bold">{customer?.name}</div>
                                             <div className="text-xs text-gray-400">{customer?.email}</div>
                                             <div className="text-xs text-gray-400">{customer?.phone}</div>
                                         </td>
-                                        <td className="p-4 font-bold text-lg">{order.total_amount} ₪</td>
-                                        <td className="p-4 text-xs text-gray-500 max-w-[200px]">
-                                            <ul className="list-disc list-inside space-y-1">
+                                        <td className="p-4 font-bold text-lg text-center">{order.total_amount} ₪</td>
+                                        <td className="p-4 text-xs text-gray-500 max-w-[200px] text-center">
+                                            <ul className="list-disc list-inside space-y-1 inline-block text-right">
                                                 {items.map((item, i) => (
-                                                    <li key={i} className="truncate">
-                                                        {item.quantity}x {item.name} ({item.size}ml)
+                                                    <li key={i} className="truncate" title={item.name}>
+                                                        {item.quantity}x {item.name} ({String(item.size).replace(/ml/gi, '')} מ"ל)
                                                     </li>
                                                 ))}
                                             </ul>
                                             {order.free_samples_count > 0 && (
-                                                <div className="mt-1 text-pink-500 font-bold">+ {order.free_samples_count} דוגמיות חינם</div>
+                                                <div className="mt-1 text-pink-500 font-bold bg-pink-50 inline-block px-2 py-0.5 rounded shadow-sm">+ {order.free_samples_count} דוגמיות חינם</div>
+                                            )}
+                                        </td>
+                                        <td className="p-4 text-center max-w-[150px]">
+                                            {(order.notes || customer?.notes) ? (
+                                                <div className="text-[10px] text-orange-700 bg-orange-50 border border-orange-100 p-1.5 rounded-lg text-right leading-tight">
+                                                    {order.notes || customer?.notes}
+                                                </div>
+                                            ) : (
+                                                <span className="text-gray-300 text-xs">—</span>
                                             )}
                                         </td>
                                         <td className="p-4 text-center">
-                                            <CustomDropdown
-                                                options={[
-                                                    { value: 'pending', label: 'ממתין', icon: <div className="w-2 h-2 rounded-full bg-orange-500" /> },
-                                                    { value: 'processing', label: 'בטיפול', icon: <div className="w-2 h-2 rounded-full bg-blue-500" /> },
-                                                    { value: 'shipped', label: 'נשלח אליכם', icon: <div className="w-2 h-2 rounded-full bg-purple-500" /> },
-                                                    { value: 'completed', label: 'הושלם', icon: <div className="w-2 h-2 rounded-full bg-green-500" /> },
-                                                    { value: 'cancelled', label: 'בוטל', icon: <div className="w-2 h-2 rounded-full bg-gray-500" /> },
-                                                ]}
-                                                value={order.status}
-                                                onChange={(val) => handleStatusChange(order.id, val)}
-                                                variant="status"
-                                            />
+                                            <div className="flex flex-col items-center gap-2">
+                                                <CustomDropdown
+                                                    options={[
+                                                        { value: 'pending', label: 'ממתין', icon: <div className="w-2 h-2 rounded-full bg-orange-500" /> },
+                                                        { value: 'processing', label: 'בטיפול', icon: <div className="w-2 h-2 rounded-full bg-blue-500" /> },
+                                                        { value: 'shipped', label: 'נשלח אליכם', icon: <div className="w-2 h-2 rounded-full bg-purple-500" /> },
+                                                        { value: 'completed', label: 'הושלם', icon: <div className="w-2 h-2 rounded-full bg-green-500" /> },
+                                                        { value: 'cancelled', label: 'בוטל', icon: <div className="w-2 h-2 rounded-full bg-gray-500" /> },
+                                                    ]}
+                                                    value={order.status}
+                                                    onChange={(val) => handleStatusChange(order.id, val)}
+                                                    variant="status"
+                                                    className="!py-1.5 !px-3 !rounded-xl"
+                                                />
+                                                {order.delivery_method === 'self_pickup' && (
+                                                    <div className="text-[10px] font-bold text-green-700 uppercase bg-green-50 rounded p-1 inline-block">איסוף עצמי</div>
+                                                )}
+                                            </div>
                                         </td>
                                     </tr>
                                 );
