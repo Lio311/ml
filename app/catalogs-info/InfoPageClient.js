@@ -225,7 +225,7 @@ export default function InfoPageClient({ userId }) {
                                     whileInView={{ scale: 1, opacity: 1 }}
                                     viewport={{ once: true }}
                                 >
-                                    <img src="/info-page/media__1773585930992.png" alt="Cart Preview" className="w-full" />
+                                    <img src="/info-page/media__1773586658987.png" alt="Catalog Preview" className="w-full" />
                                 </motion.div>
                              </div>
                         </div>
