@@ -244,8 +244,8 @@ export default function InfoPageClient({ userId }) {
             <section className="py-16 px-4 bg-black text-white relative">
                 <div className="absolute top-0 right-0 w-1/2 h-full bg-[radial-gradient(circle_at_80%_20%,rgba(255,234,0,0.1)_0%,transparent_50%)] pointer-events-none" />
                 <div className="container max-w-7xl mx-auto">
-                    <div className="flex flex-col lg:flex-row-reverse lg:items-stretch gap-16">
-                        {/* Text Content: Right side on desktop */}
+                    <div className="flex flex-col lg:flex-row lg:items-center gap-16">
+                        {/* Text Content: Right side in RTL (First child) */}
                         <div className="flex-1 text-right flex flex-col">
                             <motion.div
                                 initial={{ opacity: 0, x: 30 }}
@@ -253,7 +253,7 @@ export default function InfoPageClient({ userId }) {
                                 viewport={{ once: true }}
                                 className="flex flex-col text-right w-full h-full justify-center"
                             >
-                                <h2 className="text-4xl md:text-5xl lg:text-6xl font-black mb-8 leading-tight order-1">חוויית קנייה מעולם אחר</h2>
+                                <h2 className="text-4xl md:text-5xl lg:text-6xl font-black mb-8 leading-tight order-1 text-white">חוויית קנייה מעולם אחר</h2>
                                 <p className="text-gray-400 text-lg md:text-xl mb-12 leading-relaxed font-medium order-2">
                                     הלקוחות שלך ייהנו מממשק מהיר, חלק ויוקרתי. הצגת פירמידת תווים ויזואלית, בחירת גדלים קלה וסיכום הזמנה שקוף ומקצועי.
                                 </p>
@@ -287,10 +287,10 @@ export default function InfoPageClient({ userId }) {
                             </motion.div>
                         </div>
 
-                        {/* Desktop Image: Left side on desktop, scaled to match height */}
-                        <div className="hidden lg:block flex-1 relative h-auto">
+                        {/* Desktop Image: Left side in RTL (Second child) */}
+                        <div className="hidden lg:block flex-1 relative">
                             <motion.div 
-                                className="rounded-[3rem] overflow-hidden shadow-[0_50px_100px_-20px_rgba(0,0,0,0.6)] border border-white/10 h-full"
+                                className="rounded-[3rem] overflow-hidden shadow-[0_50px_100px_-20px_rgba(0,0,0,0.6)] border border-white/10"
                                 initial={{ x: -40, opacity: 0 }}
                                 whileInView={{ x: 0, opacity: 1 }}
                                 viewport={{ once: true }}
@@ -298,7 +298,7 @@ export default function InfoPageClient({ userId }) {
                                 <img 
                                     src="/info-page/media__1773586658987.png" 
                                     alt="Catalog Preview Desktop" 
-                                    className="w-full h-full object-cover lg:object-top" 
+                                    className="w-full h-auto block" 
                                 />
                             </motion.div>
                         </div>
