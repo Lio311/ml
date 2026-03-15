@@ -142,12 +142,6 @@ export default async function AdminOrdersPage(props) {
                                             <a href={`tel:${order.customer_details.phone}`} className="hover:underline">{order.customer_details.phone}</a>
                                         </div>
                                     )}
-                                    {order.notes && (
-                                        <div className="mt-2 text-xs bg-yellow-50 p-2 rounded border border-yellow-200 text-gray-800 max-w-[200px] break-words mx-auto">
-                                            <span className="font-bold block mb-1 text-right">הערות:</span>
-                                            {order.notes}
-                                        </div>
-                                    )}
                                 </td>
                                 <td className="p-4 text-sm text-right">
                                     <ul className="space-y-1">
@@ -159,6 +153,12 @@ export default async function AdminOrdersPage(props) {
                                             </li>
                                         ))}
                                     </ul>
+                                    {order.notes && (
+                                        <div className="mt-2 text-xs bg-yellow-50 p-2 rounded border border-yellow-200 text-gray-800 max-w-[240px] break-words ml-auto mr-0">
+                                            <span className="font-bold block mb-1 text-right">הערות:</span>
+                                            {order.notes}
+                                        </div>
+                                    )}
                                 </td>
                                 <td className="p-4 font-bold whitespace-nowrap">{order.total_amount} ₪</td>
                                 <td className="p-4">
