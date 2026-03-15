@@ -49,7 +49,7 @@ export default function InfoPageClient({ userId }) {
                                 variants={fadeIn}
                                 className="inline-block px-4 py-1.5 bg-black text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-full mb-6"
                             >
-                                Exclusive Platform for ML_TLV
+                                Exclusive Platform for ml_tlv
                             </motion.span>
                             <motion.h1 
                                 variants={fadeIn}
@@ -172,7 +172,7 @@ export default function InfoPageClient({ userId }) {
                                 <ul className="space-y-6">
                                     {[
                                         "ניהול וריאציות (גדלים) לכל בושם בנפרד",
-                                        "סנכרון תווים אוטומטי ממאגר ML_TLV",
+                                        "סנכרון תווים אוטומטי ממאגר ml_tlv",
                                         "מערכת ניהול מלאי חכמה (מ״ל / יחידות)",
                                         "עדכון סטטוס זמינות בלחיצת כפתור"
                                     ].map((item, i) => (
@@ -396,16 +396,16 @@ export default function InfoPageClient({ userId }) {
                         className="relative z-10"
                     >
                         <h2 className="text-4xl md:text-5xl font-black mb-8 leading-tight">מוכן להתחיל למכור בסטייל?</h2>
-                        <p className="text-gray-400 mb-12 text-lg font-medium">הצטרף לקהילת המוכרים של ML_TLV ותהנה מכל הכלים שאתה צריך.</p>
+                        <p className="text-gray-400 mb-12 text-lg font-medium">הצטרף לקהילת המוכרים של ml_tlv ותהנה מכל הכלים שאתה צריך.</p>
                         
                         <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
                             {userId ? (
-                                <Link href="/my-catalogs" className="w-full sm:w-auto px-12 py-5 bg-white text-black rounded-full font-black text-xl hover:scale-105 transition-transform shadow-[0_25px_50px_-12px_rgba(255,255,255,0.25)]">
-                                    התחל לנהל את הקטלוג שלי
+                                <Link href="/my-catalogs" className="w-full sm:w-auto px-12 py-5 bg-yellow-400 text-black rounded-full font-black text-xl hover:scale-105 transition-transform shadow-[0_25px_50px_-12px_rgba(253,224,71,0.25)]">
+                                    מתחילים כאן
                                 </Link>
                             ) : (
                                 <Link href="/sign-up" className="w-full sm:w-auto px-12 py-5 bg-yellow-400 text-black rounded-full font-black text-xl hover:scale-105 transition-transform shadow-[0_25px_50px_-12px_rgba(253,224,71,0.25)]">
-                                    צור חשבון בחינם
+                                    מתחילים כאן
                                 </Link>
                             )}
                         </div>
