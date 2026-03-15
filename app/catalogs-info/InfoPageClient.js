@@ -216,11 +216,11 @@ export default function InfoPageClient({ userId }) {
             <section className="py-20 px-4 bg-black text-white relative">
                 <div className="absolute top-0 right-0 w-1/2 h-full bg-[radial-gradient(circle_at_80%_20%,rgba(255,234,0,0.1)_0%,transparent_50%)] pointer-events-none" />
                 <div className="container max-w-7xl mx-auto">
-                    <div className="flex flex-col lg:flex-row items-center gap-24">
-                        <div className="flex-1 text-right lg:text-left order-2 lg:order-1 relative">
+                    <div className="flex flex-col lg:flex-row-reverse items-center gap-24">
+                        <div className="flex-1 text-right relative">
                              <div className="relative group">
                                 <motion.div 
-                                    className="rounded-[2.5rem] overflow-hidden shadow-2xl border border-white/10"
+                                    className="rounded-3xl overflow-hidden shadow-2xl border border-white/10"
                                     initial={{ scale: 0.9, opacity: 0 }}
                                     whileInView={{ scale: 1, opacity: 1 }}
                                     viewport={{ once: true }}
@@ -229,7 +229,7 @@ export default function InfoPageClient({ userId }) {
                                 </motion.div>
                              </div>
                         </div>
-                        <div className="flex-1 text-right order-1 lg:order-2">
+                        <div className="flex-1 text-right">
                             <motion.div
                                 initial={{ opacity: 0, x: -20 }}
                                 whileInView={{ opacity: 1, x: 0 }}
@@ -318,9 +318,9 @@ export default function InfoPageClient({ userId }) {
                                 עקוב אחרי כל הזמנה שנכנסת, נהל סטטוסים (ממתין, בטיפול, הושלם) וראה את כל פרטי הלקוח במקום אחד מסודר.
                             </p>
                             <div className="flex items-center gap-4 justify-end flex-wrap">
-                                <span className="px-4 py-2 bg-black/10 text-black rounded-full text-xs font-bold">תגיות משלוח / איסוף</span>
-                                <span className="px-4 py-2 bg-black/10 text-black rounded-full text-xs font-bold">מעקב סטטוס חי</span>
-                                <span className="px-4 py-2 bg-black/10 text-black rounded-full text-xs font-bold">התראות מייל</span>
+                                <span className="px-4 py-2 bg-blue-500/10 text-blue-700 rounded-full text-xs font-bold">תגיות משלוח / איסוף</span>
+                                <span className="px-4 py-2 bg-green-500/10 text-green-700 rounded-full text-xs font-bold">מעקב סטטוס חי</span>
+                                <span className="px-4 py-2 bg-orange-500/10 text-orange-700 rounded-full text-xs font-bold">התראות מייל</span>
                             </div>
                         </div>
                         <motion.div 
