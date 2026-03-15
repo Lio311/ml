@@ -69,11 +69,11 @@ export default function InfoPageClient({ userId }) {
                                 className="flex flex-col sm:flex-row items-center justify-center gap-4"
                             >
                                 {userId ? (
-                                    <Link href="/my-catalogs" className="w-full sm:w-auto px-10 py-4 bg-black text-white rounded-full font-bold text-lg hover:scale-105 transition-transform shadow-[0_20px_40px_-10px_rgba(0,0,0,0.2)]">
+                                    <Link href="/my-catalogs" className="w-full sm:w-auto px-10 py-4 bg-yellow-400 text-black rounded-full font-black text-lg hover:scale-105 transition-transform shadow-[0_20px_40px_-10px_rgba(253,224,71,0.3)]">
                                         ניהול הקטלוגים שלי
                                     </Link>
                                 ) : (
-                                    <Link href="/sign-up" className="w-full sm:w-auto px-10 py-4 bg-black text-white rounded-full font-bold text-lg hover:scale-105 transition-transform">
+                                    <Link href="/sign-up" className="w-full sm:w-auto px-10 py-4 bg-yellow-400 text-black rounded-full font-black text-lg hover:scale-105 transition-transform shadow-[0_20px_40px_-10px_rgba(253,224,71,0.3)]">
                                         צור חשבון בחינם
                                     </Link>
                                 )}
@@ -84,33 +84,44 @@ export default function InfoPageClient({ userId }) {
                         </motion.div>
 
                         <motion.div 
-                            className="flex-1 relative w-full max-w-2xl"
-                            initial={{ opacity: 0, scale: 0.8, rotate: -5 }}
-                            animate={{ opacity: 1, scale: 1, rotate: 0 }}
+                            className="flex-1 relative w-full h-[500px] flex items-center justify-center"
+                            initial={{ opacity: 0, scale: 0.8 }}
+                            animate={{ opacity: 1, scale: 1 }}
                             transition={{ duration: 1, ease: "easeOut" }}
                         >
-                            {/* Hero Visuals */}
-                            <div className="relative aspect-[4/3] rounded-3xl bg-white shadow-2xl p-2 border border-gray-100 overflow-hidden group">
-                                <img 
-                                    src="/info-page/media__1773582608518.png" 
-                                    className="w-full h-full object-cover rounded-2xl shadow-inner transition-transform duration-700 group-hover:scale-105" 
-                                    alt="Catalog Preview" 
-                                />
-                                
-                                {/* Floating Overlay Elements */}
+                            {/* 3D Overlapping Visuals */}
+                            <div className="relative w-full h-full">
+                                {/* Main Image - Angled */}
                                 <motion.div 
-                                    className="absolute -top-10 -right-10 w-48 shadow-2xl rounded-2xl border border-white/50 overflow-hidden"
+                                    className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[85%] aspect-[16/10] rounded-3xl shadow-[0_50px_100px_-20px_rgba(0,0,0,0.2)] overflow-hidden border border-white/50 bg-white"
+                                    style={{ rotateX: 10, rotateY: -15, transformPerspective: 1000 }}
+                                    whileHover={{ rotateY: -5, scale: 1.02 }}
+                                    transition={{ duration: 0.8 }}
+                                >
+                                    <img 
+                                        src="/info-page/media__1773582608518.png" 
+                                        className="w-full h-full object-cover" 
+                                        alt="Catalog Preview" 
+                                    />
+                                </motion.div>
+                                
+                                {/* Floating Top Right Card */}
+                                <motion.div 
+                                    className="absolute top-0 -right-4 w-56 shadow-2xl rounded-2xl border border-white/50 overflow-hidden bg-white p-1 z-20"
                                     variants={floatingImage}
                                     animate="animate"
+                                    style={{ rotateX: -5, rotateY: 5, transformPerspective: 1000 }}
                                 >
-                                    <img src="/info-page/media__1773582511480.png" alt="Card Preview" className="w-full" />
+                                    <img src="/info-page/media__1773582511480.png" alt="Card Preview" className="w-full rounded-xl" />
                                 </motion.div>
 
+                                {/* Floating Bottom Left Card */}
                                 <motion.div 
-                                    className="absolute -bottom-10 -left-10 w-64 shadow-2xl rounded-2xl border border-white/50 overflow-hidden bg-white p-2"
+                                    className="absolute -bottom-8 -left-8 w-64 shadow-2xl rounded-2xl border border-white/50 overflow-hidden bg-white p-2 z-30"
                                     initial={{ y: 20 }}
                                     animate={{ y: 0 }}
                                     transition={{ duration: 1.5, repeat: Infinity, repeatType: "mirror" }}
+                                    style={{ rotateX: 5, rotateY: 10, transformPerspective: 1000 }}
                                 >
                                     <img src="/info-page/media__1773582785226.png" alt="Cart Preview" className="w-full rounded-xl" />
                                 </motion.div>
