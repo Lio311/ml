@@ -74,6 +74,7 @@ export default async function Home() {
               COUNT(o.id) as order_count
           FROM user_catalogs c
           LEFT JOIN orders o ON c.id = o.catalog_id
+          WHERE c.is_hidden IS FALSE OR c.is_hidden IS NULL
           GROUP BY c.id
           ORDER BY order_count DESC, c.created_at DESC
           LIMIT 3
