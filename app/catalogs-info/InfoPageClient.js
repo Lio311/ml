@@ -244,15 +244,15 @@ export default function InfoPageClient({ userId }) {
             <section className="py-10 px-4 bg-black text-white relative">
                 <div className="absolute top-0 right-0 w-1/2 h-full bg-[radial-gradient(circle_at_80%_20%,rgba(255,234,0,0.1)_0%,transparent_50%)] pointer-events-none" />
                 <div className="container max-w-7xl mx-auto">
-                        <div className="flex-1 text-right flex flex-col">
+                        <div className="w-full flex flex-col items-center">
                             <motion.div
-                                initial={{ opacity: 0, x: -20 }}
-                                whileInView={{ opacity: 1, x: 0 }}
+                                initial={{ opacity: 0, y: 20 }}
+                                whileInView={{ opacity: 1, y: 0 }}
                                 viewport={{ once: true }}
-                                className="flex flex-col"
+                                className="flex flex-col items-center text-center lg:max-w-4xl mx-auto"
                             >
                                 <h2 className="text-4xl md:text-5xl font-black mb-8 leading-tight order-1">חוויית קנייה מעולם אחר</h2>
-                                <p className="text-gray-400 text-lg mb-10 leading-relaxed font-medium order-2">
+                                <p className="text-gray-400 text-lg mb-10 leading-relaxed font-medium order-2 max-w-2xl">
                                     הלקוחות שלך ייהנו מממשק מהיר, חלק ויוקרתי. הצגת פירמידת תווים ויזואלית, בחירת גדלים קלה וסיכום הזמנה שקוף ומקצועי.
                                 </p>
 
@@ -266,7 +266,7 @@ export default function InfoPageClient({ userId }) {
                                     <img src="/info-page/media__1773586658987.png" alt="Catalog Preview Mobile" className="w-full" />
                                 </motion.div>
 
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 order-4">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 order-4 w-full">
                                     <div className="p-8 bg-white/5 rounded-[2rem] border border-white/10 hover:bg-white/10 transition-colors text-right flex flex-col items-end group">
                                         <div className="w-12 h-12 bg-yellow-400/10 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-yellow-400 transition-colors self-end">
                                             <ShoppingBag className="text-yellow-400 w-6 h-6 group-hover:text-black transition-colors" />
@@ -283,20 +283,19 @@ export default function InfoPageClient({ userId }) {
                                     </div>
                                 </div>
                             </motion.div>
-                        {/* Desktop Image: Hidden on mobile */}
-                        <div className="hidden lg:block flex-1 relative">
-                             <div className="relative group">
+
+                            {/* Desktop Image: Now positioned below the cards, visible only on LG screens */}
+                            <div className="hidden lg:block w-full mt-16 max-w-5xl mx-auto">
                                 <motion.div 
-                                    className="rounded-3xl overflow-hidden shadow-2xl border border-white/10"
-                                    initial={{ scale: 0.9, opacity: 0 }}
-                                    whileInView={{ scale: 1, opacity: 1 }}
+                                    className="rounded-3xl overflow-hidden shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)] border border-white/10"
+                                    initial={{ y: 50, opacity: 0 }}
+                                    whileInView={{ y: 0, opacity: 1 }}
                                     viewport={{ once: true }}
                                 >
-                                    <img src="/info-page/media__1773586658987.png" alt="Catalog Preview" className="w-full" />
+                                    <img src="/info-page/media__1773586658987.png" alt="Catalog Preview Desktop" className="w-full" />
                                 </motion.div>
-                             </div>
+                            </div>
                         </div>
-                    </div>
                 </div>
             </section>
 
