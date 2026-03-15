@@ -241,14 +241,14 @@ export default function InfoPageClient({ userId }) {
                                 </p>
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                                     <div className="p-8 bg-white/5 rounded-[2rem] border border-white/10 hover:bg-white/10 transition-colors text-right flex flex-col items-end group">
-                                        <div className="w-12 h-12 bg-yellow-400/10 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-yellow-400 transition-colors ms-auto">
+                                        <div className="w-12 h-12 bg-yellow-400/10 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-yellow-400 transition-colors self-end">
                                             <ShoppingBag className="text-yellow-400 w-6 h-6 group-hover:text-black transition-colors" />
                                         </div>
                                         <h4 className="text-xl font-bold mb-3 w-full">ניהול סל קניות</h4>
                                         <p className="text-sm text-gray-500 leading-relaxed w-full">עדכון כמויות וסיכום מחיר בזמן אמת.</p>
                                     </div>
                                     <div className="p-8 bg-white/5 rounded-[2rem] border border-white/10 hover:bg-white/10 transition-colors text-right flex flex-col items-end group">
-                                        <div className="w-12 h-12 bg-yellow-400/10 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-yellow-400 transition-colors ms-auto">
+                                        <div className="w-12 h-12 bg-yellow-400/10 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-yellow-400 transition-colors self-end">
                                             <ExternalLink className="text-yellow-400 w-6 h-6 group-hover:text-black transition-colors" />
                                         </div>
                                         <h4 className="text-xl font-bold mb-3 w-full">שיתוף קל</h4>
