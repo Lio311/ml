@@ -131,6 +131,9 @@ function OrdersTab({ catalogId }) {
                                                 {order.delivery_method === 'self_pickup' && (
                                                     <div className="text-[10px] font-bold text-green-700 uppercase bg-green-50 rounded p-1 inline-block">איסוף עצמי</div>
                                                 )}
+                                                {order.delivery_method === 'mail' && (
+                                                    <div className="text-[10px] font-bold text-blue-700 uppercase bg-blue-50 rounded p-1 inline-block">משלוח</div>
+                                                )}
                                             </div>
                                         </td>
                                     </tr>
