@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
-import { auth } from '@clerk/nextjs/server';
-import pool from '@/app/lib/db';
+import { getAuthenticatedClient } from '@/app/lib/db';
+import { recordAuditLog } from '@/app/lib/audit';
 
 export async function GET(req, context) {
     let client;
@@ -13,8 +13,8 @@ export async function GET(req, context) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
-        client = await pool.connect();
-        const res = await client.query('SELECT * FROM user_catalogs WHERE id = $1 AND user_id = $2', [id, userId]);
+        client = await getAuthenticatedClient(userId);
+        const res = await client.query('SELECT * FROM user_catalogs WHERE id = $1', [id]);
         if (res.rows.length === 0) {
             return NextResponse.json({ error: 'Catalog not found or unauthorized' }, { status: 404 });
         }
@@ -53,10 +53,10 @@ export async function PUT(req, context) {
             return NextResponse.json({ error: 'Slug must contain only lowercase letters, numbers, and dashes' }, { status: 400 });
         }
 
-        client = await pool.connect();
+        client = await getAuthenticatedClient(userId);
         
-        // Check ownership
-        const check = await client.query('SELECT id FROM user_catalogs WHERE id = $1 AND user_id = $2', [id, userId]);
+        // Check ownership (RLS will also handle this, but explicit check is good for error messages)
+        const check = await client.query('SELECT id FROM user_catalogs WHERE id = $1', [id]);
         if (check.rows.length === 0) {
             return NextResponse.json({ error: 'Catalog not found or unauthorized' }, { status: 404 });
         }
@@ -70,17 +70,27 @@ export async function PUT(req, context) {
         const res = await client.query(
             `UPDATE user_catalogs 
              SET name = $1, description = $2, contact_email = $3, slug = $4, image_url = $5,
-                 self_pickup_active = COALESCE($8, self_pickup_active),
-                 delivery_active = COALESCE($9, delivery_active),
-                 delivery_price = COALESCE($10, delivery_price),
-                 sample_tiers = COALESCE($11, sample_tiers)
-             WHERE id = $6 AND user_id = $7 RETURNING *`,
+                 self_pickup_active = COALESCE($7, self_pickup_active),
+                 delivery_active = COALESCE($8, delivery_active),
+                 delivery_price = COALESCE($9, delivery_price),
+                 sample_tiers = COALESCE($10, sample_tiers)
+             WHERE id = $6 RETURNING *`,
             [
-                name, description, contact_email, slug, image_url || null, id, userId,
+                name, description, contact_email, slug, image_url || null, id,
                 self_pickup_active, delivery_active, delivery_price, 
                 sample_tiers ? JSON.stringify(sample_tiers) : null
             ]
         );
+
+        // Record Audit Log
+        await recordAuditLog({
+            userId,
+            action: 'update_catalog',
+            entityType: 'catalog',
+            entityId: id,
+            details: { name, slug },
+            req
+        });
 
         return NextResponse.json(res.rows[0]);
     } catch (error) {
@@ -102,16 +112,34 @@ export async function DELETE(req, context) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
-        client = await pool.connect();
+        client = await getAuthenticatedClient(userId);
         
         // Check ownership and delete
-        const res = await client.query('DELETE FROM user_catalogs WHERE id = $1 AND user_id = $2 RETURNING id', [id, userId]);
+        const res = await client.query('DELETE FROM user_catalogs WHERE id = $1 RETURNING id, name', [id]);
         
         if (res.rowCount === 0) {
              return NextResponse.json({ error: 'Catalog not found or unauthorized' }, { status: 404 });
         }
 
+        // Record Audit Log
+        await recordAuditLog({
+            userId,
+            action: 'delete_catalog',
+            entityType: 'catalog',
+            entityId: id,
+            details: { name: res.rows[0].name },
+            req
+        });
+
         return NextResponse.json({ success: true });
+    } catch (error) {
+        console.error('Error deleting user catalog:', error);
+        return NextResponse.json({ error: 'Internal Server Error', details: error.message }, { status: 500 });
+    } finally {
+        if (client) client.release();
+    }
+}
+
     } catch (error) {
         console.error('Error deleting user catalog:', error);
         return NextResponse.json({ error: 'Internal Server Error', details: error.message }, { status: 500 });

@@ -222,6 +222,16 @@ export async function POST(req) {
             // Also send to main admin
             await sendEmail(adminEmail, `חם מהתנור! הזמנה חדשה ${catalogId ? '(מקטלוג משתמש)' : ''} #${orderId} 🔥`, adminHtml);
 
+            // Record Audit Log
+            await recordAuditLog({
+                userId,
+                action: 'create_order',
+                entityType: 'order',
+                entityId: orderId.toString(),
+                details: { total, itemsCount: items.length, catalogId },
+                req
+            });
+
             return NextResponse.json({ success: true, orderId });
 
         } catch (dbError) {
