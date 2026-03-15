@@ -56,20 +56,20 @@ export default function InfoPageClient({ userId }) {
                             </motion.span>
                             <motion.h1 
                                 variants={fadeIn}
-                                className="text-5xl md:text-7xl font-black mb-6 leading-[1.1] tracking-tighter order-2"
+                                className="text-5xl md:text-7xl font-black mb-2 md:mb-6 leading-[1.1] tracking-tighter order-2"
                             >
                                 הקם <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-500 to-yellow-400">חנות וירטואלית</span> <br /> משלך בדקות
                             </motion.h1>
                             <motion.p 
                                 variants={fadeIn}
-                                className="text-lg md:text-xl text-gray-500 mb-4 max-w-xl mx-auto lg:mx-0 leading-relaxed font-medium order-3"
+                                className="text-lg md:text-xl text-gray-500 mb-1 md:mb-4 max-w-xl mx-auto lg:mx-0 leading-relaxed font-medium order-3"
                             >
                                 הפוך את האוסף שלך לנגיש. הוסף מוצרים, קבע מחירים, ונהל הזמנות במקום אחד - בקטלוג מעוצב שמותאם אישית עבורך.
                             </motion.p>
 
                             {/* Mobile Visuals: Positioned between text and buttons on mobile only */}
                             <motion.div 
-                                className="lg:hidden relative w-full h-[260px] flex items-center justify-center mb-2 order-4"
+                                className="lg:hidden relative w-full h-[210px] flex items-center justify-center mb-2 order-4"
                                 initial={{ opacity: 0, scale: 0.9 }}
                                 animate={{ opacity: 1, scale: 1 }}
                                 transition={{ duration: 1, ease: "easeOut" }}
