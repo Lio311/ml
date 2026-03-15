@@ -40,7 +40,7 @@ export default function InfoPageClient({ userId }) {
                 <div className="container max-w-7xl mx-auto relative z-10">
                     <div className="flex flex-col lg:flex-row items-center gap-16">
                         <motion.div 
-                            className="flex-1 text-center lg:text-right"
+                            className="flex-1 text-center"
                             initial="hidden"
                             animate="visible"
                             variants={staggerContainer}
@@ -66,7 +66,7 @@ export default function InfoPageClient({ userId }) {
                             
                             <motion.div 
                                 variants={fadeIn}
-                                className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4"
+                                className="flex flex-col sm:flex-row items-center justify-center gap-4"
                             >
                                 {userId ? (
                                     <Link href="/my-catalogs" className="w-full sm:w-auto px-10 py-4 bg-black text-white rounded-full font-bold text-lg hover:scale-105 transition-transform shadow-[0_20px_40px_-10px_rgba(0,0,0,0.2)]">
