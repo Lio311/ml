@@ -35,7 +35,10 @@ export default function InfoPageClient({ userId }) {
         <div className="min-h-screen bg-[#fafafa] text-black font-sans selection:bg-yellow-200 overflow-x-hidden">
             {/* Header / Hero Section */}
             <section className="relative pt-12 pb-20 px-4 overflow-hidden bg-white">
-                <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_20%_20%,rgba(255,234,0,0.05)_0%,transparent_50%)]" />
+                {/* Premium Texture Overlay */}
+                <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")` }}></div>
+                
+                <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_20%_20%,rgba(255,234,0,0.1)_0%,transparent_50%),radial-gradient(circle_at_80%_80%,rgba(0,0,0,0.05)_0%,transparent_50%)]" />
                 
                 <div className="container max-w-7xl mx-auto relative z-10">
                     <div className="flex flex-col lg:flex-row items-center gap-16">
@@ -89,41 +92,41 @@ export default function InfoPageClient({ userId }) {
                             animate={{ opacity: 1, scale: 1 }}
                             transition={{ duration: 1, ease: "easeOut" }}
                         >
-                            {/* 3D Cohesive Visuals */}
-                            <div className="relative w-full max-w-lg aspect-square">
-                                {/* Main Image - Angled & Lifted */}
+                            {/* 3D Cohesive Visuals - Fixed Aspect Ratios */}
+                            <div className="relative w-full max-w-lg">
+                                {/* Main Image - Preserving Ratio, Slightly Smaller */}
                                 <motion.div 
-                                    className="absolute inset-0 rounded-[2.5rem] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.15)] overflow-hidden border border-white bg-white z-10"
+                                    className="relative w-[90%] mx-auto rounded-[2rem] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.15)] overflow-hidden border border-white bg-white z-10"
                                     style={{ rotateX: 12, rotateY: -15, transformPerspective: 1200 }}
                                     whileHover={{ rotateY: -8, scale: 1.02 }}
                                     transition={{ duration: 0.8 }}
                                 >
                                     <img 
                                         src="/info-page/media__1773582608518.png" 
-                                        className="w-full h-full object-cover" 
+                                        className="w-full h-auto block" 
                                         alt="Catalog Preview" 
                                     />
                                 </motion.div>
                                 
-                                {/* Floating Top Right Card - Swapped to a cleaner preview */}
+                                {/* Floating Top Right Card - Cleaner preview */}
                                 <motion.div 
-                                    className="absolute -top-6 -right-6 w-48 shadow-2xl rounded-2xl border border-white/80 overflow-hidden bg-white/90 backdrop-blur-sm p-1 z-20"
+                                    className="absolute -top-10 -right-4 w-40 shadow-2xl rounded-2xl border border-white/80 overflow-hidden bg-white/90 backdrop-blur-sm p-1 z-20"
                                     variants={floatingImage}
                                     animate="animate"
                                     style={{ rotateX: -10, rotateY: 10, transformPerspective: 1200 }}
                                 >
-                                    <img src="/info-page/media__1773582608557.png" alt="Card Preview" className="w-full rounded-xl" />
+                                    <img src="/info-page/media__1773582608557.png" alt="Card Preview" className="w-full h-auto block rounded-xl" />
                                 </motion.div>
 
                                 {/* Floating Bottom Left Card - Tighter position */}
                                 <motion.div 
-                                    className="absolute -bottom-6 -left-6 w-56 shadow-2xl rounded-2xl border border-white/80 overflow-hidden bg-white/90 backdrop-blur-sm p-2 z-30"
+                                    className="absolute -bottom-10 -left-4 w-48 shadow-2xl rounded-2xl border border-white/80 overflow-hidden bg-white/90 backdrop-blur-sm p-2 z-30"
                                     initial={{ y: 20 }}
                                     animate={{ y: 0 }}
                                     transition={{ duration: 2, repeat: Infinity, repeatType: "mirror", ease: "easeInOut" }}
                                     style={{ rotateX: 10, rotateY: 15, transformPerspective: 1200 }}
                                 >
-                                    <img src="/info-page/media__1773582785226.png" alt="Cart Preview" className="w-full rounded-xl" />
+                                    <img src="/info-page/media__1773582785226.png" alt="Cart Preview" className="w-full h-auto block rounded-xl" />
                                 </motion.div>
                             </div>
                         </motion.div>
@@ -246,13 +249,17 @@ export default function InfoPageClient({ userId }) {
                                     הלקוחות שלך ייהנו מממשק מהיר, חלק ויוקרתי. הצגת פירמידת תווים ויזואלית, בחירת גדלים קלה וסיכום הזמנה שקוף ומקצועי.
                                 </p>
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                                    <div className="p-8 bg-white/5 rounded-[2rem] border border-white/10 hover:bg-white/10 transition-colors text-right flex flex-col items-end">
-                                        <ShoppingBag className="text-yellow-400 mb-6 w-10 h-10" />
+                                    <div className="p-8 bg-white/5 rounded-[2rem] border border-white/10 hover:bg-white/10 transition-colors text-right flex flex-col items-end group">
+                                        <div className="w-12 h-12 bg-yellow-400/10 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-yellow-400 transition-colors">
+                                            <ShoppingBag className="text-yellow-400 w-6 h-6 group-hover:text-black transition-colors" />
+                                        </div>
                                         <h4 className="text-xl font-bold mb-3">ניהול סל קניות</h4>
                                         <p className="text-sm text-gray-500 leading-relaxed">עדכון כמויות וסיכום מחיר בזמן אמת.</p>
                                     </div>
-                                    <div className="p-8 bg-white/5 rounded-[2rem] border border-white/10 hover:bg-white/10 transition-colors text-right flex flex-col items-end">
-                                        <ExternalLink className="text-yellow-400 mb-6 w-10 h-10" />
+                                    <div className="p-8 bg-white/5 rounded-[2rem] border border-white/10 hover:bg-white/10 transition-colors text-right flex flex-col items-end group">
+                                        <div className="w-12 h-12 bg-yellow-400/10 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-yellow-400 transition-colors">
+                                            <ExternalLink className="text-yellow-400 w-6 h-6 group-hover:text-black transition-colors" />
+                                        </div>
                                         <h4 className="text-xl font-bold mb-3">שיתוף קל</h4>
                                         <p className="text-sm text-gray-500 leading-relaxed">שתף מוצר ספציפי או את כל הקטלוג בקישור אחד.</p>
                                     </div>
