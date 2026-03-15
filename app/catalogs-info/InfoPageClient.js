@@ -287,7 +287,7 @@ export default function InfoPageClient({ userId }) {
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                         {/* Shipping */}
                         <motion.div 
-                            className="bg-[#f8faff] p-10 rounded-[3.5rem] border border-blue-50 relative overflow-hidden group shadow-sm hover:shadow-xl transition-all duration-500"
+                            className="bg-[#fffcf8] p-10 rounded-[3.5rem] border border-orange-50 relative overflow-hidden group shadow-sm hover:shadow-xl transition-all duration-500"
                             initial={{ y: 30, opacity: 0 }}
                             whileInView={{ y: 0, opacity: 1 }}
                             viewport={{ once: true }}
