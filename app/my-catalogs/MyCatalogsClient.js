@@ -87,7 +87,7 @@ export default function MyCatalogsClient() {
         <div className="flex flex-col lg:flex-row gap-12">
             
             {/* Left: Create New Catalog Form */}
-            <div className="w-full lg:w-1/3">
+            <div className="w-full lg:w-1/3 order-2 lg:order-1">
                 <div className="bg-white p-6 rounded-xl shadow-lg border border-gray-100 sticky top-24">
                     <h2 className="text-xl font-bold mb-6 text-gray-800">צור קטלוג חדש</h2>
                     <form onSubmit={handleCreate} className="space-y-4">
@@ -218,7 +218,7 @@ export default function MyCatalogsClient() {
             </div>
 
             {/* Right: List of Catalogs */}
-            <div className="w-full lg:w-2/3">
+            <div className="w-full lg:w-2/3 order-1 lg:order-2">
                 {catalogs.length === 0 ? (
                     <div className="bg-gray-50 border-2 border-dashed border-gray-200 rounded-xl p-12 text-center h-full flex flex-col items-center justify-center">
                         <div className="text-5xl mb-4">🏪</div>
