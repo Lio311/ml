@@ -3,21 +3,16 @@ export const metadata = {
     description: "מידע על משלוחים, זמני אספקה ומחירים.",
 };
 
-export const metadata = {
-    title: "מדיניות משלוחים | ml_tlv",
-    description: "מידע על משלוחים, זמני אספקה ומחירים.",
-};
-
 export default function ShippingPage() {
     return (
-        <div className="bg-gray-50 min-h-screen py-16 px-4">
+        <div className="bg-gray-50 min-h-screen py-16 px-4 text-right" dir="rtl">
             <div className="container mx-auto max-w-4xl">
                 <header className="mb-12 text-center">
                     <h1 className="text-5xl font-black mb-4">מדיניות משלוחים והחזרות</h1>
                     <p className="text-gray-500">UPS EasyShip & Israel Post</p>
                 </header>
 
-                <div className="bg-white p-8 md:p-12 rounded-[2.5rem] shadow-sm border border-gray-100 text-right rtl leading-relaxed">
+                <div className="bg-white p-8 md:p-12 rounded-[2.5rem] shadow-sm border border-gray-100 leading-relaxed">
                     <section className="mb-10">
                         <h2 className="text-2xl font-bold mb-4 border-b pb-2">אפשרויות משלוח</h2>
                         <ul className="space-y-4 list-disc pr-6">
@@ -38,7 +33,7 @@ export default function ShippingPage() {
                     <section className="mb-10">
                         <h2 className="text-2xl font-bold mb-4 border-b pb-2">זמני אספקה</h2>
                         <p>
-                            אנו עושים מאמץ להוציא כל הזמנה ותוכן (דיקנטים נמזגים במיוחד) תוך 24-48 שעות. 
+                            אנו עושים מאמץ להוציא כל הזמנה (דיקנטים נמזגים במיוחד) תוך 24-48 שעות. 
                             זמן ההגעה המשוער לנקודת האיסוף הוא עד 5 ימי עסקים מהוצאת המשלוח.
                         </p>
                     </section>

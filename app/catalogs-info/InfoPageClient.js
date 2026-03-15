@@ -244,7 +244,7 @@ export default function InfoPageClient({ userId }) {
             <section className="py-16 px-4 bg-black text-white relative">
                 <div className="absolute top-0 right-0 w-1/2 h-full bg-[radial-gradient(circle_at_80%_20%,rgba(255,234,0,0.1)_0%,transparent_50%)] pointer-events-none" />
                 <div className="container max-w-7xl mx-auto">
-                    <div className="flex flex-col lg:flex-row items-center gap-16 lg:items-center">
+                    <div className="flex flex-col lg:flex-row-reverse items-center gap-16 lg:items-center">
                         {/* Desktop Image: Should be on the LEFT of the screen */}
                         <div className="hidden lg:block flex-1 relative">
                             <motion.div 
