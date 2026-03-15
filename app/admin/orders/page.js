@@ -36,7 +36,7 @@ export default async function AdminOrdersPage(props) {
     const user = await currentUser();
     const email = user?.emailAddresses[0]?.emailAddress;
     const role = user?.publicMetadata?.role;
-    const isSuperAdmin = email === 'lior31197@gmail.com';
+    const isSuperAdmin = email === process.env.ADMIN_EMAIL;
     const canEdit = isSuperAdmin || role === 'admin';
 
     async function deleteOrder(formData) {
@@ -44,7 +44,7 @@ export default async function AdminOrdersPage(props) {
         const user = await currentUser();
         const role = user?.publicMetadata?.role;
         const email = user?.emailAddresses[0]?.emailAddress;
-        if (email !== 'lior31197@gmail.com' && role !== 'admin') {
+        if (email !== process.env.ADMIN_EMAIL && role !== 'admin') {
             throw new Error("Unauthorized");
         }
 

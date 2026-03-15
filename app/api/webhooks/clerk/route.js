@@ -83,7 +83,7 @@ export async function POST(req) {
                 );
 
                 // Send Admin Email Alert
-                const adminEmail = process.env.ADMIN_EMAIL || 'lior31197@gmail.com';
+                const adminEmail = process.env.ADMIN_EMAIL;
                 const userObj = { first_name, last_name, email };
                 const adminHtml = getAdminNewUserTemplate(userObj);
                 await sendEmail(adminEmail, `משתמש חדש הצטרף למשפחה! ✨`, adminHtml);

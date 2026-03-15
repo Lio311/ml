@@ -29,12 +29,12 @@ export default async function AdminRequestsPage(props) {
     const totalPages = Math.ceil(totalRequests / LIMIT);
 
     const user = await currentUser();
-    const canEdit = user?.publicMetadata?.role === 'admin' || user?.emailAddresses[0]?.emailAddress === 'lior31197@gmail.com';
+    const canEdit = user?.publicMetadata?.role === 'admin' || user?.emailAddresses[0]?.emailAddress === process.env.ADMIN_EMAIL;
 
     async function deleteRequest(formData) {
         "use server";
         const user = await currentUser();
-        const canEdit = user?.publicMetadata?.role === 'admin' || user?.emailAddresses[0]?.emailAddress === 'lior31197@gmail.com';
+        const canEdit = user?.publicMetadata?.role === 'admin' || user?.emailAddresses[0]?.emailAddress === process.env.ADMIN_EMAIL;
         if (!canEdit) throw new Error("Unauthorized");
 
         const id = formData.get("id");
@@ -51,7 +51,7 @@ export default async function AdminRequestsPage(props) {
     async function updateRequest(formData) {
         "use server";
         const user = await currentUser();
-        const canEdit = user?.publicMetadata?.role === 'admin' || user?.emailAddresses[0]?.emailAddress === 'lior31197@gmail.com';
+        const canEdit = user?.publicMetadata?.role === 'admin' || user?.emailAddresses[0]?.emailAddress === process.env.ADMIN_EMAIL;
         if (!canEdit) throw new Error("Unauthorized");
 
         const id = formData.get("id");

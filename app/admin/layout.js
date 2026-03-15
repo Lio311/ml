@@ -23,7 +23,7 @@ export default async function AdminLayout({ children }) {
     }
 
     // 1. Super Admin Failsafe (Always allowed)
-    const adminEmail = process.env.ADMIN_EMAIL || 'lior31197@gmail.com';
+    const adminEmail = process.env.ADMIN_EMAIL;
     const isSuperAdmin = email === adminEmail;
 
     // 2. Access Denied (Customer or No Role)

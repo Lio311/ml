@@ -200,7 +200,7 @@ export async function POST(req) {
 
             // Send Confirmation Email (Async, don't block response)
             const userEmail = user?.emailAddresses[0]?.emailAddress;
-            const adminEmail = process.env.ADMIN_EMAIL || 'lior31197@gmail.com';
+            const adminEmail = process.env.ADMIN_EMAIL;
 
             if (userEmail && !catalogId) {
                 const html = getOrderConfirmationTemplate(orderId, items, total, freeSamples, notes, deliveryMethod || 'mail', shippingCost);

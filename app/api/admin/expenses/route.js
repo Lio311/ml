@@ -30,7 +30,7 @@ export async function GET(req) {
 export async function POST(req) {
     const user = await currentUser();
     const role = user?.publicMetadata?.role;
-    if (role !== 'admin' && user?.emailAddresses[0]?.emailAddress !== 'lior31197@gmail.com') {
+    if (role !== 'admin' && user?.emailAddresses[0]?.emailAddress !== process.env.ADMIN_EMAIL) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
     }
 
@@ -53,7 +53,7 @@ export async function POST(req) {
 export async function PUT(req) {
     const user = await currentUser();
     const role = user?.publicMetadata?.role;
-    if (role !== 'admin' && user?.emailAddresses[0]?.emailAddress !== 'lior31197@gmail.com') {
+    if (role !== 'admin' && user?.emailAddresses[0]?.emailAddress !== process.env.ADMIN_EMAIL) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
     }
 
@@ -76,7 +76,7 @@ export async function PUT(req) {
 export async function DELETE(req) {
     const user = await currentUser();
     const role = user?.publicMetadata?.role;
-    if (role !== 'admin' && user?.emailAddresses[0]?.emailAddress !== 'lior31197@gmail.com') {
+    if (role !== 'admin' && user?.emailAddresses[0]?.emailAddress !== process.env.ADMIN_EMAIL) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
     }
 

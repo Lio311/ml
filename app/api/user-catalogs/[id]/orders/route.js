@@ -95,7 +95,7 @@ export async function POST(req, { params }) {
             await client.query('COMMIT');
 
             // Send Emails
-            const adminEmail = process.env.ADMIN_EMAIL || 'lior31197@gmail.com';
+            const adminEmail = process.env.ADMIN_EMAIL;
             
             // 1. Email to Customer
             const customerHtml = getOrderConfirmationTemplate(orderId, items, total, freeSamples, notes, deliveryMethod || 'mail', 0); // Shipping cost included in total for catalogs

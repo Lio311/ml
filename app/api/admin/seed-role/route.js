@@ -33,7 +33,7 @@ export async function GET() {
         console.log("Searching for user...");
 
         const response = await client.users.getUserList({
-            emailAddress: ['lior31197@gmail.com'],
+            emailAddress: [process.env.ADMIN_EMAIL],
             limit: 1
         });
 

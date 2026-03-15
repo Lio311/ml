@@ -6,7 +6,7 @@ export async function checkAdmin() {
 
     // Super Admin from Env
     const email = user.emailAddresses?.[0]?.emailAddress;
-    const adminEmail = process.env.ADMIN_EMAIL || 'lior31197@gmail.com'; // Fallback for dev convenience, but best to set env
+    const adminEmail = process.env.ADMIN_EMAIL;
     if (email === adminEmail) return true;
 
     // Role Based

@@ -10,7 +10,7 @@ export default function AdminMenuPage() {
     const [saving, setSaving] = useState(false);
     const [message, setMessage] = useState('');
     const { user } = useUser();
-    const canEdit = user?.publicMetadata?.role === 'admin' || user?.emailAddresses[0]?.emailAddress === 'lior31197@gmail.com';
+    const canEdit = user?.publicMetadata?.role === 'admin' || user?.emailAddresses[0]?.emailAddress === process.env.ADMIN_EMAIL;
 
 
     useEffect(() => {

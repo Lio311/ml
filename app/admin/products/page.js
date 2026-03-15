@@ -73,7 +73,7 @@ export default async function AdminProductsPage(props) {
     }
 
     const user = await currentUser();
-    const canEdit = user?.publicMetadata?.role === 'admin' || user?.emailAddresses[0]?.emailAddress === 'lior31197@gmail.com';
+    const canEdit = user?.publicMetadata?.role === 'admin' || user?.emailAddresses[0]?.emailAddress === process.env.ADMIN_EMAIL;
 
 
     return (

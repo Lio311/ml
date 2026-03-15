@@ -8,7 +8,7 @@ export async function POST(req) {
     const user = await currentUser();
     const role = user?.publicMetadata?.role;
     const email = user?.emailAddresses[0]?.emailAddress;
-    if (email !== 'lior31197@gmail.com' && role !== 'admin') {
+    if (email !== process.env.ADMIN_EMAIL && role !== 'admin') {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
