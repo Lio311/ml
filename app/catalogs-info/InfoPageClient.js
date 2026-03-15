@@ -105,14 +105,14 @@ export default function InfoPageClient({ userId }) {
                                     />
                                 </motion.div>
                                 
-                                {/* Floating Top Right Card - Tighter position */}
+                                {/* Floating Top Right Card - Swapped to a cleaner preview */}
                                 <motion.div 
                                     className="absolute -top-6 -right-6 w-48 shadow-2xl rounded-2xl border border-white/80 overflow-hidden bg-white/90 backdrop-blur-sm p-1 z-20"
                                     variants={floatingImage}
                                     animate="animate"
                                     style={{ rotateX: -10, rotateY: 10, transformPerspective: 1200 }}
                                 >
-                                    <img src="/info-page/media__1773582511480.png" alt="Card Preview" className="w-full rounded-xl" />
+                                    <img src="/info-page/media__1773582608557.png" alt="Card Preview" className="w-full rounded-xl" />
                                 </motion.div>
 
                                 {/* Floating Bottom Left Card - Tighter position */}
@@ -369,7 +369,7 @@ export default function InfoPageClient({ userId }) {
                         <h2 className="text-5xl font-black mt-4">איך זה עובד?</h2>
                     </div>
 
-                    <div className="space-y-6">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             {[
                             { num: "01", title: "הרשמה מהירה", desc: "התחבר למערכת וצור את הקטלוג הראשון שלך תוך פחות מ-60 שניות." },
                             { num: "02", title: "העלאת קולקציה", desc: "הוסף את הבשמים שלך, בחר גדלים וקבע את המחיר שמתאים לך." },
