@@ -108,9 +108,9 @@ export default function InfoPageClient({ userId }) {
                                     />
                                 </motion.div>
                                 
-                                {/* Floating Top Right Card - Cleaner preview */}
+                                {/* Floating Top Right Card - Larger preview */}
                                 <motion.div 
-                                    className="absolute -top-10 -right-4 w-40 shadow-2xl rounded-2xl border border-white/80 overflow-hidden bg-white/90 backdrop-blur-sm p-1 z-20"
+                                    className="absolute -top-12 -right-12 w-56 shadow-2xl rounded-2xl border border-white/80 overflow-hidden bg-white/90 backdrop-blur-sm p-1 z-20"
                                     variants={floatingImage}
                                     animate="animate"
                                     style={{ rotateX: -10, rotateY: 10, transformPerspective: 1200 }}
@@ -118,9 +118,9 @@ export default function InfoPageClient({ userId }) {
                                     <img src="/info-page/media__1773582608557.png" alt="Card Preview" className="w-full h-auto block rounded-xl" />
                                 </motion.div>
 
-                                {/* Floating Bottom Left Card - Tighter position */}
+                                {/* Floating Bottom Left Card - Larger preview */}
                                 <motion.div 
-                                    className="absolute -bottom-10 -left-4 w-48 shadow-2xl rounded-2xl border border-white/80 overflow-hidden bg-white/90 backdrop-blur-sm p-2 z-30"
+                                    className="absolute -bottom-12 -left-12 w-64 shadow-2xl rounded-2xl border border-white/80 overflow-hidden bg-white/90 backdrop-blur-sm p-2 z-30"
                                     initial={{ y: 20 }}
                                     animate={{ y: 0 }}
                                     transition={{ duration: 2, repeat: Infinity, repeatType: "mirror", ease: "easeInOut" }}
