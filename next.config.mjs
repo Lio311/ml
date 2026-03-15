@@ -73,7 +73,7 @@ const nextConfig = {
             key: 'Content-Security-Policy',
             value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.clerk.accounts.dev https://clerk.ml-tlv.com https://*.clerk.services https://www.googletagmanager.com https://www.google-analytics.com https://*.clarity.ms https://browser.sentry-cdn.com https://*.sentry.io; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://www.gstatic.com; img-src 'self' data: blob: https://*.clerk.com https://clerk.ml-tlv.com https://*.clerk.accounts.dev https://images.unsplash.com https://fimgs.net https://pimgs.net https://www.fragrantica.com https://www.cp-parfums.com https://wp.logos-download.com https://ipiccirilliperfumes.com https://aromadilamore.com https://encrypted-tbn0.gstatic.com https://www.google-analytics.com https://*.clarity.ms https://*.sentry.io; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' https://*.clerk.accounts.dev https://clerk.ml-tlv.com https://*.clerk.services https://www.google-analytics.com https://*.clarity.ms https://*.sentry.io; frame-src 'self' https://*.clerk.accounts.dev https://clerk.ml-tlv.com https://*.clerk.services; object-src 'none'; base-uri 'self'; form-action 'self';"
           }
-
+        ],
       },
     ];
   },
