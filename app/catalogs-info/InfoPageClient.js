@@ -311,16 +311,16 @@ export default function InfoPageClient({ userId }) {
             {/* Showcase Section: Orders Table */}
             <section className="py-16 bg-gray-50 border-y border-gray-100 px-4">
                 <div className="container max-w-7xl mx-auto">
-                    <div className="bg-white rounded-[3rem] p-10 md:p-12 shadow-2xl border border-gray-100 flex flex-col lg:flex-row items-center gap-16">
+                    <div className="bg-yellow-400 rounded-[3rem] p-10 md:p-12 shadow-2xl border border-yellow-500/20 flex flex-col lg:flex-row items-center gap-16">
                         <div className="flex-1 text-right">
-                            <h2 className="text-4xl font-black mb-8 leading-tight">ניהול הזמנות מקצה לקצה</h2>
-                            <p className="text-gray-500 text-lg mb-10 leading-relaxed font-medium">
+                            <h2 className="text-4xl font-black mb-8 leading-tight text-black">ניהול הזמנות מקצה לקצה</h2>
+                            <p className="text-black/70 text-lg mb-10 leading-relaxed font-medium">
                                 עקוב אחרי כל הזמנה שנכנסת, נהל סטטוסים (ממתין, בטיפול, הושלם) וראה את כל פרטי הלקוח במקום אחד מסודר.
                             </p>
                             <div className="flex items-center gap-4 justify-end flex-wrap">
-                                <span className="px-4 py-2 bg-blue-50 text-blue-700 rounded-full text-xs font-bold">תגיות משלוח / איסוף</span>
-                                <span className="px-4 py-2 bg-green-50 text-green-700 rounded-full text-xs font-bold">מעקב סטטוס חי</span>
-                                <span className="px-4 py-2 bg-orange-50 text-orange-700 rounded-full text-xs font-bold">התראות מייל</span>
+                                <span className="px-4 py-2 bg-black/10 text-black rounded-full text-xs font-bold">תגיות משלוח / איסוף</span>
+                                <span className="px-4 py-2 bg-black/10 text-black rounded-full text-xs font-bold">מעקב סטטוס חי</span>
+                                <span className="px-4 py-2 bg-black/10 text-black rounded-full text-xs font-bold">התראות מייל</span>
                             </div>
                         </div>
                         <motion.div 
