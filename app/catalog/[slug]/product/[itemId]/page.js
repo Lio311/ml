@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import FragrancePyramid from "../../../../components/FragrancePyramid";
 import CatalogProductActions from "./CatalogProductActions";
+import ShareButton from "../../../../components/ShareButton";
 
 export async function generateMetadata({ params }) {
     const { slug, itemId } = await params;
@@ -53,9 +54,27 @@ export default async function CatalogProductPage({ params }) {
                 <span className="font-bold text-black truncate">{item.brand} {item.fragrance_name}</span>
             </div>
 
-            <div className="flex flex-col md:flex-row items-start gap-12 mb-20">
+            <div className="flex flex-col md:flex-row-reverse items-start gap-12 mb-20">
 
-                {/* LEFT: Product Info */}
+                {/* LEFT: Product Image (Comes first on mobile) */}
+                <div className="w-full md:w-1/2 aspect-square flex items-center justify-center relative overflow-hidden p-8 md:p-12 group bg-white rounded-xl shadow-sm">
+                    {item.image_url ? (
+                        <>
+                            <img
+                                src={item.image_url}
+                                alt={`${item.brand} ${item.fragrance_name}`}
+                                className="w-full h-full object-contain p-8 md:p-12 hover:scale-105 transition-transform duration-500"
+                            />
+                            <div className="absolute top-4 right-4 z-10">
+                                <ShareButton name={`${item.brand} ${item.fragrance_name}`} />
+                            </div>
+                        </>
+                    ) : (
+                        <div className="text-6xl text-gray-300">🧴</div>
+                    )}
+                </div>
+
+                {/* RIGHT: Product Info */}
                 <div className="w-full md:w-1/2 space-y-8">
                     <div>
                         {/* Category tags */}
@@ -79,36 +98,24 @@ export default async function CatalogProductPage({ params }) {
 
                         {/* Description */}
                         {item.description && (
-                            <div className="text-lg text-gray-600 leading-relaxed text-right">
+                            <div className="text-lg text-gray-600 leading-relaxed text-right mb-8">
                                 {item.description}
                             </div>
                         )}
+
+                        {/* Price + Add to Cart */}
+                        <div className="space-y-12">
+                            <h3 className="font-bold text-gray-900 text-lg text-right">בחר גודל והוסף לסל:</h3>
+                            <CatalogProductActions item={item} slug={slug} />
+
+                            {/* Fragrance Pyramid */}
+                            <FragrancePyramid
+                                top={item.top_notes}
+                                middle={item.middle_notes}
+                                base={item.base_notes}
+                            />
+                        </div>
                     </div>
-
-                    {/* Price + Add to Cart */}
-                    <div className="space-y-6">
-                        <CatalogProductActions item={item} slug={slug} />
-
-                        {/* Fragrance Pyramid */}
-                        <FragrancePyramid
-                            top={item.top_notes}
-                            middle={item.middle_notes}
-                            base={item.base_notes}
-                        />
-                    </div>
-                </div>
-
-                {/* RIGHT: Product Image */}
-                <div className="w-full md:w-1/2 aspect-square flex items-center justify-center relative overflow-hidden p-8 md:p-12 group">
-                    {item.image_url ? (
-                        <img
-                            src={item.image_url}
-                            alt={`${item.brand} ${item.fragrance_name}`}
-                            className="w-full h-full object-contain p-8 md:p-12 hover:scale-105 transition-transform duration-500"
-                        />
-                    ) : (
-                        <div className="text-6xl text-gray-300">🧴</div>
-                    )}
                 </div>
             </div>
 

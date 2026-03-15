@@ -64,7 +64,6 @@ export default function CatalogProductActions({ item, slug }) {
 
     return (
         <div className="space-y-4">
-            <h3 className="font-bold text-gray-900 text-lg text-right">בחר גודל והוסף לסל:</h3>
             <div className="space-y-3">
                 {sizeEntries.map(([size, price]) => {
                     const cartItemId = `${item.id}_${size}`;
