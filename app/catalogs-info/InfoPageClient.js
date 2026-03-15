@@ -47,7 +47,7 @@ export default function InfoPageClient({ userId }) {
                         >
                             <motion.span 
                                 variants={fadeIn}
-                                className="inline-block px-4 py-1.5 bg-black text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-full mb-6"
+                                className="inline-block px-4 py-1.5 bg-black text-white text-[10px] font-black tracking-[0.2em] rounded-full mb-6"
                             >
                                 Exclusive Platform for ml_tlv
                             </motion.span>
