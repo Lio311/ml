@@ -225,16 +225,7 @@ export default function InfoPageClient({ userId }) {
                                     whileInView={{ scale: 1, opacity: 1 }}
                                     viewport={{ once: true }}
                                 >
-                                    <img src="/info-page/media__1773582608487.png" alt="Product Page" className="w-full" />
-                                </motion.div>
-                                <motion.div 
-                                    className="absolute -top-12 -right-12 w-1/2 shadow-2xl rounded-2xl overflow-hidden border border-white/20 bg-black/80 backdrop-blur-xl p-1"
-                                    initial={{ x: 50, opacity: 0 }}
-                                    whileInView={{ x: 0, opacity: 1 }}
-                                    viewport={{ once: true }}
-                                    transition={{ delay: 0.3 }}
-                                >
-                                    <img src="/info-page/media__1773581998712.png" alt="Cart Summary" className="w-full rounded-xl" />
+                                    <img src="/info-page/media__1773585930992.png" alt="Cart Preview" className="w-full" />
                                 </motion.div>
                              </div>
                         </div>
