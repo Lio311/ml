@@ -256,12 +256,12 @@ export default function InfoPageClient({ userId }) {
                                     הלקוחות שלך ייהנו מממשק מהיר, חלק ויוקרתי. הצגת פירמידת תווים ויזואלית, בחירת גדלים קלה וסיכום הזמנה שקוף ומקצועי.
                                 </p>
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                                    <div className="p-8 bg-white/5 rounded-[2rem] border border-white/10 hover:bg-white/10 transition-colors">
+                                    <div className="p-8 bg-white/5 rounded-[2rem] border border-white/10 hover:bg-white/10 transition-colors text-right flex flex-col items-end">
                                         <ShoppingBag className="text-yellow-400 mb-6 w-10 h-10" />
                                         <h4 className="text-xl font-bold mb-3">ניהול סל קניות</h4>
                                         <p className="text-sm text-gray-500 leading-relaxed">עדכון כמויות וסיכום מחיר בזמן אמת.</p>
                                     </div>
-                                    <div className="p-8 bg-white/5 rounded-[2rem] border border-white/10 hover:bg-white/10 transition-colors">
+                                    <div className="p-8 bg-white/5 rounded-[2rem] border border-white/10 hover:bg-white/10 transition-colors text-right flex flex-col items-end">
                                         <ExternalLink className="text-yellow-400 mb-6 w-10 h-10" />
                                         <h4 className="text-xl font-bold mb-3">שיתוף קל</h4>
                                         <p className="text-sm text-gray-500 leading-relaxed">שתף מוצר ספציפי או את כל הקטלוג בקישור אחד.</p>
