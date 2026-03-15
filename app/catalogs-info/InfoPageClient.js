@@ -116,8 +116,8 @@ export default function InfoPageClient({ userId }) {
                             transition={{ duration: 1, ease: "easeOut" }}
                         >
                             {/* 3D Cohesive Visuals - Fixed Aspect Ratios */}
-                            <div className="relative w-full max-w-md">
-                                {/* Main Image - Preserving Ratio, Slightly Smaller */}
+                            <div className="relative w-full max-w-lg">
+                                {/* Main Image - Preserving Ratio, Slightly Larger */}
                                 <motion.div 
                                     className="relative w-full mx-auto rounded-[2.5rem] shadow-[0_60px_120px_-20px_rgba(0,0,0,0.2)] overflow-hidden border border-white bg-white z-10"
                                     style={{ rotateX: 12, rotateY: -15, transformPerspective: 1200 }}
@@ -133,9 +133,9 @@ export default function InfoPageClient({ userId }) {
 
 
 
-                                {/* Floating Bottom Left Card - Slightly Smaller */}
+                                {/* Floating Bottom Left Card - Slightly Smaller & Shifted Left */}
                                 <motion.div 
-                                    className="absolute -bottom-12 -left-12 w-72 shadow-2xl rounded-2xl border border-white/80 overflow-hidden bg-white/90 backdrop-blur-sm p-3 z-30"
+                                    className="absolute -bottom-12 -left-20 w-80 shadow-2xl rounded-2xl border border-white/80 overflow-hidden bg-white/90 backdrop-blur-sm p-3 z-30"
                                     initial={{ y: 20 }}
                                     animate={{ y: 0 }}
                                     transition={{ duration: 2, repeat: Infinity, repeatType: "mirror", ease: "easeInOut" }}
