@@ -43,33 +43,56 @@ export default function InfoPageClient({ userId }) {
                 <div className="container max-w-7xl mx-auto relative z-10">
                     <div className="flex flex-col lg:flex-row items-center gap-10">
                         <motion.div 
-                            className="flex-1 text-center"
+                            className="flex-1 text-center flex flex-col items-center"
                             initial="hidden"
                             animate="visible"
                             variants={staggerContainer}
                         >
                             <motion.span 
                                 variants={fadeIn}
-                                className="inline-block px-4 py-1.5 bg-black text-white text-[10px] font-black tracking-[0.2em] rounded-full mb-6"
+                                className="inline-block px-4 py-1.5 bg-black text-white text-[10px] font-black tracking-[0.2em] rounded-full mb-6 order-1"
                             >
                                 Exclusive Platform for ml_tlv
                             </motion.span>
                             <motion.h1 
                                 variants={fadeIn}
-                                className="text-5xl md:text-7xl font-black mb-6 leading-[1.1] tracking-tighter"
+                                className="text-5xl md:text-7xl font-black mb-6 leading-[1.1] tracking-tighter order-2"
                             >
                                 הקם <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-500 to-yellow-400">חנות וירטואלית</span> <br /> משלך בדקות
                             </motion.h1>
                             <motion.p 
                                 variants={fadeIn}
-                                className="text-lg md:text-xl text-gray-500 mb-10 max-w-xl mx-auto lg:mx-0 leading-relaxed font-medium"
+                                className="text-lg md:text-xl text-gray-500 mb-8 max-w-xl mx-auto lg:mx-0 leading-relaxed font-medium order-3"
                             >
                                 הפוך את האוסף שלך לנגיש. הוסף מוצרים, קבע מחירים, ונהל הזמנות במקום אחד - בקטלוג מעוצב שמותאם אישית עבורך.
                             </motion.p>
+
+                            {/* Mobile Visuals: Positioned between text and buttons on mobile only */}
+                            <motion.div 
+                                className="lg:hidden relative w-full h-[320px] flex items-center justify-center mb-10 order-4"
+                                initial={{ opacity: 0, scale: 0.9 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                transition={{ duration: 1, ease: "easeOut" }}
+                            >
+                                <div className="relative w-full max-w-[280px]">
+                                    <motion.div 
+                                        className="relative w-full mx-auto rounded-[1.5rem] shadow-xl overflow-hidden border border-white bg-white z-10"
+                                        style={{ rotateX: 12, rotateY: -15, transformPerspective: 1200 }}
+                                    >
+                                        <img src="/info-page/media__1773582608518.png" className="w-full h-auto block" alt="Catalog Preview" />
+                                    </motion.div>
+                                    <motion.div 
+                                        className="absolute -bottom-8 -left-8 w-44 shadow-xl rounded-xl border border-white/80 overflow-hidden bg-white/90 backdrop-blur-sm p-2 z-30"
+                                        style={{ rotateX: 10, rotateY: 15, transformPerspective: 1200 }}
+                                    >
+                                        <img src="/info-page/media__1773582785226.png" alt="Cart Preview" className="w-full h-auto block rounded-lg" />
+                                    </motion.div>
+                                </div>
+                            </motion.div>
                             
                             <motion.div 
                                 variants={fadeIn}
-                                className="flex flex-col sm:flex-row items-center justify-center gap-4"
+                                className="flex flex-col sm:flex-row items-center justify-center gap-4 order-5 w-full"
                             >
                                 {userId ? (
                                     <Link href="/my-catalogs" className="w-full sm:w-auto px-10 py-4 bg-yellow-400 text-black rounded-full font-black text-lg hover:scale-105 transition-transform shadow-[0_20px_40px_-10px_rgba(253,224,71,0.3)]">
@@ -87,7 +110,7 @@ export default function InfoPageClient({ userId }) {
                         </motion.div>
 
                         <motion.div 
-                            className="flex-1 relative w-full h-[450px] flex items-center justify-center lg:justify-end -mt-12 md:-mt-20"
+                            className="hidden lg:flex flex-1 relative w-full h-[450px] items-center justify-center lg:justify-end -mt-12 md:-mt-20"
                             initial={{ opacity: 0, scale: 0.9 }}
                             animate={{ opacity: 1, scale: 1 }}
                             transition={{ duration: 1, ease: "easeOut" }}
