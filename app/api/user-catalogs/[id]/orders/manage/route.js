@@ -78,7 +78,7 @@ export async function PUT(req, context) {
             // Volume Restore: status moves TO cancelled (and was NOT already cancelled)
             if (status === 'cancelled' && oldStatus !== 'cancelled') {
                 for (const item of items) {
-                    const volume = (Number(item.quantity) || 1) * (Number(item.size) || 0);
+                    const volume = (Number(item.quantity) || 1) * (parseFloat(String(item.size)) || 0);
                     if (volume > 0 && item.id) {
                         await client.query(
                             'UPDATE user_catalog_items SET stock_ml = stock_ml + $1 WHERE id = $2 AND catalog_id = $3',
@@ -90,7 +90,7 @@ export async function PUT(req, context) {
             // Volume Deduct: status moves FROM cancelled (back to something else)
             else if (oldStatus === 'cancelled' && status !== 'cancelled') {
                 for (const item of items) {
-                    const volume = (Number(item.quantity) || 1) * (Number(item.size) || 0);
+                    const volume = (Number(item.quantity) || 1) * (parseFloat(String(item.size)) || 0);
                     if (volume > 0 && item.id) {
                         await client.query(
                             'UPDATE user_catalog_items SET stock_ml = GREATEST(0, stock_ml - $1) WHERE id = $2 AND catalog_id = $3',

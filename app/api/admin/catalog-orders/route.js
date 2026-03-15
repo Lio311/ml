@@ -78,7 +78,7 @@ export async function PUT(req) {
             // Stock restoration logic
             if (status === 'cancelled' && oldStatus !== 'cancelled') {
                 for (const item of items) {
-                    const vol = (Number(item.quantity) || 1) * (Number(item.size) || 0);
+                    const vol = (Number(item.quantity) || 1) * (parseFloat(String(item.size)) || 0);
                     if (vol > 0 && item.id) {
                         await client.query(
                             'UPDATE user_catalog_items SET stock_ml = stock_ml + $1 WHERE id = $2 AND catalog_id = $3',
@@ -88,7 +88,7 @@ export async function PUT(req) {
                 }
             } else if (oldStatus === 'cancelled' && status !== 'cancelled') {
                 for (const item of items) {
-                    const vol = (Number(item.quantity) || 1) * (Number(item.size) || 0);
+                    const vol = (Number(item.quantity) || 1) * (parseFloat(String(item.size)) || 0);
                     if (vol > 0 && item.id) {
                         await client.query(
                             'UPDATE user_catalog_items SET stock_ml = GREATEST(0, stock_ml - $1) WHERE id = $2 AND catalog_id = $3',
@@ -149,7 +149,7 @@ export async function DELETE(req) {
             // Restore stock IF order was NOT already cancelled
             if (status !== 'cancelled') {
                 for (const item of parsedItems) {
-                    const vol = (Number(item.quantity) || 1) * (Number(item.size) || 0);
+                    const vol = (Number(item.quantity) || 1) * (parseFloat(String(item.size)) || 0);
                     if (vol > 0 && item.id) {
                         await client.query(
                             'UPDATE user_catalog_items SET stock_ml = stock_ml + $1 WHERE id = $2 AND catalog_id = $3',

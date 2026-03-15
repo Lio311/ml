@@ -57,8 +57,9 @@ export default async function AdminOrdersPage(props) {
             if (res.rows.length > 0) {
                 const items = res.rows[0].items;
                 for (const item of items) {
-                    if (!item.isPrize && !isNaN(item.size)) {
-                        const amountToRestore = Number(item.size) * item.quantity;
+                    const itemSize = parseFloat(String(item.size));
+                    if (!item.isPrize && !isNaN(itemSize)) {
+                        const amountToRestore = itemSize * item.quantity;
 
                         // Fix for composite IDs (e.g. "74-2")
                         let dbId = item.id;
@@ -72,7 +73,7 @@ export default async function AdminOrdersPage(props) {
                         );
 
                         // --- RESTORE BOTTLE INVENTORY ---
-                        let bottleSize = Number(item.size);
+                        let bottleSize = itemSize;
 
                         // Luxury Bottle Logic: 10ml & Price >= 300 -> Size 11
                         if (bottleSize === 10 && item.price >= 300) {

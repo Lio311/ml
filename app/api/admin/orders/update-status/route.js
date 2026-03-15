@@ -42,12 +42,22 @@ export async function POST(req) {
         // Bottle inventory logic
         if (newStatus === 'cancelled' && oldStatus !== 'cancelled') {
             for (const item of (order.items || [])) {
-                if (!item.isPrize && !isNaN(item.size)) {
-                    let bSize = Number(item.size);
+                const itemSize = parseFloat(String(item.size));
+                if (!item.isPrize && !isNaN(itemSize)) {
+                    // Restore Bottle Inventory
+                    let bSize = itemSize;
                     if (bSize === 10 && item.price >= 300) bSize = 11;
                     if ([2, 5, 10, 11].includes(bSize)) {
                         await client.query('UPDATE bottle_inventory SET quantity = quantity + $1 WHERE size = $2', [item.quantity, bSize]);
                     }
+
+                    // Restore Product ML Stock
+                    const amountToRestore = itemSize * item.quantity;
+                    let dbId = item.id;
+                    if (typeof dbId === 'string' && dbId.includes('-')) {
+                        dbId = parseInt(dbId.split('-')[0]);
+                    }
+                    await client.query('UPDATE products SET stock = stock + $1 WHERE id = $2', [amountToRestore, dbId]);
                 }
             }
             if (order.free_samples_count > 0) {
@@ -56,12 +66,22 @@ export async function POST(req) {
         }
         if (oldStatus === 'cancelled' && newStatus !== 'cancelled') {
             for (const item of (order.items || [])) {
-                if (!item.isPrize && !isNaN(item.size)) {
-                    let bSize = Number(item.size);
+                const itemSize = parseFloat(String(item.size));
+                if (!item.isPrize && !isNaN(itemSize)) {
+                    // Deduct Bottle Inventory
+                    let bSize = itemSize;
                     if (bSize === 10 && item.price >= 300) bSize = 11;
                     if ([2, 5, 10, 11].includes(bSize)) {
                         await client.query('UPDATE bottle_inventory SET quantity = quantity - $1 WHERE size = $2', [item.quantity, bSize]);
                     }
+
+                    // Deduct Product ML Stock
+                    const amountToDeduct = itemSize * item.quantity;
+                    let dbId = item.id;
+                    if (typeof dbId === 'string' && dbId.includes('-')) {
+                        dbId = parseInt(dbId.split('-')[0]);
+                    }
+                    await client.query('UPDATE products SET stock = GREATEST(0, stock - $1) WHERE id = $2', [amountToDeduct, dbId]);
                 }
             }
             if (order.free_samples_count > 0) {
