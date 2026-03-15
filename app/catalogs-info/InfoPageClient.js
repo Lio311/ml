@@ -84,18 +84,18 @@ export default function InfoPageClient({ userId }) {
                         </motion.div>
 
                         <motion.div 
-                            className="flex-1 relative w-full h-[500px] flex items-center justify-center"
-                            initial={{ opacity: 0, scale: 0.8 }}
+                            className="flex-1 relative w-full h-[450px] flex items-center justify-center lg:justify-end"
+                            initial={{ opacity: 0, scale: 0.9 }}
                             animate={{ opacity: 1, scale: 1 }}
                             transition={{ duration: 1, ease: "easeOut" }}
                         >
-                            {/* 3D Overlapping Visuals */}
-                            <div className="relative w-full h-full">
-                                {/* Main Image - Angled */}
+                            {/* 3D Cohesive Visuals */}
+                            <div className="relative w-full max-w-lg aspect-square">
+                                {/* Main Image - Angled & Lifted */}
                                 <motion.div 
-                                    className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[85%] aspect-[16/10] rounded-3xl shadow-[0_50px_100px_-20px_rgba(0,0,0,0.2)] overflow-hidden border border-white/50 bg-white"
-                                    style={{ rotateX: 10, rotateY: -15, transformPerspective: 1000 }}
-                                    whileHover={{ rotateY: -5, scale: 1.02 }}
+                                    className="absolute inset-0 rounded-[2.5rem] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.15)] overflow-hidden border border-white bg-white z-10"
+                                    style={{ rotateX: 12, rotateY: -15, transformPerspective: 1200 }}
+                                    whileHover={{ rotateY: -8, scale: 1.02 }}
                                     transition={{ duration: 0.8 }}
                                 >
                                     <img 
@@ -105,23 +105,23 @@ export default function InfoPageClient({ userId }) {
                                     />
                                 </motion.div>
                                 
-                                {/* Floating Top Right Card */}
+                                {/* Floating Top Right Card - Tighter position */}
                                 <motion.div 
-                                    className="absolute top-0 -right-4 w-56 shadow-2xl rounded-2xl border border-white/50 overflow-hidden bg-white p-1 z-20"
+                                    className="absolute -top-6 -right-6 w-48 shadow-2xl rounded-2xl border border-white/80 overflow-hidden bg-white/90 backdrop-blur-sm p-1 z-20"
                                     variants={floatingImage}
                                     animate="animate"
-                                    style={{ rotateX: -5, rotateY: 5, transformPerspective: 1000 }}
+                                    style={{ rotateX: -10, rotateY: 10, transformPerspective: 1200 }}
                                 >
                                     <img src="/info-page/media__1773582511480.png" alt="Card Preview" className="w-full rounded-xl" />
                                 </motion.div>
 
-                                {/* Floating Bottom Left Card */}
+                                {/* Floating Bottom Left Card - Tighter position */}
                                 <motion.div 
-                                    className="absolute -bottom-8 -left-8 w-64 shadow-2xl rounded-2xl border border-white/50 overflow-hidden bg-white p-2 z-30"
+                                    className="absolute -bottom-6 -left-6 w-56 shadow-2xl rounded-2xl border border-white/80 overflow-hidden bg-white/90 backdrop-blur-sm p-2 z-30"
                                     initial={{ y: 20 }}
                                     animate={{ y: 0 }}
-                                    transition={{ duration: 1.5, repeat: Infinity, repeatType: "mirror" }}
-                                    style={{ rotateX: 5, rotateY: 10, transformPerspective: 1000 }}
+                                    transition={{ duration: 2, repeat: Infinity, repeatType: "mirror", ease: "easeInOut" }}
+                                    style={{ rotateX: 10, rotateY: 15, transformPerspective: 1200 }}
                                 >
                                     <img src="/info-page/media__1773582785226.png" alt="Cart Preview" className="w-full rounded-xl" />
                                 </motion.div>
