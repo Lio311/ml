@@ -278,7 +278,7 @@ export default function InfoPageClient({ userId }) {
                         <p className="text-gray-500 text-lg max-w-2xl mx-auto font-medium">הגדרות מתקדמות המותאמות אישית לצרכים של המוכרים המקצועיים ביותר בקהילה.</p>
                     </div>
 
-                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
                         {/* Shipping */}
                         <motion.div 
                             className="bg-[#f8faff] p-10 rounded-[3.5rem] border border-blue-50 relative overflow-hidden group shadow-sm hover:shadow-xl transition-all duration-500"
@@ -312,22 +312,7 @@ export default function InfoPageClient({ userId }) {
                             </div>
                         </motion.div>
 
-                        {/* Sharing */}
-                        <motion.div 
-                            className="bg-[#fbfbfb] p-10 rounded-[3.5rem] border border-gray-100 relative overflow-hidden group shadow-sm hover:shadow-xl transition-all duration-500"
-                            initial={{ y: 30, opacity: 0 }}
-                            whileInView={{ y: 0, opacity: 1 }}
-                            viewport={{ once: true }}
-                            transition={{ delay: 0.4 }}
-                        >
-                            <div className="mb-8 relative z-10">
-                                <h3 className="text-2xl font-black mb-4">שיתוף בתפוצה רחבה</h3>
-                                <p className="text-gray-500 text-sm leading-relaxed">העתק את הקישור האישי ושתף בכל פלטפורמה. הלקוחות שלך במרחק לחיצה.</p>
-                            </div>
-                            <div className="rounded-2xl overflow-hidden shadow-2xl border border-white group-hover:scale-[1.03] transition-transform duration-700">
-                                <img src="/info-page/media__1773581940144.png" alt="Sharing" className="w-full" />
-                            </div>
-                        </motion.div>
+
                     </div>
                 </div>
             </section>
