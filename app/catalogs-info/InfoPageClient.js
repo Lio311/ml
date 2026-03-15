@@ -172,7 +172,7 @@ export default function InfoPageClient({ userId }) {
             {/* Showcase Section: Admin Dashboard */}
             <section id="preview" className="py-10 px-4 bg-white overflow-hidden">
                 <div className="container max-w-7xl mx-auto">
-                    <div className="flex flex-col lg:flex-row items-center gap-12">
+                    <div className="flex flex-col lg:flex-row-reverse items-center gap-12">
                         <div className="flex-1 text-right">
                             <motion.div
                                 initial={{ opacity: 0, x: -20 }}
@@ -190,9 +190,9 @@ export default function InfoPageClient({ userId }) {
                                         "מערכת ניהול מלאי חכמה (מ״ל / יחידות)",
                                         "עדכון סטטוס זמינות בלחיצת כפתור"
                                     ].map((item, i) => (
-                                        <li key={i} className="flex items-center justify-end gap-4 text-right">
-                                            <span className="text-gray-900 font-bold text-lg">{item}</span>
+                                        <li key={i} className="flex items-center justify-start gap-4 text-right">
                                             <CheckCircle2 className="text-yellow-500 w-6 h-6 flex-shrink-0" />
+                                            <span className="text-gray-900 font-bold text-lg">{item}</span>
                                         </li>
                                     ))}
                                 </ul>
