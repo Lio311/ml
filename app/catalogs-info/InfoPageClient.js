@@ -1,0 +1,439 @@
+"use client";
+
+import { motion } from "framer-motion";
+import Link from "next/link";
+import { ArrowRight, CheckCircle2, ShoppingBag, Globe, Zap, ShieldCheck, Mail, Phone, ExternalLink } from "lucide-react";
+
+export default function InfoPageClient({ userId }) {
+    const fadeIn = {
+        hidden: { opacity: 0, y: 20 },
+        visible: { opacity: 1, y: 0, transition: { duration: 0.6 } }
+    };
+
+    const staggerContainer = {
+        hidden: { opacity: 0 },
+        visible: {
+            opacity: 1,
+            transition: {
+                staggerChildren: 0.2
+            }
+        }
+    };
+
+    const floatingImage = {
+        animate: {
+            y: [0, -10, 0],
+            transition: {
+                duration: 4,
+                repeat: Infinity,
+                ease: "easeInOut"
+            }
+        }
+    };
+
+    return (
+        <div className="min-h-screen bg-[#fafafa] text-black font-sans selection:bg-yellow-200 overflow-x-hidden">
+            {/* Header / Hero Section */}
+            <section className="relative pt-24 pb-32 px-4 overflow-hidden bg-white">
+                <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_20%_20%,rgba(255,234,0,0.05)_0%,transparent_50%)]" />
+                
+                <div className="container max-w-7xl mx-auto relative z-10">
+                    <div className="flex flex-col lg:flex-row items-center gap-16">
+                        <motion.div 
+                            className="flex-1 text-center lg:text-right"
+                            initial="hidden"
+                            animate="visible"
+                            variants={staggerContainer}
+                        >
+                            <motion.span 
+                                variants={fadeIn}
+                                className="inline-block px-4 py-1.5 bg-black text-white text-[10px] font-black uppercase tracking-[0.2em] rounded-full mb-6"
+                            >
+                                Exclusive Platform for ML_TLV
+                            </motion.span>
+                            <motion.h1 
+                                variants={fadeIn}
+                                className="text-5xl md:text-7xl font-black mb-6 leading-[1.1] tracking-tighter"
+                            >
+                                הקם <span className="text-transparent bg-clip-text bg-gradient-to-r from-yellow-500 to-yellow-400">חנות וירטואלית</span> <br /> משלך בדקות
+                            </motion.h1>
+                            <motion.p 
+                                variants={fadeIn}
+                                className="text-lg md:text-xl text-gray-500 mb-10 max-w-xl mx-auto lg:mx-0 leading-relaxed font-medium"
+                            >
+                                הפוך את האוסף שלך לעסק. הוסף מוצרים, קבע מחירים, ונהל הזמנות במקום אחד - בקטלוג מעוצב שמותאם אישית עבורך.
+                            </motion.p>
+                            
+                            <motion.div 
+                                variants={fadeIn}
+                                className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4"
+                            >
+                                {userId ? (
+                                    <Link href="/my-catalogs" className="w-full sm:w-auto px-10 py-4 bg-black text-white rounded-full font-bold text-lg hover:scale-105 transition-transform shadow-[0_20px_40px_-10px_rgba(0,0,0,0.2)]">
+                                        ניהול הקטלוגים שלי
+                                    </Link>
+                                ) : (
+                                    <Link href="/sign-up" className="w-full sm:w-auto px-10 py-4 bg-black text-white rounded-full font-bold text-lg hover:scale-105 transition-transform">
+                                        צור חשבון בחינם
+                                    </Link>
+                                )}
+                                <a href="#preview" className="w-full sm:w-auto px-10 py-4 bg-white text-black border border-gray-100 rounded-full font-bold text-lg hover:bg-gray-50 transition-colors flex items-center justify-center gap-2">
+                                    איך זה נראה? <ArrowRight size={20} className="rotate-90" />
+                                </a>
+                            </motion.div>
+                        </motion.div>
+
+                        <motion.div 
+                            className="flex-1 relative w-full max-w-2xl"
+                            initial={{ opacity: 0, scale: 0.8, rotate: -5 }}
+                            animate={{ opacity: 1, scale: 1, rotate: 0 }}
+                            transition={{ duration: 1, ease: "easeOut" }}
+                        >
+                            {/* Hero Visuals */}
+                            <div className="relative aspect-[4/3] rounded-3xl bg-white shadow-2xl p-2 border border-gray-100 overflow-hidden group">
+                                <img 
+                                    src="/info-page/media__1773582608518.png" 
+                                    className="w-full h-full object-cover rounded-2xl shadow-inner transition-transform duration-700 group-hover:scale-105" 
+                                    alt="Catalog Preview" 
+                                />
+                                
+                                {/* Floating Overlay Elements */}
+                                <motion.div 
+                                    className="absolute -top-10 -right-10 w-48 shadow-2xl rounded-2xl border border-white/50 overflow-hidden"
+                                    variants={floatingImage}
+                                    animate="animate"
+                                >
+                                    <img src="/info-page/media__1773582511480.png" alt="Card Preview" className="w-full" />
+                                </motion.div>
+
+                                <motion.div 
+                                    className="absolute -bottom-10 -left-10 w-64 shadow-2xl rounded-2xl border border-white/50 overflow-hidden bg-white p-2"
+                                    initial={{ y: 20 }}
+                                    animate={{ y: 0 }}
+                                    transition={{ duration: 1.5, repeat: Infinity, repeatType: "mirror" }}
+                                >
+                                    <img src="/info-page/media__1773582785226.png" alt="Cart Preview" className="w-full rounded-xl" />
+                                </motion.div>
+                            </div>
+                        </motion.div>
+                    </div>
+                </div>
+            </section>
+
+            {/* Trusted Features Grid */}
+            <section className="py-24 bg-gray-50">
+                <div className="container max-w-7xl mx-auto px-4">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-12 text-right">
+                        <div className="space-y-4">
+                            <div className="w-12 h-12 bg-white rounded-xl shadow-lg flex items-center justify-center mb-6 mr-0">
+                                <Globe className="text-blue-500" />
+                            </div>
+                            <h3 className="text-xl font-black">כתובת אישית משלך</h3>
+                            <p className="text-gray-500 leading-relaxed">
+                                קבל URL ייחודי המזוהה איתך. מושלם לשיתוף בביו של האינסטגרם או בקבוצות הוואטסאפ.
+                            </p>
+                        </div>
+                        <div className="space-y-4 border-r border-gray-200 pr-0 md:pr-12">
+                            <div className="w-12 h-12 bg-white rounded-xl shadow-lg flex items-center justify-center mb-6">
+                                <Zap className="text-yellow-500" />
+                            </div>
+                            <h3 className="text-xl font-black">ממשק ניהול מקצועי</h3>
+                            <p className="text-gray-500 leading-relaxed">
+                                שחרר את הצורך בטבלאות אקסל. הוסף ומחק מוצרים, עדכן מחירים ונהל מלאי בקלות.
+                            </p>
+                        </div>
+                        <div className="space-y-4 border-r border-gray-200 pr-0 md:pr-12">
+                            <div className="w-12 h-12 bg-white rounded-xl shadow-lg flex items-center justify-center mb-6">
+                                <ShieldCheck className="text-green-500" />
+                            </div>
+                            <h3 className="text-xl font-black">ביטחון ופרטיות</h3>
+                            <p className="text-gray-500 leading-relaxed">
+                                מערכת סגורה ומאובטחת. רק משתמשי האתר יכולים להקים קטלוגים, מה ששומר על איכות הקהילה.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* Showcase Section: Admin Dashboard */}
+            <section id="preview" className="py-32 px-4 bg-white overflow-hidden">
+                <div className="container max-w-7xl mx-auto">
+                    <div className="flex flex-col lg:flex-row-reverse items-center gap-24">
+                        <div className="flex-1 text-right">
+                            <motion.div
+                                initial={{ opacity: 0, x: 20 }}
+                                whileInView={{ opacity: 1, x: 0 }}
+                                viewport={{ once: true }}
+                            >
+                                <h2 className="text-4xl md:text-5xl font-black mb-8 leading-tight">ניהול מוצרים חכם</h2>
+                                <p className="text-gray-500 text-lg mb-10 leading-relaxed">
+                                    המערכת שלנו נותנת לך שליטה מלאה על כל פריט. הגדר מחירים, מלאי, ותיאורים בצורה מקצועית שתמשוך לקוחות.
+                                </p>
+                                <ul className="space-y-6">
+                                    {[
+                                        "ניהול וריאציות (גדלים) לכל בושם בנפרד",
+                                        "סנכרון תווים אוטומטי ממאגר ML_TLV",
+                                        "מערכת ניהול מלאי חכמה (מ״ל / יחידות)",
+                                        "עדכון סטטוס זמינות בלחיצת כפתור"
+                                    ].map((item, i) => (
+                                        <li key={i} className="flex items-center gap-4 justify-end text-sm font-bold text-gray-800">
+                                            {item} <CheckCircle2 className="text-green-500 w-5 h-5 flex-shrink-0" />
+                                        </li>
+                                    ))}
+                                </ul>
+                            </motion.div>
+                        </div>
+                        <div className="flex-1 relative">
+                            <motion.div 
+                                className="shadow-[0_50px_100px_-20px_rgba(0,0,0,0.2)] rounded-2xl overflow-hidden border border-gray-100 z-10 relative"
+                                initial={{ x: -50, opacity: 0 }}
+                                whileInView={{ x: 0, opacity: 1 }}
+                                viewport={{ once: true }}
+                            >
+                                <img src="/info-page/media__1773582785213.png" alt="Admin UI" className="w-full" />
+                            </motion.div>
+                            {/* Floating Item Detail */}
+                            <motion.div 
+                                className="absolute -bottom-10 -right-10 w-2/3 shadow-2xl rounded-2xl overflow-hidden border-4 border-white z-20 hidden md:block"
+                                initial={{ y: 50, opacity: 0 }}
+                                whileInView={{ y: 0, opacity: 1 }}
+                                viewport={{ once: true }}
+                                transition={{ delay: 0.4 }}
+                            >
+                                <img src="/info-page/media__1773582608518.png" alt="Detail" className="w-full" />
+                            </motion.div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* Showcase Section: Product & Cart */}
+            <section className="py-32 px-4 bg-black text-white relative">
+                <div className="absolute top-0 right-0 w-1/2 h-full bg-[radial-gradient(circle_at_80%_20%,rgba(255,234,0,0.1)_0%,transparent_50%)] pointer-events-none" />
+                <div className="container max-w-7xl mx-auto">
+                    <div className="flex flex-col lg:flex-row items-center gap-24">
+                        <div className="flex-1 text-right lg:text-left order-2 lg:order-1 relative">
+                             <div className="relative group">
+                                <motion.div 
+                                    className="rounded-[2.5rem] overflow-hidden shadow-2xl border border-white/10"
+                                    initial={{ scale: 0.9, opacity: 0 }}
+                                    whileInView={{ scale: 1, opacity: 1 }}
+                                    viewport={{ once: true }}
+                                >
+                                    <img src="/info-page/media__1773582608487.png" alt="Product Page" className="w-full" />
+                                </motion.div>
+                                <motion.div 
+                                    className="absolute -top-12 -right-12 w-1/2 shadow-2xl rounded-2xl overflow-hidden border border-white/20 bg-black/80 backdrop-blur-xl p-1"
+                                    initial={{ x: 50, opacity: 0 }}
+                                    whileInView={{ x: 0, opacity: 1 }}
+                                    viewport={{ once: true }}
+                                    transition={{ delay: 0.3 }}
+                                >
+                                    <img src="/info-page/media__1773582785226.png" alt="Cart Summary" className="w-full rounded-xl" />
+                                </motion.div>
+                             </div>
+                        </div>
+                        <div className="flex-1 text-right order-1 lg:order-2">
+                            <motion.div
+                                initial={{ opacity: 0, x: -20 }}
+                                whileInView={{ opacity: 1, x: 0 }}
+                                viewport={{ once: true }}
+                            >
+                                <h2 className="text-4xl md:text-5xl font-black mb-8 leading-tight">חוויית קנייה מעולם אחר</h2>
+                                <p className="text-gray-400 text-lg mb-10 leading-relaxed font-medium">
+                                    הלקוחות שלך ייהנו מממשק מהיר, חלק ויוקרתי. הצגת פירמידת תווים ויזואלית, בחירת גדלים קלה וסיכום הזמנה שקוף ומקצועי.
+                                </p>
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                                    <div className="p-8 bg-white/5 rounded-[2rem] border border-white/10 hover:bg-white/10 transition-colors">
+                                        <ShoppingBag className="text-yellow-400 mb-6 w-10 h-10" />
+                                        <h4 className="text-xl font-bold mb-3">ניהול סל קניות</h4>
+                                        <p className="text-sm text-gray-500 leading-relaxed">עדכון כמויות וסיכום מחיר בזמן אמת.</p>
+                                    </div>
+                                    <div className="p-8 bg-white/5 rounded-[2rem] border border-white/10 hover:bg-white/10 transition-colors">
+                                        <ExternalLink className="text-yellow-400 mb-6 w-10 h-10" />
+                                        <h4 className="text-xl font-bold mb-3">שיתוף קל</h4>
+                                        <p className="text-sm text-gray-500 leading-relaxed">שתף מוצר ספציפי או את כל הקטלוג בקישור אחד.</p>
+                                    </div>
+                                </div>
+                            </motion.div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+             {/* Growth Section: Shipping, Samples & Sharing */}
+             <section className="py-40 bg-white px-4">
+                <div className="container max-w-7xl mx-auto">
+                    <div className="text-center mb-24">
+                        <h2 className="text-5xl font-black mb-6">הכלים שיעזרו לך למכור יותר</h2>
+                        <p className="text-gray-500 text-lg max-w-2xl mx-auto font-medium">הגדרות מתקדמות המותאמות אישית לצרכים של המוכרים המקצועיים ביותר בקהילה.</p>
+                    </div>
+
+                    <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        {/* Shipping */}
+                        <motion.div 
+                            className="bg-[#f8faff] p-10 rounded-[3.5rem] border border-blue-50 relative overflow-hidden group shadow-sm hover:shadow-xl transition-all duration-500"
+                            initial={{ y: 30, opacity: 0 }}
+                            whileInView={{ y: 0, opacity: 1 }}
+                            viewport={{ once: true }}
+                        >
+                            <div className="mb-8 relative z-10">
+                                <h3 className="text-2xl font-black mb-4">משלוחים ואיסוף</h3>
+                                <p className="text-gray-500 text-sm leading-relaxed">שליטה מלאה בעלויות המשלוח ובאפשרויות האיסוף העצמי עבור הלקוחות שלך.</p>
+                            </div>
+                            <div className="rounded-2xl overflow-hidden shadow-2xl border border-white group-hover:scale-[1.03] transition-transform duration-700">
+                                <img src="/info-page/media__1773582608462.png" alt="Shipping" className="w-full" />
+                            </div>
+                        </motion.div>
+
+                        {/* Samples */}
+                        <motion.div 
+                            className="bg-[#fffcf8] p-10 rounded-[3.5rem] border border-orange-50 relative overflow-hidden group shadow-sm hover:shadow-xl transition-all duration-500"
+                            initial={{ y: 30, opacity: 0 }}
+                            whileInView={{ y: 0, opacity: 1 }}
+                            viewport={{ once: true }}
+                            transition={{ delay: 0.2 }}
+                        >
+                            <div className="mb-8 relative z-10">
+                                <h3 className="text-2xl font-black mb-4">מתנות ודוגמיות</h3>
+                                <p className="text-gray-500 text-sm leading-relaxed">תמריץ את הלקוחות להוסיף עוד מוצרים לסל עם מערכת הטבות חכמה.</p>
+                            </div>
+                            <div className="rounded-2xl overflow-hidden shadow-2xl border border-white group-hover:scale-[1.03] transition-transform duration-700">
+                                <img src="/info-page/media__1773582608466.png" alt="Samples" className="w-full" />
+                            </div>
+                        </motion.div>
+
+                        {/* Sharing */}
+                        <motion.div 
+                            className="bg-[#fbfbfb] p-10 rounded-[3.5rem] border border-gray-100 relative overflow-hidden group shadow-sm hover:shadow-xl transition-all duration-500"
+                            initial={{ y: 30, opacity: 0 }}
+                            whileInView={{ y: 0, opacity: 1 }}
+                            viewport={{ once: true }}
+                            transition={{ delay: 0.4 }}
+                        >
+                            <div className="mb-8 relative z-10">
+                                <h3 className="text-2xl font-black mb-4">שיתוף בתפוצה רחבה</h3>
+                                <p className="text-gray-500 text-sm leading-relaxed">העתק את הקישור האישי ושתף בכל פלטפורמה. הלקוחות שלך במרחק לחיצה.</p>
+                            </div>
+                            <div className="rounded-2xl overflow-hidden shadow-2xl border border-white group-hover:scale-[1.03] transition-transform duration-700">
+                                <img src="/info-page/media__1773581940144.png" alt="Sharing" className="w-full" />
+                            </div>
+                        </motion.div>
+                    </div>
+                </div>
+            </section>
+
+            {/* Showcase Section: Orders Table */}
+            <section className="py-24 bg-gray-50 border-y border-gray-100 px-4">
+                <div className="container max-w-7xl mx-auto">
+                    <div className="bg-white rounded-[4rem] p-10 md:p-20 shadow-2xl border border-gray-100 flex flex-col lg:flex-row items-center gap-16">
+                        <div className="flex-1 text-right">
+                            <h2 className="text-4xl font-black mb-8 leading-tight">ניהול הזמנות מקצה לקצה</h2>
+                            <p className="text-gray-500 text-lg mb-10 leading-relaxed font-medium">
+                                עקוב אחרי כל הזמנה שנכנסת, נהל סטטוסים (ממתין, בטיפול, הושלם) וראה את כל פרטי הלקוח במקום אחד מסודר.
+                            </p>
+                            <div className="flex items-center gap-4 justify-end">
+                                <span className="px-4 py-2 bg-blue-50 text-blue-700 rounded-full text-xs font-bold">תגיות משלוח / איסוף</span>
+                                <span className="px-4 py-2 bg-green-50 text-green-700 rounded-full text-xs font-bold">מעקב סטטוס חי</span>
+                                <span className="px-4 py-2 bg-orange-50 text-orange-700 rounded-full text-xs font-bold">התראות מייל</span>
+                            </div>
+                        </div>
+                        <motion.div 
+                            className="flex-[1.5] w-full shadow-2xl rounded-3xl overflow-hidden border border-gray-200"
+                            whileHover={{ scale: 1.01 }}
+                            transition={{ duration: 0.4 }}
+                        >
+                            <img src="/info-page/media__1773582785243.png" alt="Orders Admin" className="w-full" />
+                        </motion.div>
+                    </div>
+                </div>
+            </section>
+
+            {/* How It Works with Sticky Layout */}
+            <section className="py-32 bg-gray-50 px-4">
+                <div className="container max-w-7xl mx-auto">
+                    <div className="text-center mb-24">
+                        <span className="text-yellow-500 font-bold uppercase tracking-widest text-xs">Getting Started</span>
+                        <h2 className="text-5xl font-black mt-4">איך זה עובד?</h2>
+                    </div>
+
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-start">
+                        <div className="space-y-4 md:sticky top-32">
+                             {[
+                                { num: "01", title: "הרשמה מהירה", desc: "התחבר למערכת וצור את הקטלוג הראשון שלך תוך פחות מ-60 שניות." },
+                                { num: "02", title: "העלאת קולקציה", desc: "הוסף את הבשמים שלך, בחר גדלים וקבע את המחיר שמתאים לך." },
+                                { num: "03", title: "שיתוף הקישור", desc: "הפץ את הקטלוג ללקוחות שלך והתחל לקבל פניות ישירות למייל ולמערכת." },
+                                { num: "04", title: "סגירת עסקה", desc: "קבל את כל פרטי הלקוח, צור איתו קשר וסגור את התשלום אופליין בקלות." }
+                             ].map((step, idx) => (
+                                <motion.div 
+                                    key={idx}
+                                    className="p-8 bg-white rounded-3xl border border-gray-100 shadow-sm hover:shadow-md transition group text-right"
+                                    initial={{ x: 50, opacity: 0 }}
+                                    whileInView={{ x: 0, opacity: 1 }}
+                                    transition={{ delay: idx * 0.1 }}
+                                >
+                                    <span className="text-4xl font-black text-gray-100 group-hover:text-yellow-400/20 transition-colors mb-4 block leading-none">{step.num}</span>
+                                    <h4 className="text-xl font-bold mb-2">{step.title}</h4>
+                                    <p className="text-gray-500 text-sm leading-relaxed">{step.desc}</p>
+                                </motion.div>
+                             ))}
+                        </div>
+
+                        <div className="relative">
+                            <motion.div 
+                                className="rounded-[2.5rem] overflow-hidden shadow-3xl border border-gray-200"
+                                style={{ rotate: 2 }}
+                            >
+                                <img src="/info-page/media__1773582785243.png" alt="Orders Dashboard" className="w-full" />
+                            </motion.div>
+                            <div className="absolute -top-10 -left-10 w-40 bg-black text-white p-6 rounded-3xl shadow-2xl hidden md:block">
+                                <p className="text-xs font-bold leading-tight">מערכת הניהול המלאה שלך איתך בכל מקום.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            {/* Bottom CTA */}
+            <section className="py-24 px-4 bg-white">
+                <div className="container max-w-4xl mx-auto rounded-[3.5rem] bg-black text-white p-12 md:p-24 text-center relative overflow-hidden">
+                    <div className="absolute top-0 right-0 w-64 h-64 bg-yellow-500/20 blur-[100px] rounded-full" />
+                    <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-500/20 blur-[100px] rounded-full" />
+                    
+                    <motion.div 
+                        initial={{ opacity: 0, scale: 0.9 }}
+                        whileInView={{ opacity: 1, scale: 1 }}
+                        className="relative z-10"
+                    >
+                        <h2 className="text-4xl md:text-5xl font-black mb-8 leading-tight">מוכן להתחיל למכור בסטייל?</h2>
+                        <p className="text-gray-400 mb-12 text-lg">הצטרף לקהילת המוכרים של ML_TLV ותהנה מכל הכלים שאתה צריך.</p>
+                        
+                        <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
+                            {userId ? (
+                                <Link href="/my-catalogs" className="w-full sm:w-auto px-12 py-5 bg-white text-black rounded-full font-black text-xl hover:scale-105 transition-transform shadow-[0_25px_50px_-12px_rgba(255,255,255,0.25)]">
+                                    התחל לנהל את הקטלוג שלי
+                                </Link>
+                            ) : (
+                                <Link href="/sign-up" className="w-full sm:w-auto px-12 py-5 bg-yellow-400 text-black rounded-full font-black text-xl hover:scale-105 transition-transform shadow-[0_25px_50px_-12px_rgba(253,224,71,0.25)]">
+                                    צור חשבון בחינם
+                                </Link>
+                            )}
+                        </div>
+                    </motion.div>
+                </div>
+            </section>
+
+            {/* Footer Simple */}
+            <footer className="py-12 border-t border-gray-100 bg-white">
+                <div className="container max-w-7xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-6 text-gray-400 text-sm">
+                    <p>© 2026 ml_tlv. All rights reserved.</p>
+                    <div className="flex items-center gap-8">
+                        <Link href="/" className="hover:text-black transition-colors font-bold">דף הבית</Link>
+                        <Link href="/catalog" className="hover:text-black transition-colors font-bold">כל הבשמים</Link>
+                        <Link href="/my-catalogs" className="hover:text-black transition-colors font-bold">ניהול קטלוג</Link>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    );
+}
