@@ -1,8 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import Link from "next/link";
-import toast from "react-hot-toast";
+import { Pencil, Trash2, Eye, EyeOff } from "lucide-react";
 
 export default function AdminCatalogsClient() {
     const [catalogs, setCatalogs] = useState([]);
@@ -34,9 +32,6 @@ export default function AdminCatalogsClient() {
         if (!confirm("האם אתה בטוח שברצונך למחוק קטלוג זה ואת כל מוצריו? (פעולה זו בלתי הפיכה)")) return;
 
         try {
-             // We can reuse the same endpoint but as an admin we'd need an admin-specific delete or modify the user one to allow admin override.
-             // Given the scope, let's create a quick API call to a new admin delete route if needed, or we can just instruct we'll need an admin delete route.
-             // For now, let's build the UI and add the admin delete route next.
              const res = await fetch(`/api/admin/catalogs/${id}`, { method: 'DELETE' });
              if (res.ok) {
                  toast.success("קטלוג נמחק בהצלחה");
@@ -47,6 +42,29 @@ export default function AdminCatalogsClient() {
         } catch (error) {
              console.error(error);
              toast.error("שגיאת תקשורת");
+        }
+    };
+
+    const handleToggleVisibility = async (catalog) => {
+        const newHiddenStatus = !catalog.is_hidden;
+        try {
+            const res = await fetch(`/api/admin/catalogs/${catalog.id}/toggle-visibility`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ is_hidden: newHiddenStatus })
+            });
+
+            if (res.ok) {
+                toast.success(newHiddenStatus ? "הקטלוג הוסתר" : "הקטלוג כעת גלוי");
+                setCatalogs(catalogs.map(c => 
+                    c.id === catalog.id ? { ...c, is_hidden: newHiddenStatus } : c
+                ));
+            } else {
+                toast.error("שגיאה בעדכון הסטטוס");
+            }
+        } catch (error) {
+            console.error(error);
+            toast.error("שגיאת תקשורת");
         }
     };
 
@@ -75,9 +93,16 @@ export default function AdminCatalogsClient() {
                             </tr>
                         ) : (
                             catalogs.map((catalog) => (
-                                <tr key={catalog.id} className="border-b hover:bg-gray-50 transition-colors">
+                                <tr key={catalog.id} className={`border-b hover:bg-gray-50 transition-colors ${catalog.is_hidden ? 'opacity-70 bg-gray-50/50' : ''}`}>
                                     <td className="p-4 font-mono text-xs text-gray-500 text-center">{catalog.id}</td>
-                                    <td className="p-4 font-bold text-center">{catalog.name}</td>
+                                    <td className="p-4 font-bold text-center">
+                                        <div className="flex items-center justify-center gap-2">
+                                            {catalog.name}
+                                            {catalog.is_hidden && (
+                                                <span className="bg-red-100 text-red-600 text-[10px] px-2 py-0.5 rounded-full font-bold">מוסתר</span>
+                                            )}
+                                        </div>
+                                    </td>
                                     <td className="p-4 text-center">
                                         <span className="inline-block bg-blue-100 text-blue-800 px-2 py-1 rounded-full text-xs font-bold">
                                             {catalog.total_items}
@@ -98,19 +123,32 @@ export default function AdminCatalogsClient() {
                                             </svg>
                                         </a>
                                     </td>
-                                    <td className="p-4 text-center flex items-center justify-center gap-2">
-                                        <Link 
-                                            href={`/admin/catalogs/${catalog.id}`}
-                                            className="text-blue-500 hover:bg-blue-50 px-3 py-1 rounded transition text-sm font-bold"
-                                        >
-                                            נהל מוצרים
-                                        </Link>
-                                        <button 
-                                            onClick={() => handleDelete(catalog.id)}
-                                            className="text-red-500 hover:bg-red-50 px-3 py-1 rounded transition text-sm font-bold"
-                                        >
-                                            מחק
-                                        </button>
+                                    <td className="p-4 text-center">
+                                        <div className="flex items-center justify-center gap-3">
+                                            <button
+                                                onClick={() => handleToggleVisibility(catalog)}
+                                                className={`p-2 rounded-full transition-colors ${catalog.is_hidden ? 'text-red-500 bg-red-50 hover:bg-red-100' : 'text-green-500 bg-green-50 hover:bg-green-100'}`}
+                                                title={catalog.is_hidden ? "הצג קטלוג" : "הסתר קטלוג"}
+                                            >
+                                                <Eye size={18} />
+                                            </button>
+                                            
+                                            <Link 
+                                                href={`/admin/catalogs/${catalog.id}`}
+                                                className="p-2 text-blue-500 bg-blue-50 hover:bg-blue-100 rounded-full transition-colors"
+                                                title="נהל מוצרים"
+                                            >
+                                                <Pencil size={18} />
+                                            </Link>
+                                            
+                                            <button 
+                                                onClick={() => handleDelete(catalog.id)}
+                                                className="p-2 text-red-500 bg-red-50 hover:bg-red-100 rounded-full transition-colors"
+                                                title="מחק קטלוג"
+                                            >
+                                                <Trash2 size={18} />
+                                            </button>
+                                        </div>
                                     </td>
                                 </tr>
                             ))

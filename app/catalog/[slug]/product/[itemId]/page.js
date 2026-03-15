@@ -1,22 +1,18 @@
-import pool from "../../../../lib/db";
-import Link from "next/link";
-import { notFound } from "next/navigation";
-import FragrancePyramid from "../../../../components/FragrancePyramid";
-import CatalogProductActions from "./CatalogProductActions";
-import ShareButton from "../../../../components/ShareButton";
+import { checkAdmin } from "../../../../lib/admin";
 
 export async function generateMetadata({ params }) {
     const { slug, itemId } = await params;
 
     const res = await pool.query(`
-        SELECT i.*, c.name as catalog_name 
+        SELECT i.*, c.name as catalog_name, c.is_hidden
         FROM user_catalog_items i
         JOIN user_catalogs c ON i.catalog_id = c.id
         WHERE i.id = $1 AND c.slug = $2
     `, [itemId, slug]);
     
     const item = res.rows[0];
-    if (!item) return { title: "מוצר לא נמצא" };
+    const isAdmin = await checkAdmin();
+    if (!item || (item.is_hidden && !isAdmin)) return { title: "מוצר לא נמצא" };
 
     return {
         title: `${item.name} | ${item.catalog_name}`,
@@ -26,9 +22,10 @@ export async function generateMetadata({ params }) {
 
 export default async function CatalogProductPage({ params }) {
     const { slug, itemId } = await params;
+    const isAdmin = await checkAdmin();
 
     const res = await pool.query(`
-        SELECT i.*, c.name as catalog_name, c.slug as catalog_slug, c.image_url as catalog_image
+        SELECT i.*, c.name as catalog_name, c.slug as catalog_slug, c.image_url as catalog_image, c.is_hidden
         FROM user_catalog_items i
         JOIN user_catalogs c ON i.catalog_id = c.id
         WHERE i.id = $1 AND c.slug = $2
@@ -36,7 +33,7 @@ export default async function CatalogProductPage({ params }) {
 
     const item = res.rows[0];
 
-    if (!item) {
+    if (!item || (item.is_hidden && !isAdmin)) {
         notFound();
     }
 
