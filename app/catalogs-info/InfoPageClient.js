@@ -241,7 +241,7 @@ export default function InfoPageClient({ userId }) {
             </section>
 
             {/* Showcase Section: Shopping Experience */}
-            <section className="py-16 px-4 bg-black text-white relative">
+            <section className="py-10 px-4 bg-black text-white relative">
                 <div className="absolute top-0 right-0 w-1/2 h-full bg-[radial-gradient(circle_at_80%_20%,rgba(255,234,0,0.1)_0%,transparent_50%)] pointer-events-none" />
                 <div className="container max-w-7xl mx-auto">
                     <div className="flex flex-col lg:flex-row-reverse items-center gap-16 lg:items-center">
@@ -256,7 +256,7 @@ export default function InfoPageClient({ userId }) {
                                 <img 
                                     src="/info-page/media__1773586658987.png" 
                                     alt="Catalog Preview Desktop" 
-                                    className="w-full h-auto block scale-105" 
+                                    className="w-full h-auto block" 
                                 />
                             </motion.div>
                         </div>
@@ -269,14 +269,14 @@ export default function InfoPageClient({ userId }) {
                                 viewport={{ once: true }}
                                 className="flex flex-col text-right w-full h-full justify-center"
                             >
-                                <h2 className="text-4xl md:text-5xl lg:text-6xl font-black mb-8 leading-tight order-1 text-white">חוויית קנייה מעולם אחר</h2>
-                                <p className="text-gray-400 text-lg md:text-xl mb-12 leading-relaxed font-medium order-2">
+                                <h2 className="text-3xl md:text-4xl lg:text-5xl font-black mb-4 leading-tight order-1 text-white">חוויית קנייה מעולם אחר</h2>
+                                <p className="text-gray-400 text-base md:text-lg mb-6 leading-relaxed font-medium order-2">
                                     הלקוחות שלך ייהנו מממשק מהיר, חלק ויוקרתי. הצגת פירמידת תווים ויזואלית, בחירת גדלים קלה וסיכום הזמנה שקוף ומקצועי.
                                 </p>
 
                                 {/* Mobile Image: Visible only on small screens, positioned between text and cards */}
                                 <motion.div 
-                                    className="lg:hidden w-full rounded-3xl overflow-hidden shadow-2xl border border-white/10 mb-12 order-3"
+                                    className="lg:hidden w-full rounded-3xl overflow-hidden shadow-2xl border border-white/10 mb-8 order-3"
                                     initial={{ opacity: 0, scale: 0.9 }}
                                     whileInView={{ opacity: 1, scale: 1 }}
                                     viewport={{ once: true }}
@@ -284,20 +284,20 @@ export default function InfoPageClient({ userId }) {
                                     <img src="/info-page/media__1773586658987.png" alt="Catalog Preview Mobile" className="w-full" />
                                 </motion.div>
 
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 order-4 w-full">
-                                    <div className="p-10 bg-[#0a0a0a] rounded-[2.5rem] border border-white/5 hover:border-yellow-400/20 transition-all duration-500 flex flex-col items-end group shadow-2xl">
-                                        <div className="w-14 h-14 bg-yellow-400/5 rounded-2xl flex items-center justify-center mb-10 self-start group-hover:bg-yellow-400 transition-all duration-500">
-                                            <ShoppingBag className="text-yellow-400 w-7 h-7 group-hover:text-black transition-colors" />
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 order-4 w-full">
+                                    <div className="p-8 bg-[#0a0a0a] rounded-3xl border border-white/5 hover:border-yellow-400/20 transition-all duration-500 flex flex-col items-end group shadow-2xl">
+                                        <div className="w-12 h-12 bg-yellow-400/5 rounded-2xl flex items-center justify-center mb-6 self-start group-hover:bg-yellow-400 transition-all duration-500">
+                                            <ShoppingBag className="text-yellow-400 w-6 h-6 group-hover:text-black transition-colors" />
                                         </div>
-                                        <h4 className="text-2xl font-black text-white mb-4 w-full text-right">ניהול סל קניות</h4>
-                                        <p className="text-sm text-gray-500 leading-relaxed w-full text-right">עדכון כמויות וסיכום מחיר בזמן אמת.</p>
+                                        <h4 className="text-xl font-black text-white mb-2 w-full text-right">ניהול סל קניות</h4>
+                                        <p className="text-xs text-gray-500 leading-relaxed w-full text-right">עדכון כמויות וסיכום מחיר בזמן אמת.</p>
                                     </div>
-                                    <div className="p-10 bg-[#0a0a0a] rounded-[2.5rem] border border-white/5 hover:border-yellow-400/20 transition-all duration-500 flex flex-col items-end group shadow-2xl">
-                                        <div className="w-14 h-14 bg-yellow-400/5 rounded-2xl flex items-center justify-center mb-10 self-start group-hover:bg-yellow-400 transition-all duration-500">
-                                            <ExternalLink className="text-yellow-400 w-7 h-7 group-hover:text-black transition-colors" />
+                                    <div className="p-8 bg-[#0a0a0a] rounded-3xl border border-white/5 hover:border-yellow-400/20 transition-all duration-500 flex flex-col items-end group shadow-2xl">
+                                        <div className="w-12 h-12 bg-yellow-400/5 rounded-2xl flex items-center justify-center mb-6 self-start group-hover:bg-yellow-400 transition-all duration-500">
+                                            <ExternalLink className="text-yellow-400 w-6 h-6 group-hover:text-black transition-colors" />
                                         </div>
-                                        <h4 className="text-2xl font-black text-white mb-4 w-full text-right">שיתוף קל</h4>
-                                        <p className="text-sm text-gray-500 leading-relaxed w-full text-right">שתף מוצר ספציפי או את כל הקטלוג בקישור אחד.</p>
+                                        <h4 className="text-xl font-black text-white mb-2 w-full text-right">שיתוף קל</h4>
+                                        <p className="text-xs text-gray-500 leading-relaxed w-full text-right">שתף מוצר ספציפי או את כל הקטלוג בקישור אחד.</p>
                                     </div>
                                 </div>
                             </motion.div>
