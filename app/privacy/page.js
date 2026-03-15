@@ -9,7 +9,7 @@ export default function PrivacyPolicyPage() {
             <div className="container mx-auto max-w-4xl">
                 <header className="mb-12 text-center">
                     <h1 className="text-5xl font-black mb-4">מדיניות פרטיות</h1>
-                    <p className="text-gray-500 underline decoration-yellow-400 decoration-2 underline-offset-8">ml_tlv - Privacy Policy</p>
+                    <p className="text-gray-500">ml_tlv - Privacy Policy</p>
                 </header>
 
                 <div className="bg-gray-50 p-8 md:p-12 rounded-[2.5rem] border border-gray-100 leading-relaxed space-y-8">
