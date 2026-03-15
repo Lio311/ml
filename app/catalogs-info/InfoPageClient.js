@@ -96,9 +96,9 @@ export default function InfoPageClient({ userId }) {
                             <div className="relative w-full max-w-lg">
                                 {/* Main Image - Preserving Ratio, Slightly Smaller */}
                                 <motion.div 
-                                    className="relative w-[90%] mx-auto rounded-[2rem] shadow-[0_50px_100px_-20px_rgba(0,0,0,0.15)] overflow-hidden border border-white bg-white z-10"
+                                    className="relative w-full mx-auto rounded-[2.5rem] shadow-[0_60px_120px_-20px_rgba(0,0,0,0.2)] overflow-hidden border border-white bg-white z-10"
                                     style={{ rotateX: 12, rotateY: -15, transformPerspective: 1200 }}
-                                    whileHover={{ rotateY: -8, scale: 1.02 }}
+                                    whileHover={{ rotateY: -8, scale: 1.05 }}
                                     transition={{ duration: 0.8 }}
                                 >
                                     <img 
@@ -108,19 +108,11 @@ export default function InfoPageClient({ userId }) {
                                     />
                                 </motion.div>
 
-                                {/* Floating Top Right Card - Larger preview */}
-                                <motion.div 
-                                    className="absolute -top-24 -right-16 w-64 shadow-2xl rounded-2xl border border-white/80 overflow-hidden bg-white/90 backdrop-blur-sm p-1 z-20"
-                                    variants={floatingImage}
-                                    animate="animate"
-                                    style={{ rotateX: -10, rotateY: 10, transformPerspective: 1200 }}
-                                >
-                                    <img src="/info-page/media__1773582608557.png" alt="Card Preview" className="w-full h-auto block rounded-xl" />
-                                </motion.div>
 
-                                {/* Floating Bottom Left Card - Larger preview */}
+
+                                {/* Floating Bottom Left Card - Much Larger & Repositioned */}
                                 <motion.div 
-                                    className="absolute -bottom-16 -left-16 w-72 shadow-2xl rounded-2xl border border-white/80 overflow-hidden bg-white/90 backdrop-blur-sm p-2 z-30"
+                                    className="absolute -bottom-24 -left-20 w-80 shadow-2xl rounded-2xl border border-white/80 overflow-hidden bg-white/90 backdrop-blur-sm p-3 z-30"
                                     initial={{ y: 20 }}
                                     animate={{ y: 0 }}
                                     transition={{ duration: 2, repeat: Infinity, repeatType: "mirror", ease: "easeInOut" }}
@@ -181,7 +173,7 @@ export default function InfoPageClient({ userId }) {
                             >
                                 <h2 className="text-4xl md:text-5xl font-black mb-4 leading-tight">ניהול מוצרים חכם</h2>
                                 <p className="text-gray-500 text-lg mb-6 leading-relaxed">
-                                    המערכת שלנו נותנת לך שליטה מלאה על כל פריט. הגדר מחירים, מלאי, ותיאורים בצורה מקצועית שתמשוך לקוחות.
+                                    המערכת שלנו נותנת לך שליטה מלאה על כל פריט. הגדר מחירים, מלאי ותיאורים בצורה מקצועית שתמשוך לקוחות.
                                 </p>
                                 <ul className="space-y-6">
                                     {[
@@ -317,7 +309,7 @@ export default function InfoPageClient({ userId }) {
                             <p className="text-black/70 text-lg mb-10 leading-relaxed font-medium">
                                 עקוב אחרי כל הזמנה שנכנסת, נהל סטטוסים (ממתין, בטיפול, הושלם) וראה את כל פרטי הלקוח במקום אחד מסודר.
                             </p>
-                            <div className="flex items-center gap-4 justify-end flex-wrap">
+                            <div className="flex items-center gap-4 justify-center flex-wrap w-full">
                                 <span className="px-4 py-2 bg-blue-500/10 text-blue-700 rounded-full text-xs font-bold">תגיות משלוח / איסוף</span>
                                 <span className="px-4 py-2 bg-green-500/10 text-green-700 rounded-full text-xs font-bold">מעקב סטטוס חי</span>
                                 <span className="px-4 py-2 bg-orange-500/10 text-orange-700 rounded-full text-xs font-bold">התראות מייל</span>
