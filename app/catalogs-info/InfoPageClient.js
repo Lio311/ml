@@ -108,9 +108,19 @@ export default function InfoPageClient({ userId }) {
                                     />
                                 </motion.div>
 
+                                {/* Floating Top Right Card - Larger preview */}
+                                <motion.div 
+                                    className="absolute -top-24 -right-16 w-64 shadow-2xl rounded-2xl border border-white/80 overflow-hidden bg-white/90 backdrop-blur-sm p-1 z-20"
+                                    variants={floatingImage}
+                                    animate="animate"
+                                    style={{ rotateX: -10, rotateY: 10, transformPerspective: 1200 }}
+                                >
+                                    <img src="/info-page/media__1773582608557.png" alt="Card Preview" className="w-full h-auto block rounded-xl" />
+                                </motion.div>
+
                                 {/* Floating Bottom Left Card - Larger preview */}
                                 <motion.div 
-                                    className="absolute -bottom-12 -left-12 w-64 shadow-2xl rounded-2xl border border-white/80 overflow-hidden bg-white/90 backdrop-blur-sm p-2 z-30"
+                                    className="absolute -bottom-16 -left-16 w-72 shadow-2xl rounded-2xl border border-white/80 overflow-hidden bg-white/90 backdrop-blur-sm p-2 z-30"
                                     initial={{ y: 20 }}
                                     animate={{ y: 0 }}
                                     transition={{ duration: 2, repeat: Infinity, repeatType: "mirror", ease: "easeInOut" }}
