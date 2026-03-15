@@ -510,7 +510,7 @@ export default function CartClient() {
                                 className={`px-4 py-2 rounded-full transition-all duration-300 flex items-center gap-2 border ${activeVendorId === vendor.id ? 'bg-black text-white border-black shadow-md' : 'bg-white text-gray-500 border-gray-200 hover:border-gray-300'}`}
                             >
                                 <span className="font-bold text-xs whitespace-nowrap">{vendor.name}</span>
-                                <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${activeVendorId === vendor.id ? 'bg-white/20' : 'bg-gray-100'}`}>{vendor.items.length}</span>
+                                <span className={`text-[10px] px-1.5 py-0.5 rounded-full ${activeVendorId === vendor.id ? 'bg-white/20' : 'bg-gray-100'}`}>{vendor.items.reduce((s,i) => s + i.quantity, 0)}</span>
                             </button>
                         ))}
                     </div>

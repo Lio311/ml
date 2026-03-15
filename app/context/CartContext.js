@@ -324,6 +324,8 @@ export function CartProvider({ children }) {
     const activeItems = cartItems.filter(item => (item.vendorId || 'main') === activeVendorId);
     const subtotal = activeItems.reduce((sum, item) => sum + (Number(item.price) * item.quantity), 0);
     const totalItemsCount = activeItems.reduce((sum, item) => sum + item.quantity, 0);
+    const globalItemsCount = cartItems.reduce((sum, item) => sum + item.quantity, 0);
+    const uniqueVendorsCount = new Set(cartItems.map(i => i.vendorId || 'main')).size;
 
     let priceAfterDiscounts = subtotal;
     let discountAmount = 0;
@@ -383,7 +385,7 @@ export function CartProvider({ children }) {
         <CartContext.Provider value={{
             cartItems, activeVendorId, setActiveVendorId, activeItems,
              addToCart, removeFromCart, updateQuantity, clearCart, clearActiveVendorCart,
-            subtotal, totalItemsCount, freeSamplesCount, nextTier, shippingCost, total,
+            subtotal, totalItemsCount, globalItemsCount, uniqueVendorsCount, freeSamplesCount, nextTier, shippingCost, total,
             luckyPrize, setLuckyPrize, discountAmount, coupon, setCoupon,
             startLottery, cancelLottery, isCartLocked, lotteryTimeLeft, lotteryMode, 
             isMainVendor, vendorConfig, isSelfPickup, setIsSelfPickup
