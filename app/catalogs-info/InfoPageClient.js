@@ -162,10 +162,10 @@ export default function InfoPageClient({ userId }) {
             {/* Showcase Section: Admin Dashboard */}
             <section id="preview" className="py-10 px-4 bg-white overflow-hidden">
                 <div className="container max-w-7xl mx-auto">
-                    <div className="flex flex-col lg:flex-row-reverse items-center gap-12">
+                    <div className="flex flex-col lg:flex-row items-center gap-12">
                         <div className="flex-1 text-right">
                             <motion.div
-                                initial={{ opacity: 0, x: 20 }}
+                                initial={{ opacity: 0, x: -20 }}
                                 whileInView={{ opacity: 1, x: 0 }}
                                 viewport={{ once: true }}
                             >
@@ -180,9 +180,9 @@ export default function InfoPageClient({ userId }) {
                                         "מערכת ניהול מלאי חכמה (מ״ל / יחידות)",
                                         "עדכון סטטוס זמינות בלחיצת כפתור"
                                     ].map((item, i) => (
-                                        <li key={i} className="flex flex-row-reverse items-center justify-start gap-4 text-right">
-                                            <CheckCircle2 className="text-yellow-500 w-6 h-6 flex-shrink-0" />
+                                        <li key={i} className="flex items-center justify-end gap-4 text-right">
                                             <span className="text-gray-900 font-bold text-lg">{item}</span>
+                                            <CheckCircle2 className="text-yellow-500 w-6 h-6 flex-shrink-0" />
                                         </li>
                                     ))}
                                 </ul>
@@ -191,7 +191,7 @@ export default function InfoPageClient({ userId }) {
                         <div className="flex-1 relative">
                             <motion.div 
                                 className="shadow-[0_50px_100px_-20px_rgba(0,0,0,0.2)] rounded-2xl overflow-hidden border border-gray-100 z-10 relative"
-                                initial={{ x: -50, opacity: 0 }}
+                                initial={{ x: 50, opacity: 0 }}
                                 whileInView={{ x: 0, opacity: 1 }}
                                 viewport={{ once: true }}
                             >
