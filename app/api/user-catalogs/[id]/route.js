@@ -139,11 +139,3 @@ export async function DELETE(req, context) {
         if (client) client.release();
     }
 }
-
-    } catch (error) {
-        console.error('Error deleting user catalog:', error);
-        return NextResponse.json({ error: 'Internal Server Error', details: error.message }, { status: 500 });
-    } finally {
-        if (client) client.release();
-    }
-}
