@@ -6,7 +6,7 @@ import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import TagInput from "../../components/TagInput";
 import CustomDropdown from "../../components/ui/CustomDropdown";
-import { X } from "lucide-react";
+import { X, Package, Gift } from "lucide-react";
 
 function OrdersTab({ catalogId }) {
     const [orders, setOrders] = useState([]);
@@ -703,9 +703,7 @@ export default function CatalogManagerClient({ catalogId }) {
                         {/* Shipping & Delivery */}
                         <div>
                             <h2 className="text-lg font-bold mb-4 text-blue-600 flex items-center gap-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 0 1-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 0 1-3 0m3 0a1.5 1.5 0 0 0-3 0m3 0h1.125a1.125 1.125 0 0 0 1.125-1.125V11.06c0-.426-.242-.812-.614-1.026l-1.95-1.123a1.125 1.125 0 0 0-1.084 0l-1.95 1.123a1.125 1.125 0 0 0-.614 1.026v5.216C12.33 17.153 13.044 18 14.162 18H15m-1.41-11.41-1.091-1.091A1.125 1.125 0 0 0 11.5 5.25h-5.25a1.125 1.125 0 0 0-1.125 1.125v3" />
-                                </svg>
+                                <Package className="w-6 h-6" />
                                 אפשרויות משלוח
                             </h2>
                             <div className="flex flex-col gap-4 bg-gray-50 p-6 rounded-xl border border-gray-200">
@@ -762,7 +760,7 @@ export default function CatalogManagerClient({ catalogId }) {
                              <div className="flex justify-between items-center mb-4">
                                 <div>
                                     <h2 className="text-lg font-bold text-purple-600 flex items-center gap-2">
-                                        <span className="text-xl">🧪</span>
+                                        <Gift className="w-5 h-5" />
                                         הטבות דוגמיות (2ml)
                                     </h2>
                                     <p className="text-xs text-gray-500">הגדר מדרגות רכישה שבהן הלקוח יקבל דוגמיות מתנה.</p>
