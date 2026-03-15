@@ -188,17 +188,29 @@ export default function InfoPageClient({ userId }) {
             <section id="preview" className="py-10 px-4 bg-white overflow-hidden">
                 <div className="container max-w-7xl mx-auto">
                     <div className="flex flex-col lg:flex-row-reverse items-center gap-12">
-                        <div className="flex-1 text-right">
+                        <div className="flex-1 text-right flex flex-col">
                             <motion.div
                                 initial={{ opacity: 0, x: -20 }}
                                 whileInView={{ opacity: 1, x: 0 }}
                                 viewport={{ once: true }}
+                                className="flex flex-col"
                             >
-                                <h2 className="text-4xl md:text-5xl font-black mb-4 leading-tight">ניהול מוצרים חכם</h2>
-                                <p className="text-gray-500 text-lg mb-6 leading-relaxed">
+                                <h2 className="text-4xl md:text-5xl font-black mb-4 leading-tight order-1">ניהול מוצרים חכם</h2>
+                                
+                                {/* Mobile Image: Visible only on small screens */}
+                                <motion.div 
+                                    className="lg:hidden w-full shadow-xl rounded-2xl overflow-hidden border border-gray-100 mb-8 order-2"
+                                    initial={{ opacity: 0, y: 20 }}
+                                    whileInView={{ opacity: 1, y: 0 }}
+                                    viewport={{ once: true }}
+                                >
+                                    <img src="/info-page/media__1773582785213.png" alt="Admin UI Mobile" className="w-full" />
+                                </motion.div>
+
+                                <p className="text-gray-500 text-lg mb-6 leading-relaxed order-3">
                                     המערכת שלנו נותנת לך שליטה מלאה על כל פריט. הגדר מחירים, מלאי ותיאורים בצורה מקצועית שתמשוך לקוחות.
                                 </p>
-                                <ul className="space-y-6">
+                                <ul className="space-y-6 order-4">
                                     {[
                                         "ניהול וריאציות (גדלים) לכל בושם בנפרד",
                                         "סנכרון תווים אוטומטי ממאגר ml_tlv",
@@ -213,7 +225,8 @@ export default function InfoPageClient({ userId }) {
                                 </ul>
                             </motion.div>
                         </div>
-                        <div className="flex-1 relative">
+                        {/* Desktop Image: Hidden on mobile */}
+                        <div className="hidden lg:block flex-1 relative">
                             <motion.div 
                                 className="shadow-[0_50px_100px_-20px_rgba(0,0,0,0.2)] rounded-2xl overflow-hidden border border-gray-100 z-10 relative"
                                 initial={{ x: 50, opacity: 0 }}
@@ -231,30 +244,29 @@ export default function InfoPageClient({ userId }) {
             <section className="py-10 px-4 bg-black text-white relative">
                 <div className="absolute top-0 right-0 w-1/2 h-full bg-[radial-gradient(circle_at_80%_20%,rgba(255,234,0,0.1)_0%,transparent_50%)] pointer-events-none" />
                 <div className="container max-w-7xl mx-auto">
-                    <div className="flex flex-col lg:flex-row-reverse items-center gap-12">
-                        <div className="flex-1 text-right relative">
-                             <div className="relative group">
-                                <motion.div 
-                                    className="rounded-3xl overflow-hidden shadow-2xl border border-white/10"
-                                    initial={{ scale: 0.9, opacity: 0 }}
-                                    whileInView={{ scale: 1, opacity: 1 }}
-                                    viewport={{ once: true }}
-                                >
-                                    <img src="/info-page/media__1773586658987.png" alt="Catalog Preview" className="w-full" />
-                                </motion.div>
-                             </div>
-                        </div>
-                        <div className="flex-1 text-right">
+                        <div className="flex-1 text-right flex flex-col">
                             <motion.div
                                 initial={{ opacity: 0, x: -20 }}
                                 whileInView={{ opacity: 1, x: 0 }}
                                 viewport={{ once: true }}
+                                className="flex flex-col"
                             >
-                                <h2 className="text-4xl md:text-5xl font-black mb-8 leading-tight">חוויית קנייה מעולם אחר</h2>
-                                <p className="text-gray-400 text-lg mb-10 leading-relaxed font-medium">
+                                <h2 className="text-4xl md:text-5xl font-black mb-8 leading-tight order-1">חוויית קנייה מעולם אחר</h2>
+                                <p className="text-gray-400 text-lg mb-10 leading-relaxed font-medium order-2">
                                     הלקוחות שלך ייהנו מממשק מהיר, חלק ויוקרתי. הצגת פירמידת תווים ויזואלית, בחירת גדלים קלה וסיכום הזמנה שקוף ומקצועי.
                                 </p>
-                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+
+                                {/* Mobile Image: Visible only on small screens */}
+                                <motion.div 
+                                    className="lg:hidden w-full rounded-2xl overflow-hidden shadow-2xl border border-white/10 mb-10 order-3"
+                                    initial={{ opacity: 0, scale: 0.9 }}
+                                    whileInView={{ opacity: 1, scale: 1 }}
+                                    viewport={{ once: true }}
+                                >
+                                    <img src="/info-page/media__1773586658987.png" alt="Catalog Preview Mobile" className="w-full" />
+                                </motion.div>
+
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 order-4">
                                     <div className="p-8 bg-white/5 rounded-[2rem] border border-white/10 hover:bg-white/10 transition-colors text-right flex flex-col items-end group">
                                         <div className="w-12 h-12 bg-yellow-400/10 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-yellow-400 transition-colors self-end">
                                             <ShoppingBag className="text-yellow-400 w-6 h-6 group-hover:text-black transition-colors" />
@@ -271,6 +283,18 @@ export default function InfoPageClient({ userId }) {
                                     </div>
                                 </div>
                             </motion.div>
+                        {/* Desktop Image: Hidden on mobile */}
+                        <div className="hidden lg:block flex-1 relative">
+                             <div className="relative group">
+                                <motion.div 
+                                    className="rounded-3xl overflow-hidden shadow-2xl border border-white/10"
+                                    initial={{ scale: 0.9, opacity: 0 }}
+                                    whileInView={{ scale: 1, opacity: 1 }}
+                                    viewport={{ once: true }}
+                                >
+                                    <img src="/info-page/media__1773586658987.png" alt="Catalog Preview" className="w-full" />
+                                </motion.div>
+                             </div>
                         </div>
                     </div>
                 </div>
