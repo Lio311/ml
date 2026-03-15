@@ -123,31 +123,31 @@ export default function InfoPageClient({ userId }) {
             {/* Trusted Features Grid */}
             <section className="py-24 bg-gray-50">
                 <div className="container max-w-7xl mx-auto px-4">
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-12 text-right">
-                        <div className="space-y-4">
-                            <div className="w-12 h-12 bg-white rounded-xl shadow-lg flex items-center justify-center mb-6 mr-0">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-12 text-center">
+                        <div className="space-y-4 flex flex-col items-center">
+                            <div className="w-12 h-12 bg-white rounded-xl shadow-lg flex items-center justify-center mb-6 mx-auto">
                                 <Globe className="text-blue-500" />
                             </div>
                             <h3 className="text-xl font-black">כתובת אישית משלך</h3>
-                            <p className="text-gray-500 leading-relaxed">
+                            <p className="text-gray-500 leading-relaxed max-w-sm mx-auto">
                                 קבל URL ייחודי המזוהה איתך. מושלם לשיתוף בביו של האינסטגרם או בקבוצות הוואטסאפ.
                             </p>
                         </div>
-                        <div className="space-y-4 border-r border-gray-200 pr-0 md:pr-12">
-                            <div className="w-12 h-12 bg-white rounded-xl shadow-lg flex items-center justify-center mb-6">
+                        <div className="space-y-4 flex flex-col items-center border-x border-gray-100 px-8">
+                            <div className="w-12 h-12 bg-white rounded-xl shadow-lg flex items-center justify-center mb-6 mx-auto">
                                 <Zap className="text-yellow-500" />
                             </div>
                             <h3 className="text-xl font-black">ממשק ניהול מקצועי</h3>
-                            <p className="text-gray-500 leading-relaxed">
+                            <p className="text-gray-500 leading-relaxed max-w-sm mx-auto">
                                 שחרר את הצורך בטבלאות אקסל. הוסף ומחק מוצרים, עדכן מחירים ונהל מלאי בקלות.
                             </p>
                         </div>
-                        <div className="space-y-4 border-r border-gray-200 pr-0 md:pr-12">
-                            <div className="w-12 h-12 bg-white rounded-xl shadow-lg flex items-center justify-center mb-6">
+                        <div className="space-y-4 flex flex-col items-center">
+                            <div className="w-12 h-12 bg-white rounded-xl shadow-lg flex items-center justify-center mb-6 mx-auto">
                                 <ShieldCheck className="text-green-500" />
                             </div>
                             <h3 className="text-xl font-black">ביטחון ופרטיות</h3>
-                            <p className="text-gray-500 leading-relaxed">
+                            <p className="text-gray-500 leading-relaxed max-w-sm mx-auto">
                                 מערכת סגורה ומאובטחת. רק משתמשי האתר יכולים להקים קטלוגים, מה ששומר על איכות הקהילה.
                             </p>
                         </div>
@@ -366,17 +366,17 @@ export default function InfoPageClient({ userId }) {
                             ].map((step, idx) => (
                             <motion.div 
                                 key={idx}
-                                className="p-8 md:p-12 bg-white rounded-[2.5rem] border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-500 group text-right flex flex-col md:flex-row items-center gap-8"
+                                className="p-8 md:p-12 bg-white rounded-[2.5rem] border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-500 group text-center flex flex-col items-center gap-6"
                                 initial={{ y: 30, opacity: 0 }}
                                 whileInView={{ y: 0, opacity: 1 }}
                                 viewport={{ once: true }}
                                 transition={{ delay: idx * 0.1 }}
                             >
+                                <span className="text-6xl font-black text-gray-100 group-hover:text-yellow-400/20 transition-colors leading-none">{step.num}</span>
                                 <div className="flex-1">
                                     <h4 className="text-2xl font-black mb-3">{step.title}</h4>
                                     <p className="text-gray-500 text-lg leading-relaxed">{step.desc}</p>
                                 </div>
-                                <span className="text-7xl font-black text-gray-50/50 group-hover:text-yellow-400/20 transition-colors leading-none order-first md:order-last">{step.num}</span>
                             </motion.div>
                             ))}
                     </div>
