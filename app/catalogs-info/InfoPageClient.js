@@ -87,7 +87,7 @@ export default function InfoPageClient({ userId }) {
                         </motion.div>
 
                         <motion.div 
-                            className="flex-1 relative w-full h-[450px] flex items-center justify-center lg:justify-end"
+                            className="flex-1 relative w-full h-[450px] flex items-center justify-center lg:justify-end -mt-12 md:-mt-20"
                             initial={{ opacity: 0, scale: 0.9 }}
                             animate={{ opacity: 1, scale: 1 }}
                             transition={{ duration: 1, ease: "easeOut" }}
@@ -112,7 +112,7 @@ export default function InfoPageClient({ userId }) {
 
                                 {/* Floating Bottom Left Card - Much Larger & Repositioned */}
                                 <motion.div 
-                                    className="absolute -bottom-24 -left-20 w-80 shadow-2xl rounded-2xl border border-white/80 overflow-hidden bg-white/90 backdrop-blur-sm p-3 z-30"
+                                    className="absolute -bottom-16 -left-16 w-80 shadow-2xl rounded-2xl border border-white/80 overflow-hidden bg-white/90 backdrop-blur-sm p-3 z-30"
                                     initial={{ y: 20 }}
                                     animate={{ y: 0 }}
                                     transition={{ duration: 2, repeat: Infinity, repeatType: "mirror", ease: "easeInOut" }}
