@@ -51,17 +51,17 @@ export default async function CatalogsInfoPage() {
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                         <div className="bg-white p-8 rounded-3xl shadow-[0_10px_40px_-15px_rgba(0,0,0,0.1)] border border-yellow-100 text-center hover:scale-[1.02] transition-transform">
                             <div className="w-20 h-20 bg-yellow-50 rounded-full flex items-center justify-center text-4xl mb-6 mx-auto">🔗</div>
-                            <h3 className="text-xl font-bold mb-3 italic">קישור אישי קצר</h3>
+                            <h3 className="text-xl font-bold mb-3">קישור אישי קצר</h3>
                             <p className="text-gray-600 text-sm leading-relaxed">קבל כתובת URL ייחודית משלך פשוטה לשיתוף בוואטסאפ או באינסטגרם.</p>
                         </div>
                         <div className="bg-white p-8 rounded-3xl shadow-[0_10px_40px_-15px_rgba(0,0,0,0.1)] border border-yellow-100 text-center hover:scale-[1.02] transition-transform">
                             <div className="w-20 h-20 bg-yellow-50 rounded-full flex items-center justify-center text-4xl mb-6 mx-auto">🎨</div>
-                            <h3 className="text-xl font-bold mb-3 italic">שליטה מלאה במוצרים</h3>
+                            <h3 className="text-xl font-bold mb-3">שליטה מלאה במוצרים</h3>
                             <p className="text-gray-600 text-sm leading-relaxed">הוסף מוצרים עם תמונות, תיאורים ומחירים משלך. אתה קובע מה נמכר ובכמה.</p>
                         </div>
                         <div className="bg-white p-8 rounded-3xl shadow-[0_10px_40px_-15px_rgba(0,0,0,0.1)] border border-yellow-100 text-center hover:scale-[1.02] transition-transform">
                             <div className="w-20 h-20 bg-yellow-50 rounded-full flex items-center justify-center text-4xl mb-6 mx-auto">📩</div>
-                            <h3 className="text-xl font-bold mb-3 italic">הזמנות ישירות למייל</h3>
+                            <h3 className="text-xl font-bold mb-3">הזמנות ישירות למייל</h3>
                             <p className="text-gray-600 text-sm leading-relaxed">ההזמנה נשלחת ישירות אליך למייל להמשך טיפול ותשלום מול הלקוח אופליין.</p>
                         </div>
                     </div>
