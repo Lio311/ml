@@ -244,8 +244,24 @@ export default function InfoPageClient({ userId }) {
             <section className="py-16 px-4 bg-black text-white relative">
                 <div className="absolute top-0 right-0 w-1/2 h-full bg-[radial-gradient(circle_at_80%_20%,rgba(255,234,0,0.1)_0%,transparent_50%)] pointer-events-none" />
                 <div className="container max-w-7xl mx-auto">
-                    <div className="flex flex-col lg:flex-row lg:items-center gap-16">
-                        {/* Text Content: Right side in RTL (First child) */}
+                    <div className="flex flex-col lg:flex-row items-center gap-16 lg:items-center">
+                        {/* Desktop Image: Should be on the LEFT of the screen */}
+                        <div className="hidden lg:block flex-1 relative">
+                            <motion.div 
+                                className="rounded-[3rem] overflow-hidden shadow-[0_50px_100px_-20px_rgba(0,0,0,0.6)] border border-white/10"
+                                initial={{ x: -40, opacity: 0 }}
+                                whileInView={{ x: 0, opacity: 1 }}
+                                viewport={{ once: true }}
+                            >
+                                <img 
+                                    src="/info-page/media__1773586658987.png" 
+                                    alt="Catalog Preview Desktop" 
+                                    className="w-full h-auto block scale-105" 
+                                />
+                            </motion.div>
+                        </div>
+
+                        {/* Text Content: Should be on the RIGHT of the screen */}
                         <div className="flex-1 text-right flex flex-col">
                             <motion.div
                                 initial={{ opacity: 0, x: 30 }}
@@ -258,7 +274,7 @@ export default function InfoPageClient({ userId }) {
                                     הלקוחות שלך ייהנו מממשק מהיר, חלק ויוקרתי. הצגת פירמידת תווים ויזואלית, בחירת גדלים קלה וסיכום הזמנה שקוף ומקצועי.
                                 </p>
 
-                                {/* Mobile Image: Visible only on small screens */}
+                                {/* Mobile Image: Visible only on small screens, positioned between text and cards */}
                                 <motion.div 
                                     className="lg:hidden w-full rounded-3xl overflow-hidden shadow-2xl border border-white/10 mb-12 order-3"
                                     initial={{ opacity: 0, scale: 0.9 }}
@@ -284,22 +300,6 @@ export default function InfoPageClient({ userId }) {
                                         <p className="text-sm text-gray-500 leading-relaxed w-full text-right">שתף מוצר ספציפי או את כל הקטלוג בקישור אחד.</p>
                                     </div>
                                 </div>
-                            </motion.div>
-                        </div>
-
-                        {/* Desktop Image: Left side in RTL (Second child) */}
-                        <div className="hidden lg:block flex-1 relative">
-                            <motion.div 
-                                className="rounded-[3rem] overflow-hidden shadow-[0_50px_100px_-20px_rgba(0,0,0,0.6)] border border-white/10"
-                                initial={{ x: -40, opacity: 0 }}
-                                whileInView={{ x: 0, opacity: 1 }}
-                                viewport={{ once: true }}
-                            >
-                                <img 
-                                    src="/info-page/media__1773586658987.png" 
-                                    alt="Catalog Preview Desktop" 
-                                    className="w-full h-auto block" 
-                                />
                             </motion.div>
                         </div>
                     </div>

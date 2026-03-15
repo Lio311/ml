@@ -50,8 +50,9 @@ export default function TermsPage() {
                     <section className="mb-10">
                         <h2 className="text-2xl font-bold mb-4 border-b pb-2">4. אספקה ומשלוחים</h2>
                         <ul className="space-y-3 list-disc pr-6">
-                            <li className="font-bold underline">עלות משלוח עבור הזמנה באתר עומדת על 30 ₪.</li>
-                            <li>זמן אספקה ממוצע הוא עד 10 ימי עסקים.</li>
+                            <li className="font-bold underline">עלות משלוח לנקודת איסוף (UPS EasyShip) עומדת על 30 ₪.</li>
+                            <li>משלוח עד הבית ניתן בתיאום אישי דרך דואר ישראל (בתוספת תשלום). יש לציין זאת בהערות להזמנה.</li>
+                            <li>זמן אספקה ממוצע הוא עד 10 ימי עסקים (לרוב הרבה פחות).</li>
                             <li>המפעיל אינו אחראי לעיכובים שנגרמים על ידי חברות שילוח חיצוניות או כוח עליון.</li>
                         </ul>
                     </section>
@@ -60,19 +61,20 @@ export default function TermsPage() {
                         <h2 className="text-2xl font-bold mb-4 border-b pb-2">5. ביטול עסקה והחזרות</h2>
                         <ul className="space-y-3 list-disc pr-6">
                             <li>ביטול עסקה יתבצע בהתאם לחוק הגנת הצרכן, התשמ"א – 1981.</li>
-                            <li>לא ניתן להחזיר דוגמיות/דיקנטים שהוכנו במיוחד עבור הלקוח (מזיגה אישית), בשל אופי המוצר.</li>
+                            <li>לא ניתן להחזיר דוגמיות/דיקנטים שהוכנו במיוחד עבור הלקוח (מזיגה אישית), בשל אופי המוצר המותאם אישית.</li>
                             <li>על מוצרי המדף (שאינם דיקנטים): ניתן לבטל עסקה תוך 14 ימים מקבלת המוצר, בתנאי שלא נפתח ולא נעשה בו שימוש.</li>
                         </ul>
                     </section>
 
                     <section className="mb-10">
                         <h2 className="text-2xl font-bold mb-4 border-b pb-2">6. פרטיות ואבטחת מידע</h2>
-                        <p>האתר מאובטח בפרוטוקול SSL. פרטי כרטיסי אשראי אינם נשמרים במערכות האתר והסליקה נעשית דרך ספקים מורשעים בלבד.</p>
+                        <p>האתר מאובטח בפרוטוקול SSL. פרטי כרטיסי אשראי אינם נשמרים במערכות האתר והסליקה נעשית דרך ספקים מורשים בלבד.</p>
                     </section>
 
                     <section className="mb-6 pt-8 border-t">
-                        <p className="font-bold mb-4">סמכות שיפוט</p>
-                        <p>על תקנון זה יחולו דיני מדינת ישראל וסמכות השיפוט הבלעדית תהא לבית המשפט המוסמך ב<b>מחוז תל אביב</b> בלבד.</p>
+                        <p className="font-bold mb-4 text-center">שירות לקוחות וסמכות שיפוט</p>
+                        <p className="text-center mb-6">לכל שאלה ניתן לפנות במייל: <a href="mailto:pornfragrance@gmail.com" className="font-bold underline">pornfragrance@gmail.com</a></p>
+                        <p className="text-sm">על תקנון זה יחולו דיני מדינת ישראל וסמכות השיפוט הבלעדית תהא לבית המשפט המוסמך ב<b>מחוז תל אביב</b> בלבד.</p>
                     </section>
 
                     <p className="text-sm text-gray-400 mt-12 text-center">עודכן לאחרונה: 15 במרץ 2026</p>
