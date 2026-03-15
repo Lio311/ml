@@ -204,16 +204,6 @@ export default function InfoPageClient({ userId }) {
                             >
                                 <img src="/info-page/media__1773582785213.png" alt="Admin UI" className="w-full" />
                             </motion.div>
-                            {/* Floating Item Detail */}
-                            <motion.div 
-                                className="absolute -bottom-10 -right-10 w-2/3 shadow-2xl rounded-2xl overflow-hidden border-4 border-white z-20 hidden md:block"
-                                initial={{ y: 50, opacity: 0 }}
-                                whileInView={{ y: 0, opacity: 1 }}
-                                viewport={{ once: true }}
-                                transition={{ delay: 0.4 }}
-                            >
-                                <img src="/info-page/media__1773582608557.png" alt="Detail" className="w-full" />
-                            </motion.div>
                         </div>
                     </div>
                 </div>
