@@ -187,8 +187,9 @@ export default function InfoPageClient({ userId }) {
                                         "מערכת ניהול מלאי חכמה (מ״ל / יחידות)",
                                         "עדכון סטטוס זמינות בלחיצת כפתור"
                                     ].map((item, i) => (
-                                        <li key={i} className="flex items-center gap-4 justify-end text-sm font-bold text-gray-800">
-                                            {item} <CheckCircle2 className="text-green-500 w-5 h-5 flex-shrink-0" />
+                                        <li key={i} className="flex items-center gap-4 justify-end text-right">
+                                            <span className="text-gray-900 font-bold text-lg">{item}</span>
+                                            <CheckCircle2 className="text-green-500 w-6 h-6 flex-shrink-0" />
                                         </li>
                                     ))}
                                 </ul>
