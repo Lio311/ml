@@ -62,14 +62,14 @@ export default function InfoPageClient({ userId }) {
                             </motion.h1>
                             <motion.p 
                                 variants={fadeIn}
-                                className="text-lg md:text-xl text-gray-500 mb-8 max-w-xl mx-auto lg:mx-0 leading-relaxed font-medium order-3"
+                                className="text-lg md:text-xl text-gray-500 mb-4 max-w-xl mx-auto lg:mx-0 leading-relaxed font-medium order-3"
                             >
                                 הפוך את האוסף שלך לנגיש. הוסף מוצרים, קבע מחירים, ונהל הזמנות במקום אחד - בקטלוג מעוצב שמותאם אישית עבורך.
                             </motion.p>
 
                             {/* Mobile Visuals: Positioned between text and buttons on mobile only */}
                             <motion.div 
-                                className="lg:hidden relative w-full h-[320px] flex items-center justify-center mb-10 order-4"
+                                className="lg:hidden relative w-full h-[260px] flex items-center justify-center mb-2 order-4"
                                 initial={{ opacity: 0, scale: 0.9 }}
                                 animate={{ opacity: 1, scale: 1 }}
                                 transition={{ duration: 1, ease: "easeOut" }}
