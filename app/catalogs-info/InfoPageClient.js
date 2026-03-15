@@ -200,7 +200,7 @@ export default function InfoPageClient({ userId }) {
                                 viewport={{ once: true }}
                                 transition={{ delay: 0.4 }}
                             >
-                                <img src="/info-page/media__1773582608518.png" alt="Detail" className="w-full" />
+                                <img src="/info-page/media__1773582608557.png" alt="Detail" className="w-full" />
                             </motion.div>
                         </div>
                     </div>
@@ -229,7 +229,7 @@ export default function InfoPageClient({ userId }) {
                                     viewport={{ once: true }}
                                     transition={{ delay: 0.3 }}
                                 >
-                                    <img src="/info-page/media__1773582785226.png" alt="Cart Summary" className="w-full rounded-xl" />
+                                    <img src="/info-page/media__1773581998712.png" alt="Cart Summary" className="w-full rounded-xl" />
                                 </motion.div>
                              </div>
                         </div>
@@ -332,7 +332,7 @@ export default function InfoPageClient({ userId }) {
                             <p className="text-gray-500 text-lg mb-10 leading-relaxed font-medium">
                                 עקוב אחרי כל הזמנה שנכנסת, נהל סטטוסים (ממתין, בטיפול, הושלם) וראה את כל פרטי הלקוח במקום אחד מסודר.
                             </p>
-                            <div className="flex items-center gap-4 justify-end">
+                            <div className="flex items-center gap-4 justify-end flex-wrap">
                                 <span className="px-4 py-2 bg-blue-50 text-blue-700 rounded-full text-xs font-bold">תגיות משלוח / איסוף</span>
                                 <span className="px-4 py-2 bg-green-50 text-green-700 rounded-full text-xs font-bold">מעקב סטטוס חי</span>
                                 <span className="px-4 py-2 bg-orange-50 text-orange-700 rounded-full text-xs font-bold">התראות מייל</span>
@@ -349,47 +349,36 @@ export default function InfoPageClient({ userId }) {
                 </div>
             </section>
 
-            {/* How It Works with Sticky Layout */}
+            {/* How It Works - Elegant Centered Layout */}
             <section className="py-32 bg-gray-50 px-4">
-                <div className="container max-w-7xl mx-auto">
+                <div className="container max-w-4xl mx-auto">
                     <div className="text-center mb-24">
                         <span className="text-yellow-500 font-bold uppercase tracking-widest text-xs">Getting Started</span>
                         <h2 className="text-5xl font-black mt-4">איך זה עובד?</h2>
                     </div>
 
-                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-20 items-start">
-                        <div className="space-y-4 md:sticky top-32">
-                             {[
-                                { num: "01", title: "הרשמה מהירה", desc: "התחבר למערכת וצור את הקטלוג הראשון שלך תוך פחות מ-60 שניות." },
-                                { num: "02", title: "העלאת קולקציה", desc: "הוסף את הבשמים שלך, בחר גדלים וקבע את המחיר שמתאים לך." },
-                                { num: "03", title: "שיתוף הקישור", desc: "הפץ את הקטלוג ללקוחות שלך והתחל לקבל פניות ישירות למייל ולמערכת." },
-                                { num: "04", title: "סגירת עסקה", desc: "קבל את כל פרטי הלקוח, צור איתו קשר וסגור את התשלום אופליין בקלות." }
-                             ].map((step, idx) => (
-                                <motion.div 
-                                    key={idx}
-                                    className="p-8 bg-white rounded-3xl border border-gray-100 shadow-sm hover:shadow-md transition group text-right"
-                                    initial={{ x: 50, opacity: 0 }}
-                                    whileInView={{ x: 0, opacity: 1 }}
-                                    transition={{ delay: idx * 0.1 }}
-                                >
-                                    <span className="text-4xl font-black text-gray-100 group-hover:text-yellow-400/20 transition-colors mb-4 block leading-none">{step.num}</span>
-                                    <h4 className="text-xl font-bold mb-2">{step.title}</h4>
-                                    <p className="text-gray-500 text-sm leading-relaxed">{step.desc}</p>
-                                </motion.div>
-                             ))}
-                        </div>
-
-                        <div className="relative">
+                    <div className="space-y-6">
+                            {[
+                            { num: "01", title: "הרשמה מהירה", desc: "התחבר למערכת וצור את הקטלוג הראשון שלך תוך פחות מ-60 שניות." },
+                            { num: "02", title: "העלאת קולקציה", desc: "הוסף את הבשמים שלך, בחר גדלים וקבע את המחיר שמתאים לך." },
+                            { num: "03", title: "שיתוף הקישור", desc: "הפץ את הקטלוג ללקוחות שלך והתחל לקבל פניות ישירות למייל ולמערכת." },
+                            { num: "04", title: "סגירת עסקה", desc: "קבל את כל פרטי הלקוח, צור איתו קשר וסגור את התשלום אופליין בקלות." }
+                            ].map((step, idx) => (
                             <motion.div 
-                                className="rounded-[2.5rem] overflow-hidden shadow-3xl border border-gray-200"
-                                style={{ rotate: 2 }}
+                                key={idx}
+                                className="p-8 md:p-12 bg-white rounded-[2.5rem] border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-500 group text-right flex flex-col md:flex-row items-center gap-8"
+                                initial={{ y: 30, opacity: 0 }}
+                                whileInView={{ y: 0, opacity: 1 }}
+                                viewport={{ once: true }}
+                                transition={{ delay: idx * 0.1 }}
                             >
-                                <img src="/info-page/media__1773582785243.png" alt="Orders Dashboard" className="w-full" />
+                                <div className="flex-1">
+                                    <h4 className="text-2xl font-black mb-3">{step.title}</h4>
+                                    <p className="text-gray-500 text-lg leading-relaxed">{step.desc}</p>
+                                </div>
+                                <span className="text-7xl font-black text-gray-50/50 group-hover:text-yellow-400/20 transition-colors leading-none order-first md:order-last">{step.num}</span>
                             </motion.div>
-                            <div className="absolute -top-10 -left-10 w-40 bg-black text-white p-6 rounded-3xl shadow-2xl hidden md:block">
-                                <p className="text-xs font-bold leading-tight">מערכת הניהול המלאה שלך איתך בכל מקום.</p>
-                            </div>
-                        </div>
+                            ))}
                     </div>
                 </div>
             </section>
@@ -403,10 +392,11 @@ export default function InfoPageClient({ userId }) {
                     <motion.div 
                         initial={{ opacity: 0, scale: 0.9 }}
                         whileInView={{ opacity: 1, scale: 1 }}
+                        viewport={{ once: true }}
                         className="relative z-10"
                     >
                         <h2 className="text-4xl md:text-5xl font-black mb-8 leading-tight">מוכן להתחיל למכור בסטייל?</h2>
-                        <p className="text-gray-400 mb-12 text-lg">הצטרף לקהילת המוכרים של ML_TLV ותהנה מכל הכלים שאתה צריך.</p>
+                        <p className="text-gray-400 mb-12 text-lg font-medium">הצטרף לקהילת המוכרים של ML_TLV ותהנה מכל הכלים שאתה צריך.</p>
                         
                         <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
                             {userId ? (
@@ -422,18 +412,6 @@ export default function InfoPageClient({ userId }) {
                     </motion.div>
                 </div>
             </section>
-
-            {/* Footer Simple */}
-            <footer className="py-12 border-t border-gray-100 bg-white">
-                <div className="container max-w-7xl mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-6 text-gray-400 text-sm">
-                    <p>© 2026 ml_tlv. All rights reserved.</p>
-                    <div className="flex items-center gap-8">
-                        <Link href="/" className="hover:text-black transition-colors font-bold">דף הבית</Link>
-                        <Link href="/catalog" className="hover:text-black transition-colors font-bold">כל הבשמים</Link>
-                        <Link href="/my-catalogs" className="hover:text-black transition-colors font-bold">ניהול קטלוג</Link>
-                    </div>
-                </div>
-            </footer>
         </div>
     );
 }
