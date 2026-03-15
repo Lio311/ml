@@ -119,7 +119,7 @@ export default function InfoPageClient({ userId }) {
                             <div className="relative w-full max-w-xl flex justify-end">
                                 {/* Main Image - Preserving Ratio, Slightly Larger & Shifted Right */}
                                 <motion.div 
-                                    className="relative w-[420px] mr-0 ml-auto rounded-[2.5rem] shadow-[0_60px_120px_-20px_rgba(0,0,0,0.2)] overflow-hidden border border-white bg-white z-10"
+                                    className="relative w-[440px] mr-0 ml-auto rounded-[2.5rem] shadow-[0_60px_120px_-20px_rgba(0,0,0,0.2)] overflow-hidden border border-white bg-white z-10"
                                     style={{ rotateX: 12, rotateY: -15, transformPerspective: 1200 }}
                                     whileHover={{ rotateY: -8, scale: 1.05 }}
                                     transition={{ duration: 0.8 }}
@@ -133,9 +133,9 @@ export default function InfoPageClient({ userId }) {
 
 
 
-                                {/* Floating Bottom Left Card - Minimal Overlap & Shifted Left */}
+                                {/* Floating Bottom Left Card - 10% Overlap & Shifted Left */}
                                 <motion.div 
-                                    className="absolute -bottom-12 -left-[150px] w-80 shadow-2xl rounded-2xl border border-white/80 overflow-hidden bg-white/90 backdrop-blur-sm p-3 z-30"
+                                    className="absolute -bottom-12 -left-[120px] w-80 shadow-2xl rounded-2xl border border-white/80 overflow-hidden bg-white/90 backdrop-blur-sm p-3 z-30"
                                     initial={{ y: 20 }}
                                     animate={{ y: 0 }}
                                     transition={{ duration: 2, repeat: Infinity, repeatType: "mirror", ease: "easeInOut" }}
