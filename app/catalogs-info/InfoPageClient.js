@@ -34,14 +34,14 @@ export default function InfoPageClient({ userId }) {
     return (
         <div className="min-h-screen bg-[#fafafa] text-black font-sans selection:bg-yellow-200 overflow-x-hidden">
             {/* Header / Hero Section */}
-            <section className="relative pt-12 pb-20 px-4 overflow-hidden bg-white">
+            <section className="relative pt-12 pb-8 px-4 overflow-hidden bg-white">
                 {/* Premium Texture Overlay */}
                 <div className="absolute inset-0 opacity-[0.03] pointer-events-none" style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")` }}></div>
                 
-                <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_20%_20%,rgba(255,234,0,0.1)_0%,transparent_50%),radial-gradient(circle_at_80%_80%,rgba(0,0,0,0.05)_0%,transparent_50%)]" />
+                <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_20%_20%,rgba(255,234,0,0.15)_0%,transparent_50%),radial-gradient(circle_at_80%_80%,rgba(0,0,0,0.05)_0%,transparent_50%)]" />
                 
                 <div className="container max-w-7xl mx-auto relative z-10">
-                    <div className="flex flex-col lg:flex-row items-center gap-16">
+                    <div className="flex flex-col lg:flex-row items-center gap-10">
                         <motion.div 
                             className="flex-1 text-center"
                             initial="hidden"
@@ -107,16 +107,6 @@ export default function InfoPageClient({ userId }) {
                                         alt="Catalog Preview" 
                                     />
                                 </motion.div>
-                                
-                                {/* Floating Top Right Card - Larger preview */}
-                                <motion.div 
-                                    className="absolute -top-12 -right-12 w-56 shadow-2xl rounded-2xl border border-white/80 overflow-hidden bg-white/90 backdrop-blur-sm p-1 z-20"
-                                    variants={floatingImage}
-                                    animate="animate"
-                                    style={{ rotateX: -10, rotateY: 10, transformPerspective: 1200 }}
-                                >
-                                    <img src="/info-page/media__1773582608557.png" alt="Card Preview" className="w-full h-auto block rounded-xl" />
-                                </motion.div>
 
                                 {/* Floating Bottom Left Card - Larger preview */}
                                 <motion.div 
@@ -135,7 +125,7 @@ export default function InfoPageClient({ userId }) {
             </section>
 
             {/* Trusted Features Grid */}
-            <section className="py-16 bg-gray-50">
+            <section className="py-8 bg-gray-50">
                 <div className="container max-w-7xl mx-auto px-4">
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-12 text-center">
                         <div className="space-y-4 flex flex-col items-center">
@@ -170,9 +160,9 @@ export default function InfoPageClient({ userId }) {
             </section>
 
             {/* Showcase Section: Admin Dashboard */}
-            <section id="preview" className="py-20 px-4 bg-white overflow-hidden">
+            <section id="preview" className="py-10 px-4 bg-white overflow-hidden">
                 <div className="container max-w-7xl mx-auto">
-                    <div className="flex flex-col lg:flex-row-reverse items-center gap-24">
+                    <div className="flex flex-col lg:flex-row-reverse items-center gap-12">
                         <div className="flex-1 text-right">
                             <motion.div
                                 initial={{ opacity: 0, x: 20 }}
@@ -213,10 +203,10 @@ export default function InfoPageClient({ userId }) {
             </section>
 
             {/* Showcase Section: Product & Cart */}
-            <section className="py-20 px-4 bg-black text-white relative">
+            <section className="py-10 px-4 bg-black text-white relative">
                 <div className="absolute top-0 right-0 w-1/2 h-full bg-[radial-gradient(circle_at_80%_20%,rgba(255,234,0,0.1)_0%,transparent_50%)] pointer-events-none" />
                 <div className="container max-w-7xl mx-auto">
-                    <div className="flex flex-col lg:flex-row-reverse items-center gap-24">
+                    <div className="flex flex-col lg:flex-row-reverse items-center gap-12">
                         <div className="flex-1 text-right relative">
                              <div className="relative group">
                                 <motion.div 
@@ -262,9 +252,9 @@ export default function InfoPageClient({ userId }) {
             </section>
 
              {/* Growth Section: Shipping, Samples & Sharing */}
-             <section className="py-24 bg-white px-4">
+             <section className="py-10 bg-white px-4">
                 <div className="container max-w-7xl mx-auto">
-                    <div className="text-center mb-16">
+                    <div className="text-center mb-8">
                         <h2 className="text-5xl font-black mb-4">הכלים שיעזרו לך למכור יותר</h2>
                         <p className="text-gray-500 text-lg max-w-2xl mx-auto font-medium">הגדרות מתקדמות המותאמות אישית לצרכים של המוכרים המקצועיים ביותר בקהילה.</p>
                     </div>
@@ -309,9 +299,9 @@ export default function InfoPageClient({ userId }) {
             </section>
 
             {/* Showcase Section: Orders Table */}
-            <section className="py-16 bg-gray-50 border-y border-gray-100 px-4">
+            <section className="py-8 bg-gray-50 border-y border-gray-100 px-4">
                 <div className="container max-w-7xl mx-auto">
-                    <div className="bg-yellow-400 rounded-[3rem] p-10 md:p-12 shadow-2xl border border-yellow-500/20 flex flex-col lg:flex-row items-center gap-16">
+                    <div className="bg-yellow-400 rounded-[3rem] p-10 md:p-12 shadow-2xl border border-yellow-500/20 flex flex-col lg:flex-row items-center gap-10">
                         <div className="flex-1 text-right">
                             <h2 className="text-4xl font-black mb-8 leading-tight text-black">ניהול הזמנות מקצה לקצה</h2>
                             <p className="text-black/70 text-lg mb-10 leading-relaxed font-medium">
@@ -335,9 +325,9 @@ export default function InfoPageClient({ userId }) {
             </section>
 
             {/* How It Works - Elegant Centered Layout */}
-            <section className="py-20 bg-gray-50 px-4">
+            <section className="py-10 bg-gray-50 px-4">
                 <div className="container max-w-4xl mx-auto">
-                    <div className="text-center mb-12">
+                    <div className="text-center mb-6">
                         <span className="text-yellow-500 font-bold uppercase tracking-widest text-xs">Getting Started</span>
                         <h2 className="text-5xl font-black mt-4">איך זה עובד?</h2>
                     </div>
@@ -369,7 +359,7 @@ export default function InfoPageClient({ userId }) {
             </section>
 
             {/* Bottom CTA */}
-            <section className="py-16 px-4 bg-white">
+            <section className="py-8 px-4 bg-white">
                 <div className="container max-w-4xl mx-auto rounded-[2.5rem] bg-black text-white p-12 md:p-16 text-center relative overflow-hidden">
                     <div className="absolute top-0 right-0 w-64 h-64 bg-yellow-500/20 blur-[100px] rounded-full" />
                     <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-500/20 blur-[100px] rounded-full" />
@@ -380,8 +370,8 @@ export default function InfoPageClient({ userId }) {
                         viewport={{ once: true }}
                         className="relative z-10"
                     >
-                        <h2 className="text-4xl md:text-5xl font-black mb-8 leading-tight">מוכן להתחיל למכור בסטייל?</h2>
-                        <p className="text-gray-400 mb-12 text-lg font-medium">הצטרף לקהילת המוכרים של ml_tlv ותהנה מכל הכלים שאתה צריך.</p>
+                        <h2 className="text-4xl md:text-5xl font-black mb-4 leading-tight">מוכן להתחיל למכור בסטייל?</h2>
+                        <p className="text-gray-400 mb-6 text-lg font-medium">הצטרף לקהילת המוכרים של ml_tlv ותהנה מכל הכלים שאתה צריך.</p>
                         
                         <div className="flex flex-col sm:flex-row items-center justify-center gap-6">
                             {userId ? (
