@@ -64,7 +64,7 @@ export default function InfoPageClient({ userId }) {
                                 variants={fadeIn}
                                 className="text-lg md:text-xl text-gray-500 mb-10 max-w-xl mx-auto lg:mx-0 leading-relaxed font-medium"
                             >
-                                הפוך את האוסף שלך לעסק. הוסף מוצרים, קבע מחירים, ונהל הזמנות במקום אחד - בקטלוג מעוצב שמותאם אישית עבורך.
+                                הפוך את האוסף שלך לנגיש. הוסף מוצרים, קבע מחירים, ונהל הזמנות במקום אחד - בקטלוג מעוצב שמותאם אישית עבורך.
                             </motion.p>
                             
                             <motion.div 
@@ -231,18 +231,18 @@ export default function InfoPageClient({ userId }) {
                                 </p>
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                                     <div className="p-8 bg-white/5 rounded-[2rem] border border-white/10 hover:bg-white/10 transition-colors text-right flex flex-col items-end group">
-                                        <div className="w-12 h-12 bg-yellow-400/10 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-yellow-400 transition-colors">
+                                        <div className="w-12 h-12 bg-yellow-400/10 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-yellow-400 transition-colors ms-auto">
                                             <ShoppingBag className="text-yellow-400 w-6 h-6 group-hover:text-black transition-colors" />
                                         </div>
-                                        <h4 className="text-xl font-bold mb-3">ניהול סל קניות</h4>
-                                        <p className="text-sm text-gray-500 leading-relaxed">עדכון כמויות וסיכום מחיר בזמן אמת.</p>
+                                        <h4 className="text-xl font-bold mb-3 w-full">ניהול סל קניות</h4>
+                                        <p className="text-sm text-gray-500 leading-relaxed w-full">עדכון כמויות וסיכום מחיר בזמן אמת.</p>
                                     </div>
                                     <div className="p-8 bg-white/5 rounded-[2rem] border border-white/10 hover:bg-white/10 transition-colors text-right flex flex-col items-end group">
-                                        <div className="w-12 h-12 bg-yellow-400/10 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-yellow-400 transition-colors">
+                                        <div className="w-12 h-12 bg-yellow-400/10 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-yellow-400 transition-colors ms-auto">
                                             <ExternalLink className="text-yellow-400 w-6 h-6 group-hover:text-black transition-colors" />
                                         </div>
-                                        <h4 className="text-xl font-bold mb-3">שיתוף קל</h4>
-                                        <p className="text-sm text-gray-500 leading-relaxed">שתף מוצר ספציפי או את כל הקטלוג בקישור אחד.</p>
+                                        <h4 className="text-xl font-bold mb-3 w-full">שיתוף קל</h4>
+                                        <p className="text-sm text-gray-500 leading-relaxed w-full">שתף מוצר ספציפי או את כל הקטלוג בקישור אחד.</p>
                                     </div>
                                 </div>
                             </motion.div>
