@@ -299,7 +299,7 @@ export default function InfoPageClient({ userId }) {
                                 <p className="text-gray-500 text-sm leading-relaxed">תמריץ את הלקוחות להוסיף עוד מוצרים לסל עם מערכת הטבות חכמה.</p>
                             </div>
                             <div className="rounded-2xl overflow-hidden shadow-2xl border border-white group-hover:scale-[1.03] transition-transform duration-700">
-                                <img src="/info-page/media__1773586219905.png" alt="Samples" className="w-full" />
+                                <img src="/info-page/media__1773586516781.png" alt="Samples" className="w-full" />
                             </div>
                         </motion.div>
 
