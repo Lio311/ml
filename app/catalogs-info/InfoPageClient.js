@@ -304,19 +304,30 @@ export default function InfoPageClient({ userId }) {
             <section className="py-8 bg-gray-50 border-y border-gray-100 px-4">
                 <div className="container max-w-7xl mx-auto">
                     <div className="bg-yellow-400 rounded-[3rem] p-10 md:p-12 shadow-2xl border border-yellow-500/20 flex flex-col lg:flex-row items-center gap-10">
-                        <div className="flex-1 text-right">
-                            <h2 className="text-4xl font-black mb-8 leading-tight text-black">ניהול הזמנות מקצה לקצה</h2>
-                            <p className="text-black/70 text-lg mb-10 leading-relaxed font-medium">
+                        <div className="flex-1 text-center lg:text-right flex flex-col">
+                            <h2 className="text-4xl font-black mb-8 leading-tight text-black order-1">ניהול הזמנות מקצה לקצה</h2>
+                            
+                            {/* Mobile Image: Only visible on small screens, positioned below title */}
+                            <motion.div 
+                                className="lg:hidden w-full shadow-xl rounded-2xl overflow-hidden border border-gray-200 mb-8 order-2"
+                                whileHover={{ scale: 1.01 }}
+                                transition={{ duration: 0.4 }}
+                            >
+                                <img src="/info-page/media__1773582785243.png" alt="Orders Mobile" className="w-full" />
+                            </motion.div>
+
+                            <p className="text-black/70 text-lg mb-10 leading-relaxed font-medium order-3">
                                 עקוב אחרי כל הזמנה שנכנסת, נהל סטטוסים (ממתין, בטיפול, הושלם) וראה את כל פרטי הלקוח במקום אחד מסודר.
                             </p>
-                            <div className="flex items-center gap-4 justify-center flex-wrap w-full">
+                            <div className="flex items-center gap-4 justify-center flex-wrap w-full order-4">
                                 <span className="px-4 py-2 bg-blue-500/10 text-blue-700 rounded-full text-xs font-bold">תגיות משלוח / איסוף</span>
                                 <span className="px-4 py-2 bg-green-500/10 text-green-700 rounded-full text-xs font-bold">מעקב סטטוס חי</span>
                                 <span className="px-4 py-2 bg-orange-500/10 text-orange-700 rounded-full text-xs font-bold">התראות מייל</span>
                             </div>
                         </div>
+                        {/* Desktop Image: Hidden on mobile, original position */}
                         <motion.div 
-                            className="flex-[1.5] w-full shadow-2xl rounded-3xl overflow-hidden border border-gray-200"
+                            className="hidden lg:block flex-[1.5] w-full shadow-2xl rounded-3xl overflow-hidden border border-gray-200"
                             whileHover={{ scale: 1.01 }}
                             transition={{ duration: 0.4 }}
                         >
