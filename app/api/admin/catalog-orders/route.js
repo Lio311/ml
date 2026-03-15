@@ -79,20 +79,22 @@ export async function PUT(req) {
             if (status === 'cancelled' && oldStatus !== 'cancelled') {
                 for (const item of items) {
                     const vol = (Number(item.quantity) || 1) * (parseFloat(String(item.size)) || 0);
-                    if (vol > 0 && item.id) {
+                    const dbItemId = item.originalId || parseInt(String(item.id));
+                    if (vol > 0 && dbItemId) {
                         await client.query(
                             'UPDATE user_catalog_items SET stock_ml = stock_ml + $1 WHERE id = $2 AND catalog_id = $3',
-                            [vol, item.id, catalogId]
+                            [vol, dbItemId, catalogId]
                         );
                     }
                 }
             } else if (oldStatus === 'cancelled' && status !== 'cancelled') {
                 for (const item of items) {
                     const vol = (Number(item.quantity) || 1) * (parseFloat(String(item.size)) || 0);
-                    if (vol > 0 && item.id) {
+                    const dbItemId = item.originalId || parseInt(String(item.id));
+                    if (vol > 0 && dbItemId) {
                         await client.query(
                             'UPDATE user_catalog_items SET stock_ml = GREATEST(0, stock_ml - $1) WHERE id = $2 AND catalog_id = $3',
-                            [vol, item.id, catalogId]
+                            [vol, dbItemId, catalogId]
                         );
                     }
                 }
@@ -150,10 +152,11 @@ export async function DELETE(req) {
             if (status !== 'cancelled') {
                 for (const item of parsedItems) {
                     const vol = (Number(item.quantity) || 1) * (parseFloat(String(item.size)) || 0);
-                    if (vol > 0 && item.id) {
+                    const dbItemId = item.originalId || parseInt(String(item.id));
+                    if (vol > 0 && dbItemId) {
                         await client.query(
                             'UPDATE user_catalog_items SET stock_ml = stock_ml + $1 WHERE id = $2 AND catalog_id = $3',
-                            [vol, item.id, catalog_id]
+                            [vol, dbItemId, catalog_id]
                         );
                     }
                 }

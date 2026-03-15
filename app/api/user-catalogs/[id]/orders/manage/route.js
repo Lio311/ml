@@ -79,10 +79,11 @@ export async function PUT(req, context) {
             if (status === 'cancelled' && oldStatus !== 'cancelled') {
                 for (const item of items) {
                     const volume = (Number(item.quantity) || 1) * (parseFloat(String(item.size)) || 0);
-                    if (volume > 0 && item.id) {
+                    const dbItemId = item.originalId || parseInt(String(item.id));
+                    if (volume > 0 && dbItemId) {
                         await client.query(
                             'UPDATE user_catalog_items SET stock_ml = stock_ml + $1 WHERE id = $2 AND catalog_id = $3',
-                            [volume, item.id, catalogId]
+                            [volume, dbItemId, catalogId]
                         );
                     }
                 }
@@ -91,10 +92,11 @@ export async function PUT(req, context) {
             else if (oldStatus === 'cancelled' && status !== 'cancelled') {
                 for (const item of items) {
                     const volume = (Number(item.quantity) || 1) * (parseFloat(String(item.size)) || 0);
-                    if (volume > 0 && item.id) {
+                    const dbItemId = item.originalId || parseInt(String(item.id));
+                    if (volume > 0 && dbItemId) {
                         await client.query(
                             'UPDATE user_catalog_items SET stock_ml = GREATEST(0, stock_ml - $1) WHERE id = $2 AND catalog_id = $3',
-                            [volume, item.id, catalogId]
+                            [volume, dbItemId, catalogId]
                         );
                     }
                 }
