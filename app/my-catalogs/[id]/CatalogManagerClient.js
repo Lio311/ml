@@ -933,10 +933,10 @@ export default function CatalogManagerClient({ catalogId }) {
                             </div>
 
                              <div>
-                                <label className="block text-xs font-bold text-gray-500 uppercase mb-2">תגיות הבושם (באנגלית)</label>
+                                <label className="block text-xs font-bold text-gray-500 uppercase mb-2">תווי הבושם (באנגלית)</label>
                                 <div className="space-y-3">
                                     <div>
-                                        <label className="text-xs text-gray-400 mb-1 block">תגיות עליונות</label>
+                                        <label className="text-xs text-gray-400 mb-1 block">תווי עליון</label>
                                         <TagInput
                                             tags={(editingItemId ? editItemData.top_notes : newItemTopNotes).split(',').map(t => t.trim()).filter(Boolean)}
                                             onChange={(newTags) => editingItemId ? setEditItemData({...editItemData, top_notes: newTags.join(',')}) : setNewItemTopNotes(newTags.join(','))}
@@ -945,7 +945,7 @@ export default function CatalogManagerClient({ catalogId }) {
                                         />
                                     </div>
                                     <div>
-                                        <label className="text-xs text-gray-400 mb-1 block">תגיות לב (אמצע)</label>
+                                        <label className="text-xs text-gray-400 mb-1 block">תווי לב</label>
                                         <TagInput
                                             tags={(editingItemId ? editItemData.middle_notes : newItemMiddleNotes).split(',').map(t => t.trim()).filter(Boolean)}
                                             onChange={(newTags) => editingItemId ? setEditItemData({...editItemData, middle_notes: newTags.join(',')}) : setNewItemMiddleNotes(newTags.join(','))}
@@ -954,7 +954,7 @@ export default function CatalogManagerClient({ catalogId }) {
                                         />
                                     </div>
                                     <div>
-                                        <label className="text-xs text-gray-400 mb-1 block">תגיות בסיס</label>
+                                        <label className="text-xs text-gray-400 mb-1 block">תווי בסיס</label>
                                         <TagInput
                                             tags={(editingItemId ? editItemData.base_notes : newItemBaseNotes).split(',').map(t => t.trim()).filter(Boolean)}
                                             onChange={(newTags) => editingItemId ? setEditItemData({...editItemData, base_notes: newTags.join(',')}) : setNewItemBaseNotes(newTags.join(','))}

@@ -11,6 +11,22 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
     const [editingId, setEditingId] = useState(null);
     const [editForm, setEditForm] = useState({});
     const [searchTerm, setSearchTerm] = useState(initialSearch);
+    const [availableNotes, setAvailableNotes] = useState([]);
+
+    useEffect(() => {
+        const fetchNotes = async () => {
+            try {
+                const res = await fetch("/api/fragrance-notes");
+                if (res.ok) {
+                    const data = await res.json();
+                    setAvailableNotes(data);
+                }
+            } catch (error) {
+                console.error("Error fetching notes:", error);
+            }
+        };
+        fetchNotes();
+    }, []);
 
     useEffect(() => {
         setSearchTerm(initialSearch);
@@ -558,7 +574,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                         <TagInput
                                             tags={editForm.top_notes ? editForm.top_notes.split(',').filter(Boolean) : []}
                                             onChange={(newTags) => setEditForm({ ...editForm, top_notes: newTags.join(',') })}
-                                            suggestions={[]}
+                                            suggestions={availableNotes}
                                             placeholder="..."
                                         />
                                     </div>
@@ -567,7 +583,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                         <TagInput
                                             tags={editForm.middle_notes ? editForm.middle_notes.split(',').filter(Boolean) : []}
                                             onChange={(newTags) => setEditForm({ ...editForm, middle_notes: newTags.join(',') })}
-                                            suggestions={[]}
+                                            suggestions={availableNotes}
                                             placeholder="..."
                                         />
                                     </div>
@@ -576,7 +592,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                         <TagInput
                                             tags={editForm.base_notes ? editForm.base_notes.split(',').filter(Boolean) : []}
                                             onChange={(newTags) => setEditForm({ ...editForm, base_notes: newTags.join(',') })}
-                                            suggestions={[]}
+                                            suggestions={availableNotes}
                                             placeholder="..."
                                         />
                                     </div>

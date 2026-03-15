@@ -15,11 +15,11 @@ export async function GET() {
         // Fetch unique notes from top_notes, middle_notes, and base_notes
         // We split by comma and trim to get individual notes
         const res = await client.query(`
-            SELECT DISTINCT trim(unnest(string_to_array(top_notes, ','))) as note FROM user_catalog_items WHERE top_notes IS NOT NULL AND top_notes != ''
+            SELECT DISTINCT trim(unnest(string_to_array(top_notes, ','))) as note FROM products WHERE top_notes IS NOT NULL AND top_notes != ''
             UNION
-            SELECT DISTINCT trim(unnest(string_to_array(middle_notes, ','))) as note FROM user_catalog_items WHERE middle_notes IS NOT NULL AND middle_notes != ''
+            SELECT DISTINCT trim(unnest(string_to_array(middle_notes, ','))) as note FROM products WHERE middle_notes IS NOT NULL AND middle_notes != ''
             UNION
-            SELECT DISTINCT trim(unnest(string_to_array(base_notes, ','))) as note FROM user_catalog_items WHERE base_notes IS NOT NULL AND base_notes != ''
+            SELECT DISTINCT trim(unnest(string_to_array(base_notes, ','))) as note FROM products WHERE base_notes IS NOT NULL AND base_notes != ''
             ORDER BY note ASC
         `);
 

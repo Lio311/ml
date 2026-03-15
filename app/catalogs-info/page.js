@@ -101,7 +101,7 @@ export default async function CatalogsInfoPage() {
                             </div>
                             <div className="w-[calc(100%-4rem)] md:w-[calc(50%-2.5rem)] bg-zinc-900 border border-zinc-800 rounded-xl p-6 shadow-sm">
                                 <h3 className="font-bold text-xl mb-2">שיתוף ומכירה</h3>
-                                <p className="text-gray-400 text-sm leading-relaxed">העתק את הקישור אישי ושלח ללקוחות. יש להם עגלת קניות נפרדת ועמוד סיכום הזמנה נוח.</p>
+                                <p className="text-gray-400 text-sm leading-relaxed">העתק את הקישור האישי ושלח ללקוחות. יש להם עגלת קניות נפרדת ועמוד סיכום הזמנה נוח.</p>
                             </div>
                         </div>
 
