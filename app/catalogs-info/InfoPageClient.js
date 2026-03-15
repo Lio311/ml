@@ -244,7 +244,8 @@ export default function InfoPageClient({ userId }) {
             <section className="py-10 px-4 bg-black text-white relative">
                 <div className="absolute top-0 right-0 w-1/2 h-full bg-[radial-gradient(circle_at_80%_20%,rgba(255,234,0,0.1)_0%,transparent_50%)] pointer-events-none" />
                 <div className="container max-w-7xl mx-auto">
-                        <div className="w-full flex flex-col">
+                    <div className="flex flex-col lg:flex-row-reverse items-center gap-12">
+                        <div className="flex-1 text-right flex flex-col">
                             <motion.div
                                 initial={{ opacity: 0, x: 20 }}
                                 whileInView={{ opacity: 1, x: 0 }}
@@ -252,7 +253,7 @@ export default function InfoPageClient({ userId }) {
                                 className="flex flex-col text-right w-full"
                             >
                                 <h2 className="text-4xl md:text-5xl font-black mb-8 leading-tight order-1">חוויית קנייה מעולם אחר</h2>
-                                <p className="text-gray-400 text-lg mb-10 leading-relaxed font-medium order-2 lg:max-w-2xl lg:ml-auto">
+                                <p className="text-gray-400 text-lg mb-10 leading-relaxed font-medium order-2">
                                     הלקוחות שלך ייהנו מממשק מהיר, חלק ויוקרתי. הצגת פירמידת תווים ויזואלית, בחירת גדלים קלה וסיכום הזמנה שקוף ומקצועי.
                                 </p>
 
@@ -267,35 +268,40 @@ export default function InfoPageClient({ userId }) {
                                 </motion.div>
 
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 order-4 w-full">
-                                    <div className="p-8 bg-white/5 rounded-[2rem] border border-white/10 hover:bg-white/10 transition-colors text-right flex flex-col items-end group">
-                                        <div className="w-12 h-12 bg-yellow-400/10 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-yellow-400 transition-colors self-end">
+                                    <div className="p-8 bg-white/5 rounded-[2rem] border border-white/10 hover:bg-white/10 transition-colors text-right flex flex-row-reverse items-center justify-between group">
+                                        <div className="w-12 h-12 bg-yellow-400/10 rounded-2xl flex items-center justify-center group-hover:bg-yellow-400 transition-colors shrink-0">
                                             <ShoppingBag className="text-yellow-400 w-6 h-6 group-hover:text-black transition-colors" />
                                         </div>
-                                        <h4 className="text-xl font-bold mb-3 w-full">ניהול סל קניות</h4>
-                                        <p className="text-sm text-gray-500 leading-relaxed w-full">עדכון כמויות וסיכום מחיר בזמן אמת.</p>
+                                        <div className="flex-1 mr-4">
+                                            <h4 className="text-xl font-bold mb-1 w-full text-right">ניהול סל קניות</h4>
+                                            <p className="text-xs text-gray-500 leading-relaxed w-full text-right">עדכון כמויות וסיכום מחיר בזמן אמת.</p>
+                                        </div>
                                     </div>
-                                    <div className="p-8 bg-white/5 rounded-[2rem] border border-white/10 hover:bg-white/10 transition-colors text-right flex flex-col items-end group">
-                                        <div className="w-12 h-12 bg-yellow-400/10 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-yellow-400 transition-colors self-end">
+                                    <div className="p-8 bg-white/5 rounded-[2rem] border border-white/10 hover:bg-white/10 transition-colors text-right flex flex-row-reverse items-center justify-between group">
+                                        <div className="w-12 h-12 bg-yellow-400/10 rounded-2xl flex items-center justify-center group-hover:bg-yellow-400 transition-colors shrink-0">
                                             <ExternalLink className="text-yellow-400 w-6 h-6 group-hover:text-black transition-colors" />
                                         </div>
-                                        <h4 className="text-xl font-bold mb-3 w-full">שיתוף קל</h4>
-                                        <p className="text-sm text-gray-500 leading-relaxed w-full">שתף מוצר ספציפי או את כל הקטלוג בקישור אחד.</p>
+                                        <div className="flex-1 mr-4">
+                                            <h4 className="text-xl font-bold mb-1 w-full text-right">שיתוף קל</h4>
+                                            <p className="text-xs text-gray-500 leading-relaxed w-full text-right">שתף מוצר ספציפי או את כל הקטלוג בקישור אחד.</p>
+                                        </div>
                                     </div>
                                 </div>
                             </motion.div>
-
-                            {/* Desktop Image: Large Bottom Preview */}
-                            <div className="hidden lg:block w-full mt-16 max-w-6xl mx-auto">
-                                <motion.div 
-                                    className="rounded-3xl overflow-hidden shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)] border border-white/10"
-                                    initial={{ y: 50, opacity: 0 }}
-                                    whileInView={{ y: 0, opacity: 1 }}
-                                    viewport={{ once: true }}
-                                >
-                                    <img src="/info-page/media__1773586658987.png" alt="Catalog Preview Desktop" className="w-full" />
-                                </motion.div>
-                            </div>
                         </div>
+
+                        {/* Desktop Image: Large Bottom Preview, visible on the left for desktop */}
+                        <div className="hidden lg:block flex-1 relative">
+                            <motion.div 
+                                className="rounded-3xl overflow-hidden shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)] border border-white/10"
+                                initial={{ x: -50, opacity: 0 }}
+                                whileInView={{ x: 0, opacity: 1 }}
+                                viewport={{ once: true }}
+                            >
+                                <img src="/info-page/media__1773586658987.png" alt="Catalog Preview Desktop" className="w-full" />
+                            </motion.div>
+                        </div>
+                    </div>
                 </div>
             </section>
 
