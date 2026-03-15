@@ -1013,29 +1013,6 @@ export default function CatalogManagerClient({ catalogId }) {
                                         </div>
                                     ))}
                                 </div>
-                                <div className="mt-4">
-                                    <label className="block text-xs font-bold text-gray-500 uppercase mb-1">מלאי זמין סה"כ (מ"ל)</label>
-                                    <div className="relative">
-                                        <input 
-                                            type="number" 
-                                            min="0"
-                                            value={editingItemId ? editItemData.stock_ml : newItemStockMl}
-                                            onChange={(e) => {
-                                                const val = e.target.value;
-                                                if (editingItemId) {
-                                                    setEditItemData({ ...editItemData, stock_ml: val });
-                                                } else {
-                                                    setNewItemStockMl(val);
-                                                }
-                                            }}
-                                            className="w-full p-2 border rounded-lg focus:ring-1 focus:ring-black outline-none text-sm pr-2 text-left" 
-                                            placeholder="כמה מ״ל יש לך סה״כ מהבושם הזה?" 
-                                            dir="ltr"
-                                        />
-                                        <span className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xs">ml</span>
-                                    </div>
-                                    <p className="text-[10px] text-gray-400 mt-1">המלאי יקטן אוטומטית בכל הזמנה.</p>
-                                </div>
                             </div>
 
                             <div>
