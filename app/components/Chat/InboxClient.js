@@ -28,7 +28,10 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
             if (role === 'buyer') {
                 try {
                     const res = await fetch('/api/user/orders');
-                    if (res.ok) setOrders(await res.json());
+                    if (res.ok) {
+                        const data = await res.json();
+                        if (Array.isArray(data)) setOrders(data);
+                    }
                 } catch(e) {}
             }
             // Fetch catalog info for icons/names if needed
@@ -36,9 +39,11 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
                 const catRes = await fetch('/api/catalogs-info');
                 if (catRes.ok) {
                     const cData = await catRes.json();
-                    const map = {};
-                    cData.forEach(c => map[c.id] = c);
-                    setCatalogsData(map);
+                    if (Array.isArray(cData)) {
+                        const map = {};
+                        cData.forEach(c => map[c.id] = c);
+                        setCatalogsData(map);
+                    }
                 }
             } catch(e) {}
             
