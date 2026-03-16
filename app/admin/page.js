@@ -530,23 +530,40 @@ export default async function AdminDashboard() {
                 </div>
 
                 {/* Bottle Inventory */}
-                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 relative overflow-hidden group hover:shadow-md transition-shadow flex flex-col justify-between">
+                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 relative overflow-hidden group hover:shadow-md transition-shadow">
                     <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-amber-500 to-orange-500"></div>
-                    <div>
-                        <div className="text-gray-500 text-sm font-bold uppercase mb-4 flex items-center gap-2">
+                    <div className="flex justify-between items-start mb-2">
+                        <div className="text-gray-500 text-sm font-bold uppercase flex items-center gap-2">
                             <Package className="w-4 h-4 text-amber-500" />
                             מלאי בקבוקונים פנוי
                         </div>
-                        <div className="grid grid-cols-2 gap-x-4 gap-y-2">
-                            {kpis.bottleInventory && kpis.bottleInventory.map(item => (
-                                <div key={item.size} className="flex justify-between items-center border-b border-gray-50 pb-1 last:border-0 md:last:border-b">
-                                    <span className="font-bold text-gray-600 text-xs">{item.size === 11 ? '10 ספיישל' : `${item.size} מ"ל`}</span>
-                                    <span className={`font-mono font-bold text-sm ${item.quantity < 20 ? 'text-red-600' : 'text-green-600'}`}>
+                    </div>
+
+                    <div className="flex items-baseline gap-2 mb-4">
+                        <span className="text-4xl font-bold text-gray-900">
+                            {kpis.bottleInventory.reduce((acc, item) => acc + parseInt(item.quantity || 0), 0)}
+                        </span>
+                        <span className="text-xs text-gray-400 font-bold uppercase">בקבוקונים</span>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-2">
+                        {kpis.bottleInventory && kpis.bottleInventory.map(item => {
+                            const sizeLabel = item.size === 11 ? 'יוקרתי' : `${item.size} מ"ל`;
+                            // Choose a color theme based on size for consistency
+                            const theme = item.size === 2 ? 'bg-amber-50/50 border-amber-100 text-amber-700' :
+                                          item.size === 5 ? 'bg-orange-50/50 border-orange-100 text-orange-700' :
+                                          item.size === 10 ? 'bg-yellow-50/50 border-yellow-100 text-yellow-700' :
+                                          'bg-emerald-50/50 border-emerald-100 text-emerald-700';
+
+                            return (
+                                <div key={item.size} className={`flex flex-col items-center p-2 rounded-xl border ${theme}`}>
+                                    <span className="text-[9px] font-bold mb-1">{sizeLabel}</span>
+                                    <span className={`font-black text-base leading-none ${item.quantity < 20 ? 'text-red-600' : ''}`}>
                                         {item.quantity}
                                     </span>
                                 </div>
-                            ))}
-                        </div>
+                            );
+                        })}
                     </div>
                     <div className="text-[10px] text-gray-400 mt-4 text-center border-t border-gray-50 pt-3">
                         <Link href="/admin/inventory" className="text-blue-500 hover:underline font-bold transition-all">לניהול המלאי המלא ←</Link>
