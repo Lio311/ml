@@ -1,10 +1,26 @@
 "use client";
-
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { SignOutButton } from "@clerk/nextjs";
 export default function AdminSidebar({ role = 'customer' }) {
     const pathname = usePathname();
+    const [unreadCount, setUnreadCount] = useState(0);
+
+    useEffect(() => {
+        const fetchUnread = async () => {
+            try {
+                const res = await fetch('/api/inbox/unread-count');
+                if (res.ok) {
+                    const data = await res.json();
+                    setUnreadCount(data.count);
+                }
+            } catch (err) {}
+        };
+        fetchUnread();
+        const interval = setInterval(fetchUnread, 30000);
+        return () => clearInterval(interval);
+    }, []);
 
     const isActive = (path) => pathname === path;
 
@@ -44,12 +60,17 @@ export default function AdminSidebar({ role = 'customer' }) {
                         <Link
                             key={item.href}
                             href={item.href}
-                            className={`block p-2 rounded transition-colors ${isActive(item.href)
+                            className={`flex justify-between items-center p-2 rounded transition-colors ${isActive(item.href)
                                 ? "bg-white text-black font-bold"
                                 : "hover:bg-gray-800 text-gray-300"
                                 }`}
                         >
-                            {item.label}
+                            <span>{item.label}</span>
+                            {item.href.includes('inbox') && unreadCount > 0 && (
+                                <span className="bg-red-600 text-white text-[10px] px-2 py-0.5 rounded-full">
+                                    {unreadCount}
+                                </span>
+                            )}
                         </Link>
                     ))}
                 </div>

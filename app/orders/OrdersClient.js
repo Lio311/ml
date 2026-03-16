@@ -46,6 +46,9 @@ export default function OrdersClient() {
 
         fetchOrders();
         fetchUnreadCount();
+        
+        const interval = setInterval(fetchUnreadCount, 30000); // Poll every 30s
+        return () => clearInterval(interval);
     }, [isLoaded, isSignedIn]);
 
     if (!isLoaded) return <div className="py-20 text-center">טוען...</div>;

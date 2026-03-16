@@ -7,16 +7,23 @@ export async function GET(req) {
         const { userId } = getAuth(req);
         if (!userId) return new NextResponse('Unauthorized', { status: 401 });
 
-        // Count all unread messages in conversations where the user is participant1
-        // and the sender is NOT the user (meaning it's from admin/seller)
+        // Get user role for admin check
+        const userRes = await pool.query('SELECT role FROM users WHERE id = $1', [userId]);
+        const isAdmin = userRes.rows[0]?.role === 'admin';
+
+        // Count all unread messages where user is participant, or where participant2 is 'admin' and user is admin
         const { rows } = await pool.query(`
             SELECT COUNT(*) as total_unread
             FROM messages m
             JOIN conversations c ON m.conversation_id = c.id
-            WHERE (c.participant1_id = $1 OR c.participant2_id = $1 OR (c.participant2_id = 'admin' AND $2 = 'admin_placeholder'))
+            WHERE (
+                c.participant1_id = $1 
+                OR c.participant2_id = $1 
+                OR ($2 = true AND c.participant2_id = 'admin')
+            )
             AND m.sender_id != $1
             AND m.is_read = false
-        `, [userId, userId]);
+        `, [userId, isAdmin]);
 
         const count = rows[0]?.total_unread || 0;
 
