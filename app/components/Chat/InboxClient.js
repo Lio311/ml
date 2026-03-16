@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from 'react';
+import OrderReviewPrompt from '../OrderReviewPrompt';
 import { Reply, User as UserIcon, Loader2, MessageSquare, Search, Store, Package, ExternalLink, Image as ImageIcon } from 'lucide-react';
 import { useUser } from '@clerk/nextjs';
 import toast from 'react-hot-toast';

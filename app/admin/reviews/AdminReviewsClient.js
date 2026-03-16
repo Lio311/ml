@@ -110,6 +110,14 @@ export default function AdminReviewsClient({ initialReviews = [] }) {
                                     <p className="text-gray-700 text-sm leading-relaxed italic line-clamp-2 md:line-clamp-none">
                                         "{review.content}"
                                     </p>
+                                    <div className="flex items-center gap-1 mt-2">
+                                        {[1, 2, 3, 4, 5].map((s) => (
+                                            <Star 
+                                                key={s} 
+                                                className={`w-3 h-3 ${s <= (review.rating || 5) ? 'fill-amber-400 text-amber-400' : 'text-gray-200'}`} 
+                                            />
+                                        ))}
+                                    </div>
                                     <div className="flex items-center gap-3 mt-2">
                                         <div className="text-[10px] bg-gray-100 px-2 py-0.5 rounded-full font-bold text-gray-500 flex items-center gap-1">
                                             הזמנה #{review.order_id}
