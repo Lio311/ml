@@ -110,6 +110,19 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
         }
     };
 
+    const markAsRead = async (convId) => {
+        if (!convId || convId === 'new' || String(convId).startsWith('order_')) return;
+        try {
+            await fetch(`/api/inbox/${convId}/read`, { method: 'PATCH' });
+            // Update counts locally
+            setConversations(prev => prev.map(c => 
+                c.id === convId ? { ...c, unread_count: 0 } : c
+            ));
+        } catch (err) {
+            console.error("Failed to mark as read", err);
+        }
+    };
+
     const fetchOrderDetails = async (orderId) => {
         if (!orderId || orderData[orderId]) return;
         setIsLoadingOrder(true);

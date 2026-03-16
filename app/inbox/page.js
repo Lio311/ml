@@ -4,10 +4,11 @@ export const metadata = {
     title: "תיבת הודעות | ml_tlv",
 };
 
-export default function InboxPage({ searchParams }) {
-    // Next.js 13+ app directory allows reading searchParams in page components directly
-    const orderId = searchParams.order_id || null;
-    const catalogId = searchParams.catalog_id || null;
+export default async function InboxPage({ searchParams }) {
+    // Next.js 13+ app directory requires awaiting searchParams if it's a Promise (especially in v15+)
+    const sParams = await searchParams;
+    const orderId = sParams.order_id || null;
+    const catalogId = sParams.catalog_id || null;
 
     return (
         <div className="container py-12 max-w-5xl">
