@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation";
 import TagInput from "../../components/TagInput";
 import CustomDropdown from "../../components/ui/CustomDropdown";
 import { X, Package, Gift } from "lucide-react";
+import InboxClient from "../../components/Chat/InboxClient";
 
 function OrdersTab({ catalogId }) {
     const [orders, setOrders] = useState([]);
@@ -598,6 +599,12 @@ export default function CatalogManagerClient({ catalogId }) {
                     className={`px-6 py-3 font-bold text-sm whitespace-nowrap border-b-2 transition-colors ${activeTab === 'orders' ? 'border-black text-black' : 'border-transparent text-gray-500 hover:text-gray-900'}`}
                 >
                     הזמנות
+                </button>
+                <button 
+                    onClick={() => setActiveTab('inbox')} 
+                    className={`px-6 py-3 font-bold text-sm whitespace-nowrap border-b-2 transition-colors ${activeTab === 'inbox' ? 'border-black text-black' : 'border-transparent text-gray-500 hover:text-gray-900'}`}
+                >
+                    תיבת דואר
                 </button>
             </div>
 
@@ -1249,11 +1256,19 @@ export default function CatalogManagerClient({ catalogId }) {
             </div>
             )}
 
-            {/* Orders Tab Placeholder */}
+            {/* Orders Tab */}
             {activeTab === 'orders' && (
-                <OrdersTab catalogId={catalogId} />
+                <div className="animate-fade-in">
+                    <OrdersTab catalogId={catalogId} />
+                </div>
             )}
 
+            {/* Inbox Tab */}
+            {activeTab === 'inbox' && (
+                <div className="animate-fade-in mt-6">
+                    <InboxClient role="seller" catalogId={catalogId} />
+                </div>
+            )}
 
             {/* Confirm Modal */}
             {confirmModal.isOpen && (

@@ -1,0 +1,299 @@
+"use client";
+
+import { useState, useEffect, useRef } from 'react';
+import { Send, User as UserIcon, Loader2, MessageSquare, Search, Store } from 'lucide-react';
+import { useUser } from '@clerk/nextjs';
+import toast from 'react-hot-toast';
+
+export default function InboxClient({ role = 'buyer', catalogId = null, preSelectConversationWith = null }) {
+    const { user, isLoaded } = useUser();
+    const [conversations, setConversations] = useState([]);
+    const [messages, setMessages] = useState([]);
+    const [activeConvId, setActiveConvId] = useState(null);
+    const [newMessage, setNewMessage] = useState("");
+    const [isLoading, setIsLoading] = useState(true);
+    const [isSending, setIsSending] = useState(false);
+    const [searchQuery, setSearchQuery] = useState("");
+    const messagesEndRef = useRef(null);
+
+    const scrollToBottom = () => {
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    };
+
+    useEffect(() => {
+        if (!isLoaded || !user) return;
+        fetchConversations();
+    }, [isLoaded, user]);
+
+    useEffect(() => {
+        scrollToBottom();
+    }, [messages]);
+
+    useEffect(() => {
+        if (activeConvId) {
+            fetchMessages(activeConvId);
+            const interval = setInterval(() => fetchMessages(activeConvId, true), 5000); // Poll every 5s
+            return () => clearInterval(interval);
+        }
+    }, [activeConvId]);
+
+    const fetchConversations = async () => {
+        try {
+            let url = '/api/inbox';
+            if (role === 'admin') url += '?as_admin=true';
+            if (role === 'seller' && catalogId) url += `?catalog_id=${catalogId}`;
+
+            const res = await fetch(url);
+            if (res.ok) {
+                const data = await res.json();
+                setConversations(data);
+                
+                // If we need to start a chat with someone specific (e.g. from generic Contact Seller button)
+                if (preSelectConversationWith && data.length === 0) {
+                    // Start an optimistic conversation state if none exists
+                    setConversations([{
+                        id: 'new',
+                        participant1_id: user.id,
+                        participant2_id: role === 'buyer' && !catalogId ? 'admin' : preSelectConversationWith,
+                        catalog_id: catalogId || null,
+                        last_message: "התחל שיחה חדשה...",
+                        unread_count: 0
+                    }]);
+                    setActiveConvId('new');
+                } else if (data.length > 0 && !activeConvId) {
+                    setActiveConvId(data[0].id);
+                }
+            }
+        } catch (error) {
+            console.error("Failed to fetch conversations", error);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    const fetchMessages = async (convId, isPolling = false) => {
+        if (convId === 'new') return;
+        try {
+            const res = await fetch(`/api/inbox/${convId}/messages`);
+            if (res.ok) {
+                const data = await res.json();
+                setMessages(data);
+                
+                // Mark as read if not polling or if there are unread
+                fetch(`/api/inbox/${convId}/read`, { method: 'PATCH' });
+                
+                // Update unread count locally
+                setConversations(prev => prev.map(c => 
+                    c.id === convId ? { ...c, unread_count: 0 } : c
+                ));
+            }
+        } catch (error) {
+            console.error("Failed to fetch messages", error);
+        }
+    };
+
+    const handleSendMessage = async (e) => {
+        e.preventDefault();
+        if (!newMessage.trim()) return;
+
+        setIsSending(true);
+        try {
+            const participant2 = role === 'buyer' && !catalogId ? 'admin' : null;
+
+            const res = await fetch('/api/inbox', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    participant2_id: participant2,
+                    catalog_id: catalogId,
+                    content: newMessage
+                })
+            });
+
+            if (res.ok) {
+                const sentMsg = await res.json();
+                setNewMessage("");
+                
+                // If this was a new conversation, we need to refresh to get the real ID
+                if (activeConvId === 'new') {
+                    await fetchConversations();
+                } else {
+                    setMessages(prev => [...prev, sentMsg]);
+                    setConversations(prev => prev.map(c => 
+                        c.id === activeConvId ? { ...c, last_message: sentMsg.content, last_message_time: sentMsg.created_at } : c
+                    ).sort((a,b) => new Date(b.last_message_time || 0) - new Date(a.last_message_time || 0)));
+                }
+            } else {
+                toast.error("שגיאה בשליחת הודעה");
+            }
+        } catch (error) {
+            toast.error("שגיאה בשליחת הודעה");
+        } finally {
+            setIsSending(false);
+        }
+    };
+
+    const activeConversation = conversations.find(c => c.id === activeConvId);
+
+    const getChatName = (conv) => {
+        if (role === 'admin') return "לקוח (ID: " + conv.participant1_id.slice(-4) + ")";
+        if (role === 'seller') return "לקוח (ID: " + conv.participant1_id.slice(-4) + ")";
+        if (role === 'buyer') {
+            if (conv.catalog_id) return "חנות משתמש (" + conv.catalog_id + ")";
+            return "ML_TLV (צוות האתר)";
+        }
+        return "שיחה אישית";
+    };
+
+    if (!isLoaded || isLoading) return <div className="py-20 text-center"><Loader2 className="w-8 h-8 animate-spin mx-auto text-gray-400" /></div>;
+
+    const filteredConversations = conversations.filter(c => getChatName(c).toLowerCase().includes(searchQuery.toLowerCase()));
+
+    return (
+        <div className="flex h-[calc(100vh-200px)] min-h-[500px] border border-gray-200 rounded-2xl overflow-hidden bg-white shadow-sm font-sans" dir="rtl">
+            {/* Sidebar (Conversations List) */}
+            <div className={`w-full md:w-1/3 bg-gray-50 border-l border-gray-200 flex flex-col ${activeConvId ? 'hidden md:flex' : 'flex'}`}>
+                <div className="p-4 border-b border-gray-200 bg-white">
+                    <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+                        <MessageSquare className="w-5 h-5 text-black" />
+                        תיבת דואר
+                    </h2>
+                    <div className="relative">
+                        <Search className="w-4 h-4 text-gray-400 absolute right-3 top-1/2 -translate-y-1/2" />
+                        <input
+                            type="text"
+                            placeholder="חיפוש שיחה..."
+                            value={searchQuery}
+                            onChange={(e) => setSearchQuery(e.target.value)}
+                            className="w-full pl-3 pr-10 py-2 bg-gray-100 border-transparent rounded-xl text-sm focus:bg-white focus:border-black focus:ring-0 transition outline-none"
+                        />
+                    </div>
+                </div>
+
+                <div className="flex-1 overflow-y-auto">
+                    {filteredConversations.length === 0 ? (
+                        <div className="p-8 text-center text-gray-400 text-sm">
+                            {searchQuery ? "לא נמצאו שיחות תואמות." : "אין לך הודעות כרגע."}
+                        </div>
+                    ) : (
+                        filteredConversations.map(conv => (
+                            <button
+                                key={conv.id}
+                                onClick={() => setActiveConvId(conv.id)}
+                                className={`w-full text-right p-4 border-b border-gray-100 hover:bg-gray-100 transition flex items-center gap-3 ${activeConvId === conv.id ? 'bg-blue-50/50 relative' : ''}`}
+                            >
+                                {activeConvId === conv.id && <div className="absolute right-0 top-0 bottom-0 w-1 bg-black rounded-r-full" />}
+                                
+                                <div className="w-12 h-12 rounded-full bg-gray-200 flex-shrink-0 flex items-center justify-center overflow-hidden border border-gray-300">
+                                    {role === 'buyer' && !conv.catalog_id ? (
+                                        <div className="text-xl font-bold text-gray-500">M</div>
+                                    ) : role === 'buyer' && conv.catalog_id ? (
+                                        <Store className="w-6 h-6 text-gray-500" />
+                                    ) : (
+                                        <UserIcon className="w-6 h-6 text-gray-500" />
+                                    )}
+                                </div>
+                                
+                                <div className="flex-1 min-w-0">
+                                    <div className="flex justify-between items-baseline mb-1">
+                                        <h3 className={`font-bold text-sm truncate ${conv.unread_count > 0 ? 'text-black' : 'text-gray-800'}`}>
+                                            {getChatName(conv)}
+                                        </h3>
+                                        <span className="text-[10px] text-gray-400 font-medium">
+                                            {conv.last_message_time ? new Date(conv.last_message_time).toLocaleDateString('he-IL') : ''}
+                                        </span>
+                                    </div>
+                                    <p className={`text-xs truncate ${conv.unread_count > 0 ? 'text-black font-semibold' : 'text-gray-500'}`}>
+                                        {conv.last_message || "התחל שיחה חדשה..."}
+                                    </p>
+                                </div>
+
+                                {conv.unread_count > 0 && (
+                                    <div className="w-5 h-5 bg-blue-600 text-white text-[10px] font-bold flex items-center justify-center rounded-full shadow-sm">
+                                        {conv.unread_count}
+                                    </div>
+                                )}
+                            </button>
+                        ))
+                    )}
+                </div>
+            </div>
+
+            {/* Main Chat Area */}
+            <div className={`flex-1 flex flex-col bg-white ${!activeConvId ? 'hidden md:flex items-center justify-center' : 'flex'}`}>
+                {!activeConvId ? (
+                    <div className="text-center text-gray-400">
+                        <MessageSquare className="w-16 h-16 mx-auto mb-4 opacity-20" />
+                        <p>בחר שיחה מהרשימה כדי להתחיל</p>
+                    </div>
+                ) : (
+                    <>
+                        {/* Chat Header */}
+                        <div className="p-4 border-b border-gray-200 bg-white flex items-center gap-3 shadow-sm z-10">
+                            <button className="md:hidden text-gray-500 p-2 ml-2 bg-gray-100 rounded-full" onClick={() => setActiveConvId(null)}>
+                                חזור
+                            </button>
+                            <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden border border-gray-300">
+                                {role === 'buyer' && !activeConversation?.catalog_id ? (
+                                    <div className="text-lg font-bold text-gray-500">M</div>
+                                ) : role === 'buyer' && activeConversation?.catalog_id ? (
+                                    <Store className="w-5 h-5 text-gray-500" />
+                                ) : (
+                                    <UserIcon className="w-5 h-5 text-gray-500" />
+                                )}
+                            </div>
+                            <div>
+                                <h2 className="font-bold text-gray-800">{activeConversation ? getChatName(activeConversation) : '...'}</h2>
+                                <p className="text-xs text-green-600 font-medium">זמין כעת</p>
+                            </div>
+                        </div>
+
+                        {/* Messages Area */}
+                        <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50/30">
+                            {messages.map((msg, idx) => {
+                                const isCurrentUser = msg.sender_id === user?.id;
+
+                                return (
+                                    <div key={idx} className={`flex ${isCurrentUser ? 'justify-start' : 'justify-end'}`}>
+                                        <div className={`max-w-[70%] rounded-2xl px-4 py-2 text-sm shadow-sm ${
+                                            isCurrentUser 
+                                            ? 'bg-black text-white rounded-tr-none' 
+                                            : 'bg-gray-200 text-gray-900 rounded-tl-none'
+                                        }`}>
+                                            <p className="whitespace-pre-wrap leading-relaxed">{msg.content}</p>
+                                            <span className={`text-[10px] mt-1 block ${isCurrentUser ? 'text-gray-400' : 'text-gray-500'}`}>
+                                                {new Date(msg.created_at).toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' })}
+                                            </span>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                            <div ref={messagesEndRef} />
+                        </div>
+
+                        {/* Input Area */}
+                        <div className="p-4 bg-white border-t border-gray-200">
+                            <form onSubmit={handleSendMessage} className="flex items-center gap-2 relative">
+                                <input
+                                    type="text"
+                                    value={newMessage}
+                                    onChange={(e) => setNewMessage(e.target.value)}
+                                    placeholder="הקלד הודעה..."
+                                    className="flex-1 pl-12 pr-4 py-3 bg-gray-100 hover:bg-gray-200 focus:bg-white border focus:border-black rounded-full outline-none transition-all text-sm shadow-inner"
+                                    disabled={isSending}
+                                />
+                                <button
+                                    type="submit"
+                                    disabled={!newMessage.trim() || isSending}
+                                    className="absolute left-1 top-1/2 -translate-y-1/2 w-10 h-10 bg-black text-white rounded-full flex items-center justify-center hover:bg-gray-800 disabled:opacity-50 transition shadow-md"
+                                >
+                                    {isSending ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-4 h-4 ml-1" />}
+                                </button>
+                            </form>
+                        </div>
+                    </>
+                )}
+            </div>
+        </div>
+    );
+}

@@ -5,7 +5,7 @@ import { useUser } from '@clerk/nextjs';
 import Link from 'next/link';
 import { useCart } from '../context/CartContext';
 import OrderStatusTimeline from '../components/OrderStatusTimeline';
-import { MapPin, Package, Gift, RefreshCw } from 'lucide-react';
+import { MapPin, Package, Gift, RefreshCw, MessageSquare } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 
 export default function OrdersClient() {
@@ -49,7 +49,12 @@ export default function OrdersClient() {
 
     return (
         <div className="container py-12 max-w-4xl">
-            <h1 className="text-3xl font-bold mb-8">ההזמנות שלי</h1>
+            <div className="flex justify-between items-center mb-8">
+                <h1 className="text-3xl font-bold">ההזמנות שלי</h1>
+                <Link href="/inbox" className="p-2 bg-gray-100 hover:bg-gray-200 rounded-full transition relative" title="תיבת הודעות">
+                    <MessageSquare className="w-6 h-6 text-gray-700" />
+                </Link>
+            </div>
 
             {orders.length === 0 ? (
                 <div className="text-center py-12 bg-gray-50 rounded-lg">
@@ -131,21 +136,29 @@ export default function OrdersClient() {
                                                     }, item.size, item.price);
                                                     toast.success('המוצר נוסף לסל בהצלחה!');
                                                 }}
-                                                className="text-xs bg-black text-white px-3 py-1.5 rounded hover:bg-gray-800 transition shadow-sm flex items-center gap-1.5"
+                                                className="text-xs bg-black text-white px-3 py-1.5 rounded hover:bg-gray-800 transition shadow-sm flex items-center gap-1.5 w-full justify-center"
                                             >
                                                 הזמן שוב <RefreshCw className="w-3.5 h-3.5" />
                                             </button>
+                                            
                                         </div>
                                     </div>
                                 ))}
                             </div>
-
-                            {order.free_samples_count > 0 && (
-                                <div className="mt-4 text-sm text-black flex items-center gap-2 font-bold bg-gray-50 p-3 rounded-lg border border-gray-100">
-                                    <Gift className="w-4 h-4 text-amber-500" />
-                                    כולל {order.free_samples_count} דוגמיות מתנה
-                                </div>
-                            )}
+                            
+                            <div className="mt-4 pt-4 border-t flex justify-between items-center">
+                                <Link href="/inbox" className="text-xs text-blue-600 hover:text-blue-800 font-bold flex items-center gap-1">
+                                    <MessageSquare className="w-3.5 h-3.5" />
+                                    צור קשר מול המוכר בנידון ההזמנה
+                                </Link>
+                                
+                                {order.free_samples_count > 0 && (
+                                    <div className="text-sm text-black flex items-center gap-2 font-bold bg-gray-50 px-3 py-1.5 rounded-lg border border-gray-100">
+                                        <Gift className="w-4 h-4 text-amber-500" />
+                                        כולל {order.free_samples_count} דוגמיות
+                                    </div>
+                                )}
+                            </div>
                         </div>
                     ))}
                 </div>

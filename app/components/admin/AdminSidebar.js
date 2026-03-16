@@ -10,6 +10,7 @@ export default function AdminSidebar({ role = 'customer' }) {
 
     const allNavItems = [
         { href: "/admin", label: "🏠 דשבורד", roles: ['admin', 'deputy'] },
+        { href: "/admin/inbox", label: "💬 תיבת דואר", roles: ['admin', 'deputy'] },
         { href: "/admin/orders", label: "📦 ניהול הזמנות", roles: ['admin', 'deputy', 'warehouse'] },
         { href: "/admin/users", label: "👥 ניהול משתמשים", roles: ['admin', 'deputy'] },
         { href: "/admin/inventory", label: "🧪 ניהול בקבוקונים", roles: ['admin', 'deputy'] },
