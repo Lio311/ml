@@ -110,12 +110,11 @@ export default async function AdminDashboard() {
             pool.query('SELECT * FROM orders ORDER BY created_at DESC LIMIT 3'),
             // 2. Total Orders Count
             pool.query('SELECT COUNT(*) FROM orders'),
-            // 3. Total Monthly Revenue
+            // 3. Total Yearly Revenue
             safeQuery(`
                 SELECT SUM(total_amount) FROM orders 
                 WHERE status != 'cancelled'
                 AND catalog_id IS NULL
-                AND EXTRACT(MONTH FROM created_at) = EXTRACT(MONTH FROM CURRENT_DATE)
                 AND EXTRACT(YEAR FROM created_at) = EXTRACT(YEAR FROM CURRENT_DATE)
             `),
             // 4. Total Samples Sold
@@ -143,41 +142,38 @@ export default async function AdminDashboard() {
                  )
                  GROUP BY size
             `),
-            // 6. Monthly Expenses
+            // 6. Yearly Expenses (Monthly Type)
             safeQuery(`
                 SELECT SUM(amount) FROM expenses 
                 WHERE type = 'monthly'
-                AND EXTRACT(MONTH FROM date) = EXTRACT(MONTH FROM CURRENT_DATE)
                 AND EXTRACT(YEAR FROM date) = EXTRACT(YEAR FROM CURRENT_DATE)
             `),
-            // 7. Yearly Expenses
+            // 7. Yearly Expenses (Yearly Type)
             safeQuery("SELECT SUM(amount) FROM expenses WHERE type = 'yearly'"),
             // 8. Bottle Inventory
             safeQuery('SELECT size, quantity FROM bottle_inventory ORDER BY size ASC'),
             // 9. Total Users
             safeQuery('SELECT COUNT(*) FROM users'),
-            // 10. Users Graph (Current)
+            // 10. Users yearly Graph (Current)
             safeQuery(`
                 SELECT 
-                    EXTRACT(DAY FROM created_at)::int as day,
+                    EXTRACT(MONTH FROM created_at)::int as month,
                     COUNT(*)::int as count
                 FROM users
-                WHERE EXTRACT(MONTH FROM created_at) = $1
-                AND EXTRACT(YEAR FROM created_at) = $2
-                GROUP BY day
-                ORDER BY day
-            `, [month, year]),
-            // 11. Users Graph (Previous)
+                WHERE EXTRACT(YEAR FROM created_at) = $1
+                GROUP BY month
+                ORDER BY month
+            `, [year]),
+            // 11. Users yearly Graph (Previous Year)
             safeQuery(`
                 SELECT 
-                    EXTRACT(DAY FROM created_at)::int as day,
+                    EXTRACT(MONTH FROM created_at)::int as month,
                     COUNT(*)::int as count
                 FROM users
-                WHERE EXTRACT(MONTH FROM created_at) = $1
-                AND EXTRACT(YEAR FROM created_at) = $2
-                GROUP BY day
-                ORDER BY day
-            `, [prevMonth, prevYear]),
+                WHERE EXTRACT(YEAR FROM created_at) = $1
+                GROUP BY month
+                ORDER BY month
+            `, [year - 1]),
             // 12. Forecast Data (Last 30 Days Orders)
             safeQuery(`
                 SELECT items FROM orders 
@@ -185,72 +181,66 @@ export default async function AdminDashboard() {
                 AND catalog_id IS NULL
                 AND created_at > NOW() - INTERVAL '30 days'
             `),
-            // 13. Monthly Orders (For Profit Calc)
+            // 13. Yearly Orders (For Statistics)
             safeQuery(`
-                SELECT total_amount, items FROM orders 
+                SELECT total_amount, items, created_at FROM orders 
                 WHERE status != 'cancelled' 
                 AND catalog_id IS NULL
-                AND EXTRACT(MONTH FROM created_at) = EXTRACT(MONTH FROM CURRENT_DATE)
                 AND EXTRACT(YEAR FROM created_at) = EXTRACT(YEAR FROM CURRENT_DATE)
             `),
             // 14. Products (For Cost Calculation)
             safeQuery('SELECT id, cost_price, original_size FROM products'),
-            // 15. Monthly Visits (KPI)
+            // 15. Yearly Visits (KPI)
             safeQuery(`
                 SELECT COUNT(*) FROM site_visits 
-                WHERE EXTRACT(MONTH FROM created_at) = EXTRACT(MONTH FROM CURRENT_DATE) 
-                AND EXTRACT(YEAR FROM created_at) = EXTRACT(YEAR FROM CURRENT_DATE)
+                WHERE EXTRACT(YEAR FROM created_at) = EXTRACT(YEAR FROM CURRENT_DATE)
             `),
-            // 16. Orders Chart (Current)
+            // 16. Orders Chart (Yearly - By Month)
             safeQuery(`
                 SELECT 
-                    EXTRACT(DAY FROM created_at) as day,
+                    EXTRACT(MONTH FROM created_at) as month,
                     COUNT(*) as orders,
                     SUM(total_amount) as revenue
                 FROM orders
                 WHERE status != 'cancelled'
                 AND catalog_id IS NULL
-                AND EXTRACT(MONTH FROM created_at) = $1
-                AND EXTRACT(YEAR FROM created_at) = $2
-                GROUP BY day
-                ORDER BY day
-            `, [month, year]),
-            // 17. Orders Chart (Previous)
+                AND EXTRACT(YEAR FROM created_at) = $1
+                GROUP BY month
+                ORDER BY month
+            `, [year]),
+            // 17. Orders Chart (Previous Year - By Month)
             safeQuery(`
                 SELECT 
-                    EXTRACT(DAY FROM created_at) as day,
+                    EXTRACT(MONTH FROM created_at) as month,
                     COUNT(*) as orders,
                     SUM(total_amount) as revenue
                 FROM orders
                 WHERE status != 'cancelled'
                 AND catalog_id IS NULL
-                AND EXTRACT(MONTH FROM created_at) = $1
-                AND EXTRACT(YEAR FROM created_at) = $2
-                GROUP BY day
-                ORDER BY day
-            `, [prevMonth, prevYear]),
-            // 18. Visits Chart (Current)
+                AND EXTRACT(YEAR FROM created_at) = $1
+                GROUP BY month
+                ORDER BY month
+            `, [year - 1]),
+            // 18. Visits Chart (Yearly - By Month)
             safeQuery(`
                 SELECT 
-                    EXTRACT(DAY FROM created_at) as day,
+                    EXTRACT(MONTH FROM created_at) as month,
                     COUNT(*) as count
                 FROM site_visits
-                WHERE EXTRACT(MONTH FROM created_at) = $1
-                AND EXTRACT(YEAR FROM created_at) = $2
-                GROUP BY day
-                ORDER BY day
-            `, [month, year]),
-            // 19. Visits Chart (Previous)
+                WHERE EXTRACT(YEAR FROM created_at) = $1
+                GROUP BY month
+                ORDER BY month
+            `, [year]),
+            // 19. Visits Chart (Previous Year - By Month)
             safeQuery(`
                 SELECT 
-                    EXTRACT(DAY FROM created_at) as day,
+                    EXTRACT(MONTH FROM created_at) as month,
                     COUNT(*) as count
                 FROM site_visits
-                WHERE EXTRACT(MONTH FROM created_at) = $1
-                AND EXTRACT(YEAR FROM created_at) = $2
-                GROUP BY day
-                ORDER BY day
-            `, [prevMonth, prevYear]),
+                WHERE EXTRACT(YEAR FROM created_at) = $1
+                GROUP BY month
+                ORDER BY month
+            `, [year - 1]),
             // 20. Recent Coupons
             safeQuery(`
                 SELECT * FROM coupons 
@@ -312,10 +302,9 @@ export default async function AdminDashboard() {
         });
 
         // Expenses
-        const monthlySum = parseFloat(monthlyExpRes.rows[0]?.sum || 0);
+        const yearlyMonthlySum = parseFloat(monthlyExpRes.rows[0]?.sum || 0); // aggregated monthly type for year
         const yearlySum = parseFloat(yearlyExpRes.rows[0]?.sum || 0);
-        const totalMonthlyExpenses = monthlySum + (yearlySum / 12);
-        kpis.totalExpenses = Math.round(totalMonthlyExpenses);
+        kpis.totalExpenses = Math.round(yearlyMonthlySum + yearlySum);
 
         // Profit Calculation
         const productMap = {};
@@ -328,7 +317,7 @@ export default async function AdminDashboard() {
 
         const brandStats = {};
         const sizeStats = {};
-        let monthlyProfit = 0;
+        let currentYearProfit = 0;
 
         monthlyOrdersRes.rows.forEach(order => {
             const items = typeof order.items === 'string' ? JSON.parse(order.items) : order.items;
@@ -376,12 +365,12 @@ export default async function AdminDashboard() {
                 }
             });
 
-            monthlyProfit += (orderNetTotal - orderItemsCost);
+            currentYearProfit += (orderNetTotal - orderItemsCost);
         });
 
-        // Final Profit
-        monthlyProfit -= totalMonthlyExpenses;
-        kpis.monthlyProfit = Math.round(monthlyProfit);
+        // Final Profit (Current Year)
+        currentYearProfit -= kpis.totalExpenses;
+        kpis.monthlyProfit = Math.round(currentYearProfit); // Reusing variable to avoid breaking UI for now, but label will be yearly
 
         // Stats Ranking
         kpis.topBrands = Object.entries(brandStats)
@@ -394,39 +383,39 @@ export default async function AdminDashboard() {
             .sort((a, b) => b.sales - a.sales);
 
 
-        // Chart Mapping (Common Loop)
-        for (let i = 1; i <= daysInMonth; i++) {
+        // Chart Mapping (Yearly - 12 Months)
+        for (let m = 1; m <= 12; m++) {
             // Users
-            const curUserDay = userCurrentMonthRes.rows.find(r => Number(r.day) === i);
-            const prevUserDay = userPrevMonthRes.rows.find(r => Number(r.day) === i);
+            const curUserMonth = userCurrentMonthRes.rows.find(r => Number(r.month) === m);
+            const prevUserMonth = userPrevMonthRes.rows.find(r => Number(r.month) === m);
             usersChartData.push({
-                day: i,
-                current: curUserDay ? Number(curUserDay.count) : 0,
-                previous: prevUserDay ? Number(prevUserDay.count) : 0
+                month: m,
+                current: curUserMonth ? Number(curUserMonth.count) : 0,
+                previous: prevUserMonth ? Number(prevUserMonth.count) : 0
             });
 
             // Orders/Revenue
-            const curOrd = currentMonthRes.rows.find(r => parseInt(r.day) === i);
-            const prevOrd = prevMonthRes.rows.find(r => parseInt(r.day) === i);
+            const curOrd = currentMonthRes.rows.find(r => parseInt(r.month) === m);
+            const prevOrd = prevMonthRes.rows.find(r => parseInt(r.month) === m);
 
             // Visits
-            const curVis = currentMonthVisitsRes.rows.find(r => parseInt(r.day) === i);
-            const prevVis = prevMonthVisitsRes.rows.find(r => parseInt(r.day) === i);
+            const curVis = currentMonthVisitsRes.rows.find(r => parseInt(r.month) === m);
+            const prevVis = prevMonthVisitsRes.rows.find(r => parseInt(r.month) === m);
 
             kpis.visitsChartData.push({
-                day: i,
+                month: m,
                 current: curVis ? parseInt(curVis.count) : 0,
                 previous: prevVis ? parseInt(prevVis.count) : 0
             });
 
             kpis.orderChartData.push({
-                day: i,
+                month: m,
                 current: curOrd ? parseInt(curOrd.orders) : 0,
                 previous: prevOrd ? parseInt(prevOrd.orders) : 0
             });
 
             kpis.revenueChartData.push({
-                day: i,
+                month: m,
                 current: curOrd ? parseFloat(curOrd.revenue || 0) : 0,
                 previous: prevOrd ? parseFloat(prevOrd.revenue || 0) : 0
             });
@@ -470,11 +459,11 @@ export default async function AdminDashboard() {
     }
     // No finally{client.release()} needed! pool.query handles it.
 
-    const currentMonthLabel = new Date().toLocaleString('he-IL', { month: 'long' });
+    const currentYearLabel = new Date().getFullYear().toString();
 
     return (
         <div className="pb-8">
-            <h1 className="text-3xl font-bold mb-8">לוח בקרה</h1>
+            <h1 className="text-3xl font-bold mb-8">לוח בקרה - {currentYearLabel}</h1>
 
             <DashboardCharts
                 orderData={kpis.orderChartData}
@@ -487,7 +476,7 @@ export default async function AdminDashboard() {
             <AnalyticsTables
                 topBrands={kpis.topBrands}
                 topSizes={kpis.topSizes}
-                monthName={currentMonthLabel}
+                monthName={currentYearLabel}
             />
 
             {/* KPI Cards Grid */}
@@ -499,7 +488,7 @@ export default async function AdminDashboard() {
                     <div className="flex justify-between items-start mb-4">
                         <div className="text-gray-500 text-sm font-bold uppercase flex items-center gap-2">
                             <Wallet className="w-4 h-4 text-green-500" />
-                            תזרים ({currentMonthLabel})
+                            תזרים שנתי ({currentYearLabel})
                         </div>
                     </div>
                     <div className="space-y-3">
@@ -635,7 +624,7 @@ export default async function AdminDashboard() {
                         כניסות לאתר
                     </div>
                     <div className="text-xl font-bold mb-1 text-gray-900">
-                        {currentMonthLabel}: <span className="text-blue-600">{kpis.monthlyVisits}</span>
+                        שנתי ({currentYearLabel}): <span className="text-blue-600">{kpis.monthlyVisits}</span>
                     </div>
                     <div className="text-[10px] text-gray-400 font-medium italic">נספר לפי ביקורים ייחודיים</div>
                 </div>

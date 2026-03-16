@@ -27,9 +27,15 @@ const CustomLegend = ({ payload }) => {
 
 const CustomTooltip = ({ active, payload, label, prefix = "" }) => {
     if (active && payload && payload.length) {
+        const monthNames = [
+            "ינואר", "פברואר", "מרץ", "אפריל", "מאי", "יוני",
+            "יולי", "אוגוסט", "ספטמבר", "אוקטובר", "נובמבר", "דצמבר"
+        ];
+        const monthLabel = typeof label === 'number' ? monthNames[label - 1] : label;
+
         return (
             <div className="bg-white p-3 border rounded shadow-xl text-right z-50" dir="rtl">
-                <p className="font-bold mb-2 text-gray-800 border-b pb-1 text-sm">{`יום ${label} לחודש`}</p>
+                <p className="font-bold mb-2 text-gray-800 border-b pb-1 text-sm">{monthLabel}</p>
                 <div className="flex flex-col gap-1">
                     {payload.map((entry, index) => (
                         <div key={index} className="flex justify-between gap-4 items-center">
@@ -78,12 +84,15 @@ export default function DashboardCharts({ orderData, revenueData, visitsData, us
                         <LineChart data={leftChartMode === 'visits' ? visitsData : usersData} margin={{ top: 10, right: 10, left: -30, bottom: 0 }}>
                             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
                             <XAxis
-                                dataKey="day"
+                                dataKey="month"
                                 fontSize={9}
                                 tickLine={false}
                                 axisLine={false}
                                 tick={{ fill: '#9ca3af' }}
-                                tickCount={window?.innerWidth < 768 ? 6 : undefined}
+                                tickFormatter={(value) => {
+                                    const monthNames = ["ינו", "פבר", "מרץ", "אפר", "מאי", "יונ", "יול", "אוג", "ספט", "אוק", "נוב", "דצמ"];
+                                    return monthNames[value - 1] || value;
+                                }}
                             />
                             <YAxis
                                 fontSize={9}
@@ -98,7 +107,7 @@ export default function DashboardCharts({ orderData, revenueData, visitsData, us
                             {leftChartMode === 'visits' ? (
                                 <>
                                     <Line
-                                        name="החודש"
+                                        name="השנה"
                                         type="monotone"
                                         dataKey="current"
                                         stroke="#ef4444" 
@@ -108,7 +117,7 @@ export default function DashboardCharts({ orderData, revenueData, visitsData, us
                                         connectNulls
                                     />
                                     <Line
-                                        name="חודש קודם"
+                                        name="שנה קודמת"
                                         type="monotone"
                                         dataKey="previous"
                                         stroke="#f97316" 
@@ -122,7 +131,7 @@ export default function DashboardCharts({ orderData, revenueData, visitsData, us
                             ) : (
                                 <>
                                     <Line
-                                        name="החודש"
+                                        name="השנה"
                                         type="monotone"
                                         dataKey="current"
                                         stroke="#ef4444" 
@@ -132,7 +141,7 @@ export default function DashboardCharts({ orderData, revenueData, visitsData, us
                                         connectNulls
                                     />
                                     <Line
-                                        name="חודש קודם"
+                                        name="שנה קודמת"
                                         type="monotone"
                                         dataKey="previous"
                                         stroke="#f97316" 
@@ -175,12 +184,15 @@ export default function DashboardCharts({ orderData, revenueData, visitsData, us
                         <LineChart data={rightChartMode === 'revenue' ? revenueData : orderData} margin={{ top: 10, right: 10, left: -30, bottom: 0 }}>
                             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
                             <XAxis
-                                dataKey="day"
+                                dataKey="month"
                                 fontSize={9}
                                 tickLine={false}
                                 axisLine={false}
                                 tick={{ fill: '#9ca3af' }}
-                                tickCount={window?.innerWidth < 768 ? 6 : undefined}
+                                tickFormatter={(value) => {
+                                    const monthNames = ["ינו", "פבר", "מרץ", "אפר", "מאי", "יונ", "יול", "אוג", "ספט", "אוק", "נוב", "דצמ"];
+                                    return monthNames[value - 1] || value;
+                                }}
                             />
                             <YAxis
                                 fontSize={9}
@@ -193,7 +205,7 @@ export default function DashboardCharts({ orderData, revenueData, visitsData, us
                             <Tooltip content={<CustomTooltip prefix={rightChartMode === 'revenue' ? "₪" : ""} />} cursor={{ stroke: '#f3f4f6', strokeWidth: 2 }} />
                             <Legend content={<CustomLegend />} verticalAlign="bottom" align="center" />
                             <Line
-                                name="החודש"
+                                name="השנה"
                                 type="monotone"
                                 dataKey="current"
                                 stroke="#10b981" 
@@ -203,7 +215,7 @@ export default function DashboardCharts({ orderData, revenueData, visitsData, us
                                 connectNulls
                             />
                             <Line
-                                name="חודש קודם"
+                                name="שנה קודמת"
                                 type="monotone"
                                 dataKey="previous"
                                 stroke="#3b82f6" 
