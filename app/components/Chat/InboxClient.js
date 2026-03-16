@@ -15,6 +15,7 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
     const [isLoading, setIsLoading] = useState(true);
     const [isSending, setIsSending] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
+    const [catalogsData, setCatalogsData] = useState({});
     const messagesEndRef = useRef(null);
 
     const scrollToBottom = () => {
@@ -30,6 +31,17 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
                     if (res.ok) setOrders(await res.json());
                 } catch(e) {}
             }
+            // Fetch catalog info for icons/names if needed
+            try {
+                const catRes = await fetch('/api/catalogs-info');
+                if (catRes.ok) {
+                    const cData = await catRes.json();
+                    const map = {};
+                    cData.forEach(c => map[c.id] = c);
+                    setCatalogsData(map);
+                }
+            } catch(e) {}
+            
             await fetchConversations(true);
         };
         loadInitialData();
@@ -198,8 +210,11 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
         if (role === 'admin') name = "לקוח (ID: " + conv.participant1_id.slice(-4) + ")";
         else if (role === 'seller') name = "לקוח (ID: " + conv.participant1_id.slice(-4) + ")";
         else if (role === 'buyer') {
-            if (conv.catalog_id) name = "מוכר קטלוג (#" + conv.catalog_id + ")";
-            else name = "ML_TLV (הנהלת האתר)";
+            if (conv.catalog_id) {
+                name = catalogsData[conv.catalog_id]?.name || "מוכר קטלוג (#" + conv.catalog_id + ")";
+            } else {
+                name = "ml_tlv (הנהלת האתר)";
+            }
         }
 
         if (conv.order_id) {
@@ -250,10 +265,14 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
                                 {activeConvId === conv.id && <div className="absolute right-0 top-0 bottom-0 w-1 bg-black rounded-r-full" />}
                                 
                                 <div className="w-12 h-12 rounded-full bg-gray-200 flex-shrink-0 flex items-center justify-center overflow-hidden border border-gray-300">
-                                    {role === 'buyer' && !conv.catalog_id ? (
-                                        <div className="text-xl font-bold text-gray-500">M</div>
+                                    {(role === 'buyer' && !conv.catalog_id) || (role === 'seller' && conv.participant2_id === 'admin') ? (
+                                        <img src="/icon.png" alt="ml_tlv" className="w-full h-full object-cover" />
                                     ) : role === 'buyer' && conv.catalog_id ? (
-                                        <Store className="w-6 h-6 text-gray-500" />
+                                        catalogsData[conv.catalog_id]?.logo_url ? (
+                                            <img src={catalogsData[conv.catalog_id].logo_url} alt="Store" className="w-full h-full object-cover" />
+                                        ) : (
+                                            <Store className="w-6 h-6 text-gray-500" />
+                                        )
                                     ) : (
                                         <UserIcon className="w-6 h-6 text-gray-500" />
                                     )}
@@ -298,11 +317,15 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
                             <button className="md:hidden text-gray-500 p-2 ml-2 bg-gray-100 rounded-full" onClick={() => setActiveConvId(null)}>
                                 חזור
                             </button>
-                            <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden border border-gray-300">
-                                {role === 'buyer' && !activeConversation?.catalog_id ? (
-                                    <div className="text-lg font-bold text-gray-500">M</div>
+                            <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center overflow-hidden border border-gray-300 flex-shrink-0">
+                                {(role === 'buyer' && !activeConversation?.catalog_id) || (role === 'seller' && activeConversation?.participant2_id === 'admin') ? (
+                                    <img src="/icon.png" alt="ml_tlv" className="w-full h-full object-cover" />
                                 ) : role === 'buyer' && activeConversation?.catalog_id ? (
-                                    <Store className="w-5 h-5 text-gray-500" />
+                                    catalogsData[activeConversation.catalog_id]?.logo_url ? (
+                                        <img src={catalogsData[activeConversation.catalog_id].logo_url} alt="Store" className="w-full h-full object-cover" />
+                                    ) : (
+                                        <Store className="w-5 h-5 text-gray-500" />
+                                    )
                                 ) : (
                                     <UserIcon className="w-5 h-5 text-gray-500" />
                                 )}
