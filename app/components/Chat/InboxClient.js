@@ -54,11 +54,16 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
 
     useEffect(() => {
         // Initial scroll to bottom when messages first load
-        // We only do this once when the conversation is opened
         if (messages.length > 0 && activeConvId && !String(activeConvId).startsWith('order_')) {
             scrollToBottom();
+            
+            // For admin/seller, we don't mark as read immediately on click
+            // We'll do it via scroll or if they are already at the bottom
+            if (role === 'buyer') {
+                markAsRead(activeConvId);
+            }
         }
-    }, [activeConvId]); // Only trigger when switching conversations, not when messages array changes
+    }, [activeConvId]);
 
     useEffect(() => {
         if (activeConvId && activeConvId !== 'new' && activeConvId !== 'general' && !String(activeConvId).startsWith('order_')) {
@@ -124,6 +129,18 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
 
     const getActiveDisplayConv = () => {
         return displayConversations.find(c => c.id === activeConvId);
+    };
+
+    const handleScroll = (e) => {
+        if (role === 'buyer') return;
+        
+        const { scrollTop, scrollHeight, clientHeight } = e.currentTarget;
+        // If close to bottom (within 50px)
+        if (scrollHeight - scrollTop - clientHeight < 50) {
+            if (activeConvId && activeConvId !== 'new' && !String(activeConvId).startsWith('order_')) {
+                markAsRead(activeConvId);
+            }
+        }
     };
 
     const handleSendMessage = async (e) => {
@@ -352,12 +369,17 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
                             </div>
                         </div>
 
-                        <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50/30">
+                        <div 
+                            className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50/30"
+                            onScroll={handleScroll}
+                        >
                                 {messages.map((msg, idx) => {
                                     const isClientMessage = msg.sender_id === activeConversation?.participant1_id;
 
+                                    // In RTL: justify-start is Right, justify-end is Left
+                                    // But if the user sees them on the left with justify-start, we'll force it.
                                     return (
-                                        <div key={idx} className={`flex ${isClientMessage ? 'justify-start' : 'justify-end'}`}>
+                                        <div key={idx} className={`flex block w-full ${isClientMessage ? 'justify-start' : 'justify-end'}`} dir="rtl">
                                             <div className={`max-w-[70%] rounded-2xl px-4 py-2 text-sm shadow-sm ${
                                                 isClientMessage
                                                 ? 'bg-gray-200 text-black rounded-br-none' 
