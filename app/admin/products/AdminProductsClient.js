@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import TagInput from "../../components/TagInput";
 import toast from 'react-hot-toast';
+import AdminFilterBar from "../../components/admin/AdminFilterBar";
 
 export default function AdminProductsClient({ products, initialSearch, totalProducts, filteredCount, currentPage, totalPages, currentLetter, currentView, currentSort, canEdit }) {
 
@@ -148,6 +149,10 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
     };
 
     const handleLetterClick = (letter) => {
+        if (!letter) {
+            router.push('/admin/products');
+            return;
+        }
         router.push(`/admin/products?letter=${letter}`);
     };
 
@@ -252,23 +257,11 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
             </div>
 
             {/* A-Z Filter */}
-            <div className="flex gap-2 mb-8 overflow-x-auto pb-4 md:pb-0 scrollbar-hide mask-fade-left">
-                <button
-                    onClick={() => router.push('/admin/products')}
-                    className={`px-4 py-1.5 rounded-lg text-sm font-bold border transition shrink-0 shadow-sm ${!currentLetter && !searchTerm ? 'bg-black text-white border-black' : 'bg-white text-black border-gray-200 hover:border-black'}`}
-                >
-                    הכל
-                </button>
-                {letters.map(letter => (
-                    <button
-                        key={letter}
-                        onClick={() => handleLetterClick(letter)}
-                        className={`w-9 h-9 flex items-center justify-center rounded-lg text-sm font-bold border transition shrink-0 shadow-sm ${currentLetter === letter ? 'bg-black text-white border-black' : 'bg-white text-black border-gray-200 hover:border-black'}`}
-                    >
-                        {letter}
-                    </button>
-                ))}
-            </div>
+            <AdminFilterBar
+                selectedLetter={currentLetter}
+                onSelect={handleLetterClick}
+                className="mb-8"
+            />
 
             {isCreating && (
                 <div className="bg-white p-6 rounded-lg shadow-md border border-blue-200 mb-8">
