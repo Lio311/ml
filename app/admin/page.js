@@ -469,7 +469,7 @@ export default async function AdminDashboard() {
 
             <DashboardCharts
                 orderData={kpis.orderChartData}
-                revenueData={kpis.revenueData}
+                revenueData={kpis.revenueChartData}
                 visitsData={kpis.visitsChartData}
                 usersData={usersChartData || []}
             />
