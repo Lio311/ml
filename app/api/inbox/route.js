@@ -1,4 +1,4 @@
-import pool from '../../../../lib/db';
+import pool from '../../lib/db';
 import { getAuth } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
 
