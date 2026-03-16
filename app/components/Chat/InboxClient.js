@@ -53,8 +53,11 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
     }, [isLoaded, user]);
 
     useEffect(() => {
-        scrollToBottom();
-    }, [messages]);
+        // Initial scroll to bottom when messages first load
+        if (messages.length > 0) {
+            scrollToBottom();
+        }
+    }, [messages.length]);
 
     useEffect(() => {
         if (activeConvId && activeConvId !== 'new' && activeConvId !== 'general' && !String(activeConvId).startsWith('order_')) {
@@ -348,12 +351,12 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
                                 return (
                                     <div key={idx} className={`flex ${isCurrentUser ? 'justify-end' : 'justify-start'}`}>
                                         <div className={`max-w-[70%] rounded-2xl px-4 py-2 text-sm shadow-sm ${
-                                            isCurrentUser 
-                                            ? 'bg-black text-white rounded-br-none' 
-                                            : 'bg-white border border-gray-200 text-gray-900 rounded-bl-none'
+                                            isCurrentUser
+                                            ? 'bg-gray-200 text-black rounded-br-none' 
+                                            : 'bg-black text-white rounded-bl-none'
                                         }`}>
                                             <p className="whitespace-pre-wrap leading-relaxed">{msg.content}</p>
-                                            <span className={`text-[10px] mt-1 block ${isCurrentUser ? 'text-gray-400' : 'text-gray-400'}`}>
+                                            <span className={`text-[10px] mt-1 block ${isCurrentUser ? 'text-gray-500' : 'text-gray-400'}`}>
                                                 {new Date(msg.created_at).toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' })}
                                             </span>
                                         </div>
