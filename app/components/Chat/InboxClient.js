@@ -8,6 +8,7 @@ import toast from 'react-hot-toast';
 export default function InboxClient({ role = 'buyer', catalogId = null, preSelectConversationWith = null, initialOrderId = null, initialCatalogId = null }) {
     const { user, isLoaded } = useUser();
     const [conversations, setConversations] = useState([]);
+    const [orders, setOrders] = useState([]);
     const [messages, setMessages] = useState([]);
     const [activeConvId, setActiveConvId] = useState(null);
     const [newMessage, setNewMessage] = useState("");
@@ -22,7 +23,16 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
 
     useEffect(() => {
         if (!isLoaded || !user) return;
-        fetchConversations();
+        const loadInitialData = async () => {
+            if (role === 'buyer') {
+                try {
+                    const res = await fetch('/api/user/orders');
+                    if (res.ok) setOrders(await res.json());
+                } catch(e) {}
+            }
+            await fetchConversations(true);
+        };
+        loadInitialData();
     }, [isLoaded, user]);
 
     useEffect(() => {
@@ -30,14 +40,16 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
     }, [messages]);
 
     useEffect(() => {
-        if (activeConvId) {
+        if (activeConvId && activeConvId !== 'new' && activeConvId !== 'general' && !String(activeConvId).startsWith('order_')) {
             fetchMessages(activeConvId);
             const interval = setInterval(() => fetchMessages(activeConvId, true), 5000); // Poll every 5s
             return () => clearInterval(interval);
+        } else {
+            setMessages([]); // Clear messages for placeholder chats
         }
     }, [activeConvId]);
 
-    const fetchConversations = async () => {
+    const fetchConversations = async (isInitial = false) => {
         try {
             let url = '/api/inbox';
             if (role === 'admin') url += '?as_admin=true';
@@ -48,40 +60,17 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
                 const data = await res.json();
                 setConversations(data);
                 
-                // If we arrived from a specific order link
-                if (initialOrderId) {
-                    const existingConv = data.find(c => String(c.order_id) === String(initialOrderId));
-                    if (existingConv) {
-                        setActiveConvId(existingConv.id);
-                    } else {
-                        // Create optimistic conversation for this order
-                        setConversations([{
-                            id: 'new',
-                            participant1_id: user.id,
-                            participant2_id: role === 'buyer' && !initialCatalogId ? 'admin' : (preSelectConversationWith || null),
-                            catalog_id: initialCatalogId || null,
-                            order_id: initialOrderId,
-                            last_message: "התחל שיחה חדשה על ההזמנה...",
-                            unread_count: 0
-                        }, ...data]);
-                        setActiveConvId('new');
+                if (isInitial) {
+                    if (initialOrderId) {
+                        const existingConv = data.find(c => String(c.order_id) === String(initialOrderId));
+                        if (existingConv) setActiveConvId(existingConv.id);
+                        else setActiveConvId(`order_${initialOrderId}`);
+                    } else if (data.length > 0) {
+                        setActiveConvId(data[0].id);
+                    } else if (role === 'buyer') {
+                        // Default to general contact if no conversations and no initial order ID
+                        setActiveConvId('general');
                     }
-                } 
-                // Legacy optimistic creation
-                else if (preSelectConversationWith && data.length === 0) {
-                    setConversations([{
-                        id: 'new',
-                        participant1_id: user.id,
-                        participant2_id: role === 'buyer' && !catalogId ? 'admin' : preSelectConversationWith,
-                        catalog_id: catalogId || null,
-                        order_id: null,
-                        last_message: "התחל שיחה חדשה...",
-                        unread_count: 0
-                    }]);
-                    setActiveConvId('new');
-                } 
-                else if (data.length > 0 && !activeConvId) {
-                    setActiveConvId(data[0].id);
                 }
             }
         } catch (error) {
@@ -112,21 +101,26 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
         }
     };
 
+    const getActiveDisplayConv = () => {
+        return displayConversations.find(c => c.id === activeConvId);
+    };
+
     const handleSendMessage = async (e) => {
         e.preventDefault();
         if (!newMessage.trim()) return;
 
         setIsSending(true);
         try {
-            const participant2 = role === 'buyer' && !activeConversation?.catalog_id ? 'admin' : null;
+            const activeDispConv = getActiveDisplayConv();
+            const participant2 = role === 'buyer' && !activeDispConv?.catalog_id ? 'admin' : null;
 
             const res = await fetch('/api/inbox', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     participant2_id: participant2,
-                    catalog_id: activeConversation?.catalog_id || catalogId || null,
-                    order_id: activeConversation?.order_id || null,
+                    catalog_id: activeDispConv?.catalog_id || catalogId || null,
+                    order_id: activeDispConv?.order_id || null,
                     content: newMessage
                 })
             });
@@ -135,9 +129,10 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
                 const sentMsg = await res.json();
                 setNewMessage("");
                 
-                // If this was a new conversation, we need to refresh to get the real ID
-                if (activeConvId === 'new') {
+                // If this was a new conversation, we need to refresh to get the real ID and update active tab
+                if (String(activeConvId).startsWith('order_') || activeConvId === 'new' || activeConvId === 'general') {
                     await fetchConversations();
+                    setActiveConvId(sentMsg.conversation_id);
                 } else {
                     setMessages(prev => [...prev, sentMsg]);
                     setConversations(prev => prev.map(c => 
@@ -154,7 +149,49 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
         }
     };
 
-    const activeConversation = conversations.find(c => c.id === activeConvId);
+    let displayConversations = [...conversations];
+
+    if (role === 'buyer') {
+        const hasGeneral = displayConversations.some(c => c.catalog_id == null && c.order_id == null);
+        if (!hasGeneral) {
+            displayConversations.push({
+                id: 'general',
+                participant1_id: user?.id,
+                participant2_id: 'admin',
+                catalog_id: null,
+                order_id: null,
+                last_message: "התחל פנייה כללית...",
+                unread_count: 0,
+                last_message_time: 0
+            });
+        }
+
+        orders.forEach(order => {
+            const hasOrderConv = displayConversations.some(c => String(c.order_id) === String(order.id));
+            if (!hasOrderConv) {
+                displayConversations.push({
+                    id: `order_${order.id}`,
+                    participant1_id: user?.id,
+                    participant2_id: order.catalog_id ? null : 'admin',
+                    catalog_id: order.catalog_id || null,
+                    order_id: order.id,
+                    last_message: "התחל שיחה חדשה על ההזמנה...",
+                    unread_count: 0,
+                    last_message_time: 0
+                });
+            }
+        });
+    }
+
+    displayConversations.sort((a,b) => {
+        // Unread first
+        if (a.unread_count > 0 && b.unread_count === 0) return -1;
+        if (b.unread_count > 0 && a.unread_count === 0) return 1;
+        // Then by time
+        return new Date(b.last_message_time || 0) - new Date(a.last_message_time || 0)
+    });
+
+    const activeConversation = getActiveDisplayConv();
 
     const getChatName = (conv) => {
         let name = "";
@@ -173,28 +210,9 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
         return name;
     };
 
-    const startGeneralChat = () => {
-        // Check if there's already a general chat
-        const existing = conversations.find(c => c.catalog_id == null && c.order_id == null);
-        if (existing) {
-            setActiveConvId(existing.id);
-        } else {
-            setConversations([{
-                id: 'new',
-                participant1_id: user.id,
-                participant2_id: 'admin',
-                catalog_id: null,
-                order_id: null,
-                last_message: "התחל פנייה כללית...",
-                unread_count: 0
-            }, ...conversations.filter(c => c.id !== 'new')]);
-            setActiveConvId('new');
-        }
-    };
-
     if (!isLoaded || isLoading) return <div className="py-20 text-center"><Loader2 className="w-8 h-8 animate-spin mx-auto text-gray-400" /></div>;
 
-    const filteredConversations = conversations.filter(c => getChatName(c).toLowerCase().includes(searchQuery.toLowerCase()));
+    const filteredConversations = displayConversations.filter(c => getChatName(c).toLowerCase().includes(searchQuery.toLowerCase()));
 
     return (
         <div className="flex h-[calc(100vh-200px)] min-h-[500px] border border-gray-200 rounded-2xl overflow-hidden bg-white shadow-sm font-sans" dir="rtl">
@@ -215,15 +233,6 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
                             className="w-full pl-3 pr-10 py-2 bg-gray-100 border-transparent rounded-xl text-sm focus:bg-white focus:border-black focus:ring-0 transition outline-none"
                         />
                     </div>
-                    
-                    {role === 'buyer' && (
-                        <button 
-                            onClick={startGeneralChat}
-                            className="w-full mt-3 bg-black text-white text-xs font-bold py-2 rounded-lg hover:bg-gray-800 transition"
-                        >
-                            + פנייה כללית להנהלת האתר
-                        </button>
-                    )}
                 </div>
 
                 <div className="flex-1 overflow-y-auto">
@@ -304,20 +313,19 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
                             </div>
                         </div>
 
-                        {/* Messages Area */}
                         <div className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50/30">
                             {messages.map((msg, idx) => {
                                 const isCurrentUser = msg.sender_id === user?.id;
 
                                 return (
-                                    <div key={idx} className={`flex ${isCurrentUser ? 'justify-start' : 'justify-end'}`}>
+                                    <div key={idx} className={`flex ${isCurrentUser ? 'justify-end' : 'justify-start'}`}>
                                         <div className={`max-w-[70%] rounded-2xl px-4 py-2 text-sm shadow-sm ${
                                             isCurrentUser 
-                                            ? 'bg-black text-white rounded-tr-none' 
-                                            : 'bg-gray-200 text-gray-900 rounded-tl-none'
+                                            ? 'bg-black text-white rounded-br-none' 
+                                            : 'bg-white border border-gray-200 text-gray-900 rounded-bl-none'
                                         }`}>
                                             <p className="whitespace-pre-wrap leading-relaxed">{msg.content}</p>
-                                            <span className={`text-[10px] mt-1 block ${isCurrentUser ? 'text-gray-400' : 'text-gray-500'}`}>
+                                            <span className={`text-[10px] mt-1 block ${isCurrentUser ? 'text-gray-400' : 'text-gray-400'}`}>
                                                 {new Date(msg.created_at).toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' })}
                                             </span>
                                         </div>
@@ -341,9 +349,9 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
                                 <button
                                     type="submit"
                                     disabled={!newMessage.trim() || isSending}
-                                    className="absolute left-1 top-1/2 -translate-y-1/2 w-10 h-10 bg-black text-white rounded-full flex items-center justify-center hover:bg-gray-800 disabled:opacity-50 transition shadow-md"
+                                    className="absolute left-2 top-1/2 -translate-y-1/2 w-9 h-9 bg-black text-white rounded-full flex items-center justify-center hover:bg-gray-800 disabled:opacity-50 transition shadow-md"
                                 >
-                                    {isSending ? <Loader2 className="w-5 h-5 animate-spin" /> : <Send className="w-4 h-4 ml-1" />}
+                                    {isSending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4 mr-0.5 transform rotate-180" />}
                                 </button>
                             </form>
                         </div>
