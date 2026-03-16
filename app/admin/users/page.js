@@ -4,6 +4,7 @@ import Link from "next/link";
 import UserRoleSelect from "./UserRoleSelect";
 import SyncUsersButton from "./SyncUsersButton";
 import EditPhoneInput from "./EditPhoneInput";
+import AdminUsersFilter from "./AdminUsersFilter";
 import React from 'react';
 
 export const metadata = {
@@ -14,7 +15,9 @@ export const metadata = {
 export default async function AdminUsersPage(props) {
     const searchParams = await props.searchParams;
     const page = Number(searchParams?.page) || 1;
-    const LIMIT = 10;
+    const q = searchParams?.q || '';
+    const roleFilter = searchParams?.role || '';
+    const LIMIT = 50; // Increased limit
     const offset = (page - 1) * LIMIT;
 
     const user = await currentUser();
@@ -27,11 +30,32 @@ export default async function AdminUsersPage(props) {
 
     const client = await pool.connect();
     try {
+        let whereClause = '';
+        let queryParams = [LIMIT, offset];
+        let paramIndex = 3;
+
+        const conditions = [];
+        if (q) {
+            conditions.push(`(first_name ILIKE $${paramIndex} OR last_name ILIKE $${paramIndex} OR email ILIKE $${paramIndex} OR phone ILIKE $${paramIndex} OR id ILIKE $${paramIndex})`);
+            queryParams.push(`%${q}%`);
+            paramIndex++;
+        }
+        if (roleFilter) {
+            conditions.push(`role = $${paramIndex}`);
+            queryParams.push(roleFilter);
+            paramIndex++;
+        }
+
+        if (conditions.length > 0) {
+            whereClause = 'WHERE ' + conditions.join(' AND ');
+        }
+
         // Fetch Users with specific Role Priority sorting and Pagination
         const [usersRes, countRes] = await Promise.all([
             client.query(`
                 SELECT id, first_name, last_name, email, phone, role, created_at 
                 FROM users 
+                ${whereClause}
                 ORDER BY 
                     CASE role 
                         WHEN 'admin' THEN 1 
@@ -41,8 +65,8 @@ export default async function AdminUsersPage(props) {
                     END ASC, 
                     created_at DESC
                 LIMIT $1 OFFSET $2
-            `, [LIMIT, offset]),
-            client.query('SELECT COUNT(*) FROM users')
+            `, queryParams),
+            client.query(`SELECT COUNT(*) FROM users ${whereClause}`, queryParams.slice(2))
         ]);
 
         users = usersRes.rows.map(u => ({
@@ -70,6 +94,8 @@ export default async function AdminUsersPage(props) {
                     <SyncUsersButton />
                 </div>
             </div>
+
+            <AdminUsersFilter initialQuery={q} initialRole={roleFilter} />
 
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
                 {/* Desktop View Table */}
@@ -162,7 +188,7 @@ export default async function AdminUsersPage(props) {
                 {totalPages > 1 && (
                     <div className="flex justify-center items-center gap-4">
                         <Link
-                            href={`/admin/users?page=${Math.max(1, page - 1)}`}
+                            href={`/admin/users?page=${Math.max(1, page - 1)}${q ? `&q=${encodeURIComponent(q)}` : ''}${roleFilter ? `&role=${roleFilter}` : ''}`}
                             className={`px-4 py-2 border rounded hover:bg-gray-100 transition ${page === 1 ? 'opacity-50 pointer-events-none' : ''}`}
                             aria-disabled={page === 1}
                         >
@@ -174,7 +200,7 @@ export default async function AdminUsersPage(props) {
                         </span>
 
                         <Link
-                            href={`/admin/users?page=${Math.min(totalPages, page + 1)}`}
+                            href={`/admin/users?page=${Math.min(totalPages, page + 1)}${q ? `&q=${encodeURIComponent(q)}` : ''}${roleFilter ? `&role=${roleFilter}` : ''}`}
                             className={`px-4 py-2 border rounded hover:bg-gray-100 transition ${page === totalPages ? 'opacity-50 pointer-events-none' : ''}`}
                             aria-disabled={page === totalPages}
                         >
