@@ -464,14 +464,12 @@ export default async function AdminDashboard() {
     const currentMonthLabel = new Date().toLocaleString('he-IL', { month: 'long' });
 
     return (
-        <div>
-            <h1 className="text-3xl font-bold mb-8">לוח בקרה</h1>
-
-            {/* <InventoryForecast forecasts={forecasts} /> */}
+        <div className="pb-8">
+            <h1 className="text-2xl md:text-3xl font-bold mb-6 md:mb-8 text-gray-900">לוח בקרה</h1>
 
             <DashboardCharts
                 orderData={kpis.orderChartData}
-                revenueData={kpis.revenueChartData}
+                revenueData={kpis.revenueData}
                 visitsData={kpis.visitsChartData}
                 usersData={usersChartData || []}
             />
@@ -483,180 +481,176 @@ export default async function AdminDashboard() {
                 monthName={currentMonthLabel}
             />
 
-            {/* Cards */}
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+            {/* KPI Cards Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-8 md:mb-12">
 
                 {/* Cash Flow */}
-                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 relative overflow-hidden group hover:shadow-md transition-shadow">
+                <div className="bg-white p-5 md:p-6 rounded-2xl shadow-sm border border-gray-100 relative overflow-hidden group hover:shadow-md transition-shadow">
                     <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-green-500 to-emerald-500"></div>
                     <div className="flex justify-between items-start mb-4">
-                        <div className="text-gray-500 text-sm font-bold uppercase flex items-center gap-2">
+                        <div className="text-gray-400 text-[10px] md:text-sm font-bold uppercase flex items-center gap-2">
                             <Wallet className="w-4 h-4 text-green-500" />
                             תזרים ({currentMonthLabel})
                         </div>
                     </div>
                     <div className="space-y-3">
                         <div className="flex justify-between items-center border-b border-gray-50 pb-2">
-                            <span className="text-blue-600 font-bold text-sm">הכנסות</span>
+                            <span className="text-blue-600 font-bold text-xs md:text-sm">הכנסות</span>
                             <div className="text-right">
-                                <span className="text-xl font-bold text-blue-700">
+                                <span className="text-lg md:text-xl font-bold text-blue-700">
                                     <span dir="ltr" className="inline-block">{kpis.totalRevenue.toLocaleString()}</span> ₪
                                 </span>
                             </div>
                         </div>
                         <div className="flex justify-between items-center border-b border-gray-50 pb-2">
-                            <span className="text-red-600 font-bold text-sm">הוצאות</span>
+                            <span className="text-red-600 font-bold text-xs md:text-sm">הוצאות</span>
                             <div className="text-right">
-                                <span className="text-xl font-bold text-red-700">
+                                <span className="text-lg md:text-xl font-bold text-red-700">
                                     <span dir="ltr" className="inline-block">{kpis.totalExpenses.toLocaleString()}</span> ₪
                                 </span>
                             </div>
                         </div>
-                        <div className="flex justify-between items-center bg-gray-50 p-2 rounded mb-2">
-                            <span className={`${kpis.monthlyProfit < 0 ? 'text-red-600' : 'text-green-600'} font-bold`}>רווח</span>
+                        <div className="flex justify-between items-center bg-gray-50/50 p-2 rounded-xl mb-2">
+                            <span className={`${kpis.monthlyProfit < 0 ? 'text-red-600' : 'text-green-600'} font-bold text-sm`}>רווח</span>
                             <div className="text-right">
-                                <span className={`text-2xl font-bold ${kpis.monthlyProfit < 0 ? 'text-red-700' : 'text-green-700'}`}>
+                                <span className={`text-xl md:text-2xl font-bold ${kpis.monthlyProfit < 0 ? 'text-red-700' : 'text-green-700'}`}>
                                     <span dir="ltr" className="inline-block">{kpis.monthlyProfit.toLocaleString()}</span> ₪
                                 </span>
                             </div>
                         </div>
-                        {/* Cumulative Profit Line */}
                         <div className="flex justify-between items-center border-t border-gray-100 pt-2 mt-2">
-                            <span className="text-gray-500 font-bold text-xs">רווח מצטבר (מאז ומעולם)</span>
+                            <span className="text-gray-400 font-bold text-[10px]">רווח מצטבר (מאז ומעולם)</span>
                             <div className="text-right">
-                                <span className={`text-sm font-bold ${kpis.cumulativeProfit < 0 ? 'text-red-600' : 'text-green-600'}`}>
+                                <span className={`text-xs font-bold ${kpis.cumulativeProfit < 0 ? 'text-red-600' : 'text-green-600'}`}>
                                     <span dir="ltr" className="inline-block">{kpis.cumulativeProfit ? kpis.cumulativeProfit.toLocaleString() : '0'}</span> ₪
                                 </span>
                             </div>
                         </div>
                     </div>
-                    <div className="mt-2 text-[10px] text-gray-400 text-center">
-                        * הכנסות נטו (אחרי הנחות) פחות עלות סחורה שנמכרה והוצאות
-                    </div>
                 </div>
 
                 {/* Bottle Inventory */}
-                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 relative overflow-hidden group hover:shadow-md transition-shadow flex flex-col justify-between">
+                <div className="bg-white p-5 md:p-6 rounded-2xl shadow-sm border border-gray-100 relative overflow-hidden group hover:shadow-md transition-shadow flex flex-col justify-between">
                     <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-amber-500 to-orange-500"></div>
                     <div>
-                        <div className="text-gray-500 text-sm font-bold uppercase mb-4 flex items-center gap-2">
+                        <div className="text-gray-400 text-[10px] md:text-sm font-bold uppercase mb-4 flex items-center gap-2">
                             <Package className="w-4 h-4 text-amber-500" />
-                            מלאי בקבוקנים (פנוי)
+                            מלאי בקבוקונים פנוי
                         </div>
-                        <div className="space-y-3">
+                        <div className="grid grid-cols-2 gap-x-4 gap-y-2">
                             {kpis.bottleInventory && kpis.bottleInventory.map(item => (
-                                <div key={item.size} className="flex justify-between items-center border-b border-gray-50 pb-1 last:border-0">
-                                    <span className="font-bold text-gray-700 text-sm">{item.size === 11 ? '10 מ"ל יוקרתי' : `${item.size} מ"ל`}</span>
-                                    <span className={`font-mono font-bold ${item.quantity < 20 ? 'text-red-600' : 'text-green-600'}`}>
+                                <div key={item.size} className="flex justify-between items-center border-b border-gray-50 pb-1 last:border-0 md:last:border-b">
+                                    <span className="font-bold text-gray-600 text-xs">{item.size === 11 ? '10 ספיישל' : `${item.size} מ"ל`}</span>
+                                    <span className={`font-mono font-bold text-sm ${item.quantity < 20 ? 'text-red-600' : 'text-green-600'}`}>
                                         {item.quantity}
                                     </span>
                                 </div>
                             ))}
-                            {(!kpis.bottleInventory || kpis.bottleInventory.length === 0) && (
-                                <div className="text-center text-gray-400 text-sm">אין נתונים</div>
-                            )}
                         </div>
                     </div>
-                    <div className="text-xs text-gray-400 mt-4 text-center border-t pt-2">
-                        <Link href="/admin/inventory" className="text-blue-500 hover:text-blue-600 hover:underline transition-colors">לניהול המלאי המלא</Link>
+                    <div className="text-[10px] text-gray-400 mt-4 text-center border-t border-gray-50 pt-3">
+                        <Link href="/admin/inventory" className="text-blue-500 hover:underline font-bold transition-all">לניהול המלאי המלא ←</Link>
                     </div>
                 </div>
 
                 {/* Samples Sold */}
-                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 relative overflow-hidden group hover:shadow-md transition-shadow">
+                <div className="bg-white p-5 md:p-6 rounded-2xl shadow-sm border border-gray-100 relative overflow-hidden group hover:shadow-md transition-shadow">
                     <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 to-pink-500"></div>
                     <div className="flex justify-between items-start mb-2">
-                        <div className="text-gray-500 text-sm font-bold uppercase flex items-center gap-2">
+                        <div className="text-gray-400 text-[10px] md:text-sm font-bold uppercase flex items-center gap-2">
                             <FlaskConical className="w-4 h-4 text-purple-500" />
                             דוגמיות שנמכרו
                         </div>
                     </div>
 
-                    <div className="flex items-baseline gap-2 mb-6">
-                        <span className="text-4xl font-bold text-gray-900">{kpis.totalSamples}</span>
-                        <span className="text-xs text-gray-400 font-medium">יחידות</span>
+                    <div className="flex items-baseline gap-2 mb-4">
+                        <span className="text-3xl md:text-4xl font-bold text-gray-900">{kpis.totalSamples}</span>
+                        <span className="text-[10px] text-gray-400 font-bold uppercase">יחידות</span>
                     </div>
 
                     <div className="grid grid-cols-2 gap-2">
-                        <div className="flex flex-col items-center bg-purple-50 p-2 rounded-lg border border-purple-100">
-                            <span className="text-[10px] text-purple-600 font-bold mb-1">2 מ״ל</span>
-                            <span className="font-black text-lg text-purple-800 leading-none">{kpis.samplesBreakdown['2']}</span>
+                        <div className="flex flex-col items-center bg-purple-50/50 p-2 rounded-xl border border-purple-100">
+                            <span className="text-[9px] text-purple-600 font-bold mb-1">2 מ״ל</span>
+                            <span className="font-black text-base text-purple-800 leading-none">{kpis.samplesBreakdown['2']}</span>
                         </div>
-                        <div className="flex flex-col items-center bg-pink-50 p-2 rounded-lg border border-pink-100">
-                            <span className="text-[10px] text-pink-600 font-bold mb-1">5 מ״ל</span>
-                            <span className="font-black text-lg text-pink-800 leading-none">{kpis.samplesBreakdown['5']}</span>
+                        <div className="flex flex-col items-center bg-pink-50/50 p-2 rounded-xl border border-pink-100">
+                            <span className="text-[9px] text-pink-600 font-bold mb-1">5 מ״ל</span>
+                            <span className="font-black text-base text-pink-800 leading-none">{kpis.samplesBreakdown['5']}</span>
                         </div>
-                        <div className="flex flex-col items-center bg-blue-50 p-2 rounded-lg border border-blue-100">
-                            <span className="text-[10px] text-blue-600 font-bold mb-1">10 מ״ל</span>
-                            <span className="font-black text-lg text-blue-800 leading-none">{kpis.samplesBreakdown['10']}</span>
+                        <div className="flex flex-col items-center bg-blue-50/50 p-2 rounded-xl border border-blue-100">
+                            <span className="text-[9px] text-blue-600 font-bold mb-1">10 מ״ל</span>
+                            <span className="font-black text-base text-blue-800 leading-none">{kpis.samplesBreakdown['10']}</span>
                         </div>
-                        <div className="flex flex-col items-center bg-amber-50 p-2 rounded-lg border border-amber-100">
-                            <span className="text-[10px] text-amber-600 font-bold mb-1">10 מ״ל יוקרתי</span>
-                            <span className="font-black text-lg text-amber-800 leading-none">{kpis.samplesBreakdown['11']}</span>
+                        <div className="flex flex-col items-center bg-amber-50/50 p-2 rounded-xl border border-amber-100">
+                            <span className="text-[9px] text-amber-600 font-bold mb-1">יוקרתי</span>
+                            <span className="font-black text-base text-amber-800 leading-none">{kpis.samplesBreakdown['11']}</span>
                         </div>
                     </div>
                 </div>
 
                 {/* Total Orders */}
-                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 relative overflow-hidden group hover:shadow-md transition-shadow">
+                <div className="bg-white p-5 md:p-6 rounded-2xl shadow-sm border border-gray-100 relative overflow-hidden group hover:shadow-md transition-shadow">
                     <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-cyan-500"></div>
-                    <div className="text-gray-500 text-sm font-bold uppercase mb-2 flex items-center gap-2">
+                    <div className="text-gray-400 text-[10px] md:text-sm font-bold uppercase mb-2 flex items-center gap-2">
                         <ShoppingCart className="w-4 h-4 text-blue-500" />
                         הזמנות סה״כ
                     </div>
-                    <div className="text-3xl font-bold mb-4">{kpis.totalOrders}</div>
-                    <div className="text-xs text-center border-t pt-2 mt-2">
-                        <Link href="/admin/orders" className="text-blue-500 hover:text-blue-600 hover:underline transition-colors">לניהול הזמנות</Link>
+                    <div className="text-2xl md:text-3xl font-bold mb-4 text-gray-900">{kpis.totalOrders}</div>
+                    <div className="text-[10px] text-center border-t border-gray-50 pt-3 mt-2">
+                        <Link href="/admin/orders" className="text-blue-500 hover:underline font-bold transition-all">לניהול הזמנות ←</Link>
                     </div>
                 </div>
 
                 {/* Site Visits */}
-                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 relative overflow-hidden group hover:shadow-md transition-shadow">
+                <div className="bg-white p-5 md:p-6 rounded-2xl shadow-sm border border-gray-100 relative overflow-hidden group hover:shadow-md transition-shadow">
                     <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-sky-400 to-indigo-400"></div>
-                    <div className="text-gray-500 text-sm font-bold uppercase mb-2 flex items-center gap-2">
+                    <div className="text-gray-400 text-[10px] md:text-sm font-bold uppercase mb-2 flex items-center gap-2">
                         <Eye className="w-4 h-4 text-sky-500" />
                         כניסות לאתר
                     </div>
-                    <div className="text-xl font-bold mb-1">חודש {currentMonthLabel}: <span className="text-blue-600">{kpis.monthlyVisits}</span> כניסות</div>
-                    <div className="text-xs text-gray-400">נספר לפי ביקורים ייחודיים</div>
+                    <div className="text-lg md:text-xl font-bold mb-1 text-gray-900">
+                        {currentMonthLabel}: <span className="text-blue-600">{kpis.monthlyVisits}</span>
+                    </div>
+                    <div className="text-[10px] text-gray-400 font-medium italic">נספר לפי ביקורים ייחודיים</div>
                 </div>
 
                 {/* Registered Users */}
-                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 relative overflow-hidden group hover:shadow-md transition-shadow">
+                <div className="bg-white p-5 md:p-6 rounded-2xl shadow-sm border border-gray-100 relative overflow-hidden group hover:shadow-md transition-shadow">
                     <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-500 to-purple-600"></div>
-                    <div className="text-gray-500 text-sm font-bold uppercase mb-2 flex items-center gap-2">
+                    <div className="text-gray-400 text-[10px] md:text-sm font-bold uppercase mb-2 flex items-center gap-2">
                         <Users className="w-4 h-4 text-indigo-500" />
                         משתמשים רשומים
                     </div>
-                    <div className="text-3xl font-bold mb-4">{kpis.totalUsers}</div>
-                    <div className="text-xs text-center border-t pt-2 mt-2">
-                        <Link href="/admin/users" className="text-blue-500 hover:text-blue-600 hover:underline transition-colors">לניהול משתמשים</Link>
+                    <div className="text-2xl md:text-3xl font-bold mb-4 text-gray-900">{kpis.totalUsers}</div>
+                    <div className="text-[10px] text-center border-t border-gray-50 pt-3 mt-2">
+                        <Link href="/admin/users" className="text-blue-500 hover:underline font-bold transition-all">לניהול משתמשים ←</Link>
                     </div>
                 </div>
             </div>
 
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                <div className="p-6 border-b flex justify-between items-center">
-                    <h3 className="font-bold">הזמנות אחרונות</h3>
-                    <Link href="/admin/orders" className="text-blue-600 text-sm hover:underline">לכל ההזמנות</Link>
+            {/* Recent Orders List */}
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mb-8 md:mb-12">
+                <div className="p-5 md:p-6 border-b bg-gray-50/50 flex justify-between items-center">
+                    <h3 className="font-bold text-gray-900">הזמנות אחרונות</h3>
+                    <Link href="/admin/orders" className="text-blue-600 text-[10px] md:text-sm font-bold hover:underline">לכל ההזמנות ←</Link>
                 </div>
-                <div className="divide-y">
+                <div className="divide-y divide-gray-100">
                     {kpis.recentOrders.length === 0 ? (
-                        <div className="p-8 text-center text-gray-500">
+                        <div className="p-8 text-center text-gray-400 text-sm italic">
                             עדיין אין הזמנות...
                         </div>
                     ) : (
                         kpis.recentOrders.map(order => (
-                            <div key={order.id} className="p-4 flex items-center justify-between hover:bg-gray-50">
+                            <div key={order.id} className="p-4 flex items-center justify-between hover:bg-gray-50 transition-colors">
                                 <div>
-                                    <div className="font-bold">הזמנה #{order.id}</div>
-                                    <div className="text-sm text-gray-500">
+                                    <div className="font-bold text-gray-900 text-sm md:text-base">הזמנה #{order.id}</div>
+                                    <div className="text-[10px] md:text-sm text-gray-500">
                                         {order.customer_details?.name} • {new Date(order.created_at).toLocaleDateString('he-IL')}
                                     </div>
                                 </div>
                                 <div className="text-right">
-                                    <div className="font-bold">{order.total_amount} ₪</div>
-                                    <span className={`text-xs px-2 py-1 rounded-full ${order.status === 'pending' ? 'bg-orange-100 text-orange-800' :
+                                    <div className="font-bold text-gray-900 text-sm md:text-base">{order.total_amount} ₪</div>
+                                    <span className={`text-[9px] md:text-xs px-2 py-0.5 rounded-full font-bold uppercase tracking-wider ${order.status === 'pending' ? 'bg-orange-100 text-orange-800' :
                                         order.status === 'processing' ? 'bg-blue-100 text-blue-800' :
                                             order.status === 'shipped' ? 'bg-purple-100 text-purple-800' :
                                                 order.status === 'completed' ? 'bg-green-100 text-green-800' :
@@ -679,34 +673,34 @@ export default async function AdminDashboard() {
             </div>
 
             {/* Coupons Table */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden mt-8">
-                <div className="p-6 border-b flex justify-between items-center">
-                    <h3 className="font-bold">קופונים אחרונים</h3>
-                    <Link href="/admin/coupons" className="text-blue-600 text-sm hover:underline">לכל הקופונים</Link>
+            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                <div className="p-5 md:p-6 border-b bg-gray-50/50 flex justify-between items-center">
+                    <h3 className="font-bold text-gray-900">קופונים אחרונים</h3>
+                    <Link href="/admin/coupons" className="text-blue-600 text-[10px] md:text-sm font-bold hover:underline">לכל הקופונים ←</Link>
                 </div>
-                <div className="overflow-x-auto">
-                    <table className="w-full text-right" dir="rtl">
-                        <thead className="bg-gray-50 text-gray-500 text-sm">
+                <div className="overflow-x-auto custom-scrollbar">
+                    <table className="w-full text-right min-w-[500px]" dir="rtl">
+                        <thead className="bg-gray-50/80 text-gray-400 text-[10px] md:text-xs uppercase font-bold">
                             <tr>
                                 <th className="p-4 text-center">קוד</th>
                                 <th className="p-4 text-center">הנחה</th>
                                 <th className="p-4 text-center">מייל לקוח</th>
                                 <th className="p-4 text-center">סטטוס</th>
-                                <th className="p-4 text-center">נוצר בתאריך</th>
+                                <th className="p-4 text-center">תאריך</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y">
+                        <tbody className="divide-y divide-gray-100">
                             {kpis.recentCoupons && kpis.recentCoupons.map(coupon => {
                                 const isExpired = coupon.expires_at && new Date(coupon.expires_at) < new Date();
                                 const displayStatus = isExpired ? 'expired' : coupon.status;
 
                                 return (
-                                    <tr key={coupon.id} className="hover:bg-gray-50">
-                                        <td className="p-4 font-mono font-bold text-blue-600 text-center">{coupon.code}</td>
-                                        <td className="p-4 text-center">{coupon.discount_percent}%</td>
-                                        <td className="p-4 text-sm text-center">{coupon.email || '-'}</td>
+                                    <tr key={coupon.id} className="hover:bg-gray-50/80 transition-colors">
+                                        <td className="p-4 font-mono font-bold text-blue-600 text-center text-sm">{coupon.code}</td>
+                                        <td className="p-4 text-center font-black text-gray-900">{coupon.discount_percent}%</td>
+                                        <td className="p-4 text-xs text-center text-gray-500 truncate max-w-[150px]">{coupon.email || '-'}</td>
                                         <td className="p-4 text-center">
-                                            <span className={`px-2 py-1 rounded-full text-xs ${displayStatus === 'active' ? 'bg-green-100 text-green-800' :
+                                            <span className={`px-2 py-1 rounded-lg text-[9px] font-bold uppercase tracking-wider ${displayStatus === 'active' ? 'bg-green-100 text-green-800' :
                                                 displayStatus === 'redeemed' ? 'bg-gray-800 text-white' :
                                                     'bg-red-100 text-red-800'
                                                 }`}>
@@ -714,20 +708,12 @@ export default async function AdminDashboard() {
                                                     displayStatus === 'redeemed' ? 'מומש' : 'פג תוקף'}
                                             </span>
                                         </td>
-                                        <td className="p-4 text-sm text-gray-500 text-center">
-                                            {new Date(coupon.created_at).toLocaleString('he-IL')}
+                                        <td className="p-4 text-xs text-gray-400 text-center whitespace-nowrap">
+                                            {new Date(coupon.created_at).toLocaleDateString('he-IL', { day: '2-digit', month: '2-digit' })}
                                         </td>
                                     </tr>
                                 );
                             })}
-                            {(!kpis.recentCoupons || kpis.recentCoupons.length === 0) && (
-                                <tr>
-                                    <td colSpan="5" className="p-8 text-center text-gray-500">
-                                        עדיין לא נוצרו קופונים...<br />
-                                        <span className="text-xs">(הקופונים נוצרים אוטומטית כשהמערכת מזהה עגלה נטושה)</span>
-                                    </td>
-                                </tr>
-                            )}
                         </tbody>
                     </table>
                 </div>

@@ -1,0 +1,107 @@
+"use client";
+
+import { useState } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { Menu, X, Home, ShoppingBox, Users, Package, CreditCard, Inbox, ShoppingBag, Label, Ticket, Dice5, Library, Map, Store, ClipboardList, LogOut } from "lucide-react";
+import { SignOutButton } from "@clerk/nextjs";
+
+export default function AdminMobileNav({ role = 'customer' }) {
+    const [isOpen, setIsOpen] = useState(false);
+    const pathname = usePathname();
+
+    const isActive = (path) => pathname === path;
+
+    const allNavItems = [
+        { href: "/admin", label: "דשבורד", icon: Home, roles: ['admin', 'deputy'] },
+        { href: "/admin/orders", label: "ניהול הזמנות", icon: ShoppingBag, roles: ['admin', 'deputy', 'warehouse'] },
+        { href: "/admin/users", label: "ניהול משתמשים", icon: Users, roles: ['admin', 'deputy'] },
+        { href: "/admin/inventory", label: "ניהול בקבוקונים", icon: Package, roles: ['admin', 'deputy'] },
+        { href: "/admin/expenses", label: "ניהול הוצאות", icon: CreditCard, roles: ['admin', 'deputy'] },
+        { href: "/admin/requests", label: "ניהול בקשות", icon: Inbox, roles: ['admin', 'deputy'] },
+        { href: "/admin/products", label: "ניהול מוצרים", icon: Store, roles: ['admin', 'deputy'] },
+        { href: "/admin/brands", label: "ניהול מותגים", icon: Label, roles: ['admin', 'deputy'] },
+        { href: "/admin/coupons", label: "ניהול קופונים", icon: Ticket, roles: ['admin', 'deputy'] },
+        { href: "/admin/lottery", label: "ניהול הגרלות", icon: Dice5, roles: ['admin', 'deputy'] },
+        { href: "/admin/dictionary", label: "מילון חיפוש", icon: Library, roles: ['admin', 'deputy'] },
+        { href: "/admin/menu", label: "ניהול תפריט", icon: Map, roles: ['admin', 'deputy'] },
+        { href: "/admin/catalogs", label: "ניהול קטלוגים", icon: Store, roles: ['admin', 'deputy'] },
+        { href: "/admin/catalog-orders", label: "הזמנות קטלוגים", icon: ClipboardList, roles: ['admin', 'deputy'] },
+    ];
+
+    const navItems = allNavItems.filter(item => item.roles.includes(role));
+
+    return (
+        <div className="md:hidden">
+            {/* Top Bar */}
+            <div className="bg-black text-white p-4 flex justify-between items-center shadow-lg sticky top-0 z-50">
+                <span className="font-bold text-lg">ml_tlv Admin</span>
+                <button 
+                    onClick={() => setIsOpen(!isOpen)}
+                    className="p-2 hover:bg-gray-800 rounded-lg transition-colors"
+                >
+                    {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+                </button>
+            </div>
+
+            {/* Menu Overlay */}
+            {isOpen && (
+                <div 
+                    className="fixed inset-0 bg-black/50 z-40 backdrop-blur-sm"
+                    onClick={() => setIsOpen(false)}
+                />
+            )}
+
+            {/* Side Drawer */}
+            <div className={`fixed top-0 right-0 h-full w-72 bg-white z-50 transform transition-transform duration-300 ease-in-out shadow-2xl ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}>
+                <div className="p-6 flex flex-col h-full bg-gray-50">
+                    <div className="flex justify-between items-center mb-8">
+                        <div>
+                            <h2 className="text-xl font-bold">ml_tlv</h2>
+                            <p className="text-xs text-gray-500">ניהול מערכת</p>
+                        </div>
+                        <button onClick={() => setIsOpen(false)} className="p-2 hover:bg-gray-200 rounded-full transition-colors">
+                            <X className="w-5 h-5 text-gray-500" />
+                        </button>
+                    </div>
+
+                    <nav className="flex-1 space-y-1 overflow-y-auto" dir="rtl">
+                        {navItems.map((item) => {
+                            const Icon = item.icon;
+                            return (
+                                <Link
+                                    key={item.href}
+                                    href={item.href}
+                                    onClick={() => setIsOpen(false)}
+                                    className={`flex items-center gap-3 p-3 rounded-xl transition-all ${isActive(item.href)
+                                        ? "bg-black text-white shadow-md font-bold"
+                                        : "hover:bg-gray-200 text-gray-700 hover:text-black"
+                                        }`}
+                                >
+                                    <Icon className={`w-5 h-5 ${isActive(item.href) ? 'text-white' : 'text-gray-400'}`} />
+                                    <span>{item.label}</span>
+                                </Link>
+                            );
+                        })}
+                    </nav>
+
+                    <div className="mt-auto pt-6 border-t border-gray-200">
+                        <Link 
+                            href="/" 
+                            className="flex items-center gap-3 p-3 text-gray-600 hover:text-black hover:bg-gray-200 rounded-xl transition-colors mb-2"
+                        >
+                            <Home className="w-5 h-5" />
+                            <span>חזרה לאתר</span>
+                        </Link>
+                        <SignOutButton>
+                            <button className="flex items-center gap-3 p-3 text-red-500 hover:bg-red-50 rounded-xl transition-colors w-full text-right" dir="rtl">
+                                <LogOut className="w-5 h-5" />
+                                <span>התנתק מהמערכת</span>
+                            </button>
+                        </SignOutButton>
+                    </div>
+                </div>
+            </div>
+        </div>
+    );
+}
