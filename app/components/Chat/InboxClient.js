@@ -54,6 +54,9 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
             await fetchConversations(true);
         };
         loadInitialData();
+        
+        const interval = setInterval(() => fetchConversations(), 10000); // Poll inbox list every 10s
+        return () => clearInterval(interval);
     }, [isLoaded, user]);
 
     useEffect(() => {
@@ -352,19 +355,19 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
                                 
                                 <div className="flex-1 min-w-0">
                                     <div className="flex justify-between items-baseline mb-1">
-                                        <h3 className={`font-bold text-sm truncate ${conv.unread_count > 0 ? 'text-black' : 'text-gray-800'}`}>
+                                        <h3 className={`font-bold text-sm truncate ${Number(conv.unread_count) > 0 ? 'text-black' : 'text-gray-800'}`}>
                                             {getChatName(conv)}
                                         </h3>
                                         <span className="text-[10px] text-gray-400 font-medium">
                                             {conv.last_message_time ? new Date(conv.last_message_time).toLocaleDateString('he-IL') : ''}
                                         </span>
                                     </div>
-                                    <p className={`text-xs truncate ${conv.unread_count > 0 ? 'text-black font-semibold' : 'text-gray-500'}`}>
+                                    <p className={`text-xs truncate ${Number(conv.unread_count) > 0 ? 'text-black font-semibold' : 'text-gray-500'}`}>
                                         {conv.last_message || "התחל שיחה חדשה..."}
                                     </p>
                                 </div>
 
-                                {conv.unread_count > 0 && (
+                                {Number(conv.unread_count) > 0 && (
                                     <div className="w-5 h-5 bg-blue-600 text-white text-[10px] font-bold flex items-center justify-center rounded-full shadow-sm">
                                         {conv.unread_count}
                                     </div>
@@ -417,46 +420,46 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
                             onScroll={handleScroll}
                         >
                             {activeConversation?.order_id && orderData[activeConversation.order_id] && (
-                                <div className="mb-4 bg-white rounded-xl py-2 px-3 border border-gray-100 shadow-sm flex items-center justify-between gap-3 text-[11px]">
-                                    <div className="flex items-center gap-3 flex-1 min-w-0">
-                                        {/* Status Badge */}
-                                        <div className="flex items-center gap-1.5 whitespace-nowrap bg-gray-50 px-2 py-1 rounded-full border border-gray-100">
-                                            <div className={`w-1.5 h-1.5 rounded-full ${
+                                <div className="mb-4 bg-white rounded-2xl py-3 px-4 border border-teal-100 shadow-sm flex flex-col gap-3">
+                                    <div className="flex items-center justify-between">
+                                        <div className="flex items-center gap-2">
+                                            <div className={`w-2 h-2 rounded-full ${
                                                 ['delivered', 'completed'].includes(orderData[activeConversation.order_id].status) ? 'bg-green-500' :
                                                 ['shipped'].includes(orderData[activeConversation.order_id].status) ? 'bg-blue-500' :
-                                                ['cancelled'].includes(orderData[activeConversation.order_id].status) ? 'bg-red-500' : 'bg-amber-500'
+                                                ['cancelled'].includes(orderData[activeConversation.order_id].status) ? 'bg-red-500' : 'bg-teal-500'
                                             }`} />
-                                            <span className="font-bold text-gray-700">
-                                                {orderData[activeConversation.order_id].status === 'pending' ? 'ממתין' :
+                                            <span className="font-bold text-xs text-teal-800">
+                                                סטטוס: {
+                                                 orderData[activeConversation.order_id].status === 'pending' ? 'ממתין' :
                                                  orderData[activeConversation.order_id].status === 'processing' ? 'בטיפול' :
                                                  orderData[activeConversation.order_id].status === 'shipped' ? 'נשלח' :
                                                  orderData[activeConversation.order_id].status === 'delivered' ? 'נמסר' :
                                                  orderData[activeConversation.order_id].status === 'completed' ? 'הושלם' :
-                                                 orderData[activeConversation.order_id].status === 'cancelled' ? 'בוטל' : 'חדש'}
+                                                 orderData[activeConversation.order_id].status === 'cancelled' ? 'בוטל' : 'חדש'
+                                                }
                                             </span>
                                         </div>
-
-                                        {/* Separator Line */}
-                                        <div className="h-4 w-[1px] bg-gray-200 hidden sm:block" />
-
-                                        {/* Product Mini Images */}
-                                        <div className="flex gap-1 overflow-hidden">
-                                            {orderData[activeConversation.order_id].items?.slice(0, 4).map((item, idx) => (
-                                                <div key={idx} className="w-6 h-6 rounded-md overflow-hidden border border-gray-100 bg-gray-50 flex-shrink-0">
-                                                    <img src={item.image_url || '/placeholder.png'} alt="" className="w-full h-full object-cover" />
-                                                </div>
-                                            ))}
-                                            {(orderData[activeConversation.order_id].items?.length || 0) > 4 && (
-                                                <div className="w-6 h-6 rounded-md bg-gray-100 flex items-center justify-center text-[8px] font-bold text-gray-500 border border-gray-200">
-                                                    +{orderData[activeConversation.order_id].items.length - 4}
-                                                </div>
-                                            )}
-                                        </div>
+                                        <Link href="/orders" className="text-xs text-blue-600 hover:text-blue-800 font-bold flex items-center gap-1 transition-colors">
+                                            פרטי הזמנה מלאים <ExternalLink className="w-3 h-3" />
+                                        </Link>
                                     </div>
 
-                                    <Link href="/orders" className="text-blue-600 hover:underline font-bold whitespace-nowrap flex items-center gap-1">
-                                        פרטי הזמנה <ExternalLink className="w-2.5 h-2.5" />
-                                    </Link>
+                                    <div className="flex gap-4 overflow-x-auto pb-1 custom-scrollbar">
+                                        {orderData[activeConversation.order_id].items?.map((item, idx) => (
+                                            <div key={idx} className="flex items-center gap-2 bg-gray-50/80 rounded-xl p-1.5 border border-gray-100/50 flex-shrink-0 group hover:bg-white hover:shadow-sm transition-all duration-300">
+                                                <div className="w-10 h-10 rounded-lg overflow-hidden border border-gray-100 bg-white">
+                                                    <img src={item.image_url || '/placeholder.png'} alt="" className="w-full h-full object-contain group-hover:scale-110 transition-transform" />
+                                                </div>
+                                                <div className="flex flex-col">
+                                                    <span className="text-[10px] font-bold text-gray-800 truncate max-w-[80px] leading-tight">{item.name}</span>
+                                                    <div className="flex items-center gap-1 text-[9px] text-gray-400 mt-0.5">
+                                                        <span className="bg-gray-200 px-1 rounded font-medium text-gray-600">{item.size}ml</span>
+                                                        <span className="font-bold text-black">x{item.quantity}</span>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
                                 </div>
                             )}
 
