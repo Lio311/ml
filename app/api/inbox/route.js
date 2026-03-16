@@ -165,11 +165,16 @@ export async function POST(req) {
             }
         }
 
-        // Insert message
+        // Insert message with role
         const insertMsg = await pool.query(`
-            INSERT INTO messages (conversation_id, sender_id, content)
-            VALUES ($1, $2, $3)
-            RETURNING *
+            WITH inserted AS (
+                INSERT INTO messages (conversation_id, sender_id, content)
+                VALUES ($1, $2, $3)
+                RETURNING *
+            )
+            SELECT i.*, u.role as sender_role
+            FROM inserted i
+            LEFT JOIN users u ON i.sender_id = u.id
         `, [conversationId, userId, content]);
 
         // Update conversation timestamp

@@ -444,7 +444,9 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
                             )}
 
                             {messages.map((msg, idx) => {
-                                    const isClientMessage = msg.sender_id === activeConversation?.participant1_id;
+                                    // Robust check: Customer results in 'justify-start' (RIGHT in RTL)
+                                    // Admin/Staff results in 'justify-end' (LEFT in RTL)
+                                    const isClientMessage = msg.sender_role === 'customer' || (!msg.sender_role && msg.sender_id === activeConversation?.participant1_id);
 
                                     // In RTL: justify-start is Right, justify-end is Left
                                     // But if the user sees them on the left with justify-start, we'll force it.

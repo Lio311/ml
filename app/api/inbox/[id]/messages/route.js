@@ -38,10 +38,11 @@ export async function GET(req, { params }) {
         if (!isAuthorized) return new NextResponse('Forbidden', { status: 403 });
 
         const messages = await pool.query(`
-            SELECT id, sender_id, content, is_read, created_at 
-            FROM messages 
-            WHERE conversation_id = $1
-            ORDER BY created_at ASC
+            SELECT m.id, m.sender_id, m.content, m.is_read, m.created_at, u.role as sender_role
+            FROM messages m
+            LEFT JOIN users u ON m.sender_id = u.id
+            WHERE m.conversation_id = $1
+            ORDER BY m.created_at ASC
         `, [conversationId]);
 
         // We can fetch names from Clerk if we want, or do that on the client side
@@ -66,9 +67,14 @@ export async function POST(req, { params }) {
         }
 
         const insertMsg = await pool.query(`
-            INSERT INTO messages (conversation_id, sender_id, content)
-            VALUES ($1, $2, $3)
-            RETURNING id, sender_id, content, is_read, created_at
+            WITH inserted AS (
+                INSERT INTO messages (conversation_id, sender_id, content)
+                VALUES ($1, $2, $3)
+                RETURNING id, sender_id, content, is_read, created_at
+            )
+            SELECT i.*, u.role as sender_role
+            FROM inserted i
+            LEFT JOIN users u ON i.sender_id = u.id
         `, [conversationId, userId, content.trim()]);
 
         await pool.query(`
