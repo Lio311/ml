@@ -3,7 +3,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X, Home, ShoppingBox, Users, Package, CreditCard, Inbox, ShoppingBag, Label, Ticket, Dice5, Library, Map, Store, ClipboardList, LogOut } from "lucide-react";
+import { Menu, X, Home, Users, Package, CreditCard, Inbox, ShoppingBag, Tag, Ticket, Dice5, Library, Map, Store, ClipboardList, LogOut } from "lucide-react";
 import { SignOutButton } from "@clerk/nextjs";
 
 export default function AdminMobileNav({ role = 'customer' }) {
@@ -20,7 +20,7 @@ export default function AdminMobileNav({ role = 'customer' }) {
         { href: "/admin/expenses", label: "ניהול הוצאות", icon: CreditCard, roles: ['admin', 'deputy'] },
         { href: "/admin/requests", label: "ניהול בקשות", icon: Inbox, roles: ['admin', 'deputy'] },
         { href: "/admin/products", label: "ניהול מוצרים", icon: Store, roles: ['admin', 'deputy'] },
-        { href: "/admin/brands", label: "ניהול מותגים", icon: Label, roles: ['admin', 'deputy'] },
+        { href: "/admin/brands", label: "ניהול מותגים", icon: Tag, roles: ['admin', 'deputy'] },
         { href: "/admin/coupons", label: "ניהול קופונים", icon: Ticket, roles: ['admin', 'deputy'] },
         { href: "/admin/lottery", label: "ניהול הגרלות", icon: Dice5, roles: ['admin', 'deputy'] },
         { href: "/admin/dictionary", label: "מילון חיפוש", icon: Library, roles: ['admin', 'deputy'] },
