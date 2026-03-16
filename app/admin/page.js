@@ -3,7 +3,7 @@ import Link from "next/link";
 import DashboardCharts from "../components/admin/DashboardCharts";
 import AnalyticsTables from "../components/admin/AnalyticsTables";
 import InventoryForecast from "../components/admin/InventoryForecast";
-import { FlaskConical, TrendingUp, ShoppingBag, Users, Eye, Wallet, Package, ShoppingCart } from 'lucide-react';
+import { FlaskConical, TrendingUp, ShoppingBag, Users, Eye, Wallet, Package, ShoppingCart, ChevronRight, ChevronLeft } from 'lucide-react';
 
 export const dynamic = 'force-dynamic';
 
@@ -16,7 +16,7 @@ export const metadata = {
     robots: "noindex, nofollow",
 };
 
-export default async function AdminDashboard() {
+export default async function AdminDashboard({ searchParams }) {
     // Safe Auth Check
     let user = null;
     let role = null;
@@ -44,18 +44,31 @@ export default async function AdminDashboard() {
 
     // Date Parameters
     const now = new Date();
-    const year = now.getFullYear();
-    const month = now.getMonth() + 1;
-    const currentMonthLabel = now.toLocaleDateString('he-IL', { month: 'long' });
+    const currentRealYear = now.getFullYear();
+    const currentRealMonth = now.getMonth() + 1;
+
+    const params = await searchParams;
+    const year = params?.year ? parseInt(params.year) : currentRealYear;
+    const month = params?.month ? parseInt(params.month) : currentRealMonth;
+
+    const currentMonthLabel = new Date(year, month - 1, 1).toLocaleDateString('he-IL', { month: 'long' });
     const currentYearLabel = `${year}`;
 
     // Fix: Handle end-of-month edge cases (e.g., March 31 -> Feb 31 -> March 3)
-    const prevDate = new Date();
-    prevDate.setDate(1); // Safely move to the 1st of the month
-    prevDate.setMonth(prevDate.getMonth() - 1);
-    const prevYear = prevDate.getFullYear();
-    const prevMonth = prevDate.getMonth() + 1;
+    const prevDateObj = new Date(year, month - 2, 1);
+    const prevYear = prevDateObj.getFullYear();
+    const prevMonth = prevDateObj.getMonth() + 1;
     const daysInMonth = new Date(year, month, 0).getDate();
+
+    // Navigation Dates (For UI Links)
+    const prevNavYear = prevYear;
+    const prevNavMonth = prevMonth;
+    
+    const nextDateObj = new Date(year, month, 1);
+    const nextNavYear = nextDateObj.getFullYear();
+    const nextNavMonth = nextDateObj.getMonth() + 1;
+    
+    const hasNextMonth = (year < currentRealYear) || (year === currentRealYear && month < currentRealMonth);
 
     // Initialize KPIs container
     let kpis = {
@@ -118,9 +131,9 @@ export default async function AdminDashboard() {
                 SELECT SUM(total_amount) FROM orders 
                 WHERE status != 'cancelled'
                 AND catalog_id IS NULL
-                AND EXTRACT(MONTH FROM created_at) = EXTRACT(MONTH FROM CURRENT_DATE)
-                AND EXTRACT(YEAR FROM created_at) = EXTRACT(YEAR FROM CURRENT_DATE)
-            `),
+                AND EXTRACT(MONTH FROM created_at) = $1
+                AND EXTRACT(YEAR FROM created_at) = $2
+            `, [month, year]),
             // 4. Total Samples Sold
             safeQuery(`
                  SELECT SUM((item->>'quantity')::int) as count 
@@ -150,9 +163,9 @@ export default async function AdminDashboard() {
             safeQuery(`
                 SELECT SUM(amount) FROM expenses 
                 WHERE type = 'monthly'
-                AND EXTRACT(MONTH FROM date) = EXTRACT(MONTH FROM CURRENT_DATE)
-                AND EXTRACT(YEAR FROM date) = EXTRACT(YEAR FROM CURRENT_DATE)
-            `),
+                AND EXTRACT(MONTH FROM date) = $1
+                AND EXTRACT(YEAR FROM date) = $2
+            `, [month, year]),
             // 7. Yearly Expenses
             safeQuery("SELECT SUM(amount) FROM expenses WHERE type = 'yearly'"),
             // 8. Bottle Inventory
@@ -164,8 +177,8 @@ export default async function AdminDashboard() {
                 SELECT total_amount, items, created_at FROM orders 
                 WHERE status != 'cancelled' 
                 AND catalog_id IS NULL
-                AND EXTRACT(YEAR FROM created_at) = EXTRACT(YEAR FROM CURRENT_DATE)
-            `),
+                AND EXTRACT(YEAR FROM created_at) = $1
+            `, [year]),
             // 11. Users Graph (Current)
             safeQuery(`
                 SELECT 
@@ -200,17 +213,17 @@ export default async function AdminDashboard() {
                 SELECT total_amount, items FROM orders 
                 WHERE status != 'cancelled' 
                 AND catalog_id IS NULL
-                AND EXTRACT(MONTH FROM created_at) = EXTRACT(MONTH FROM CURRENT_DATE)
-                AND EXTRACT(YEAR FROM created_at) = EXTRACT(YEAR FROM CURRENT_DATE)
-            `),
+                AND EXTRACT(MONTH FROM created_at) = $1
+                AND EXTRACT(YEAR FROM created_at) = $2
+            `, [month, year]),
             // 14. Products (For Cost Calculation)
             safeQuery('SELECT id, cost_price, original_size FROM products'),
             // 15. Monthly Visits (KPI)
             safeQuery(`
                 SELECT COUNT(*) FROM site_visits 
-                WHERE EXTRACT(MONTH FROM created_at) = EXTRACT(MONTH FROM CURRENT_DATE) 
-                AND EXTRACT(YEAR FROM created_at) = EXTRACT(YEAR FROM CURRENT_DATE)
-            `),
+                WHERE EXTRACT(MONTH FROM created_at) = $1 
+                AND EXTRACT(YEAR FROM created_at) = $2
+            `, [month, year]),
             // 16. Orders Chart (Current)
             safeQuery(`
                 SELECT 
@@ -510,6 +523,20 @@ export default async function AdminDashboard() {
                             <Wallet className="w-4 h-4 text-green-500" />
                             תזרים ({currentMonthLabel})
                         </div>
+                        <div className="flex items-center gap-1 bg-gray-50 rounded-lg p-0.5 z-10">
+                            <Link href={`/admin?year=${prevNavYear}&month=${prevNavMonth}`} prefetch={true} className="p-1 hover:bg-white rounded-md text-gray-500 hover:text-gray-900 transition-colors">
+                                <ChevronRight className="w-4 h-4" />
+                            </Link>
+                            {hasNextMonth ? (
+                                <Link href={`/admin?year=${nextNavYear}&month=${nextNavMonth}`} prefetch={true} className="p-1 hover:bg-white rounded-md text-gray-500 hover:text-gray-900 transition-colors">
+                                    <ChevronLeft className="w-4 h-4" />
+                                </Link>
+                            ) : (
+                                <div className="p-1 rounded-md text-gray-300">
+                                    <ChevronLeft className="w-4 h-4" />
+                                </div>
+                            )}
+                        </div>
                     </div>
                     <div className="space-y-3">
                         <div className="flex justify-between items-center border-b border-gray-50 pb-2">
@@ -639,9 +666,25 @@ export default async function AdminDashboard() {
                 {/* Site Visits */}
                 <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 relative overflow-hidden group hover:shadow-md transition-shadow">
                     <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-sky-400 to-indigo-400"></div>
-                    <div className="text-gray-500 text-sm font-bold uppercase mb-2 flex items-center gap-2">
-                        <Eye className="w-4 h-4 text-sky-500" />
-                        כניסות לאתר
+                    <div className="flex justify-between items-start mb-2">
+                        <div className="text-gray-500 text-sm font-bold uppercase flex items-center gap-2">
+                            <Eye className="w-4 h-4 text-sky-500" />
+                            כניסות לאתר
+                        </div>
+                        <div className="flex items-center gap-1 bg-gray-50 rounded-lg p-0.5 z-10">
+                            <Link href={`/admin?year=${prevNavYear}&month=${prevNavMonth}`} prefetch={true} className="p-1 hover:bg-white rounded-md text-gray-500 hover:text-gray-900 transition-colors">
+                                <ChevronRight className="w-4 h-4" />
+                            </Link>
+                            {hasNextMonth ? (
+                                <Link href={`/admin?year=${nextNavYear}&month=${nextNavMonth}`} prefetch={true} className="p-1 hover:bg-white rounded-md text-gray-500 hover:text-gray-900 transition-colors">
+                                    <ChevronLeft className="w-4 h-4" />
+                                </Link>
+                            ) : (
+                                <div className="p-1 rounded-md text-gray-300">
+                                    <ChevronLeft className="w-4 h-4" />
+                                </div>
+                            )}
+                        </div>
                     </div>
                     <div className="text-xl font-bold mb-1 text-gray-900">
                         {currentMonthLabel}: <span className="text-blue-600">{kpis.monthlyVisits}</span>
