@@ -9,7 +9,7 @@ export async function GET(req) {
 
         // Count all unread messages in conversations where the user is participant1
         // and the sender is NOT the user (meaning it's from admin/seller)
-        const [rows] = await pool.query(`
+        const { rows } = await pool.query(`
             SELECT COUNT(*) as total_unread
             FROM messages m
             JOIN conversations c ON m.conversation_id = c.id

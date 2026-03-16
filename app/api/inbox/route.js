@@ -50,9 +50,9 @@ export async function GET(req) {
                     SELECT * FROM conversations WHERE participant1_id = $2
                 )
                 SELECT 
-                    COALESCE(c.id, 'order_' || o.order_id) as id,
-                    $3 as participant1_id,
-                    COALESCE(c.participant2_id, 'admin') as participant2_id,
+                    COALESCE(c.id::text, 'order_' || o.order_id::text) as id,
+                    $3::text as participant1_id,
+                    COALESCE(c.participant2_id, 'admin')::text as participant2_id,
                     c.catalog_id,
                     o.order_id,
                     c.created_at,
@@ -66,7 +66,7 @@ export async function GET(req) {
                 UNION ALL
                 
                 SELECT 
-                    c.id,
+                    c.id::text,
                     c.participant1_id,
                     c.participant2_id,
                     c.catalog_id,
