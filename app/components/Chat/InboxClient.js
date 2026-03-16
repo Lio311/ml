@@ -431,10 +431,17 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
                                     )
                                 )}
                             </div>
-                            <div>
-                                <h2 className="font-bold text-gray-800">{activeConversation ? getChatName(activeConversation) : '...'}</h2>
-                                <p className="text-xs text-green-600 font-medium">זמין כעת</p>
-                            </div>
+                                        <div className="flex flex-col">
+                                            <h2 className="font-bold text-gray-900 leading-tight">
+                                                {activeConversation ? getChatName(activeConversation) : '...'}
+                                            </h2>
+                                            <div className="flex items-center gap-1">
+                                                <div className={`w-1.5 h-1.5 rounded-full ${otherParticipantStatus?.last_active_at && (new Date() - new Date(otherParticipantStatus.last_active_at)) < 120000 ? 'bg-green-500 animate-pulse' : 'bg-gray-300'}`} />
+                                                <span className="text-[10px] text-gray-500">
+                                                    {formatLastSeen(otherParticipantStatus?.last_active_at) || "זמין כעת"}
+                                                </span>
+                                            </div>
+                                        </div>
                         </div>
 
                         <div 
@@ -486,25 +493,22 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
                             )}
 
                             {messages.map((msg, idx) => {
-                                    // Robust check: Customer results in 'justify-start' (RIGHT in RTL)
-                                    // Admin/Staff results in 'justify-end' (LEFT in RTL)
+                                    // Rule: Admin (staff) always LEFT (black), Customer always RIGHT (gray)
+                                    // This applies to BOTH user and admin interfaces (absolute alignment)
                                     const isClientMessage = msg.sender_role === 'customer' || 
-                                                          (!msg.sender_role && msg.sender_id === activeConversation?.participant1_id) ||
-                                                          (role === 'buyer' && msg.sender_id === user?.id);
+                                                          (msg.sender_role !== 'admin' && msg.sender_id === activeConversation?.participant1_id);
 
-                                    // In RTL: justify-start is Right, justify-end is Left
-                                    // But if the user sees them on the left with justify-start, we'll force it.
                                     return (
-                                        <div key={idx} className={`flex block w-full ${isClientMessage ? 'justify-start' : 'justify-end'}`} dir="rtl">
-                                            <div className={`max-w-[70%] rounded-2xl px-4 py-2 text-sm shadow-sm ${
+                                        <div key={idx} className={`flex w-full mb-3 ${isClientMessage ? 'justify-start' : 'justify-end'}`} dir="rtl">
+                                            <div className={`max-w-[75%] rounded-2xl px-4 py-2 text-sm shadow-sm transition-all duration-300 transform hover:scale-[1.01] ${
                                                 isClientMessage
                                                 ? 'bg-gray-200 text-black rounded-br-none' 
                                                 : 'bg-black text-white rounded-bl-none'
                                             }`}>
                                                 <p className="whitespace-pre-wrap leading-relaxed">{msg.content}</p>
-                                                <span className={`text-[10px] mt-1 block ${isClientMessage ? 'text-gray-500' : 'text-gray-400'}`}>
-                                                    {new Date(msg.created_at).toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' })}
-                                                </span>
+                                                <div className={`text-[9px] mt-1 flex ${isClientMessage ? 'justify-end' : 'justify-start'} opacity-50`}>
+                                                    {new Date(msg.created_at).toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit', hour12: false })}
+                                                </div>
                                             </div>
                                         </div>
                                     );
