@@ -175,19 +175,19 @@ export default function LotteryAdminPage() {
                                                 onClick={() => toggleLotteryStatus(product.id, product.in_lottery ?? true)}
                                                 disabled={!canEdit}
                                                 className={`
-                                                    relative inline-flex h-6 w-11 items-center rounded-full transition-all shadow-inner
-                                                    ${(product.in_lottery ?? true) ? 'bg-green-500 shadow-green-100' : 'bg-gray-200 shadow-gray-100'}
-                                                    ${!canEdit ? 'opacity-30 cursor-not-allowed' : 'hover:scale-105 active:scale-95'}
+                                                    relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500
+                                                    ${(product.in_lottery ?? true) ? 'bg-emerald-500' : 'bg-gray-200'}
+                                                    ${!canEdit ? 'opacity-30 cursor-not-allowed' : 'cursor-pointer hover:brightness-105 active:scale-95'}
                                                 `}
                                             >
                                                 <span
                                                     className={`
-                                                        inline-block h-4 w-4 transform rounded-full bg-white shadow-md transition-transform
-                                                        ${(product.in_lottery ?? true) ? 'translate-x-[24px]' : 'translate-x-[4px]'}
+                                                        inline-block h-5 w-5 transform rounded-full bg-white shadow-lg transition duration-200 ease-in-out
+                                                        ${(product.in_lottery ?? true) ? 'translate-x-5' : 'translate-x-1'}
                                                     `}
                                                 />
                                             </button>
-                                            <div className={`text-[9px] uppercase font-black tracking-widest ${(product.in_lottery ?? true) ? 'text-green-600' : 'text-gray-400'}`}>
+                                            <div className={`text-[10px] uppercase font-black tracking-tighter ${(product.in_lottery ?? true) ? 'text-emerald-600' : 'text-gray-400'}`}>
                                                 {(product.in_lottery ?? true) ? 'כלול' : 'מושבת'}
                                             </div>
                                         </div>
@@ -234,15 +234,15 @@ export default function LotteryAdminPage() {
                                             onClick={() => toggleLotteryStatus(product.id, product.in_lottery ?? true)}
                                             disabled={!canEdit}
                                             className={`
-                                                relative inline-flex h-6 w-11 items-center rounded-full transition-all shadow-inner
-                                                ${(product.in_lottery ?? true) ? 'bg-green-500 shadow-green-100' : 'bg-gray-200 shadow-gray-100'}
+                                                relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 outline-none
+                                                ${(product.in_lottery ?? true) ? 'bg-emerald-500' : 'bg-gray-200'}
                                                 ${!canEdit ? 'opacity-30' : 'active:scale-90'}
                                             `}
                                         >
                                             <span
                                                 className={`
-                                                    inline-block h-4 w-4 transform rounded-full bg-white shadow-md transition-transform
-                                                    ${(product.in_lottery ?? true) ? 'translate-x-[24px]' : 'translate-x-[4px]'}
+                                                    inline-block h-5 w-5 transform rounded-full bg-white shadow-lg transition duration-200 ease-in-out
+                                                    ${(product.in_lottery ?? true) ? 'translate-x-5' : 'translate-x-1'}
                                                 `}
                                             />
                                         </button>
