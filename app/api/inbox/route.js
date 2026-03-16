@@ -44,7 +44,7 @@ export async function GET(req) {
                 WITH user_orders AS (
                     SELECT id as order_id, created_at
                     FROM orders 
-                    WHERE user_id = $1
+                    WHERE customer_details->>'clerk_id' = $1
                 ),
                 existing_convs AS (
                     SELECT * FROM conversations WHERE participant1_id = $2
