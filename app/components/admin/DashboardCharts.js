@@ -1,4 +1,4 @@
-"use client";
+﻿"use client";
 
 import React from "react";
 import {
@@ -29,7 +29,7 @@ const CustomTooltip = ({ active, payload, label, prefix = "" }) => {
     if (active && payload && payload.length) {
         return (
             <div className="bg-white p-3 border rounded shadow-xl text-right z-50" dir="rtl">
-                <p className="font-bold mb-2 text-gray-800 border-b pb-1 text-sm">יום {label} לחודש</p>
+                <p className="font-bold mb-2 text-gray-800 border-b pb-1 text-sm">{`ÎÖÎòÎØ ${label} Î£ÎùÎòÎôÎ®`}</p>
                 <div className="flex flex-col gap-1">
                     {payload.map((entry, index) => (
                         <div key={index} className="flex justify-between gap-4 items-center">
@@ -56,20 +56,20 @@ export default function DashboardCharts({ orderData, revenueData, visitsData, us
             <div className="bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-gray-100">
                 <div className="flex justify-between items-center mb-6" dir="rtl">
                     <h3 className="text-base md:text-lg font-bold text-gray-800">
-                        {leftChartMode === 'visits' ? 'כניסות לאתר' : 'הרשמות משתמשים'}
+                        {leftChartMode === 'visits' ? 'ÎøÎáÎÖÎíÎòÎ¬ Î£ÎÉÎ¬Î¿' : 'ÎöÎ¿Î®Î×ÎòÎ¬ Î×Î®Î¬Î×Î®ÎÖÎØ'}
                     </h3>
                     <div className="flex bg-gray-100 p-1 rounded-lg scale-90 md:scale-100">
                         <button
                             onClick={() => setLeftChartMode('visits')}
                             className={`px-3 py-1 text-[10px] md:text-xs font-bold rounded-md transition ${leftChartMode === 'visits' ? 'bg-white shadow text-black' : 'text-gray-500 hover:text-black'}`}
                         >
-                            כניסות
+                            ÎøÎáÎÖÎíÎòÎ¬
                         </button>
                         <button
                             onClick={() => setLeftChartMode('users')}
                             className={`px-3 py-1 text-[10px] md:text-xs font-bold rounded-md transition ${leftChartMode === 'users' ? 'bg-white shadow text-black' : 'text-gray-500 hover:text-black'}`}
                         >
-                            הרשמות
+                            ÎöÎ¿Î®Î×ÎòÎ¬
                         </button>
                     </div>
                 </div>
@@ -98,7 +98,7 @@ export default function DashboardCharts({ orderData, revenueData, visitsData, us
                             {leftChartMode === 'visits' ? (
                                 <>
                                     <Line
-                                        name="החודש"
+                                        name="ÎöÎùÎòÎôÎ®"
                                         type="monotone"
                                         dataKey="current"
                                         stroke="#ef4444" 
@@ -108,7 +108,7 @@ export default function DashboardCharts({ orderData, revenueData, visitsData, us
                                         connectNulls
                                     />
                                     <Line
-                                        name="חודש קודם"
+                                        name="ÎùÎòÎôÎ® ÎºÎòÎôÎØ"
                                         type="monotone"
                                         dataKey="previous"
                                         stroke="#f97316" 
@@ -122,7 +122,7 @@ export default function DashboardCharts({ orderData, revenueData, visitsData, us
                             ) : (
                                 <>
                                     <Line
-                                        name="החודש"
+                                        name="ÎöÎùÎòÎôÎ®"
                                         type="monotone"
                                         dataKey="current"
                                         stroke="#ef4444" 
@@ -132,7 +132,7 @@ export default function DashboardCharts({ orderData, revenueData, visitsData, us
                                         connectNulls
                                     />
                                     <Line
-                                        name="חודש קודם"
+                                        name="ÎùÎòÎôÎ® ÎºÎòÎôÎØ"
                                         type="monotone"
                                         dataKey="previous"
                                         stroke="#f97316" 
@@ -153,20 +153,20 @@ export default function DashboardCharts({ orderData, revenueData, visitsData, us
             <div className="bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-gray-100">
                 <div className="flex justify-between items-center mb-6" dir="rtl">
                     <h3 className="text-base md:text-lg font-bold text-gray-800">
-                        {rightChartMode === 'revenue' ? 'מכירות' : 'הזמנות'}
+                        {rightChartMode === 'revenue' ? 'Î×ÎøÎÖÎ¿ÎòÎ¬' : 'ÎöÎûÎ×ÎáÎòÎ¬'}
                     </h3>
                     <div className="flex bg-gray-100 p-1 rounded-lg scale-90 md:scale-100">
                         <button
                             onClick={() => setRightChartMode('orders')}
                             className={`px-3 py-1 text-[10px] md:text-xs font-bold rounded-md transition ${rightChartMode === 'orders' ? 'bg-white shadow text-black' : 'text-gray-500 hover:text-black'}`}
                         >
-                            הזמנות
+                            ÎöÎûÎ×ÎáÎòÎ¬
                         </button>
                         <button
                             onClick={() => setRightChartMode('revenue')}
                             className={`px-3 py-1 text-[10px] md:text-xs font-bold rounded-md transition ${rightChartMode === 'revenue' ? 'bg-white shadow text-black' : 'text-gray-500 hover:text-black'}`}
                         >
-                            מכירות
+                            Î×ÎøÎÖÎ¿ÎòÎ¬
                         </button>
                     </div>
                 </div>
@@ -188,12 +188,12 @@ export default function DashboardCharts({ orderData, revenueData, visitsData, us
                                 axisLine={false}
                                 tick={{ fill: '#9ca3af' }}
                                 orientation="left"
-                                tickFormatter={rightChartMode === 'revenue' ? ((value) => `₪${value >= 1000 ? (value / 1000).toFixed(0) + 'k' : value}`) : undefined}
+                                tickFormatter={rightChartMode === 'revenue' ? ((value) => `Ôé¬${value >= 1000 ? (value / 1000).toFixed(0) + 'k' : value}`) : undefined}
                             />
-                            <Tooltip content={<CustomTooltip prefix={rightChartMode === 'revenue' ? "₪" : ""} />} cursor={{ stroke: '#f3f4f6', strokeWidth: 2 }} />
+                            <Tooltip content={<CustomTooltip prefix={rightChartMode === 'revenue' ? "Ôé¬" : ""} />} cursor={{ stroke: '#f3f4f6', strokeWidth: 2 }} />
                             <Legend content={<CustomLegend />} verticalAlign="bottom" align="center" />
                             <Line
-                                name="החודש"
+                                name="ÎöÎùÎòÎôÎ®"
                                 type="monotone"
                                 dataKey="current"
                                 stroke="#10b981" 
@@ -203,7 +203,7 @@ export default function DashboardCharts({ orderData, revenueData, visitsData, us
                                 connectNulls
                             />
                             <Line
-                                name="חודש קודם"
+                                name="ÎùÎòÎôÎ® ÎºÎòÎôÎØ"
                                 type="monotone"
                                 dataKey="previous"
                                 stroke="#3b82f6" 

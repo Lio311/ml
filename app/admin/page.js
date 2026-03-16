@@ -12,7 +12,7 @@ import { redirect } from "next/navigation";
 
 
 export const metadata = {
-    title: "ניהול ראשי | ml_tlv",
+    title: "ÎáÎÖÎöÎòÎ£ Î¿ÎÉÎ®ÎÖ | ml_tlv",
     robots: "noindex, nofollow",
 };
 
@@ -46,6 +46,8 @@ export default async function AdminDashboard() {
     const now = new Date();
     const year = now.getFullYear();
     const month = now.getMonth() + 1;
+    const currentMonthLabel = now.toLocaleDateString('he-IL', { month: 'long' });
+    const currentYearLabel = `${year}`;
 
     // Fix: Handle end-of-month edge cases (e.g., March 31 -> Feb 31 -> March 3)
     const prevDate = new Date();
@@ -91,9 +93,13 @@ export default async function AdminDashboard() {
             yearlyExpRes,
             bottleInvRes,
             countResUsers,
+            yearlyOrdersRes,
             userCurrentMonthRes,
             userPrevMonthRes,
             last30DaysRes,
+            monthlyOrdersRes,
+            productsRes,
+            visitsRes,
             currentMonthRes,
             prevMonthRes,
             currentMonthVisitsRes,
@@ -104,38 +110,37 @@ export default async function AdminDashboard() {
             cogsAllTimeRes
         ] = await Promise.all([
             // 1. Recent Orders
-            pool.query('SELECT * FROM orders ORDER BY created_at DESC LIMIT 3'),
+            safeQuery("SELECT * FROM orders WHERE catalog_id IS NULL ORDER BY created_at DESC LIMIT 3"),
             // 2. Total Orders Count
-            pool.query('SELECT COUNT(*) FROM orders'),
+            safeQuery("SELECT COUNT(*) FROM orders WHERE catalog_id IS NULL"),
             // 3. Total Monthly Revenue
             safeQuery(`
                 SELECT SUM(total_amount) FROM orders 
                 WHERE status != 'cancelled'
                 AND catalog_id IS NULL
-                AND created_at >= DATE_TRUNC('month', CURRENT_DATE)
+                AND EXTRACT(MONTH FROM created_at) = EXTRACT(MONTH FROM CURRENT_DATE)
+                AND EXTRACT(YEAR FROM created_at) = EXTRACT(YEAR FROM CURRENT_DATE)
             `),
-            // 4. Total Samples Sold (Monthly)
+            // 4. Total Samples Sold
             safeQuery(`
                  SELECT SUM((item->>'quantity')::int) as count 
                  FROM orders, jsonb_array_elements(items::jsonb) as item 
                  WHERE orders.status != 'cancelled' 
                  AND orders.catalog_id IS NULL
-                 AND created_at >= DATE_TRUNC('month', CURRENT_DATE)
                  AND (
-                    item->>'name' LIKE '%דוגמית%' 
+                    item->>'name' LIKE '%ÎôÎòÎÆÎ×ÎÖÎ¬%' 
                     OR item->>'name' ILIKE '%sample%'
                     OR item->>'size' IN ('2', '5', '10', '11')
                  )
             `),
-            // 5. Samples Breakdown (Monthly)
+            // 5. Samples Breakdown
             safeQuery(`
                  SELECT item->>'size' as size, SUM((item->>'quantity')::int) as count 
                  FROM orders, jsonb_array_elements(items::jsonb) as item 
                  WHERE orders.status != 'cancelled' 
                  AND orders.catalog_id IS NULL
-                 AND created_at >= DATE_TRUNC('month', CURRENT_DATE)
                  AND (
-                    item->>'name' LIKE '%דוגמית%' 
+                    item->>'name' LIKE '%ÎôÎòÎÆÎ×ÎÖÎ¬%' 
                     OR item->>'name' ILIKE '%sample%'
                     OR item->>'size' IN ('2', '5', '10', '11')
                  )
@@ -148,33 +153,41 @@ export default async function AdminDashboard() {
                 AND EXTRACT(MONTH FROM date) = EXTRACT(MONTH FROM CURRENT_DATE)
                 AND EXTRACT(YEAR FROM date) = EXTRACT(YEAR FROM CURRENT_DATE)
             `),
-            // 7. Yearly Expenses (Pro-rated for month)
+            // 7. Yearly Expenses
             safeQuery("SELECT SUM(amount) FROM expenses WHERE type = 'yearly'"),
             // 8. Bottle Inventory
             safeQuery('SELECT size, quantity FROM bottle_inventory ORDER BY size ASC'),
             // 9. Total Users
             safeQuery('SELECT COUNT(*) FROM users'),
-            // 10. Users Daily Graph (Current Month)
+            // 10. Yearly Orders (For Tables)
+            safeQuery(`
+                SELECT total_amount, items, created_at FROM orders 
+                WHERE status != 'cancelled' 
+                AND catalog_id IS NULL
+                AND EXTRACT(YEAR FROM created_at) = EXTRACT(YEAR FROM CURRENT_DATE)
+            `),
+            // 11. Users Graph (Current)
             safeQuery(`
                 SELECT 
                     EXTRACT(DAY FROM created_at)::int as day,
                     COUNT(*)::int as count
                 FROM users
-                WHERE created_at >= DATE_TRUNC('month', CURRENT_DATE)
+                WHERE EXTRACT(MONTH FROM created_at) = $1
+                AND EXTRACT(YEAR FROM created_at) = $2
                 GROUP BY day
                 ORDER BY day
-            `),
-            // 11. Users Daily Graph (Previous Month)
+            `, [month, year]),
+            // 11. Users Graph (Previous)
             safeQuery(`
                 SELECT 
                     EXTRACT(DAY FROM created_at)::int as day,
                     COUNT(*)::int as count
                 FROM users
-                WHERE created_at >= DATE_TRUNC('month', CURRENT_DATE) - INTERVAL '1 month'
-                AND created_at < DATE_TRUNC('month', CURRENT_DATE)
+                WHERE EXTRACT(MONTH FROM created_at) = $1
+                AND EXTRACT(YEAR FROM created_at) = $2
                 GROUP BY day
                 ORDER BY day
-            `),
+            `, [prevMonth, prevYear]),
             // 12. Forecast Data (Last 30 Days Orders)
             safeQuery(`
                 SELECT items FROM orders 
@@ -182,11 +195,12 @@ export default async function AdminDashboard() {
                 AND catalog_id IS NULL
                 AND created_at > NOW() - INTERVAL '30 days'
             `),
-            // 13. Yearly Orders (KEEPING FOR STATISTICS TABLES)
+            // 13. Monthly Orders (For Profit Calc)
             safeQuery(`
-                SELECT total_amount, items, created_at FROM orders 
+                SELECT total_amount, items FROM orders 
                 WHERE status != 'cancelled' 
                 AND catalog_id IS NULL
+                AND EXTRACT(MONTH FROM created_at) = EXTRACT(MONTH FROM CURRENT_DATE)
                 AND EXTRACT(YEAR FROM created_at) = EXTRACT(YEAR FROM CURRENT_DATE)
             `),
             // 14. Products (For Cost Calculation)
@@ -194,9 +208,10 @@ export default async function AdminDashboard() {
             // 15. Monthly Visits (KPI)
             safeQuery(`
                 SELECT COUNT(*) FROM site_visits 
-                WHERE created_at >= DATE_TRUNC('month', CURRENT_DATE)
+                WHERE EXTRACT(MONTH FROM created_at) = EXTRACT(MONTH FROM CURRENT_DATE) 
+                AND EXTRACT(YEAR FROM created_at) = EXTRACT(YEAR FROM CURRENT_DATE)
             `),
-            // 16. Orders Chart (Daily - Current Month)
+            // 16. Orders Chart (Current)
             safeQuery(`
                 SELECT 
                     EXTRACT(DAY FROM created_at) as day,
@@ -205,11 +220,12 @@ export default async function AdminDashboard() {
                 FROM orders
                 WHERE status != 'cancelled'
                 AND catalog_id IS NULL
-                AND created_at >= DATE_TRUNC('month', CURRENT_DATE)
+                AND EXTRACT(MONTH FROM created_at) = $1
+                AND EXTRACT(YEAR FROM created_at) = $2
                 GROUP BY day
                 ORDER BY day
-            `),
-            // 17. Orders Chart (Daily - Previous Month)
+            `, [month, year]),
+            // 17. Orders Chart (Previous)
             safeQuery(`
                 SELECT 
                     EXTRACT(DAY FROM created_at) as day,
@@ -218,32 +234,33 @@ export default async function AdminDashboard() {
                 FROM orders
                 WHERE status != 'cancelled'
                 AND catalog_id IS NULL
-                AND created_at >= DATE_TRUNC('month', CURRENT_DATE) - INTERVAL '1 month'
-                AND created_at < DATE_TRUNC('month', CURRENT_DATE)
+                AND EXTRACT(MONTH FROM created_at) = $1
+                AND EXTRACT(YEAR FROM created_at) = $2
                 GROUP BY day
                 ORDER BY day
-            `),
-            // 18. Visits Chart (Daily - Current Month)
+            `, [prevMonth, prevYear]),
+            // 18. Visits Chart (Current)
             safeQuery(`
                 SELECT 
                     EXTRACT(DAY FROM created_at) as day,
                     COUNT(*) as count
                 FROM site_visits
-                WHERE created_at >= DATE_TRUNC('month', CURRENT_DATE)
+                WHERE EXTRACT(MONTH FROM created_at) = $1
+                AND EXTRACT(YEAR FROM created_at) = $2
                 GROUP BY day
                 ORDER BY day
-            `),
-            // 19. Visits Chart (Daily - Previous Month)
+            `, [month, year]),
+            // 19. Visits Chart (Previous)
             safeQuery(`
                 SELECT 
                     EXTRACT(DAY FROM created_at) as day,
                     COUNT(*) as count
                 FROM site_visits
-                WHERE created_at >= DATE_TRUNC('month', CURRENT_DATE) - INTERVAL '1 month'
-                AND created_at < DATE_TRUNC('month', CURRENT_DATE)
+                WHERE EXTRACT(MONTH FROM created_at) = $1
+                AND EXTRACT(YEAR FROM created_at) = $2
                 GROUP BY day
                 ORDER BY day
-            `),
+            `, [prevMonth, prevYear]),
             // 20. Recent Coupons
             safeQuery(`
                 SELECT * FROM coupons 
@@ -284,7 +301,7 @@ export default async function AdminDashboard() {
         kpis.totalSamples = parseInt(samplesSoldRes.rows[0]?.count || 0);
         kpis.bottleInventory = bottleInvRes.rows;
         kpis.totalUsers = parseInt(countResUsers.rows[0]?.count || 0);
-        kpis.monthlyVisits = parseInt(currentMonthVisitsRes.rows[0]?.count || 0);
+        kpis.monthlyVisits = parseInt(visitsRes.rows[0]?.count || 0);
         kpis.recentCoupons = couponsRes.rows;
 
         // Cumulative Data
@@ -306,8 +323,9 @@ export default async function AdminDashboard() {
 
         // Expenses
         const monthlySum = parseFloat(monthlyExpRes.rows[0]?.sum || 0);
-        const yearlyProRated = parseFloat(yearlyExpRes.rows[0]?.sum || 0) / 12;
-        kpis.totalExpenses = Math.round(monthlySum + yearlyProRated);
+        const yearlySum = parseFloat(yearlyExpRes.rows[0]?.sum || 0);
+        const totalMonthlyExpenses = monthlySum + (yearlySum / 12);
+        kpis.totalExpenses = Math.round(totalMonthlyExpenses);
 
         // Profit Calculation
         const productMap = {};
@@ -318,11 +336,43 @@ export default async function AdminDashboard() {
             };
         });
 
-        // Yearly Stats for Tables (Preserving the requested yearly view)
-        const brandStats = {};
-        const sizeStats = {};
-        
+        // Stats Ranking (YEARLY - From yearlyOrdersRes)
+        const brandStatsYearly = {};
+        const sizeStatsYearly = {};
+
         yearlyOrdersRes.rows.forEach(order => {
+            const items = typeof order.items === 'string' ? JSON.parse(order.items) : order.items;
+            let orderGrossSales = 0;
+            items.forEach(item => {
+                orderGrossSales += parseFloat(item.price || 0) * parseInt(item.quantity || 1);
+            });
+            const ratio = orderGrossSales > 0 ? (parseFloat(order.total_amount) / orderGrossSales) : 0;
+
+            items.forEach(item => {
+                const quantity = parseInt(item.quantity || 1);
+                const itemNet = parseFloat(item.price || 0) * quantity * ratio;
+                if (item.brand) {
+                    brandStatsYearly[item.brand] = (brandStatsYearly[item.brand] || 0) + itemNet;
+                }
+                if (item.size) {
+                    const sizeKey = item.size.toString();
+                    sizeStatsYearly[sizeKey] = (sizeStatsYearly[sizeKey] || 0) + itemNet;
+                }
+            });
+        });
+
+        kpis.topBrands = Object.entries(brandStatsYearly)
+            .map(([name, sales]) => ({ name, sales }))
+            .sort((a, b) => b.sales - a.sales)
+            .slice(0, 5);
+
+        kpis.topSizes = Object.entries(sizeStatsYearly)
+            .map(([size, sales]) => ({ size, sales }))
+            .sort((a, b) => b.sales - a.sales);
+
+        // EXTRA: Recalculate monthly profit for the KPI card from monthlyOrdersRes (FROM b7a4bb8)
+        let monthlyProfit = 0;
+        monthlyOrdersRes.rows.forEach(order => {
             const items = typeof order.items === 'string' ? JSON.parse(order.items) : order.items;
             let orderItemsCost = 0;
             let orderGrossSales = 0;
@@ -335,102 +385,63 @@ export default async function AdminDashboard() {
             const ratio = orderGrossSales > 0 ? (orderNetTotal / orderGrossSales) : 0;
 
             items.forEach(item => {
-                const quantity = parseInt(item.quantity || 1);
-                const itemGross = parseFloat(item.price || 0) * quantity;
-                const itemNet = itemGross * ratio;
-
-                if (item.brand) {
-                    brandStats[item.brand] = (brandStats[item.brand] || 0) + itemNet;
-                }
-                if (item.size) {
-                    const sizeKey = item.size.toString();
-                    sizeStats[sizeKey] = (sizeStats[sizeKey] || 0) + itemNet;
-                }
-            });
-        });
-
-        // Current Month Profit Calculation
-        let currentMonthProfit = 0;
-        currentMonthRes.rows.forEach(day => {
-            // Estimating profit from revenue since we don't have per-order COGS in the chart query
-            // Using a conservative 40% margin estimate for the KPI card if detailed COGS isn't available per-day
-            // Better: calculate it from the monthlyOrdersRes if we want accuracy, or fetch items for the month
-        });
-        
-        // Re-calculating monthly profit accurately
-        const monthlyOrdersRes = await safeQuery(`
-            SELECT total_amount, items FROM orders 
-            WHERE status != 'cancelled' 
-            AND catalog_id IS NULL
-            AND created_at >= DATE_TRUNC('month', CURRENT_DATE)
-        `);
-
-        monthlyOrdersRes.rows.forEach(order => {
-            const items = typeof order.items === 'string' ? JSON.parse(order.items) : order.items;
-            let orderItemsCost = 0;
-            items.forEach(item => {
                 let dbId = item.id;
-                if (typeof dbId === 'string' && dbId.includes('-')) dbId = parseInt(dbId.split('-')[0]);
+                if (typeof dbId === 'string' && dbId.includes('-')) {
+                    dbId = parseInt(dbId.split('-')[0]);
+                }
                 const prodInfo = productMap[dbId];
+                const soldSize = parseFloat(item.size || 2);
+                const quantity = parseInt(item.quantity || 1);
                 if (prodInfo && prodInfo.size > 0) {
-                    orderItemsCost += (prodInfo.cost / prodInfo.size) * parseFloat(item.size || 2) * parseInt(item.quantity || 1);
+                    orderItemsCost += (prodInfo.cost / prodInfo.size) * soldSize * quantity;
                 }
             });
-            currentMonthProfit += (parseFloat(order.total_amount) - orderItemsCost);
+            monthlyProfit += (orderNetTotal - orderItemsCost);
         });
 
-        kpis.monthlyProfit = Math.round(currentMonthProfit - kpis.totalExpenses);
-
-        // Stats Ranking (Yearly)
-        kpis.topBrands = Object.entries(brandStats)
-            .map(([name, sales]) => ({ name, sales }))
-            .sort((a, b) => b.sales - a.sales)
-            .slice(0, 5);
-
-        kpis.topSizes = Object.entries(sizeStats)
-            .map(([size, sales]) => ({ size, sales }))
-            .sort((a, b) => b.sales - a.sales);
+        monthlyProfit -= totalMonthlyExpenses;
+        kpis.monthlyProfit = Math.round(monthlyProfit);
 
 
-        // Chart Mapping (Daily - Current Month)
-        for (let d = 1; d <= daysInMonth; d++) {
+        // Chart Mapping (Common Loop)
+        for (let i = 1; i <= daysInMonth; i++) {
             // Users
-            const curUserDay = userCurrentMonthRes.rows.find(r => Number(r.day) === d);
-            const prevUserDay = userPrevMonthRes.rows.find(r => Number(r.day) === d);
+            const curUserDay = userCurrentMonthRes.rows.find(r => Number(r.day) === i);
+            const prevUserDay = userPrevMonthRes.rows.find(r => Number(r.day) === i);
             usersChartData.push({
-                day: d,
+                day: i,
                 current: curUserDay ? Number(curUserDay.count) : 0,
                 previous: prevUserDay ? Number(prevUserDay.count) : 0
             });
 
             // Orders/Revenue
-            const curOrd = currentMonthRes.rows.find(r => parseInt(r.day) === d);
-            const prevOrd = prevMonthRes.rows.find(r => parseInt(r.day) === d);
+            const curOrd = currentMonthRes.rows.find(r => parseInt(r.day) === i);
+            const prevOrd = prevMonthRes.rows.find(r => parseInt(r.day) === i);
 
             // Visits
-            const curVis = currentMonthVisitsRes.rows.find(r => parseInt(r.day) === d);
-            const prevVis = prevMonthVisitsRes.rows.find(r => parseInt(r.day) === d);
+            const curVis = currentMonthVisitsRes.rows.find(r => parseInt(r.day) === i);
+            const prevVis = prevMonthVisitsRes.rows.find(r => parseInt(r.day) === i);
 
             kpis.visitsChartData.push({
-                day: d,
+                day: i,
                 current: curVis ? parseInt(curVis.count) : 0,
                 previous: prevVis ? parseInt(prevVis.count) : 0
             });
 
             kpis.orderChartData.push({
-                day: d,
+                day: i,
                 current: curOrd ? parseInt(curOrd.orders) : 0,
                 previous: prevOrd ? parseInt(prevOrd.orders) : 0
             });
 
             kpis.revenueChartData.push({
-                day: d,
+                day: i,
                 current: curOrd ? parseFloat(curOrd.revenue || 0) : 0,
                 previous: prevOrd ? parseFloat(prevOrd.revenue || 0) : 0
             });
         }
 
-        // Inventory Forecast Logic (Sync) - unchanged
+        // Inventory Forecast Logic (Sync)
         try {
             const sizeConsumption = { '2': 0, '5': 0, '10': 0, '11': 0 };
             last30DaysRes.rows.forEach(order => {
@@ -451,7 +462,7 @@ export default async function AdminDashboard() {
                 const dailyRate = usage30Days / 30;
                 const daysLeft = dailyRate > 0 ? Math.round(quantity / dailyRate) : 9999;
                 forecasts.push({
-                    name: `בקבוקי ${inv.size} מ"ל`,
+                    name: `ÎæÎºÎæÎòÎºÎÖ ${inv.size} Î×"Î£`,
                     daysLeft,
                     dailyRate,
                     quantity
@@ -464,14 +475,15 @@ export default async function AdminDashboard() {
 
     } catch (err) {
         console.error("Critical Dashboard Error:", err);
+        // Page renders with whatever kpis initialized
     }
+    // No finally{client.release()} needed! pool.query handles it.
 
-    const currentMonthLabel = new Date().toLocaleString('he-IL', { month: 'long' });
-    const currentYearLabel = new Date().getFullYear().toString();
+    // Use the already defined currentMonthLabel or currentYearLabel as needed
 
     return (
         <div className="pb-8">
-            <h1 className="text-3xl font-bold mb-8">לוח בקרה</h1>
+            <h1 className="text-3xl font-bold mb-8">Î£ÎòÎù ÎæÎºÎ¿Îö</h1>
 
             <DashboardCharts
                 orderData={kpis.orderChartData}
@@ -496,39 +508,39 @@ export default async function AdminDashboard() {
                     <div className="flex justify-between items-start mb-4">
                         <div className="text-gray-500 text-sm font-bold uppercase flex items-center gap-2">
                             <Wallet className="w-4 h-4 text-green-500" />
-                            תזרים ({currentMonthLabel})
+                            Î¬ÎûÎ¿ÎÖÎØ ({currentMonthLabel})
                         </div>
                     </div>
                     <div className="space-y-3">
                         <div className="flex justify-between items-center border-b border-gray-50 pb-2">
-                            <span className="text-blue-600 font-bold text-xs md:text-sm">הכנסות</span>
+                            <span className="text-blue-600 font-bold text-xs md:text-sm">ÎöÎøÎáÎíÎòÎ¬</span>
                             <div className="text-right">
                                 <span className="text-lg md:text-xl font-bold text-blue-700">
-                                    <span dir="ltr" className="inline-block">{kpis.totalRevenue.toLocaleString()}</span> ₪
+                                    <span dir="ltr" className="inline-block">{kpis.totalRevenue.toLocaleString()}</span> Ôé¬
                                 </span>
                             </div>
                         </div>
                         <div className="flex justify-between items-center border-b border-gray-50 pb-2">
-                            <span className="text-red-600 font-bold text-xs md:text-sm">הוצאות</span>
+                            <span className="text-red-600 font-bold text-xs md:text-sm">ÎöÎòÎªÎÉÎòÎ¬</span>
                             <div className="text-right">
                                 <span className="text-lg md:text-xl font-bold text-red-700">
-                                    <span dir="ltr" className="inline-block">{kpis.totalExpenses.toLocaleString()}</span> ₪
+                                    <span dir="ltr" className="inline-block">{kpis.totalExpenses.toLocaleString()}</span> Ôé¬
                                 </span>
                             </div>
                         </div>
                         <div className="flex justify-between items-center bg-gray-50/50 p-2 rounded-xl mb-2">
-                            <span className={`${kpis.monthlyProfit < 0 ? 'text-red-600' : 'text-green-600'} font-bold text-sm`}>רווח</span>
+                            <span className={`${kpis.monthlyProfit < 0 ? 'text-red-600' : 'text-green-600'} font-bold text-sm`}>Î¿ÎòÎòÎù</span>
                             <div className="text-right">
                                 <span className={`text-xl md:text-2xl font-bold ${kpis.monthlyProfit < 0 ? 'text-red-700' : 'text-green-700'}`}>
-                                    <span dir="ltr" className="inline-block">{kpis.monthlyProfit.toLocaleString()}</span> ₪
+                                    <span dir="ltr" className="inline-block">{kpis.monthlyProfit.toLocaleString()}</span> Ôé¬
                                 </span>
                             </div>
                         </div>
                         <div className="flex justify-between items-center border-t border-gray-100 pt-2 mt-2">
-                            <span className="text-gray-400 font-bold text-[10px]">רווח מצטבר (מאז ומעולם)</span>
+                            <span className="text-gray-400 font-bold text-[10px]">Î¿ÎòÎòÎù Î×ÎªÎÿÎæÎ¿ (Î×ÎÉÎû ÎòÎ×ÎóÎòÎ£ÎØ)</span>
                             <div className="text-right">
                                 <span className={`text-xs font-bold ${kpis.cumulativeProfit < 0 ? 'text-red-600' : 'text-green-600'}`}>
-                                    <span dir="ltr" className="inline-block">{kpis.cumulativeProfit ? kpis.cumulativeProfit.toLocaleString() : '0'}</span> ₪
+                                    <span dir="ltr" className="inline-block">{kpis.cumulativeProfit ? kpis.cumulativeProfit.toLocaleString() : '0'}</span> Ôé¬
                                 </span>
                             </div>
                         </div>
@@ -541,7 +553,7 @@ export default async function AdminDashboard() {
                     <div className="flex justify-between items-start mb-2">
                         <div className="text-gray-500 text-sm font-bold uppercase flex items-center gap-2">
                             <Package className="w-4 h-4 text-amber-500" />
-                            מלאי בקבוקונים פנוי
+                            Î×Î£ÎÉÎÖ ÎæÎºÎæÎòÎºÎòÎáÎÖÎØ ÎñÎáÎòÎÖ
                         </div>
                     </div>
 
@@ -549,12 +561,12 @@ export default async function AdminDashboard() {
                         <span className="text-4xl font-bold text-gray-900">
                             {kpis.bottleInventory.reduce((acc, item) => acc + parseInt(item.quantity || 0), 0)}
                         </span>
-                        <span className="text-xs text-gray-400 font-bold uppercase">בקבוקונים</span>
+                        <span className="text-xs text-gray-400 font-bold uppercase">ÎæÎºÎæÎòÎºÎòÎáÎÖÎØ</span>
                     </div>
 
                     <div className="grid grid-cols-2 gap-2">
                         {kpis.bottleInventory && kpis.bottleInventory.map(item => {
-                            const sizeLabel = item.size === 11 ? 'יוקרתי' : `${item.size} מ"ל`;
+                            const sizeLabel = item.size === 11 ? 'ÎÖÎòÎºÎ¿Î¬ÎÖ' : `${item.size} Î×"Î£`;
                             // Choose a color theme based on size for consistency
                             const theme = item.size === 2 ? 'bg-amber-50/50 border-amber-100 text-amber-700' :
                                           item.size === 5 ? 'bg-orange-50/50 border-orange-100 text-orange-700' :
@@ -572,7 +584,7 @@ export default async function AdminDashboard() {
                         })}
                     </div>
                     <div className="text-[10px] text-gray-400 mt-4 text-center border-t border-gray-50 pt-3">
-                        <Link href="/admin/inventory" className="text-blue-500 hover:underline font-bold transition-all">לניהול המלאי המלא ←</Link>
+                        <Link href="/admin/inventory" className="text-blue-500 hover:underline font-bold transition-all">Î£ÎáÎÖÎöÎòÎ£ ÎöÎ×Î£ÎÉÎÖ ÎöÎ×Î£ÎÉ ÔåÉ</Link>
                     </div>
                 </div>
 
@@ -582,30 +594,30 @@ export default async function AdminDashboard() {
                     <div className="flex justify-between items-start mb-2">
                         <div className="text-gray-500 text-sm font-bold uppercase flex items-center gap-2">
                             <FlaskConical className="w-4 h-4 text-purple-500" />
-                            דוגמיות שנמכרו
+                            ÎôÎòÎÆÎ×ÎÖÎòÎ¬ Î®ÎáÎ×ÎøÎ¿Îò
                         </div>
                     </div>
 
                     <div className="flex items-baseline gap-2 mb-4">
                         <span className="text-4xl font-bold text-gray-900">{kpis.totalSamples}</span>
-                        <span className="text-xs text-gray-400 font-bold uppercase">יחידות</span>
+                        <span className="text-xs text-gray-400 font-bold uppercase">ÎÖÎùÎÖÎôÎòÎ¬</span>
                     </div>
 
                     <div className="grid grid-cols-2 gap-2">
                         <div className="flex flex-col items-center bg-purple-50/50 p-2 rounded-xl border border-purple-100">
-                            <span className="text-[9px] text-purple-600 font-bold mb-1">2 מ״ל</span>
+                            <span className="text-[9px] text-purple-600 font-bold mb-1">2 Î×Î┤Î£</span>
                             <span className="font-black text-base text-purple-800 leading-none">{kpis.samplesBreakdown['2']}</span>
                         </div>
                         <div className="flex flex-col items-center bg-pink-50/50 p-2 rounded-xl border border-pink-100">
-                            <span className="text-[9px] text-pink-600 font-bold mb-1">5 מ״ל</span>
+                            <span className="text-[9px] text-pink-600 font-bold mb-1">5 Î×Î┤Î£</span>
                             <span className="font-black text-base text-pink-800 leading-none">{kpis.samplesBreakdown['5']}</span>
                         </div>
                         <div className="flex flex-col items-center bg-blue-50/50 p-2 rounded-xl border border-blue-100">
-                            <span className="text-[9px] text-blue-600 font-bold mb-1">10 מ״ל</span>
+                            <span className="text-[9px] text-blue-600 font-bold mb-1">10 Î×Î┤Î£</span>
                             <span className="font-black text-base text-blue-800 leading-none">{kpis.samplesBreakdown['10']}</span>
                         </div>
                         <div className="flex flex-col items-center bg-amber-50/50 p-2 rounded-xl border border-amber-100">
-                            <span className="text-[9px] text-amber-600 font-bold mb-1">יוקרתי</span>
+                            <span className="text-[9px] text-amber-600 font-bold mb-1">ÎÖÎòÎºÎ¿Î¬ÎÖ</span>
                             <span className="font-black text-base text-amber-800 leading-none">{kpis.samplesBreakdown['11']}</span>
                         </div>
                     </div>
@@ -616,11 +628,11 @@ export default async function AdminDashboard() {
                     <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-cyan-500"></div>
                     <div className="text-gray-500 text-sm font-bold uppercase mb-2 flex items-center gap-2">
                         <ShoppingCart className="w-4 h-4 text-blue-500" />
-                        הזמנות סה״כ
+                        ÎöÎûÎ×ÎáÎòÎ¬ ÎíÎöÎ┤Îø
                     </div>
                     <div className="text-3xl font-bold mb-4">{kpis.totalOrders}</div>
                     <div className="text-[10px] text-center border-t border-gray-50 pt-3 mt-2">
-                        <Link href="/admin/orders" className="text-blue-500 hover:underline font-bold transition-all">לניהול הזמנות ←</Link>
+                        <Link href="/admin/orders" className="text-blue-500 hover:underline font-bold transition-all">Î£ÎáÎÖÎöÎòÎ£ ÎöÎûÎ×ÎáÎòÎ¬ ÔåÉ</Link>
                     </div>
                 </div>
 
@@ -629,12 +641,12 @@ export default async function AdminDashboard() {
                     <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-sky-400 to-indigo-400"></div>
                     <div className="text-gray-500 text-sm font-bold uppercase mb-2 flex items-center gap-2">
                         <Eye className="w-4 h-4 text-sky-500" />
-                        כניסות לאתר
+                        ÎøÎáÎÖÎíÎòÎ¬ Î£ÎÉÎ¬Î¿
                     </div>
                     <div className="text-xl font-bold mb-1 text-gray-900">
-                        שנתי ({currentYearLabel}): <span className="text-blue-600">{kpis.monthlyVisits}</span>
+                        {currentMonthLabel}: <span className="text-blue-600">{kpis.monthlyVisits}</span>
                     </div>
-                    <div className="text-[10px] text-gray-400 font-medium italic">נספר לפי ביקורים ייחודיים</div>
+                    <div className="text-[10px] text-gray-400 font-medium italic">ÎáÎíÎñÎ¿ Î£ÎñÎÖ ÎæÎÖÎºÎòÎ¿ÎÖÎØ ÎÖÎÖÎùÎòÎôÎÖÎÖÎØ</div>
                 </div>
 
                 {/* Registered Users */}
@@ -642,11 +654,11 @@ export default async function AdminDashboard() {
                     <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-500 to-purple-600"></div>
                     <div className="text-gray-500 text-sm font-bold uppercase mb-2 flex items-center gap-2">
                         <Users className="w-4 h-4 text-indigo-500" />
-                        משתמשים רשומים
+                        Î×Î®Î¬Î×Î®ÎÖÎØ Î¿Î®ÎòÎ×ÎÖÎØ
                     </div>
                     <div className="text-3xl font-bold mb-4 text-gray-900">{kpis.totalUsers}</div>
                     <div className="text-[10px] text-center border-t border-gray-50 pt-3 mt-2">
-                        <Link href="/admin/users" className="text-blue-500 hover:underline font-bold transition-all">לניהול משתמשים ←</Link>
+                        <Link href="/admin/users" className="text-blue-500 hover:underline font-bold transition-all">Î£ÎáÎÖÎöÎòÎ£ Î×Î®Î¬Î×Î®ÎÖÎØ ÔåÉ</Link>
                     </div>
                 </div>
             </div>
@@ -654,25 +666,25 @@ export default async function AdminDashboard() {
             {/* Recent Orders List */}
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden mb-8">
                 <div className="p-6 border-b flex justify-between items-center">
-                    <h3 className="font-bold text-gray-900">הזמנות אחרונות</h3>
-                    <Link href="/admin/orders" className="text-blue-600 text-sm font-bold hover:underline">לכל ההזמנות</Link>
+                    <h3 className="font-bold text-gray-900">ÎöÎûÎ×ÎáÎòÎ¬ ÎÉÎùÎ¿ÎòÎáÎòÎ¬</h3>
+                    <Link href="/admin/orders" className="text-blue-600 text-sm font-bold hover:underline">Î£ÎøÎ£ ÎöÎöÎûÎ×ÎáÎòÎ¬</Link>
                 </div>
                 <div className="divide-y divide-gray-100">
                     {kpis.recentOrders.length === 0 ? (
                         <div className="p-8 text-center text-gray-400 text-sm italic">
-                            עדיין אין הזמנות...
+                            ÎóÎôÎÖÎÖÎƒ ÎÉÎÖÎƒ ÎöÎûÎ×ÎáÎòÎ¬...
                         </div>
                     ) : (
                         kpis.recentOrders.map(order => (
                             <div key={order.id} className="p-4 flex items-center justify-between hover:bg-gray-50 transition-colors">
                                 <div>
-                                    <div className="font-bold text-gray-900">הזמנה #{order.id}</div>
+                                    <div className="font-bold text-gray-900">ÎöÎûÎ×ÎáÎö #{order.id}</div>
                                     <div className="text-sm text-gray-500">
-                                        {order.customer_details?.name} • {new Date(order.created_at).toLocaleDateString('he-IL')}
+                                        {order.customer_details?.name} ÔÇó {new Date(order.created_at).toLocaleDateString('he-IL')}
                                     </div>
                                 </div>
                                 <div className="text-right">
-                                    <div className="font-bold text-gray-900">{order.total_amount} ₪</div>
+                                    <div className="font-bold text-gray-900">{order.total_amount} Ôé¬</div>
                                     <span className={`text-[9px] md:text-xs px-2 py-0.5 rounded-full font-bold uppercase tracking-wider ${order.status === 'pending' ? 'bg-orange-100 text-orange-800' :
                                         order.status === 'processing' ? 'bg-blue-100 text-blue-800' :
                                             order.status === 'shipped' ? 'bg-purple-100 text-purple-800' :
@@ -680,11 +692,11 @@ export default async function AdminDashboard() {
                                                     'bg-gray-100 text-gray-800'
                                         }`}>
                                         {
-                                            order.status === 'pending' ? 'ממתין' :
-                                                order.status === 'processing' ? 'בטיפול' :
-                                                    order.status === 'shipped' ? 'נשלח' :
-                                                        order.status === 'completed' ? 'הושלם' :
-                                                            order.status === 'cancelled' ? 'בוטל' :
+                                            order.status === 'pending' ? 'Î×Î×Î¬ÎÖÎƒ' :
+                                                order.status === 'processing' ? 'ÎæÎÿÎÖÎñÎòÎ£' :
+                                                    order.status === 'shipped' ? 'ÎáÎ®Î£Îù' :
+                                                        order.status === 'completed' ? 'ÎöÎòÎ®Î£ÎØ' :
+                                                            order.status === 'cancelled' ? 'ÎæÎòÎÿÎ£' :
                                                                 order.status
                                         }
                                     </span>
@@ -698,18 +710,18 @@ export default async function AdminDashboard() {
             {/* Coupons Table */}
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden mt-8">
                 <div className="p-6 border-b flex justify-between items-center">
-                    <h3 className="font-bold text-gray-900">קופונים אחרונים</h3>
-                    <Link href="/admin/coupons" className="text-blue-600 text-sm font-bold hover:underline">לכל הקופונים</Link>
+                    <h3 className="font-bold text-gray-900">ÎºÎòÎñÎòÎáÎÖÎØ ÎÉÎùÎ¿ÎòÎáÎÖÎØ</h3>
+                    <Link href="/admin/coupons" className="text-blue-600 text-sm font-bold hover:underline">Î£ÎøÎ£ ÎöÎºÎòÎñÎòÎáÎÖÎØ</Link>
                 </div>
                 <div className="overflow-x-auto custom-scrollbar">
                     <table className="w-full text-right" dir="rtl">
                         <thead className="bg-gray-50 text-gray-500 text-sm font-bold">
                             <tr>
-                                <th className="p-4 text-center">קוד</th>
-                                <th className="p-4 text-center">הנחה</th>
-                                <th className="p-4 text-center">מייל לקוח</th>
-                                <th className="p-4 text-center">סטטוס</th>
-                                <th className="p-4 text-center">נוצר בתאריך</th>
+                                <th className="p-4 text-center">ÎºÎòÎô</th>
+                                <th className="p-4 text-center">ÎöÎáÎùÎö</th>
+                                <th className="p-4 text-center">Î×ÎÖÎÖÎ£ Î£ÎºÎòÎù</th>
+                                <th className="p-4 text-center">ÎíÎÿÎÿÎòÎí</th>
+                                <th className="p-4 text-center">ÎáÎòÎªÎ¿ ÎæÎ¬ÎÉÎ¿ÎÖÎÜ</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100">
@@ -727,8 +739,8 @@ export default async function AdminDashboard() {
                                                 displayStatus === 'redeemed' ? 'bg-gray-800 text-white' :
                                                     'bg-red-100 text-red-800'
                                                 }`}>
-                                                {displayStatus === 'active' ? 'פעיל' :
-                                                    displayStatus === 'redeemed' ? 'מומש' : 'פג תוקף'}
+                                                {displayStatus === 'active' ? 'ÎñÎóÎÖÎ£' :
+                                                    displayStatus === 'redeemed' ? 'Î×ÎòÎ×Î®' : 'ÎñÎÆ Î¬ÎòÎºÎú'}
                                             </span>
                                         </td>
                                         <td className="p-4 text-xs text-gray-500 text-center whitespace-nowrap">
