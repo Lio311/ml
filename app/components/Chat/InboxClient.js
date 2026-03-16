@@ -1,9 +1,11 @@
 "use client";
 
 import { useState, useEffect, useRef } from 'react';
-import { Reply, User as UserIcon, Loader2, MessageSquare, Search, Store } from 'lucide-react';
+import { Reply, User as UserIcon, Loader2, MessageSquare, Search, Store, Package, ExternalLink, Image as ImageIcon } from 'lucide-react';
 import { useUser } from '@clerk/nextjs';
 import toast from 'react-hot-toast';
+import Link from 'next/link';
+import OrderStatusTimeline from '../OrderStatusTimeline';
 
 export default function InboxClient({ role = 'buyer', catalogId = null, preSelectConversationWith = null, initialOrderId = null, initialCatalogId = null }) {
     const { user, isLoaded } = useUser();
