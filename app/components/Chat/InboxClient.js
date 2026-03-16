@@ -18,6 +18,7 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
     const [isSending, setIsSending] = useState(false);
     const [orderData, setOrderData] = useState({}); // Cache for order details
     const [isLoadingOrder, setIsLoadingOrder] = useState(false);
+    const [searchQuery, setSearchQuery] = useState("");
     const [catalogsData, setCatalogsData] = useState({});
     const [otherParticipantStatus, setOtherParticipantStatus] = useState(null);
     const messagesEndRef = useRef(null);
