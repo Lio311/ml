@@ -39,16 +39,48 @@ export async function GET(req) {
                 ORDER BY c.updated_at DESC
             `, [userId, catalogId]);
         } else {
-            // Buyer mode
+            // Buyer mode: Get existing conversations AND orders that don't have conversations yet
             query = await pool.query(`
-                SELECT c.*, 
-                       (SELECT content FROM messages m WHERE m.conversation_id = c.id ORDER BY created_at DESC LIMIT 1) as last_message,
-                       (SELECT created_at FROM messages m WHERE m.conversation_id = c.id ORDER BY created_at DESC LIMIT 1) as last_message_time,
-                       (SELECT COUNT(*) FROM messages m WHERE m.conversation_id = c.id AND sender_id != $1 AND is_read = false) as unread_count
-                FROM conversations c 
-                WHERE c.participant1_id = $2
-                ORDER BY c.updated_at DESC
-            `, [userId, userId]);
+                WITH user_orders AS (
+                    SELECT id as order_id, created_at
+                    FROM orders 
+                    WHERE user_id = $1
+                ),
+                existing_convs AS (
+                    SELECT * FROM conversations WHERE participant1_id = $2
+                )
+                SELECT 
+                    COALESCE(c.id, 'order_' || o.order_id) as id,
+                    $3 as participant1_id,
+                    COALESCE(c.participant2_id, 'admin') as participant2_id,
+                    c.catalog_id,
+                    o.order_id,
+                    c.created_at,
+                    COALESCE(c.updated_at, o.created_at) as updated_at,
+                    (SELECT content FROM messages m WHERE m.conversation_id = c.id ORDER BY created_at DESC LIMIT 1) as last_message,
+                    (SELECT created_at FROM messages m WHERE m.conversation_id = c.id ORDER BY created_at DESC LIMIT 1) as last_message_time,
+                    (SELECT COUNT(*) FROM messages m WHERE m.conversation_id = c.id AND sender_id != $4 AND is_read = false) as unread_count
+                FROM user_orders o
+                LEFT JOIN existing_convs c ON o.order_id = c.order_id
+                
+                UNION ALL
+                
+                SELECT 
+                    c.id,
+                    c.participant1_id,
+                    c.participant2_id,
+                    c.catalog_id,
+                    c.order_id,
+                    c.created_at,
+                    c.updated_at,
+                    (SELECT content FROM messages m WHERE m.conversation_id = c.id ORDER BY created_at DESC LIMIT 1) as last_message,
+                    (SELECT created_at FROM messages m WHERE m.conversation_id = c.id ORDER BY created_at DESC LIMIT 1) as last_message_time,
+                    (SELECT COUNT(*) FROM messages m WHERE m.conversation_id = c.id AND sender_id != $5 AND is_read = false) as unread_count
+                FROM existing_convs c
+                WHERE c.order_id IS NULL
+                
+                ORDER BY updated_at DESC
+            `, [userId, userId, userId, userId, userId]);
         }
 
         let convs = query.rows;

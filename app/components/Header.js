@@ -11,6 +11,7 @@ import SearchAutocomplete from './SearchAutocomplete';
 import LiveVisitorCounter from './LiveVisitorCounter';
 
 import { useWishlist } from '../context/WishlistContext';
+import { Mail } from 'lucide-react';
 
 export default function Header({ brands = [], menu = [] }) {
     const { uniqueVendorsCount: cartCount } = useCart();
@@ -29,6 +30,26 @@ export default function Header({ brands = [], menu = [] }) {
     }, {});
 
     const sortedLetters = Object.keys(groupedBrands).sort();
+
+    const [unreadCount, setUnreadCount] = useState(0);
+
+    useEffect(() => {
+        const fetchUnreadCount = async () => {
+            try {
+                const res = await fetch('/api/inbox/unread-count');
+                if (res.ok) {
+                    const data = await res.json();
+                    setUnreadCount(data.count);
+                }
+            } catch (err) {
+                console.error("Error fetching unread count", err);
+            }
+        };
+
+        fetchUnreadCount();
+        const interval = setInterval(fetchUnreadCount, 30000); // Check every 30 seconds
+        return () => clearInterval(interval);
+    }, []);
 
 
     return (
@@ -98,10 +119,15 @@ export default function Header({ brands = [], menu = [] }) {
                                 <Link href="/my-catalogs" className="p-1.5 text-black hover:text-yellow-600 transition hidden md:block" title="ניהול הקטלוגים שלי">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-store"><path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7"/><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4"/><path d="M2 7h20"/><path d="M22 7v3a2 2 0 0 1-2 2v0a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 16 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 12 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 8 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 4 12v0a2 2 0 0 1-2-2V7"/></svg>
                                 </Link>
-                                <Link href="/orders" className="p-1.5 text-black" title="ההזמנות שלי">
+                                <Link href="/orders" className="p-1.5 text-black relative" title="ההזמנות שלי">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
                                         <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
                                     </svg>
+                                    {unreadCount > 0 && (
+                                        <span className="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-red-600 text-[10px] text-white font-bold border-2 border-white">
+                                            {unreadCount}
+                                        </span>
+                                    )}
                                 </Link>
                             </SignedIn>
                             <SignedOut>
@@ -250,6 +276,11 @@ export default function Header({ brands = [], menu = [] }) {
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 hover:text-blue-600 transition">
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
                                 </svg>
+                                {unreadCount > 0 && (
+                                    <span className="absolute -top-2 -right-2 flex h-4.5 w-4.5 items-center justify-center rounded-full bg-red-600 text-[10px] text-white font-bold border-2 border-white shadow-sm scale-110">
+                                        {unreadCount}
+                                    </span>
+                                )}
                             </Link>
                         </SignedIn>
 
