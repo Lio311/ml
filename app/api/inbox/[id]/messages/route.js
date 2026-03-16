@@ -7,7 +7,7 @@ export async function GET(req, { params }) {
         const { userId } = getAuth(req);
         if (!userId) return new NextResponse('Unauthorized', { status: 401 });
 
-        const { id: conversationId } = params;
+        const { id: conversationId } = await params;
 
         // Verify user is part of the conversation (or is admin/catalog_owner)
         // Simplified check: since they know the ID, we could just fetch it, but let's be secure
@@ -57,7 +57,7 @@ export async function POST(req, { params }) {
         const { userId } = getAuth(req);
         if (!userId) return new NextResponse('Unauthorized', { status: 401 });
 
-        const { id: conversationId } = params;
+        const { id: conversationId } = await params;
         const body = await req.json();
         const { content } = body;
 

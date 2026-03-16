@@ -7,7 +7,7 @@ export async function PATCH(req, { params }) {
         const { userId } = getAuth(req);
         if (!userId) return new NextResponse('Unauthorized', { status: 401 });
 
-        const { id: conversationId } = params;
+        const { id: conversationId } = await params;
 
         // Verify conversation access
         const check = await pool.query(`SELECT * FROM conversations WHERE id = $1`, [conversationId]);

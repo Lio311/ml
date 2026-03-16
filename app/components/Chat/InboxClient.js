@@ -379,7 +379,7 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
                                     disabled={!newMessage.trim() || isSending}
                                     className="absolute left-2 top-1/2 -translate-y-1/2 w-9 h-9 bg-black text-white rounded-full flex items-center justify-center hover:bg-gray-800 disabled:opacity-50 transition shadow-md"
                                 >
-                                    {isSending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4 mr-0.5 transform rotate-180" />}
+                                    {isSending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4 mr-0.5" />}
                                 </button>
                             </form>
                         </div>
