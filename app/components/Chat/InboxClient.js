@@ -358,7 +358,7 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
                                     const isClientMessage = msg.sender_id === activeConversation?.participant1_id;
 
                                     return (
-                                        <div key={idx} className={`flex ${isClientMessage ? 'justify-end' : 'justify-start'}`}>
+                                        <div key={idx} className={`flex ${isClientMessage ? 'justify-start' : 'justify-end'}`}>
                                             <div className={`max-w-[70%] rounded-2xl px-4 py-2 text-sm shadow-sm ${
                                                 isClientMessage
                                                 ? 'bg-gray-200 text-black rounded-br-none' 
