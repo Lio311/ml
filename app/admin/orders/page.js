@@ -231,78 +231,79 @@ export default async function AdminOrdersPage(props) {
                 </div>
 
                 {/* Mobile View - Card Layout */}
-                <div className="md:hidden divide-y divide-gray-100">
+                <div className="md:hidden divide-y divide-gray-100/50">
                     {orders.map((order) => (
-                        <div key={order.id} className="p-4 bg-white hover:bg-gray-50/50 transition-colors">
+                        <div key={order.id} className="p-5 bg-white hover:bg-gray-50/50 transition-colors">
                             <div className="flex justify-between items-start mb-4">
-                                <div>
-                                    <span className="text-xs font-bold text-gray-400 ml-2">#{order.id}</span>
-                                    <span className="font-bold text-gray-900">{order.customer_details?.name}</span>
-                                    <div className="text-[10px] text-gray-500 mt-0.5">{order.customer_details?.email}</div>
+                                <div className="space-y-1">
+                                    <div className="flex items-center gap-2 mb-1">
+                                        <span className="text-[10px] font-black text-gray-400 leading-none">#{order.id}</span>
+                                        <div className={`text-[9px] px-2 py-0.5 rounded-full font-black uppercase tracking-widest ${order.status === 'pending' ? 'bg-orange-50 text-orange-700 border border-orange-100' :
+                                            order.status === 'processing' ? 'bg-blue-50 text-blue-700 border border-blue-100' :
+                                                order.status === 'shipped' ? 'bg-purple-50 text-purple-700 border border-purple-100' :
+                                                    order.status === 'completed' ? 'bg-green-50 text-green-700 border border-green-100' :
+                                                        'bg-gray-50 text-gray-700 border border-gray-100'
+                                            }`}>
+                                            {
+                                                order.status === 'pending' ? 'ממתין' :
+                                                    order.status === 'processing' ? 'בטיפול' :
+                                                        order.status === 'shipped' ? 'נשלח' :
+                                                            order.status === 'completed' ? 'הושלם' :
+                                                                order.status === 'cancelled' ? 'בוטל' :
+                                                                    order.status
+                                            }
+                                        </div>
+                                    </div>
+                                    <h3 className="font-black text-gray-900 text-base">{order.customer_details?.name}</h3>
+                                    <div className="text-[11px] font-medium text-gray-500">{order.customer_details?.email}</div>
                                 </div>
-                                <div className="text-left">
-                                    <div className="font-black text-gray-900">{order.total_amount} ₪</div>
-                                    <div className="text-[9px] text-gray-400">
+                                <div className="flex flex-col items-end shrink-0">
+                                    <div className="font-black text-gray-900 text-lg leading-none mb-1.5" dir="ltr">₪{order.total_amount}</div>
+                                    <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none">
                                         {new Date(order.created_at).toLocaleDateString('he-IL', { day: '2-digit', month: '2-digit', year: '2-digit' })}
                                     </div>
                                 </div>
                             </div>
 
-                            <div className="mb-4 bg-gray-50/50 p-3 rounded-xl border border-gray-100">
-                                <h4 className="text-[10px] uppercase font-bold text-gray-400 mb-2">תכולת ההזמנה:</h4>
-                                <ul className="space-y-1.5">
+                            <div className="mb-5 bg-gray-50/50 rounded-[1.5rem] border border-gray-100/50 p-4">
+                                <h4 className="text-[9px] uppercase font-black text-gray-400 mb-3 tracking-widest opacity-60">תכולת ההזמנה</h4>
+                                <ul className="space-y-2.5">
                                     {order.items?.map((item, idx) => (
-                                        <li key={idx} className="flex justify-between text-xs">
-                                            <div className="flex gap-2 items-start">
-                                                <span className="font-bold text-blue-600">{item.quantity}x</span>
-                                                <span className="text-gray-700 leading-tight">{item.name}</span>
+                                        <li key={idx} className="flex justify-between items-start text-[13px]">
+                                            <div className="flex gap-2.5 flex-1">
+                                                <span className="font-black text-blue-600 bg-blue-50 w-6 h-6 rounded-lg flex items-center justify-center text-[11px] shrink-0 border border-blue-100/50">{item.quantity}</span>
+                                                <span className="font-bold text-gray-800 leading-tight pt-0.5">{item.name}</span>
                                             </div>
-                                            <span className="text-gray-400 text-[10px] shrink-0" dir="ltr">
+                                            <span className="text-gray-400 font-black text-[10px] uppercase tracking-tighter pt-1 shrink-0 bg-white px-2 py-0.5 rounded-lg border border-gray-100" dir="ltr">
                                                 {item.size.toString().includes('ml') ? item.size : `${item.size}ml`}
                                             </span>
                                         </li>
                                     ))}
                                 </ul>
                                 {order.notes && (
-                                    <div className="mt-3 text-[10px] text-amber-800 bg-amber-50 p-2 rounded-lg border border-amber-100">
-                                        <span className="font-bold block mb-1">הערה:</span>
+                                    <div className="mt-4 text-[11px] font-medium text-amber-800 bg-amber-50/50 p-3 rounded-2xl border border-amber-100/50 leading-relaxed shadow-sm">
+                                        <span className="text-[9px] font-black uppercase tracking-widest block mb-1 underline decoration-amber-200 decoration-2 underline-offset-2">הערה מיוחדת:</span>
                                         {order.notes}
                                     </div>
                                 )}
                             </div>
 
-                            <div className="flex flex-wrap items-center gap-3">
-                                <div className={`text-[10px] px-2 py-1 rounded-full font-bold uppercase tracking-wider ${order.status === 'pending' ? 'bg-orange-100 text-orange-800' :
-                                    order.status === 'processing' ? 'bg-blue-100 text-blue-800' :
-                                        order.status === 'shipped' ? 'bg-purple-100 text-purple-800' :
-                                            order.status === 'completed' ? 'bg-green-100 text-green-800' :
-                                                'bg-gray-100 text-gray-800'
-                                    }`}>
-                                    {
-                                        order.status === 'pending' ? 'ממתין' :
-                                            order.status === 'processing' ? 'בטיפול' :
-                                                order.status === 'shipped' ? 'נשלח' :
-                                                    order.status === 'completed' ? 'הושלם' :
-                                                        order.status === 'cancelled' ? 'בוטל' :
-                                                            order.status
-                                    }
-                                </div>
-
+                            <div className="flex flex-wrap items-center gap-2 mb-4">
                                 {order.free_samples_count > 0 && (
-                                    <div className="flex items-center gap-1.5 text-[10px] font-bold text-blue-700 bg-blue-50 px-2 py-1 rounded-lg border border-blue-100">
-                                        <span>🎁</span>
-                                        <span>{order.free_samples_count}</span>
+                                    <div className="flex items-center gap-2 text-[10px] font-black text-blue-700 bg-blue-50 px-3 py-1.5 rounded-xl border border-blue-100 shadow-sm">
+                                        <span className="text-xs">🎁</span>
+                                        <span className="uppercase tracking-widest">{order.free_samples_count} דוגמיות</span>
                                     </div>
                                 )}
 
-                                <div className={`flex items-center gap-1.5 text-[10px] font-bold px-2 py-1 rounded-lg border ${order.delivery_method === 'self_pickup' ? 'text-green-700 bg-green-50 border-green-100' : 'text-sky-700 bg-sky-50 border-sky-100'}`}>
+                                <div className={`flex items-center gap-2 text-[10px] font-black px-3 py-1.5 rounded-xl border shadow-sm ${order.delivery_method === 'self_pickup' ? 'text-green-700 bg-green-50 border-green-100' : 'text-sky-700 bg-sky-50 border-sky-100'}`}>
                                     <span>{order.delivery_method === 'self_pickup' ? '📍' : '📦'}</span>
-                                    <span>{order.delivery_method === 'self_pickup' ? 'איסוף' : 'משלוח'}</span>
+                                    <span className="uppercase tracking-widest">{order.delivery_method === 'self_pickup' ? 'איסוף עצמי' : 'משלוח'}</span>
                                 </div>
                             </div>
 
                             {canEdit && (
-                                <div className="mt-4 flex gap-2">
+                                <div className="mt-5 flex gap-3 pt-4 border-t border-gray-100/50">
                                     <div className="flex-1">
                                         <AdminOrderStatusSelect orderId={order.id} initialStatus={order.status} />
                                     </div>
@@ -346,9 +347,6 @@ export default async function AdminOrdersPage(props) {
                     </Link>
                 </div>
             )}
-        </div>
-    );
-}
         </div>
     );
 }

@@ -465,7 +465,7 @@ export default async function AdminDashboard() {
 
     return (
         <div className="pb-8">
-            <h1 className="text-2xl md:text-3xl font-bold mb-6 md:mb-8 text-gray-900">לוח בקרה</h1>
+            <h1 className="text-3xl font-bold mb-8">לוח בקרה</h1>
 
             <DashboardCharts
                 orderData={kpis.orderChartData}
@@ -485,10 +485,10 @@ export default async function AdminDashboard() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-8 md:mb-12">
 
                 {/* Cash Flow */}
-                <div className="bg-white p-5 md:p-6 rounded-2xl shadow-sm border border-gray-100 relative overflow-hidden group hover:shadow-md transition-shadow">
+                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 relative overflow-hidden group hover:shadow-md transition-shadow">
                     <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-green-500 to-emerald-500"></div>
                     <div className="flex justify-between items-start mb-4">
-                        <div className="text-gray-400 text-[10px] md:text-sm font-bold uppercase flex items-center gap-2">
+                        <div className="text-gray-500 text-sm font-bold uppercase flex items-center gap-2">
                             <Wallet className="w-4 h-4 text-green-500" />
                             תזרים ({currentMonthLabel})
                         </div>
@@ -530,10 +530,10 @@ export default async function AdminDashboard() {
                 </div>
 
                 {/* Bottle Inventory */}
-                <div className="bg-white p-5 md:p-6 rounded-2xl shadow-sm border border-gray-100 relative overflow-hidden group hover:shadow-md transition-shadow flex flex-col justify-between">
+                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 relative overflow-hidden group hover:shadow-md transition-shadow flex flex-col justify-between">
                     <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-amber-500 to-orange-500"></div>
                     <div>
-                        <div className="text-gray-400 text-[10px] md:text-sm font-bold uppercase mb-4 flex items-center gap-2">
+                        <div className="text-gray-500 text-sm font-bold uppercase mb-4 flex items-center gap-2">
                             <Package className="w-4 h-4 text-amber-500" />
                             מלאי בקבוקונים פנוי
                         </div>
@@ -554,18 +554,18 @@ export default async function AdminDashboard() {
                 </div>
 
                 {/* Samples Sold */}
-                <div className="bg-white p-5 md:p-6 rounded-2xl shadow-sm border border-gray-100 relative overflow-hidden group hover:shadow-md transition-shadow">
+                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 relative overflow-hidden group hover:shadow-md transition-shadow">
                     <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 to-pink-500"></div>
                     <div className="flex justify-between items-start mb-2">
-                        <div className="text-gray-400 text-[10px] md:text-sm font-bold uppercase flex items-center gap-2">
+                        <div className="text-gray-500 text-sm font-bold uppercase flex items-center gap-2">
                             <FlaskConical className="w-4 h-4 text-purple-500" />
                             דוגמיות שנמכרו
                         </div>
                     </div>
 
                     <div className="flex items-baseline gap-2 mb-4">
-                        <span className="text-3xl md:text-4xl font-bold text-gray-900">{kpis.totalSamples}</span>
-                        <span className="text-[10px] text-gray-400 font-bold uppercase">יחידות</span>
+                        <span className="text-4xl font-bold text-gray-900">{kpis.totalSamples}</span>
+                        <span className="text-xs text-gray-400 font-bold uppercase">יחידות</span>
                     </div>
 
                     <div className="grid grid-cols-2 gap-2">
@@ -589,39 +589,39 @@ export default async function AdminDashboard() {
                 </div>
 
                 {/* Total Orders */}
-                <div className="bg-white p-5 md:p-6 rounded-2xl shadow-sm border border-gray-100 relative overflow-hidden group hover:shadow-md transition-shadow">
+                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 relative overflow-hidden group hover:shadow-md transition-shadow">
                     <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-cyan-500"></div>
-                    <div className="text-gray-400 text-[10px] md:text-sm font-bold uppercase mb-2 flex items-center gap-2">
+                    <div className="text-gray-500 text-sm font-bold uppercase mb-2 flex items-center gap-2">
                         <ShoppingCart className="w-4 h-4 text-blue-500" />
                         הזמנות סה״כ
                     </div>
-                    <div className="text-2xl md:text-3xl font-bold mb-4 text-gray-900">{kpis.totalOrders}</div>
+                    <div className="text-3xl font-bold mb-4">{kpis.totalOrders}</div>
                     <div className="text-[10px] text-center border-t border-gray-50 pt-3 mt-2">
                         <Link href="/admin/orders" className="text-blue-500 hover:underline font-bold transition-all">לניהול הזמנות ←</Link>
                     </div>
                 </div>
 
                 {/* Site Visits */}
-                <div className="bg-white p-5 md:p-6 rounded-2xl shadow-sm border border-gray-100 relative overflow-hidden group hover:shadow-md transition-shadow">
+                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 relative overflow-hidden group hover:shadow-md transition-shadow">
                     <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-sky-400 to-indigo-400"></div>
-                    <div className="text-gray-400 text-[10px] md:text-sm font-bold uppercase mb-2 flex items-center gap-2">
+                    <div className="text-gray-500 text-sm font-bold uppercase mb-2 flex items-center gap-2">
                         <Eye className="w-4 h-4 text-sky-500" />
                         כניסות לאתר
                     </div>
-                    <div className="text-lg md:text-xl font-bold mb-1 text-gray-900">
+                    <div className="text-xl font-bold mb-1 text-gray-900">
                         {currentMonthLabel}: <span className="text-blue-600">{kpis.monthlyVisits}</span>
                     </div>
                     <div className="text-[10px] text-gray-400 font-medium italic">נספר לפי ביקורים ייחודיים</div>
                 </div>
 
                 {/* Registered Users */}
-                <div className="bg-white p-5 md:p-6 rounded-2xl shadow-sm border border-gray-100 relative overflow-hidden group hover:shadow-md transition-shadow">
+                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 relative overflow-hidden group hover:shadow-md transition-shadow">
                     <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-500 to-purple-600"></div>
-                    <div className="text-gray-400 text-[10px] md:text-sm font-bold uppercase mb-2 flex items-center gap-2">
+                    <div className="text-gray-500 text-sm font-bold uppercase mb-2 flex items-center gap-2">
                         <Users className="w-4 h-4 text-indigo-500" />
                         משתמשים רשומים
                     </div>
-                    <div className="text-2xl md:text-3xl font-bold mb-4 text-gray-900">{kpis.totalUsers}</div>
+                    <div className="text-3xl font-bold mb-4 text-gray-900">{kpis.totalUsers}</div>
                     <div className="text-[10px] text-center border-t border-gray-50 pt-3 mt-2">
                         <Link href="/admin/users" className="text-blue-500 hover:underline font-bold transition-all">לניהול משתמשים ←</Link>
                     </div>
@@ -629,10 +629,10 @@ export default async function AdminDashboard() {
             </div>
 
             {/* Recent Orders List */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden mb-8 md:mb-12">
-                <div className="p-5 md:p-6 border-b bg-gray-50/50 flex justify-between items-center">
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden mb-8">
+                <div className="p-6 border-b flex justify-between items-center">
                     <h3 className="font-bold text-gray-900">הזמנות אחרונות</h3>
-                    <Link href="/admin/orders" className="text-blue-600 text-[10px] md:text-sm font-bold hover:underline">לכל ההזמנות ←</Link>
+                    <Link href="/admin/orders" className="text-blue-600 text-sm font-bold hover:underline">לכל ההזמנות</Link>
                 </div>
                 <div className="divide-y divide-gray-100">
                     {kpis.recentOrders.length === 0 ? (
@@ -643,13 +643,13 @@ export default async function AdminDashboard() {
                         kpis.recentOrders.map(order => (
                             <div key={order.id} className="p-4 flex items-center justify-between hover:bg-gray-50 transition-colors">
                                 <div>
-                                    <div className="font-bold text-gray-900 text-sm md:text-base">הזמנה #{order.id}</div>
-                                    <div className="text-[10px] md:text-sm text-gray-500">
+                                    <div className="font-bold text-gray-900">הזמנה #{order.id}</div>
+                                    <div className="text-sm text-gray-500">
                                         {order.customer_details?.name} • {new Date(order.created_at).toLocaleDateString('he-IL')}
                                     </div>
                                 </div>
                                 <div className="text-right">
-                                    <div className="font-bold text-gray-900 text-sm md:text-base">{order.total_amount} ₪</div>
+                                    <div className="font-bold text-gray-900">{order.total_amount} ₪</div>
                                     <span className={`text-[9px] md:text-xs px-2 py-0.5 rounded-full font-bold uppercase tracking-wider ${order.status === 'pending' ? 'bg-orange-100 text-orange-800' :
                                         order.status === 'processing' ? 'bg-blue-100 text-blue-800' :
                                             order.status === 'shipped' ? 'bg-purple-100 text-purple-800' :
@@ -673,20 +673,20 @@ export default async function AdminDashboard() {
             </div>
 
             {/* Coupons Table */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                <div className="p-5 md:p-6 border-b bg-gray-50/50 flex justify-between items-center">
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden mt-8">
+                <div className="p-6 border-b flex justify-between items-center">
                     <h3 className="font-bold text-gray-900">קופונים אחרונים</h3>
-                    <Link href="/admin/coupons" className="text-blue-600 text-[10px] md:text-sm font-bold hover:underline">לכל הקופונים ←</Link>
+                    <Link href="/admin/coupons" className="text-blue-600 text-sm font-bold hover:underline">לכל הקופונים</Link>
                 </div>
                 <div className="overflow-x-auto custom-scrollbar">
-                    <table className="w-full text-right min-w-[500px]" dir="rtl">
-                        <thead className="bg-gray-50/80 text-gray-400 text-[10px] md:text-xs uppercase font-bold">
+                    <table className="w-full text-right" dir="rtl">
+                        <thead className="bg-gray-50 text-gray-500 text-sm font-bold">
                             <tr>
                                 <th className="p-4 text-center">קוד</th>
                                 <th className="p-4 text-center">הנחה</th>
                                 <th className="p-4 text-center">מייל לקוח</th>
                                 <th className="p-4 text-center">סטטוס</th>
-                                <th className="p-4 text-center">תאריך</th>
+                                <th className="p-4 text-center">נוצר בתאריך</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100">
@@ -708,8 +708,8 @@ export default async function AdminDashboard() {
                                                     displayStatus === 'redeemed' ? 'מומש' : 'פג תוקף'}
                                             </span>
                                         </td>
-                                        <td className="p-4 text-xs text-gray-400 text-center whitespace-nowrap">
-                                            {new Date(coupon.created_at).toLocaleDateString('he-IL', { day: '2-digit', month: '2-digit' })}
+                                        <td className="p-4 text-xs text-gray-500 text-center whitespace-nowrap">
+                                            {new Date(coupon.created_at).toLocaleString('he-IL')}
                                         </td>
                                     </tr>
                                 );

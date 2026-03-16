@@ -4,31 +4,31 @@ export default function AnalyticsTables({ topBrands, topSizes, monthName }) {
     return (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
             {/* Top Brands Table */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                <div className="p-4 md:p-6 border-b bg-gray-50/50">
-                    <h3 className="font-bold text-gray-800 text-base md:text-lg">חמשת המותגים הכי מוכרים - {monthName}</h3>
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                <div className="p-6 border-b bg-gray-50/50">
+                    <h3 className="font-bold text-gray-800 text-lg">חמשת המותגים הכי מוכרים - {monthName}</h3>
                 </div>
                 <div className="overflow-x-auto custom-scrollbar">
                     <table className="w-full text-right min-w-[300px]" dir="rtl">
-                        <thead className="bg-gray-50 text-gray-500 text-[10px] md:text-xs uppercase font-bold">
+                        <thead className="bg-gray-50 text-gray-500 text-xs uppercase font-bold">
                             <tr>
-                                <th className="p-3 md:p-4">שם המותג</th>
-                                <th className="p-3 md:p-4 text-left">מכירות (ש״ח)</th>
+                                <th className="p-4">שם המותג</th>
+                                <th className="p-4 text-left">מכירות (ש״ח)</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100">
                             {topBrands && topBrands.length > 0 ? (
                                 topBrands.map((brand, index) => (
                                     <tr key={index} className="hover:bg-gray-50/80 transition-colors">
-                                        <td className="p-3 md:p-4">
-                                            <div className="flex items-center gap-2 md:gap-3">
-                                                <span className="flex items-center justify-center w-5 h-5 md:w-6 md:h-6 rounded-full bg-blue-50 text-blue-600 text-[9px] md:text-[10px] font-bold shrink-0">
+                                        <td className="p-4">
+                                            <div className="flex items-center gap-3">
+                                                <span className="flex items-center justify-center w-6 h-6 rounded-full bg-blue-50 text-blue-600 text-[10px] font-bold shrink-0">
                                                     {index + 1}
                                                 </span>
-                                                <span className="font-bold text-gray-700 text-sm md:text-base truncate max-w-[120px] md:max-w-none">{brand.name}</span>
+                                                <span className="font-bold text-gray-700 text-base truncate max-w-[120px] md:max-w-none">{brand.name}</span>
                                             </div>
                                         </td>
-                                        <td className="p-3 md:p-4 text-left font-mono font-bold text-gray-900 text-sm md:text-base whitespace-nowrap">
+                                        <td className="p-4 text-left font-mono font-bold text-gray-900 text-base whitespace-nowrap">
                                             {parseFloat(brand.sales).toLocaleString()} ₪
                                         </td>
                                     </tr>
@@ -46,29 +46,29 @@ export default function AnalyticsTables({ topBrands, topSizes, monthName }) {
             </div>
 
             {/* Top Sizes Table */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                <div className="p-4 md:p-6 border-b bg-gray-50/50">
-                    <h3 className="font-bold text-gray-800 text-base md:text-lg">הגדלים הכי מוכרים - {monthName}</h3>
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                <div className="p-6 border-b bg-gray-50/50">
+                    <h3 className="font-bold text-gray-800 text-lg">הגדלים הכי מוכרים - {monthName}</h3>
                 </div>
                 <div className="overflow-x-auto custom-scrollbar">
                     <table className="w-full text-right min-w-[300px]" dir="rtl">
-                        <thead className="bg-gray-50 text-gray-500 text-[10px] md:text-xs uppercase font-bold">
+                        <thead className="bg-gray-50 text-gray-500 text-xs uppercase font-bold">
                             <tr>
-                                <th className="p-3 md:p-4">גודל דוגמית (מ״ל)</th>
-                                <th className="p-3 md:p-4 text-left">מכירות (ש״ח)</th>
+                                <th className="p-4">גודל דוגמית (מ״ל)</th>
+                                <th className="p-4 text-left">מכירות (ש״ח)</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100">
                             {topSizes && topSizes.length > 0 ? (
                                 topSizes.map((size, index) => (
                                     <tr key={index} className="hover:bg-gray-50/80 transition-colors">
-                                        <td className="p-3 md:p-4 text-gray-700">
+                                        <td className="p-4 text-gray-700">
                                             <div className="flex items-center gap-2">
                                                 <span className="w-2 h-2 rounded-full bg-green-400 shrink-0"></span>
-                                                <span className="font-bold text-sm md:text-base">{size.size} מ״ל</span>
+                                                <span className="font-bold text-base">{size.size} מ״ל</span>
                                             </div>
                                         </td>
-                                        <td className="p-3 md:p-4 text-left font-mono font-bold text-gray-900 text-sm md:text-base whitespace-nowrap">
+                                        <td className="p-4 text-left font-mono font-bold text-gray-900 text-base whitespace-nowrap">
                                             {parseFloat(size.sales).toLocaleString()} ₪
                                         </td>
                                     </tr>

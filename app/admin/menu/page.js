@@ -75,49 +75,89 @@ export default function AdminMenuPage() {
             <h1 className="text-3xl font-bold mb-8">ניהול תפריט ראשי</h1>
 
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                <table className="w-full text-right border-collapse">
-                    <thead className="bg-gray-50 border-b border-gray-200">
-                        <tr>
-                            <th className="px-6 py-4 font-bold text-gray-700 text-center">שם העמוד</th>
-                            <th className="px-6 py-4 font-bold text-gray-700 text-center">סטטוס תצוגה</th>
-                            <th className="px-6 py-4 font-bold text-gray-700 text-center">שינוי שם</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {menu.map((item) => (
-                            <tr key={item.id} className="border-b border-gray-100 hover:bg-gray-50/50 transition">
-                                <td className="px-6 py-4 text-sm font-medium text-center">{item.id}</td>
-                                <td className="px-6 py-4 text-center">
-                                    <button
-                                        onClick={() => canEdit && handleToggle(item.id)}
-                                        disabled={!canEdit}
-                                        className={`px-4 py-1.5 rounded-full text-xs font-bold transition-all ${item.visible
-                                            ? 'bg-green-100 text-green-700 hover:bg-green-200'
-                                            : 'bg-red-100 text-red-700 hover:bg-red-200'
-                                            } ${!canEdit ? 'opacity-50 cursor-not-allowed' : ''}`}
-                                    >
-                                        {item.visible ? 'מוצג' : 'מוסתר'}
-                                    </button>
-                                </td>
-
-                                <td className="px-6 py-4 text-center">
-                                    {canEdit ? (
-                                        <input
-                                            type="text"
-                                            value={item.label}
-                                            onChange={(e) => handleLabelChange(item.id, e.target.value)}
-                                            className="border border-gray-300 rounded px-3 py-1.5 w-full text-sm focus:ring-2 focus:ring-black outline-none text-center"
-                                            placeholder="שם העמוד בתפריט..."
-                                        />
-                                    ) : (
-                                        <span className="text-gray-700 text-sm font-bold">{item.label}</span>
-                                    )}
-                                </td>
-
+                {/* Desktop View Table */}
+                <div className="hidden md:block overflow-x-auto">
+                    <table className="w-full text-right border-collapse">
+                        <thead className="bg-gray-50 border-b border-gray-200 text-gray-500 text-sm">
+                            <tr>
+                                <th className="px-6 py-4 font-bold text-center">שם העמוד (ID)</th>
+                                <th className="px-6 py-4 font-bold text-center">סטטוס תצוגה</th>
+                                <th className="px-6 py-4 font-bold text-center">שינוי שם (Label)</th>
                             </tr>
-                        ))}
-                    </tbody>
-                </table>
+                        </thead>
+                        <tbody className="divide-y divide-gray-100">
+                            {menu.map((item) => (
+                                <tr key={item.id} className="hover:bg-gray-50/50 transition-colors">
+                                    <td className="px-6 py-4 text-sm font-bold text-center text-gray-400 font-mono">{item.id}</td>
+                                    <td className="px-6 py-4 text-center">
+                                        <button
+                                            onClick={() => canEdit && handleToggle(item.id)}
+                                            disabled={!canEdit}
+                                            className={`px-4 py-1.5 rounded-lg text-[11px] font-bold uppercase tracking-wider transition-all border ${item.visible
+                                                ? 'bg-green-50 text-green-700 border-green-100 hover:bg-green-100'
+                                                : 'bg-red-50 text-red-700 border-red-100 hover:bg-red-100'
+                                                } ${!canEdit ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                        >
+                                            {item.visible ? 'מוצג' : 'מוסתר'}
+                                        </button>
+                                    </td>
+                                    <td className="px-6 py-4 text-center">
+                                        {canEdit ? (
+                                            <input
+                                                type="text"
+                                                value={item.label}
+                                                onChange={(e) => handleLabelChange(item.id, e.target.value)}
+                                                className="border border-gray-200 rounded-lg px-4 py-2 w-full max-w-xs text-sm focus:ring-2 focus:ring-blue-100 outline-none text-center bg-gray-50 focus:bg-white transition-all shadow-sm"
+                                                placeholder="שם העמוד בתפריט..."
+                                            />
+                                        ) : (
+                                            <span className="text-gray-900 text-sm font-bold">{item.label}</span>
+                                        )}
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+
+                {/* Mobile View Card Layout */}
+                <div className="md:hidden divide-y divide-gray-100">
+                    {menu.map((item) => (
+                        <div key={item.id} className="p-5 bg-white space-y-4">
+                            <div className="flex justify-between items-center">
+                                <div className="space-y-0.5">
+                                    <div className="text-[10px] uppercase font-bold text-gray-400 tracking-wider">מזהה עמוד:</div>
+                                    <div className="text-sm font-mono font-bold text-gray-900">{item.id}</div>
+                                </div>
+                                <button
+                                    onClick={() => canEdit && handleToggle(item.id)}
+                                    disabled={!canEdit}
+                                    className={`px-3 py-1.5 rounded-xl text-[10px] font-extrabold uppercase tracking-widest transition-all border shadow-sm ${item.visible
+                                        ? 'bg-green-50 text-green-700 border-green-100 active:bg-green-200'
+                                        : 'bg-red-50 text-red-700 border-red-100 active:bg-red-200'
+                                        } ${!canEdit ? 'opacity-50 cursor-not-allowed' : ''}`}
+                                >
+                                    {item.visible ? 'מוצג' : 'מוסתר'}
+                                </button>
+                            </div>
+
+                            <div className="space-y-2 pt-2">
+                                <label className="text-[10px] uppercase font-bold text-gray-400 tracking-wider block">שם העמוד בתפריט:</label>
+                                {canEdit ? (
+                                    <input
+                                        type="text"
+                                        value={item.label}
+                                        onChange={(e) => handleLabelChange(item.id, e.target.value)}
+                                        className="border border-gray-200 rounded-xl px-4 py-3 w-full text-base focus:ring-2 focus:ring-blue-100 outline-none bg-gray-50 focus:bg-white transition-all shadow-sm"
+                                        placeholder="למשל: דף הבית"
+                                    />
+                                ) : (
+                                    <div className="text-lg font-bold text-gray-900 px-1">{item.label}</div>
+                                )}
+                            </div>
+                        </div>
+                    ))}
+                </div>
             </div>
 
             <div className="mt-8 flex items-center">

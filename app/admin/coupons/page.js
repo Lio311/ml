@@ -5,7 +5,6 @@ import { useUser } from "@clerk/nextjs";
 import ObjectTagInput from '@/app/components/ObjectTagInput';
 import toast from 'react-hot-toast';
 
-
 export default function AdminCouponsPage() {
     // Force rebuild: Fix toast import and API caching issues
     const [coupons, setCoupons] = useState([]);
@@ -243,46 +242,62 @@ export default function AdminCouponsPage() {
 
     return (
         <div className="container mx-auto py-8 text-right" dir="rtl">
-            <div className="flex justify-between items-center mb-8">
+            <div className="flex justify-between items-center mb-8 px-4">
                 <h1 className="text-3xl font-bold">ניהול קופונים</h1>
                 <div className="flex gap-4">
-                    <Link href="/admin" className="btn btn-ghost">חזרה</Link>
+                    <Link href="/admin" className="hidden md:flex btn btn-ghost">חזרה</Link>
                     {canEdit && (
-                        <button onClick={openCreateModal} className="btn btn-primary bg-black text-white px-6 py-2 rounded-lg">
+                        <button onClick={openCreateModal} className="bg-black text-white px-6 py-2 rounded-xl font-bold shadow-md hover:bg-gray-800 transition text-sm md:text-base">
                             + קופון חדש
                         </button>
                     )}
                 </div>
-
             </div>
 
-            <div className="bg-white rounded-xl shadow-sm border overflow-hidden">
-                <table className="w-full">
-                    <thead className="bg-gray-50 border-b text-gray-500 text-sm">
-                        <tr>
-                            <th className="p-4 text-center">קוד קופון</th>
-                            <th className="p-4 text-center">הנחה</th>
-                            <th className="p-4 text-center">תוקף (שעון עצר)</th>
-                            <th className="p-4 text-center">הגבלות</th>
-                            <th className="p-4 text-center">סטטוס</th>
-                            <th className="p-4 text-center">פעולות</th>
-                        </tr>
-                    </thead>
-                    <tbody className="divide-y">
-                        {loading ? (
-                            <tr><td colSpan="6" className="p-8 text-center">טוען...</td></tr>
-                        ) : coupons.length === 0 ? (
-                            <tr><td colSpan="6" className="p-8 text-center text-gray-500">אין קופונים במערכת</td></tr>
-                        ) : (
-                            coupons
-                                .slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE)
-                                .map(coupon => (
-                                    <CouponRow key={coupon.id} coupon={coupon} onDelete={handleDelete} onEdit={handleEdit} canEdit={canEdit} />
-                                ))
-                        )}
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                {/* Desktop View Table */}
+                <div className="hidden md:block overflow-x-auto">
+                    <table className="w-full">
+                        <thead className="bg-gray-50 border-b text-gray-500 text-sm">
+                            <tr>
+                                <th className="p-4 text-center">קוד קופון</th>
+                                <th className="p-4 text-center">הנחה</th>
+                                <th className="p-4 text-center">תוקף (שעון עצר)</th>
+                                <th className="p-4 text-center">הגבלות</th>
+                                <th className="p-4 text-center">סטטוס</th>
+                                <th className="p-4 text-center">פעולות</th>
+                            </tr>
+                        </thead>
+                        <tbody className="divide-y">
+                            {loading ? (
+                                <tr><td colSpan="6" className="p-8 text-center">טוען...</td></tr>
+                            ) : coupons.length === 0 ? (
+                                <tr><td colSpan="6" className="p-8 text-center text-gray-500">אין קופונים במערכת</td></tr>
+                            ) : (
+                                coupons
+                                    .slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE)
+                                    .map(coupon => (
+                                        <CouponRow key={coupon.id} coupon={coupon} onDelete={handleDelete} onEdit={handleEdit} canEdit={canEdit} />
+                                    ))
+                            )}
+                        </tbody>
+                    </table>
+                </div>
 
-                    </tbody>
-                </table>
+                {/* Mobile View Card Layout */}
+                <div className="md:hidden divide-y divide-gray-100">
+                    {loading ? (
+                        <div className="p-8 text-center">טוען...</div>
+                    ) : coupons.length === 0 ? (
+                        <div className="p-8 text-center text-gray-500">אין קופונים במערכת</div>
+                    ) : (
+                        coupons
+                            .slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE)
+                            .map(coupon => (
+                                <CouponCard key={coupon.id} coupon={coupon} onDelete={handleDelete} onEdit={handleEdit} canEdit={canEdit} />
+                            ))
+                    )}
+                </div>
             </div>
 
             {/* Pagination Controls */}
@@ -311,11 +326,10 @@ export default function AdminCouponsPage() {
             {/* Modal */}
             {showModal && (
                 <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 py-2">
-                    {/* Added mr-64 to shift left, reduced padding for compactness */}
-                    <div className="bg-white p-6 rounded-xl w-full max-w-5xl shadow-2xl relative mr-64 max-h-[95vh] overflow-y-auto custom-scrollbar">
+                    <div className="bg-white p-6 rounded-xl w-full max-w-5xl shadow-2xl relative md:mr-64 max-h-[95vh] overflow-y-auto custom-scrollbar mx-4 md:mx-0">
                         <button
                             onClick={() => setShowModal(false)}
-                            className="absolute top-4 left-4 text-gray-400 hover:text-gray-600"
+                            className="absolute top-4 left-4 text-gray-400 hover:text-gray-600 p-2"
                         >
                             ✕
                         </button>
@@ -334,7 +348,7 @@ export default function AdminCouponsPage() {
                                                 type="text"
                                                 required
                                                 disabled={!!editingId}
-                                                className="input border p-2 rounded w-full disabled:bg-gray-200"
+                                                className="input border p-2 rounded-xl w-full disabled:bg-gray-100 outline-none focus:ring-2 focus:ring-blue-100"
                                                 value={formData.code}
                                                 onChange={e => setFormData({ ...formData, code: e.target.value.toUpperCase() })}
                                             />
@@ -348,7 +362,7 @@ export default function AdminCouponsPage() {
                                             type="number"
                                             required
                                             min="1" max="100"
-                                            className="input border p-2 rounded w-full"
+                                            className="input border p-2 rounded-xl w-full outline-none focus:ring-2 focus:ring-blue-100"
                                             value={formData.discount_percent}
                                             onChange={e => setFormData({ ...formData, discount_percent: e.target.value })}
                                             onWheel={(e) => e.target.blur()}
@@ -361,7 +375,7 @@ export default function AdminCouponsPage() {
                                             type="number"
                                             min="1"
                                             placeholder={editingId ? "הזן כדי לעדכן" : "ללא הגבלה"}
-                                            className="input border p-2 rounded w-full"
+                                            className="input border p-2 rounded-xl w-full outline-none focus:ring-2 focus:ring-blue-100"
                                             value={formData.expires_in_hours}
                                             onChange={e => setFormData({ ...formData, expires_in_hours: e.target.value })}
                                             onWheel={(e) => e.target.blur()}
@@ -373,7 +387,7 @@ export default function AdminCouponsPage() {
                                         <input
                                             type="number"
                                             min="0"
-                                            className="input border p-2 rounded w-full"
+                                            className="input border p-2 rounded-xl w-full outline-none focus:ring-2 focus:ring-blue-100"
                                             value={formData.min_cart_total}
                                             onChange={e => setFormData({ ...formData, min_cart_total: e.target.value })}
                                             onWheel={(e) => e.target.blur()}
@@ -393,7 +407,7 @@ export default function AdminCouponsPage() {
                                         </label>
                                         <div className="flex gap-3 flex-wrap">
                                             {['men', 'women', 'unisex'].map(c => (
-                                                <label key={c} className="flex items-center gap-2 bg-white px-3 py-1 rounded cursor-pointer border hover:border-black transition">
+                                                <label key={c} className="flex items-center gap-2 bg-white px-3 py-1 rounded-lg cursor-pointer border hover:border-black transition">
                                                     <input
                                                         type="checkbox"
                                                         checked={formData.allowed_categories.includes(c)}
@@ -413,7 +427,7 @@ export default function AdminCouponsPage() {
                                         <label className="block text-sm font-bold mb-2">תקף לגדלים:</label>
                                         <div className="flex gap-3 flex-wrap">
                                             {[2, 5, 10, 11].map(s => (
-                                                <label key={s} className="flex items-center gap-2 bg-white px-3 py-1 rounded cursor-pointer border hover:border-black transition">
+                                                <label key={s} className="flex items-center gap-2 bg-white px-3 py-1 rounded-lg cursor-pointer border hover:border-black transition">
                                                     <input
                                                         type="checkbox"
                                                         checked={formData.allowed_sizes.includes(s)}
@@ -464,11 +478,11 @@ export default function AdminCouponsPage() {
                             </div>
 
                             <div className="flex justify-end gap-3 mt-8 border-t pt-4">
-                                <button type="button" onClick={() => setShowModal(false)} className="px-4 py-2 hover:bg-gray-100 rounded">ביטול</button>
+                                <button type="button" onClick={() => setShowModal(false)} className="px-6 py-2 hover:bg-gray-100 rounded-xl transition">ביטול</button>
                                 <button
                                     type="submit"
                                     disabled={isSubmitting}
-                                    className="px-6 py-2 bg-black text-white rounded font-bold hover:bg-gray-800"
+                                    className="px-8 py-2 bg-black text-white rounded-xl font-bold hover:bg-gray-800 shadow-md active:scale-95 transition"
                                 >
                                     {isSubmitting ? 'שומר...' : (editingId ? 'עדכן קופון' : 'צור קופון')}
                                 </button>
@@ -573,6 +587,98 @@ function CouponRow({ coupon, onDelete, onEdit, canEdit }) {
             </td>
 
         </tr>
+    );
+}
+
+function CouponCard({ coupon, onDelete, onEdit, canEdit }) {
+    const [timeLeft, setTimeLeft] = useState(null);
+    const [isExpired, setIsExpired] = useState(false);
+
+    useEffect(() => {
+        if (!coupon.expires_at) {
+            setTimeLeft(null);
+            setIsExpired(false);
+            return;
+        }
+
+        const updateTimer = () => {
+            const now = new Date().getTime();
+            const expiry = new Date(coupon.expires_at).getTime();
+            const diff = expiry - now;
+
+            if (diff <= 0) {
+                setTimeLeft('פג תוקף');
+                setIsExpired(true);
+            } else {
+                const hours = Math.floor(diff / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+                setTimeLeft(`${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`);
+                setIsExpired(false);
+            }
+        };
+
+        updateTimer();
+        const interval = setInterval(updateTimer, 1000);
+        return () => clearInterval(interval);
+    }, [coupon.expires_at]);
+
+    const isActive = coupon.status === 'active' && !isExpired;
+    const isRedeemed = coupon.status === 'redeemed';
+    const limits = coupon.limitations || {};
+    const activeFilters = [];
+    if (limits.allowed_sizes?.length > 0) activeFilters.push('גודל');
+    if (limits.allowed_categories?.length > 0) activeFilters.push('קטגוריה');
+    if (limits.allowed_brands?.length > 0) activeFilters.push('מותג');
+    if (limits.allowed_products?.length > 0) activeFilters.push('מוצר');
+    if (limits.allowed_users?.length > 0) activeFilters.push('שייכות');
+    if (limits.min_cart_total > 0) activeFilters.push('מינימום סל');
+
+    return (
+        <div className="p-5 bg-white space-y-4">
+            <div className="flex justify-between items-start">
+                <div className="space-y-1">
+                    <div className="font-mono font-bold text-blue-600 text-lg select-all">{coupon.code}</div>
+                    <div className="text-2xl font-black text-gray-900">{coupon.discount_percent}% הנחה</div>
+                </div>
+                <span className={`px-2.5 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider ${isActive ? 'bg-green-50 text-green-700 border border-green-100' : 'bg-red-50 text-red-700 border border-red-100'
+                    }`}>
+                    {isActive ? 'פעיל' : (isRedeemed ? 'מומש' : 'לא פעיל')}
+                </span>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4 pt-2 border-t border-gray-50">
+                <div>
+                    <div className="text-[10px] uppercase font-bold text-gray-400 mb-1">תוקף:</div>
+                    <div className={`font-mono text-sm ${isExpired ? 'text-red-500 font-bold' : 'text-green-600 font-bold'}`}>
+                        {coupon.expires_at ? timeLeft : 'ללא הגבלה'}
+                    </div>
+                </div>
+                <div>
+                    <div className="text-[10px] uppercase font-bold text-gray-400 mb-1">הגבלות:</div>
+                    <div className="text-xs text-gray-600 truncate" title={activeFilters.join(', ')}>
+                        {activeFilters.length > 0 ? activeFilters.join(', ') : 'כל האתר'}
+                    </div>
+                </div>
+            </div>
+
+            {canEdit && (
+                <div className="flex gap-2 pt-2">
+                    <button
+                        onClick={() => onEdit(coupon)}
+                        className="bg-blue-50 text-blue-600 flex-1 py-2.5 rounded-xl text-sm font-bold active:scale-95 transition border border-blue-100 flex items-center justify-center gap-2"
+                    >
+                        <Edit2Icon /> ערוך
+                    </button>
+                    <button
+                        onClick={() => onDelete(coupon.id)}
+                        className="bg-red-50 text-red-600 px-4 py-2.5 rounded-xl text-sm font-bold active:scale-95 transition border border-red-100 flex items-center justify-center"
+                    >
+                        <TrashIcon />
+                    </button>
+                </div>
+            )}
+        </div>
     );
 }
 

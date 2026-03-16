@@ -3,6 +3,7 @@ import { currentUser } from "@clerk/nextjs/server";
 import Link from "next/link";
 import UserRoleSelect from "./UserRoleSelect";
 import SyncUsersButton from "./SyncUsersButton";
+import React from 'react';
 
 export const metadata = {
     title: "ניהול זהויות | ml_tlv",
@@ -61,105 +62,128 @@ export default async function AdminUsersPage(props) {
     const totalPages = Math.ceil(totalUsers / LIMIT);
 
     return (
-        <div className="pb-8">
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
-                <h1 className="text-2xl md:text-3xl font-bold text-gray-900">ניהול זהויות והרשאות</h1>
+        <div>
+            <div className="flex justify-between items-center mb-6 md:pl-12">
+                <h1 className="text-3xl font-bold">ניהול זהויות והרשאות</h1>
                 <SyncUsersButton />
             </div>
 
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                <div className="overflow-x-auto custom-scrollbar">
-                    <table className="w-full text-right" dir="rtl">
-                        <thead className="bg-gray-50/80 text-gray-500 text-[10px] md:text-xs uppercase font-bold">
+            <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+                {/* Desktop View Table */}
+                <div className="hidden md:block overflow-x-auto">
+                    <table className="w-full text-center" dir="rtl">
+                        <thead className="bg-gray-50 text-gray-500 text-sm">
                             <tr>
-                                <th className="p-4">משתמש</th>
-                                <th className="p-4 hidden md:table-cell">אימייל</th>
-                                <th className="p-4">נוצר</th>
-                                <th className="p-4">תפקיד</th>
+                                <th className="p-4 text-center">משתמש</th>
+                                <th className="p-4 text-center">אימייל</th>
+                                <th className="p-4 text-center">נוצר בתאריך</th>
+                                <th className="p-4 text-center">תפקיד נוכחי</th>
                             </tr>
                         </thead>
-                        <tbody className="divide-y divide-gray-100">
+                        <tbody className="divide-y">
                             {users.map(u => (
-                                <tr key={u.id} className="hover:bg-gray-50/50 transition-colors">
+                                <tr key={u.id} className="hover:bg-gray-50">
                                     <td className="p-4">
-                                        <div className="font-bold text-gray-900 mb-0.5">{u.firstName} {u.lastName}</div>
-                                        <div className="text-[10px] text-gray-400 font-mono">{u.id}</div>
-                                        <div className="md:hidden text-xs text-blue-600 mt-1 truncate max-w-[150px]">{u.email}</div>
+                                        <div className="font-bold">{u.firstName} {u.lastName}</div>
+                                        <div className="text-xs text-gray-400 font-mono">{u.id}</div>
                                     </td>
-                                    <td className="p-4 text-sm text-gray-600 hidden md:table-cell">
-                                        <div className="font-medium">{u.email}</div>
+                                    <td className="p-4 text-sm">
+                                        <div>{u.email}</div>
                                         {u.phone && (
-                                            <div className="text-xs text-gray-400 mt-1">
-                                                <a href={`tel:${u.phone}`} className="hover:text-blue-600 transition-colors">
+                                            <div className="text-xs text-gray-500 font-bold mt-1">
+                                                <a href={`tel:${u.phone}`} className="hover:underline text-blue-600">
                                                     {u.phone}
                                                 </a>
                                             </div>
                                         )}
                                     </td>
-                                    <td className="p-4 text-xs md:text-sm text-gray-500 whitespace-nowrap">
-                                        {new Date(u.createdAt).toLocaleDateString('he-IL', { day: '2-digit', month: '2-digit', year: '2-digit' })}
+                                    <td className="p-4 text-sm text-gray-500">
+                                        {new Date(u.createdAt).toLocaleDateString('he-IL')}
                                     </td>
-                                    <td className="p-4">
-                                        <div className="flex justify-end md:justify-center">
-                                            <UserRoleSelect
-                                                userId={u.id}
-                                                initialRole={u.role}
-                                                canEdit={canEdit}
-                                            />
-                                        </div>
+                                    <td className="p-4 flex justify-center">
+                                        <UserRoleSelect
+                                            userId={u.id}
+                                            initialRole={u.role}
+                                            canEdit={canEdit}
+                                        />
                                     </td>
                                 </tr>
                             ))}
                         </tbody>
                     </table>
                 </div>
+
+                {/* Mobile View Card Layout */}
+                <div className="md:hidden divide-y divide-gray-100">
+                    {users.map(u => (
+                        <div key={u.id} className="p-5 bg-white space-y-4">
+                            <div className="flex justify-between items-start">
+                                <div className="space-y-1">
+                                    <div className="font-bold text-gray-900 text-base">{u.firstName} {u.lastName}</div>
+                                    <div className="text-[10px] text-gray-400 font-mono">{u.id}</div>
+                                </div>
+                                <div className="text-[10px] text-gray-400 font-bold bg-gray-50 px-2 py-1 rounded-lg border border-gray-100">
+                                    {new Date(u.createdAt).toLocaleDateString('he-IL', { day: '2-digit', month: '2-digit' })}
+                                </div>
+                            </div>
+                            
+                            <div className="space-y-2">
+                                <div className="text-xs text-blue-600 font-medium truncate py-1 border-b border-blue-50">
+                                    {u.email}
+                                </div>
+                                {u.phone && (
+                                    <div className="text-xs text-gray-500 flex items-center gap-2">
+                                        <span className="text-gray-300">📱</span>
+                                        <a href={`tel:${u.phone}`} className="hover:text-blue-600 font-bold transition-colors">
+                                            {u.phone}
+                                        </a>
+                                    </div>
+                                )}
+                            </div>
+
+                            <div className="pt-2">
+                                <div className="text-[10px] uppercase font-bold text-gray-400 mb-2">הרשאת מערכת:</div>
+                                <UserRoleSelect
+                                    userId={u.id}
+                                    initialRole={u.role}
+                                    canEdit={canEdit}
+                                />
+                            </div>
+                        </div>
+                    ))}
+                </div>
             </div>
 
             {/* Pagination & Count */}
-            <div className="mt-8 flex flex-col items-center gap-6">
+            <div className="flex flex-col items-center gap-4 mt-8 relative">
+                {/* Brand Style Pagination - Centered */}
                 {totalPages > 1 && (
-                    <div className="flex items-center gap-2">
+                    <div className="flex justify-center items-center gap-4">
                         <Link
                             href={`/admin/users?page=${Math.max(1, page - 1)}`}
-                            className={`p-2 w-10 h-10 flex items-center justify-center border rounded-xl hover:bg-gray-50 transition ${page === 1 ? 'opacity-30 pointer-events-none' : ''}`}
+                            className={`px-4 py-2 border rounded hover:bg-gray-100 transition ${page === 1 ? 'opacity-50 pointer-events-none' : ''}`}
                             aria-disabled={page === 1}
                         >
-                            <span className="sr-only">הקודם</span>
-                            <span aria-hidden="true">→</span>
+                            הקודם
                         </Link>
 
-                        <div className="flex gap-1">
-                            {Array.from({ length: totalPages }, (_, i) => i + 1)
-                                .filter(p => p === 1 || p === totalPages || Math.abs(p - page) <= 1)
-                                .map((p, i, arr) => {
-                                    const showDots = i > 0 && p - arr[i-1] > 1;
-                                    return (
-                                        <React.Fragment key={p}>
-                                            {showDots && <span className="px-2 self-end text-gray-400">...</span>}
-                                            <Link
-                                                href={`/admin/users?page=${p}`}
-                                                className={`w-10 h-10 flex items-center justify-center rounded-xl text-sm font-bold transition-all ${page === p ? 'bg-black text-white shadow-lg scale-110' : 'hover:bg-gray-100 text-gray-600'}`}
-                                            >
-                                                {p}
-                                            </Link>
-                                        </React.Fragment>
-                                    );
-                                })}
-                        </div>
+                        <span className="text-sm text-gray-600">
+                            עמוד {page} מתוך {totalPages}
+                        </span>
 
                         <Link
                             href={`/admin/users?page=${Math.min(totalPages, page + 1)}`}
-                            className={`p-2 w-10 h-10 flex items-center justify-center border rounded-xl hover:bg-gray-50 transition ${page === totalPages ? 'opacity-30 pointer-events-none' : ''}`}
+                            className={`px-4 py-2 border rounded hover:bg-gray-100 transition ${page === totalPages ? 'opacity-50 pointer-events-none' : ''}`}
                             aria-disabled={page === totalPages}
                         >
-                            <span className="sr-only">הבא</span>
-                            <span aria-hidden="true">←</span>
+                            הבא
                         </Link>
                     </div>
                 )}
 
-                <div className="text-xs text-gray-400 font-bold bg-gray-50 px-4 py-2 rounded-full border border-gray-100">
-                    סה״כ {totalUsers} משתמשים רשומים
+                {/* Total Count - Absolute positioned to bottom right or kept separate if mobile */}
+                <div className="text-sm text-gray-500 font-medium md:absolute md:right-0 md:bottom-2">
+                    סה״כ {totalUsers} משתמשים
                 </div>
             </div>
         </div>

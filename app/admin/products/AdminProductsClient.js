@@ -173,7 +173,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
     const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split('');
 
     return (
-        <div className="p-6 max-w-6xl mx-auto">
+        <div className="p-4 md:p-6 max-w-6xl mx-auto">
             <div className="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
                 <div>
                     <h1 className="text-3xl font-bold mb-2">ניהול מוצרים</h1>
@@ -216,47 +216,46 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
             </div>
 
             {/* Sorting Controls (Visible mainly in Stock List or All) */}
-            <div className="flex justify-between items-center mb-4">
-                <div className="flex gap-2">
-                    <span className="text-sm text-gray-500 self-center">מיון לפי מלאי:</span>
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
+                <div className="flex gap-2 w-full md:w-auto overflow-x-auto pb-2 md:pb-0 scrollbar-hide">
+                    <span className="text-sm text-gray-500 self-center whitespace-nowrap">מיון מלאי:</span>
                     <button
                         onClick={() => router.push(`/admin/products?view=${currentView}&sort=stock_desc`)}
-                        className={`px-3 py-1 rounded text-sm border ${currentSort === 'stock_desc' ? 'bg-black text-white border-black' : 'bg-white text-black hover:border-black'}`}
+                        className={`px-3 py-1 rounded-lg text-xs md:text-sm border whitespace-nowrap shadow-sm transition ${currentSort === 'stock_desc' ? 'bg-black text-white border-black' : 'bg-white text-black hover:border-black'}`}
                     >
                         גבוה לנמוך
                     </button>
                     <button
                         onClick={() => router.push(`/admin/products?view=${currentView}&sort=stock_asc`)}
-                        className={`px-3 py-1 rounded text-sm border ${currentSort === 'stock_asc' ? 'bg-black text-white border-black' : 'bg-white text-black hover:border-black'}`}
+                        className={`px-3 py-1 rounded-lg text-xs md:text-sm border whitespace-nowrap shadow-sm transition ${currentSort === 'stock_asc' ? 'bg-black text-white border-black' : 'bg-white text-black hover:border-black'}`}
                     >
                         נמוך לגבוה
                     </button>
                 </div>
 
-                <div className="flex gap-4">
+                <div className="flex flex-col md:flex-row gap-3 w-full md:w-auto">
                     {canEdit && (
-                        <button onClick={startCreate} className="bg-blue-600 text-white px-4 py-2 rounded font-bold hover:bg-blue-700 transition">
+                        <button onClick={startCreate} className="bg-blue-600 text-white px-4 py-2 rounded-xl font-bold hover:bg-blue-700 transition shadow-md w-full md:w-auto text-sm md:text-base">
                             + מוצר חדש
                         </button>
                     )}
                     <form onSubmit={handleSearch} className="flex gap-2 w-full md:w-auto">
-
                         <input
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                             placeholder="חפש מוצר..."
-                            className="border p-2 rounded w-full md:w-64"
+                            className="border p-2 rounded-xl w-full md:w-64 bg-gray-50 focus:bg-white transition-all outline-none focus:ring-2 focus:ring-blue-100"
                         />
-                        <button className="bg-black text-white px-4 py-2 rounded font-bold">חפש</button>
+                        <button className="bg-black text-white px-5 py-2 rounded-xl font-bold shadow-sm hover:bg-gray-800 transition">חפש</button>
                     </form>
                 </div>
             </div>
 
             {/* A-Z Filter */}
-            <div className="flex flex-wrap gap-2 mb-8 justify-center md:justify-start">
+            <div className="flex gap-2 mb-8 overflow-x-auto pb-4 md:pb-0 scrollbar-hide mask-fade-left">
                 <button
                     onClick={() => router.push('/admin/products')}
-                    className={`px-3 py-1 rounded text-sm font-bold border transition ${!currentLetter && !searchTerm ? 'bg-black text-white border-black' : 'bg-white text-black border-gray-300 hover:border-black'}`}
+                    className={`px-4 py-1.5 rounded-lg text-sm font-bold border transition shrink-0 shadow-sm ${!currentLetter && !searchTerm ? 'bg-black text-white border-black' : 'bg-white text-black border-gray-200 hover:border-black'}`}
                 >
                     הכל
                 </button>
@@ -264,7 +263,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                     <button
                         key={letter}
                         onClick={() => handleLetterClick(letter)}
-                        className={`w-8 h-8 flex items-center justify-center rounded text-sm font-bold border transition ${currentLetter === letter ? 'bg-black text-white border-black' : 'bg-white text-black border-gray-300 hover:border-black'}`}
+                        className={`w-9 h-9 flex items-center justify-center rounded-lg text-sm font-bold border transition shrink-0 shadow-sm ${currentLetter === letter ? 'bg-black text-white border-black' : 'bg-white text-black border-gray-200 hover:border-black'}`}
                     >
                         {letter}
                     </button>
@@ -446,40 +445,40 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
             )
             }
 
-            <div className="grid grid-cols-1 gap-4">
+            <div className="grid grid-cols-1 gap-4 mb-8">
                 {products.map((product) => (
-                    <div key={product.id} className="bg-white p-4 rounded-lg shadow-sm border border-gray-200 flex flex-col md:flex-row items-center justify-between gap-4">
+                    <div key={product.id} className="bg-white p-4 md:p-5 rounded-2xl shadow-sm border border-gray-100 flex flex-col md:flex-row items-center justify-between gap-4 transition-all hover:shadow-md hover:border-gray-200">
 
                         {editingId === product.id ? (
                             <div className="flex-1 w-full flex flex-col gap-4">
-                                <div className="grid grid-cols-1 md:grid-cols-7 gap-2">
+                                <div className="grid grid-cols-1 md:grid-cols-7 gap-3 bg-gray-50/50 p-4 rounded-2xl border border-gray-100 mb-2">
                                     <div className="md:col-span-1">
-                                        <label className="text-xs font-bold">מותג</label>
+                                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">מותג</label>
                                         <input
                                             value={editForm.brand}
                                             onChange={e => setEditForm({ ...editForm, brand: e.target.value })}
-                                            className="border p-2 rounded w-full bg-white"
+                                            className="border-2 border-gray-100 rounded-xl p-2 w-full bg-white focus:border-black outline-none transition-colors font-bold text-sm"
                                         />
                                     </div>
                                     <div className="md:col-span-1">
-                                        <label className="text-xs font-bold">דגם</label>
+                                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">דגם</label>
                                         <input
                                             value={editForm.model}
                                             onChange={e => setEditForm({ ...editForm, model: e.target.value })}
-                                            className="border p-2 rounded w-full bg-white"
+                                            className="border-2 border-gray-100 rounded-xl p-2 w-full bg-white focus:border-black outline-none transition-colors font-bold text-sm"
                                         />
                                     </div>
                                     <div className="md:col-span-2">
-                                        <label className="text-xs font-bold">שם בעברית</label>
+                                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">שם בעברית</label>
                                         <input
                                             value={editForm.name_he}
                                             onChange={e => setEditForm({ ...editForm, name_he: e.target.value })}
-                                            className="border p-2 rounded w-full bg-white"
+                                            className="border-2 border-gray-100 rounded-xl p-2 w-full bg-white focus:border-black outline-none transition-colors font-bold text-sm"
                                             placeholder="עברית..."
                                         />
                                     </div>
                                     <div className="md:col-span-1">
-                                        <label className="text-xs font-bold">קטגוריות</label>
+                                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">קטגוריות</label>
                                         <TagInput
                                             tags={editForm.category ? editForm.category.split(',').filter(Boolean) : []}
                                             onChange={(newTags) => setEditForm({ ...editForm, category: newTags.join(',') })}
@@ -487,209 +486,221 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                             placeholder="הוסף קטגוריה..."
                                         />
                                     </div>
-                                    <div>
-                                        <label className="text-xs font-bold">2 מ״ל</label>
-                                        <input
-                                            type="number"
-                                            value={editForm.price_2ml}
-                                            onChange={e => setEditForm({ ...editForm, price_2ml: Number(e.target.value) })}
-                                            onWheel={(e) => e.target.blur()}
-                                            className="border p-2 rounded w-full bg-white"
-                                        />
+                                    <div className="grid grid-cols-3 md:col-span-2 gap-2">
+                                        <div>
+                                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">2 מ״ל</label>
+                                            <input
+                                                type="number"
+                                                value={editForm.price_2ml}
+                                                onChange={e => setEditForm({ ...editForm, price_2ml: Number(e.target.value) })}
+                                                onWheel={(e) => e.target.blur()}
+                                                className="border-2 border-gray-100 rounded-xl p-2 w-full bg-white focus:border-black outline-none transition-colors font-bold text-sm"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">5 מ״ל</label>
+                                            <input
+                                                type="number"
+                                                value={editForm.price_5ml}
+                                                onChange={e => setEditForm({ ...editForm, price_5ml: Number(e.target.value) })}
+                                                onWheel={(e) => e.target.blur()}
+                                                className="border-2 border-gray-100 rounded-xl p-2 w-full bg-white focus:border-black outline-none transition-colors font-bold text-sm"
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">10 מ״ל</label>
+                                            <input
+                                                type="number"
+                                                value={editForm.price_10ml}
+                                                onChange={e => setEditForm({ ...editForm, price_10ml: Number(e.target.value) })}
+                                                onWheel={(e) => e.target.blur()}
+                                                className="border-2 border-gray-100 rounded-xl p-2 w-full bg-white focus:border-black outline-none transition-colors font-bold text-sm"
+                                            />
+                                        </div>
                                     </div>
-                                    <div>
-                                        <label className="text-xs font-bold">5 מ״ל</label>
-                                        <input
-                                            type="number"
-                                            value={editForm.price_5ml}
-                                            onChange={e => setEditForm({ ...editForm, price_5ml: Number(e.target.value) })}
-                                            onWheel={(e) => e.target.blur()}
-                                            className="border p-2 rounded w-full bg-white"
-                                        />
-                                    </div>
-                                    <div>
-                                        <label className="text-xs font-bold">10 מ״ל</label>
-                                        <input
-                                            type="number"
-                                            value={editForm.price_10ml}
-                                            onChange={e => setEditForm({ ...editForm, price_10ml: Number(e.target.value) })}
-                                            onWheel={(e) => e.target.blur()}
-                                            className="border p-2 rounded w-full bg-white"
-                                        />
-                                    </div>
-                                    <div>
-                                        <label className="text-xs font-bold">מלאי (מ״ל)</label>
+                                </div>
+
+                                <div className="grid grid-cols-1 md:grid-cols-4 gap-4 bg-gray-50/50 p-4 rounded-2xl border border-gray-100">
+                                    <div className="md:col-span-2">
+                                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">מלאי (מ״ל)</label>
                                         <input
                                             type="number"
                                             value={editForm.stock}
                                             onChange={e => setEditForm({ ...editForm, stock: Number(e.target.value) })}
                                             onWheel={(e) => e.target.blur()}
-                                            className="border p-2 rounded w-full bg-white"
+                                            className="border-2 border-gray-100 rounded-xl p-2 w-full bg-white focus:border-black outline-none transition-colors font-bold text-sm"
                                         />
                                     </div>
                                     <div className="md:col-span-1">
-                                        <label className="text-xs font-bold">עלות (ש״ח)</label>
+                                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">עלות (ש״ח)</label>
                                         <input
                                             type="number"
                                             value={editForm.cost_price}
                                             onChange={e => setEditForm({ ...editForm, cost_price: Number(e.target.value) })}
                                             onWheel={(e) => e.target.blur()}
-                                            className="border p-2 rounded w-full bg-white"
+                                            className="border-2 border-gray-100 rounded-xl p-2 w-full bg-white focus:border-black outline-none transition-colors font-bold text-sm"
                                         />
                                     </div>
                                     <div className="md:col-span-1">
-                                        <label className="text-xs font-bold">גודל מקור</label>
+                                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">גודל מקור</label>
                                         <input
                                             type="number"
                                             value={editForm.original_size}
                                             onChange={e => setEditForm({ ...editForm, original_size: Number(e.target.value) })}
                                             onWheel={(e) => e.target.blur()}
-                                            className="border p-2 rounded w-full bg-white"
+                                            className="border-2 border-gray-100 rounded-xl p-2 w-full bg-white focus:border-black outline-none transition-colors font-bold text-sm"
                                         />
                                     </div>
                                 </div>
 
+                                <div className="space-y-4 pt-2">
+                                    <div>
+                                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">קישור לתמונה</label>
+                                        <input
+                                            value={editForm.image_url || ''}
+                                            onChange={e => setEditForm({ ...editForm, image_url: e.target.value })}
+                                            className="border-2 border-gray-100 rounded-xl p-2 w-full bg-white focus:border-black outline-none transition-colors text-xs text-left"
+                                            dir="ltr"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">תיאור</label>
+                                        <textarea
+                                            value={editForm.description || ''}
+                                            onChange={e => setEditForm({ ...editForm, description: e.target.value })}
+                                            className="border-2 border-gray-100 rounded-xl p-2 w-full bg-white h-24 focus:border-black outline-none transition-colors text-sm font-medium"
+                                        />
+                                    </div>
+                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+                                        <div>
+                                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">תווים עליונים</label>
+                                            <TagInput
+                                                tags={editForm.top_notes ? editForm.top_notes.split(',').filter(Boolean) : []}
+                                                onChange={(newTags) => setEditForm({ ...editForm, top_notes: newTags.join(',') })}
+                                                suggestions={availableNotes}
+                                                placeholder="..."
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">תווי לב</label>
+                                            <TagInput
+                                                tags={editForm.middle_notes ? editForm.middle_notes.split(',').filter(Boolean) : []}
+                                                onChange={(newTags) => setEditForm({ ...editForm, middle_notes: newTags.join(',') })}
+                                                suggestions={availableNotes}
+                                                placeholder="..."
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">תווי בסיס</label>
+                                            <TagInput
+                                                tags={editForm.base_notes ? editForm.base_notes.split(',').filter(Boolean) : []}
+                                                onChange={(newTags) => setEditForm({ ...editForm, base_notes: newTags.join(',') })}
+                                                suggestions={availableNotes}
+                                                placeholder="..."
+                                            />
+                                        </div>
+                                    </div>
+                                    <div className="flex items-center gap-3 bg-gray-50/50 p-3 rounded-xl border border-gray-100 w-fit">
+                                        <input
+                                            type="checkbox"
+                                            checked={editForm.in_lottery ?? true}
+                                            onChange={e => setEditForm({ ...editForm, in_lottery: e.target.checked })}
+                                            className="w-5 h-5 accent-black cursor-pointer rounded-lg"
+                                        />
+                                        <label className="text-xs font-black uppercase tracking-widest select-none text-gray-700">כלול בהגרלות רנדומליות</label>
+                                    </div>
+                                </div>
 
-
-                                <div>
-                                    <label className="text-xs font-bold">קישור לתמונה</label>
-                                    <input
-                                        value={editForm.image_url || ''}
-                                        onChange={e => setEditForm({ ...editForm, image_url: e.target.value })}
-                                        className="border p-2 rounded w-full bg-white text-left"
-                                        dir="ltr"
-                                    />
-                                </div>
-                                <div>
-                                    <label className="text-xs font-bold">תיאור</label>
-                                    <textarea
-                                        value={editForm.description || ''}
-                                        onChange={e => setEditForm({ ...editForm, description: e.target.value })}
-                                        className="border p-2 rounded w-full bg-white h-20 text-sm"
-                                    />
-                                </div>
-                                <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
-                                    <div>
-                                        <label className="text-xs font-bold">עליונים</label>
-                                        <TagInput
-                                            tags={editForm.top_notes ? editForm.top_notes.split(',').filter(Boolean) : []}
-                                            onChange={(newTags) => setEditForm({ ...editForm, top_notes: newTags.join(',') })}
-                                            suggestions={availableNotes}
-                                            placeholder="..."
-                                        />
-                                    </div>
-                                    <div>
-                                        <label className="text-xs font-bold">לב</label>
-                                        <TagInput
-                                            tags={editForm.middle_notes ? editForm.middle_notes.split(',').filter(Boolean) : []}
-                                            onChange={(newTags) => setEditForm({ ...editForm, middle_notes: newTags.join(',') })}
-                                            suggestions={availableNotes}
-                                            placeholder="..."
-                                        />
-                                    </div>
-                                    <div>
-                                        <label className="text-xs font-bold">בסיס</label>
-                                        <TagInput
-                                            tags={editForm.base_notes ? editForm.base_notes.split(',').filter(Boolean) : []}
-                                            onChange={(newTags) => setEditForm({ ...editForm, base_notes: newTags.join(',') })}
-                                            suggestions={availableNotes}
-                                            placeholder="..."
-                                        />
-                                    </div>
-                                </div>
-                                <div className="flex items-center gap-2 mt-4 ml-1">
-                                    <input
-                                        type="checkbox"
-                                        checked={editForm.in_lottery ?? true}
-                                        onChange={e => setEditForm({ ...editForm, in_lottery: e.target.checked })}
-                                        className="w-4 h-4 accent-red-600 cursor-pointer"
-                                    />
-                                    <label className="text-xs font-bold select-none">לכלול במאגר ההגרלות? (רנדומלי)</label>
-                                </div>
-                                <div className="flex gap-2 justify-end mt-4">
-                                    <button onClick={handleSave} className="bg-green-600 text-white px-4 py-2 rounded text-sm font-bold flex-1 md:flex-none">שמור</button>
-                                    <button onClick={handleCancel} className="bg-gray-200 text-black px-4 py-2 rounded text-sm font-bold flex-1 md:flex-none">ביטול</button>
+                                <div className="flex gap-3 justify-end mt-4 pt-4 border-t border-gray-100">
+                                    <button onClick={handleCancel} className="bg-gray-100 text-gray-600 px-8 py-3 rounded-2xl font-black uppercase tracking-widest text-[11px] hover:bg-gray-200 transition-colors">ביטול</button>
+                                    <button onClick={handleSave} className="bg-black text-white px-10 py-3 rounded-2xl font-black uppercase tracking-widest text-[11px] hover:bg-gray-800 transition-all shadow-md active:scale-95">שמור שינויים</button>
                                 </div>
                             </div >
                         ) : (
-                            <div className="flex-1 flex items-center gap-4 w-full">
+                            <div className="flex-1 flex items-center gap-4 md:gap-6 w-full rtl">
                                 {product.image_url ? (
-                                    <img src={product.image_url} alt={product.model} className="w-10 h-10 object-contain rounded" />
+                                    <div className="w-16 h-16 md:w-20 md:h-20 flex-shrink-0 bg-white rounded-[1.5rem] border border-gray-100 overflow-hidden shadow-sm shadow-gray-100/50">
+                                        <img src={product.image_url} alt={product.model} className="w-full h-full object-contain p-1" />
+                                    </div>
                                 ) : (
-                                    <div className="hidden md:flex w-10 h-10 bg-gray-100 rounded items-center justify-center text-lg"></div>
+                                    <div className="w-16 h-16 md:w-20 md:h-20 flex-shrink-0 bg-gray-50 rounded-[1.5rem] border border-gray-100 flex items-center justify-center text-[10px] font-black text-gray-300 uppercase tracking-widest">
+                                        no img
+                                    </div>
                                 )}
-                                <div className="flex-1 flex flex-col">
-                                    <div className="flex items-center gap-3">
-                                        <div className="font-bold text-lg">{product.brand}</div>
-                                        <div className={`font-bold text-xs px-2 py-0.5 rounded shadow-sm ${(product.stock || 0) <= 20 ? 'bg-red-100 text-red-800' :
-                                            (product.stock || 0) <= 50 ? 'bg-orange-100 text-orange-800' :
-                                                'bg-green-100 text-green-800'
+                                <div className="flex-1 flex flex-col min-w-0 space-y-1.5">
+                                    <div className="flex flex-wrap items-center gap-2">
+                                        <h3 className="font-black text-lg md:text-xl text-gray-900 leading-none truncate">{product.brand}</h3>
+                                        <div className={`font-black text-[9px] md:text-[10px] px-2.5 py-1 rounded-full uppercase tracking-widest border shadow-sm ${(product.stock || 0) <= 20 ? 'bg-red-50 text-red-700 border-red-100/50' :
+                                            (product.stock || 0) <= 50 ? 'bg-orange-50 text-orange-700 border-orange-100/50' :
+                                                'bg-green-50 text-green-700 border-green-100/50'
                                             }`}>
-                                            מלאי: {product.stock || 0} מ״ל
+                                            מלאי: {product.stock || 0}מ״ל
                                         </div>
+                                    </div>
+                                    <div className="text-gray-500 font-bold text-sm md:text-base leading-tight line-clamp-1">{product.model}</div>
+                                    <div className="flex items-center gap-2 md:gap-3">
                                         {(() => {
                                             const profitPerMl = Math.round((product.price_2ml / 2) - ((product.cost_price || 0) / (product.original_size || 100)));
                                             const isNegative = profitPerMl < 0;
                                             return (
                                                 <div
-                                                    className={`font-mono text-xs px-2 py-0.5 rounded shadow-sm border ${isNegative
-                                                        ? 'bg-red-50 text-red-700 border-red-200'
-                                                        : 'bg-green-50 text-green-700 border-green-200'
+                                                    className={`inline-flex items-center gap-1.5 font-black text-[10px] md:text-[11px] px-2.5 py-1 rounded-xl border shadow-sm ${isNegative
+                                                        ? 'bg-red-50 text-red-700 border-red-100'
+                                                        : 'bg-indigo-50 text-indigo-700 border-indigo-100'
                                                         }`}
-                                                    title="רווח ל-1 מ״ל"
                                                     dir="ltr"
                                                 >
-                                                    ₪ {isNegative ? `-${Math.abs(profitPerMl)}` : profitPerMl}
+                                                    <span className="opacity-50">₪</span>
+                                                    {isNegative ? `-${Math.abs(profitPerMl)}` : profitPerMl}
+                                                    <span className="text-[8px] font-black uppercase tracking-tighter ml-0.5 opacity-60">/ml</span>
                                                 </div>
                                             );
                                         })()}
+                                        <div className="text-[9px] font-black text-gray-400 uppercase tracking-widest opacity-60">רווח ליחידת מידה</div>
                                     </div>
-                                    <div className="text-gray-600 text-sm">{product.model}</div>
                                 </div>
                             </div>
                         )
                         }
 
                         {editingId !== product.id && canEdit && (
-                            <div className="flex gap-2 w-full md:w-auto">
-                                <button onClick={() => startEdit(product)} className="bg-blue-600 text-white px-4 py-1.5 rounded text-xs hover:bg-blue-700 font-bold transition whitespace-nowrap">
-                                    עדכן
+                            <div className="flex md:flex-col gap-2 w-full md:w-auto pt-4 md:pt-0 border-t md:border-t-0 border-gray-100">
+                                <button onClick={() => startEdit(product)} className="flex-1 bg-black text-white px-6 py-2.5 rounded-2xl text-[11px] font-black uppercase tracking-widest shadow-md hover:bg-gray-800 transition-all active:scale-95">
+                                    עדכן מוצר
                                 </button>
-                                <button onClick={() => handleDelete(product.id)} className="text-red-500 hover:text-red-700 text-xs font-bold border border-red-200 px-4 py-1.5 rounded hover:bg-white transition">
+                                <button onClick={() => handleDelete(product.id)} className="flex-1 md:flex-none text-red-500 hover:text-red-700 bg-red-50 rounded-2xl border border-red-100/50 px-4 py-2 text-[11px] font-black uppercase tracking-widest transition-colors hover:bg-red-100/50">
                                     מחק
                                 </button>
                             </div>
                         )}
-
-
                     </div >
                 ))}
             </div >
 
             {/* Pagination Controls */}
-            {
-                totalPages > 1 && (
-                    <div className="flex justify-center gap-2 mt-8">
-                        <button
-                            onClick={() => handlePageChange(currentPage - 1)}
-                            disabled={currentPage === 1}
-                            className="px-4 py-2 border rounded disabled:opacity-50"
-                        >
-                            הקודם
-                        </button>
-                        <span className="px-4 py-2 text-gray-600">
-                            עמוד {currentPage} מתוך {totalPages}
-                        </span>
-                        <button
-                            onClick={() => handlePageChange(currentPage + 1)}
-                            disabled={currentPage === totalPages}
-                            className="px-4 py-2 border rounded disabled:opacity-50"
-                        >
-                            הבא
-                        </button>
+            {totalPages > 1 && (
+                <div className="flex justify-center items-center gap-4 mt-12 py-8 border-t border-gray-100">
+                    <button
+                        onClick={() => handlePageChange(currentPage - 1)}
+                        disabled={currentPage === 1}
+                        className={`w-12 h-12 flex items-center justify-center border-2 border-gray-100 rounded-[1.25rem] transition-all hover:bg-gray-50 active:shadow-inner active:scale-95 ${currentPage === 1 ? 'opacity-30 pointer-events-none' : 'shadow-sm'}`}
+                    >
+                        →
+                    </button>
+                    
+                    <div className="bg-gray-100 px-6 py-2.5 rounded-2xl text-[11px] font-black text-gray-500 uppercase tracking-widest leading-none shadow-sm border border-gray-200/50">
+                        עמוד {currentPage} / {totalPages}
                     </div>
-                )
-            }
+
+                    <button
+                        onClick={() => handlePageChange(currentPage + 1)}
+                        disabled={currentPage === totalPages}
+                        className={`w-12 h-12 flex items-center justify-center border-2 border-gray-100 rounded-[1.25rem] transition-all hover:bg-gray-50 active:shadow-inner active:scale-95 ${currentPage === totalPages ? 'opacity-30 pointer-events-none' : 'shadow-sm'}`}
+                    >
+                        ←
+                    </button>
+                </div>
+            )}
         </div >
     );
 }
