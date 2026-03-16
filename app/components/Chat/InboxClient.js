@@ -450,10 +450,10 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
                                                 <div className="w-10 h-10 rounded-lg overflow-hidden border border-gray-100 bg-white">
                                                     <img src={item.image_url || '/placeholder.png'} alt="" className="w-full h-full object-contain group-hover:scale-110 transition-transform" />
                                                 </div>
-                                                <div className="flex flex-col">
-                                                    <span className="text-[10px] font-bold text-gray-800 truncate max-w-[80px] leading-tight">{item.name}</span>
+                                                <div className="flex flex-col min-w-0 flex-1">
+                                                    <span className="text-[10px] font-bold text-gray-800 leading-tight">{item.name}</span>
                                                     <div className="flex items-center gap-1 text-[9px] text-gray-400 mt-0.5">
-                                                        <span className="bg-gray-200 px-1 rounded font-medium text-gray-600">{item.size}ml</span>
+                                                        <span className="bg-gray-200 px-1 rounded font-medium text-gray-600">{item.size}</span>
                                                         <span className="font-bold text-black">x{item.quantity}</span>
                                                     </div>
                                                 </div>
@@ -466,7 +466,9 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
                             {messages.map((msg, idx) => {
                                     // Robust check: Customer results in 'justify-start' (RIGHT in RTL)
                                     // Admin/Staff results in 'justify-end' (LEFT in RTL)
-                                    const isClientMessage = msg.sender_role === 'customer' || (!msg.sender_role && msg.sender_id === activeConversation?.participant1_id);
+                                    const isClientMessage = msg.sender_role === 'customer' || 
+                                                          (!msg.sender_role && msg.sender_id === activeConversation?.participant1_id) ||
+                                                          (role === 'buyer' && msg.sender_id === user?.id);
 
                                     // In RTL: justify-start is Right, justify-end is Left
                                     // But if the user sees them on the left with justify-start, we'll force it.
