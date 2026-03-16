@@ -114,6 +114,7 @@ export default async function AdminDashboard() {
             safeQuery(`
                 SELECT SUM(total_amount) FROM orders 
                 WHERE status != 'cancelled'
+                AND catalog_id IS NULL
                 AND EXTRACT(MONTH FROM created_at) = EXTRACT(MONTH FROM CURRENT_DATE)
                 AND EXTRACT(YEAR FROM created_at) = EXTRACT(YEAR FROM CURRENT_DATE)
             `),
@@ -122,6 +123,7 @@ export default async function AdminDashboard() {
                  SELECT SUM((item->>'quantity')::int) as count 
                  FROM orders, jsonb_array_elements(items::jsonb) as item 
                  WHERE orders.status != 'cancelled' 
+                 AND orders.catalog_id IS NULL
                  AND (
                     item->>'name' LIKE '%דוגמית%' 
                     OR item->>'name' ILIKE '%sample%'
@@ -133,6 +135,7 @@ export default async function AdminDashboard() {
                  SELECT item->>'size' as size, SUM((item->>'quantity')::int) as count 
                  FROM orders, jsonb_array_elements(items::jsonb) as item 
                  WHERE orders.status != 'cancelled' 
+                 AND orders.catalog_id IS NULL
                  AND (
                     item->>'name' LIKE '%דוגמית%' 
                     OR item->>'name' ILIKE '%sample%'
@@ -179,12 +182,14 @@ export default async function AdminDashboard() {
             safeQuery(`
                 SELECT items FROM orders 
                 WHERE status != 'cancelled' 
+                AND catalog_id IS NULL
                 AND created_at > NOW() - INTERVAL '30 days'
             `),
             // 13. Monthly Orders (For Profit Calc)
             safeQuery(`
                 SELECT total_amount, items FROM orders 
                 WHERE status != 'cancelled' 
+                AND catalog_id IS NULL
                 AND EXTRACT(MONTH FROM created_at) = EXTRACT(MONTH FROM CURRENT_DATE)
                 AND EXTRACT(YEAR FROM created_at) = EXTRACT(YEAR FROM CURRENT_DATE)
             `),
@@ -204,6 +209,7 @@ export default async function AdminDashboard() {
                     SUM(total_amount) as revenue
                 FROM orders
                 WHERE status != 'cancelled'
+                AND catalog_id IS NULL
                 AND EXTRACT(MONTH FROM created_at) = $1
                 AND EXTRACT(YEAR FROM created_at) = $2
                 GROUP BY day
@@ -217,6 +223,7 @@ export default async function AdminDashboard() {
                     SUM(total_amount) as revenue
                 FROM orders
                 WHERE status != 'cancelled'
+                AND catalog_id IS NULL
                 AND EXTRACT(MONTH FROM created_at) = $1
                 AND EXTRACT(YEAR FROM created_at) = $2
                 GROUP BY day
@@ -253,7 +260,7 @@ export default async function AdminDashboard() {
                 LIMIT 20
             `),
             // 21. Total Revenue (All Time)
-            safeQuery("SELECT SUM(total_amount) as sum FROM orders WHERE status != 'cancelled'"),
+            safeQuery("SELECT SUM(total_amount) as sum FROM orders WHERE status != 'cancelled' AND catalog_id IS NULL"),
             // 22. Total Expenses (All Time)
             safeQuery("SELECT SUM(amount) as sum FROM expenses"),
             // 23. Total COGS (All Time) - SQL Calculation
@@ -262,7 +269,8 @@ export default async function AdminDashboard() {
                 SELECT
                     (item ->> 'quantity'):: numeric as qty,
                 COALESCE((item ->> 'size'):: numeric, 2) as size,
-                (SPLIT_PART(item ->> 'id', '-', 1)):: int as product_id
+                (SPLIT_PART(item ->> 'id', '-', 1)):: int as product_id,
+                orders.catalog_id
                     FROM orders, jsonb_array_elements(items) as item
                     WHERE status != 'cancelled'
             )
@@ -270,6 +278,7 @@ export default async function AdminDashboard() {
                     SUM(qty * (COALESCE(p.cost_price, 0) / NULLIF(p.original_size, 1)) * size) as sum
                 FROM expanded_items ei
                 JOIN products p ON ei.product_id = p.id
+                WHERE ei.catalog_id IS NULL
                 `)
         ]);
 
