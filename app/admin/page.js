@@ -496,11 +496,13 @@ export default async function AdminDashboard({ searchParams }) {
 
     return (
         <div className="pb-8">
-            <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
-                <h1 className="text-3xl font-bold">לוח בקרה</h1>
+            <div className="relative flex flex-col md:flex-row justify-center items-center mb-8 mt-4 md:mt-0 gap-6">
+                <div className="md:absolute md:right-0 md:top-1/2 md:-translate-y-1/2 w-full md:w-auto text-right">
+                    <h1 className="text-3xl font-bold">לוח בקרה</h1>
+                </div>
                 
                 {/* Global Month Navigation */}
-                <div className="flex items-center gap-4 bg-white px-4 py-2 rounded-xl shadow-sm border border-gray-100">
+                <div className="flex items-center gap-4 bg-white px-4 py-2 rounded-xl shadow-sm border border-gray-100 z-10 w-full md:w-auto justify-center">
                     <Link 
                         href={`/admin?year=${prevNavYear}&month=${prevNavMonth}`} 
                         prefetch={true} 
@@ -691,8 +693,8 @@ export default async function AdminDashboard({ searchParams }) {
                             כניסות לאתר
                         </div>
                     </div>
-                    <div className="text-xl font-bold mb-1 text-gray-900">
-                        {currentMonthLabel}: <span className="text-blue-600">{kpis.monthlyVisits}</span>
+                    <div className="text-3xl font-bold mb-4 text-gray-900">
+                        {kpis.monthlyVisits}
                     </div>
                     <div className="text-[10px] text-gray-400 font-medium italic">נספר לפי ביקורים ייחודיים</div>
                 </div>
