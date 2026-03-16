@@ -215,23 +215,22 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
     const activeConversation = getActiveDisplayConv();
 
     const getChatName = (conv) => {
-        let name = "";
-        if (role === 'admin') name = conv.participant1_name || "לקוח (ID: " + conv.participant1_id.slice(-4) + ")";
-        else if (role === 'seller') name = conv.participant1_name || "לקוח (ID: " + conv.participant1_id.slice(-4) + ")";
-        else if (role === 'buyer') {
-            if (conv.catalog_id) {
-                name = catalogsData[conv.catalog_id]?.name || "מוכר קטלוג (#" + conv.catalog_id + ")";
-            } else {
-                name = "ml_tlv (הנהלת האתר)";
-            }
+        if (role === 'admin' || role === 'seller') {
+            const clientName = conv.participant1_name || "לקוח (ID: " + conv.participant1_id.slice(-4) + ")";
+            if (conv.order_id) return `${clientName} | הזמנה #${conv.order_id}`;
+            return `${clientName} | פנייה כללית`;
         }
-
+        
+        // Buyer view
         if (conv.order_id) {
-            name += ` - הזמנה #${conv.order_id}`;
-        } else {
-            name += ` - פנייה כללית`;
+            return `הזמנה מספר ${conv.order_id}`;
         }
-        return name;
+        
+        if (conv.catalog_id) {
+            return catalogsData[conv.catalog_id]?.name || "מוכר קטלוג (#" + conv.catalog_id + ")";
+        }
+        
+        return "ml_tlv (הנהלת האתר)";
     };
 
     if (!isLoaded || isLoading) return <div className="py-20 text-center"><Loader2 className="w-8 h-8 animate-spin mx-auto text-gray-400" /></div>;
@@ -358,7 +357,7 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
                                     const isClientMessage = msg.sender_id === activeConversation?.participant1_id;
 
                                     return (
-                                        <div key={idx} className={`flex ${isClientMessage ? 'justify-end' : 'justify-start'}`}>
+                                        <div key={idx} className={`flex ${isClientMessage ? 'justify-start' : 'justify-end'}`}>
                                             <div className={`max-w-[70%] rounded-2xl px-4 py-2 text-sm shadow-sm ${
                                                 isClientMessage
                                                 ? 'bg-gray-200 text-black rounded-br-none' 
