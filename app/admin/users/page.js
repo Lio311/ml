@@ -3,6 +3,7 @@ import { currentUser } from "@clerk/nextjs/server";
 import Link from "next/link";
 import UserRoleSelect from "./UserRoleSelect";
 import SyncUsersButton from "./SyncUsersButton";
+import EditPhoneInput from "./EditPhoneInput";
 import React from 'react';
 
 export const metadata = {
@@ -91,13 +92,11 @@ export default async function AdminUsersPage(props) {
                                     </td>
                                     <td className="p-4 text-sm">
                                         <div>{u.email}</div>
-                                        {u.phone && (
-                                            <div className="text-xs text-gray-500 font-bold mt-1">
-                                                <a href={`tel:${u.phone}`} className="hover:underline text-blue-600">
-                                                    {u.phone}
-                                                </a>
-                                            </div>
-                                        )}
+                                        <EditPhoneInput 
+                                            userId={u.id} 
+                                            initialPhone={u.phone} 
+                                            canEdit={canEdit} 
+                                        />
                                     </td>
                                     <td className="p-4 text-sm text-gray-500">
                                         {new Date(u.createdAt).toLocaleDateString('he-IL')}
@@ -133,14 +132,11 @@ export default async function AdminUsersPage(props) {
                                 <div className="text-xs text-blue-600 font-medium truncate py-1 border-b border-blue-50">
                                     {u.email}
                                 </div>
-                                {u.phone && (
-                                    <div className="text-xs text-gray-500 flex items-center gap-2">
-                                        <span className="text-gray-300">📱</span>
-                                        <a href={`tel:${u.phone}`} className="hover:text-blue-600 font-bold transition-colors">
-                                            {u.phone}
-                                        </a>
-                                    </div>
-                                )}
+                                <EditPhoneInput 
+                                    userId={u.id} 
+                                    initialPhone={u.phone} 
+                                    canEdit={canEdit} 
+                                />
                             </div>
 
                             <div className="pt-2">

@@ -496,7 +496,40 @@ export default async function AdminDashboard({ searchParams }) {
 
     return (
         <div className="pb-8">
-            <h1 className="text-3xl font-bold mb-8">לוח בקרה</h1>
+            <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
+                <h1 className="text-3xl font-bold">לוח בקרה</h1>
+                
+                {/* Global Month Navigation */}
+                <div className="flex items-center gap-4 bg-white px-4 py-2 rounded-xl shadow-sm border border-gray-100">
+                    <Link 
+                        href={`/admin?year=${prevNavYear}&month=${prevNavMonth}`} 
+                        prefetch={true} 
+                        className="p-2 hover:bg-gray-50 rounded-lg text-gray-500 hover:text-blue-600 transition-colors"
+                        title="חודש קודם"
+                    >
+                        <ChevronRight className="w-5 h-5" />
+                    </Link>
+                    
+                    <div className="text-base font-bold text-gray-800 min-w-[120px] text-center">
+                        {currentMonthLabel} {year}
+                    </div>
+
+                    {hasNextMonth ? (
+                        <Link 
+                            href={`/admin?year=${nextNavYear}&month=${nextNavMonth}`} 
+                            prefetch={true} 
+                            className="p-2 hover:bg-gray-50 rounded-lg text-gray-500 hover:text-blue-600 transition-colors"
+                            title="חודש הבא"
+                        >
+                            <ChevronLeft className="w-5 h-5" />
+                        </Link>
+                    ) : (
+                        <div className="p-2 rounded-lg text-gray-200">
+                            <ChevronLeft className="w-5 h-5" />
+                        </div>
+                    )}
+                </div>
+            </div>
 
             <DashboardCharts
                 orderData={kpis.orderChartData}
@@ -521,21 +554,7 @@ export default async function AdminDashboard({ searchParams }) {
                     <div className="flex justify-between items-start mb-4">
                         <div className="text-gray-500 text-sm font-bold uppercase flex items-center gap-2">
                             <Wallet className="w-4 h-4 text-green-500" />
-                            תזרים ({currentMonthLabel})
-                        </div>
-                        <div className="flex items-center gap-1 bg-gray-50 rounded-lg p-0.5 z-10">
-                            <Link href={`/admin?year=${prevNavYear}&month=${prevNavMonth}`} prefetch={true} className="p-1 hover:bg-white rounded-md text-gray-500 hover:text-gray-900 transition-colors">
-                                <ChevronRight className="w-4 h-4" />
-                            </Link>
-                            {hasNextMonth ? (
-                                <Link href={`/admin?year=${nextNavYear}&month=${nextNavMonth}`} prefetch={true} className="p-1 hover:bg-white rounded-md text-gray-500 hover:text-gray-900 transition-colors">
-                                    <ChevronLeft className="w-4 h-4" />
-                                </Link>
-                            ) : (
-                                <div className="p-1 rounded-md text-gray-300">
-                                    <ChevronLeft className="w-4 h-4" />
-                                </div>
-                            )}
+                            תזרים
                         </div>
                     </div>
                     <div className="space-y-3">
@@ -670,20 +689,6 @@ export default async function AdminDashboard({ searchParams }) {
                         <div className="text-gray-500 text-sm font-bold uppercase flex items-center gap-2">
                             <Eye className="w-4 h-4 text-sky-500" />
                             כניסות לאתר
-                        </div>
-                        <div className="flex items-center gap-1 bg-gray-50 rounded-lg p-0.5 z-10">
-                            <Link href={`/admin?year=${prevNavYear}&month=${prevNavMonth}`} prefetch={true} className="p-1 hover:bg-white rounded-md text-gray-500 hover:text-gray-900 transition-colors">
-                                <ChevronRight className="w-4 h-4" />
-                            </Link>
-                            {hasNextMonth ? (
-                                <Link href={`/admin?year=${nextNavYear}&month=${nextNavMonth}`} prefetch={true} className="p-1 hover:bg-white rounded-md text-gray-500 hover:text-gray-900 transition-colors">
-                                    <ChevronLeft className="w-4 h-4" />
-                                </Link>
-                            ) : (
-                                <div className="p-1 rounded-md text-gray-300">
-                                    <ChevronLeft className="w-4 h-4" />
-                                </div>
-                            )}
                         </div>
                     </div>
                     <div className="text-xl font-bold mb-1 text-gray-900">
