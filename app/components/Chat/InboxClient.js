@@ -5,7 +5,7 @@ import { Send, User as UserIcon, Loader2, MessageSquare, Search, Store } from 'l
 import { useUser } from '@clerk/nextjs';
 import toast from 'react-hot-toast';
 
-export default function InboxClient({ role = 'buyer', catalogId = null, preSelectConversationWith = null }) {
+export default function InboxClient({ role = 'buyer', catalogId = null, preSelectConversationWith = null, initialOrderId = null, initialCatalogId = null }) {
     const { user, isLoaded } = useUser();
     const [conversations, setConversations] = useState([]);
     const [messages, setMessages] = useState([]);
@@ -48,19 +48,39 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
                 const data = await res.json();
                 setConversations(data);
                 
-                // If we need to start a chat with someone specific (e.g. from generic Contact Seller button)
-                if (preSelectConversationWith && data.length === 0) {
-                    // Start an optimistic conversation state if none exists
+                // If we arrived from a specific order link
+                if (initialOrderId) {
+                    const existingConv = data.find(c => String(c.order_id) === String(initialOrderId));
+                    if (existingConv) {
+                        setActiveConvId(existingConv.id);
+                    } else {
+                        // Create optimistic conversation for this order
+                        setConversations([{
+                            id: 'new',
+                            participant1_id: user.id,
+                            participant2_id: role === 'buyer' && !initialCatalogId ? 'admin' : (preSelectConversationWith || null),
+                            catalog_id: initialCatalogId || null,
+                            order_id: initialOrderId,
+                            last_message: "התחל שיחה חדשה על ההזמנה...",
+                            unread_count: 0
+                        }, ...data]);
+                        setActiveConvId('new');
+                    }
+                } 
+                // Legacy optimistic creation
+                else if (preSelectConversationWith && data.length === 0) {
                     setConversations([{
                         id: 'new',
                         participant1_id: user.id,
                         participant2_id: role === 'buyer' && !catalogId ? 'admin' : preSelectConversationWith,
                         catalog_id: catalogId || null,
+                        order_id: null,
                         last_message: "התחל שיחה חדשה...",
                         unread_count: 0
                     }]);
                     setActiveConvId('new');
-                } else if (data.length > 0 && !activeConvId) {
+                } 
+                else if (data.length > 0 && !activeConvId) {
                     setActiveConvId(data[0].id);
                 }
             }
@@ -98,14 +118,15 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
 
         setIsSending(true);
         try {
-            const participant2 = role === 'buyer' && !catalogId ? 'admin' : null;
+            const participant2 = role === 'buyer' && !activeConversation?.catalog_id ? 'admin' : null;
 
             const res = await fetch('/api/inbox', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     participant2_id: participant2,
-                    catalog_id: catalogId,
+                    catalog_id: activeConversation?.catalog_id || catalogId || null,
+                    order_id: activeConversation?.order_id || null,
                     content: newMessage
                 })
             });
@@ -136,13 +157,39 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
     const activeConversation = conversations.find(c => c.id === activeConvId);
 
     const getChatName = (conv) => {
-        if (role === 'admin') return "לקוח (ID: " + conv.participant1_id.slice(-4) + ")";
-        if (role === 'seller') return "לקוח (ID: " + conv.participant1_id.slice(-4) + ")";
-        if (role === 'buyer') {
-            if (conv.catalog_id) return "חנות משתמש (" + conv.catalog_id + ")";
-            return "ML_TLV (צוות האתר)";
+        let name = "";
+        if (role === 'admin') name = "לקוח (ID: " + conv.participant1_id.slice(-4) + ")";
+        else if (role === 'seller') name = "לקוח (ID: " + conv.participant1_id.slice(-4) + ")";
+        else if (role === 'buyer') {
+            if (conv.catalog_id) name = "מוכר קטלוג (#" + conv.catalog_id + ")";
+            else name = "ML_TLV (הנהלת האתר)";
         }
-        return "שיחה אישית";
+
+        if (conv.order_id) {
+            name += ` - הזמנה #${conv.order_id}`;
+        } else {
+            name += ` - פנייה כללית`;
+        }
+        return name;
+    };
+
+    const startGeneralChat = () => {
+        // Check if there's already a general chat
+        const existing = conversations.find(c => c.catalog_id == null && c.order_id == null);
+        if (existing) {
+            setActiveConvId(existing.id);
+        } else {
+            setConversations([{
+                id: 'new',
+                participant1_id: user.id,
+                participant2_id: 'admin',
+                catalog_id: null,
+                order_id: null,
+                last_message: "התחל פנייה כללית...",
+                unread_count: 0
+            }, ...conversations.filter(c => c.id !== 'new')]);
+            setActiveConvId('new');
+        }
     };
 
     if (!isLoaded || isLoading) return <div className="py-20 text-center"><Loader2 className="w-8 h-8 animate-spin mx-auto text-gray-400" /></div>;
@@ -168,6 +215,15 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
                             className="w-full pl-3 pr-10 py-2 bg-gray-100 border-transparent rounded-xl text-sm focus:bg-white focus:border-black focus:ring-0 transition outline-none"
                         />
                     </div>
+                    
+                    {role === 'buyer' && (
+                        <button 
+                            onClick={startGeneralChat}
+                            className="w-full mt-3 bg-black text-white text-xs font-bold py-2 rounded-lg hover:bg-gray-800 transition"
+                        >
+                            + פנייה כללית להנהלת האתר
+                        </button>
+                    )}
                 </div>
 
                 <div className="flex-1 overflow-y-auto">

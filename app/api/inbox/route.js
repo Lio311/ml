@@ -64,22 +64,28 @@ export async function POST(req) {
         if (!userId) return new NextResponse('Unauthorized', { status: 401 });
 
         const body = await req.json();
-        const { participant2_id, catalog_id, content } = body;
+        const { participant2_id, catalog_id, order_id, content } = body;
 
         let conversationId;
 
         // Check if conversation already exists
         let checkQuery;
-        if (catalog_id) {
+        if (order_id) {
             checkQuery = await pool.query(`
                 SELECT id FROM conversations 
-                WHERE participant1_id = $1 AND catalog_id = $2
+                WHERE participant1_id = $1 AND order_id = $2
+                LIMIT 1
+            `, [userId, order_id]);
+        } else if (catalog_id) {
+            checkQuery = await pool.query(`
+                SELECT id FROM conversations 
+                WHERE participant1_id = $1 AND catalog_id = $2 AND order_id IS NULL
                 LIMIT 1
             `, [userId, catalog_id]);
         } else {
             checkQuery = await pool.query(`
                 SELECT id FROM conversations 
-                WHERE participant1_id = $1 AND participant2_id = $2 AND catalog_id IS NULL
+                WHERE participant1_id = $1 AND participant2_id = $2 AND catalog_id IS NULL AND order_id IS NULL
                 LIMIT 1
             `, [userId, participant2_id || 'admin']);
         }
@@ -89,10 +95,10 @@ export async function POST(req) {
         } else {
             // Create new conversation
             const insertConv = await pool.query(`
-                INSERT INTO conversations (participant1_id, participant2_id, catalog_id)
-                VALUES ($1, $2, $3)
+                INSERT INTO conversations (participant1_id, participant2_id, catalog_id, order_id)
+                VALUES ($1, $2, $3, $4)
                 RETURNING id
-            `, [userId, participant2_id || 'admin', catalog_id || null]);
+            `, [userId, participant2_id || 'admin', catalog_id || null, order_id || null]);
             conversationId = insertConv.rows[0].id;
         }
 
