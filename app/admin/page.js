@@ -12,7 +12,7 @@ import { redirect } from "next/navigation";
 
 
 export const metadata = {
-    title: "ÎáÎÖÎöÎòÎ£ Î¿ÎÉÎ®ÎÖ | ml_tlv",
+    title: "לוח בקרה | ml_tlv",
     robots: "noindex, nofollow",
 };
 
@@ -128,7 +128,7 @@ export default async function AdminDashboard() {
                  WHERE orders.status != 'cancelled' 
                  AND orders.catalog_id IS NULL
                  AND (
-                    item->>'name' LIKE '%ÎôÎòÎÆÎ×ÎÖÎ¬%' 
+                    item->>'name' LIKE '%דוגמיות%' 
                     OR item->>'name' ILIKE '%sample%'
                     OR item->>'size' IN ('2', '5', '10', '11')
                  )
@@ -140,7 +140,7 @@ export default async function AdminDashboard() {
                  WHERE orders.status != 'cancelled' 
                  AND orders.catalog_id IS NULL
                  AND (
-                    item->>'name' LIKE '%ÎôÎòÎÆÎ×ÎÖÎ¬%' 
+                    item->>'name' LIKE '%דוגמיות%' 
                     OR item->>'name' ILIKE '%sample%'
                     OR item->>'size' IN ('2', '5', '10', '11')
                  )
@@ -462,7 +462,7 @@ export default async function AdminDashboard() {
                 const dailyRate = usage30Days / 30;
                 const daysLeft = dailyRate > 0 ? Math.round(quantity / dailyRate) : 9999;
                 forecasts.push({
-                    name: `ÎæÎºÎæÎòÎºÎÖ ${inv.size} Î×"Î£`,
+                    name: `בקבוק ${inv.size} מ"ל`,
                     daysLeft,
                     dailyRate,
                     quantity
@@ -483,7 +483,7 @@ export default async function AdminDashboard() {
 
     return (
         <div className="pb-8">
-            <h1 className="text-3xl font-bold mb-8">Î£ÎòÎù ÎæÎºÎ¿Îö</h1>
+            <h1 className="text-3xl font-bold mb-8">לוח בקרה</h1>
 
             <DashboardCharts
                 orderData={kpis.orderChartData}
@@ -508,39 +508,39 @@ export default async function AdminDashboard() {
                     <div className="flex justify-between items-start mb-4">
                         <div className="text-gray-500 text-sm font-bold uppercase flex items-center gap-2">
                             <Wallet className="w-4 h-4 text-green-500" />
-                            Î¬ÎûÎ¿ÎÖÎØ ({currentMonthLabel})
+                            תזרים ({currentMonthLabel})
                         </div>
                     </div>
                     <div className="space-y-3">
                         <div className="flex justify-between items-center border-b border-gray-50 pb-2">
-                            <span className="text-blue-600 font-bold text-xs md:text-sm">ÎöÎøÎáÎíÎòÎ¬</span>
+                            <span className="text-blue-600 font-bold text-xs md:text-sm">הכנסות</span>
                             <div className="text-right">
                                 <span className="text-lg md:text-xl font-bold text-blue-700">
-                                    <span dir="ltr" className="inline-block">{kpis.totalRevenue.toLocaleString()}</span> Ôé¬
+                                    <span dir="ltr" className="inline-block">{kpis.totalRevenue.toLocaleString()}</span> ₪
                                 </span>
                             </div>
                         </div>
                         <div className="flex justify-between items-center border-b border-gray-50 pb-2">
-                            <span className="text-red-600 font-bold text-xs md:text-sm">ÎöÎòÎªÎÉÎòÎ¬</span>
+                            <span className="text-red-600 font-bold text-xs md:text-sm">הוצאות</span>
                             <div className="text-right">
                                 <span className="text-lg md:text-xl font-bold text-red-700">
-                                    <span dir="ltr" className="inline-block">{kpis.totalExpenses.toLocaleString()}</span> Ôé¬
+                                    <span dir="ltr" className="inline-block">{kpis.totalExpenses.toLocaleString()}</span> ₪
                                 </span>
                             </div>
                         </div>
                         <div className="flex justify-between items-center bg-gray-50/50 p-2 rounded-xl mb-2">
-                            <span className={`${kpis.monthlyProfit < 0 ? 'text-red-600' : 'text-green-600'} font-bold text-sm`}>Î¿ÎòÎòÎù</span>
+                            <span className={`${kpis.monthlyProfit < 0 ? 'text-red-600' : 'text-green-600'} font-bold text-sm`}>רווח</span>
                             <div className="text-right">
                                 <span className={`text-xl md:text-2xl font-bold ${kpis.monthlyProfit < 0 ? 'text-red-700' : 'text-green-700'}`}>
-                                    <span dir="ltr" className="inline-block">{kpis.monthlyProfit.toLocaleString()}</span> Ôé¬
+                                    <span dir="ltr" className="inline-block">{kpis.monthlyProfit.toLocaleString()}</span> ₪
                                 </span>
                             </div>
                         </div>
                         <div className="flex justify-between items-center border-t border-gray-100 pt-2 mt-2">
-                            <span className="text-gray-400 font-bold text-[10px]">Î¿ÎòÎòÎù Î×ÎªÎÿÎæÎ¿ (Î×ÎÉÎû ÎòÎ×ÎóÎòÎ£ÎØ)</span>
+                            <span className="text-gray-400 font-bold text-[10px]">רווח מצטבר (כלל המערכת)</span>
                             <div className="text-right">
                                 <span className={`text-xs font-bold ${kpis.cumulativeProfit < 0 ? 'text-red-600' : 'text-green-600'}`}>
-                                    <span dir="ltr" className="inline-block">{kpis.cumulativeProfit ? kpis.cumulativeProfit.toLocaleString() : '0'}</span> Ôé¬
+                                    <span dir="ltr" className="inline-block">{kpis.cumulativeProfit ? kpis.cumulativeProfit.toLocaleString() : '0'}</span> ₪
                                 </span>
                             </div>
                         </div>
@@ -553,7 +553,7 @@ export default async function AdminDashboard() {
                     <div className="flex justify-between items-start mb-2">
                         <div className="text-gray-500 text-sm font-bold uppercase flex items-center gap-2">
                             <Package className="w-4 h-4 text-amber-500" />
-                            Î×Î£ÎÉÎÖ ÎæÎºÎæÎòÎºÎòÎáÎÖÎØ ÎñÎáÎòÎÖ
+                            מלאי בקבוקים פנוי
                         </div>
                     </div>
 
@@ -561,12 +561,12 @@ export default async function AdminDashboard() {
                         <span className="text-4xl font-bold text-gray-900">
                             {kpis.bottleInventory.reduce((acc, item) => acc + parseInt(item.quantity || 0), 0)}
                         </span>
-                        <span className="text-xs text-gray-400 font-bold uppercase">ÎæÎºÎæÎòÎºÎòÎáÎÖÎØ</span>
+                        <span className="text-xs text-gray-400 font-bold uppercase">בקבוקים</span>
                     </div>
 
                     <div className="grid grid-cols-2 gap-2">
                         {kpis.bottleInventory && kpis.bottleInventory.map(item => {
-                            const sizeLabel = item.size === 11 ? 'ÎÖÎòÎºÎ¿Î¬ÎÖ' : `${item.size} Î×"Î£`;
+                            const sizeLabel = item.size === 11 ? 'ויאלים' : `${item.size} מ"ל`;
                             // Choose a color theme based on size for consistency
                             const theme = item.size === 2 ? 'bg-amber-50/50 border-amber-100 text-amber-700' :
                                           item.size === 5 ? 'bg-orange-50/50 border-orange-100 text-orange-700' :
@@ -584,7 +584,7 @@ export default async function AdminDashboard() {
                         })}
                     </div>
                     <div className="text-[10px] text-gray-400 mt-4 text-center border-t border-gray-50 pt-3">
-                        <Link href="/admin/inventory" className="text-blue-500 hover:underline font-bold transition-all">Î£ÎáÎÖÎöÎòÎ£ ÎöÎ×Î£ÎÉÎÖ ÎöÎ×Î£ÎÉ ÔåÉ</Link>
+                        <Link href="/admin/inventory" className="text-blue-500 hover:underline font-bold transition-all">לניהול מלאי וחיזוי ←</Link>
                     </div>
                 </div>
 
@@ -594,30 +594,30 @@ export default async function AdminDashboard() {
                     <div className="flex justify-between items-start mb-2">
                         <div className="text-gray-500 text-sm font-bold uppercase flex items-center gap-2">
                             <FlaskConical className="w-4 h-4 text-purple-500" />
-                            ÎôÎòÎÆÎ×ÎÖÎòÎ¬ Î®ÎáÎ×ÎøÎ¿Îò
+                            דוגמיות שנמכרו
                         </div>
                     </div>
 
                     <div className="flex items-baseline gap-2 mb-4">
                         <span className="text-4xl font-bold text-gray-900">{kpis.totalSamples}</span>
-                        <span className="text-xs text-gray-400 font-bold uppercase">ÎÖÎùÎÖÎôÎòÎ¬</span>
+                        <span className="text-xs text-gray-400 font-bold uppercase">יחידות</span>
                     </div>
 
                     <div className="grid grid-cols-2 gap-2">
                         <div className="flex flex-col items-center bg-purple-50/50 p-2 rounded-xl border border-purple-100">
-                            <span className="text-[9px] text-purple-600 font-bold mb-1">2 Î×Î┤Î£</span>
+                            <span className="text-[10px] text-purple-600 font-bold mb-1">2 מ"ל</span>
                             <span className="font-black text-base text-purple-800 leading-none">{kpis.samplesBreakdown['2']}</span>
                         </div>
                         <div className="flex flex-col items-center bg-pink-50/50 p-2 rounded-xl border border-pink-100">
-                            <span className="text-[9px] text-pink-600 font-bold mb-1">5 Î×Î┤Î£</span>
+                            <span className="text-[10px] text-pink-600 font-bold mb-1">5 מ"ל</span>
                             <span className="font-black text-base text-pink-800 leading-none">{kpis.samplesBreakdown['5']}</span>
                         </div>
                         <div className="flex flex-col items-center bg-blue-50/50 p-2 rounded-xl border border-blue-100">
-                            <span className="text-[9px] text-blue-600 font-bold mb-1">10 Î×Î┤Î£</span>
+                            <span className="text-[10px] text-blue-600 font-bold mb-1">10 מ"ל</span>
                             <span className="font-black text-base text-blue-800 leading-none">{kpis.samplesBreakdown['10']}</span>
                         </div>
                         <div className="flex flex-col items-center bg-amber-50/50 p-2 rounded-xl border border-amber-100">
-                            <span className="text-[9px] text-amber-600 font-bold mb-1">ÎÖÎòÎºÎ¿Î¬ÎÖ</span>
+                            <span className="text-[10px] text-amber-600 font-bold mb-1">ויאלים</span>
                             <span className="font-black text-base text-amber-800 leading-none">{kpis.samplesBreakdown['11']}</span>
                         </div>
                     </div>
@@ -628,11 +628,11 @@ export default async function AdminDashboard() {
                     <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-cyan-500"></div>
                     <div className="text-gray-500 text-sm font-bold uppercase mb-2 flex items-center gap-2">
                         <ShoppingCart className="w-4 h-4 text-blue-500" />
-                        ÎöÎûÎ×ÎáÎòÎ¬ ÎíÎöÎ┤Îø
+                        הזמנות החודש
                     </div>
                     <div className="text-3xl font-bold mb-4">{kpis.totalOrders}</div>
                     <div className="text-[10px] text-center border-t border-gray-50 pt-3 mt-2">
-                        <Link href="/admin/orders" className="text-blue-500 hover:underline font-bold transition-all">Î£ÎáÎÖÎöÎòÎ£ ÎöÎûÎ×ÎáÎòÎ¬ ÔåÉ</Link>
+                        <Link href="/admin/orders" className="text-blue-500 hover:underline font-bold transition-all">לניהול הזמנות ←</Link>
                     </div>
                 </div>
 
@@ -641,12 +641,12 @@ export default async function AdminDashboard() {
                     <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-sky-400 to-indigo-400"></div>
                     <div className="text-gray-500 text-sm font-bold uppercase mb-2 flex items-center gap-2">
                         <Eye className="w-4 h-4 text-sky-500" />
-                        ÎøÎáÎÖÎíÎòÎ¬ Î£ÎÉÎ¬Î¿
+                        כניסות לאתר
                     </div>
                     <div className="text-xl font-bold mb-1 text-gray-900">
                         {currentMonthLabel}: <span className="text-blue-600">{kpis.monthlyVisits}</span>
                     </div>
-                    <div className="text-[10px] text-gray-400 font-medium italic">ÎáÎíÎñÎ¿ Î£ÎñÎÖ ÎæÎÖÎºÎòÎ¿ÎÖÎØ ÎÖÎÖÎùÎòÎôÎÖÎÖÎØ</div>
+                    <div className="text-[10px] text-gray-400 font-medium italic">נספר לפי ביקורים ייחודיים</div>
                 </div>
 
                 {/* Registered Users */}
@@ -654,11 +654,11 @@ export default async function AdminDashboard() {
                     <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-500 to-purple-600"></div>
                     <div className="text-gray-500 text-sm font-bold uppercase mb-2 flex items-center gap-2">
                         <Users className="w-4 h-4 text-indigo-500" />
-                        Î×Î®Î¬Î×Î®ÎÖÎØ Î¿Î®ÎòÎ×ÎÖÎØ
+                        משתמשים רשומים
                     </div>
                     <div className="text-3xl font-bold mb-4 text-gray-900">{kpis.totalUsers}</div>
                     <div className="text-[10px] text-center border-t border-gray-50 pt-3 mt-2">
-                        <Link href="/admin/users" className="text-blue-500 hover:underline font-bold transition-all">Î£ÎáÎÖÎöÎòÎ£ Î×Î®Î¬Î×Î®ÎÖÎØ ÔåÉ</Link>
+                        <Link href="/admin/users" className="text-blue-500 hover:underline font-bold transition-all">לניהול משתמשים ←</Link>
                     </div>
                 </div>
             </div>
@@ -666,25 +666,25 @@ export default async function AdminDashboard() {
             {/* Recent Orders List */}
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden mb-8">
                 <div className="p-6 border-b flex justify-between items-center">
-                    <h3 className="font-bold text-gray-900">ÎöÎûÎ×ÎáÎòÎ¬ ÎÉÎùÎ¿ÎòÎáÎòÎ¬</h3>
-                    <Link href="/admin/orders" className="text-blue-600 text-sm font-bold hover:underline">Î£ÎøÎ£ ÎöÎöÎûÎ×ÎáÎòÎ¬</Link>
+                    <h3 className="font-bold text-gray-900">הזמנות אחרונות</h3>
+                    <Link href="/admin/orders" className="text-blue-600 text-sm font-bold hover:underline">לכל ההזמנות</Link>
                 </div>
                 <div className="divide-y divide-gray-100">
                     {kpis.recentOrders.length === 0 ? (
                         <div className="p-8 text-center text-gray-400 text-sm italic">
-                            ÎóÎôÎÖÎÖÎƒ ÎÉÎÖÎƒ ÎöÎûÎ×ÎáÎòÎ¬...
+                            עדיין אין הזמנות...
                         </div>
                     ) : (
                         kpis.recentOrders.map(order => (
                             <div key={order.id} className="p-4 flex items-center justify-between hover:bg-gray-50 transition-colors">
                                 <div>
-                                    <div className="font-bold text-gray-900">ÎöÎûÎ×ÎáÎö #{order.id}</div>
+                                    <div className="font-bold text-gray-900">הזמנה #{order.id}</div>
                                     <div className="text-sm text-gray-500">
-                                        {order.customer_details?.name} ÔÇó {new Date(order.created_at).toLocaleDateString('he-IL')}
+                                        {order.customer_details?.name} • {new Date(order.created_at).toLocaleDateString('he-IL')}
                                     </div>
                                 </div>
                                 <div className="text-right">
-                                    <div className="font-bold text-gray-900">{order.total_amount} Ôé¬</div>
+                                    <div className="font-bold text-gray-900">{order.total_amount} ₪</div>
                                     <span className={`text-[9px] md:text-xs px-2 py-0.5 rounded-full font-bold uppercase tracking-wider ${order.status === 'pending' ? 'bg-orange-100 text-orange-800' :
                                         order.status === 'processing' ? 'bg-blue-100 text-blue-800' :
                                             order.status === 'shipped' ? 'bg-purple-100 text-purple-800' :
@@ -692,11 +692,11 @@ export default async function AdminDashboard() {
                                                     'bg-gray-100 text-gray-800'
                                         }`}>
                                         {
-                                            order.status === 'pending' ? 'Î×Î×Î¬ÎÖÎƒ' :
-                                                order.status === 'processing' ? 'ÎæÎÿÎÖÎñÎòÎ£' :
-                                                    order.status === 'shipped' ? 'ÎáÎ®Î£Îù' :
-                                                        order.status === 'completed' ? 'ÎöÎòÎ®Î£ÎØ' :
-                                                            order.status === 'cancelled' ? 'ÎæÎòÎÿÎ£' :
+                                            order.status === 'pending' ? 'ממתין' :
+                                                order.status === 'processing' ? 'בטיפול' :
+                                                    order.status === 'shipped' ? 'נשלח' :
+                                                        order.status === 'completed' ? 'הושלם' :
+                                                            order.status === 'cancelled' ? 'בוטל' :
                                                                 order.status
                                         }
                                     </span>
@@ -710,18 +710,18 @@ export default async function AdminDashboard() {
             {/* Coupons Table */}
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden mt-8">
                 <div className="p-6 border-b flex justify-between items-center">
-                    <h3 className="font-bold text-gray-900">ÎºÎòÎñÎòÎáÎÖÎØ ÎÉÎùÎ¿ÎòÎáÎÖÎØ</h3>
-                    <Link href="/admin/coupons" className="text-blue-600 text-sm font-bold hover:underline">Î£ÎøÎ£ ÎöÎºÎòÎñÎòÎáÎÖÎØ</Link>
+                    <h3 className="font-bold text-gray-900">קופונים אחרונים</h3>
+                    <Link href="/admin/coupons" className="text-blue-600 text-sm font-bold hover:underline">לכל הקופונים</Link>
                 </div>
                 <div className="overflow-x-auto custom-scrollbar">
                     <table className="w-full text-right" dir="rtl">
                         <thead className="bg-gray-50 text-gray-500 text-sm font-bold">
                             <tr>
-                                <th className="p-4 text-center">ÎºÎòÎô</th>
-                                <th className="p-4 text-center">ÎöÎáÎùÎö</th>
-                                <th className="p-4 text-center">Î×ÎÖÎÖÎ£ Î£ÎºÎòÎù</th>
-                                <th className="p-4 text-center">ÎíÎÿÎÿÎòÎí</th>
-                                <th className="p-4 text-center">ÎáÎòÎªÎ¿ ÎæÎ¬ÎÉÎ¿ÎÖÎÜ</th>
+                                <th className="p-4 text-center">קוד</th>
+                                <th className="p-4 text-center">הנחה</th>
+                                <th className="p-4 text-center">מייל לקוח</th>
+                                <th className="p-4 text-center">סטטוס</th>
+                                <th className="p-4 text-center">נוצר בתאריך</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100">
@@ -739,8 +739,8 @@ export default async function AdminDashboard() {
                                                 displayStatus === 'redeemed' ? 'bg-gray-800 text-white' :
                                                     'bg-red-100 text-red-800'
                                                 }`}>
-                                                {displayStatus === 'active' ? 'ÎñÎóÎÖÎ£' :
-                                                    displayStatus === 'redeemed' ? 'Î×ÎòÎ×Î®' : 'ÎñÎÆ Î¬ÎòÎºÎú'}
+                                                {displayStatus === 'active' ? 'פעיל' :
+                                                    displayStatus === 'redeemed' ? 'מומש' : 'פג תוקף'}
                                             </span>
                                         </td>
                                         <td className="p-4 text-xs text-gray-500 text-center whitespace-nowrap">
