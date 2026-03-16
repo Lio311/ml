@@ -14,6 +14,8 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
     const [newMessage, setNewMessage] = useState("");
     const [isLoading, setIsLoading] = useState(true);
     const [isSending, setIsSending] = useState(false);
+    const [orderData, setOrderData] = useState({}); // Cache for order details
+    const [isLoadingOrder, setIsLoadingOrder] = useState(false);
     const [searchQuery, setSearchQuery] = useState("");
     const [catalogsData, setCatalogsData] = useState({});
     const messagesEndRef = useRef(null);
@@ -106,21 +108,46 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
         }
     };
 
+    const fetchOrderDetails = async (orderId) => {
+        if (!orderId || orderData[orderId]) return;
+        setIsLoadingOrder(true);
+        try {
+            const res = await fetch(`/api/orders/${orderId}`);
+            if (res.ok) {
+                const data = await res.json();
+                setOrderData(prev => ({ ...prev, [orderId]: data }));
+            }
+        } catch (error) {
+            console.error("Failed to fetch order details", error);
+        } finally {
+            setIsLoadingOrder(false);
+        }
+    };
+
     const fetchMessages = async (convId, isPolling = false) => {
         if (convId === 'new') return;
+        
+        // Find conversation in displays to see if it holds an order
+        const conv = displayConversations.find(c => c.id === convId);
+        if (conv?.order_id && !isPolling) {
+            fetchOrderDetails(conv.order_id);
+        }
+
         try {
             const res = await fetch(`/api/inbox/${convId}/messages`);
             if (res.ok) {
                 const data = await res.json();
                 setMessages(data);
                 
-                // Mark as read if not polling or if there are unread
-                fetch(`/api/inbox/${convId}/read`, { method: 'PATCH' });
-                
-                // Update unread count locally
-                setConversations(prev => prev.map(c => 
-                    c.id === convId ? { ...c, unread_count: 0 } : c
-                ));
+                // Only mark as read if NOT polling
+                if (!isPolling) {
+                    fetch(`/api/inbox/${convId}/read`, { method: 'PATCH' });
+                    
+                    // Update unread count locally
+                    setConversations(prev => prev.map(c => 
+                        c.id === convId ? { ...c, unread_count: 0 } : c
+                    ));
+                }
             }
         } catch (error) {
             console.error("Failed to fetch messages", error);
@@ -156,6 +183,7 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
+                    conversation_id: (activeConvId === 'new' || activeConvId === 'general' || String(activeConvId).startsWith('order_')) ? null : activeConvId,
                     participant2_id: participant2,
                     catalog_id: activeDispConv?.catalog_id || catalogId || null,
                     order_id: activeDispConv?.order_id || null,
@@ -373,7 +401,47 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
                             className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50/30"
                             onScroll={handleScroll}
                         >
-                                {messages.map((msg, idx) => {
+                            {activeConversation?.order_id && orderData[activeConversation.order_id] && (
+                                <div className="mb-6 bg-white rounded-2xl p-6 border border-gray-100 shadow-sm overflow-hidden">
+                                    <div className="flex justify-between items-center mb-6">
+                                        <h3 className="font-bold text-gray-900">סטטוס הזמנה #{activeConversation.order_id}</h3>
+                                        <Link href="/orders" className="text-xs text-blue-600 hover:underline flex items-center gap-1">
+                                            פרטי הזמנה מלאים <ExternalLink className="w-3 h-3" />
+                                        </Link>
+                                    </div>
+                                    
+                                    <div className="scale-90 md:scale-100 origin-center">
+                                        <OrderStatusTimeline status={orderData[activeConversation.order_id].status} />
+                                    </div>
+
+                                    <div className="mt-8 pt-6 border-t border-gray-50">
+                                        <h4 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-4">פריטים בהזמנה</h4>
+                                        <div className="flex gap-3 overflow-x-auto pb-2 custom-scrollbar">
+                                            {orderData[activeConversation.order_id].items?.map((item, idx) => (
+                                                <div key={idx} className="flex-shrink-0 group">
+                                                    <div className="w-16 h-16 rounded-xl overflow-hidden border border-gray-100 bg-gray-50 relative">
+                                                        {item.image_url ? (
+                                                            <img src={item.image_url} alt={item.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                                                        ) : (
+                                                            <div className="w-full h-full flex items-center justify-center text-gray-300">
+                                                                <ImageIcon className="w-6 h-6" />
+                                                            </div>
+                                                        )}
+                                                        <div className="absolute bottom-0 right-0 bg-black/70 text-white text-[8px] px-1 rounded-tl-lg font-bold">
+                                                            x{item.quantity}
+                                                        </div>
+                                                    </div>
+                                                    <div className="mt-1 w-16">
+                                                        <p className="text-[9px] font-medium text-gray-600 truncate text-center">{item.name}</p>
+                                                    </div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+
+                            {messages.map((msg, idx) => {
                                     const isClientMessage = msg.sender_id === activeConversation?.participant1_id;
 
                                     // In RTL: justify-start is Right, justify-end is Left

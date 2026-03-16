@@ -13,8 +13,8 @@ export async function GET(req) {
             SELECT COUNT(*) as total_unread
             FROM messages m
             JOIN conversations c ON m.conversation_id = c.id
-            WHERE c.participant1_id = $1
-            AND m.sender_id != $2
+            WHERE (c.participant1_id = $1 OR c.participant2_id = $1 OR (c.participant2_id = 'admin' AND $2 = 'admin_placeholder'))
+            AND m.sender_id != $1
             AND m.is_read = false
         `, [userId, userId]);
 
