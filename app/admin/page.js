@@ -94,9 +94,6 @@ export default async function AdminDashboard() {
             userCurrentMonthRes,
             userPrevMonthRes,
             last30DaysRes,
-            monthlyOrdersRes,
-            productsRes,
-            visitsRes,
             currentMonthRes,
             prevMonthRes,
             currentMonthVisitsRes,
@@ -110,31 +107,33 @@ export default async function AdminDashboard() {
             pool.query('SELECT * FROM orders ORDER BY created_at DESC LIMIT 3'),
             // 2. Total Orders Count
             pool.query('SELECT COUNT(*) FROM orders'),
-            // 3. Total Yearly Revenue
+            // 3. Total Monthly Revenue
             safeQuery(`
                 SELECT SUM(total_amount) FROM orders 
                 WHERE status != 'cancelled'
                 AND catalog_id IS NULL
-                AND EXTRACT(YEAR FROM created_at) = EXTRACT(YEAR FROM CURRENT_DATE)
+                AND created_at >= DATE_TRUNC('month', CURRENT_DATE)
             `),
-            // 4. Total Samples Sold
+            // 4. Total Samples Sold (Monthly)
             safeQuery(`
                  SELECT SUM((item->>'quantity')::int) as count 
                  FROM orders, jsonb_array_elements(items::jsonb) as item 
                  WHERE orders.status != 'cancelled' 
                  AND orders.catalog_id IS NULL
+                 AND created_at >= DATE_TRUNC('month', CURRENT_DATE)
                  AND (
                     item->>'name' LIKE '%דוגמית%' 
                     OR item->>'name' ILIKE '%sample%'
                     OR item->>'size' IN ('2', '5', '10', '11')
                  )
             `),
-            // 5. Samples Breakdown
+            // 5. Samples Breakdown (Monthly)
             safeQuery(`
                  SELECT item->>'size' as size, SUM((item->>'quantity')::int) as count 
                  FROM orders, jsonb_array_elements(items::jsonb) as item 
                  WHERE orders.status != 'cancelled' 
                  AND orders.catalog_id IS NULL
+                 AND created_at >= DATE_TRUNC('month', CURRENT_DATE)
                  AND (
                     item->>'name' LIKE '%דוגמית%' 
                     OR item->>'name' ILIKE '%sample%'
@@ -142,38 +141,40 @@ export default async function AdminDashboard() {
                  )
                  GROUP BY size
             `),
-            // 6. Yearly Expenses (Monthly Type)
+            // 6. Monthly Expenses
             safeQuery(`
                 SELECT SUM(amount) FROM expenses 
                 WHERE type = 'monthly'
+                AND EXTRACT(MONTH FROM date) = EXTRACT(MONTH FROM CURRENT_DATE)
                 AND EXTRACT(YEAR FROM date) = EXTRACT(YEAR FROM CURRENT_DATE)
             `),
-            // 7. Yearly Expenses (Yearly Type)
+            // 7. Yearly Expenses (Pro-rated for month)
             safeQuery("SELECT SUM(amount) FROM expenses WHERE type = 'yearly'"),
             // 8. Bottle Inventory
             safeQuery('SELECT size, quantity FROM bottle_inventory ORDER BY size ASC'),
             // 9. Total Users
             safeQuery('SELECT COUNT(*) FROM users'),
-            // 10. Users yearly Graph (Current)
+            // 10. Users Daily Graph (Current Month)
             safeQuery(`
                 SELECT 
-                    EXTRACT(MONTH FROM created_at)::int as month,
+                    EXTRACT(DAY FROM created_at)::int as day,
                     COUNT(*)::int as count
                 FROM users
-                WHERE EXTRACT(YEAR FROM created_at) = $1
-                GROUP BY month
-                ORDER BY month
-            `, [year]),
-            // 11. Users yearly Graph (Previous Year)
+                WHERE created_at >= DATE_TRUNC('month', CURRENT_DATE)
+                GROUP BY day
+                ORDER BY day
+            `),
+            // 11. Users Daily Graph (Previous Month)
             safeQuery(`
                 SELECT 
-                    EXTRACT(MONTH FROM created_at)::int as month,
+                    EXTRACT(DAY FROM created_at)::int as day,
                     COUNT(*)::int as count
                 FROM users
-                WHERE EXTRACT(YEAR FROM created_at) = $1
-                GROUP BY month
-                ORDER BY month
-            `, [year - 1]),
+                WHERE created_at >= DATE_TRUNC('month', CURRENT_DATE) - INTERVAL '1 month'
+                AND created_at < DATE_TRUNC('month', CURRENT_DATE)
+                GROUP BY day
+                ORDER BY day
+            `),
             // 12. Forecast Data (Last 30 Days Orders)
             safeQuery(`
                 SELECT items FROM orders 
@@ -181,7 +182,7 @@ export default async function AdminDashboard() {
                 AND catalog_id IS NULL
                 AND created_at > NOW() - INTERVAL '30 days'
             `),
-            // 13. Yearly Orders (For Statistics)
+            // 13. Yearly Orders (KEEPING FOR STATISTICS TABLES)
             safeQuery(`
                 SELECT total_amount, items, created_at FROM orders 
                 WHERE status != 'cancelled' 
@@ -190,57 +191,59 @@ export default async function AdminDashboard() {
             `),
             // 14. Products (For Cost Calculation)
             safeQuery('SELECT id, cost_price, original_size FROM products'),
-            // 15. Yearly Visits (KPI)
+            // 15. Monthly Visits (KPI)
             safeQuery(`
                 SELECT COUNT(*) FROM site_visits 
-                WHERE EXTRACT(YEAR FROM created_at) = EXTRACT(YEAR FROM CURRENT_DATE)
+                WHERE created_at >= DATE_TRUNC('month', CURRENT_DATE)
             `),
-            // 16. Orders Chart (Yearly - By Month)
+            // 16. Orders Chart (Daily - Current Month)
             safeQuery(`
                 SELECT 
-                    EXTRACT(MONTH FROM created_at) as month,
+                    EXTRACT(DAY FROM created_at) as day,
                     COUNT(*) as orders,
                     SUM(total_amount) as revenue
                 FROM orders
                 WHERE status != 'cancelled'
                 AND catalog_id IS NULL
-                AND EXTRACT(YEAR FROM created_at) = $1
-                GROUP BY month
-                ORDER BY month
-            `, [year]),
-            // 17. Orders Chart (Previous Year - By Month)
+                AND created_at >= DATE_TRUNC('month', CURRENT_DATE)
+                GROUP BY day
+                ORDER BY day
+            `),
+            // 17. Orders Chart (Daily - Previous Month)
             safeQuery(`
                 SELECT 
-                    EXTRACT(MONTH FROM created_at) as month,
+                    EXTRACT(DAY FROM created_at) as day,
                     COUNT(*) as orders,
                     SUM(total_amount) as revenue
                 FROM orders
                 WHERE status != 'cancelled'
                 AND catalog_id IS NULL
-                AND EXTRACT(YEAR FROM created_at) = $1
-                GROUP BY month
-                ORDER BY month
-            `, [year - 1]),
-            // 18. Visits Chart (Yearly - By Month)
+                AND created_at >= DATE_TRUNC('month', CURRENT_DATE) - INTERVAL '1 month'
+                AND created_at < DATE_TRUNC('month', CURRENT_DATE)
+                GROUP BY day
+                ORDER BY day
+            `),
+            // 18. Visits Chart (Daily - Current Month)
             safeQuery(`
                 SELECT 
-                    EXTRACT(MONTH FROM created_at) as month,
+                    EXTRACT(DAY FROM created_at) as day,
                     COUNT(*) as count
                 FROM site_visits
-                WHERE EXTRACT(YEAR FROM created_at) = $1
-                GROUP BY month
-                ORDER BY month
-            `, [year]),
-            // 19. Visits Chart (Previous Year - By Month)
+                WHERE created_at >= DATE_TRUNC('month', CURRENT_DATE)
+                GROUP BY day
+                ORDER BY day
+            `),
+            // 19. Visits Chart (Daily - Previous Month)
             safeQuery(`
                 SELECT 
-                    EXTRACT(MONTH FROM created_at) as month,
+                    EXTRACT(DAY FROM created_at) as day,
                     COUNT(*) as count
                 FROM site_visits
-                WHERE EXTRACT(YEAR FROM created_at) = $1
-                GROUP BY month
-                ORDER BY month
-            `, [year - 1]),
+                WHERE created_at >= DATE_TRUNC('month', CURRENT_DATE) - INTERVAL '1 month'
+                AND created_at < DATE_TRUNC('month', CURRENT_DATE)
+                GROUP BY day
+                ORDER BY day
+            `),
             // 20. Recent Coupons
             safeQuery(`
                 SELECT * FROM coupons 
@@ -281,7 +284,7 @@ export default async function AdminDashboard() {
         kpis.totalSamples = parseInt(samplesSoldRes.rows[0]?.count || 0);
         kpis.bottleInventory = bottleInvRes.rows;
         kpis.totalUsers = parseInt(countResUsers.rows[0]?.count || 0);
-        kpis.monthlyVisits = parseInt(visitsRes.rows[0]?.count || 0);
+        kpis.monthlyVisits = parseInt(currentMonthVisitsRes.rows[0]?.count || 0);
         kpis.recentCoupons = couponsRes.rows;
 
         // Cumulative Data
@@ -302,9 +305,9 @@ export default async function AdminDashboard() {
         });
 
         // Expenses
-        const yearlyMonthlySum = parseFloat(monthlyExpRes.rows[0]?.sum || 0); // aggregated monthly type for year
-        const yearlySum = parseFloat(yearlyExpRes.rows[0]?.sum || 0);
-        kpis.totalExpenses = Math.round(yearlyMonthlySum + yearlySum);
+        const monthlySum = parseFloat(monthlyExpRes.rows[0]?.sum || 0);
+        const yearlyProRated = parseFloat(yearlyExpRes.rows[0]?.sum || 0) / 12;
+        kpis.totalExpenses = Math.round(monthlySum + yearlyProRated);
 
         // Profit Calculation
         const productMap = {};
@@ -315,64 +318,70 @@ export default async function AdminDashboard() {
             };
         });
 
+        // Yearly Stats for Tables (Preserving the requested yearly view)
         const brandStats = {};
         const sizeStats = {};
-        let currentYearProfit = 0;
-
-        monthlyOrdersRes.rows.forEach(order => {
+        
+        yearlyOrdersRes.rows.forEach(order => {
             const items = typeof order.items === 'string' ? JSON.parse(order.items) : order.items;
             let orderItemsCost = 0;
             let orderGrossSales = 0;
 
-            // Calc Gross
             items.forEach(item => {
-                const price = parseFloat(item.price || 0);
-                const quantity = parseInt(item.quantity || 1);
-                orderGrossSales += price * quantity;
+                orderGrossSales += parseFloat(item.price || 0) * parseInt(item.quantity || 1);
             });
 
             const orderNetTotal = parseFloat(order.total_amount) || 0;
             const ratio = orderGrossSales > 0 ? (orderNetTotal / orderGrossSales) : 0;
 
-            // Process Items
             items.forEach(item => {
-                let dbId = item.id;
-                if (typeof dbId === 'string' && dbId.includes('-')) {
-                    dbId = parseInt(dbId.split('-')[0]);
-                }
-
-                const prodInfo = productMap[dbId];
-                const soldSize = parseFloat(item.size || 2);
                 const quantity = parseInt(item.quantity || 1);
-
-                if (prodInfo && prodInfo.size > 0) {
-                    const itemCost = (prodInfo.cost / prodInfo.size) * soldSize * quantity;
-                    orderItemsCost += itemCost;
-                }
-
                 const itemGross = parseFloat(item.price || 0) * quantity;
                 const itemNet = itemGross * ratio;
 
-                // Stats
                 if (item.brand) {
-                    if (!brandStats[item.brand]) brandStats[item.brand] = 0;
-                    brandStats[item.brand] += itemNet;
+                    brandStats[item.brand] = (brandStats[item.brand] || 0) + itemNet;
                 }
                 if (item.size) {
                     const sizeKey = item.size.toString();
-                    if (!sizeStats[sizeKey]) sizeStats[sizeKey] = 0;
-                    sizeStats[sizeKey] += itemNet;
+                    sizeStats[sizeKey] = (sizeStats[sizeKey] || 0) + itemNet;
                 }
             });
-
-            currentYearProfit += (orderNetTotal - orderItemsCost);
         });
 
-        // Final Profit (Current Year)
-        currentYearProfit -= kpis.totalExpenses;
-        kpis.monthlyProfit = Math.round(currentYearProfit); // Reusing variable to avoid breaking UI for now, but label will be yearly
+        // Current Month Profit Calculation
+        let currentMonthProfit = 0;
+        currentMonthRes.rows.forEach(day => {
+            // Estimating profit from revenue since we don't have per-order COGS in the chart query
+            // Using a conservative 40% margin estimate for the KPI card if detailed COGS isn't available per-day
+            // Better: calculate it from the monthlyOrdersRes if we want accuracy, or fetch items for the month
+        });
+        
+        // Re-calculating monthly profit accurately
+        const monthlyOrdersRes = await safeQuery(`
+            SELECT total_amount, items FROM orders 
+            WHERE status != 'cancelled' 
+            AND catalog_id IS NULL
+            AND created_at >= DATE_TRUNC('month', CURRENT_DATE)
+        `);
 
-        // Stats Ranking
+        monthlyOrdersRes.rows.forEach(order => {
+            const items = typeof order.items === 'string' ? JSON.parse(order.items) : order.items;
+            let orderItemsCost = 0;
+            items.forEach(item => {
+                let dbId = item.id;
+                if (typeof dbId === 'string' && dbId.includes('-')) dbId = parseInt(dbId.split('-')[0]);
+                const prodInfo = productMap[dbId];
+                if (prodInfo && prodInfo.size > 0) {
+                    orderItemsCost += (prodInfo.cost / prodInfo.size) * parseFloat(item.size || 2) * parseInt(item.quantity || 1);
+                }
+            });
+            currentMonthProfit += (parseFloat(order.total_amount) - orderItemsCost);
+        });
+
+        kpis.monthlyProfit = Math.round(currentMonthProfit - kpis.totalExpenses);
+
+        // Stats Ranking (Yearly)
         kpis.topBrands = Object.entries(brandStats)
             .map(([name, sales]) => ({ name, sales }))
             .sort((a, b) => b.sales - a.sales)
@@ -383,45 +392,45 @@ export default async function AdminDashboard() {
             .sort((a, b) => b.sales - a.sales);
 
 
-        // Chart Mapping (Yearly - 12 Months)
-        for (let m = 1; m <= 12; m++) {
+        // Chart Mapping (Daily - Current Month)
+        for (let d = 1; d <= daysInMonth; d++) {
             // Users
-            const curUserMonth = userCurrentMonthRes.rows.find(r => Number(r.month) === m);
-            const prevUserMonth = userPrevMonthRes.rows.find(r => Number(r.month) === m);
+            const curUserDay = userCurrentMonthRes.rows.find(r => Number(r.day) === d);
+            const prevUserDay = userPrevMonthRes.rows.find(r => Number(r.day) === d);
             usersChartData.push({
-                month: m,
-                current: curUserMonth ? Number(curUserMonth.count) : 0,
-                previous: prevUserMonth ? Number(prevUserMonth.count) : 0
+                day: d,
+                current: curUserDay ? Number(curUserDay.count) : 0,
+                previous: prevUserDay ? Number(prevUserDay.count) : 0
             });
 
             // Orders/Revenue
-            const curOrd = currentMonthRes.rows.find(r => parseInt(r.month) === m);
-            const prevOrd = prevMonthRes.rows.find(r => parseInt(r.month) === m);
+            const curOrd = currentMonthRes.rows.find(r => parseInt(r.day) === d);
+            const prevOrd = prevMonthRes.rows.find(r => parseInt(r.day) === d);
 
             // Visits
-            const curVis = currentMonthVisitsRes.rows.find(r => parseInt(r.month) === m);
-            const prevVis = prevMonthVisitsRes.rows.find(r => parseInt(r.month) === m);
+            const curVis = currentMonthVisitsRes.rows.find(r => parseInt(r.day) === d);
+            const prevVis = prevMonthVisitsRes.rows.find(r => parseInt(r.day) === d);
 
             kpis.visitsChartData.push({
-                month: m,
+                day: d,
                 current: curVis ? parseInt(curVis.count) : 0,
                 previous: prevVis ? parseInt(prevVis.count) : 0
             });
 
             kpis.orderChartData.push({
-                month: m,
+                day: d,
                 current: curOrd ? parseInt(curOrd.orders) : 0,
                 previous: prevOrd ? parseInt(prevOrd.orders) : 0
             });
 
             kpis.revenueChartData.push({
-                month: m,
+                day: d,
                 current: curOrd ? parseFloat(curOrd.revenue || 0) : 0,
                 previous: prevOrd ? parseFloat(prevOrd.revenue || 0) : 0
             });
         }
 
-        // Inventory Forecast Logic (Sync)
+        // Inventory Forecast Logic (Sync) - unchanged
         try {
             const sizeConsumption = { '2': 0, '5': 0, '10': 0, '11': 0 };
             last30DaysRes.rows.forEach(order => {
@@ -455,15 +464,14 @@ export default async function AdminDashboard() {
 
     } catch (err) {
         console.error("Critical Dashboard Error:", err);
-        // Page renders with whatever kpis initialized
     }
-    // No finally{client.release()} needed! pool.query handles it.
 
+    const currentMonthLabel = new Date().toLocaleString('he-IL', { month: 'long' });
     const currentYearLabel = new Date().getFullYear().toString();
 
     return (
         <div className="pb-8">
-            <h1 className="text-3xl font-bold mb-8">לוח בקרה - {currentYearLabel}</h1>
+            <h1 className="text-3xl font-bold mb-8">לוח בקרה</h1>
 
             <DashboardCharts
                 orderData={kpis.orderChartData}
@@ -488,7 +496,7 @@ export default async function AdminDashboard() {
                     <div className="flex justify-between items-start mb-4">
                         <div className="text-gray-500 text-sm font-bold uppercase flex items-center gap-2">
                             <Wallet className="w-4 h-4 text-green-500" />
-                            תזרים שנתי ({currentYearLabel})
+                            תזרים ({currentMonthLabel})
                         </div>
                     </div>
                     <div className="space-y-3">
