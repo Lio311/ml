@@ -5,6 +5,8 @@ import { useUser } from '@clerk/nextjs';
 import Link from 'next/link';
 import { useCart } from '../context/CartContext';
 import OrderStatusTimeline from '../components/OrderStatusTimeline';
+import { MapPin, Package, Gift, RefreshCw } from 'lucide-react';
+import { toast } from 'react-hot-toast';
 
 export default function OrdersClient() {
     const { addToCart } = useCart();
@@ -72,12 +74,12 @@ export default function OrdersClient() {
                                         <span>{new Date(order.created_at).toLocaleDateString('he-IL')} בשעה {new Date(order.created_at).toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' })}</span>
                                         <span className="text-gray-300">•</span>
                                         {order.delivery_method === 'self_pickup' ? (
-                                            <span className="text-black font-bold flex items-center gap-1">
-                                                <span>📍</span> איסוף עצמי
+                                            <span className="text-black font-bold flex items-center gap-1.5">
+                                                <MapPin className="w-4 h-4 text-pink-500" /> איסוף עצמי
                                             </span>
                                         ) : (
-                                            <span className="text-black font-bold flex items-center gap-1">
-                                                <span>📦</span> משלוח בדואר
+                                            <span className="text-black font-bold flex items-center gap-1.5">
+                                                <Package className="w-4 h-4 text-blue-500" /> משלוח בדואר
                                             </span>
                                         )}
                                     </div>
@@ -129,9 +131,9 @@ export default function OrdersClient() {
                                                     }, item.size, item.price);
                                                     toast.success('המוצר נוסף לסל בהצלחה!');
                                                 }}
-                                                className="text-xs bg-black text-white px-3 py-1.5 rounded hover:bg-gray-800 transition shadow-sm flex items-center gap-1"
+                                                className="text-xs bg-black text-white px-3 py-1.5 rounded hover:bg-gray-800 transition shadow-sm flex items-center gap-1.5"
                                             >
-                                                הזמן שוב <span>↻</span>
+                                                הזמן שוב <RefreshCw className="w-3.5 h-3.5" />
                                             </button>
                                         </div>
                                     </div>
@@ -139,8 +141,9 @@ export default function OrdersClient() {
                             </div>
 
                             {order.free_samples_count > 0 && (
-                                <div className="mt-4 text-sm text-black font-bold bg-gray-50 p-2 rounded border border-gray-100">
-                                    🎁 כולל {order.free_samples_count} דוגמיות מתנה
+                                <div className="mt-4 text-sm text-black flex items-center gap-2 font-bold bg-gray-50 p-3 rounded-lg border border-gray-100">
+                                    <Gift className="w-4 h-4 text-amber-500" />
+                                    כולל {order.free_samples_count} דוגמיות מתנה
                                 </div>
                             )}
                         </div>
