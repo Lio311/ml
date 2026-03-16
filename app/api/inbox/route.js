@@ -1,4 +1,4 @@
-import { db } from '@vercel/postgres';
+import pool from '../../../../lib/db';
 import { getAuth } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
 
@@ -19,7 +19,7 @@ export async function GET(req) {
 
         if (asAdmin) {
             // Check if user is admin (you can add your admin validation logic here)
-            query = await db.sql`
+            query = await pool.query(`
                 SELECT c.*, 
                        (SELECT content FROM messages m WHERE m.conversation_id = c.id ORDER BY created_at DESC LIMIT 1) as last_message,
                        (SELECT created_at FROM messages m WHERE m.conversation_id = c.id ORDER BY created_at DESC LIMIT 1) as last_message_time,
@@ -27,28 +27,28 @@ export async function GET(req) {
                 FROM conversations c 
                 WHERE c.participant2_id = 'admin'
                 ORDER BY c.updated_at DESC
-            `;
+            `);
         } else if (catalogId) {
-            query = await db.sql`
+            query = await pool.query(`
                 SELECT c.*, 
                        (SELECT content FROM messages m WHERE m.conversation_id = c.id ORDER BY created_at DESC LIMIT 1) as last_message,
                        (SELECT created_at FROM messages m WHERE m.conversation_id = c.id ORDER BY created_at DESC LIMIT 1) as last_message_time,
-                       (SELECT COUNT(*) FROM messages m WHERE m.conversation_id = c.id AND sender_id != ${userId} AND is_read = false) as unread_count
+                       (SELECT COUNT(*) FROM messages m WHERE m.conversation_id = c.id AND sender_id != $1 AND is_read = false) as unread_count
                 FROM conversations c 
-                WHERE c.catalog_id = ${catalogId}
+                WHERE c.catalog_id = $2
                 ORDER BY c.updated_at DESC
-            `;
+            `, [userId, catalogId]);
         } else {
             // Buyer mode
-            query = await db.sql`
+            query = await pool.query(`
                 SELECT c.*, 
                        (SELECT content FROM messages m WHERE m.conversation_id = c.id ORDER BY created_at DESC LIMIT 1) as last_message,
                        (SELECT created_at FROM messages m WHERE m.conversation_id = c.id ORDER BY created_at DESC LIMIT 1) as last_message_time,
-                       (SELECT COUNT(*) FROM messages m WHERE m.conversation_id = c.id AND sender_id != ${userId} AND is_read = false) as unread_count
+                       (SELECT COUNT(*) FROM messages m WHERE m.conversation_id = c.id AND sender_id != $1 AND is_read = false) as unread_count
                 FROM conversations c 
-                WHERE c.participant1_id = ${userId}
+                WHERE c.participant1_id = $2
                 ORDER BY c.updated_at DESC
-            `;
+            `, [userId, userId]);
         }
 
         return NextResponse.json(query.rows);
@@ -71,42 +71,42 @@ export async function POST(req) {
         // Check if conversation already exists
         let checkQuery;
         if (catalog_id) {
-            checkQuery = await db.sql`
+            checkQuery = await pool.query(`
                 SELECT id FROM conversations 
-                WHERE participant1_id = ${userId} AND catalog_id = ${catalog_id}
+                WHERE participant1_id = $1 AND catalog_id = $2
                 LIMIT 1
-            `;
+            `, [userId, catalog_id]);
         } else {
-            checkQuery = await db.sql`
+            checkQuery = await pool.query(`
                 SELECT id FROM conversations 
-                WHERE participant1_id = ${userId} AND participant2_id = ${participant2_id || 'admin'} AND catalog_id IS NULL
+                WHERE participant1_id = $1 AND participant2_id = $2 AND catalog_id IS NULL
                 LIMIT 1
-            `;
+            `, [userId, participant2_id || 'admin']);
         }
 
         if (checkQuery.rows.length > 0) {
             conversationId = checkQuery.rows[0].id;
         } else {
             // Create new conversation
-            const insertConv = await db.sql`
+            const insertConv = await pool.query(`
                 INSERT INTO conversations (participant1_id, participant2_id, catalog_id)
-                VALUES (${userId}, ${participant2_id || 'admin'}, ${catalog_id || null})
+                VALUES ($1, $2, $3)
                 RETURNING id
-            `;
+            `, [userId, participant2_id || 'admin', catalog_id || null]);
             conversationId = insertConv.rows[0].id;
         }
 
         // Insert message
-        const insertMsg = await db.sql`
+        const insertMsg = await pool.query(`
             INSERT INTO messages (conversation_id, sender_id, content)
-            VALUES (${conversationId}, ${userId}, ${content})
+            VALUES ($1, $2, $3)
             RETURNING *
-        `;
+        `, [conversationId, userId, content]);
 
         // Update conversation timestamp
-        await db.sql`
-            UPDATE conversations SET updated_at = CURRENT_TIMESTAMP WHERE id = ${conversationId}
-        `;
+        await pool.query(`
+            UPDATE conversations SET updated_at = CURRENT_TIMESTAMP WHERE id = $1
+        `, [conversationId]);
 
         return NextResponse.json(insertMsg.rows[0]);
     } catch (error) {

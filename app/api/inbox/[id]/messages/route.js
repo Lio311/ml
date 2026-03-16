@@ -1,4 +1,4 @@
-import { db } from '@vercel/postgres';
+import pool from '../../../../../lib/db';
 import { getAuth, clerkClient } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
 
@@ -11,9 +11,9 @@ export async function GET(req, { params }) {
 
         // Verify user is part of the conversation (or is admin/catalog_owner)
         // Simplified check: since they know the ID, we could just fetch it, but let's be secure
-        const check = await db.sql`
-            SELECT * FROM conversations WHERE id = ${conversationId}
-        `;
+        const check = await pool.query(`
+            SELECT * FROM conversations WHERE id = $1
+        `, [conversationId]);
         
         if (check.rows.length === 0) return new NextResponse('Not Found', { status: 404 });
         
@@ -29,7 +29,7 @@ export async function GET(req, { params }) {
             isAuthorized = true; 
         } else if (conv.catalog_id) {
             // Verify if user owns catalog
-            const catCheck = await db.sql`SELECT user_id FROM catalogs WHERE id = ${conv.catalog_id}`;
+            const catCheck = await pool.query(`SELECT user_id FROM catalogs WHERE id = $1`, [conv.catalog_id]);
             if (catCheck.rows.length > 0 && catCheck.rows[0].user_id === userId) {
                 isAuthorized = true;
             }
@@ -37,12 +37,12 @@ export async function GET(req, { params }) {
 
         if (!isAuthorized) return new NextResponse('Forbidden', { status: 403 });
 
-        const messages = await db.sql`
+        const messages = await pool.query(`
             SELECT id, sender_id, content, is_read, created_at 
             FROM messages 
-            WHERE conversation_id = ${conversationId}
+            WHERE conversation_id = $1
             ORDER BY created_at ASC
-        `;
+        `, [conversationId]);
 
         // We can fetch names from Clerk if we want, or do that on the client side
         return NextResponse.json(messages.rows);
@@ -65,15 +65,15 @@ export async function POST(req, { params }) {
             return new NextResponse('Content is required', { status: 400 });
         }
 
-        const insertMsg = await db.sql`
+        const insertMsg = await pool.query(`
             INSERT INTO messages (conversation_id, sender_id, content)
-            VALUES (${conversationId}, ${userId}, ${content.trim()})
+            VALUES ($1, $2, $3)
             RETURNING id, sender_id, content, is_read, created_at
-        `;
+        `, [conversationId, userId, content.trim()]);
 
-        await db.sql`
-            UPDATE conversations SET updated_at = CURRENT_TIMESTAMP WHERE id = ${conversationId}
-        `;
+        await pool.query(`
+            UPDATE conversations SET updated_at = CURRENT_TIMESTAMP WHERE id = $1
+        `, [conversationId]);
 
         return NextResponse.json(insertMsg.rows[0]);
     } catch (error) {

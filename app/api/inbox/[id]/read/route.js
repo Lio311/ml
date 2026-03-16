@@ -1,4 +1,4 @@
-import { db } from '@vercel/postgres';
+import pool from '../../../../../lib/db';
 import { getAuth } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
 
@@ -10,7 +10,7 @@ export async function PATCH(req, { params }) {
         const { id: conversationId } = params;
 
         // Verify conversation access
-        const check = await db.sql`SELECT * FROM conversations WHERE id = ${conversationId}`;
+        const check = await pool.query(`SELECT * FROM conversations WHERE id = $1`, [conversationId]);
         if (check.rows.length === 0) return new NextResponse('Not Found', { status: 404 });
         
         const conv = check.rows[0];
@@ -19,7 +19,7 @@ export async function PATCH(req, { params }) {
         if (conv.participant1_id === userId || conv.participant2_id === userId || conv.participant2_id === 'admin') {
             isAuthorized = true;
         } else if (conv.catalog_id) {
-            const catCheck = await db.sql`SELECT user_id FROM catalogs WHERE id = ${conv.catalog_id}`;
+            const catCheck = await pool.query(`SELECT user_id FROM catalogs WHERE id = $1`, [conv.catalog_id]);
             if (catCheck.rows.length > 0 && catCheck.rows[0].user_id === userId) {
                 isAuthorized = true;
             }
@@ -32,12 +32,12 @@ export async function PATCH(req, { params }) {
         // If current user is a catalog owner reading, the sender works
         // If 'admin' is reading, userId is the admin's clerk ID which might not be participant2_id verbatim
         // So just mark anything not sent by the caller as read
-        const update = await db.sql`
+        const update = await pool.query(`
             UPDATE messages 
             SET is_read = true 
-            WHERE conversation_id = ${conversationId} AND sender_id != ${userId}
+            WHERE conversation_id = $1 AND sender_id != $2
             RETURNING id
-        `;
+        `, [conversationId, userId]);
 
         return NextResponse.json({ success: true, count: update.rowCount });
     } catch (error) {
