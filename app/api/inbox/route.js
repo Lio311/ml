@@ -90,20 +90,26 @@ export async function GET(req) {
                 const userIds = [...new Set(convs.map(c => c.participant1_id))];
                 
                 if (userIds.length > 0) {
+                    const dbUsers = await pool.query('SELECT id, last_active_at FROM users WHERE id = ANY($1)', [userIds]);
+                    const dbUserMap = {};
+                    dbUsers.rows.forEach(u => { dbUserMap[u.id] = u.last_active_at; });
+
                     const userList = await clerk.users.getUserList({ userId: userIds, limit: 100 });
                     const userMap = {};
                     userList.data.forEach(u => {
                         const fullName = `${u.firstName || ''} ${u.lastName || ''}`.trim();
                         userMap[u.id] = {
                             name: fullName || u.emailAddresses[0]?.emailAddress || "לקוח",
-                            image: u.imageUrl || null
+                            image: u.imageUrl || null,
+                            last_active_at: dbUserMap[u.id] || null
                         };
                     });
                     
                     convs = convs.map(c => ({
                         ...c,
                         participant1_name: userMap[c.participant1_id]?.name || "לקוח (ID: " + c.participant1_id.slice(-4) + ")",
-                        participant1_image: userMap[c.participant1_id]?.image || null
+                        participant1_image: userMap[c.participant1_id]?.image || null,
+                        participant1_last_active: userMap[c.participant1_id]?.last_active_at || null
                     }));
                 }
             } catch (err) {

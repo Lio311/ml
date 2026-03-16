@@ -8,11 +8,7 @@ async function checkSchema() {
             WHERE table_name = 'users'
         `);
         console.log('Users table columns:');
-        console.table(res.rows); // Simplified output
-        
-        const sample = await pool.query('SELECT * FROM users LIMIT 1');
-        console.log('\nSample user row:');
-        console.log(sample.rows[0]);
+        console.table(res.rows);
         
         process.exit(0);
     } catch (err) {

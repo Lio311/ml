@@ -45,8 +45,25 @@ export async function GET(req, { params }) {
             ORDER BY m.created_at ASC
         `, [conversationId]);
 
-        // We can fetch names from Clerk if we want, or do that on the client side
-        return NextResponse.json(messages.rows);
+        // Fetch other participant's last seen
+        const otherId = conv.participant1_id === userId ? conv.participant2_id : conv.participant1_id;
+        let lastSeen = null;
+        if (otherId && otherId !== 'admin') {
+            const userRes = await pool.query('SELECT last_active_at FROM users WHERE id = $1', [otherId]);
+            lastSeen = userRes.rows[0]?.last_active_at || null;
+        } else if (otherId === 'admin') {
+            // Check for last active admin
+            const adminRes = await pool.query("SELECT last_active_at FROM users WHERE role = 'admin' ORDER BY last_active_at DESC LIMIT 1");
+            lastSeen = adminRes.rows[0]?.last_active_at || null;
+        }
+
+        return NextResponse.json({
+            messages: messages.rows,
+            other_participant: {
+                id: otherId,
+                last_active_at: lastSeen
+            }
+        });
     } catch (error) {
         console.error('Error fetching messages:', error);
         return new NextResponse('Internal Error', { status: 500 });

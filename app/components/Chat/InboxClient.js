@@ -18,8 +18,8 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
     const [isSending, setIsSending] = useState(false);
     const [orderData, setOrderData] = useState({}); // Cache for order details
     const [isLoadingOrder, setIsLoadingOrder] = useState(false);
-    const [searchQuery, setSearchQuery] = useState("");
     const [catalogsData, setCatalogsData] = useState({});
+    const [otherParticipantStatus, setOtherParticipantStatus] = useState(null);
     const messagesEndRef = useRef(null);
 
     const scrollToBottom = () => {
@@ -155,7 +155,12 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
             const res = await fetch(`/api/inbox/${convId}/messages`);
             if (res.ok) {
                 const data = await res.json();
-                setMessages(data);
+                if (data.messages) {
+                    setMessages(data.messages);
+                    setOtherParticipantStatus(data.other_participant || null);
+                } else {
+                    setMessages(data); // Fallback for old API if any
+                }
                 
                 // Only mark as read if NOT polling
                 if (!isPolling) {
@@ -276,6 +281,23 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
     });
 
     const activeConversation = getActiveDisplayConv();
+
+    const formatLastSeen = (dateString) => {
+        if (!dateString) return null;
+        const lastActive = new Date(dateString);
+        const now = new Date();
+        const diffMinutes = Math.floor((now - lastActive) / 60000);
+
+        if (diffMinutes < 2) return "זמין כעת";
+        
+        const isToday = lastActive.toDateString() === now.toDateString();
+        const timeStr = lastActive.toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit', hour12: false });
+        
+        if (isToday) return `נראה לאחרונה היום ב-${timeStr}`;
+        
+        const dateStr = lastActive.toLocaleDateString('he-IL', { day: '2-digit', month: '2-digit' });
+        return `נראה לאחרונה ב-${dateStr} ${timeStr}`;
+    };
 
     const getChatName = (conv) => {
         if (role === 'admin' || role === 'seller') {
