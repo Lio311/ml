@@ -13,6 +13,7 @@ export default function OrdersClient() {
     const { isLoaded, isSignedIn } = useUser();
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [unreadCount, setUnreadCount] = useState(0);
 
     useEffect(() => {
         if (!isLoaded || !isSignedIn) return;
@@ -31,7 +32,20 @@ export default function OrdersClient() {
             }
         }
 
+        async function fetchUnreadCount() {
+            try {
+                const res = await fetch('/api/inbox/unread-count');
+                if (res.ok) {
+                    const data = await res.json();
+                    setUnreadCount(data.count);
+                }
+            } catch (error) {
+                console.error("Failed to fetch unread count", error);
+            }
+        }
+
         fetchOrders();
+        fetchUnreadCount();
     }, [isLoaded, isSignedIn]);
 
     if (!isLoaded) return <div className="py-20 text-center">טוען...</div>;
@@ -53,6 +67,11 @@ export default function OrdersClient() {
                 <h1 className="text-3xl font-bold">ההזמנות שלי</h1>
                 <Link href="/inbox" className="p-2 bg-gray-100 hover:bg-gray-200 rounded-full transition relative" title="תיבת הודעות">
                     <MessageSquare className="w-6 h-6 text-gray-700" />
+                    {unreadCount > 0 && (
+                        <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-600 text-[10px] text-white font-bold border-2 border-white">
+                            {unreadCount}
+                        </span>
+                    )}
                 </Link>
             </div>
 
