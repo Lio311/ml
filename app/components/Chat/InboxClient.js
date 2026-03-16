@@ -417,37 +417,46 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
                             onScroll={handleScroll}
                         >
                             {activeConversation?.order_id && orderData[activeConversation.order_id] && (
-                                <div className="mb-4 bg-white rounded-2xl p-4 border border-gray-100 shadow-sm overflow-hidden">
-                                    <div className="scale-90 md:scale-95 origin-center">
-                                        <OrderStatusTimeline status={orderData[activeConversation.order_id].status} />
+                                <div className="mb-4 bg-white rounded-xl py-2 px-3 border border-gray-100 shadow-sm flex items-center justify-between gap-3 text-[11px]">
+                                    <div className="flex items-center gap-3 flex-1 min-w-0">
+                                        {/* Status Badge */}
+                                        <div className="flex items-center gap-1.5 whitespace-nowrap bg-gray-50 px-2 py-1 rounded-full border border-gray-100">
+                                            <div className={`w-1.5 h-1.5 rounded-full ${
+                                                ['delivered', 'completed'].includes(orderData[activeConversation.order_id].status) ? 'bg-green-500' :
+                                                ['shipped'].includes(orderData[activeConversation.order_id].status) ? 'bg-blue-500' :
+                                                ['cancelled'].includes(orderData[activeConversation.order_id].status) ? 'bg-red-500' : 'bg-amber-500'
+                                            }`} />
+                                            <span className="font-bold text-gray-700">
+                                                {orderData[activeConversation.order_id].status === 'pending' ? 'ממתין' :
+                                                 orderData[activeConversation.order_id].status === 'processing' ? 'בטיפול' :
+                                                 orderData[activeConversation.order_id].status === 'shipped' ? 'נשלח' :
+                                                 orderData[activeConversation.order_id].status === 'delivered' ? 'נמסר' :
+                                                 orderData[activeConversation.order_id].status === 'completed' ? 'הושלם' :
+                                                 orderData[activeConversation.order_id].status === 'cancelled' ? 'בוטל' : 'חדש'}
+                                            </span>
+                                        </div>
+
+                                        {/* Separator Line */}
+                                        <div className="h-4 w-[1px] bg-gray-200 hidden sm:block" />
+
+                                        {/* Product Mini Images */}
+                                        <div className="flex gap-1 overflow-hidden">
+                                            {orderData[activeConversation.order_id].items?.slice(0, 4).map((item, idx) => (
+                                                <div key={idx} className="w-6 h-6 rounded-md overflow-hidden border border-gray-100 bg-gray-50 flex-shrink-0">
+                                                    <img src={item.image_url || '/placeholder.png'} alt="" className="w-full h-full object-cover" />
+                                                </div>
+                                            ))}
+                                            {(orderData[activeConversation.order_id].items?.length || 0) > 4 && (
+                                                <div className="w-6 h-6 rounded-md bg-gray-100 flex items-center justify-center text-[8px] font-bold text-gray-500 border border-gray-200">
+                                                    +{orderData[activeConversation.order_id].items.length - 4}
+                                                </div>
+                                            )}
+                                        </div>
                                     </div>
 
-                                    <div className="mt-6 pt-4 border-t border-gray-50 flex justify-between items-end">
-                                        <div>
-                                            <h4 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">פריטים בהזמנה</h4>
-                                            <div className="flex gap-2 overflow-x-auto pb-1 custom-scrollbar">
-                                                {orderData[activeConversation.order_id].items?.map((item, idx) => (
-                                                    <div key={idx} className="flex-shrink-0 group">
-                                                        <div className="w-12 h-12 rounded-lg overflow-hidden border border-gray-100 bg-gray-50 relative">
-                                                            {item.image_url ? (
-                                                                <img src={item.image_url} alt={item.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
-                                                            ) : (
-                                                                <div className="w-full h-full flex items-center justify-center text-gray-300">
-                                                                    <ImageIcon className="w-4 h-4" />
-                                                                </div>
-                                                            )}
-                                                            <div className="absolute bottom-0 right-0 bg-black/70 text-white text-[7px] px-1 rounded-tl-md font-bold">
-                                                                x{item.quantity}
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                ))}
-                                            </div>
-                                        </div>
-                                        <Link href="/orders" className="text-[10px] text-blue-600 hover:underline flex items-center gap-1 font-bold mb-1">
-                                            פרטי הזמנה מלאים <ExternalLink className="w-2.5 h-2.5" />
-                                        </Link>
-                                    </div>
+                                    <Link href="/orders" className="text-blue-600 hover:underline font-bold whitespace-nowrap flex items-center gap-1">
+                                        פרטי הזמנה <ExternalLink className="w-2.5 h-2.5" />
+                                    </Link>
                                 </div>
                             )}
 
