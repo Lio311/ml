@@ -174,6 +174,7 @@ export default function LotteryAdminPage() {
                                             <button
                                                 onClick={() => toggleLotteryStatus(product.id, product.in_lottery ?? true)}
                                                 disabled={!canEdit}
+                                                dir="ltr"
                                                 className={`
                                                     relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 outline-none focus:ring-2 focus:ring-offset-2 focus:ring-emerald-500
                                                     ${(product.in_lottery ?? true) ? 'bg-emerald-500' : 'bg-gray-200'}
@@ -233,6 +234,7 @@ export default function LotteryAdminPage() {
                                         <button
                                             onClick={() => toggleLotteryStatus(product.id, product.in_lottery ?? true)}
                                             disabled={!canEdit}
+                                            dir="ltr"
                                             className={`
                                                 relative inline-flex h-6 w-11 items-center rounded-full transition-colors duration-200 outline-none
                                                 ${(product.in_lottery ?? true) ? 'bg-emerald-500' : 'bg-gray-200'}
