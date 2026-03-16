@@ -22,8 +22,6 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
     const [catalogsData, setCatalogsData] = useState({});
     const [otherParticipantStatus, setOtherParticipantStatus] = useState(null);
     const [hasSubmittedReview, setHasSubmittedReview] = useState({}); // orderId -> boolean
-    const [reviewContent, setReviewContent] = useState("");
-    const [isSubmittingReview, setIsSubmittingReview] = useState(false);
     const messagesEndRef = useRef(null);
 
     const scrollToBottom = () => {
@@ -503,52 +501,12 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
                                         ))}
                                     </div>
 
-                                    {role === 'buyer' && (orderData[activeConversation.order_id].status === 'completed' || orderData[activeConversation.order_id].status === 'הושלם') && !hasSubmittedReview[activeConversation.order_id] && (
-                                        <div className="mt-3 p-4 bg-gradient-to-br from-black to-gray-800 rounded-xl text-white shadow-lg border border-gray-700 animate-fade-in">
-                                            <p className="text-xs font-medium mb-3 text-gray-300">
-                                                נשמח שתכתבו לנו איך הייתה חווית ההזמנה ואם אהבתם את הבשמים! ✨
-                                            </p>
-                                            <div className="space-y-3">
-                                                <textarea
-                                                    className="w-full bg-white/10 border border-white/20 rounded-lg p-3 text-xs text-white placeholder-gray-500 outline-none focus:border-white/40 transition-all resize-none h-20"
-                                                    placeholder="כתבו כאן את הביקורת שלכם..."
-                                                    value={reviewContent}
-                                                    onChange={(e) => setReviewContent(e.target.value)}
-                                                />
-                                                <button
-                                                    onClick={async () => {
-                                                        if (!reviewContent.trim()) return;
-                                                        setIsSubmittingReview(true);
-                                                        try {
-                                                            const res = await fetch('/api/reviews', {
-                                                                method: 'POST',
-                                                                headers: { 'Content-Type': 'application/json' },
-                                                                body: JSON.stringify({
-                                                                    orderId: activeConversation.order_id,
-                                                                    content: reviewContent.trim()
-                                                                })
-                                                            });
-                                                            if (res.ok) {
-                                                                toast.success("תודה על הביקורת!");
-                                                                setHasSubmittedReview(prev => ({ ...prev, [activeConversation.order_id]: true }));
-                                                                setReviewContent("");
-                                                            } else {
-                                                                toast.error("שגיאה בשליחת הביקורת");
-                                                            }
-                                                        } catch (e) {
-                                                            toast.error("שגיאה בשליחת הביקורת");
-                                                        } finally {
-                                                            setIsSubmittingReview(false);
-                                                        }
-                                                    }}
-                                                    disabled={isSubmittingReview || !reviewContent.trim()}
-                                                    className="w-full bg-white text-black py-2 rounded-lg text-xs font-bold hover:bg-gray-200 transition-colors disabled:opacity-50 flex items-center justify-center gap-2"
-                                                >
-                                                    {isSubmittingReview && <Loader2 className="w-3 h-3 animate-spin" />}
-                                                    שלח ביקורת
-                                                </button>
-                                            </div>
-                                        </div>
+                                    {role === 'buyer' && (orderData[activeConversation.order_id].status === 'completed' || orderData[activeConversation.order_id].status === 'הושלם') && (
+                                        <OrderReviewPrompt 
+                                            orderId={activeConversation.order_id} 
+                                            initialHasSubmitted={hasSubmittedReview[activeConversation.order_id]}
+                                            onSubmitted={() => setHasSubmittedReview(prev => ({ ...prev, [activeConversation.order_id]: true }))}
+                                        />
                                     )}
                                 </div>
                             )}

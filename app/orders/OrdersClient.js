@@ -5,8 +5,9 @@ import { useUser } from '@clerk/nextjs';
 import Link from 'next/link';
 import { useCart } from '../context/CartContext';
 import OrderStatusTimeline from '../components/OrderStatusTimeline';
-import { MapPin, Package, Gift, RefreshCw, MessageSquare } from 'lucide-react';
+import { MapPin, Package, Gift, RefreshCw, MessageSquare, Star } from 'lucide-react';
 import { toast } from 'react-hot-toast';
+import OrderReviewPrompt from '../components/OrderReviewPrompt';
 
 export default function OrdersClient() {
     const { addToCart } = useCart();
@@ -117,6 +118,13 @@ export default function OrdersClient() {
                             </div>
 
                             <OrderStatusTimeline status={order.status} />
+
+                            {(order.status === 'completed' || order.status === 'הושלם') && (
+                                <OrderReviewPrompt 
+                                    orderId={order.id} 
+                                    initialHasSubmitted={order.has_review} 
+                                />
+                            )}
 
                             <div className="divide-y">
                                 {order.items.map((item, idx) => (

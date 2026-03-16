@@ -13,9 +13,11 @@ export async function GET() {
         const client = await pool.connect();
         try {
             const res = await client.query(`
-                SELECT * FROM orders 
-                WHERE customer_details->>'clerk_id' = $1
-                ORDER BY created_at DESC
+                SELECT o.*, 
+                       EXISTS(SELECT 1 FROM reviews r WHERE r.order_id = o.id) as has_review
+                FROM orders o
+                WHERE o.customer_details->>'clerk_id' = $1
+                ORDER BY o.created_at DESC
             `, [userId]);
 
             return NextResponse.json({ orders: res.rows });
