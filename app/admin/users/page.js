@@ -88,7 +88,9 @@ export default async function AdminUsersPage(props) {
                                 <tr key={u.id} className="hover:bg-gray-50">
                                     <td className="p-4">
                                         <div className="font-bold">{u.firstName} {u.lastName}</div>
-                                        <div className="text-xs text-gray-400 font-mono">{u.id}</div>
+                                        <div className="text-[10px] text-gray-400 font-mono opacity-70 hover:opacity-100 transition-opacity" title={u.id}>
+                                            {u.id.length > 12 ? `${u.id.slice(0, 8)}...${u.id.slice(-4)}` : u.id}
+                                        </div>
                                     </td>
                                     <td className="p-4 text-sm">
                                         <div>{u.email}</div>
@@ -121,7 +123,9 @@ export default async function AdminUsersPage(props) {
                             <div className="flex justify-between items-start">
                                 <div className="space-y-1">
                                     <div className="font-bold text-gray-900 text-base">{u.firstName} {u.lastName}</div>
-                                    <div className="text-[10px] text-gray-400 font-mono">{u.id}</div>
+                                    <div className="text-[10px] text-gray-400 font-mono opacity-70 hover:opacity-100 transition-opacity" title={u.id}>
+                                        {u.id.length > 12 ? `${u.id.slice(0, 8)}...${u.id.slice(-4)}` : u.id}
+                                    </div>
                                 </div>
                                 <div className="text-[10px] text-gray-400 font-bold bg-gray-50 px-2 py-1 rounded-lg border border-gray-100">
                                     {new Date(u.createdAt).toLocaleDateString('he-IL', { day: '2-digit', month: '2-digit' })}
