@@ -4,7 +4,7 @@ export default function AdminFilterBar({ selectedLetter, onSelect, className = "
     const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split('');
 
     return (
-        <div className={`flex flex-nowrap gap-2 mb-6 md:justify-center overflow-x-auto scrollbar-hide pb-2 ${className}`}>
+        <div className={`flex flex-nowrap gap-1.5 mb-6 md:justify-center overflow-x-auto scrollbar-hide pb-2 ${className}`}>
             <style jsx>{`
                 .scrollbar-hide::-webkit-scrollbar {
                     display: none;
@@ -16,7 +16,7 @@ export default function AdminFilterBar({ selectedLetter, onSelect, className = "
             `}</style>
             <button
                 onClick={() => onSelect(null)}
-                className={`px-4 py-1.5 rounded-lg text-xs font-bold border transition shrink-0 shadow-sm ${(!selectedLetter || selectedLetter === '')
+                className={`px-3 py-1.5 rounded-lg text-[13px] font-bold border transition shrink-0 shadow-sm ${(!selectedLetter || selectedLetter === '')
                         ? 'bg-black text-white border-black'
                         : 'bg-white text-black border-gray-200 hover:border-black'
                     }`}
@@ -27,7 +27,7 @@ export default function AdminFilterBar({ selectedLetter, onSelect, className = "
                 <button
                     key={letter}
                     onClick={() => onSelect(letter)}
-                    className={`w-9 h-9 flex items-center justify-center rounded-lg text-sm font-bold border transition shrink-0 shadow-sm ${selectedLetter === letter
+                    className={`w-8 h-8 flex items-center justify-center rounded-lg text-sm font-bold border transition shrink-0 shadow-sm ${selectedLetter === letter
                             ? 'bg-black text-white border-black'
                             : 'bg-white text-black border-gray-200 hover:border-black'
                         }`}
