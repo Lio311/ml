@@ -4,7 +4,7 @@ export default function AdminFilterBar({ selectedLetter, onSelect, className = "
     const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split('');
 
     return (
-        <div className={`flex gap-2 mb-8 overflow-x-auto pb-4 md:pb-2 scrollbar-hide md:justify-center ${className}`}>
+        <div className={`flex flex-wrap gap-3 mb-8 md:justify-center ${className}`}>
             <style jsx>{`
                 .scrollbar-hide::-webkit-scrollbar {
                     display: none;
