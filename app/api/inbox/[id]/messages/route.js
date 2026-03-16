@@ -7,6 +7,10 @@ export async function GET(req, { params }) {
         const { userId } = getAuth(req);
         if (!userId) return new NextResponse('Unauthorized', { status: 401 });
 
+        // Update user activity proactively
+        const { updateUserActivity } = await import('../../../../lib/db');
+        await updateUserActivity(userId);
+
         const { id: conversationId } = await params;
 
         // Verify user is part of the conversation (or is admin/catalog_owner)
@@ -74,6 +78,10 @@ export async function POST(req, { params }) {
     try {
         const { userId } = getAuth(req);
         if (!userId) return new NextResponse('Unauthorized', { status: 401 });
+
+        // Update user activity proactively
+        const { updateUserActivity } = await import('../../../../lib/db');
+        await updateUserActivity(userId);
 
         const { id: conversationId } = await params;
         const body = await req.json();

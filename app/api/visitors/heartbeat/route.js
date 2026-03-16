@@ -54,12 +54,8 @@ export async function POST(req) {
 
             // 1b. Update User last_seen if authenticated
             if (userId) {
-                await client.query(`
-                    INSERT INTO users (id, last_active_at)
-                    VALUES ($1, NOW())
-                    ON CONFLICT (id) 
-                    DO UPDATE SET last_active_at = NOW()
-                `, [userId]);
+                const { updateUserActivity } = await import('../../../lib/db');
+                await updateUserActivity(userId);
             }
 
             // 2. Count active visitors in last 5 minutes (Real-time window)

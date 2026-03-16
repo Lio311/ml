@@ -36,4 +36,22 @@ export async function getAuthenticatedClient(userId) {
     return client;
 }
 
+/**
+ * Proactively updates the user's last_active_at timestamp.
+ * @param {string} userId - The Clerk user ID.
+ */
+export async function updateUserActivity(userId) {
+    if (!userId) return;
+    try {
+        await pool.query(`
+            INSERT INTO users (id, last_active_at)
+            VALUES ($1, NOW())
+            ON CONFLICT (id) 
+            DO UPDATE SET last_active_at = NOW()
+        `, [userId]);
+    } catch (err) {
+        console.error('Error updating user activity:', err);
+    }
+}
+
 export default pool;
