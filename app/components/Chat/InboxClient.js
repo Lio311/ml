@@ -54,10 +54,11 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
 
     useEffect(() => {
         // Initial scroll to bottom when messages first load
-        if (messages.length > 0) {
+        // We only do this once when the conversation is opened
+        if (messages.length > 0 && activeConvId && !String(activeConvId).startsWith('order_')) {
             scrollToBottom();
         }
-    }, [messages.length]);
+    }, [activeConvId]); // Only trigger when switching conversations, not when messages array changes
 
     useEffect(() => {
         if (activeConvId && activeConvId !== 'new' && activeConvId !== 'general' && !String(activeConvId).startsWith('order_')) {
@@ -272,9 +273,9 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
                             >
                                 {activeConvId === conv.id && <div className="absolute right-0 top-0 bottom-0 w-1 bg-black rounded-r-full" />}
                                 
-                                <div className={`w-12 h-12 rounded-full flex-shrink-0 flex items-center justify-center overflow-hidden border ${((role === 'buyer' && !conv.catalog_id) || (role === 'seller' && conv.participant2_id === 'admin')) ? 'bg-black border-gray-800' : 'bg-gray-200 border-gray-300'}`}>
+                                <div className={`w-12 h-12 rounded-full flex-shrink-0 flex items-center justify-center overflow-hidden border ${((role === 'buyer' && !conv.catalog_id) || (role === 'seller' && conv.participant2_id === 'admin')) ? 'bg-white border-gray-100' : 'bg-gray-200 border-gray-300'}`}>
                                     {(role === 'buyer' && !conv.catalog_id) || (role === 'seller' && conv.participant2_id === 'admin') ? (
-                                        <span className="text-white font-bold text-lg tracking-wider">ML</span>
+                                        <img src="/ml_CHAT.png" alt="ml_tlv" className="w-full h-full object-cover" />
                                     ) : role === 'buyer' && conv.catalog_id ? (
                                         catalogsData[conv.catalog_id]?.logo_url ? (
                                             <img src={catalogsData[conv.catalog_id].logo_url} alt="Store" className="w-full h-full object-cover" />
@@ -282,7 +283,11 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
                                             <Store className="w-6 h-6 text-gray-500" />
                                         )
                                     ) : (
-                                        <UserIcon className="w-6 h-6 text-gray-500" />
+                                        conv.participant1_image ? (
+                                            <img src={conv.participant1_image} alt="User" className="w-full h-full object-cover" />
+                                        ) : (
+                                            <UserIcon className="w-6 h-6 text-gray-500" />
+                                        )
                                     )}
                                 </div>
                                 
@@ -325,9 +330,9 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
                             <button className="md:hidden text-gray-500 p-2 ml-2 bg-gray-100 rounded-full" onClick={() => setActiveConvId(null)}>
                                 חזור
                             </button>
-                            <div className={`w-10 h-10 rounded-full flex items-center justify-center overflow-hidden border flex-shrink-0 ${((role === 'buyer' && !activeConversation?.catalog_id) || (role === 'seller' && activeConversation?.participant2_id === 'admin')) ? 'bg-black border-gray-800' : 'bg-gray-200 border-gray-300'}`}>
+                            <div className={`w-10 h-10 rounded-full flex items-center justify-center overflow-hidden border flex-shrink-0 ${((role === 'buyer' && !activeConversation?.catalog_id) || (role === 'seller' && activeConversation?.participant2_id === 'admin')) ? 'bg-white border-gray-100' : 'bg-gray-200 border-gray-300'}`}>
                                 {(role === 'buyer' && !activeConversation?.catalog_id) || (role === 'seller' && activeConversation?.participant2_id === 'admin') ? (
-                                    <span className="text-white font-bold text-[15px] tracking-wider">ML</span>
+                                    <img src="/ml_CHAT.png" alt="ml_tlv" className="w-full h-full object-cover" />
                                 ) : role === 'buyer' && activeConversation?.catalog_id ? (
                                     catalogsData[activeConversation.catalog_id]?.logo_url ? (
                                         <img src={catalogsData[activeConversation.catalog_id].logo_url} alt="Store" className="w-full h-full object-cover" />
@@ -335,7 +340,11 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
                                         <Store className="w-5 h-5 text-gray-500" />
                                     )
                                 ) : (
-                                    <UserIcon className="w-5 h-5 text-gray-500" />
+                                    activeConversation?.participant1_image ? (
+                                        <img src={activeConversation.participant1_image} alt="User" className="w-full h-full object-cover" />
+                                    ) : (
+                                        <UserIcon className="w-5 h-5 text-gray-500" />
+                                    )
                                 )}
                             </div>
                             <div>

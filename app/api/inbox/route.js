@@ -64,12 +64,16 @@ export async function GET(req) {
                     const userMap = {};
                     userList.data.forEach(u => {
                         const fullName = `${u.firstName || ''} ${u.lastName || ''}`.trim();
-                        userMap[u.id] = fullName || u.emailAddresses[0]?.emailAddress || "לקוח";
+                        userMap[u.id] = {
+                            name: fullName || u.emailAddresses[0]?.emailAddress || "לקוח",
+                            image: u.imageUrl || null
+                        };
                     });
                     
                     convs = convs.map(c => ({
                         ...c,
-                        participant1_name: userMap[c.participant1_id] || "לקוח (ID: " + c.participant1_id.slice(-4) + ")"
+                        participant1_name: userMap[c.participant1_id]?.name || "לקוח (ID: " + c.participant1_id.slice(-4) + ")",
+                        participant1_image: userMap[c.participant1_id]?.image || null
                     }));
                 }
             } catch (err) {
