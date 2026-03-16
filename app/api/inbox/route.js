@@ -1,5 +1,5 @@
 import pool from '../../lib/db';
-import { getAuth } from '@clerk/nextjs/server';
+import { getAuth, clerkClient } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
 
 export async function GET(req) {
@@ -51,7 +51,33 @@ export async function GET(req) {
             `, [userId, userId]);
         }
 
-        return NextResponse.json(query.rows);
+        let convs = query.rows;
+
+        // Fetch user names for admin/seller view
+        if (asAdmin || catalogId) {
+            try {
+                const clerk = await clerkClient();
+                const userIds = [...new Set(convs.map(c => c.participant1_id))];
+                
+                if (userIds.length > 0) {
+                    const userList = await clerk.users.getUserList({ userId: userIds, limit: 100 });
+                    const userMap = {};
+                    userList.data.forEach(u => {
+                        const fullName = `${u.firstName || ''} ${u.lastName || ''}`.trim();
+                        userMap[u.id] = fullName || u.emailAddresses[0]?.emailAddress || "לקוח";
+                    });
+                    
+                    convs = convs.map(c => ({
+                        ...c,
+                        participant1_name: userMap[c.participant1_id] || "לקוח (ID: " + c.participant1_id.slice(-4) + ")"
+                    }));
+                }
+            } catch (err) {
+                console.error("Error fetching clerk users for inbox", err);
+            }
+        }
+
+        return NextResponse.json(convs);
     } catch (error) {
         console.error('Error fetching inbox:', error);
         return new NextResponse('Internal Error', { status: 500 });

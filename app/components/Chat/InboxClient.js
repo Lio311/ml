@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from 'react';
-import { Send, User as UserIcon, Loader2, MessageSquare, Search, Store } from 'lucide-react';
+import { Reply, User as UserIcon, Loader2, MessageSquare, Search, Store } from 'lucide-react';
 import { useUser } from '@clerk/nextjs';
 import toast from 'react-hot-toast';
 
@@ -215,8 +215,8 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
 
     const getChatName = (conv) => {
         let name = "";
-        if (role === 'admin') name = "לקוח (ID: " + conv.participant1_id.slice(-4) + ")";
-        else if (role === 'seller') name = "לקוח (ID: " + conv.participant1_id.slice(-4) + ")";
+        if (role === 'admin') name = conv.participant1_name || "לקוח (ID: " + conv.participant1_id.slice(-4) + ")";
+        else if (role === 'seller') name = conv.participant1_name || "לקוח (ID: " + conv.participant1_id.slice(-4) + ")";
         else if (role === 'buyer') {
             if (conv.catalog_id) {
                 name = catalogsData[conv.catalog_id]?.name || "מוכר קטלוג (#" + conv.catalog_id + ")";
@@ -382,7 +382,7 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
                                     disabled={!newMessage.trim() || isSending}
                                     className="absolute left-2 top-1/2 -translate-y-1/2 w-9 h-9 bg-black text-white rounded-full flex items-center justify-center hover:bg-gray-800 disabled:opacity-50 transition shadow-md"
                                 >
-                                    {isSending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4 mr-0.5" />}
+                                    {isSending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Reply className="w-4 h-4 mr-0.5" />}
                                 </button>
                             </form>
                         </div>
