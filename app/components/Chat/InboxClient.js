@@ -417,41 +417,36 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
                             onScroll={handleScroll}
                         >
                             {activeConversation?.order_id && orderData[activeConversation.order_id] && (
-                                <div className="mb-6 bg-white rounded-2xl p-6 border border-gray-100 shadow-sm overflow-hidden">
-                                    <div className="flex justify-between items-center mb-6">
-                                        <h3 className="font-bold text-gray-900">סטטוס הזמנה #{activeConversation.order_id}</h3>
-                                        <Link href="/orders" className="text-xs text-blue-600 hover:underline flex items-center gap-1">
-                                            פרטי הזמנה מלאים <ExternalLink className="w-3 h-3" />
-                                        </Link>
-                                    </div>
-                                    
-                                    <div className="scale-90 md:scale-100 origin-center">
+                                <div className="mb-4 bg-white rounded-2xl p-4 border border-gray-100 shadow-sm overflow-hidden">
+                                    <div className="scale-90 md:scale-95 origin-center">
                                         <OrderStatusTimeline status={orderData[activeConversation.order_id].status} />
                                     </div>
 
-                                    <div className="mt-8 pt-6 border-t border-gray-50">
-                                        <h4 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-4">פריטים בהזמנה</h4>
-                                        <div className="flex gap-3 overflow-x-auto pb-2 custom-scrollbar">
-                                            {orderData[activeConversation.order_id].items?.map((item, idx) => (
-                                                <div key={idx} className="flex-shrink-0 group">
-                                                    <div className="w-16 h-16 rounded-xl overflow-hidden border border-gray-100 bg-gray-50 relative">
-                                                        {item.image_url ? (
-                                                            <img src={item.image_url} alt={item.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
-                                                        ) : (
-                                                            <div className="w-full h-full flex items-center justify-center text-gray-300">
-                                                                <ImageIcon className="w-6 h-6" />
+                                    <div className="mt-6 pt-4 border-t border-gray-50 flex justify-between items-end">
+                                        <div>
+                                            <h4 className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-3">פריטים בהזמנה</h4>
+                                            <div className="flex gap-2 overflow-x-auto pb-1 custom-scrollbar">
+                                                {orderData[activeConversation.order_id].items?.map((item, idx) => (
+                                                    <div key={idx} className="flex-shrink-0 group">
+                                                        <div className="w-12 h-12 rounded-lg overflow-hidden border border-gray-100 bg-gray-50 relative">
+                                                            {item.image_url ? (
+                                                                <img src={item.image_url} alt={item.name} className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500" />
+                                                            ) : (
+                                                                <div className="w-full h-full flex items-center justify-center text-gray-300">
+                                                                    <ImageIcon className="w-4 h-4" />
+                                                                </div>
+                                                            )}
+                                                            <div className="absolute bottom-0 right-0 bg-black/70 text-white text-[7px] px-1 rounded-tl-md font-bold">
+                                                                x{item.quantity}
                                                             </div>
-                                                        )}
-                                                        <div className="absolute bottom-0 right-0 bg-black/70 text-white text-[8px] px-1 rounded-tl-lg font-bold">
-                                                            x{item.quantity}
                                                         </div>
                                                     </div>
-                                                    <div className="mt-1 w-16">
-                                                        <p className="text-[9px] font-medium text-gray-600 truncate text-center">{item.name}</p>
-                                                    </div>
-                                                </div>
-                                            ))}
+                                                ))}
+                                            </div>
                                         </div>
+                                        <Link href="/orders" className="text-[10px] text-blue-600 hover:underline flex items-center gap-1 font-bold mb-1">
+                                            פרטי הזמנה מלאים <ExternalLink className="w-2.5 h-2.5" />
+                                        </Link>
                                     </div>
                                 </div>
                             )}
