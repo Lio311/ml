@@ -1,10 +1,20 @@
-import pool from '../../lib/db';
-import { NextResponse } from 'next/server';
+const { Pool } = require('pg');
+require('dotenv').config({ path: '.env.local' });
 
-export async function GET() {
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: {
+      rejectUnauthorized: false
+  }
+});
+
+async function setup() {
+    console.log("Setting up chat database tables...");
+    const client = await pool.connect();
+
     try {
-        const client = await pool.connect();
-        
+        await client.query('BEGIN');
+
         await client.query(`
             CREATE TABLE IF NOT EXISTS conversations (
                 id SERIAL PRIMARY KEY,
@@ -14,6 +24,7 @@ export async function GET() {
                 updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );
         `);
+        console.log("Created conversations table (if it didn't exist).");
 
         await client.query(`
             CREATE TABLE IF NOT EXISTS messages (
@@ -25,11 +36,18 @@ export async function GET() {
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );
         `);
-        
+        console.log("Created messages table (if it didn't exist).");
+
+        await client.query('COMMIT');
+        console.log("Chat setup complete.");
+    } catch (e) {
+        await client.query('ROLLBACK');
+        console.error("Failed to setup chat DB:", e);
+    } finally {
         client.release();
-        return NextResponse.json({ success: true, message: 'Chat tables created successfully' });
-    } catch (error) {
-        console.error('Failed to create chat tables:', error);
-        return NextResponse.json({ success: false, error: error.message }, { status: 500 });
+        await pool.end();
+        process.exit();
     }
 }
+
+setup();
