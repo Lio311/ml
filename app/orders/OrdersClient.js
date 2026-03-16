@@ -149,7 +149,7 @@ export default function OrdersClient() {
                             <div className="mt-4 pt-4 border-t flex justify-between items-center">
                                 <Link href={`/inbox?order_id=${order.id}${order.catalog_id ? `&catalog_id=${order.catalog_id}` : ''}`} className="text-xs text-blue-600 hover:text-blue-800 font-bold flex items-center gap-1">
                                     <MessageSquare className="w-3.5 h-3.5" />
-                                    צור קשר מול המוכר בנידון ההזמנה
+                                    בירור הזמנה
                                 </Link>
                                 
                                 {order.free_samples_count > 0 && (
