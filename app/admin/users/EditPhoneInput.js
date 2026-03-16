@@ -35,23 +35,46 @@ export default function EditPhoneInput({ userId, initialPhone, canEdit }) {
     };
 
     if (!canEdit) {
-        return initialPhone ? (
-            <a href={`tel:${initialPhone}`} className="hover:underline text-blue-600">
-                {initialPhone}
-            </a>
-        ) : (
-            <span className="text-gray-400 italic">אין</span>
+        return (
+            <div className="flex items-center justify-center mt-1">
+                {initialPhone ? (
+                    <a href={`tel:${initialPhone}`} className="hover:underline text-blue-600 text-[15px]" dir="ltr">
+                        {initialPhone}
+                    </a>
+                ) : (
+                    <span className="text-gray-400 italic text-[10px]">אין טלפון</span>
+                )}
+            </div>
         );
     }
 
     if (isEditing) {
         return (
-            <div className="flex items-center gap-2 mt-1" dir="ltr">
+            <div className="flex items-center justify-center gap-1 mt-1" dir="ltr">
+                <button
+                    onClick={handleSave}
+                    disabled={isLoading}
+                    className="text-green-600 hover:text-green-700 bg-green-50 p-1 rounded transition-colors disabled:opacity-50 flex-shrink-0"
+                    title="שמור"
+                >
+                    {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />}
+                </button>
+                <button
+                    onClick={() => {
+                        setPhone(initialPhone || '');
+                        setIsEditing(false);
+                    }}
+                    disabled={isLoading}
+                    className="text-gray-400 hover:text-red-600 bg-gray-50 p-1 rounded transition-colors disabled:opacity-50 flex-shrink-0"
+                    title="ביטול"
+                >
+                    <X className="w-4 h-4" />
+                </button>
                 <input
                     type="tel"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
-                    className="w-full text-xs px-2 py-1 border border-blue-300 rounded focus:ring-1 focus:ring-blue-500 outline-none transition-all text-right"
+                    className="w-32 text-[15px] px-2 py-1 border border-blue-300 rounded focus:ring-1 focus:ring-blue-500 outline-none transition-all text-center"
                     placeholder="הזן טלפון"
                     autoFocus
                     onKeyDown={(e) => {
@@ -63,41 +86,24 @@ export default function EditPhoneInput({ userId, initialPhone, canEdit }) {
                     }}
                     disabled={isLoading}
                 />
-                <button
-                    onClick={handleSave}
-                    disabled={isLoading}
-                    className="text-green-600 hover:text-green-700 bg-green-50 p-1 rounded transition-colors disabled:opacity-50"
-                    title="שמור"
-                >
-                    {isLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <Check className="w-4 h-4" />}
-                </button>
-                <button
-                    onClick={() => {
-                        setPhone(initialPhone || '');
-                        setIsEditing(false);
-                    }}
-                    disabled={isLoading}
-                    className="text-gray-400 hover:text-red-600 bg-gray-50 p-1 rounded transition-colors disabled:opacity-50"
-                    title="ביטול"
-                >
-                    <X className="w-4 h-4" />
-                </button>
             </div>
         );
     }
 
     return (
-        <div className="group flex items-center justify-between mt-1">
-            {initialPhone ? (
-                <a href={`tel:${initialPhone}`} className="hover:underline text-blue-600" dir="ltr">
-                    {initialPhone}
-                </a>
-            ) : (
-                <span className="text-gray-400 italic text-[10px]">אין טלפון</span>
-            )}
+        <div className="group flex items-center justify-center gap-1.5 mt-1">
+            <div dir="ltr">
+                {initialPhone ? (
+                    <a href={`tel:${initialPhone}`} className="hover:underline text-blue-600 text-[15px]">
+                        {initialPhone}
+                    </a>
+                ) : (
+                    <span className="text-gray-400 italic text-[10px]">אין טלפון</span>
+                )}
+            </div>
             <button
                 onClick={() => setIsEditing(true)}
-                className="opacity-0 group-hover:opacity-100 text-gray-400 hover:text-blue-600 p-1 rounded transition-all focus:opacity-100"
+                className="text-gray-400 hover:text-blue-600 p-1 rounded transition-colors"
                 title="ערוך טלפון"
             >
                 <Pencil className="w-3.5 h-3.5" />
