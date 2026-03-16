@@ -34,6 +34,7 @@ export default function Footer() {
                         <li><Link href="/terms">תקנון האתר</Link></li>
                         <li><Link href="/shipping">משלוחים והחזרות</Link></li>
                         <li><Link href="/privacy">מדיניות פרטיות</Link></li>
+                        <li><Link href="/reviews">ביקורות גולשים</Link></li>
                     </ul>
                 </div>
 
