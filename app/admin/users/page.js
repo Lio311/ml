@@ -63,9 +63,11 @@ export default async function AdminUsersPage(props) {
 
     return (
         <div>
-            <div className="flex justify-between items-center mb-6 md:pl-12">
-                <h1 className="text-3xl font-bold">ניהול זהויות והרשאות</h1>
-                <SyncUsersButton />
+            <div className="flex justify-between items-center mb-6 md:pl-12 gap-4">
+                <h1 className="text-xl md:text-3xl font-bold">ניהול זהויות והרשאות</h1>
+                <div className="hidden md:block">
+                    <SyncUsersButton />
+                </div>
             </div>
 
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
