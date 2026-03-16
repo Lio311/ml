@@ -25,9 +25,13 @@ export default function CustomDropdown({
     const updateMenuPosition = useCallback(() => {
         if (!triggerRef.current) return;
         const rect = triggerRef.current.getBoundingClientRect();
+        const menuHeight = menuRef.current?.offsetHeight || 250; // Estimate or use ref
+        const spaceBelow = window.innerHeight - rect.bottom;
+        const openUpwards = spaceBelow < menuHeight + 20 && rect.top > menuHeight;
+
         setMenuStyle({
             position: "fixed",
-            top: rect.bottom + 6,
+            top: openUpwards ? rect.top - menuHeight - 6 : rect.bottom + 6,
             right: window.innerWidth - rect.right,
             minWidth: Math.max(rect.width, 180),
             zIndex: 9999,

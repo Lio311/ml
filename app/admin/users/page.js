@@ -66,7 +66,7 @@ export default async function AdminUsersPage(props) {
                     created_at DESC
                 LIMIT $1 OFFSET $2
             `, queryParams),
-            client.query(`SELECT COUNT(*) FROM users ${whereClause}`, queryParams.slice(2))
+            client.query(`SELECT COUNT(*) FROM users ${whereClause.replace(/\$(\d+)/g, (match, num) => `$${parseInt(num) - 2}`)}`, queryParams.slice(2))
         ]);
 
         users = usersRes.rows.map(u => ({
