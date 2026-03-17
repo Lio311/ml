@@ -519,11 +519,11 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
                                                           (msg.sender_role !== 'admin' && msg.sender_id === activeConversation?.participant1_id);
 
                                     return (
-                                        <div key={idx} className={`flex w-full mb-4 ${isClientMessage ? 'justify-start px-4' : 'justify-end pl-10 pr-4'}`} dir="rtl">
-                                            <div className={`max-w-[85%] md:max-w-[75%] rounded-2xl px-5 py-2.5 text-sm shadow-sm transition-all duration-300 transform hover:scale-[1.01] ${
+                                        <div key={idx} className={`flex w-full mb-4 px-3 ${isClientMessage ? 'justify-start' : 'justify-end'}`} dir="rtl">
+                                            <div className={`max-w-[80%] md:max-w-[75%] rounded-2xl px-5 py-2.5 text-sm shadow-sm transition-all duration-300 transform hover:scale-[1.01] ${
                                                 isClientMessage
-                                                ? 'bg-gray-200 text-black rounded-tr-none' 
-                                                : 'bg-black text-white rounded-tl-none'
+                                                ? 'bg-gray-200 text-black rounded-tr-none ml-8' 
+                                                : 'bg-black text-white rounded-tl-none mr-8'
                                             }`}>
                                                 <p className="whitespace-pre-wrap leading-relaxed break-words">{msg.content}</p>
                                                 <div className={`text-[9px] mt-1.5 flex ${isClientMessage ? 'justify-end' : 'justify-start'} opacity-50`}>
