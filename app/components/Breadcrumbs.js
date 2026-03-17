@@ -4,8 +4,8 @@ export default function Breadcrumbs({ items }) {
     if (!items || items.length === 0) return null;
 
     return (
-        <nav aria-label="Breadcrumb" className="mb-6">
-            <ol className="flex flex-wrap items-center text-xs md:text-sm text-gray-500 gap-2">
+        <nav aria-label="Breadcrumb" className="mb-8 mt-2">
+            <ol className="flex flex-wrap items-center text-[10px] md:text-xs text-gray-400 gap-1.5 md:gap-2">
                 <li>
                     <Link href="/" className="hover:text-black transition-colors">
                         דף הבית

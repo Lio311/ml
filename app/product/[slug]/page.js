@@ -249,10 +249,12 @@ export default async function ProductPage(props) {
     ];
 
     return (
-        <div className="container py-8">
-            <Breadcrumbs items={breadcrumbItems} />
+        <div className="container py-8 max-w-7xl mx-auto px-4 md:px-6">
+            <div className="mb-6">
+                <Breadcrumbs items={breadcrumbItems} />
+            </div>
 
-            <div className="flex flex-col lg:flex-row gap-12">
+            <div className="flex flex-col lg:flex-row gap-8 lg:gap-16">
                 {/* Image */}
                 <div className="w-full md:w-1/2 aspect-square bg-white rounded-xl flex items-center justify-center relative overflow-hidden shadow-sm p-8 md:p-12 group">
                     {product.image_url ? (
