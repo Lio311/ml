@@ -28,7 +28,7 @@ export default function Footer() {
                         <li><Link href="/brands/Initio" className="hover:text-white transition">Initio</Link></li>
                         <li><Link href="/brands/Tom%20Ford" className="hover:text-white transition">Tom Ford</Link></li>
                         <li><Link href="/brands/Amouage" className="hover:text-white transition">Amouage</Link></li>
-                        <li><Link href="/brands/Nishane" className="hover:text-white transition">Nishane</Link></li>
+                        <li><Link href="/brands/Clive%20Christian" className="hover:text-white transition">Clive Christian</Link></li>
                         <li><Link href="/brands/Roja" className="hover:text-white transition">Roja</Link></li>
                     </ul>
                 </div>
