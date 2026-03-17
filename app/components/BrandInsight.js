@@ -6,7 +6,7 @@ export default function BrandInsight({ brand }) {
     if (!insight) return null;
 
     return (
-        <section className="mt-12 py-12 border-t border-gray-100 bg-white">
+        <section className="mt-12 pt-12 pb-0 border-t border-gray-100 bg-white">
             <div className="max-w-5xl mx-auto px-4 md:px-0">
                 <div className="flex flex-col gap-6 text-right">
                     
@@ -37,12 +37,6 @@ export default function BrandInsight({ brand }) {
                             </div>
                         </div>
                     </div>
-                </div>
-                
-                <div className="mt-8 pt-6 border-t border-gray-100 text-center">
-                    <p className="text-[10px] text-gray-400 uppercase tracking-widest">
-                        הוכן עבור ml_tlv - מגזין הבישום והנישה
-                    </p>
                 </div>
             </div>
         </section>
