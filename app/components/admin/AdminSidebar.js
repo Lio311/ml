@@ -68,7 +68,6 @@ export default function AdminSidebar({ role = 'customer' }) {
         }
     ];
 
-    const navItems = allNavItems.filter(item => item.roles.includes(role));
 
 
     return (

@@ -72,7 +72,6 @@ export default function AdminMobileNav({ role = 'customer' }) {
         }
     ];
 
-    const navItems = allNavItems.filter(item => item.roles.includes(role));
 
     return (
         <div className="md:hidden">
