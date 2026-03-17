@@ -10,10 +10,12 @@ import LanguageSwitcher from './LanguageSwitcher';
 import SearchAutocomplete from './SearchAutocomplete';
 import LiveVisitorCounter from './LiveVisitorCounter';
 
-import { useWishlist } from '../context/WishlistContext';
-import { Mail } from 'lucide-react';
+import { Mail, Settings, MessageSquare, Star } from 'lucide-react';
+import { useUser } from '@clerk/nextjs';
 
 export default function Header({ brands = [], menu = [] }) {
+    const { user } = useUser();
+    const isAdmin = user?.publicMetadata?.role === 'admin' || user?.publicMetadata?.role === 'deputy';
     const { uniqueVendorsCount: cartCount } = useCart();
     const { count: wishlistCount } = useWishlist();
     const pathname = usePathname();
@@ -89,7 +91,7 @@ export default function Header({ brands = [], menu = [] }) {
                     <div className="flex md:hidden justify-between items-center w-full z-20">
                         <div className="flex items-center gap-0.5">
                             {/* Hamburger */}
-                            <button className="p-2" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+                            <button className="p-2 -ml-2" onClick={() => setIsMenuOpen(!isMenuOpen)}>
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
                                 </svg>
@@ -338,6 +340,41 @@ export default function Header({ brands = [], menu = [] }) {
                                 {item.label}
                             </Link>
                         ))}
+
+                        {/* Admin Management Links in Mobile Menu */}
+                        {isAdmin && (
+                            <div className="mt-4 pt-6 border-t border-gray-100 flex flex-col gap-6">
+                                <Link 
+                                    href="/admin/inbox" 
+                                    onClick={() => setIsMenuOpen(false)}
+                                    className="flex items-center justify-center gap-3 text-blue-600 bg-blue-50 py-3 rounded-2xl"
+                                >
+                                    <MessageSquare className="w-6 h-6" />
+                                    <span>תיבת הודעות</span>
+                                    {unreadCount > 0 && (
+                                        <span className="bg-blue-600 text-white text-[10px] w-5 h-5 flex items-center justify-center rounded-full font-bold">
+                                            {unreadCount}
+                                        </span>
+                                    )}
+                                </Link>
+                                <Link 
+                                    href="/admin?tab=reviews" 
+                                    onClick={() => setIsMenuOpen(false)}
+                                    className="flex items-center justify-center gap-3 text-black bg-gray-100 py-3 rounded-2xl"
+                                >
+                                    <Star className="w-6 h-6" />
+                                    <span>ניהול ביקורות</span>
+                                </Link>
+                                <Link 
+                                    href="/admin" 
+                                    onClick={() => setIsMenuOpen(false)}
+                                    className="flex items-center justify-center gap-3 text-gray-600 border border-gray-200 py-3 rounded-2xl"
+                                >
+                                    <Settings className="w-6 h-6" />
+                                    <span>ניהול אתר</span>
+                                </Link>
+                            </div>
+                        )}
                         <button onClick={() => setIsMenuOpen(false)} className="mt-8 text-sm text-gray-500 underline">
                             סגור תפריט
                         </button>
