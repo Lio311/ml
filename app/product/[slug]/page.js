@@ -8,6 +8,7 @@ import WishlistHeart from "../../components/WishlistHeart";
 import AddToCartAdvanced from "../../components/ProductCard";
 import FragrancePyramid from "../../components/FragrancePyramid";
 import ShareButton from "../../components/ShareButton";
+import Breadcrumbs from "../../components/Breadcrumbs";
 
 
 export const revalidate = 3600; // SEO Improvement: Cache for 1 hour
@@ -239,9 +240,19 @@ export default async function ProductPage(props) {
         };
     }
 
+    // Prepare breadcrumbs
+    const breadcrumbItems = [
+        { label: 'חנות', href: '/catalog' },
+        { label: product.category || 'בשמים', href: `/catalog?category=${encodeURIComponent(product.category || '')}` },
+        { label: product.brand, href: `/brands/${encodeURIComponent(product.brand)}` },
+        { label: product.name }
+    ];
+
     return (
-        <div className="container py-12">
-            <div className="flex flex-col md:flex-row items-start gap-12 mb-20">
+        <div className="container py-8">
+            <Breadcrumbs items={breadcrumbItems} />
+
+            <div className="flex flex-col lg:flex-row gap-12">
                 {/* Image */}
                 <div className="w-full md:w-1/2 aspect-square bg-white rounded-xl flex items-center justify-center relative overflow-hidden shadow-sm p-8 md:p-12 group">
                     {product.image_url ? (
