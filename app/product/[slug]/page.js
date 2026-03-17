@@ -386,12 +386,12 @@ export default async function ProductPage(props) {
                 <div className="mt-20 border-t pt-12">
                     <h2 className="text-2xl font-serif font-bold mb-8 text-center">אולי תאהבו גם</h2>
                     <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-                            {related.map(p => (
-                                <ProductCard key={p.id} product={p} />
-                            ))}
+                        {related.map(p => (
+                            <ProductCard key={p.id} product={p} />
+                        ))}
                     </div>
-                )
-            }
+                </div>
+            )}
 
             {/* Brand Insight Section (SEO) */}
             <BrandInsight brand={product.brand} />
