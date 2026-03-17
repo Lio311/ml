@@ -43,7 +43,7 @@ export default function AdminMobileNav({ role = 'customer' }) {
         { href: "/admin/dictionary", label: "מילון חיפוש", icon: Library, roles: ['admin', 'deputy'] },
         { href: "/admin/menu", label: "ניהול תפריט", icon: Map, roles: ['admin', 'deputy'] },
         { href: "/admin/catalogs", label: "ניהול קטלוגים", icon: Store, roles: ['admin', 'deputy'] },
-        { href: "/admin/catalog-orders", label: "הזמנות קטלוגים", icon: ClipboardList, roles: ['admin', 'deputy'] },
+        { href: "/admin/catalog-orders", label: "ניהול הזמנות קטלוגים", icon: ClipboardList, roles: ['admin', 'deputy'] },
         { href: "/admin/reviews", label: "ניהול ביקורות", icon: Star, roles: ['admin', 'deputy'] },
     ];
 

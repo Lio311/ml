@@ -39,7 +39,7 @@ export default function AdminSidebar({ role = 'customer' }) {
         { href: "/admin/dictionary", label: "📖 ניהול מילון חיפוש", roles: ['admin', 'deputy'] },
         { href: "/admin/menu", label: "🗺️ ניהול תפריט ראשי", roles: ['admin', 'deputy'] },
         { href: "/admin/catalogs", label: "🏪 ניהול קטלוגים", roles: ['admin', 'deputy'] },
-        { href: "/admin/catalog-orders", label: "📋 הזמנות קטלוגים", roles: ['admin', 'deputy'] },
+        { href: "/admin/catalog-orders", label: "📋 ניהול הזמנות קטלוגים", roles: ['admin', 'deputy'] },
         { href: "/admin/reviews", label: "⭐ ניהול ביקורות", roles: ['admin', 'deputy'] },
     ];
 
