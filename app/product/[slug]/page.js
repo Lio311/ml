@@ -383,9 +383,9 @@ export default async function ProductPage(props) {
 
             {/* Related Products */}
             {related.length > 0 && (
-                <div className="mt-20 border-t pt-12">
-                    <h2 className="text-2xl font-serif font-bold mb-8 text-center">אולי תאהבו גם</h2>
-                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+                <div className="mt-12">
+                    <h2 className="text-2xl font-bold mb-8 text-right">אולי תאהבו גם</h2>
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                         {related.map(p => (
                             <ProductCard key={p.id} product={p} />
                         ))}
