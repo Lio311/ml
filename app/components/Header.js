@@ -10,6 +10,7 @@ import LanguageSwitcher from './LanguageSwitcher';
 import SearchAutocomplete from './SearchAutocomplete';
 import LiveVisitorCounter from './LiveVisitorCounter';
 
+import { useWishlist } from '../context/WishlistContext';
 import { Mail, Settings, MessageSquare, Star } from 'lucide-react';
 import { useUser } from '@clerk/nextjs';
 

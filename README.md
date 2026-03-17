@@ -1,117 +1,84 @@
-# 💎 ml_tlv - Luxury Perfume Decants & Smart Commerce
+# 💎 ml_tlv - The Ultimate Luxury Perfume Ecosystem
 
-[![Next.js](https://img.shields.io/badge/Next.js-15.0-black?logo=next.js)](https://nextjs.org/) [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4-38B2AC?logo=tailwind-css)](https://tailwindcss.com/) [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16.0-336791?logo=postgresql)](https://www.postgresql.org/) [![Clerk](https://img.shields.io/badge/Authentication-Clerk-6C47FF?logo=clerk)](https://clerk.com/)
+[![Next.js](https://img.shields.io/badge/Next.js-15.1-black?logo=next.js)](https://nextjs.org/) [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4-38B2AC?logo=tailwind-css)](https://tailwindcss.com/) [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16.0-336791?logo=postgresql)](https://www.postgresql.org/) [![Clerk](https://img.shields.io/badge/Authentication-Clerk-6C47FF?logo=clerk)](https://clerk.com/)
 
-An advanced, full-stack Israeli commerce platform specializing in niche and boutique perfume decants. This project combines a premium shopping experience with sophisticated real-time communication and management tools.
-
----
-
-## 🌟 Premium Features
-
-### 🛒 Advanced Commerce Engine
-- **Dynamic Cart & Bonus System**: Real-time total calculation with a layered bonus system (up to 6 free samples).
-- **Smart Cart Sharing**: Persistence-backed short URLs for seamless cross-device cart sharing.
-- **Abandoned Cart Recovery**: Automated CRON tasks send personalized recovery emails with unique 5% discount coupons.
-- **Inventory Precision**: Real-time ml-level stock tracking across multiple decant sizes (2ml to 10ml).
-
-### 💬 Real-time Communication Hub (Inbox 2.0)
-- **Multi-Role Messaging**: Integrated chat system connecting Customers, Sales Representatives (Catalogs), and Platform Administrators.
-- **Presence & "Last Seen"**: High-accuracy presence tracking with "Available Now" pulsing indicators and precise localized "Last Seen" timestamps.
-- **Order-Linked Conversations**: Context-aware chat threads automatically show current order status timelines and item previews.
-- **Mobile Optimized**: Responsive chat interface with dynamic bubble sizing and layout adjustments for clear readability on all devices.
-
-### ⭐️ Intelligent Reviews Engine
-- **Automated Engagement**: Precise triggers prompt users for reviews once orders reach "Completed" status.
-- **Interactive Ratings**: Sleek, Lucide-indexed star rating selector with responsive feedback.
-- **Dynamic Social Proof**: The public `/reviews` page features real-time calculated statistics:
-  - **Verified Purchase Badges**: Trust-building indicators for confirmed customers.
-  - **Live Aggregate Stats**: Average rating and total counts updated on the fly.
-- **Admin Curation Dashboard**: Comprehensive interface for administrators to Moderate (Hide/Show) or Permanently Delete reviews.
-
-### 🎲 Gamified Engagement (Lottery)
-- **7 Built-in Mini-Games**: Roulette, Slot Machines, Shell games, and more.
-- **Value Optimization**: Smart logic ensures users always receive bundles worth 15% more than their entry fee.
-- **Interactive Mystery Reveal**: A high-end unboxing experience for curated fragrance bundles.
-
-### 🛡️ Admin Command Center
-- **Advanced Identity Management**: Role-based access control (Admin, Deputy, Warehouse, Customer) with advanced search (Clerk ID, Email, Phone).
-- **Pro Dictionary Mapping**: Smart Hebrew-to-English alias mapping for searching fragrances across languages.
-- **Revenue Dashboard**: Real-time KPIs including active carts, revenue metrics, and monthly visit trends.
-- **Coupons & Promotions**: Granular control over discount categories, expiration, and user-targeted coupons.
+A high-performance, enterprise-grade Israeli commerce platform designed for the luxury perfume decant industry. Beyond a simple shop, **ml_tlv** is a multi-tenant ecosystem combining algorithmic bundling, virtual store creation, and real-time operational tools.
 
 ---
 
-## 🏗️ Technical Stack
+## 🚀 Key Innovation Pillars
 
-### Core
-- **Next.js 15 (App Router)**: Utilizing server actions and streaming for high performance.
-- **React 19**: Modern component architecture with localized state management.
-- **PostgreSQL (Neon)**: Relational data storage with robust schema constraints and optimized pooling.
-- **Clerk Auth**: Enterprise-grade identity management with custom public metadata roles.
+### 🏪 Virtual Stores (Multi-Tenant Architecture)
+- **Storefront-as-a-Service**: Users can create personalized "Virtual Catalogs" with custom branding, unique slugs (`ml-tlv.com/catalog/your-name`), and curated item selections.
+- **Independent Management**: Store owners receive dedicated dashboards to manage their unique offerings and receive direct order notifications.
+- **Branded Experience**: Support for custom logos, descriptions, and direct contact integration.
 
-### UI/UX
-- **Tailwind CSS**: Utility-first styling for a premium, consistent design language.
-- **Framer Motion**: Smooth micro-interactions and page transitions.
-- **Lucide React**: High-quality vector iconography used site-wide.
-- **React Hot Toast**: Real-time UI feedback and notifications.
+### 🧪 Algorithmic & Gamified Commerce
+- **Smart Matching Wizard**: A data-driven questionnaire that analyzes top, middle, and base notes to build the "Perfect Bundle" based on user taste and budget.
+- **Lottery & Games**: 7 high-fidelity mini-games (Roulette, Slot Machine, Shell Game, etc.) with built-in **Value Protection Logic**—ensuring every player receives 15% more value in products than their entry fee.
+- **Dynamic Upsell Engine**: Real-time cart analysis that prioritizes Wishlist items and recently viewed products for personalized recommendations.
 
-### Observability & Infrastructure
-- **Sentry**: Critical error monitoring and performance tracing.
-- **Microsoft Clarity**: Visual behavioral session recordings.
-- **Google Analytics 4**: Deep traffic and conversion analytics.
-- **Nodemailer**: Automated SMTP delivery system for order updates and recovery.
+### 💬 Unified Communication Center (Inbox 2.0)
+- **Multi-Role Presence**: High-precision real-time chat connecting Customers, Catalog Owners, and Site Admins.
+- **Localized Presence**: Pulsing status indicators with localized "Available Now" or precise "Last Seen" timestamps synchronized across timezones.
+- **Order Contextualization**: Chat threads automatically embed order status timelines and product previews for friction-less support.
+
+### 📊 Operational Excellence (Admin Dashboard)
+- **Predictive Inventory**: An advanced forecasting engine that calculates daily consumption rates (30-day window) to predict exactly when bottle supplies (2ml, 5ml, 10ml) will deplete.
+- **Financial Intelligence**: Real-time Profit/Loss tracking, including COGS (Cost of Goods Sold) calculation, monthly expense balancing, and cumulative net profit analysis.
+- **Traffic Observability**: Real-time unique visitor monitoring with bot-filtering logic for clean analytics.
+- **Review Curation**: Verified-purchase linked review system with global aggregate stats and administrative moderation tools.
 
 ---
 
-## 📂 Project Architecture
+## 🛠️ Technical Sophistication
 
-```
+### Frontend & UX
+- **Next.js 15 (App Router)**: Utilizing fine-grained Server Components and optimized Server Actions.
+- **Accessibility Suite**: A custom, WCAG-compliant accessibility widget that remains isolated from global CSS filters (Invert/Contrast).
+- **Premium Design System**: Glassmorphism, tailored Framer Motion animations, and bi-directional RTL support.
+
+### Backend & Data
+- **Postgres (Neon)**: Relational database with advanced JSONB usage for flexible order tracking and complex schema constraints.
+- **Search Optimization Engine**: A sophisticated Hebrew-to-English alias mapping system allowing complex Hebrew queries to find English-indexed product data.
+- **Abandoned Cart Recovery**: Automated CRON infrastructure sending personalized recovery emails with platform-generated unique coupons.
+
+### Security & Infrastructure
+- **Role-Based Access Control (RBAC)**: Deep integration with Clerk to enforce permissions for `admin`, `deputy`, and `warehouse` roles.
+- **Edge Security**: Custom middleware blocking commercial scrapers and malicious crawlers at the network edge.
+- **Full Observability**: Triple-stack monitoring with **Sentry** (Error tracking), **Microsoft Clarity** (Behavioral), and **GA4** (Traffic).
+
+---
+
+## 📂 Architecture Overview
+
+```bash
 ml/
 ├── app/
-│   ├── admin/              # Management Dashboards & Live Stats
-│   ├── api/                # Robust Backend (Orders, Inbox, Webhooks)
-│   ├── components/         # Premium UI Components (Chat, Header, Reviews)
-│   ├── context/            # Global State (Cart, Wishlist)
-│   ├── lib/                # Shared Utilities (DB Pool, Helper functions)
-│   └── reviews/            # Public Customer Feedback System
-├── public/                 # Optimized Static Assets (High-Res Logos)
-├── scripts/                # Utility & Maintenance Scripts
-└── tmp/                    # Database Migration & Schema Repair tools
+│   ├── admin/              # Financial Dashboards & Inventory Forecasting
+│   ├── my-catalogs/        # Virtual Store Creation & Management
+│   ├── matching/           # Algorithmic Perfume Matching Wizard
+│   ├── lottery/            # Gamified Mystery Bundle System
+│   ├── inbox/              # Multi-Role Real-time Communication
+│   ├── blog/               # SEO-Optimized CMS Magazine
+│   ├── components/         # High-End Shared UI (Sarah AI, Header, Games)
+│   └── lib/                # Core Logic (DB Pooling, Encryption, Mailer)
 ```
 
 ---
 
-## 🔧 Installation & Setup
+## 🔧 Deployment & Setup
 
-1. **Clone the project**
-   ```bash
-   git clone https://github.com/Lio311/ml.git
-   cd ml/app
-   ```
-
-2. **Install dependencies**
-   ```bash
-   npm install
-   ```
-
-3. **Environment Configuration**
-   Create a `.env.local` file with the following keys:
-   - `DATABASE_URL`: PostgreSQL connection string.
-   - `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`: Clerk access key.
-   - `CLERK_SECRET_KEY`: Clerk backend secret.
-   - `ADMIN_EMAIL`: Master admin identification.
-   - `EMAIL_USER`/`PASS`: SMTP credentials for automated notifications.
-
-4. **Start Development**
-   ```bash
-   npm run dev
-   ```
+1. **Clone & Install**: `npm install` inside `/app`.
+2. **Environment**: Configure `.env.local` with DATABASE_URL, Clerk keys, and SMTP credentials.
+3. **Database Maintenance**: Use `tmp/repair_db_final.js` for initial schema enforcement.
+4. **Development**: `npm run dev`.
 
 ---
 
 <div align="center">
 
-**Developed with precision for ml_tlv**  
-**Luxury Niche Fragrances | Tel Aviv, Israel**
+**Crafted with excellence for ml_tlv**  
+**Luxury Perfume Decants | Tel Aviv | Next.js 15**
 
 </div>
