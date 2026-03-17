@@ -312,16 +312,17 @@ export default async function CatalogPage(props) {
             </div>
 
             {/* SEO Content Section */}
-            <div className="mt-16 border-t border-gray-100 pt-12 pb-8 px-4">
+            <div className="border-t border-gray-100 px-4">
                 <div className="max-w-5xl mx-auto">
-                    <h2 className="text-2xl font-serif font-bold mb-8 text-center text-gray-900">
+                    <h2 className="text-2xl font-serif font-bold mb-8 text-center text-gray-900 mt-12">
                         מדריך דוגמיות בשמים ודיקאנטים
                     </h2>
-                    <div className="grid md:grid-cols-2 gap-6 text-right">
+                    <div className="grid md:grid-cols-2 gap-6 text-right pb-12">
                         <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm hover:border-gray-200 transition-all group">
                             <div className="flex items-center gap-3 mb-4">
                                 <div className="p-2 bg-gray-50 rounded-lg group-hover:bg-black group-hover:text-white transition-colors">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
+                                    {/* Perfume Bottle Icon */}
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 3h6v3H9z"/><path d="M6 7h12v12a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2z"/><path d="M12 7v14"/><path d="M9 11h6"/><path d="M9 15h6"/></svg>
                                 </div>
                                 <h3 className="text-lg font-bold text-black border-r-2 border-black pr-3 leading-none">למה דוגמיות?</h3>
                             </div>
@@ -332,7 +333,8 @@ export default async function CatalogPage(props) {
                         <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm hover:border-gray-200 transition-all group">
                             <div className="flex items-center gap-3 mb-4">
                                 <div className="p-2 bg-gray-50 rounded-lg group-hover:bg-black group-hover:text-white transition-colors">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 7v10"/><path d="M3 7v10"/><path d="M12 3v18"/><path d="M7 12h10"/><path d="m7 7 10 10"/><path d="m17 7-10 10"/></svg>
+                                    {/* Test Tube / Vial Icon */}
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 2v17.5A2.5 2.5 0 0 0 11.5 22h1a2.5 2.5 0 0 0 2.5-2.5V2h-6z"/><path d="M8 2h8"/><path d="M9 7h6"/><path d="M9 12h6"/></svg>
                                 </div>
                                 <h3 className="text-lg font-bold text-black border-r-2 border-black pr-3 leading-none">מהו דיקאנט?</h3>
                             </div>
@@ -340,9 +342,6 @@ export default async function CatalogPage(props) {
                                 דיקאנט הוא בושם מקורי שהועבר לבקבוקון קטן (2, 5 או 10 מ"ל). זוהי חלופה נהדרת המאפשרת לקחת את הריח האהוב לכל מקום, או לנסות מותגי נישה במחיר נגיש. כל התמציות אצלנו מקוריות לחלוטין ונארזות בקפידה.
                             </p>
                         </div>
-                    </div>
-                    <div className="mt-8 pt-6 border-t border-gray-50 text-center">
-                        <span className="text-sm font-serif italic text-gray-400">ml_tlv - יוקרה בחתיכות קטנות</span>
                     </div>
                 </div>
             </div>
