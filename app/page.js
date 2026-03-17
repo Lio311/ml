@@ -8,6 +8,7 @@ import BonusesSection from "./components/BonusesSection";
 
 
 import BrandCarousel from "./components/BrandCarousel";
+import HomeSEOContent from "./components/HomeSEOContent";
 
 const dancingScript = Dancing_Script({
   subsets: ["latin"],
@@ -264,6 +265,7 @@ export default async function Home() {
           </div >
         </div >
       </section >
+      <HomeSEOContent />
     </div >
   );
 }
