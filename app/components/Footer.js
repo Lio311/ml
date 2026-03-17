@@ -20,20 +20,28 @@ export default function Footer() {
                 </div>
 
                 <div>
-                    <h3 className="text-lg font-bold mb-4">שירות לקוחות</h3>
-                    <ul className="space-y-2 text-sm text-gray-400">
-                        <li><Link href="/about">אודות</Link></li>
-                        <li><Link href="/faq">שאלות ותשובות</Link></li>
-                        <li><Link href="/contact">צור קשר</Link></li>
+                    <h3 className="text-lg font-bold mb-4">מותגים פופולריים</h3>
+                    <ul className="grid grid-cols-2 gap-x-2 gap-y-2 text-xs text-right text-gray-400">
+                        <li><Link href="/brands/Xerjoff" className="hover:text-white">Xerjoff</Link></li>
+                        <li><Link href="/brands/Creed" className="hover:text-white">Creed</Link></li>
+                        <li><Link href="/brands/Kilian" className="hover:text-white">Kilian</Link></li>
+                        <li><Link href="/brands/Initio" className="hover:text-white">Initio</Link></li>
+                        <li><Link href="/brands/Casamorati" className="hover:text-white">Casamorati</Link></li>
+                        <li><Link href="/brands/Amouage" className="hover:text-white">Amouage</Link></li>
+                        <li><Link href="/brands/Nishane" className="hover:text-white">Nishane</Link></li>
+                        <li><Link href="/brands/Roja" className="hover:text-white">Roja</Link></li>
                     </ul>
                 </div>
 
                 <div>
-                    <h3 className="text-lg font-bold mb-4">מידע ונהלים</h3>
+                    <h3 className="text-lg font-bold mb-4">קטגוריות מובילות</h3>
                     <ul className="space-y-2 text-sm text-gray-400">
-                        <li><Link href="/terms">תקנון האתר</Link></li>
-                        <li><Link href="/shipping">משלוחים והחזרות</Link></li>
-                        <li><Link href="/privacy">מדיניות פרטיות</Link></li>
+                        <li><Link href="/catalog?category=בוטיק" className="hover:text-white">בשמי בוטיק</Link></li>
+                        <li><Link href="/catalog?category=נישה" className="hover:text-white">בשמי נישה</Link></li>
+                        <li><Link href="/catalog?category=דיזיינר" className="hover:text-white">בשמי דיזיינר</Link></li>
+                        <li><Link href="/catalog?category=יוניסקס" className="hover:text-white">בשמי יוניסקס</Link></li>
+                        <li><Link href="/catalog?category=גברים" className="hover:text-white">בשמים לגברים</Link></li>
+                        <li><Link href="/catalog?category=נשים" className="hover:text-white">בשמים לנשים</Link></li>
                     </ul>
                 </div>
 
@@ -66,11 +74,17 @@ export default function Footer() {
 
                     <div className="mt-4 space-y-2">
                         <Link href="/blog" className="text-sm text-gray-400 hover:text-white transition block">
-                            מגזין הבישום
+                            מגזין הבישום - כתבות ומדריכים
                         </Link>
                         <Link href="/reviews" className="text-sm text-gray-400 hover:text-white transition block">
-                            ביקורות גולשים
+                            ביקורות גולשים על דוגמיות בשמים
                         </Link>
+                        <div className="pt-4 space-y-2 border-t border-gray-800">
+                            <Link href="/about" className="text-xs text-gray-500 hover:text-gray-300 block">אודות</Link>
+                            <Link href="/faq" className="text-xs text-gray-500 hover:text-gray-300 block">שאלות ותשובות</Link>
+                            <Link href="/contact" className="text-xs text-gray-500 hover:text-gray-300 block">צור קשר</Link>
+                            <Link href="/terms" className="text-xs text-gray-500 hover:text-gray-300 block">תקנון ומשלוחים</Link>
+                        </div>
                     </div>
                 </div>
 

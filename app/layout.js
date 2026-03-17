@@ -148,17 +148,40 @@ export default async function RootLayout({ children }) {
               <script
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{
-                  __html: JSON.stringify({
-                    "@context": "https://schema.org",
-                    "@type": "Organization",
-                    "name": "ml_tlv",
-                    "url": "https://www.ml-tlv.com",
-                    "logo": "https://www.ml-tlv.com/logo_v3.png",
-                    "description": "Luxury Niche Perfume Samples in Israel",
-                    "sameAs": [
-                      "https://instagram.com/ml_tlv"
-                    ]
-                  })
+                    __html: JSON.stringify({
+                      "@context": "https://schema.org",
+                      "@type": "Store",
+                      "name": "ml_tlv - יוקרה בחתיכות קטנות",
+                      "url": "https://www.ml-tlv.com",
+                      "logo": "https://www.ml-tlv.com/logo_v3.png",
+                      "image": "https://www.ml-tlv.com/logo_v5.png",
+                      "description": "דוגמיות בשמים, דיקאנטים ובשמי נישה מקוריים בתל אביב והסביבה. משלוחים לכל הארץ.",
+                      "address": {
+                        "@type": "PostalAddress",
+                        "addressLocality": "Tel Aviv",
+                        "addressCountry": "IL"
+                      },
+                      "geo": {
+                        "@type": "GeoCoordinates",
+                        "latitude": 32.0853,
+                        "longitude": 34.7818
+                      },
+                      "openingHoursSpecification": {
+                        "@type": "OpeningHoursSpecification",
+                        "dayOfWeek": [
+                          "Sunday",
+                          "Monday",
+                          "Tuesday",
+                          "Wednesday",
+                          "Thursday"
+                        ],
+                        "opens": "09:00",
+                        "closes": "20:00"
+                      },
+                      "sameAs": [
+                        "https://instagram.com/ml_tlv"
+                      ]
+                    })
                 }}
               />
             </WishlistProvider>

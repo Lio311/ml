@@ -310,6 +310,30 @@ export default async function CatalogPage(props) {
                 </div>
 
             </div>
+
+            {/* SEO Content Section */}
+            <div className="mt-20 border-t pt-12">
+                <div className="max-w-4xl mx-auto prose prose-sm md:prose-base dark:prose-invert">
+                    <h2 className="text-2xl font-bold mb-6 text-center">דוגמיות בשמים ודיקאנטים - כל מה שצריך לדעת</h2>
+                    <div className="grid md:grid-cols-2 gap-8 text-right leading-relaxed text-gray-700">
+                        <div>
+                            <h3 className="font-bold text-black mb-3">למה כדאי לקנות דוגמיות בשמים?</h3>
+                            <p>
+                                עולם הבישום הוא רחב ומורכב, ובחירת בושם חדש יכולה להיות משימה מאתגרת. דוגמיות בשמים (Perfume Samples) מאפשרות לכם להתנסות בריחות יוקרה, נישה ובוטיק מבלי להתחייב לבקבוק מלא ויקר. אצלנו ב-ml_tlv תוכלו למצוא מגוון רחב של דוגמיות בשמים מקוריים בקונספט ייחודי.
+                            </p>
+                        </div>
+                        <div>
+                            <h3 className="font-bold text-black mb-3">מה זה דיקאנט (Decant)?</h3>
+                            <p>
+                                דיקאנטים הם בשמים שהועברו מהבקבוק המקורי לבקבוקונים קטנים ונוחים לשימוש. זו הדרך הטובה ביותר לקחת את הריח האהוב עליכם לכל מקום, או פשוט לנסות בושם נישה יקר במחיר נגיש לכל כיס. כל הדיקאנטים שלנו מיוצרים בתנאים סטריליים מהבשמים המקוריים ביותר.
+                            </p>
+                        </div>
+                    </div>
+                    <div className="mt-8 text-center text-sm text-gray-500 italic">
+                        מחפשים דוגמיות יוקרה או דיקאנטים של בשמי נישה? הגעתם למקום הנכון. ml_tlv - יוקרה בחתיכות קטנות.
+                    </div>
+                </div>
+            </div>
         </div>
     );
 }
