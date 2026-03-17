@@ -29,7 +29,7 @@ export async function GET(req) {
                        (SELECT created_at FROM messages m WHERE m.conversation_id = c.id ORDER BY created_at DESC LIMIT 1) as last_message_time,
                        (SELECT COUNT(*) FROM messages m WHERE m.conversation_id = c.id AND sender_id != $1 AND is_read = false) as unread_count
                 FROM conversations c 
-                WHERE c.participant2_id = 'admin'
+                WHERE c.participant2_id = 'admin' AND c.catalog_id IS NULL
                 ORDER BY c.updated_at DESC
             `, [userId]);
         } else if (catalogId) {
@@ -46,7 +46,7 @@ export async function GET(req) {
             // Buyer mode: Get existing conversations AND orders that don't have conversations yet
             query = await pool.query(`
                 WITH user_orders AS (
-                    SELECT id as order_id, created_at
+                    SELECT id as order_id, created_at, catalog_id
                     FROM orders 
                     WHERE customer_details->>'clerk_id' = $1
                 ),
@@ -56,8 +56,8 @@ export async function GET(req) {
                 SELECT 
                     COALESCE(c.id::text, 'order_' || o.order_id::text) as id,
                     $3::text as participant1_id,
-                    COALESCE(c.participant2_id, 'admin')::text as participant2_id,
-                    c.catalog_id,
+                    COALESCE(c.participant2_id, CASE WHEN COALESCE(c.catalog_id, o.catalog_id) IS NOT NULL THEN NULL ELSE 'admin' END)::text as participant2_id,
+                    COALESCE(c.catalog_id, o.catalog_id) as catalog_id,
                     o.order_id,
                     COALESCE(c.updated_at, o.created_at) as updated_at,
                     (SELECT content FROM messages m WHERE m.conversation_id = c.id ORDER BY created_at DESC LIMIT 1) as last_message,
@@ -157,9 +157,9 @@ export async function POST(req) {
             if (order_id) {
                 checkQuery = await pool.query(`
                     SELECT id FROM conversations 
-                    WHERE (participant1_id = $1 OR participant2_id = $1) AND order_id = $2
+                    WHERE order_id = $1
                     LIMIT 1
-                `, [userId, order_id]);
+                `, [order_id]);
             } else if (catalog_id) {
                 checkQuery = await pool.query(`
                     SELECT id FROM conversations 
@@ -177,12 +177,15 @@ export async function POST(req) {
             if (checkQuery?.rows && checkQuery.rows.length > 0) {
                 conversationId = checkQuery.rows[0].id;
             } else {
+                // Determine participant2_id
+                const p2 = catalog_id ? null : (participant2_id || 'admin');
+
                 // Create new conversation
                 const insertConv = await pool.query(`
                     INSERT INTO conversations (participant1_id, participant2_id, catalog_id, order_id)
                     VALUES ($1, $2, $3, $4)
                     RETURNING id
-                `, [userId, participant2_id || 'admin', catalog_id || null, order_id || null]);
+                `, [userId, p2, catalog_id || null, order_id || null]);
                 conversationId = insertConv.rows[0].id;
             }
         }
