@@ -1,10 +1,10 @@
 import pool from '../../../../lib/db';
-import { getAuth, clerkClient } from '@clerk/nextjs/server';
+import { auth, clerkClient } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
 
 export async function GET(req, { params }) {
     try {
-        const { userId } = getAuth(req);
+        const { userId } = await auth();
         if (!userId) return new NextResponse('Unauthorized', { status: 401 });
 
         // Update user activity proactively
@@ -33,7 +33,7 @@ export async function GET(req, { params }) {
             isAuthorized = true; 
         } else if (conv.catalog_id) {
             // Verify if user owns catalog
-            const catCheck = await pool.query(`SELECT user_id FROM catalogs WHERE id = $1`, [conv.catalog_id]);
+            const catCheck = await pool.query(`SELECT user_id FROM user_catalogs WHERE id = $1`, [conv.catalog_id]);
             if (catCheck.rows.length > 0 && catCheck.rows[0].user_id === userId) {
                 isAuthorized = true;
             }
@@ -76,7 +76,7 @@ export async function GET(req, { params }) {
 
 export async function POST(req, { params }) {
     try {
-        const { userId } = getAuth(req);
+        const { userId } = await auth();
         if (!userId) return new NextResponse('Unauthorized', { status: 401 });
 
         // Update user activity proactively

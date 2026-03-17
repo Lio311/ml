@@ -1,11 +1,11 @@
 import pool from "@/app/lib/db";
-import { getAuth } from "@clerk/nextjs/server";
+import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
 export async function GET(req, props) {
     const params = await props.params;
     try {
-        const { userId } = getAuth(req);
+        const { userId } = await auth();
         if (!userId) return new NextResponse('Unauthorized', { status: 401 });
 
         const orderId = params.id;
@@ -30,7 +30,7 @@ export async function GET(req, props) {
         const userRole = userQuery.rows[0]?.role;
         const isAdmin = userRole === 'admin' || userRole === 'deputy';
         const isSeller = userRole === 'seller' && order.catalog_id && (
-            await pool.query('SELECT owner_id FROM catalogs WHERE id = $1 AND owner_id = $2', [order.catalog_id, userId])
+            await pool.query('SELECT user_id FROM user_catalogs WHERE id = $1 AND user_id = $2', [order.catalog_id, userId])
         ).rows.length > 0;
 
         if (!isBuyer && !isAdmin && !isSeller) {

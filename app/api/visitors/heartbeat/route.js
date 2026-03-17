@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import pool from '../../../lib/db';
-import { getAuth } from '@clerk/nextjs/server';
+import { auth } from '@clerk/nextjs/server';
 
 export const dynamic = 'force-dynamic';
 
@@ -15,7 +15,7 @@ const isAnalyticsBot = (ua) => {
 
 export async function POST(req) {
     try {
-        const { userId } = getAuth(req);
+        const { userId } = await auth();
         const { visitorId } = await req.json();
         const ua = req.headers.get('user-agent');
 

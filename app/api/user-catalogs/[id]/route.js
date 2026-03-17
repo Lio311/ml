@@ -6,11 +6,22 @@ import { recordAuditLog } from '@/app/lib/audit';
 export async function GET(req, context) {
     let client;
     try {
-        const { userId } = await auth();
+        console.log("GET /api/user-catalogs/[id]: Starting request...");
+        // Check if auth is defined in the module scope
+        if (typeof auth === 'undefined') {
+            console.error("DEBUG: 'auth' is UNDEFINED in module scope of GET!");
+            throw new ReferenceError("auth is not defined in GET scope");
+        }
+        
+        const authData = await auth();
+        const userId = authData?.userId;
+        console.log("GET /api/user-catalogs/[id]: Authenticated userId:", userId);
+        
         const params = await context.params;
         const { id } = params;
         
         if (!userId) {
+            console.log("GET /api/user-catalogs/[id]: Unauthorized");
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
@@ -31,11 +42,15 @@ export async function GET(req, context) {
 export async function PUT(req, context) {
     let client;
     try {
+        console.log("PUT /api/user-catalogs/[id]: Starting request...");
         const { userId } = await auth();
+        console.log("PUT /api/user-catalogs/[id]: Authenticated userId:", userId);
+        
         const params = await context.params;
         const { id } = params;
 
         if (!userId) {
+            console.log("PUT /api/user-catalogs/[id]: Unauthorized");
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
@@ -105,11 +120,15 @@ export async function PUT(req, context) {
 export async function DELETE(req, context) {
     let client;
     try {
+        console.log("DELETE /api/user-catalogs/[id]: Starting request...");
         const { userId } = await auth();
+        console.log("DELETE /api/user-catalogs/[id]: Authenticated userId:", userId);
+        
         const params = await context.params;
         const { id } = params;
 
         if (!userId) {
+            console.log("DELETE /api/user-catalogs/[id]: Unauthorized");
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 

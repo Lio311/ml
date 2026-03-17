@@ -1,11 +1,17 @@
 import pool from '../../lib/db';
-import { getAuth, clerkClient } from '@clerk/nextjs/server';
+import { auth, clerkClient } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
 
 export async function GET(req) {
     try {
-        const { userId } = getAuth(req);
-        if (!userId) return new NextResponse('Unauthorized', { status: 401 });
+        console.log("GET /api/inbox: Starting request...");
+        const { userId } = await auth();
+        console.log("GET /api/inbox: Authenticated userId:", userId);
+        
+        if (!userId) {
+            console.log("GET /api/inbox: Unauthorized access attempt");
+            return new NextResponse('Unauthorized', { status: 401 });
+        }
 
         // Update user activity proactively
         const { updateUserActivity } = await import('../../lib/db');
@@ -130,8 +136,14 @@ export async function GET(req) {
 
 export async function POST(req) {
     try {
-        const { userId } = getAuth(req);
-        if (!userId) return new NextResponse('Unauthorized', { status: 401 });
+        console.log("POST /api/inbox: Starting request...");
+        const { userId } = await auth();
+        console.log("POST /api/inbox: Authenticated userId:", userId);
+        
+        if (!userId) {
+            console.log("POST /api/inbox: Unauthorized access attempt");
+            return new NextResponse('Unauthorized', { status: 401 });
+        }
 
         const body = await req.json();
         let { conversation_id, participant2_id, catalog_id, order_id, content } = body;
