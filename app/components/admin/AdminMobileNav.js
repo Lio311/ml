@@ -28,23 +28,48 @@ export default function AdminMobileNav({ role = 'customer' }) {
 
     const isActive = (path) => pathname === path;
 
-    const allNavItems = [
-        { href: "/admin", label: "דשבורד", icon: Home, roles: ['admin', 'deputy'] },
-        { href: "/admin/inbox", label: "תיבת דואר", icon: MessageSquare, roles: ['admin', 'deputy'] },
-        { href: "/admin/orders", label: "ניהול הזמנות", icon: ShoppingBag, roles: ['admin', 'deputy', 'warehouse'] },
-        { href: "/admin/users", label: "ניהול משתמשים", icon: Users, roles: ['admin', 'deputy'] },
-        { href: "/admin/inventory", label: "ניהול בקבוקונים", icon: Package, roles: ['admin', 'deputy'] },
-        { href: "/admin/expenses", label: "ניהול הוצאות", icon: CreditCard, roles: ['admin', 'deputy'] },
-        { href: "/admin/requests", label: "ניהול בקשות", icon: Inbox, roles: ['admin', 'deputy'] },
-        { href: "/admin/products", label: "ניהול מוצרים", icon: Store, roles: ['admin', 'deputy'] },
-        { href: "/admin/brands", label: "ניהול מותגים", icon: Tag, roles: ['admin', 'deputy'] },
-        { href: "/admin/coupons", label: "ניהול קופונים", icon: Ticket, roles: ['admin', 'deputy'] },
-        { href: "/admin/lottery", label: "ניהול הגרלות", icon: Dice5, roles: ['admin', 'deputy'] },
-        { href: "/admin/dictionary", label: "מילון חיפוש", icon: Library, roles: ['admin', 'deputy'] },
-        { href: "/admin/menu", label: "ניהול תפריט", icon: Map, roles: ['admin', 'deputy'] },
-        { href: "/admin/catalogs", label: "ניהול קטלוגים", icon: Store, roles: ['admin', 'deputy'] },
-        { href: "/admin/catalog-orders", label: "ניהול הזמנות קטלוגים", icon: ClipboardList, roles: ['admin', 'deputy'] },
-        { href: "/admin/reviews", label: "ניהול ביקורות", icon: Star, roles: ['admin', 'deputy'] },
+    const navGroups = [
+        {
+            title: "פעילות שוטפת",
+            items: [
+                { href: "/admin", label: "דשבורד", icon: Home, roles: ['admin', 'deputy'] },
+                { href: "/admin/inbox", label: "תיבת דואר", icon: MessageSquare, roles: ['admin', 'deputy'] },
+                { href: "/admin/orders", label: "ניהול הזמנות", icon: ShoppingBag, roles: ['admin', 'deputy', 'warehouse'] },
+                { href: "/admin/users", label: "ניהול משתמשים", icon: Users, roles: ['admin', 'deputy'] },
+            ]
+        },
+        {
+            title: "מוצרים ומלאי",
+            items: [
+                { href: "/admin/products", label: "ניהול מוצרים", icon: Store, roles: ['admin', 'deputy'] },
+                { href: "/admin/inventory", label: "ניהול בקבוקונים", icon: Package, roles: ['admin', 'deputy'] },
+                { href: "/admin/brands", label: "ניהול מותגים", icon: Tag, roles: ['admin', 'deputy'] },
+                { href: "/admin/requests", label: "ניהול בקשות", icon: Inbox, roles: ['admin', 'deputy'] },
+            ]
+        },
+        {
+            title: "קטלוגים וצד ג'",
+            items: [
+                { href: "/admin/catalogs", label: "ניהול קטלוגים", icon: Store, roles: ['admin', 'deputy'] },
+                { href: "/admin/catalog-orders", label: "ניהול הזמנות קטלוגים", icon: ClipboardList, roles: ['admin', 'deputy'] },
+            ]
+        },
+        {
+            title: "שיווק ותוכן",
+            items: [
+                { href: "/admin/coupons", label: "ניהול קופונים", icon: Ticket, roles: ['admin', 'deputy'] },
+                { href: "/admin/lottery", label: "ניהול הגרלות", icon: Dice5, roles: ['admin', 'deputy'] },
+                { href: "/admin/reviews", label: "ניהול ביקורות", icon: Star, roles: ['admin', 'deputy'] },
+                { href: "/admin/expenses", label: "ניהול הוצאות", icon: CreditCard, roles: ['admin', 'deputy'] },
+            ]
+        },
+        {
+            title: "הגדרות מערכת",
+            items: [
+                { href: "/admin/dictionary", label: "מילון חיפוש", icon: Library, roles: ['admin', 'deputy'] },
+                { href: "/admin/menu", label: "ניהול תפריט", icon: Map, roles: ['admin', 'deputy'] },
+            ]
+        }
     ];
 
     const navItems = allNavItems.filter(item => item.roles.includes(role));
@@ -83,27 +108,41 @@ export default function AdminMobileNav({ role = 'customer' }) {
                         </button>
                     </div>
 
-                    <nav className="flex-1 space-y-1 overflow-y-auto" dir="rtl">
-                        {navItems.map((item) => {
-                            const Icon = item.icon;
+                    <nav className="flex-1 space-y-4 overflow-y-auto" dir="rtl">
+                        {navGroups.map((group, idx) => {
+                            const visibleItems = group.items.filter(item => item.roles.includes(role));
+                            if (visibleItems.length === 0) return null;
+
                             return (
-                                <Link
-                                    key={item.href}
-                                    href={item.href}
-                                    onClick={() => setIsOpen(false)}
-                                    className={`flex items-center gap-3 p-3 rounded-xl transition-all ${isActive(item.href)
-                                        ? "bg-black text-white shadow-md font-bold"
-                                        : "hover:bg-gray-200 text-gray-700 hover:text-black"
-                                        }`}
-                                >
-                                    <Icon className={`w-5 h-5 ${isActive(item.href) ? 'text-white' : 'text-gray-400'}`} />
-                                    <span>{item.label}</span>
-                                    {item.href.includes('inbox') && unreadCount > 0 && (
-                                        <span className="bg-red-600 text-white text-[10px] w-5 h-5 flex items-center justify-center rounded-full font-bold mr-auto">
-                                            {unreadCount}
-                                        </span>
-                                    )}
-                                </Link>
+                                <div key={idx} className="space-y-1">
+                                    <h3 className="px-3 text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">
+                                        {group.title}
+                                    </h3>
+                                    <div className="space-y-1">
+                                        {visibleItems.map((item) => {
+                                            const Icon = item.icon;
+                                            return (
+                                                <Link
+                                                    key={item.href}
+                                                    href={item.href}
+                                                    onClick={() => setIsOpen(false)}
+                                                    className={`flex items-center gap-3 p-3 rounded-xl transition-all ${isActive(item.href)
+                                                        ? "bg-black text-white shadow-md font-bold"
+                                                        : "hover:bg-gray-200 text-gray-700 hover:text-black"
+                                                        }`}
+                                                >
+                                                    <Icon className={`w-5 h-5 ${isActive(item.href) ? 'text-white' : 'text-gray-400'}`} />
+                                                    <span className="text-sm">{item.label.replace('ניהול ', '')}</span>
+                                                    {item.href.includes('inbox') && unreadCount > 0 && (
+                                                        <span className="bg-red-600 text-white text-[10px] w-5 h-5 flex items-center justify-center rounded-full font-bold mr-auto">
+                                                            {unreadCount}
+                                                        </span>
+                                                    )}
+                                                </Link>
+                                            );
+                                        })}
+                                    </div>
+                                </div>
                             );
                         })}
                     </nav>

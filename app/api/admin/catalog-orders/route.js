@@ -118,7 +118,8 @@ export async function PUT(req) {
 export async function DELETE(req) {
     let client;
     try {
-        const { userId } = await auth();
+        const authData = await clerkAuth();
+        const userId = authData?.userId;
         if (!userId) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
