@@ -15,9 +15,18 @@ export async function generateMetadata(props) {
     let title = "קטלוג דוגמיות בשמים ודיקאנטים | ml_tlv";
     let description = "כל דוגמיות הבשמים, הדיקאנטים ודוגמיות היוקרה שלנו במקום אחד. מצאו את הריח הבא שלכם.";
 
-    if (brand) title = `${brand} | ml_tlv`;
-    if (category) title = `${category} | ml_tlv`;
-    if (q) title = `חיפוש: ${q} | ml_tlv`;
+    if (brand) {
+        title = `${brand} - דוגמיות בשמים ודיקאנטים | ml_tlv`;
+        description = `קולקציית דוגמיות הבשמים של מותג ${brand}. הזמינו עכשיו דיקאנטים מקוריים של ${brand}.`;
+    }
+    if (category) {
+        title = `${category} - דוגמיות בשמים ודיקאנטים | ml_tlv`;
+        description = `מגוון דוגמיות בשמים מקטגוריית ${category}. בשמי בוטיק ונישה בריחות ${category} מובחרים.`;
+    }
+    if (q) {
+        title = `חיפוש: ${q} | ml_tlv`;
+        description = `תוצאות חיפוש עבור ${q} בקטלוג דוגמיות הבשמים של ml_tlv.`;
+    }
 
     const baseUrl = 'https://www.ml-tlv.com';
     const params = new URLSearchParams();

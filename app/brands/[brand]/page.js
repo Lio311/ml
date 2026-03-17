@@ -12,6 +12,9 @@ export async function generateMetadata(props) {
     return {
         title: `${brandName} - דוגמיות בשמים | ml_tlv`,
         description: `קולקציית בשמי ${brandName} באתר ml_tlv. הזמינו דוגמיות של ${brandName} במשלוח מהיר.`,
+        alternates: {
+            canonical: `https://www.ml-tlv.com/brands/${brand}`,
+        },
         openGraph: {
             title: `${brandName} - דוגמיות בשמים`,
             description: `קולקציית בשמי ${brandName} המלאה.`,
