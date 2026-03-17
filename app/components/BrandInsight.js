@@ -6,22 +6,19 @@ export default function BrandInsight({ brand }) {
     if (!insight) return null;
 
     return (
-        <section className="mt-16 pt-12 border-t border-gray-100 bg-gray-50/50 rounded-3xl p-8 md:p-12 mb-12">
-            <div className="max-w-4xl mx-auto">
-                <div className="flex flex-col md:flex-row gap-8 items-center md:items-start text-right">
+        <section className="mt-12 py-12 border-t border-gray-100 bg-white">
+            <div className="max-w-5xl mx-auto px-4 md:px-0">
+                <div className="flex flex-col gap-6 text-right">
                     
                     {/* Brand Meta */}
                     <div className="flex-1">
-                        <div className="flex items-center gap-3 mb-4 justify-end md:justify-start flex-row-reverse">
-                            <span className="bg-black text-white p-2 rounded-lg">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
-                            </span>
-                            <h2 className="text-2xl font-serif font-bold text-gray-900 leading-tight">
+                        <div className="mb-6">
+                            <h2 className="text-2xl md:text-3xl font-serif font-bold text-gray-900 leading-tight">
                                 {insight.title}
                             </h2>
                         </div>
                         
-                        <p className="text-gray-600 leading-relaxed text-sm md:text-base mb-6">
+                        <p className="text-gray-700 leading-relaxed text-base md:text-lg mb-8 max-w-none text-justify group">
                             {insight.description}
                         </p>
                         
