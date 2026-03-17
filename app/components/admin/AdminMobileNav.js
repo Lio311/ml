@@ -30,44 +30,44 @@ export default function AdminMobileNav({ role = 'customer' }) {
 
     const navGroups = [
         {
-            title: "פעילות שוטפת",
+            title: "פעילות",
             items: [
                 { href: "/admin", label: "דשבורד", icon: Home, roles: ['admin', 'deputy'] },
                 { href: "/admin/inbox", label: "תיבת דואר", icon: MessageSquare, roles: ['admin', 'deputy'] },
-                { href: "/admin/orders", label: "ניהול הזמנות", icon: ShoppingBag, roles: ['admin', 'deputy', 'warehouse'] },
-                { href: "/admin/users", label: "ניהול משתמשים", icon: Users, roles: ['admin', 'deputy'] },
+                { href: "/admin/orders", label: "הזמנות", icon: ShoppingBag, roles: ['admin', 'deputy', 'warehouse'] },
+                { href: "/admin/users", label: "משתמשים", icon: Users, roles: ['admin', 'deputy'] },
             ]
         },
         {
-            title: "מוצרים ומלאי",
+            title: "מלאי",
             items: [
-                { href: "/admin/products", label: "ניהול מוצרים", icon: Store, roles: ['admin', 'deputy'] },
-                { href: "/admin/inventory", label: "ניהול בקבוקונים", icon: Package, roles: ['admin', 'deputy'] },
-                { href: "/admin/brands", label: "ניהול מותגים", icon: Tag, roles: ['admin', 'deputy'] },
-                { href: "/admin/requests", label: "ניהול בקשות", icon: Inbox, roles: ['admin', 'deputy'] },
+                { href: "/admin/products", label: "מוצרים", icon: Store, roles: ['admin', 'deputy'] },
+                { href: "/admin/inventory", label: "בקבוקונים", icon: Package, roles: ['admin', 'deputy'] },
+                { href: "/admin/brands", label: "מותגים", icon: Tag, roles: ['admin', 'deputy'] },
+                { href: "/admin/requests", label: "בקשות", icon: Inbox, roles: ['admin', 'deputy'] },
             ]
         },
         {
-            title: "קטלוגים וצד ג'",
+            title: "קטלוגים",
             items: [
-                { href: "/admin/catalogs", label: "ניהול קטלוגים", icon: Store, roles: ['admin', 'deputy'] },
-                { href: "/admin/catalog-orders", label: "ניהול הזמנות קטלוגים", icon: ClipboardList, roles: ['admin', 'deputy'] },
+                { href: "/admin/catalogs", label: "קטלוגים", icon: Store, roles: ['admin', 'deputy'] },
+                { href: "/admin/catalog-orders", label: "הזמנות קטלוגים", icon: ClipboardList, roles: ['admin', 'deputy'] },
             ]
         },
         {
-            title: "שיווק ותוכן",
+            title: "שיווק",
             items: [
-                { href: "/admin/coupons", label: "ניהול קופונים", icon: Ticket, roles: ['admin', 'deputy'] },
-                { href: "/admin/lottery", label: "ניהול הגרלות", icon: Dice5, roles: ['admin', 'deputy'] },
-                { href: "/admin/reviews", label: "ניהול ביקורות", icon: Star, roles: ['admin', 'deputy'] },
-                { href: "/admin/expenses", label: "ניהול הוצאות", icon: CreditCard, roles: ['admin', 'deputy'] },
+                { href: "/admin/coupons", label: "קופונים", icon: Ticket, roles: ['admin', 'deputy'] },
+                { href: "/admin/lottery", label: "הגרלות", icon: Dice5, roles: ['admin', 'deputy'] },
+                { href: "/admin/reviews", label: "ביקורות", icon: Star, roles: ['admin', 'deputy'] },
+                { href: "/admin/expenses", label: "הוצאות", icon: CreditCard, roles: ['admin', 'deputy'] },
             ]
         },
         {
-            title: "הגדרות מערכת",
+            title: "מערכת",
             items: [
-                { href: "/admin/dictionary", label: "מילון חיפוש", icon: Library, roles: ['admin', 'deputy'] },
-                { href: "/admin/menu", label: "ניהול תפריט", icon: Map, roles: ['admin', 'deputy'] },
+                { href: "/admin/dictionary", label: "מילון", icon: Library, roles: ['admin', 'deputy'] },
+                { href: "/admin/menu", label: "תפריט", icon: Map, roles: ['admin', 'deputy'] },
             ]
         }
     ];
@@ -77,7 +77,7 @@ export default function AdminMobileNav({ role = 'customer' }) {
         <div className="md:hidden">
             {/* Top Bar */}
             <div className="bg-black text-white p-4 flex justify-between items-center shadow-lg sticky top-0 z-50">
-                <span className="font-bold text-lg">ml_tlv Admin</span>
+                <span className="font-bold text-lg tracking-tight">ml_tlv <span className="text-blue-500 font-medium">Admin</span></span>
                 <button 
                     onClick={() => setIsOpen(!isOpen)}
                     className="p-2 hover:bg-gray-800 rounded-lg transition-colors"
@@ -131,7 +131,7 @@ export default function AdminMobileNav({ role = 'customer' }) {
                                                         }`}
                                                 >
                                                     <Icon className={`w-5 h-5 ${isActive(item.href) ? 'text-white' : 'text-gray-400'}`} />
-                                                    <span className="text-sm">{item.label.replace('ניהול ', '')}</span>
+                                                    <span className="text-sm">{item.label}</span>
                                                     {item.href.includes('inbox') && unreadCount > 0 && (
                                                         <span className="bg-red-600 text-white text-[10px] w-5 h-5 flex items-center justify-center rounded-full font-bold mr-auto">
                                                             {unreadCount}
