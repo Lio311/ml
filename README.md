@@ -6,6 +6,19 @@ A high-performance, enterprise-grade Israeli commerce platform designed for the 
 
 ---
 
+## 📊 Project Statistics
+
+| Metric | Value |
+| :--- | :--- |
+| **Total Lines of Code** | 25,000+ |
+| **Project Files** | 220+ |
+| **API Endpoints** | 75+ |
+| **Custom UI Components** | 40+ |
+| **Database Tables** | 15+ |
+| **Tech Stack** | Next.js 15, React 19, PostgreSQL, Clerk |
+
+---
+
 ## 🚀 Key Innovation Pillars
 
 ### 🏪 Virtual Stores (Multi-Tenant Architecture)
