@@ -3,17 +3,34 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X, Home, Users, Package, CreditCard, Inbox, ShoppingBag, Tag, Ticket, Dice5, Library, Map, Store, ClipboardList, LogOut } from "lucide-react";
+import { Menu, X, Home, Users, Package, CreditCard, Inbox, ShoppingBag, Tag, Ticket, Dice5, Library, Map, Store, ClipboardList, LogOut, MessageSquare, Star } from "lucide-react";
 import { SignOutButton } from "@clerk/nextjs";
 
 export default function AdminMobileNav({ role = 'customer' }) {
     const [isOpen, setIsOpen] = useState(false);
+    const [unreadCount, setUnreadCount] = useState(0);
     const pathname = usePathname();
+
+    useEffect(() => {
+        const fetchUnread = async () => {
+            try {
+                const res = await fetch('/api/inbox/unread-count');
+                if (res.ok) {
+                    const data = await res.json();
+                    setUnreadCount(data.count);
+                }
+            } catch (err) {}
+        };
+        fetchUnread();
+        const interval = setInterval(fetchUnread, 30000);
+        return () => clearInterval(interval);
+    }, []);
 
     const isActive = (path) => pathname === path;
 
     const allNavItems = [
         { href: "/admin", label: "דשבורד", icon: Home, roles: ['admin', 'deputy'] },
+        { href: "/admin/inbox", label: "תיבת דואר", icon: MessageSquare, roles: ['admin', 'deputy'] },
         { href: "/admin/orders", label: "ניהול הזמנות", icon: ShoppingBag, roles: ['admin', 'deputy', 'warehouse'] },
         { href: "/admin/users", label: "ניהול משתמשים", icon: Users, roles: ['admin', 'deputy'] },
         { href: "/admin/inventory", label: "ניהול בקבוקונים", icon: Package, roles: ['admin', 'deputy'] },
@@ -27,6 +44,7 @@ export default function AdminMobileNav({ role = 'customer' }) {
         { href: "/admin/menu", label: "ניהול תפריט", icon: Map, roles: ['admin', 'deputy'] },
         { href: "/admin/catalogs", label: "ניהול קטלוגים", icon: Store, roles: ['admin', 'deputy'] },
         { href: "/admin/catalog-orders", label: "הזמנות קטלוגים", icon: ClipboardList, roles: ['admin', 'deputy'] },
+        { href: "/admin/reviews", label: "ניהול ביקורות", icon: Star, roles: ['admin', 'deputy'] },
     ];
 
     const navItems = allNavItems.filter(item => item.roles.includes(role));
@@ -80,6 +98,11 @@ export default function AdminMobileNav({ role = 'customer' }) {
                                 >
                                     <Icon className={`w-5 h-5 ${isActive(item.href) ? 'text-white' : 'text-gray-400'}`} />
                                     <span>{item.label}</span>
+                                    {item.href.includes('inbox') && unreadCount > 0 && (
+                                        <span className="bg-red-600 text-white text-[10px] w-5 h-5 flex items-center justify-center rounded-full font-bold mr-auto">
+                                            {unreadCount}
+                                        </span>
+                                    )}
                                 </Link>
                             );
                         })}
