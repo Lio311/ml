@@ -52,7 +52,7 @@ export async function POST(req) {
         }
 
         // Verify order belongs to user and is completed
-        const orderCheck = await pool.query('SELECT status FROM orders WHERE id = $1 AND user_id = $2', [orderId, userId]);
+        const orderCheck = await pool.query("SELECT status FROM orders WHERE id = $1 AND customer_details->>'clerk_id' = $2", [orderId, userId]);
         if (orderCheck.rows.length === 0) {
             return new NextResponse('Order not found or unauthorized', { status: 404 });
         }

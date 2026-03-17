@@ -31,7 +31,7 @@ export default function ReviewsClient({ initialReviews = [] }) {
                    החוויות שלכם עם ml_tlv
                 </h1>
                 
-                <p className="max-w-2xl mx-auto text-gray-500 text-sm md:text-base leading-relaxed font-medium">
+                <p className="max-w-4xl mx-auto text-gray-500 text-sm md:text-base leading-relaxed font-medium">
                     אנחנו גאים לחלוק את המשוב שלכם. כל ביקורת עוזרת לנו להשתפר ולהמשיך להביא לכם את הריחות הכי יוקרתיים שיש.
                 </p>
             </div>
