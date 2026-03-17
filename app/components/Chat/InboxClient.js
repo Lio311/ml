@@ -300,7 +300,7 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
         const now = new Date();
         const diffMinutes = Math.floor((now - lastActive) / 60000);
 
-        if (diffMinutes < 2) return "זמין כעת";
+        if (diffMinutes < 1) return "זמין כעת";
         
         const isToday = lastActive.toDateString() === now.toDateString();
         const timeStr = lastActive.toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit', hour12: false });
@@ -447,9 +447,9 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
                                             <h2 className="font-bold text-gray-900 leading-tight">
                                                 {activeConversation ? getChatName(activeConversation) : '...'}
                                             </h2>
-                                            <div className="flex items-center gap-1">
-                                                <div className={`w-1.5 h-1.5 rounded-full ${otherParticipantStatus?.last_active_at && (new Date() - new Date(otherParticipantStatus.last_active_at)) < 120000 ? 'bg-green-500 animate-pulse' : 'bg-gray-300'}`} />
-                                                <span className="text-[10px] text-gray-500">
+                                            <div className="flex items-center gap-1.5">
+                                                <div className={`w-2 h-2 rounded-full shadow-sm ${otherParticipantStatus?.last_active_at && (new Date() - new Date(otherParticipantStatus.last_active_at)) < 60000 ? 'bg-green-500 animate-pulse ring-2 ring-green-100' : 'bg-gray-300'}`} />
+                                                <span className={`text-[10px] font-medium ${otherParticipantStatus?.last_active_at && (new Date() - new Date(otherParticipantStatus.last_active_at)) < 60000 ? 'text-green-600' : 'text-gray-500'}`}>
                                                     {formatLastSeen(otherParticipantStatus?.last_active_at) || "זמין כעת"}
                                                 </span>
                                             </div>

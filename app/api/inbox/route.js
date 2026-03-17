@@ -7,6 +7,10 @@ export async function GET(req) {
         const { userId } = getAuth(req);
         if (!userId) return new NextResponse('Unauthorized', { status: 401 });
 
+        // Update user activity proactively
+        const { updateUserActivity } = await import('../../lib/db');
+        await updateUserActivity(userId);
+
         const { searchParams } = new URL(req.url);
         const catalogId = searchParams.get('catalog_id');
         const asAdmin = searchParams.get('as_admin') === 'true';
