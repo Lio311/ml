@@ -83,7 +83,7 @@ export default function OrderReviewPrompt({ orderId, initialHasSubmitted = false
             <button
                 onClick={handleSubmit}
                 disabled={isSubmitting || !content.trim()}
-                className="mt-6 w-full bg-white text-black font-black py-4 rounded-3xl text-sm transition-all hover:bg-gray-100 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_10px_30px_rgba(255,255,255,0.05)] flex items-center justify-center gap-2 uppercase tracking-tight"
+                className="mt-6 w-full bg-emerald-500 text-white font-black py-4 rounded-3xl text-sm transition-all hover:bg-emerald-600 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_10px_30px_rgba(16,185,129,0.1)] flex items-center justify-center gap-2 uppercase tracking-tight"
             >
                 {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : "שלח ביקורת"}
             </button>

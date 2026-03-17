@@ -34,7 +34,6 @@ export default function Footer() {
                         <li><Link href="/terms">תקנון האתר</Link></li>
                         <li><Link href="/shipping">משלוחים והחזרות</Link></li>
                         <li><Link href="/privacy">מדיניות פרטיות</Link></li>
-                        <li><Link href="/reviews">ביקורות גולשים</Link></li>
                     </ul>
                 </div>
 
@@ -65,9 +64,12 @@ export default function Footer() {
                         <span>ml_tlv@</span>
                     </a>
 
-                    <div className="mt-4">
+                    <div className="mt-4 space-y-2">
                         <Link href="/blog" className="text-gray-400 hover:text-white transition block">
                             מגזין הבישום
+                        </Link>
+                        <Link href="/reviews" className="text-gray-400 hover:text-white transition block">
+                            ביקורות גולשים
                         </Link>
                     </div>
                 </div>

@@ -37,9 +37,8 @@ export default function ReviewsClient({ initialReviews = [] }) {
             </div>
 
             {/* Stats Section */}
-            <div className="max-w-6xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6 mb-20">
+            <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-6 mb-20">
                 {[
-                    { label: "שביעות רצון", value: `${stats.satisfaction}%`, icon: Heart },
                     { label: "דירוג ממוצע", value: `${stats.avg}/5`, icon: Star },
                     { label: "ביקורות מאומתות", value: stats.count.toString(), icon: MessageSquare }
                 ].map((stat, i) => (
