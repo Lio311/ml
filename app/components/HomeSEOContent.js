@@ -50,23 +50,38 @@ export default function HomeSEOContent() {
                         </div>
                     </div>
 
-                    <div className="mt-16 pb-20 border-b border-stone-200/50 space-y-10">
-                        <div className="max-w-4xl mx-auto space-y-6 text-center md:text-right">
-                             <h3 className="text-2xl font-serif font-bold text-gray-900 italic">המשמעות של ריח בחיי היומיום</h3>
-                            <p className="text-gray-600 text-lg lg:text-xl font-light leading-relaxed">
-                                ריח הוא החוש החזק ביותר שקשור לזיכרון ורגש. בחירת <strong>בשמים</strong> נכונה יכולה לשפר את הביטחון העצמי, ליצור רושם ראשוני בלתי נשכח ולעורר תחושות של רוגע או אנרגיה. אנו מאמינים שלכל אירוע יש את הריח המתאים לו – בושם רענן ולימוני לבוקר במשרד, ניחוח עוד (Oud) עשיר ומתובל לאירוע ערב יוקרתי, או בושם פרחוני ועדין לדייט רומנטי. דרך ה-<strong>דיקאנטים</strong> שלנו, תוכלו להתאים את הריח למצב הרוח ולבגדים שלכם בכל יום מחדש.
-                            </p>
-                            <p className="text-gray-600 text-lg lg:text-xl font-light leading-relaxed">
-                                אנו גאים לספק משלוחים מהירים לכל חלקי הארץ, מאילת ועד רמת הגולן. השירות שלנו כולל ייעוץ אישי למי שמתלבט, מאמרים מקצועיים במגזין שלנו על משפחות ריח ומרכיבים נדירים, ומערכת הטבות ייחודית המעניקה <strong>דוגמיות חינם</strong> בכל רכישה משמעותית. כשאתם מחפשים <strong>בשמים תל אביב</strong> או <strong>דוגמיות בשמים אונליין</strong>, ml_tlv היא הבחירה הטבעית של מי שלא מוכן להתפשר על פחות מהטוב ביותר.
-                            </p>
-                            <p className="text-lg font-medium text-gray-900 mt-8">
-                                גלו עכשיו את האוסף שלנו, התחילו את המסע שלכם בעולם ה-<strong>בישום הנישתי</strong>. עם ml_tlv, היוקרה נמצאת בהישג ידכם – בטיפה אחת של דיקאנט.
-                            </p>
+                    {/* Bottom Section - More Structured */}
+                    <div className="mt-20 space-y-16">
+                        <div className="p-10 md:p-16 bg-white rounded-[3rem] border border-stone-100 shadow-sm relative overflow-hidden group">
+                            <div className="absolute top-0 right-0 w-32 h-32 bg-stone-50 rounded-full -translate-y-16 translate-x-16 group-hover:scale-110 transition-transform duration-700"></div>
+                            
+                            <h3 className="text-3xl font-serif font-black text-gray-900 mb-8 relative z-10 italic">
+                                המשמעות של ריח בחיי היומיום
+                            </h3>
+                            
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-10 relative z-10">
+                                <p className="text-gray-600 text-lg font-light leading-relaxed">
+                                    ריח הוא החוש החזק ביותר שקשור לזיכרון ורגש. בחירת <strong>בשמים</strong> נכונה יכולה לשפר את הביטחון העצמי, ליצור רושם ראשוני בלתי נשכח ולעורר תחושות של רוגע או אנרגיה. אנו מאמינים שלכל אירוע יש את הריח המתאים לו – בושם רענן ולימוני לבוקר במשרד, ניחוח עוד (Oud) עשיר ומתובל לאירוע ערב יוקרתי, או בושם פרחוני ועדין לדייט רומנטי. 
+                                </p>
+                                <p className="text-gray-600 text-lg font-light leading-relaxed">
+                                    אנו גאים לספק משלוחים מהירים לכל חלקי הארץ, מאילת ועד רמת הגולן. השירות שלנו כולל ייעוץ אישי למי שמתלבט, מאמרים מקצועיים במגזין שלנו על משפחות ריח ומרכיבים נדירים, ומערכת הטבות ייחודית המעניקה <strong>דוגמיות חינם</strong> בכל רכישה משמעותית. כשאתם מחפשים <strong>בשמים תל אביב</strong> או <strong>דוגמיות בשמים אונליין</strong>, ml_tlv היא הבחירה הטבעית.
+                                </p>
+                            </div>
+
+                            <div className="mt-12 pt-8 border-t border-stone-100 flex flex-col md:flex-row items-center justify-between gap-6">
+                                <p className="text-xl font-bold text-gray-900 text-center md:text-right">
+                                    גלו עכשיו את האוסף שלנו, התחילו את המסע שלכם בעולם ה-<strong>בישום הנישתי</strong>.
+                                </p>
+                                <Link href="/catalog" className="px-10 py-4 bg-black text-white rounded-full font-bold text-sm tracking-widest hover:bg-gray-800 transition shadow-lg whitespace-nowrap">
+                                    Shop Collection
+                                </Link>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
-            {/* Decorative bottom element to blend with footer if needed, but per request: completely flush */}
+            {/* Flush bottom spacer */}
+            <div className="h-20 w-full bg-stone-50/0 pointer-events-none"></div>
         </section>
     );
 }
