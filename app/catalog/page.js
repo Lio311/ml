@@ -312,25 +312,35 @@ export default async function CatalogPage(props) {
             </div>
 
             {/* SEO Content Section */}
-            <div className="mt-20 border-t pt-12">
-                <div className="max-w-4xl mx-auto prose prose-sm md:prose-base dark:prose-invert">
-                    <h2 className="text-2xl font-bold mb-6 text-center">דוגמיות בשמים ודיקאנטים - כל מה שצריך לדעת</h2>
-                    <div className="grid md:grid-cols-2 gap-8 text-right leading-relaxed text-gray-700">
-                        <div>
-                            <h3 className="font-bold text-black mb-3">למה כדאי לקנות דוגמיות בשמים?</h3>
-                            <p>
-                                עולם הבישום הוא רחב ומורכב, ובחירת בושם חדש יכולה להיות משימה מאתגרת. דוגמיות בשמים (Perfume Samples) מאפשרות לכם להתנסות בריחות יוקרה, נישה ובוטיק מבלי להתחייב לבקבוק מלא ויקר. אצלנו ב-ml_tlv תוכלו למצוא מגוון רחב של דוגמיות בשמים מקוריים בקונספט ייחודי.
+            <div className="mt-24 border-t border-gray-100 pt-16 pb-12 bg-gray-50/50 rounded-3xl px-6 md:px-12">
+                <div className="max-w-4xl mx-auto">
+                    <h2 className="text-3xl font-serif font-bold mb-10 text-center text-gray-900 relative">
+                        דוגמיות בשמים ודיקאנטים - כל מה שצריך לדעת
+                        <span className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-20 h-1 bg-black rounded-full"></span>
+                    </h2>
+                    <div className="grid md:grid-cols-2 gap-12 text-right">
+                        <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+                            <div className="w-12 h-12 bg-black text-white rounded-xl flex items-center justify-center mb-6 text-xl">✨</div>
+                            <h3 className="text-xl font-bold text-black mb-4">למה כדאי לקנות דוגמיות בשמים?</h3>
+                            <p className="leading-relaxed text-gray-600">
+                                עולם הבישום הוא רחב ומורכב, ובחירת בושם חדש יכולה להיות משימה מאתגרת. דוגמיות בשמים (Perfume Samples) מאפשרות לכם להתנסות בריחות יוקרה, נישה ובוטיק מבלי להתחייב לבקבוק מלא ויקר. אצלנו ב-ml_tlv תוכלו למצוא מגוון רחב של דוגמיות בשמים מקוריים בקונספט ייחודי המאפשר לחוות את הריח לאורך זמן.
                             </p>
                         </div>
-                        <div>
-                            <h3 className="font-bold text-black mb-3">מה זה דיקאנט (Decant)?</h3>
-                            <p>
-                                דיקאנטים הם בשמים שהועברו מהבקבוק המקורי לבקבוקונים קטנים ונוחים לשימוש. זו הדרך הטובה ביותר לקחת את הריח האהוב עליכם לכל מקום, או פשוט לנסות בושם נישה יקר במחיר נגיש לכל כיס. כל הדיקאנטים שלנו מיוצרים בתנאים סטריליים מהבשמים המקוריים ביותר.
+                        <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
+                            <div className="w-12 h-12 bg-black text-white rounded-xl flex items-center justify-center mb-6 text-xl">⚱️</div>
+                            <h3 className="text-xl font-bold text-black mb-4">מה זה דיקאנט (Decant)?</h3>
+                            <p className="leading-relaxed text-gray-600">
+                                דיקאנטים הם בשמים שהועברו מהבקבוק המקורי לבקבוקונים קטנים ונוחים לשימוש (בד"כ 2, 5 או 10 מ"ל). זו הדרך הטובה ביותר לקחת את הריח האהוב עליכם לכל מקום, או פשוט לנסות בושם נישה יקר במחיר נגיש לכל כיס. כל הדיקאנטים שלנו מיוצרים תחת בקרה קפדנית ומהבשמים המקוריים ביותר.
                             </p>
                         </div>
                     </div>
-                    <div className="mt-8 text-center text-sm text-gray-500 italic">
-                        מחפשים דוגמיות יוקרה או דיקאנטים של בשמי נישה? הגעתם למקום הנכון. ml_tlv - יוקרה בחתיכות קטנות.
+                    <div className="mt-12 text-center">
+                        <div className="inline-block bg-black text-white px-8 py-3 rounded-full font-serif italic text-lg shadow-lg">
+                            ml_tlv - יוקרה בחתיכות קטנות
+                        </div>
+                        <p className="mt-6 text-gray-400 text-sm max-w-xl mx-auto">
+                            מחפשים דוגמיות יוקרה או דיקאנטים של בשמי נישה מהמותגים המובילים בעולם? הגעתם למקום הנכון. אצלנו תהנו ממשלוח מהיר ושירות אישי.
+                        </p>
                     </div>
                 </div>
             </div>
