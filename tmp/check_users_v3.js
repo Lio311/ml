@@ -8,12 +8,7 @@ async function checkUsers() {
     const client = await pool.connect();
     try {
         console.log('Checking users table schema...');
-        const res = await client.query(\`
-            SELECT column_name, column_default, is_nullable, data_type
-            FROM information_schema.columns 
-            WHERE table_name = 'users'
-            ORDER BY ordinal_position
-        \`);
+        const res = await client.query("SELECT column_name, column_default, is_nullable, data_type FROM information_schema.columns WHERE table_name = 'users' ORDER BY ordinal_position");
         console.log('Columns in users table:', res.rows);
     } catch (err) {
         console.error('Check failed:', err);

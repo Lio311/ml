@@ -44,10 +44,12 @@ export async function updateUserActivity(userId) {
     if (!userId) return;
     try {
         await pool.query(`
-            INSERT INTO users (id, last_active_at)
-            VALUES ($1, NOW())
+            INSERT INTO users (id, last_active_at, created_at, updated_at)
+            VALUES ($1, NOW(), NOW(), NOW())
             ON CONFLICT (id) 
-            DO UPDATE SET last_active_at = NOW()
+            DO UPDATE SET 
+                last_active_at = NOW(),
+                updated_at = NOW()
         `, [userId]);
     } catch (err) {
         console.error('Error updating user activity:', err);

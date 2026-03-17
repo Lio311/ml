@@ -65,10 +65,10 @@ export default function Footer() {
                     </a>
 
                     <div className="mt-4 space-y-2">
-                        <Link href="/blog" className="text-gray-400 hover:text-white transition block">
+                        <Link href="/blog" className="text-sm text-gray-400 hover:text-white transition block">
                             מגזין הבישום
                         </Link>
-                        <Link href="/reviews" className="text-gray-400 hover:text-white transition block">
+                        <Link href="/reviews" className="text-sm text-gray-400 hover:text-white transition block">
                             ביקורות גולשים
                         </Link>
                     </div>

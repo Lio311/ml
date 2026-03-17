@@ -4,17 +4,12 @@ const pool = new Pool({
     ssl: { rejectUnauthorized: false }
 });
 
-async function checkUsers() {
+async function checkReviews() {
     const client = await pool.connect();
     try {
-        console.log('Checking users table schema...');
-        const res = await client.query(\`
-            SELECT column_name, column_default, is_nullable, data_type
-            FROM information_schema.columns 
-            WHERE table_name = 'users'
-            ORDER BY ordinal_position
-        \`);
-        console.log('Columns in users table:', res.rows);
+        console.log('Checking reviews table schema...');
+        const res = await client.query("SELECT column_name, data_type, is_nullable FROM information_schema.columns WHERE table_name = 'reviews' ORDER BY ordinal_position");
+        console.log('Columns in reviews table:', res.rows);
     } catch (err) {
         console.error('Check failed:', err);
     } finally {
@@ -23,4 +18,4 @@ async function checkUsers() {
     }
 }
 
-checkUsers();
+checkReviews();
