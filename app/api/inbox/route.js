@@ -1,21 +1,23 @@
-import pool from '../../lib/db';
-import { auth, clerkClient } from '@clerk/nextjs/server';
+import pool, { updateUserActivity } from '../../lib/db';
+import { auth as clerkAuth, clerkClient } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
 
 export async function GET(req) {
     try {
-        console.log("GET /api/inbox: Starting request...");
-        const { userId } = await auth();
-        console.log("GET /api/inbox: Authenticated userId:", userId);
+        console.log("DEBUG: GET /api/inbox - Starting request");
+        const authData = await clerkAuth();
+        const userId = authData?.userId;
+        console.log("DEBUG: GET /api/inbox - Authenticated userId:", userId);
         
         if (!userId) {
-            console.log("GET /api/inbox: Unauthorized access attempt");
+            console.log("DEBUG: GET /api/inbox - Unauthorized");
             return new NextResponse('Unauthorized', { status: 401 });
         }
 
         // Update user activity proactively
-        const { updateUserActivity } = await import('../../lib/db');
+        console.log("DEBUG: GET /api/inbox - Updating activity for:", userId);
         await updateUserActivity(userId);
+        console.log("DEBUG: GET /api/inbox - Activity updated");
 
         const { searchParams } = new URL(req.url);
         const catalogId = searchParams.get('catalog_id');
@@ -129,19 +131,20 @@ export async function GET(req) {
 
         return NextResponse.json(convs);
     } catch (error) {
-        console.error('Error fetching inbox:', error);
-        return new NextResponse('Internal Error', { status: 500 });
+        console.error('ERROR: GET /api/inbox failed:', error);
+        return new NextResponse('Internal Error: ' + (error.message || 'Unknown'), { status: 500 });
     }
 }
 
 export async function POST(req) {
     try {
-        console.log("POST /api/inbox: Starting request...");
-        const { userId } = await auth();
-        console.log("POST /api/inbox: Authenticated userId:", userId);
+        console.log("DEBUG: POST /api/inbox - Starting request");
+        const authData = await clerkAuth();
+        const userId = authData?.userId;
+        console.log("DEBUG: POST /api/inbox - Authenticated userId:", userId);
         
         if (!userId) {
-            console.log("POST /api/inbox: Unauthorized access attempt");
+            console.log("DEBUG: POST /api/inbox - Unauthorized");
             return new NextResponse('Unauthorized', { status: 401 });
         }
 
@@ -221,7 +224,7 @@ export async function POST(req) {
 
         return NextResponse.json(insertMsg.rows[0]);
     } catch (error) {
-        console.error('Error sending message:', error);
-        return new NextResponse('Internal Error', { status: 500 });
+        console.error('ERROR: POST /api/inbox failed:', error);
+        return new NextResponse('Internal Error: ' + (error.message || 'Unknown'), { status: 500 });
     }
 }
