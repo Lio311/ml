@@ -312,35 +312,37 @@ export default async function CatalogPage(props) {
             </div>
 
             {/* SEO Content Section */}
-            <div className="mt-24 border-t border-gray-100 pt-16 pb-12 bg-gray-50/50 rounded-3xl px-6 md:px-12">
-                <div className="max-w-4xl mx-auto">
-                    <h2 className="text-3xl font-serif font-bold mb-10 text-center text-gray-900 relative">
-                        דוגמיות בשמים ודיקאנטים - כל מה שצריך לדעת
-                        <span className="absolute -bottom-4 left-1/2 -translate-x-1/2 w-20 h-1 bg-black rounded-full"></span>
+            <div className="mt-16 border-t border-gray-100 pt-12 pb-8 px-4">
+                <div className="max-w-5xl mx-auto">
+                    <h2 className="text-2xl font-serif font-bold mb-8 text-center text-gray-900">
+                        מדריך דוגמיות בשמים ודיקאנטים
                     </h2>
-                    <div className="grid md:grid-cols-2 gap-12 text-right">
-                        <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
-                            <div className="w-12 h-12 bg-black text-white rounded-xl flex items-center justify-center mb-6 text-xl">✨</div>
-                            <h3 className="text-xl font-bold text-black mb-4">למה כדאי לקנות דוגמיות בשמים?</h3>
-                            <p className="leading-relaxed text-gray-600">
-                                עולם הבישום הוא רחב ומורכב, ובחירת בושם חדש יכולה להיות משימה מאתגרת. דוגמיות בשמים (Perfume Samples) מאפשרות לכם להתנסות בריחות יוקרה, נישה ובוטיק מבלי להתחייב לבקבוק מלא ויקר. אצלנו ב-ml_tlv תוכלו למצוא מגוון רחב של דוגמיות בשמים מקוריים בקונספט ייחודי המאפשר לחוות את הריח לאורך זמן.
+                    <div className="grid md:grid-cols-2 gap-6 text-right">
+                        <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm hover:border-gray-200 transition-all group">
+                            <div className="flex items-center gap-3 mb-4">
+                                <div className="p-2 bg-gray-50 rounded-lg group-hover:bg-black group-hover:text-white transition-colors">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
+                                </div>
+                                <h3 className="text-lg font-bold text-black border-r-2 border-black pr-3 leading-none">למה דוגמיות?</h3>
+                            </div>
+                            <p className="text-sm leading-relaxed text-gray-600">
+                                עולם הבישום הוא רחב ומורכב. דוגמיות בשמים (Perfume Samples) מאפשרות לכם להתנסות בריחות יוקרה, נישה ובוטיק מבלי להתחייב לבקבוק מלא. זו הדרך החכמה ביותר למצוא את הריח המדויק עבורכם במינימום סיכון ומקסימום חוויה.
                             </p>
                         </div>
-                        <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
-                            <div className="w-12 h-12 bg-black text-white rounded-xl flex items-center justify-center mb-6 text-xl">⚱️</div>
-                            <h3 className="text-xl font-bold text-black mb-4">מה זה דיקאנט (Decant)?</h3>
-                            <p className="leading-relaxed text-gray-600">
-                                דיקאנטים הם בשמים שהועברו מהבקבוק המקורי לבקבוקונים קטנים ונוחים לשימוש (בד"כ 2, 5 או 10 מ"ל). זו הדרך הטובה ביותר לקחת את הריח האהוב עליכם לכל מקום, או פשוט לנסות בושם נישה יקר במחיר נגיש לכל כיס. כל הדיקאנטים שלנו מיוצרים תחת בקרה קפדנית ומהבשמים המקוריים ביותר.
+                        <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm hover:border-gray-200 transition-all group">
+                            <div className="flex items-center gap-3 mb-4">
+                                <div className="p-2 bg-gray-50 rounded-lg group-hover:bg-black group-hover:text-white transition-colors">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 7v10"/><path d="M3 7v10"/><path d="M12 3v18"/><path d="M7 12h10"/><path d="m7 7 10 10"/><path d="m17 7-10 10"/></svg>
+                                </div>
+                                <h3 className="text-lg font-bold text-black border-r-2 border-black pr-3 leading-none">מהו דיקאנט?</h3>
+                            </div>
+                            <p className="text-sm leading-relaxed text-gray-600">
+                                דיקאנט הוא בושם מקורי שהועבר לבקבוקון קטן (2, 5 או 10 מ"ל). זוהי חלופה נהדרת המאפשרת לקחת את הריח האהוב לכל מקום, או לנסות מותגי נישה במחיר נגיש. כל התמציות אצלנו מקוריות לחלוטין ונארזות בקפידה.
                             </p>
                         </div>
                     </div>
-                    <div className="mt-12 text-center">
-                        <div className="inline-block bg-black text-white px-8 py-3 rounded-full font-serif italic text-lg shadow-lg">
-                            ml_tlv - יוקרה בחתיכות קטנות
-                        </div>
-                        <p className="mt-6 text-gray-400 text-sm max-w-xl mx-auto">
-                            מחפשים דוגמיות יוקרה או דיקאנטים של בשמי נישה מהמותגים המובילים בעולם? הגעתם למקום הנכון. אצלנו תהנו ממשלוח מהיר ושירות אישי.
-                        </p>
+                    <div className="mt-8 pt-6 border-t border-gray-50 text-center">
+                        <span className="text-sm font-serif italic text-gray-400">ml_tlv - יוקרה בחתיכות קטנות</span>
                     </div>
                 </div>
             </div>
