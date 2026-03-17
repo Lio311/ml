@@ -1,11 +1,13 @@
 import { NextResponse } from 'next/server';
-import { auth, currentUser } from '@clerk/nextjs/server';
+import { auth as clerkAuth, currentUser } from '@clerk/nextjs/server';
 import pool from '../../lib/db';
 import { sendEmail, getOrderConfirmationTemplate, getAdminNewOrderTemplate } from '../../lib/email';
+import { recordAuditLog } from '../../lib/audit';
 
 export async function POST(req) {
     try {
-        const { userId } = await auth();
+        const authData = await clerkAuth();
+        const userId = authData?.userId;
         const user = await currentUser();
 
         if (!userId) {

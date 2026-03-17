@@ -1,10 +1,11 @@
 import pool from '../../../lib/db';
-import { auth } from '@clerk/nextjs/server';
+import { auth as clerkAuth } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
 
 export async function PATCH(req) {
     try {
-        const { userId } = await auth();
+        const authData = await clerkAuth();
+        const userId = authData?.userId;
         if (!userId) return new NextResponse('Unauthorized', { status: 401 });
 
         // Check if requester is admin
@@ -32,7 +33,8 @@ export async function PATCH(req) {
 
 export async function DELETE(req) {
     try {
-        const { userId } = await auth();
+        const authData = await clerkAuth();
+        const userId = authData?.userId;
         if (!userId) return new NextResponse('Unauthorized', { status: 401 });
 
         // Check if requester is admin

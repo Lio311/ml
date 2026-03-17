@@ -6,7 +6,8 @@ export async function GET(req, { params }) {
     try {
         // Here we might not strictly need auth for public viewing, but this endpoint is typically for the owner's dashboard
         // A separate public route will be created for public viewing by slug
-        const { userId } = await auth();
+        const authData = await clerkAuth();
+        const userId = authData?.userId;
         const { id } = await params;
 
         if (!userId) {

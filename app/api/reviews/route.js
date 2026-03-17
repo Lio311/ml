@@ -1,5 +1,5 @@
 import pool from '../../lib/db';
-import { auth, clerkClient } from '@clerk/nextjs/server';
+import { auth as clerkAuth, clerkClient } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
 
 export async function GET() {
@@ -41,7 +41,8 @@ export async function GET() {
 
 export async function POST(req) {
     try {
-        const { userId } = await auth();
+        const authData = await clerkAuth();
+        const userId = authData?.userId;
         if (!userId) return new NextResponse('Unauthorized', { status: 401 });
 
         const body = await req.json();

@@ -5,7 +5,8 @@ import pool from '@/app/lib/db';
 export async function PUT(req, context) {
     let client;
     try {
-        const { userId } = await auth();
+        const authData = await clerkAuth();
+        const userId = authData?.userId;
         const params = await context.params;
         const { id, itemId } = params;
 

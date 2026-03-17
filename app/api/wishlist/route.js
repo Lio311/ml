@@ -1,10 +1,11 @@
 import { NextResponse } from 'next/server';
 import pool from '../../lib/db';
-import { auth } from '@clerk/nextjs/server';
+import { auth as clerkAuth } from '@clerk/nextjs/server';
 
 // GET: Get user's wishlist product IDs
 export async function GET(req) {
-    const { userId } = await auth();
+    const authData = await clerkAuth();
+    const userId = authData?.userId;
     if (!userId) {
         return NextResponse.json({ wishlist: [] });
     }
@@ -25,7 +26,8 @@ export async function GET(req) {
 
 // POST: Toggle Wishlist Item
 export async function POST(req) {
-    const { userId } = await auth();
+    const authData = await clerkAuth();
+    const userId = authData?.userId;
     if (!userId) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
