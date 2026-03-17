@@ -389,10 +389,12 @@ export default async function ProductPage(props) {
                             {related.map(p => (
                                 <ProductCard key={p.id} product={p} />
                             ))}
-                        </div>
                     </div>
                 )
             }
+
+            {/* Brand Insight Section (SEO) */}
+            <BrandInsight brand={product.brand} />
         </div >
     );
 }
