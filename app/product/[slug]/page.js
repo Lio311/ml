@@ -9,6 +9,7 @@ import AddToCartAdvanced from "../../components/ProductCard";
 import FragrancePyramid from "../../components/FragrancePyramid";
 import ShareButton from "../../components/ShareButton";
 import Breadcrumbs from "../../components/Breadcrumbs";
+import BrandInsight from "../../components/BrandInsight";
 
 
 export const revalidate = 3600; // SEO Improvement: Cache for 1 hour
