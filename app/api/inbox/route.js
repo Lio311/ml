@@ -217,9 +217,20 @@ export async function POST(req) {
                 conversationId = checkQuery.rows[0].id;
             } else {
                 // Determine participant2_id
-                const p2 = catalog_id ? null : (participant2_id || 'admin');
+                let p2 = participant2_id || 'admin';
+                if (catalog_id) {
+                    try {
+                        const catRes = await pool.query('SELECT user_id FROM user_catalogs WHERE id = $1', [catalog_id]);
+                        if (catRes.rows.length > 0) {
+                            p2 = catRes.rows[0].user_id;
+                        }
+                    } catch (err) {
+                        console.error("DEBUG: POST /api/inbox - Error resolving catalog owner:", err);
+                    }
+                }
 
                 // Create new conversation
+                console.log("DEBUG: POST /api/inbox - Creating conversation with p2:", p2);
                 const insertConv = await pool.query(`
                     INSERT INTO conversations (participant1_id, participant2_id, catalog_id, order_id)
                     VALUES ($1, $2, $3, $4)

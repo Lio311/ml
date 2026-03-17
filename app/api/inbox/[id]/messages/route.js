@@ -103,16 +103,23 @@ export async function POST(req, { params }) {
             const orderId = parseInt(conversationId.replace('order_', ''));
             console.log("DEBUG: POST /api/inbox/messages - Creating conversation for virtual order:", orderId);
             
-            // Auto-resolve catalog_id
-            const orderRes = await pool.query('SELECT catalog_id FROM orders WHERE id = $1', [orderId]);
+            // Auto-resolve catalog_id and owner
+            const orderRes = await pool.query(`
+                SELECT o.catalog_id, c.user_id as owner_id 
+                FROM orders o 
+                LEFT JOIN user_catalogs c ON o.catalog_id = c.id 
+                WHERE o.id = $1
+            `, [orderId]);
+            
             const catalogId = orderRes.rows[0]?.catalog_id || null;
-            const p2 = catalogId ? null : 'admin';
+            const p2 = orderRes.rows[0]?.owner_id || 'admin';
 
             // Check if exists first (concurrency protection)
             const check = await pool.query('SELECT id FROM conversations WHERE order_id = $1', [orderId]);
             if (check.rows.length > 0) {
                 conversationId = check.rows[0].id;
             } else {
+                console.log("DEBUG: POST /api/inbox/messages - Creating conversation with p2:", p2);
                 const insertConv = await pool.query(`
                     INSERT INTO conversations (participant1_id, participant2_id, catalog_id, order_id)
                     VALUES ($1, $2, $3, $4)
