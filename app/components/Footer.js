@@ -3,7 +3,7 @@ import Link from 'next/link';
 export default function Footer() {
     return (
         <footer className="border-t bg-black text-white py-8 relative z-20">
-            <div className="container grid grid-cols-1 md:grid-cols-4 gap-8 text-center md:text-right">
+            <div className="container grid grid-cols-2 md:grid-cols-5 gap-8 text-center md:text-right">
 
                 <div>
                     <h3 className="text-lg font-bold mb-4">ml_tlv</h3>
@@ -57,7 +57,7 @@ export default function Footer() {
                     </ul>
                 </div>
 
-                <div>
+                <div className="flex flex-col">
                     <h3 className="text-lg font-bold mb-4">עקבו אחרינו</h3>
                     <a
                         href="https://instagram.com/ml_tlv"
