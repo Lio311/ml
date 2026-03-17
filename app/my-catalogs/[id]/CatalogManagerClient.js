@@ -60,7 +60,8 @@ function OrdersTab({ catalogId }) {
                 <span className="bg-black text-white px-3 py-1 rounded-full text-xs font-bold">{orders.length} הזמנות</span>
             </div>
             
-            <div className="overflow-x-auto">
+            {/* Desktop View */}
+            <div className="hidden md:block overflow-x-auto">
                 <table className="w-full text-sm">
                     <thead className="bg-gray-50 text-gray-500 border-b">
                         <tr>
@@ -76,7 +77,7 @@ function OrdersTab({ catalogId }) {
                     <tbody className="divide-y text-right">
                         {orders.length === 0 ? (
                             <tr>
-                                <td colSpan="6" className="p-10 text-center text-gray-500 text-lg">עדיין אין הזמנות לקטלוג זה.</td>
+                                <td colSpan="7" className="p-10 text-center text-gray-500 text-lg">עדיין אין הזמנות לקטלוג זה.</td>
                             </tr>
                         ) : (
                             orders.map(order => {
@@ -90,24 +91,24 @@ function OrdersTab({ catalogId }) {
                                         <td className="p-4 text-center">
                                             <div className="font-bold">{customer?.name}</div>
                                             <div className="text-xs text-gray-400">{customer?.email}</div>
-                                            <div className="text-xs text-gray-400">{customer?.phone}</div>
+                                            <div className="text-xs text-gray-400 font-bold">{customer?.phone}</div>
                                         </td>
                                         <td className="p-4 font-bold text-lg text-center">{order.total_amount} ₪</td>
                                         <td className="p-4 text-xs text-gray-500 max-w-[200px] text-center">
                                             <ul className="list-disc list-inside space-y-1 inline-block text-right">
                                                 {items.map((item, i) => (
-                                                    <li key={i} className="truncate" title={item.name}>
-                                                        {item.quantity}x {item.name} ({String(item.size).replace(/ml/gi, '')} מ"ל)
+                                                    <li key={i} className="truncate font-medium text-gray-700" title={item.name}>
+                                                        <span className="font-bold text-blue-600">{item.quantity}x</span> {item.name} ({String(item.size).replace(/ml/gi, '')} מ"ל)
                                                     </li>
                                                 ))}
                                             </ul>
                                             {order.free_samples_count > 0 && (
-                                                <div className="mt-1 text-pink-500 font-bold bg-pink-50 inline-block px-2 py-0.5 rounded shadow-sm">+ {order.free_samples_count} דוגמיות חינם</div>
+                                                <div className="mt-1 text-pink-500 font-black bg-pink-50 inline-block px-2 py-0.5 rounded shadow-sm border border-pink-100">+ {order.free_samples_count} דוגמיות חינם</div>
                                             )}
                                         </td>
                                         <td className="p-4 text-center max-w-[150px]">
                                             {(order.notes || customer?.notes) ? (
-                                                <div className="text-[10px] text-orange-700 bg-orange-50 border border-orange-100 p-1.5 rounded-lg text-right leading-tight">
+                                                <div className="text-[10px] text-orange-700 bg-orange-50 border border-orange-100 p-1.5 rounded-lg text-right leading-tight font-medium">
                                                     {order.notes || customer?.notes}
                                                 </div>
                                             ) : (
@@ -129,11 +130,10 @@ function OrdersTab({ catalogId }) {
                                                     variant="status"
                                                     className="!py-1.5 !px-3 !rounded-xl"
                                                 />
-                                                {order.delivery_method === 'self_pickup' && (
-                                                    <div className="text-[10px] font-bold text-green-700 uppercase bg-green-50 rounded p-1 inline-block">איסוף עצמי</div>
-                                                )}
-                                                {order.delivery_method === 'mail' && (
-                                                    <div className="text-[10px] font-bold text-blue-700 uppercase bg-blue-50 rounded p-1 inline-block">משלוח</div>
+                                                {order.delivery_method === 'self_pickup' ? (
+                                                    <div className="text-[10px] font-bold text-green-700 uppercase bg-green-50 rounded px-2 py-0.5 border border-green-100">איסוף עצמי</div>
+                                                ) : (
+                                                    <div className="text-[10px] font-bold text-blue-700 uppercase bg-blue-50 rounded px-2 py-0.5 border border-blue-100">משלוח</div>
                                                 )}
                                             </div>
                                         </td>
@@ -143,6 +143,85 @@ function OrdersTab({ catalogId }) {
                         )}
                     </tbody>
                 </table>
+            </div>
+
+            {/* Mobile View */}
+            <div className="md:hidden divide-y divide-gray-100">
+                {orders.length === 0 ? (
+                    <div className="p-10 text-center text-gray-500">עדיין אין הזמנות לקטלוג זה.</div>
+                ) : (
+                    orders.map(order => {
+                        const customer = typeof order.customer_details === 'string' ? JSON.parse(order.customer_details) : order.customer_details;
+                        const items = typeof order.items === 'string' ? JSON.parse(order.items) : order.items;
+                        
+                        return (
+                            <div key={order.id} className="p-4 bg-white hover:bg-gray-50 transition-colors">
+                                <div className="flex justify-between items-start mb-3">
+                                    <div className="space-y-1">
+                                        <div className="flex items-center gap-2">
+                                            <span className="text-[10px] font-bold text-gray-400">#{order.id}</span>
+                                            <span className="text-[10px] text-gray-500">{new Date(order.created_at).toLocaleDateString('he-IL')}</span>
+                                        </div>
+                                        <h4 className="font-bold text-gray-900">{customer?.name}</h4>
+                                        <div className="text-xs text-gray-400">{customer?.email}</div>
+                                        <div className="text-xs font-bold text-gray-700">{customer?.phone}</div>
+                                    </div>
+                                    <div className="text-left font-bold text-lg">{order.total_amount} ₪</div>
+                                </div>
+
+                                <div className="bg-gray-50 rounded-xl p-3 mb-4 border border-gray-100 shadow-sm">
+                                    <h5 className="text-[10px] font-black text-gray-400 uppercase mb-2">פריטים</h5>
+                                    <ul className="space-y-1.5">
+                                        {items.map((item, i) => (
+                                            <li key={i} className="flex justify-between items-center text-xs">
+                                                <div className="flex gap-2">
+                                                    <span className="font-bold text-blue-600 bg-blue-50 w-5 h-5 flex items-center justify-center rounded border border-blue-100">{item.quantity}</span>
+                                                    <span className="font-medium text-gray-700">{item.name}</span>
+                                                </div>
+                                                <span className="text-gray-400 text-[10px] font-bold uppercase" dir="ltr">{String(item.size).replace(/ml/gi, '')}ml</span>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                    {order.free_samples_count > 0 && (
+                                        <div className="mt-3 flex items-center gap-1.5 text-[10px] font-bold text-pink-600 bg-pink-50 px-2 py-1 rounded-lg border border-pink-100 shadow-sm self-start">
+                                            🎁 {order.free_samples_count} דוגמיות חינם
+                                        </div>
+                                    )}
+                                </div>
+
+                                {(order.notes || customer?.notes) && (
+                                    <div className="mb-4 text-[11px] font-medium text-orange-800 bg-orange-50 p-3 rounded-xl border border-orange-100 shadow-sm">
+                                        <span className="text-[9px] font-black uppercase block mb-1">הערה:</span>
+                                        {order.notes || customer?.notes}
+                                    </div>
+                                )}
+
+                                <div className="flex justify-between items-center pt-3 border-t border-gray-100">
+                                    <div className="flex flex-col gap-1">
+                                        {order.delivery_method === 'self_pickup' ? (
+                                            <div className="text-[10px] font-bold text-green-700 uppercase bg-green-50 rounded-lg px-2 py-1 border border-green-100 w-fit">📍 איסוף עצמי</div>
+                                        ) : (
+                                            <div className="text-[10px] font-bold text-blue-700 uppercase bg-blue-50 rounded-lg px-2 py-1 border border-blue-100 w-fit">📦 משלוח</div>
+                                        )}
+                                    </div>
+                                    <CustomDropdown
+                                        options={[
+                                            { value: 'pending', label: 'ממתין', icon: <div className="w-2 h-2 rounded-full bg-orange-500" /> },
+                                            { value: 'processing', label: 'בטיפול', icon: <div className="w-2 h-2 rounded-full bg-blue-500" /> },
+                                            { value: 'shipped', label: 'נשלח', icon: <div className="w-2 h-2 rounded-full bg-purple-500" /> },
+                                            { value: 'completed', label: 'הושלם', icon: <div className="w-2 h-2 rounded-full bg-green-500" /> },
+                                            { value: 'cancelled', label: 'בוטל', icon: <div className="w-2 h-2 rounded-full bg-gray-500" /> },
+                                        ]}
+                                        value={order.status}
+                                        onChange={(val) => handleStatusChange(order.id, val)}
+                                        variant="status"
+                                        className="!py-1 !px-2.5 !rounded-xl !text-[11px]"
+                                    />
+                                </div>
+                            </div>
+                        );
+                    })
+                )}
             </div>
         </div>
     );
