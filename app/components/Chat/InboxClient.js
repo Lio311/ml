@@ -23,10 +23,16 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
     const [catalogsData, setCatalogsData] = useState({});
     const [otherParticipantStatus, setOtherParticipantStatus] = useState(null);
     const [hasSubmittedReview, setHasSubmittedReview] = useState({}); // orderId -> boolean
+    const scrollRef = useRef(null);
     const messagesEndRef = useRef(null);
 
     const scrollToBottom = () => {
-        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+        if (scrollRef.current) {
+            scrollRef.current.scrollTo({
+                top: scrollRef.current.scrollHeight,
+                behavior: messages.length <= 1 ? "auto" : "smooth"
+            });
+        }
     };
 
     useEffect(() => {
@@ -64,7 +70,7 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
 
     useEffect(() => {
         // Initial scroll to bottom when messages first load
-        if (messages.length > 0 && activeConvId && !String(activeConvId).startsWith('order_')) {
+        if (messages.length > 0 && activeConvId) {
             scrollToBottom();
             
             // For admin/seller, we don't mark as read immediately on click
@@ -73,7 +79,7 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
                 markAsRead(activeConvId);
             }
         }
-    }, [activeConvId]);
+    }, [activeConvId, messages.length]);
 
     useEffect(() => {
         if (activeConvId && activeConvId !== 'new' && activeConvId !== 'general' && !String(activeConvId).startsWith('order_')) {
@@ -369,8 +375,8 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
                             >
                                 {activeConvId === conv.id && <div className="absolute right-0 top-0 bottom-0 w-1 bg-black rounded-r-full" />}
                                 
-                                <div className={`w-12 h-12 rounded-full flex-shrink-0 flex items-center justify-center overflow-hidden border ${((role === 'buyer' && !conv.catalog_id) || (role === 'seller' && conv.participant2_id === 'admin')) ? 'bg-white border-gray-100' : 'bg-gray-200 border-gray-300'}`}>
-                                    {(role === 'buyer' && !conv.catalog_id) || (role === 'seller' && conv.participant2_id === 'admin') ? (
+                                <div className={`w-12 h-12 rounded-full flex-shrink-0 flex items-center justify-center overflow-hidden border ${((role === 'buyer' && !conv.catalog_id && !conv.order_id) || (role === 'seller' && !conv.catalog_id && conv.participant2_id === 'admin')) ? 'bg-white border-gray-100' : 'bg-gray-200 border-gray-300'}`}>
+                                    {(role === 'buyer' && !conv.catalog_id && !conv.order_id) || (role === 'seller' && !conv.catalog_id && conv.participant2_id === 'admin') ? (
                                         <img src="/ml_CHAT.png" alt="ml_tlv" className="w-full h-full object-cover" />
                                     ) : role === 'buyer' && conv.catalog_id ? (
                                         catalogsData[conv.catalog_id]?.logo_url ? (
@@ -426,8 +432,8 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
                             <button className="md:hidden text-gray-500 p-2 ml-2 bg-gray-100 rounded-full" onClick={() => setActiveConvId(null)}>
                                 חזור
                             </button>
-                            <div className={`w-10 h-10 rounded-full flex items-center justify-center overflow-hidden border flex-shrink-0 ${((role === 'buyer' && !activeConversation?.catalog_id) || (role === 'seller' && activeConversation?.participant2_id === 'admin')) ? 'bg-white border-gray-100' : 'bg-gray-200 border-gray-300'}`}>
-                                {(role === 'buyer' && !activeConversation?.catalog_id) || (role === 'seller' && activeConversation?.participant2_id === 'admin') ? (
+                            <div className={`w-10 h-10 rounded-full flex items-center justify-center overflow-hidden border flex-shrink-0 ${((role === 'buyer' && !activeConversation?.catalog_id && !activeConversation?.order_id) || (role === 'seller' && !activeConversation?.catalog_id && activeConversation?.participant2_id === 'admin')) ? 'bg-white border-gray-100' : 'bg-gray-200 border-gray-300'}`}>
+                                {(role === 'buyer' && !activeConversation?.catalog_id && !activeConversation?.order_id) || (role === 'seller' && !activeConversation?.catalog_id && activeConversation?.participant2_id === 'admin') ? (
                                     <img src="/ml_CHAT.png" alt="ml_tlv" className="w-full h-full object-cover" />
                                 ) : role === 'buyer' && activeConversation?.catalog_id ? (
                                     catalogsData[activeConversation.catalog_id]?.logo_url ? (
@@ -457,6 +463,7 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
                         </div>
 
                         <div 
+                            ref={scrollRef}
                             className="flex-1 overflow-y-auto p-4 space-y-4 bg-gray-50/30"
                             onScroll={handleScroll}
                         >
