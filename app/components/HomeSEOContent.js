@@ -2,68 +2,71 @@ import Link from 'next/link';
 
 export default function HomeSEOContent() {
     return (
-        <section className="py-20 bg-white border-t border-gray-100 overflow-hidden">
-            <div className="container mx-auto px-6 md:px-12 max-w-5xl">
-                <div className="text-right space-y-8">
-                    {/* Header */}
-                    <div className="mb-12">
-                        <h2 className="text-3xl md:text-4xl font-serif font-bold text-gray-900 mb-6 leading-tight">
-                            עולם הבישום של ml_tlv: דוגמיות בשמים, דיקאנטים וחוויות ריח בלתי נשכחות
+        <section className="pt-20 pb-0 bg-stone-50/50 border-t border-gray-100 overflow-hidden" dir="rtl">
+            <div className="container mx-auto px-6 md:px-12 max-w-6xl">
+                <div className="text-right">
+                    {/* Premium Header */}
+                    <div className="mb-16 text-center md:text-right">
+                        <span className="text-xs uppercase tracking-[0.3em] text-gray-400 font-bold mb-3 block">Premium Fragrance Guide</span>
+                        <h2 className="text-4xl md:text-5xl font-serif font-black text-gray-900 mb-6 leading-[1.1]">
+                            המדריך המלא לעולם ה-דיקאנטים: <br className="hidden md:block" />
+                            איך לבחור את ה-בושם המושלם עבורך?
                         </h2>
-                        <div className="w-24 h-1 bg-black rounded-full mb-8"></div>
+                        <div className="w-20 h-1.5 bg-black rounded-full mx-auto md:mx-0"></div>
                     </div>
 
-                    {/* Content Blocks */}
-                    <div className="prose prose-lg max-w-none text-gray-700 leading-relaxed text-justify space-y-6 font-light">
-                        <p>
-                            ברוכים הבאים ל-<strong>ml_tlv</strong>, המרכז המוביל בישראל עבור חובבי בשמים, אספנים וכל מי שמחפש את הניחוח הבא שלו מבלי להתפשר על איכות או מחיר. אנו מתמחים באמנות ה-<strong>דיקאנטים</strong> (Decants) ו-<strong>דוגמיות בשמים</strong>, ומציעים גישה חכמה ויוקרתית לעולם הנישתי של הבישום הבינלאומי. הרעיון שלנו פשוט אך מהפכני: למה לקנות בקבוק מלא במחיר של אלפי שקלים, כשאפשר להתנסות ב-<strong>דוגמיות יוקרה</strong> המאפשרות לכם לחוות את הבושם לאורך זמן ובסיטואציות שונות?
-                        </p>
+                    {/* Content Blocks - Two Columns on Desktop */}
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 text-gray-700 leading-relaxed text-justify font-light text-lg">
+                        <div className="space-y-6">
+                            <p>
+                                ברוכים הבאים ל-<strong>ml_tlv</strong>, המרכז המוביל בישראל עבור חובבי בשמים, אספנים וכל מי שמחפש את הניחוח הבא שלו מבלי להתפשר על איכות או מחיר. אנו מתמחים באמנות ה-<strong>דיקאנטים</strong> (Decants) ו-<strong>דוגמיות בשמים</strong>, ומציעים גישה חכמה ויוקרתית לעולם הנישתי של הבישום הבינלאומי. הרעיון שלנו פשוט אך מהפכני: למה לקנות בקבוק מלא במחיר של אלפי שקלים, כשאפשר להתנסות ב-<strong>דוגמיות יוקרה</strong> המאפשרות לכם לחוות את הבושם לאורך זמן ובסיטואציות שונות?
+                            </p>
 
-                        <p>
-                            ענף ה-<strong>בשמים</strong> עבר טרנספורמציה מדהימה בשנים האחרונות. אם בעבר הסתפקנו במותגי המיינסטרים המוכרים מהדיוטי פרי, היום הקהל הישראלי מחפש עומק, ייחודיות וסיפור מאחורי כל התזה. <strong>בשמי נישה</strong> (Niche Perfumery) הם הלב הפועם של הקולקציה שלנו. מותגים כמו Xerjoff, Roja, Creed ו-Amouage הם כבר לא שמות ששמורים רק לאצולה האירופאית; בזכות ה-<strong>דיקנטים</strong> (דקנטים) שלנו, כל אחד יכול להחזיק בכיסו פיסה של יצירת אמנות ריחנית.
-                        </p>
+                            <p>
+                                ענף ה-<strong>בשמים</strong> עבר טרנספורמציה מדהימה בשנים האחרונות. אם בעבר הסתפקנו במותגי המיינסטרים המוכרים מהדיוטי פרי, היום הקהל הישראלי מחפש עומק, ייחודיות וסיפור מאחורי כל התזה. <strong>בשמי נישה</strong> (Niche Perfumery) הם הלב הפועם של הקולקציה שלנו. מותגים כמו Xerjoff, Roja, Creed ו-Amouage הם כבר לא שמות ששמורים רק לאצולה האירופאית; בזכות ה-<strong>דיקנטים</strong> (דקנטים) שלנו, כל אחד יכול להחזיק בכיסו פיסה של יצירת אמנות ריחנית.
+                            </p>
 
-                        <h3 className="text-2xl font-serif font-bold text-gray-800 mt-10">למה לבחור בדוגמיות ודיקאנטים?</h3>
-                        <p>
-                            רכישת <strong>דוגמית בושם</strong> היא לא רק חיסכון כלכלי, אלא החלטה צרכנית נבונה. לעיתים קרובות בושם מריח נפלא על נייר דגימה בחנות, אך משנה את פניו לחלוטין במגע עם העור לאחר חצי שעה. על ידי שימוש ב-<strong>דיקנטים</strong> של 2 מ"ל, 5 מ"ל או 10 מ"ל, אתם מעניקים לעור שלכם את הזמן להכיר את תווי הלב והבסיס של הבושם. אתם יכולים לבחון את ה-Sillage (השובל שהבושם משאיר) ואת העמידות (Longevity) שלו בתנאי מזג האוויר המשתנים של ישראל.
-                        </p>
+                            <div className="bg-white p-8 rounded-3xl border border-stone-100 shadow-sm space-y-4">
+                                <h3 className="text-xl font-serif font-bold text-gray-900">למה לבחור בדוגמיות?</h3>
+                                <p className="text-base text-gray-600">
+                                    רכישת <strong>דוגמית בושם</strong> היא לא רק חיסכון כלכלי, אלא החלטה צרכנית נבונה. לעיתים קרובות בושם מריח נפלא על נייר דגימה בחנות, אך משנה את פניו לחלוטין במגע עם העור לאחר חצי שעה. על ידי שימוש ב-<strong>דיקנטים</strong> של 2 מ"ל, 5 מ"ל או 10 מ"ל, אתם מעניקים לעור שלכם את הזמן להכיר את תווי הלב והבסיס של הבושם.
+                                </p>
+                            </div>
+                        </div>
 
-                        <p>
-                            ב-ml_tlv אנו מקפידים על סטנדרטים עילאיים של היגיינה ודיוק. כל <strong>דקאנט</strong> (דקנט) מיוצר ישירות מהבקבוק המקורי בלבד, ללא ערבוב וללא שינוי הרכב הנוזל. אנו משתמשים בבקבוקי זכוכית איכותיים עם ספריי (מרסס) המבטיח פיזור אחיד של הניחוח, מה שמאפשר לכם ליהנות מחוויית שימוש זהה לזו של הבקבוק המקורי. זהו הפתרון המושלם לנסיעות, ליציאות בערב או פשוט כדי לבנות "ארון בשמים" מגוון ועשיר מבלי לשבור את תוכנית החיסכון.
-                        </p>
+                        <div className="space-y-6">
+                            <p>
+                                ב-ml_tlv אנו מקפידים על סטנדרטים עילאיים של היגיינה ודיוק. כל <strong>דקאנט</strong> (דקנט) מיוצר ישירות מהבקבוק המקורי בלבד, ללא ערבוב וללא שינוי הרכב הנוזל. אנו משתמשים בבקבוקי זכוכית איכותיים עם ספריי (מרסס) המבטיח פיזור אחיד של הניחוח, מה שמאפשר לכם ליהנות מחוויית שימוש זהה לזו של הבקבוק המקורי. זהו הפתרון המושלם לנסיעות, ליציאות בערב או פשוט כדי לבנות "ארון בשמים" מגוון ועשיר מבלי לשבור את תוכנית החיסכון.
+                            </p>
 
-                        <h3 className="text-2xl font-serif font-bold text-gray-800 mt-10">מגוון בשמי הנישה והיוקרה הגדול בישראל</h3>
-                        <p>
-                            הקטלוג שלנו נבחר בפינצטה. אנו עוקבים אחרי הטרנדים החמים ביותר בפריז, מילאנו ולונדון כדי להביא לכם <strong>דוגמיות בשמי נישה</strong> שקשה להשיג במקומות אחרים. בין אם אתם מחפשים את הניחוח האוריינטלי העמוק של Amouage, את האלגנטיות המלכותית של Creed Aventus, או את התחכום המודרני של Maison Francis Kurkdjian – תמצאו אותם אצלנו.
-                        </p>
-
-                        <p>
-                            אבל ml_tlv היא יותר מסתם חנות; היא קהילה. פלטפורמת ה-<strong>קטלוגים האישיים</strong> שלנו מאפשרת לחובבי בשמים מושבעים לפתוח חנות משלהם בתוך האתר, לחלוק את האוסף שלהם ולהנגיש את הבשמים שלהם לאחרים. זהו המקום שבו אספנים נפגשים, מחליפים חוויות ומגלים יחד את "הגביע הקדוש" של עולם הבישום. השקיפות, הביטחון והאמינות הם נר לרגלינו, ואנו מוודאים שכל מוצר שנמכר דרך הפלטפורמה עומד בסטנדרטים המחמירים שלנו.
-                        </p>
-
-                        <h3 className="text-2xl font-serif font-bold text-gray-800 mt-10">המשמעות של ריח בחיי היומיום</h3>
-                        <p>
-                            ריח הוא החוש החזק ביותר שקשור לזיכרון ורגש. בחירת <strong>בשמים</strong> נכונה יכולה לשפר את הביטחון העצמי, ליצור רושם ראשוני בלתי נשכח ולעורר תחושות של רוגע או אנרגיה. אנו מאמינים שלכל אירוע יש את הריח המתאים לו – בושם רענן ולימוני לבוקר במשרד, ניחוח עוד (Oud) עשיר ומתובל לאירוע ערב יוקרתי, או בושם פרחוני ועדין לדייט רומנטי. דרך ה-<strong>דיקאנטים</strong> שלנו, תוכלו להתאים את הריח למצב הרוח ולבגדים שלכם בכל יום מחדש.
-                        </p>
-
-                        <p>
-                            אנו גאים לספק משלוחים מהירים לכל חלקי הארץ, מאילת ועד רמת הגולן. השירות שלנו כולל ייעוץ אישי למי שמתלבט, מאמרים מקצועיים במגזין שלנו על משפחות ריח ומרכיבים נדירים, ומערכת הטבות ייחודית המעניקה <strong>דוגמיות חינם</strong> בכל רכישה משמעותית. כשאתם מחפשים <strong>בשמים תל אביב</strong> או <strong>דוגמיות בשמים אונליין</strong>, ml_tlv היא הבחירה הטבעית של מי שלא מוכן להתפשר על פחות מהטוב ביותר.
-                        </p>
-
-                        <p className="pb-8">
-                            גלו עכשיו את האוסף שלנו, התחילו את המסע שלכם בעולם ה-<strong>בישום הנישתי</strong>, ותראו איך כמה מיליליטרים בודדים של יוקרה יכולים לשנות את כל התפיסה שלכם לגבי ריח. עם ml_tlv, היוקרה נמצאת בהישג ידכם – בטיפה אחת של דיוק, בתשוקה אחת גדולה לעולם הבישום.
-                        </p>
+                            <h3 className="text-2xl font-serif font-bold text-gray-900 pt-4">מגוון בשמי הנישה והיוקרה הגדול בישראל</h3>
+                            <p>
+                                הקטלוג שלנו נבחר בפינצטה. אנו עוקבים אחרי הטרנדים החמים ביותר בפריז, מילאנו ולונדון כדי להביא לכם <strong>דוגמיות בשמי נישה</strong> שקשה להשיג במקומות אחרים. בין אם אתם מחפשים את הניחוח האוריינטלי העמוק של Amouage, את האלגנטיות המלכותית של Creed Aventus, או את התחכום המודרני של Maison Francis Kurkdjian – תמצאו אותם אצלנו.
+                            </p>
+                            
+                            <p>
+                                אבל ml_tlv היא יותר מסתם חנות; היא קהילה. פלטפורמת ה-<strong>קטלוגים האישיים</strong> שלנו מאפשרת לחובבי בשמים מושבעים לפתוח חנות משלהם בתוך האתר, לחלוק את האוסף שלהם ולהנגיש את הבשמים שלהם לאחרים. זהו המקום שבו אספנים נפגשים, מחליפים חוויות ומגלים יחד את "הגביע הקדוש" של עולם הבישום. השקיפות, הביטחון והאמינות הם נר לרגלינו, ואנו מוודאים שכל מוצר שנמכר דרך הפלטפורמה עומד בסטנדרטים המחמירים שלנו.
+                            </p>
+                        </div>
                     </div>
 
-                    {/* Quick Navigation Links for SEO */}
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-12 py-8 border-y border-gray-100 italic">
-                        <Link href="/catalog?category=נישה" className="hover:text-black transition-colors font-medium">בשמי נישה</Link>
-                        <Link href="/catalog" className="hover:text-black transition-colors font-medium">דוגמיות יוקרה</Link>
-                        <Link href="/brands" className="hover:text-black transition-colors font-medium">מותגי על</Link>
-                        <Link href="/about" className="hover:text-black transition-colors font-medium">אודות ml_tlv</Link>
+                    <div className="mt-16 pb-20 border-b border-stone-200/50 space-y-10">
+                        <div className="max-w-4xl mx-auto space-y-6 text-center md:text-right">
+                             <h3 className="text-2xl font-serif font-bold text-gray-900 italic">המשמעות של ריח בחיי היומיום</h3>
+                            <p className="text-gray-600 text-lg lg:text-xl font-light leading-relaxed">
+                                ריח הוא החוש החזק ביותר שקשור לזיכרון ורגש. בחירת <strong>בשמים</strong> נכונה יכולה לשפר את הביטחון העצמי, ליצור רושם ראשוני בלתי נשכח ולעורר תחושות של רוגע או אנרגיה. אנו מאמינים שלכל אירוע יש את הריח המתאים לו – בושם רענן ולימוני לבוקר במשרד, ניחוח עוד (Oud) עשיר ומתובל לאירוע ערב יוקרתי, או בושם פרחוני ועדין לדייט רומנטי. דרך ה-<strong>דיקאנטים</strong> שלנו, תוכלו להתאים את הריח למצב הרוח ולבגדים שלכם בכל יום מחדש.
+                            </p>
+                            <p className="text-gray-600 text-lg lg:text-xl font-light leading-relaxed">
+                                אנו גאים לספק משלוחים מהירים לכל חלקי הארץ, מאילת ועד רמת הגולן. השירות שלנו כולל ייעוץ אישי למי שמתלבט, מאמרים מקצועיים במגזין שלנו על משפחות ריח ומרכיבים נדירים, ומערכת הטבות ייחודית המעניקה <strong>דוגמיות חינם</strong> בכל רכישה משמעותית. כשאתם מחפשים <strong>בשמים תל אביב</strong> או <strong>דוגמיות בשמים אונליין</strong>, ml_tlv היא הבחירה הטבעית של מי שלא מוכן להתפשר על פחות מהטוב ביותר.
+                            </p>
+                            <p className="text-lg font-medium text-gray-900 mt-8">
+                                גלו עכשיו את האוסף שלנו, התחילו את המסע שלכם בעולם ה-<strong>בישום הנישתי</strong>. עם ml_tlv, היוקרה נמצאת בהישג ידכם – בטיפה אחת של דיקאנט.
+                            </p>
+                        </div>
                     </div>
                 </div>
             </div>
+            {/* Decorative bottom element to blend with footer if needed, but per request: completely flush */}
         </section>
     );
 }
