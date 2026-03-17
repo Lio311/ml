@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { auth, clerkClient } from '@clerk/nextjs/server';
+import { auth as clerkAuth, clerkClient } from '@clerk/nextjs/server';
 import pool from '@/app/lib/db';
 
 export const dynamic = 'force-dynamic';
@@ -7,7 +7,8 @@ export const dynamic = 'force-dynamic';
 export async function GET() {
     let client;
     try {
-        const { userId } = await auth();
+        const authData = await clerkAuth();
+        const userId = authData?.userId;
         if (!userId) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
@@ -40,7 +41,8 @@ export async function GET() {
 export async function PUT(req) {
     let client;
     try {
-        const { userId } = await auth();
+        const authData = await clerkAuth();
+        const userId = authData?.userId;
         if (!userId) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }

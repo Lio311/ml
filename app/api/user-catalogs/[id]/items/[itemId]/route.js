@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { auth } from '@clerk/nextjs/server';
+import { auth as clerkAuth } from '@clerk/nextjs/server';
 import pool from '@/app/lib/db';
 
 export async function PUT(req, context) {
@@ -64,7 +64,8 @@ export async function PUT(req, context) {
 export async function DELETE(req, context) {
     let client;
     try {
-        const { userId } = await auth();
+        const authData = await clerkAuth();
+        const userId = authData?.userId;
         const params = await context.params;
         const { id, itemId } = params;
 

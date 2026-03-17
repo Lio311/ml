@@ -1,17 +1,24 @@
-import pool from '../../../../lib/db';
-import { auth, clerkClient } from '@clerk/nextjs/server';
+import pool, { updateUserActivity } from '../../../../lib/db';
+import { auth as clerkAuth, clerkClient } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
 
 export async function GET(req, { params }) {
     try {
-        const { userId } = await auth();
+        const authData = await clerkAuth();
+        const userId = authData?.userId;
         if (!userId) return new NextResponse('Unauthorized', { status: 401 });
 
         // Update user activity proactively
-        const { updateUserActivity } = await import('../../../../lib/db');
         await updateUserActivity(userId);
 
         const { id: conversationId } = await params;
+
+        if (typeof conversationId === 'string' && conversationId.startsWith('order_')) {
+            return NextResponse.json({
+                messages: [],
+                other_participant: { id: null, last_active_at: null }
+            });
+        }
 
         // Verify user is part of the conversation (or is admin/catalog_owner)
         // Simplified check: since they know the ID, we could just fetch it, but let's be secure
@@ -70,25 +77,49 @@ export async function GET(req, { params }) {
         });
     } catch (error) {
         console.error('Error fetching messages:', error);
-        return new NextResponse('Internal Error', { status: 500 });
+        return NextResponse.json({ error: 'Internal Error', details: error.message }, { status: 500 });
     }
 }
 
 export async function POST(req, { params }) {
     try {
-        const { userId } = await auth();
+        const authData = await clerkAuth();
+        const userId = authData?.userId;
         if (!userId) return new NextResponse('Unauthorized', { status: 401 });
 
         // Update user activity proactively
-        const { updateUserActivity } = await import('../../../../lib/db');
         await updateUserActivity(userId);
 
-        const { id: conversationId } = await params;
+        let { id: conversationId } = await params;
         const body = await req.json();
         const { content } = body;
 
         if (!content || !content.trim()) {
             return new NextResponse('Content is required', { status: 400 });
+        }
+
+        // If it's a virtual order conversation, we need to create it first
+        if (typeof conversationId === 'string' && conversationId.startsWith('order_')) {
+            const orderId = parseInt(conversationId.replace('order_', ''));
+            console.log("DEBUG: POST /api/inbox/messages - Creating conversation for virtual order:", orderId);
+            
+            // Auto-resolve catalog_id
+            const orderRes = await pool.query('SELECT catalog_id FROM orders WHERE id = $1', [orderId]);
+            const catalogId = orderRes.rows[0]?.catalog_id || null;
+            const p2 = catalogId ? null : 'admin';
+
+            // Check if exists first (concurrency protection)
+            const check = await pool.query('SELECT id FROM conversations WHERE order_id = $1', [orderId]);
+            if (check.rows.length > 0) {
+                conversationId = check.rows[0].id;
+            } else {
+                const insertConv = await pool.query(`
+                    INSERT INTO conversations (participant1_id, participant2_id, catalog_id, order_id)
+                    VALUES ($1, $2, $3, $4)
+                    RETURNING id
+                `, [userId, p2, catalogId, orderId]);
+                conversationId = insertConv.rows[0].id;
+            }
         }
 
         const insertMsg = await pool.query(`
@@ -109,6 +140,6 @@ export async function POST(req, { params }) {
         return NextResponse.json(insertMsg.rows[0]);
     } catch (error) {
         console.error('Error sending message:', error);
-        return new NextResponse('Internal Error', { status: 500 });
+        return NextResponse.json({ error: 'Internal Error', details: error.message }, { status: 500 });
     }
 }

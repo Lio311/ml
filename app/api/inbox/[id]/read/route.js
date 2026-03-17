@@ -1,10 +1,11 @@
 import pool from '../../../../lib/db';
-import { auth } from '@clerk/nextjs/server';
+import { auth as clerkAuth } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
 
 export async function PATCH(req, { params }) {
     try {
-        const { userId } = await auth();
+        const authData = await clerkAuth();
+        const userId = authData?.userId;
         if (!userId) return new NextResponse('Unauthorized', { status: 401 });
 
         const { id: conversationId } = await params;
@@ -42,6 +43,6 @@ export async function PATCH(req, { params }) {
         return NextResponse.json({ success: true, count: update.rowCount });
     } catch (error) {
         console.error('Error marking messages as read:', error);
-        return new NextResponse('Internal Error', { status: 500 });
+        return NextResponse.json({ error: 'Internal Error', details: error.message }, { status: 500 });
     }
 }

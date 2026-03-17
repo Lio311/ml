@@ -1,12 +1,13 @@
 import { NextResponse } from 'next/server';
-import { auth, currentUser } from '@clerk/nextjs/server';
+import { auth as clerkAuth, currentUser } from '@clerk/nextjs/server';
 import pool from '@/app/lib/db';
 import { sendEmail, getOrderConfirmationTemplate, getAdminNewOrderTemplate } from '@/app/lib/email';
 
 export async function POST(req, { params }) {
     try {
         const { id: catalogId } = await params;
-        const { userId } = await auth();
+        const authData = await clerkAuth();
+        const userId = authData?.userId;
         const user = await currentUser();
 
         if (!userId) {

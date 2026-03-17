@@ -1,11 +1,12 @@
 import pool from "@/app/lib/db";
-import { auth } from "@clerk/nextjs/server";
+import { auth as clerkAuth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 
 export async function GET(req, props) {
     const params = await props.params;
     try {
-        const { userId } = await auth();
+        const authData = await clerkAuth();
+        const userId = authData?.userId;
         if (!userId) return new NextResponse('Unauthorized', { status: 401 });
 
         const orderId = params.id;

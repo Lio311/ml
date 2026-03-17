@@ -132,7 +132,11 @@ export async function GET(req) {
         return NextResponse.json(convs);
     } catch (error) {
         console.error('ERROR: GET /api/inbox failed:', error);
-        return new NextResponse('Internal Error: ' + (error.message || 'Unknown'), { status: 500 });
+        return NextResponse.json({ 
+            error: 'Internal Error', 
+            details: error.message,
+            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined 
+        }, { status: 500 });
     }
 }
 
@@ -151,7 +155,27 @@ export async function POST(req) {
         const body = await req.json();
         let { conversation_id, participant2_id, catalog_id, order_id, content } = body;
 
+        console.log("DEBUG: POST /api/inbox - Body received:", { conversation_id, participant2_id, catalog_id, order_id, content: content?.slice(0, 10) + '...' });
+
+        if (!content || !content.trim()) {
+            console.log("DEBUG: POST /api/inbox - Missing content");
+            return new NextResponse('Content is required', { status: 400 });
+        }
+
+        // Update user activity/JIT sync
+        await updateUserActivity(userId);
+
         let conversationId = conversation_id;
+
+        // If conversation_id is a string like 'order_123', it means we're starting a chat from an order
+        if (typeof conversationId === 'string' && conversationId.startsWith('order_')) {
+            const extractedOrderId = parseInt(conversationId.replace('order_', ''));
+            if (!isNaN(extractedOrderId)) {
+                order_id = extractedOrderId;
+                conversationId = null;
+                console.log("DEBUG: POST /api/inbox - Converted order_X ID into order_id:", order_id);
+            }
+        }
 
         // Auto-resolve catalog_id from order_id if not provided
         if (order_id && !catalog_id) {
@@ -225,6 +249,10 @@ export async function POST(req) {
         return NextResponse.json(insertMsg.rows[0]);
     } catch (error) {
         console.error('ERROR: POST /api/inbox failed:', error);
-        return new NextResponse('Internal Error: ' + (error.message || 'Unknown'), { status: 500 });
+        return NextResponse.json({ 
+            error: 'Internal Error', 
+            details: error.message,
+            stack: process.env.NODE_ENV === 'development' ? error.stack : undefined 
+        }, { status: 500 });
     }
 }

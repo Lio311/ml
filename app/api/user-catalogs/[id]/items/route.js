@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { auth } from '@clerk/nextjs/server';
+import { auth as clerkAuth } from '@clerk/nextjs/server';
 import pool from '@/app/lib/db';
 
 export async function GET(req, { params }) {
@@ -34,7 +34,8 @@ export async function GET(req, { params }) {
 
 export async function POST(req, { params }) {
     try {
-        const { userId } = await auth();
+        const authData = await clerkAuth();
+        const userId = authData?.userId;
         const { id } = await params;
 
         if (!userId) {
