@@ -37,7 +37,7 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
                     const res = await fetch('/api/user/orders');
                     if (res.ok) {
                         const data = await res.json();
-                        if (Array.isArray(data)) setOrders(data);
+                        if (data.orders && Array.isArray(data.orders)) setOrders(data.orders);
                     }
                 } catch(e) {}
             }

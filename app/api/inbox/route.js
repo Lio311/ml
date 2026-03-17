@@ -134,9 +134,21 @@ export async function POST(req) {
         if (!userId) return new NextResponse('Unauthorized', { status: 401 });
 
         const body = await req.json();
-        const { conversation_id, participant2_id, catalog_id, order_id, content } = body;
+        let { conversation_id, participant2_id, catalog_id, order_id, content } = body;
 
         let conversationId = conversation_id;
+
+        // Auto-resolve catalog_id from order_id if not provided
+        if (order_id && !catalog_id) {
+            try {
+                const orderRes = await pool.query('SELECT catalog_id FROM orders WHERE id = $1', [order_id]);
+                if (orderRes.rows.length > 0) {
+                    catalog_id = orderRes.rows[0].catalog_id;
+                }
+            } catch (err) {
+                console.error("Error auto-resolving catalog_id from order:", err);
+            }
+        }
 
         // If no conversationId provided, try to find or create
         if (!conversationId) {
