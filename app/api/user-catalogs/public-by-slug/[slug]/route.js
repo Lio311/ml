@@ -1,3 +1,5 @@
+import { NextResponse } from 'next/server';
+import pool from '@/app/lib/db';
 import { checkAdmin } from '@/app/lib/admin';
 
 export async function GET(req, { params }) {

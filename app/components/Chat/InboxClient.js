@@ -519,14 +519,14 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
                                                           (msg.sender_role !== 'admin' && msg.sender_id === activeConversation?.participant1_id);
 
                                     return (
-                                        <div key={idx} className={`flex w-full mb-3 px-1 ${isClientMessage ? 'justify-start' : 'justify-end'}`} dir="rtl">
-                                            <div className={`max-w-[88%] md:max-w-[75%] rounded-2xl px-4 py-2 text-sm shadow-sm transition-all duration-300 transform hover:scale-[1.01] ${
+                                        <div key={idx} className={`flex w-full mb-4 px-4 ${isClientMessage ? 'justify-start' : 'justify-end'}`} dir="rtl">
+                                            <div className={`max-w-[85%] md:max-w-[75%] rounded-2xl px-5 py-2.5 text-sm shadow-sm transition-all duration-300 transform hover:scale-[1.01] ${
                                                 isClientMessage
                                                 ? 'bg-gray-200 text-black rounded-tr-none' 
                                                 : 'bg-black text-white rounded-tl-none'
                                             }`}>
                                                 <p className="whitespace-pre-wrap leading-relaxed break-words">{msg.content}</p>
-                                                <div className={`text-[9px] mt-1 flex ${isClientMessage ? 'justify-end' : 'justify-start'} opacity-50`}>
+                                                <div className={`text-[9px] mt-1.5 flex ${isClientMessage ? 'justify-end' : 'justify-start'} opacity-50`}>
                                                     {new Date(msg.created_at).toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit', hour12: false })}
                                                 </div>
                                             </div>

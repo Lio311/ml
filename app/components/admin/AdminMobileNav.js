@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, X, Home, Users, Package, CreditCard, Inbox, ShoppingBag, Tag, Ticket, Dice5, Library, Map, Store, ClipboardList, LogOut, MessageSquare, Star } from "lucide-react";
