@@ -55,7 +55,7 @@ export default function HomeSEOContent() {
                         <div className="p-10 md:p-16 bg-black text-white rounded-[3rem] border border-zinc-900 shadow-2xl relative overflow-hidden group">
                             <div className="absolute top-0 right-0 w-32 h-32 bg-zinc-800/30 rounded-full -translate-y-16 translate-x-16 group-hover:scale-110 transition-transform duration-700"></div>
                             
-                            <h3 className="text-3xl font-serif font-black text-white mb-8 relative z-10 italic">
+                            <h3 className="text-3xl font-serif font-black text-white mb-8 relative z-10">
                                 המשמעות של ריח בחיי היומיום
                             </h3>
                             
