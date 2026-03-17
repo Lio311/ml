@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { auth } from '@clerk/nextjs/server';
 import { getAuthenticatedClient } from '@/app/lib/db';
 import { recordAuditLog } from '@/app/lib/audit';
 

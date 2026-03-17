@@ -83,7 +83,7 @@ export default function DashboardCharts({ orderData, revenueData, visitsData, us
                                 tickLine={false}
                                 axisLine={false}
                                 tick={{ fill: '#9ca3af' }}
-                                tickCount={window?.innerWidth < 768 ? 6 : undefined}
+                                tickCount={(typeof window !== 'undefined' && window.innerWidth < 768) ? 6 : undefined}
                             />
                             <YAxis
                                 fontSize={9}
@@ -180,7 +180,7 @@ export default function DashboardCharts({ orderData, revenueData, visitsData, us
                                 tickLine={false}
                                 axisLine={false}
                                 tick={{ fill: '#9ca3af' }}
-                                tickCount={window?.innerWidth < 768 ? 6 : undefined}
+                                tickCount={(typeof window !== 'undefined' && window.innerWidth < 768) ? 6 : undefined}
                             />
                             <YAxis
                                 fontSize={9}
