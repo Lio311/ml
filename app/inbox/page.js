@@ -11,8 +11,8 @@ export default async function InboxPage({ searchParams }) {
     const catalogId = sParams.catalog_id || null;
 
     return (
-        <div className="container py-12 max-w-5xl">
-            <h1 className="text-3xl font-bold mb-8">תיבת הודעות</h1>
+        <div className="container mx-auto px-2 md:px-4 py-4 md:py-12 max-w-5xl">
+            <h1 className="text-2xl md:text-3xl font-bold mb-4 md:mb-8">תיבת הודעות</h1>
             <InboxClient role="buyer" initialOrderId={orderId} initialCatalogId={catalogId} />
         </div>
     );
