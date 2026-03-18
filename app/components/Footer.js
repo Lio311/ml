@@ -3,7 +3,7 @@ import Link from 'next/link';
 export default function Footer() {
     return (
         <footer className="border-t bg-black text-white py-6 overflow-hidden mt-auto">
-            <div className="container grid grid-cols-2 md:grid-cols-5 gap-8 text-center md:text-right">
+            <div className="container grid grid-cols-1 sm:grid-cols-2 md:grid-cols-5 gap-10 text-center md:text-right py-10">
 
                 <div>
                     <h3 className="text-lg font-bold mb-4">ml_tlv</h3>
@@ -21,7 +21,7 @@ export default function Footer() {
 
                 <div>
                     <h3 className="text-lg font-bold mb-4">מותגים פופולריים</h3>
-                    <ul className="grid grid-cols-2 gap-x-2 gap-y-2 text-xs text-right text-gray-400">
+                    <ul className="grid grid-cols-2 gap-x-2 gap-y-2 text-xs text-center md:text-right text-gray-400">
                         <li><Link href="/brands/Xerjoff" className="hover:text-white transition">Xerjoff</Link></li>
                         <li><Link href="/brands/Creed" className="hover:text-white transition">Creed</Link></li>
                         <li><Link href="/brands/Kilian" className="hover:text-white transition">Kilian</Link></li>
@@ -47,7 +47,7 @@ export default function Footer() {
 
                 <div>
                     <h3 className="text-lg font-bold mb-4">מידע ונהלים</h3>
-                    <ul className="space-y-2 text-sm text-gray-400 text-right">
+                    <ul className="space-y-2 text-sm text-gray-400 text-center md:text-right">
                         <li><Link href="/about" className="hover:text-white transition">אודות ml_tlv</Link></li>
                         <li><Link href="/faq" className="hover:text-white transition">שאלות ותשובות</Link></li>
                         <li><Link href="/contact" className="hover:text-white transition">צור קשר</Link></li>
@@ -57,7 +57,7 @@ export default function Footer() {
                     </ul>
                 </div>
 
-                <div className="flex flex-col">
+                <div className="flex flex-col items-center md:items-start">
                     <h3 className="text-lg font-bold mb-4">עקבו אחרינו</h3>
                     <a
                         href="https://instagram.com/ml_tlv"
@@ -83,7 +83,7 @@ export default function Footer() {
                         <span>ml_tlv@</span>
                     </a>
 
-                    <div className="space-y-3 pt-6 border-t border-gray-800">
+                    <div className="space-y-3 pt-6 border-t border-gray-800 w-full">
                         <Link href="/blog" className="text-sm text-gray-400 hover:text-white transition block">
                             מגזין הבישום - כתבות ומדריכים
                         </Link>
