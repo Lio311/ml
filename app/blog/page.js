@@ -54,54 +54,71 @@ export default async function BlogIndex(props) {
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
-                    {articles.map((article) => (
-                        <Link
-                            key={article.slug}
-                            href={`/blog/${article.slug}`}
-                            className="group bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 flex flex-col h-full"
-                        >
-                            <div className="h-48 bg-gray-100 relative overflow-hidden">
-                                {article.image_url ? (
-                                    <Image
-                                        src={article.image_url}
-                                        alt={article.title}
-                                        fill
-                                        className="object-cover group-hover:scale-105 transition duration-500"
-                                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                                    />
-                                ) : (
-                                    <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center text-4xl">
-                                        🧴
+                    {articles.map((article) => {
+                        const readingTime = Math.ceil((article.excerpt?.length || 0) / 100) + 1; // Simple estimate
+                        return (
+                            <Link
+                                key={article.slug}
+                                href={`/blog/${article.slug}`}
+                                className="group bg-white rounded-2xl overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500 border border-gray-100 flex flex-col h-full transform hover:-translate-y-2"
+                            >
+                                <div className="h-56 bg-gray-100 relative overflow-hidden">
+                                    {article.image_url ? (
+                                        <Image
+                                            src={article.image_url}
+                                            alt={article.title}
+                                            fill
+                                            className="object-cover group-hover:scale-110 transition duration-700"
+                                            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                                        />
+                                    ) : (
+                                        <div className="w-full h-full bg-gradient-to-br from-gray-50 to-gray-200 flex items-center justify-center text-4xl transform group-hover:scale-110 transition duration-700">
+                                            🧴
+                                        </div>
+                                    )}
+                                    <div className="absolute top-4 right-4 flex gap-1.5 flex-wrap z-10">
+                                        {article.tags && article.tags.map(tag => (
+                                            <span key={tag} className="bg-white/90 text-black text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full backdrop-blur-md shadow-sm">
+                                                {tag}
+                                            </span>
+                                        ))}
                                     </div>
-                                )}
-                                <div className="absolute top-2 right-2 flex gap-1 flex-wrap">
-                                    {article.tags && article.tags.map(tag => (
-                                        <span key={tag} className="bg-black/70 text-white text-xs px-2 py-1 rounded backdrop-blur-sm">
-                                            {tag}
-                                        </span>
-                                    ))}
+                                    <div className="absolute bottom-0 left-0 right-0 h-1/3 bg-gradient-to-t from-black/40 to-transparent"></div>
                                 </div>
-                            </div>
 
-                            <div className="p-6 flex flex-col flex-1">
-                                <div className="text-xs text-gray-400 mb-2">
-                                    {new Date(article.created_at).toLocaleDateString('he-IL')}
+                                <div className="p-7 flex flex-col flex-1 relative">
+                                    <div className="flex items-center gap-3 text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-4">
+                                        <span>{new Date(article.created_at).toLocaleDateString('he-IL')}</span>
+                                        <span className="w-1 h-1 bg-gray-300 rounded-full"></span>
+                                        <span>{readingTime} דקות קריאה</span>
+                                    </div>
+                                    
+                                    <h2 className="text-2xl font-serif font-bold mb-4 group-hover:text-blue-600 transition-colors leading-tight">
+                                        {article.title}
+                                    </h2>
+                                    
+                                    <p className="text-gray-600 text-sm leading-relaxed line-clamp-3 mb-6 flex-1">
+                                        {article.excerpt}
+                                    </p>
+                                    
+                                    <div className="flex items-center justify-between mt-auto">
+                                        <span className="text-black font-bold text-xs uppercase tracking-widest flex items-center gap-2 group-hover:gap-3 transition-all">
+                                            קרא עוד
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4">
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
+                                            </svg>
+                                        </span>
+                                        
+                                        <div className="w-8 h-8 rounded-full bg-gray-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-4 h-4 text-gray-400">
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 19.5 15-15m0 0H8.25m11.25 0v11.25" />
+                                            </svg>
+                                        </div>
+                                    </div>
                                 </div>
-                                <h2 className="text-xl font-bold mb-3 group-hover:text-blue-600 transition">
-                                    {article.title}
-                                </h2>
-                                <p className="text-gray-600 text-sm line-clamp-3 mb-4 flex-1">
-                                    {article.excerpt}
-                                </p>
-                                <span className="text-blue-600 font-bold text-sm flex items-center gap-1 group-hover:gap-2 transition-all">
-                                    קרא עוד
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
-                                    </svg>
-                                </span>
-                            </div>
-                        </Link>
-                    ))}
+                            </Link>
+                        );
+                    })}
                 </div>
 
                 {/* Pagination */}
