@@ -1,5 +1,6 @@
 import pool from "../../lib/db";
 import Link from "next/link";
+import Image from "next/image";
 
 import { redirect } from 'next/navigation';
 import ProductCard from "../../components/ProductCard";
@@ -259,10 +260,13 @@ export default async function ProductPage(props) {
                 {/* Image */}
                 <div className="w-full md:w-1/2 aspect-square bg-white rounded-xl flex items-center justify-center relative overflow-hidden shadow-sm p-8 md:p-12 group">
                     {product.image_url ? (
-                        <img
+                        <Image
                             src={product.image_url}
                             alt={`${product.name} ${product.name_he ? ' - ' + product.name_he : ''}`}
-                            className="w-full h-full object-contain p-8 md:p-12 hover:scale-105 transition-transform duration-500"
+                            fill
+                            priority
+                            className="object-contain p-8 md:p-12 hover:scale-105 transition-transform duration-500"
+                            sizes="(max-width: 768px) 100vw, 50vw"
                         />
                     ) : (
                         <div className="text-6xl text-gray-300">🧴</div>
@@ -341,10 +345,12 @@ export default async function ProductPage(props) {
                             product.logo_url && (
                                 <div className="mb-6 w-32 h-16 flex items-center justify-start"> {/* Fixed container */}
                                     <Link href={`/brands/${encodeURIComponent(product.brand)}`} className="block w-full h-full relative">
-                                        <img
+                                        <Image
                                             src={product.logo_url}
                                             alt={product.brand}
-                                            className="w-full h-full object-contain hover:opacity-80 transition-opacity"
+                                            fill
+                                            className="object-contain hover:opacity-80 transition-opacity"
+                                            sizes="128px"
                                         />
                                     </Link>
                                 </div>

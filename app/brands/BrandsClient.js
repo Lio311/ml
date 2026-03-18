@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 
 export default function BrandsClient({ brands }) {
@@ -72,10 +73,12 @@ export default function BrandsClient({ brands }) {
                             <div className="absolute inset-0 bg-gray-50 opacity-0 group-hover:opacity-10 transition-opacity"></div>
                             <div className="relative w-full h-full flex items-center justify-center p-4 text-center">
                                 {brand.logo_url ? (
-                                    <img
+                                    <Image
                                         src={brand.logo_url}
                                         alt={brand.name}
-                                        className="object-contain max-h-24 w-auto filter grayscale group-hover:grayscale-0 transition-all duration-500"
+                                        fill
+                                        className="object-contain p-4 filter grayscale group-hover:grayscale-0 transition-all duration-500"
+                                        sizes="(max-width: 768px) 50vw, 16vw"
                                     />
                                 ) : (
                                     <span className="text-sm font-bold text-gray-800 uppercase tracking-wider group-hover:text-black transition-colors">

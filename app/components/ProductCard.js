@@ -2,6 +2,7 @@
 
 
 import Link from "next/link";
+import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useCart } from "../context/CartContext";
 import { useState, useEffect } from "react";
@@ -81,10 +82,13 @@ export default function ProductCard({ product }) {
 
             <Link href={`/product/${product.slug || product.id}`} className="block relative aspect-square bg-white overflow-hidden cursor-pointer p-2">
                 {product.image_url ? (
-                    <img
+                    <Image
                         src={product.image_url}
-                        alt={product.name}
+                        alt={`דוגמית בושם ${product.name} - ${product.brand}`}
+                        width={300}
+                        height={300}
                         className="w-full h-full object-contain group-hover:scale-110 transition duration-700"
+                        sizes="(max-width: 768px) 50vw, 25vw"
                     />
                 ) : (
                     <div className="absolute inset-0 flex items-center justify-center text-gray-300 text-4xl group-hover:scale-105 transition duration-500">

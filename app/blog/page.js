@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import pool from '../lib/db';
 
 export const dynamic = 'force-dynamic';
@@ -60,12 +61,13 @@ export default async function BlogIndex(props) {
                             className="group bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 flex flex-col h-full"
                         >
                             <div className="h-48 bg-gray-100 relative overflow-hidden">
-                                {article.image_url && article.image_url.startsWith('/') ? (
-                                    // Use absolute path for generated images or placeholders
-                                    <img
+                                {article.image_url ? (
+                                    <Image
                                         src={article.image_url}
                                         alt={article.title}
-                                        className="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+                                        fill
+                                        className="object-cover group-hover:scale-105 transition duration-500"
+                                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                                     />
                                 ) : (
                                     <div className="w-full h-full bg-gradient-to-br from-gray-200 to-gray-300 flex items-center justify-center text-4xl">

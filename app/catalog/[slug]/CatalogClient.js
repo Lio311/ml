@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import toast from "react-hot-toast";
 import { useCart } from "../../context/CartContext";
 import CustomDropdown from "../../components/ui/CustomDropdown";
@@ -76,10 +77,13 @@ function CatalogProductCard({ item, slug, catalogId, catalogName }) {
 
             <Link href={`/catalog/${slug}/product/${item.id}`} className="block relative aspect-square bg-white overflow-hidden cursor-pointer p-2">
                 {item.image_url ? (
-                    <img
+                    <Image
                         src={item.image_url}
-                        alt={item.fragrance_name}
+                        alt={`דוגמית בושם ${item.brand} - ${item.fragrance_name}`}
+                        width={300}
+                        height={300}
                         className="w-full h-full object-contain group-hover:scale-110 transition duration-700"
+                        sizes="(max-width: 768px) 50vw, 25vw"
                     />
                 ) : (
                     <div className="absolute inset-0 flex items-center justify-center text-gray-300 text-4xl group-hover:scale-105 transition duration-500">
@@ -255,7 +259,9 @@ export default function CatalogClient({ slug }) {
             {/* Header */}
             <div className="text-center mb-8">
                 {catalog.image_url && (
-                    <img src={catalog.image_url} alt={catalog.name} className="w-20 h-20 object-cover rounded-full mx-auto mb-4 border-2 border-gray-200 shadow" />
+                    <div className="w-20 h-20 mx-auto mb-4 relative overflow-hidden rounded-full border-2 border-gray-200 shadow">
+                        <Image src={catalog.image_url} alt={catalog.name} fill className="object-cover" sizes="80px" />
+                    </div>
                 )}
                 <h1 className="text-3xl font-serif font-bold mb-2">{catalog.name}</h1>
                 {catalog.description && <p className="text-gray-500 max-w-xl mx-auto">{catalog.description}</p>}

@@ -46,6 +46,38 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'm.media-amazon.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'i0.wp.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'scentadvice.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'zacshop.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'media.parfumo.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'upload.wikimedia.org',
+      },
+      {
+        protocol: 'https',
+        hostname: 'lessenteurs.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'seeklogo.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'sekega.com',
+      },
     ],
   },
   async headers() {

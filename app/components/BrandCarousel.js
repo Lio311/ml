@@ -1,6 +1,7 @@
 "use client";
 
 import Link from 'next/link';
+import Image from 'next/image';
 
 export default function BrandCarousel({ brands }) {
     if (!brands || brands.length === 0) return null;
@@ -26,7 +27,15 @@ export default function BrandCarousel({ brands }) {
                             className="flex items-center justify-center w-40 h-28 md:w-48 md:h-32 p-4 grayscale hover:grayscale-0 transition-all duration-300 hover:scale-105"
                         >
                             {brand.logo_url ? (
-                                <img src={brand.logo_url} alt={brand.name} className="w-full h-full object-contain mix-blend-multiply opacity-80 hover:opacity-100" />
+                                <div className="relative w-full h-full">
+                                    <Image
+                                        src={brand.logo_url}
+                                        alt={brand.name}
+                                        fill
+                                        className="object-contain mix-blend-multiply opacity-80 hover:opacity-100"
+                                        sizes="(max-width: 768px) 160px, 192px"
+                                    />
+                                </div>
                             ) : (
                                 <span className="text-xl font-bold text-gray-400 font-serif">{brand.name}</span>
                             )}

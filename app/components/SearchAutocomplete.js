@@ -117,10 +117,12 @@ export default function SearchAutocomplete({ fullWidth = false, onSelect }) {
                             >
                                 <div className="relative w-12 h-12 flex-shrink-0 bg-gray-50 rounded-md overflow-hidden">
                                     {product.image ? (
-                                        <img
+                                        <Image
                                             src={product.image}
                                             alt={product.name}
-                                            className="w-full h-full object-contain group-hover/item:scale-105 transition duration-500"
+                                            fill
+                                            className="object-contain group-hover/item:scale-105 transition duration-500"
+                                            sizes="48px"
                                         />
                                     ) : (
                                         <div className="w-full h-full flex items-center justify-center text-xs text-gray-300">No Img</div>

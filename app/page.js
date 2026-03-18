@@ -173,9 +173,9 @@ export default async function Home() {
                  {topCatalogs.map(cat => (
                      <Link href={`/catalog/${cat.slug}`} key={cat.id} className="bg-white p-8 rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 group flex flex-col relative overflow-hidden">
                           <div className="absolute top-0 right-0 w-full h-1 bg-gradient-to-r from-yellow-200 to-yellow-400 transform origin-right scale-x-0 group-hover:scale-x-100 transition-transform duration-500"></div>
-                          <div className="w-16 h-16 bg-yellow-50 text-yellow-600 rounded-full flex items-center justify-center text-2xl mx-auto mb-4 group-hover:scale-110 transition-transform overflow-hidden">
+                          <div className="w-16 h-16 bg-yellow-50 text-yellow-600 rounded-full flex items-center justify-center text-2xl mx-auto mb-4 group-hover:scale-110 transition-transform overflow-hidden relative">
                                {cat.image_url ? (
-                                   <img src={cat.image_url} alt={cat.name} className="w-full h-full object-cover" />
+                                   <Image src={cat.image_url} alt={cat.name} fill className="object-cover" sizes="64px" />
                                ) : (
                                    "🔥"
                                )}
