@@ -105,8 +105,10 @@ export default async function BlogPost({ params }) {
                     
                     <div className="flex items-center gap-4 text-gray-400 text-xs font-bold uppercase tracking-widest">
                         <div className="flex items-center gap-2">
-                            <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-500">ML</div>
-                            <span>מאת צוות ML_TLV</span>
+                            <div className="w-8 h-8 rounded-full bg-gray-100 overflow-hidden border border-gray-200">
+                                <Image src="/ml_CHAT.png" alt="ml_tlv" width={32} height={32} className="w-full h-full object-cover" />
+                            </div>
+                            <span>מאת צוות ml_tlv</span>
                         </div>
                         <span className="w-1 h-1 bg-gray-200 rounded-full"></span>
                         <span>{new Date(article.created_at).toLocaleDateString('he-IL', { year: 'numeric', month: 'long', day: 'numeric' })}</span>

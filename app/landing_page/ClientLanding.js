@@ -123,7 +123,7 @@ export default function ClientLanding({ newArrivals, stats }) {
             <nav className="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
                 <div className="container mx-auto px-6 h-20 flex items-center justify-between">
                     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex items-center gap-2">
-                        <Link href="/"><span className="text-2xl font-bold tracking-widest uppercase mix-blend-difference text-white">ML_TLV</span></Link>
+                        <Link href="/"><span className="text-2xl font-bold tracking-widest uppercase mix-blend-difference text-white">ml_tlv</span></Link>
                     </motion.div>
                     <div className="hidden md:flex items-center gap-6">
                         <Link href="/catalog"><Button variant="ghost" className="text-white hover:bg-white/10 rounded-full px-6 mix-blend-difference">קטלוג</Button></Link>
@@ -336,7 +336,7 @@ function Section({ section, isActive, newArrivals, stats }) {
                             </div>
 
                             <div className="border-t border-white/10 pt-8 mt-8 text-white/30 text-xs w-full max-w-3xl mx-auto">
-                                <p>© 2026 ML_TLV. כל הזכויות שמורות.</p>
+                                <p>© 2026 ml_tlv. כל הזכויות שמורות.</p>
                             </div>
                         </div>
                     </div>
