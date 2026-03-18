@@ -87,7 +87,7 @@ export default async function BlogIndex(props) {
                                 </div>
 
                                 <div className="p-7 flex flex-col flex-1 relative">
-                                    <div className="flex items-center gap-3 text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-4">
+                                    <div className="flex items-center gap-3 text-[10px] font-bold text-gray-400 tracking-widest mb-4">
                                         <span>{new Date(article.created_at).toLocaleDateString('he-IL')}</span>
                                         <span className="w-1 h-1 bg-gray-300 rounded-full"></span>
                                         <span>{readingTime} דקות קריאה</span>

@@ -104,7 +104,7 @@ export default async function BlogPost({ params }) {
                         {article.title}
                     </h1>
                     
-                    <div className="flex items-center gap-4 text-gray-400 text-xs font-bold uppercase tracking-widest">
+                    <div className="flex items-center gap-4 text-gray-400 text-xs font-bold tracking-widest">
                         <div className="flex items-center gap-2">
                             <div className="w-8 h-8 rounded-full bg-gray-100 overflow-hidden border border-gray-200">
                                 <Image src="/ml_CHAT.png" alt="ml_tlv" width={32} height={32} className="w-full h-full object-cover" />
