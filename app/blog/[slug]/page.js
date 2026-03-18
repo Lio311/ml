@@ -50,11 +50,12 @@ export default async function BlogPost({ params }) {
 
     return (
         <div className="container py-12 max-w-4xl mx-auto">
-            <nav className="text-sm text-gray-500 mb-8 flex gap-2 items-center">
+            <nav className="text-sm text-gray-500 mb-8 flex gap-2 items-center flex-wrap">
                 <Link href="/" className="hover:underline">ראשי</Link>
                 <span>/</span>
                 <Link href="/blog" className="hover:underline">מגזין</Link>
                 <span>/</span>
+                <span className="text-gray-900 truncate max-w-[200px] md:max-w-none">{article.title}</span>
             </nav>
             
             <script
