@@ -297,39 +297,39 @@ export default async function CatalogPage(props) {
                             {/* Active Filters Summary */}
                             <div className="flex gap-2 text-xs mt-1 flex-wrap">
                                 {(Array.isArray(brand) ? brand : [brand]).filter(Boolean).map(b => (
-                                    <Link key={b} href={getRemoveLink('brand', b)} className="bg-black text-white px-2 py-1 rounded flex items-center gap-1.5 hover:bg-gray-800 transition-colors">
-                                        <span>מותג: {b}</span>
-                                        <span className="text-[10px] opacity-60 hover:opacity-100 italic transition-opacity border-r border-white/20 pr-1.5 mr-0.5">✕</span>
+                                    <Link key={b} href={getRemoveLink('brand', b)} className="bg-black text-white px-2 py-1 rounded flex items-center gap-2 hover:bg-gray-800 transition-colors group">
+                                        <span className="font-medium">מותג: {b}</span>
+                                        <span className="w-4 h-4 flex items-center justify-center rounded-full bg-white/10 group-hover:bg-white/20 transition-colors text-[14px] leading-none pb-0.5">×</span>
                                     </Link>
                                 ))}
                                 {(Array.isArray(category) ? category : [category]).filter(Boolean).map(c => (
-                                    <Link key={c} href={getRemoveLink('category', c)} className="bg-black text-white px-2 py-1 rounded flex items-center gap-1.5 hover:bg-gray-800 transition-colors">
-                                        <span>קטגוריה: {c}</span>
-                                        <span className="text-[10px] opacity-60 hover:opacity-100 italic transition-opacity border-r border-white/20 pr-1.5 mr-0.5">✕</span>
+                                    <Link key={c} href={getRemoveLink('category', c)} className="bg-black text-white px-2 py-1 rounded flex items-center gap-2 hover:bg-gray-800 transition-colors group">
+                                        <span className="font-medium">קטגוריה: {c}</span>
+                                        <span className="w-4 h-4 flex items-center justify-center rounded-full bg-white/10 group-hover:bg-white/20 transition-colors text-[14px] leading-none pb-0.5">×</span>
                                     </Link>
                                 ))}
                                 {search && (
-                                    <Link href={getRemoveLink('q', search)} className="bg-black text-white px-2 py-1 rounded flex items-center gap-1.5 hover:bg-gray-800 transition-colors">
-                                        <span>חיפוש: {search}</span>
-                                        <span className="text-[10px] opacity-60 hover:opacity-100 italic transition-opacity border-r border-white/20 pr-1.5 mr-0.5">✕</span>
+                                    <Link href={getRemoveLink('q', search)} className="bg-black text-white px-2 py-1 rounded flex items-center gap-2 hover:bg-gray-800 transition-colors group">
+                                        <span className="font-medium">חיפוש: {search}</span>
+                                        <span className="w-4 h-4 flex items-center justify-center rounded-full bg-white/10 group-hover:bg-white/20 transition-colors text-[14px] leading-none pb-0.5">×</span>
                                     </Link>
                                 )}
                                 {(Array.isArray(searchParams.season) ? searchParams.season : [searchParams.season]).filter(Boolean).map(s => (
-                                    <Link key={s} href={getRemoveLink('season', s)} className="bg-black text-white px-2 py-1 rounded flex items-center gap-1.5 hover:bg-gray-800 transition-colors">
-                                        <span>עונה: {s}</span>
-                                        <span className="text-[10px] opacity-60 hover:opacity-100 italic transition-opacity border-r border-white/20 pr-1.5 mr-0.5">✕</span>
+                                    <Link key={s} href={getRemoveLink('season', s)} className="bg-black text-white px-2 py-1 rounded flex items-center gap-2 hover:bg-gray-800 transition-colors group">
+                                        <span className="font-medium">עונה: {s}</span>
+                                        <span className="w-4 h-4 flex items-center justify-center rounded-full bg-white/10 group-hover:bg-white/20 transition-colors text-[14px] leading-none pb-0.5">×</span>
                                     </Link>
                                 ))}
                                 {(Array.isArray(searchParams.country) ? searchParams.country : [searchParams.country]).filter(Boolean).map(c => (
-                                    <Link key={c} href={getRemoveLink('country', c)} className="bg-black text-white px-2 py-1 rounded flex items-center gap-1.5 hover:bg-gray-800 transition-colors">
-                                        <span>מדינה: {c}</span>
-                                        <span className="text-[10px] opacity-60 hover:opacity-100 italic transition-opacity border-r border-white/20 pr-1.5 mr-0.5">✕</span>
+                                    <Link key={c} href={getRemoveLink('country', c)} className="bg-black text-white px-2 py-1 rounded flex items-center gap-2 hover:bg-gray-800 transition-colors group">
+                                        <span className="font-medium">מדינה: {c}</span>
+                                        <span className="w-4 h-4 flex items-center justify-center rounded-full bg-white/10 group-hover:bg-white/20 transition-colors text-[14px] leading-none pb-0.5">×</span>
                                     </Link>
                                 ))}
                                 {(Array.isArray(searchParams.perfumer) ? searchParams.perfumer : [searchParams.perfumer]).filter(Boolean).map(p => (
-                                    <Link key={p} href={getRemoveLink('perfumer', p)} className="bg-black text-white px-2 py-1 rounded flex items-center gap-1.5 hover:bg-gray-800 transition-colors">
-                                        <span>פרפיומר: {p}</span>
-                                        <span className="text-[10px] opacity-60 hover:opacity-100 italic transition-opacity border-r border-white/20 pr-1.5 mr-0.5">✕</span>
+                                    <Link key={p} href={getRemoveLink('perfumer', p)} className="bg-black text-white px-2 py-1 rounded flex items-center gap-2 hover:bg-gray-800 transition-colors group">
+                                        <span className="font-medium">פרפיומר: {p}</span>
+                                        <span className="w-4 h-4 flex items-center justify-center rounded-full bg-white/10 group-hover:bg-white/20 transition-colors text-[14px] leading-none pb-0.5">×</span>
                                     </Link>
                                 ))}
                             </div>
