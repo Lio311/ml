@@ -248,6 +248,23 @@ export default async function CatalogPage(props) {
 
     const mappedSearch = await mapHebrewQuery(search);
 
+    const getRemoveLink = (key, value) => {
+        const nextParams = new URLSearchParams(searchParams);
+        const currentValues = nextParams.getAll(key);
+        
+        if (currentValues.length > 1) {
+            const updatedValues = currentValues.filter(v => v !== value);
+            nextParams.delete(key);
+            updatedValues.forEach(v => nextParams.append(key, v));
+        } else {
+            nextParams.delete(key);
+        }
+        
+        nextParams.delete('page');
+        const qs = nextParams.toString();
+        return `/catalog${qs ? `?${qs}` : ''}`;
+    };
+
     const { products, totalPages } = await getProducts(mappedSearch, brand, category, minPrice, maxPrice, sort, page, searchParams);
     const allBrands = await getBrands();
     const allCategories = await getCategories();
@@ -280,20 +297,40 @@ export default async function CatalogPage(props) {
                             {/* Active Filters Summary */}
                             <div className="flex gap-2 text-xs mt-1 flex-wrap">
                                 {(Array.isArray(brand) ? brand : [brand]).filter(Boolean).map(b => (
-                                    <span key={b} className="bg-black text-white px-2 py-1 rounded">מותג: {b}</span>
+                                    <Link key={b} href={getRemoveLink('brand', b)} className="bg-black text-white px-2 py-1 rounded flex items-center gap-1.5 hover:bg-gray-800 transition-colors">
+                                        <span>מותג: {b}</span>
+                                        <span className="text-[10px] opacity-60 hover:opacity-100 italic transition-opacity border-r border-white/20 pr-1.5 mr-0.5">✕</span>
+                                    </Link>
                                 ))}
                                 {(Array.isArray(category) ? category : [category]).filter(Boolean).map(c => (
-                                    <span key={c} className="bg-black text-white px-2 py-1 rounded">קטגוריה: {c}</span>
+                                    <Link key={c} href={getRemoveLink('category', c)} className="bg-black text-white px-2 py-1 rounded flex items-center gap-1.5 hover:bg-gray-800 transition-colors">
+                                        <span>קטגוריה: {c}</span>
+                                        <span className="text-[10px] opacity-60 hover:opacity-100 italic transition-opacity border-r border-white/20 pr-1.5 mr-0.5">✕</span>
+                                    </Link>
                                 ))}
-                                {search && <span className="bg-black text-white px-2 py-1 rounded">חיפוש: {search}</span>}
+                                {search && (
+                                    <Link href={getRemoveLink('q', search)} className="bg-black text-white px-2 py-1 rounded flex items-center gap-1.5 hover:bg-gray-800 transition-colors">
+                                        <span>חיפוש: {search}</span>
+                                        <span className="text-[10px] opacity-60 hover:opacity-100 italic transition-opacity border-r border-white/20 pr-1.5 mr-0.5">✕</span>
+                                    </Link>
+                                )}
                                 {(Array.isArray(searchParams.season) ? searchParams.season : [searchParams.season]).filter(Boolean).map(s => (
-                                    <span key={s} className="bg-black text-white px-2 py-1 rounded">עונה: {s}</span>
+                                    <Link key={s} href={getRemoveLink('season', s)} className="bg-black text-white px-2 py-1 rounded flex items-center gap-1.5 hover:bg-gray-800 transition-colors">
+                                        <span>עונה: {s}</span>
+                                        <span className="text-[10px] opacity-60 hover:opacity-100 italic transition-opacity border-r border-white/20 pr-1.5 mr-0.5">✕</span>
+                                    </Link>
                                 ))}
                                 {(Array.isArray(searchParams.country) ? searchParams.country : [searchParams.country]).filter(Boolean).map(c => (
-                                    <span key={c} className="bg-black text-white px-2 py-1 rounded">מדינה: {c}</span>
+                                    <Link key={c} href={getRemoveLink('country', c)} className="bg-black text-white px-2 py-1 rounded flex items-center gap-1.5 hover:bg-gray-800 transition-colors">
+                                        <span>מדינה: {c}</span>
+                                        <span className="text-[10px] opacity-60 hover:opacity-100 italic transition-opacity border-r border-white/20 pr-1.5 mr-0.5">✕</span>
+                                    </Link>
                                 ))}
                                 {(Array.isArray(searchParams.perfumer) ? searchParams.perfumer : [searchParams.perfumer]).filter(Boolean).map(p => (
-                                    <span key={p} className="bg-black text-white px-2 py-1 rounded">פרפיומר: {p}</span>
+                                    <Link key={p} href={getRemoveLink('perfumer', p)} className="bg-black text-white px-2 py-1 rounded flex items-center gap-1.5 hover:bg-gray-800 transition-colors">
+                                        <span>פרפיומר: {p}</span>
+                                        <span className="text-[10px] opacity-60 hover:opacity-100 italic transition-opacity border-r border-white/20 pr-1.5 mr-0.5">✕</span>
+                                    </Link>
                                 ))}
                             </div>
                         </div>

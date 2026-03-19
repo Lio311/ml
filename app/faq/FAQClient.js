@@ -3,7 +3,12 @@
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 
-export default function FAQClient({ categories }) {
+export default function FAQClient({ 
+    categories, 
+    sidebarTitle = "קטגוריות", 
+    footerTitle = "לא מצאתם תשובה?", 
+    footerSubtitle = "הצוות שלנו כאן כדי לעזור לכם למצוא את הריח המושלם או לענות על כל שאלה טכנית" 
+}) {
     const [activeCategory, setActiveCategory] = useState(0);
     const observer = useRef(null);
 
@@ -41,7 +46,7 @@ export default function FAQClient({ categories }) {
             <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
                 {/* Sidebar navigation for desktop */}
                 <aside className="hidden md:block sticky top-36 z-30 self-start space-y-2">
-                    <h2 className="text-sm font-bold uppercase tracking-wider text-gray-400 mb-4 px-3">קטגוריות</h2>
+                    <h2 className="text-sm font-bold uppercase tracking-wider text-gray-400 mb-4 px-3">{sidebarTitle}</h2>
                     {categories.map((cat, idx) => (
                         <a 
                             key={idx} 
@@ -100,8 +105,8 @@ export default function FAQClient({ categories }) {
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                                 </svg>
                             </div>
-                            <h3 className="text-2xl md:text-3xl font-bold mb-4">לא מצאתם תשובה?</h3>
-                            <p className="text-gray-400 mb-8 max-w-md mx-auto">הצוות שלנו כאן כדי לעזור לכם למצוא את הריח המושלם או לענות על כל שאלה טכנית</p>
+                            <h3 className="text-2xl md:text-3xl font-bold mb-4">{footerTitle}</h3>
+                            <p className="text-gray-400 mb-8 max-w-md mx-auto">{footerSubtitle}</p>
                             <div className="flex flex-wrap justify-center gap-4">
                                 <Link href="/contact" className="bg-white text-black px-10 py-4 rounded-2xl font-bold hover:bg-gray-200 transition-all hover:scale-105 active:scale-95 shadow-xl">
                                     צרו קשר עכשיו

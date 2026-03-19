@@ -1,84 +1,110 @@
+import FAQClient from '../faq/FAQClient';
+
 export const metadata = {
     title: "תקנון האתר | ml_tlv",
     description: "תנאי שימוש ותקנון האתר.",
 };
 
 export default function TermsPage() {
+    const categories = [
+        {
+            title: "כללי",
+            items: [
+                { 
+                    q: "מהות האתר", 
+                    a: "אתר ml_tlv משמש כפלטפורמה להתנסות בבשמי יוקרה באמצעות דוגמיות (דיקנטים), וכן כזירה המאפשרת לאספנים ושותפים להציג את הקולקציות שלהם דרך חנויות וירטואליות." 
+                },
+                { 
+                    q: "הסכמה לתנאים", 
+                    a: "השימוש באתר, הגלישה בו וביצוע הזמנות מהווים הסכמה מפורשת מצד המשתמש לכל התנאים המפורטים בתקנון זה." 
+                }
+            ]
+        },
+        {
+            title: "פלטפורמת חנויות צד ג'",
+            items: [
+                { 
+                    q: "אחריות ושימוש בתשתית", 
+                    a: " ml_tlv מספקת את התשתית הטכנולוגית והמאובטחת עבור שותפים (מוכרי צד ג'). בעוד אנו מוודאים את סטנדרט האיכות, האחריות הישירה על מוצרי שותפים חלה עליהם." 
+                },
+                { 
+                    q: "הגבלת אחריות", 
+                    a: "המפעיל (ml_tlv) אינו צד לעסקאות המתבצעות ישירות בחנויות צד ג', ואינו נושא באחריות לנזקים עקיפים הנובעים משימוש במוצרי שותפים, מעבר לאחריות הספק עצמו." 
+                }
+            ]
+        },
+        {
+            title: "מקוריות ומוצרים",
+            items: [
+                { 
+                    q: "התחייבות למקוריות", 
+                    a: "אנו מתחייבים כי כל הבשמים הנמכרים תחת המותג ml_tlv הם מקוריים ב-100% ונרכשים ממקורות מהימנים ומוסמכים." 
+                },
+                { 
+                    q: "הבהרה לגבי דוגמיות (דיקנטים)", 
+                    a: "חשוב להדגיש: אנו מוכרים דוגמיות בלבד. הבושם מועבר מבקבוקו המקורי לבקבוקון זכוכית איכותי. התמונה באתר של בקבוק המותג המקורי היא להמחשת הניחוח בלבד." 
+                }
+            ]
+        },
+        {
+            title: "הזמנות ותשלומים",
+            items: [
+                { 
+                    q: "אבטחת תשלום", 
+                    a: "כל התשלומים באתר מאובטחים. אנו משתמשים בטכנולוגיות המתקדמות ביותר כדי להבטיח שפרטי האשראי שלכם לעולם לא ייחשפו או יישמרו במערכת שלנו." 
+                },
+                { 
+                    q: "מדיניות מחירים", 
+                    a: "מחירי המוצרים עשויים להשתנות מעת לעת ללא הודעה מוקדמת, בהתאם למלאי ולמחירי חומרי הגלם." 
+                }
+            ]
+        },
+        {
+            title: "ביטולים והחזרות",
+            items: [
+                { 
+                    q: "חוק הגנת הצרכן", 
+                    a: "ביטול עסקאות יתבצע בהתאם להוראות חוק הגנת הצרכן. זכות הביטול לא תחול על טובין שיוצרו/נמזגו במיוחד עבור הצרכן (דיקנטים), בשל אופיים המיוחד." 
+                }
+            ]
+        },
+        {
+            title: "סמכות שיפוט וקניין רוחני",
+            items: [
+                { 
+                    q: "זכויות יוצרים", 
+                    a: "כל התכנים, העיצובים והסימנים המסחריים באתר הם רכושה של ml_tlv או של שותפיה ואין לעשות בהם שימוש ללא אישור בכתב." 
+                },
+                { 
+                    q: "מקום שיפוט", 
+                    a: "על תקנון זה יחולו אך ורק דיני מדינת ישראל. סמכות השיפוט הבלעדית בכל מחלוקת תהיה לבתי המשפט המוסמכים במחוז תל אביב." 
+                }
+            ]
+        }
+    ];
+
     return (
-        <div className="bg-gray-50 min-h-screen py-16 px-4">
-            <div className="container mx-auto max-w-4xl">
-                <header className="mb-12 text-center">
-                    <h1 className="text-5xl font-black mb-4">תקנון תנאי שימוש</h1>
-                    <p className="text-gray-500">ml_tlv - יוקרה בחתיכות קטנות</p>
-                </header>
-
-                <div className="bg-white p-8 md:p-12 rounded-[2.5rem] shadow-sm border border-gray-100 text-right rtl leading-relaxed">
-                    <p className="mb-8">
-                        ברוכים הבאים לאתר ml_tlv (להלן: "האתר"). האתר משמש כפלטפורמה להצגת דוגמיות בשמים, רכישתן, וכן כפלטפורמה המאפשרת למשתמשים להקים דפי קטלוג וחנויות וירטואליות (להלן: "השירותים"). האתר מופעל על ידי הנהלת ml_tlv (להלן: "המפעיל").
-                        <br /><br />
-                        השימוש באתר מהווה הסכמה מצד המשתמש לתקנון זה ולתנאיו במלואם.
+        <div className="min-h-screen bg-gray-50 pb-20">
+            {/* Header section with background pattern */}
+            <div className="bg-black text-white py-20 mb-12 relative overflow-hidden">
+                <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_center,white_0%,transparent_70%)]" />
+                <div className="container mx-auto px-4 relative z-10">
+                    <h1 className="text-4xl md:text-6xl font-black mb-6 text-center tracking-tight">תקנון האתר</h1>
+                    <p className="text-gray-400 text-center text-lg md:text-xl w-full mx-auto font-light leading-relaxed whitespace-nowrap overflow-hidden text-ellipsis">
+                        כל מה שצריך לדעת על עולם הבישום, ההזמנות והבונוסים הייחודיים של ml_tlv. אנחנו כאן לכל שאלה.
                     </p>
-
-                    <section className="mb-10">
-                        <h2 className="text-2xl font-bold mb-4 border-b pb-2">1. כללי</h2>
-                        <ul className="space-y-3 list-disc pr-6">
-                            <li>התקנון מנוסח בלשון זכר מטעמי נוחות בלבד, אך מתייחס לנשים ולגברים כאחד.</li>
-                            <li>התקנון מסדיר את התנאים לשימוש באתר, להקמת חנויות וירטואליות ולרכישת מוצרים דרכו, והוא מחייב את כלל המשתמשים, המוכרים והלקוחות לכל דבר ועניין.</li>
-                            <li>המפעיל שומר לעצמו את הזכות לעדכן או לשנות את התקנון מעת לעת, לפי שיקול דעתו הבלעדי.</li>
-                        </ul>
-                    </section>
-
-                    <section className="mb-10 bg-yellow-50 p-6 rounded-2xl border border-yellow-100">
-                        <h2 className="text-2xl font-bold mb-4">2. פלטפורמת חנויות וירטואליות והגבלת אחריות</h2>
-                        <ul className="space-y-3">
-                            <li>2.1 האתר מאפשר למשתמשים להקים דפי קטלוג וחנויות וירטואליות לצורך הצגת ומכירת מוצרים (להלן: "חנויות צד ג'").</li>
-                            <li className="font-bold">2.2 המפעיל מספק את התשתית הטכנולוגית בלבד ואינו צד לעסקאות המתבצעות בחנויות צד ג'. האחריות הבלעדית על איכות המוצרים, תיאורם, חוקיותם, אספקתם, מחירם ושירות הלקוחות שלהם חלה על בעל החנות הווירטואלית בלבד.</li>
-                            <li>2.3 המפעיל אינו נושא באחריות לכל נזק, ישיר או עקיף, שייגרם למשתמש או לצד שלישי כתוצאה מרכישה או שימוש בחנות וירטואלית שהוקמה דרך האתר.</li>
-                        </ul>
-                    </section>
-
-                    <section className="mb-10">
-                        <h2 className="text-2xl font-bold mb-4 border-b pb-2">3. מוצרים ואחריות</h2>
-                        <ul className="space-y-3 list-disc pr-6">
-                            <li className="font-black text-lg">כל הבשמים הנמכרים באתר ml_tlv הם בשמים מקוריים ב-100%.</li>
-                            <li className="font-bold text-red-600 underline">חשוב להבהיר: לא נמכרים באתר בשמים בגודל מלא כלל.</li>
-                            <li>האתר מוכר דוגמיות (דיקנטים) בלבד - זהו נוזל מבושם מקורי שנמזג לתוך כלי זכוכית ייעודי (Decant) בהתאם להזמנת הלקוח.</li>
-                            <li>תמונות המוצרים באתר נועדו להמחשה בלבד ומתייחסות לבקבוק המקורי ממנו נלקח הנוזל.</li>
-                        </ul>
-                    </section>
-
-                    <section className="mb-10">
-                        <h2 className="text-2xl font-bold mb-4 border-b pb-2">4. אספקה ומשלוחים</h2>
-                        <ul className="space-y-3 list-disc pr-6">
-                            <li className="font-bold underline">עלות משלוח לנקודת איסוף (UPS EasyShip) עומדת על 30 ₪.</li>
-                            <li>משלוח עד הבית ניתן בתיאום אישי דרך דואר ישראל (בתוספת תשלום). יש לציין זאת בהערות להזמנה.</li>
-                            <li>זמן אספקה ממוצע הוא עד 10 ימי עסקים (לרוב הרבה פחות).</li>
-                            <li>המפעיל אינו אחראי לעיכובים שנגרמים על ידי חברות שילוח חיצוניות או כוח עליון.</li>
-                        </ul>
-                    </section>
-
-                    <section className="mb-10">
-                        <h2 className="text-2xl font-bold mb-4 border-b pb-2">5. ביטול עסקה והחזרות</h2>
-                        <ul className="space-y-3 list-disc pr-6">
-                            <li>ביטול עסקה יתבצע בהתאם לחוק הגנת הצרכן, התשמ"א – 1981.</li>
-                            <li>לא ניתן להחזיר דוגמיות/דיקנטים שהוכנו במיוחד עבור הלקוח (מזיגה אישית), בשל אופי המוצר המותאם אישית.</li>
-                            <li>על מוצרי המדף (שאינם דיקנטים): ניתן לבטל עסקה תוך 14 ימים מקבלת המוצר, בתנאי שלא נפתח ולא נעשה בו שימוש.</li>
-                        </ul>
-                    </section>
-
-                    <section className="mb-10">
-                        <h2 className="text-2xl font-bold mb-4 border-b pb-2">6. פרטיות ואבטחת מידע</h2>
-                        <p>האתר מאובטח בפרוטוקול SSL. פרטי כרטיסי אשראי אינם נשמרים במערכות האתר והסליקה נעשית דרך ספקים מורשים בלבד.</p>
-                    </section>
-
-                    <section className="mb-6 pt-8 border-t">
-                        <p className="font-bold mb-4 text-center">שירות לקוחות וסמכות שיפוט</p>
-                        <p className="text-center mb-6">לכל שאלה ניתן לפנות במייל: <a href="mailto:pornfragrance@gmail.com" className="font-bold underline">pornfragrance@gmail.com</a></p>
-                        <p className="text-sm">על תקנון זה יחולו דיני מדינת ישראל וסמכות השיפוט הבלעדית תהא לבית המשפט המוסמך ב<b>מחוז תל אביב</b> בלבד.</p>
-                    </section>
-
-                    <p className="text-sm text-gray-400 mt-12 text-center">עודכן לאחרונה: 15 במרץ 2026</p>
                 </div>
+            </div>
+
+            <FAQClient 
+                categories={categories} 
+                sidebarTitle="פרקי התקנון"
+                footerTitle="צריכים הבהרה משפטית?"
+                footerSubtitle="צוות השירות שלנו ישמח להסביר כל סעיף בתקנון בצורה פשוטה וברורה."
+            />
+            
+            <div className="container mx-auto px-4 max-w-5xl mt-12 text-center">
+                <p className="text-gray-400 text-sm">עודכן לאחרונה: 20 במרץ 2026</p>
             </div>
         </div>
     );

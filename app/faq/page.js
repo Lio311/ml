@@ -118,7 +118,7 @@ export default function FAQPage() {
                 <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_center,white_0%,transparent_70%)]" />
                 <div className="container mx-auto px-4 relative z-10">
                     <h1 className="text-4xl md:text-6xl font-black mb-6 text-center tracking-tight">מרכז המידע</h1>
-                    <p className="text-gray-400 text-center text-lg md:text-xl max-w-2xl mx-auto font-light leading-relaxed">
+                    <p className="text-gray-400 text-center text-lg md:text-xl w-full mx-auto font-light leading-relaxed whitespace-nowrap overflow-hidden text-ellipsis">
                         כל מה שצריך לדעת על עולם הבישום, ההזמנות והבונוסים הייחודיים של ml_tlv. אנחנו כאן לכל שאלה.
                     </p>
                 </div>
