@@ -30,12 +30,16 @@ export default function FilterSidebar({ allBrands, allCategories, allCountries, 
         return val;
     };
 
+    const ABSOLUTE_MAX = 2000;
+    const ABSOLUTE_MIN = 0;
+
     const [selectedBrands, setSelectedBrands] = useState(getSelected('brand'));
     const [selectedCategories, setSelectedCategories] = useState(getSelected('category'));
     const [selectedSeasons, setSelectedSeasons] = useState(getSelected('season'));
     const [selectedCountries, setSelectedCountries] = useState(getSelected('country'));
     const [selectedPerfumers, setSelectedPerfumers] = useState(getSelected('perfumer'));
     const [searchTerm, setSearchTerm] = useState(searchParams.get('q') || '');
+    const [price, setPrice] = useState(Number(searchParams.get("max")) || ABSOLUTE_MAX);
 
     useEffect(() => {
         setSelectedBrands(searchParams.getAll('brand'));
@@ -44,6 +48,7 @@ export default function FilterSidebar({ allBrands, allCategories, allCountries, 
         setSelectedCountries(searchParams.getAll('country'));
         setSelectedPerfumers(searchParams.getAll('perfumer'));
         setSearchTerm(searchParams.get('q') || '');
+        setPrice(Number(searchParams.get("max")) || ABSOLUTE_MAX);
     }, [searchParams]);
 
     const handleSearch = (e) => {
@@ -114,6 +119,10 @@ export default function FilterSidebar({ allBrands, allCategories, allCountries, 
             if (updates.gender === null) params.delete('gender');
             else params.set('gender', updates.gender);
         }
+        if (updates.max !== undefined) {
+            if (updates.max === ABSOLUTE_MAX) params.delete('max');
+            else params.set('max', updates.max);
+        }
         if (updates.resetPage) params.set('page', '1');
 
         router.push(`/catalog?${params.toString()}`);
@@ -123,18 +132,6 @@ export default function FilterSidebar({ allBrands, allCategories, allCountries, 
 
     return (
         <aside className="w-full md:w-64 space-y-6">
-
-            {/* Gender Filter */}
-            <div className="bg-gray-50 p-4 rounded-lg border">
-                <h3 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-3">מגדר</h3>
-                <CustomDropdown 
-                    options={GENDER_OPTIONS}
-                    value={searchParams.get('gender') || 'all'}
-                    onChange={(val) => applyFilters({ gender: val === 'all' ? null : val, resetPage: true })}
-                    fullWidth
-                    className="!bg-white !border-gray-100 !rounded-xl"
-                />
-            </div>
 
             {/* Search - Always Visible */}
             <div className="bg-gray-50 p-4 rounded-lg border">
@@ -159,8 +156,20 @@ export default function FilterSidebar({ allBrands, allCategories, allCountries, 
                 </form>
             </div>
 
+            {/* Gender Filter - Repositioned here */}
+            <div className="bg-gray-50 p-4 rounded-lg border">
+                <h3 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-3">מגדר</h3>
+                <CustomDropdown 
+                    options={GENDER_OPTIONS}
+                    value={searchParams.get('gender') || 'all'}
+                    onChange={(val) => applyFilters({ gender: val === 'all' ? null : val, resetPage: true })}
+                    fullWidth
+                    className="!bg-white !border-gray-100 !rounded-xl"
+                />
+            </div>
+
             {/* Category Filter */}
-            <CollapsibleSection title={`קטגוריות (${combinedCategories.length})`}>
+            <CollapsibleSection title={`קטגוריות (${combinedCategories.length})`} initialOpen={true}>
                 <div className="space-y-2 text-sm max-h-[200px] overflow-y-auto custom-scrollbar pl-2">
                     {combinedCategories.map(cat => (
                         <label key={cat} className="flex items-center gap-2 cursor-pointer hover:bg-gray-100 p-1 rounded">
@@ -177,7 +186,7 @@ export default function FilterSidebar({ allBrands, allCategories, allCountries, 
             </CollapsibleSection>
 
             {/* Brand Filter */}
-            <CollapsibleSection title={`מותגים (${allBrands.length})`}>
+            <CollapsibleSection title={`מותגים (${allBrands.length})`} initialOpen={true}>
                 <div className="space-y-2 text-sm max-h-[300px] overflow-y-auto custom-scrollbar pl-2">
                     {allBrands.map(b => (
                         <label key={b} className="flex items-center gap-2 cursor-pointer hover:bg-gray-100 p-1 rounded">
@@ -193,12 +202,19 @@ export default function FilterSidebar({ allBrands, allCategories, allCountries, 
                 </div>
             </CollapsibleSection>
 
-            {/* Price Filter Slider */}
-            <PriceFilter />
+            {/* Price Filter Slider - Collapsible */}
+            <CollapsibleSection title={`מחיר (עד ${price} ₪)`}>
+                <PriceFilter 
+                    price={price} 
+                    setPrice={setPrice} 
+                    onApply={() => applyFilters({ max: price, resetPage: true })}
+                    ABSOLUTE_MIN={ABSOLUTE_MIN}
+                    ABSOLUTE_MAX={ABSOLUTE_MAX}
+                />
+            </CollapsibleSection>
 
-            {/* Season Filter */}
-            <div className="bg-gray-50 p-4 rounded-lg border">
-                <h3 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-3">עונה</h3>
+            {/* Season Filter - Collapsible */}
+            <CollapsibleSection title="עונה">
                 <div className="grid grid-cols-2 gap-2">
                     {['חורף', 'סתיו', 'אביב', 'קיץ'].map(s => (
                         <button
@@ -214,7 +230,7 @@ export default function FilterSidebar({ allBrands, allCategories, allCountries, 
                         </button>
                     ))}
                 </div>
-            </div>
+            </CollapsibleSection>
 
             {/* Country Filter */}
             {allCountries && allCountries.length > 0 && (
@@ -258,25 +274,23 @@ export default function FilterSidebar({ allBrands, allCategories, allCountries, 
     );
 }
 
-function CollapsibleSection({ title, children }) {
-    // Default open on desktop (hidden logic handled via CSS or just default closed on mobile?)
-    // User explicitly wants "Folded on mobile".
-    // We can use a simple state that initializes based on window width? No, hydration error.
-    // We can use <details> and <summary> which is native and works without JS well, but styling is tricky.
-    // Let's use simple state, default OPEN. But on mobile, we want it CLOSED.
-    // Best way: Use CSS 'peer' or 'group' or just a media query based initial check in useEffect.
-
-    // Let's try a CSS-first approach for defaults?
-    // "md:block hidden" logic? No, it's a toggle.
-
-    // Robust solution: Render open, but check width on mount to close if mobile.
-    const [isOpen, setIsOpen] = useState(true);
+function CollapsibleSection({ title, children, initialOpen = false }) {
+    const [isOpen, setIsOpen] = useState(initialOpen);
 
     useEffect(() => {
-        if (window.innerWidth < 768) {
-            setIsOpen(false);
-        }
-    }, []);
+        const handleResize = () => {
+            if (window.innerWidth < 768) {
+                setIsOpen(false);
+            } else {
+                setIsOpen(initialOpen);
+            }
+        };
+
+        handleResize(); // Set initial state on mount
+
+        window.addEventListener('resize', handleResize);
+        return () => window.removeEventListener('resize', handleResize);
+    }, [initialOpen]);
 
     return (
         <div className="bg-gray-50 rounded-lg border overflow-hidden">

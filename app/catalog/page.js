@@ -308,6 +308,16 @@ export default async function CatalogPage(props) {
                                         <span className="w-4 h-4 flex items-center justify-center rounded-full bg-white/10 group-hover:bg-white/20 transition-colors text-[14px] leading-none pb-0.5">×</span>
                                     </Link>
                                 ))}
+                                {searchParams.gender && searchParams.gender !== 'all' && (
+                                    <Link href={getRemoveLink('gender', searchParams.gender)} className="bg-black text-white px-2 py-1 rounded flex items-center gap-2 hover:bg-gray-800 transition-colors group">
+                                        <span className="font-medium">מגדר: {
+                                            searchParams.gender === 'men' ? 'גברים' : 
+                                            searchParams.gender === 'women' ? 'נשים' : 
+                                            searchParams.gender === 'unisex' ? 'יוניסקס' : searchParams.gender
+                                        }</span>
+                                        <span className="w-4 h-4 flex items-center justify-center rounded-full bg-white/10 group-hover:bg-white/20 transition-colors text-[14px] leading-none pb-0.5">×</span>
+                                    </Link>
+                                )}
                                 {search && (
                                     <Link href={getRemoveLink('q', search)} className="bg-black text-white px-2 py-1 rounded flex items-center gap-2 hover:bg-gray-800 transition-colors group">
                                         <span className="font-medium">חיפוש: {search}</span>
