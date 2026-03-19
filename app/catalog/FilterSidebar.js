@@ -203,7 +203,7 @@ export default function FilterSidebar({ allBrands, allCategories, allCountries, 
             </CollapsibleSection>
 
             {/* Price Filter Slider - Collapsible */}
-            <CollapsibleSection title={`מחיר (עד ${price} ₪)`}>
+            <CollapsibleSection title={`מחיר (עד ${price} ₪)`} initialOpen={true}>
                 <PriceFilter 
                     price={price} 
                     setPrice={setPrice} 
@@ -214,7 +214,7 @@ export default function FilterSidebar({ allBrands, allCategories, allCountries, 
             </CollapsibleSection>
 
             {/* Season Filter - Collapsible */}
-            <CollapsibleSection title="עונה">
+            <CollapsibleSection title="עונה" initialOpen={true}>
                 <div className="grid grid-cols-2 gap-2">
                     {['חורף', 'סתיו', 'אביב', 'קיץ'].map(s => (
                         <button
@@ -234,7 +234,7 @@ export default function FilterSidebar({ allBrands, allCategories, allCountries, 
 
             {/* Country Filter */}
             {allCountries && allCountries.length > 0 && (
-                <CollapsibleSection title={`מדינה (${allCountries.length})`}>
+                <CollapsibleSection title={`מדינה (${allCountries.length})`} initialOpen={true}>
                     <div className="space-y-2 text-sm max-h-[200px] overflow-y-auto custom-scrollbar pl-2">
                         {allCountries.map(c => (
                             <label key={c} className="flex items-center gap-2 cursor-pointer hover:bg-gray-100 p-1 rounded">
@@ -253,7 +253,7 @@ export default function FilterSidebar({ allBrands, allCategories, allCountries, 
 
             {/* Perfumer Filter */}
             {allPerfumers && allPerfumers.length > 0 && (
-                <CollapsibleSection title={`פרפיומר (${allPerfumers.length})`}>
+                <CollapsibleSection title={`פרפיומר (${allPerfumers.length})`} initialOpen={true}>
                     <div className="space-y-2 text-sm max-h-[200px] overflow-y-auto custom-scrollbar pl-2">
                         {allPerfumers.map(p => (
                             <label key={p} className="flex items-center gap-2 cursor-pointer hover:bg-gray-100 p-1 rounded">
