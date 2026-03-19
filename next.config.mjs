@@ -8,7 +8,15 @@ const nextConfig = {
       },
       {
         protocol: 'https',
+        hostname: '**.fimgs.net',
+      },
+      {
+        protocol: 'https',
         hostname: 'fimgs.net',
+      },
+      {
+        protocol: 'https',
+        hostname: '**.pimgs.net',
       },
       {
         protocol: 'https',
@@ -16,7 +24,15 @@ const nextConfig = {
       },
       {
         protocol: 'https',
+        hostname: '**.fragrantica.com',
+      },
+      {
+        protocol: 'https',
         hostname: 'www.fragrantica.com',
+      },
+      {
+        protocol: 'https',
+        hostname: '**.cp-parfums.com',
       },
       {
         protocol: 'https',

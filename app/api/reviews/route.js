@@ -1,5 +1,6 @@
 import { auth as clerkAuth, clerkClient } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
+import pool from '@/app/lib/db';
 import * as Sentry from "@sentry/nextjs";
 
 export async function GET() {
@@ -35,8 +36,7 @@ export async function GET() {
         return NextResponse.json(reviewsWithImages);
     } catch (error) {
         Sentry.captureException(error);
-        console.error('Error fetching reviews:', error);
-        return new NextResponse('Internal Error', { status: 500 });
+        return NextResponse.json({ error: 'Internal Error' }, { status: 500 });
     }
 }
 
@@ -44,19 +44,19 @@ export async function POST(req) {
     try {
         const authData = await clerkAuth();
         const userId = authData?.userId;
-        if (!userId) return new NextResponse('Unauthorized', { status: 401 });
+        if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
         const body = await req.json();
         const { orderId, content, rating = 5 } = body;
 
         if (!orderId || !content) {
-            return new NextResponse('OrderId and Content are required', { status: 400 });
+            return NextResponse.json({ error: 'OrderId and Content are required' }, { status: 400 });
         }
 
         // Verify order belongs to user and is completed
         const orderCheck = await pool.query("SELECT status FROM orders WHERE id = $1 AND customer_details->>'clerk_id' = $2", [orderId, userId]);
         if (orderCheck.rows.length === 0) {
-            return new NextResponse('Order not found or unauthorized', { status: 404 });
+            return NextResponse.json({ error: 'Order not found or unauthorized' }, { status: 404 });
         }
         if (orderCheck.rows[0].status !== 'completed' && orderCheck.rows[0].status !== 'הושלם') {
              // Allow both if translated
@@ -73,6 +73,6 @@ export async function POST(req) {
     } catch (error) {
         Sentry.captureException(error);
         console.error('Error submitting review:', error);
-        return new NextResponse('Internal Error', { status: 500 });
+        return NextResponse.json({ error: 'Internal Error' }, { status: 500 });
     }
 }

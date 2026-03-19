@@ -32,31 +32,34 @@ export default function Header({ brands = [], menu = [] }) {
 
             {/* Main Header Container */}
             <div className="w-full px-3 md:px-6 py-2 md:py-4 relative bg-white">
-                <div className="flex flex-col md:grid md:grid-cols-3 md:items-center">
-                    
-                    {/* Mobile Navigation (Handles Search Overlay internally) */}
+                {/* Mobile Header (Visible on Mobile Only) */}
+                <div className="md:hidden">
                     <MobileNav 
                         menu={menu} 
                         cartCount={cartCount} 
                         wishlistCount={wishlistCount} 
                         isAdmin={isAdmin} 
                     />
+                </div>
 
-                    {/* Desktop RIGHT Group: Search + User Profile */}
-                    <div className="hidden md:flex">
+                {/* Desktop Header (Visible on Desktop Only) */}
+                <div className="hidden md:grid grid-cols-3 items-center w-full">
+                    
+                    {/* Desktop RIGHT Group (RTL Start): Search + User Profile */}
+                    <div className="flex items-center justify-start gap-4">
                         <UserActions />
                     </div>
 
                     {/* Desktop CENTER Group: Logo + Navigation Links */}
-                    <div className="hidden md:flex flex-col items-center justify-center gap-2">
+                    <div className="flex flex-col items-center justify-center gap-2">
                         <Link href="/" className="block">
                             <Image src="/logo_v5.png" alt="ml." width={180} height={70} className="h-16 w-auto object-contain" priority />
                         </Link>
                         <DesktopNav menu={menu} brands={brands} />
                     </div>
 
-                    {/* Desktop LEFT Group: Orders + Wishlist + Cart */}
-                    <div className="hidden md:flex">
+                    {/* Desktop LEFT Group (RTL End): Orders + Wishlist + Cart */}
+                    <div className="flex items-center justify-end gap-6">
                         <DesktopIcons cartCount={cartCount} wishlistCount={wishlistCount} />
                     </div>
                 </div>

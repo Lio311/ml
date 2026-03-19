@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { getBrandInsight } from '../lib/db';
 
 export default async function BrandInsight({ brand }) {
@@ -8,10 +9,23 @@ export default async function BrandInsight({ brand }) {
     return (
         <section className="mt-12 pt-12 pb-0 border-t border-gray-100 bg-white">
             <div className="max-w-5xl mx-auto px-4 md:px-0">
-                <div className="flex flex-col gap-6 text-right">
-                    
                     {/* Brand Meta */}
-                    <div className="flex-1">
+                    <div className="flex flex-col md:flex-row gap-8 items-start">
+                        {insight.logo_url && (
+                            <div className="w-full md:w-1/3 flex justify-center md:justify-end mb-4 md:mb-0">
+                                <div className="p-4 border border-gray-100 rounded-2xl bg-white shadow-sm flex items-center justify-center aspect-square w-48 h-48 md:w-64 md:h-64 sticky top-24">
+                                    <Image 
+                                        src={insight.logo_url} 
+                                        alt={insight.name} 
+                                        width={256} 
+                                        height={256} 
+                                        className="w-full h-full object-contain"
+                                        priority
+                                    />
+                                </div>
+                            </div>
+                        )}
+                        <div className="flex-1">
                         <div className="mb-6">
                             <h2 className="text-2xl md:text-3xl font-serif font-bold text-gray-900 leading-tight">
                                 {insight.title}
