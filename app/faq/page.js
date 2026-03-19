@@ -1,3 +1,5 @@
+import Link from 'next/link';
+
 export const metadata = {
     title: "שאלות ותשובות | ml_tlv",
     description: "שאלות נפוצות ותשובות בנוגע להזמנות, משלוחים ומוצרים.",
