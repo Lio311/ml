@@ -287,13 +287,13 @@ export default async function CatalogPage(props) {
                                 ))}
                                 {search && <span className="bg-black text-white px-2 py-1 rounded">חיפוש: {search}</span>}
                                 {(Array.isArray(searchParams.season) ? searchParams.season : [searchParams.season]).filter(Boolean).map(s => (
-                                    <span key={s} className="bg-orange-500 text-white px-2 py-1 rounded">עונה: {s}</span>
+                                    <span key={s} className="bg-black text-white px-2 py-1 rounded">עונה: {s}</span>
                                 ))}
                                 {(Array.isArray(searchParams.country) ? searchParams.country : [searchParams.country]).filter(Boolean).map(c => (
-                                    <span key={c} className="bg-blue-500 text-white px-2 py-1 rounded">מדינה: {c}</span>
+                                    <span key={c} className="bg-black text-white px-2 py-1 rounded">מדינה: {c}</span>
                                 ))}
                                 {(Array.isArray(searchParams.perfumer) ? searchParams.perfumer : [searchParams.perfumer]).filter(Boolean).map(p => (
-                                    <span key={p} className="bg-purple-500 text-white px-2 py-1 rounded">פרפיומר: {p}</span>
+                                    <span key={p} className="bg-black text-white px-2 py-1 rounded">פרפיומר: {p}</span>
                                 ))}
                             </div>
                         </div>

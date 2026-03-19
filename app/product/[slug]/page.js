@@ -365,7 +365,7 @@ export default async function ProductPage(props) {
                                             <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none mb-1">עונות מתאימות</div>
                                             <div className="flex flex-wrap gap-2 mt-1">
                                                 {product.seasons.split(',').map(s => (
-                                                    <span key={s} className="bg-white px-2 py-1 rounded-md text-xs font-bold border border-gray-100 shadow-sm flex items-center gap-1">
+                                                    <span key={s} className="bg-black text-white px-2 py-1 rounded-md text-xs font-bold shadow-sm flex items-center gap-1 transition-colors hover:bg-gray-800">
                                                         {s}
                                                     </span>
                                                 ))}
