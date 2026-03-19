@@ -92,9 +92,26 @@ const nextConfig = {
       },
       {
         protocol: 'https',
+        hostname: '**.sekega.com',
+      },
+      {
+        protocol: 'https',
         hostname: 'sekega.com',
       },
+      {
+        protocol: 'https',
+        hostname: '**.lessenteurs.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'www.lessenteurs.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'cdn.shopify.com',
+      },
     ],
+    formats: ['image/avif', 'image/webp'],
   },
   async headers() {
     return [

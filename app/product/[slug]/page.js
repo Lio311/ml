@@ -108,7 +108,7 @@ export default async function ProductPage(props) {
         const searchPatterns = notesArray.length > 0 ? notesArray.map(n => `%${n}%`) : ['%NONE%'];
 
         const relatedRes = await pool.query(`
-            SELECT id, slug, name, brand, image_url, price_10ml, is_limited, stock, category
+            SELECT id, slug, name, brand, image_url, price_10ml, stock, category
             FROM products 
             WHERE active = true AND id != $1
             AND (
@@ -131,7 +131,7 @@ export default async function ProductPage(props) {
         if (related.length < 4) {
             const excludeIds = [product.id, ...related.map(r => r.id)];
             const fillRes = await pool.query(`
-                SELECT id, slug, name, brand, image_url, price_10ml, is_limited, stock, category
+                SELECT id, slug, name, brand, image_url, price_10ml, stock, category
                 FROM products 
                 WHERE active = true AND id != ALL($1)
                 ORDER BY RANDOM()
@@ -249,7 +249,7 @@ export default async function ProductPage(props) {
                         <ShareButton name={product.name} />
                     </div>
 
-                    {product.is_limited && (
+                    {product.stock > 0 && product.stock <= 20 && (
                         <span className="absolute top-16 right-4 bg-red-600 text-white text-sm font-bold px-3 py-1 rounded-full animate-pulse z-10 shadow-sm border border-red-500">
                             מלאי מוגבל
                         </span>
