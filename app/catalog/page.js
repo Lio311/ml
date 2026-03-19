@@ -348,8 +348,9 @@ export default async function CatalogPage(props) {
                         </div>
 
                         {/* Sort Options */}
-                        <div className="flex justify-between items-center w-full md:w-auto gap-4">
-                            <span className="md:hidden text-[10px] text-gray-400 whitespace-nowrap">
+                        {/* Sort Options */}
+                        <div className="flex flex-row justify-center md:justify-end items-center w-full md:w-auto gap-4">
+                            <span className="md:hidden text-[11px] text-gray-400 whitespace-nowrap font-medium">
                                 מציג {products.length} מוצרים (עמוד {page} מתוך {totalPages})
                             </span>
                             <SortSelect />
