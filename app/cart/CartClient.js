@@ -46,10 +46,12 @@ export default function CartClient() {
                 buckets[vId] = {
                     id: vId,
                     name: item.vendorName || (vId === 'main' ? 'האתר הרשמי' : 'ספק חיצוני'),
-                    items: []
+                    items: [],
+                    totalQuantity: 0
                 };
             }
             buckets[vId].items.push(item);
+            buckets[vId].totalQuantity += (item.quantity || 1);
         });
         return Object.values(buckets);
     }, [cartItems]);
@@ -251,7 +253,7 @@ export default function CartClient() {
                                 onClick={() => setActiveVendorId(v.id)}
                                 className={`px-4 py-2 rounded-full border transition ${activeVendorId === v.id ? 'bg-black text-white' : 'bg-white text-gray-500'}`}
                             >
-                                {v.name} ({v.items.length})
+                                {v.name} ({v.totalQuantity})
                             </button>
                         ))}
                     </div>
