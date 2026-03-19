@@ -40,7 +40,7 @@ export default function FAQClient({ categories }) {
         <div className="container mx-auto px-4 max-w-5xl">
             <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
                 {/* Sidebar navigation for desktop */}
-                <aside className="hidden md:block sticky top-28 self-start space-y-2">
+                <aside className="hidden md:block sticky top-36 z-30 self-start space-y-2">
                     <h2 className="text-sm font-bold uppercase tracking-wider text-gray-400 mb-4 px-3">קטגוריות</h2>
                     {categories.map((cat, idx) => (
                         <a 
