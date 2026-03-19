@@ -54,7 +54,10 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
             base_notes: product.base_notes || '',
             in_lottery: product.in_lottery ?? true,
             cost_price: product.cost_price || 0,
-            original_size: product.original_size || 100
+            original_size: product.original_size || 100,
+            seasons: product.seasons || '',
+            perfumers: product.perfumers || '',
+            country: product.country || ''
         });
     };
 
@@ -77,7 +80,10 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
             base_notes: '',
             in_lottery: true,
             cost_price: 0,
-            original_size: 100
+            original_size: 100,
+            seasons: '',
+            perfumers: '',
+            country: ''
         });
     };
 
@@ -415,11 +421,51 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                     <div className="mb-4">
                         <label className="text-sm font-bold">תיאור מוצר</label>
                         <textarea
-                            value={editForm.description || ''}
-                            onChange={e => setEditForm({ ...editForm, description: e.target.value })}
-                            className="border p-2 rounded w-full bg-white h-24"
                             placeholder="תיאור מלא של הבושם, תווים, וכו'..."
                         />
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 bg-gray-50 p-4 rounded-xl border border-gray-100">
+                        <div>
+                            <label className="text-sm font-bold block mb-2">עונות (בחר לפחות אחת)</label>
+                            <div className="flex flex-wrap gap-3">
+                                {['חורף', 'סתיו', 'אביב', 'קיץ'].map(s => (
+                                    <label key={s} className="flex items-center gap-2 cursor-pointer bg-white px-3 py-1.5 rounded-lg border hover:border-black transition-colors">
+                                        <input
+                                            type="checkbox"
+                                            checked={(editForm.seasons || '').split(',').includes(s)}
+                                            onChange={(e) => {
+                                                const current = (editForm.seasons || '').split(',').filter(Boolean);
+                                                const next = e.target.checked 
+                                                    ? [...current, s] 
+                                                    : current.filter(x => x !== s);
+                                                setEditForm({ ...editForm, seasons: next.join(',') });
+                                            }}
+                                            className="w-4 h-4 accent-black"
+                                        />
+                                        <span className="text-sm font-bold">{s}</span>
+                                    </label>
+                                ))}
+                            </div>
+                        </div>
+                        <div>
+                            <label className="text-sm font-bold block mb-2">מדינת מוצא</label>
+                            <input
+                                value={editForm.country || ''}
+                                onChange={e => setEditForm({ ...editForm, country: e.target.value })}
+                                className="border p-2 rounded w-full bg-white shadow-sm focus:ring-2 focus:ring-blue-100 transition-all outline-none"
+                                placeholder="למשל: צרפת, איטליה, אומן..."
+                            />
+                        </div>
+                        <div className="md:col-span-2">
+                            <label className="text-sm font-bold block mb-2">פרפיומר (Perfumer) - לחץ Enter להוספה</label>
+                            <TagInput
+                                tags={editForm.perfumers ? editForm.perfumers.split(',').filter(Boolean) : []}
+                                onChange={(newTags) => setEditForm({ ...editForm, perfumers: newTags.join(',') })}
+                                suggestions={[]}
+                                placeholder="לדוגמה: Olivier Polge, Jean-Claude Ellena..."
+                            />
+                        </div>
                     </div>
                     <div className="flex items-center gap-2 mb-4">
                         <input
@@ -601,6 +647,49 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                             className="w-5 h-5 accent-black cursor-pointer rounded-lg"
                                         />
                                         <label className="text-xs font-black uppercase tracking-widest select-none text-gray-700">כלול בהגרלות רנדומליות</label>
+                                    </div>
+
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2 p-4 bg-white rounded-2xl border border-gray-100">
+                                        <div>
+                                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">עונות</label>
+                                            <div className="flex flex-wrap gap-2">
+                                                {['חורף', 'סתיו', 'אביב', 'קיץ'].map(s => (
+                                                    <label key={s} className="flex items-center gap-1.5 cursor-pointer hover:bg-gray-50 p-1.5 rounded-lg transition-colors border-2 border-transparent has-[:checked]:border-black has-[:checked]:bg-gray-50">
+                                                        <input
+                                                            type="checkbox"
+                                                            checked={(editForm.seasons || '').split(',').includes(s)}
+                                                            onChange={(e) => {
+                                                                const current = (editForm.seasons || '').split(',').filter(Boolean);
+                                                                const next = e.target.checked 
+                                                                    ? [...current, s] 
+                                                                    : current.filter(x => x !== s);
+                                                                setEditForm({ ...editForm, seasons: next.join(',') });
+                                                            }}
+                                                            className="w-3.5 h-3.5 accent-black"
+                                                        />
+                                                        <span className="text-[11px] font-black">{s}</span>
+                                                    </label>
+                                                ))}
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">מדינת מוצא</label>
+                                            <input
+                                                value={editForm.country || ''}
+                                                onChange={e => setEditForm({ ...editForm, country: e.target.value })}
+                                                className="border-2 border-gray-100 rounded-xl p-2 w-full bg-white focus:border-black outline-none transition-colors font-bold text-sm"
+                                                placeholder="מדינה..."
+                                            />
+                                        </div>
+                                        <div className="md:col-span-2">
+                                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">פרפיומרים (Perfumers)</label>
+                                            <TagInput
+                                                tags={editForm.perfumers ? editForm.perfumers.split(',').filter(Boolean) : []}
+                                                onChange={(newTags) => setEditForm({ ...editForm, perfumers: newTags.join(',') })}
+                                                suggestions={[]}
+                                                placeholder="הוסף שם..."
+                                            />
+                                        </div>
                                     </div>
                                 </div>
 

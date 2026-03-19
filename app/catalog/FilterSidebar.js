@@ -15,7 +15,7 @@ const GENDER_OPTIONS = [
 
 const VIRTUAL_CATEGORIES = ['בוטיק', 'נישה'];
 
-export default function FilterSidebar({ allBrands, allCategories, minPrice, maxPrice }) {
+export default function FilterSidebar({ allBrands, allCategories, allCountries, allPerfumers, minPrice, maxPrice }) {
     // Merge virtual categories (remove duplicates just in case)
     const combinedCategories = Array.from(new Set([...VIRTUAL_CATEGORIES, ...allCategories]));
     const router = useRouter();
@@ -32,11 +32,17 @@ export default function FilterSidebar({ allBrands, allCategories, minPrice, maxP
 
     const [selectedBrands, setSelectedBrands] = useState(getSelected('brand'));
     const [selectedCategories, setSelectedCategories] = useState(getSelected('category'));
+    const [selectedSeasons, setSelectedSeasons] = useState(getSelected('season'));
+    const [selectedCountries, setSelectedCountries] = useState(getSelected('country'));
+    const [selectedPerfumers, setSelectedPerfumers] = useState(getSelected('perfumer'));
     const [searchTerm, setSearchTerm] = useState(searchParams.get('q') || '');
 
     useEffect(() => {
         setSelectedBrands(searchParams.getAll('brand'));
         setSelectedCategories(searchParams.getAll('category'));
+        setSelectedSeasons(searchParams.getAll('season'));
+        setSelectedCountries(searchParams.getAll('country'));
+        setSelectedPerfumers(searchParams.getAll('perfumer'));
         setSearchTerm(searchParams.get('q') || '');
     }, [searchParams]);
 
@@ -61,6 +67,30 @@ export default function FilterSidebar({ allBrands, allCategories, minPrice, maxP
         applyFilters({ category: newCats, resetPage: true });
     };
 
+    const toggleSeason = (season) => {
+        const newSeasons = selectedSeasons.includes(season)
+            ? selectedSeasons.filter(s => s !== season)
+            : [...selectedSeasons, season];
+        setSelectedSeasons(newSeasons);
+        applyFilters({ season: newSeasons, resetPage: true });
+    };
+
+    const toggleCountry = (country) => {
+        const newCountries = selectedCountries.includes(country)
+            ? selectedCountries.filter(c => c !== country)
+            : [...selectedCountries, country];
+        setSelectedCountries(newCountries);
+        applyFilters({ country: newCountries, resetPage: true });
+    };
+
+    const togglePerfumer = (perfumer) => {
+        const newPerfumers = selectedPerfumers.includes(perfumer)
+            ? selectedPerfumers.filter(p => p !== perfumer)
+            : [...selectedPerfumers, perfumer];
+        setSelectedPerfumers(newPerfumers);
+        applyFilters({ perfumer: newPerfumers, resetPage: true });
+    };
+
     const applyFilters = (updates) => {
         const params = new URLSearchParams(searchParams.toString());
 
@@ -77,6 +107,9 @@ export default function FilterSidebar({ allBrands, allCategories, minPrice, maxP
         if (updates.q !== undefined) updateArrayParam('q', updates.q);
         if (updates.brand !== undefined) updateArrayParam('brand', updates.brand);
         if (updates.category !== undefined) updateArrayParam('category', updates.category);
+        if (updates.season !== undefined) updateArrayParam('season', updates.season);
+        if (updates.country !== undefined) updateArrayParam('country', updates.country);
+        if (updates.perfumer !== undefined) updateArrayParam('perfumer', updates.perfumer);
         if (updates.gender !== undefined) {
             if (updates.gender === null) params.delete('gender');
             else params.set('gender', updates.gender);
@@ -162,6 +195,64 @@ export default function FilterSidebar({ allBrands, allCategories, minPrice, maxP
 
             {/* Price Filter Slider */}
             <PriceFilter />
+
+            {/* Season Filter */}
+            <div className="bg-gray-50 p-4 rounded-lg border">
+                <h3 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-3">עונה</h3>
+                <div className="grid grid-cols-2 gap-2">
+                    {['חורף', 'סתיו', 'אביב', 'קיץ'].map(s => (
+                        <button
+                            key={s}
+                            onClick={() => toggleSeason(s)}
+                            className={`px-2 py-2 rounded-lg border text-xs font-bold transition-all ${
+                                selectedSeasons.includes(s) 
+                                ? 'bg-black text-white border-black shadow-md' 
+                                : 'bg-white text-gray-600 border-gray-100 hover:border-gray-200'
+                            }`}
+                        >
+                            {s}
+                        </button>
+                    ))}
+                </div>
+            </div>
+
+            {/* Country Filter */}
+            {allCountries && allCountries.length > 0 && (
+                <CollapsibleSection title={`מדינה (${allCountries.length})`}>
+                    <div className="space-y-2 text-sm max-h-[200px] overflow-y-auto custom-scrollbar pl-2">
+                        {allCountries.map(c => (
+                            <label key={c} className="flex items-center gap-2 cursor-pointer hover:bg-gray-100 p-1 rounded">
+                                <input
+                                    type="checkbox"
+                                    checked={selectedCountries.includes(c)}
+                                    onChange={() => toggleCountry(c)}
+                                    className="w-4 h-4 rounded border-gray-300 text-black focus:ring-black"
+                                />
+                                <span className={selectedCountries.includes(c) ? 'font-bold' : ''}>{c}</span>
+                            </label>
+                        ))}
+                    </div>
+                </CollapsibleSection>
+            )}
+
+            {/* Perfumer Filter */}
+            {allPerfumers && allPerfumers.length > 0 && (
+                <CollapsibleSection title={`פרפיומר (${allPerfumers.length})`}>
+                    <div className="space-y-2 text-sm max-h-[200px] overflow-y-auto custom-scrollbar pl-2">
+                        {allPerfumers.map(p => (
+                            <label key={p} className="flex items-center gap-2 cursor-pointer hover:bg-gray-100 p-1 rounded">
+                                <input
+                                    type="checkbox"
+                                    checked={selectedPerfumers.includes(p)}
+                                    onChange={() => togglePerfumer(p)}
+                                    className="w-4 h-4 rounded border-gray-300 text-black focus:ring-black"
+                                />
+                                <span className={selectedPerfumers.includes(p) ? 'font-bold' : ''}>{p}</span>
+                            </label>
+                        ))}
+                    </div>
+                </CollapsibleSection>
+            )}
 
         </aside>
     );

@@ -53,7 +53,7 @@ export async function generateMetadata(props) {
     };
 }
 
-async function getProducts(search, brand, category, minPrice, maxPrice, sort, page) {
+async function getProducts(search, brand, category, minPrice, maxPrice, sort, page, searchParams) {
     const LIMIT = 16;
     const OFFSET = (page - 1) * LIMIT;
 
@@ -116,6 +116,33 @@ async function getProducts(search, brand, category, minPrice, maxPrice, sort, pa
     if (maxPrice) {
         params.push(maxPrice);
         query += ` AND p.price_10ml <= $${params.length}`;
+    }
+
+    if (searchParams?.season) {
+        const seasons = Array.isArray(searchParams.season) ? searchParams.season : [searchParams.season];
+        if (seasons.length > 0) {
+            const conditions = seasons.map((_, i) => `p.seasons ILIKE $${params.length + i + 1}`).join(' OR ');
+            query += ` AND (${conditions})`;
+            params.push(...seasons.map(s => `%${s}%`));
+        }
+    }
+
+    if (searchParams?.perfumer) {
+        const perfumers = Array.isArray(searchParams.perfumer) ? searchParams.perfumer : [searchParams.perfumer];
+        if (perfumers.length > 0) {
+            const conditions = perfumers.map((_, i) => `p.perfumers ILIKE $${params.length + i + 1}`).join(' OR ');
+            query += ` AND (${conditions})`;
+            params.push(...perfumers.map(p => `%${p}%`));
+        }
+    }
+
+    if (searchParams?.country) {
+        const countries = Array.isArray(searchParams.country) ? searchParams.country : [searchParams.country];
+        if (countries.length > 0) {
+            const placeHolders = countries.map((_, i) => `$${params.length + i + 1}`).join(', ');
+            query += ` AND p.country IN (${placeHolders})`;
+            params.push(...countries);
+        }
     }
 
     const countQuery = `SELECT COUNT(*) FROM (${query}) AS total`;
@@ -184,6 +211,31 @@ async function getCategories() {
     }
 }
 
+async function getMetadataOptions() {
+    try {
+        const res = await pool.query(`
+            SELECT 
+                array_agg(DISTINCT country) as countries,
+                array_agg(DISTINCT perfumers) as perfumers
+            FROM products 
+            WHERE active = true
+        `);
+        
+        const countries = (res.rows[0].countries || []).filter(c => c && c !== 'Unknown').sort();
+        
+        const perfumersSet = new Set();
+        (res.rows[0].perfumers || []).forEach(pStr => {
+            if (pStr) pStr.split(',').forEach(p => perfumersSet.add(p.trim()));
+        });
+        const perfumers = Array.from(perfumersSet).filter(Boolean).sort();
+
+        return { countries, perfumers };
+    } catch (e) {
+        console.error("Error fetching metadata options:", e);
+        return { countries: [], perfumers: [] };
+    }
+}
+
 export default async function CatalogPage(props) {
     const searchParams = await props.searchParams;
     const search = searchParams?.q || '';
@@ -196,9 +248,10 @@ export default async function CatalogPage(props) {
 
     const mappedSearch = await mapHebrewQuery(search);
 
-    const { products, totalPages } = await getProducts(mappedSearch, brand, category, minPrice, maxPrice, sort, page);
+    const { products, totalPages } = await getProducts(mappedSearch, brand, category, minPrice, maxPrice, sort, page, searchParams);
     const allBrands = await getBrands();
     const allCategories = await getCategories();
+    const { countries: allCountries, perfumers: allPerfumers } = await getMetadataOptions();
 
     const pageTitle = sort === 'bestsellers' ? 'הנמכרים ביותר' : 'הקטלוג המלא';
 
@@ -212,6 +265,8 @@ export default async function CatalogPage(props) {
                 <FilterSidebar
                     allBrands={allBrands}
                     allCategories={allCategories}
+                    allCountries={allCountries}
+                    allPerfumers={allPerfumers}
                     minPrice={minPrice}
                     maxPrice={maxPrice}
                 />
@@ -231,6 +286,15 @@ export default async function CatalogPage(props) {
                                     <span key={c} className="bg-black text-white px-2 py-1 rounded">קטגוריה: {c}</span>
                                 ))}
                                 {search && <span className="bg-black text-white px-2 py-1 rounded">חיפוש: {search}</span>}
+                                {(Array.isArray(searchParams.season) ? searchParams.season : [searchParams.season]).filter(Boolean).map(s => (
+                                    <span key={s} className="bg-orange-500 text-white px-2 py-1 rounded">עונה: {s}</span>
+                                ))}
+                                {(Array.isArray(searchParams.country) ? searchParams.country : [searchParams.country]).filter(Boolean).map(c => (
+                                    <span key={c} className="bg-blue-500 text-white px-2 py-1 rounded">מדינה: {c}</span>
+                                ))}
+                                {(Array.isArray(searchParams.perfumer) ? searchParams.perfumer : [searchParams.perfumer]).filter(Boolean).map(p => (
+                                    <span key={p} className="bg-purple-500 text-white px-2 py-1 rounded">פרפיומר: {p}</span>
+                                ))}
                             </div>
                         </div>
 

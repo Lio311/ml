@@ -352,6 +352,51 @@ export default async function ProductPage(props) {
                             middle={product.middle_notes}
                             base={product.base_notes}
                         />
+
+                        {/* Additional Metadata */}
+                        {(product.seasons || product.perfumers || product.country) && (
+                            <div className="bg-gray-50 rounded-2xl p-6 border border-gray-100 space-y-4 shadow-sm animate-in fade-in slide-in-from-bottom-2 duration-700">
+                                <h4 className="text-xs font-black uppercase tracking-widest text-gray-400 mb-2 border-b border-gray-200 pb-2">פרטים נוספים</h4>
+                                
+                                {product.seasons && (
+                                    <div className="flex items-start gap-4">
+                                        <div className="w-8 h-8 rounded-lg bg-white border border-gray-100 flex items-center justify-center text-lg shadow-sm">📅</div>
+                                        <div>
+                                            <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none mb-1">עונות מתאימות</div>
+                                            <div className="flex flex-wrap gap-2 mt-1">
+                                                {product.seasons.split(',').map(s => (
+                                                    <span key={s} className="bg-white px-2 py-1 rounded-md text-xs font-bold border border-gray-100 shadow-sm flex items-center gap-1">
+                                                        {s}
+                                                    </span>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {product.country && (
+                                    <div className="flex items-start gap-4">
+                                        <div className="w-8 h-8 rounded-lg bg-white border border-gray-100 flex items-center justify-center text-lg shadow-sm">🌍</div>
+                                        <div>
+                                            <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none mb-1">ארץ מקור</div>
+                                            <div className="text-sm font-bold">{product.country}</div>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {product.perfumers && (
+                                    <div className="flex items-start gap-4">
+                                        <div className="w-8 h-8 rounded-lg bg-white border border-gray-100 flex items-center justify-center text-lg shadow-sm">🎨</div>
+                                        <div>
+                                            <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none mb-1">פרפיומר (Perfumer)</div>
+                                            <div className="text-sm font-bold text-gray-700">
+                                                {product.perfumers.split(',').join(' • ')}
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+                            </div>
+                        )}
                     </div>
                 </div >
             </div >
