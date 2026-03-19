@@ -6,6 +6,10 @@ import AnalyticsTracker from "./components/AnalyticsTracker";
 import GoogleAnalytics from "./components/GoogleAnalytics";
 import MicrosoftClarity from "./components/MicrosoftClarity";
 import ClientLayout from "./components/ClientLayout";
+import { validateEnv } from "./lib/env";
+
+// Validate env vars on server start/request
+validateEnv();
 
 const assistant = Assistant({
   subsets: ["hebrew", "latin"],

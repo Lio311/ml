@@ -143,8 +143,24 @@ const nextConfig = {
             value: 'camera=(), microphone=(), geolocation=()'
           },
           {
+            key: 'Permissions-Policy',
+            value: 'camera=(), microphone=(), geolocation=()'
+          },
+          {
             key: 'Content-Security-Policy',
-            value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' blob: https://*.ml-tlv.com https://ml-tlv.com https://*.clerk.accounts.dev https://clerk.ml-tlv.com https://*.clerk.services https://www.googletagmanager.com https://www.google-analytics.com https://*.clarity.ms https://browser.sentry-cdn.com https://*.sentry.io; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://www.gstatic.com; img-src 'self' data: blob: https://*.ml-tlv.com https://ml-tlv.com https://*.clerk.com https://clerk.ml-tlv.com https://*.clerk.accounts.dev https://*.googleusercontent.com https://images.unsplash.com https://*.fimgs.net https://fimgs.net https://*.pimgs.net https://pimgs.net https://*.fragrantica.com https://fragrantica.com https://*.cp-parfums.com https://cp-parfums.com https://*.logos-download.com https://logos-download.com https://*.ipiccirilliperfumes.com https://ipiccirilliperfumes.com https://*.aromadilamore.com https://aromadilamore.com https://*.sekega.com https://sekega.com https://*.gstatic.com https://www.gstatic.com https://upload.wikimedia.org https://*.lessenteurs.com https://lessenteurs.com https://*.seeklogo.com https://seeklogo.com https://c.bing.com https://www.google-analytics.com https://*.clarity.ms https://*.sentry.io https://*.redd.it https://redd.it https://*.francescadelloro.it https://francescadelloro.it https://zacshop.com https://media.parfumo.com https://i0.wp.com https://scentadvice.com https://m.media-amazon.com; font-src 'self' data: https://fonts.gstatic.com; connect-src 'self' https://*.ml-tlv.com https://ml-tlv.com https://*.clerk.accounts.dev https://clerk.ml-tlv.com https://*.clerk.services https://www.google-analytics.com https://*.clarity.ms https://c.bing.com https://*.sentry.io; frame-src 'self' https://*.ml-tlv.com https://ml-tlv.com https://*.clerk.accounts.dev https://clerk.ml-tlv.com https://*.clerk.services; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self';"
+            value: [
+              "default-src 'self';",
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' blob: https://*.ml-tlv.com https://ml-tlv.com https://*.clerk.accounts.dev https://clerk.ml-tlv.com https://*.clerk.services https://www.googletagmanager.com https://www.google-analytics.com https://*.clarity.ms https://browser.sentry-cdn.com https://*.sentry.io;",
+              "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://www.gstatic.com;",
+              "img-src 'self' data: blob: https://*.ml-tlv.com https://ml-tlv.com https://*.clerk.com https://clerk.ml-tlv.com https://*.clerk.accounts.dev https://*.googleusercontent.com https://images.unsplash.com https://*.fimgs.net https://fimgs.net https://*.pimgs.net https://pimgs.net https://*.fragrantica.com https://fragrantica.com https://*.cp-parfums.com https://cp-parfums.com https://*.logos-download.com https://logos-download.com https://*.ipiccirilliperfumes.com https://ipiccirilliperfumes.com https://*.aromadilamore.com https://aromadilamore.com https://*.sekega.com https://sekega.com https://*.gstatic.com https://www.gstatic.com https://upload.wikimedia.org https://*.lessenteurs.com https://lessenteurs.com https://*.seeklogo.com https://seeklogo.com https://c.bing.com https://www.google-analytics.com https://*.clarity.ms https://*.sentry.io https://*.redd.it https://redd.it https://*.francescadelloro.it https://francescadelloro.it https://zacshop.com https://media.parfumo.com https://i0.wp.com https://scentadvice.com https://m.media-amazon.com;",
+              "font-src 'self' data: https://fonts.gstatic.com;",
+              "connect-src 'self' https://*.ml-tlv.com https://ml-tlv.com https://*.clerk.accounts.dev https://clerk.ml-tlv.com https://*.clerk.services https://www.google-analytics.com https://*.clarity.ms https://c.bing.com https://*.sentry.io;",
+              "frame-src 'self' https://*.ml-tlv.com https://ml-tlv.com https://*.clerk.accounts.dev https://clerk.ml-tlv.com https://*.clerk.services;",
+              "worker-src 'self' blob:;",
+              "object-src 'none';",
+              "base-uri 'self';",
+              "form-action 'self';"
+            ].join(' ')
           }
         ],
       },

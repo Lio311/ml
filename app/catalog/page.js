@@ -1,5 +1,5 @@
 import Link from "next/link";
-import pool from "../lib/db";
+import pool, { withClient } from "../lib/db";
 import ProductCard from "../components/ProductCard";
 import FilterSidebar from "./FilterSidebar";
 import SortSelect from "./SortSelect";
@@ -52,15 +52,11 @@ export async function generateMetadata(props) {
         },
     };
 }
-// ...
-// ... I need to replace the component body to map the query.
 
 async function getProducts(search, brand, category, minPrice, maxPrice, sort, page) {
     const LIMIT = 16;
     const OFFSET = (page - 1) * LIMIT;
 
-    // Use INNER JOIN for bestsellers to only show items that have sales
-    // Use LEFT JOIN for others to show all products
     const joinType = sort === 'bestsellers' ? 'INNER JOIN' : 'LEFT JOIN';
 
     let query = `
@@ -122,10 +118,8 @@ async function getProducts(search, brand, category, minPrice, maxPrice, sort, pa
         query += ` AND p.price_10ml <= $${params.length}`;
     }
 
-    // Get Total Count for Pagination
     const countQuery = `SELECT COUNT(*) FROM (${query}) AS total`;
 
-    // Sorting Logic
     let orderBy = 'RANDOM()';
     switch (sort) {
         case 'price_asc':
@@ -151,28 +145,22 @@ async function getProducts(search, brand, category, minPrice, maxPrice, sort, pa
 
     query += ` ORDER BY ${orderBy} LIMIT ${LIMIT} OFFSET ${OFFSET}`;
 
-    try {
-        const client = await pool.connect();
-        try {
-            const countRes = await client.query(countQuery, params);
-            const totalProducts = parseInt(countRes.rows[0].count);
+    return await withClient(async (client) => {
+        const countRes = await client.query(countQuery, params);
+        const totalProducts = parseInt(countRes.rows[0].count);
 
-            const res = await client.query(query, params);
-            return { products: res.rows, totalProducts, totalPages: Math.ceil(totalProducts / LIMIT) };
-        } finally {
-            client.release();
-        }
-    } catch (error) {
+        const res = await client.query(query, params);
+        return { products: res.rows, totalProducts, totalPages: Math.ceil(totalProducts / LIMIT) };
+    }).catch(error => {
         console.error("DB Error:", error);
         return { products: [], totalProducts: 0, totalPages: 0 };
-    }
+    });
 }
 
 async function getBrands() {
     try {
-        const res = await pool.query('SELECT DISTINCT brand FROM products WHERE active = true'); // Fetch unsorted
+        const res = await pool.query('SELECT DISTINCT brand FROM products WHERE active = true'); // Direct query is fine here as pool.query handles checkout/release
         const brands = res.rows.map(r => r.brand).filter(b => b && b !== 'Unknown');
-        // Sort case-insensitive in JS
         return brands.sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
     } catch (e) {
         return [];
@@ -184,7 +172,6 @@ async function getCategories() {
         const res = await pool.query('SELECT DISTINCT category FROM products WHERE active = true');
         const rawCategories = res.rows.map(r => r.category).filter(c => c && c !== 'General');
 
-        // Split comma-separated values, trim, and deduplicate
         const uniqueCategories = new Set();
         rawCategories.forEach(catStr => {
             catStr.split(',').forEach(c => uniqueCategories.add(c.trim()));

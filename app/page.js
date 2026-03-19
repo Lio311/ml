@@ -5,10 +5,9 @@ import ProductCard from "./components/ProductCard";
 import LiveStats from "./components/LiveStats";
 import { Dancing_Script } from "next/font/google";
 import BonusesSection from "./components/BonusesSection";
-
-
 import BrandCarousel from "./components/BrandCarousel";
 import HomeSEOContent from "./components/HomeSEOContent";
+import { withClient } from "./lib/db";
 
 const dancingScript = Dancing_Script({
   subsets: ["latin"],
@@ -28,64 +27,62 @@ export default async function Home() {
   let stats = { brands: 0, products: 0, samples: 500 };
 
   try {
-    const client = await pool.connect();
+    await withClient(async (client) => {
+      // Fetch New Arrivals (Only in stock)
+      const res = await client.query('SELECT * FROM products WHERE stock > 0 ORDER BY created_at DESC LIMIT 6');
+      newArrivals = res.rows;
 
-    // Fetch New Arrivals (Only in stock)
-    const res = await client.query('SELECT * FROM products WHERE stock > 0 ORDER BY created_at DESC LIMIT 6');
-    newArrivals = res.rows;
-
-    // Fetch Stats
-    try {
-      const productCountRes = await client.query('SELECT COUNT(*) FROM products WHERE active = true');
-      const brandCountRes = await client.query('SELECT COUNT(DISTINCT brand) FROM products WHERE active = true');
-
-      stats.products = parseInt(productCountRes.rows[0].count);
-      stats.brands = parseInt(brandCountRes.rows[0].count);
-
-      // Fetch all brands for carousel (Randomized) 
-      const brandsRes = await client.query('SELECT name, logo_url FROM brands WHERE logo_url IS NOT NULL ORDER BY RANDOM()');
-      stats.allBrands = brandsRes.rows;
-
-      // Try to get orders count for samples estimation
+      // Fetch Stats
       try {
-        const ordersRes = await client.query("SELECT items FROM orders WHERE status != 'cancelled'");
-        const totalSamplesSold = ordersRes.rows.reduce((acc, row) => {
-          const items = row.items || [];
-          // items is array of objects { quantity: 1, ... }
-          const orderSum = items.reduce((sum, item) => sum + (parseInt(item.quantity) || 0), 0);
-          return acc + orderSum;
-        }, 0);
-        stats.samples += totalSamplesSold;
+        const productCountRes = await client.query('SELECT COUNT(*) FROM products WHERE active = true');
+        const brandCountRes = await client.query('SELECT COUNT(DISTINCT brand) FROM products WHERE active = true');
+
+        stats.products = parseInt(productCountRes.rows[0].count);
+        stats.brands = parseInt(brandCountRes.rows[0].count);
+
+        // Fetch all brands for carousel (Randomized) 
+        const brandsRes = await client.query('SELECT name, logo_url FROM brands WHERE logo_url IS NOT NULL ORDER BY RANDOM()');
+        stats.allBrands = brandsRes.rows;
+
+        // Try to get orders count for samples estimation
+        try {
+          const ordersRes = await client.query("SELECT items FROM orders WHERE status != 'cancelled'");
+          const totalSamplesSold = ordersRes.rows.reduce((acc, row) => {
+            const items = row.items || [];
+            // items is array of objects { quantity: 1, ... }
+            const orderSum = items.reduce((sum, item) => sum + (parseInt(item.quantity) || 0), 0);
+            return acc + orderSum;
+          }, 0);
+          stats.samples += totalSamplesSold;
+        } catch (e) {
+          // Orders table might not exist or be empty, ignore
+        }
       } catch (e) {
-        // Orders table might not exist or be empty, ignore
+        console.error("Stats error", e);
       }
-    } catch (e) {
-      console.error("Stats error", e);
-    }
 
-    // Fetch Top Catalogs
-    try {
-      const topCatRes = await client.query(`
-          SELECT 
-              c.id, 
-              c.name, 
-              c.slug, 
-              c.description,
-              c.image_url,
-              COUNT(o.id) as order_count
-          FROM user_catalogs c
-          LEFT JOIN orders o ON c.id = o.catalog_id
-          WHERE c.is_hidden IS FALSE OR c.is_hidden IS NULL
-          GROUP BY c.id
-          ORDER BY order_count DESC, c.created_at DESC
-          LIMIT 3
-      `);
-      topCatalogs = topCatRes.rows;
-    } catch (e) {
-      console.error("Top catalogs error", e);
-    }
-
-    client.release();
+      // Fetch Top Catalogs
+      try {
+        const topCatRes = await client.query(`
+            SELECT 
+                c.id, 
+                c.name, 
+                c.slug, 
+                c.description,
+                c.image_url,
+                COUNT(o.id) as order_count
+            FROM user_catalogs c
+            LEFT JOIN orders o ON c.id = o.catalog_id
+            WHERE c.is_hidden IS FALSE OR c.is_hidden IS NULL
+            GROUP BY c.id
+            ORDER BY order_count DESC, c.created_at DESC
+            LIMIT 3
+        `);
+        topCatalogs = topCatRes.rows;
+      } catch (e) {
+        console.error("Top catalogs error", e);
+      }
+    });
   } catch (err) {
     console.error("Error fetching homepage data:", err);
   }

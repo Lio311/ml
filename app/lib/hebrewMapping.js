@@ -1,4 +1,4 @@
-import pool from './db.js';
+import { withClient } from './db.js';
 
 let cache = null;
 let lastFetch = 0;
@@ -10,10 +10,7 @@ export async function getHebrewMapping() {
     }
 
     try {
-        const client = await pool.connect();
-        try {
-            // Check if table exists first to avoid crashing if setup hasn't run
-            // Or just try query
+        return await withClient(async (client) => {
             const res = await client.query("SELECT hebrew_term, english_term FROM search_mappings");
 
             const mapping = {};
@@ -24,9 +21,7 @@ export async function getHebrewMapping() {
             cache = mapping;
             lastFetch = Date.now();
             return mapping;
-        } finally {
-            client.release();
-        }
+        });
     } catch (e) {
         console.error("Mapping fetch error (Table might not exist yet):", e);
         // Fallback to minimal if DB fails or empty to prevent search crash

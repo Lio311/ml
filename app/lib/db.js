@@ -125,6 +125,22 @@ export const getBrandInsight = unstable_cache(
 );
 
 /**
+ * Wrapper for database operations that ensures the client is released back to the pool.
+ * @param {Function} callback - Async function that receives the client and performs queries.
+ */
+export async function withClient(callback) {
+    const client = await pool.connect();
+    try {
+        return await callback(client);
+    } catch (err) {
+        Sentry.captureException(err);
+        throw err;
+    } finally {
+        client.release();
+    }
+}
+
+/**
  * Standard query wrapper with Sentry logging
  */
 export async function query(text, params) {
