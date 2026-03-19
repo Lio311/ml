@@ -13,7 +13,11 @@ const GENDER_OPTIONS = [
     { value: 'unisex', label: 'יוניסקס', icon: <UserRound className="w-4 h-4 text-blue-500" /> },
 ];
 
+const VIRTUAL_CATEGORIES = ['בוטיק', 'נישה'];
+
 export default function FilterSidebar({ allBrands, allCategories, minPrice, maxPrice }) {
+    // Merge virtual categories (remove duplicates just in case)
+    const combinedCategories = Array.from(new Set([...VIRTUAL_CATEGORIES, ...allCategories]));
     const router = useRouter();
     const searchParams = useSearchParams();
 
@@ -123,9 +127,9 @@ export default function FilterSidebar({ allBrands, allCategories, minPrice, maxP
             </div>
 
             {/* Category Filter */}
-            <CollapsibleSection title={`קטגוריות (${allCategories.length})`}>
+            <CollapsibleSection title={`קטגוריות (${combinedCategories.length})`}>
                 <div className="space-y-2 text-sm max-h-[200px] overflow-y-auto custom-scrollbar pl-2">
-                    {allCategories.map(cat => (
+                    {combinedCategories.map(cat => (
                         <label key={cat} className="flex items-center gap-2 cursor-pointer hover:bg-gray-100 p-1 rounded">
                             <input
                                 type="checkbox"

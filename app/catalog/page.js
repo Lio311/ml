@@ -89,9 +89,26 @@ async function getProducts(search, brand, category, minPrice, maxPrice, sort, pa
     if (category) {
         const categories = Array.isArray(category) ? category : [category];
         if (categories.length > 0) {
-            const catConditions = categories.map((_, i) => `p.category ILIKE $${params.length + i + 1}`).join(' OR ');
-            query += ` AND (${catConditions})`;
-            params.push(...categories.map(c => `%${c}%`));
+            const hasSpecialFilter = categories.some(c => c === 'בוטיק' || c === 'נישה');
+            const otherCategories = categories.filter(c => c !== 'בוטיק' && c !== 'נישה');
+            
+            let catCondition = '';
+            if (otherCategories.length > 0) {
+                const placeHolders = otherCategories.map((_, i) => `p.category ILIKE $${params.length + i + 1}`).join(' OR ');
+                catCondition = `(${placeHolders})`;
+                params.push(...otherCategories.map(c => `%${c}%`));
+            }
+
+            if (hasSpecialFilter) {
+                const nicheBoutiqueCondition = "p.category NOT ILIKE '%דיזיינר%'";
+                if (catCondition) {
+                    query += ` AND (${catCondition} OR ${nicheBoutiqueCondition})`;
+                } else {
+                    query += ` AND ${nicheBoutiqueCondition}`;
+                }
+            } else if (catCondition) {
+                query += ` AND ${catCondition}`;
+            }
         }
     }
 
