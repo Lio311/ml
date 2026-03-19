@@ -51,7 +51,7 @@ export default function FAQClient({ categories }) {
                                 const el = document.getElementById(`cat-${idx}`);
                                 if (el) {
                                     window.scrollTo({
-                                        top: el.offsetTop - 100,
+                                        top: el.offsetTop - 160,
                                         behavior: 'smooth'
                                     });
                                 }
@@ -70,7 +70,7 @@ export default function FAQClient({ categories }) {
                 {/* Content Area */}
                 <div className="md:col-span-3 space-y-16">
                     {categories.map((cat, idx) => (
-                        <section key={idx} id={`cat-${idx}`} className="scroll-mt-28">
+                        <section key={idx} id={`cat-${idx}`} className="scroll-mt-40">
                             <h2 className="text-2xl font-bold mb-8 flex items-center gap-3">
                                 <span className="w-1.5 h-8 bg-black rounded-full" />
                                 {cat.title}
