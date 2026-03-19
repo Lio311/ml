@@ -1,7 +1,7 @@
 import pool from '../../lib/db';
 import Link from 'next/link';
 import Image from 'next/image';
-import { marked } from 'marked';
+import { parse } from 'marked';
 
 export const dynamic = 'force-dynamic';
 
@@ -53,28 +53,53 @@ export default async function BlogPost({ params }) {
     // Helper to render Markdown and support custom tags
     const renderContent = (content) => {
         if (!content) return '';
-        
-        let html = content;
 
-        // Pre-process custom tags
+        // Pre-process: Normalize newlines and ensure tables (|) are isolated blocks
+        const lines = content.replace(/\r\n/g, '\n').split('\n');
+        const processedLines = lines.map((line, i) => {
+            const isTableLine = line.trim().startsWith('|');
+            const prevLine = i > 0 ? lines[i - 1].trim() : '';
+            const isPrevTableLine = prevLine.startsWith('|');
+            
+            // If current line is a table but previous isn't and isn't empty, add a blank line
+            if (isTableLine && i > 0 && !isPrevTableLine && prevLine !== '') {
+                return '\n' + line;
+            }
+            return line;
+        });
+        
+        const processedContent = processedLines.join('\n');
+
+        // Parse Markdown using marked FIRST
+        let html = parse(processedContent, { gfm: true, breaks: true });
+        
+        console.log('DEBUG: Markdown Result (first 100 chars):', html.substring(0, 100));
+
+        // Post-process custom tags in the resulting HTML
         html = html.replace(
             /\[TIP\](.*?)\[\/TIP\]/gs,
-            '<div class="bg-amber-50 border-r-4 border-amber-400 p-6 my-8 rounded-l-2xl shadow-sm"><div class="flex items-center gap-3 mb-2 font-bold text-amber-800"><span class="text-xl">💡</span> Pro Tip</div><div class="text-amber-900/80 leading-relaxed">$1</div></div>'
+            '<div class="bg-amber-50 border-r-4 border-amber-400 p-6 my-8 rounded-l-2xl shadow-sm text-right"><div class="flex items-center gap-3 mb-2 font-bold text-amber-800"><span class="text-xl">💡</span> Pro Tip</div><div class="text-amber-900/80 leading-relaxed">$1</div></div>'
         );
 
         html = html.replace(
             /\[IMPORTANT\](.*?)\[\/IMPORTANT\]/gs,
-            '<div class="bg-rose-50 border-r-4 border-rose-500 p-6 my-8 rounded-l-2xl shadow-sm"><div class="flex items-center gap-3 mb-2 font-bold text-rose-800"><span class="text-xl">⚠️</span> חשוב לדעת</div><div class="text-rose-900/80 leading-relaxed">$1</div></div>'
+            '<div class="bg-rose-50 border-r-4 border-rose-500 p-6 my-8 rounded-l-2xl shadow-sm text-right"><div class="flex items-center gap-3 mb-2 font-bold text-rose-800"><span class="text-xl">⚠️</span> חשוב לדעת</div><div class="text-rose-900/80 leading-relaxed">$1</div></div>'
         );
 
-        // Parse Markdown using marked
-        return marked.parse(html);
+        return html;
     };
 
-    const contentHtml = await renderContent(article.content);
+    const contentHtml = renderContent(article.content);
 
     return (
         <div className="container py-12 max-w-4xl mx-auto">
+            <style dangerouslySetInnerHTML={{ __html: `
+                .prose table { width: 100% !important; border-collapse: collapse !important; border: 1px solid #e5e7eb !important; margin: 2rem 0 !important; }
+                .prose th, .prose td { border: 1px solid #e5e7eb !important; padding: 12px 16px !important; text-align: right !important; }
+                .prose th { background-color: #f9fafb !important; font-weight: 700 !important; }
+                .prose tr:nth-child(even) { background-color: #fcfcfc !important; }
+            `}} />
+            
             <nav className="text-sm text-gray-500 mb-8 flex gap-2 items-center flex-wrap">
                 <Link href="/" className="hover:underline">ראשי</Link>
                 <span>/</span>
@@ -144,14 +169,16 @@ export default async function BlogPost({ params }) {
 
                 <div
                     className="prose prose-lg md:prose-xl max-w-none text-right
-                        prose-headings:font-serif prose-headings:font-bold prose-headings:text-gray-900
-                        prose-p:text-gray-600 prose-p:leading-relaxed
+                        prose-headings:font-serif prose-headings:font-bold prose-headings:text-gray-900 prose-headings:text-right
+                        prose-p:text-gray-600 prose-p:leading-relaxed prose-p:text-right
                         prose-a:text-blue-600 prose-a:no-underline hover:prose-a:underline
                         prose-img:rounded-[2rem] prose-img:shadow-lg
                         prose-strong:text-gray-900
+                        prose-th:text-right prose-td:text-right prose-table:w-full prose-table:my-8
                         prose-blockquote:border-r-4 prose-blockquote:border-blue-600 prose-blockquote:bg-blue-50/30 prose-blockquote:py-2 prose-blockquote:px-6 prose-blockquote:rounded-l-xl prose-blockquote:italic
                         "
                     dangerouslySetInnerHTML={{ __html: contentHtml }}
+                    dir="rtl"
                 ></div>
 
 
