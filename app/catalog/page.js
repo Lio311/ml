@@ -275,7 +275,7 @@ export default async function CatalogPage(props) {
     return (
         <div className="container py-12">
             <h1 className="text-3xl font-serif font-bold mb-2 text-center">{pageTitle}</h1>
-            <p className="text-sm text-gray-400 text-center mb-10">
+            <p className="hidden md:block text-sm text-gray-400 text-center mb-10">
                 מציג {products.length} מוצרים (עמוד {page} מתוך {totalPages})
             </p>
 
@@ -348,7 +348,12 @@ export default async function CatalogPage(props) {
                         </div>
 
                         {/* Sort Options */}
-                        <SortSelect />
+                        <div className="flex justify-between items-center w-full md:w-auto gap-4">
+                            <span className="md:hidden text-[10px] text-gray-400 whitespace-nowrap">
+                                מציג {products.length} מוצרים (עמוד {page} מתוך {totalPages})
+                            </span>
+                            <SortSelect />
+                        </div>
                     </div>
 
                     <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
