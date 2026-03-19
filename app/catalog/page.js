@@ -249,17 +249,26 @@ export default async function CatalogPage(props) {
     const mappedSearch = await mapHebrewQuery(search);
 
     const getRemoveLink = (key, value) => {
-        const nextParams = new URLSearchParams(searchParams);
-        const currentValues = nextParams.getAll(key);
+        const nextParams = new URLSearchParams();
         
-        if (currentValues.length > 1) {
-            const updatedValues = currentValues.filter(v => v !== value);
-            nextParams.delete(key);
-            updatedValues.forEach(v => nextParams.append(key, v));
-        } else {
-            nextParams.delete(key);
-        }
+        // Manually build params from the searchParams object (which might have arrays for multi-values)
+        Object.entries(searchParams).forEach(([k, v]) => {
+            if (Array.isArray(v)) {
+                v.forEach(val => {
+                    // Only append if it's not the one we're trying to remove
+                    if (k !== key || val !== value) {
+                        nextParams.append(k, val);
+                    }
+                });
+            } else if (v !== undefined && v !== null && v !== '') {
+                // Only append if it's not the one we're trying to remove
+                if (k !== key || v !== value) {
+                    nextParams.append(k, v);
+                }
+            }
+        });
         
+        // Always reset page when changing filters
         nextParams.delete('page');
         const qs = nextParams.toString();
         return `/catalog${qs ? `?${qs}` : ''}`;
