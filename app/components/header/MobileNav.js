@@ -143,15 +143,6 @@ export default function MobileNav({ menu = [], cartCount, wishlistCount, isAdmin
                         {/* Admin Management Links */}
                         {isAdmin && (
                             <div className="mt-4 pt-6 border-t border-gray-100 flex flex-col gap-6">
-                                <AdminInboxCounter isAdmin={isAdmin} />
-                                <Link 
-                                    href="/admin?tab=reviews" 
-                                    onClick={() => setIsMenuOpen(false)}
-                                    className="flex items-center justify-center gap-3 text-black bg-gray-100 py-3 rounded-2xl"
-                                >
-                                    <Star className="w-6 h-6" />
-                                    <span>ניהול ביקורות</span>
-                                </Link>
                                 <Link 
                                     href="/admin" 
                                     onClick={() => setIsMenuOpen(false)}

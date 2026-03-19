@@ -38,37 +38,33 @@ export default function FAQClient({ categories }) {
 
     return (
         <div className="container mx-auto px-4 max-w-5xl">
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-                
                 {/* Sidebar navigation for desktop */}
-                <div className="hidden md:block">
-                    <div className="sticky top-28 space-y-2">
-                        <h2 className="text-sm font-bold uppercase tracking-wider text-gray-400 mb-4 px-3">קטגוריות</h2>
-                        {categories.map((cat, idx) => (
-                            <a 
-                                key={idx} 
-                                href={`#cat-${idx}`}
-                                onClick={(e) => {
-                                    e.preventDefault();
-                                    const el = document.getElementById(`cat-${idx}`);
-                                    if (el) {
-                                        window.scrollTo({
-                                            top: el.offsetTop - 100,
-                                            behavior: 'smooth'
-                                        });
-                                    }
-                                }}
-                                className={`block px-4 py-3 text-sm font-medium transition-all duration-300 rounded-xl ${
-                                    activeCategory === idx 
-                                    ? 'bg-black text-white shadow-lg transform translate-x-[-4px]' 
-                                    : 'text-gray-500 hover:text-black hover:bg-white'
-                                }`}
-                            >
-                                {cat.title}
-                            </a>
-                        ))}
-                    </div>
-                </div>
+                <aside className="hidden md:block sticky top-28 self-start space-y-2">
+                    <h2 className="text-sm font-bold uppercase tracking-wider text-gray-400 mb-4 px-3">קטגוריות</h2>
+                    {categories.map((cat, idx) => (
+                        <a 
+                            key={idx} 
+                            href={`#cat-${idx}`}
+                            onClick={(e) => {
+                                e.preventDefault();
+                                const el = document.getElementById(`cat-${idx}`);
+                                if (el) {
+                                    window.scrollTo({
+                                        top: el.offsetTop - 100,
+                                        behavior: 'smooth'
+                                    });
+                                }
+                            }}
+                            className={`block px-4 py-3 text-sm font-medium transition-all duration-300 rounded-xl ${
+                                activeCategory === idx 
+                                ? 'bg-black text-white shadow-lg transform translate-x-[-4px]' 
+                                : 'text-gray-500 hover:text-black hover:bg-white'
+                            }`}
+                        >
+                            {cat.title}
+                        </a>
+                    ))}
+                </aside>
 
                 {/* Content Area */}
                 <div className="md:col-span-3 space-y-16">
