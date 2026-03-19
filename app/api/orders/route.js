@@ -3,6 +3,7 @@ import { auth as clerkAuth, currentUser } from '@clerk/nextjs/server';
 import pool from '../../lib/db';
 import { sendEmail, getOrderConfirmationTemplate, getAdminNewOrderTemplate } from '../../lib/email';
 import { recordAuditLog } from '../../lib/audit';
+import * as Sentry from "@sentry/nextjs";
 
 export async function POST(req) {
     try {
@@ -244,6 +245,7 @@ export async function POST(req) {
         }
 
     } catch (error) {
+        Sentry.captureException(error);
         console.error('Order creation error:', error);
         return NextResponse.json({ error: error.message || 'Internal Server Error' }, { status: 500 });
     }

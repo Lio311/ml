@@ -50,6 +50,27 @@ export default async function BlogPost({ params }) {
         );
     }
 
+    // Fetch mentioned products for Schema consistency
+    let mentionedProducts = [];
+    if (article.tags && article.tags.length > 0) {
+        const client = await pool.connect();
+        try {
+            // Match by Brand (first priority) or Product Category
+            const res = await client.query(`
+                SELECT id, name, name_he, brand, price_2ml, price_5ml, price_10ml, stock, slug, image_url 
+                FROM products 
+                WHERE (brand ILIKE ANY($1) OR category ILIKE ANY($1))
+                AND active = true
+                LIMIT 5
+            `, [article.tags.map(t => `%${t}%`)]);
+            mentionedProducts = res.rows;
+        } catch (err) {
+            console.error("Error fetching mentioned products:", err);
+        } finally {
+            client.release();
+        }
+    }
+
     // Helper to render Markdown and support custom tags
     const renderContent = (content) => {
         if (!content) return '';
@@ -132,7 +153,20 @@ export default async function BlogPost({ params }) {
                         "mainEntityOfPage": {
                             "@type": "WebPage",
                             "@id": `https://www.ml-tlv.com/blog/${slug}`
-                        }
+                        },
+                        "about": mentionedProducts.map(p => ({
+                            "@type": "Product",
+                            "name": p.name,
+                            "brand": { "@type": "Brand", "name": p.brand },
+                            "image": p.image_url,
+                            "offers": {
+                                "@type": "Offer",
+                                "price": p.price_2ml || p.price_5ml || p.price_10ml,
+                                "priceCurrency": "ILS",
+                                "availability": p.stock > 0 ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
+                                "url": `https://www.ml-tlv.com/product/${p.slug}`
+                            }
+                        }))
                     })
                 }}
             />

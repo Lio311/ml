@@ -1,7 +1,7 @@
-import { getBrandInsight } from '../lib/brandData';
+import { getBrandInsight } from '../lib/db';
 
-export default function BrandInsight({ brand }) {
-    const insight = getBrandInsight(brand);
+export default async function BrandInsight({ brand }) {
+    const insight = await getBrandInsight(brand);
     
     if (!insight) return null;
 

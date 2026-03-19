@@ -60,6 +60,37 @@ export default async function BrandPage(props) {
                 <span className="font-bold text-black">{brandData?.name || brandName}</span>
             </div>
 
+            {/* Breadcrumb Schema */}
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{
+                    __html: JSON.stringify({
+                        "@context": "https://schema.org",
+                        "@type": "BreadcrumbList",
+                        "itemListElement": [
+                            {
+                                "@type": "ListItem",
+                                "position": 1,
+                                "name": "בית",
+                                "item": "https://www.ml-tlv.com"
+                            },
+                            {
+                                "@type": "ListItem",
+                                "position": 2,
+                                "name": "מותגים",
+                                "item": "https://www.ml-tlv.com/brands"
+                            },
+                            {
+                                "@type": "ListItem",
+                                "position": 3,
+                                "name": brandData?.name || brandName,
+                                "item": `https://www.ml-tlv.com/brands/${brand}`
+                            }
+                        ]
+                    })
+                }}
+            />
+
             {/* Header */}
             <div className="flex flex-col items-center mb-12 text-center">
                 {brandData?.logo_url ? (

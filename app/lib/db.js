@@ -1,4 +1,6 @@
 import { Pool } from 'pg';
+import { unstable_cache } from 'next/cache';
+import * as Sentry from "@sentry/nextjs";
 
 let pool;
 
@@ -53,6 +55,84 @@ export async function updateUserActivity(userId) {
         `, [userId]);
     } catch (err) {
         console.error('Error updating user activity:', err);
+    }
+}
+
+/**
+ * CACHED DATA FETCHERS (Performance Improvement)
+ */
+export const getBrands = unstable_cache(
+    async () => {
+        try {
+            const res = await pool.query('SELECT name FROM brands ORDER BY LOWER(name) ASC');
+            return res.rows;
+        } catch (err) {
+            Sentry.captureException(err);
+            throw err;
+        }
+    },
+    ['global-brands'],
+    { revalidate: 3600, tags: ['globals', 'brands'] }
+);
+
+export const getMenuItems = unstable_cache(
+    async () => {
+        try {
+            const settingsRes = await pool.query("SELECT value FROM site_settings WHERE key = 'main_menu'");
+            if (settingsRes.rows.length > 0 && settingsRes.rows[0].value && settingsRes.rows[0].value.length > 0) {
+                return settingsRes.rows[0].value.sort((a, b) => a.order - b.order);
+            }
+        } catch (err) {
+            Sentry.captureException(err);
+            console.error("Error fetching menu from DB, using fallback", err.message);
+        }
+
+        // Fallback Menu
+        return [
+            { id: 'brands', label: 'מותגים', path: '/brands', order: 1, visible: true },
+            { id: 'categories', label: 'קטגוריות', path: '/categories', order: 2, visible: true },
+            { id: 'lottery', label: 'הגרלת בשמים', path: '/lottery', order: 3, isRed: true, visible: true },
+            { id: 'matching', label: 'התאמת מארזים', path: '/matching', order: 4, visible: true },
+            { id: 'about', label: 'אודות', path: '/about', order: 5, visible: true },
+            { id: 'contact', label: 'צור קשר', path: '/contact', order: 6, visible: true },
+        ];
+    },
+    ['global-menu'],
+    { revalidate: 3600, tags: ['globals', 'menu'] }
+);
+
+export const getBrandInsight = unstable_cache(
+    async (brandName) => {
+        try {
+            const res = await pool.query(`
+                SELECT name, title, description, perfumer, highlights 
+                FROM brands 
+                WHERE name ILIKE $1 
+                LIMIT 1
+            `, [brandName]);
+            
+            if (res.rows.length > 0 && res.rows[0].description) {
+                return res.rows[0];
+            }
+            return null;
+        } catch (err) {
+            Sentry.captureException(err);
+            return null;
+        }
+    },
+    ['brand-insights'],
+    { revalidate: 3600, tags: ['brands', 'insights'] }
+);
+
+/**
+ * Standard query wrapper with Sentry logging
+ */
+export async function query(text, params) {
+    try {
+        return await pool.query(text, params);
+    } catch (err) {
+        Sentry.captureException(err);
+        throw err;
     }
 }
 

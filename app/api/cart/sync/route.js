@@ -1,8 +1,14 @@
-import { NextResponse } from 'next/server';
 import pool from '@/app/lib/db';
+import * as Sentry from "@sentry/nextjs";
 
 export async function POST(req) {
     try {
+        const origin = req.headers.get('origin') || req.headers.get('referer');
+        const host = req.headers.get('host');
+        if (origin && !origin.includes(host)) {
+            return new NextResponse("Forbidden", { status: 403 });
+        }
+
         const { email, items } = await req.json();
 
         if (!email) {
@@ -27,6 +33,7 @@ export async function POST(req) {
             client.release();
         }
     } catch (error) {
+        Sentry.captureException(error);
         console.error('Cart Sync Error:', error);
         return NextResponse.json({ error: 'Sync failed' }, { status: 500 });
     }
@@ -52,6 +59,7 @@ export async function GET(req) {
             client.release();
         }
     } catch (error) {
+        Sentry.captureException(error);
         console.error('Cart Fetch Error:', error);
         return NextResponse.json({ error: 'Fetch failed' }, { status: 500 });
     }

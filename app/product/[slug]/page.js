@@ -11,6 +11,7 @@ import FragrancePyramid from "../../components/FragrancePyramid";
 import ShareButton from "../../components/ShareButton";
 import Breadcrumbs from "../../components/Breadcrumbs";
 import BrandInsight from "../../components/BrandInsight";
+import * as Sentry from "@sentry/nextjs";
 
 
 export const revalidate = 3600; // SEO Improvement: Cache for 1 hour
@@ -92,90 +93,58 @@ export default async function ProductPage(props) {
         redirect(`/product/${product.slug}`);
     }
 
-    // Data for similarity - fetch all products to calculate score
-    // Optimally validation should happen in DB, but for ~200 items doing it in memory is fast and flexible for "Jaccard-like" similarity on text tags.
+    // Efficient Related Products Fetch (SQL-based similarity)
     let related = [];
     try {
-        const allProductsRes = await pool.query('SELECT id, slug, name, brand, image_url, price_10ml, is_limited, stock, top_notes, middle_notes, base_notes, category FROM products WHERE id != $1 AND active = true', [product.id]);
-        const allProducts = allProductsRes.rows;
+        const notesArray = [
+            ...(product.top_notes || '').split(','),
+            ...(product.middle_notes || '').split(','),
+            ...(product.base_notes || '').split(',')
+        ]
+        .map(n => n.trim())
+        .filter(n => n.length > 2) // Avoid tiny notes
+        .slice(0, 6); // Take top 6 notes for search
 
-        const currentNotes = new Set([
-            ...(product.top_notes || '').split(',').map(n => n.trim()).filter(Boolean),
-            ...(product.middle_notes || '').split(',').map(n => n.trim()).filter(Boolean),
-            ...(product.base_notes || '').split(',').map(n => n.trim()).filter(Boolean)
-        ]);
+        const searchPatterns = notesArray.length > 0 ? notesArray.map(n => `%${n}%`) : ['%NONE%'];
 
-        related = allProducts.map(p => {
-            const pNotes = new Set([
-                ...(p.top_notes || '').split(',').map(n => n.trim()).filter(Boolean),
-                ...(p.middle_notes || '').split(',').map(n => n.trim()).filter(Boolean),
-                ...(p.base_notes || '').split(',').map(n => n.trim()).filter(Boolean)
-            ]);
+        const relatedRes = await pool.query(`
+            SELECT id, slug, name, brand, image_url, price_10ml, is_limited, stock, category
+            FROM products 
+            WHERE active = true AND id != $1
+            AND (
+                category = $2 
+                OR brand = $3
+                OR top_notes ILIKE ANY($4)
+                OR middle_notes ILIKE ANY($4)
+                OR base_notes ILIKE ANY($4)
+            )
+            ORDER BY 
+                (CASE WHEN brand = $3 THEN 2 ELSE 0 END) + 
+                (CASE WHEN category = $2 THEN 1 ELSE 0 END) DESC,
+                RANDOM()
+            LIMIT 4
+        `, [product.id, product.category, product.brand, searchPatterns]);
+        
+        related = relatedRes.rows;
 
-            // Intersection count
-            let intersection = 0;
-            pNotes.forEach(note => {
-                if (currentNotes.has(note)) intersection++;
-            });
-
-            // Jaccard Index = (Intersection) / (Union)
-            const union = new Set([...currentNotes, ...pNotes]).size;
-            const score = union === 0 ? 0 : intersection / union;
-
-            // Boost if same category
-            const categoryBonus = (p.category && product.category && p.category.includes(product.category)) ? 0.1 : 0;
-
-            return { ...p, similarity: score + categoryBonus };
-        });
-
-        // Filter products with actual similarity
-        let matches = related.filter(p => p.similarity > 0);
-
-        let finalSelection = [];
-
-        if (matches.length >= 4) {
-            // Case 1: Enough matches. 
-            // Strategy: Take top 8 matches (to ensure relevance) and randomly select 4 from them.
-            matches.sort((a, b) => b.similarity - a.similarity);
-            const topPool = matches.slice(0, 8);
-            finalSelection = topPool.sort(() => 0.5 - Math.random()).slice(0, 4);
-        } else {
-            // Case 2: Not enough matches (< 4).
-            // Strategy: Take all matches, and fill the rest with random products.
-            finalSelection = [...matches];
-
-            const countNeeded = 4 - finalSelection.length;
-            const alreadySelectedIds = new Set(finalSelection.map(p => p.id));
-
-            // Get candidate pool for filling (everything else)
-            // We shuffle the "non-matching" products and take what we need
-            const fillPool = allProducts
-                .filter(p => !alreadySelectedIds.has(p.id))
-                .sort(() => 0.5 - Math.random()) // Shuffle
-                .slice(0, countNeeded);
-
-            finalSelection = [...finalSelection, ...fillPool];
+        // If still not enough, fill with random items
+        if (related.length < 4) {
+            const excludeIds = [product.id, ...related.map(r => r.id)];
+            const fillRes = await pool.query(`
+                SELECT id, slug, name, brand, image_url, price_10ml, is_limited, stock, category
+                FROM products 
+                WHERE active = true AND id != ALL($1)
+                ORDER BY RANDOM()
+                LIMIT $2
+            `, [excludeIds, 4 - related.length]);
+            related = [...related, ...fillRes.rows];
         }
-
-        related = finalSelection;
 
     } catch (e) {
-        console.error("Related products error (falling back to category):", e);
-        try {
-            // Fallback: Simple category match if advanced logic fails
-            const fallbackRes = await pool.query('SELECT * FROM products WHERE category = $1 AND id != $2 LIMIT 4', [product.category, product.id]);
-            related = fallbackRes.rows;
-
-            // If still not enough (e.g. category has few items), fill with random active products
-            if (related.length < 4) {
-                const randomRes = await pool.query('SELECT * FROM products WHERE id != $1 AND active = true ORDER BY RANDOM() LIMIT 4', [product.id]);
-                // Combine and dedup
-                const combined = [...related, ...randomRes.rows].filter((v, i, a) => a.findIndex(t => (t.id === v.id)) === i);
-                related = combined.slice(0, 4);
-            }
-        } catch (err2) {
-            console.error("Fallback related failed:", err2);
-        }
+        Sentry.captureException(e);
+        console.error("Related products fetch error:", e);
+        // Minimum fallback to avoid page crash
+        related = [];
     }
 
     // Format dates for Schema

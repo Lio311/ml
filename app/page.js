@@ -104,6 +104,7 @@ export default async function Home() {
             muted
             playsInline
             preload="auto"
+            fetchpriority="high"
             className="absolute inset-0 w-full h-full object-cover scale-[1.05]"
           >
             <source src="/hero-video.mp4" type="video/mp4" />

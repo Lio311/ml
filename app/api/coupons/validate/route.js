@@ -1,8 +1,14 @@
-import { NextResponse } from 'next/server';
 import pool from '@/app/lib/db';
+import * as Sentry from "@sentry/nextjs";
 
 export async function POST(req) {
     try {
+        const origin = req.headers.get('origin') || req.headers.get('referer');
+        const host = req.headers.get('host');
+        if (origin && !origin.includes(host)) {
+            return new NextResponse("Forbidden", { status: 403 });
+        }
+
         const { code } = await req.json();
 
         if (!code) {
@@ -33,6 +39,7 @@ export async function POST(req) {
             client.release();
         }
     } catch (error) {
+        Sentry.captureException(error);
         console.error('Coupon Validation Error:', error);
         return NextResponse.json({ error: 'Validation failed' }, { status: 500 });
     }

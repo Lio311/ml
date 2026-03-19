@@ -1,6 +1,6 @@
-import pool from '../../lib/db';
 import { auth as clerkAuth, clerkClient } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
+import * as Sentry from "@sentry/nextjs";
 
 export async function GET() {
     try {
@@ -34,6 +34,7 @@ export async function GET() {
 
         return NextResponse.json(reviewsWithImages);
     } catch (error) {
+        Sentry.captureException(error);
         console.error('Error fetching reviews:', error);
         return new NextResponse('Internal Error', { status: 500 });
     }
@@ -70,6 +71,7 @@ export async function POST(req) {
 
         return NextResponse.json(result.rows[0]);
     } catch (error) {
+        Sentry.captureException(error);
         console.error('Error submitting review:', error);
         return new NextResponse('Internal Error', { status: 500 });
     }

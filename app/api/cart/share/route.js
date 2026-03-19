@@ -1,8 +1,14 @@
-import pool from "../../../lib/db";
 import { NextResponse } from "next/server";
+import * as Sentry from "@sentry/nextjs";
 
 export async function POST(req) {
     try {
+        const origin = req.headers.get('origin') || req.headers.get('referer');
+        const host = req.headers.get('host');
+        if (origin && !origin.includes(host)) {
+            return new NextResponse("Forbidden", { status: 403 });
+        }
+
         const body = await req.json();
         const { items } = body;
 
@@ -21,6 +27,7 @@ export async function POST(req) {
             client.release();
         }
     } catch (e) {
+        Sentry.captureException(e);
         console.error("Error sharing cart:", e);
         return NextResponse.json({ error: "Failed to share cart" }, { status: 500 });
     }
