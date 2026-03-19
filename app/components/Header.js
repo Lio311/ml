@@ -16,7 +16,7 @@ import LiveVisitorCounter from './LiveVisitorCounter';
 export default function Header({ brands = [], menu = [] }) {
     const { user } = useUser();
     const isAdmin = user?.publicMetadata?.role === 'admin' || user?.publicMetadata?.role === 'deputy';
-    const { uniqueVendorsCount: cartCount } = useCart();
+    const { globalItemsCount: cartCount } = useCart();
     const { count: wishlistCount } = useWishlist();
 
     return (
