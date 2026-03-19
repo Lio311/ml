@@ -110,6 +110,14 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'cdn.shopify.com',
       },
+      {
+        protocol: 'https',
+        hostname: '**.gstatic.com',
+      },
+      {
+        protocol: 'https',
+        hostname: '**.googleusercontent.com',
+      },
     ],
     formats: ['image/avif', 'image/webp'],
   },
