@@ -1,4 +1,4 @@
-import Link from 'next/link';
+import FAQClient from './FAQClient';
 
 export const metadata = {
     title: "שאלות ותשובות | ml_tlv",
@@ -114,74 +114,17 @@ export default function FAQPage() {
     return (
         <div className="min-h-screen bg-gray-50 pb-20">
             {/* Header section with background pattern */}
-            <div className="bg-black text-white py-16 mb-12 relative overflow-hidden">
-                <div className="absolute inset-0 opacity-10 bg-[radial-gradient(circle_at_center,white_0%,transparent_70%)]" />
+            <div className="bg-black text-white py-20 mb-12 relative overflow-hidden">
+                <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_center,white_0%,transparent_70%)]" />
                 <div className="container mx-auto px-4 relative z-10">
-                    <h1 className="text-4xl md:text-5xl font-bold mb-4 text-center">מרכז המידע והתמיכה</h1>
-                    <p className="text-gray-400 text-center text-lg max-w-2xl mx-auto italic">
-                        כל מה שצריך לדעת על עולם הבישום, ההזמנות והבונוסים של ml_tlv
+                    <h1 className="text-4xl md:text-6xl font-black mb-6 text-center tracking-tight">מרכז המידע</h1>
+                    <p className="text-gray-400 text-center text-lg md:text-xl max-w-2xl mx-auto font-light leading-relaxed">
+                        כל מה שצריך לדעת על עולם הבישום, ההזמנות והבונוסים הייחודיים של ml_tlv. אנחנו כאן לכל שאלה.
                     </p>
                 </div>
             </div>
 
-            <div className="container mx-auto px-4 max-w-5xl">
-                <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
-                    
-                    {/* Sidebar navigation for desktop */}
-                    <div className="hidden md:block">
-                        <div className="sticky top-24 space-y-2">
-                            <h2 className="text-sm font-bold uppercase tracking-wider text-gray-400 mb-4 px-3">קטגוריות</h2>
-                            {categories.map((cat, idx) => (
-                                <a 
-                                    key={idx} 
-                                    href={`#cat-${idx}`}
-                                    className="block px-3 py-2 text-sm text-gray-600 hover:text-black hover:bg-white hover:shadow-sm rounded-lg transition-all"
-                                >
-                                    {cat.title}
-                                </a>
-                            ))}
-                        </div>
-                    </div>
-
-                    {/* Content Area */}
-                    <div className="md:col-span-3 space-y-12">
-                        {categories.map((cat, idx) => (
-                            <section key={idx} id={`cat-${idx}`} className="scroll-mt-24">
-                                <h2 className="text-2xl font-bold mb-6 flex items-center gap-3">
-                                    <span className="w-1 h-8 bg-black rounded-full" />
-                                    {cat.title}
-                                </h2>
-                                <div className="space-y-4">
-                                    {cat.items.map((item, i) => (
-                                        <div key={i} className="group bg-white p-6 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300">
-                                            <h3 className="font-bold text-lg mb-3 flex justify-between items-start gap-4">
-                                                <span>{item.q}</span>
-                                            </h3>
-                                            <p className="text-gray-600 leading-relaxed text-sm md:text-base">
-                                                {item.a}
-                                            </p>
-                                        </div>
-                                    ))}
-                                </div>
-                            </section>
-                        ))}
-
-                        {/* Direct Contact Footer */}
-                        <div className="bg-black text-white p-8 rounded-3xl mt-12 text-center shadow-2xl relative overflow-hidden group">
-                            <div className="absolute inset-0 bg-gradient-to-r from-gray-900 to-black opacity-50" />
-                            <div className="relative z-10">
-                                <h3 className="text-2xl font-bold mb-4">לא מצאתם תשובה?</h3>
-                                <p className="text-gray-400 mb-6">הצוות שלנו כאן כדי לעזור לכם למצוא את הריח המושלם</p>
-                                <div className="flex flex-wrap justify-center gap-4">
-                                    <Link href="/contact" className="bg-white text-black px-8 py-3 rounded-full font-bold hover:bg-gray-200 transition">
-                                        דברו איתנו
-                                    </Link>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <FAQClient categories={categories} />
         </div>
     );
 }
