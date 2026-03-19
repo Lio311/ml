@@ -1,6 +1,7 @@
 import pool from '../../lib/db';
 import Link from 'next/link';
 import Image from 'next/image';
+import { marked } from 'marked';
 
 export const dynamic = 'force-dynamic';
 
@@ -48,6 +49,29 @@ export default async function BlogPost({ params }) {
             </div>
         );
     }
+
+    // Helper to render Markdown and support custom tags
+    const renderContent = (content) => {
+        if (!content) return '';
+        
+        let html = content;
+
+        // Pre-process custom tags
+        html = html.replace(
+            /\[TIP\](.*?)\[\/TIP\]/gs,
+            '<div class="bg-amber-50 border-r-4 border-amber-400 p-6 my-8 rounded-l-2xl shadow-sm"><div class="flex items-center gap-3 mb-2 font-bold text-amber-800"><span class="text-xl">💡</span> Pro Tip</div><div class="text-amber-900/80 leading-relaxed">$1</div></div>'
+        );
+
+        html = html.replace(
+            /\[IMPORTANT\](.*?)\[\/IMPORTANT\]/gs,
+            '<div class="bg-rose-50 border-r-4 border-rose-500 p-6 my-8 rounded-l-2xl shadow-sm"><div class="flex items-center gap-3 mb-2 font-bold text-rose-800"><span class="text-xl">⚠️</span> חשוב לדעת</div><div class="text-rose-900/80 leading-relaxed">$1</div></div>'
+        );
+
+        // Parse Markdown using marked
+        return marked.parse(html);
+    };
+
+    const contentHtml = await renderContent(article.content);
 
     return (
         <div className="container py-12 max-w-4xl mx-auto">
@@ -100,26 +124,26 @@ export default async function BlogPost({ params }) {
                         ))}
                     </div>
                     
-                    <h1 className="text-4xl md:text-6xl font-serif font-bold mb-8 leading-[1.15] text-gray-900 tracking-tight">
+                    <h1 className="text-4xl md:text-6xl font-serif font-bold mb-8 leading-[1.15] text-gray-900 tracking-tight text-right">
                         {article.title}
                     </h1>
                     
-                    <div className="flex items-center gap-4 text-gray-400 text-xs font-bold tracking-widest">
-                        <div className="flex items-center gap-2">
-                            <div className="w-8 h-8 rounded-full bg-gray-100 overflow-hidden border border-gray-200">
-                                <Image src="/ml_CHAT.png" alt="ml_tlv" width={32} height={32} className="w-full h-full object-cover" />
-                            </div>
-                            <span>מאת צוות ml_tlv</span>
-                        </div>
+                    <div className="flex items-center gap-4 text-gray-400 text-xs font-bold tracking-widest justify-end">
+                        <span>{Math.ceil((article.content?.length || 0) / 500) + 2} דקות קריאה</span>
                         <span className="w-1 h-1 bg-gray-200 rounded-full"></span>
                         <span>{new Date(article.created_at).toLocaleDateString('he-IL', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
                         <span className="w-1 h-1 bg-gray-200 rounded-full"></span>
-                        <span>{Math.ceil((article.content?.length || 0) / 500) + 2} דקות קריאה</span>
+                        <div className="flex items-center gap-2">
+                            <span>מאת צוות ml_tlv</span>
+                            <div className="w-8 h-8 rounded-full bg-gray-100 overflow-hidden border border-gray-200">
+                                <Image src="/ml_CHAT.png" alt="ml_tlv" width={32} height={32} className="w-full h-full object-cover" />
+                            </div>
+                        </div>
                     </div>
                 </header>
 
                 <div
-                    className="prose prose-lg md:prose-xl max-w-none 
+                    className="prose prose-lg md:prose-xl max-w-none text-right
                         prose-headings:font-serif prose-headings:font-bold prose-headings:text-gray-900
                         prose-p:text-gray-600 prose-p:leading-relaxed
                         prose-a:text-blue-600 prose-a:no-underline hover:prose-a:underline
@@ -127,13 +151,9 @@ export default async function BlogPost({ params }) {
                         prose-strong:text-gray-900
                         prose-blockquote:border-r-4 prose-blockquote:border-blue-600 prose-blockquote:bg-blue-50/30 prose-blockquote:py-2 prose-blockquote:px-6 prose-blockquote:rounded-l-xl prose-blockquote:italic
                         "
-                    dangerouslySetInnerHTML={{ 
-                        __html: article.content.replace(
-                            /\[TIP\](.*?)\[\/TIP\]/gs, 
-                            '<div class="bg-amber-50 border-r-4 border-amber-400 p-6 my-8 rounded-l-2xl shadow-sm"><div class="flex items-center gap-3 mb-2 font-bold text-amber-800"><span class="text-xl">💡</span> Pro Tip</div><div class="text-amber-900/80 leading-relaxed">$1</div></div>'
-                        ) 
-                    }}
+                    dangerouslySetInnerHTML={{ __html: contentHtml }}
                 ></div>
+
 
                 <div className="mt-16 pt-12 border-t border-gray-50 flex flex-col md:flex-row items-center justify-between gap-8">
                     <div>
