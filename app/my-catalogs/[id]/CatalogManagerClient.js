@@ -178,7 +178,7 @@ function OrdersTab({ catalogId }) {
                                                     <span className="font-bold text-blue-600 bg-blue-50 w-5 h-5 flex items-center justify-center rounded border border-blue-100">{item.quantity}</span>
                                                     <span className="font-medium text-gray-700">{item.name}</span>
                                                 </div>
-                                                <span className="text-gray-400 text-[10px] font-bold uppercase" dir="ltr">{String(item.size).replace(/ml/gi, '')}ml</span>
+                                                <span className="text-gray-400 text-[10px] font-bold" dir="ltr">{String(item.size).replace(/ml/gi, '')}ml</span>
                                             </li>
                                         ))}
                                     </ul>
