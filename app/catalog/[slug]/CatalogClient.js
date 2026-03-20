@@ -99,9 +99,13 @@ function CatalogProductCard({ item, slug, catalogId, catalogName }) {
             <div className={`p-4 flex-1 flex flex-col ${dir === 'rtl' ? 'text-right' : 'text-left'}`} dir={dir}>
                 <div className="text-xs text-gray-500 mb-1 line-clamp-1">{(item.category || '').split(',')[0]}</div>
                 <Link href={`/catalog/${slug}/product/${item.id}`}>
-                    <h3 className="font-bold text-sm mb-2 line-clamp-2 min-h-[40px] hover:underline">
-                        <span className="mr-1">{item.brand}</span>
-                        {item.fragrance_name}
+                    <h3 className="font-bold text-sm mb-2 line-clamp-2 min-h-[40px] hover:underline flex flex-col">
+                        <span className="text-gray-400 font-medium text-[10px] md:text-xs uppercase tracking-wider mb-0.5">
+                            {item.brand}
+                        </span>
+                        <span className="text-black text-sm md:text-base">
+                            {item.fragrance_name}
+                        </span>
                     </h3>
                 </Link>
 

@@ -84,7 +84,9 @@ export async function generateMetadata(props) {
     // We let the Page component handle the redirect. Here we just return canonical.
 
     const baseUrl = 'https://www.ml-tlv.com';
-    const localizedName = localize(product, 'name', locale);
+    const localizedName = locale === 'he' 
+        ? `${product.brand_he || product.brand} ${product.model_he || product.model}` 
+        : localize(product, 'name', locale);
     const localizedDesc = localize(product, 'description', locale);
     
     const title = `${localizedName} | ${t('common.from')}${product.price_2ml}₪`;
@@ -208,7 +210,9 @@ export default async function ProductPage(props) {
     const nextYear = new Date().getFullYear() + 1;
     const priceValidUntil = `${nextYear}-12-31`;
 
-    const localizedName_val = localize(product, 'name', locale);
+    const localizedName_val = locale === 'he'
+        ? `${product.brand_he || product.brand} ${product.model_he || product.model}`
+        : localize(product, 'name', locale);
     const localizedDesc_val = localize(product, 'description', locale);
     const localizedCategory = translateCategory(localize(product, 'category', locale), locale);
 

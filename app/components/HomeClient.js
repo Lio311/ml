@@ -140,12 +140,27 @@ function ProductCardWrapper({ product }) {
             </Link>
 
             <div className="p-3 text-center flex flex-col items-center justify-center flex-1">
-                <div className="text-[10px] text-gray-400 mb-0.5 line-clamp-1 uppercase tracking-wider font-medium">{product.brand || 'No Brand'}</div>
-                <Link href={`/product/${product.slug || product.id}`} className="w-full">
-                    <p className="text-sm font-bold text-black truncate w-full hover:underline">
-                        {cleanProductName(localize(product, 'name'), product.brand)}
-                    </p>
-                </Link>
+                {dir === 'rtl' ? (
+                    <div className="flex flex-col items-center mb-1">
+                        <div className="text-[10px] text-gray-400 uppercase tracking-wider font-medium">
+                            {product.brand_he || product.brand}
+                        </div>
+                        <Link href={`/product/${product.slug || product.id}`} className="w-full">
+                            <p className="text-sm font-bold text-black truncate w-full hover:underline">
+                                {product.model_he || product.model}
+                            </p>
+                        </Link>
+                    </div>
+                ) : (
+                    <>
+                        <div className="text-[10px] text-gray-400 mb-0.5 line-clamp-1 uppercase tracking-wider font-medium">{product.brand || 'No Brand'}</div>
+                        <Link href={`/product/${product.slug || product.id}`} className="w-full">
+                            <p className="text-sm font-bold text-black truncate w-full hover:underline">
+                                {cleanProductName(localize(product, 'name'), product.brand)}
+                            </p>
+                        </Link>
+                    </>
+                )}
 
                 <div className="w-full mt-3 space-y-2">
                     {Number(product.price_2ml) > 0 && (

@@ -233,7 +233,47 @@
         "reviews_cta_desc": "הביקורות שלכם עוזרות לנו ולקהילת ml_tlv לצמוח. שלחו ביקורת דרך עמוד ההזמנות שלכם!",
         "happy_customers": "לקוחות מרוצים",
         "catalogs_info_meta_title": "הקם חנות משלך | ml_tlv",
-        "catalogs_info_meta_desc": "צור קטלוג אישי ומכור מוצרים היישר ללקוחות שלך בקלות."
+        "catalogs_info_meta_desc": "צור קטלוג אישי ומכור מוצרים היישר ללקוחות שלך בקלות.",
+        "orders": {
+            "title": "ההזמנות שלי",
+            "inbox_title": "תיבת הודעות",
+            "no_orders": "עדיין לא ביצעת הזמנות.",
+            "start_shopping": "התחל לקנות",
+            "order_number": "הזמנה #{id}",
+            "external_supplier": "ספק חיצוני",
+            "external_supplier_desc": "הוזמן מקטלוג של משתמש",
+            "at_time": "בשעה",
+            "self_pickup": "איסוף עצמי",
+            "shipping": "משלוח בדואר",
+            "quantity": "כמות",
+            "order_again": "הזמן שוב",
+            "added_to_cart": "המוצר נוסף לסל בהצלחה!",
+            "order_inquiry": "בירור הזמנה",
+            "includes_samples": "כולל {count} דוגמיות",
+            "loading": "טוען...",
+            "loading_orders": "טוען הזמנות...",
+            "login_prompt": "התחבר כדי לצפות בהזמנות שלך",
+            "login_btn": "התחברות",
+            "status": {
+                "pending": "הוזמן",
+                "pending_desc": "הזמנתך התקבלה במערכת",
+                "processing": "בטיפול",
+                "processing_desc": "יצירת קשר ותיאום",
+                "shipped": "נשלח",
+                "shipped_desc": "המשלוח בדרך אליך",
+                "completed": "הושלם",
+                "completed_desc": "ההזמנה נמסרה",
+                "cancelled": "ההזמנה בוטלה"
+            },
+            "review": {
+                "prompt": "נשמח שתכתבו לנו איך הייתה חווית ההזמנה ואם אהבתם את הבשמים!",
+                "placeholder": "החוויות שלכם עם ml_tlv...",
+                "submit": "שלח ביקורת",
+                "success": "תודה על הביקורת! היא תפורסם לאחר אישור מנהל.",
+                "error": "שגיאה בשליחת הביקורת",
+                "empty_error": "אנא כתבו משהו לפני השליחה"
+            }
+        }
     },
     "catalogs_info": {
         "hero_badge": "Exclusive Platform for ml_tlv",

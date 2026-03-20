@@ -1,28 +1,19 @@
-"use client";
-
-import React from 'react';
-import { motion } from 'framer-motion';
-import { Package, Phone, Truck, CheckCircle, XCircle } from 'lucide-react';
-import { clsx } from 'clsx';
-import { twMerge } from 'tailwind-merge';
-
-function cn(...inputs) {
-    return twMerge(clsx(inputs));
-}
-
-const statusSteps = [
-    { id: 'pending', label: 'הוזמן', icon: Package, description: 'הזמנתך התקבלה במערכת' },
-    { id: 'processing', label: 'בטיפול', icon: Phone, description: 'יצירת קשר ותיאום' },
-    { id: 'shipped', label: 'נשלח', icon: Truck, description: 'המשלוח בדרך אליך' },
-    { id: 'completed', label: 'הושלם', icon: CheckCircle, description: 'ההזמנה נמסרה' },
-];
+import { useLanguage } from '../context/LanguageContext';
 
 export default function OrderStatusTimeline({ status }) {
+    const { t } = useLanguage();
+
+    const statusSteps = [
+        { id: 'pending', label: t('orders.status.pending'), icon: Package, description: t('orders.status.pending_desc') },
+        { id: 'processing', label: t('orders.status.processing'), icon: Phone, description: t('orders.status.processing_desc') },
+        { id: 'shipped', label: t('orders.status.shipped'), icon: Truck, description: t('orders.status.shipped_desc') },
+        { id: 'completed', label: t('orders.status.completed'), icon: CheckCircle, description: t('orders.status.completed_desc') },
+    ];
     if (status === 'cancelled') {
         return (
             <div className="bg-red-50 border border-red-100 rounded-xl p-4 flex items-center gap-3 text-red-700 mb-6">
                 <XCircle className="w-6 h-6" />
-                <span className="font-bold">ההזמנה בוטלה</span>
+                <span className="font-bold">{t('orders.status.cancelled')}</span>
             </div>
         );
     }

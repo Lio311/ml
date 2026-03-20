@@ -244,7 +244,47 @@
         "reviews_cta_desc": "Your reviews help us and the ml_tlv community grow. Send us a review from your orders page!",
         "happy_customers": "happy customers",
         "catalogs_info_meta_title": "Create Your Own Store | ml_tlv",
-        "catalogs_info_meta_desc": "Create a personal catalog and sell products directly to your customers easily."
+        "catalogs_info_meta_desc": "Create a personal catalog and sell products directly to your customers easily.",
+        "orders": {
+            "title": "My Orders",
+            "inbox_title": "Message Inbox",
+            "no_orders": "You haven't placed any orders yet.",
+            "start_shopping": "Start Shopping",
+            "order_number": "Order #{id}",
+            "external_supplier": "External Supplier",
+            "external_supplier_desc": "Ordered from a user's catalog",
+            "at_time": "at",
+            "self_pickup": "Self Pickup",
+            "shipping": "Shipping by Mail",
+            "quantity": "Quantity",
+            "order_again": "Order Again",
+            "added_to_cart": "Product added to cart successfully!",
+            "order_inquiry": "Order Inquiry",
+            "includes_samples": "Includes {count} samples",
+            "loading": "Loading...",
+            "loading_orders": "Loading orders...",
+            "login_prompt": "Please login to view your orders",
+            "login_btn": "Login",
+            "status": {
+                "pending": "Ordered",
+                "pending_desc": "Your order has been received",
+                "processing": "Processing",
+                "processing_desc": "Contacting and coordinating",
+                "shipped": "Shipped",
+                "shipped_desc": "Your order is on the way",
+                "completed": "Completed",
+                "completed_desc": "Order delivered",
+                "cancelled": "Order Cancelled"
+            },
+            "review": {
+                "prompt": "We'd love to hear about your experience and if you liked the perfumes!",
+                "placeholder": "Your experiences with ml_tlv...",
+                "submit": "Submit Review",
+                "success": "Thank you for the review! It will be published after admin approval.",
+                "error": "Error submitting review",
+                "empty_error": "Please write something before submitting"
+            }
+        }
     },
     "catalogs_info": {
         "hero_badge": "Exclusive Platform for ml_tlv",

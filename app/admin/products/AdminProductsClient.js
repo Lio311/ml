@@ -42,6 +42,8 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
             brand: product.brand || '',
             model: product.model || '',
             name_he: product.name_he || '',
+            brand_he: product.brand_he || '',
+            model_he: product.model_he || '',
             price_2ml: product.price_2ml || 0,
             price_5ml: product.price_5ml || 0,
             price_10ml: product.price_10ml || 0,
@@ -68,6 +70,8 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
             brand: '',
             model: '',
             name_he: '',
+            brand_he: '',
+            model_he: '',
             price_2ml: 0,
             price_5ml: 0,
             price_10ml: 0,
@@ -289,8 +293,26 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                 className="border p-2 rounded w-full bg-white"
                             />
                         </div>
+                        <div className="md:col-span-1">
+                            <label className="text-sm font-bold">שם המותג בעברית</label>
+                            <input
+                                value={editForm.brand_he}
+                                onChange={e => setEditForm({ ...editForm, brand_he: e.target.value })}
+                                className="border p-2 rounded w-full bg-white"
+                                placeholder="..."
+                            />
+                        </div>
+                        <div className="md:col-span-1">
+                            <label className="text-sm font-bold">שם הדגם בעברית</label>
+                            <input
+                                value={editForm.model_he}
+                                onChange={e => setEditForm({ ...editForm, model_he: e.target.value })}
+                                className="border p-2 rounded w-full bg-white"
+                                placeholder="..."
+                            />
+                        </div>
                         <div className="md:col-span-2">
-                            <label className="text-sm font-bold">שם בעברית (ל-SEO)</label>
+                            <label className="text-sm font-bold">שם SEO (עברית)</label>
                             <input
                                 value={editForm.name_he}
                                 onChange={e => setEditForm({ ...editForm, name_he: e.target.value })}
@@ -507,8 +529,24 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                             className="border-2 border-gray-100 rounded-xl p-2 w-full bg-white focus:border-black outline-none transition-colors font-bold text-sm"
                                         />
                                     </div>
-                                    <div className="md:col-span-2">
-                                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">שם בעברית</label>
+                                    <div className="md:col-span-1">
+                                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">מותג (עברית)</label>
+                                        <input
+                                            value={editForm.brand_he}
+                                            onChange={e => setEditForm({ ...editForm, brand_he: e.target.value })}
+                                            className="border-2 border-gray-100 rounded-xl p-2 w-full bg-white focus:border-black outline-none transition-colors font-bold text-sm"
+                                        />
+                                    </div>
+                                    <div className="md:col-span-1">
+                                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">דגם (עברית)</label>
+                                        <input
+                                            value={editForm.model_he}
+                                            onChange={e => setEditForm({ ...editForm, model_he: e.target.value })}
+                                            className="border-2 border-gray-100 rounded-xl p-2 w-full bg-white focus:border-black outline-none transition-colors font-bold text-sm"
+                                        />
+                                    </div>
+                                    <div className="md:col-span-1">
+                                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">SEO (עברית)</label>
                                         <input
                                             value={editForm.name_he}
                                             onChange={e => setEditForm({ ...editForm, name_he: e.target.value })}
@@ -719,7 +757,9 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                             מלאי: {product.stock || 0}מ״ל
                                         </div>
                                     </div>
-                                    <div className="text-gray-500 font-bold text-sm md:text-base leading-tight line-clamp-1">{product.model}</div>
+                                    <div className="text-gray-500 font-bold text-sm md:text-base leading-tight line-clamp-1">
+                                        {product.brand_he || product.brand} • {product.model_he || product.model}
+                                    </div>
                                     <div className="flex items-center gap-2 md:gap-3">
                                         {(() => {
                                             const profitPerMl = Math.round((product.price_2ml / 2) - ((product.cost_price || 0) / (product.original_size || 100)));

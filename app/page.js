@@ -9,20 +9,46 @@ import BrandCarousel from "./components/BrandCarousel";
 import HomeSEOContent from "./components/HomeSEOContent";
 import HomeClient from "./components/HomeClient";
 import { withClient } from "./lib/db";
+import { cookies } from 'next/headers';
+import he from './data/locales/he.json';
+import en from './data/locales/en.json';
+
+const getT = (locale) => {
+  const dict = locale === 'en' ? en : he;
+  return (key) => {
+    const keys = key.split('.');
+    let result = dict;
+    for (const k of keys) {
+      if (result[k]) result = result[k];
+      else return key;
+    }
+    return result;
+  };
+};
 
 const dancingScript = Dancing_Script({
   subsets: ["latin"],
   weight: "700", // Bold for impact
 });
 
-export const revalidate = 0; // Force dynamic to show fresh stock immediately
+export const dynamic = 'force-dynamic';
 
-export const metadata = {
-  title: "דוגמיות בשמים ודיקאנטים | ml_tlv - דוגמיות יוקרה",
-  description: "חנות דוגמיות בשמים ודיקאנטים הגדולה בישראל. מגוון דוגמיות יוקרה, נישה ובוטיק במחירים משתלמים ומשלוח מהיר.",
-};
+export async function generateMetadata() {
+  const cookieStore = await cookies();
+  const locale = cookieStore.get('NEXT_LOCALE')?.value || 'he';
+  const t = getT(locale);
+
+  return {
+    title: t('metadata.home.title'),
+    description: t('metadata.home.description'),
+  };
+}
 
 export default async function Home() {
+  const cookieStore = await cookies();
+  const locale = cookieStore.get('NEXT_LOCALE')?.value || 'he';
+  const t = getT(locale);
+
   let newArrivals = [];
   let topCatalogs = [];
   let stats = { brands: 0, products: 0, samples: 500 };
@@ -120,11 +146,11 @@ export default async function Home() {
               Sample Collections
             </h1>
             <p className="text-xs md:text-base text-gray-800 mb-3 md:mb-4 font-light leading-relaxed">
-              הדרך החכמה לגלות בשמי נישה יוקרתיים.
+              {t('common.hero_subtitle')}
               <br />
-              מגוון <strong>דוגמיות יוקרה ודיקאנטים</strong> (דיקנטים) של הבשמים הנחשקים בעולם.
+              {t('common.hero_tagline')}
               <br />
-              הזמינו דוגמיות לפני רכישת בקבוק מלא.
+              {t('common.hero_cta')}
             </p>
             <Link href="/catalog" className="inline-block border text-black border-black px-6 py-2 text-xs md:text-sm font-bold tracking-widest hover:bg-black hover:text-white transition duration-300 uppercase">
               Shop Now
