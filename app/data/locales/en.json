@@ -339,5 +339,37 @@
         "cta_title": "Ready to start selling in style?",
         "cta_subtitle": "Join the ml_tlv seller community and enjoy all the tools you need.",
         "cta_button": "Starts Here"
+    },
+    "orders": {
+        "title": "My Orders",
+        "loading": "Loading...",
+        "login_prompt": "Please log in to view your orders",
+        "login_btn": "Log In",
+        "loading_orders": "Loading orders...",
+        "inbox_title": "Messages",
+        "no_orders": "You don't have any orders yet",
+        "start_shopping": "Start Shopping",
+        "order_number": "Order #{id}",
+        "external_supplier": "External Supplier",
+        "external_supplier_desc": "This order is handled by an external supplier",
+        "at_time": "at",
+        "self_pickup": "Self Pickup",
+        "shipping": "Shipping",
+        "quantity": "Quantity",
+        "added_to_cart": "Added to cart",
+        "order_again": "Order Again",
+        "order_inquiry": "Order Inquiry",
+        "includes_samples": "Includes {count} free samples",
+        "status": {
+            "pending": "Pending",
+            "pending_desc": "Order received and pending processing",
+            "processing": "Processing",
+            "processing_desc": "Order is being processed and prepared",
+            "shipped": "Shipped",
+            "shipped_desc": "Order has been shipped",
+            "completed": "Completed",
+            "completed_desc": "Order delivered successfully",
+            "cancelled": "Cancelled"
+        }
     }
 }

@@ -328,5 +328,37 @@
         "cta_title": "מוכן להתחיל למכור בסטייל?",
         "cta_subtitle": "הצטרף לקהילת המוכרים של ml_tlv ותהנה מכל הכלים שאתה צריך.",
         "cta_button": "מתחילים כאן"
+    },
+    "orders": {
+        "title": "ההזמנות שלי",
+        "loading": "טוען...",
+        "login_prompt": "התחבר כדי לצפות בהזמנות שלך",
+        "login_btn": "התחברות",
+        "loading_orders": "טוען הזמנות...",
+        "inbox_title": "הודעות",
+        "no_orders": "אין לך הזמנות עדיין",
+        "start_shopping": "התחל לקנות",
+        "order_number": "הזמנה #{id}",
+        "external_supplier": "ספק חיצוני",
+        "external_supplier_desc": "הזמנה זו מטופלת על ידי ספק חיצוני",
+        "at_time": "בשעה",
+        "self_pickup": "איסוף עצמי",
+        "shipping": "משלוח",
+        "quantity": "כמות",
+        "added_to_cart": "התווסף לסל",
+        "order_again": "הזמן שוב",
+        "order_inquiry": "בירור לגבי הזמנה",
+        "includes_samples": "כולל {count} דוגמיות חינם",
+        "status": {
+            "pending": "ממתין",
+            "pending_desc": "ההזמנה התקבלה וממתינה לטיפול",
+            "processing": "בטיפול",
+            "processing_desc": "ההזמנה בטיפול ומרקחת",
+            "shipped": "נשלח",
+            "shipped_desc": "ההזמנה יצאה למשלוח",
+            "completed": "הושלם",
+            "completed_desc": "ההזמנה נמסרה בהצלחה",
+            "cancelled": "בוטל"
+        }
     }
 }
