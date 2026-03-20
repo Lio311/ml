@@ -210,6 +210,19 @@
         "seo_experience_p1": "Scent is the strongest sense tied to memory and emotion. Choosing the right perfume can boost your confidence.",
         "seo_experience_p2": "We are proud to provide fast shipping across the country, from Eilat to the Golan Heights.",
         "seo_cta": "Explore our collection now, begin your journey into the world of niche perfumery.",
-        "shop_collection": "Shop Collection"
+        "shop_collection": "Shop Collection",
+        "contact_title": "Contact Us",
+        "contact_subtitle": "Have a question? A special request? Fill in the form and we'll get back to you shortly.",
+        "contact_name_label": "Full Name",
+        "contact_name_placeholder": "John Smith",
+        "contact_email_label": "Reply Email",
+        "contact_message_label": "Message",
+        "contact_message_placeholder": "Good morning, I wanted to ask...",
+        "contact_send": "Send Message",
+        "contact_sending": "Sending...",
+        "contact_success_title": "Message sent successfully!",
+        "contact_success_desc": "We will get back to you by email as soon as possible.",
+        "contact_send_another": "Send another message",
+        "contact_error": "An error occurred. Please try again or contact us on Instagram."
     }
 }

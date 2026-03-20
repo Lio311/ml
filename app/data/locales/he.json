@@ -198,6 +198,19 @@
         "seo_experience_p1": "ריח הוא החוש החזק ביותר שקשור לזיכרון ורגש. בחירת בשמים נכונה יכולה לשפר את הביטחון העצמי.",
         "seo_experience_p2": "אנו גאים לספק משלוחים מהירים לכל חלקי הארץ, מאילת ועד רמת הגולן.",
         "seo_cta": "גלו עכשיו את האוסף שלנו, התחילו את המסע שלכם בעולם הבישום הנישתי.",
-        "shop_collection": "Shop Collection"
+        "shop_collection": "Shop Collection",
+        "contact_title": "צור קשר",
+        "contact_subtitle": "יש לך שאלה? בקשה מיוחדת? מלא את הטופס ונחזור אליך בהקדם.",
+        "contact_name_label": "שם מלא",
+        "contact_name_placeholder": "ישראל ישראלי",
+        "contact_email_label": "אימייל לחזרה",
+        "contact_message_label": "תוכן ההודעה",
+        "contact_message_placeholder": "בוקר טוב, רציתי לשאול...",
+        "contact_send": "שלח הודעה",
+        "contact_sending": "שולח...",
+        "contact_success_title": "הודעתך נשלחה בהצלחה!",
+        "contact_success_desc": "נחזור אליך למייל בהקדם האפשרי.",
+        "contact_send_another": "שלח הודעה נוספת",
+        "contact_error": "אירעה שגיאה בשליחת ההודעה. אנא נסה שנית או פנה אלינו באינסטגרם."
     }
 }
