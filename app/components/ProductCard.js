@@ -15,7 +15,30 @@ import toast from 'react-hot-toast';
 export default function ProductCard({ product }) {
     const { addToCart, cartItems } = useCart();
     const [added, setAdded] = useState(false);
-    const { t, dir, localize } = useLanguage();
+    const { t, dir, localize, locale } = useLanguage();
+
+    // Translate individual Hebrew category terms to English
+    const HE_TO_EN_CATS = {
+        'יוניסקס': 'Unisex', 'גברים': 'Men', 'נשים': 'Women',
+        'ערב': 'Evening', 'יום': 'Day', 'קיץ': 'Summer', 'חורף': 'Winter',
+        'אביב': 'Spring', 'סתיו': 'Autumn',
+        'דובאי': 'Dubai', 'ערבי': 'Oriental', 'פרחוניקה': 'Floral',
+        'פרחוני': 'Floral', 'עצי': 'Woody', 'ספורטיבי': 'Sport',
+        'קלאסי': 'Classic', 'מודרני': 'Modern', 'מזרחי': 'Oriental',
+        'נדיר': 'Rare', 'יוקרה': 'Luxury', 'בוטיק': 'Boutique',
+        'נישה': 'Niche', 'מהדורה מוגבלת': 'Limited Edition',
+        'אין בארץ': 'Exclusive Import', 'לא מיוצר יותר': 'Discontinued',
+        'חריף': 'Spicy', 'מתוק': 'Sweet', 'ים תיכוני': 'Mediterranean',
+    };
+
+    const translateCategory = (cat) => {
+        if (!cat || locale !== 'en') return cat;
+        return cat.split(',').map(part => {
+            const trimmed = part.trim();
+            return HE_TO_EN_CATS[trimmed] || trimmed;
+        }).join(', ');
+    };
+
 
     useEffect(() => {
         let timer;
@@ -101,7 +124,7 @@ export default function ProductCard({ product }) {
             </Link>
 
             <div className="p-4 flex-1 flex flex-col">
-                <div className="text-xs text-gray-500 mb-1 line-clamp-1">{localize(product, 'category')}</div>
+                <div className="text-xs text-gray-500 mb-1 line-clamp-1">{translateCategory(localize(product, 'category'))}</div>
                 <Link href={`/product/${product.slug || product.id}`}>
                     <h3 className="font-bold text-sm mb-2 line-clamp-2 min-h-[40px] hover:underline">{localize(product, 'name')}</h3>
                 </Link>
