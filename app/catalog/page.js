@@ -208,9 +208,8 @@ async function getProducts(search, brand, category, minPrice, maxPrice, sort, pa
 
 async function getBrands() {
     try {
-        const res = await pool.query('SELECT DISTINCT brand FROM products WHERE active = true'); // Direct query is fine here as pool.query handles checkout/release
-        const brands = res.rows.map(r => r.brand).filter(b => b && b !== 'Unknown');
-        return brands.sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase()));
+        const res = await pool.query('SELECT name FROM brands ORDER BY LOWER(name) ASC');
+        return res.rows.map(r => r.name);
     } catch (e) {
         return [];
     }
