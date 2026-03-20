@@ -30,10 +30,10 @@ export default function OrderStatusTimeline({ status }) {
     const progressPercentage = activeIndex === -1 ? 0 : (activeIndex / (statusSteps.length - 1)) * 100;
 
     return (
-        <div className="w-full py-8 px-2 mb-8">
+        <div className="w-full py-8 px-10 mb-8">
             <div className="relative">
                 {/* Line Container (Centered on circles) */}
-                <div className="absolute top-6 right-6 left-6 -translate-y-1/2 h-1">
+                <div className="absolute top-6 right-16 left-16 -translate-y-1/2 h-1">
                     {/* Background Line */}
                     <div className="w-full h-full bg-gray-100 dark:bg-zinc-800 rounded-full" />
                     
@@ -88,7 +88,7 @@ export default function OrderStatusTimeline({ status }) {
                                         <motion.span 
                                             initial={{ opacity: 0, y: 5 }}
                                             animate={{ opacity: 1, y: 0 }}
-                                            className="text-[10px] text-gray-500 dark:text-zinc-400 mt-1 absolute -bottom-6 w-max"
+                                            className="text-[10px] text-gray-500 dark:text-zinc-400 mt-1 absolute -bottom-6 left-1/2 -translate-x-1/2 w-max text-center"
                                         >
                                             {step.description}
                                         </motion.span>
