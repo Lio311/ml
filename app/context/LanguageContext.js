@@ -37,10 +37,11 @@ export function LanguageProvider({ children, initialLocale = 'he' }) {
 
     const localize = (obj, field) => {
         if (!obj) return '';
-        if (locale === 'en' && obj[`${field}_en` || obj[`${field}_EN`]]) {
-            return obj[`${field}_en`] || obj[`${field}_EN`] || obj[field];
+        if (locale === 'en') {
+            return obj[`${field}_en`] || obj[`${field}_EN`] || obj[field] || '';
         }
-        return obj[field] || '';
+        // For Hebrew, prioritize _he if it exists, then fallback to base field
+        return obj[`${field}_he`] || obj[`${field}_HE`] || obj[field] || '';
     };
 
     return (

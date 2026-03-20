@@ -36,7 +36,7 @@ export default function DesktopNav({ menu = [], brands = [] }) {
                                 href="/brands"
                                 className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm whitespace-nowrap ${pathname.startsWith('/brands') ? 'bg-black text-white' : 'text-gray-900 hover:bg-black hover:text-white'}`}
                             >
-                                {t(`common.${item.id}`)}
+                                {t(`common.${item.id}`) !== `common.${item.id}` ? t(`common.${item.id}`) : item.label}
                             </Link>
 
                             {/* The Mega Menu Dropdown */}
@@ -88,7 +88,7 @@ export default function DesktopNav({ menu = [], brands = [] }) {
                             : (item.isRed ? 'text-red-600 hover:text-red-700 hover:bg-red-50' : 'text-gray-900 hover:bg-black hover:text-white')
                             }`}
                     >
-                        {t(`common.${item.id}`)}
+                        {t(`common.${item.id}`) !== `common.${item.id}` ? t(`common.${item.id}`) : item.label}
                     </Link>
                 );
             })}

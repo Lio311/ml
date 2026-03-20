@@ -138,7 +138,7 @@ export default function MobileNav({ menu = [], cartCount, wishlistCount, isAdmin
                                 onClick={() => setIsMenuOpen(false)}
                                 className={`border-b pb-4 ${item.isRed ? 'text-red-600 font-bold' : ''}`}
                             >
-                                {t(`common.${item.id}`)}
+                                {t(`common.${item.id}`) !== `common.${item.id}` ? t(`common.${item.id}`) : item.label}
                             </Link>
                         ))}
 

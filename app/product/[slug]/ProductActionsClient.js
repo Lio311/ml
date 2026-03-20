@@ -41,7 +41,7 @@ export default function ProductActionsClient({ product }) {
         }
 
         addToCart(product, size, price);
-        toast.success(t('common.added_to_cart_toast').replace('{name}', product.name).replace('{size}', size));
+        toast.success(t('common.added_to_cart_toast').replace('{name}', localize(product, 'name')).replace('{size}', size));
         setAddedId(size);
         setTimeout(() => setAddedId(null), 2000);
     };

@@ -42,7 +42,7 @@ export default function ProductCard({ product }) {
         }
 
         addToCart(product, size, price);
-        toast.success(t('common.added_to_cart_toast').replace('{name}', product.name).replace('{size}', size));
+        toast.success(t('common.added_to_cart_toast').replace('{name}', localize(product, 'name')).replace('{size}', size));
         setAdded(true);
     };
 
@@ -87,7 +87,7 @@ export default function ProductCard({ product }) {
                 {product.image_url ? (
                     <Image
                         src={product.image_url}
-                        alt={t('common.perfume_sample_alt').replace('{name}', product.name).replace('{brand}', product.brand)}
+                        alt={t('common.perfume_sample_alt').replace('{name}', localize(product, 'name')).replace('{brand}', product.brand)}
                         width={300}
                         height={300}
                         className="w-full h-full object-contain group-hover:scale-110 transition duration-700"

@@ -9,7 +9,7 @@ const localize = (obj, field, locale) => {
     if (locale === 'en') {
         return obj[`${field}_en`] || obj[`${field}_EN`] || obj[field] || '';
     }
-    return obj[field] || '';
+    return obj[`${field}_he`] || obj[`${field}_HE`] || obj[field] || '';
 };
 
 const getT = (locale) => {
