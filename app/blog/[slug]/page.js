@@ -21,8 +21,8 @@ const getT = (locale) => {
 
 const localize = (obj, field, locale) => {
     if (!obj) return '';
-    if (locale === 'en' && obj[`${field}_en` || `${field}_EN` || `${field}_En` || `${field}_eN` ]) {
-        return obj[`${field}_en`] || obj[`${field}_EN`] || obj[field];
+    if (locale === 'en') {
+        return obj[`${field}_en`] || obj[`${field}_EN`] || obj[field] || '';
     }
     return obj[field] || '';
 };

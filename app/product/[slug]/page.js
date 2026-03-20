@@ -7,10 +7,23 @@ import en from '../../data/locales/en.json';
 
 const localize = (obj, field, locale) => {
     if (!obj) return '';
-    if (locale === 'en' && obj[`${field}_en` || `${field}_EN` || `${field}_En` || `${field}_eN` ]) {
-        return obj[`${field}_en`] || obj[`${field}_EN`] || obj[field];
+    if (locale === 'en') {
+        return obj[`${field}_en`] || obj[`${field}_EN`] || obj[field] || '';
     }
     return obj[field] || '';
+};
+
+const getT = (locale) => {
+    const dict = locale === 'en' ? en : he;
+    return (key) => {
+        const keys = key.split('.');
+        let result = dict;
+        for (const k of keys) {
+            if (result[k]) result = result[k];
+            else return key;
+        }
+        return result;
+    };
 };
 
 import { redirect } from 'next/navigation';
