@@ -42,7 +42,10 @@ export default function OrderStatusTimeline({ status }) {
                         initial={{ width: 0 }}
                         animate={{ width: `${progressPercentage}%` }}
                         transition={{ duration: 1, ease: "easeOut" }}
-                        className="absolute top-0 right-0 h-full bg-black dark:bg-white rounded-full shadow-[0_0_10px_rgba(0,0,0,0.1)]"
+                        className={cn(
+                            "absolute top-0 h-full bg-black dark:bg-white rounded-full shadow-[0_0_10px_rgba(0,0,0,0.1)]",
+                            language === 'he' ? 'right-0' : 'left-0'
+                        )}
                     />
                 </div>
 
