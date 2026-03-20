@@ -2,7 +2,12 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
+import { useCart } from '../context/CartContext';
+import { useState, useEffect } from 'react';
+import toast from 'react-hot-toast';
 import { useLanguage } from '../context/LanguageContext';
+import WishlistHeart from './WishlistHeart';
 
 export default function HomeClient({ newArrivals, topCatalogs }) {
     const { t, dir, localize, locale } = useLanguage();
@@ -81,13 +86,45 @@ export default function HomeClient({ newArrivals, topCatalogs }) {
 // This is a simple wrapper to use ProductCard inside a client component
 // We import it inline to avoid the server/client boundary issue
 function ProductCardWrapper({ product }) {
-    const { t, localize } = useLanguage();
+    const { t, localize, dir } = useLanguage();
+    const { addToCart, cartItems } = useCart();
+    const [added, setAdded] = useState(false);
+    const router = useRouter();
+
+    useEffect(() => {
+        let timer;
+        if (added) {
+            timer = setTimeout(() => setAdded(false), 2000);
+        }
+        return () => clearTimeout(timer);
+    }, [added]);
+
+    const handleAdd = (size, price) => {
+        const stock = product.stock || 0;
+        const currentInCart = (cartItems || []).reduce((total, item) => {
+            if (item.id === product.id) {
+                return total + (item.size * item.quantity);
+            }
+            return total;
+        }, 0);
+
+        if (currentInCart + size > stock) {
+            toast.error(dir === 'rtl' ? "לא ניתן להוסיף את המוצר, אזל המלאי!" : "Out of stock!");
+            return;
+        }
+
+        addToCart(product, size, price);
+        toast.success(dir === 'rtl' ? `נוסף לסל: ${localize(product, 'name')} (${size} מ"ל)` : `Added to cart: ${localize(product, 'name')} (${size}ml)`);
+        setAdded(true);
+    };
+
     return (
-        <Link
-            href={`/product/${product.slug || product.id}`}
-            className="group block bg-white rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300"
-        >
-            <div className="relative aspect-square bg-gray-50 overflow-hidden">
+        <div className="group border rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 bg-white flex flex-col h-full relative">
+            <div className="absolute top-2 start-2 z-10">
+                <WishlistHeart productId={product.id} />
+            </div>
+
+            <Link href={`/product/${product.slug || product.id}`} className="relative aspect-square bg-gray-50 overflow-hidden block">
                 {product.image_url ? (
                     <Image
                         src={product.image_url}
@@ -99,52 +136,95 @@ function ProductCardWrapper({ product }) {
                 ) : (
                     <div className="w-full h-full flex items-center justify-center text-4xl opacity-20">🌸</div>
                 )}
-            </div>
-            <div className="p-3 text-center flex flex-col items-center justify-center">
-                <div className="text-[10px] text-gray-400 mb-0.5 line-clamp-1 uppercase tracking-wider">{product.brand || 'No Brand'}</div>
-                <p className="text-sm font-bold text-black truncate w-full">
-                    {(function() {
-                        const name = localize(product, 'name');
-                        const brand = product.brand || '';
-                        if (!brand) return name;
-                        
-                        // Advanced cleanup: remove brand in various languages/forms
-                        const BRAND_MAP = {
-                            'Roja': ['רוג\'ה', 'רוגה', 'Roja'],
-                            'Elixir Privé': ['אליקסיר פריבה', 'Elixir Privé', 'Elixir Prive'],
-                            'Frederic Malle': ['פרדריק מאל', 'Frederic Malle'],
-                            'Xerjoff': ['קסרז\'וף', 'Xerjoff'],
-                            'Creed': ['קריד', 'Creed'],
-                            'Kilian': ['קיליאן', 'Kilian'],
-                            'Sospiro': ['סוספירו', 'Sospiro'],
-                            'Amouage': ['אמואז\'', 'Amouage'],
-                            'Initio': ['אינישיו', 'Initio'],
-                            'Mancera': ['מנסרה', 'Mancera'],
-                            'Montale': ['מונטל', 'Montale'],
-                            'Byredo': ['ביירדו', 'Byredo'],
-                            'Diptyque': ['דיפטיק', 'Diptyque'],
-                            'Memo Paris': ['ממו פאריס', 'ממו', 'Memo Paris', 'Memo'],
-                        };
+            </Link>
 
-                        let cleaned = name;
-                        const searchBrands = BRAND_MAP[brand] || [brand];
-                        
-                        for (const b of searchBrands) {
-                            const escaped = b.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').trim();
-                            const regex = new RegExp(`^${escaped}\\s*`, 'i');
-                            if (regex.test(cleaned)) {
-                                cleaned = cleaned.replace(regex, '');
-                                break;
+            <div className="p-3 text-center flex flex-col items-center justify-center flex-1">
+                <div className="text-[10px] text-gray-400 mb-0.5 line-clamp-1 uppercase tracking-wider font-medium">{product.brand || 'No Brand'}</div>
+                <Link href={`/product/${product.slug || product.id}`} className="w-full">
+                    <p className="text-sm font-bold text-black truncate w-full hover:underline">
+                        {(function() {
+                            const name = localize(product, 'name');
+                            const brand = product.brand || '';
+                            if (!brand) return name;
+                            
+                            const BRAND_MAP = {
+                                'Roja': ['רוג\'ה', 'רוגה', 'Roja'],
+                                'Elixir Privé': ['אליקסיר פריבה', 'Elixir Privé', 'Elixir Prive'],
+                                'Frederic Malle': ['פרדריק מאל', 'Frederic Malle'],
+                                'Xerjoff': ['קסרז\'וף', 'Xerjoff'],
+                                'Creed': ['קריד', 'Creed'],
+                                'Kilian': ['קיליאן', 'Kilian'],
+                                'Sospiro': ['סוספירו', 'Sospiro'],
+                                'Amouage': ['אמואז\'', 'Amouage'],
+                                'Initio': ['אינישיו', 'Initio'],
+                                'Mancera': ['מנסרה', 'Mancera'],
+                                'Montale': ['מונטל', 'Montale'],
+                                'Byredo': ['ביירדו', 'Byredo'],
+                                'Diptyque': ['דיפטיק', 'Diptyque'],
+                                'Memo Paris': ['ממו פאריס', 'ממו', 'Memo Paris', 'Memo'],
+                            };
+
+                            let cleaned = name;
+                            const searchBrands = BRAND_MAP[brand] || [brand];
+                            
+                            for (const b of searchBrands) {
+                                const escaped = b.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').trim();
+                                const regex = new RegExp(`^${escaped}\\s*`, 'i');
+                                if (regex.test(cleaned)) {
+                                    cleaned = cleaned.replace(regex, '');
+                                    break;
+                                }
                             }
-                        }
-                        
-                        return cleaned.trim() || name;
-                    })()}
-                </p>
-                {product.price_2ml && (
-                    <p className="text-[11px] text-gray-500 mt-1">{t('common.from')} {product.price_2ml} ₪</p>
-                )}
+                            return cleaned.trim() || name;
+                        })()}
+                    </p>
+                </Link>
+
+                <div className="w-full mt-3 space-y-2">
+                    {Number(product.price_2ml) > 0 && (
+                        <div className="flex items-center justify-between text-[11px] text-gray-600">
+                            <span>2 {dir === 'rtl' ? 'מ"ל' : 'ml'}</span>
+                            <div className="flex items-center gap-2">
+                                <span className="font-bold">{product.price_2ml} ₪</span>
+                                <button
+                                    onClick={() => handleAdd(2, product.price_2ml)}
+                                    className="bg-gray-100 hover:bg-black hover:text-white w-5 h-5 rounded flex items-center justify-center transition"
+                                >+</button>
+                            </div>
+                        </div>
+                    )}
+
+                    {Number(product.price_5ml) > 0 && (
+                        <div className="flex items-center justify-between text-[11px] text-gray-600">
+                            <span>5 {dir === 'rtl' ? 'מ"ל' : 'ml'}</span>
+                            <div className="flex items-center gap-2">
+                                <span className="font-bold">{product.price_5ml} ₪</span>
+                                <button
+                                    onClick={() => handleAdd(5, product.price_5ml)}
+                                    className="bg-gray-100 hover:bg-black hover:text-white w-5 h-5 rounded flex items-center justify-center transition"
+                                >+</button>
+                            </div>
+                        </div>
+                    )}
+
+                    {Number(product.price_10ml) > 0 && (
+                        <div className="flex items-center justify-between text-[11px] text-gray-600">
+                            <span>10 {dir === 'rtl' ? 'מ"ל' : 'ml'}</span>
+                            <div className="flex items-center gap-2">
+                                <span className="font-bold">{product.price_10ml} ₪</span>
+                                <button
+                                    onClick={() => handleAdd(10, product.price_10ml)}
+                                    className="bg-gray-100 hover:bg-black hover:text-white w-5 h-5 rounded flex items-center justify-center transition"
+                                >+</button>
+                            </div>
+                        </div>
+                    )}
+
+                    <Link href={`/product/${product.slug || product.id}`} className={`block w-full text-center text-[11px] py-1.5 mt-2 rounded transition ${added ? 'bg-green-600 text-white' : 'bg-black text-white hover:bg-gray-800'}`}>
+                        {added ? (dir === 'rtl' ? 'נוסף לסל!' : 'Added!') : (dir === 'rtl' ? 'פרטים נוספים' : 'More Details')}
+                    </Link>
+                </div>
             </div>
-        </Link>
+        </div>
     );
 }
