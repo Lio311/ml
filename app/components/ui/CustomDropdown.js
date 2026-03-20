@@ -107,12 +107,12 @@ export default function CustomDropdown({
                                 className={`w-full flex items-center justify-between px-4 py-3 text-sm font-bold transition-colors hover:bg-gray-50 ${value === opt.value ? 'text-black bg-gray-50' : 'text-gray-500 hover:text-black'}`}
                             >
                                 <div className="flex items-center gap-3">
-                                    {value === opt.value && (
-                                        <Check className="w-4 h-4 text-emerald-500 flex-shrink-0" />
-                                    )}
+                                    {opt.icon}
                                     <span>{opt.label}</span>
                                 </div>
-                                {opt.icon}
+                                {value === opt.value && (
+                                    <Check className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                                )}
                             </button>
                         ))}
                     </div>
@@ -134,11 +134,11 @@ export default function CustomDropdown({
             >
                 {isRTL ? (
                     <>
-                        <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform duration-300 flex-shrink-0 ${isOpen ? 'rotate-180' : ''}`} />
                         <div className="flex items-center gap-2 truncate">
-                            <span className="truncate">{selectedOption?.label || placeholder}</span>
                             {selectedOption?.icon}
+                            <span className="truncate">{selectedOption?.label || placeholder}</span>
                         </div>
+                        <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform duration-300 flex-shrink-0 ${isOpen ? 'rotate-180' : ''}`} />
                     </>
                 ) : (
                     <>
