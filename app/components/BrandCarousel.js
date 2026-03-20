@@ -9,7 +9,7 @@ export default function BrandCarousel({ brands }) {
     if (!brands || brands.length === 0) return null;
 
     return (
-        <div className="w-full bg-white py-16 border-t border-gray-200 overflow-hidden">
+        <div className="w-full bg-white py-16 border-t border-gray-200 overflow-hidden" dir={dir}>
             <div className="container mx-auto px-4 text-center mb-10">
                 <h2 className="text-2xl md:text-3xl font-serif font-medium text-black tracking-widest uppercase">{t('common.top_brands')}</h2>
                 <div className="w-12 h-0.5 bg-black mx-auto mt-4"></div>
@@ -17,16 +17,16 @@ export default function BrandCarousel({ brands }) {
 
             <div className="relative w-full overflow-hidden group">
                 {/* Gradient Masks */}
-                <div className="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-neutral-50 to-transparent z-10 pointer-events-none"></div>
-                <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-neutral-50 to-transparent z-10 pointer-events-none"></div>
+                <div className="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-white to-transparent z-10 pointer-events-none"></div>
+                <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-white to-transparent z-10 pointer-events-none"></div>
 
-                <div className="flex animate-scroll whitespace-nowrap gap-16 md:gap-24 w-max pause-on-hover items-center">
-                    {/* Duplicate the array to create infinite loop effect */}
+                <div className="flex animate-scroll whitespace-nowrap gap-16 md:gap-24 w-max pause-on-hover items-center py-4">
+                    {/* Duplicate the array to create infinite loop effect - Using 3 copies for smoothness */}
                     {[...brands, ...brands, ...brands].map((brand, i) => (
                         <Link
                             key={`${brand.name}-${i}`}
                             href={`/brands/${encodeURIComponent(brand.name)}`}
-                            className="flex items-center justify-center w-40 h-28 md:w-48 md:h-32 p-4 grayscale hover:grayscale-0 transition-all duration-300 hover:scale-105"
+                            className="flex-shrink-0 flex items-center justify-center w-32 h-16 md:w-40 md:h-20 p-2 grayscale hover:grayscale-0 transition-all duration-300 hover:scale-110"
                         >
                             {brand.logo_url ? (
                                 <div className="relative w-full h-full">
@@ -35,11 +35,11 @@ export default function BrandCarousel({ brands }) {
                                         alt={brand.name}
                                         fill
                                         className="object-contain mix-blend-multiply opacity-80 hover:opacity-100"
-                                        sizes="(max-width: 768px) 160px, 192px"
+                                        sizes="(max-width: 768px) 120px, 160px"
                                     />
                                 </div>
                             ) : (
-                                <span className="text-xl font-bold text-gray-400 font-serif">{brand.name}</span>
+                                <span className="text-sm font-bold text-gray-400 font-serif uppercase tracking-tighter">{brand.name}</span>
                             )}
                         </Link>
                     ))}
@@ -49,10 +49,10 @@ export default function BrandCarousel({ brands }) {
             <style jsx>{`
             @keyframes scroll {
                 0% { transform: translateX(0); }
-                100% { transform: translateX(50%); } /* RTL scroll direction */
+                100% { transform: translateX(${dir === 'rtl' ? '33.33%' : '-33.33%'}); }
             }
             .animate-scroll {
-                animation: scroll 120s linear infinite;
+                animation: scroll 40s linear infinite;
             }
             .pause-on-hover:hover {
                 animation-play-state: paused;
