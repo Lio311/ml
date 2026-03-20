@@ -353,7 +353,7 @@
             "pending": "ממתין",
             "pending_desc": "ההזמנה התקבלה וממתינה לטיפול",
             "processing": "בטיפול",
-            "processing_desc": "ההזמנה בטיפול ומרקחת",
+            "processing_desc": "ההזמנה בטיפול ונרקחת",
             "shipped": "נשלח",
             "shipped_desc": "ההזמנה יצאה למשלוח",
             "completed": "הושלם",
