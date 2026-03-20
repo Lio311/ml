@@ -26,7 +26,7 @@ export default function AdditionalDetails({ seasons, country, perfumers }) {
             <div className={`transition-all duration-500 ease-in-out overflow-hidden ${isOpen ? 'max-h-[500px] opacity-100 mt-4' : 'max-h-0 opacity-0'}`}>
                 <div className="bg-white rounded-2xl p-6 border border-gray-100 space-y-6 shadow-sm">
                     {seasons && (
-                        <div className={`flex items-start gap-4 ${dir === 'rtl' ? 'flex-row' : 'flex-row-reverse justify-end'}`}>
+                        <div className="flex items-start gap-4 flex-row">
                             <div className="w-10 h-10 rounded-xl bg-gray-50 border border-gray-100 flex items-center justify-center shadow-sm shrink-0">
                                 <Calendar className="w-5 h-5 text-black" />
                             </div>
@@ -44,7 +44,7 @@ export default function AdditionalDetails({ seasons, country, perfumers }) {
                     )}
 
                     {country && (
-                        <div className={`flex items-start gap-4 ${dir === 'rtl' ? 'flex-row' : 'flex-row-reverse justify-end'}`}>
+                        <div className="flex items-start gap-4 flex-row">
                             <div className="w-10 h-10 rounded-xl bg-gray-50 border border-gray-100 flex items-center justify-center shadow-sm shrink-0">
                                 <Globe className="w-5 h-5 text-black" />
                             </div>
@@ -56,7 +56,7 @@ export default function AdditionalDetails({ seasons, country, perfumers }) {
                     )}
 
                     {perfumers && (
-                        <div className={`flex items-start gap-4 ${dir === 'rtl' ? 'flex-row' : 'flex-row-reverse justify-end'}`}>
+                        <div className="flex items-start gap-4 flex-row">
                             <div className="w-10 h-10 rounded-xl bg-gray-50 border border-gray-100 flex items-center justify-center shadow-sm shrink-0">
                                 <Palette className="w-5 h-5 text-black" />
                             </div>
