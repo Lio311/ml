@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { useLanguage } from '../context/LanguageContext';
 
 export default function BrandCarousel({ brands }) {
-    const { t } = useLanguage();
+    const { t, dir } = useLanguage();
     if (!brands || brands.length === 0) return null;
 
     return (

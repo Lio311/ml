@@ -81,6 +81,7 @@ export default function HomeClient({ newArrivals, topCatalogs }) {
 // This is a simple wrapper to use ProductCard inside a client component
 // We import it inline to avoid the server/client boundary issue
 function ProductCardWrapper({ product }) {
+    const { t } = useLanguage();
     return (
         <Link
             href={`/product/${product.slug || product.id}`}
