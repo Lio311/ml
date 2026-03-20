@@ -96,8 +96,8 @@ export default function SearchAutocomplete({ fullWidth = false, onSelect }) {
 
 
                 {isLoading && (
-                    <div className={`absolute top-1/2 -translate-y-1/2 ${isRTL ? 'start-6' : 'end-6'}`}>
-                        <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-black"></div>
+                    <div className={`absolute top-1/2 -translate-y-1/2 ${isRTL ? 'left-6' : 'right-6'}`}>
+                        <div className="animate-spin rounded-full h-3 w-3 border-b-1.5 border-black/50"></div>
                     </div>
                 )}
             </form>
