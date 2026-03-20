@@ -2,14 +2,16 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function BrandCarousel({ brands }) {
+    const { t } = useLanguage();
     if (!brands || brands.length === 0) return null;
 
     return (
         <div className="w-full bg-white py-16 border-t border-gray-200 overflow-hidden">
             <div className="container mx-auto px-4 text-center mb-10">
-                <h2 className="text-2xl md:text-3xl font-serif font-medium text-black tracking-widest uppercase">המותגים המובילים</h2>
+                <h2 className="text-2xl md:text-3xl font-serif font-medium text-black tracking-widest uppercase">{t('common.top_brands')}</h2>
                 <div className="w-12 h-0.5 bg-black mx-auto mt-4"></div>
             </div>
 

@@ -3,10 +3,12 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { useLanguage } from '../context/LanguageContext';
 
 
 export default function BrandsClient({ brands }) {
     const [selectedLetter, setSelectedLetter] = useState(null);
+    const { t } = useLanguage();
 
     // Alphabet and Available Letters Logic
     const fullAlphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split('');
@@ -47,19 +49,19 @@ export default function BrandsClient({ brands }) {
                         : 'bg-white text-gray-700 hover:bg-gray-200 border border-gray-200'
                         }`}
                 >
-                    הכל
+                    {t('common.all')}
                 </button>
             </div>
 
             {/* Results Grid */}
             {filteredBrands.length === 0 ? (
                 <div className="text-center py-20">
-                    <p className="text-2xl text-gray-400 font-light">לא נמצאו מותגים באות {selectedLetter}</p>
+                    <p className="text-2xl text-gray-400 font-light">{t('common.no_brands_for_letter')} {selectedLetter}</p>
                     <button
                         onClick={() => setSelectedLetter(null)}
                         className="mt-4 text-black underline font-bold"
                     >
-                        חזרה לכל המותגים
+                        {t('common.back_to_all_brands')}
                     </button>
                 </div>
             ) : (
