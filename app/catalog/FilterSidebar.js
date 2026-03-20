@@ -10,7 +10,15 @@ import { useLanguage } from '../context/LanguageContext';
 const VIRTUAL_CATEGORIES = ['בוטיק', 'נישה'];
 
 export default function FilterSidebar({ allBrands, allCategories, allCountries, allPerfumers, minPrice, maxPrice }) {
-    const { t, dir } = useLanguage();
+    const { t, dir, locale } = useLanguage();
+
+    // Translate category names from Hebrew DB values to the current locale
+    const translateCategory = (hebrewCat) => {
+        if (locale === 'he') return hebrewCat;
+        const mapped = t(`category_map.${hebrewCat}`);
+        // If t() returns the key itself (not found), fall back to the original
+        return mapped.startsWith('category_map.') ? hebrewCat : mapped;
+    };
     
     const GENDER_OPTIONS = [
         { value: 'all', label: t('common.all_genders'), icon: <Users className="w-4 h-4" /> },
@@ -183,7 +191,7 @@ export default function FilterSidebar({ allBrands, allCategories, allCountries, 
                                 onChange={() => toggleCategory(cat)}
                                 className="w-4 h-4 rounded border-gray-300 text-black focus:ring-black"
                             />
-                            <span className={selectedCategories.includes(cat) ? 'font-bold' : ''}>{cat}</span>
+                            <span className={selectedCategories.includes(cat) ? 'font-bold' : ''}>{translateCategory(cat)}</span>
                         </label>
                     ))}
                 </div>

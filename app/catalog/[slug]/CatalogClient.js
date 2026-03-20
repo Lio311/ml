@@ -147,7 +147,14 @@ function CatalogProductCard({ item, slug, catalogId, catalogName }) {
 // ─── Main Component ───────────────────────────────────────────────────
 export default function CatalogClient({ slug }) {
     const { setActiveVendorId } = useCart();
-    const { t, dir } = useLanguage();
+    const { t, dir, locale } = useLanguage();
+
+    // Translate category names from Hebrew DB values to the current locale
+    const translateCategory = (hebrewCat) => {
+        if (locale === 'he') return hebrewCat;
+        const mapped = t(`category_map.${hebrewCat}`);
+        return mapped.startsWith('category_map.') ? hebrewCat : mapped;
+    };
     const [catalog, setCatalog] = useState(null);
     const [items, setItems] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -313,7 +320,7 @@ export default function CatalogClient({ slug }) {
                                             onChange={() => toggleFilter(selectedCategories, setSelectedCategories, cat)}
                                             className="w-4 h-4 rounded border-gray-300 text-black focus:ring-black"
                                         />
-                                        <span className={selectedCategories.includes(cat) ? 'font-bold' : ''}>{cat}</span>
+                                        <span className={selectedCategories.includes(cat) ? 'font-bold' : ''}>{translateCategory(cat)}</span>
                                     </label>
                                 ))}
                             </div>

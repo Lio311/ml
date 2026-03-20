@@ -401,5 +401,27 @@
         "description": "All {brand} perfumes are now available as samples in various sizes. Choose your next scent from our luxury collection.",
         "no_products": "No products found for this brand at the moment.",
         "back_to_brands": "Back to all brands"
+    },
+    "category_map": {
+        "בוטיק": "Boutique",
+        "נישה": "Niche",
+        "אין בארץ": "Not in Israel",
+        "ביסטמוד": "Beastmode",
+        "גברים": "Men",
+        "דיוניל": "Dional",
+        "יוניסקס": "Unisex",
+        "נשים": "Women",
+        "נדיר": "Rare",
+        "הופסק": "Discontinued",
+        "קלאסי": "Classic",
+        "דיזיינר": "Designer",
+        "ספורטיבי": "Sporty",
+        "אלגנטי": "Elegant",
+        "רומנטי": "Romantic",
+        "אירועים": "Events",
+        "יומיומי": "Daily",
+        "ערב": "Evening",
+        "קיצי": "Summer",
+        "חורפי": "Winter"
     }
 }
