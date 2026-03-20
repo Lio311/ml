@@ -1,3 +1,5 @@
+import Link from 'next/link';
+import Image from 'next/image';
 import pool from '../lib/db';
 import { cookies } from 'next/headers';
 import he from '../data/locales/he.json';
