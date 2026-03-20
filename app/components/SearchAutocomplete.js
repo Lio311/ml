@@ -79,7 +79,7 @@ export default function SearchAutocomplete({ fullWidth = false, onSelect }) {
                     }}
                     className={`border-b border-gray-300 py-1 text-sm focus:outline-none focus:border-black transition-all bg-transparent placeholder-gray-400 
                         ${fullWidth ? 'w-full' : 'w-20 focus:w-48'}
-                        ${isRTL ? 'text-right pe-2 ps-8' : 'text-left ps-8 pe-2'}`} // Icon on the left for both
+                        ${isRTL ? 'text-right pe-8 ps-2' : 'text-left ps-8 pe-2'}`} // Icon on the left for both
                     dir={direction}
                 />
 
