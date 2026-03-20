@@ -125,9 +125,9 @@ export default function ReviewsClient({ initialReviews = [] }) {
                                 </div>
                             ))}
                         </div>
-                        <div className={dir === 'rtl' ? 'text-right' : 'text-left'}>
+                        <div className="text-center">
                             <div className="text-sm font-bold">{stats.count}+ {t('common.happy_customers')}</div>
-                            <div className="flex items-center gap-1">
+                            <div className="flex items-center justify-center gap-1">
                                 {[1, 2, 3, 4, 5].map(s => <Star key={s} className="w-3 h-3 fill-amber-400 text-amber-400" />)}
                             </div>
                         </div>

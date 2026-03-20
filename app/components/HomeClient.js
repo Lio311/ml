@@ -5,7 +5,7 @@ import Image from 'next/image';
 import { useLanguage } from '../context/LanguageContext';
 
 export default function HomeClient({ newArrivals, topCatalogs }) {
-    const { t, dir } = useLanguage();
+    const { t, dir, localize, locale } = useLanguage();
     const isRTL = dir === 'rtl';
 
     return (
@@ -81,7 +81,7 @@ export default function HomeClient({ newArrivals, topCatalogs }) {
 // This is a simple wrapper to use ProductCard inside a client component
 // We import it inline to avoid the server/client boundary issue
 function ProductCardWrapper({ product }) {
-    const { t } = useLanguage();
+    const { t, localize } = useLanguage();
     return (
         <Link
             href={`/product/${product.slug || product.id}`}
@@ -101,8 +101,46 @@ function ProductCardWrapper({ product }) {
                 )}
             </div>
             <div className="p-3">
-                <p className="text-xs text-gray-400 truncate mb-0.5">{product.brand}</p>
-                <p className="text-sm font-bold text-black truncate">{product.name}</p>
+                <div className="text-[10px] text-gray-500 mb-0.5 line-clamp-1 truncate font-medium uppercase tracking-wider">{product.brand || 'No Brand'}</div>
+                <p className="text-sm font-bold text-black truncate">
+                    {(function() {
+                        const name = localize(product, 'name');
+                        const brand = product.brand || '';
+                        if (!brand) return name;
+                        
+                        // Advanced cleanup: remove brand in various languages/forms
+                        const BRAND_MAP = {
+                            'Roja': ['רוג\'ה', 'רוגה', 'Roja'],
+                            'Elixir Privé': ['אליקסיר פריבה', 'Elixir Privé', 'Elixir Prive'],
+                            'Frederic Malle': ['פרדריק מאל', 'Frederic Malle'],
+                            'Xerjoff': ['קסרז\'וף', 'Xerjoff'],
+                            'Creed': ['קრიד', 'Creed'],
+                            'Kilian': ['קיליאן', 'Kilian'],
+                            'Sospiro': ['סוספירו', 'Sospiro'],
+                            'Amouage': ['אמואז\'', 'Amouage'],
+                            'Initio': ['אינישיו', 'Initio'],
+                            'Mancera': ['מנסרה', 'Mancera'],
+                            'Montale': ['מונטל', 'Montale'],
+                            'Byredo': ['ביירדו', 'Byredo'],
+                            'Diptyque': ['דיפטיק', 'Diptyque'],
+                            'Memo Paris': ['ממו פאריס', 'ממו', 'Memo Paris', 'Memo'],
+                        };
+
+                        let cleaned = name;
+                        const searchBrands = BRAND_MAP[brand] || [brand];
+                        
+                        for (const b of searchBrands) {
+                            const escaped = b.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').trim();
+                            const regex = new RegExp(`^${escaped}\\s*`, 'i');
+                            if (regex.test(cleaned)) {
+                                cleaned = cleaned.replace(regex, '');
+                                break;
+                            }
+                        }
+                        
+                        return cleaned.trim() || name;
+                    })()}
+                </p>
                 {product.price_2ml && (
                     <p className="text-xs text-gray-600 mt-1">{t('common.from')} {product.price_2ml} ₪</p>
                 )}

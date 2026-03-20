@@ -52,7 +52,7 @@ export default function BrandCarousel({ brands }) {
                 100% { transform: translateX(${dir === 'rtl' ? '33.33%' : '-33.33%'}); }
             }
             .animate-scroll {
-                animation: scroll 40s linear infinite;
+                animation: scroll 80s linear infinite;
             }
             .pause-on-hover:hover {
                 animation-play-state: paused;
