@@ -17,7 +17,7 @@ export default function Breadcrumbs({ items }) {
                 </li>
                 {items.map((item, index) => (
                     <li key={index} className="flex items-center gap-2">
-                        <span className={`text-gray-300 ${dir === 'rtl' ? '' : 'rotate-180'}`}>»</span>
+                        <span className={`text-gray-300 ${dir === 'rtl' ? 'rotate-180' : ''}`}>»</span>
                         {item.href ? (
                             <Link 
                                 href={item.href} 
