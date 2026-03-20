@@ -11,7 +11,7 @@ import OrderReviewPrompt from '../components/OrderReviewPrompt';
 import { useLanguage } from '../context/LanguageContext';
 
 export default function OrdersClient() {
-    const { t, language } = useLanguage();
+    const { t, locale } = useLanguage();
     const { addToCart } = useCart();
     const { isLoaded, isSignedIn } = useUser();
     const [orders, setOrders] = useState([]);
@@ -101,7 +101,13 @@ export default function OrdersClient() {
                                         )}
                                     </div>
                                     <div className="text-sm text-gray-500 flex items-center gap-2 mt-1">
-                                        <span>{new Date(order.created_at).toLocaleDateString(language === 'he' ? 'he-IL' : 'en-US')} {t('orders.at_time')} {new Date(order.created_at).toLocaleTimeString(language === 'he' ? 'he-IL' : 'en-US', { hour: '2-digit', minute: '2-digit' })}</span>
+                                        <span>
+                                            {locale === 'he' ? (
+                                                `${new Date(order.created_at).toLocaleDateString('he-IL', { day: '2-digit', month: '2-digit', year: 'numeric' }).replace(/\//g, '.')} | ${new Date(order.created_at).toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit', hour12: false })}`
+                                            ) : (
+                                                `${new Date(order.created_at).toLocaleDateString('en-US')} at ${new Date(order.created_at).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })}`
+                                            )}
+                                        </span>
                                         <span className="text-gray-300">•</span>
                                         {order.delivery_method === 'self_pickup' ? (
                                             <span className="text-black font-bold flex items-center gap-1.5">
