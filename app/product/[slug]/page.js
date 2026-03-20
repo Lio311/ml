@@ -322,11 +322,7 @@ export default async function ProductPage(props) {
                 <div className="w-full md:w-1/2 space-y-8">
                     <div className={`${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
                         <div className="text-gray-500 mb-2">{localizedCategory}</div>
-                        <h1 className="text-4xl font-bold mb-2">{localizedName_val}</h1>
-
-                        <div className="mb-4">
-                            <StarRating productId={product.id} />
-                        </div>
+                        <h1 className="text-4xl font-bold mb-6">{localizedName_val}</h1>
 
                         {/* SEO: Structured Data */}
                         <script
@@ -373,19 +369,25 @@ export default async function ProductPage(props) {
 
                         {
                             product.logo_url && (
-                                <div className="mb-6 w-32 h-16 flex items-center justify-start"> {/* Fixed container */}
-                                    <Link href={`/brands/${encodeURIComponent(product.brand)}`} className="block w-full h-full relative">
-                                        <Image
-                                            src={product.logo_url}
-                                            alt={product.brand}
-                                            fill
-                                            className="object-contain hover:opacity-80 transition-opacity"
-                                            sizes="128px"
-                                        />
-                                    </Link>
+                                <div className={`mb-4 flex ${dir === 'rtl' ? 'justify-end' : 'justify-start'}`}>
+                                    <div className="w-32 h-16 relative">
+                                        <Link href={`/brands/${encodeURIComponent(product.brand)}`} className="block w-full h-full">
+                                            <Image
+                                                src={product.logo_url}
+                                                alt={product.brand}
+                                                fill
+                                                className="object-contain hover:opacity-80 transition-opacity"
+                                                sizes="128px"
+                                            />
+                                        </Link>
+                                    </div>
                                 </div>
                             )
                         }
+
+                        <div className="mb-6">
+                            <StarRating productId={product.id} />
+                        </div>
 
                         <div className={`text-lg text-gray-600 leading-relaxed ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
                             {localizedDesc_val || t('common.product_desc_fallback').replace('{category}', localizedCategory)}
