@@ -103,7 +103,7 @@ function ProductCardWrapper({ product }) {
                 <p className="text-xs text-gray-400 truncate mb-0.5">{product.brand}</p>
                 <p className="text-sm font-bold text-black truncate">{product.name}</p>
                 {product.price_2ml && (
-                    <p className="text-xs text-gray-600 mt-1">from ₪{product.price_2ml}</p>
+                    <p className="text-xs text-gray-600 mt-1">{t('common.from')} {product.price_2ml} ₪</p>
                 )}
             </div>
         </Link>
