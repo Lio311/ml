@@ -281,7 +281,7 @@ export default async function ProductPage(props) {
                     ) : (
                         <div className="text-6xl text-gray-300">🧴</div>
                     )}
-"
+
                     <div className="absolute top-4 start-4 z-10">
                         <WishlistHeart productId={product.id} />
                     </div>
