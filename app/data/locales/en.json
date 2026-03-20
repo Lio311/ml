@@ -422,6 +422,20 @@
         "יומיומי": "Daily",
         "ערב": "Evening",
         "קיצי": "Summer",
-        "חורפי": "Winter"
+        "חורפי": "Winter",
+        "חורף": "Winter",
+        "קיץ": "Summer",
+        "סתיו": "Fall",
+        "אביב": "Spring",
+        "לא מיוצר יותר": "Discontinued",
+        "מהדורה מוגבלת": "Limited Edition",
+        "מותג יוקרה": "Luxury Brand",
+        "מותג נישה": "Niche Brand",
+        "ריח מתוק": "Sweet Scent",
+        "ריח עוצמתי": "Powerful Scent",
+        "ריח עדין": "Subtle Scent",
+        "ריח רענן": "Fresh Scent",
+        "ריח חורפי": "Winter Scent",
+        "ריח קיצי": "Summer Scent"
     }
 }
