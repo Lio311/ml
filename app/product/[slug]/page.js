@@ -369,7 +369,7 @@ export default async function ProductPage(props) {
 
                         {
                             product.logo_url && (
-                                <div className={`mb-4 flex ${dir === 'rtl' ? 'justify-end' : 'justify-start'}`}>
+                                <div className={`mb-4 flex`} dir={dir}>
                                     <div className="w-32 h-16 relative">
                                         <Link href={`/brands/${encodeURIComponent(product.brand)}`} className="block w-full h-full">
                                             <Image
