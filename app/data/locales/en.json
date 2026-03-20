@@ -1,6 +1,8 @@
 {
     "common": {
         "home": "Home",
+        "price": "Price",
+        "up_to": "Up to",
         "brands": "Brands",
         "categories": "Categories",
         "lottery": "Perfume Lottery",

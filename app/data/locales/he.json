@@ -1,6 +1,8 @@
 {
     "common": {
         "home": "דף הבית",
+        "price": "מחיר",
+        "up_to": "עד",
         "brands": "מותגים",
         "categories": "קטגוריות",
         "lottery": "הגרלת בשמים",

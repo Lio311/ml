@@ -207,7 +207,7 @@ export default function FilterSidebar({ allBrands, allCategories, allCountries, 
             </CollapsibleSection>
 
             {/* Price Filter Slider - Collapsible */}
-            <CollapsibleSection title={`${t('common.price')} (עד ${price} ₪)`} initialOpen={true}>
+            <CollapsibleSection title={`${t('common.price')} (${t('common.up_to')} ${price} ₪)`} initialOpen={true}>
                 <PriceFilter 
                     price={price} 
                     setPrice={setPrice} 
