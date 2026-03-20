@@ -13,7 +13,7 @@ export default function HomeSEOContent() {
                 <div className={isRTL ? 'text-right' : 'text-left'}>
                     {/* Premium Header */}
                     <div className={`mb-16 text-center ${isRTL ? 'md:text-right' : 'md:text-left'}`}>
-                        <span className="text-xs uppercase tracking-[0.3em] text-gray-400 font-bold mb-3 block">Premium Fragrance Guide</span>
+                        <span className="text-xs uppercase tracking-[0.3em] text-gray-400 font-bold mb-3 block">{t('homepage.seo_guide_badge') || 'Premium Fragrance Guide'}</span>
                         <h2 className="text-4xl md:text-5xl font-serif font-black text-gray-900 mb-6 leading-[1.1]">
                             {t('common.seo_title')}
                         </h2>

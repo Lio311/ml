@@ -27,8 +27,15 @@ export function LanguageProvider({ children, initialLocale = 'he' }) {
     const toggleLanguage = () => {
         const newLocale = locale === 'he' ? 'en' : 'he';
         setLocale(newLocale);
+        
+        // Update cookie immediately so server components see it on refresh
+        document.cookie = `NEXT_LOCALE=${newLocale}; path=/; max-age=31536000; SameSite=Lax`;
+        
         // Next.js refresh to update server components that rely on cookies
-        router.refresh();
+        // We use a small timeout to ensure the cookie is processed
+        setTimeout(() => {
+            router.refresh();
+        }, 100);
     };
 
     const t = (keyPath) => {

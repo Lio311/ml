@@ -24,25 +24,13 @@ const localize = (obj, field, locale) => {
     return obj[`${field}_he`] || obj[`${field}_HE`] || obj[field] || '';
 };
 
-const HE_TO_EN_CATS = {
-    'יוניסקס': 'Unisex', 'גברים': 'Men', 'נשים': 'Women',
-    'ערב': 'Evening', 'יום': 'Day', 'קיץ': 'Summer', 'חורף': 'Winter',
-    'אביב': 'Spring', 'סתיו': 'Autumn',
-    'דובאי': 'Dubai', 'ערבי': 'Oriental', 'פרחוניקה': 'Floral',
-    'פרחוני': 'Floral', 'עצי': 'Woody', 'ספורטיבי': 'Sport',
-    'קלאסי': 'Classic', 'מודרני': 'Modern', 'מזרחי': 'Oriental',
-    'נדיר': 'Rare', 'יוקרה': 'Luxury', 'בוטיק': 'Boutique',
-    'נישה': 'Niche', 'מהדורה מוגבלת': 'Limited Edition',
-    'אין בארץ': 'Exclusive Import', 'לא מיוצר יותר': 'Discontinued',
-    'חריף': 'Spicy', 'מתוק': 'Sweet', 'ים תיכוני': 'Mediterranean',
-    'ביסטמוד': 'Beast Mode'
-};
-
 const translateCategory = (cat, locale) => {
     if (!cat || locale !== 'en') return cat;
     return cat.split(',').map(part => {
         const trimmed = part.trim();
-        return HE_TO_EN_CATS[trimmed] || trimmed;
+        const dict = en;
+        const mapped = dict.category_map?.[trimmed];
+        return mapped || trimmed;
     }).join(', ');
 };
 

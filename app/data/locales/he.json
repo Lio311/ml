@@ -390,5 +390,19 @@
         "description": "כל הבשמים של {brand} זמינים עכשיו כדוגמיות בגדלים שונים. בחרו את הריח הבא שלכם מהקולקציה היוקרתית שלנו.",
         "no_products": "לא נמצאו מוצרים למותג זה כרגע.",
         "back_to_brands": "לחזרה לכל המותגים"
+    },
+    "homepage": {
+        "discover_sig": "גלה את הניחוח המזוהה שלך",
+        "hero_title_p1": "קולקציית דוגמיות",
+        "hero_title_p2": "נישה ובוטיק",
+        "shop_now": "קנה עכשיו",
+        "exclusive_tagline": "הבשמים ה",
+        "exclusive_title": "בלעדיים\nביותר",
+        "summer_tagline": "הניחוחות ה",
+        "summer_title": "קיציים\nביותר",
+        "datenight_tagline": "בחר את המועדף עליך",
+        "datenight_title": "לערב\nמושלם",
+        "shop_collection": "לכל הקולקציה",
+        "seo_guide_badge": "מדריך ניחוחות פרימיום"
     }
 }

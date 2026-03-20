@@ -110,12 +110,12 @@ function ProductCardWrapper({ product }) {
         }, 0);
 
         if (currentInCart + size > stock) {
-            toast.error(dir === 'rtl' ? "לא ניתן להוסיף את המוצר, אזל המלאי!" : "Out of stock!");
+            toast.error(t('common.out_of_stock_toast'));
             return;
         }
 
         addToCart(product, size, price);
-        toast.success(dir === 'rtl' ? `נוסף לסל: ${localize(product, 'name')} (${size} מ"ל)` : `Added to cart: ${localize(product, 'name')} (${size}ml)`);
+        toast.success(t('common.added_to_cart_toast').replace('{name}', localize(product, 'name')).replace('{size}', size));
         setAdded(true);
     };
 
@@ -165,7 +165,7 @@ function ProductCardWrapper({ product }) {
                 <div className="w-full mt-3 space-y-2">
                     {Number(product.price_2ml) > 0 && (
                         <div className="flex items-center justify-between text-[11px] text-gray-600">
-                            <span>2 {dir === 'rtl' ? 'מ"ל' : 'ml'}</span>
+                            <span>2 {t('common.ml_unit')}</span>
                             <div className="flex items-center gap-2">
                                 <span className="font-bold">{product.price_2ml} ₪</span>
                                 <button
@@ -178,7 +178,7 @@ function ProductCardWrapper({ product }) {
 
                     {Number(product.price_5ml) > 0 && (
                         <div className="flex items-center justify-between text-[11px] text-gray-600">
-                            <span>5 {dir === 'rtl' ? 'מ"ל' : 'ml'}</span>
+                            <span>5 {t('common.ml_unit')}</span>
                             <div className="flex items-center gap-2">
                                 <span className="font-bold">{product.price_5ml} ₪</span>
                                 <button
@@ -191,7 +191,7 @@ function ProductCardWrapper({ product }) {
 
                     {Number(product.price_10ml) > 0 && (
                         <div className="flex items-center justify-between text-[11px] text-gray-600">
-                            <span>10 {dir === 'rtl' ? 'מ"ל' : 'ml'}</span>
+                            <span>10 {t('common.ml_unit')}</span>
                             <div className="flex items-center gap-2">
                                 <span className="font-bold">{product.price_10ml} ₪</span>
                                 <button
@@ -203,7 +203,7 @@ function ProductCardWrapper({ product }) {
                     )}
 
                     <Link href={`/product/${product.slug || product.id}`} className={`block w-full text-center text-[11px] py-1.5 mt-2 rounded transition ${added ? 'bg-green-600 text-white' : 'bg-black text-white hover:bg-gray-800'}`}>
-                        {added ? (dir === 'rtl' ? 'נוסף לסל!' : 'Added!') : (dir === 'rtl' ? 'פרטים נוספים' : 'More Details')}
+                        {added ? t('common.added_to_cart_btn') : t('common.more_details')}
                     </Link>
                 </div>
             </div>

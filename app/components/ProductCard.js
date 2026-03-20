@@ -1,44 +1,29 @@
 "use client";
 
-
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useCart } from "../context/CartContext";
 import { useState, useEffect } from "react";
 import { useLanguage } from "../context/LanguageContext";
-
 import WishlistHeart from "./WishlistHeart";
-
 import toast from 'react-hot-toast';
 
 export default function ProductCard({ product }) {
     const { addToCart, cartItems } = useCart();
     const [added, setAdded] = useState(false);
     const { t, dir, localize, locale } = useLanguage();
-
-    // Translate individual Hebrew category terms to English
-    const HE_TO_EN_CATS = {
-        'יוניסקס': 'Unisex', 'גברים': 'Men', 'נשים': 'Women',
-        'ערב': 'Evening', 'יום': 'Day', 'קיץ': 'Summer', 'חורף': 'Winter',
-        'אביב': 'Spring', 'סתיו': 'Autumn',
-        'דובאי': 'Dubai', 'ערבי': 'Oriental', 'פרחוניקה': 'Floral',
-        'פרחוני': 'Floral', 'עצי': 'Woody', 'ספורטיבי': 'Sport',
-        'קלאסי': 'Classic', 'מודרני': 'Modern', 'מזרחי': 'Oriental',
-        'נדיר': 'Rare', 'יוקרה': 'Luxury', 'בוטיק': 'Boutique',
-        'נישה': 'Niche', 'מהדורה מוגבלת': 'Limited Edition',
-        'אין בארץ': 'Exclusive Import', 'לא מיוצר יותר': 'Discontinued',
-        'חריף': 'Spicy', 'מתוק': 'Sweet', 'ים תיכוני': 'Mediterranean',
-    };
+    const router = useRouter();
 
     const translateCategory = (cat) => {
-        if (!cat || locale !== 'en') return cat;
+        if (!cat || locale === 'he') return cat;
         return cat.split(',').map(part => {
             const trimmed = part.trim();
-            return HE_TO_EN_CATS[trimmed] || trimmed;
+            const mapped = t(`category_map.${trimmed}`);
+            // If t() returns the key itself, it means it's not found in the map
+            return mapped.startsWith('category_map.') ? trimmed : mapped;
         }).join(', ');
     };
-
 
     useEffect(() => {
         let timer;
@@ -50,8 +35,6 @@ export default function ProductCard({ product }) {
 
     const handleAdd = (size, price) => {
         const stock = product.stock || 0;
-
-        // Calculate current volume of this product in cart
         const currentInCart = (cartItems || []).reduce((total, item) => {
             if (item.id === product.id) {
                 return total + (item.size * item.quantity);
@@ -68,8 +51,6 @@ export default function ProductCard({ product }) {
         toast.success(t('common.added_to_cart_toast').replace('{name}', localize(product, 'name')).replace('{size}', size));
         setAdded(true);
     };
-
-    const router = useRouter();
 
     return (
         <div
@@ -184,7 +165,6 @@ export default function ProductCard({ product }) {
                             </div>
                         </div>
                     )}
-
                 </div>
             </div>
         </div>

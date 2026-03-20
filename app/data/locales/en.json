@@ -437,6 +437,30 @@
         "ריח רענן": "Fresh Scent",
         "ריח חורפי": "Winter Scent",
         "ריח קיצי": "Summer Scent",
-        "דובאי": "Dubai"
+        "דובאי": "Dubai",
+        "יום": "Day",
+        "ערבי": "Oriental",
+        "מזרחי": "Oriental",
+        "פרחוני": "Floral",
+        "פרחוניקה": "Floral",
+        "עצי": "Woody",
+        "מודרני": "Modern",
+        "חריף": "Spicy",
+        "מתוק": "Sweet",
+        "ים תיכוני": "Mediterranean"
+    },
+    "homepage": {
+        "discover_sig": "Discover Your Signature Scent",
+        "hero_title_p1": "Niche & Boutique",
+        "hero_title_p2": "Sample Collections",
+        "shop_now": "Shop Now",
+        "exclusive_tagline": "The Most",
+        "exclusive_title": "EXCLUSIVE\nFRAGRANCES",
+        "summer_tagline": "The Best",
+        "summer_title": "SUMMER\nSCENTS",
+        "datenight_tagline": "Choose your favorite",
+        "datenight_title": "DATE NIGHT\nESSENTIALS",
+        "shop_collection": "Shop Collection",
+        "seo_guide_badge": "Premium Fragrance Guide"
     }
 }
