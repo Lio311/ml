@@ -3,8 +3,10 @@
 import { useState, useEffect } from 'react';
 import { useUser } from '@clerk/nextjs';
 import toast from 'react-hot-toast';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function RequestsClient() {
+    const { t } = useLanguage();
     const { user, isLoaded } = useUser();
     const [brand, setBrand] = useState('');
     const [model, setModel] = useState('');
