@@ -100,9 +100,9 @@ function ProductCardWrapper({ product }) {
                     <div className="w-full h-full flex items-center justify-center text-4xl opacity-20">🌸</div>
                 )}
             </div>
-            <div className="p-3">
-                <div className="text-[10px] text-gray-500 mb-0.5 line-clamp-1 truncate font-medium uppercase tracking-wider">{product.brand || 'No Brand'}</div>
-                <p className="text-sm font-bold text-black truncate">
+            <div className="p-3 text-center flex flex-col items-center justify-center">
+                <div className="text-[10px] text-gray-400 mb-0.5 line-clamp-1 uppercase tracking-wider">{product.brand || 'No Brand'}</div>
+                <p className="text-sm font-bold text-black truncate w-full">
                     {(function() {
                         const name = localize(product, 'name');
                         const brand = product.brand || '';
@@ -114,7 +114,7 @@ function ProductCardWrapper({ product }) {
                             'Elixir Privé': ['אליקסיר פריבה', 'Elixir Privé', 'Elixir Prive'],
                             'Frederic Malle': ['פרדריק מאל', 'Frederic Malle'],
                             'Xerjoff': ['קסרז\'וף', 'Xerjoff'],
-                            'Creed': ['קრიד', 'Creed'],
+                            'Creed': ['קריד', 'Creed'],
                             'Kilian': ['קיליאן', 'Kilian'],
                             'Sospiro': ['סוספירו', 'Sospiro'],
                             'Amouage': ['אמואז\'', 'Amouage'],
@@ -142,7 +142,7 @@ function ProductCardWrapper({ product }) {
                     })()}
                 </p>
                 {product.price_2ml && (
-                    <p className="text-xs text-gray-600 mt-1">{t('common.from')} {product.price_2ml} ₪</p>
+                    <p className="text-[11px] text-gray-500 mt-1">{t('common.from')} {product.price_2ml} ₪</p>
                 )}
             </div>
         </Link>
