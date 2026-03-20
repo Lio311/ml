@@ -224,6 +224,16 @@
         "contact_success_title": "Message sent successfully!",
         "contact_success_desc": "We will get back to you by email as soon as possible.",
         "contact_send_another": "Send another message",
-        "contact_error": "An error occurred. Please try again or contact us on Instagram."
+        "contact_error": "An error occurred. Please try again or contact us on Instagram.",
+        "customer_reviews_badge": "Customer Reviews",
+        "reviews_heading": "Your Experiences with ml_tlv",
+        "reviews_subheading": "We are proud to share your feedback. Every review helps us improve and keep bringing you the finest fragrances.",
+        "average_rating": "Average Rating",
+        "verified_reviews": "Verified Reviews",
+        "no_reviews_yet": "No reviews yet. Coming soon!",
+        "verified_buyer": "Verified Buyer",
+        "reviews_cta_title": "Want to share your experience?",
+        "reviews_cta_desc": "Your reviews help us and the ml_tlv community grow. Send us a review from your orders page!",
+        "happy_customers": "happy customers"
     }
 }
