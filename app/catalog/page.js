@@ -415,7 +415,7 @@ export default async function CatalogPage(props) {
 
                     {/* Pagination Controls */}
                     {totalPages > 1 && (
-                        <div className="mt-12 flex justify-center gap-2 flex-wrap" dir="rtl">
+                        <div className="mt-12 flex justify-center gap-2 flex-wrap" dir={dir}>
                             {/* Previous Button */}
                             {page > 1 && (
                                 <Link
