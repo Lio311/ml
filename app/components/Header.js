@@ -12,6 +12,7 @@ import UserActions from './header/UserActions';
 import DesktopNav from './header/DesktopNav';
 import DesktopIcons from './header/DesktopIcons';
 import LiveVisitorCounter from './LiveVisitorCounter';
+import LanguageSwitcher from './header/LanguageSwitcher';
 import { useLanguage } from '../context/LanguageContext';
 
 export default function Header({ brands = [], menu = [] }) {
