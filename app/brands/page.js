@@ -1,14 +1,40 @@
 import pool from '../lib/db';
 import BrandsClient from './BrandsClient';
+import { cookies } from 'next/headers';
+import he from '../data/locales/he.json';
+import en from '../data/locales/en.json';
 
-export const metadata = {
-    title: "המותגים שלנו | ml_tlv",
-    description: "גלו את מותגי הנישה והבוטיק המובילים בעולם. כל המותגים במקום אחד.",
+const getT = (locale) => {
+    const dict = locale === 'en' ? en : he;
+    return (key) => {
+        const keys = key.split('.');
+        let result = dict;
+        for (const k of keys) {
+            if (result[k]) result = result[k];
+            else return key;
+        }
+        return result;
+    };
 };
+
+export async function generateMetadata() {
+    const cookieStore = await cookies();
+    const locale = cookieStore.get('NEXT_LOCALE')?.value || 'he';
+    const t = getT(locale);
+
+    return {
+        title: `${t('common.our_brands')} | ml_tlv`,
+        description: t('common.brands_meta_desc'),
+    };
+}
 
 export const revalidate = 3600; // Cache for 1 hour
 
 export default async function BrandsPage() {
+    const cookieStore = await cookies();
+    const locale = cookieStore.get('NEXT_LOCALE')?.value || 'he';
+    const t = getT(locale);
+
     let brands = [];
     try {
         const client = await pool.connect();
@@ -23,10 +49,10 @@ export default async function BrandsPage() {
         <div className="min-h-screen bg-gray-100 py-12">
             <div className="container mx-auto px-4">
                 <div className="text-center mb-12">
-                    <h1 className="text-4xl md:text-5xl font-bold mb-4">המותגים שלנו</h1>
+                    <h1 className="text-4xl md:text-5xl font-bold mb-4">{t('common.our_brands')}</h1>
                     <div className="w-16 h-1 bg-black mx-auto"></div>
                     <p className="mt-4 text-gray-600 max-w-2xl mx-auto">
-                        אוסף המותגים היוקרתי ביותר של בשמי נישה ובוטיק. לחצו על הלוגו לצפייה בכל הבשמים של המותג.
+                        {t('common.brands_subtitle')}
                     </p>
                 </div>
 
