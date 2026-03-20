@@ -8,7 +8,7 @@ export default function Footer() {
             <div className={`container grid grid-cols-2 md:grid-cols-5 gap-10 text-center py-10 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
 
                 <div>
-                    <h3 className="text-lg font-bold mb-4 uppercase tracking-widest">ml_tlv</h3>
+                    <h3 className="text-lg font-bold mb-4 tracking-widest">ml_tlv</h3>
                     <p className="text-sm text-gray-400">
                         {t('common.footer_tagline')}
                     </p>
