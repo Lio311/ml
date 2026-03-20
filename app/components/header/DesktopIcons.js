@@ -3,7 +3,6 @@
 import Link from 'next/link';
 import { SignedIn } from '@clerk/nextjs';
 import { useLanguage } from '../../context/LanguageContext';
-import LanguageSwitcher from './LanguageSwitcher';
 
 export default function DesktopIcons({ cartCount, wishlistCount }) {
     const { t } = useLanguage();
