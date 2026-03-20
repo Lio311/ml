@@ -33,9 +33,9 @@ export default function OrderStatusTimeline({ status }) {
         <div className="w-full py-4 px-10 mb-2">
             <div className="relative">
                 {/* Line Container (Centered on circles) */}
-                <div className="absolute top-6 right-16 left-16 -translate-y-1/2 h-1">
+                <div className="absolute top-6 right-12 left-12 -translate-y-1/2 h-1.5">
                     {/* Background Line */}
-                    <div className="w-full h-full bg-gray-100 dark:bg-zinc-800 rounded-full" />
+                    <div className="w-full h-full bg-gray-100 dark:bg-zinc-800" />
                     
                     {/* Progress Line */}
                     <motion.div 
@@ -43,7 +43,7 @@ export default function OrderStatusTimeline({ status }) {
                         animate={{ width: `${progressPercentage}%` }}
                         transition={{ duration: 1, ease: "easeOut" }}
                         className={cn(
-                            "absolute top-0 h-full bg-black dark:bg-white rounded-full shadow-[0_0_10px_rgba(0,0,0,0.1)]",
+                            "absolute top-0 h-full bg-black dark:bg-white shadow-[0_0_10px_rgba(0,0,0,0.1)]",
                             locale === 'he' ? 'right-0' : 'left-0'
                         )}
                     />
