@@ -104,9 +104,9 @@ export default function ProductCard({ product }) {
                 )}
             </Link>
 
-            <div className="p-4 flex-1 flex flex-col items-center">
+            <div className="p-4 flex-1 flex flex-col">
                 <div className="text-xs text-gray-500 mb-1 line-clamp-1 text-center">{translateCategory(localize(product, 'category'))}</div>
-                <Link href={`/product/${product.slug || product.id}`} className="w-full">
+                <Link href={`/product/${product.slug || product.id}`}>
                     <h3 className="font-bold text-sm mb-2 line-clamp-2 min-h-[40px] hover:underline flex flex-col items-center text-center">
                         {locale === 'he' ? (
                             <>
