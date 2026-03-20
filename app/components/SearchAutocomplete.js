@@ -5,6 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
 import { useLanguage } from '../context/LanguageContext';
+import { cleanProductName } from '../lib/productUtils';
 
 export default function SearchAutocomplete({ fullWidth = false, onSelect }) {
     const { t, locale, dir: contextDir } = useLanguage();
@@ -131,7 +132,7 @@ export default function SearchAutocomplete({ fullWidth = false, onSelect }) {
                                 </div>
                                 <div className="flex-1 min-w-0">
                                     <div className="text-sm font-bold text-gray-900 truncate group-hover/item:text-blue-600 transition">
-                                        {product.name}
+                                        {cleanProductName(product.name, product.brand)}
                                     </div>
                                     <div className="text-xs text-gray-500 truncate">{product.brand}</div>
                                 </div>
