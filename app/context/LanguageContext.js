@@ -1,6 +1,7 @@
 "use client";
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 
 import he from '../data/locales/he.json';
 import en from '../data/locales/en.json';
@@ -12,6 +13,8 @@ const dictionaries = { he, en };
 export function LanguageProvider({ children, initialLocale = 'he' }) {
     const [locale, setLocale] = useState(initialLocale);
     
+    const router = useRouter();
+    
     const dir = locale === 'he' ? 'rtl' : 'ltr';
 
     useEffect(() => {
@@ -22,7 +25,10 @@ export function LanguageProvider({ children, initialLocale = 'he' }) {
     }, [locale, dir]);
 
     const toggleLanguage = () => {
-        setLocale(prev => prev === 'he' ? 'en' : 'he');
+        const newLocale = locale === 'he' ? 'en' : 'he';
+        setLocale(newLocale);
+        // Next.js refresh to update server components that rely on cookies
+        router.refresh();
     };
 
     const t = (keyPath) => {

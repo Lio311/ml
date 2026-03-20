@@ -10,7 +10,7 @@ export default function ProductActionsClient({ product }) {
     const { addToCart, cartItems } = useCart();
     const [addedId, setAddedId] = useState(null);
     const { isSignedIn } = useUser();
-    const { t, dir } = useLanguage();
+    const { t, dir, localize } = useLanguage();
 
     // Track View History
     useEffect(() => {

@@ -1,8 +1,10 @@
 "use client";
 
 import { useState, useEffect } from 'react';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function LiveVisitorCounter() {
+    const { t } = useLanguage();
     const [count, setCount] = useState(null);
 
     useEffect(() => {
@@ -47,7 +49,7 @@ export default function LiveVisitorCounter() {
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
             </span>
             <span className="text-[10px] mobile:text-[10px] font-bold text-gray-900 tabular-nums tracking-wide">
-                {count} צופים כרגע
+                {t('common.viewers_count').replace('{count}', count)}
             </span>
         </div>
     );

@@ -3,11 +3,12 @@
 import Link from 'next/link';
 import { SignedIn } from '@clerk/nextjs';
 import { useLanguage } from '../../context/LanguageContext';
+import LanguageSwitcher from './LanguageSwitcher';
 
 export default function DesktopIcons({ cartCount, wishlistCount }) {
     const { t } = useLanguage();
     return (
-        <div className="flex items-center justify-end gap-6">
+        <div className="flex items-center justify-end gap-5">
             {/* Orders & Catalogs (Gated by SignedIn as per original) */}
             <SignedIn>
                 <Link href="/my-catalogs" className="relative group text-black" title={t('common.manage_catalogs')}>

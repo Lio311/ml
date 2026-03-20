@@ -163,6 +163,23 @@
         "buy_over_1000": "Order over ₪1000",
         "samples_6_gift": "6 Gift Samples",
         "bonuses_disclaimer": "*Samples are chosen by our team based on stock and your taste unless otherwise noted.",
-        "start_shopping_btn": "Got it, let's start"
+        "start_shopping_btn": "Got it, let's start",
+        "viewers_count": "{count} viewers right now",
+        "products_on_site": "Fragrances on Site",
+        "samples_sold": "Samples Sold",
+        "instagram_popup_title": "Let's talk on Instagram!",
+        "instagram_popup_desc": "Need advice or a quick answer? We are available for you at ml_tlv for any question, all week long.",
+        "instagram_popup_btn": "Go to Personal Advice",
+        "lucky_wheel_title": "Secret Lucky Wheel",
+        "lucky_wheel_desc": "Great job! Your cart is over ₪1,200. Spin the wheel and win a prize!",
+        "lucky_wheel_win": "You won: {prize}!",
+        "spin_wheel": "Spin the Wheel",
+        "discount_5": "5% Discount",
+        "niche_perfume_gift": "Niche Perfume Gift",
+        "sample_2ml_gift": "2ml Sample Gift",
+        "discount_25": "25% Discount",
+        "discovery_set": "Discovery Set Gift",
+        "discount_10": "10% Discount",
+        "sample_10ml_gift": "10ml Sample Gift"
     }
 }

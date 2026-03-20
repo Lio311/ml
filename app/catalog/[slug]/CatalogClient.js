@@ -6,11 +6,13 @@ import Image from "next/image";
 import toast from "react-hot-toast";
 import { useCart } from "../../context/CartContext";
 import CustomDropdown from "../../components/ui/CustomDropdown";
+import { useLanguage } from "../../context/LanguageContext";
 
 const ITEMS_PER_PAGE = 16;
 
 // ─── Collapsible Section (same as FilterSidebar) ─────────────────────
 function CollapsibleSection({ title, children }) {
+    const { dir } = useLanguage();
     const [isOpen, setIsOpen] = useState(true);
     useEffect(() => { if (window.innerWidth < 768) setIsOpen(false); }, []);
     return (
@@ -18,7 +20,8 @@ function CollapsibleSection({ title, children }) {
             <button
                 type="button"
                 onClick={() => setIsOpen(!isOpen)}
-                className="w-full flex justify-between items-center p-4 font-bold bg-gray-50 hover:bg-gray-100 transition text-right"
+                className={`w-full flex justify-between items-center p-4 font-bold bg-gray-50 hover:bg-gray-100 transition ${dir === 'rtl' ? 'text-right' : 'text-left'}`}
+                dir={dir}
             >
                 <span>{title}</span>
                 <span className={`transform transition ${isOpen ? 'rotate-180' : ''}`}>▼</span>
@@ -35,6 +38,7 @@ function CollapsibleSection({ title, children }) {
 // ─── Catalog Product Card (IDENTICAL to main site ProductCard.js) ─────
 function CatalogProductCard({ item, slug, catalogId, catalogName }) {
     const { addToCart } = useCart();
+    const { t, dir, localize } = useLanguage();
     const [added, setAdded] = useState(false);
 
     useEffect(() => {
@@ -48,7 +52,7 @@ function CatalogProductCard({ item, slug, catalogId, catalogName }) {
     const handleAdd = (size, price) => {
         const stockMl = Number(item.stock_ml) || 0;
         if (stockMl <= 0) {
-            toast.error("המוצר אזל מהמלאי!");
+            toast.error(t('common.out_of_stock_toast'));
             return;
         }
 
@@ -59,7 +63,7 @@ function CatalogProductCard({ item, slug, catalogId, catalogName }) {
             slug,
             catalogName
         );
-        toast.success(`נוסף לסל: ${item.fragrance_name} (${size} מ"ל)`);
+        toast.success(t('common.added_to_cart_toast').replace('{name}', item.fragrance_name).replace('{size}', size));
         setAdded(true);
     };
 
@@ -92,7 +96,7 @@ function CatalogProductCard({ item, slug, catalogId, catalogName }) {
                 )}
             </Link>
 
-            <div className="p-4 flex-1 flex flex-col">
+            <div className={`p-4 flex-1 flex flex-col ${dir === 'rtl' ? 'text-right' : 'text-left'}`} dir={dir}>
                 <div className="text-xs text-gray-500 mb-1 line-clamp-1">{(item.category || '').split(',')[0]}</div>
                 <Link href={`/catalog/${slug}/product/${item.id}`}>
                     <h3 className="font-bold text-sm mb-2 line-clamp-2 min-h-[40px] hover:underline">
@@ -104,19 +108,19 @@ function CatalogProductCard({ item, slug, catalogId, catalogName }) {
                 <div className="mt-auto space-y-2">
                     {sizeEntries.length > 0 ? sizeEntries.map(([size, price]) => (
                         <div key={size} className="flex items-center justify-between text-xs text-gray-600">
-                            <span>{size.replace(/ml/gi, '').trim()} מ״ל</span>
+                            <span>{size.replace(/ml/gi, '').trim()} {t('common.ml_unit')}</span>
                             <div className="flex items-center gap-2">
                                 <span className="font-bold">{price} ₪</span>
                                 <button
                                     onClick={(e) => { e.preventDefault(); handleAdd(size, price); }}
                                     className="bg-gray-100 hover:bg-black hover:text-white w-6 h-6 rounded flex items-center justify-center transition"
-                                    title="הוסף לסל"
+                                    title={t('common.add_to_cart')}
                                 >+</button>
                             </div>
                         </div>
                     )) : (
                         <div className="flex items-center justify-between text-xs text-gray-600">
-                            <span>1 מ״ל</span>
+                            <span>1 {t('common.ml_unit')}</span>
                             <div className="flex items-center gap-2">
                                 <span className="font-bold">{item.price || 0} ₪</span>
                                 <button
@@ -128,7 +132,7 @@ function CatalogProductCard({ item, slug, catalogId, catalogName }) {
                     )}
 
                     <Link href={`/catalog/${slug}/product/${item.id}`} className={`block w-full text-center text-xs py-2 mt-3 rounded transition ${added ? 'bg-green-600 text-white' : 'bg-black text-white hover:bg-gray-800'}`}>
-                        {added ? 'נוסף לסל!' : 'פרטים נוספים'}
+                        {added ? t('common.added_to_cart_btn') : t('common.more_details')}
                     </Link>
                 </div>
             </div>
@@ -139,6 +143,7 @@ function CatalogProductCard({ item, slug, catalogId, catalogName }) {
 // ─── Main Component ───────────────────────────────────────────────────
 export default function CatalogClient({ slug }) {
     const { setActiveVendorId } = useCart();
+    const { t, dir } = useLanguage();
     const [catalog, setCatalog] = useState(null);
     const [items, setItems] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
@@ -165,7 +170,7 @@ export default function CatalogClient({ slug }) {
                     setError("הקטלוג לא נמצא או שאינו זמין.");
                 }
             } catch (err) {
-                setError("שגיאת תקשורת.");
+                setError(t('common.product_not_found'));
             } finally {
                 setIsLoading(false);
             }
@@ -242,14 +247,14 @@ export default function CatalogClient({ slug }) {
         setArr(arr.includes(val) ? arr.filter(v => v !== val) : [...arr, val]);
     };
 
-    if (isLoading) return <div className="text-center py-20 text-xl animate-pulse">טוען קטלוג...</div>;
+    if (isLoading) return <div className="text-center py-20 text-xl animate-pulse">{t('common.loading_brands')}</div>;
 
     if (error || !catalog) {
         return (
             <div className="text-center py-20">
-                <h1 className="text-2xl font-bold text-red-500 mb-4">אופס!</h1>
-                <p className="text-gray-600">{error || "משהו השתבש."}</p>
-                <Link href="/" className="mt-8 inline-block px-6 py-2 bg-black text-white rounded hover:bg-gray-800 transition">חזרה לעמוד הבית</Link>
+                <h1 className="text-2xl font-bold text-red-500 mb-4">Oops!</h1>
+                <p className="text-gray-600">{error || "Something went wrong."}</p>
+                <Link href="/" className="mt-8 inline-block px-6 py-2 bg-black text-white rounded hover:bg-gray-800 transition">{t('common.home')}</Link>
             </div>
         );
     }
@@ -273,17 +278,18 @@ export default function CatalogClient({ slug }) {
                 <aside className="w-full md:w-64 space-y-4 flex-shrink-0">
 
                     {/* Search */}
-                    <div className="bg-gray-50 p-4 rounded-lg border">
-                        <h3 className="font-bold mb-3 border-b pb-2">חיפוש</h3>
+                    <div className={`bg-gray-50 p-4 rounded-lg border ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
+                        <h3 className="font-bold mb-3 border-b pb-2">{t('common.search_filter')}</h3>
                         <form onSubmit={e => { e.preventDefault(); setSearch(searchInput); setCurrentPage(1); }} className="relative">
                             <input
                                 type="text"
                                 value={searchInput}
                                 onChange={e => setSearchInput(e.target.value)}
-                                placeholder="חפש בושם..."
-                                className="w-full p-2 pl-10 border rounded text-sm bg-white"
+                                placeholder={t('common.search_perfume_placeholder')}
+                                className="w-full p-2 ps-10 border rounded text-sm bg-white"
+                                dir={dir}
                             />
-                            <button type="submit" className="absolute left-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-black transition">
+                            <button type="submit" className={`absolute top-1/2 -translate-y-1/2 text-gray-400 hover:text-black transition ${dir === 'rtl' ? 'left-2' : 'right-2'}`}>
                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
                                     <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
                                 </svg>
@@ -293,8 +299,8 @@ export default function CatalogClient({ slug }) {
 
                     {/* Category Filter */}
                     {allCategories.length > 0 && (
-                        <CollapsibleSection title={`קטגוריות (${allCategories.length})`}>
-                            <div className="space-y-2 text-sm max-h-[200px] overflow-y-auto pl-1">
+                        <CollapsibleSection title={`${t('common.category_filter')} (${allCategories.length})`}>
+                            <div className={`space-y-2 text-sm max-h-[200px] overflow-y-auto ps-1 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
                                 {allCategories.map(cat => (
                                     <label key={cat} className="flex items-center gap-2 cursor-pointer hover:bg-gray-100 p-1 rounded">
                                         <input
@@ -312,8 +318,8 @@ export default function CatalogClient({ slug }) {
 
                     {/* Gender Filter */}
                     {allGenders.length > 0 && (
-                        <CollapsibleSection title="מגדר">
-                            <div className="space-y-2 text-sm">
+                        <CollapsibleSection title={t('common.gender_filter')}>
+                            <div className={`space-y-2 text-sm ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
                                 {allGenders.map(g => (
                                     <label key={g} className="flex items-center gap-2 cursor-pointer hover:bg-gray-100 p-1 rounded">
                                         <input
@@ -333,26 +339,26 @@ export default function CatalogClient({ slug }) {
                 {/* ── Product Grid ── */}
                 <div className="flex-1 min-w-0">
                     {/* Top bar: count + sort */}
-                    <div className="mb-4 text-sm text-gray-500 flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
+                    <div className={`mb-4 text-sm text-gray-500 flex flex-col md:flex-row justify-between items-start md:items-center gap-3 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
                         <div>
-                            <span>מציג {pagedItems.length} מוצרים (עמוד {currentPage} מתוך {Math.max(1, totalPages)})</span>
+                            <span>{t('common.showing_products').replace('{count}', pagedItems.length).replace('{page}', currentPage).replace('{total}', Math.max(1, totalPages))}</span>
                             {/* Active filter pills */}
                             <div className="flex gap-1.5 flex-wrap mt-1">
                                 {selectedCategories.map(c => (
-                                    <span key={c} onClick={() => toggleFilter(selectedCategories, setSelectedCategories, c)} className="bg-black text-white text-xs px-2 py-0.5 rounded cursor-pointer hover:bg-gray-700">קטגוריה: {c} ✕</span>
+                                    <span key={c} onClick={() => toggleFilter(selectedCategories, setSelectedCategories, c)} className="bg-black text-white text-xs px-2 py-0.5 rounded cursor-pointer hover:bg-gray-700">{t('common.category_filter')}: {c} ✕</span>
                                 ))}
                                 {selectedGenders.map(g => (
-                                    <span key={g} onClick={() => toggleFilter(selectedGenders, setSelectedGenders, g)} className="bg-black text-white text-xs px-2 py-0.5 rounded cursor-pointer hover:bg-gray-700">מגדר: {g} ✕</span>
+                                    <span key={g} onClick={() => toggleFilter(selectedGenders, setSelectedGenders, g)} className="bg-black text-white text-xs px-2 py-0.5 rounded cursor-pointer hover:bg-gray-700">{t('common.gender_filter')}: {g} ✕</span>
                                 ))}
-                                {search && <span onClick={() => { setSearch(''); setSearchInput(''); }} className="bg-black text-white text-xs px-2 py-0.5 rounded cursor-pointer hover:bg-gray-700">חיפוש: {search} ✕</span>}
+                                {search && <span onClick={() => { setSearch(''); setSearchInput(''); }} className="bg-black text-white text-xs px-2 py-0.5 rounded cursor-pointer hover:bg-gray-700">{t('common.search_filter')}: {search} ✕</span>}
                             </div>
                         </div>
                         <CustomDropdown
                             options={[
-                                { value: 'newest', label: 'מין לפי: חדש ביותר' },
-                                { value: 'price_asc', label: 'מחיר: נמוך לגבוה' },
-                                { value: 'price_desc', label: 'מחיר: גבוה לנמוך' },
-                                { value: 'name_az', label: 'שם מותג: א-ת' },
+                                { value: 'newest', label: t('common.sort_newest') },
+                                { value: 'price_asc', label: t('common.sort_price_asc') },
+                                { value: 'price_desc', label: t('common.sort_price_desc') },
+                                { value: 'name_az', label: t('common.sort_by') + ': A-Z' },
                             ]}
                             value={sortBy}
                             onChange={(v) => { setSortBy(v); setCurrentPage(1); }}
@@ -363,8 +369,8 @@ export default function CatalogClient({ slug }) {
                     {/* Grid */}
                     {pagedItems.length === 0 ? (
                         <div className="text-center py-20 bg-gray-50 rounded-lg">
-                            <p className="text-xl text-gray-500">לא נמצאו מוצרים תואמים.</p>
-                            <button onClick={() => { setSearch(''); setSearchInput(''); setSelectedCategories([]); setSelectedGenders([]); setCurrentPage(1); }} className="text-blue-600 mt-2 underline text-sm">נקה סינון</button>
+                            <p className="text-xl text-gray-500">{t('common.no_products_found')}</p>
+                            <button onClick={() => { setSearch(''); setSearchInput(''); setSelectedCategories([]); setSelectedGenders([]); setCurrentPage(1); }} className="text-blue-600 mt-2 underline text-sm">{t('common.clear_all')}</button>
                         </div>
                     ) : (
                         <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
@@ -382,9 +388,9 @@ export default function CatalogClient({ slug }) {
 
                     {/* Pagination */}
                     {totalPages > 1 && (
-                        <div className="mt-12 flex justify-center gap-2 flex-wrap" dir="rtl">
+                        <div className="mt-12 flex justify-center gap-2 flex-wrap" dir={dir}>
                             {currentPage > 1 && (
-                                <button onClick={() => { setCurrentPage(p => p - 1); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="px-4 py-2 border rounded hover:bg-gray-100 transition text-sm font-bold">הקודם</button>
+                                <button onClick={() => { setCurrentPage(p => p - 1); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="px-4 py-2 border rounded hover:bg-gray-100 transition text-sm font-bold">{t('common.previous')}</button>
                             )}
                             {(() => {
                                 let start = Math.max(1, currentPage - 1);
@@ -404,7 +410,7 @@ export default function CatalogClient({ slug }) {
                                 ));
                             })()}
                             {currentPage < totalPages && (
-                                <button onClick={() => { setCurrentPage(p => p + 1); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="px-4 py-2 border rounded hover:bg-gray-100 transition text-sm font-bold">הבא</button>
+                                <button onClick={() => { setCurrentPage(p => p + 1); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="px-4 py-2 border rounded hover:bg-gray-100 transition text-sm font-bold">{t('common.next')}</button>
                             )}
                         </div>
                     )}

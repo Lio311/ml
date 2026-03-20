@@ -282,6 +282,7 @@ export default function FilterSidebar({ allBrands, allCategories, allCountries, 
 }
 
 function CollapsibleSection({ title, children, initialOpen = false }) {
+    const { dir } = useLanguage();
     const [isOpen, setIsOpen] = useState(initialOpen);
 
     useEffect(() => {

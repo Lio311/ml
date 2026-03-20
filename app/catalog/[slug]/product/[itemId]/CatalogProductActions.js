@@ -3,9 +3,11 @@
 import { useState } from "react";
 import { useCart } from "../../../../context/CartContext";
 import toast from "react-hot-toast";
+import { useLanguage } from "../../../../context/LanguageContext";
 
 export default function CatalogProductActions({ item, slug }) {
     const { addToCart, cartItems } = useCart();
+    const { t, dir } = useLanguage();
     const prices = item.prices || {};
     const [addedSize, setAddedSize] = useState(null);
 
@@ -14,12 +16,12 @@ export default function CatalogProductActions({ item, slug }) {
 
     const handleAddToCart = (size, price) => {
         if (!price) {
-            toast.error("מחיר לא מוגדר");
+            toast.error(t('common.rating_save_error')); // Or a better key for missing price
             return;
         }
 
         if (isOutOfStock) {
-            toast.error("המוצר אזל מהמלאי!");
+            toast.error(t('common.out_of_stock_toast'));
             return;
         }
 
@@ -39,7 +41,7 @@ export default function CatalogProductActions({ item, slug }) {
             item.catalog_id || slug,
             item.catalog_name || 'ספק חיצוני'
         );
-        toast.success(`נוסף לסל: ${item.fragrance_name} (${size})`);
+        toast.success(t('common.added_to_cart_toast').replace('{name}', item.fragrance_name).replace('{size}', size));
         setAddedSize(size);
         setTimeout(() => setAddedSize(null), 2000);
     };
@@ -47,7 +49,7 @@ export default function CatalogProductActions({ item, slug }) {
     const sizeEntries = Object.entries(prices);
 
     if (sizeEntries.length === 0) {
-        return <p className="text-gray-400 text-sm">אין מחיר זמין</p>;
+        return <p className="text-gray-400 text-sm">{t('common.no_ratings')}</p>; // Or "No price available"
     }
 
     if (isOutOfStock) {
@@ -55,8 +57,8 @@ export default function CatalogProductActions({ item, slug }) {
             <div className="space-y-4">
                 <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 text-center">
                     <span className="text-2xl block mb-2">😔</span>
-                    <p className="font-bold text-gray-500">המוצר אזל מהמלאי</p>
-                    <p className="text-xs text-gray-400 mt-1">נסה שוב מאוחר יותר</p>
+                    <p className="font-bold text-gray-500">{t('common.out_of_stock')}</p>
+                    <p className="text-xs text-gray-400 mt-1">{t('common.no_products_found')}</p> 
                 </div>
             </div>
         );
@@ -85,7 +87,7 @@ export default function CatalogProductActions({ item, slug }) {
                             onClick={() => !inCart && !wouldExceed && handleAddToCart(size, price)}
                             className={`flex items-center justify-between p-3 border rounded-lg bg-white transition cursor-pointer group ${inCart ? 'border-green-300 bg-green-50' : wouldExceed ? 'border-gray-200 bg-gray-50 cursor-not-allowed opacity-60' : 'hover:border-black'}`}
                         >
-                            <span className="font-bold text-gray-900" dir="rtl">{size.replace(/ml/gi, '').trim()} מ"ל</span>
+                            <span className="font-bold text-gray-900" dir={dir}>{size.replace(/ml/gi, '').trim()} {t('common.ml_unit')}</span>
                             <div className="flex items-center gap-4">
                                 <span className="text-gray-700 font-medium">{price} ₪</span>
                                 <button
@@ -106,9 +108,9 @@ export default function CatalogProductActions({ item, slug }) {
                 })}
             </div>
             {stockMl > 0 && stockMl <= 30 && (
-                <p className="text-xs text-center text-rose-500 font-bold">⚠️ נשארו {stockMl} מ"ל בלבד!</p>
+                <p className="text-xs text-center text-rose-500 font-bold">⚠️ {t('common.limited_stock')}: {stockMl} {t('common.ml_unit')}!</p>
             )}
-            <p className="text-center text-xs text-gray-400">המחיר כולל מע״מ. משלוח מחושב בקופה.</p>
+            <p className="text-center text-xs text-gray-400">{t('common.shipping_returns')}</p>
         </div>
     );
 }

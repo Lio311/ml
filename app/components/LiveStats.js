@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useLanguage } from "../context/LanguageContext";
 
 function Counter({ end, duration = 2000, prefix = "" }) {
     const [count, setCount] = useState(0);
@@ -32,6 +33,7 @@ function Counter({ end, duration = 2000, prefix = "" }) {
 }
 
 export default function LiveStats({ stats }) {
+    const { t } = useLanguage();
     return (
         <section className="bg-black text-white py-4 border-t border-gray-800 relative z-20">
             <div className="container mx-auto px-4">
@@ -41,7 +43,7 @@ export default function LiveStats({ stats }) {
                             <Counter end={stats.brands} />
                         </span>
                         <span className="text-xs md:text-sm uppercase tracking-widest text-gray-400 mt-1">
-                            מותגים
+                            {t('common.brands')}
                         </span>
                     </div>
                     <div className="flex flex-col items-center">
@@ -49,7 +51,7 @@ export default function LiveStats({ stats }) {
                             <Counter end={stats.products} />
                         </span>
                         <span className="text-xs md:text-sm uppercase tracking-widest text-gray-400 mt-1">
-                            בשמים באתר
+                            {t('common.products_on_site') || t('common.full_catalog')}
                         </span>
                     </div>
                     <div className="flex flex-col items-center">
@@ -57,7 +59,7 @@ export default function LiveStats({ stats }) {
                             <Counter end={stats.samples} prefix="+" />
                         </span>
                         <span className="text-xs md:text-sm uppercase tracking-widest text-gray-400 mt-1">
-                            דוגמיות שנמכרו
+                            {t('common.samples_sold')}
                         </span>
                     </div>
                 </div>

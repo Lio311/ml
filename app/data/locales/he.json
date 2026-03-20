@@ -151,6 +151,23 @@
         "buy_over_1000": "בקנייה מעל ₪1000",
         "samples_6_gift": "6 דוגמיות מתנה",
         "bonuses_disclaimer": "* הדוגמיות נבחרות על ידי הצוות שלנו בהתאם למלאי ולטעם שלכם במידה ולא צוין אחרת.",
-        "start_shopping_btn": "קניתי אותי, בוא נתחיל"
+        "start_shopping_btn": "קניתי אותי, בוא נתחיל",
+        "viewers_count": "{count} צופים כרגע",
+        "products_on_site": "בשמים באתר",
+        "samples_sold": "דוגמיות שנמכרו",
+        "instagram_popup_title": "בואו נדבר באינסטגרם!",
+        "instagram_popup_desc": "זקוקים לייעוץ או מענה מהיר? אנחנו זמינים עבורכם ב-ml_tlv לכל שאלה, בכל ימות השבוע.",
+        "instagram_popup_btn": "למעבר לייעוץ אישי",
+        "lucky_wheel_title": "גלגל המזל הסודי",
+        "lucky_wheel_desc": "כל הכבוד! העגלה שלך שווה מעל 1,200 ₪. סובבו את הגלגל וזכו בפרס שווה!",
+        "lucky_wheel_win": "זכית ב: {prize}!",
+        "spin_wheel": "סובב/י את הגלגל",
+        "discount_5": "5% הנחה",
+        "niche_perfume_gift": "בושם נישה מתנה",
+        "sample_2ml_gift": "דוגמית 2 מ\"ל מתנה",
+        "discount_25": "25% הנחה",
+        "discovery_set": "דיסקברי סט מתנה",
+        "discount_10": "10% הנחה",
+        "sample_10ml_gift": "דוגמית 10 מ\"ל מתנה"
     }
 }

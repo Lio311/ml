@@ -8,6 +8,7 @@ import SearchAutocomplete from '../SearchAutocomplete';
 import { Settings, MessageSquare, Star } from 'lucide-react';
 import AdminInboxCounter from './AdminInboxCounter';
 import { useLanguage } from '../../context/LanguageContext';
+import LanguageSwitcher from './LanguageSwitcher';
 
 export default function MobileNav({ menu = [], cartCount, wishlistCount, isAdmin }) {
     const { t, locale, dir } = useLanguage();
@@ -120,6 +121,10 @@ export default function MobileNav({ menu = [], cartCount, wishlistCount, isAdmin
                             <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
                         </svg>
                     </button>
+
+                    <div className="flex justify-end pt-4 pe-2">
+                        <LanguageSwitcher variant="mobile" />
+                    </div>
                     
                     <div className="flex flex-col gap-6 text-xl font-bold text-center pb-10">
                         <div className="flex justify-center items-center gap-4 py-4">

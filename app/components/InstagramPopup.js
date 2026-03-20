@@ -4,8 +4,10 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Instagram, MessageCircle } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function InstagramPopup() {
+    const { t, dir } = useLanguage();
     const [isOpen, setIsOpen] = useState(false);
 
     useEffect(() => {
@@ -76,15 +78,11 @@ export default function InstagramPopup() {
                             </div>
 
                             <h2 className="text-2xl font-bold mb-3 bg-gradient-to-tr from-[#dc2743] to-[#bc1888] bg-clip-text text-transparent">
-                                בואו נדבר באינסטגרם!
+                                {t('common.instagram_popup_title') || "Let's talk on Instagram!"}
                             </h2>
                             
                             <p className="text-gray-600 dark:text-zinc-400 mb-8 text-lg leading-relaxed">
-                                זקוקים לייעוץ או מענה מהיר? 
-                                <br />
-                                אנחנו זמינים עבורכם ב-
-                                <span className="font-bold text-zinc-800 dark:text-zinc-200"> ml_tlv </span>
-                                לכל שאלה, בכל ימות השבוע.
+                                {t('common.instagram_popup_desc') || "Need advice or a quick answer? We are available for you at ml_tlv for any question, all week long."}
                             </p>
 
                             <button
@@ -92,14 +90,14 @@ export default function InstagramPopup() {
                                 className="w-full py-4 px-6 rounded-2xl bg-gradient-to-tr from-[#f09433] via-[#e6683c] via-[#dc2743] via-[#cc2366] to-[#bc1888] text-white font-bold text-lg shadow-xl hover:shadow-2xl hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3 group"
                             >
                                 <MessageCircle className="w-6 h-6 group-hover:animate-pulse" />
-                                <span>למעבר לייעוץ אישי</span>
+                                <span>{t('common.instagram_popup_btn') || "Go to personal advice"}</span>
                             </button>
 
                             <button
                                 onClick={handleClose}
                                 className="mt-4 text-sm text-gray-400 hover:text-gray-600 dark:hover:text-zinc-200 transition-colors"
                             >
-                                סגירה
+                                {t('common.close_menu')}
                             </button>
                         </div>
 

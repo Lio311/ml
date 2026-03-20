@@ -27,12 +27,6 @@ export default function Header({ brands = [], menu = [] }) {
             <div className="hidden md:flex justify-between items-center bg-black text-white text-[10px] md:text-xs py-1 px-4 tracking-widest uppercase">
                 <div className="flex-1 flex justify-start gap-4 items-center">
                     <LiveVisitorCounter />
-                    <button 
-                        onClick={toggleLanguage}
-                        className="hover:text-yellow-400 transition-colors font-bold uppercase"
-                    >
-                        {locale === 'he' ? 'English' : 'עברית'}
-                    </button>
                 </div>
                 <div className="text-center font-bold">{t('common.free_shipping_strip')}</div>
                 <div className="flex-1"></div>
@@ -51,24 +45,30 @@ export default function Header({ brands = [], menu = [] }) {
                 </div>
 
                 {/* Desktop Header (Visible on Desktop Only) */}
-                <div className="hidden md:grid grid-cols-3 items-center w-full">
-                    
-                    {/* Desktop RIGHT Group (RTL Start): Search + User Profile */}
-                    <div className="flex items-center justify-start gap-4">
-                        <UserActions />
+                <div className="hidden md:flex flex-col w-full">
+                    {/* Top Row for Language Switcher - Positioned Above Icons */}
+                    <div className="flex justify-end pb-2">
+                        <LanguageSwitcher variant="header" />
                     </div>
 
-                    {/* Desktop CENTER Group: Logo + Navigation Links */}
-                    <div className="flex flex-col items-center justify-center gap-2">
-                        <Link href="/" className="block">
-                            <Image src="/logo_v5.png" alt="ml." width={180} height={70} className="h-16 w-auto object-contain" priority />
-                        </Link>
-                        <DesktopNav menu={menu} brands={brands} />
-                    </div>
+                    <div className="grid grid-cols-3 items-center w-full mt-1">
+                        {/* Desktop RIGHT Group (RTL Start): Search + User Profile */}
+                        <div className="flex items-center justify-start gap-4">
+                            <UserActions />
+                        </div>
 
-                    {/* Desktop LEFT Group (RTL End): Orders + Wishlist + Cart */}
-                    <div className="flex items-center justify-end gap-6">
-                        <DesktopIcons cartCount={cartCount} wishlistCount={wishlistCount} />
+                        {/* Desktop CENTER Group: Logo + Navigation Links */}
+                        <div className="flex flex-col items-center justify-center gap-2">
+                            <Link href="/" className="block">
+                                <Image src="/logo_v5.png" alt="ml." width={180} height={70} className="h-16 w-auto object-contain" priority />
+                            </Link>
+                            <DesktopNav menu={menu} brands={brands} />
+                        </div>
+
+                        {/* Desktop LEFT Group (RTL End): Orders + Wishlist + Cart */}
+                        <div className="flex items-center justify-end gap-6">
+                            <DesktopIcons cartCount={cartCount} wishlistCount={wishlistCount} />
+                        </div>
                     </div>
                 </div>
             </div>

@@ -2,8 +2,10 @@
 
 import { useState } from 'react';
 import confetti from 'canvas-confetti';
+import { useLanguage } from '../context/LanguageContext';
 
 const LuckyWheel = ({ onWin, onClose }) => {
+    const { t } = useLanguage();
     const [spinning, setSpinning] = useState(false);
     const [rotation, setRotation] = useState(0);
     const [winnerIndex, setWinnerIndex] = useState(null);
@@ -12,13 +14,13 @@ const LuckyWheel = ({ onWin, onClose }) => {
     // isWinning: Determines if this prize can actually be won.
     // weight: Higher number = higher chance to win.
     const prizes = [
-        { label: '5% הנחה', color: '#FFB6C1', type: 'discount', value: 0.05, isWinning: true, weight: 40 },
-        { label: 'בושם נישה מתנה', color: '#FF69B4', type: 'item', size: 'bottle', name: 'בושם נישה מתנה', price: 0, isWinning: false, weight: 0 },
-        { label: 'דוגמית 2 מ"ל', color: '#87CEFA', type: 'item', size: 2, name: 'דוגמית 2 מ"ל', price: 0, isWinning: true, image_url: 'https://www.dulcie.world/cdn/shop/files/DREAMLANDSAMPLESQUARE.png?v=1751633413&width=2366', weight: 40 },
-        { label: '25% הנחה', color: '#FF6347', type: 'discount', value: 0.25, isWinning: false, weight: 0 },
-        { label: 'דיסקברי סט', color: '#FFD700', type: 'item', size: 'set', name: 'דיסקברי סט', price: 0, isWinning: true, image_url: 'https://www.francescadelloro.it/images/galleries/original/Icon-yul2umy6sshp7qbpeh2t25.jpg', weight: 5 },
-        { label: '10% הנחה', color: '#90EE90', type: 'discount', value: 0.10, isWinning: false, weight: 0 },
-        { label: 'דוגמית 10 מ"ל', color: '#FFA07A', type: 'item', size: 10, name: 'דוגמית 10 מ"ל', price: 0, isWinning: true, image_url: 'https://allbottlesusa.com/cdn/shop/products/10mlClearTallBCOpen.jpg?v=1662849592&width=2048', weight: 15 },
+        { label: t('common.discount_5'), color: '#FFB6C1', type: 'discount', value: 0.05, isWinning: true, weight: 40 },
+        { label: t('common.niche_perfume_gift'), color: '#FF69B4', type: 'item', size: 'bottle', name: t('common.niche_perfume_gift'), price: 0, isWinning: false, weight: 0 },
+        { label: t('common.sample_2ml_gift'), color: '#87CEFA', type: 'item', size: 2, name: t('common.sample_2ml_gift'), price: 0, isWinning: true, image_url: 'https://www.dulcie.world/cdn/shop/files/DREAMLANDSAMPLESQUARE.png?v=1751633413&width=2366', weight: 40 },
+        { label: t('common.discount_25'), color: '#FF6347', type: 'discount', value: 0.25, isWinning: false, weight: 0 },
+        { label: t('common.discovery_set'), color: '#FFD700', type: 'item', size: 'set', name: t('common.discovery_set'), price: 0, isWinning: true, image_url: 'https://www.francescadelloro.it/images/galleries/original/Icon-yul2umy6sshp7qbpeh2t25.jpg', weight: 5 },
+        { label: t('common.discount_10'), color: '#90EE90', type: 'discount', value: 0.10, isWinning: false, weight: 0 },
+        { label: t('common.sample_10ml_gift'), color: '#FFA07A', type: 'item', size: 10, name: t('common.sample_10ml_gift'), price: 0, isWinning: true, image_url: 'https://allbottlesusa.com/cdn/shop/products/10mlClearTallBCOpen.jpg?v=1662849592&width=2048', weight: 15 },
     ];
 
     const spinWheel = () => {
@@ -81,8 +83,8 @@ const LuckyWheel = ({ onWin, onClose }) => {
     return (
         <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
             <div className="bg-white rounded-2xl p-8 max-w-md w-full text-center relative shadow-2xl animate-fade-in overflow-hidden">
-                <h2 className="text-3xl font-bold mb-2">גלגל המזל הסודי</h2>
-                <p className="mb-6 text-gray-600">כל הכבוד! העגלה שלך שווה מעל 1,200 ₪.<br />סובבו את הגלגל וזכו בפרס שווה!</p>
+                <h2 className="text-3xl font-bold mb-2">{t('common.lucky_wheel_title') || "Secret Lucky Wheel"}</h2>
+                <p className="mb-6 text-gray-600">{t('common.lucky_wheel_desc') || "Great job! Your cart is over ₪1,200. Spin the wheel and win a prize!"}</p>
 
                 <div className="relative w-72 h-72 mx-auto mb-8">
                     {/* Wheel Container */}
@@ -139,9 +141,9 @@ const LuckyWheel = ({ onWin, onClose }) => {
                 {winnerIndex !== null ? (
                     <div className="animate-pulse">
                         <h3 className="text-2xl font-bold text-green-600 mb-4">
-                            זכית ב: {prizes[winnerIndex].label}! 🎁
+                            {t('common.lucky_wheel_win').replace('{prize}', prizes[winnerIndex].label)} 🎁
                         </h3>
-                        <p className="text-sm text-gray-500 mb-4">מעדכן את העגלה...</p>
+                        <p className="text-sm text-gray-500 mb-4">{t('common.loading_brands')}</p>
                     </div>
                 ) : (
                     <button
@@ -149,7 +151,7 @@ const LuckyWheel = ({ onWin, onClose }) => {
                         disabled={spinning}
                         className="btn btn-primary w-full py-4 text-xl shadow-lg transform hover:scale-105 transition disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                        {spinning ? 'מסובב...' : 'סובב/י את הגלגל'}
+                        {spinning ? t('common.loading_brands') : t('common.spin_wheel')}
                     </button>
                 )}
             </div>
