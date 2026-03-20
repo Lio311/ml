@@ -3,8 +3,11 @@
 import { motion } from "framer-motion";
 import { Sparkles, Gift, Diamond } from "lucide-react";
 import Link from 'next/link';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function BonusesSection() {
+    const { t, dir } = useLanguage();
+
     return (
         <section className="w-full relative flex flex-col justify-center items-center bg-black overflow-hidden perspective-1000 py-10">
             {/* Static Background - High Performance */}
@@ -20,16 +23,16 @@ export default function BonusesSection() {
                     transition={{ duration: 0.8 }}
                     className="shrink-0 mb-6"
                 >
-                    <h2 className="text-3xl md:text-4xl font-bold mb-2 bg-clip-text text-transparent bg-gradient-to-r from-white via-gray-200 to-gray-500 drop-shadow-lg tracking-[0.1em] uppercase">הבונוסים שלנו</h2>
-                    <p className="text-gray-300 text-base mb-2">ככל שסכום ההזמנה גבוה יותר, כך אנחנו מפנקים יותר</p>
+                    <h2 className="text-3xl md:text-4xl font-bold mb-2 bg-clip-text text-transparent bg-gradient-to-r from-white via-gray-200 to-gray-500 drop-shadow-lg tracking-[0.1em] uppercase">{t('common.our_bonuses')}</h2>
+                    <p className="text-gray-300 text-base mb-2">{t('common.bonuses_subtitle')}</p>
                     <div className="w-16 h-0.5 bg-gradient-to-r from-transparent via-white to-transparent mx-auto rounded-full opacity-70"></div>
                 </motion.div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-3 max-w-5xl mx-auto perspective-1000" dir="rtl">
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-3 max-w-5xl mx-auto perspective-1000" dir={dir}>
                     {/* Tier: 300 NIS */}
                     <motion.div
                         whileHover={{ scale: 1.05, rotateY: 5, z: 50 }}
-                        initial={{ opacity: 0, x: 50 }}
+                        initial={{ opacity: 0, x: dir === 'rtl' ? 50 : -50 }}
                         whileInView={{ opacity: 1, x: 0 }}
                         transition={{ type: "spring", stiffness: 100, delay: 0.1 }}
                         className="group relative bg-white/5 border border-white/10 p-5 rounded-xl backdrop-blur-xl shadow-xl hover:bg-white/10 transition-all duration-500 flex flex-col items-center border-t-white/20 border-l-white/20"
@@ -38,9 +41,9 @@ export default function BonusesSection() {
                         <div className="mb-3 text-white/50 group-hover:text-white transition-colors">
                             <Sparkles size={32} strokeWidth={1} />
                         </div>
-                        <h3 className="text-xl font-bold mb-1 text-white">בקנייה מעל 300 ₪</h3>
-                        <p className="text-gray-300 text-base group-hover:text-white transition-colors">2 דוגמיות מתנה</p>
-                        <p className="text-white/60 text-[10px] mt-2 group-hover:text-white/80 transition-colors">*בגודל 2 מ"ל</p>
+                        <h3 className="text-xl font-bold mb-1 text-white">{t('common.buy_over_300')}</h3>
+                        <p className="text-gray-300 text-base group-hover:text-white transition-colors">{t('common.samples_2_gift')}</p>
+                        <p className="text-white/60 text-[10px] mt-2 group-hover:text-white/80 transition-colors">{t('common.size_2ml_note')}</p>
                     </motion.div>
 
                     {/* Tier: 500 NIS - Highlighted */}
@@ -52,21 +55,21 @@ export default function BonusesSection() {
                         className="group relative bg-gradient-to-br from-white/10 to-white/5 border border-white/30 p-6 rounded-xl backdrop-blur-2xl shadow-[0_0_50px_rgba(255,255,255,0.1)] hover:shadow-[0_0_80px_rgba(255,255,255,0.2)] transition-all duration-500 flex flex-col items-center transform scale-105 z-10 border-t-white/40 border-l-white/40"
                     >
                         <div className="absolute -top-3 bg-gradient-to-r from-white via-gray-200 to-white text-black px-4 py-0.5 rounded-full text-xs font-bold tracking-widest shadow-lg uppercase">
-                            מומלץ
+                            {t('common.recommended')}
                         </div>
                         <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
                         <div className="mb-4 text-white/80 group-hover:text-white transition-colors group-hover:scale-110 duration-500">
                             <Gift size={48} strokeWidth={1} />
                         </div>
-                        <h3 className="text-2xl font-bold mb-2 text-white">בקנייה מעל 500 ₪</h3>
-                        <p className="text-gray-200 text-lg font-medium group-hover:text-white transition-colors">4 דוגמיות מתנה</p>
-                        <p className="text-white/60 text-[10px] mt-2 group-hover:text-white/80 transition-colors">*בגודל 2 מ"ל</p>
+                        <h3 className="text-2xl font-bold mb-2 text-white">{t('common.buy_over_500')}</h3>
+                        <p className="text-gray-200 text-lg font-medium group-hover:text-white transition-colors">{t('common.samples_4_gift')}</p>
+                        <p className="text-white/60 text-[10px] mt-2 group-hover:text-white/80 transition-colors">{t('common.size_2ml_note')}</p>
                     </motion.div>
 
                     {/* Tier: 1000 NIS */}
                     <motion.div
                         whileHover={{ scale: 1.05, rotateY: -5, z: 50 }}
-                        initial={{ opacity: 0, x: -50 }}
+                        initial={{ opacity: 0, x: dir === 'rtl' ? -50 : 50 }}
                         whileInView={{ opacity: 1, x: 0 }}
                         transition={{ type: "spring", stiffness: 100, delay: 0.3 }}
                         className="group relative bg-white/5 border border-white/10 p-5 rounded-xl backdrop-blur-xl shadow-xl hover:bg-white/10 transition-all duration-500 flex flex-col items-center border-t-white/20 border-l-white/20"
@@ -75,9 +78,9 @@ export default function BonusesSection() {
                         <div className="mb-3 text-white/50 group-hover:text-white transition-colors">
                             <Diamond size={32} strokeWidth={1} />
                         </div>
-                        <h3 className="text-xl font-bold mb-1 text-white">בקנייה מעל 1000 ₪</h3>
-                        <p className="text-gray-300 text-base group-hover:text-white transition-colors">6 דוגמיות מתנה</p>
-                        <p className="text-white/60 text-[10px] mt-2 group-hover:text-white/80 transition-colors">*בגודל 2 מ"ל</p>
+                        <h3 className="text-xl font-bold mb-1 text-white">{t('common.buy_over_1000')}</h3>
+                        <p className="text-gray-300 text-base group-hover:text-white transition-colors">{t('common.samples_6_gift')}</p>
+                        <p className="text-white/60 text-[10px] mt-2 group-hover:text-white/80 transition-colors">{t('common.size_2ml_note')}</p>
                     </motion.div>
                 </div>
 
@@ -87,12 +90,12 @@ export default function BonusesSection() {
                     transition={{ delay: 0.8, duration: 1 }}
                     className="text-gray-500 text-[10px] mt-8 opacity-50"
                 >
-                    * הדוגמיות נבחרות על ידי הצוות שלנו בהתאם למלאי ולטעם שלכם במידה ולא צוין אחרת.
+                    {t('common.bonuses_disclaimer')}
                 </motion.p>
 
                 <div className="text-center mt-8">
                     <Link href="/catalog" className="btn bg-white text-black hover:bg-gray-200 px-8 py-3 text-lg font-bold rounded-lg transition inline-block">
-                        קניתי אותי, בוא נתחיל
+                        {t('common.start_shopping_btn')}
                     </Link>
                 </div>
             </div>

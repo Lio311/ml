@@ -149,6 +149,18 @@
         "last_updated": "Last Updated",
         "policy_topics": "Policy Topics",
         "privacy_questions": "Do you have more questions?",
-        "privacy_footer_subtitle": "We will be happy to answer any issue regarding privacy and security via email or WhatsApp."
+        "privacy_footer_subtitle": "We will be happy to answer any issue regarding privacy and security via email or WhatsApp.",
+        "our_bonuses": "Our Bonuses",
+        "bonuses_subtitle": "The more you order, the more we pamper you",
+        "buy_over_300": "Order over ₪300",
+        "samples_2_gift": "2 Gift Samples",
+        "size_2ml_note": "*2ml size",
+        "buy_over_500": "Order over ₪500",
+        "samples_4_gift": "4 Gift Samples",
+        "recommended": "Recommended",
+        "buy_over_1000": "Order over ₪1000",
+        "samples_6_gift": "6 Gift Samples",
+        "bonuses_disclaimer": "*Samples are chosen by our team based on stock and your taste unless otherwise noted.",
+        "start_shopping_btn": "Got it, let's start"
     }
 }
