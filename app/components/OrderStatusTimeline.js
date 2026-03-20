@@ -30,7 +30,7 @@ export default function OrderStatusTimeline({ status }) {
     const progressPercentage = activeIndex === -1 ? 0 : (activeIndex / (statusSteps.length - 1)) * 100;
 
     return (
-        <div className="w-full py-8 px-10 mb-8">
+        <div className="w-full py-4 px-10 mb-2">
             <div className="relative">
                 {/* Line Container (Centered on circles) */}
                 <div className="absolute top-6 right-16 left-16 -translate-y-1/2 h-1">
@@ -77,7 +77,7 @@ export default function OrderStatusTimeline({ status }) {
                                     <Icon className={cn("w-6 h-6", isActive && "animate-pulse")} />
                                 </motion.div>
                                 
-                                <div className="mt-4 flex flex-col items-center text-center">
+                                <div className="mt-4 flex flex-col items-center text-center min-h-[65px]">
                                     <span className={cn(
                                         "text-sm font-bold transition-colors duration-300",
                                         isActive ? "text-black dark:text-white" : "text-gray-400 dark:text-zinc-500"
@@ -88,7 +88,7 @@ export default function OrderStatusTimeline({ status }) {
                                         <motion.span 
                                             initial={{ opacity: 0, y: 5 }}
                                             animate={{ opacity: 1, y: 0 }}
-                                            className="text-[10px] text-gray-500 dark:text-zinc-400 mt-1 absolute -bottom-6 left-1/2 -translate-x-1/2 w-max text-center"
+                                            className="text-[10px] text-gray-500 dark:text-zinc-400 mt-1 max-w-[120px] leading-tight whitespace-normal text-center"
                                         >
                                             {step.description}
                                         </motion.span>

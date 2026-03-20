@@ -87,10 +87,10 @@ export default function OrdersClient() {
                     <Link href="/catalog" className="text-blue-600 underline">{t('orders.start_shopping')}</Link>
                 </div>
             ) : (
-                <div className="space-y-6">
+                <div className="space-y-4">
                     {orders.map((order) => (
                         <div key={order.id} className="border rounded-lg p-6 bg-white shadow-sm">
-                            <div className="flex justify-between items-start mb-4 border-b pb-4">
+                            <div className="flex justify-between items-start mb-2 border-b pb-4">
                                 <div>
                                     <div className="font-bold text-lg flex items-center gap-2">
                                         {t('orders.order_number').replace('{id}', order.id)}
@@ -130,7 +130,7 @@ export default function OrdersClient() {
 
                             <div className="divide-y">
                                 {order.items.map((item, idx) => (
-                                    <div key={idx} className="flex items-center gap-4 py-4">
+                                    <div key={idx} className="flex items-center gap-4 py-2">
                                         {/* Product Image */}
                                         <div className="w-16 h-16 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0 border">
                                             {item.image_url ? (
