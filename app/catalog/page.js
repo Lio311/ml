@@ -483,7 +483,7 @@ export default async function CatalogPage(props) {
                     <h2 className="text-2xl font-serif font-bold mb-8 text-center text-gray-900 mt-12">
                         {t('common.catalog_seo_title')}
                     </h2>
-                    <div className="grid md:grid-cols-2 gap-6 text-right pb-12">
+                    <div className={`grid md:grid-cols-2 gap-6 pb-12 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
                         <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm hover:border-gray-200 transition-all group">
                             <div className="flex items-center gap-3 mb-4">
                                 <div className="p-2 bg-gray-50 rounded-lg group-hover:bg-black group-hover:text-white transition-colors">
