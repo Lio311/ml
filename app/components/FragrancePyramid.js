@@ -1,6 +1,7 @@
 "use client";
 
 import React from 'react';
+import { ChevronDown } from 'lucide-react';
 
 export default function FragrancePyramid({ top, middle, base }) {
     const [isOpen, setIsOpen] = React.useState(false);
@@ -25,9 +26,7 @@ export default function FragrancePyramid({ top, middle, base }) {
                 <span className="font-bold text-lg text-gray-800 flex items-center gap-2">
                     פירמידת הבושם
                 </span>
-                <span className={`transform transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`}>
-                    ▼
-                </span>
+                <ChevronDown className={`w-5 h-5 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />
             </button>
 
             <div className={`transition-all duration-500 ease-in-out overflow-hidden ${isOpen ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0'}`}>
