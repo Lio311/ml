@@ -61,7 +61,7 @@ export default function StarRating({ productId, readOnly = false }) {
     };
 
     return (
-        <div className={`flex flex-col ${dir === 'rtl' ? 'items-start' : 'items-start'}`} dir="ltr"> {/* Rating stars usually LTR across cultures or at least fixed */}
+        <div className={`flex flex-col ${dir === 'rtl' ? 'items-end' : 'items-start'}`} dir={dir}>
             <div className="flex items-center">
                 {[...Array(5)].map((_, index) => {
                     const ratingValue = index + 1;

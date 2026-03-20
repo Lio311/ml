@@ -127,6 +127,8 @@
         "must_login_to_rate": "עליך להתחבר כדי לדרג",
         "rating_save_error": "שגיאה בשמירת הדירוג",
         "ratings_count": "{average} ({count} דירוגים)",
+        "no_ratings": "אין דירוגים עדיין",
+        "no_reviews": "אין ביקורות עדיין",
         "liked_article": "אהבתם את המאמר?",
         "discover_catalog": "גלו את הקטלוג שלנו",
         "important_to_know": "חשוב לדעת",

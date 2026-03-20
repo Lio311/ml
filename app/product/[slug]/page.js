@@ -24,6 +24,28 @@ const localize = (obj, field, locale) => {
     return obj[`${field}_he`] || obj[`${field}_HE`] || obj[field] || '';
 };
 
+const HE_TO_EN_CATS = {
+    'יוניסקס': 'Unisex', 'גברים': 'Men', 'נשים': 'Women',
+    'ערב': 'Evening', 'יום': 'Day', 'קיץ': 'Summer', 'חורף': 'Winter',
+    'אביב': 'Spring', 'סתיו': 'Autumn',
+    'דובאי': 'Dubai', 'ערבי': 'Oriental', 'פרחוניקה': 'Floral',
+    'פרחוני': 'Floral', 'עצי': 'Woody', 'ספורטיבי': 'Sport',
+    'קלאסי': 'Classic', 'מודרני': 'Modern', 'מזרחי': 'Oriental',
+    'נדיר': 'Rare', 'יוקרה': 'Luxury', 'בוטיק': 'Boutique',
+    'נישה': 'Niche', 'מהדורה מוגבלת': 'Limited Edition',
+    'אין בארץ': 'Exclusive Import', 'לא מיוצר יותר': 'Discontinued',
+    'חריף': 'Spicy', 'מתוק': 'Sweet', 'ים תיכוני': 'Mediterranean',
+    'ביסטמוד': 'Beast Mode'
+};
+
+const translateCategory = (cat, locale) => {
+    if (!cat || locale !== 'en') return cat;
+    return cat.split(',').map(part => {
+        const trimmed = part.trim();
+        return HE_TO_EN_CATS[trimmed] || trimmed;
+    }).join(', ');
+};
+
 const getT = (locale) => {
     const dict = locale === 'en' ? en : he;
     return (key) => {
@@ -188,7 +210,7 @@ export default async function ProductPage(props) {
 
     const localizedName_val = localize(product, 'name', locale);
     const localizedDesc_val = localize(product, 'description', locale);
-    const localizedCategory = localize(product, 'category', locale);
+    const localizedCategory = translateCategory(localize(product, 'category', locale), locale);
 
     const jsonLd = {
         "@context": "https://schema.org",
@@ -298,7 +320,7 @@ export default async function ProductPage(props) {
 
                 {/* Details */}
                 <div className="w-full md:w-1/2 space-y-8">
-                    <div>
+                    <div className={`${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
                         <div className="text-gray-500 mb-2">{localizedCategory}</div>
                         <h1 className="text-4xl font-bold mb-2">{localizedName_val}</h1>
 
