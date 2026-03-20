@@ -47,8 +47,8 @@ export default function Header({ brands = [], menu = [] }) {
 
                 {/* Desktop Header (Visible on Desktop Only) */}
                 <div className="hidden md:flex flex-col w-full">
-                    {/* Top Row for Language Switcher - Positioned Above Icons */}
-                    <div className="flex justify-end pb-2">
+                    {/* Top Row for Language Switcher - Positioned Fixed on the LEFT (Physical Not Logical) */}
+                    <div className="flex justify-start ltr:justify-start rtl:justify-end pb-2">
                         <LanguageSwitcher variant="header" />
                     </div>
 
