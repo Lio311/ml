@@ -9,7 +9,7 @@ function cn(...inputs) {
 }
 
 export default function OrderStatusTimeline({ status }) {
-    const { t, language } = useLanguage();
+    const { t, locale } = useLanguage();
 
     const statusSteps = [
         { id: 'pending', label: t('orders.status.pending'), icon: Package, description: t('orders.status.pending_desc') },
