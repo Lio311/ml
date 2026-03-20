@@ -134,7 +134,7 @@ export default async function BrandPage(props) {
                 )}
 
                 <h1 className="text-4xl font-serif font-bold mb-4">{displayName}</h1>
-                <p className="max-w-2xl text-gray-600">
+                <p className="max-w-4xl text-gray-600">
                     {t('brands_page.description', { brand: displayName })}
                 </p>
             </div>
