@@ -360,5 +360,24 @@
             "completed_desc": "ההזמנה נמסרה בהצלחה",
             "cancelled": "בוטל"
         }
+    },
+    "requests": {
+        "title": "בקשת בשמים",
+        "header": "לא מצאתם את הבושם שחיפשתם?",
+        "subheader": "כאן זה המקום שלכם להשפיע!",
+        "management_note": "הנהלת האתר תשקול ותביא את הבשמים המבוקשים ביותר.",
+        "brand_label": "שם המותג (Brand)",
+        "model_label": "שם הדגם (Model)",
+        "brand_placeholder": "לדוגמה: Xerjoff",
+        "model_placeholder": "לדוגמה: Naxos",
+        "submit_btn": "שלח בקשה",
+        "sending": "שולח את הבקשה שלך...",
+        "duplicate_error": "לא ניתן לבקש את אותו מוצר פעמיים",
+        "general_error": "שגיאה בשליחה, נסה שוב",
+        "success_title": "הבקשה שלך התקבלה!",
+        "success_subtitle": "הנה מה שאחרים ביקשו... האם הטעם שלכם דומה?",
+        "no_requests": "עדיין אין בקשות... היה הראשון!",
+        "votes": "הצבעות",
+        "send_another": "שלח בקשה נוספת"
     }
 }

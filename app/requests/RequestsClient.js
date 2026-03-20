@@ -49,7 +49,7 @@ export default function RequestsClient() {
             });
 
             if (res.status === 409) {
-                toast.error('לא ניתן לבקש את אותו מוצר פעמיים');
+                toast.error(t('requests.duplicate_error'));
                 setLoading(false);
                 return;
             }
@@ -66,14 +66,14 @@ export default function RequestsClient() {
 
             setSubmitted(true);
         } catch (err) {
-            toast.error('שגיאה בשליחה, נסה שוב');
+            toast.error(t('requests.general_error'));
         } finally {
             setLoading(false);
         }
     };
 
     return (
-        <div className="min-h-screen bg-gray-50 flex flex-col items-center py-12 px-4">
+        <div className="min-h-screen bg-gray-50 flex flex-col items-center py-12 px-4 shadow-inner">
 
             {/* Logic: If NOT submitted, show Form. If Submitted, show Wall. */}
 
@@ -82,20 +82,20 @@ export default function RequestsClient() {
 
 
                     <p className="text-center text-gray-600 mb-8 text-lg leading-relaxed">
-                        לא מצאתם את הבושם שחיפשתם? <br />
-                        כאן זה המקום שלכם להשפיע! <br />
-                        <span className="font-bold text-black">הנהלת האתר תשקול ותביא את הבשמים המבוקשים ביותר.</span>
+                        {t('requests.header')} <br />
+                        {t('requests.subheader')} <br />
+                        <span className="font-bold text-black">{t('requests.management_note')}</span>
                     </p>
 
                     {loading ? (
                         <div className="flex flex-col items-center justify-center py-12">
                             <div className="w-16 h-16 border-4 border-black border-t-transparent rounded-full animate-spin mb-4"></div>
-                            <p className="text-xl font-bold animate-pulse">שולח את הבקשה שלך...</p>
+                            <p className="text-xl font-bold animate-pulse">{t('requests.sending')}</p>
                         </div>
                     ) : (
                         <form onSubmit={handleSubmit} className="space-y-6">
                             <div>
-                                <label className="block text-sm font-bold mb-2">שם המותג (Brand)</label>
+                                <label className="block text-sm font-bold mb-2">{t('requests.brand_label')}</label>
                                 <input
                                     type="text"
                                     value={brand}
@@ -106,12 +106,12 @@ export default function RequestsClient() {
                                         }
                                     }}
                                     className="w-full p-4 border rounded-xl bg-gray-50 focus:bg-white focus:ring-2 focus:ring-black focus:border-transparent transition text-lg"
-                                    placeholder="לדוגמה: Xerjoff"
+                                    placeholder={t('requests.brand_placeholder')}
                                     required
                                 />
                             </div>
                             <div>
-                                <label className="block text-sm font-bold mb-2">שם הדגם (Model)</label>
+                                <label className="block text-sm font-bold mb-2">{t('requests.model_label')}</label>
                                 <input
                                     type="text"
                                     value={model}
@@ -122,7 +122,7 @@ export default function RequestsClient() {
                                         }
                                     }}
                                     className="w-full p-4 border rounded-xl bg-gray-50 focus:bg-white focus:ring-2 focus:ring-black focus:border-transparent transition text-lg"
-                                    placeholder="לדוגמה: Naxos"
+                                    placeholder={t('requests.model_placeholder')}
                                     required
                                 />
                             </div>
@@ -131,7 +131,7 @@ export default function RequestsClient() {
                                 type="submit"
                                 className="w-full py-4 text-xl font-bold text-white bg-black rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-1 mt-4"
                             >
-                                שלח בקשה
+                                {t('requests.submit_btn')}
                             </button>
                         </form>
                     )}
@@ -139,13 +139,13 @@ export default function RequestsClient() {
             ) : (
                 <div className="w-full max-w-6xl animate-fade-in-up">
                     <div className="text-center mb-12">
-                        <h2 className="text-4xl font-bold mb-4">הבקשה שלך התקבלה!</h2>
-                        <p className="text-xl text-gray-600">הנה מה שאחרים ביקשו... האם הטעם שלכם דומה?</p>
+                        <h2 className="text-4xl font-bold mb-4">{t('requests.success_title')}</h2>
+                        <p className="text-xl text-gray-600">{t('requests.success_subtitle')}</p>
                     </div>
 
                     {/* Animated Grid of Requests */}
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                        {requests.length === 0 && <p className="text-center col-span-full">עדיין אין בקשות... היה הראשון!</p>}
+                        {requests.length === 0 && <p className="text-center col-span-full">{t('requests.no_requests')}</p>}
 
                         {requests.map((req, idx) => (
                             <div
@@ -159,7 +159,7 @@ export default function RequestsClient() {
                                 </div>
                                 <div className="flex flex-col items-center justify-center bg-gray-100 rounded-lg p-3 min-w-[60px]">
                                     <span className="text-2xl font-bold">{req.count}</span>
-                                    <span className="text-[10px] uppercase text-gray-500">Votes</span>
+                                    <span className="text-[10px] uppercase text-gray-500">{t('requests.votes')}</span>
                                 </div>
                             </div>
                         ))}
@@ -167,7 +167,7 @@ export default function RequestsClient() {
 
                     <div className="text-center mt-12">
                         <button onClick={() => setSubmitted(false)} className="text-gray-500 underline hover:text-black">
-                            שלח בקשה נוספת
+                            {t('requests.send_another')}
                         </button>
                     </div>
                 </div>

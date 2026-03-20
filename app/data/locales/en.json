@@ -371,5 +371,24 @@
             "completed_desc": "Order delivered successfully",
             "cancelled": "Cancelled"
         }
+    },
+    "requests": {
+        "title": "Fragrance Requests",
+        "header": "Didn't find the perfume you were looking for?",
+        "subheader": "This is your place to influence!",
+        "management_note": "Site management will consider and bring the most requested perfumes.",
+        "brand_label": "Brand Name",
+        "model_label": "Model Name",
+        "brand_placeholder": "Example: Xerjoff",
+        "model_placeholder": "Example: Naxos",
+        "submit_btn": "Submit Request",
+        "sending": "Sending your request...",
+        "duplicate_error": "Cannot request the same product twice",
+        "general_error": "Error sending, please try again",
+        "success_title": "Your request has been received!",
+        "success_subtitle": "Here's what others requested... is your taste similar?",
+        "no_requests": "No requests yet... be the first!",
+        "votes": "Votes",
+        "send_another": "Send another request"
     }
 }
