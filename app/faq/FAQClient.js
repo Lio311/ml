@@ -79,9 +79,9 @@ export default function FAQClient({
                 <div className="md:col-span-3 space-y-16">
                     {categories.map((cat, idx) => (
                         <section key={idx} id={`cat-${idx}`} className="scroll-mt-52">
-                            <h2 className={`text-2xl font-bold mb-8 flex items-center gap-3 ${dir === 'rtl' ? 'flex-row-reverse justify-end' : 'flex-row'}`}>
-                                <span className="w-1.5 h-8 bg-black rounded-full" />
-                                {cat.title}
+                            <h2 className="text-2xl font-bold mb-8 flex items-center gap-3">
+                                <span className="w-1.5 h-8 bg-black rounded-full flex-shrink-0" />
+                                <span>{cat.title}</span>
                             </h2>
                             <div className="space-y-6">
                                 {cat.items.map((item, i) => (
