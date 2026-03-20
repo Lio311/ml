@@ -1,87 +1,38 @@
 import FAQClient from '../faq/FAQClient';
+import { terms_he, terms_en } from '../data/terms_data';
+import { cookies } from 'next/headers';
+import he from '../data/locales/he.json';
+import en from '../data/locales/en.json';
 
-export const metadata = {
-    title: "תקנון האתר | ml_tlv",
-    description: "תנאי שימוש ותקנון האתר.",
+const getT = (locale) => {
+    const dict = locale === 'en' ? en : he;
+    return (key) => {
+        const keys = key.split('.');
+        let result = dict;
+        for (const k of keys) {
+            if (result[k]) result = result[k];
+            else return key;
+        }
+        return result;
+    };
 };
 
-export default function TermsPage() {
-    const categories = [
-        {
-            title: "כללי",
-            items: [
-                { 
-                    q: "מהות האתר", 
-                    a: "אתר ml_tlv משמש כפלטפורמה להתנסות בבשמי יוקרה באמצעות דוגמיות (דיקנטים), וכן כזירה המאפשרת לאספנים ושותפים להציג את הקולקציות שלהם דרך חנויות וירטואליות." 
-                },
-                { 
-                    q: "הסכמה לתנאים", 
-                    a: "השימוש באתר, הגלישה בו וביצוע הזמנות מהווים הסכמה מפורשת מצד המשתמש לכל התנאים המפורטים בתקנון זה." 
-                }
-            ]
-        },
-        {
-            title: "פלטפורמת חנויות צד ג'",
-            items: [
-                { 
-                    q: "אחריות ושימוש בתשתית", 
-                    a: " ml_tlv מספקת את התשתית הטכנולוגית והמאובטחת עבור שותפים (מוכרי צד ג'). בעוד אנו מוודאים את סטנדרט האיכות, האחריות הישירה על מוצרי שותפים חלה עליהם." 
-                },
-                { 
-                    q: "הגבלת אחריות", 
-                    a: "המפעיל (ml_tlv) אינו צד לעסקאות המתבצעות ישירות בחנויות צד ג', ואינו נושא באחריות לנזקים עקיפים הנובעים משימוש במוצרי שותפים, מעבר לאחריות הספק עצמו." 
-                }
-            ]
-        },
-        {
-            title: "מקוריות ומוצרים",
-            items: [
-                { 
-                    q: "התחייבות למקוריות", 
-                    a: "אנו מתחייבים כי כל הבשמים הנמכרים תחת המותג ml_tlv הם מקוריים ב-100% ונרכשים ממקורות מהימנים ומוסמכים." 
-                },
-                { 
-                    q: "הבהרה לגבי דוגמיות (דיקנטים)", 
-                    a: "חשוב להדגיש: אנו מוכרים דוגמיות בלבד. הבושם מועבר מבקבוקו המקורי לבקבוקון זכוכית איכותי. התמונה באתר של בקבוק המותג המקורי היא להמחשת הניחוח בלבד." 
-                }
-            ]
-        },
-        {
-            title: "הזמנות ותשלומים",
-            items: [
-                { 
-                    q: "אבטחת תשלום", 
-                    a: "כל התשלומים באתר מאובטחים. אנו משתמשים בטכנולוגיות המתקדמות ביותר כדי להבטיח שפרטי האשראי שלכם לעולם לא ייחשפו או יישמרו במערכת שלנו." 
-                },
-                { 
-                    q: "מדיניות מחירים", 
-                    a: "מחירי המוצרים עשויים להשתנות מעת לעת ללא הודעה מוקדמת, בהתאם למלאי ולמחירי חומרי הגלם." 
-                }
-            ]
-        },
-        {
-            title: "ביטולים והחזרות",
-            items: [
-                { 
-                    q: "חוק הגנת הצרכן", 
-                    a: "ביטול עסקאות יתבצע בהתאם להוראות חוק הגנת הצרכן. זכות הביטול לא תחול על טובין שיוצרו/נמזגו במיוחד עבור הצרכן (דיקנטים), בשל אופיים המיוחד." 
-                }
-            ]
-        },
-        {
-            title: "סמכות שיפוט וקניין רוחני",
-            items: [
-                { 
-                    q: "זכויות יוצרים", 
-                    a: "כל התכנים, העיצובים והסימנים המסחריים באתר הם רכושה של ml_tlv או של שותפיה ואין לעשות בהם שימוש ללא אישור בכתב." 
-                },
-                { 
-                    q: "מקום שיפוט", 
-                    a: "על תקנון זה יחולו אך ורק דיני מדינת ישראל. סמכות השיפוט הבלעדית בכל מחלוקת תהיה לבתי המשפט המוסמכים במחוז תל אביב." 
-                }
-            ]
-        }
-    ];
+export async function generateMetadata() {
+    const cookieStore = await cookies();
+    const locale = cookieStore.get('NEXT_LOCALE')?.value || 'he';
+    const t = getT(locale);
+
+    return {
+        title: `${t('common.website_terms')} | ml_tlv`,
+        description: t('common.terms_desc') || "Website terms and conditions.",
+    };
+}
+
+export default async function TermsPage() {
+    const cookieStore = await cookies();
+    const locale = cookieStore.get('NEXT_LOCALE')?.value || 'he';
+    const t = getT(locale);
+    const categories = locale === 'en' ? terms_en : terms_he;
 
     return (
         <div className="min-h-screen bg-gray-50 pb-20">
@@ -89,22 +40,27 @@ export default function TermsPage() {
             <div className="bg-black text-white py-20 mb-12 relative overflow-hidden">
                 <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_center,white_0%,transparent_70%)]" />
                 <div className="container mx-auto px-4 relative z-10">
-                    <h1 className="text-4xl md:text-6xl font-black mb-6 text-center tracking-tight">תקנון האתר</h1>
-                    <p className="text-gray-400 text-center text-lg md:text-xl w-full mx-auto font-light leading-relaxed whitespace-nowrap overflow-hidden text-ellipsis">
-                        כל מה שצריך לדעת על עולם הבישום, ההזמנות והבונוסים הייחודיים של ml_tlv. אנחנו כאן לכל שאלה.
+                    <h1 className="text-4xl md:text-6xl font-black mb-6 text-center tracking-tight">
+                        {t('common.website_terms')}
+                    </h1>
+                    <p className="text-gray-400 text-center text-lg md:text-xl w-full mx-auto font-light leading-relaxed">
+                        {t('common.faq_subtitle_header')}
                     </p>
                 </div>
             </div>
 
             <FAQClient 
                 categories={categories} 
-                sidebarTitle="פרקי התקנון"
-                footerTitle="צריכים הבהרה משפטית?"
-                footerSubtitle="צוות השירות שלנו ישמח להסביר כל סעיף בתקנון בצורה פשוטה וברורה."
+                sidebarTitle={t('common.terms_sidebar_title')}
+                footerTitle={t('common.terms_footer_title')}
+                footerSubtitle={t('common.terms_footer_subtitle')}
+                contactBtnText={t('common.contact_now')}
             />
             
             <div className="container mx-auto px-4 max-w-5xl mt-12 text-center">
-                <p className="text-gray-400 text-sm">עודכן לאחרונה: 20 במרץ 2026</p>
+                <p className="text-gray-400 text-sm">
+                    {t('common.last_updated')}: {locale === 'en' ? 'March 20, 2026' : '20 במרץ 2026'}
+                </p>
             </div>
         </div>
     );
