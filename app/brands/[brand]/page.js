@@ -1,23 +1,45 @@
 import pool from '../../lib/db';
 import ProductCard from '../../components/ProductCard';
 import Link from 'next/link';
+import { cookies } from 'next/headers';
+import he from '../../data/locales/he.json';
+import en from '../../data/locales/en.json';
 
 export const revalidate = 3600; // Cache for 1 hour
+
+const getT = (locale) => {
+    const dict = locale === 'en' ? en : he;
+    return (key, vars = {}) => {
+        const keys = key.split('.');
+        let result = dict;
+        for (const k of keys) {
+            if (result[k]) result = result[k];
+            else return key;
+        }
+        if (typeof result === 'string' && vars) {
+            return Object.entries(vars).reduce((str, [k, v]) => str.replace(new RegExp(`\\{${k}\\}`, 'g'), v), result);
+        }
+        return result;
+    };
+};
 
 export async function generateMetadata(props) {
     const params = await props.params;
     const { brand } = params;
     const brandName = decodeURIComponent(brand);
+    const cookieStore = await cookies();
+    const locale = cookieStore.get('NEXT_LOCALE')?.value || 'he';
+    const t = getT(locale);
 
     return {
-        title: `${brandName} - דוגמיות בשמים | ml_tlv`,
-        description: `קולקציית בשמי ${brandName} באתר ml_tlv. הזמינו דוגמיות של ${brandName} במשלוח מהיר.`,
+        title: t('brands_page.meta_title', { brand: brandName }),
+        description: t('brands_page.meta_desc', { brand: brandName }),
         alternates: {
             canonical: `https://www.ml-tlv.com/brands/${brand}`,
         },
         openGraph: {
-            title: `${brandName} - דוגמיות בשמים`,
-            description: `קולקציית בשמי ${brandName} המלאה.`,
+            title: t('brands_page.og_title', { brand: brandName }),
+            description: t('brands_page.og_desc', { brand: brandName }),
         }
     };
 }
@@ -26,6 +48,9 @@ export default async function BrandPage(props) {
     const params = await props.params;
     const { brand } = params;
     const brandName = decodeURIComponent(brand);
+    const cookieStore = await cookies();
+    const locale = cookieStore.get('NEXT_LOCALE')?.value || 'he';
+    const t = getT(locale);
 
     const client = await pool.connect();
     let products = [];
@@ -37,7 +62,6 @@ export default async function BrandPage(props) {
         brandData = brandRes.rows[0];
 
         // Fetch Products
-        // Note: We use case-insensitive matching for brand name to ensure we catch everything
         const res = await client.query(`
             SELECT p.*, s.sales_count 
             FROM products p 
@@ -51,13 +75,15 @@ export default async function BrandPage(props) {
         client.release();
     }
 
+    const displayName = brandData?.name || brandName;
+
     return (
         <div className="container py-12 min-h-screen">
             {/* Breadcrumbs */}
             <div className="text-sm text-gray-500 mb-8 flex gap-2">
-                <Link href="/" className="hover:underline">בית</Link> /
-                <Link href="/brands" className="hover:underline">מותגים</Link> /
-                <span className="font-bold text-black">{brandData?.name || brandName}</span>
+                <Link href="/" className="hover:underline">{t('brands_page.home')}</Link> /
+                <Link href="/brands" className="hover:underline">{t('brands_page.brands')}</Link> /
+                <span className="font-bold text-black">{displayName}</span>
             </div>
 
             {/* Breadcrumb Schema */}
@@ -71,19 +97,19 @@ export default async function BrandPage(props) {
                             {
                                 "@type": "ListItem",
                                 "position": 1,
-                                "name": "בית",
+                                "name": t('brands_page.home'),
                                 "item": "https://www.ml-tlv.com"
                             },
                             {
                                 "@type": "ListItem",
                                 "position": 2,
-                                "name": "מותגים",
+                                "name": t('brands_page.brands'),
                                 "item": "https://www.ml-tlv.com/brands"
                             },
                             {
                                 "@type": "ListItem",
                                 "position": 3,
-                                "name": brandData?.name || brandName,
+                                "name": displayName,
                                 "item": `https://www.ml-tlv.com/brands/${brand}`
                             }
                         ]
@@ -107,10 +133,9 @@ export default async function BrandPage(props) {
                     </div>
                 )}
 
-                <h1 className="text-4xl font-serif font-bold mb-4">{brandData?.name || brandName}</h1>
+                <h1 className="text-4xl font-serif font-bold mb-4">{displayName}</h1>
                 <p className="max-w-2xl text-gray-600">
-                    כל הבשמים של {brandData?.name || brandName} זמינים עכשיו כדוגמיות בגדלים שונים.
-                    בחרו את הריח הבא שלכם מהקולקציה היוקרתית שלנו.
+                    {t('brands_page.description', { brand: displayName })}
                 </p>
             </div>
 
@@ -123,9 +148,9 @@ export default async function BrandPage(props) {
                 </div>
             ) : (
                 <div className="text-center py-20 bg-gray-50 rounded-xl">
-                    <p className="text-xl text-gray-500">לא נמצאו מוצרים למותג זה כרגע.</p>
+                    <p className="text-xl text-gray-500">{t('brands_page.no_products')}</p>
                     <Link href="/brands" className="text-blue-600 font-bold mt-4 inline-block">
-                        לחזרה לכל המותגים
+                        {t('brands_page.back_to_brands')}
                     </Link>
                 </div>
             )}

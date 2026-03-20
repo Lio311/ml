@@ -390,5 +390,16 @@
         "no_requests": "No requests yet... be the first!",
         "votes": "Votes",
         "send_another": "Send another request"
+    },
+    "brands_page": {
+        "home": "Home",
+        "brands": "Brands",
+        "meta_title": "{brand} - Perfume Samples | ml_tlv",
+        "meta_desc": "{brand} perfume collection at ml_tlv. Order {brand} samples with fast delivery.",
+        "og_title": "{brand} - Perfume Samples",
+        "og_desc": "The full {brand} collection.",
+        "description": "All {brand} perfumes are now available as samples in various sizes. Choose your next scent from our luxury collection.",
+        "no_products": "No products found for this brand at the moment.",
+        "back_to_brands": "Back to all brands"
     }
 }
