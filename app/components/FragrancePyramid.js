@@ -4,15 +4,72 @@ import React from 'react';
 import { ChevronDown } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
+// Hebrew → English lookup for common fragrance notes
+// Covers the most common notes that appear in the DB in Hebrew
+const HE_TO_EN_NOTES = {
+    // Florals
+    'ורד': 'Rose', 'ורד דמשק': 'Damascus Rose', 'רוז דה מאי': 'Rose de Mai',
+    'סיגליות': 'Violet', 'יסמין': 'Jasmine', 'לבנדר': 'Lavender',
+    'טובארוז': 'Tuberose', 'אורכידיה': 'Orchid', 'פרחי תפוח': 'Apple Blossom',
+    'אירוס': 'Iris', 'שורש אירים': 'Iris Root', 'ג\'ורג\'יה': 'Gardenia',
+    'ברוסליה': 'Freesia', 'מגנוליה': 'Magnolia', 'סחלב': 'Orchid',
+    'פרחי תפוז': 'Orange Blossom', 'נרגיס': 'Narcissus', 'ילנג ילנג': 'Ylang Ylang',
+    'ג\'אסמין': 'Jasmine', 'כלניות': 'Carnation',
+    // Citrus
+    'ליים': 'Lime', 'לימון': 'Lemon', 'תפוז': 'Orange', 'אשכולית': 'Grapefruit',
+    'ברגמוט': 'Bergamot', 'מנדרינה': 'Mandarin', 'לימון מאייר': 'Meyer Lemon',
+    'ציטרוס': 'Citrus', 'סיטרקס': 'Citrus',
+    // Woods & Resins
+    'עץ ארז': 'Cedarwood', 'ארז': 'Cedar', 'לבנה': 'Labdanum', 'לבונה': 'Frankincense',
+    'קונה': 'Guaiac Wood', 'עץ סנדל': 'Sandalwood', 'סנדלווד': 'Sandalwood',
+    'עץ קשמיר': 'Cashmeran', 'עץ ורד': 'Rosewood', 'אגר עוד': 'Oud',
+    'עוד': 'Oud', 'אמברגריס': 'Ambergris', 'פאטשולי': 'Patchouli',
+    'ענבר': 'Amber', 'בנזואין': 'Benzoin', 'בנסואין': 'Benzoin',
+    'ראדיקס': 'Radix', 'וטיבר': 'Vetiver', 'וטיוור': 'Vetiver',
+    // Spices
+    'פלפל': 'Pepper', 'פלפל שחור': 'Black Pepper', 'קינמון': 'Cinnamon',
+    'קרדמום': 'Cardamom', 'זעפרן': 'Saffron', 'גינגר': 'Ginger',
+    'לעשוש': 'Nutmeg', 'אגוז מוסקט': 'Nutmeg', 'ציפורן': 'Clove',
+    // Musks & Gourmands
+    'מוסק': 'Musk', 'ונילה': 'Vanilla', 'קרמל': 'Caramel', 'שולק': 'Caramel',
+    'קפה': 'Coffee', 'שוקולד': 'Chocolate', 'טולו': 'Tolu Balsam',
+    'בנסם פרו': 'Peru Balsam', 'גומי': 'Gummy',
+    // Fruits
+    'תפוח': 'Apple', 'אגס': 'Pear', 'אפרסק': 'Peach', 'ליצ\'י': 'Lychee',
+    'פרחי דובדבן': 'Cherry Blossom', 'פטל': 'Raspberry', 'תות': 'Strawberry',
+    'מנגו': 'Mango', 'פפאיה': 'Papaya', 'גויאבה': 'Guava',
+    'אננס': 'Pineapple', 'בלק קארנט': 'Blackcurrant', 'דומדמנית שחורה': 'Blackcurrant',
+    // Animals & Aquatics
+    'אמבר': 'Amber', 'בְּיוֹר': "Birch", 'ביר\'': 'Birch',
+    'לביח': 'Labdanum', 'ציוות': 'Civet',
+    // Other
+    'פרנגיפני': 'Frangipani', 'תה': 'Tea', 'תה ירוק': 'Green Tea',
+    'מאסם': 'Mace', 'אנג\'ל': 'Angelica', 'אנס': 'Anise',
+    'סיפרס': 'Cypress', 'ברוש': 'Cypress',
+    'קנה': 'Gaiac Wood', 'פְּטִיגְר\'ן': 'Petitgrain',
+    'אורן': 'Pine', 'אלדרווד': 'Eldarwood',
+    'גחלת': 'Charcoal', 'כחול': 'Blue', 'ים': 'Sea Salt',
+};
+
+function translateNote(note, locale) {
+    if (locale !== 'en') return note;
+    const trimmed = note.trim();
+    // Direct match (case insensitive)
+    const key = Object.keys(HE_TO_EN_NOTES).find(
+        k => k === trimmed || k.toLowerCase() === trimmed.toLowerCase()
+    );
+    return key ? HE_TO_EN_NOTES[key] : trimmed;
+}
+
 export default function FragrancePyramid({ top, middle, base }) {
     const [isOpen, setIsOpen] = React.useState(false);
-    const { t, dir } = useLanguage();
+    const { t, dir, locale } = useLanguage();
 
     if (!top && !middle && !base) return null;
 
     const parseNotes = (notesStr) => {
         if (!notesStr) return [];
-        return notesStr.split(',').map(n => n.trim()).filter(Boolean);
+        return notesStr.split(',').map(n => translateNote(n.trim(), locale)).filter(Boolean);
     };
 
     const topNotes = parseNotes(top);
