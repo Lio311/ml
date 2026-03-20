@@ -1,11 +1,11 @@
-"use client";
-
 import { useState, useEffect } from 'react';
 import { useUser } from '@clerk/nextjs';
+import { useLanguage } from '../context/LanguageContext';
 import toast from 'react-hot-toast';
 
 export default function StarRating({ productId, readOnly = false }) {
     const { isSignedIn } = useUser();
+    const { t, dir } = useLanguage();
     const [rating, setRating] = useState(0);
     const [hover, setHover] = useState(0);
     const [average, setAverage] = useState(0);
@@ -34,7 +34,7 @@ export default function StarRating({ productId, readOnly = false }) {
     const handleRating = async (newRating) => {
         if (readOnly) return;
         if (!isSignedIn) {
-            toast.error('עליך להתחבר כדי לדרג');
+            toast.error(t('common.must_login_to_rate'));
             return;
         }
 
@@ -54,12 +54,12 @@ export default function StarRating({ productId, readOnly = false }) {
                     setCount(stats.count);
                 });
         } catch (e) {
-            toast.error('שגיאה בשמירת הדירוג');
+            toast.error(t('common.rating_save_error'));
         }
     };
 
     return (
-        <div className="flex flex-col items-start">
+        <div className={`flex flex-col ${dir === 'rtl' ? 'items-start' : 'items-start'}`} dir="ltr"> {/* Rating stars usually LTR across cultures or at least fixed */}
             <div className="flex items-center">
                 {[...Array(5)].map((_, index) => {
                     const ratingValue = index + 1;
@@ -87,8 +87,8 @@ export default function StarRating({ productId, readOnly = false }) {
                     );
                 })}
             </div>
-            <div className="text-xs text-gray-500 mt-1">
-                {average > 0 ? `${average} (${count} דירוגים)` : 'אין דירוגים'}
+            <div className={`text-xs text-gray-500 mt-1 ${dir === 'rtl' ? 'text-right' : 'text-left'}`} dir={dir}>
+                {average > 0 ? t('common.ratings_count').replace('{average}', average).replace('{count}', count) : t('common.no_ratings')}
             </div>
         </div>
     );

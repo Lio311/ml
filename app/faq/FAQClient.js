@@ -2,13 +2,16 @@
 
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function FAQClient({ 
     categories, 
-    sidebarTitle = "קטגוריות", 
-    footerTitle = "לא מצאתם תשובה?", 
-    footerSubtitle = "הצוות שלנו כאן כדי לעזור לכם למצוא את הריח המושלם או לענות על כל שאלה טכנית" 
+    sidebarTitle = "Categories", 
+    footerTitle = "Didn't find an answer?", 
+    footerSubtitle = "Our team is here to help you find the perfect scent or answer any technical question.",
+    contactBtnText = "Contact Now"
 }) {
+    const { dir } = useLanguage();
     const [activeCategory, setActiveCategory] = useState(0);
     const observer = useRef(null);
 
@@ -42,11 +45,11 @@ export default function FAQClient({
     }, [categories]);
 
     return (
-        <div className="container mx-auto px-4 max-w-5xl">
+        <div className="container mx-auto px-4 max-w-5xl" dir={dir}>
             <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
                 {/* Sidebar navigation for desktop */}
-                <aside className="hidden md:block sticky top-36 z-30 self-start space-y-2">
-                    <h2 className="text-sm font-bold uppercase tracking-wider text-gray-400 mb-4 px-3">{sidebarTitle}</h2>
+                <aside className={`hidden md:block sticky top-36 z-30 self-start space-y-2 ${dir === 'rtl' ? 'border-r-0' : 'border-l-0'}`}>
+                    <h2 className={`text-sm font-bold uppercase tracking-wider text-gray-400 mb-4 px-3 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>{sidebarTitle}</h2>
                     {categories.map((cat, idx) => (
                         <a 
                             key={idx} 
@@ -61,9 +64,9 @@ export default function FAQClient({
                                     });
                                 }
                             }}
-                            className={`block px-4 py-3 text-sm font-medium transition-all duration-300 rounded-xl ${
+                            className={`block px-4 py-3 text-sm font-medium transition-all duration-300 rounded-xl ${dir === 'rtl' ? 'text-right' : 'text-left'} ${
                                 activeCategory === idx 
-                                ? 'bg-black text-white shadow-lg transform translate-x-[-4px]' 
+                                ? `bg-black text-white shadow-lg transform ${dir === 'rtl' ? 'translate-x-[4px]' : 'translate-x-[-4px]'}` 
                                 : 'text-gray-500 hover:text-black hover:bg-white'
                             }`}
                         >
@@ -76,13 +79,13 @@ export default function FAQClient({
                 <div className="md:col-span-3 space-y-16">
                     {categories.map((cat, idx) => (
                         <section key={idx} id={`cat-${idx}`} className="scroll-mt-52">
-                            <h2 className="text-2xl font-bold mb-8 flex items-center gap-3">
+                            <h2 className={`text-2xl font-bold mb-8 flex items-center gap-3 ${dir === 'rtl' ? 'flex-row' : 'flex-row-reverse justify-end'}`}>
                                 <span className="w-1.5 h-8 bg-black rounded-full" />
                                 {cat.title}
                             </h2>
                             <div className="space-y-6">
                                 {cat.items.map((item, i) => (
-                                    <div key={i} className="group bg-white p-7 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300">
+                                    <div key={i} className={`group bg-white p-7 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-all duration-300 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
                                         <h3 className="font-bold text-lg mb-4 text-gray-900 leading-tight">
                                             {item.q}
                                         </h3>
@@ -109,7 +112,7 @@ export default function FAQClient({
                             <p className="text-gray-400 mb-8 max-w-md mx-auto">{footerSubtitle}</p>
                             <div className="flex flex-wrap justify-center gap-4">
                                 <Link href="/contact" className="bg-white text-black px-10 py-4 rounded-2xl font-bold hover:bg-gray-200 transition-all hover:scale-105 active:scale-95 shadow-xl">
-                                    צרו קשר עכשיו
+                                    {contactBtnText}
                                 </Link>
                             </div>
                         </div>

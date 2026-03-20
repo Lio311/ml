@@ -1,22 +1,50 @@
-import Link from 'next/link';
-import Image from 'next/image';
 import pool from '../lib/db';
+import { cookies } from 'next/headers';
+import he from '../data/locales/he.json';
+import en from '../data/locales/en.json';
+
+const getT = (locale) => {
+    const dict = locale === 'en' ? en : he;
+    return (key) => {
+        const keys = key.split('.');
+        let result = dict;
+        for (const k of keys) {
+            if (result[k]) result = result[k];
+            else return key;
+        }
+        return result;
+    };
+};
+
+const localize = (obj, field, locale) => {
+    if (!obj) return '';
+    if (locale === 'en' && obj[`${field}_en` || `${field}_EN` || `${field}_En` || `${field}_eN` ]) {
+        return obj[`${field}_en`] || obj[`${field}_EN`] || obj[field];
+    }
+    return obj[field] || '';
+};
 
 export const dynamic = 'force-dynamic';
 
-export const metadata = {
-    title: 'מגזין הבישום | ml_tlv',
-    description: 'כתבות, סקירות, מדריכים וטיפים על עולם הבישום, דוגמיות בשמים ומותגי נישה.',
-    alternates: {
-        canonical: 'https://www.ml-tlv.com/blog',
-    },
-    openGraph: {
-        title: 'מגזין הבישום | ml_tlv',
-        description: 'הבלוג הרשמי של ml_tlv - כל המידע על עולם דוגמיות הבושם.',
-        url: 'https://www.ml-tlv.com/blog',
-        type: 'website'
-    }
-};
+export async function generateMetadata() {
+    const cookieStore = await cookies();
+    const locale = cookieStore.get('NEXT_LOCALE')?.value || 'he';
+    const t = getT(locale);
+
+    return {
+        title: `${t('common.magazine_title')} | ml_tlv`,
+        description: t('common.magazine_desc'),
+        alternates: {
+            canonical: 'https://www.ml-tlv.com/blog',
+        },
+        openGraph: {
+            title: `${t('common.magazine_title')} | ml_tlv`,
+            description: t('common.magazine_desc'),
+            url: 'https://www.ml-tlv.com/blog',
+            type: 'website'
+        }
+    };
+}
 
 async function getArticles(page = 1) {
     const LIMIT = 6;
@@ -24,7 +52,7 @@ async function getArticles(page = 1) {
 
     const client = await pool.connect();
     try {
-        const res = await client.query('SELECT title, slug, excerpt, image_url, created_at, tags FROM blog_posts ORDER BY created_at DESC LIMIT $1 OFFSET $2', [LIMIT, OFFSET]);
+        const res = await client.query('SELECT title, slug, excerpt, image_url, created_at, tags, title_en, excerpt_en FROM blog_posts ORDER BY created_at DESC LIMIT $1 OFFSET $2', [LIMIT, OFFSET]);
         const countRes = await client.query('SELECT COUNT(*) FROM blog_posts');
 
         return {
@@ -38,18 +66,22 @@ async function getArticles(page = 1) {
 }
 
 export default async function BlogIndex(props) {
+    const cookieStore = await cookies();
+    const locale = cookieStore.get('NEXT_LOCALE')?.value || 'he';
+    const t = getT(locale);
+    const dir = locale === 'he' ? 'rtl' : 'ltr';
+
     const searchParams = await props.searchParams;
     const page = parseInt(searchParams?.page || '1');
     const { articles, totalPages } = await getArticles(page);
 
     return (
         <div className="min-h-screen bg-gray-50 py-12">
-            <div className="container">
+            <div className="container px-4">
                 <div className="text-center mb-12">
-                    <h1 className="text-4xl font-serif font-bold mb-4">מגזין הבישום</h1>
+                    <h1 className="text-4xl font-serif font-bold mb-4">{t('common.magazine_title')}</h1>
                     <p className="text-gray-500 max-w-2xl mx-auto">
-                        ברוכים הבאים לבלוג שלנו. כאן תמצאו את כל המידע שצריך לדעת על עולם הבישום,
-                        סקירות של מותגי נישה מובילים וטיפים לבחירת הריח הבא שלכם.
+                        {t('common.magazine_header_desc')}
                     </p>
                 </div>
 
@@ -86,25 +118,25 @@ export default async function BlogIndex(props) {
                                     <div className="absolute bottom-0 left-0 right-0 h-1/3 bg-gradient-to-t from-black/40 to-transparent"></div>
                                 </div>
 
-                                <div className="p-7 flex flex-col flex-1 relative">
+                                <div className={`p-7 flex flex-col flex-1 relative ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
                                     <div className="flex items-center gap-3 text-[10px] font-bold text-gray-400 tracking-widest mb-4">
-                                        <span>{new Date(article.created_at).toLocaleDateString('he-IL')}</span>
+                                        <span>{new Date(article.created_at).toLocaleDateString(locale === 'he' ? 'he-IL' : 'en-US')}</span>
                                         <span className="w-1 h-1 bg-gray-300 rounded-full"></span>
-                                        <span>{readingTime} דקות קריאה</span>
+                                        <span>{readingTime} {t('common.minutes_read')}</span>
                                     </div>
                                     
                                     <h2 className="text-2xl font-serif font-bold mb-4 group-hover:text-blue-600 transition-colors leading-tight">
-                                        {article.title}
+                                        {localize(article, 'title', locale)}
                                     </h2>
                                     
                                     <p className="text-gray-600 text-sm leading-relaxed line-clamp-3 mb-6 flex-1">
-                                        {article.excerpt}
+                                        {localize(article, 'excerpt', locale)}
                                     </p>
                                     
                                     <div className="flex items-center justify-between mt-auto">
                                         <span className="text-black font-bold text-xs uppercase tracking-widest flex items-center gap-2 group-hover:gap-3 transition-all">
-                                            קרא עוד
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-4 h-4">
+                                            {t('common.read_more')}
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className={`w-4 h-4 ${dir === 'rtl' ? '' : 'rotate-180'}`}>
                                                 <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 19.5 3 12m0 0 7.5-7.5M3 12h18" />
                                             </svg>
                                         </span>

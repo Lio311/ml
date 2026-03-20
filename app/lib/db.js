@@ -105,7 +105,8 @@ export const getBrandInsight = unstable_cache(
     async (brandName) => {
         try {
             const res = await pool.query(`
-                SELECT name, title, description, perfumer, highlights, logo_url
+                SELECT name, title, description, perfumer, highlights, logo_url,
+                       title_en, description_en, perfumer_en, highlights_en
                 FROM brands 
                 WHERE name ILIKE $1 
                 LIMIT 1

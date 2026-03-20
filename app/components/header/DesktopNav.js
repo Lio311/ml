@@ -3,9 +3,11 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
+import { useLanguage } from '../../context/LanguageContext';
 
 export default function DesktopNav({ menu = [], brands = [] }) {
     const pathname = usePathname();
+    const { t, locale, dir } = useLanguage();
     const [isBrandsDropdownOpen, setIsBrandsDropdownOpen] = useState(false);
 
     // Group Brands by Letter
@@ -34,16 +36,16 @@ export default function DesktopNav({ menu = [], brands = [] }) {
                                 href="/brands"
                                 className={`px-5 py-2 text-sm font-bold tracking-widest transition rounded-sm whitespace-nowrap ${pathname.startsWith('/brands') ? 'bg-black text-white' : 'text-gray-900 hover:bg-black hover:text-white'}`}
                             >
-                                {item.label}
+                                {t(`common.${item.id}`)}
                             </Link>
 
                             {/* The Mega Menu Dropdown */}
                             {isBrandsDropdownOpen && (
                                 <div className="absolute top-full w-[900px] bg-white text-black shadow-[0_30px_60px_-15px_rgba(0,0,0,0.3)] border border-gray-100 rounded-b-xl overflow-hidden z-50 transition-all duration-300 origin-top transform -translate-x-1/2 left-1/2 animate-in fade-in zoom-in-95 duration-200">
                                     <div className="flex flex-col max-h-[60vh]">
-                                        <div className="overflow-y-auto p-6 custom-scrollbar text-right">
+                                        <div className={`overflow-y-auto p-6 custom-scrollbar ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
                                             {brands.length === 0 ? (
-                                                <p className="text-center text-gray-400">טוען מותגים...</p>
+                                                <p className="text-center text-gray-400">{t('common.loading_brands')}</p>
                                             ) : (
                                                 <div className="columns-4 gap-8">
                                                     {sortedLetters.map(letter => (
@@ -67,7 +69,7 @@ export default function DesktopNav({ menu = [], brands = [] }) {
                                         </div>
                                         <div className="p-4 bg-gray-50 border-t text-center">
                                             <Link href="/brands" className="text-sm font-bold underline hover:text-red-600">
-                                                לכל המותגים &larr;
+                                                {t('common.all_brands')} {dir === 'rtl' ? '←' : '→'}
                                             </Link>
                                         </div>
                                     </div>
@@ -86,7 +88,7 @@ export default function DesktopNav({ menu = [], brands = [] }) {
                             : (item.isRed ? 'text-red-600 hover:text-red-700 hover:bg-red-50' : 'text-gray-900 hover:bg-black hover:text-white')
                             }`}
                     >
-                        {item.label}
+                        {t(`common.${item.id}`)}
                     </Link>
                 );
             })}

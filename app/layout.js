@@ -7,6 +7,8 @@ import GoogleAnalytics from "./components/GoogleAnalytics";
 import MicrosoftClarity from "./components/MicrosoftClarity";
 import ClientLayout from "./components/ClientLayout";
 import { validateEnv } from "./lib/env";
+import { cookies } from "next/headers";
+import { LanguageProvider } from "./context/LanguageContext";
 
 // Validate env vars on server start/request
 validateEnv();
@@ -68,6 +70,10 @@ import { Toaster } from 'react-hot-toast';
 export default async function RootLayout({ children }) {
   const brands = await getBrands();
   const menu = await getMenuItems();
+  
+  const cookieStore = await cookies();
+  const locale = cookieStore.get('NEXT_LOCALE')?.value || 'he';
+  const dir = locale === 'he' ? 'rtl' : 'ltr';
 
   return (
     <ClerkProvider
@@ -94,10 +100,11 @@ export default async function RootLayout({ children }) {
         }
       }}
     >
-      <html lang="he" dir="rtl">
+      <html lang={locale} dir={dir}>
         <body className={assistant.className}>
-          <CartProvider>
-            <WishlistProvider>
+          <LanguageProvider initialLocale={locale}>
+            <CartProvider>
+              <WishlistProvider>
               <AnalyticsTracker />
               <Toaster position="top-center" toastOptions={{ duration: 3000 }} />
 
@@ -148,8 +155,9 @@ export default async function RootLayout({ children }) {
                     })
                 }}
               />
-            </WishlistProvider>
-          </CartProvider>
+              </WishlistProvider>
+            </CartProvider>
+          </LanguageProvider>
         </body>
       </html>
     </ClerkProvider>

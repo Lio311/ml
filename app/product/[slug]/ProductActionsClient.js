@@ -2,6 +2,7 @@
 import { useCart } from "../../context/CartContext";
 import { useUser } from "@clerk/nextjs";
 import { useState, useEffect } from "react";
+import { useLanguage } from "../../context/LanguageContext";
 
 import toast from 'react-hot-toast';
 
@@ -9,6 +10,7 @@ export default function ProductActionsClient({ product }) {
     const { addToCart, cartItems } = useCart();
     const [addedId, setAddedId] = useState(null);
     const { isSignedIn } = useUser();
+    const { t, dir } = useLanguage();
 
     // Track View History
     useEffect(() => {
@@ -34,20 +36,20 @@ export default function ProductActionsClient({ product }) {
         }, 0);
 
         if (currentInCart + size > stock) {
-            toast.error("לא ניתן להוסיף את המוצר, אזל המלאי!");
+            toast.error(t('common.out_of_stock_toast'));
             return;
         }
 
         addToCart(product, size, price);
-        toast.success(`נוסף לסל: ${product.name} (${size} מ"ל)`);
+        toast.success(t('common.added_to_cart_toast').replace('{name}', product.name).replace('{size}', size));
         setAddedId(size);
         setTimeout(() => setAddedId(null), 2000);
     };
 
     return (
-        <div className="space-y-4">
+        <div className={`space-y-4 ${dir === 'rtl' ? 'text-right' : 'text-left'}`} dir={dir}>
             <div className="flex items-center justify-between p-3 border rounded-lg bg-white hover:border-black transition cursor-pointer" onClick={() => handleAdd(2, product.price_2ml)}>
-                <span className="font-bold">2 מ״ל</span>
+                <span className="font-bold">2 {t('common.ml_unit')}</span>
                 <div className="flex items-center gap-4">
                     <span>{product.price_2ml} ₪</span>
                     <button className={`w-8 h-8 rounded-full flex items-center justify-center transition ${addedId === 2 ? 'bg-green-500 text-white' : 'bg-black text-white hover:bg-gray-800'}`}>
@@ -57,7 +59,7 @@ export default function ProductActionsClient({ product }) {
             </div>
 
             <div className="flex items-center justify-between p-3 border rounded-lg bg-white hover:border-black transition cursor-pointer" onClick={() => handleAdd(5, product.price_5ml)}>
-                <span className="font-bold">5 מ״ל</span>
+                <span className="font-bold">5 {t('common.ml_unit')}</span>
                 <div className="flex items-center gap-4">
                     <span>{product.price_5ml} ₪</span>
                     <button className={`w-8 h-8 rounded-full flex items-center justify-center transition ${addedId === 5 ? 'bg-green-500 text-white' : 'bg-black text-white hover:bg-gray-800'}`}>
@@ -67,7 +69,7 @@ export default function ProductActionsClient({ product }) {
             </div>
 
             <div className="flex items-center justify-between p-3 border rounded-lg bg-white hover:border-black transition cursor-pointer" onClick={() => handleAdd(10, product.price_10ml)}>
-                <span className="font-bold">10 מ״ל</span>
+                <span className="font-bold">10 {t('common.ml_unit')}</span>
                 <div className="flex items-center gap-4">
                     <span>{product.price_10ml} ₪</span>
                     <button className={`w-8 h-8 rounded-full flex items-center justify-center transition ${addedId === 10 ? 'bg-green-500 text-white' : 'bg-black text-white hover:bg-gray-800'}`}>

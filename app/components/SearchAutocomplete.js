@@ -4,8 +4,10 @@ import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function SearchAutocomplete({ fullWidth = false, onSelect }) {
+    const { t, locale, dir: contextDir } = useLanguage();
     const [query, setQuery] = useState('');
     const [results, setResults] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
@@ -56,10 +58,10 @@ export default function SearchAutocomplete({ fullWidth = false, onSelect }) {
         setIsOpen(false);
     };
 
-    // Detect Text Direction (Default RTL)
+    // Detect Text Direction (Support dynamic switching + character detection)
     const isHebrew = /[\u0590-\u05FF]/.test(query);
     const isEnglish = /^[A-Za-z]/.test(query);
-    const direction = isEnglish && !isHebrew ? 'ltr' : 'rtl';
+    const direction = query.length > 0 ? (isEnglish && !isHebrew ? 'ltr' : 'rtl') : contextDir;
     const isRTL = direction === 'rtl';
 
     return (
@@ -69,7 +71,7 @@ export default function SearchAutocomplete({ fullWidth = false, onSelect }) {
 
                 <input
                     type="text"
-                    placeholder="חיפוש..."
+                    placeholder={t('common.search')}
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
                     onFocus={() => {
@@ -77,15 +79,14 @@ export default function SearchAutocomplete({ fullWidth = false, onSelect }) {
                     }}
                     className={`border-b border-gray-300 py-1 text-sm focus:outline-none focus:border-black transition-all bg-transparent placeholder-gray-400 
                         ${fullWidth ? 'w-full' : 'w-20 focus:w-48'}
-                        ${isRTL ? 'text-right pl-8 pr-2' : 'text-left pr-8 pl-2'}`}
-
+                        ${isRTL ? 'text-right ps-2 pe-8' : 'text-left ps-2 pe-8'}`} // Standardizing spacing to use logical icon position
                     dir={direction}
                 />
 
                 {/* Search Icon (Always at "End" of input) */}
                 <button
                     type="submit"
-                    className={`absolute top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-black hover:text-black p-1 ${isRTL ? 'left-0' : 'right-0'}`}
+                    className={`absolute top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-black hover:text-black p-1 ${isRTL ? 'start-0' : 'end-0'}`}
                 >
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -94,7 +95,7 @@ export default function SearchAutocomplete({ fullWidth = false, onSelect }) {
 
 
                 {isLoading && (
-                    <div className={`absolute top-1/2 -translate-y-1/2 ${isRTL ? 'left-6' : 'right-6'}`}>
+                    <div className={`absolute top-1/2 -translate-y-1/2 ${isRTL ? 'start-6' : 'end-6'}`}>
                         <div className="animate-spin rounded-full h-3 w-3 border-b-2 border-black"></div>
                     </div>
                 )}
@@ -102,7 +103,7 @@ export default function SearchAutocomplete({ fullWidth = false, onSelect }) {
 
             {/* Dropdown Results */}
             {isOpen && results.length > 0 && (
-                <div className="absolute top-full right-0 w-80 bg-white shadow-xl border border-gray-100 rounded-lg mt-2 overflow-hidden z-50">
+                <div className={`absolute top-full w-80 bg-white shadow-xl border border-gray-100 rounded-lg mt-2 overflow-hidden z-50 ${isRTL ? 'right-0' : 'left-0'}`}>
                     <div className="p-2 max-h-[70vh] overflow-y-auto divide-y divide-gray-50">
                         {results.map((product) => (
                             <Link
@@ -112,8 +113,8 @@ export default function SearchAutocomplete({ fullWidth = false, onSelect }) {
                                     setIsOpen(false);
                                     if (onSelect) onSelect();
                                 }}
-                                className="flex items-center gap-4 p-3 hover:bg-gray-50 transition group/item text-right"
-                                dir="rtl"
+                                className="flex items-center gap-4 p-3 hover:bg-gray-50 transition group/item"
+                                dir={direction}
                             >
                                 <div className="relative w-12 h-12 flex-shrink-0 bg-gray-50 rounded-md overflow-hidden">
                                     {product.image ? (
@@ -148,7 +149,7 @@ export default function SearchAutocomplete({ fullWidth = false, onSelect }) {
                         }}
                         className="block bg-gray-50 p-3 text-center text-xs font-bold text-blue-600 hover:underline border-t"
                     >
-                        צפה בכל התוצאות ({results.length}+)
+                        {t('common.view_all_results')} ({results.length}+)
                     </Link>
 
                 </div>

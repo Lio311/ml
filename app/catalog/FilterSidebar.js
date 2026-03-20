@@ -5,17 +5,20 @@ import { useState, useEffect } from 'react';
 import PriceFilter from './PriceFilter';
 import CustomDropdown from '../components/ui/CustomDropdown';
 import { User, Users, UserRound, UserRoundSearch } from 'lucide-react';
-
-const GENDER_OPTIONS = [
-    { value: 'all', label: 'כל המגדרים', icon: <Users className="w-4 h-4" /> },
-    { value: 'men', label: 'גברים', icon: <User className="w-4 h-4" /> },
-    { value: 'women', label: 'נשים', icon: <User className="w-4 h-4 text-pink-500" /> },
-    { value: 'unisex', label: 'יוניסקס', icon: <UserRound className="w-4 h-4 text-blue-500" /> },
-];
+import { useLanguage } from '../context/LanguageContext';
 
 const VIRTUAL_CATEGORIES = ['בוטיק', 'נישה'];
 
 export default function FilterSidebar({ allBrands, allCategories, allCountries, allPerfumers, minPrice, maxPrice }) {
+    const { t, dir } = useLanguage();
+    
+    const GENDER_OPTIONS = [
+        { value: 'all', label: t('common.all_genders'), icon: <Users className="w-4 h-4" /> },
+        { value: 'men', label: t('common.men'), icon: <User className="w-4 h-4" /> },
+        { value: 'women', label: t('common.women'), icon: <User className="w-4 h-4 text-pink-500" /> },
+        { value: 'unisex', label: t('common.unisex'), icon: <UserRound className="w-4 h-4 text-blue-500" /> },
+    ];
+
     // Merge virtual categories (remove duplicates just in case)
     const combinedCategories = Array.from(new Set([...VIRTUAL_CATEGORIES, ...allCategories]));
     const router = useRouter();
@@ -134,20 +137,21 @@ export default function FilterSidebar({ allBrands, allCategories, allCountries, 
         <aside className="w-full md:w-64 space-y-6">
 
             {/* Search - Always Visible */}
-            <div className="bg-gray-50 p-4 rounded-lg border">
-                <h3 className="font-bold mb-4 border-b pb-2">חיפוש</h3>
+            <div className={`bg-gray-50 p-4 rounded-lg border ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
+                <h3 className="font-bold mb-4 border-b pb-2">{t('common.search_filter')}</h3>
                 <form onSubmit={handleSearch} className="relative">
                     <input
                         type="text"
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        placeholder="חפש בושם..."
-                        className="w-full p-2 pl-10 border rounded text-sm bg-white"
+                        placeholder={t('common.search_perfume_placeholder')}
+                        className="w-full p-2 ps-10 border rounded text-sm bg-white"
+                        dir={dir}
                     />
                     <button
                         type="submit"
-                        className="absolute left-2 top-1/2 -translate-y-1/2 text-gray-400 hover:text-black transition"
-                        title="חפש"
+                        className={`absolute top-1/2 -translate-y-1/2 text-gray-400 hover:text-black transition ${dir === 'rtl' ? 'left-2' : 'right-2'}`}
+                        title={t('common.search_filter')}
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
                             <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
@@ -157,8 +161,8 @@ export default function FilterSidebar({ allBrands, allCategories, allCountries, 
             </div>
 
             {/* Gender Filter - Repositioned here */}
-            <div className="bg-gray-50 p-4 rounded-lg border">
-                <h3 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-3">מגדר</h3>
+            <div className={`bg-gray-50 p-4 rounded-lg border ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
+                <h3 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-3">{t('common.gender_filter')}</h3>
                 <CustomDropdown 
                     options={GENDER_OPTIONS}
                     value={searchParams.get('gender') || 'all'}
@@ -169,8 +173,8 @@ export default function FilterSidebar({ allBrands, allCategories, allCountries, 
             </div>
 
             {/* Category Filter */}
-            <CollapsibleSection title={`קטגוריות (${combinedCategories.length})`} initialOpen={true}>
-                <div className="space-y-2 text-sm max-h-[200px] overflow-y-auto custom-scrollbar pl-2">
+            <CollapsibleSection title={`${t('common.category_filter')} (${combinedCategories.length})`} initialOpen={true}>
+                <div className={`space-y-2 text-sm max-h-[200px] overflow-y-auto custom-scrollbar ps-2 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
                     {combinedCategories.map(cat => (
                         <label key={cat} className="flex items-center gap-2 cursor-pointer hover:bg-gray-100 p-1 rounded">
                             <input
@@ -186,8 +190,8 @@ export default function FilterSidebar({ allBrands, allCategories, allCountries, 
             </CollapsibleSection>
 
             {/* Brand Filter */}
-            <CollapsibleSection title={`מותגים (${allBrands.length})`} initialOpen={true}>
-                <div className="space-y-2 text-sm max-h-[300px] overflow-y-auto custom-scrollbar pl-2">
+            <CollapsibleSection title={`${t('common.brand_filter')} (${allBrands.length})`} initialOpen={true}>
+                <div className={`space-y-2 text-sm max-h-[300px] overflow-y-auto custom-scrollbar ps-2 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
                     {allBrands.map(b => (
                         <label key={b} className="flex items-center gap-2 cursor-pointer hover:bg-gray-100 p-1 rounded">
                             <input
@@ -203,7 +207,7 @@ export default function FilterSidebar({ allBrands, allCategories, allCountries, 
             </CollapsibleSection>
 
             {/* Price Filter Slider - Collapsible */}
-            <CollapsibleSection title={`מחיר (עד ${price} ₪)`} initialOpen={true}>
+            <CollapsibleSection title={`${t('common.price')} (עד ${price} ₪)`} initialOpen={true}>
                 <PriceFilter 
                     price={price} 
                     setPrice={setPrice} 
@@ -214,7 +218,7 @@ export default function FilterSidebar({ allBrands, allCategories, allCountries, 
             </CollapsibleSection>
 
             {/* Season Filter - Collapsible */}
-            <CollapsibleSection title="עונה" initialOpen={true}>
+            <CollapsibleSection title={t('common.season_filter')} initialOpen={true}>
                 <div className="grid grid-cols-2 gap-2">
                     {['חורף', 'סתיו', 'אביב', 'קיץ'].map(s => (
                         <button
@@ -226,7 +230,10 @@ export default function FilterSidebar({ allBrands, allCategories, allCountries, 
                                 : 'bg-white text-gray-600 border-gray-100 hover:border-gray-200'
                             }`}
                         >
-                            {s}
+                            {s === 'חורף' ? t('common.winter') :
+                             s === 'סתיו' ? t('common.fall') :
+                             s === 'אביב' ? t('common.spring') :
+                             s === 'קיץ' ? t('common.summer') : s}
                         </button>
                     ))}
                 </div>
@@ -234,8 +241,8 @@ export default function FilterSidebar({ allBrands, allCategories, allCountries, 
 
             {/* Country Filter */}
             {allCountries && allCountries.length > 0 && (
-                <CollapsibleSection title={`מדינה (${allCountries.length})`} initialOpen={true}>
-                    <div className="space-y-2 text-sm max-h-[200px] overflow-y-auto custom-scrollbar pl-2">
+                <CollapsibleSection title={`${t('common.country_filter')} (${allCountries.length})`} initialOpen={true}>
+                    <div className={`space-y-2 text-sm max-h-[200px] overflow-y-auto custom-scrollbar ps-2 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
                         {allCountries.map(c => (
                             <label key={c} className="flex items-center gap-2 cursor-pointer hover:bg-gray-100 p-1 rounded">
                                 <input
@@ -253,8 +260,8 @@ export default function FilterSidebar({ allBrands, allCategories, allCountries, 
 
             {/* Perfumer Filter */}
             {allPerfumers && allPerfumers.length > 0 && (
-                <CollapsibleSection title={`פרפיומר (${allPerfumers.length})`} initialOpen={true}>
-                    <div className="space-y-2 text-sm max-h-[200px] overflow-y-auto custom-scrollbar pl-2">
+                <CollapsibleSection title={`${t('common.perfumer_filter')} (${allPerfumers.length})`} initialOpen={true}>
+                    <div className={`space-y-2 text-sm max-h-[200px] overflow-y-auto custom-scrollbar ps-2 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
                         {allPerfumers.map(p => (
                             <label key={p} className="flex items-center gap-2 cursor-pointer hover:bg-gray-100 p-1 rounded">
                                 <input
@@ -297,7 +304,7 @@ function CollapsibleSection({ title, children, initialOpen = false }) {
             <button
                 type="button"
                 onClick={() => setIsOpen(!isOpen)}
-                className="w-full flex justify-between items-center p-4 font-bold bg-gray-50 hover:bg-gray-100 transition text-right"
+                className={`w-full flex justify-between items-center p-4 font-bold bg-gray-50 hover:bg-gray-100 transition ${dir === 'rtl' ? 'text-right' : 'text-left'}`}
             >
                 <span>{title}</span>
                 <span className={`transform transition ${isOpen ? 'rotate-180' : ''}`}>

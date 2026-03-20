@@ -1,6 +1,17 @@
 import pool from "../../lib/db";
 import Link from "next/link";
 import Image from "next/image";
+import { cookies } from 'next/headers';
+import he from '../../data/locales/he.json';
+import en from '../../data/locales/en.json';
+
+const localize = (obj, field, locale) => {
+    if (!obj) return '';
+    if (locale === 'en' && obj[`${field}_en` || `${field}_EN` || `${field}_En` || `${field}_eN` ]) {
+        return obj[`${field}_en`] || obj[`${field}_EN`] || obj[field];
+    }
+    return obj[field] || '';
+};
 
 import { redirect } from 'next/navigation';
 import ProductCard from "../../components/ProductCard";
@@ -18,6 +29,10 @@ import * as Sentry from "@sentry/nextjs";
 export const revalidate = 3600; // SEO Improvement: Cache for 1 hour
 
 export async function generateMetadata(props) {
+    const cookieStore = await cookies();
+    const locale = cookieStore.get('NEXT_LOCALE')?.value || 'he';
+    const t = getT(locale);
+
     const params = await props.params;
     const { slug } = params;
 
@@ -26,8 +41,8 @@ export async function generateMetadata(props) {
 
     if (!product) {
         return {
-            title: "מוצר לא נמצא | ml_tlv",
-            description: "הבושם שחיפשת לא נמצא.",
+            title: `${t('common.product_not_found')} | ml_tlv`,
+            description: t('common.not_found_desc'),
         };
     }
 
@@ -36,8 +51,11 @@ export async function generateMetadata(props) {
     // We let the Page component handle the redirect. Here we just return canonical.
 
     const baseUrl = 'https://www.ml-tlv.com';
-    const title = `${product.name} | החל מ-${product.price_2ml}₪`;
-    const description = product.description ? product.description.substring(0, 160) : `קנו דוגמית של ${product.name} באתר ml_tlv. בשמים מקוריים ומיוחדים.`;
+    const localizedName = localize(product, 'name', locale);
+    const localizedDesc = localize(product, 'description', locale);
+    
+    const title = `${localizedName} | ${t('common.from')}${product.price_2ml}₪`;
+    const description = localizedDesc ? localizedDesc.substring(0, 160) : t('common.buy_sample_at').replace('{name}', localizedName);
     const imageUrl = product.image_url || `${baseUrl}/logo_v3.png`;
 
     return {
@@ -72,6 +90,11 @@ export async function generateMetadata(props) {
 }
 
 export default async function ProductPage(props) {
+    const cookieStore = await cookies();
+    const locale = cookieStore.get('NEXT_LOCALE')?.value || 'he';
+    const t = getT(locale);
+    const dir = locale === 'he' ? 'rtl' : 'ltr';
+
     const params = await props.params;
     const { slug } = params;
 
@@ -86,7 +109,7 @@ export default async function ProductPage(props) {
     const product = res.rows[0];
 
     if (!product) {
-        return <div className="p-20 text-center">מוצר לא נמצא</div>;
+        return <div className="p-20 text-center">{t('common.product_not_found')}</div>;
     }
 
     // SEO Redirect: If accessed via ID (or wrong slug case), redirect to canonical slug
@@ -152,12 +175,16 @@ export default async function ProductPage(props) {
     const nextYear = new Date().getFullYear() + 1;
     const priceValidUntil = `${nextYear}-12-31`;
 
+    const localizedName_val = localize(product, 'name', locale);
+    const localizedDesc_val = localize(product, 'description', locale);
+    const localizedCategory = localize(product, 'category', locale);
+
     const jsonLd = {
         "@context": "https://schema.org",
         "@type": "Product",
-        "name": product.name,
+        "name": localizedName_val,
         "image": product.image_url,
-        "description": product.description || `Buy ${product.name} sample - Original Niche Perfume`,
+        "description": localizedDesc_val || `Buy ${localizedName_val} sample - Original Niche Perfume`,
         "brand": {
             "@type": "Brand",
             "name": product.brand
@@ -214,10 +241,10 @@ export default async function ProductPage(props) {
 
     // Prepare breadcrumbs
     const breadcrumbItems = [
-        { label: 'חנות', href: '/catalog' },
-        { label: product.category || 'בשמים', href: `/catalog?category=${encodeURIComponent(product.category || '')}` },
+        { label: t('common.shop'), href: '/catalog' },
+        { label: localizedCategory || t('common.perfumes'), href: `/catalog?category=${encodeURIComponent(product.category || '')}` },
         { label: product.brand, href: `/brands/${encodeURIComponent(product.brand)}` },
-        { label: product.name }
+        { label: localizedName_val }
     ];
 
     return (
@@ -228,11 +255,11 @@ export default async function ProductPage(props) {
 
             <div className="flex flex-col lg:flex-row gap-8 lg:gap-16">
                 {/* Image */}
-                <div className="w-full md:w-1/2 aspect-square bg-white rounded-xl flex items-center justify-center relative overflow-hidden shadow-sm p-8 md:p-12 group">
+                <div className="w-full md:w-1/2 aspect-square bg-white rounded-xl flex items-center justify-center relative shadow-sm p-8 md:p-12 group">
                     {product.image_url ? (
                         <Image
                             src={product.image_url}
-                            alt={`${product.name} ${product.name_he ? ' - ' + product.name_he : ''}`}
+                            alt={`${localizedName_val}`}
                             fill
                             priority
                             className="object-contain p-8 md:p-12 hover:scale-105 transition-transform duration-500"
@@ -241,18 +268,18 @@ export default async function ProductPage(props) {
                     ) : (
                         <div className="text-6xl text-gray-300">🧴</div>
                     )}
-
-                    <div className="absolute top-4 left-4 z-10">
+"
+                    <div className="absolute top-4 start-4 z-10">
                         <WishlistHeart productId={product.id} />
                     </div>
 
-                    <div className="absolute top-4 right-4 z-10">
+                    <div className="absolute top-4 end-4 z-10">
                         <ShareButton name={product.name} />
                     </div>
 
                     {product.stock > 0 && product.stock <= 20 && (
-                        <span className="absolute top-16 right-4 bg-red-600 text-white text-sm font-bold px-3 py-1 rounded-full animate-pulse z-10 shadow-sm border border-red-500">
-                            מלאי מוגבל
+                        <span className="absolute top-16 end-4 bg-red-600 text-white text-sm font-bold px-3 py-1 rounded-full animate-pulse z-10 shadow-sm border border-red-500">
+                            {t('common.limited_stock')}
                         </span>
                     )}
                 </div>
@@ -261,8 +288,8 @@ export default async function ProductPage(props) {
                 {/* Details */}
                 <div className="w-full md:w-1/2 space-y-8">
                     <div>
-                        <div className="text-gray-500 mb-2">{product.category}</div>
-                        <h1 className="text-4xl font-bold mb-2">{product.name}</h1>
+                        <div className="text-gray-500 mb-2">{localizedCategory}</div>
+                        <h1 className="text-4xl font-bold mb-2">{localizedName_val}</h1>
 
                         <div className="mb-4">
                             <StarRating productId={product.id} />
@@ -285,25 +312,25 @@ export default async function ProductPage(props) {
                                         {
                                             "@type": "ListItem",
                                             "position": 1,
-                                            "name": "בית",
+                                            "name": t('common.home'),
                                             "item": "https://www.ml-tlv.com"
                                         },
                                         {
                                             "@type": "ListItem",
                                             "position": 2,
-                                            "name": "קטלוג",
+                                            "name": t('common.catalog'),
                                             "item": "https://ml-tlv.com/catalog"
                                         },
                                         {
                                             "@type": "ListItem",
                                             "position": 3,
-                                            "name": product.category || "כללי",
+                                            "name": localizedCategory || t('common.perfumes'),
                                             "item": `https://www.ml-tlv.com/catalog?category=${encodeURIComponent(product.category || '')}`
                                         },
                                         {
                                             "@type": "ListItem",
                                             "position": 4,
-                                            "name": product.name,
+                                            "name": localizedName_val,
                                             "item": `https://www.ml-tlv.com/product/${product.slug || product.id}`
                                         }
                                     ]
@@ -327,15 +354,15 @@ export default async function ProductPage(props) {
                             )
                         }
 
-                        <div className="text-lg text-gray-600 leading-relaxed">
-                            {product.description || `תיאור מוצר מורחב יבוא כאן... ריחות של ${product.category} בשילוב תווים ייחודיים.`}
+                        <div className={`text-lg text-gray-600 leading-relaxed ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
+                            {localizedDesc_val || t('common.product_desc_fallback').replace('{category}', localizedCategory)}
                         </div>
 
                         {/* Fragrance Pyramid Visualization removed from here */}
                     </div >
 
                     <div className="space-y-6">
-                        <h3 className="font-bold mb-4">בחר גודל והוסף לסל:</h3>
+                        <h3 className="font-bold mb-4">{t('common.select_size_add_to_cart')}</h3>
                         {/* Reusing ProductCard purely for logic is hacky, but consistent with requested "simple" flow. 
                             Ideally would be refactored, but for now we put a "Card" style adder or just the buttons.
                             To save creating a new component file right now, I will render a specialized client component inline if needed,
@@ -349,16 +376,16 @@ export default async function ProductPage(props) {
 
                         {/* Fragrance Pyramid Accordion */}
                         <FragrancePyramid
-                            top={product.top_notes}
-                            middle={product.middle_notes}
-                            base={product.base_notes}
+                            top={localize(product, 'top_notes', locale)}
+                            middle={localize(product, 'middle_notes', locale)}
+                            base={localize(product, 'base_notes', locale)}
                         />
 
                         {/* Additional Metadata */}
                         <AdditionalDetails 
-                            seasons={product.seasons}
-                            country={product.country}
-                            perfumers={product.perfumers}
+                            seasons={localize(product, 'seasons', locale)}
+                            country={localize(product, 'country', locale)}
+                            perfumers={localize(product, 'perfumers', locale)}
                         />
                     </div>
                 </div >
@@ -367,7 +394,7 @@ export default async function ProductPage(props) {
             {/* Related Products */}
             {related.length > 0 && (
                 <div className="mt-12">
-                    <h2 className="text-2xl font-bold mb-8 text-right">אולי תאהבו גם</h2>
+                    <h2 className={`text-2xl font-bold mb-8 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>{t('common.you_might_also_like')}</h2>
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
                         {related.map(p => (
                             <ProductCard key={p.id} product={p} />

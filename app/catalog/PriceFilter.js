@@ -2,15 +2,17 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState, useEffect } from "react";
+import { useLanguage } from "../context/LanguageContext";
 
 export default function PriceFilter({ price, setPrice, onApply, ABSOLUTE_MIN, ABSOLUTE_MAX }) {
+    const { dir } = useLanguage();
     // Update local state is now handled by parent's setPrice
     const handleChange = (e) => {
         setPrice(Number(e.target.value));
     };
 
     return (
-        <div className="space-y-4">
+        <div className="space-y-4" dir="ltr">
             <input
                 type="range"
                 min={ABSOLUTE_MIN}

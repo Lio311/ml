@@ -4,28 +4,50 @@ import ProductCard from "../components/ProductCard";
 import FilterSidebar from "./FilterSidebar";
 import SortSelect from "./SortSelect";
 import { mapHebrewQuery } from "../lib/hebrewMapping";
+import { cookies } from 'next/headers';
+import he from '../data/locales/he.json';
+import en from '../data/locales/en.json';
+
+const getT = (locale) => {
+    const dict = locale === 'en' ? en : he;
+    return (key) => {
+        const keys = key.split('.');
+        let result = dict;
+        for (const k of keys) {
+            if (result[k]) result = result[k];
+            else return key;
+        }
+        return result;
+    };
+};
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 export async function generateMetadata(props) {
+    const cookieStore = await cookies();
+    const locale = cookieStore.get('NEXT_LOCALE')?.value || 'he';
+    const t = getT(locale);
+
     const searchParams = await props.searchParams;
     const { q, brand, category } = searchParams;
 
-    let title = "קטלוג דוגמיות בשמים ודיקאנטים | ml_tlv";
-    let description = "כל דוגמיות הבשמים, הדיקאנטים ודוגמיות היוקרה שלנו במקום אחד. מצאו את הריח הבא שלכם.";
+    let title = t('common.meta_catalog_title');
+    let description = t('common.meta_catalog_desc');
 
     if (brand) {
-        title = `${brand} - דוגמיות בשמים ודיקאנטים | ml_tlv`;
-        description = `קולקציית דוגמיות הבשמים של מותג ${brand}. הזמינו עכשיו דיקאנטים מקוריים של ${brand}.`;
+        title = t('common.meta_brand_title').replace('{brand}', brand);
+        description = t('common.meta_brand_desc').replace('{brand}', brand);
     }
     if (category) {
-        title = `${category} - דוגמיות בשמים ודיקאנטים | ml_tlv`;
-        description = `מגוון דוגמיות בשמים מקטגוריית ${category}. בשמי בוטיק ונישה בריחות ${category} מובחרים.`;
+        const catName = category === 'בוטיק' ? t('common.boutique_perfumes') :
+                        category === 'נישה' ? t('common.niche_perfumes') : category;
+        title = t('common.meta_category_title').replace('{category}', catName);
+        description = t('common.meta_category_desc').replace('{category}', catName);
     }
     if (q) {
-        title = `חיפוש: ${q} | ml_tlv`;
-        description = `תוצאות חיפוש עבור ${q} בקטלוג דוגמיות הבשמים של ml_tlv.`;
+        title = t('common.meta_search_title').replace('{q}', q);
+        description = t('common.meta_search_desc').replace('{q}', q);
     }
 
     const baseUrl = 'https://www.ml-tlv.com';
@@ -237,6 +259,11 @@ async function getMetadataOptions() {
 }
 
 export default async function CatalogPage(props) {
+    const cookieStore = await cookies();
+    const locale = cookieStore.get('NEXT_LOCALE')?.value || 'he';
+    const t = getT(locale);
+    const dir = locale === 'he' ? 'rtl' : 'ltr';
+
     const searchParams = await props.searchParams;
     const search = searchParams?.q || '';
     const brand = searchParams?.brand || '';
@@ -279,13 +306,13 @@ export default async function CatalogPage(props) {
     const allCategories = await getCategories();
     const { countries: allCountries, perfumers: allPerfumers } = await getMetadataOptions();
 
-    const pageTitle = sort === 'bestsellers' ? 'הנמכרים ביותר' : 'הקטלוג המלא';
+    const pageTitle = sort === 'bestsellers' ? t('common.bestsellers') : t('common.full_catalog');
 
     return (
-        <div className="container py-12">
+        <div className={`container py-12 ${dir === 'rtl' ? 'text-right' : 'text-left'}`} dir={dir}>
             <h1 className="text-3xl font-serif font-bold mb-2 text-center">{pageTitle}</h1>
             <p className="hidden md:block text-sm text-gray-400 text-center mb-10">
-                מציג {products.length} מוצרים (עמוד {page} מתוך {totalPages})
+                {t('common.showing_products').replace('{count}', products.length).replace('{page}', page).replace('{total}', totalPages)}
             </p>
 
             <div className="flex flex-col md:flex-row gap-8">
@@ -309,47 +336,55 @@ export default async function CatalogPage(props) {
                             <div className="flex gap-2 text-xs mt-1 flex-wrap">
                                 {(Array.isArray(brand) ? brand : [brand]).filter(Boolean).map(b => (
                                     <Link key={b} href={getRemoveLink('brand', b)} className="bg-black text-white px-2 py-1 rounded flex items-center gap-2 hover:bg-gray-800 transition-colors group">
-                                        <span className="font-medium">מותג: {b}</span>
+                                        <span className="font-medium">{t('common.brand_filter')}: {b}</span>
                                         <span className="w-4 h-4 flex items-center justify-center rounded-full bg-white/10 group-hover:bg-white/20 transition-colors text-[14px] leading-none pb-0.5">×</span>
                                     </Link>
                                 ))}
                                 {(Array.isArray(category) ? category : [category]).filter(Boolean).map(c => (
                                     <Link key={c} href={getRemoveLink('category', c)} className="bg-black text-white px-2 py-1 rounded flex items-center gap-2 hover:bg-gray-800 transition-colors group">
-                                        <span className="font-medium">קטגוריה: {c}</span>
+                                        <span className="font-medium">{t('common.category_filter')}: {
+                                            c === 'בוטיק' ? t('common.boutique_perfumes') :
+                                            c === 'נישה' ? t('common.niche_perfumes') : c
+                                        }</span>
                                         <span className="w-4 h-4 flex items-center justify-center rounded-full bg-white/10 group-hover:bg-white/20 transition-colors text-[14px] leading-none pb-0.5">×</span>
                                     </Link>
                                 ))}
                                 {searchParams.gender && searchParams.gender !== 'all' && (
                                     <Link href={getRemoveLink('gender', searchParams.gender)} className="bg-black text-white px-2 py-1 rounded flex items-center gap-2 hover:bg-gray-800 transition-colors group">
-                                        <span className="font-medium">מגדר: {
-                                            searchParams.gender === 'men' ? 'גברים' : 
-                                            searchParams.gender === 'women' ? 'נשים' : 
-                                            searchParams.gender === 'unisex' ? 'יוניסקס' : searchParams.gender
+                                        <span className="font-medium">{t('common.gender_filter')}: {
+                                            searchParams.gender === 'men' ? t('common.men') : 
+                                            searchParams.gender === 'women' ? t('common.women') : 
+                                            searchParams.gender === 'unisex' ? t('common.unisex') : searchParams.gender
                                         }</span>
                                         <span className="w-4 h-4 flex items-center justify-center rounded-full bg-white/10 group-hover:bg-white/20 transition-colors text-[14px] leading-none pb-0.5">×</span>
                                     </Link>
                                 )}
                                 {search && (
                                     <Link href={getRemoveLink('q', search)} className="bg-black text-white px-2 py-1 rounded flex items-center gap-2 hover:bg-gray-800 transition-colors group">
-                                        <span className="font-medium">חיפוש: {search}</span>
+                                        <span className="font-medium">{t('common.search_filter')}: {search}</span>
                                         <span className="w-4 h-4 flex items-center justify-center rounded-full bg-white/10 group-hover:bg-white/20 transition-colors text-[14px] leading-none pb-0.5">×</span>
                                     </Link>
                                 )}
                                 {(Array.isArray(searchParams.season) ? searchParams.season : [searchParams.season]).filter(Boolean).map(s => (
                                     <Link key={s} href={getRemoveLink('season', s)} className="bg-black text-white px-2 py-1 rounded flex items-center gap-2 hover:bg-gray-800 transition-colors group">
-                                        <span className="font-medium">עונה: {s}</span>
+                                        <span className="font-medium">{t('common.season_filter')}: {
+                                            s === 'חורף' ? t('common.winter') :
+                                            s === 'סתיו' ? t('common.fall') :
+                                            s === 'אביב' ? t('common.spring') :
+                                            s === 'קיץ' ? t('common.summer') : s
+                                        }</span>
                                         <span className="w-4 h-4 flex items-center justify-center rounded-full bg-white/10 group-hover:bg-white/20 transition-colors text-[14px] leading-none pb-0.5">×</span>
                                     </Link>
                                 ))}
                                 {(Array.isArray(searchParams.country) ? searchParams.country : [searchParams.country]).filter(Boolean).map(c => (
                                     <Link key={c} href={getRemoveLink('country', c)} className="bg-black text-white px-2 py-1 rounded flex items-center gap-2 hover:bg-gray-800 transition-colors group">
-                                        <span className="font-medium">מדינה: {c}</span>
+                                        <span className="font-medium">{t('common.country_filter')}: {c}</span>
                                         <span className="w-4 h-4 flex items-center justify-center rounded-full bg-white/10 group-hover:bg-white/20 transition-colors text-[14px] leading-none pb-0.5">×</span>
                                     </Link>
                                 ))}
                                 {(Array.isArray(searchParams.perfumer) ? searchParams.perfumer : [searchParams.perfumer]).filter(Boolean).map(p => (
                                     <Link key={p} href={getRemoveLink('perfumer', p)} className="bg-black text-white px-2 py-1 rounded flex items-center gap-2 hover:bg-gray-800 transition-colors group">
-                                        <span className="font-medium">פרפיומר: {p}</span>
+                                        <span className="font-medium">{t('common.perfumer_filter')}: {p}</span>
                                         <span className="w-4 h-4 flex items-center justify-center rounded-full bg-white/10 group-hover:bg-white/20 transition-colors text-[14px] leading-none pb-0.5">×</span>
                                     </Link>
                                 ))}
@@ -360,7 +395,7 @@ export default async function CatalogPage(props) {
                         {/* Sort Options */}
                         <div className="flex flex-row justify-center md:justify-end items-center w-full md:w-auto gap-4">
                             <span className="md:hidden text-[11px] text-gray-400 whitespace-nowrap font-medium">
-                                מציג {products.length} מוצרים (עמוד {page} מתוך {totalPages})
+                                {t('common.showing_products').replace('{count}', products.length).replace('{page}', page).replace('{total}', totalPages)}
                             </span>
                             <SortSelect />
                         </div>
@@ -374,8 +409,8 @@ export default async function CatalogPage(props) {
 
                     {products.length === 0 && (
                         <div className="text-center py-20 bg-gray-50 rounded-lg">
-                            <p className="text-xl text-gray-500">לא נמצאו מוצרים תואמים.</p>
-                            <Link href="/catalog" className="text-blue-600 mt-2 block underline">נקה הכל</Link>
+                            <p className="text-xl text-gray-500">{t('common.no_products_found')}</p>
+                            <Link href="/catalog" className="text-blue-600 mt-2 block underline">{t('common.clear_all')}</Link>
                         </div>
                     )}
 
@@ -391,7 +426,7 @@ export default async function CatalogPage(props) {
                                     }}
                                     className="px-4 py-2 border rounded hover:bg-gray-100 transition"
                                 >
-                                    הקודם
+                                    {t('common.previous')}
                                 </Link>
                             )}
 
@@ -434,7 +469,7 @@ export default async function CatalogPage(props) {
                                     }}
                                     className="px-4 py-2 border rounded hover:bg-gray-100 transition"
                                 >
-                                    הבא
+                                    {t('common.next')}
                                 </Link>
                             )}
                         </div>
@@ -447,7 +482,7 @@ export default async function CatalogPage(props) {
             <div className="border-t border-gray-100 px-4">
                 <div className="max-w-5xl mx-auto">
                     <h2 className="text-2xl font-serif font-bold mb-8 text-center text-gray-900 mt-12">
-                        מדריך דוגמיות בשמים ודיקאנטים
+                        {t('common.catalog_seo_title')}
                     </h2>
                     <div className="grid md:grid-cols-2 gap-6 text-right pb-12">
                         <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm hover:border-gray-200 transition-all group">
@@ -456,10 +491,10 @@ export default async function CatalogPage(props) {
                                     {/* Perfume Bottle Icon */}
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 3h6v3H9z"/><path d="M6 7h12v12a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2z"/><path d="M12 7v14"/><path d="M9 11h6"/><path d="M9 15h6"/></svg>
                                 </div>
-                                <h3 className="text-lg font-bold text-black border-r-2 border-black pr-3 leading-none">למה דוגמיות?</h3>
+                                <h3 className={`text-lg font-bold text-black border-black ps-3 leading-none ${dir === 'rtl' ? 'border-r-2' : 'border-l-2'}`}>{t('common.why_samples_title')}</h3>
                             </div>
                             <p className="text-sm leading-relaxed text-gray-600">
-                                עולם הבישום הוא רחב ומורכב. דוגמיות בשמים (Perfume Samples) מאפשרות לכם להתנסות בריחות יוקרה, נישה ובוטיק מבלי להתחייב לבקבוק מלא. זו הדרך החכמה ביותר למצוא את הריח המדויק עבורכם במינימום סיכון ומקסימום חוויה.
+                                {t('common.why_samples_desc')}
                             </p>
                         </div>
                         <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm hover:border-gray-200 transition-all group">
@@ -468,10 +503,10 @@ export default async function CatalogPage(props) {
                                     {/* Test Tube / Vial Icon */}
                                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M9 2v17.5A2.5 2.5 0 0 0 11.5 22h1a2.5 2.5 0 0 0 2.5-2.5V2h-6z"/><path d="M8 2h8"/><path d="M9 7h6"/><path d="M9 12h6"/></svg>
                                 </div>
-                                <h3 className="text-lg font-bold text-black border-r-2 border-black pr-3 leading-none">מהו דיקאנט?</h3>
+                                <h3 className={`text-lg font-bold text-black border-black ps-3 leading-none ${dir === 'rtl' ? 'border-r-2' : 'border-l-2'}`}>{t('common.what_is_decant_title')}</h3>
                             </div>
                             <p className="text-sm leading-relaxed text-gray-600">
-                                דיקאנט הוא בושם מקורי שהועבר לבקבוקון קטן (2, 5 או 10 מ"ל). זוהי חלופה נהדרת המאפשרת לקחת את הריח האהוב לכל מקום, או לנסות מותגי נישה במחיר נגיש. כל התמציות אצלנו מקוריות לחלוטין ונארזות בקפידה.
+                                {t('common.what_is_decant_desc')}
                             </p>
                         </div>
                     </div>

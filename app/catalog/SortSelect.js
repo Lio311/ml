@@ -1,17 +1,19 @@
 "use client";
 import { useRouter, useSearchParams } from "next/navigation";
 import CustomDropdown from "../components/ui/CustomDropdown";
+import { useLanguage } from "../context/LanguageContext";
 
 export default function SortSelect() {
     const router = useRouter();
     const searchParams = useSearchParams();
+    const { t } = useLanguage();
     const currentSort = searchParams.get("sort") || "newest";
 
     const SORT_OPTIONS = [
-        { value: "newest", label: "חדש ביותר" },
-        { value: "oldest", label: "ישן ביותר" },
-        { value: "price_asc", label: "מחיר: מהנמוך לגבוה" },
-        { value: "price_desc", label: "מחיר: מהגבוה לנמוך" },
+        { value: "newest", label: t('common.sort_newest') },
+        { value: "oldest", label: t('common.sort_oldest') },
+        { value: "price_asc", label: t('common.sort_price_asc') },
+        { value: "price_desc", label: t('common.sort_price_desc') },
     ];
 
     const handleSortChange = (newSort) => {
@@ -23,7 +25,7 @@ export default function SortSelect() {
 
     return (
         <div className="flex items-center gap-3">
-            <span className="text-xs text-gray-400 font-black uppercase tracking-widest hidden md:inline">מיון לפי</span>
+            <span className="text-xs text-gray-400 font-black uppercase tracking-widest hidden md:inline">{t('common.sort_by')}</span>
             <CustomDropdown 
                 options={SORT_OPTIONS}
                 value={currentSort}

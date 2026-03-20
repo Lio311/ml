@@ -1,130 +1,61 @@
 import FAQClient from './FAQClient';
+import { faq_he, faq_en } from '../data/faq_data';
+import { cookies } from 'next/headers';
+import he from '../data/locales/he.json';
+import en from '../data/locales/en.json';
 
-export const metadata = {
-    title: "שאלות ותשובות | ml_tlv",
-    description: "שאלות נפוצות ותשובות בנוגע להזמנות, משלוחים ומוצרים.",
+const getT = (locale) => {
+    const dict = locale === 'en' ? en : he;
+    return (key) => {
+        const keys = key.split('.');
+        let result = dict;
+        for (const k of keys) {
+            if (result[k]) result = result[k];
+            else return key;
+        }
+        return result;
+    };
 };
 
-export default function FAQPage() {
-    const categories = [
-        {
-            title: "מקוריות ואיכות בשמים",
-            items: [
-                { 
-                    q: "האם הבשמים מקוריים ב-100%?", 
-                    a: "חד משמעית כן. אנחנו ב-ml_tlv מתחייבים למקוריות מלאה. כל הבשמים נרכשים מהיבואנים הרשמיים או ממשווקים מורשים בלבד. אנחנו לא מתעסקים עם חיקויים או בשמי 'טסטר' ממקורות לא ידועים." 
-                },
-                { 
-                    q: "איך מתבצע תהליך המילוי (Decanting)?", 
-                    a: "תהליך המילוי מתבצע בסביבה סטרילית ומבוקרת. אנחנו משתמשים במזרקים חד-פעמיים ובמכשור מקצועי להעברת הבושם ישירות מהבקבוק המקורי לבקבוקוני זכוכית איכותיים, ללא מגע יד אדם וללא פגיעה בניחוח או באיכות הבושם." 
-                },
-                { 
-                    q: "האם הריח בדוגמית זהה לבשום המקורי?", 
-                    a: "כן, מדובר בדיוק באותו נוזל. ההבדל היחיד הוא האריזה. דוגמית היא דרך מצוינת לנסות בושם יוקרתי לפני שמשקיעים אלפי שקלים בבקבוק מלא." 
-                },
-                { 
-                    q: "האם הדוגמיות מגיעות בבקבוק המקורי של המותג?", 
-                    a: "לא. המותגים הגדולים בדרך כלל לא מייצרים דוגמיות בגדלים של 5 או 10 מ\"ל למכירה. אנחנו מעבירים את הבושם לבקבוקוני זכוכית יוקרתיים בעלי ראש התזה (Atmoizer) איכותי שמבטיח פיזור אופטימלי של הניחוח." 
-                }
-            ]
-        },
-        {
-            title: "גדלים, כמויות ושימוש",
-            items: [
-                { 
-                    q: "אילו גדלים זמינים לרכישה?", 
-                    a: "אנחנו מציעים שלושה גדלים עיקריים: 2 מ\"ל (לניסיון ראשוני), 5 מ\"ל (לשימוש של כשבועיים) ו-10 מ\"ל (לשימוש ממושך או נסיעות)." 
-                },
-                { 
-                    q: "לכמה התזות מספיקה דוגמית של 2 מ\"ל?", 
-                    a: "דוגמית של 2 מ\"ל מספיקה לרוב ל-25 עד 30 התזות. זה מספיק בהחלט כדי לבחון את עמידות הבושם על העור לאורך מספר ימים." 
-                },
-                { 
-                    q: "כמה התזות יש ב-5 מ\"ל וב-10 מ\"ל?", 
-                    a: "ב-5 מ\"ל יש כ-75 התזות, וב-10 מ\"ל יש כ-150 התזות. המספר המדויק תלוי בעוצמת הלחיצה ובסוג המתיז." 
-                },
-                { 
-                    q: "האם הבקבוקונים ניתנים למילוי חוזר?", 
-                    a: "הבקבוקונים שלנו איכותיים מאוד וניתנים להברגה חוזרת, כך שתוכלו להשתמש בהם שוב לנסיעות או למילוי עצמי של בשמים אחרים לאחר שטיפה יסודית." 
-                }
-            ]
-        },
-        {
-            title: "מבצעים, הגרלות ומתנות",
-            items: [
-                { 
-                    q: "איך עובדת שיטת הדוגמיות במתנה?", 
-                    a: "אנחנו אוהבים לפנק! בקנייה מעל 300 ₪ תקבלו 2 דוגמיות מתנה, מעל 500 ₪ תקבלו 4 דוגמיות, ומעל 1000 ₪ תקבלו 6 דוגמיות (בגודל 2 מ\"ל). המתנות נבחרות על ידינו בהתאם למלאי ולסגנון ההזמנה שלכם." 
-                },
-                { 
-                    q: "מה זה 'מבצע הבזק' (Lottery Mode)?", 
-                    a: "מדי פעם מופיע באתר שעון עצר שמציע הנחה משמעותית (לרוב 15%) לזמן מוגבל מאוד. עליכם לסיים את הרכישה לפני שהזמן נגמר, אחרת העגלה שלכם תתאפס וההנחה תיעלם." 
-                },
-                { 
-                    q: "איך מפעילים את גלגל המזל?", 
-                    a: "כשסכום העגלה שלכם באתר הראשי חוצה את רף ה-1200 ₪, יופיע לכם גלגל מזל עם אפשרות לזכות בפרסים מדהימים - מהנחות נוספות ועד דוגמיות יוקרה בחינם." 
-                }
-            ]
-        },
-        {
-            title: "משלוחים ואיסוף עצמי",
-            items: [
-                { 
-                    q: "מהי עלות המשלוח?", 
-                    a: "עלות המשלוח היא 30 ₪ לכל חלקי הארץ. המשלוח מתבצע באמצעות חברת שליחים עד הבית." 
-                },
-                { 
-                    q: "תוך כמה זמן המשלוח יגיע אלי?", 
-                    a: "זמן האספקה הממוצע הוא 3 עד 5 ימי עסקים. בדרך כלל אנחנו מוציאים את ההזמנות מהר יותר כדי שתיהנו מהבושם כמה שיותר מהר." 
-                },
-                { 
-                    q: "האם ניתן לבצע איסוף עצמי?", 
-                    a: "כן, ניתן לבצע איסוף עצמי בחינם מרחוב וושינגטון 19, תל אביב. יש לבחור באופציה זו בעגלת הקניות ולתאם מראש בוואטסאפ." 
-                }
-            ]
-        },
-        {
-            title: "מערכת הקטלוגים והשותפים",
-            items: [
-                { 
-                    q: "ראיתי 'הבשמים של...' - מה זה אומר?", 
-                    a: "בנוסף לקטלוג הראשי, אנחנו מארחים קטלוגים אישיים של אספנים ושותפים. אלו מוצרים שנשלחים ישירות מאותם ספקים אך מנוהלים דרך התשתית המאובטחת שלנו." 
-                },
-                { 
-                    q: "האם ניתן לשלב מוצרים מקטלוגים שונים בהזמנה אחת?", 
-                    a: "בוודאי. ניתן להוסיף מוצרים מכל קטלוג לעגלה אחת. שימו לב שהעגלה מחולקת ללשוניות לפי ספקים, וייתכן שיידרש תשלום משלוח נפרד לכל ספק (אלא אם צוין אחרת)." 
-                }
-            ]
-        },
-        {
-            title: "שירות לקוחות והחזרות",
-            items: [
-                { 
-                    q: "איך ניתן ליצור קשר עם שירות הלקוחות?", 
-                    a: "הדרך המהירה ביותר היא דרך הוואטסאפ שלנו (הכפתור הצף באתר) או במייל. אנחנו זמינים למענה בימי חול בין 10:00 ל-18:00." 
-                },
-                { 
-                    q: "מהי מדיניות ההחזרות?", 
-                    a: "בשל העובדה שמדובר במוצרים אישיים והיגייניים (דוגמיות בושם), לא ניתן להחזיר מוצרים שנפתחו או נעשה בהם שימוש. אם המוצר הגיע תקול או דולף, אנא צרו קשר מיד ונחליף אותו עבורכם." 
-                }
-            ]
-        }
-    ];
+export async function generateMetadata() {
+    const cookieStore = await cookies();
+    const locale = cookieStore.get('NEXT_LOCALE')?.value || 'he';
+    const t = getT(locale);
+
+    return {
+        title: `${t('common.faq')} | ml_tlv`,
+        description: t('common.faq_desc'),
+    };
+}
+
+export default async function FAQPage() {
+    const cookieStore = await cookies();
+    const locale = cookieStore.get('NEXT_LOCALE')?.value || 'he';
+    const t = getT(locale);
+    const categories = locale === 'en' ? faq_en : faq_he;
 
     return (
         <div className="min-h-screen bg-gray-50 pb-20">
             {/* Header section with background pattern */}
             <div className="bg-black text-white py-20 mb-12 relative overflow-hidden">
                 <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_center,white_0%,transparent_70%)]" />
-                <div className="container mx-auto px-4 relative z-10">
-                    <h1 className="text-4xl md:text-6xl font-black mb-6 text-center tracking-tight">מרכז המידע</h1>
-                    <p className="text-gray-400 text-center text-lg md:text-xl w-full mx-auto font-light leading-relaxed whitespace-nowrap overflow-hidden text-ellipsis">
-                        כל מה שצריך לדעת על עולם הבישום, ההזמנות והבונוסים הייחודיים של ml_tlv. אנחנו כאן לכל שאלה.
+                <div className="container mx-auto px-4 relative z-10 text-center">
+                    <h1 className="text-4xl md:text-6xl font-black mb-6 tracking-tight">
+                        {t('common.faq_title_header')}
+                    </h1>
+                    <p className="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto font-light leading-relaxed">
+                        {t('common.faq_subtitle_header')}
                     </p>
                 </div>
             </div>
 
-            <FAQClient categories={categories} />
+            <FAQClient 
+                categories={categories} 
+                sidebarTitle={t('common.categories_label')}
+                footerTitle={t('common.no_answer_found')}
+                footerSubtitle={t('common.faq_footer_subtitle')}
+                contactBtnText={t('common.contact_now')}
+            />
         </div>
     );
 }

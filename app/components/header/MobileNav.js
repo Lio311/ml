@@ -7,8 +7,10 @@ import { SignedIn, SignedOut, SignInButton, UserButton } from '@clerk/nextjs';
 import SearchAutocomplete from '../SearchAutocomplete';
 import { Settings, MessageSquare, Star } from 'lucide-react';
 import AdminInboxCounter from './AdminInboxCounter';
+import { useLanguage } from '../../context/LanguageContext';
 
 export default function MobileNav({ menu = [], cartCount, wishlistCount, isAdmin }) {
+    const { t, locale, dir } = useLanguage();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isSearchOpen, setIsSearchOpen] = useState(false);
 
@@ -25,7 +27,7 @@ export default function MobileNav({ menu = [], cartCount, wishlistCount, isAdmin
                             onClick={() => setIsSearchOpen(false)}
                             className="p-2 text-gray-500 hover:text-black font-bold text-sm"
                         >
-                            ביטול
+                            {t('common.cancel')}
                         </button>
                     </div>
                 </div>
@@ -35,7 +37,7 @@ export default function MobileNav({ menu = [], cartCount, wishlistCount, isAdmin
             <div className="flex md:hidden justify-between items-center w-full z-20">
                 <div className="flex items-center gap-0.5">
                     {/* Hamburger */}
-                    <button className="p-2 -ml-2" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+                    <button className="p-2 -ms-2" onClick={() => setIsMenuOpen(!isMenuOpen)}>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
                         </svg>
@@ -60,10 +62,10 @@ export default function MobileNav({ menu = [], cartCount, wishlistCount, isAdmin
                 {/* Right Icons */}
                 <div className="flex items-center gap-0">
                     <SignedIn>
-                        <Link href="/my-catalogs" className="p-1.5 text-black hover:text-yellow-600 transition" title="ניהול הקטלוגים שלי">
+                        <Link href="/my-catalogs" className="p-1.5 text-black hover:text-yellow-600 transition" title={t('common.manage_catalogs')}>
                             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.25" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-store"><path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7"/><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4"/><path d="M2 7h20"/><path d="M22 7v3a2 2 0 0 1-2 2v0a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 16 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 12 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 8 12a2.7 2.7 0 0 1-1.59-.63.7.7 0 0 0-.82 0A2.7 2.7 0 0 1 4 12v0a2 2 0 0 1-2-2V7"/></svg>
                         </Link>
-                        <Link href="/orders" className="p-1.5 text-black relative" title="ההזמנות שלי">
+                        <Link href="/orders" className="p-1.5 text-black relative" title={t('common.my_orders')}>
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
                                 <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0zM4.501 20.118a7.5 7.5 0 0114.998 0A17.933 17.933 0 0112 21.75c-2.676 0-5.216-.584-7.499-1.632z" />
                             </svg>
@@ -111,7 +113,7 @@ export default function MobileNav({ menu = [], cartCount, wishlistCount, isAdmin
                     {/* Close Button */}
                     <button
                         onClick={() => setIsMenuOpen(false)}
-                        className="absolute top-5 left-5 p-2 text-black hover:bg-gray-100 rounded-full transition-colors z-50"
+                        className="absolute top-5 start-5 p-2 text-black hover:bg-gray-100 rounded-full transition-colors z-50"
                         aria-label="סגור תפריט"
                     >
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-8 h-8">
@@ -124,7 +126,7 @@ export default function MobileNav({ menu = [], cartCount, wishlistCount, isAdmin
                             <SignedIn>
                                 <UserButton afterSignOutUrl="/" appearance={{ elements: { userButtonAvatarBox: "w-12 h-12" } }} />
                                 <Link href="/my-catalogs" onClick={() => setIsMenuOpen(false)} className="bg-yellow-400 text-black px-4 py-2 rounded-full text-sm font-bold shadow-sm">
-                                    הקטלוגים שלי
+                                    {t('common.my_catalogs_mobile')}
                                 </Link>
                             </SignedIn>
                         </div>
@@ -136,7 +138,7 @@ export default function MobileNav({ menu = [], cartCount, wishlistCount, isAdmin
                                 onClick={() => setIsMenuOpen(false)}
                                 className={`border-b pb-4 ${item.isRed ? 'text-red-600 font-bold' : ''}`}
                             >
-                                {item.label}
+                                {t(`common.${item.id}`)}
                             </Link>
                         ))}
 
@@ -149,13 +151,13 @@ export default function MobileNav({ menu = [], cartCount, wishlistCount, isAdmin
                                     className="flex items-center justify-center gap-3 text-gray-600 border border-gray-200 py-3 rounded-2xl"
                                 >
                                     <Settings className="w-6 h-6" />
-                                    <span>ניהול אתר</span>
+                                    <span>{t('common.admin_management')}</span>
                                 </Link>
                             </div>
                         )}
                         
                         <button onClick={() => setIsMenuOpen(false)} className="mt-8 text-sm text-gray-500 underline font-normal">
-                            סגור תפריט
+                            {t('common.close_menu')}
                         </button>
                     </div>
                 </div>

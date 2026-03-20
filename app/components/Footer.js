@@ -1,27 +1,27 @@
 import Link from 'next/link';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function Footer() {
+    const { t, dir } = useLanguage();
     return (
         <footer className="border-t bg-black text-white py-6 overflow-hidden mt-auto">
-            <div className="container grid grid-cols-2 md:grid-cols-5 gap-10 text-center py-10">
+            <div className={`container grid grid-cols-2 md:grid-cols-5 gap-10 text-center py-10 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
 
                 <div>
-                    <h3 className="text-lg font-bold mb-4">ml_tlv</h3>
+                    <h3 className="text-lg font-bold mb-4 uppercase tracking-widest">ml_tlv</h3>
                     <p className="text-sm text-gray-400">
-                        דוגמיות בשמים יוקרתיות במחירים הוגנים.
-                        <br />
-                        נבחרו בקפידה כדי שתמצאו את הריח שלכם.
+                        {t('common.footer_tagline')}
                     </p>
                     <div className="mt-4">
                         <Link href="/catalogs-info" className="text-yellow-400 font-bold hover:underline transition">
-                            צור חנות משלך!
+                            {t('common.create_store')}
                         </Link>
                     </div>
                 </div>
 
                 <div>
-                    <h3 className="text-lg font-bold mb-4">מותגים פופולריים</h3>
-                    <ul className="grid grid-cols-2 gap-x-2 gap-y-2 text-xs text-center text-gray-400">
+                    <h3 className="text-lg font-bold mb-4">{t('common.popular_brands')}</h3>
+                    <ul className={`grid grid-cols-2 gap-x-2 gap-y-2 text-xs text-center text-gray-400`}>
                         <li><Link href="/brands/Xerjoff" className="hover:text-white transition">Xerjoff</Link></li>
                         <li><Link href="/brands/Creed" className="hover:text-white transition">Creed</Link></li>
                         <li><Link href="/brands/Kilian" className="hover:text-white transition">Kilian</Link></li>
@@ -34,31 +34,31 @@ export default function Footer() {
                 </div>
 
                 <div>
-                    <h3 className="text-lg font-bold mb-4">קטגוריות מובילות</h3>
+                    <h3 className="text-lg font-bold mb-4">{t('common.top_categories')}</h3>
                     <ul className="space-y-2 text-sm text-gray-400">
-                        <li><Link href="/catalog?category=בוטיק" className="hover:text-white transition">בשמי בוטיק</Link></li>
-                        <li><Link href="/catalog?category=נישה" className="hover:text-white transition">בשמי נישה</Link></li>
-                        <li><Link href="/catalog?category=דיזיינר" className="hover:text-white transition">בשמי דיזיינר</Link></li>
-                        <li><Link href="/catalog?category=יוניסקס" className="hover:text-white transition">בשמי יוניסקס</Link></li>
-                        <li><Link href="/catalog?category=גברים" className="hover:text-white transition">בשמים לגברים</Link></li>
-                        <li><Link href="/catalog?category=נשים" className="hover:text-white transition">בשמים לנשים</Link></li>
+                        <li><Link href="/catalog?category=בוטיק" className="hover:text-white transition">{t('common.boutique_perfumes')}</Link></li>
+                        <li><Link href="/catalog?category=נישה" className="hover:text-white transition">{t('common.niche_perfumes')}</Link></li>
+                        <li><Link href="/catalog?category=דיזיינר" className="hover:text-white transition">{t('common.designer_perfumes')}</Link></li>
+                        <li><Link href="/catalog?category=יוניסקס" className="hover:text-white transition">{t('common.unisex_perfumes')}</Link></li>
+                        <li><Link href="/catalog?category=גברים" className="hover:text-white transition">{t('common.men_perfumes')}</Link></li>
+                        <li><Link href="/catalog?category=נשים" className="hover:text-white transition">{t('common.women_perfumes')}</Link></li>
                     </ul>
                 </div>
 
                 <div>
-                    <h3 className="text-lg font-bold mb-4">מידע ונהלים</h3>
-                    <ul className="space-y-2 text-sm text-gray-400 text-center">
-                        <li><Link href="/about" className="hover:text-white transition">אודות ml_tlv</Link></li>
-                        <li><Link href="/faq" className="hover:text-white transition">שאלות ותשובות</Link></li>
-                        <li><Link href="/contact" className="hover:text-white transition">צור קשר</Link></li>
-                        <li><Link href="/terms" className="hover:text-white transition">תקנון האתר</Link></li>
-                        <li><Link href="/shipping" className="hover:text-white transition">משלוחים והחזרות</Link></li>
-                        <li><Link href="/privacy" className="hover:text-white transition">מדיניות פרטיות</Link></li>
+                    <h3 className="text-lg font-bold mb-4">{t('common.info_and_terms')}</h3>
+                    <ul className={`space-y-2 text-sm text-gray-400`}>
+                        <li><Link href="/about" className="hover:text-white transition">{t('common.about_ml_tlv')}</Link></li>
+                        <li><Link href="/faq" className="hover:text-white transition">{t('common.faq')}</Link></li>
+                        <li><Link href="/contact" className="hover:text-white transition">{t('common.contact')}</Link></li>
+                        <li><Link href="/terms" className="hover:text-white transition">{t('common.terms_of_service')}</Link></li>
+                        <li><Link href="/shipping" className="hover:text-white transition">{t('common.shipping_returns')}</Link></li>
+                        <li><Link href="/privacy" className="hover:text-white transition">{t('common.privacy_policy')}</Link></li>
                     </ul>
                 </div>
 
                 <div className="flex flex-col items-center col-span-2 md:col-span-1">
-                    <h3 className="text-lg font-bold mb-4">עקבו אחרינו</h3>
+                    <h3 className="text-lg font-bold mb-4">{t('common.follow_us')}</h3>
                     <a
                         href="https://instagram.com/ml_tlv"
                         target="_blank"
@@ -85,17 +85,17 @@ export default function Footer() {
 
                     <div className="space-y-3 pt-6 border-t border-gray-800 w-full">
                         <Link href="/blog" className="text-sm text-gray-400 hover:text-white transition block">
-                            מגזין הבישום - כתבות ומדריכים
+                            {t('common.perfume_magazine')}
                         </Link>
                         <Link href="/reviews" className="text-sm text-gray-400 hover:text-white transition block">
-                            ביקורות גולשים על דוגמיות
+                            {t('common.user_reviews')}
                         </Link>
                     </div>
                 </div>
 
             </div>
             <div className="container mt-8 pt-4 border-t border-gray-800 text-center text-xs text-gray-500">
-                © 2022 ml_tlv. כל הזכויות שמורות.
+                © 2022 ml_tlv. {t('common.all_rights_reserved')}
             </div>
         </footer>
     );

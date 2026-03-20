@@ -37,7 +37,7 @@ export default function AdminInboxCounter({ isAdmin }) {
             <MessageSquare className="w-6 h-6 md:w-5 md:h-5 hover:text-blue-800 transition" />
             <span className="md:hidden">תיבת הודעות</span>
             {unreadCount > 0 && (
-                <span className="bg-blue-600 text-white text-[10px] w-5 h-5 md:w-3.5 md:h-3.5 flex items-center justify-center rounded-full font-bold md:absolute md:-top-1 md:-right-1 border border-white">
+                <span className="bg-blue-600 text-white text-[10px] w-5 h-5 md:w-3.5 md:h-3.5 flex items-center justify-center rounded-full font-bold md:absolute md:-top-1 md:-end-1 border border-white">
                     {unreadCount}
                 </span>
             )}

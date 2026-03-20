@@ -12,21 +12,29 @@ import UserActions from './header/UserActions';
 import DesktopNav from './header/DesktopNav';
 import DesktopIcons from './header/DesktopIcons';
 import LiveVisitorCounter from './LiveVisitorCounter';
+import { useLanguage } from '../context/LanguageContext';
 
 export default function Header({ brands = [], menu = [] }) {
     const { user } = useUser();
     const isAdmin = user?.publicMetadata?.role === 'admin' || user?.publicMetadata?.role === 'deputy';
     const { globalItemsCount: cartCount } = useCart();
     const { count: wishlistCount } = useWishlist();
+    const { locale, toggleLanguage, t } = useLanguage();
 
     return (
         <header className="sticky top-0 z-50 bg-white shadow-sm">
             {/* Top Bar - Black Promo Strip */}
             <div className="hidden md:flex justify-between items-center bg-black text-white text-[10px] md:text-xs py-1 px-4 tracking-widest uppercase">
-                <div className="flex-1 flex justify-start">
+                <div className="flex-1 flex justify-start gap-4 items-center">
                     <LiveVisitorCounter />
+                    <button 
+                        onClick={toggleLanguage}
+                        className="hover:text-yellow-400 transition-colors font-bold uppercase"
+                    >
+                        {locale === 'he' ? 'English' : 'עברית'}
+                    </button>
                 </div>
-                <div className="text-center font-bold">משלוח בדואר לכל הארץ ב-30 ₪</div>
+                <div className="text-center font-bold">{t('common.free_shipping_strip')}</div>
                 <div className="flex-1"></div>
             </div>
 
