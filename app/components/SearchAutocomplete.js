@@ -79,14 +79,14 @@ export default function SearchAutocomplete({ fullWidth = false, onSelect }) {
                     }}
                     className={`border-b border-gray-300 py-1 text-sm focus:outline-none focus:border-black transition-all bg-transparent placeholder-gray-400 
                         ${fullWidth ? 'w-full' : 'w-20 focus:w-48'}
-                        ${isRTL ? 'text-right pe-8 ps-2' : 'text-left ps-8 pe-2'}`} // Icon on the left for both
+                        ${isRTL ? 'text-right' : 'text-left'} pe-8 ps-2`}
                     dir={direction}
                 />
 
-                {/* Search Icon (Always on the LEFT as requested) */}
+                {/* Search Icon (Always at the END of the input direction) */}
                 <button
                     type="submit"
-                    className={`absolute top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-black hover:text-black p-1 ${isRTL ? 'end-0' : 'start-0'}`}
+                    className={`absolute top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-black hover:text-black p-1 end-0`}
                 >
                     <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
