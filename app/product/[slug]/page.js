@@ -4,6 +4,17 @@ import Image from "next/image";
 import { cookies } from 'next/headers';
 import he from '../../data/locales/he.json';
 import en from '../../data/locales/en.json';
+import { redirect } from 'next/navigation';
+import ProductCard from "../../components/ProductCard";
+import StarRating from "../../components/StarRating";
+import WishlistHeart from "../../components/WishlistHeart";
+import FragrancePyramid from "../../components/FragrancePyramid";
+import ShareButton from "../../components/ShareButton";
+import Breadcrumbs from "../../components/Breadcrumbs";
+import BrandInsight from "../../components/BrandInsight";
+import AdditionalDetails from "../../components/AdditionalDetails";
+import ProductActionsClient from "./ProductActionsClient";
+import * as Sentry from "@sentry/nextjs";
 
 const localize = (obj, field, locale) => {
     if (!obj) return '';
@@ -25,19 +36,6 @@ const getT = (locale) => {
         return result;
     };
 };
-
-import { redirect } from 'next/navigation';
-import ProductCard from "../../components/ProductCard";
-import StarRating from "../../components/StarRating";
-import WishlistHeart from "../../components/WishlistHeart";
-import AddToCartAdvanced from "../../components/ProductCard";
-import FragrancePyramid from "../../components/FragrancePyramid";
-import ShareButton from "../../components/ShareButton";
-import Breadcrumbs from "../../components/Breadcrumbs";
-import BrandInsight from "../../components/BrandInsight";
-import AdditionalDetails from "../../components/AdditionalDetails";
-import * as Sentry from "@sentry/nextjs";
-
 
 export const revalidate = 3600; // SEO Improvement: Cache for 1 hour
 
@@ -421,6 +419,3 @@ export default async function ProductPage(props) {
         </div >
     );
 }
-
-// Simple Client Component for Actions
-import ProductActionsClient from "./ProductActionsClient";
