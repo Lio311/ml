@@ -1,4 +1,12 @@
 import { useLanguage } from '../context/LanguageContext';
+import { motion } from "framer-motion";
+import { Package, Phone, Truck, CheckCircle, XCircle } from "lucide-react";
+import { clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
+
+function cn(...inputs) {
+    return twMerge(clsx(inputs));
+}
 
 export default function OrderStatusTimeline({ status }) {
     const { t } = useLanguage();
