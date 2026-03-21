@@ -1,20 +1,24 @@
 "use client";
 
+import { useLanguage } from "../../context/LanguageContext";
+
 export default function FreeSamplesProgress({ 
     isMainVendor, 
     subtotal, 
     freeSamplesCount, 
     vendorConfig 
 }) {
+    const { t } = useLanguage();
+
     if (isMainVendor) {
         return (
             <div className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
                 <h3 className="font-bold text-gray-900 mb-2 flex items-center gap-2 text-right justify-start">
                     <span>🎁</span>
                     {freeSamplesCount === 6 ? (
-                        <span className="text-green-600">קיבלת את כל הדוגמיות! (6)</span>
+                        <span className="text-green-600">{t('cart.all_samples_received')}</span>
                     ) : (
-                        <span>דוגמיות חינם</span>
+                        <span>{t('cart.free_samples')}</span>
                     )}
                 </h3>
 
@@ -35,10 +39,10 @@ export default function FreeSamplesProgress({
                 </div>
 
                 <div className="mt-3 text-xs text-center font-bold">
-                    {freeSamplesCount === 0 && <span className="text-gray-500">עוד <span className="font-bold text-black">{300 - subtotal} ₪</span> ל-2 דוגמיות חינם!</span>}
-                    {freeSamplesCount === 2 && <span className="text-blue-600">יש לך 2 דוגמיות. עוד <span className="font-bold">{500 - subtotal} ₪</span> ל-4 דוגמיות!</span>}
-                    {freeSamplesCount === 4 && <span className="text-purple-600">וואו! 4 דוגמיות שלך. עוד <span className="font-bold">{1000 - subtotal} ₪</span> ל-6 דוגמיות!</span>}
-                    {freeSamplesCount === 6 && <span className="text-green-600 font-bold">פינקנו אותך ב-6 דוגמיות! תהנה! 🎉</span>}
+                    {freeSamplesCount === 0 && <span className="text-gray-500">{t('cart.more_for_samples', { amount: 300 - subtotal, count: 2 })}</span>}
+                    {freeSamplesCount === 2 && <span className="text-blue-600">{t('cart.have_samples_more_for_tier', { count: 2, amount: 500 - subtotal, nextCount: 4 })}</span>}
+                    {freeSamplesCount === 4 && <span className="text-purple-600">{t('cart.wow_samples_more_for_tier', { count: 4, amount: 1000 - subtotal, nextCount: 6 })}</span>}
+                    {freeSamplesCount === 6 && <span className="text-green-600 font-bold">{t('cart.max_samples_reached')}</span>}
                 </div>
             </div>
         );
@@ -56,8 +60,8 @@ export default function FreeSamplesProgress({
                 <div className="bg-green-50 border border-green-100 p-4 rounded-xl flex items-center gap-3 animate-bounce">
                     <div className="bg-green-600 text-white w-10 h-10 rounded-full flex items-center justify-center text-xl">🎁</div>
                     <div>
-                        <p className="text-green-900 font-bold text-sm">הטבה מחכה לך!</p>
-                        <p className="text-green-700 text-xs font-medium">מגיע לך {freeSamplesCount} דוגמיות חינם בהזמנה זו!</p>
+                        <p className="text-green-900 font-bold text-sm">{t('cart.benefit_waiting')}</p>
+                        <p className="text-green-700 text-xs font-medium">{t('cart.eligible_for_samples', { count: freeSamplesCount })}</p>
                     </div>
                 </div>
             );
@@ -74,9 +78,9 @@ export default function FreeSamplesProgress({
             <h3 className="font-bold text-gray-900 mb-2 flex items-center gap-2 text-right justify-start">
                 <span>🎁</span>
                 {currentTier ? (
-                    <span className="text-green-600">קיבלת {currentTier.samplesCount} דוגמיות חינם!</span>
+                    <span className="text-green-600">{t('cart.received_samples', { count: currentTier.samplesCount })}</span>
                 ) : (
-                    <span>דוגמיות חינם</span>
+                    <span>{t('cart.free_samples')}</span>
                 )}
             </h3>
 

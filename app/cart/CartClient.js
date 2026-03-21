@@ -8,6 +8,7 @@ import confetti from 'canvas-confetti';
 import { useRouter, useSearchParams } from 'next/navigation';
 import LuckyWheel from "../components/LuckyWheel";
 import toast from 'react-hot-toast';
+import { useLanguage } from "../context/LanguageContext";
 
 // Modular Components
 import CartItem from "./components/CartItem";
@@ -17,6 +18,7 @@ import FreeSamplesProgress from "./components/FreeSamplesProgress";
 import UpsellRecs from "./components/UpsellRecs";
 
 export default function CartClient() {
+    const { t } = useLanguage();
     const {
         cartItems, activeVendorId, setActiveVendorId, activeItems,
         removeFromCart, updateQuantity, addToCart, clearCart, clearActiveVendorCart,
@@ -45,7 +47,7 @@ export default function CartClient() {
             if (!buckets[vId]) {
                 buckets[vId] = {
                     id: vId,
-                    name: item.vendorName || (vId === 'main' ? 'האתר הרשמי' : 'ספק חיצוני'),
+                    name: item.vendorName || (vId === 'main' ? t('cart.official_site') : t('cart.external_supplier')),
                     items: [],
                     totalQuantity: 0
                 };
@@ -54,7 +56,7 @@ export default function CartClient() {
             buckets[vId].totalQuantity += (item.quantity || 1);
         });
         return Object.values(buckets);
-    }, [cartItems]);
+    }, [cartItems, t]);
 
     // Safety Vendor Switch
     useEffect(() => {
@@ -79,11 +81,11 @@ export default function CartClient() {
 
     const handleLoadSharedCart = () => {
         if (!sharedCart) return;
-        if (confirm("פעולה זו תחליף את הסל הנוכחי שלך בסל המשותף. האם להמשיך?")) {
+        if (confirm(t('cart.load_shared_cart_confirm'))) {
             clearCart();
             sharedCart.forEach(item => {
                 for (let k = 0; k < item.quantity; k++) {
-                    addToCart(item, item.size, item.price, item.vendorId || 'main', item.vendorName || 'האתר הרשמי');
+                    addToCart(item, item.size, item.price, item.vendorId || 'main', item.vendorName || t('cart.official_site'));
                 }
             });
             setSharedCart(null);
@@ -93,7 +95,7 @@ export default function CartClient() {
 
     const handleShareCart = async () => {
         if (activeItems.length === 0) {
-            toast.error("הסל הנוכחי ריק");
+            toast.error(t('cart.empty'));
             return;
         }
         try {
@@ -106,9 +108,9 @@ export default function CartClient() {
                 const data = await res.json();
                 const url = `${window.location.origin}/cart?share=${data.id}`;
                 if (navigator.share) {
-                    navigator.share({ title: 'הסל שלי ב-ml_tlv', url }).catch(console.error);
+                    navigator.share({ title: `ml_tlv - ${t('cart.title')}`, url }).catch(console.error);
                 } else {
-                    navigator.clipboard.writeText(url).then(() => toast.success("הקישור הועתק!"));
+                    navigator.clipboard.writeText(url).then(() => toast.success(t('cart.link_copied')));
                 }
             }
         } catch (e) { console.error(e); }
@@ -204,7 +206,7 @@ export default function CartClient() {
         return (
             <div className="container py-20 text-center flex flex-col items-center justify-center min-h-[60vh]">
                 <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-b-4 border-black mb-4"></div>
-                <h2 className="text-2xl font-bold">מעבד את ההזמנה שלך...</h2>
+                <h2 className="text-2xl font-bold">{t('cart.processing')}</h2>
             </div>
         );
     }
@@ -212,8 +214,8 @@ export default function CartClient() {
     if (cartItems.length === 0) {
         return (
             <div className="container py-20 text-center">
-                <h1 className="text-3xl font-bold mb-4">העגלה שלך ריקה</h1>
-                <Link href="/catalog" className="btn btn-primary">חזרה לקטלוג</Link>
+                <h1 className="text-3xl font-bold mb-4">{t('cart.empty')}</h1>
+                <Link href="/catalog" className="btn btn-primary">{t('cart.back_to_catalog')}</Link>
             </div>
         );
     }
@@ -225,21 +227,21 @@ export default function CartClient() {
                 {/* Banners */}
                 {lotteryMode?.active && (
                     <div className="bg-gradient-to-r from-red-500 to-red-600 text-white p-4 rounded-xl mb-8 shadow-lg flex items-center justify-between">
-                        <div className="text-xl font-black">מבצע הבזק פעיל! 15% הנחה</div>
+                        <div className="text-xl font-black">{t('cart.flash_sale')}</div>
                         <div className="text-4xl font-mono">{Math.floor(lotteryTimeLeft / 60)}:{(lotteryTimeLeft % 60).toString().padStart(2, '0')}</div>
                     </div>
                 )}
 
                 {sharedCart && (
                     <div className="bg-blue-600 text-white p-4 rounded-xl mb-8 shadow-lg flex items-center justify-between">
-                        <p>קיבלת סל משותף! ({sharedCart.length} פריטים)</p>
-                        <button onClick={handleLoadSharedCart} className="bg-white text-blue-600 px-4 py-2 rounded-lg font-bold">טען סל</button>
+                        <p>{t('cart.shared_cart_received', { count: sharedCart.length })}</p>
+                        <button onClick={handleLoadSharedCart} className="bg-white text-blue-600 px-4 py-2 rounded-lg font-bold">{t('cart.load_cart_btn')}</button>
                     </div>
                 )}
 
                 <div className="flex items-center justify-between mb-8">
-                    <h1 className="text-3xl font-bold">העגלה שלי</h1>
-                    <button onClick={handleShareCart} className="p-2 bg-gray-100 rounded-full" title="שתף סל">
+                    <h1 className="text-3xl font-bold">{t('cart.title')}</h1>
+                    <button onClick={handleShareCart} className="p-2 bg-gray-100 rounded-full" title={t('cart.share_cart')}>
                         <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M15.75 4.5a3 3 0 1 1 .825 2.066l-8.421 4.679a3.002 3.002 0 0 1 0 1.51l8.421 4.679a3 3 0 1 1-.729 1.31l-8.421-4.678a3 3 0 1 1 0-4.132l8.421-4.679a3 3 0 0 1-.096-.755Z" /></svg>
                     </button>
                 </div>
@@ -274,16 +276,16 @@ export default function CartClient() {
 
                     <div className="w-full lg:w-96 space-y-6">
                         <div className="bg-white p-6 rounded-xl border shadow-xl space-y-6 sticky top-24">
-                            <h2 className="text-xl font-bold border-b pb-4">סיכום הזמנה</h2>
+                            <h2 className="text-xl font-bold border-b pb-4">{t('cart.order_summary')}</h2>
 
                             <div className="flex justify-between text-lg">
-                                <span>סכום ביניים</span>
+                                <span>{t('cart.subtotal')}</span>
                                 <span className="font-bold">{subtotal} ₪</span>
                             </div>
 
                             {isMainVendor && luckyPrize?.type === 'discount' && !lotteryMode?.active && (
                                 <div className="flex justify-between text-green-600 font-bold">
-                                    <span>הנחת גלגל ({luckyPrize.value * 100}%)</span>
+                                    <span>{t('cart.discount', { percent: luckyPrize.value * 100 })}</span>
                                     <span>{Math.round(subtotal * luckyPrize.value)}- ₪</span>
                                 </div>
                             )}
@@ -315,7 +317,7 @@ export default function CartClient() {
                             <div className="space-y-4 pt-4 border-t">
                                 <input 
                                     type="tel" 
-                                    placeholder="מספר טלפון ליצירת קשר" 
+                                    placeholder={t('cart.phone_placeholder')}
                                     className={`w-full p-3 border rounded-xl ${phoneError ? 'border-red-500 bg-red-50' : ''}`}
                                     value={phoneNumber}
                                     onChange={(e) => { setPhoneNumber(e.target.value); setPhoneError(''); }}
@@ -323,14 +325,14 @@ export default function CartClient() {
                                 {phoneError && <p className="text-red-600 text-xs font-bold">{phoneError}</p>}
 
                                 <textarea 
-                                    placeholder="הערות להזמנה (קומה, קוד לבניין, בקשות מיוחדות...)" 
+                                    placeholder={t('cart.notes_placeholder')}
                                     className="w-full p-3 border rounded-xl h-24"
                                     value={notes}
                                     onChange={(e) => setNotes(e.target.value)}
                                 />
 
                                 <div className="flex justify-between items-center text-2xl font-black pt-4">
-                                    <span>סה״כ לתשלום</span>
+                                    <span>{t('cart.total')}</span>
                                     <span>{total} ₪</span>
                                 </div>
 
@@ -338,9 +340,9 @@ export default function CartClient() {
                                     onClick={handleCheckout}
                                     className="w-full bg-black text-white py-4 rounded-xl font-bold text-lg hover:bg-gray-900 transition-all shadow-lg active:scale-95"
                                 >
-                                    בצע הזמנה ושלם
+                                    {t('cart.checkout_btn')}
                                 </button>
-                                <p className="text-[10px] text-gray-400 text-center">בוושינגטון 19 בתשלום, כפוף לתקנון האתר.</p>
+                                <p className="text-[10px] text-gray-400 text-center">{t('cart.pickup_note')}</p>
                             </div>
                         </div>
                     </div>

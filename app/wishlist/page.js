@@ -3,14 +3,23 @@ import { auth } from '@clerk/nextjs/server';
 import ProductCard from "../components/ProductCard";
 import Link from "next/link";
 import { redirect } from 'next/navigation';
+import { cookies } from 'next/headers';
+import { getT } from '../lib/getT';
 
-export const metadata = {
-    title: "המועדפים שלי ❤️ | ml_tlv",
-    description: "רשימת המשאלות שלך.",
-};
+export async function generateMetadata() {
+    const locale = (await cookies()).get('NEXT_LOCALE')?.value || 'he';
+    const t = await getT(locale);
+    
+    return {
+        title: t('wishlist.meta_title'),
+        description: t('wishlist.meta_desc'),
+    };
+}
 
 export default async function WishlistPage() {
     const { userId } = await auth();
+    const locale = (await cookies()).get('NEXT_LOCALE')?.value || 'he';
+    const t = await getT(locale);
 
     if (!userId) {
         redirect('/');
@@ -34,13 +43,13 @@ export default async function WishlistPage() {
 
     return (
         <div className="container py-12 min-h-[60vh]">
-            <h1 className="text-3xl font-serif font-bold mb-8 text-center">המועדפים שלי ❤️</h1>
+            <h1 className="text-3xl font-serif font-bold mb-8 text-center">{t('wishlist.title')}</h1>
 
             {products.length === 0 ? (
                 <div className="text-center py-12">
-                    <p className="text-xl text-gray-500 mb-4">רשימת המשאלות שלך ריקה.</p>
+                    <p className="text-xl text-gray-500 mb-4">{t('wishlist.empty')}</p>
                     <Link href="/catalog" className="btn btn-primary">
-                        עבור לקטלוג
+                        {t('wishlist.go_to_catalog')}
                     </Link>
                 </div>
             ) : (

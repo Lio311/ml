@@ -1,8 +1,11 @@
 "use client";
 
 import Image from "next/image";
+import { useLanguage } from "../../context/LanguageContext";
 
 export default function CartItem({ item, updateQuantity, removeFromCart, activeVendorId }) {
+    const { t } = useLanguage();
+    
     return (
         <div key={`${item.id}-${item.size}`} className={`flex items-center gap-4 border p-4 rounded-lg bg-white shadow-sm relative ${item.isPrize ? 'border-amber-300 bg-amber-50' : ''}`}>
             <div className="w-20 h-20 bg-white flex items-center justify-center text-2xl rounded overflow-hidden relative border border-gray-100 flex-shrink-0">
@@ -15,8 +18,8 @@ export default function CartItem({ item, updateQuantity, removeFromCart, activeV
 
             <div className="flex-1 min-w-0">
                 <h3 className="font-bold truncate">{item.name}</h3>
-                <div className="text-sm text-gray-500">גודל: {item.size === 'set' ? 'סט' : `${String(item.size).replace(/ml$/i, '')} מ"ל`}</div>
-                <div className={`text-sm font-bold mt-1 ${item.isPrize ? 'text-green-600' : 'text-primary'}`}>{item.price} ₪ {item.isPrize && '(פרס)'}</div>
+                <div className="text-sm text-gray-500">{t('cart.size')}: {item.size === 'set' ? t('cart.set') : `${String(item.size).replace(/ml$/i, '')} ${t('common.ml_unit')}`}</div>
+                <div className={`text-sm font-bold mt-1 ${item.isPrize ? 'text-green-600' : 'text-primary'}`}>{item.price} ₪ {item.isPrize && `(${t('cart.prize')})`}</div>
             </div>
 
             {!item.isPrize && (

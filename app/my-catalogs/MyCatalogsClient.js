@@ -4,8 +4,10 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import { useLanguage } from "../context/LanguageContext";
 
 export default function MyCatalogsClient() {
+    const { t } = useLanguage();
     const [catalogs, setCatalogs] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
     const [isCreating, setIsCreating] = useState(false);
@@ -28,11 +30,11 @@ export default function MyCatalogsClient() {
                 const data = await res.json();
                 setCatalogs(data);
             } else {
-                toast.error("שגיאה בטעינת הקטלוגים");
+                toast.error(t('my_catalogs.load_error'));
             }
         } catch (error) {
             console.error(error);
-            toast.error("שגיאה בטעינת הקטלוגים");
+            toast.error(t('my_catalogs.load_error'));
         } finally {
             setIsLoading(false);
         }
@@ -60,7 +62,7 @@ export default function MyCatalogsClient() {
             });
 
             if (res.ok) {
-                toast.success("קטלוג נוצר בהצלחה!");
+                toast.success(t('my_catalogs.create_success'));
                 setName("");
                 setSlug("");
                 setDescription("");
@@ -69,18 +71,18 @@ export default function MyCatalogsClient() {
                 fetchCatalogs(); // Refresh the list
             } else {
                 const data = await res.json();
-                toast.error(data.error || "שגיאה ביצירת הקטלוג");
+                toast.error(data.error || t('my_catalogs.server_error'));
             }
         } catch (error) {
             console.error(error);
-            toast.error("שגיאה בתקשורת מול השרת");
+            toast.error(t('my_catalogs.server_error'));
         } finally {
             setIsCreating(false);
         }
     };
 
     if (isLoading) {
-        return <div className="text-center py-20 text-xl animate-pulse">טוען קטלוגים...</div>;
+        return <div className="text-center py-20 text-xl animate-pulse">{t('my_catalogs.loading')}</div>;
     }
 
     return (
@@ -89,21 +91,21 @@ export default function MyCatalogsClient() {
             {/* Left: Create New Catalog Form */}
             <div className="w-full lg:w-1/3 order-2 lg:order-1">
                 <div className="bg-white p-6 rounded-xl shadow-lg border border-gray-100 sticky top-24">
-                    <h2 className="text-xl font-bold mb-6 text-gray-800">צור קטלוג חדש</h2>
+                    <h2 className="text-xl font-bold mb-6 text-gray-800">{t('my_catalogs.create_new')}</h2>
                     <form onSubmit={handleCreate} className="space-y-4">
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">שם הקטלוג (יוצג למבקרים)</label>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">{t('my_catalogs.name_label')}</label>
                             <input 
                                 type="text" 
                                 required
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
                                 className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-black outline-none"
-                                placeholder="למשל: הבשמים של דני"
+                                placeholder={t('my_catalogs.name_placeholder')}
                             />
                         </div>
                         <div>
-                           <label className="block text-sm font-medium text-gray-700 mb-1">קישור אישי (אנגלית ומספרים בלבד)</label>
+                           <label className="block text-sm font-medium text-gray-700 mb-1">{t('my_catalogs.link_label')}</label>
                             <div className="flex items-center text-left h-12" dir="ltr">
                                 <span className="bg-gray-100 px-4 h-full flex items-center rounded-l-lg border border-r-0 text-gray-500 text-sm whitespace-nowrap flex-shrink-0">ml-tlv.com/catalog/</span>
                                 <input 
@@ -115,10 +117,10 @@ export default function MyCatalogsClient() {
                                     placeholder="danny-shop"
                                 />
                             </div>
-                            <p className="text-xs text-gray-400 mt-1" dir="rtl">כך ייראה הקישור שתשתף עם הלקוחות שלך.</p>
+                            <p className="text-xs text-gray-400 mt-1" dir="rtl">{t('my_catalogs.link_hint')}</p>
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">אימייל לקבלת הזמנות</label>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">{t('my_catalogs.email_label')}</label>
                             <input 
                                 type="email" 
                                 required
@@ -129,7 +131,7 @@ export default function MyCatalogsClient() {
                             />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">תמונת לוגו / פרופיל החנות</label>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">{t('my_catalogs.logo_label')}</label>
                             
                             <div className="flex bg-gray-100 p-1 rounded-lg mb-3">
                                 <button 
@@ -137,14 +139,14 @@ export default function MyCatalogsClient() {
                                     onClick={() => setImageInputType("file")}
                                     className={`flex-1 text-sm py-1.5 rounded-md transition ${imageInputType === "file" ? 'bg-white shadow-sm font-bold text-black' : 'text-gray-500 hover:text-black'}`}
                                 >
-                                    העלאה מהמחשב
+                                    {t('my_catalogs.upload_from_computer')}
                                 </button>
                                 <button 
                                     type="button"
                                     onClick={() => setImageInputType("url")}
                                     className={`flex-1 text-sm py-1.5 rounded-md transition ${imageInputType === "url" ? 'bg-white shadow-sm font-bold text-black' : 'text-gray-500 hover:text-black'}`}
                                 >
-                                    קישור לתמונה
+                                    {t('my_catalogs.image_link')}
                                 </button>
                             </div>
 
@@ -155,7 +157,7 @@ export default function MyCatalogsClient() {
                                             <svg className="w-8 h-8 mb-3 text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
                                                 <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2"/>
                                             </svg>
-                                            <p className="mb-1 text-sm text-gray-500"><span className="font-semibold text-black">לחץ כאן לבחירת תמונה מהמחשב</span></p>
+                                            <p className="mb-1 text-sm text-gray-500"><span className="font-semibold text-black">{t('my_catalogs.click_to_upload')}</span></p>
                                             <p className="text-xs text-gray-400">PNG, JPG, WEBP</p>
                                         </div>
                                         <input 
@@ -166,7 +168,7 @@ export default function MyCatalogsClient() {
                                                 const file = e.target.files[0];
                                                 if (file) {
                                                     if (file.size > 2 * 1024 * 1024) {
-                                                        toast.error("קובץ גדול מדי. המקסימום הוא 2MB.");
+                                                        toast.error(t('my_catalogs.file_too_large'));
                                                         return;
                                                     }
                                                     const reader = new FileReader();
@@ -198,12 +200,12 @@ export default function MyCatalogsClient() {
                             </div>
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-gray-700 mb-1">תיאור קצר (אופציונלי)</label>
+                            <label className="block text-sm font-medium text-gray-700 mb-1">{t('my_catalogs.description_label')}</label>
                             <textarea 
                                 value={description}
                                 onChange={(e) => setDescription(e.target.value)}
                                 className="w-full p-3 border rounded-lg focus:ring-2 focus:ring-black outline-none resize-none h-24"
-                                placeholder="ספר קצת על הקטלוג שלך..."
+                                placeholder={t('my_catalogs.description_placeholder')}
                             />
                         </div>
                         <button 
@@ -211,7 +213,7 @@ export default function MyCatalogsClient() {
                             disabled={isCreating}
                             className="w-full py-3 bg-black text-white rounded-lg font-bold hover:bg-gray-800 transition disabled:opacity-50"
                         >
-                            {isCreating ? 'יוצר...' : 'צור קטלוג'}
+                            {isCreating ? t('my_catalogs.creating') : t('my_catalogs.submit_btn')}
                         </button>
                     </form>
                 </div>
@@ -222,8 +224,8 @@ export default function MyCatalogsClient() {
                 {catalogs.length === 0 ? (
                     <div className="bg-gray-50 border-2 border-dashed border-gray-200 rounded-xl p-12 text-center h-full flex flex-col items-center justify-center">
                         <div className="text-5xl mb-4">🏪</div>
-                        <h3 className="text-xl font-bold text-gray-700 mb-2">אין לך עדיין קטלוגים</h3>
-                        <p className="text-gray-500 max-w-sm">צור את הקטלוג הראשון שלך באמצעות הטופס והתחל למכור מוצרים לבחירתך!</p>
+                        <h3 className="text-xl font-bold text-gray-700 mb-2">{t('my_catalogs.no_catalogs')}</h3>
+                        <p className="text-gray-500 max-w-sm">{t('my_catalogs.no_catalogs_desc')}</p>
                     </div>
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -243,7 +245,7 @@ export default function MyCatalogsClient() {
                                     <h3 className="text-xl font-bold">{catalog.name}</h3>
                                 </div>
                                 <p className="text-sm text-gray-500 mb-4 line-clamp-2 flex-grow">
-                                    {catalog.description || "ללא תיאור"}
+                                    {catalog.description || t('my_catalogs.no_description')}
                                 </p>
                                 
                                 <div className="bg-gray-50 p-3 rounded-lg mb-4 text-xs font-mono text-left break-all border group-hover:bg-gray-100 transition" dir="ltr">
@@ -252,10 +254,10 @@ export default function MyCatalogsClient() {
 
                                 <div className="flex items-center justify-between mt-auto pt-4 border-t">
                                     <div className="text-xs text-gray-400">
-                                        נוצר ב: {new Date(catalog.created_at).toLocaleDateString('he-IL')}
+                                        {t('my_catalogs.created_at')} {new Date(catalog.created_at).toLocaleDateString()}
                                     </div>
                                     <Link href={`/my-catalogs/${catalog.id}`} className="px-5 py-2 bg-black text-white rounded-lg text-sm font-bold hover:bg-gray-800 transition">
-                                        ניהול קטלוג
+                                        {t('my_catalogs.manage_btn')}
                                     </Link>
                                 </div>
                             </div>
