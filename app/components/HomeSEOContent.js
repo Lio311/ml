@@ -14,7 +14,7 @@ export default function HomeSEOContent() {
                     {/* Premium Header */}
                     <div className={`mb-16 text-center ${isRTL ? 'md:text-right' : 'md:text-left'}`}>
                         <span className="text-xs uppercase tracking-[0.3em] text-gray-400 font-bold mb-3 block">{t('homepage.seo_guide_badge') || 'Premium Fragrance Guide'}</span>
-                        <h2 className="text-[clamp(14px,2.9vw,34px)] lg:text-[33px] font-serif font-black text-gray-900 mb-6 leading-tight whitespace-normal md:whitespace-nowrap">
+                        <h2 className="text-[clamp(14px,3.0vw,35px)] lg:text-[34.5px] font-serif font-black text-gray-900 mb-6 leading-tight whitespace-normal md:whitespace-nowrap">
                             {t('common.seo_title')}
                         </h2>
                         <div className={`w-20 h-1.5 bg-black rounded-full mx-auto ${isRTL ? 'md:mx-0' : 'md:ml-0'}`}></div>
