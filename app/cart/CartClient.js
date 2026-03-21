@@ -294,13 +294,13 @@ export default function CartClient() {
 
                             <div className="flex justify-between text-lg">
                                 <span>{t('cart.subtotal')}</span>
-                                <span className="font-bold">{subtotal} ₪</span>
+                                <span className="font-bold">{t('cart.price_format', { price: subtotal })}</span>
                             </div>
 
                             {isMainVendor && luckyPrize?.type === 'discount' && !lotteryMode?.active && (
                                 <div className="flex justify-between text-green-600 font-bold">
                                     <span>{t('cart.discount', { percent: luckyPrize.value * 100 })}</span>
-                                    <span>{Math.round(subtotal * luckyPrize.value)}- ₪</span>
+                                    <span>{t('cart.price_format', { price: -Math.round(subtotal * luckyPrize.value) })}</span>
                                 </div>
                             )}
 
@@ -331,7 +331,7 @@ export default function CartClient() {
                             {/* Recommendations / Upsell */}
                             {recommendations.length > 0 && (
                                 <div className="space-y-3 pt-2">
-                                    <h4 className="text-sm font-bold text-gray-700">השלם את החסר בקלות:</h4>
+                                    <h4 className="text-sm font-bold text-gray-700">{t('cart.upsell_title')}</h4>
                                     <div className="space-y-2">
                                         {recommendations.map(rec => (
                                             <div key={rec.id} className="flex items-center gap-3 bg-white border p-2 rounded-lg shadow-sm hover:shadow-md transition">
@@ -340,7 +340,13 @@ export default function CartClient() {
                                                 </div>
                                                 <div className="flex-1 min-w-0">
                                                     <div className="font-bold text-xs truncate">{rec.name}</div>
-                                                    <div className="text-xs text-gray-500">{rec.size} מ"ל • {rec.price} ₪</div>
+                                                    <div className="text-xs text-gray-500">
+                                                        {t('cart.upsell_item_format', { 
+                                                            size: rec.size, 
+                                                            ml: t('ml_unit'), 
+                                                            price: rec.price 
+                                                        })}
+                                                    </div>
                                                 </div>
                                                 <button
                                                     onClick={() => addToCart(rec, rec.size, rec.price)}
@@ -358,7 +364,7 @@ export default function CartClient() {
                             {/* Phone Number */}
                             <div className="py-2 border-t pt-4">
                                 <label className="text-sm font-bold text-gray-700 mb-2 block flex items-center gap-1">
-                                    מספר טלפון (חובה)
+                                    {t('cart.phone_label')}
                                     <span className="text-red-500">*</span>
                                 </label>
                                 <div className="relative">
@@ -383,16 +389,16 @@ export default function CartClient() {
                                     )}
                                 </div>
                                 {phoneError && <p className="text-red-600 text-xs font-bold mt-1 animate-shake">{phoneError}</p>}
-                                <p className="text-[10px] text-gray-400 mt-1">נשתמש במספר זה רק לתיאום המשלוח והתשלום.</p>
+                                <p className="text-[10px] text-gray-400 mt-1">{t('cart.phone_disclaimer')}</p>
                             </div>
 
                             {/* Order Notes */}
                             <div className="py-2">
-                                <label className="text-sm font-bold text-gray-700 mb-2 block">הערות להזמנה (אופציונלי):</label>
+                                <label className="text-sm font-bold text-gray-700 mb-2 block">{t('cart.order_notes_label')}</label>
                                 <textarea
                                     className="w-full p-3 border rounded-lg text-sm focus:ring-2 focus:ring-gray-900 outline-none resize-none bg-white"
                                     rows="3"
-                                    placeholder="בקשות מיוחדות לימי הולדת / אריזה / שליח..."
+                                    placeholder={t('cart.order_notes_placeholder')}
                                     value={notes}
                                     onChange={(e) => setNotes(e.target.value)}
                                 ></textarea>
@@ -400,7 +406,7 @@ export default function CartClient() {
 
                                 <div className="flex justify-between items-center text-2xl font-black pt-4 border-t mt-4">
                                     <span>{t('cart.total')}</span>
-                                    <span>{total} ₪</span>
+                                    <span>{t('cart.price_format', { price: total })}</span>
                                 </div>
 
                                 <div className="pt-6">
