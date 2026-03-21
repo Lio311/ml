@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import OrderReviewPrompt from '../OrderReviewPrompt';
 import { Reply, User as UserIcon, Loader2, MessageSquare, Search, Store, Package, ExternalLink, Image as ImageIcon } from 'lucide-react';
 import { useUser } from '@clerk/nextjs';
-import { useLanguage } from '../context/LanguageContext';
+import { useLanguage } from '../../context/LanguageContext';
 import toast from 'react-hot-toast';
 import Link from 'next/link';
 import OrderStatusTimeline from '../OrderStatusTimeline';
