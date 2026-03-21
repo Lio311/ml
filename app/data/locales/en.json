@@ -552,6 +552,35 @@
         "meta_title": "My Cart | ml_tlv",
         "meta_desc": "View your cart items and complete your order on ml_tlv."
     },
+    "inbox": {
+        "title": "Inbox",
+        "search_placeholder": "Search conversation...",
+        "no_messages": "You have no messages yet.",
+        "no_results": "No matching conversations found.",
+        "start_order_chat": "Start a new conversation about this order...",
+        "start_general_chat": "Start a general inquiry...",
+        "status_now": "Active now",
+        "seen_today": "Last seen today at {time}",
+        "seen_on": "Last seen on {date} {time}",
+        "order_num": "Order #{id}",
+        "general_inquiry": "General Inquiry",
+        "site_management": "ml_tlv (Site Management)",
+        "select_chat": "Select a conversation to start",
+        "back": "Back",
+        "type_message": "Type a message...",
+        "send_error": "Error sending message",
+        "client_id_label": "Customer (ID: {id})",
+        "order_status": {
+            "pending": "Pending",
+            "processing": "Processing",
+            "shipped": "Shipped",
+            "delivered": "Delivered",
+            "completed": "Completed",
+            "cancelled": "Cancelled",
+            "new": "New"
+        },
+        "full_order_details": "Full order details"
+    },
     "my_catalogs": {
         "title": "My Catalogs",
         "create_new": "Create New Catalog",

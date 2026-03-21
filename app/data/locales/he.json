@@ -494,6 +494,35 @@
         "meta_title": "העגלה שלי | ml_tlv",
         "meta_desc": "צפייה בפריטים בעגלה וסיום הזמנה ב-ml_tlv."
     },
+    "inbox": {
+        "title": "תיבת דואר",
+        "search_placeholder": "חיפוש שיחה...",
+        "no_messages": "אין לך הודעות כרגע.",
+        "no_results": "לא נמצאו שיחות תואמות.",
+        "start_order_chat": "התחל שיחה חדשה על ההזמנה...",
+        "start_general_chat": "התחל פנייה כללית...",
+        "status_now": "זמין כעת",
+        "seen_today": "נראה לאחרונה היום ב-{time}",
+        "seen_on": "נראה לאחרונה ב-{date} {time}",
+        "order_num": "הזמנה מספר {id}",
+        "general_inquiry": "פנייה כללית",
+        "site_management": "ml_tlv (הנהלת האתר)",
+        "select_chat": "בחר שיחה מהרשימה כדי להתחיל",
+        "back": "חזור",
+        "type_message": "הקלד הודעה...",
+        "send_error": "שגיאה בשליחת הודעה",
+        "client_id_label": "לקוח (ID: {id})",
+        "order_status": {
+            "pending": "ממתין",
+            "processing": "בטיפול",
+            "shipped": "נשלח",
+            "delivered": "נמסר",
+            "completed": "הושלם",
+            "cancelled": "בוטל",
+            "new": "חדש"
+        },
+        "full_order_details": "פרטי הזמנה מלאים"
+    },
     "my_catalogs": {
         "title": "הקטלוגים שלי",
         "create_new": "צור קטלוג חדש",

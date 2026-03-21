@@ -4,12 +4,14 @@ import { useState, useEffect, useRef } from 'react';
 import OrderReviewPrompt from '../OrderReviewPrompt';
 import { Reply, User as UserIcon, Loader2, MessageSquare, Search, Store, Package, ExternalLink, Image as ImageIcon } from 'lucide-react';
 import { useUser } from '@clerk/nextjs';
+import { useLanguage } from '../context/LanguageContext';
 import toast from 'react-hot-toast';
 import Link from 'next/link';
 import OrderStatusTimeline from '../OrderStatusTimeline';
 
 export default function InboxClient({ role = 'buyer', catalogId = null, preSelectConversationWith = null, initialOrderId = null, initialCatalogId = null }) {
     const { user, isLoaded } = useUser();
+    const { t, locale, dir } = useLanguage();
     const [conversations, setConversations] = useState([]);
     const [orders, setOrders] = useState([]);
     const [messages, setMessages] = useState([]);
@@ -247,10 +249,10 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
                     ).sort((a,b) => new Date(b.last_message_time || 0) - new Date(a.last_message_time || 0)));
                 }
             } else {
-                toast.error("שגיאה בשליחת הודעה");
+                toast.error(t('inbox.send_error'));
             }
         } catch (error) {
-            toast.error("שגיאה בשליחת הודעה");
+            toast.error(t('inbox.send_error'));
         } finally {
             setIsSending(false);
         }
@@ -267,7 +269,7 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
                 participant2_id: 'admin',
                 catalog_id: null,
                 order_id: null,
-                last_message: "התחל פנייה כללית...",
+                last_message: t('inbox.start_general_chat'),
                 unread_count: 0,
                 last_message_time: 0
             });
@@ -282,7 +284,7 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
                     participant2_id: order.catalog_id ? null : 'admin',
                     catalog_id: order.catalog_id || null,
                     order_id: order.id,
-                    last_message: "התחל שיחה חדשה על ההזמנה...",
+                    last_message: t('inbox.start_order_chat'),
                     unread_count: 0,
                     last_message_time: 0
                 });
@@ -306,34 +308,34 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
         const now = new Date();
         const diffMinutes = Math.floor((now - lastActive) / 60000);
 
-        if (diffMinutes < 1) return "זמין כעת";
+        if (diffMinutes < 1) return t('inbox.status_now');
         
         const isToday = lastActive.toDateString() === now.toDateString();
-        const timeStr = lastActive.toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit', hour12: false });
+        const timeStr = lastActive.toLocaleTimeString(locale === 'he' ? 'he-IL' : 'en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
         
-        if (isToday) return `נראה לאחרונה היום ב-${timeStr}`;
+        if (isToday) return t('inbox.seen_today').replace('{time}', timeStr);
         
-        const dateStr = lastActive.toLocaleDateString('he-IL', { day: '2-digit', month: '2-digit' });
-        return `נראה לאחרונה ב-${dateStr} ${timeStr}`;
+        const dateStr = lastActive.toLocaleDateString(locale === 'he' ? 'he-IL' : 'en-US', { day: '2-digit', month: '2-digit' });
+        return t('inbox.seen_on').replace('{date}', dateStr).replace('{time}', timeStr);
     };
 
     const getChatName = (conv) => {
         if (role === 'admin' || role === 'seller') {
-            const clientName = conv.participant1_name || "לקוח (ID: " + conv.participant1_id.slice(-4) + ")";
-            if (conv.order_id) return `${clientName} | הזמנה #${conv.order_id}`;
-            return `${clientName} | פנייה כללית`;
+            const clientName = conv.participant1_name || t('inbox.client_id_label').replace('{id}', conv.participant1_id.slice(-4));
+            if (conv.order_id) return `${clientName} | ${t('inbox.order_num').replace('{id}', conv.order_id)}`;
+            return `${clientName} | ${t('inbox.general_inquiry')}`;
         }
         
         // Buyer view
         if (conv.order_id) {
-            return `הזמנה מספר ${conv.order_id}`;
+            return t('inbox.order_num').replace('{id}', conv.order_id);
         }
         
         if (conv.catalog_id) {
             return catalogsData[conv.catalog_id]?.name || "מוכר קטלוג (#" + conv.catalog_id + ")";
         }
         
-        return "ml_tlv (הנהלת האתר)";
+        return t('inbox.site_management');
     };
 
     if (!isLoaded || isLoading) return <div className="py-20 text-center"><Loader2 className="w-8 h-8 animate-spin mx-auto text-gray-400" /></div>;
@@ -341,22 +343,24 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
     const filteredConversations = displayConversations.filter(c => getChatName(c).toLowerCase().includes(searchQuery.toLowerCase()));
 
     return (
-        <div className="flex h-[calc(100vh-140px)] md:h-[calc(100vh-200px)] min-h-[500px] border border-gray-200 rounded-2xl overflow-hidden bg-white shadow-sm font-sans" dir="rtl">
+        <div className="container mx-auto px-2 md:px-4 py-4 md:py-12 max-w-5xl">
+            <h1 className="text-2xl md:text-3xl font-bold mb-4 md:mb-8">{t('inbox.title')}</h1>
+            <div className="flex h-[calc(100vh-140px)] md:h-[calc(100vh-200px)] min-h-[500px] border border-gray-200 rounded-2xl overflow-hidden bg-white shadow-sm font-sans" dir={dir}>
             {/* Sidebar (Conversations List) */}
             <div className={`w-full md:w-1/3 bg-gray-50 border-l border-gray-200 flex flex-col ${activeConvId ? 'hidden md:flex' : 'flex'}`}>
                 <div className="p-4 border-b border-gray-200 bg-white">
                     <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
                         <MessageSquare className="w-5 h-5 text-black" />
-                        תיבת דואר
+                        {t('inbox.title')}
                     </h2>
                     <div className="relative">
-                        <Search className="w-4 h-4 text-gray-400 absolute right-3 top-1/2 -translate-y-1/2" />
+                        <Search className={`w-4 h-4 text-gray-400 absolute ${dir === 'rtl' ? 'right-3' : 'left-3'} top-1/2 -translate-y-1/2`} />
                         <input
                             type="text"
-                            placeholder="חיפוש שיחה..."
+                            placeholder={t('inbox.search_placeholder')}
                             value={searchQuery}
                             onChange={(e) => setSearchQuery(e.target.value)}
-                            className="w-full pl-3 pr-10 py-2 bg-gray-100 border-transparent rounded-xl text-sm focus:bg-white focus:border-black focus:ring-0 transition outline-none"
+                            className={`w-full ${dir === 'rtl' ? 'pl-3 pr-10' : 'pr-3 pl-10'} py-2 bg-gray-100 border-transparent rounded-xl text-sm focus:bg-white focus:border-black focus:ring-0 transition outline-none`}
                         />
                     </div>
                 </div>
@@ -399,11 +403,11 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
                                             {getChatName(conv)}
                                         </h3>
                                         <span className="text-[10px] text-gray-400 font-medium">
-                                            {conv.last_message_time ? new Date(conv.last_message_time).toLocaleDateString('he-IL') : ''}
+                                            {conv.last_message_time ? new Date(conv.last_message_time).toLocaleDateString(locale === 'he' ? 'he-IL' : 'en-US') : ''}
                                         </span>
                                     </div>
                                     <p className={`text-xs truncate ${Number(conv.unread_count) > 0 ? 'text-black font-semibold' : 'text-gray-500'}`}>
-                                        {conv.last_message || "התחל שיחה חדשה..."}
+                                        {conv.last_message || t('inbox.start_general_chat')}
                                     </p>
                                 </div>
 
@@ -423,14 +427,14 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
                 {!activeConvId ? (
                     <div className="text-center text-gray-400">
                         <MessageSquare className="w-16 h-16 mx-auto mb-4 opacity-20" />
-                        <p>בחר שיחה מהרשימה כדי להתחיל</p>
+                        <p>{t('inbox.select_chat')}</p>
                     </div>
                 ) : (
                     <>
                         {/* Chat Header */}
                         <div className="p-4 border-b border-gray-200 bg-white flex items-center gap-3 shadow-sm z-10">
                             <button className="md:hidden text-gray-500 p-2 ml-2 bg-gray-100 rounded-full" onClick={() => setActiveConvId(null)}>
-                                חזור
+                                {t('inbox.back')}
                             </button>
                             <div className={`w-10 h-10 rounded-full flex items-center justify-center overflow-hidden border flex-shrink-0 ${((role === 'buyer' && !activeConversation?.catalog_id) || (role === 'seller' && !activeConversation?.catalog_id && activeConversation?.participant2_id === 'admin')) ? 'bg-white border-gray-100' : 'bg-gray-200 border-gray-300'}`}>
                                 {(role === 'buyer' && !activeConversation?.catalog_id) || (role === 'seller' && !activeConversation?.catalog_id && activeConversation?.participant2_id === 'admin') ? (
@@ -456,7 +460,7 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
                                             <div className="flex items-center gap-1.5">
                                                 <div className={`w-2 h-2 rounded-full shadow-sm ${otherParticipantStatus?.last_active_at && (new Date() - new Date(otherParticipantStatus.last_active_at)) < 60000 ? 'bg-green-500 animate-pulse ring-2 ring-green-100' : 'bg-gray-300'}`} />
                                                 <span className={`text-[10px] font-medium ${otherParticipantStatus?.last_active_at && (new Date() - new Date(otherParticipantStatus.last_active_at)) < 60000 ? 'text-green-600' : 'text-gray-500'}`}>
-                                                    {formatLastSeen(otherParticipantStatus?.last_active_at) || "זמין כעת"}
+                                                    {formatLastSeen(otherParticipantStatus?.last_active_at) || t('inbox.status_now')}
                                                 </span>
                                             </div>
                                         </div>
@@ -477,18 +481,18 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
                                                 ['cancelled'].includes(orderData[activeConversation.order_id].status) ? 'bg-red-500' : 'bg-teal-500'
                                             }`} />
                                             <span className="font-bold text-xs text-teal-800">
-                                                סטטוס: {
-                                                 orderData[activeConversation.order_id].status === 'pending' ? 'ממתין' :
-                                                 orderData[activeConversation.order_id].status === 'processing' ? 'בטיפול' :
-                                                 orderData[activeConversation.order_id].status === 'shipped' ? 'נשלח' :
-                                                 orderData[activeConversation.order_id].status === 'delivered' ? 'נמסר' :
-                                                 orderData[activeConversation.order_id].status === 'completed' ? 'הושלם' :
-                                                 orderData[activeConversation.order_id].status === 'cancelled' ? 'בוטל' : 'חדש'
+                                                {t('inbox.status_label')}: {
+                                                 orderData[activeConversation.order_id].status === 'pending' ? t('inbox.order_status.pending') :
+                                                 orderData[activeConversation.order_id].status === 'processing' ? t('inbox.order_status.processing') :
+                                                 orderData[activeConversation.order_id].status === 'shipped' ? t('inbox.order_status.shipped') :
+                                                 orderData[activeConversation.order_id].status === 'delivered' ? t('inbox.order_status.delivered') :
+                                                 orderData[activeConversation.order_id].status === 'completed' ? t('inbox.order_status.completed') :
+                                                 orderData[activeConversation.order_id].status === 'cancelled' ? t('inbox.order_status.cancelled') : t('inbox.order_status.new')
                                                 }
                                             </span>
                                         </div>
                                         <Link href="/orders" className="text-xs text-blue-600 hover:text-blue-800 font-bold flex items-center gap-1 transition-colors">
-                                            פרטי הזמנה מלאים <ExternalLink className="w-3 h-3" />
+                                            {t('inbox.full_order_details')} <ExternalLink className="w-3 h-3" />
                                         </Link>
                                     </div>
 
@@ -501,7 +505,7 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
                                                 <div className="flex flex-col min-w-0 flex-1">
                                                     <span className="text-[10px] font-bold text-gray-800 leading-tight">{item.name}</span>
                                                     <div className="flex items-center gap-1 text-[9px] text-gray-400 mt-0.5">
-                                                        <span className="bg-gray-200 px-1 rounded font-medium text-gray-600">{String(item.size).replace(/ml|מ"ל/gi, '').trim()} מ"ל</span>
+                                                        <span className="bg-gray-200 px-1 rounded font-medium text-gray-600">{String(item.size).replace(/ml|מ"ל/gi, '').trim()} {t('common.ml_unit')}</span>
                                                         <span className="font-bold text-black">x{item.quantity}</span>
                                                     </div>
                                                 </div>
@@ -534,7 +538,7 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
                                             }`}>
                                                 <p className="whitespace-pre-wrap leading-relaxed break-words">{msg.content}</p>
                                                 <div className={`text-[9px] mt-1.5 flex ${isClientMessage ? 'justify-end' : 'justify-start'} opacity-50`}>
-                                                    {new Date(msg.created_at).toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit', hour12: false })}
+                                                    {new Date(msg.created_at).toLocaleTimeString(locale === 'he' ? 'he-IL' : 'en-US', { hour: '2-digit', minute: '2-digit', hour12: false })}
                                                 </div>
                                             </div>
                                         </div>
@@ -551,16 +555,16 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
                                     type="text"
                                     value={newMessage}
                                     onChange={(e) => setNewMessage(e.target.value)}
-                                    placeholder="הקלד הודעה..."
-                                    className="flex-1 pl-12 pr-4 py-3 bg-gray-100 hover:bg-gray-200 focus:bg-white border focus:border-black rounded-full outline-none transition-all text-sm shadow-inner"
+                                    placeholder={t('inbox.type_message')}
+                                    className={`flex-1 ${dir === 'rtl' ? 'pl-12 pr-4' : 'pr-12 pl-4'} py-3 bg-gray-100 hover:bg-gray-200 focus:bg-white border focus:border-black rounded-full outline-none transition-all text-sm shadow-inner`}
                                     disabled={isSending}
                                 />
                                 <button
                                     type="submit"
                                     disabled={!newMessage.trim() || isSending}
-                                    className="absolute left-2 top-1/2 -translate-y-1/2 w-9 h-9 bg-black text-white rounded-full flex items-center justify-center hover:bg-gray-800 disabled:opacity-50 transition shadow-md"
+                                    className={`absolute ${dir === 'rtl' ? 'left-2' : 'right-2'} top-1/2 -translate-y-1/2 w-9 h-9 bg-black text-white rounded-full flex items-center justify-center hover:bg-gray-800 disabled:opacity-50 transition shadow-md`}
                                 >
-                                    {isSending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Reply className="w-4 h-4 mr-0.5" />}
+                                    {isSending ? <Loader2 className="w-4 h-4 animate-spin" /> : <Reply className={`w-4 h-4 ${dir === 'rtl' ? 'mr-0.5' : 'ml-0.5'}`} />}
                                 </button>
                             </form>
                         </div>
@@ -568,5 +572,6 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
                 )}
             </div>
         </div>
+    </div>
     );
 }
