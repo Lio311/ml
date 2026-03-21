@@ -1,17 +1,29 @@
 import SmartMatchingClient from "./SmartMatchingClient";
 import pool from "../lib/db";
-
-export const metadata = {
-    title: 'התאמת מארזים | ml_tlv',
-    description: 'אשף התאמת בשמים אישי - בנה את המארז המושלם בשבילך',
-};
+import { cookies } from "next/headers";
+import { getT } from "../lib/getT";
 
 // Force dynamic rendering to avoid build timeout
 export const dynamic = 'force-dynamic';
 
+export async function generateMetadata() {
+    const cookieStore = cookies();
+    const locale = cookieStore.get('NEXT_LOCALE')?.value || 'he';
+    const t = await getT(locale);
+
+    return {
+        title: `${t('common.matching')} | ml_tlv`,
+        description: t('matching.description'),
+    };
+}
+
 export default async function MatchingPage() {
+    const cookieStore = cookies();
+    const locale = cookieStore.get('NEXT_LOCALE')?.value || 'he';
+    const t = await getT(locale);
+    const dir = locale === 'he' ? 'rtl' : 'ltr';
+
     // Fetch all unique notes for the tag selector
-    // We can do this on the server to pass initial data
     let allNotes = new Set();
 
     try {
@@ -30,12 +42,12 @@ export default async function MatchingPage() {
     const uniqueNotes = Array.from(allNotes).sort();
 
     return (
-        <div className="bg-neutral-50 min-h-screen py-12">
+        <div className="bg-neutral-50 min-h-screen py-12" dir={dir}>
             <div className="container mx-auto px-4">
                 <div className="text-center mb-12">
-                    <h1 className="text-4xl md:text-5xl font-bold mb-4 font-serif">יוקרה בחתיכות קטנות</h1>
+                    <h1 className="text-4xl md:text-5xl font-bold mb-4 font-serif">{t('matching.title')}</h1>
                     <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-                        ענה על מספר שאלות קצרות, והאלגוריתם שלנו ירכיב עבורך את המארז המושלם בהתאם לתקציב ולטעם שלך.
+                        {t('matching.description')}
                     </p>
                 </div>
 

@@ -1,9 +1,13 @@
 import pool from '../../lib/db';
 import { NextResponse } from 'next/server';
+import { getT } from '../../lib/getT';
 
 export async function POST(request) {
     try {
         const { quantity, size, budget, notes } = await request.json();
+        
+        const locale = request.headers.get('cookie')?.split('; ').find(row => row.startsWith('NEXT_LOCALE='))?.split('=')[1] || 'he';
+        const t = getT(locale);
 
         // Validate inputs
         if (!quantity || !size || !budget) {
@@ -41,7 +45,7 @@ export async function POST(request) {
 
         if (candidates.length < requestedQty) {
             return NextResponse.json({
-                error: "לא נמצאו מספיק בשמים במלאי התואמים את הגודל המבוקש.",
+                error: t('matching.error_no_stock'),
                 products: [],
                 totalPrice: 0
             }, { status: 200 }); // Return 200 to handle gracefully in UI
@@ -188,11 +192,11 @@ export async function POST(request) {
         // Final Check
         let message = "";
         if (currentTotal > userBudget) {
-            message = `התקציב היה נמוך מדי למארז זה, הגענו הכי קרוב שאפשר (${currentTotal} ₪)`;
+            message = t('matching.budget_too_low', { total: currentTotal });
         } else if (currentTotal < userBudget * 0.8) {
-            message = `מצאנו מארז מעולה במחיר משתלם במיוחד! (${currentTotal} ₪)`;
+            message = t('matching.great_value', { total: currentTotal });
         } else {
-            message = "בול בתקציב! מארז מושלם עבורך.";
+            message = t('matching.perfect_match');
         }
 
         return NextResponse.json({

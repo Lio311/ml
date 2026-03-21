@@ -462,5 +462,33 @@
         "datenight_title": "DATE NIGHT\nESSENTIALS",
         "shop_collection": "Shop Collection",
         "seo_guide_badge": "Premium Fragrance Guide"
+    },
+    "matching": {
+        "title": "Luxury in Small Pieces",
+        "description": "Answer a few short questions, and our algorithm will build the perfect bundle for you based on your budget and taste.",
+        "quantity_label": "How many perfumes in the bundle?",
+        "size_label": "Bottle Size (ml)",
+        "budget_label": "Estimated Budget",
+        "economy": "Economy",
+        "premium": "Premium",
+        "favorite_notes": "Favorite Notes",
+        "notes_hint": "Type the note name and select from the list (e.g., \"Rose\", \"Oud\", \"Jasmine\")",
+        "search_placeholder": "Type a note to search...",
+        "no_notes_selected": "No notes selected yet...",
+        "add_note": "Add +",
+        "submit_btn": "Perform Smart Matching",
+        "loading_title": "Building the perfect bundle...",
+        "loading_desc": "Checking stock, calculating prices, and matching notes.",
+        "ready_title": "Your bundle is ready!",
+        "ready_desc": "Total {count} perfumes in your scent profile",
+        "final_price": "Final bundle price",
+        "rematch": "Re-match",
+        "add_all": "Add all to cart",
+        "error_toast": "Error calculating the bundle. Please try again.",
+        "success_toast": "Added {count} products to cart successfully!",
+        "error_no_stock": "Not enough perfumes in stock matching the requested size.",
+        "budget_too_low": "The budget was too low for this bundle, we got as close as possible ({total} ₪)",
+        "great_value": "We found a great bundle at a special price! ({total} ₪)",
+        "perfect_match": "Perfect match! Correct budget bundle for you."
     }
 }
