@@ -315,13 +315,26 @@ export default function CartClient() {
                             />
 
                             <div className="space-y-4 pt-4 border-t">
-                                <input 
-                                    type="tel" 
-                                    placeholder={t('cart.phone_placeholder')}
-                                    className={`w-full p-3 border rounded-xl ${phoneError ? 'border-red-500 bg-red-50' : ''}`}
-                                    value={phoneNumber}
-                                    onChange={(e) => { setPhoneNumber(e.target.value); setPhoneError(''); }}
-                                />
+                                <div className="relative">
+                                    <input 
+                                        type="tel" 
+                                        placeholder={t('cart.phone_placeholder')}
+                                        className={`w-full p-3 border rounded-xl ${phoneError ? 'border-red-500 bg-red-50' : ''} ${phoneNumber.replace(/\D/g, '').length === 10 && phoneNumber.startsWith('05') ? 'border-green-500' : ''}`}
+                                        value={phoneNumber}
+                                        onChange={(e) => { 
+                                            const val = e.target.value.replace(/\D/g, '').slice(0, 10);
+                                            setPhoneNumber(val); 
+                                            setPhoneError(''); 
+                                        }}
+                                    />
+                                    {phoneNumber.replace(/\D/g, '').length === 10 && phoneNumber.startsWith('05') && (
+                                        <div className="absolute inset-y-0 right-3 flex items-center">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor" className="w-5 h-5 text-green-500">
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                                            </svg>
+                                        </div>
+                                    )}
+                                </div>
                                 {phoneError && <p className="text-red-600 text-xs font-bold">{phoneError}</p>}
 
                                 <textarea 

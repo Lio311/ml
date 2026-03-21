@@ -38,13 +38,22 @@ export function LanguageProvider({ children, initialLocale = 'he' }) {
         }, 100);
     };
 
-    const t = (keyPath) => {
+    const t = (keyPath, data = null) => {
         const keys = keyPath.split('.');
         let result = dictionaries[locale];
         for (const key of keys) {
             if (result[key] === undefined) return keyPath;
             result = result[key];
         }
+        
+        // Handle placeholders if data provided
+        if (data && typeof result === 'string') {
+            Object.keys(data).forEach(key => {
+                const placeholder = `{${key}}`;
+                result = result.replace(new RegExp(placeholder, 'g'), data[key]);
+            });
+        }
+        
         return result;
     };
 
