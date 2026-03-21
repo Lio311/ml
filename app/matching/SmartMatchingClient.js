@@ -102,7 +102,7 @@ export default function SmartMatchingClient({ initialNotes }) {
         <div className="min-h-[600px] flex flex-col">
 
             {/* Progress Bar */}
-            <div className={`w-full bg-gray-100 h-2 ${dir === 'rtl' ? 'rtl' : 'ltr'}`}>
+            <div className="w-full bg-gray-100 h-2" dir={dir}>
                 <div
                     className="bg-black h-2 transition-all duration-500"
                     style={{ width: step === 1 ? '33%' : step === 2 ? '66%' : '100%' }}
