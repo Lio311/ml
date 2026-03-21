@@ -205,6 +205,15 @@ const nextConfig = {
     ],
     formats: ['image/avif', 'image/webp'],
   },
+  async redirects() {
+    return [
+      {
+        source: '/brands/%C3%89lixir%20Priv%C3%A9',
+        destination: '/brands/Elixir%20Priv%C3%A9',
+        permanent: true,
+      },
+    ];
+  },
   async headers() {
     return [
       {
