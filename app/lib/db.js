@@ -103,6 +103,7 @@ export const getMenuItems = unstable_cache(
 
 export const getBrandInsight = unstable_cache(
     async (brandName) => {
+        const normalized = (brandName || '').trim();
         try {
             const res = await pool.query(`
                 SELECT name, title, description, perfumer, highlights, logo_url,
@@ -110,12 +111,19 @@ export const getBrandInsight = unstable_cache(
                 FROM brands 
                 WHERE name ILIKE $1 
                 LIMIT 1
-            `, [brandName]);
+            `, [normalized || 'NONE']);
             
             if (res.rows.length > 0 && res.rows[0].description) {
                 return res.rows[0];
             }
-            return null;
+
+            // Fallback to legacy brandData
+            try {
+                const { getBrandInsight: getLegacyInsight } = require('./brandData');
+                return getLegacyInsight(normalized);
+            } catch (e) {
+                return null;
+            }
         } catch (err) {
             Sentry.captureException(err);
             return null;
