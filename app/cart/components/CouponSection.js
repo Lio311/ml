@@ -88,7 +88,6 @@ export default function CouponSection({
             ) : (
                 <div className="flex items-center justify-between p-3 bg-green-50 border border-green-200 rounded-xl">
                     <div className="flex items-center gap-2">
-                        <span className="text-green-600">🎟️</span>
                         <div>
                             <p className="text-sm font-bold text-green-800">{t('cart.coupon_applied', { code: coupon.code })}</p>
                             <p className="text-xs text-green-600">
