@@ -512,6 +512,7 @@
         "type_message": "הקלד הודעה...",
         "send_error": "שגיאה בשליחת הודעה",
         "client_id_label": "לקוח (ID: {id})",
+        "status_label": "סטטוס",
         "order_status": {
             "pending": "ממתין",
             "processing": "בטיפול",

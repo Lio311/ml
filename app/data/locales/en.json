@@ -570,6 +570,7 @@
         "type_message": "Type a message...",
         "send_error": "Error sending message",
         "client_id_label": "Customer (ID: {id})",
+        "status_label": "Status",
         "order_status": {
             "pending": "Pending",
             "processing": "Processing",

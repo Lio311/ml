@@ -6,7 +6,7 @@ import toast from 'react-hot-toast';
 import { useLanguage } from '../context/LanguageContext';
 
 export default function OrderReviewPrompt({ orderId, initialHasSubmitted = false, onSubmitted }) {
-    const { t } = useLanguage();
+    const { t, dir } = useLanguage();
     const [hasSubmitted, setHasSubmitted] = useState(initialHasSubmitted);
     const [content, setContent] = useState('');
     const [rating, setRating] = useState(5);
@@ -15,7 +15,7 @@ export default function OrderReviewPrompt({ orderId, initialHasSubmitted = false
 
     const handleSubmit = async () => {
         if (!content.trim()) {
-            toast.error(t('orders.review.empty_error'));
+            toast.error(t('common.orders.review.empty_error'));
             return;
         }
 
@@ -29,13 +29,13 @@ export default function OrderReviewPrompt({ orderId, initialHasSubmitted = false
 
             if (res.ok) {
                 setHasSubmitted(true);
-                toast.success(t('orders.review.success'));
+                toast.success(t('common.orders.review.success'));
                 if (onSubmitted) onSubmitted();
             } else {
-                toast.error(t('orders.review.error'));
+                toast.error(t('common.orders.review.error'));
             }
         } catch (error) {
-            toast.error(t('orders.review.error'));
+            toast.error(t('common.orders.review.error'));
         } finally {
             setIsSubmitting(false);
         }
@@ -44,11 +44,11 @@ export default function OrderReviewPrompt({ orderId, initialHasSubmitted = false
     if (hasSubmitted) return null;
 
     return (
-        <div className="mt-4 p-6 bg-black rounded-[2.5rem] shadow-2xl transition-all border border-gray-800" dir="rtl">
+        <div className="mt-4 p-6 bg-black rounded-[2.5rem] shadow-2xl transition-all border border-gray-800" dir={dir}>
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
                 <h3 className="text-white font-bold text-sm flex items-center gap-2">
                     <Sparkles className="w-5 h-5 text-amber-400 animate-pulse" />
-                    {t('orders.review.prompt')}
+                    {t('common.orders.review.prompt')}
                 </h3>
                 
                 {/* Star Rating Selector */}
@@ -77,7 +77,7 @@ export default function OrderReviewPrompt({ orderId, initialHasSubmitted = false
                 <textarea
                     value={content}
                     onChange={(e) => setContent(e.target.value)}
-                    placeholder={t('orders.review.placeholder')}
+                    placeholder={t('common.orders.review.placeholder')}
                     className="w-full bg-white text-black p-5 rounded-3xl text-sm min-h-[120px] outline-none transition-all placeholder:text-gray-400 font-bold focus:shadow-[0_0_20px_rgba(255,255,255,0.1)] border-2 border-transparent focus:border-white/10"
                 />
             </div>
@@ -87,7 +87,7 @@ export default function OrderReviewPrompt({ orderId, initialHasSubmitted = false
                 disabled={isSubmitting || !content.trim()}
                 className="mt-6 w-full bg-emerald-500 text-white font-black py-4 rounded-3xl text-sm transition-all hover:bg-emerald-600 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_10px_30px_rgba(16,185,129,0.1)] flex items-center justify-center gap-2 uppercase tracking-tight"
             >
-                {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : t('orders.review.submit')}
+                {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : t('common.orders.review.submit')}
             </button>
         </div>
     );
