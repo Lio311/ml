@@ -57,7 +57,7 @@ export default function AdminBrandsPage() {
 
     const [selectedLetter, setSelectedLetter] = useState(null);
     const [page, setPage] = useState(1);
-    const ITEMS_PER_PAGE = 5;
+    const ITEMS_PER_PAGE = 7;
 
     const filteredBrands = selectedLetter
         ? brands.filter(brand => brand.name.trim().toLowerCase().startsWith(selectedLetter.toLowerCase()))
