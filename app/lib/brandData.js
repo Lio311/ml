@@ -67,9 +67,13 @@ export const brandData = {
     },
     'Elixir Privé': {
         title: 'סודות הבישום הפרטי: Elixir Privé ואיכות ללא פשרות',
+        title_en: 'The Secrets of Private Perfumery: Elixir Privé and Uncompromising Quality',
         description: 'Elixir Privé (אליקסיר פריבה) הוא בית בישום המוקדש ליצירת "אליקסירים" ריחניים – תמציות מרוכזות ועמוקות המיוצרות בכמויות קטנות ובלעדיות. המותג מתמקד במיצוי המקסימלי של כל רכיב, תוך שימוש בטכנולוגיות זיקוק מתקדמות המאפשרות לשמר את הניחוח הטבעי והמדויק ביותר של פרחים, שרפים ועצים. הפילוסופיה של המותג מבוססת על האמונה שבושם צריך להיות חתימה אישית ואינטימית, כזו שנשארת קרוב לעור אך משדרת יוקרה מאופקת. הניחוחות של Elixir Privé מתאפיינים באיזון מושלם ובעמידות שנמשכת שעות רבות, מה שהופך אותם לבחירה אידיאלית לאלו המחפשים משהו שונה וייחודי. ml_tlv מביאה לכם את הניחוחות המובילים של הבית, ומאפשרת לכם להיכנס לעולם של בישום פרטי ואקסקלוסיבי שלא תמצאו בכל מקום.',
+        description_en: 'Elixir Privé is a perfume house dedicated to creating fragrant "elixirs" – concentrated and deep extracts produced in small and exclusive quantities. The brand focuses on the maximum extraction of each component, using advanced distillation technologies that allow for the preservation of the most natural and accurate scent of flowers, resins, and woods. The brand\'s philosophy is based on the belief that a perfume should be a personal and intimate signature, one that stays close to the skin but radiates understated luxury. Elixir Privé fragrances are characterized by perfect balance and longevity that lasts for many hours, making them an ideal choice for those looking for something different and unique.',
         perfumer: 'מומחי בישום בינלאומיים תחת ניהול אמנותי',
-        highlights: 'ייצור במנות קטנות, ריכוזי תמצית גבוהים, ואיכות השמנים המובילה בתחום.'
+        perfumer_en: 'International perfume experts under artistic management',
+        highlights: 'ייצור במנות קטנות, ריכוזי תמצית גבוהים, ואיכות השמנים המובילה בתחום.',
+        highlights_en: 'Production in small batches, high extract concentrations, and leading oil quality in the field.'
     },
     'Bergamoss': {
         title: 'חזון של טבע ואמנות: עולם הבישום של Bergamoss',
