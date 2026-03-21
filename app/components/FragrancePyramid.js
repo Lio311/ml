@@ -9,7 +9,7 @@ import { useLanguage } from '../context/LanguageContext';
 const HE_TO_EN_NOTES = {
     // Florals
     'ורד': 'Rose', 'ורד דמשק': 'Damascus Rose', 'רוז דה מאי': 'Rose de Mai',
-    'סיגליות': 'Violet', 'יסמין': 'Jasmine', 'לבנדר': 'Lavender',
+    'סיגליות': 'Violet', 'סיגלית': 'Violet', 'עלי סיגלית': 'Violet Leaves', 'יסמין': 'Jasmine', 'לבנדר': 'Lavender',
     'טובארוז': 'Tuberose', 'אורכידיה': 'Orchid', 'פרחי תפוח': 'Apple Blossom',
     'אירוס': 'Iris', 'שורש אירים': 'Iris Root', 'ג\'ורג\'יה': 'Gardenia',
     'ברוסליה': 'Freesia', 'מגנוליה': 'Magnolia', 'סחלב': 'Orchid',
@@ -36,7 +36,7 @@ const HE_TO_EN_NOTES = {
     'בנסם פרו': 'Peru Balsam', 'גומי': 'Gummy',
     // Fruits
     'תפוח': 'Apple', 'אגס': 'Pear', 'אפרסק': 'Peach', 'ליצ\'י': 'Lychee',
-    'פרחי דובדבן': 'Cherry Blossom', 'פטל': 'Raspberry', 'תות': 'Strawberry',
+    'פרחי דובדבן': 'Cherry Blossom', 'פטל': 'Raspberry', 'תות': 'Strawberry', 'תות שדה': 'Strawberry',
     'מנגו': 'Mango', 'פפאיה': 'Papaya', 'גויאבה': 'Guava',
     'אננס': 'Pineapple', 'בלק קארנט': 'Blackcurrant', 'דומדמנית שחורה': 'Blackcurrant',
     // Animals & Aquatics
