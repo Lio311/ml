@@ -23,7 +23,7 @@ export async function POST(req) {
             // 1. Wishlist (If logged in)
             if (userId) {
                 const wishlistRes = await client.query(`
-                    SELECT p.id, p.name, p.brand, p.model, p.image_url, p.price_2ml, p.price_5ml, p.price_10ml, p.stock
+                    SELECT p.id, p.name, p.brand, p.brand_he, p.model, p.model_he, p.image_url, p.price_2ml, p.price_5ml, p.price_10ml, p.stock
                     FROM wishlist w
                     JOIN products p ON w.product_id = p.id
                     WHERE w.user_id = $1 AND p.stock > 0
@@ -40,7 +40,7 @@ export async function POST(req) {
                 // console.log(`[Upsell] Fetching history... Slots remaining: ${3 - recommendations.length}`);
                 try {
                     const historyRes = await client.query(`
-                        SELECT DISTINCT ON (p.id) p.id, p.name, p.brand, p.model, p.image_url, p.price_2ml, p.price_5ml, p.price_10ml, p.stock
+                        SELECT DISTINCT ON (p.id) p.id, p.name, p.brand, p.brand_he, p.model, p.model_he, p.image_url, p.price_2ml, p.price_5ml, p.price_10ml, p.stock
                         FROM product_views v
                         JOIN products p ON v.product_id::text = p.id::text
                         WHERE v.user_id = $1 
@@ -79,7 +79,7 @@ export async function POST(req) {
                 }
 
                 const randomRes = await client.query(`
-                    SELECT id, name, brand, model, image_url, price_2ml, price_5ml, price_10ml, stock 
+                    SELECT id, name, brand, brand_he, model, model_he, image_url, price_2ml, price_5ml, price_10ml, stock 
                     FROM products 
                     WHERE stock > 0 ${notInClause}
                     ORDER BY RANDOM() 
