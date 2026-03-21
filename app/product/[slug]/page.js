@@ -155,7 +155,7 @@ export default async function ProductPage(props) {
         const searchPatterns = notesArray.length > 0 ? notesArray.map(n => `%${n}%`) : ['%NONE%'];
 
         const relatedRes = await pool.query(`
-            SELECT id, slug, name, brand, brand_he, model_he, image_url, price_2ml, price_5ml, price_10ml, stock, category
+            SELECT id, slug, name, brand, brand_he, model, model_he, image_url, price_2ml, price_5ml, price_10ml, stock, category
             FROM products 
             WHERE active = true AND id != $1
             AND (
@@ -178,7 +178,7 @@ export default async function ProductPage(props) {
         if (related.length < 4) {
             const excludeIds = [product.id, ...related.map(r => r.id)];
             const fillRes = await pool.query(`
-                SELECT id, slug, name, brand, brand_he, model_he, image_url, price_2ml, price_5ml, price_10ml, stock, category
+                SELECT id, slug, name, brand, brand_he, model, model_he, image_url, price_2ml, price_5ml, price_10ml, stock, category
                 FROM products 
                 WHERE active = true AND id != ALL($1)
                 ORDER BY RANDOM()
