@@ -142,15 +142,10 @@ export default async function Home() {
               {t('homepage.discover_sig')}
             </h2>
             <h1 className={`${dancingScript.className} text-3xl md:text-6xl mb-2 md:mb-4 text-black leading-tight tracking-wide`}>
-              {t('homepage.hero_title_p1')} <br />
-              {t('homepage.hero_title_p2')}
+              {t('homepage.hero_title_p1')} {t('homepage.hero_title_p2')}
             </h1>
             <p className="text-xs md:text-base text-gray-800 mb-3 md:mb-4 font-light leading-relaxed">
-              {t('common.hero_subtitle')}
-              <br />
-              {t('common.hero_tagline')}
-              <br />
-              {t('common.hero_cta')}
+              {t('common.hero_subtitle')} {t('common.hero_tagline')} {t('common.hero_cta')}
             </p>
             <Link href="/catalog" className="inline-block border text-black border-black px-6 py-2 text-xs md:text-sm font-bold tracking-widest hover:bg-black hover:text-white transition duration-300 uppercase">
               {t('homepage.shop_now')}
