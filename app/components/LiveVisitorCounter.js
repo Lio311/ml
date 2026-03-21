@@ -17,7 +17,7 @@ export default function LiveVisitorCounter() {
 
         const fetchCount = async () => {
             try {
-                const res = await fetch('/api/visitors/heartbeat', {
+                const res = await fetch('/api/v-h', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({ visitorId })
