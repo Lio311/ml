@@ -71,8 +71,8 @@ export const getBrands = unstable_cache(
             throw err;
         }
     },
-    ['global-brands'],
-    { revalidate: 3600, tags: ['globals', 'brands'] }
+    ['global-brands-v2'],
+    { revalidate: 3600, tags: ['globals', 'brands', 'v2'] }
 );
 
 export const getMenuItems = unstable_cache(
@@ -137,8 +137,8 @@ export const getBrandInsight = unstable_cache(
             }
         }
     },
-    ['brand-insights'],
-    { revalidate: 3600, tags: ['brands', 'insights'] }
+    ['brand-insights-v2'],
+    { revalidate: 3600, tags: ['brands', 'insights', 'v2'] }
 );
 
 /**
