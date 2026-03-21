@@ -314,52 +314,66 @@ export default function CartClient() {
                                 vendorConfig={vendorConfig} 
                             />
 
-                            <div className="space-y-4 pt-4 border-t">
+                            {/* Phone Number */}
+                            <div className="py-2 border-t pt-4">
+                                <label className="text-sm font-bold text-gray-700 mb-2 block flex items-center gap-1">
+                                    מספר טלפון (חובה)
+                                    <span className="text-red-500">*</span>
+                                </label>
                                 <div className="relative">
-                                    <input 
-                                        type="tel" 
-                                        placeholder={t('cart.phone_placeholder')}
-                                        className={`w-full p-3 border rounded-xl ${phoneError ? 'border-red-500 bg-red-50' : ''} ${phoneNumber.replace(/\D/g, '').length === 10 && phoneNumber.startsWith('05') ? 'border-green-500' : ''}`}
+                                    <input
+                                        type="tel"
+                                        maxLength="10"
+                                        className={`w-full p-3 border rounded-lg text-lg font-mono focus:ring-2 outline-none bg-white transition-all ${phoneError ? 'border-red-500 bg-red-50' : 'focus:ring-gray-900 border-gray-200'}`}
+                                        placeholder="05XXXXXXXX"
                                         value={phoneNumber}
-                                        onChange={(e) => { 
-                                            const val = e.target.value.replace(/\D/g, '').slice(0, 10);
-                                            setPhoneNumber(val); 
-                                            setPhoneError(''); 
+                                        onChange={(e) => {
+                                            const val = e.target.value.replace(/\D/g, '');
+                                            setPhoneNumber(val);
+                                            if (phoneError) setPhoneError('');
                                         }}
                                     />
-                                    {phoneNumber.replace(/\D/g, '').length === 10 && phoneNumber.startsWith('05') && (
-                                        <div className="absolute inset-y-0 right-3 flex items-center">
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor" className="w-5 h-5 text-green-500">
-                                                <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                                    {phoneNumber.length === 10 && phoneNumber.startsWith('05') && (
+                                        <div className="absolute right-3 top-1/2 -translate-y-1/2 text-green-500">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5">
+                                                <path fillRule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.857-9.809a.75.75 0 0 0-1.214-.882l-3.483 4.79-1.88-1.88a.75.75 0 1 0-1.06 1.061l2.5 2.5a.75.75 0 0 0 1.137-.089l4.001-5.5Z" clipRule="evenodd" />
                                             </svg>
                                         </div>
                                     )}
                                 </div>
-                                {phoneError && <p className="text-red-600 text-xs font-bold">{phoneError}</p>}
+                                {phoneError && <p className="text-red-600 text-xs font-bold mt-1 animate-shake">{phoneError}</p>}
+                                <p className="text-[10px] text-gray-400 mt-1">נשתמש במספר זה רק לתיאום המשלוח והתשלום.</p>
+                            </div>
 
-                                <textarea 
-                                    placeholder={t('cart.notes_placeholder')}
-                                    className="w-full p-3 border rounded-xl h-24"
+                            {/* Order Notes */}
+                            <div className="py-2">
+                                <label className="text-sm font-bold text-gray-700 mb-2 block">הערות להזמנה (אופציונלי):</label>
+                                <textarea
+                                    className="w-full p-3 border rounded-lg text-sm focus:ring-2 focus:ring-gray-900 outline-none resize-none bg-white"
+                                    rows="3"
+                                    placeholder="בקשות מיוחדות לימי הולדת / אריזה / שליח..."
                                     value={notes}
                                     onChange={(e) => setNotes(e.target.value)}
-                                />
+                                ></textarea>
+                            </div>
 
-                                <div className="flex justify-between items-center text-2xl font-black pt-4">
+                                <div className="flex justify-between items-center text-2xl font-black pt-4 border-t mt-4">
                                     <span>{t('cart.total')}</span>
                                     <span>{total} ₪</span>
                                 </div>
 
-                                <button 
-                                    onClick={handleCheckout}
-                                    className="w-full bg-black text-white py-4 rounded-xl font-bold text-lg hover:bg-gray-900 transition-all shadow-lg active:scale-95"
-                                >
-                                    {t('cart.checkout_btn')}
-                                </button>
-                                <p className="text-[10px] text-gray-400 text-center">{t('cart.pickup_note')}</p>
+                                <div className="pt-6">
+                                    <button 
+                                        onClick={handleCheckout}
+                                        className="w-full bg-black text-white py-4 rounded-xl font-bold text-lg hover:bg-gray-900 transition-all shadow-lg active:scale-95"
+                                    >
+                                        {t('cart.checkout_btn')}
+                                    </button>
+                                    <p className="text-[10px] text-gray-400 text-center mt-2">{t('cart.pickup_note')}</p>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
                 <UpsellRecs 
                     isMainVendor={isMainVendor} 

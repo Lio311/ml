@@ -6,7 +6,7 @@
         "brands": "Brands",
         "categories": "Categories",
         "lottery": "Perfume Lottery",
-        "matching": "Package Matching",
+        "matching": "Perfume Matching",
         "about": "About",
         "contact": "Contact",
         "catalog": "Catalog",
@@ -245,8 +245,6 @@
         "reviews_cta_title": "Want to share your experience?",
         "reviews_cta_desc": "Your reviews help us and the ml_tlv community grow. Send us a review from your orders page!",
         "happy_customers": "happy customers",
-        "catalogs_info_meta_title": "Create Your Own Store | ml_tlv",
-        "catalogs_info_meta_desc": "Create a personal catalog and sell products directly to your customers easily.",
         "orders": {
             "title": "My Orders",
             "inbox_title": "Message Inbox",
@@ -464,8 +462,8 @@
         "seo_guide_badge": "Premium Fragrance Guide"
     },
     "matching": {
-        "title": "Luxury in Small Pieces",
-        "description": "Answer a few short questions, and our algorithm will build the perfect bundle for you based on your budget and taste.",
+        "title": "Smart Perfume Matching",
+        "description": "Our algorithm will find the perfumes that best match your personal taste based on ingredients and notes.",
         "quantity_label": "How many perfumes in the bundle?",
         "size_label": "Bottle Size (ml)",
         "budget_label": "Estimated Budget",
@@ -543,7 +541,9 @@
         "max_samples_reached": "We pampered you with 6 samples! Enjoy! 🎉",
         "benefit_waiting": "Benefit waiting for you!",
         "eligible_for_samples": "You are eligible for {count} free samples in this order!",
-        "received_samples": "You received {count} free samples!"
+        "received_samples": "You received {count} free samples!",
+        "meta_title": "My Cart | ml_tlv",
+        "meta_desc": "View your cart items and complete your order on ml_tlv."
     },
     "my_catalogs": {
         "title": "My Catalogs",

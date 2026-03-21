@@ -10,7 +10,7 @@ export const getT = (locale) => {
             if (result && result[k]) {
                 result = result[k];
             } else {
-                return key;
+                return vars?.defaultValue || key;
             }
         }
         
