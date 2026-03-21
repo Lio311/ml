@@ -113,20 +113,28 @@ export const getBrandInsight = unstable_cache(
                 LIMIT 1
             `, [normalized || 'NONE']);
             
-            if (res.rows.length > 0 && res.rows[0].description) {
-                return res.rows[0];
-            }
+            const dbBrand = res.rows[0];
+            const { getBrandInsight: getLegacyInsight } = require('./brandData');
+            const fallback = getLegacyInsight(normalized) || {};
 
-            // Fallback to legacy brandData
+            if (!dbBrand) return fallback;
+
+            // Merge logic: prefer DB, but use fallback for nulls
+            const merged = { ...fallback };
+            for (const key of Object.keys(dbBrand)) {
+                if (dbBrand[key] !== null) {
+                    merged[key] = dbBrand[key];
+                }
+            }
+            return merged;
+        } catch (err) {
+            Sentry.captureException(err);
             try {
                 const { getBrandInsight: getLegacyInsight } = require('./brandData');
                 return getLegacyInsight(normalized);
             } catch (e) {
                 return null;
             }
-        } catch (err) {
-            Sentry.captureException(err);
-            return null;
         }
     },
     ['brand-insights'],

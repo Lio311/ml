@@ -186,6 +186,22 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'theharmonist.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'fimgs.net',
+      },
+      {
+        protocol: 'https',
+        hostname: '**.fimgs.net',
+      },
+      {
+        protocol: 'https',
+        hostname: 'pimgs.net',
+      },
+      {
+        protocol: 'https',
+        hostname: '**.pimgs.net',
+      },
     ],
     formats: ['image/avif', 'image/webp'],
   },
