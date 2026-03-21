@@ -8,7 +8,8 @@ export default function FreeSamplesProgress({
     freeSamplesCount, 
     vendorConfig 
 }) {
-    const { t } = useLanguage();
+    const { t, dir } = useLanguage();
+    const isRTL = dir === 'rtl';
 
     if (isMainVendor) {
         return (
@@ -24,11 +25,11 @@ export default function FreeSamplesProgress({
 
                 <div className="relative h-4 bg-gray-100 rounded-full overflow-hidden mb-2">
                     <div
-                        className="absolute top-0 right-0 h-full bg-gradient-to-r from-blue-500 to-purple-600 transition-all duration-1000 ease-out rounded-full"
+                        className={`absolute top-0 ${isRTL ? 'right-0' : 'left-0'} h-full bg-gradient-to-r from-blue-500 to-purple-600 transition-all duration-1000 ease-out rounded-full`}
                         style={{ width: `${Math.min(100, (subtotal / 1000) * 100)}%` }}
                     ></div>
-                    <div className="absolute top-0 right-[30%] h-full w-0.5 bg-white/50 z-10" title="300₪ - 2 דוגמיות"></div>
-                    <div className="absolute top-0 right-[50%] h-full w-0.5 bg-white/50 z-10" title="500₪ - 4 דוגמיות"></div>
+                    <div className={`absolute top-0 ${isRTL ? 'right-[30%]' : 'left-[30%]'} h-full w-0.5 bg-white/50 z-10`} title="300₪ - 2 דוגמיות"></div>
+                    <div className={`absolute top-0 ${isRTL ? 'right-[50%]' : 'left-[50%]'} h-full w-0.5 bg-white/50 z-10`} title="500₪ - 4 דוגמיות"></div>
                 </div>
 
                 <div className="flex justify-between text-[10px] text-gray-400 font-medium px-1">
@@ -86,14 +87,14 @@ export default function FreeSamplesProgress({
 
             <div className="relative h-4 bg-gray-100 rounded-full overflow-hidden mb-2">
                 <div
-                    className="absolute top-0 right-0 h-full bg-gradient-to-r from-green-400 to-emerald-600 transition-all duration-1000 ease-out rounded-full"
+                    className={`absolute top-0 ${isRTL ? 'right-0' : 'left-0'} h-full bg-gradient-to-r from-green-400 to-emerald-600 transition-all duration-1000 ease-out rounded-full`}
                     style={{ width: `${Math.min(100, (subtotal / maxTierSum) * 100)}%` }}
                 ></div>
                 {sortedTiers.map((t, idx) => (
                     <div
                         key={idx}
-                        className="absolute top-0 h-full w-0.5 bg-white/50 z-10"
-                        style={{ right: `${(t.minAmount / maxTierSum) * 100}%` }}
+                        className={`absolute top-0 h-full w-0.5 bg-white/50 z-10`}
+                        style={{ [isRTL ? 'right' : 'left']: `${(t.minAmount / maxTierSum) * 100}%` }}
                         title={`${t.minAmount}₪ - ${t.samplesCount} דוגמיות`}
                     ></div>
                 ))}
