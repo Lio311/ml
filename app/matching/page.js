@@ -7,9 +7,9 @@ import { getT } from "../lib/getT";
 export const dynamic = 'force-dynamic';
 
 export async function generateMetadata() {
-    const cookieStore = cookies();
+    const cookieStore = await cookies();
     const locale = cookieStore.get('NEXT_LOCALE')?.value || 'he';
-    const t = await getT(locale);
+    const t = getT(locale);
 
     return {
         title: `${t('common.matching')} | ml_tlv`,
@@ -18,9 +18,9 @@ export async function generateMetadata() {
 }
 
 export default async function MatchingPage() {
-    const cookieStore = cookies();
+    const cookieStore = await cookies();
     const locale = cookieStore.get('NEXT_LOCALE')?.value || 'he';
-    const t = await getT(locale);
+    const t = getT(locale);
     const dir = locale === 'he' ? 'rtl' : 'ltr';
 
     // Fetch all unique notes for the tag selector
