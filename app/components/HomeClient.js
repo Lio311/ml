@@ -170,7 +170,7 @@ function ProductCardWrapper({ product }) {
                                 <span className="font-bold">{product.price_2ml} ₪</span>
                                 <button
                                     onClick={() => handleAdd(2, product.price_2ml)}
-                                    className="bg-gray-100 hover:bg-black hover:text-white w-5 h-5 rounded flex items-center justify-center transition"
+                                    className="bg-gray-100 hover:bg-black hover:text-white w-5 h-5 rounded-full flex-shrink-0 flex items-center justify-center transition"
                                 >+</button>
                             </div>
                         </div>
@@ -183,7 +183,7 @@ function ProductCardWrapper({ product }) {
                                 <span className="font-bold">{product.price_5ml} ₪</span>
                                 <button
                                     onClick={() => handleAdd(5, product.price_5ml)}
-                                    className="bg-gray-100 hover:bg-black hover:text-white w-5 h-5 rounded flex items-center justify-center transition"
+                                    className="bg-gray-100 hover:bg-black hover:text-white w-5 h-5 rounded-full flex-shrink-0 flex items-center justify-center transition"
                                 >+</button>
                             </div>
                         </div>
@@ -196,7 +196,7 @@ function ProductCardWrapper({ product }) {
                                 <span className="font-bold">{product.price_10ml} ₪</span>
                                 <button
                                     onClick={() => handleAdd(10, product.price_10ml)}
-                                    className="bg-gray-100 hover:bg-black hover:text-white w-5 h-5 rounded flex items-center justify-center transition"
+                                    className="bg-gray-100 hover:bg-black hover:text-white w-5 h-5 rounded-full flex-shrink-0 flex items-center justify-center transition"
                                 >+</button>
                             </div>
                         </div>

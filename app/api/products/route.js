@@ -3,6 +3,7 @@ import pool from '../../lib/db';
 import { clerkClient } from '@clerk/nextjs/server';
 import { sendEmail, getNewProductTemplate } from '../../lib/email';
 import { checkAdmin } from '../../lib/admin';
+import { revalidatePath } from 'next/cache';
 
 export async function GET(req) {
     try {
@@ -84,6 +85,11 @@ export async function PUT(req) {
                     ON CONFLICT (name) DO NOTHING
                 `, [brand]);
             }
+
+            revalidatePath('/');
+            revalidatePath('/catalog');
+            revalidatePath('/brands/[brand]', 'page');
+            revalidatePath('/product/[slug]', 'page');
 
             return NextResponse.json({ success: true });
         } finally {
@@ -172,6 +178,11 @@ export async function POST(req) {
             }
             // --------------------------
 
+            revalidatePath('/');
+            revalidatePath('/catalog');
+            revalidatePath('/brands/[brand]', 'page');
+            revalidatePath('/product/[slug]', 'page');
+
             return NextResponse.json({ success: true, id: newProductId });
         } finally {
             client.release();
@@ -245,9 +256,16 @@ export async function DELETE(req) {
                 const info = brand + ' ' + model;
                 // Delete from Dictionary
                 await client.query('DELETE FROM search_mappings WHERE english_term = $1 AND type = \'product\'', [info]);
+                
+                revalidatePath('/brands/[brand]', 'page');
+                revalidatePath('/product/[slug]', 'page');
             }
 
             await client.query('DELETE FROM products WHERE id = $1', [id]);
+            
+            revalidatePath('/');
+            revalidatePath('/catalog');
+            
             return NextResponse.json({ success: true });
         } finally {
             client.release();
