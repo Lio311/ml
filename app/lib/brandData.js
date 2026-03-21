@@ -105,6 +105,7 @@ export const getBrandInsight = (brandName) => {
         perfumer: 'אמני בישום בינלאומיים מובילים',
         perfumer_en: 'Leading international perfumers',
         highlights: 'ייצור תחת סטנדרטים גבוהים של יוקרה, דגש על עמידות ונוכחות, ושימוש ברכיבי פרימיום.',
-        highlights_en: 'Produced under high luxury standards, emphasis on longevity and presence, and use of premium ingredients.'
+        highlights_en: 'Produced under high luxury standards, emphasis on longevity and presence, and use of premium ingredients.',
+        logo_url: 'https://images.unsplash.com/photo-1541643600914-78b084683601?q=80&w=512&h=512&auto=format&fit=crop'
     };
 };
