@@ -15,7 +15,7 @@ export default function BrandsClient({ brands }) {
 
     // Get unique first letters from brands
     const availableLetters = new Set(
-        brands.map(b => b.name.trim().charAt(0).toUpperCase())
+        brands.map(b => b.name.trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "").charAt(0).toUpperCase())
     );
 
     // Filter Alphabet
@@ -23,7 +23,9 @@ export default function BrandsClient({ brands }) {
 
     // Filter Logic
     const filteredBrands = selectedLetter
-        ? brands.filter(brand => brand.name.trim().toLowerCase().startsWith(selectedLetter.toLowerCase()))
+        ? brands.filter(brand => 
+            brand.name.trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().startsWith(selectedLetter.toLowerCase())
+        )
         : brands;
 
     return (

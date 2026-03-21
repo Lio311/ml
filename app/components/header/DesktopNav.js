@@ -12,7 +12,7 @@ export default function DesktopNav({ menu = [], brands = [] }) {
 
     // Group Brands by Letter
     const groupedBrands = brands.reduce((acc, brand) => {
-        const letter = brand.name.charAt(0).toUpperCase();
+        const letter = brand.name.trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "").charAt(0).toUpperCase();
         if (!acc[letter]) acc[letter] = [];
         acc[letter].push(brand);
         return acc;

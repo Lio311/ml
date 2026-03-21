@@ -60,7 +60,9 @@ export default function AdminBrandsPage() {
     const ITEMS_PER_PAGE = 7;
 
     const filteredBrands = selectedLetter
-        ? brands.filter(brand => brand.name.trim().toLowerCase().startsWith(selectedLetter.toLowerCase()))
+        ? brands.filter(brand => 
+            brand.name.trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().startsWith(selectedLetter.toLowerCase())
+          )
         : brands;
 
     // Pagination Logic
