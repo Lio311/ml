@@ -96,11 +96,15 @@ export const getBrandInsight = (brandName) => {
     
     if (foundKey) return brandData[foundKey];
     
-    // Generic fallback for SEO
+    // Generic professional fallback
     return {
-        title: `הכירו את עולם הבישום של ${normalized} - איכות, יוקרה וניחוחות נישה`,
-        description: `ביתו של המותג ${normalized} הוא עולם של יצירה אמנותית המתרכזת בייצור בשמים בעלי חתימה אישית ייחודית. בעולם בשמי הנישה והיוקרה, ${normalized} בולט בזכות המחויבות שלו לשימוש בחומרי גלם איכותיים ביותר, המעניקים לכל ניחוח עומק, עמידות ונוכחות מרשימה. כל בושם של המותג נבחר בקפידה על ידי הצוות של ml_tlv כדי להבטיח שאתם מקבלים את הטוב ביותר שיש לעולם הבישום הבינלאומי להציע. הניחוחות של ${normalized} מציעים חוויה חושית המשלבת בין מסורת לחדשנות, ויוצרים זיכרון ריחני שקשה לשכוח. בין אם אתם מחפשים בושם רענן ליומיום או ניחוח דומיננטי לאירוע מיוחד, הקולקציות של ${normalized} מספקות מענה לכל טעם אישי מתוחכם. גלו עכשיו את מגוון דוגמיות הנישה של ${normalized} באתר ml_tlv ותהנו מהזדמנות להתנסות ביוקרה אמיתית בבקבוקים קטנים.`,
-        perfumer: 'אמני בישום בינלאומיים מהשורה הראשונה',
-        highlights: 'ייצור תחת סטנדרטים גבוהים של יוקרה, דגש על עמידות ונוכחות, ושימוש ברכיבי פרימיום.'
+        title: `הכירו את עולם הבישום של ${normalized}`,
+        title_en: `Discover the World of ${normalized}`,
+        description: `המותג ${normalized} מייצג את הפסגה של יצירה אמנותית ואיכות בשמי המזרח והמערב. כל בושם של המותג נבחר בקפידה על ידי צוות ml_tlv כדי להבטיח שאתם מקבלים חוויה חושית עשירה, עמידה ומתוחכמת המבוססת על חומרי הגלם הטובים ביותר.`,
+        description_en: `${normalized} represents the pinnacle of artistic creation and quality in both Eastern and Western perfumery. Each fragrance from the brand is carefully selected by the ml_tlv team to ensure you receive a rich, long-lasting, and sophisticated sensory experience based on the finest raw materials.`,
+        perfumer: 'אמני בישום בינלאומיים מובילים',
+        perfumer_en: 'Leading international perfumers',
+        highlights: 'ייצור תחת סטנדרטים גבוהים של יוקרה, דגש על עמידות ונוכחות, ושימוש ברכיבי פרימיום.',
+        highlights_en: 'Produced under high luxury standards, emphasis on longevity and presence, and use of premium ingredients.'
     };
 };
