@@ -10,7 +10,7 @@ export async function POST(req) {
             return new NextResponse("Forbidden", { status: 403 });
         }
 
-        const { code } = await req.json();
+        const { code, subtotal } = await req.json();
 
         if (!code) {
             return NextResponse.json({ error: 'Code required' }, { status: 400 });
@@ -18,6 +18,11 @@ export async function POST(req) {
 
         const client = await pool.connect();
         try {
+            // Lazy migration: Ensure limitations column exists
+            try {
+                await client.query('ALTER TABLE coupons ADD COLUMN IF NOT EXISTS limitations JSONB');
+            } catch (e) { /* Ignore if already exists or fails for other reasons */ }
+
             const res = await client.query(`
                 SELECT * FROM coupons 
                 WHERE code = $1 
@@ -30,11 +35,24 @@ export async function POST(req) {
             }
 
             const coupon = res.rows[0];
+            const limitations = coupon.limitations || {};
+
+            // Check Minimum Total
+            if (limitations.min_total && subtotal < limitations.min_total) {
+                return NextResponse.json({ 
+                    error: `סכום מינימלי לשימוש בקופון זה הוא ${limitations.min_total} ₪`,
+                    min_total: limitations.min_total
+                }, { status: 400 });
+            }
+
             return NextResponse.json({
                 success: true,
-                discountPercent: coupon.discount_percent,
-                code: coupon.code,
-                limitations: coupon.limitations || {}
+                coupon: {
+                    code: coupon.code,
+                    discount_type: 'percent',
+                    discount_value: coupon.discount_percent,
+                    limitations: limitations
+                }
             });
         } finally {
             client.release();
