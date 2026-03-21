@@ -292,9 +292,18 @@ export default function CartClient() {
                         <div className="bg-white p-6 rounded-xl border shadow-xl space-y-6 sticky top-24">
                             <h2 className="text-xl font-bold border-b pb-4">{t('cart.order_summary')}</h2>
 
-                            <div className="flex justify-between text-lg">
+                            <div className="flex justify-between text-lg items-center">
                                 <span>{t('cart.subtotal')}</span>
-                                <span className="font-bold">{t('cart.price_format', { price: subtotal })}</span>
+                                <div className="flex items-center gap-2">
+                                    {coupon && (
+                                        <span className="line-through text-gray-400 text-sm">
+                                            {t('cart.price_format', { price: subtotal })}
+                                        </span>
+                                    )}
+                                    <span className="font-bold">
+                                        {t('cart.price_format', { price: coupon ? subtotal - discountAmount : subtotal })}
+                                    </span>
+                                </div>
                             </div>
 
                             {isMainVendor && luckyPrize?.type === 'discount' && !lotteryMode?.active && (
