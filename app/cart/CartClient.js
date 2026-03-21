@@ -15,7 +15,6 @@ import CartItem from "./components/CartItem";
 import CouponSection from "./components/CouponSection";
 import DeliverySection from "./components/DeliverySection";
 import FreeSamplesProgress from "./components/FreeSamplesProgress";
-import UpsellRecs from "./components/UpsellRecs";
 
 export default function CartClient() {
     const { t } = useLanguage();
@@ -186,6 +185,21 @@ export default function CartClient() {
         if (isMainVendor && activeItems.length > 0) fetchUpsell();
     }, [isMainVendor, activeItems.length, cartItems]);
 
+    const recommendations = useMemo(() => {
+        if (!isMainVendor || nextTier <= 0) return [];
+        return upsellProducts
+            .filter(p => !cartItems.some(item => item.id === p.id))
+            .map(p => {
+                const sizes = [
+                    { size: '2', price: Number(p.price_2ml) },
+                    { size: '5', price: Number(p.price_5ml) },
+                    { size: '10', price: Number(p.price_10ml) }
+                ].filter(s => s.price > 0);
+                let bestMatch = sizes.find(s => s.price >= nextTier) || sizes[sizes.length - 1];
+                return { ...p, ...bestMatch };
+            }).slice(0, 3);
+    }, [isMainVendor, nextTier, upsellProducts, cartItems]);
+
     // Lucky Wheel
     useEffect(() => {
         const lastSpin = localStorage.getItem('lastLuckySpin');
@@ -314,6 +328,33 @@ export default function CartClient() {
                                 vendorConfig={vendorConfig} 
                             />
 
+                            {/* Recommendations / Upsell */}
+                            {recommendations.length > 0 && (
+                                <div className="space-y-3 pt-2">
+                                    <h4 className="text-sm font-bold text-gray-700">השלם את החסר בקלות:</h4>
+                                    <div className="space-y-2">
+                                        {recommendations.map(rec => (
+                                            <div key={rec.id} className="flex items-center gap-3 bg-white border p-2 rounded-lg shadow-sm hover:shadow-md transition">
+                                                <div className="w-10 h-10 bg-gray-50 rounded flex-shrink-0 flex items-center justify-center overflow-hidden">
+                                                    {rec.image_url ? <img src={rec.image_url} alt="" className="w-full h-full object-contain p-1" /> : '🧴'}
+                                                </div>
+                                                <div className="flex-1 min-w-0">
+                                                    <div className="font-bold text-xs truncate">{rec.name}</div>
+                                                    <div className="text-xs text-gray-500">{rec.size} מ"ל • {rec.price} ₪</div>
+                                                </div>
+                                                <button
+                                                    onClick={() => addToCart(rec, rec.size, rec.price)}
+                                                    className="w-8 h-8 flex items-center justify-center bg-black text-white rounded-full hover:bg-gray-800 transition"
+                                                    title="הוסף לעגלה"
+                                                >
+                                                    +
+                                                </button>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            )}
+
                             {/* Phone Number */}
                             <div className="py-2 border-t pt-4">
                                 <label className="text-sm font-bold text-gray-700 mb-2 block flex items-center gap-1">
@@ -374,14 +415,6 @@ export default function CartClient() {
                             </div>
                         </div>
                     </div>
-
-                <UpsellRecs 
-                    isMainVendor={isMainVendor} 
-                    nextTier={nextTier} 
-                    upsellProducts={upsellProducts} 
-                    cartItems={cartItems} 
-                    addToCart={addToCart} 
-                />
             </div>
 
             {showWheel && <LuckyWheel onWin={handleWin} onClose={() => setShowWheel(false)} />}
