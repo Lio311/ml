@@ -343,7 +343,7 @@ export default function CartClient() {
                                                     <div className="text-xs text-gray-500">
                                                         {t('cart.upsell_item_format', { 
                                                             size: rec.size, 
-                                                            ml: t('ml_unit'), 
+                                                            ml: t('common.ml_unit'), 
                                                             price: rec.price 
                                                         })}
                                                     </div>
