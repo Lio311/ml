@@ -342,10 +342,16 @@ export function CartProvider({ children }) {
         }
 
         if (coupon) {
-            let limits = coupon.limitations || {};
-            // Simplified coupon logic for this step, keeping structure
-            const ratio = 1; // All main items eligible for this logic
-            const couponDiscount = Math.round(priceAfterDiscounts * (coupon.discountPercent / 100));
+            const dv = coupon.discount_value || coupon.discountPercent || 0;
+            const dt = coupon.discount_type || 'percent';
+            
+            let couponDiscount = 0;
+            if (dt === 'percent') {
+                couponDiscount = Math.round(priceAfterDiscounts * (dv / 100));
+            } else {
+                couponDiscount = Math.min(priceAfterDiscounts, dv);
+            }
+            
             discountAmount += couponDiscount;
             priceAfterDiscounts -= couponDiscount;
         }
