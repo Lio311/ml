@@ -490,5 +490,11 @@
         "budget_too_low": "The budget was too low for this bundle, we got as close as possible ({total} ₪)",
         "great_value": "We found a great bundle at a special price! ({total} ₪)",
         "perfect_match": "Perfect match! Correct budget bundle for you."
+    },
+    "metadata": {
+        "home": {
+            "title": "ml_tlv - Luxury Perfume Samples & Decants",
+            "description": "Discover the world of niche and boutique perfumes with our curated sample collections. ml_tlv offers high-quality decants and luxury samples delivered across Israel."
+        }
     }
 }
