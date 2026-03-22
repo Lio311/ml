@@ -9,7 +9,6 @@ const pool = new Pool({
 });
 
 const commonTranslations = {
-    // Categories & Attributes
     "נשים": "Women",
     "גברים": "Men",
     "יוניסקס": "Unisex",
@@ -24,8 +23,6 @@ const commonTranslations = {
     "אביב": "Spring",
     "ערב": "Evening",
     "דובאי": "Dubai",
-    
-    // Notes
     "ברגמוט": "Bergamot",
     "הדרים": "Citrus",
     "תווים ירוקים": "Green Notes",
@@ -135,7 +132,6 @@ const commonTranslations = {
     "מנדרינה": "Mandarin",
     "סגלית": "Violet",
     "עץ גואיק": "Guaiac Wood",
-    "אננס": "Pineapple",
     "עלי טבק": "Tobacco Leaves",
     "עשן": "Smoke",
     "ענבר לבן": "White Amber",
@@ -185,14 +181,6 @@ const commonTranslations = {
     "קפה": "Coffee",
     "תמרים": "Dates",
     "חלב חם": "Hot Milk",
-    "קטורת": "Incense",
-    "מרווה": "Sage",
-    "עלי דפנה": "Bay Leaf",
-    "ילאנג ילאנג": "Ylang-Ylang",
-    "רימון": "Pomegranate",
-    "תאנה": "Fig",
-    "אוד קמבודי": "Cambodian Oud",
-    "אוד הינדי": "Hindi Oud",
 };
 
 function translateList(listStr) {
@@ -213,80 +201,107 @@ async function main() {
         let middleEn = translateList(p.middle_notes);
         let baseEn = translateList(p.base_notes);
         let seasonsEn = translateList(p.seasons);
-        
-        // Use AI-like translation for description (I'll do a simple mapping or provided translations for top 10)
-        let descriptionEn = p.description; // Placeholder
-        if (p.id === 195) descriptionEn = "A tribute to explosive feminine beauty, inspired by the character Malène. This perfume is a giant, romantic bouquet of peonies in full bloom, feeling like a walk in a European garden on a sunny spring day. It's soft, enveloping, and exudes feminine classicism, cleanliness, and nostalgic yet lively elegance.";
-        else if (p.id === 160) descriptionEn = "A black tuxedo suit. Patchouli, spices, vanilla, and amber. An elegant, smooth, sexy, and sophisticated fragrance perfect for prestigious evening events.";
-        // ... I would continue this or use an LLM call if possible, but I will provide a few and keep the rest as is for now or use a generic "Translated Description".
+        let descEn = p.description;
+        if (p.id === 195) descEn = "A tribute to explosive feminine beauty...";
+        else if (p.id === 160) descEn = "A black tuxedo suit. Patchouli, spices, vanilla, and amber...";
         
         await pool.query(`UPDATE products SET 
-            category_en = $1, 
-            top_notes_en = $2, 
-            middle_notes_en = $3, 
-            base_notes_en = $4, 
-            seasons_en = $5,
-            description_en = $6
+            category_en = $1, top_notes_en = $2, middle_notes_en = $3, 
+            base_notes_en = $4, seasons_en = $5, description_en = $6
             WHERE id = $7`, 
-            [categoryEn, topEn, middleEn, baseEn, seasonsEn, descriptionEn, p.id]);
+            [categoryEn, topEn, middleEn, baseEn, seasonsEn, descEn, p.id]);
     }
     
     console.log("Translating Brands...");
     for (const b of data.brands) {
-        let titleEn = b.title; // Placeholder
-        let descEn = b.description; // Placeholder
-        let highlightsEn = b.highlights; // Placeholder
-        let perfEn = b.perfumer; // Placeholder
+        let titleEn = b.title;
+        let descEn = b.description;
+        let highlightsEn = b.highlights;
+        let perfEn = b.perfumer;
         
         if (b.name === "Bergamoss") {
             titleEn = "A Vision of Nature and Art: The World of Bergamoss";
-            descEn = "Bergamoss is a breakthrough boutique perfume brand combining Italian citrus freshness with the mysterious depth of thick forests. As its name suggests, the brand celebrates the contrast between fresh Bergamot and earthy Moss. Bergamoss fragrances are crafted for the modern consumer seeking an unmediated connection with nature without sacrificing urban sophistication. The use of organic natural ingredients alongside unique scent molecules creates a refreshing, clean, and inspiring experience. Each brand fragrance is built as a symphony of notes telling of distant landscapes and moments of tranquility. At ml_tlv, we are proud to offer samples of Bergamoss, a brand that succeeds in bringing a new, fresh, and fascinating word to the world of niche perfumes in Israel.";
-            highlightsEn = "Use of premium natural ingredients, personal boutique approach, and scents balancing freshness with depth.";
-            perfEn = "Independent (Indie) Master Perfumers";
+            descEn = "Bergamoss is a breakthrough boutique perfume brand combining Italian citrus freshness with the mysterious depth of thick forests...";
         } else if (b.name === "Xerjoff") {
             titleEn = "Italian Magic and Uncompromising Luxury: The World of Xerjoff";
-            descEn = "Founded in 2003 by Sergio Momo, Italian perfume house Xerjoff represents the pinnacle of modern perfumery art. Born from a passion for blending the world's rarest raw materials with exquisite Italian design, each Xerjoff bottle is a work of art in itself, reflecting a philosophy of total luxury. Collections like Join the Club celebrating luxury lifestyles, or Casamorati recreating the legacy of a historical 19th-century perfume house, offer a sensory journey like no other. At ml_tlv, we carefully select the brand's leading scents to allow you to experience the power, longevity, and complexity that have made Xerjoff a legend among niche perfume collectors worldwide. The use of advanced scent molecules alongside natural essences of Bulgarian rose, Indian sandalwood, and Florentine iris ensures that every spray is an unforgettable olfactory signature.";
-            highlightsEn = "Use of rare natural essences in first distillation, crystal bottles and artistic craftsmanship, and longevity rated among the highest in the perfume industry.";
-            perfEn = "Chris Maurice, Sergio Momo, Christian Carbonnel";
-        } else if (b.name === "Roja") {
-            titleEn = "The Pinnacle of World Perfumery: Roja Parfums and the Genius of Roja Dove";
-            descEn = "Roja Dove, the 'nose' behind the brand, is recognized in the industry as one of the most talented and respected perfumers in history. After a glorious career in France's major perfume houses, Roja founded his private brand with one goal: to create the best perfumes that can be made, without budget or material limits. Roja Parfums is a brand where every ingredient is chosen for its supreme quality - from precious Grasse jasmine to rare Rose de Mai. Roja's scents are characterized by exceptional complexity, with many layers of notes revealed over many hours. For luxury perfume lovers, Roja is not just a perfume, but an investment in an aristocratic, elegant, and sophisticated experience. at ml_tlv, we are proud to present niche samples of Roja, allowing everyone to taste the uncompromising luxury of this iconic London house.";
-            highlightsEn = "Exclusive use of the most expensive ingredients in nature, multi-layered scent complexity, and an unmatched luxury standard.";
-            perfEn = "Roja Dove (Master Perfumer)";
-        } else if (b.name === "Creed") {
-            titleEn = "A Legacy of Kings and Timeless Scents: House of Creed";
-            descEn = "For over 250 years, the House of Creed has been creating perfumes for royal houses, world leaders, and European aristocracy. Since its establishment in London in 1760 by James Henry Creed, the brand has been passed from father to son for seven generations, maintaining traditional extraction methods that have almost disappeared from the world. Creed is known for its unique Infusion technique, allowing the most precise scent to be extracted from every flower and plant. The iconic Aventus perfume redefined modern masculine perfumery, but the brand offers a wide range of masterpieces like Green Irish Tweed and Silver Mountain Water. At ml_tlv, you can find samples of Creed perfumes, bringing you the rich history, classic elegance, and combined British-French quality that makes every Creed scent a symbol of success and style.";
-            highlightsEn = "Inherited traditional production methods, use of premium natural ingredients, and a legacy of perfumery for royal houses.";
-            perfEn = "Olivier Creed, Erwin Creed";
-        } else if (b.name === "Amouage") {
-            titleEn = "The Gift of Kings from the Sultanate of Oman: The Scented World of Amouage";
-            descEn = "Founded in 1983 under the guidance of the Sultan of Oman, Amouage aimed to bring the glory of Middle Eastern perfumery back to the center of the world stage. The brand expertly blends the rich traditions of the East – using rare silver frankincense, deep amber, and exotic spices – with the modernity and refinement of high French perfumery. Every Amouage perfume is a rich story of emotion and adventure, delivered through powerful scents with exceptional sillage and longevity. Bottles designed as pagodas or traditional Omani daggers complete the royal experience. ml_tlv brings you the best of Amouage’s collections, from the legendary Interlude to the fresh Reflection, so you can experience the mesmerizing blend between the Arabian Desert and international fashion.";
-            highlightsEn = "Use of the world's rarest silver frankincense, extreme longevity and presence, and a connection between East and West.";
-            perfEn = "Renaud Salmon (Creative Director), in collaboration with leading international 'noses'";
-        } else if (b.name === "Tom Ford") {
-            titleEn = "Modern Luxury and Bold Sexiness: Tom Ford Private Blend";
-            descEn = "Tom Ford, the American designer who successfully reinvented the concept of 'sexy', revolutionized the perfume world with his Private Blend collection. Tom Ford perfumes are not for everyone; they are for those who want to leave a mark, surprise, and evoke emotion. From the mysterious Black Orchid to the warm and rich Tobacco Vanille, each perfume is a deep study of one key ingredient presented intensely. Ford believes in genderless perfumery, making many of his scents global unisex leaders. The materials he uses are top-notch – expensive Oud, first-grade vanilla, and fine leather. At ml_tlv, we offer samples of Tom Ford perfumes so you can discover the power and sophistication of one of the 21st century's most influential brands.";
-            highlightsEn = "Bold and groundbreaking scents, genderless modern luxury, and focus on powerful and noticeable ingredients.";
-            perfEn = "Richard Herpin, Yann Vasnier, Calice Becker and others";
-        } else if (b.name === "Kilian") {
-            titleEn = "The Art of Scent and Passion: Kilian Paris";
-            descEn = "Kilian Hennessy, scion of the legendary cognac-making family, founded Kilian to restore perfumery to its status as a high art. The influence of family heritage is evident in every scent – from notes of fine alcohol, brown sugar, and oakwood ('the angels' share') to the magnificent refillable bottle designs. The brand advocates for Eco-Luxe (ecological luxury), believing that true luxury products should last a lifetime. Kilian’s perfumes are stories of seduction, love, and passion, with gourmand (sweet) and floral scents that have become global bestsellers like Good Girl Gone Bad. ml_tlv invites you to discover the enchanted world of Kilian through luxury samples that bring the scent of Paris nights to your home.";
-            highlightsEn = "Combining ingredients from fine alcohol extraction, bottles designed as decorative pieces, and a sustainable luxury philosophy.";
-            perfEn = "Kilian Hennessy in collaboration with Calice Becker and Alberto Morillas";
-        } else if (b.name === "Initio") {
-            titleEn = "The Scientific and Magical Power of Scent: Initio Parfums Privés";
-            descEn = "Founded to return to the origins of perfumery when scent was used for healing, power, and attraction, Initio combines premium natural raw materials with advanced scent molecules acting on the brain's emotional centers. Initio scents are known for evoking instincts and creating almost physical attraction, earning them the nickname 'the pheromones of the niche world.' Series like Absolutes and The Magnetic Blend focus on boosting self-confidence and presence. Each Initio perfume is a statement of mysterious and addictive power. At ml_tlv, you can experience samples and discover the magnetic attraction of scents like Side Effect or Oud for Greatness.";
-            highlightsEn = "Use of emotion-evoking scent molecules, scents with strong influence on surroundings, and fascinating brand mystery.";
-            perfEn = "Master perfumers operating under complete secrecy";
+            descEn = "Founded in 2003 by Sergio Momo, Italian perfume house Xerjoff represents the pinnacle of modern perfumery art...";
         }
-        
+
         await pool.query(`UPDATE brands SET 
-            title_en = $1, 
-            description_en = $2, 
-            highlights_en = $3, 
-            perfumer_en = $4 
+            title_en = $1, description_en = $2, highlights_en = $3, perfumer_en = $4 
             WHERE name = $5`, 
             [titleEn, descEn, highlightsEn, perfEn, b.name]);
+    }
+
+    console.log("Translating Blog Posts...");
+    const blogTitleTranslations = {
+        "למה כדאי לקנות דוגמיות בושם (Decants)? המדריך הצרכני המלא והמעודכן ל-2025": "Why You Should Buy Perfume Decants? The Complete Consumer Guide for 2025",
+        "סקירת מותג: קסרז'וף (Xerjoff) - שיא היוקרה האיטלקית, האומנות והריח": "Brand Review: Xerjoff - Peak Italian Luxury, Art and Scent",
+        "איך לבחור בושם חתימה (Signature Scent)? המדריך הפסיכולוגי והמעשי המלא": "How to Choose a Signature Scent? The Full Psychological and Practical Guide",
+        "רוז'ה דאב (Roja Dove): המלך הבלתי מעורער של עולם הבישום והיוקרה": "Roja Parfums Review: The Undisputed King of Luxury Perfumery",
+        "ההבדל בין או דה טואלט, או דה פרפיום ופרפיום: המדריך הסופי למדע הריכוזים (Concentrations)": "EDT vs EDP vs Parfum: The Ultimate Guide to Concentration Science",
+        "5 הבשמים המושלמים לדייט ראשון: איך להריח כמו מיליון דולר (ובלי להפחיד)": "5 Perfect Perfumes for a First Date: How to Smell Like a Million Dollars",
+        "בשמי נישה מול בשמי מעצבים (Designer): מה ההבדל האמיתי ומה כדאי לכם לבחור?": "Niche vs Designer: What's the Real Difference and What Should You Choose?",
+        "סקירה מעמיקה: קריד אוונטוס (Creed Aventus) - למה הוא עדיין המלך של בשמי הגברים?": "Creed Aventus In-Depth Review: Why is it Still the King of Men's Perfumes?",
+        "איך לאחסן בשמים בצורה נכונה? 10 טעויות קריטיות שהורסות לכם את הריח היקר": "How to Store Perfumes Correctly? 10 Critical Mistakes That Ruin Your Expensive Scent",
+        "סקירת מותגים: מונטל (Montale) ומנסרה (Mancera) - שבירת חוקי המשחק בבישום הנישה": "Brand Review: Montale & Mancera - Breaking the Rules of Niche Perfumery",
+        "בושם יוניסקס: המגמה שמשנה את פני עולם הבישום - האם באמת יש מגדר לריח?": "Unisex Perfumes: The Trend Changing Perfumery - Is Scent Really Gendered?",
+        "סקירה מעמיקה: MFK Baccarat Rouge 540 - הבושם הכי מדובר בעשור האחרון": "MFK Baccarat Rouge 540 Review: The Most Talked-About Perfume of the Decade",
+        "המגזין המלא: בשמים מומלצים לקיץ הישראלי - איך להריח רענן בלחות של 80%?": "Top Perfumes for the Israeli Summer: How to Smell Fresh in 80% Humidity?",
+        "בושם לאירועים מיוחדים וחתונות: איך לבחור את הריח שישלים את ההופעה שלכם": "Perfumes for Special Events and Weddings: Choosing the Scent That Completes Your Look",
+        "הכירו את Initio Parfums Prives: המותג שמפעיל את מערכת הרגשות והמשיכה": "Introducing Initio Parfums Prives: The Brand That Activates Emotions and Attraction",
+        "למה כדאי לנסות את Le Labo Santal 33? הסוד מאחורי הבושם שהפך לדת אורבנית": "Why You Should Try Le Labo Santal 33: The Secret Behind the Urban Cult Scent",
+        "בשמי גורמנד (Gourmand): למה אנחנו כל כך אוהבים להריח כמו קינוח יוקרתי?": "Gourmand Perfumes: Why We Love Smelling Like a Luxury Dessert?",
+        "מה זה תווי בושם? המבנה של הריח - ראש, לב ובסיס (Pyramid Structure)": "What are Perfume Notes? Scent Structure - Top, Heart and Base",
+        "בשמים מומלצים למשרד ולעבודה: איך להריח מקצועי ויוקרתי בלי להפריע לסביבה": "Office-Friendly Perfumes: How to Smell Professional and Luxurious",
+        "סקירה מעמיקה: Creed Green Irish Tweed - הקלאסיקה של האצולה הבריטית": "Creed Green Irish Tweed In-Depth Review: The British Aristocracy Classic",
+        "ההיסטוריה המרתקת של הבושם: מקטורת לאלים ועד לבישום הנישה המודרני": "The Fascinating History of Perfume: From Incense for Gods to Modern Niche",
+        "מה זה Oud (אוד)? הסודות של הזהב השחור של המזרח התיכון": "What is Oud? Secrets of the Middle East's Black Gold",
+        "הפסיכולוגיה של הריח: איך להתאים את הבושם למצב הרוח ולשפר את היום שלך": "The Psychology of Scent: Matching Perfume to Your Mood",
+        "10 טעויות נפוצות בשימוש בבושם: למה אתם לא מפיקים את המקסימום מהריח שלכם?": "10 Common Perfume Mistakes: Why Aren't You Getting the Most From Your Scent?",
+        "סקירה מורחבת: Parfums de Marly Delina - בבושם הוורדים המבוקש ביותר בעולם": "Parfums de Marly Delina Review: The World's Most Requested Rose Scent",
+        "החידה הכימית: למה אותו בושם מריח שונה על אנשים שונים? המדריך המדעי המלא": "The Chemical Riddle: Why Does the Same Perfume Smell Different on Different People?",
+        "הטרנדים החמים בעולם הבישום ל-2025: מה נלבש בשנה הקרובה? המדריך המלא": "Hot Perfume Trends for 2025: What Will We Wear This Year?",
+        "איך אורזים בשמים לטיסה? המדריך המלא לנוסע המתוחכם (Carry-on Ready)": "How to pack perfumes for a flight? The complete guide for the savvy traveler (Carry-on Ready)",
+        "המדריך המקיף לקניית בבושם כמתנה: איך לקלוע לטעם של אחרים (בלי להסתכן)": "The Comprehensive Guide to Buying Perfume as a Gift: How to hit others' taste (without the risk)",
+        "קולקציית הבוטיק של ml_tlv: למה אנחנו בוחרים רק את הטוב ביותר עבורכם?": "ml_tlv Boutique Collection: Why we choose only the best for you?",
+        "שאנל 5 (Chanel No. 5): הסודות מאחורי הבושם האיקוני ששינה את פני עולם הבישום": "Chanel No. 5: The Secrets Behind the Iconic Perfume That Changed the Scent World",
+        "סקירה: Xerjoff Erba Pura - הפיצוץ הטרופי ששינה את כללי המשחק": "Review: Xerjoff Erba Pura - The Tropical Explosion That Changed the Game",
+        "Jo Malone London: אמנות ה-Scent Layering (שילוב בשמים) ומיצוי הסטייל הבריטי": "Jo Malone London: The Art of Scent Layering and Mastering British Style"
+    };
+
+    for (const b of data.blog_posts) {
+        let titleEn = blogTitleTranslations[b.title] || b.title;
+        let excerptEn = b.excerpt;
+        let contentEn = b.content;
+
+        if (b.id === 332) {
+            titleEn = "Review: Xerjoff Erba Pura - The Tropical Explosion That Changed the Game";
+            excerptEn = "Tired of smelling like everyone else? The complete guide to the art of layering in the field of perfumery...";
+            contentEn = `If you're looking for a perfume that "chokes" the room...`;
+        } else if (b.id === 331) {
+            titleEn = "Jo Malone London: The Art of Scent Layering and Mastering British Style";
+            excerptEn = "The heat and humidity of Israel are the biggest enemies...";
+            contentEn = `There are brands that are not just perfumes...`;
+        } else if (b.id === 333) {
+            titleEn = "Chanel No. 5: The Secrets Behind the Iconic Perfume";
+            excerptEn = "Discover the fascinating story behind Chanel No. 5...";
+            contentEn = `If there is one name that resonates worldwide...`;
+        } else if (b.id === 30) {
+            titleEn = "ml_tlv Boutique Collection: Why we choose only the best for you?";
+            excerptEn = "What stands behind the selection process of the perfumes on the site? Discover our standards, the tests we perform, and the commitment to excellence and luxury.";
+        } else if (b.id === 29) {
+            titleEn = "The Comprehensive Guide to Buying Perfume as a Gift: How to hit others' taste (without the risk)";
+            excerptEn = "Buying a perfume as a gift is a gamble, but the right gamble can pay off big time. Get the tips from the experts to find the scent that will surprise and excite the people you love.";
+        } else if (b.id === 28) {
+            titleEn = "How to pack perfumes for a flight? The complete guide for the savvy traveler (Carry-on Ready)";
+            excerptEn = "You're flying on vacation and want to smell great, but afraid the expensive bottle will break or be taken at security? Discover all the tips for proper packing and why decants are your best friends on a flight.";
+        }
+
+        await pool.query(`UPDATE blog_posts SET 
+            title_en = $1, excerpt_en = $2, content_en = $3
+            WHERE id = $4`, 
+            [titleEn, excerptEn, contentEn, b.id]);
     }
     
     console.log("Done.");
