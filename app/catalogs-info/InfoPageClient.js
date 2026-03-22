@@ -113,7 +113,7 @@ export default function InfoPageClient({ userId }) {
                         </motion.div>
 
                         <motion.div 
-                            className={`hidden lg:flex flex-1 relative w-full h-[450px] items-center justify-center lg:justify-end -mt-12 md:-mt-20 ${!isRTL ? 'lg:translate-x-32' : ''}`}
+                            className={`hidden lg:flex flex-1 relative w-full h-[450px] items-center justify-center lg:justify-end -mt-12 md:-mt-20 ${isRTL ? 'lg:translate-x-12' : 'lg:translate-x-32'}`}
                             initial={{ opacity: 0, scale: 0.9 }}
                             animate={{ opacity: 1, scale: 1 }}
                             transition={{ duration: 1, ease: "easeOut" }}

@@ -3,10 +3,12 @@
 import { createContext, useContext, useState, useEffect, useRef } from "react";
 import { useUser } from "@clerk/nextjs";
 import toast from 'react-hot-toast';
+import { useLanguage } from "./LanguageContext";
 
 const CartContext = createContext();
 
 export function CartProvider({ children }) {
+    const { t } = useLanguage();
     const [cartItems, setCartItems] = useState([]);
     const [activeVendorId, setActiveVendorId] = useState('main');
     const [lotteryMode, setLotteryMode] = useState({ active: false, expiresAt: null });
@@ -198,7 +200,7 @@ export function CartProvider({ children }) {
 
                         if (changed) {
                             setTimeout(() => {
-                                toast.success("שחזרנו את העגלה מהביקור הקודם שלך!");
+                                toast.success(t('common.cart_restored'));
                             }, 500);
                             return newCart;
                         }
@@ -228,13 +230,22 @@ export function CartProvider({ children }) {
 
     const addToCart = (product, size, price, vendorId = 'main', vendorName = 'האתר הרשמי') => {
         if (isCartLocked && vendorId === 'main') {
-            toast.error("העגלה נעולה בזמן שהגרלת הבשמים פעילה!");
+            toast.error(t('common.cart_locked_lottery'));
             return;
         }
 
         setCartItems((prev) => {
             // helper: parse size that may be '10ml' or 10
             const parseSizeML = (s) => parseFloat(String(s)) || 0;
+
+            // PREVENT STOCK CHECK FOR PRIZES (from Lucky Wheel)
+            if (product.isPrize) {
+                const existingPrize = prev.find(
+                    (item) => item.id === product.id && item.size === size && (item.vendorId || 'main') === vendorId
+                );
+                if (existingPrize) return prev; // Don't add multiple prizes of same type
+                return [...prev, { ...product, size, price, quantity: 1, vendorId, vendorName }];
+            }
 
             // STOCK CHECK (ML-based for catalogs, ML-based for main too)
             if (vendorId !== 'main') {
@@ -249,7 +260,7 @@ export function CartProvider({ children }) {
                     }, 0);
                     const addedVolume = parseSizeML(size);
                     if (currentVolumeInCart + addedVolume > stockLimit) {
-                        toast.error(`לא ניתן להוסיף - המלאי מוגבל ל-${stockLimit} מ"ל סה"כ!`);
+                        toast.error(t('common.stock_limit_ml_reached', { limit: stockLimit }));
                         return prev;
                     }
                 }
@@ -257,7 +268,7 @@ export function CartProvider({ children }) {
                 // Main vendor: stock is total ML available for this product
                 const stockML = parseFloat(String(product.stock)) || 0;
                 if (stockML === 0) {
-                    toast.error("המוצר אזל מהמלאי!");
+                    toast.error(t('common.out_of_stock_toast'));
                     return prev;
                 }
                 if (stockML > 0) {
@@ -269,7 +280,7 @@ export function CartProvider({ children }) {
                         return sum;
                     }, 0);
                     if (currentML + addedML > stockML) {
-                        toast.error("אזל המלאי!");
+                        toast.error(t('common.out_of_stock_toast'));
                         return prev;
                     }
                 }
@@ -292,7 +303,7 @@ export function CartProvider({ children }) {
 
     const addMultipleToCart = (itemsToAdd) => {
         if (isCartLocked) {
-            toast.error("העגלה נעולה בזמן שהגרלת הבשמים פעילה!");
+            toast.error(t('common.cart_locked_lottery'));
             return;
         }
 
@@ -318,7 +329,7 @@ export function CartProvider({ children }) {
 
     const removeFromCart = (id, size, vendorId = 'main') => {
         if (isCartLocked && vendorId === 'main') {
-            toast.error("העגלה נעולה בזמן שהגרלת הבשמים פעילה!");
+            toast.error(t('common.cart_locked_lottery'));
             return;
         }
         setCartItems((prev) => prev.filter((item) => !(item.id === id && item.size === size && (item.vendorId || 'main') === vendorId)));
@@ -326,7 +337,7 @@ export function CartProvider({ children }) {
 
     const updateQuantity = (id, size, quantity, vendorId = 'main') => {
         if (isCartLocked && vendorId === 'main') {
-            toast.error("העגלה נעולה בזמן שהגרלת הבשמים פעילה!");
+            toast.error(t('common.cart_locked_lottery'));
             return;
         }
         if (quantity < 1) {
@@ -354,14 +365,14 @@ export function CartProvider({ children }) {
                     }, 0);
                     const newVolume = otherItemsVolume + (Number(quantity) * parseSizeML(size));
                     if (newVolume > stockLimit) {
-                        toast.error(`המלאי מוגבל ל-${stockLimit} מ"ל!`);
+                        toast.error(t('common.stock_limit_ml_reached', { limit: stockLimit }));
                         return prev;
                     }
                 }
             } else {
                 const stockML = parseFloat(String(itemToUpdate.stock)) || 0;
                 if (stockML === 0) {
-                    toast.error("המוצר אזל מהמלאי!");
+                    toast.error(t('common.out_of_stock_toast'));
                     return prev;
                 }
                 if (stockML > 0) {
@@ -374,7 +385,7 @@ export function CartProvider({ children }) {
                         return sum;
                     }, 0);
                     if (otherML + newML > stockML) {
-                        toast.error("המלאי מוגבל!");
+                        toast.error(t('common.stock_limit_reached'));
                         return prev;
                     }
                 }
