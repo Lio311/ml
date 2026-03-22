@@ -211,6 +211,32 @@ export function CartProvider({ children }) {
         });
     };
 
+    const addMultipleToCart = (itemsToAdd) => {
+        if (isCartLocked) {
+            toast.error("העגלה נעולה בזמן שהגרלת הבשמים פעילה!");
+            return;
+        }
+
+        setCartItems((prev) => {
+            let newCart = [...prev];
+            itemsToAdd.forEach(({ product, size, price }) => {
+                const vendorId = 'main';
+                const vendorName = 'האתר הרשמי';
+                const existingIndex = newCart.findIndex(
+                    (item) => item.id === product.id && String(item.size) === String(size) && (item.vendorId || 'main') === vendorId
+                );
+                if (existingIndex >= 0) {
+                    let updatedItem = { ...newCart[existingIndex] };
+                    updatedItem.quantity += 1;
+                    newCart[existingIndex] = updatedItem;
+                } else {
+                    newCart.push({ ...product, size, price, quantity: 1, vendorId, vendorName });
+                }
+            });
+            return newCart;
+        });
+    };
+
     const removeFromCart = (id, size, vendorId = 'main') => {
         if (isCartLocked && vendorId === 'main') {
             toast.error("העגלה נעולה בזמן שהגרלת הבשמים פעילה!");
@@ -390,7 +416,7 @@ export function CartProvider({ children }) {
     return (
         <CartContext.Provider value={{
             cartItems, activeVendorId, setActiveVendorId, activeItems,
-             addToCart, removeFromCart, updateQuantity, clearCart, clearActiveVendorCart,
+             addToCart, addMultipleToCart, removeFromCart, updateQuantity, clearCart, clearActiveVendorCart,
             subtotal, totalItemsCount, globalItemsCount, uniqueVendorsCount, freeSamplesCount, nextTier, shippingCost, total,
             luckyPrize, setLuckyPrize, discountAmount, coupon, setCoupon,
             startLottery, cancelLottery, isCartLocked, lotteryTimeLeft, lotteryMode, 

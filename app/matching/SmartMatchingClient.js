@@ -272,7 +272,7 @@ export default function SmartMatchingClient({ initialNotes }) {
                             <div className={`${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
                                 <div className="text-sm opacity-70">{t('matching.final_price')}</div>
                                 <div className="text-3xl font-bold text-green-400">{results.totalPrice} ₪</div>
-                                <div className="text-xs text-red-300 mt-1">{results.message}</div>
+                                <div className="text-sm font-medium text-white mt-1">{results.message}</div>
                             </div>
 
                             <div className="flex gap-4">
