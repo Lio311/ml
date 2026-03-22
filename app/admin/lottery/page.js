@@ -282,8 +282,8 @@ export default function LotteryAdminPage() {
                     </button>
                     <div className="flex flex-col items-center gap-0.5">
                         <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest">עמוד</span>
-                        <span className="text-sm font-black text-gray-900 leading-none">
-                            {currentPage} <span className="text-gray-300 mx-1">/</span> {totalPages}
+                        <span className="text-sm font-black text-gray-900 leading-none" dir="ltr">
+                            {currentPage} / {totalPages}
                         </span>
                     </div>
                     <button

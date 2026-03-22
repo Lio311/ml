@@ -811,7 +811,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                     </button>
                     
                     <div className="bg-gray-100 px-6 py-2.5 rounded-2xl text-[11px] font-black text-gray-500 uppercase tracking-widest leading-none shadow-sm border border-gray-200/50">
-                        עמוד {currentPage} / {totalPages}
+                        עמוד <span dir="ltr">{currentPage} / {totalPages}</span>
                     </div>
 
                     <button

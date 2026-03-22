@@ -325,7 +325,7 @@ export default function AdminExpensesPage() {
                         →
                     </button>
                     <div className="bg-gray-100 px-5 py-2.5 rounded-2xl text-[10px] font-black text-gray-500 uppercase tracking-widest leading-none">
-                         {page} / {totalPages}
+                         <span dir="ltr">{page} / {totalPages}</span>
                     </div>
                     <button
                         onClick={() => setPage(p => Math.min(totalPages, p + 1))}
