@@ -28,10 +28,11 @@ export async function GET(req) {
                     OR brand ILIKE $1 
                     OR model ILIKE $1
                     OR description ILIKE $1
+                    OR name_he ILIKE $1
                 )
                 ORDER BY 
                     CASE 
-                        WHEN name ILIKE $1 THEN 1 
+                        WHEN name ILIKE $1 OR name_he ILIKE $1 THEN 1 
                         WHEN brand ILIKE $1 THEN 2 
                         ELSE 3 
                     END,

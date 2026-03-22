@@ -92,7 +92,7 @@ async function getProducts(search, brand, category, minPrice, maxPrice, sort, pa
 
     if (search) {
         params.push(`%${search}%`);
-        query += ` AND (p.name ILIKE $${params.length} OR p.brand ILIKE $${params.length} OR p.model ILIKE $${params.length} OR p.description ILIKE $${params.length})`;
+        query += ` AND (p.name ILIKE $${params.length} OR p.brand ILIKE $${params.length} OR p.model ILIKE $${params.length} OR p.description ILIKE $${params.length} OR p.name_he ILIKE $${params.length})`;
     }
 
     if (brand) {
