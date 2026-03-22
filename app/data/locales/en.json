@@ -505,7 +505,7 @@
         "total": "Total Amount",
         "phone_placeholder": "Contact Phone Number",
         "notes_placeholder": "Order notes (floor, building code, special requests...)",
-        "checkout_btn": "Place Order",
+        "checkout_btn": "Confirm Order",
         "processing": "Processing your order...",
         "share_cart": "Share Cart",
         "link_copied": "Link copied!",
