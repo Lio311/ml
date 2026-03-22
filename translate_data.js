@@ -234,68 +234,66 @@ async function main() {
     }
 
     console.log("Translating Blog Posts...");
-    const blogTitleTranslations = {
-        "למה כדאי לקנות דוגמיות בושם (Decants)? המדריך הצרכני המלא והמעודכן ל-2025": "Why You Should Buy Perfume Decants? The Complete Consumer Guide for 2025",
-        "סקירת מותג: קסרז'וף (Xerjoff) - שיא היוקרה האיטלקית, האומנות והריח": "Brand Review: Xerjoff - Peak Italian Luxury, Art and Scent",
-        "איך לבחור בושם חתימה (Signature Scent)? המדריך הפסיכולוגי והמעשי המלא": "How to Choose a Signature Scent? The Full Psychological and Practical Guide",
-        "רוז'ה דאב (Roja Dove): המלך הבלתי מעורער של עולם הבישום והיוקרה": "Roja Parfums Review: The Undisputed King of Luxury Perfumery",
-        "ההבדל בין או דה טואלט, או דה פרפיום ופרפיום: המדריך הסופי למדע הריכוזים (Concentrations)": "EDT vs EDP vs Parfum: The Ultimate Guide to Concentration Science",
-        "5 הבשמים המושלמים לדייט ראשון: איך להריח כמו מיליון דולר (ובלי להפחיד)": "5 Perfect Perfumes for a First Date: How to Smell Like a Million Dollars",
-        "בשמי נישה מול בשמי מעצבים (Designer): מה ההבדל האמיתי ומה כדאי לכם לבחור?": "Niche vs Designer: What's the Real Difference and What Should You Choose?",
-        "סקירה מעמיקה: קריד אוונטוס (Creed Aventus) - למה הוא עדיין המלך של בשמי הגברים?": "Creed Aventus In-Depth Review: Why is it Still the King of Men's Perfumes?",
-        "איך לאחסן בשמים בצורה נכונה? 10 טעויות קריטיות שהורסות לכם את הריח היקר": "How to Store Perfumes Correctly? 10 Critical Mistakes That Ruin Your Expensive Scent",
-        "סקירת מותגים: מונטל (Montale) ומנסרה (Mancera) - שבירת חוקי המשחק בבישום הנישה": "Brand Review: Montale & Mancera - Breaking the Rules of Niche Perfumery",
-        "בושם יוניסקס: המגמה שמשנה את פני עולם הבישום - האם באמת יש מגדר לריח?": "Unisex Perfumes: The Trend Changing Perfumery - Is Scent Really Gendered?",
-        "סקירה מעמיקה: MFK Baccarat Rouge 540 - הבושם הכי מדובר בעשור האחרון": "MFK Baccarat Rouge 540 Review: The Most Talked-About Perfume of the Decade",
-        "המגזין המלא: בשמים מומלצים לקיץ הישראלי - איך להריח רענן בלחות של 80%?": "Top Perfumes for the Israeli Summer: How to Smell Fresh in 80% Humidity?",
-        "בושם לאירועים מיוחדים וחתונות: איך לבחור את הריח שישלים את ההופעה שלכם": "Perfumes for Special Events and Weddings: Choosing the Scent That Completes Your Look",
-        "הכירו את Initio Parfums Prives: המותג שמפעיל את מערכת הרגשות והמשיכה": "Introducing Initio Parfums Prives: The Brand That Activates Emotions and Attraction",
-        "למה כדאי לנסות את Le Labo Santal 33? הסוד מאחורי הבושם שהפך לדת אורבנית": "Why You Should Try Le Labo Santal 33: The Secret Behind the Urban Cult Scent",
-        "בשמי גורמנד (Gourmand): למה אנחנו כל כך אוהבים להריח כמו קינוח יוקרתי?": "Gourmand Perfumes: Why We Love Smelling Like a Luxury Dessert?",
-        "מה זה תווי בושם? המבנה של הריח - ראש, לב ובסיס (Pyramid Structure)": "What are Perfume Notes? Scent Structure - Top, Heart and Base",
-        "בשמים מומלצים למשרד ולעבודה: איך להריח מקצועי ויוקרתי בלי להפריע לסביבה": "Office-Friendly Perfumes: How to Smell Professional and Luxurious",
-        "סקירה מעמיקה: Creed Green Irish Tweed - הקלאסיקה של האצולה הבריטית": "Creed Green Irish Tweed In-Depth Review: The British Aristocracy Classic",
-        "ההיסטוריה המרתקת של הבושם: מקטורת לאלים ועד לבישום הנישה המודרני": "The Fascinating History of Perfume: From Incense for Gods to Modern Niche",
-        "מה זה Oud (אוד)? הסודות של הזהב השחור של המזרח התיכון": "What is Oud? Secrets of the Middle East's Black Gold",
-        "הפסיכולוגיה של הריח: איך להתאים את הבושם למצב הרוח ולשפר את היום שלך": "The Psychology of Scent: Matching Perfume to Your Mood",
-        "10 טעויות נפוצות בשימוש בבושם: למה אתם לא מפיקים את המקסימום מהריח שלכם?": "10 Common Perfume Mistakes: Why Aren't You Getting the Most From Your Scent?",
-        "סקירה מורחבת: Parfums de Marly Delina - בבושם הוורדים המבוקש ביותר בעולם": "Parfums de Marly Delina Review: The World's Most Requested Rose Scent",
-        "החידה הכימית: למה אותו בושם מריח שונה על אנשים שונים? המדריך המדעי המלא": "The Chemical Riddle: Why Does the Same Perfume Smell Different on Different People?",
-        "הטרנדים החמים בעולם הבישום ל-2025: מה נלבש בשנה הקרובה? המדריך המלא": "Hot Perfume Trends for 2025: What Will We Wear This Year?",
-        "איך אורזים בשמים לטיסה? המדריך המלא לנוסע המתוחכם (Carry-on Ready)": "How to pack perfumes for a flight? The complete guide for the savvy traveler (Carry-on Ready)",
-        "המדריך המקיף לקניית בבושם כמתנה: איך לקלוע לטעם של אחרים (בלי להסתכן)": "The Comprehensive Guide to Buying Perfume as a Gift: How to hit others' taste (without the risk)",
-        "קולקציית הבוטיק של ml_tlv: למה אנחנו בוחרים רק את הטוב ביותר עבורכם?": "ml_tlv Boutique Collection: Why we choose only the best for you?",
-        "שאנל 5 (Chanel No. 5): הסודות מאחורי הבושם האיקוני ששינה את פני עולם הבישום": "Chanel No. 5: The Secrets Behind the Iconic Perfume That Changed the Scent World",
-        "סקירה: Xerjoff Erba Pura - הפיצוץ הטרופי ששינה את כללי המשחק": "Review: Xerjoff Erba Pura - The Tropical Explosion That Changed the Game",
-        "Jo Malone London: אמנות ה-Scent Layering (שילוב בשמים) ומיצוי הסטייל הבריטי": "Jo Malone London: The Art of Scent Layering and Mastering British Style"
+    const blogTranslations = {
+        1: { title: "Why Buy Perfume Decants? The Complete Consumer Guide for 2025", excerpt: "Learn how to build a luxury perfume wardrobe without breaking the bank. Everything you need to know about decants and how they change your shopping experience." },
+        2: { title: "Brand Review: Xerjoff - Peak Italian Luxury, Art and Scent", excerpt: "Discover the history behind the most prestigious perfume house, its status symbol status, and the secret ingredients that make it irresistible." },
+        3: { title: "How to Choose a Signature Scent? The Full Psychological and Practical Guide", excerpt: "Find the fragrance that tells your story to the world without speaking a word. A complete guide to finding your perfect perfume." },
+        4: { title: "Roja Parfums Review: The Undisputed King of Luxury Perfumery", excerpt: "Discover the world's most expensive ingredients and what makes Roja Dove's creations so addictive and special." },
+        5: { title: "EDT vs EDP vs Parfum: The Ultimate Guide to Concentration Science", excerpt: "Everything you need to know about longevity, presence, and concentration. What's the real difference and how does it effect your choice?" },
+        6: { title: "5 Perfect Perfumes for a First Date: How to Smell Like a Million Dollars", excerpt: "The fragrances that leave an unforgettable first impression – how to smell amazing and which scents are the most loved." },
+        7: { title: "Niche vs Designer: What is the Real Difference?", excerpt: "A deep dive into artistic perfumery vs commercial fashion. raw materials, production, and why you should switch to niche." },
+        8: { title: "Creed Aventus Review 2025: Why is it Still the King?", excerpt: "Why is this perfume still the undisputed king of men's fragrances? An in-depth look at the most copied and loved perfume in history." },
+        9: { title: "How to Store Perfumes Correctly? 10 Critical Mistakes That Ruin Your Expensive Scent", excerpt: "Keep your perfumes fresh and powerful for years. Learn the worst places to store perfume and why original packaging matters." },
+        10: { title: "Brand Review: Montale & Mancera - Breaking the Rules of Niche Perfumery", excerpt: "Review of the brands that broke the rules with extreme longevity and unmissable presence. What's the secret of the metallic bottles?" },
+        11: { title: "Unisex Perfumes: The Trend Changing the Industry", excerpt: "Is there really a gender for scent? Discover the best gender-neutral perfumes and why this trend is growing stronger." },
+        12: { title: "MFK Baccarat Rouge 540 Review: The Most Talked-About Perfume of the Decade", excerpt: "What's the secret of the scent everyone is trying to copy? Discover why Baccarat Rouge is the symbol of modern luxury." },
+        13: { title: "Top Perfumes for the Israeli Summer: How to Smell Fresh in 80% Humidity", excerpt: "Discover 5 luxury fragrances that survive the Israeli heat and humidity, keeping you fresh even in 35 degrees." },
+        14: { title: "Perfumes for Special Events and Weddings: Choosing the Scent That Completes Your Look", excerpt: "Special event or wedding? Your perfume is the most important final touch. Discover the most prestigious evening fragrances." },
+        15: { title: "Introducing Initio Parfums Prives: The Brand That Activates Instincts", excerpt: "Discover the secrets of Initio - the brand that brought 'pheromones' back to the perfume world. A deep dive into the French brand's most intriguing scents." },
+        16: { title: "Why Try Le Labo Santal 33? The Secret Behind the Urban Cult Scent", excerpt: "How did one small NYC perfume conquer the world? Discover the story of Santal 33, why it smells so good (and weird) and who it's really for." },
+        17: { title: "Gourmand Perfumes: Smelling Like a Luxury Dessert", excerpt: "Vanilla, caramel, and chocolate - the world of Gourmand perfumes is the most sought-after. Discover the most delicious scents and how to wear them." },
+        18: { title: "What are Perfume Notes? The Scent Pyramid - Top, Heart, and Base explained like a pro", excerpt: "Why does perfume change after 30 minutes? Discover the secret of the pyramid structure - Top, Heart, and Base notes explained." },
+        19: { title: "Office-Friendly Perfumes: Smelling Professional and Luxurious", excerpt: "Work environments demand a cleaner, more professional scent. Discover the best fragrances for long working days and business meetings." },
+        20: { title: "Creed Green Irish Tweed In-Depth Review: The Elite Classic", excerpt: "Why has this perfume been a favorite of kings and Hollywood stars for decades? Discover the magic of GIT - the scent of the green countryside after rain." },
+        21: { title: "Fascinating History of Perfume: From Ancient Egypt to Modern Niche", excerpt: "A journey through time from Ancient Egypt to the 20th-century perfume revolution. Everything you wanted to know about the history of scent." },
+        22: { title: "What is Oud? Secrets of the Black Gold", excerpt: "Discover the most expensive ingredient in perfumery. What is the mysterious resin from infected wood, and how do you spot high-quality Oud?" },
+        23: { title: "The Psychology of Scent: Matching Perfume to Your Mood", excerpt: "Your perfume can change how you feel. Discover which scents reduce stress, boost confidence, or spark creativity." },
+        24: { title: "10 Common Perfume Mistakes: Why aren't you getting the most from your scent?", excerpt: "Spray on hair? Rubbing your wrists? Using heavy scents in the sun? Discover the common mistakes that are making you smell less than your best." },
+        25: { title: "Parfums de Marly Delina Review: The Feminine Icon", excerpt: "Why did Delina become a feminine icon so fast? Discover the magic of Turkish rose, rhubarb, and vanilla magic." },
+        26: { title: "The Chemical Riddle: Why common scents smell unique on different skins", excerpt: "Smelled great on a friend but like pickles on you? Learn what affects scent evolution - from skin pH to diet and lifestyle." },
+        27: { title: "Hot Perfume Trends for 2025: What Will We Wear This Year?", excerpt: "The world is moving to green, molecular and natural scents. Discover the trends leading the shelves in 2025 and stay ahead of the game." },
+        28: { title: "How to pack perfumes for a flight? Complete guide for the traveller", excerpt: "Traveling soon and want to smell great safely? Discover all the packing tips and why decants are your best friends on a flight." },
+        29: { title: "Buying Perfume as a Gift: How to hit others' taste without the risk", excerpt: "Buying a perfume as a gift is a gamble that can pay off. Learn expert tricks for finding the scent that will surprise and excite your loved ones." },
+        30: { title: "ml_tlv Boutique Collection: Why we choose only the best", excerpt: "What goes into selecting the perfumes on our site? Discover our standards, our rigorous testing, and our commitment to excellence." },
+        331: { title: "Jo Malone London: The art of layering and British style", excerpt: "The Israeli heat is the enemy of perfume. Discover 5 luxury scents that survive the day and the secrets to making them last longer." },
+        332: { title: "Xerjoff Erba Pura Review: The tropical explosion that changed the game", excerpt: "Tired of smelling like everyone else? Complete guide to scent layering. Learn how to combine perfumes to create a signature that is uniquely yours." },
+        333: { title: "Chanel No. 5: Secrets behind the icon", excerpt: "Discover the story behind Chanel No. 5, the world's most iconic perfume. From Coco Chanel's vision to the aldehyde revolution." }
     };
 
     for (const b of data.blog_posts) {
-        let titleEn = blogTitleTranslations[b.title] || b.title;
+        const trans = blogTranslations[b.id];
+        let titleEn = b.title;
         let excerptEn = b.excerpt;
         let contentEn = b.content;
 
-        if (b.id === 332) {
-            titleEn = "Review: Xerjoff Erba Pura - The Tropical Explosion That Changed the Game";
-            excerptEn = "Tired of smelling like everyone else? The complete guide to the art of layering in the field of perfumery...";
-            contentEn = `If you're looking for a perfume that "chokes" the room...`;
-        } else if (b.id === 331) {
-            titleEn = "Jo Malone London: The Art of Scent Layering and Mastering British Style";
-            excerptEn = "The heat and humidity of Israel are the biggest enemies...";
-            contentEn = `There are brands that are not just perfumes...`;
-        } else if (b.id === 333) {
-            titleEn = "Chanel No. 5: The Secrets Behind the Iconic Perfume";
-            excerptEn = "Discover the fascinating story behind Chanel No. 5...";
-            contentEn = `If there is one name that resonates worldwide...`;
-        } else if (b.id === 30) {
-            titleEn = "ml_tlv Boutique Collection: Why we choose only the best for you?";
-            excerptEn = "What stands behind the selection process of the perfumes on the site? Discover our standards, the tests we perform, and the commitment to excellence and luxury.";
-        } else if (b.id === 29) {
-            titleEn = "The Comprehensive Guide to Buying Perfume as a Gift: How to hit others' taste (without the risk)";
-            excerptEn = "Buying a perfume as a gift is a gamble, but the right gamble can pay off big time. Get the tips from the experts to find the scent that will surprise and excite the people you love.";
-        } else if (b.id === 28) {
-            titleEn = "How to pack perfumes for a flight? The complete guide for the savvy traveler (Carry-on Ready)";
-            excerptEn = "You're flying on vacation and want to smell great, but afraid the expensive bottle will break or be taken at security? Discover all the tips for proper packing and why decants are your best friends on a flight.";
+        if (trans) {
+            titleEn = trans.title;
+            excerptEn = trans.excerpt;
+        }
+
+        // Provide full content for top articles
+        if (b.id === 8) { // Creed Aventus
+            contentEn = `If there is one name that has defined masculine perfumery in the 21st century, it is **Aventus**. Since its launch in 2010 by the House of **Creed**, this perfume has become more than just a scent – it's a global obsession, a status symbol, and the most discussed fragrance in the history of the internet. At **ml_tlv**, Aventus remains our undisputed top seller. In this review, we'll dive into what makes this "pineapple king" so special.\n\n---\n\n## The Legend: Napoleon, Power, and Pineapple\nInspired by the Emperor Napoleon Bonaparte, Aventus was designed to represent power, success, and vision. It was a revolutionary composition that combined sharp fruitiness with smokiness and mossy depth – a DNA that is now known as "the Aventus DNA."\n* **Top Notes:** Pineapple, Bergamot, Blackcurrant, and Apple. The pineapple note is legendary; it's what gives Aventus its signature "sparkling" opening.\n* **Heart Notes:** Birch, Patchouli, Moroccan Jasmine, and Rose. The birch is what provides that slight smokiness that contrasts perfectly with the fruits.\n* **Base Notes:** Musk, Oakmoss, Ambergris, and Vanille. The Creed-exclusive Ambergris base gives it the salty, oceanic, and prestigious dry down.\n\n---\n\n## Why is it so addictive?\nAventus is often called "the compliment monster." It has a psychological effect on people – it smells professional yet approachable, powerful yet clean. It works in the office, at a wedding, or on a casual day out. It is the ultimate "white shirt" fragrance.\n\n---\n\n## Batch Variations: The Ultimate Collector's Game\nIf you dive into online forums, you'll hear talk of "batches." Some bottles are fruitier, some are smokier. This is due to the high use of natural ingredients by Creed. At **ml_tlv**, we ensure all our decants come from high-quality, authentic batches that represent the true essence of Aventus.\n\n**Experience the king of perfumes. Order a decant of Aventus now at ml_tlv.**`;
+        } else if (b.id === 12) { // Baccarat Rouge 540
+            contentEn = `It is the scent of the era. If you've been to a high-end mall, a luxury hotel, or a prestigious event in the last 5 years, you have smelled **Baccarat Rouge 540** by **Maison Francis Kurkdjian**. What started as a limited edition for the 250th anniversary of Baccarat crystal has become the most iconic perfume of the decade. But what exactly is the secret of this mysterious, airy, and "saffron-sugar" scent?\n\n---\n\n## The Alchemy of Air: What does it smell like?\nFrancis Kurkdjian, the master perfumer, aimed to create a scent that feels like "melted crystal." It doesn't smell like flowers or food; it smells conceptual.\n* **Top Notes:** Saffron and Jasmine. The saffron gives it that "expensive" and slightly medicinal opening.\n* **Heart Notes:** Amberwood and Ambergris. This is where the magic happens – the "burnt sugar" or "cotton candy" airiness that floats around you.\n* **Base Notes:** Fir Resin and Cedar. These provide the structure and the incredible longevity.\n\n---\n\n## The \"Scent Cloud\" Phenomenon\nBaccarat Rouge 540 is famous for its **sillage** (the trail you leave behind). You might not smell it on yourself after an hour, but everyone else in the room will. It creates a "cloud" of luxury that lasts for days on clothes.\n\n**Join the legend. Experience Baccarat Rouge 540 decants at ml_tlv.**`;
+        } else if (b.id === 20) { // Creed GIT
+            contentEn = `**Green Irish Tweed** (GIT) by the House of **Creed** is history in a bottle. Launched in 1985, it is a favorite of Hollywood stars and British aristocracy. It smells like the green Irish countryside after rain.\n\n---\n\n## The Experience: A Spring Walk in Ireland\nImagine a spring morning in a green village, the grass still wet with dew, and the air clean and cool.\n* **Top Notes:** Sicily Lemon and Verbena. A vibrant, sharp green opening.\n* **Heart Notes:** Violet Leaves and Florentine Iris. Prestigious, powdery elegance.\n* **Base Notes:** Natural Ambergris and Sandalwood. Creed's signature base providing incredible longevity and depth.\n\n**Connect with the legacy. Order a decant of GIT now at ml_tlv.**`;
+        } else if (b.id === 332) { // Erba Pura
+            contentEn = `**Erba Pura** by **Xerjoff** is a tropical explosion. Known as one of the strongest and most compliment-getting perfumes ever created.\n\n---\n\n## The Alchemy of Fruits\nIt feels like a giant, vibrant fruit basket on a sunny day in Sicily.\n* **Top Notes:** Sicily Orange, Lemon, and Bergamot.\n* **Heart Notes:** Secret tropical fruit basket.\n* **Base Notes:** White Musk, Amber, and Madagascar Vanilla.\n\n**Experience the explosion. Order a decant at ml_tlv.**`;
+        } else if (b.id === 331) { // Jo Malone
+            contentEn = `**Jo Malone London** is the symbol of understated elegance. The secret is the "Scent Pairing" philosophy, allowing you to create your own signature.\n\n---\n\n## Scent Layering\nDesigned to be worn alone or combined, giving you absolute freedom to create.\n* **Rule:** Heavy/warm first, then light/fresh over it.\n\n**Discover the art of layering with Jo Malone decants at ml_tlv.**`;
+        } else if (b.id === 333) { // Chanel No 5
+            contentEn = `**Chanel No. 5** is not just a perfume; it's a revolutionary icon. Gabrielle "Coco" Chanel wanted a scent that "smells like a woman, not a flower" - abstract and powerful.\n\n---\n\n## The Aldehyde Revolution\nLaunched in 1921, it used aldehydes to give the scent a "sparkling" quality, like champagne. It changed perfumery forever.\n\n**Experience magic. Order a Chanel No. 5 decant at ml_tlv.**`;
         }
 
         await pool.query(`UPDATE blog_posts SET 
