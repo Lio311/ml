@@ -191,7 +191,7 @@ export default function InfoPageClient({ userId }) {
             <section id="preview" className="py-10 px-4 bg-white overflow-hidden">
                 <div className="container max-w-7xl mx-auto">
                     <div className="flex flex-col lg:flex-row-reverse items-center gap-12">
-                        <div className="flex-1 text-right flex flex-col">
+                        <div className={`flex-1 ${isRTL ? "text-right" : "text-left"} flex flex-col`}>
                             <motion.div
                                 initial={{ opacity: 0, x: -20 }}
                                 whileInView={{ opacity: 1, x: 0 }}
@@ -220,7 +220,7 @@ export default function InfoPageClient({ userId }) {
                                         t('catalogs_info.admin_feature_3'),
                                         t('catalogs_info.admin_feature_4')
                                     ].map((item, i) => (
-                                        <li key={i} className={`flex items-center ${isRTL ? "justify-start" : "justify-end"} gap-4 ${isRTL ? "text-right" : "text-left"}`}>
+                                        <li key={i} className={`flex items-center ${isRTL ? "justify-start" : "justify-start"} gap-4 ${isRTL ? "text-right" : "text-left w-full"}`}>
                                             <CheckCircle2 className="text-yellow-500 w-6 h-6 flex-shrink-0" />
                                             <span className="text-gray-900 font-bold text-lg">{item}</span>
                                         </li>
@@ -265,12 +265,12 @@ export default function InfoPageClient({ userId }) {
                         </div>
 
                         {/* Text Content: Should be on the RIGHT of the screen */}
-                        <div className="flex-1 text-right flex flex-col">
+                        <div className={`flex-1 ${isRTL ? "text-right" : "text-left"} flex flex-col`}>
                             <motion.div
                                 initial={{ opacity: 0, x: 30 }}
                                 whileInView={{ opacity: 1, x: 0 }}
                                 viewport={{ once: true }}
-                                className="flex flex-col text-right w-full h-full justify-center"
+                                className={`flex flex-col ${isRTL ? "text-right" : "text-left"} w-full h-full justify-center`}
                             >
                                 <h2 className="text-3xl md:text-4xl lg:text-5xl font-black mb-4 leading-tight order-1 text-white">{t('catalogs_info.shopping_title')}</h2>
                                 <p className="text-gray-400 text-base md:text-lg mb-6 leading-relaxed font-medium order-2">
@@ -288,15 +288,15 @@ export default function InfoPageClient({ userId }) {
                                 </motion.div>
 
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 order-4 w-full">
-                                    <div className="p-8 bg-[#0a0a0a] rounded-3xl border border-white/5 hover:border-yellow-400/20 transition-all duration-500 flex flex-col items-end group shadow-2xl">
-                                        <div className="w-12 h-12 bg-yellow-400/5 rounded-2xl flex items-center justify-center mb-6 self-start group-hover:bg-yellow-400 transition-all duration-500">
+                                    <div className={`p-8 bg-[#0a0a0a] rounded-3xl border border-white/5 hover:border-yellow-400/20 transition-all duration-500 flex flex-col ${isRTL ? "items-end" : "items-start"} group shadow-2xl`}>
+                                        <div className={`w-12 h-12 bg-yellow-400/5 rounded-2xl flex items-center justify-center mb-6 ${isRTL ? "self-start" : "self-start"} group-hover:bg-yellow-400 transition-all duration-500`}>
                                             <ShoppingBag className="text-yellow-400 w-6 h-6 group-hover:text-black transition-colors" />
                                         </div>
                                         <h4 className={`text-xl font-black text-white mb-2 w-full ${isRTL ? "text-right" : "text-left"}`}>{t('catalogs_info.shopping_cart_title')}</h4>
                                         <p className={`text-xs text-gray-500 leading-relaxed w-full ${isRTL ? "text-right" : "text-left"}`}>{t('catalogs_info.shopping_cart_desc')}</p>
                                     </div>
-                                    <div className="p-8 bg-[#0a0a0a] rounded-3xl border border-white/5 hover:border-yellow-400/20 transition-all duration-500 flex flex-col items-end group shadow-2xl">
-                                        <div className="w-12 h-12 bg-yellow-400/5 rounded-2xl flex items-center justify-center mb-6 self-start group-hover:bg-yellow-400 transition-all duration-500">
+                                    <div className={`p-8 bg-[#0a0a0a] rounded-3xl border border-white/5 hover:border-yellow-400/20 transition-all duration-500 flex flex-col ${isRTL ? "items-end" : "items-start"} group shadow-2xl`}>
+                                        <div className={`w-12 h-12 bg-yellow-400/5 rounded-2xl flex items-center justify-center mb-6 ${isRTL ? "self-start" : "self-start"} group-hover:bg-yellow-400 transition-all duration-500`}>
                                             <ExternalLink className="text-yellow-400 w-6 h-6 group-hover:text-black transition-colors" />
                                         </div>
                                         <h4 className={`text-xl font-black text-white mb-2 w-full ${isRTL ? "text-right" : "text-left"}`}>{t('catalogs_info.shopping_share_title')}</h4>
@@ -312,9 +312,9 @@ export default function InfoPageClient({ userId }) {
              {/* Growth Section: Shipping, Samples & Sharing */}
              <section className="py-10 bg-white px-4">
                 <div className="container max-w-7xl mx-auto">
-                    <div className="text-center mb-8">
+                    <div className={`${isRTL ? "text-center" : "text-left"} mb-8`}>
                         <h2 className="text-5xl font-black mb-4">{t('catalogs_info.growth_title')}</h2>
-                        <p className="text-gray-500 text-lg max-w-2xl mx-auto font-medium">{t('catalogs_info.growth_subtitle')}</p>
+                        <p className="text-gray-500 text-lg max-w-none w-full font-medium whitespace-normal md:whitespace-nowrap">{t('catalogs_info.growth_subtitle')}</p>
                     </div>
 
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -375,7 +375,7 @@ export default function InfoPageClient({ userId }) {
                             <p className="text-black/70 text-lg mb-10 leading-relaxed font-medium order-3">
                                 {t('catalogs_info.orders_desc')}
                             </p>
-                            <div className="flex items-center gap-4 justify-center flex-wrap w-full order-4">
+                            <div className={`flex items-center gap-4 ${isRTL ? "justify-center" : "justify-start"} flex-wrap w-full order-4`}>
                                 <span className="px-4 py-2 bg-blue-500/10 text-blue-700 rounded-full text-xs font-bold">{t('catalogs_info.orders_tag_shipping')}</span>
                                 <span className="px-4 py-2 bg-green-500/10 text-green-700 rounded-full text-xs font-bold">{t('catalogs_info.orders_tag_status')}</span>
                                 <span className="px-4 py-2 bg-orange-500/10 text-orange-700 rounded-full text-xs font-bold">{t('catalogs_info.orders_tag_email')}</span>
@@ -396,7 +396,7 @@ export default function InfoPageClient({ userId }) {
             {/* How It Works - Elegant Centered Layout */}
             <section className="py-10 bg-gray-50 px-4">
                 <div className="container max-w-4xl mx-auto">
-                    <div className="text-center mb-6">
+                    <div className={`${isRTL ? "text-center" : "text-left"} mb-6`}>
                         <span className="text-yellow-500 font-bold uppercase tracking-widest text-xs">{t('catalogs_info.how_works_badge')}</span>
                         <h2 className="text-5xl font-black mt-4">{t('catalogs_info.how_works_title')}</h2>
                     </div>
@@ -410,7 +410,7 @@ export default function InfoPageClient({ userId }) {
                             ].map((step, idx) => (
                             <motion.div 
                                 key={idx}
-                                className="p-6 md:p-8 bg-white rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-500 group text-center flex flex-col items-center gap-4"
+                                className={`p-6 md:p-8 bg-white rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-500 group ${isRTL ? "text-center items-center" : "text-left items-start"} flex flex-col gap-4`}
                                 initial={{ y: 30, opacity: 0 }}
                                 whileInView={{ y: 0, opacity: 1 }}
                                 viewport={{ once: true }}
@@ -429,7 +429,7 @@ export default function InfoPageClient({ userId }) {
 
             {/* Bottom CTA */}
             <section className="py-8 px-4 bg-white">
-                <div className="container max-w-4xl mx-auto rounded-[2.5rem] bg-black text-white p-12 md:p-16 text-center relative overflow-hidden">
+                <div className={`container max-w-4xl mx-auto rounded-[2.5rem] bg-black text-white p-12 md:p-16 ${isRTL ? "text-center" : "text-left"} relative overflow-hidden`}>
                     <div className="absolute top-0 right-0 w-64 h-64 bg-yellow-500/20 blur-[100px] rounded-full" />
                     <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-500/20 blur-[100px] rounded-full" />
                     
