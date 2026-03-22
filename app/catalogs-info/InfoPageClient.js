@@ -46,7 +46,7 @@ export default function InfoPageClient({ userId }) {
                 <div className="container max-w-7xl mx-auto relative z-10">
                     <div className="flex flex-col lg:flex-row items-center gap-10">
                         <motion.div 
-                            className="flex-1 text-center flex flex-col items-center"
+                            className={`flex-1 ${isRTL ? "text-center items-center" : "text-center lg:text-left flex flex-col items-center lg:items-start"}`}
                             initial="hidden"
                             animate="visible"
                             variants={staggerContainer}
@@ -95,7 +95,7 @@ export default function InfoPageClient({ userId }) {
                             
                             <motion.div 
                                 variants={fadeIn}
-                                className="flex flex-col sm:flex-row items-center justify-center gap-4 order-5 w-full"
+                                className={`flex flex-col sm:flex-row items-center ${isRTL ? "justify-center" : "justify-center lg:justify-start"} gap-4 order-5 w-full`}
                             >
                                 {userId ? (
                                     <Link href="/my-catalogs" className="w-full sm:w-auto px-10 py-4 bg-yellow-400 text-black rounded-full font-black text-lg hover:scale-105 transition-transform shadow-[0_20px_40px_-10px_rgba(253,224,71,0.3)]">
@@ -113,7 +113,7 @@ export default function InfoPageClient({ userId }) {
                         </motion.div>
 
                         <motion.div 
-                            className={`hidden lg:flex flex-1 relative w-full h-[450px] items-center justify-center lg:justify-end -mt-12 md:-mt-20 ${!isRTL ? 'lg:translate-x-80' : ''}`}
+                            className={`hidden lg:flex flex-1 relative w-full h-[450px] items-center justify-center lg:justify-end -mt-12 md:-mt-20 ${!isRTL ? 'lg:translate-x-32' : ''}`}
                             initial={{ opacity: 0, scale: 0.9 }}
                             animate={{ opacity: 1, scale: 1 }}
                             transition={{ duration: 1, ease: "easeOut" }}
