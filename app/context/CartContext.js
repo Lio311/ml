@@ -62,6 +62,34 @@ export function CartProvider({ children }) {
         else localStorage.removeItem("coupon");
     }, [coupon]);
 
+    // Coupon Expiration (20 minutes)
+    useEffect(() => {
+        if (!coupon) return;
+        
+        let addedAt = coupon.addedAt;
+        if (!addedAt) {
+            addedAt = Date.now();
+            setCoupon({ ...coupon, addedAt });
+            return;
+        }
+
+        const expiresAt = addedAt + (20 * 60 * 1000); // 20 minutes in ms
+        const timeRemaining = expiresAt - Date.now();
+
+        if (timeRemaining <= 0) {
+            setCoupon(null);
+            toast.error("תוקף הקופון בעגלה פג (20 דקות). באפשרותך להזין אותו מחדש.");
+            return;
+        }
+
+        const timeout = setTimeout(() => {
+            setCoupon(null);
+            toast.error("תוקף הקופון בעגלה פג (20 דקות). באפשרותך להזין אותו מחדש.");
+        }, timeRemaining);
+
+        return () => clearTimeout(timeout);
+    }, [coupon]);
+
     // Derived State
     const isCartLocked = lotteryMode.active;
     const isMainVendor = activeVendorId === 'main';
