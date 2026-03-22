@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState, useEffect } from "react";
+import { createContext, useContext, useState, useEffect, useRef } from "react";
 import { useUser } from "@clerk/nextjs";
 import toast from 'react-hot-toast';
 
@@ -157,6 +157,57 @@ export function CartProvider({ children }) {
             localStorage.removeItem("lotteryMode");
         }
     }, [cartItems, lotteryMode.active]);
+
+    const hasSyncedRef = useRef(false);
+
+    // Initial Cart Pull Strategy (Sync on Login)
+    useEffect(() => {
+        if (!user?.primaryEmailAddress?.emailAddress) {
+            hasSyncedRef.current = false;
+            return;
+        }
+
+        if (hasSyncedRef.current || isCartLocked) return;
+        
+        const email = user.primaryEmailAddress.emailAddress;
+        hasSyncedRef.current = true;
+
+        fetch(`/api/cart/sync?email=${encodeURIComponent(email)}`)
+            .then(res => res.json())
+            .then(data => {
+                if (data && data.items && Array.isArray(data.items) && data.items.length > 0) {
+                    setCartItems(prev => {
+                        let newCart = [...prev];
+                        let changed = false;
+
+                        data.items.forEach(serverItem => {
+                            const existing = newCart.find(localItem => 
+                                localItem.id === serverItem.id && String(localItem.size) === String(serverItem.size) && (localItem.vendorId || 'main') === (serverItem.vendorId || 'main')
+                            );
+                            if (!existing) {
+                                newCart.push(serverItem);
+                                changed = true;
+                            } else if (serverItem.quantity > existing.quantity) {
+                                const index = newCart.findIndex(localItem => 
+                                    localItem.id === serverItem.id && String(localItem.size) === String(serverItem.size) && (localItem.vendorId || 'main') === (serverItem.vendorId || 'main')
+                                );
+                                if (index >= 0) newCart[index].quantity = serverItem.quantity;
+                                changed = true;
+                            }
+                        });
+
+                        if (changed) {
+                            setTimeout(() => {
+                                toast.success("שחזרנו את העגלה מהביקור הקודם שלך!");
+                            }, 500);
+                            return newCart;
+                        }
+                        return prev;
+                    });
+                }
+            })
+            .catch(err => console.error("Failed to fetch cart:", err));
+    }, [user, isCartLocked]);
 
     // Sync to Site Server (Abandoned Cart) - Only for 'main' items
     useEffect(() => {
