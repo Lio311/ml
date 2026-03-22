@@ -113,7 +113,7 @@ export default function InfoPageClient({ userId }) {
                         </motion.div>
 
                         <motion.div 
-                            className={`hidden lg:flex flex-1 relative w-full h-[450px] items-center justify-center lg:justify-end -mt-12 md:-mt-20 ${!isRTL ? 'lg:translate-x-20' : ''}`}
+                            className={`hidden lg:flex flex-1 relative w-full h-[450px] items-center justify-center lg:justify-end -mt-12 md:-mt-20 ${!isRTL ? 'lg:translate-x-48' : ''}`}
                             initial={{ opacity: 0, scale: 0.9 }}
                             animate={{ opacity: 1, scale: 1 }}
                             transition={{ duration: 1, ease: "easeOut" }}
@@ -312,9 +312,9 @@ export default function InfoPageClient({ userId }) {
              {/* Growth Section: Shipping, Samples & Sharing */}
              <section className="py-10 bg-white px-4">
                 <div className="container max-w-7xl mx-auto">
-                    <div className={`${isRTL ? "text-center" : "text-left"} mb-8`}>
+                    <div className="text-center mb-8">
                         <h2 className="text-5xl font-black mb-4">{t('catalogs_info.growth_title')}</h2>
-                        <p className="text-gray-500 text-lg max-w-none w-full font-medium whitespace-normal md:whitespace-nowrap">{t('catalogs_info.growth_subtitle')}</p>
+                        <p className="text-gray-500 text-lg max-w-none w-full font-medium whitespace-normal md:whitespace-nowrap text-center">{t('catalogs_info.growth_subtitle')}</p>
                     </div>
 
                     <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -410,7 +410,7 @@ export default function InfoPageClient({ userId }) {
                             ].map((step, idx) => (
                             <motion.div 
                                 key={idx}
-                                className={`p-6 md:p-8 bg-white rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-500 group ${isRTL ? "text-center items-center" : "text-left items-start"} flex flex-col gap-4`}
+                                className="p-6 md:p-8 bg-white rounded-[2rem] border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-500 group text-center flex flex-col items-center gap-4"
                                 initial={{ y: 30, opacity: 0 }}
                                 whileInView={{ y: 0, opacity: 1 }}
                                 viewport={{ once: true }}
@@ -429,7 +429,7 @@ export default function InfoPageClient({ userId }) {
 
             {/* Bottom CTA */}
             <section className="py-8 px-4 bg-white">
-                <div className={`container max-w-4xl mx-auto rounded-[2.5rem] bg-black text-white p-12 md:p-16 ${isRTL ? "text-center" : "text-left"} relative overflow-hidden`}>
+                <div className="container max-w-4xl mx-auto rounded-[2.5rem] bg-black text-white p-12 md:p-16 text-center relative overflow-hidden">
                     <div className="absolute top-0 right-0 w-64 h-64 bg-yellow-500/20 blur-[100px] rounded-full" />
                     <div className="absolute bottom-0 left-0 w-64 h-64 bg-blue-500/20 blur-[100px] rounded-full" />
                     
