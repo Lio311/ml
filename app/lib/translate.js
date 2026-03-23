@@ -175,13 +175,20 @@ const commonTranslations = {
 
 /**
  * Translates a comma-separated list of terms (notes, categories, seasons) using the predefined dictionary.
+ * Falls back to Google Translate API for unknown terms.
  */
-export function translateList(listStr) {
+export async function translateList(listStr) {
     if (!listStr) return "";
-    return listStr.split(",").map(s => {
+    const items = listStr.split(",");
+    const translatedItems = await Promise.all(items.map(async (s) => {
         let trimmed = s.trim();
-        return commonTranslations[trimmed] || trimmed;
-    }).join(", ");
+        if (commonTranslations[trimmed]) {
+            return commonTranslations[trimmed];
+        }
+        // Fallback to API translation for unknown terms
+        return await translateText(trimmed);
+    }));
+    return translatedItems.join(", ");
 }
 
 /**

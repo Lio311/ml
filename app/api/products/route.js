@@ -62,11 +62,11 @@ export async function PUT(req) {
 
         const client = await pool.connect();
         try {
-            const category_en = translateList(category);
-            const top_notes_en = translateList(top_notes);
-            const middle_notes_en = translateList(middle_notes);
-            const base_notes_en = translateList(base_notes);
-            const seasons_en = translateList(seasons);
+            const category_en = await translateList(category);
+            const top_notes_en = await translateList(top_notes);
+            const middle_notes_en = await translateList(middle_notes);
+            const base_notes_en = await translateList(base_notes);
+            const seasons_en = await translateList(seasons);
             const description_en = await translateText(description);
 
             await client.query(
@@ -128,11 +128,11 @@ export async function POST(req) {
 
         const client = await pool.connect();
         try {
-            const category_en = translateList(category || 'General');
-            const top_notes_en = translateList(top_notes);
-            const middle_notes_en = translateList(middle_notes);
-            const base_notes_en = translateList(base_notes);
-            const seasons_en = translateList(seasons);
+            const category_en = await translateList(category || 'General');
+            const top_notes_en = await translateList(top_notes);
+            const middle_notes_en = await translateList(middle_notes);
+            const base_notes_en = await translateList(base_notes);
+            const seasons_en = await translateList(seasons);
             const description_en = await translateText(description);
 
             const res = await client.query(
