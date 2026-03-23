@@ -172,21 +172,32 @@ const commonTranslations = {
     "תמרים": "Dates",
     "חלב חם": "Hot Milk",
 };
+/**
+ * Capitalizes the first letter of a string.
+ */
+function capitalize(s) {
+    if (!s) return s;
+    return s.charAt(0).toUpperCase() + s.slice(1);
+}
 
 /**
  * Translates a comma-separated list of terms (notes, categories, seasons) using the predefined dictionary.
  * Falls back to Google Translate API for unknown terms.
+ * Ensures each term is capitalized.
  */
 export async function translateList(listStr) {
     if (!listStr) return "";
     const items = listStr.split(",");
     const translatedItems = await Promise.all(items.map(async (s) => {
         let trimmed = s.trim();
-        if (commonTranslations[trimmed]) {
-            return commonTranslations[trimmed];
+        let result = commonTranslations[trimmed];
+        
+        if (!result) {
+            // Fallback to API translation for unknown terms
+            result = await translateText(trimmed);
         }
-        // Fallback to API translation for unknown terms
-        return await translateText(trimmed);
+        
+        return capitalize(result);
     }));
     return translatedItems.join(", ");
 }

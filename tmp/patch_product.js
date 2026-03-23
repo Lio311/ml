@@ -13,11 +13,11 @@ async function fix() {
         const p = res.rows[0];
         
         const descEnc = await translateText(p.description);
-        const catEnc = translateList(p.category);
-        const topEnc = translateList(p.top_notes);
-        const midEnc = translateList(p.middle_notes);
-        const baseEnc = translateList(p.base_notes);
-        const seaEnc = translateList(p.seasons);
+        const catEnc = await translateList(p.category);
+        const topEnc = await translateList(p.top_notes);
+        const midEnc = await translateList(p.middle_notes);
+        const baseEnc = await translateList(p.base_notes);
+        const seaEnc = await translateList(p.seasons);
 
         await pool.query(
             `UPDATE products SET description_en = $1, category_en = $2, top_notes_en = $3, middle_notes_en = $4, base_notes_en = $5, seasons_en = $6 WHERE id = 202`,
