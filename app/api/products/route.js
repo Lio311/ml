@@ -4,6 +4,7 @@ import { clerkClient } from '@clerk/nextjs/server';
 import { sendEmail, getNewProductTemplate } from '../../lib/email';
 import { checkAdmin } from '../../lib/admin';
 import { revalidatePath } from 'next/cache';
+import { translateList, translateText } from '../../lib/translate';
 
 export async function GET(req) {
     try {
@@ -61,6 +62,13 @@ export async function PUT(req) {
 
         const client = await pool.connect();
         try {
+            const category_en = translateList(category);
+            const top_notes_en = translateList(top_notes);
+            const middle_notes_en = translateList(middle_notes);
+            const base_notes_en = translateList(base_notes);
+            const seasons_en = translateList(seasons);
+            const description_en = await translateText(description);
+
             await client.query(
                 `UPDATE products 
                  SET brand = $1, model = $2, price_2ml = $3, price_5ml = $4, price_10ml = $5, 
@@ -68,13 +76,16 @@ export async function PUT(req) {
                      top_notes = $10, middle_notes = $11, base_notes = $12, 
                      name = $13, in_lottery = $14, name_he = $15, brand_he = $16, model_he = $17,
                      cost_price = $18, original_size = $19,
-                     seasons = $20, perfumers = $21, country = $22
+                     seasons = $20, perfumers = $21, country = $22,
+                     category_en = $24, description_en = $25, top_notes_en = $26,
+                     middle_notes_en = $27, base_notes_en = $28, seasons_en = $29
                  WHERE id = $23`,
                 [
                     brand, model, price_2ml, price_5ml, price_10ml, image_url,
                     category, description, stock || 0, top_notes, middle_notes, base_notes,
                     brand + ' ' + model, in_lottery ?? true, name_he, brand_he, model_he,
-                    cost_price, original_size, seasons, perfumers, country, id
+                    cost_price, original_size, seasons, perfumers, country, id,
+                    category_en, description_en, top_notes_en, middle_notes_en, base_notes_en, seasons_en
                 ]
             );
 
@@ -117,19 +128,28 @@ export async function POST(req) {
 
         const client = await pool.connect();
         try {
+            const category_en = translateList(category || 'General');
+            const top_notes_en = translateList(top_notes);
+            const middle_notes_en = translateList(middle_notes);
+            const base_notes_en = translateList(base_notes);
+            const seasons_en = translateList(seasons);
+            const description_en = await translateText(description);
+
             const res = await client.query(
                 `INSERT INTO products 
                  (name, category, brand, model, price_2ml, price_5ml, price_10ml, image_url, 
                   description, stock, top_notes, middle_notes, base_notes, in_lottery, 
                   name_he, brand_he, model_he, cost_price, original_size,
-                  seasons, perfumers, country) 
-                 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22) 
+                  seasons, perfumers, country,
+                  category_en, description_en, top_notes_en, middle_notes_en, base_notes_en, seasons_en) 
+                 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28) 
                  RETURNING id`,
                 [
                     brand + ' ' + model, category || 'General', brand, model, price_2ml, price_5ml, price_10ml, image_url,
                     description, stock || 0, top_notes, middle_notes, base_notes, in_lottery ?? true, 
                     name_he, brand_he, model_he, cost_price, original_size,
-                    seasons, perfumers, country
+                    seasons, perfumers, country,
+                    category_en, description_en, top_notes_en, middle_notes_en, base_notes_en, seasons_en
                 ]
             );
 
