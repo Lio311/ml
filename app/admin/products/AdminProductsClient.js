@@ -278,50 +278,50 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                     <h3 className="text-xl font-bold mb-4">יצירת מוצר חדש</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                         <div>
-                            <label className="text-sm font-bold">מותג</label>
+                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">מותג</label>
                             <input
                                 value={editForm.brand}
                                 onChange={e => setEditForm({ ...editForm, brand: e.target.value })}
-                                className="border p-2 rounded w-full bg-white"
+                                className="border-2 border-gray-100 rounded-xl p-2 w-full bg-white focus:border-black outline-none transition-colors font-bold text-sm"
                             />
                         </div>
                         <div>
-                            <label className="text-sm font-bold">דגם</label>
+                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">דגם</label>
                             <input
                                 value={editForm.model}
                                 onChange={e => setEditForm({ ...editForm, model: e.target.value })}
-                                className="border p-2 rounded w-full bg-white"
+                                className="border-2 border-gray-100 rounded-xl p-2 w-full bg-white focus:border-black outline-none transition-colors font-bold text-sm"
                             />
                         </div>
                         <div className="md:col-span-1">
-                            <label className="text-sm font-bold">שם המותג בעברית</label>
+                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">שם המותג בעברית</label>
                             <input
                                 value={editForm.brand_he}
                                 onChange={e => setEditForm({ ...editForm, brand_he: e.target.value })}
-                                className="border p-2 rounded w-full bg-white"
+                                className="border-2 border-gray-100 rounded-xl p-2 w-full bg-white focus:border-black outline-none transition-colors font-bold text-sm"
                                 placeholder="..."
                             />
                         </div>
                         <div className="md:col-span-1">
-                            <label className="text-sm font-bold">שם הדגם בעברית</label>
+                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">שם הדגם בעברית</label>
                             <input
                                 value={editForm.model_he}
                                 onChange={e => setEditForm({ ...editForm, model_he: e.target.value })}
-                                className="border p-2 rounded w-full bg-white"
+                                className="border-2 border-gray-100 rounded-xl p-2 w-full bg-white focus:border-black outline-none transition-colors font-bold text-sm"
                                 placeholder="..."
                             />
                         </div>
                         <div className="md:col-span-2">
-                            <label className="text-sm font-bold">שם SEO (עברית)</label>
+                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">שם SEO (עברית)</label>
                             <input
                                 value={editForm.name_he}
                                 onChange={e => setEditForm({ ...editForm, name_he: e.target.value })}
-                                className="border p-2 rounded w-full bg-white"
+                                className="border-2 border-gray-100 rounded-xl p-2 w-full bg-white focus:border-black outline-none transition-colors font-bold text-sm"
                                 placeholder="לדוגמה: קריד אוונטוס..."
                             />
                         </div>
-                        <div>
-                            <label className="text-sm font-bold">קטגוריות (לחץ Enter להוספה)</label>
+                        <div className="md:col-span-2">
+                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">קטגוריות (לחץ Enter להוספה)</label>
                             <TagInput
                                 tags={editForm.category ? editForm.category.split(',').filter(Boolean) : []}
                                 onChange={(newTags) => setEditForm({ ...editForm, category: newTags.join(',') })}
@@ -332,69 +332,69 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                         <div>
-                            <label className="text-sm font-bold">2 מ״ל</label>
+                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">2 מ״ל</label>
                             <input
                                 type="number"
                                 value={editForm.price_2ml}
                                 onChange={e => setEditForm({ ...editForm, price_2ml: Number(e.target.value) })}
                                 onWheel={(e) => e.target.blur()}
-                                className="border p-2 rounded w-full bg-white"
+                                className="border-2 border-gray-100 rounded-xl p-2 w-full bg-white focus:border-black outline-none transition-colors font-bold text-sm"
                             />
                         </div>
                         <div>
-                            <label className="text-sm font-bold">5 מ״ל</label>
+                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">5 מ״ל</label>
                             <input
                                 type="number"
                                 value={editForm.price_5ml}
                                 onChange={e => setEditForm({ ...editForm, price_5ml: Number(e.target.value) })}
                                 onWheel={(e) => e.target.blur()}
-                                className="border p-2 rounded w-full bg-white"
+                                className="border-2 border-gray-100 rounded-xl p-2 w-full bg-white focus:border-black outline-none transition-colors font-bold text-sm"
                             />
                         </div>
                         <div>
-                            <label className="text-sm font-bold">10 מ״ל</label>
+                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">10 מ״ל</label>
                             <input
                                 type="number"
                                 value={editForm.price_10ml}
                                 onChange={e => setEditForm({ ...editForm, price_10ml: Number(e.target.value) })}
                                 onWheel={(e) => e.target.blur()}
-                                className="border p-2 rounded w-full bg-white"
+                                className="border-2 border-gray-100 rounded-xl p-2 w-full bg-white focus:border-black outline-none transition-colors font-bold text-sm"
                             />
                         </div>
                         <div className="md:col-span-3 mt-2 grid grid-cols-1 md:grid-cols-2 gap-4">
                             <div>
-                                <label className="text-sm font-bold">מחיר עלות (ש״ח) *</label>
+                                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">מחיר עלות (ש״ח) *</label>
                                 <input
                                     type="number"
                                     required
                                     value={editForm.cost_price}
                                     onChange={e => setEditForm({ ...editForm, cost_price: Number(e.target.value) })}
                                     onWheel={(e) => e.target.blur()}
-                                    className="border p-2 rounded w-full bg-white"
+                                    className="border-2 border-gray-100 rounded-xl p-2 w-full bg-white focus:border-black outline-none transition-colors font-bold text-sm"
                                     placeholder="לדוגמה: 50"
                                 />
                             </div>
                             <div>
-                                <label className="text-sm font-bold">גודל מקור (מ״ל) *</label>
+                                <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">גודל מקור (מ״ל) *</label>
                                 <input
                                     type="number"
                                     required
                                     value={editForm.original_size}
                                     onChange={e => setEditForm({ ...editForm, original_size: Number(e.target.value) })}
                                     onWheel={(e) => e.target.blur()}
-                                    className="border p-2 rounded w-full bg-white"
+                                    className="border-2 border-gray-100 rounded-xl p-2 w-full bg-white focus:border-black outline-none transition-colors font-bold text-sm"
                                     placeholder="לדוגמה: 50"
                                 />
                             </div>
                         </div>
                         <div className="md:col-span-3 mt-2">
-                            <label className="text-sm font-bold">מלאי (מ״ל)</label>
+                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">מלאי (מ״ל)</label>
                             <input
                                 type="number"
                                 value={editForm.stock}
                                 onChange={e => setEditForm({ ...editForm, stock: Number(e.target.value) })}
                                 onWheel={(e) => e.target.blur()}
-                                className="border p-2 rounded w-full bg-white"
+                                className="border-2 border-gray-100 rounded-xl p-2 w-full bg-white focus:border-black outline-none transition-colors font-bold text-sm"
                                 placeholder="לדוגמה: 100"
                             />
                         </div>
@@ -441,8 +441,11 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                     </div>
 
                     <div className="mb-4">
-                        <label className="text-sm font-bold">תיאור מוצר</label>
+                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">תיאור מוצר</label>
                         <textarea
+                            value={editForm.description || ''}
+                            onChange={e => setEditForm({ ...editForm, description: e.target.value })}
+                            className="border-2 border-gray-100 rounded-xl p-2 w-full bg-white h-32 focus:border-black outline-none transition-colors text-sm font-medium shadow-sm"
                             placeholder="תיאור מלא של הבושם, תווים, וכו'..."
                         />
                     </div>
