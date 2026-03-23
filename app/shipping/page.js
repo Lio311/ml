@@ -27,6 +27,9 @@ export async function generateMetadata() {
         description: locale === 'en' 
             ? "Information on shipping options, delivery times and return policy."
             : "מידע על אפשרויות משלוח, זמני אספקה ומדיניות החזרות.",
+        alternates: {
+            canonical: 'https://www.ml-tlv.com/shipping',
+        },
     };
 }
 

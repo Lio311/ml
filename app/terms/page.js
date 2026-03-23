@@ -25,6 +25,9 @@ export async function generateMetadata() {
     return {
         title: `${t('common.website_terms')} | ml_tlv`,
         description: t('common.terms_desc') || "Website terms and conditions.",
+        alternates: {
+            canonical: 'https://www.ml-tlv.com/terms',
+        },
     };
 }
 

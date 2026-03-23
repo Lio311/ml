@@ -2,10 +2,13 @@ import CatalogClient from "./CatalogClient";
 
 export async function generateMetadata({ params }) {
     const { slug } = await params;
-    // We ideally should fetch the catalog name here for SEO, but keeping it simple for now
+    const baseUrl = 'https://www.ml-tlv.com';
     return {
         title: `קטלוג אישי | ml_tlv`,
         description: `צפה בקטלוג ובמוצרים של ${slug}`,
+        alternates: {
+            canonical: `${baseUrl}/catalog/${slug}`,
+        },
     };
 }
 

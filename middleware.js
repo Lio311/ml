@@ -24,6 +24,32 @@ const isAdminRoute = createRouteMatcher(['/admin(.*)']);
 const isApiRoute = createRouteMatcher(['/api(.*)']);
 
 export default clerkMiddleware(async (auth, req) => {
+    const url = req.nextUrl.clone();
+    const hostname = req.headers.get('host') || '';
+    const xForwardedProto = req.headers.get('x-forwarded-proto') || 'http';
+
+    // 1. Force HTTPS and WWW (SEO Improvement)
+    // Only apply in production
+    if (process.env.NODE_ENV === 'production') {
+        let redirectNeeded = false;
+        
+        // Check for non-www
+        if (hostname === 'ml-tlv.com') {
+            url.hostname = 'www.ml-tlv.com';
+            redirectNeeded = true;
+        }
+
+        // Check for http
+        if (xForwardedProto === 'http') {
+            url.protocol = 'https:';
+            redirectNeeded = true;
+        }
+
+        if (redirectNeeded) {
+            return NextResponse.redirect(url, 301);
+        }
+    }
+
     if (isBadBot(req)) {
         return new NextResponse("Access Denied: Bot Detected", { status: 403 });
     }

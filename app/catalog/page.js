@@ -57,7 +57,13 @@ export async function generateMetadata(props) {
     if (category) params.set('category', category);
 
     const queryString = params.toString();
-    const canonical = queryString ? `${baseUrl}/catalog?${queryString}` : `${baseUrl}/catalog`;
+    
+    let canonical = queryString ? `${baseUrl}/catalog?${queryString}` : `${baseUrl}/catalog`;
+
+    // SEO Hack: If ONLY brand is selected, canonicalize to the dedicated brand page
+    if (brand && !q && !category) {
+        canonical = `${baseUrl}/brands/${encodeURIComponent(brand)}`;
+    }
 
     return {
         title,

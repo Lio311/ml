@@ -55,7 +55,10 @@ export default function ProductCard({ product }) {
     return (
         <div
             className={`group border rounded-lg overflow-hidden hover:shadow-xl transition bg-white flex flex-col h-full relative ${dir === 'rtl' ? 'text-right' : 'text-left'}`}
-            onMouseEnter={() => router.prefetch(`/product/${product.slug || product.id}`)}
+            onMouseEnter={() => {
+                const identifier = product.slug || product.id;
+                if (identifier) router.prefetch(`/product/${identifier}`);
+            }}
             dir={dir}
         >
             <div className="absolute top-2 start-2 z-10">
@@ -87,7 +90,10 @@ export default function ProductCard({ product }) {
                 </div>
             )}
 
-            <Link href={`/product/${product.slug || product.id}`} className="block relative aspect-square bg-white overflow-hidden cursor-pointer p-2">
+            <Link 
+                href={product.slug || product.id ? `/product/${product.slug || product.id}` : '#'} 
+                className={`block relative aspect-square bg-white overflow-hidden p-2 ${!product.slug && !product.id ? 'pointer-events-none' : 'cursor-pointer'}`}
+            >
                 {product.image_url ? (
                     <Image
                         src={product.image_url}
@@ -106,7 +112,7 @@ export default function ProductCard({ product }) {
 
             <div className="p-4 flex-1 flex flex-col">
                 <div className="text-xs text-gray-500 mb-1 line-clamp-1 text-center">{translateCategory(localize(product, 'category'))}</div>
-                <Link href={`/product/${product.slug || product.id}`}>
+                <Link href={product.slug || product.id ? `/product/${product.slug || product.id}` : '#'}>
                     <h3 className="font-bold text-sm mb-2 line-clamp-2 min-h-[40px] hover:underline flex flex-col items-center text-center">
                         {locale === 'he' ? (
                             <>

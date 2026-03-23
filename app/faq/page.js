@@ -25,6 +25,9 @@ export async function generateMetadata() {
     return {
         title: `${t('common.faq')} | ml_tlv`,
         description: t('common.faq_desc'),
+        alternates: {
+            canonical: 'https://www.ml-tlv.com/faq',
+        },
     };
 }
 

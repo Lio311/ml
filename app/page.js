@@ -41,6 +41,9 @@ export async function generateMetadata() {
   return {
     title: t('metadata.home.title'),
     description: t('metadata.home.description'),
+    alternates: {
+      canonical: 'https://www.ml-tlv.com',
+    },
   };
 }
 
@@ -56,7 +59,7 @@ export default async function Home() {
   try {
     await withClient(async (client) => {
       // Fetch New Arrivals (Only in stock)
-      const res = await client.query('SELECT * FROM products WHERE stock > 0 ORDER BY created_at DESC LIMIT 6');
+      const res = await client.query('SELECT * FROM products WHERE active = true AND stock > 0 ORDER BY created_at DESC LIMIT 6');
       newArrivals = res.rows;
 
       // Fetch Stats

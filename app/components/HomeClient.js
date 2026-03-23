@@ -125,7 +125,10 @@ function ProductCardWrapper({ product }) {
                 <WishlistHeart productId={product.id} />
             </div>
 
-            <Link href={`/product/${product.slug || product.id}`} className="relative aspect-square bg-gray-50 overflow-hidden block">
+            <Link 
+                href={product.slug || product.id ? `/product/${product.slug || product.id}` : '#'} 
+                className={`relative aspect-square bg-gray-50 overflow-hidden block ${!product.slug && !product.id ? 'pointer-events-none' : ''}`}
+            >
                 {product.image_url ? (
                     <Image
                         src={product.image_url}
@@ -145,7 +148,7 @@ function ProductCardWrapper({ product }) {
                         <div className="text-[10px] text-gray-400 uppercase tracking-wider font-medium">
                             {product.brand_he || product.brand}
                         </div>
-                        <Link href={`/product/${product.slug || product.id}`} className="w-full">
+                        <Link href={product.slug || product.id ? `/product/${product.slug || product.id}` : '#'} className="w-full">
                             <p className="text-sm font-bold text-black truncate w-full hover:underline">
                                 {product.model_he || product.model}
                             </p>
@@ -154,7 +157,7 @@ function ProductCardWrapper({ product }) {
                 ) : (
                     <>
                         <div className="text-[10px] text-gray-400 mb-0.5 line-clamp-1 uppercase tracking-wider font-medium">{product.brand || 'No Brand'}</div>
-                        <Link href={`/product/${product.slug || product.id}`} className="w-full">
+                        <Link href={product.slug || product.id ? `/product/${product.slug || product.id}` : '#'} className="w-full">
                             <p className="text-sm font-bold text-black truncate w-full hover:underline">
                                 {cleanProductName(localize(product, 'name'), product.brand)}
                             </p>
@@ -202,7 +205,10 @@ function ProductCardWrapper({ product }) {
                         </div>
                     )}
 
-                    <Link href={`/product/${product.slug || product.id}`} className={`block w-full text-center text-[11px] py-1.5 mt-2 rounded transition ${added ? 'bg-green-600 text-white' : 'bg-black text-white hover:bg-gray-800'}`}>
+                    <Link 
+                        href={product.slug || product.id ? `/product/${product.slug || product.id}` : '#'} 
+                        className={`block w-full text-center text-[11px] py-1.5 mt-2 rounded transition ${added ? 'bg-green-600 text-white' : 'bg-black text-white hover:bg-gray-800'} ${!product.slug && !product.id ? 'pointer-events-none opacity-50' : ''}`}
+                    >
                         {added ? t('common.added_to_cart_btn') : t('common.more_details')}
                     </Link>
                 </div>

@@ -27,6 +27,9 @@ export async function generateMetadata() {
         description: locale === 'en' 
             ? "Information on data collection, security and user privacy protection."
             : "מידע על איסוף נתונים, אבטחה ושמירה על פרטיות המשתמשים.",
+        alternates: {
+            canonical: 'https://www.ml-tlv.com/privacy',
+        },
     };
 }
 
