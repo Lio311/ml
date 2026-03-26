@@ -94,14 +94,14 @@ export default function CatalogProductActions({ item, slug }) {
                                 <button
                                     type="button"
                                     disabled={wouldExceed && !inCart}
-                                    className={`w-8 h-8 rounded-full flex items-center justify-center font-bold text-lg transition-all ${
+                                    className={`w-8 h-8 rounded-full flex items-center justify-center p-0 leading-none transition-all ${
                                         inCart ? 'bg-green-500 text-white' :
                                         isAdded ? 'bg-green-500 text-white scale-110' :
                                         wouldExceed ? 'bg-gray-300 text-white' :
                                         'bg-black text-white hover:bg-gray-800 group-hover:scale-110'
                                     }`}
                                 >
-                                    {inCart || isAdded ? <Check size={20} strokeWidth={3} /> : wouldExceed ? <X size={20} strokeWidth={3} /> : <Plus size={20} strokeWidth={3} />}
+                                    {inCart || isAdded ? <Check size={20} strokeWidth={3} className="shrink-0" /> : wouldExceed ? <X size={20} strokeWidth={3} className="shrink-0" /> : <Plus size={20} strokeWidth={3} className="shrink-0" />}
                                 </button>
                             </div>
                         </div>
