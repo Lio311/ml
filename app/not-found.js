@@ -23,7 +23,7 @@ export default function NotFound() {
             </div>
 
             {/* Glassmorphic Content Card */}
-            <div className="relative z-10 w-full max-w-2xl mx-4 p-8 md:p-12 rounded-3xl bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl text-center text-white">
+            <div className="relative z-10 w-full max-w-3xl mx-4 p-8 md:p-12 rounded-3xl bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl text-center text-white">
                 <div className="mb-6 inline-block">
                     <span className="text-sm tracking-[0.4em] uppercase opacity-70 mb-2 block">{t('not_found.error_code')}</span>
                     <h1 className="text-8xl md:text-9xl font-bold tracking-tighter bg-clip-text text-transparent bg-gradient-to-b from-white to-white/30 drop-shadow-lg">
@@ -31,7 +31,7 @@ export default function NotFound() {
                     </h1>
                 </div>
 
-                <h2 className="text-2xl md:text-4xl font-light mb-6">
+                <h2 className="text-xl md:text-3xl lg:text-[2.5rem] font-light mb-8 md:whitespace-nowrap">
                     {t('not_found.title').split(t('not_found.evaporated')).map((part, i, arr) => (
                         <span key={i}>
                             {part}
