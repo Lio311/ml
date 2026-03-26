@@ -6,6 +6,10 @@ import { checkAdmin } from '../../lib/admin';
 import { revalidatePath } from 'next/cache';
 import { translateList, translateText } from '../../lib/translate';
 
+const generateSlug = (brand, model) => {
+    return `${brand} ${model}`.toLowerCase().replace(/[^a-z0-9\u0590-\u05FF]+/g, '-').replace(/(^-|-$)+/g, '');
+};
+
 export async function GET(req) {
     try {
         const { searchParams } = new URL(req.url);
@@ -135,21 +139,23 @@ export async function POST(req) {
             const seasons_en = await translateList(seasons);
             const description_en = await translateText(description);
 
+            const newSlug = generateSlug(brand || '', model || '');
+
             const res = await client.query(
                 `INSERT INTO products 
                  (name, category, brand, model, price_2ml, price_5ml, price_10ml, image_url, 
                   description, stock, top_notes, middle_notes, base_notes, in_lottery, 
                   name_he, brand_he, model_he, cost_price, original_size,
                   seasons, perfumers, country,
-                  category_en, description_en, top_notes_en, middle_notes_en, base_notes_en, seasons_en) 
-                 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28) 
+                  category_en, description_en, top_notes_en, middle_notes_en, base_notes_en, seasons_en, slug) 
+                 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29) 
                  RETURNING id`,
                 [
                     brand + ' ' + model, category || 'General', brand, model, price_2ml, price_5ml, price_10ml, image_url,
                     description, stock || 0, top_notes, middle_notes, base_notes, in_lottery ?? true, 
                     name_he, brand_he, model_he, cost_price, original_size,
                     seasons, perfumers, country,
-                    category_en, description_en, top_notes_en, middle_notes_en, base_notes_en, seasons_en
+                    category_en, description_en, top_notes_en, middle_notes_en, base_notes_en, seasons_en, newSlug
                 ]
             );
 
