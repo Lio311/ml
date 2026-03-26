@@ -114,8 +114,8 @@ export default async function HomeV2() {
 
   return (
     <div className="flex flex-col min-h-screen overflow-x-hidden">
-      {/* Hero Section - Increased height and moved to top */}
-      <section className="relative h-[70vh] w-full m-0 p-0 overflow-hidden bg-black block">
+      {/* Hero Section - Reduced height on mobile */}
+      <section className="relative h-[60vh] md:h-[70vh] w-full m-0 p-0 overflow-hidden bg-black block">
         <div className="absolute inset-0 w-full h-full overflow-hidden bg-gray-100">
           <video
             autoPlay
@@ -130,9 +130,9 @@ export default async function HomeV2() {
           </video>
         </div>
 
-        <div className="absolute inset-0 z-10 container mx-auto flex items-center justify-center pt-20 md:pt-28 px-6 md:px-12">
-          {/* Hero Content Box */}
-          <div className="max-w-xs md:max-w-3xl text-black text-center bg-white/85 p-6 rounded-2xl backdrop-blur-md shadow-2xl transform scale-90 md:scale-100 origin-center border border-white/20">
+        <div className="absolute inset-0 z-10 container mx-auto flex items-start justify-center pt-24 md:pt-28 md:items-center px-6 md:px-12">
+          {/* Hero Content Box - Moved up on mobile with items-start + pt */}
+          <div className="max-w-xs md:max-w-3xl text-black text-center bg-white/85 p-6 rounded-2xl backdrop-blur-md shadow-2xl transform scale-90 md:scale-100 origin-center border border-white/20 mt-4 md:mt-0">
             <h2 className="text-xs md:text-sm font-assistant tracking-[0.2em] uppercase mb-1 opacity-90 animate-fadeIn font-bold">
               {t('homepage.discover_sig')}
             </h2>
@@ -149,7 +149,7 @@ export default async function HomeV2() {
         </div>
       </section>
 
-      <div className="relative z-30 -mt-20 md:mt-0">
+      <div className="relative z-30 -mt-24 md:mt-0">
         <LiveStats stats={stats} />
       </div>
       <HomeClient newArrivals={newArrivals} topCatalogs={topCatalogs} />
