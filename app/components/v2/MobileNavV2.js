@@ -115,8 +115,8 @@ export default function MobileNavV2({ isOpen, onClose, navLinks = [], isAdmin })
                                 <LanguageSwitcher variant="mobile" light={true} />
                             </div>
 
-                            <p className="text-[10px] text-white/20 text-center tracking-[0.1em] font-light">
-                                ml-tlv. luxury sample boutique
+                            <p className="text-[10px] text-white/20 text-center font-light">
+                                ml-tlv. <span className="uppercase text-[9px] tracking-[0.2em]">luxury sample boutique</span>
                             </p>
                         </div>
                     </motion.div>
