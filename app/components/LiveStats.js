@@ -37,28 +37,28 @@ export default function LiveStats({ stats }) {
     return (
         <section className="bg-black text-white py-1 md:py-1.5 border-t border-gray-800 relative z-20">
             <div className="container mx-auto px-4">
-                <div className="grid grid-cols-3 gap-4 text-center divide-x divide-gray-800 rtl:divide-x-reverse">
-                    <div className="flex flex-col items-center">
-                        <span className="text-3xl md:text-4xl font-bold font-serif">
+                <div className="grid grid-cols-3 gap-1 text-center divide-x divide-gray-800 rtl:divide-x-reverse">
+                    <div className="flex flex-col items-center justify-center gap-0.5">
+                        <span className="text-3xl md:text-4xl font-bold font-serif leading-none">
                             <Counter end={stats.brands} />
                         </span>
-                        <span className="text-xs md:text-sm uppercase tracking-widest text-gray-400 mt-1 whitespace-nowrap">
+                        <span className="text-[10px] md:text-sm uppercase tracking-widest text-gray-400 whitespace-nowrap">
                             {t('common.brands')}
                         </span>
                     </div>
-                    <div className="flex flex-col items-center">
-                        <span className="text-3xl md:text-4xl font-bold font-serif">
+                    <div className="flex flex-col items-center justify-center gap-0.5">
+                        <span className="text-3xl md:text-4xl font-bold font-serif leading-none">
                             <Counter end={stats.products} />
                         </span>
-                        <span className="text-xs md:text-sm uppercase tracking-widest text-gray-400 mt-1 whitespace-nowrap">
+                        <span className="text-[10px] md:text-sm uppercase tracking-widest text-gray-400 whitespace-nowrap">
                             {t('common.products_on_site') || t('common.full_catalog')}
                         </span>
                     </div>
-                    <div className="flex flex-col items-center">
-                        <span className="text-3xl md:text-4xl font-bold font-serif">
+                    <div className="flex flex-col items-center justify-center gap-0.5">
+                        <span className="text-3xl md:text-4xl font-bold font-serif leading-none">
                             <Counter end={stats.samples} prefix="+" />
                         </span>
-                        <span className="text-xs md:text-sm uppercase tracking-widest text-gray-400 mt-1 whitespace-nowrap">
+                        <span className="text-[10px] md:text-sm uppercase tracking-widest text-gray-400 whitespace-nowrap">
                             {t('common.samples_sold')}
                         </span>
                     </div>
