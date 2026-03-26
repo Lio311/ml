@@ -435,6 +435,24 @@ export function CartProvider({ children }) {
         setLotteryTimeLeft(null);
         setCartItems([]);
     };
+    
+    // 6. Lucky Wheel Prize Protection
+    // Automatically removes prizes/discounts if main site subtotal falls below threshold after deletion
+    const mainSiteSubtotal = cartItems
+        .filter(item => (item.vendorId || 'main') === 'main')
+        .reduce((sum, item) => sum + (Number(item.price) * (item.quantity || 1)), 0);
+
+    useEffect(() => {
+        if (mainSiteSubtotal < 1200 && mainSiteSubtotal > 0) {
+            if (luckyPrize) {
+                setLuckyPrize(null);
+            }
+            const hasPrizeItem = cartItems.some(i => i.isPrize && (i.vendorId || 'main') === 'main');
+            if (hasPrizeItem) {
+                setCartItems(prev => prev.filter(i => !i.isPrize || (i.vendorId || 'main') !== 'main'));
+            }
+        }
+    }, [mainSiteSubtotal, luckyPrize, cartItems]);
 
     // Calculations
     const activeItems = cartItems.filter(item => (item.vendorId || 'main') === activeVendorId);
