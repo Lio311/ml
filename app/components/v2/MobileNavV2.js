@@ -44,16 +44,11 @@ export default function MobileNavV2({ isOpen, onClose, navLinks = [], isAdmin })
                         style={{ background: 'rgba(255, 255, 255, 0.1)', backdropFilter: 'blur(40px)', borderLeft: dir === 'rtl' ? '1px solid rgba(255,255,255,0.1)' : 'none', borderRight: dir === 'ltr' ? '1px solid rgba(255,255,255,0.1)' : 'none' }}
                     >
                         {/* Header Area */}
-                        <div className="grid grid-cols-3 items-center p-6 border-b border-white/10">
-                            <span className="text-white text-[10px] font-bold tracking-[0.2em] uppercase whitespace-nowrap">{t('common.close_menu')}</span>
-                            <div className="flex justify-center">
-                                <LanguageSwitcher variant="mobile" light={true} />
-                            </div>
-                            <div className="flex justify-end">
-                                <button onClick={onClose} className="p-2 -me-2 text-white/70 hover:text-white transition-colors">
-                                    <X size={24} />
-                                </button>
-                            </div>
+                        <div className="flex items-center justify-between p-6 border-b border-white/10">
+                            <span className="text-white text-[10px] font-bold tracking-[0.2em] uppercase whitespace-nowrap opacity-80">{t('common.close_menu')}</span>
+                            <button onClick={onClose} className="p-2 -me-2 text-white/70 hover:text-white transition-colors">
+                                <X size={24} />
+                            </button>
                         </div>
 
                         {/* User + My Catalogs */}
@@ -94,34 +89,15 @@ export default function MobileNavV2({ isOpen, onClose, navLinks = [], isAdmin })
                                     </Link>
                                 </motion.div>
                             ))}
-
-                            {/* Prominent Admin Link inside list if role is detected */}
-                            {isAdmin && (
-                                <motion.div
-                                    initial={{ opacity: 0, y: 10 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: 0.5 }}
-                                    className="pt-4"
-                                >
-                                    <Link 
-                                        href="/admin" 
-                                        onClick={onClose}
-                                        className="flex items-center justify-center gap-3 bg-white/10 text-white hover:bg-white/20 transition-all border border-white/20 py-4 rounded-xl text-sm font-black tracking-[0.2em] uppercase shadow-[0_0_20px_rgba(255,255,255,0.05)]"
-                                    >
-                                        <Settings size={20} />
-                                        <span>{t('common.admin_management')}</span>
-                                    </Link>
-                                </motion.div>
-                            )}
                         </div>
 
                         {/* Bottom Actions Fallback */}
-                        <div className="p-6 space-y-4 bg-black/20 border-t border-white/5 mt-auto">
+                        <div className="p-6 space-y-6 bg-black/20 border-t border-white/5 mt-auto">
                             {isAdmin && (
                                 <motion.div
                                     initial={{ opacity: 0, y: 10 }}
                                     animate={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: 0.6 }}
+                                    transition={{ delay: 0.2 }}
                                 >
                                     <Link 
                                         href="/admin" 
@@ -133,6 +109,11 @@ export default function MobileNavV2({ isOpen, onClose, navLinks = [], isAdmin })
                                     </Link>
                                 </motion.div>
                             )}
+
+                            {/* Language Switcher at Bottom */}
+                            <div className="flex justify-center py-2 border-y border-white/5">
+                                <LanguageSwitcher variant="mobile" light={true} />
+                            </div>
 
                             <p className="text-[9px] text-white/20 text-center uppercase tracking-[0.3em] font-light">
                                 ml-tlv. luxury sample boutique
