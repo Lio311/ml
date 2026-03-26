@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useCart } from "../../../../context/CartContext";
 import toast from "react-hot-toast";
 import { useLanguage } from "../../../../context/LanguageContext";
+import { Check, Plus, X } from "lucide-react";
 
 export default function CatalogProductActions({ item, slug }) {
     const { addToCart, cartItems } = useCart();
@@ -100,7 +101,7 @@ export default function CatalogProductActions({ item, slug }) {
                                         'bg-black text-white hover:bg-gray-800 group-hover:scale-110'
                                     }`}
                                 >
-                                    {inCart || isAdded ? '✓' : wouldExceed ? '✕' : '+'}
+                                    {inCart || isAdded ? <Check size={20} strokeWidth={3} /> : wouldExceed ? <X size={20} strokeWidth={3} /> : <Plus size={20} strokeWidth={3} />}
                                 </button>
                             </div>
                         </div>
