@@ -43,7 +43,7 @@ export default function HeaderV2({ brands = [] }) {
             dir={dir}
         >
             <div className="frosted-nav h-20 md:h-28 relative z-40 flex items-center">
-                <div className="w-full max-w-[1800px] mx-auto px-6 md:px-12 h-full flex items-center justify-between">
+                <div className="w-full max-w-[1800px] mx-auto ps-0 md:ps-0 pe-6 md:pe-12 h-full flex items-center justify-between">
                     
                     {/* Desktop Layout (XL and up) */}
                     <div className="hidden xl:flex w-full items-center justify-between h-full">
