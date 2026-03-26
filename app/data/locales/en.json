@@ -629,5 +629,17 @@
         "subtitle_p1": "Your order has been successfully received.",
         "subtitle_p2": "A representative will contact you via WhatsApp shortly to coordinate payment and delivery.",
         "back_to_catalog": "Back to Catalog"
+    },
+    "not_found": {
+        "title": "Oops... The scent you searched for evaporated",
+        "desc": "The page you are looking for doesn't exist or has been moved. Don't worry, we are here to help you find your next scent.",
+        "back_home": "Back to Home",
+        "full_catalog": "Full Catalog",
+        "discover_collections": "Discover our Collections",
+        "error_code": "Error Code",
+        "niche": "Niche Perfumes",
+        "boutique": "Boutique Perfumes",
+        "all_brands": "All Brands",
+        "evaporated": "evaporated"
     }
 }

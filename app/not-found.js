@@ -2,8 +2,11 @@
 
 import Link from 'next/link';
 import Image from 'next/image';
+import { useLanguage } from './context/LanguageContext';
 
 export default function NotFound() {
+    const { t } = useLanguage();
+
     return (
         <div className="relative min-h-[90vh] flex items-center justify-center overflow-hidden font-assistant">
             {/* Immersive Background */}
@@ -12,27 +15,33 @@ export default function NotFound() {
                     src="/404-bg.png" 
                     alt="Luxury Perfume" 
                     fill 
-                    className="object-cover opacity-60 scale-105 animate-pulse-slow"
+                    className="object-cover opacity-80 scale-105 animate-pulse-slow"
                     priority
+                    quality={100}
                 />
-                <div className="absolute inset-0 bg-gradient-to-b from-black/40 via-transparent to-black/60" />
+                <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-black/70" />
             </div>
 
             {/* Glassmorphic Content Card */}
             <div className="relative z-10 w-full max-w-2xl mx-4 p-8 md:p-12 rounded-3xl bg-white/10 backdrop-blur-xl border border-white/20 shadow-2xl text-center text-white">
                 <div className="mb-6 inline-block">
-                    <span className="text-sm tracking-[0.4em] uppercase opacity-70 mb-2 block">Error Code</span>
+                    <span className="text-sm tracking-[0.4em] uppercase opacity-70 mb-2 block">{t('not_found.error_code')}</span>
                     <h1 className="text-8xl md:text-9xl font-bold tracking-tighter bg-clip-text text-transparent bg-gradient-to-b from-white to-white/30 drop-shadow-lg">
                         404
                     </h1>
                 </div>
 
                 <h2 className="text-2xl md:text-4xl font-light mb-6">
-                    אופס... הריח שחיפשת <span className="font-bold underline decoration-amber-400/50">התנדף</span>
+                    {t('not_found.title').split(t('not_found.evaporated')).map((part, i, arr) => (
+                        <span key={i}>
+                            {part}
+                            {i < arr.length - 1 && <span className="font-bold underline decoration-amber-400/50">{t('not_found.evaporated')}</span>}
+                        </span>
+                    ))}
                 </h2>
 
-                <p className="text-lg md:text-xl opacity-80 mb-10 leading-relaxed max-w-md mx-auto">
-                    הדף שחיפשת אינו קיים או שהועבר למקום אחר. אל דאגה, אנחנו כאן כדי לעזור לך למצוא את הניחוח הבא שלך.
+                <p className="text-lg md:text-xl opacity-80 mb-10 leading-relaxed max-w-md mx-auto line-clamp-3">
+                    {t('not_found.desc')}
                 </p>
 
                 <div className="flex flex-col md:flex-row items-center justify-center gap-4 mb-12">
@@ -40,34 +49,34 @@ export default function NotFound() {
                         href="/" 
                         className="w-full md:w-auto px-10 py-4 bg-white text-black rounded-full font-bold text-lg shadow-xl hover:bg-gray-100 hover:scale-105 transition-all duration-300"
                     >
-                        חזרה לדף הבית
+                        {t('not_found.back_home')}
                     </Link>
                     <Link 
                         href="/catalog" 
                         className="w-full md:w-auto px-10 py-4 bg-white/10 backdrop-blur-md border border-white/30 rounded-full font-bold text-lg hover:bg-white/20 hover:scale-105 transition-all duration-300"
                     >
-                        לקטלוג המלא
+                        {t('not_found.full_catalog')}
                     </Link>
                 </div>
 
                 {/* Discovery Quick Links */}
                 <div className="pt-8 border-t border-white/10">
-                    <p className="text-sm uppercase tracking-widest opacity-50 mb-6">גלו את הקולקציות שלנו</p>
+                    <p className="text-sm uppercase tracking-widest opacity-50 mb-6">{t('not_found.discover_collections')}</p>
                     <div className="flex flex-wrap justify-center gap-3">
-                        <Link href="/catalog?category=niche" className="px-5 py-2 bg-white/5 border border-white/10 rounded-full text-sm hover:bg-white/10 transition-colors">בשמי נישה</Link>
-                        <Link href="/catalog?category=boutique" className="px-5 py-2 bg-white/5 border border-white/10 rounded-full text-sm hover:bg-white/10 transition-colors">בשמי בוטיק</Link>
-                        <Link href="/brands" className="px-5 py-2 bg-white/5 border border-white/10 rounded-full text-sm hover:bg-white/10 transition-colors">כל המותגים</Link>
+                        <Link href="/catalog?category=niche" className="px-5 py-2 bg-white/5 border border-white/10 rounded-full text-sm hover:bg-white/10 transition-colors uppercase">{t('not_found.niche')}</Link>
+                        <Link href="/catalog?category=boutique" className="px-5 py-2 bg-white/5 border border-white/10 rounded-full text-sm hover:bg-white/10 transition-colors uppercase">{t('not_found.boutique')}</Link>
+                        <Link href="/brands" className="px-5 py-2 bg-white/5 border border-white/10 rounded-full text-sm hover:bg-white/10 transition-colors uppercase">{t('not_found.all_brands')}</Link>
                     </div>
                 </div>
             </div>
 
             <style jsx global>{`
                 @keyframes pulse-slow {
-                    0%, 100% { opacity: 0.55; transform: scale(1); }
-                    50% { opacity: 0.7; transform: scale(1.03); }
+                    0%, 100% { transform: scale(1); opacity: 0.8; }
+                    50% { transform: scale(1.05); opacity: 0.9; }
                 }
                 .animate-pulse-slow {
-                    animation: pulse-slow 8s ease-in-out infinite;
+                    animation: pulse-slow 15s ease-in-out infinite;
                 }
             `}</style>
         </div>
