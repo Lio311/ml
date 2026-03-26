@@ -7,7 +7,7 @@ export default function CartItem({ item, updateQuantity, removeFromCart, activeV
     const { t } = useLanguage();
     
     return (
-        <div key={`${item.id}-${item.size}`} className={`flex items-center gap-4 border p-4 rounded-lg bg-white shadow-sm relative ${item.isPrize ? 'border-amber-300 bg-amber-50' : ''}`}>
+        <div key={`${item.id}-${item.size}`} className={`flex items-center gap-4 border p-4 rounded-lg bg-white shadow-sm relative`}>
             <div className="w-20 h-20 bg-white flex items-center justify-center text-2xl rounded overflow-hidden relative border border-gray-100 flex-shrink-0">
                 {item.image_url ? (
                     <Image src={item.image_url} alt={item.name} fill className="object-contain" sizes="80px" />
