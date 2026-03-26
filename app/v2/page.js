@@ -149,9 +149,10 @@ export default async function HomeV2() {
         </div>
       </section>
 
-      <div className="relative z-30 -mt-24 md:mt-0 pb-10 md:pb-0">
+      <div className="relative z-30 -mt-24 md:mt-0">
         <LiveStats stats={stats} />
       </div>
+      <div className="bg-white h-10 md:h-0" />
       <HomeClient newArrivals={newArrivals} topCatalogs={topCatalogs} />
       <BonusesSection />
       <BrandCarousel brands={stats.allBrands} />
