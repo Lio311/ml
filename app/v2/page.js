@@ -132,14 +132,14 @@ export default async function HomeV2() {
 
         <div className="absolute inset-0 z-10 container mx-auto flex items-center justify-center pt-20 md:pt-28 px-6 md:px-12">
           {/* Hero Content Box */}
-          <div className="max-w-xs md:max-w-2xl text-black text-center bg-white/85 p-6 rounded-2xl backdrop-blur-md shadow-2xl transform scale-90 md:scale-100 origin-center border border-white/20">
+          <div className="max-w-xs md:max-w-3xl text-black text-center bg-white/85 p-6 rounded-2xl backdrop-blur-md shadow-2xl transform scale-90 md:scale-100 origin-center border border-white/20">
             <h2 className="text-xs md:text-sm font-assistant tracking-[0.2em] uppercase mb-1 opacity-90 animate-fadeIn font-bold">
               {t('homepage.discover_sig')}
             </h2>
             <h1 className={`${dancingScript.className} font-dancing text-3xl md:text-6xl mb-2 md:mb-4 text-black leading-tight tracking-wide`}>
               {t('homepage.hero_title_p1')} {t('homepage.hero_title_p2')}
             </h1>
-            <p className="text-xs md:text-base text-gray-800 mb-3 md:mb-4 font-light leading-relaxed">
+            <p className="text-xs md:text-base text-gray-800 mb-3 md:mb-4 font-assistant leading-relaxed max-w-[280px] md:max-w-none mx-auto opacity-80">
               {t('common.hero_subtitle')} {t('common.hero_tagline')} {t('common.hero_cta')}
             </p>
             <Link href="/catalog" className="inline-block border text-black border-black px-8 py-3 text-xs md:text-sm font-bold tracking-widest hover:bg-black hover:text-white transition duration-500 uppercase rounded-full">
