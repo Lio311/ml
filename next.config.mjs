@@ -8,19 +8,19 @@ const nextConfig = {
       },
       {
         protocol: 'https',
-        hostname: '**.fimgs.net',
+        hostname: 'fimgs.net',
       },
       {
         protocol: 'https',
-        hostname: '**.pimgs.net',
+        hostname: 'pimgs.net',
       },
       {
         protocol: 'https',
-        hostname: '**.fragrantica.com',
+        hostname: 'fragrantica.com',
       },
       {
         protocol: 'https',
-        hostname: '**.cp-parfums.com',
+        hostname: 'cp-parfums.com',
       },
       {
         protocol: 'https',
@@ -68,15 +68,15 @@ const nextConfig = {
       },
       {
         protocol: 'https',
-        hostname: '**.seeklogo.com',
+        hostname: 'seeklogo.com',
       },
       {
         protocol: 'https',
-        hostname: '**.sekega.com',
+        hostname: 'sekega.com',
       },
       {
         protocol: 'https',
-        hostname: '**.lessenteurs.com',
+        hostname: 'lessenteurs.com',
       },
       {
         protocol: 'https',
@@ -84,15 +84,15 @@ const nextConfig = {
       },
       {
         protocol: 'https',
-        hostname: '**.gstatic.com',
+        hostname: '*.gstatic.com',
       },
       {
         protocol: 'https',
-        hostname: '**.googleusercontent.com',
+        hostname: '*.googleusercontent.com',
       },
       {
         protocol: 'https',
-        hostname: '**.ebayimg.com',
+        hostname: '*.ebayimg.com',
       },
       {
         protocol: 'https',
@@ -100,7 +100,7 @@ const nextConfig = {
       },
       {
         protocol: 'https',
-        hostname: '**.logos-world.net',
+        hostname: 'logos-world.net',
       },
       {
         protocol: 'https',
@@ -148,7 +148,7 @@ const nextConfig = {
       },
       {
         protocol: 'https',
-        hostname: '**.dulcie.world',
+        hostname: 'dulcie.world',
       },
     ],
     formats: ['image/avif', 'image/webp'],
