@@ -1,17 +1,4 @@
-/* Narkiss Block Font */
-@font-face {
-    font-family: 'NarkissBlock';
-    src: url('/fonts/Narkiss Block Regular.woff2') format('woff2'),
-         url('/fonts/Narkiss Block Regular.woff') format('woff'),
-         url('/fonts/Narkiss Block Regular.ttf') format('truetype');
-    font-weight: normal;
-    font-style: normal;
-    font-display: swap;
-}
-
-.v2-page, .v2-page * {
-    font-family: 'NarkissBlock', sans-serif !important;
-}
+/* V2 Specific Utilities */
 
 .v2-page .font-assistant {
     font-family: 'Assistant', var(--font-assistant), sans-serif !important;

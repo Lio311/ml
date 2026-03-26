@@ -101,7 +101,7 @@ export default async function RootLayout({ children }) {
       }}
     >
       <html lang={locale} dir={dir}>
-        <body className={assistant.className}>
+        <body className="antialiased">
           <LanguageProvider initialLocale={locale}>
             <CartProvider>
               <WishlistProvider>
