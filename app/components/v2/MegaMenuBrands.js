@@ -59,20 +59,20 @@ export default function MegaMenuBrands({ brands = [], isOpen, onClose }) {
                 {/* Brands Display Area */}
                 <div className="w-full min-h-[180px] transition-all duration-500 relative">
                     {!hoveredLetter ? (
-                        <div className="flex flex-col items-center justify-center text-white/20 space-y-3 py-8">
-                            <span className="text-xl font-serif tracking-[0.2em] uppercase opacity-30">בחרו אות</span>
-                            <div className="w-10 h-[1px] bg-white/10"></div>
-                            <span className="text-[8px] uppercase tracking-[0.3em]">EXPLORE OUR CURATED COLLECTIONS</span>
+                        <div className="flex flex-col items-center justify-center text-white space-y-3 py-8">
+                            <span className="text-2xl md:text-3xl font-serif tracking-[0.2em] uppercase opacity-90 drop-shadow-lg">בחרו אות</span>
+                            <div className="w-12 h-[1px] bg-white/30"></div>
+                            <span className="text-[9px] uppercase tracking-[0.3em] opacity-60">EXPLORE OUR CURATED COLLECTIONS</span>
                         </div>
                     ) : (
-                        <div className="flex flex-wrap justify-center gap-4 animate-fadeInQuick w-full">
+                        <div className="flex flex-wrap justify-center gap-4 animate-fadeInQuick w-full pb-6">
                             {hoveredBrands.map((brand) => (
                                 <Link 
                                     key={brand.id} 
                                     href={`/catalog?brand=${encodeURIComponent(brand.name)}`}
-                                    className="brand-card group flex flex-col items-center justify-center p-3 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 hover:border-white/20 transition-all duration-500 w-[140px] md:w-[160px]"
+                                    className="brand-card group flex flex-col items-center justify-center p-3 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 hover:border-white/20 transition-all duration-500 w-[140px] md:w-[170px] min-h-[100px]"
                                 >
-                                    <div className="relative w-full h-8 mb-2 transition-transform duration-700 group-hover:scale-110">
+                                    <div className="relative w-full h-8 mb-3 transition-transform duration-700 group-hover:scale-110">
                                         {brand.logo_url ? (
                                             <Image 
                                                 src={brand.logo_url} 
@@ -86,7 +86,7 @@ export default function MegaMenuBrands({ brands = [], isOpen, onClose }) {
                                             </div>
                                         )}
                                     </div>
-                                    <span className="text-[9px] font-bold text-white/40 group-hover:text-white transition-colors uppercase tracking-[0.2em] text-center line-clamp-1 p-1">
+                                    <span className="text-[10px] font-bold text-white/50 group-hover:text-white transition-colors uppercase tracking-[0.15em] text-center p-1 break-words w-full">
                                         {brand.name}
                                     </span>
                                 </Link>

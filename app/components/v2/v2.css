@@ -69,6 +69,29 @@
     text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
 }
 
+.v2-lang-row {
+    margin-top: -4px;
+}
+
+.v2-lang-row .flex {
+    gap: 0.75rem !important;
+}
+
+/* Ensure no truncation in brand cards */
+.brand-card span {
+    display: block;
+    max-height: 3em;
+    overflow: hidden;
+    text-overflow: clip;
+    white-space: normal;
+    word-break: break-word;
+}
+
+.brand-card:hover {
+    box-shadow: 0 10px 30px -10px rgba(0,0,0,0.5);
+    background: rgba(255, 255, 255, 0.15);
+}
+
 /* Antigravity Effects */
 .floating-layer {
     transition: transform 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);

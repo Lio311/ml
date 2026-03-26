@@ -11,11 +11,9 @@ import LiveVisitorCounter from '../LiveVisitorCounter';
 import { useLanguage } from '../../context/LanguageContext';
 import { useCart } from '../../context/CartContext';
 import { useWishlist } from '../../context/WishlistContext';
-import { useUser } from '@clerk/nextjs';
-import UserActions from '../header/UserActions';
-import DesktopIcons from '../header/DesktopIcons';
-import LanguageSwitcher from '../header/LanguageSwitcher';
-import { Menu, Search } from 'lucide-react';
+import { Menu, Search, User } from 'lucide-react';
+import { SignInButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs';
+import SearchAutocomplete from '../SearchAutocomplete';
 import './v2.css';
 
 export default function HeaderV2({ brands = [] }) {
@@ -47,8 +45,24 @@ export default function HeaderV2({ brands = [] }) {
                     
                     {/* Desktop Layout (XL and up) */}
                     <div className="hidden xl:flex w-full items-center justify-between h-full">
-                        {/* Right Side: Navigation */}
-                        <div className="flex-1 flex items-center">
+                        {/* Right Side: Navigation & User */}
+                        <div className="flex-1 flex items-center gap-8">
+                            <div className="flex items-center gap-4 border-r border-black/5 pr-6">
+                                <SignedIn>
+                                    <div className="flex items-center">
+                                        <UserButton afterSignOutUrl="/" />
+                                    </div>
+                                </SignedIn>
+                                <SignedOut>
+                                    <SignInButton mode="modal">
+                                        <button className="flex items-center gap-2 text-[10px] font-bold tracking-widest uppercase py-2 px-4 border border-black/10 rounded-full hover:bg-black hover:text-white transition-all duration-300">
+                                            <User size={14} />
+                                            {t('common.login_register') || 'כניסה'}
+                                        </button>
+                                    </SignInButton>
+                                </SignedOut>
+                            </div>
+                            
                             <nav className="flex items-center gap-6 text-black">
                                 {navLinks.map((link) => (
                                     <div 
@@ -77,7 +91,7 @@ export default function HeaderV2({ brands = [] }) {
                         </div>
 
                         {/* Center: Logo */}
-                        <div className="flex-shrink-0 flex justify-center px-8">
+                        <div className="flex-shrink-0 flex justify-center px-4">
                             <Link href="/v2" className="block transform hover:scale-105 transition-transform duration-700">
                                 <Image 
                                     src="/logo_v5.png" 
@@ -90,15 +104,18 @@ export default function HeaderV2({ brands = [] }) {
                             </Link>
                         </div>
 
-                        {/* Left Side: Actions */}
-                        <div className="flex-1 flex items-center justify-end gap-6 text-black">
-                            <div className="flex items-center gap-4 v2-user-actions">
-                                <LanguageSwitcher variant="header" />
-                                <div className="hidden lg:flex w-[1px] h-4 bg-black/10 mx-2"></div>
-                                <UserActions />
+                        {/* Left Side: Actions (Icons Above, Language Below) */}
+                        <div className="flex-1 flex flex-col items-end gap-1.5 text-black">
+                            <div className="flex items-center gap-6">
+                                <div className="max-w-[180px]">
+                                    <SearchAutocomplete />
+                                </div>
+                                <div className="flex items-center gap-6 v2-desktop-icons">
+                                    <DesktopIcons cartCount={cartCount} wishlistCount={wishlistCount} />
+                                </div>
                             </div>
-                            <div className="flex items-center gap-6 v2-desktop-icons">
-                                <DesktopIcons cartCount={cartCount} wishlistCount={wishlistCount} />
+                            <div className="v2-lang-row scale-90 origin-right opacity-80 hover:opacity-100 transition-opacity">
+                                <LanguageSwitcher variant="header" />
                             </div>
                         </div>
                     </div>
