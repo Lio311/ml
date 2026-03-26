@@ -31,11 +31,11 @@ export default function MegaMenuCatalog({ isOpen, onClose }) {
         { 
             id: 'men', 
             label: 'גברים', 
-            subtitle: 'Classic, Aquatic, Bold', 
             href: '/catalog?gender=גברים',
             icon: (
                 <svg className="w-16 h-16 text-gray-300 opacity-80" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M10 14a6 6 0 100-12 6 6 0 000 12zM14 10l7-7m0 0h-5m5 0v5" />
+                    <circle cx="10" cy="14" r="5" strokeWidth={1.5} />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M13.5 10.5L19 5m0 0h-4m4 0v4" />
                 </svg>
             )
         },
@@ -45,7 +45,8 @@ export default function MegaMenuCatalog({ isOpen, onClose }) {
             href: '/catalog?gender=נשים',
             icon: (
                 <svg className="w-16 h-16 text-pink-300 opacity-80" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 4a6 6 0 100 12 6 6 0 000-12zM12 16v5m-3-2h6" />
+                    <circle cx="12" cy="9" r="5" strokeWidth={1.5} />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 14v7m-3-3h6" />
                 </svg>
             )
         }

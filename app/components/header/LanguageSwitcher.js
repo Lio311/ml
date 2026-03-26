@@ -15,16 +15,17 @@ export default function LanguageSwitcher({ variant = "header" }) {
     const inactiveClass = "bg-white text-black px-3 py-1 text-[10px] font-bold border border-black hover:bg-gray-50 transition-colors";
 
     return (
-        <div className={`flex items-center gap-0 ${variant === 'mobile' ? 'flex-row' : ''}`} dir="ltr">
+        <div className="flex items-center gap-3 font-serif text-[11px] tracking-[0.15em] uppercase" dir="ltr">
             <button
                 onClick={() => handleSwitch('en')}
-                className={`${locale === 'en' ? activeClass : inactiveClass} rounded-s-sm`}
+                className={`transition-all duration-500 cursor-pointer ${locale === 'en' ? 'text-black font-black border-b-[1.5px] border-black pb-0.5' : 'text-black/30 hover:text-black/60'}`}
             >
                 English
             </button>
+            <div className="w-[1px] h-3 bg-black/10"></div>
             <button
                 onClick={() => handleSwitch('he')}
-                className={`${locale === 'he' ? activeClass : inactiveClass} rounded-e-sm`}
+                className={`transition-all duration-500 cursor-pointer ${locale === 'he' ? 'text-black font-black border-b-[1.5px] border-black pb-0.5' : 'text-black/30 hover:text-black/60'}`}
             >
                 עברית
             </button>

@@ -39,7 +39,7 @@ export default function HeaderV2({ brands = [] }) {
             dir={dir}
         >
             <div className="frosted-nav h-24 md:h-28 relative z-40 flex items-center">
-                <div className="container mx-auto px-4 md:px-8 h-full flex items-center justify-between">
+                <div className="w-full max-w-[1800px] mx-auto px-6 md:px-12 h-full flex items-center justify-between">
                     
                     {/* User Actions & Search (Physical Right in RTL, Left in LTR) */}
                     <div className="flex items-center gap-4 v2-user-actions flex-1">
