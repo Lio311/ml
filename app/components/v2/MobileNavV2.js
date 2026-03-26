@@ -109,7 +109,7 @@ export default function MobileNavV2({ isOpen, onClose, navLinks = [], isAdmin })
                                         onClick={onClose}
                                         className="flex items-center justify-center gap-3 bg-white/10 text-white hover:bg-white/20 transition-all border border-white/20 py-4 rounded-xl text-sm font-bold tracking-[0.2em] uppercase shadow-[0_0_20px_rgba(255,255,255,0.05)]"
                                     >
-                                        <Settings size={20} className="text-yellow-400" />
+                                        <Settings size={20} className="text-white" />
                                         <span>{t('common.admin_management')}</span>
                                     </Link>
                                 </motion.div>
