@@ -41,11 +41,11 @@ export default function HeaderV2({ brands = [] }) {
 
     return (
         <header 
-            className="fixed top-0 left-0 right-0 w-full z-50 transition-all duration-500"
+            className="fixed top-0 !left-0 !right-0 !w-screen z-50 transition-all duration-500"
             onMouseLeave={() => setActiveMenu(null)}
             dir={dir}
         >
-            <div className="frosted-nav w-full h-20 md:h-28 relative z-40 flex items-center overflow-hidden">
+            <div className="frosted-nav !w-screen h-20 md:h-28 relative z-40 flex items-center overflow-hidden">
                 <div className="w-full max-w-[1800px] mx-auto px-4 md:px-12 h-full flex items-center justify-between">
                     
                     {/* Desktop Layout (XL and up) */}
