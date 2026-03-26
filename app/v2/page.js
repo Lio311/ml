@@ -130,7 +130,7 @@ export default async function HomeV2() {
           </video>
         </div>
 
-        <div className="absolute inset-0 z-10 container mx-auto flex items-start justify-center pt-48 md:pt-64 px-6 md:px-12">
+        <div className="absolute inset-0 z-10 container mx-auto flex items-start justify-center pt-48 md:pt-48 px-6 md:px-12">
           {/* Hero Content Box - Adjusted pt to compensate for -mt-20 */}
           <div className="max-w-xs md:max-w-3xl text-black text-center bg-white/85 p-6 rounded-2xl backdrop-blur-md shadow-2xl transform scale-90 md:scale-100 origin-center border border-white/20 mt-4 md:mt-0">
             <h2 className="text-xs md:text-sm font-assistant tracking-[0.2em] uppercase mb-1 opacity-90 animate-fadeIn font-bold">
