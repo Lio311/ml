@@ -26,11 +26,13 @@ export default function ClientLayout({ children, brands, menu }) {
         );
     }
 
+    const isHome = pathname === '/';
+
     return (
         <>
             <div id="site-content" className={isV2 ? 'v2-page' : ''}>
                 {isV2 ? <HeaderV2 brands={brands} menu={menu} /> : <Header brands={brands} />}
-                <main className="min-h-screen">
+                <main className={`min-h-screen ${!isHome ? 'pt-20 md:pt-28' : ''}`}>
                     {children}
                 </main>
                 <Footer />
