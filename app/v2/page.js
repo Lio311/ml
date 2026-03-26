@@ -149,7 +149,7 @@ export default async function HomeV2() {
         </div>
       </section>
 
-      <div className="-mt-8 relative z-30">
+      <div className="-mt-16 relative z-30">
         <LiveStats stats={stats} />
       </div>
       <HomeClient newArrivals={newArrivals} topCatalogs={topCatalogs} />

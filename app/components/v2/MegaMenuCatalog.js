@@ -42,11 +42,10 @@ export default function MegaMenuCatalog({ isOpen, onClose }) {
         { 
             id: 'women', 
             label: 'נשים', 
-            subtitle: 'Floral, Elegant, Sweet', 
             href: '/catalog?gender=נשים',
             icon: (
                 <svg className="w-16 h-16 text-pink-300 opacity-80" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 4v16m8-8H4" />
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 4a6 6 0 100 12 6 6 0 000-12zM12 16v5m-3-2h6" />
                 </svg>
             )
         }
@@ -69,7 +68,6 @@ export default function MegaMenuCatalog({ isOpen, onClose }) {
                                 {cat.icon}
                             </div>
                             <h3 className="text-2xl font-serif text-white mb-2">{cat.label}</h3>
-                            <p className="text-xs text-white/50 tracking-widest uppercase">{cat.subtitle}</p>
                             
                             {/* Inner Glow Mesh */}
                             <div className="absolute inset-0 bg-white opacity-0 group-hover/item:opacity-[0.05] transition-opacity duration-700 pointer-events-none blur-3xl"></div>
