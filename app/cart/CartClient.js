@@ -132,6 +132,19 @@ export default function CartClient() {
         fetchPersonalPhone();
     }, []);
 
+    // Tier Celebration (Confetti)
+    useEffect(() => {
+        if (freeSamplesCount > prevSamplesCount.current && freeSamplesCount > 0) {
+            confetti({
+                particleCount: 150,
+                spread: 70,
+                origin: { y: 0.6 },
+                zIndex: 2000
+            });
+        }
+        prevSamplesCount.current = freeSamplesCount;
+    }, [freeSamplesCount]);
+
     const handleCheckout = async () => {
         const cleanPhone = phoneNumber.replace(/\D/g, '');
         if (cleanPhone.length !== 10 || !cleanPhone.startsWith('05')) {
