@@ -49,7 +49,7 @@ export default function HeaderV2({ brands = [] }) {
                     <div className="hidden xl:flex w-full items-center justify-between h-full">
                         {/* Right Side: Navigation & User */}
                         <div className="flex-1 flex items-center gap-8">
-                            <div className="flex items-center gap-4 border-r border-black/5 pr-3">
+                            <div className="flex items-center gap-4 border-r border-black/5 pr-0">
                                 <SignedIn>
                                     <div className="flex items-center">
                                         <UserButton afterSignOutUrl="/" />
@@ -107,17 +107,19 @@ export default function HeaderV2({ brands = [] }) {
                         </div>
 
                         {/* Left Side: Actions (Icons Above, Language Below) */}
-                        <div className="flex-1 flex flex-col items-end gap-1.5 text-black">
-                            <div className="flex items-center gap-6">
-                                <div className="max-w-[180px]">
-                                    <SearchAutocomplete />
+                        <div className="flex-1 flex flex-col items-end gap-3 text-black">
+                            <div className="flex flex-col items-center gap-4">
+                                <div className="flex items-center gap-8">
+                                    <div className="max-w-[180px] v2-user-actions">
+                                        <SearchAutocomplete />
+                                    </div>
+                                    <div className="flex items-center gap-6 v2-desktop-icons">
+                                        <DesktopIcons cartCount={cartCount} wishlistCount={wishlistCount} />
+                                    </div>
                                 </div>
-                                <div className="flex items-center gap-6 v2-desktop-icons">
-                                    <DesktopIcons cartCount={cartCount} wishlistCount={wishlistCount} />
+                                <div className="v2-lang-row scale-90 origin-center opacity-80 hover:opacity-100 transition-opacity">
+                                    <LanguageSwitcher variant="header" />
                                 </div>
-                            </div>
-                            <div className="v2-lang-row scale-90 origin-right opacity-80 hover:opacity-100 transition-opacity">
-                                <LanguageSwitcher variant="header" />
                             </div>
                         </div>
                     </div>
@@ -181,7 +183,7 @@ export default function HeaderV2({ brands = [] }) {
                 }
                 .v2-user-actions input {
                     background: transparent !important;
-                    border-bottom-color: rgba(0,0,0,0.2) !important;
+                    border-bottom-color: black !important;
                 }
                 .v2-user-actions input:focus {
                     border-bottom-color: black !important;
