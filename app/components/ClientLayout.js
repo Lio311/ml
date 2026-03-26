@@ -9,10 +9,11 @@ import InstagramPopup from "./InstagramPopup";
 
 export default function ClientLayout({ children, brands, menu }) {
     const pathname = usePathname();
-    // Only hide header if we're DEFINITELY in admin (defensive check)
+    // Only hide header if we're in admin or v2 draft
     const isAdmin = pathname && typeof pathname === 'string' && pathname.startsWith('/admin');
+    const isV2 = pathname && typeof pathname === 'string' && pathname.startsWith('/v2');
 
-    if (isAdmin) {
+    if (isAdmin || isV2) {
         return (
             <>
                 <div id="site-content">
