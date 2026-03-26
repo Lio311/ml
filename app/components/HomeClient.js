@@ -34,22 +34,14 @@ export default function HomeClient({ newArrivals, topCatalogs }) {
                 </div>
             </section>
 
-            {/* Hot Catalogs Section */}
-            <section className="py-12 bg-gray-50 border-t border-b">
-                <div className="container mx-auto px-4 text-center">
-                    <h2 className="text-3xl tracking-[0.2em] uppercase mb-3 font-bold text-black">{t('common.hot_catalogs')}</h2>
-                    <div className="w-10 h-0.5 bg-yellow-400 mx-auto mb-6"></div>
-                    <p className="text-gray-500 mb-10 max-w-2xl mx-auto">{t('common.hot_catalogs_desc')}</p>
+            {/* Hot Catalogs Section - Hidden if empty */}
+            {topCatalogs.length > 0 && (
+                <section className="py-12 bg-gray-50 border-t border-b">
+                    <div className="container mx-auto px-4 text-center">
+                        <h2 className="text-3xl tracking-[0.2em] uppercase mb-3 font-bold text-black">{t('common.hot_catalogs')}</h2>
+                        <div className="w-10 h-0.5 bg-yellow-400 mx-auto mb-6"></div>
+                        <p className="text-gray-500 mb-10 max-w-2xl mx-auto">{t('common.hot_catalogs_desc')}</p>
 
-                    {topCatalogs.length === 0 ? (
-                        <div className="text-center py-12 bg-white rounded-2xl border border-gray-100 border-dashed max-w-3xl mx-auto">
-                            <div className="text-4xl mb-4 opacity-50">🏪</div>
-                            <h3 className="text-xl font-bold text-gray-400">{t('common.no_active_catalogs')}</h3>
-                            <p className="text-gray-400 text-sm mt-2">
-                                {t('common.be_first_to_open')} <Link href="/catalogs-info" className="underline hover:text-black">{t('common.here')}</Link>.
-                            </p>
-                        </div>
-                    ) : (
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                             {topCatalogs.map(cat => (
                                 <Link href={`/catalog/${cat.slug}`} key={cat.id} className="bg-white p-8 rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 border border-gray-100 group flex flex-col relative overflow-hidden">
@@ -77,9 +69,9 @@ export default function HomeClient({ newArrivals, topCatalogs }) {
                                 </Link>
                             ))}
                         </div>
-                    )}
-                </div>
-            </section>
+                    </div>
+                </section>
+            )}
         </>
     );
 }
