@@ -25,7 +25,10 @@ export default function HeaderV2({ brands = [] }) {
     const { globalItemsCount: cartCount } = useCart();
     const { count: wishlistCount } = useWishlist();
     const { user } = useUser();
-    const isAdmin = user?.publicMetadata?.role === 'admin' || user?.publicMetadata?.role === 'deputy';
+    const isAdmin = 
+        user?.publicMetadata?.role?.toLowerCase() === 'admin' || 
+        user?.publicMetadata?.role?.toLowerCase() === 'deputy' ||
+        user?.publicMetadata?.isAdmin === true;
 
     const navLinks = [
         { label: 'דף הבית', href: '/v2', active: true },

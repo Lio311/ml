@@ -94,15 +94,34 @@ export default function MobileNavV2({ isOpen, onClose, navLinks = [], isAdmin })
                                     </Link>
                                 </motion.div>
                             ))}
-                        </div>
 
-                        {/* Bottom Actions */}
-                        <div className="p-6 space-y-4 bg-black/20 border-t border-white/5">
+                            {/* Prominent Admin Link inside list if role is detected */}
                             {isAdmin && (
                                 <motion.div
                                     initial={{ opacity: 0, y: 10 }}
                                     animate={{ opacity: 1, y: 0 }}
-                                    transition={{ delay: 0.4 }}
+                                    transition={{ delay: 0.5 }}
+                                    className="pt-4"
+                                >
+                                    <Link 
+                                        href="/admin" 
+                                        onClick={onClose}
+                                        className="flex items-center justify-center gap-3 bg-yellow-400/10 text-yellow-400 hover:bg-yellow-400/20 transition-all border border-yellow-400/20 py-4 rounded-xl text-sm font-black tracking-[0.2em] uppercase shadow-[0_0_20px_rgba(250,204,21,0.05)]"
+                                    >
+                                        <Settings size={20} />
+                                        <span>{t('common.admin_management')}</span>
+                                    </Link>
+                                </motion.div>
+                            )}
+                        </div>
+
+                        {/* Bottom Actions Fallback */}
+                        <div className="p-6 space-y-4 bg-black/20 border-t border-white/5 mt-auto">
+                            {isAdmin && (
+                                <motion.div
+                                    initial={{ opacity: 0, y: 10 }}
+                                    animate={{ opacity: 1, y: 0 }}
+                                    transition={{ delay: 0.6 }}
                                 >
                                     <Link 
                                         href="/admin" 
