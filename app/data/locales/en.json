@@ -623,5 +623,11 @@
             "title": "ml_tlv - Luxury Perfume Samples & Decants",
             "description": "Discover the world of niche and boutique perfumes with our curated sample collections. ml_tlv offers high-quality decants and luxury samples delivered across Israel."
         }
+    },
+    "checkout_success": {
+        "title": "Thank you for your order!",
+        "subtitle_p1": "Your order has been successfully received.",
+        "subtitle_p2": "A representative will contact you via WhatsApp shortly to coordinate payment and delivery.",
+        "back_to_catalog": "Back to Catalog"
     }
 }
