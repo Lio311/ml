@@ -25,11 +25,11 @@ export default function HeaderV2({ brands = [] }) {
 
     return (
         <header 
-            className="sticky top-0 w-full z-50 transition-all duration-500"
+            className="fixed top-0 w-full z-50 transition-all duration-500"
             onMouseLeave={() => setActiveMenu(null)}
         >
-            {/* Top Bar - Black Promo Strip (Restored from Original) */}
-            <div className="hidden md:flex justify-between items-center bg-black text-white text-[10px] md:text-xs py-1 px-4 tracking-widest uppercase relative z-50">
+            {/* Top Bar - Black Promo Strip */}
+            <div className="hidden md:flex justify-between items-center bg-black/80 text-white text-[10px] md:text-xs py-1 px-4 tracking-widest uppercase relative z-50 backdrop-blur-sm">
                 <div className="flex-1 flex justify-start gap-4 items-center">
                     <LiveVisitorCounter />
                 </div>
@@ -37,7 +37,7 @@ export default function HeaderV2({ brands = [] }) {
                 <div className="flex-1"></div>
             </div>
 
-            <div className="frosted-nav h-20 relative z-40">
+            <div className="frosted-nav h-20 md:h-24 relative z-40 flex items-center">
                 <div className="container mx-auto h-full px-6 flex items-center justify-between">
                 
                 {/* Header Icons (Left Side - LTR Layout for icons) */}

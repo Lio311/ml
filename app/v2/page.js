@@ -113,10 +113,9 @@ export default async function HomeV2() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen bg-white">
-
-      {/* Hero Section - Restored to match original exactly */}
-      <section className="relative h-[40vh] md:h-[50vh] w-full m-0 p-0 overflow-hidden bg-white block">
+    <div className="flex flex-col min-h-screen">
+      {/* Hero Section - Increased height and moved to top */}
+      <section className="relative h-[70vh] md:h-[85vh] w-full m-0 p-0 overflow-hidden bg-black block">
         <div className="absolute inset-0 w-full h-full overflow-hidden bg-gray-100 animate-pulse">
           <video
             autoPlay

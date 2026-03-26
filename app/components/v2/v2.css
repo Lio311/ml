@@ -23,10 +23,15 @@
 }
 
 .frosted-nav {
-    background: rgba(255, 255, 255, 0.6);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(25px) saturate(150%);
+    -webkit-backdrop-filter: blur(25px) saturate(150%);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
+}
+
+.frosted-nav Link, .frosted-nav button, .frosted-nav span {
+    text-shadow: 0 0 10px rgba(255, 255, 255, 0.3);
 }
 
 /* Antigravity Effects */
