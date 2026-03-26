@@ -150,6 +150,22 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'dulcie.world',
       },
+      {
+        protocol: 'https',
+        hostname: 'www.dulcie.world',
+      },
+      {
+        protocol: 'https',
+        hostname: 'www.fimgs.net',
+      },
+      {
+        protocol: 'https',
+        hostname: 'www.pimgs.net',
+      },
+      {
+        protocol: 'https',
+        hostname: 'www.fragrantica.com',
+      },
     ],
     formats: ['image/avif', 'image/webp'],
   },
