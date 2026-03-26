@@ -177,11 +177,11 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
                             />
                         </div>
 
-                        <div className="relative z-10 text-center text-black bg-white/80 p-6 md:px-12 rounded-xl backdrop-blur-sm shadow-sm max-w-4xl mx-4">
+                        <div className="relative z-10 text-center text-black bg-white/80 p-6 md:px-12 rounded-xl backdrop-blur-sm shadow-sm max-w-5xl mx-4">
                             <h2 className="text-xs tracking-[0.2em] uppercase mb-2 font-bold opacity-90">
                                 Discover Your Signature Scent
                             </h2>
-                            <h1 className={`${dancingScript.className} text-4xl md:text-[3.25rem] font-bold mb-3 leading-tight md:whitespace-nowrap`}>
+                            <h1 className={`${dancingScript.className} text-3xl md:text-5xl lg:text-[3.75rem] font-bold mb-3 leading-tight md:whitespace-nowrap`}>
                                 Niche & Boutique Sample Collections
                             </h1>
                             <p className="text-sm md:text-base mb-6 font-light leading-relaxed text-gray-800">
