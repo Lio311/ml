@@ -44,16 +44,16 @@ export default function MobileNavV2({ isOpen, onClose, navLinks = [], isAdmin })
                         style={{ background: 'rgba(255, 255, 255, 0.1)', backdropFilter: 'blur(40px)', borderLeft: dir === 'rtl' ? '1px solid rgba(255,255,255,0.1)' : 'none', borderRight: dir === 'ltr' ? '1px solid rgba(255,255,255,0.1)' : 'none' }}
                     >
                         {/* Header Area */}
-                        <div className="flex items-center justify-between p-6 border-b border-white/10">
-                            <span className="text-white text-xs font-bold tracking-[0.2em] uppercase">תפריט</span>
-                            <button onClick={onClose} className="p-2 text-white/70 hover:text-white transition-colors">
-                                <X size={24} />
-                            </button>
-                        </div>
-
-                        {/* Language Switcher */}
-                        <div className="flex justify-end px-6 pt-4">
-                            <LanguageSwitcher variant="mobile" />
+                        <div className="grid grid-cols-3 items-center p-6 border-b border-white/10">
+                            <span className="text-white text-[10px] font-bold tracking-[0.2em] uppercase whitespace-nowrap">תפריט</span>
+                            <div className="flex justify-center">
+                                <LanguageSwitcher variant="mobile" light={true} />
+                            </div>
+                            <div className="flex justify-end">
+                                <button onClick={onClose} className="p-2 -me-2 text-white/70 hover:text-white transition-colors">
+                                    <X size={24} />
+                                </button>
+                            </div>
                         </div>
 
                         {/* User + My Catalogs */}
@@ -107,9 +107,9 @@ export default function MobileNavV2({ isOpen, onClose, navLinks = [], isAdmin })
                                     <Link 
                                         href="/admin" 
                                         onClick={onClose}
-                                        className="flex items-center justify-center gap-3 text-white/60 hover:text-white transition-colors border border-white/10 py-3 rounded-xl text-sm font-bold tracking-widest uppercase"
+                                        className="flex items-center justify-center gap-3 bg-white/10 text-white hover:bg-white/20 transition-all border border-white/20 py-4 rounded-xl text-sm font-bold tracking-[0.2em] uppercase shadow-[0_0_20px_rgba(255,255,255,0.05)]"
                                     >
-                                        <Settings size={18} />
+                                        <Settings size={20} className="text-yellow-400" />
                                         <span>{t('common.admin_management')}</span>
                                     </Link>
                                 </motion.div>
