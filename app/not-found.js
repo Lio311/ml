@@ -8,18 +8,18 @@ export default function NotFound() {
     const { t } = useLanguage();
 
     return (
-        <div className="relative min-h-[90vh] flex items-center justify-center overflow-hidden font-assistant">
+        <div className="relative min-h-screen flex items-center justify-center overflow-hidden font-assistant bg-black">
             {/* Immersive Background */}
             <div className="absolute inset-0 z-0">
                 <Image 
                     src="/404-bg.png" 
                     alt="Luxury Perfume" 
                     fill 
-                    className="object-cover opacity-80 scale-105 animate-pulse-slow"
+                    className="object-cover opacity-90"
                     priority
                     quality={100}
                 />
-                <div className="absolute inset-0 bg-gradient-to-b from-black/50 via-transparent to-black/70" />
+                <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-black" />
             </div>
 
             {/* Glassmorphic Content Card */}
@@ -69,16 +69,6 @@ export default function NotFound() {
                     </div>
                 </div>
             </div>
-
-            <style jsx global>{`
-                @keyframes pulse-slow {
-                    0%, 100% { transform: scale(1); opacity: 0.8; }
-                    50% { transform: scale(1.05); opacity: 0.9; }
-                }
-                .animate-pulse-slow {
-                    animation: pulse-slow 15s ease-in-out infinite;
-                }
-            `}</style>
         </div>
     );
 }
