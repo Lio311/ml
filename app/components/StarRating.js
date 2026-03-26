@@ -61,7 +61,7 @@ export default function StarRating({ productId, readOnly = false }) {
     };
 
     return (
-        <div className="flex flex-col w-full items-start" dir={dir}>
+        <div className="flex flex-col w-full items-center justify-center" dir={dir}>
             <div className="flex items-center">
                 {[...Array(5)].map((_, index) => {
                     const ratingValue = index + 1;
@@ -89,7 +89,7 @@ export default function StarRating({ productId, readOnly = false }) {
                     );
                 })}
             </div>
-            <div className={`text-xs text-gray-500 mt-1 ${dir === 'rtl' ? 'text-right' : 'text-left'}`} dir={dir}>
+            <div className="text-xs text-gray-500 mt-1 text-center font-medium" dir={dir}>
                 {average > 0 ? t('common.ratings_count').replace('{average}', average).replace('{count}', count) : t('common.no_ratings')}
             </div>
         </div>

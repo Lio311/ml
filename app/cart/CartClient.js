@@ -309,7 +309,7 @@ export default function CartClient() {
                             {isMainVendor && luckyPrize?.type === 'discount' && !lotteryMode?.active && (
                                 <div className="flex justify-between text-green-600 font-bold">
                                     <span>{t('cart.discount', { percent: luckyPrize.value * 100 })}</span>
-                                    <span>{t('cart.price_format', { price: -Math.round(subtotal * luckyPrize.value) })}</span>
+                                    <span dir="ltr">₪ -{Math.round(subtotal * luckyPrize.value)}</span>
                                 </div>
                             )}
 
