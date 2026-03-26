@@ -99,7 +99,7 @@ export default function CatalogProductActions({ item, slug }) {
                                         'bg-black text-white hover:bg-gray-800 group-hover:scale-110'
                                     }`}
                                 >
-                                    {inCart || isAdded ? <Check size={18} strokeWidth={3} /> : wouldExceed ? <X size={18} strokeWidth={3} /> : <Plus size={16} strokeWidth={3} />}
+                                    {inCart || isAdded ? <Check size={14} strokeWidth={2.5} /> : wouldExceed ? <X size={14} strokeWidth={2.5} /> : <Plus size={14} strokeWidth={2.5} />}
                                 </div>
                             </div>
                         </div>

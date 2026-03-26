@@ -54,7 +54,7 @@ export default function ProductActionsClient({ product }) {
                 <div className="flex items-center gap-4">
                     <span>{product.price_2ml} ₪</span>
                     <div className={`w-8 h-8 rounded-full grid place-items-center transition ${addedId === 2 ? 'bg-green-500 text-white' : 'bg-black text-white hover:bg-gray-800'}`}>
-                        {addedId === 2 ? <Check size={18} strokeWidth={3} /> : <Plus size={16} strokeWidth={3} />}
+                        {addedId === 2 ? <Check size={14} strokeWidth={2.5} /> : <Plus size={14} strokeWidth={2.5} />}
                     </div>
                 </div>
             </div>
@@ -64,7 +64,7 @@ export default function ProductActionsClient({ product }) {
                 <div className="flex items-center gap-4">
                     <span>{product.price_5ml} ₪</span>
                     <div className={`w-8 h-8 rounded-full grid place-items-center transition ${addedId === 5 ? 'bg-green-500 text-white' : 'bg-black text-white hover:bg-gray-800'}`}>
-                        {addedId === 5 ? <Check size={18} strokeWidth={3} /> : <Plus size={16} strokeWidth={3} />}
+                        {addedId === 5 ? <Check size={14} strokeWidth={2.5} /> : <Plus size={14} strokeWidth={2.5} />}
                     </div>
                 </div>
             </div>
@@ -74,7 +74,7 @@ export default function ProductActionsClient({ product }) {
                 <div className="flex items-center gap-4">
                     <span>{product.price_10ml} ₪</span>
                     <div className={`w-8 h-8 rounded-full grid place-items-center transition ${addedId === 10 ? 'bg-green-500 text-white' : 'bg-black text-white hover:bg-gray-800'}`}>
-                        {addedId === 10 ? <Check size={18} strokeWidth={3} /> : <Plus size={16} strokeWidth={3} />}
+                        {addedId === 10 ? <Check size={14} strokeWidth={2.5} /> : <Plus size={14} strokeWidth={2.5} />}
                     </div>
                 </div>
             </div>
