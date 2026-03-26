@@ -19,6 +19,7 @@ import LanguageSwitcher from './header/LanguageSwitcher';
 import './v2/v2.css';
 
 export default function Header({ brands = [] }) {
+    const [isScrolled, setIsScrolled] = useState(false);
     const [activeMenu, setActiveMenu] = useState(null); 
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const { t, dir } = useLanguage();
@@ -39,13 +40,26 @@ export default function Header({ brands = [] }) {
         { label: t('common.contact'), href: '/contact' },
     ];
 
+    const pathname = usePathname();
+    const isHome = pathname === '/';
+
+    useEffect(() => {
+        const handleScroll = () => {
+            setIsScrolled(window.scrollY > 20);
+        };
+        window.addEventListener('scroll', handleScroll);
+        return () => window.removeEventListener('scroll', handleScroll);
+    }, []);
+
     return (
         <header 
             className="fixed top-0 !left-0 !right-0 !w-screen z-50 transition-all duration-500"
             onMouseLeave={() => setActiveMenu(null)}
             dir={dir}
         >
-            <div className="frosted-nav !w-screen h-20 md:h-28 relative z-40 flex items-center overflow-hidden">
+            <div className={`frosted-nav !w-screen h-20 md:h-28 relative z-40 flex items-center overflow-hidden transition-all duration-500 ${
+                !isScrolled && isHome ? 'bg-white !backdrop-blur-none shadow-none' : ''
+            }`}>
                 <div className="w-full max-w-[1800px] mx-auto px-4 md:px-12 h-full flex items-center justify-between">
                     
                     {/* Desktop Layout (XL and up) */}
