@@ -6,10 +6,13 @@ import Image from 'next/image';
 import MegaMenuBrands from './MegaMenuBrands';
 import MegaMenuCatalog from './MegaMenuCatalog';
 import { usePathname } from 'next/navigation';
+import LiveVisitorCounter from '../LiveVisitorCounter';
+import { useLanguage } from '../../context/LanguageContext';
+import './v2.css';
 
 export default function HeaderV2({ brands = [] }) {
-    const [activeMenu, setActiveMenu] = useState(null); // 'brands' or 'catalog'
-    const pathname = usePathname();
+    const [activeMenu, setActiveMenu] = useState(null); 
+    const { t } = useLanguage();
 
     const navLinks = [
         { label: 'דף הבית', href: '/v2', active: true },
@@ -22,10 +25,20 @@ export default function HeaderV2({ brands = [] }) {
 
     return (
         <header 
-            className="fixed top-0 left-0 w-full z-50 frosted-nav h-20 transition-all duration-500"
+            className="sticky top-0 w-full z-50 transition-all duration-500"
             onMouseLeave={() => setActiveMenu(null)}
         >
-            <div className="container mx-auto h-full px-6 flex items-center justify-between">
+            {/* Top Bar - Black Promo Strip (Restored from Original) */}
+            <div className="hidden md:flex justify-between items-center bg-black text-white text-[10px] md:text-xs py-1 px-4 tracking-widest uppercase relative z-50">
+                <div className="flex-1 flex justify-start gap-4 items-center">
+                    <LiveVisitorCounter />
+                </div>
+                <div className="text-center font-bold">{t('common.free_shipping_strip')}</div>
+                <div className="flex-1"></div>
+            </div>
+
+            <div className="frosted-nav h-20 relative z-40">
+                <div className="container mx-auto h-full px-6 flex items-center justify-between">
                 
                 {/* Header Icons (Left Side - LTR Layout for icons) */}
                 <div className="flex items-center gap-6 order-last md:order-first">
@@ -39,17 +52,17 @@ export default function HeaderV2({ brands = [] }) {
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
                         </svg>
                     </button>
-                    <button className="icon-glow p-2 rounded-lg text-black/80 hover:text-black transition-all relative">
+                    <Link href="/catalog?flavor=checkout" className="icon-glow p-2 rounded-lg text-black/80 hover:text-black transition-all relative">
                         <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 11V7a4 4 0 118 0m-4 15V11m-4 11H8m12 0a2 2 0 100-4 2 2 0 000 4z" />
                         </svg>
-                    </button>
+                    </Link>
                     <div className="h-4 w-[1px] bg-black/10 mx-2"></div>
                     <button className="text-[10px] font-bold tracking-widest hover:opacity-100 opacity-60 transition-opacity">EN / עב</button>
                 </div>
 
                 {/* Navigation Links */}
-                <nav className="hidden lg:flex items-center gap-8 dir-rtl">
+                <nav className="hidden lg:flex items-center gap-8 dir-rtl text-black">
                     {navLinks.map((link) => (
                         <div 
                             key={link.label}
@@ -92,6 +105,8 @@ export default function HeaderV2({ brands = [] }) {
                 isOpen={activeMenu === 'catalog'} 
                 onClose={() => setActiveMenu(null)} 
             />
+
+            </div>
 
             <style jsx>{`
                 .icon-glow:hover {
