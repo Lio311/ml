@@ -30,11 +30,12 @@ export async function POST(req) {
             ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value, updated_at = CURRENT_TIMESTAMP
         `, [JSON.stringify([
             { id: 1, label: "מותגים", path: "/brands", order: 1, isDropdown: true },
-            { id: 2, label: "קטגוריות", path: "/categories", order: 2 },
-            { id: 3, label: "הגרלת בשמים", path: "/lottery", order: 3, isRed: true },
-            { id: 4, label: "התאמת מארזים", path: "/matching", order: 4 },
-            { id: 5, label: "אודות", path: "/about", order: 5 },
-            { id: 6, label: "צור קשר", path: "/contact", order: 6 }
+            { id: 2, label: "קטלוג", path: "/catalog", order: 2 },
+            { id: 3, label: "קטגוריות", path: "/categories", order: 3 },
+            { id: 4, label: "הגרלת בשמים", path: "/lottery", order: 4, isRed: true },
+            { id: 5, label: "התאמת מארזים", path: "/matching", order: 5 },
+            { id: 6, label: "אודות", path: "/about", order: 6 },
+            { id: 7, label: "צור קשר", path: "/contact", order: 7 }
         ])]);
 
         // Create index

@@ -90,11 +90,12 @@ export const getMenuItems = unstable_cache(
         // Fallback Menu
         return [
             { id: 'brands', label: 'מותגים', path: '/brands', order: 1, visible: true },
-            { id: 'categories', label: 'קטגוריות', path: '/categories', order: 2, visible: true },
-            { id: 'lottery', label: 'הגרלת בשמים', path: '/lottery', order: 3, isRed: true, visible: true },
-            { id: 'matching', label: 'התאמת מארזים', path: '/matching', order: 4, visible: true },
-            { id: 'about', label: 'אודות', path: '/about', order: 5, visible: true },
-            { id: 'contact', label: 'צור קשר', path: '/contact', order: 6, visible: true },
+            { id: 'catalog', label: 'קטלוג', path: '/catalog', order: 2, visible: true },
+            { id: 'categories', label: 'קטגוריות', path: '/categories', order: 3, visible: true },
+            { id: 'lottery', label: 'הגרלת בשמים', path: '/lottery', order: 4, isRed: true, visible: true },
+            { id: 'matching', label: 'התאמת מארזים', path: '/matching', order: 5, visible: true },
+            { id: 'about', label: 'אודות', path: '/about', order: 6, visible: true },
+            { id: 'contact', label: 'צור קשר', path: '/contact', order: 7, visible: true },
         ];
     },
     ['global-menu'],

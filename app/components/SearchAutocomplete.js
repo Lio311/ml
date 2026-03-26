@@ -107,16 +107,20 @@ export default function SearchAutocomplete({ fullWidth = false, onSelect }) {
                 <div className={`absolute top-full w-80 bg-white shadow-xl border border-gray-100 rounded-lg mt-2 overflow-hidden z-50 ${contextDir === 'rtl' ? 'right-0' : 'left-0'}`}>
                     <div className="p-2 max-h-[70vh] overflow-y-auto divide-y divide-gray-50">
                         {results.map((product) => (
-                            <Link
-                                key={product.id}
-                                href={`/product/${product.slug || product.id}`}
-                                onClick={() => {
-                                    setIsOpen(false);
-                                    if (onSelect) onSelect();
-                                }}
-                                className="flex items-center gap-4 p-3 hover:bg-gray-50 transition group/item"
-                                dir={direction}
-                            >
+                                <Link
+                                    key={product.id}
+                                    href={product.slug ? `/product/${product.slug}` : (product.id ? `/product/${product.id}` : '#')}
+                                    onClick={(e) => {
+                                        if (!product.slug && !product.id) {
+                                            e.preventDefault();
+                                            return;
+                                        }
+                                        setIsOpen(false);
+                                        if (onSelect) onSelect();
+                                    }}
+                                    className={`flex items-center gap-4 p-3 hover:bg-gray-50 transition group/item ${(!product.slug && !product.id) ? 'pointer-events-none opacity-50' : ''}`}
+                                    dir={direction}
+                                >
                                 <div className="relative w-12 h-12 flex-shrink-0 bg-gray-50 rounded-md overflow-hidden">
                                     {product.image ? (
                                         <Image
