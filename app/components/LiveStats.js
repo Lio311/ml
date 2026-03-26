@@ -42,7 +42,7 @@ export default function LiveStats({ stats }) {
                         <span className="text-3xl md:text-4xl font-bold font-serif">
                             <Counter end={stats.brands} />
                         </span>
-                        <span className="text-xs md:text-sm uppercase tracking-widest text-gray-400 mt-1">
+                        <span className="text-xs md:text-sm uppercase tracking-widest text-gray-400 mt-1 whitespace-nowrap">
                             {t('common.brands')}
                         </span>
                     </div>
@@ -50,7 +50,7 @@ export default function LiveStats({ stats }) {
                         <span className="text-3xl md:text-4xl font-bold font-serif">
                             <Counter end={stats.products} />
                         </span>
-                        <span className="text-xs md:text-sm uppercase tracking-widest text-gray-400 mt-1">
+                        <span className="text-xs md:text-sm uppercase tracking-widest text-gray-400 mt-1 whitespace-nowrap">
                             {t('common.products_on_site') || t('common.full_catalog')}
                         </span>
                     </div>
@@ -58,7 +58,7 @@ export default function LiveStats({ stats }) {
                         <span className="text-3xl md:text-4xl font-bold font-serif">
                             <Counter end={stats.samples} prefix="+" />
                         </span>
-                        <span className="text-xs md:text-sm uppercase tracking-widest text-gray-400 mt-1">
+                        <span className="text-xs md:text-sm uppercase tracking-widest text-gray-400 mt-1 whitespace-nowrap">
                             {t('common.samples_sold')}
                         </span>
                     </div>
