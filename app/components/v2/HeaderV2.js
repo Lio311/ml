@@ -108,11 +108,11 @@ export default function HeaderV2({ brands = [] }) {
 
                         {/* Left Side: Actions (Icons Above, Language Below) */}
                         <div className="flex-1 flex flex-col items-end gap-3 text-black">
-                            <div className="flex items-center gap-8">
-                                <div className="max-w-[180px] v2-user-actions">
+                            <div className="flex items-center gap-12">
+                                <div className="max-w-[180px] v2-user-actions pt-0.5">
                                     <SearchAutocomplete />
                                 </div>
-                                <div className="flex flex-col items-center gap-2">
+                                <div className="flex flex-col items-center gap-5">
                                     <div className="flex items-center gap-6 v2-desktop-icons">
                                         <DesktopIcons cartCount={cartCount} wishlistCount={wishlistCount} />
                                     </div>
