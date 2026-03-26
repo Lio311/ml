@@ -12,15 +12,7 @@ const nextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'fimgs.net',
-      },
-      {
-        protocol: 'https',
         hostname: '**.pimgs.net',
-      },
-      {
-        protocol: 'https',
-        hostname: 'pimgs.net',
       },
       {
         protocol: 'https',
@@ -28,15 +20,7 @@ const nextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'www.fragrantica.com',
-      },
-      {
-        protocol: 'https',
         hostname: '**.cp-parfums.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'www.cp-parfums.com',
       },
       {
         protocol: 'https',
@@ -84,14 +68,6 @@ const nextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'lessenteurs.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'seeklogo.com',
-      },
-      {
-        protocol: 'https',
         hostname: '**.seeklogo.com',
       },
       {
@@ -100,15 +76,7 @@ const nextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'sekega.com',
-      },
-      {
-        protocol: 'https',
         hostname: '**.lessenteurs.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'www.lessenteurs.com',
       },
       {
         protocol: 'https',
@@ -124,19 +92,11 @@ const nextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'i.ebayimg.com',
-      },
-      {
-        protocol: 'https',
         hostname: '**.ebayimg.com',
       },
       {
         protocol: 'https',
         hostname: 'images.squarespace-cdn.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'logos-world.net',
       },
       {
         protocol: 'https',
@@ -188,31 +148,7 @@ const nextConfig = {
       },
       {
         protocol: 'https',
-        hostname: 'fimgs.net',
-      },
-      {
-        protocol: 'https',
-        hostname: '**.fimgs.net',
-      },
-      {
-        protocol: 'https',
-        hostname: 'pimgs.net',
-      },
-      {
-        protocol: 'https',
-        hostname: '**.pimgs.net',
-      },
-      {
-        protocol: 'https',
-        hostname: 'www.dulcie.world',
-      },
-      {
-        protocol: 'https',
         hostname: '**.dulcie.world',
-      },
-      {
-        protocol: 'https',
-        hostname: 'dulcie.world',
       },
     ],
     formats: ['image/avif', 'image/webp'],
