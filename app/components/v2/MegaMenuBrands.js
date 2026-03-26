@@ -7,7 +7,7 @@ import { useLanguage } from '../../context/LanguageContext';
 
 export default function MegaMenuBrands({ brands = [], isOpen, onClose }) {
     const [hoveredLetter, setHoveredLetter] = useState(null);
-    const { dir } = useLanguage();
+    const { dir, t } = useLanguage();
 
     // Group brands by first letter
     const brandsByLetter = useMemo(() => {
@@ -60,7 +60,7 @@ export default function MegaMenuBrands({ brands = [], isOpen, onClose }) {
                 <div className="w-full min-h-[180px] transition-all duration-500 relative">
                     {!hoveredLetter ? (
                         <div className="flex flex-col items-center justify-center text-white space-y-3 py-8">
-                            <span className="text-2xl md:text-3xl font-serif tracking-[0.2em] uppercase opacity-90 drop-shadow-lg">בחרו אות</span>
+                            <span className="text-2xl md:text-3xl font-serif tracking-[0.2em] uppercase opacity-90 drop-shadow-lg">{t('common.choose_letter')}</span>
                             <div className="w-12 h-[1px] bg-white/30"></div>
                             <span className="text-[9px] uppercase tracking-[0.3em] opacity-60">EXPLORE OUR CURATED COLLECTIONS</span>
                         </div>
@@ -101,7 +101,7 @@ export default function MegaMenuBrands({ brands = [], isOpen, onClose }) {
                         href="/brands" 
                         className="text-white/50 hover:text-white transition-all inline-flex items-center gap-2 group text-[9px] uppercase tracking-[0.3em]"
                     >
-                        <span>כל המותגים</span>
+                        <span>{t('common.all_brands')}</span>
                         <span className="group-hover:translate-x-1 group-hover:-translate-x-1 transition-transform duration-500 inline-block">
                             {dir === 'rtl' ? '←' : '→'}
                         </span>

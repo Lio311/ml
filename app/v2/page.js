@@ -113,7 +113,7 @@ export default async function HomeV2() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen overflow-x-hidden">
       {/* Hero Section - Increased height and moved to top */}
       <section className="relative h-[70vh] w-full m-0 p-0 overflow-hidden bg-black block">
         <div className="absolute inset-0 w-full h-full overflow-hidden bg-gray-100">
@@ -149,7 +149,7 @@ export default async function HomeV2() {
         </div>
       </section>
 
-      <div className="relative z-30">
+      <div className="relative z-30 -mt-20 md:mt-0">
         <LiveStats stats={stats} />
       </div>
       <HomeClient newArrivals={newArrivals} topCatalogs={topCatalogs} />

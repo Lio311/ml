@@ -31,12 +31,12 @@ export default function HeaderV2({ brands = [] }) {
         user?.publicMetadata?.isAdmin === true;
 
     const navLinks = [
-        { label: 'דף הבית', href: '/v2', active: true },
-        { label: 'מותגים', href: '/brands', type: 'brands' },
-        { label: 'קטלוג', href: '/catalog', type: 'catalog' },
-        { label: 'התאמת בושם', href: '/matching' },
-        { label: 'בקשת בשמים', href: '/requests' },
-        { label: 'צור קשר', href: '/contact' },
+        { label: t('common.home'), href: '/v2', active: true },
+        { label: t('common.brands'), href: '/brands', type: 'brands' },
+        { label: t('common.catalog'), href: '/catalog', type: 'catalog' },
+        { label: t('common.matching'), href: '/matching' },
+        { label: t('common.requests'), href: '/requests' },
+        { label: t('common.contact'), href: '/contact' },
     ];
 
     return (

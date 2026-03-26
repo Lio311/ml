@@ -45,7 +45,7 @@ export default function MobileNavV2({ isOpen, onClose, navLinks = [], isAdmin })
                     >
                         {/* Header Area */}
                         <div className="grid grid-cols-3 items-center p-6 border-b border-white/10">
-                            <span className="text-white text-[10px] font-bold tracking-[0.2em] uppercase whitespace-nowrap">תפריט</span>
+                            <span className="text-white text-[10px] font-bold tracking-[0.2em] uppercase whitespace-nowrap">{t('common.close_menu')}</span>
                             <div className="flex justify-center">
                                 <LanguageSwitcher variant="mobile" light={true} />
                             </div>
@@ -106,7 +106,7 @@ export default function MobileNavV2({ isOpen, onClose, navLinks = [], isAdmin })
                                     <Link 
                                         href="/admin" 
                                         onClick={onClose}
-                                        className="flex items-center justify-center gap-3 bg-yellow-400/10 text-yellow-400 hover:bg-yellow-400/20 transition-all border border-yellow-400/20 py-4 rounded-xl text-sm font-black tracking-[0.2em] uppercase shadow-[0_0_20px_rgba(250,204,21,0.05)]"
+                                        className="flex items-center justify-center gap-3 bg-white/10 text-white hover:bg-white/20 transition-all border border-white/20 py-4 rounded-xl text-sm font-black tracking-[0.2em] uppercase shadow-[0_0_20px_rgba(255,255,255,0.05)]"
                                     >
                                         <Settings size={20} />
                                         <span>{t('common.admin_management')}</span>

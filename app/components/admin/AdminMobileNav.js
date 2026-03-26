@@ -77,13 +77,13 @@ export default function AdminMobileNav({ role = 'customer' }) {
         <div className="md:hidden">
             {/* Top Bar */}
             <div className="bg-black text-white p-4 flex justify-between items-center shadow-lg sticky top-0 z-50">
-                <span className="font-bold text-lg tracking-tight">ml_tlv <span className="text-blue-500 font-medium">Admin</span></span>
                 <button 
                     onClick={() => setIsOpen(!isOpen)}
                     className="p-2 hover:bg-gray-800 rounded-lg transition-colors"
                 >
                     {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
                 </button>
+                <span className="font-bold text-lg tracking-tight">ml_tlv <span className="text-blue-500 font-medium">Admin</span></span>
             </div>
 
             {/* Menu Overlay */}

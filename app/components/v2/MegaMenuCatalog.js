@@ -1,14 +1,16 @@
 "use client";
 
-import Link from 'next/link';
+import { useLanguage } from '../../context/LanguageContext';
 
 export default function MegaMenuCatalog({ isOpen, onClose }) {
+    const { t } = useLanguage();
+
     if (!isOpen) return null;
 
     const categories = [
         { 
             id: 'summer', 
-            label: 'קיץ', 
+            label: t('common.summer'), 
             subtitle: 'Fresh, Citrus, Clean', 
             href: '/catalog?category=קיץ',
             icon: (
@@ -19,7 +21,7 @@ export default function MegaMenuCatalog({ isOpen, onClose }) {
         },
         { 
             id: 'winter', 
-            label: 'חורף', 
+            label: t('common.winter'), 
             subtitle: 'Spicy, Oriental, Woody', 
             href: '/catalog?category=חורף',
             icon: (
@@ -30,7 +32,7 @@ export default function MegaMenuCatalog({ isOpen, onClose }) {
         },
         { 
             id: 'men', 
-            label: 'גברים', 
+            label: t('common.men'), 
             href: '/catalog?gender=גברים',
             icon: (
                 <svg className="w-16 h-16 text-gray-300 opacity-80" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -41,7 +43,7 @@ export default function MegaMenuCatalog({ isOpen, onClose }) {
         },
         { 
             id: 'women', 
-            label: 'נשים', 
+            label: t('common.women'), 
             href: '/catalog?gender=נשים',
             icon: (
                 <svg className="w-16 h-16 text-pink-300 opacity-80" fill="none" viewBox="0 0 24 24" stroke="currentColor">
