@@ -63,8 +63,8 @@ export default function NotFound() {
                 <div className="pt-8 border-t border-white/10">
                     <p className="text-sm uppercase tracking-widest opacity-50 mb-6">{t('not_found.discover_collections')}</p>
                     <div className="flex flex-wrap justify-center gap-3">
-                        <Link href="/catalog?category=niche" className="px-5 py-2 bg-white/5 border border-white/10 rounded-full text-sm hover:bg-white/10 transition-colors uppercase">{t('not_found.niche')}</Link>
-                        <Link href="/catalog?category=boutique" className="px-5 py-2 bg-white/5 border border-white/10 rounded-full text-sm hover:bg-white/10 transition-colors uppercase">{t('not_found.boutique')}</Link>
+                        <Link href="/catalog?category=נישה" className="px-5 py-2 bg-white/5 border border-white/10 rounded-full text-sm hover:bg-white/10 transition-colors uppercase">{t('not_found.niche')}</Link>
+                        <Link href="/catalog?category=בוטיק" className="px-5 py-2 bg-white/5 border border-white/10 rounded-full text-sm hover:bg-white/10 transition-colors uppercase">{t('not_found.boutique')}</Link>
                         <Link href="/brands" className="px-5 py-2 bg-white/5 border border-white/10 rounded-full text-sm hover:bg-white/10 transition-colors uppercase">{t('not_found.all_brands')}</Link>
                     </div>
                 </div>
