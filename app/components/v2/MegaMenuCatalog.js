@@ -1,6 +1,7 @@
 "use client";
 
 import { useLanguage } from '../../context/LanguageContext';
+import Link from 'next/link';
 
 export default function MegaMenuCatalog({ isOpen, onClose }) {
     const { t } = useLanguage();
