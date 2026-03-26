@@ -14,7 +14,8 @@ export async function POST(req) {
 
     try {
         const { excludedIds } = await req.json();
-        const excluded = Array.isArray(excludedIds) ? excludedIds : [];
+        const rawExcluded = Array.isArray(excludedIds) ? excludedIds : [];
+        const excluded = rawExcluded.filter(id => id && !isNaN(parseInt(id, 10)) && String(id).match(/^\d+$/)).map(id => parseInt(id, 10));
 
         let recommendations = [];
         const client = await pool.connect();
