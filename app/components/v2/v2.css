@@ -17,7 +17,23 @@
     font-family: 'Assistant', var(--font-assistant), sans-serif !important;
 }
 
-/* Glassmorphism & Antigravity Styles for V2 */
+/* Hide scrollbar for Chrome, Safari and Opera */
+.no-scrollbar::-webkit-scrollbar {
+    display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+.no-scrollbar {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+.glass-dark {
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
 
 .glass-container {
     --glass-bg: rgba(255, 255, 255, 0.4);
