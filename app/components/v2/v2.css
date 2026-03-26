@@ -1,3 +1,18 @@
+/* Narkiss Block Font */
+@font-face {
+    font-family: 'NarkissBlock';
+    src: url('/fonts/Narkiss Block Regular.woff2') format('woff2'),
+         url('/fonts/Narkiss Block Regular.woff') format('woff'),
+         url('/fonts/Narkiss Block Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+.v2-page, .v2-page * {
+    font-family: 'NarkissBlock', sans-serif !important;
+}
+
 /* Glassmorphism & Antigravity Styles for V2 */
 
 .glass-container {
