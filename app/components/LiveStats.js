@@ -35,8 +35,8 @@ function Counter({ end, duration = 2000, prefix = "" }) {
 export default function LiveStats({ stats }) {
     const { t } = useLanguage();
     return (
-        <section className="bg-black text-white py-3 md:py-1.5 border-t border-gray-800 relative z-20">
-            <div className="container mx-auto px-4">
+        <section className="relative z-20 md:py-1.5 border-gray-800" style={{ background: 'linear-gradient(to bottom, transparent 50%, black 50%)' }}>
+            <div className="container mx-auto px-4 -mt-4 md:mt-0">
                 <div className="grid grid-cols-3 gap-1 text-center divide-x divide-gray-800 rtl:divide-x-reverse">
                     <div className="flex flex-col items-center justify-center gap-0.5">
                         <span className="text-3xl md:text-4xl font-bold font-serif leading-none">
