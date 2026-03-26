@@ -17,6 +17,7 @@
         "catalogs_info_meta_title": "פלטפורמת קטלוגים אישיים | ml_tlv",
         "cart_locked_lottery": "העגלה נעולה בזמן שהגרלת הבשמים פעילה!",
         "stock_limit_ml_reached": "לא ניתן להוסיף - המלאי מוגבל ל-{limit} מ\"ל סה\"כ!",
+        "stock_limit_reached": "המלאי למוצר זה הגיע למקסימום המותר במחסן.",
         "catalogs_info_meta_desc": "צרו קטלוג בשמים אישי משלכם ב-60 שניות. ניהול מוצרים, מלאי והזמנות במקום אחד.",
         "shop": "חנות",
         "free_shipping_strip": "משלוח בדואר לכל הארץ ב-30 ₪",
