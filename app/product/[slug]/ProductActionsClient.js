@@ -3,6 +3,7 @@ import { useCart } from "../../context/CartContext";
 import { useUser } from "@clerk/nextjs";
 import { useState, useEffect } from "react";
 import { useLanguage } from "../../context/LanguageContext";
+import { Check, Plus } from "lucide-react";
 
 import toast from 'react-hot-toast';
 
@@ -52,9 +53,9 @@ export default function ProductActionsClient({ product }) {
                 <span className="font-bold">2 {t('common.ml_unit')}</span>
                 <div className="flex items-center gap-4">
                     <span>{product.price_2ml} ₪</span>
-                    <button className={`w-8 h-8 rounded-full flex items-center justify-center transition ${addedId === 2 ? 'bg-green-500 text-white' : 'bg-black text-white hover:bg-gray-800'}`}>
-                        {addedId === 2 ? '✓' : '+'}
-                    </button>
+                    <div className={`w-8 h-8 rounded-full grid place-items-center transition ${addedId === 2 ? 'bg-green-500 text-white' : 'bg-black text-white hover:bg-gray-800'}`}>
+                        {addedId === 2 ? <Check size={18} strokeWidth={3} /> : <Plus size={18} strokeWidth={3} />}
+                    </div>
                 </div>
             </div>
 
@@ -62,9 +63,9 @@ export default function ProductActionsClient({ product }) {
                 <span className="font-bold">5 {t('common.ml_unit')}</span>
                 <div className="flex items-center gap-4">
                     <span>{product.price_5ml} ₪</span>
-                    <button className={`w-8 h-8 rounded-full flex items-center justify-center transition ${addedId === 5 ? 'bg-green-500 text-white' : 'bg-black text-white hover:bg-gray-800'}`}>
-                        {addedId === 5 ? '✓' : '+'}
-                    </button>
+                    <div className={`w-8 h-8 rounded-full grid place-items-center transition ${addedId === 5 ? 'bg-green-500 text-white' : 'bg-black text-white hover:bg-gray-800'}`}>
+                        {addedId === 5 ? <Check size={18} strokeWidth={3} /> : <Plus size={18} strokeWidth={3} />}
+                    </div>
                 </div>
             </div>
 
@@ -72,9 +73,9 @@ export default function ProductActionsClient({ product }) {
                 <span className="font-bold">10 {t('common.ml_unit')}</span>
                 <div className="flex items-center gap-4">
                     <span>{product.price_10ml} ₪</span>
-                    <button className={`w-8 h-8 rounded-full flex items-center justify-center transition ${addedId === 10 ? 'bg-green-500 text-white' : 'bg-black text-white hover:bg-gray-800'}`}>
-                        {addedId === 10 ? '✓' : '+'}
-                    </button>
+                    <div className={`w-8 h-8 rounded-full grid place-items-center transition ${addedId === 10 ? 'bg-green-500 text-white' : 'bg-black text-white hover:bg-gray-800'}`}>
+                        {addedId === 10 ? <Check size={18} strokeWidth={3} /> : <Plus size={18} strokeWidth={3} />}
+                    </div>
                 </div>
             </div>
 
