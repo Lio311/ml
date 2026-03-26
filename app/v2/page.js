@@ -115,7 +115,7 @@ export default async function HomeV2() {
   return (
     <div className="flex flex-col min-h-screen">
       {/* Hero Section - Increased height and moved to top */}
-      <section className="relative h-[80vh] w-full m-0 p-0 overflow-hidden bg-black block">
+      <section className="relative h-[70vh] w-full m-0 p-0 overflow-hidden bg-black block">
         <div className="absolute inset-0 w-full h-full overflow-hidden bg-gray-100">
           <video
             autoPlay
@@ -149,7 +149,7 @@ export default async function HomeV2() {
         </div>
       </section>
 
-      <div className="-mt-24 relative z-30">
+      <div className="-mt-20 relative z-30">
         <LiveStats stats={stats} />
       </div>
       <HomeClient newArrivals={newArrivals} topCatalogs={topCatalogs} />
