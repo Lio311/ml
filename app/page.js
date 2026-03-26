@@ -79,14 +79,11 @@ export default async function Home() {
           const ordersRes = await client.query("SELECT items FROM orders WHERE status != 'cancelled'");
           const totalSamplesSold = ordersRes.rows.reduce((acc, row) => {
             const items = row.items || [];
-            // items is array of objects { quantity: 1, ... }
             const orderSum = items.reduce((sum, item) => sum + (parseInt(item.quantity) || 0), 0);
             return acc + orderSum;
           }, 0);
           stats.samples += totalSamplesSold;
-        } catch (e) {
-          // Orders table might not exist or be empty, ignore
-        }
+        } catch (e) {}
       } catch (e) {
         console.error("Stats error", e);
       }
@@ -94,13 +91,7 @@ export default async function Home() {
       // Fetch Top Catalogs
       try {
         const topCatRes = await client.query(`
-            SELECT 
-                c.id, 
-                c.name, 
-                c.slug, 
-                c.description,
-                c.image_url,
-                COUNT(o.id) as order_count
+            SELECT c.id, c.name, c.slug, c.description, c.image_url, COUNT(o.id) as order_count
             FROM user_catalogs c
             LEFT JOIN orders o ON c.id = o.catalog_id
             WHERE c.is_hidden IS FALSE OR c.is_hidden IS NULL
@@ -118,13 +109,10 @@ export default async function Home() {
   }
 
   return (
-    <div className="flex flex-col min-h-screen">
-
-      {/* Hero Section */}
-      <section className="relative h-[40vh] md:h-[50vh] w-full m-0 p-0 overflow-hidden bg-white block">
-        {/* Decorative Background Video - Scaled slightly to prevent black lines */}
-        {/* Video Background Layer */}
-        <div className="absolute inset-0 w-full h-full overflow-hidden bg-gray-100 animate-pulse">
+    <div className="flex flex-col min-h-screen overflow-x-hidden">
+      {/* Hero Section - Tall and pulled to top on mobile */}
+      <section className="relative h-[68vh] md:h-[70vh] w-full m-0 p-0 overflow-hidden bg-white block !-mt-20 md:mt-0">
+        <div className="absolute inset-0 w-full h-full overflow-hidden">
           <video
             autoPlay
             loop
@@ -138,103 +126,69 @@ export default async function Home() {
           </video>
         </div>
 
-        <div className="absolute inset-0 z-10 container mx-auto flex items-center justify-center px-6 md:px-12">
-          {/* Hero Content Box - Scaled down on Mobile */}
-          <div className="max-w-xs md:max-w-lg text-black text-center bg-white/80 p-4 md:p-6 rounded-xl backdrop-blur-sm shadow-sm transform scale-90 md:scale-100 origin-center">
-            <h2 className="text-xs md:text-sm font-sans tracking-[0.2em] uppercase mb-1 opacity-90 animate-fadeIn font-bold">
+        <div className="absolute inset-0 z-10 container mx-auto flex items-start justify-center pt-48 md:pt-52 px-6 md:px-12">
+          {/* Hero Content Box - Adjusted pt to compensate for -mt-20 */}
+          <div className="max-w-xs md:max-w-3xl text-black text-center bg-white/85 p-6 rounded-2xl backdrop-blur-md shadow-2xl transform scale-90 md:scale-100 origin-center border border-white/20 mt-4 md:mt-0">
+            <h2 className="text-xs md:text-sm font-assistant tracking-[0.2em] uppercase mb-1 opacity-90 animate-fadeIn font-bold">
               {t('homepage.discover_sig')}
             </h2>
-            <h1 className={`${dancingScript.className} text-3xl md:text-6xl mb-2 md:mb-4 text-black leading-tight tracking-wide`}>
+            <h1 className={`${dancingScript.className} font-dancing text-3xl md:text-6xl mb-2 md:mb-4 text-black leading-tight tracking-wide`}>
               {t('homepage.hero_title_p1')} {t('homepage.hero_title_p2')}
             </h1>
-            <p className="text-xs md:text-base text-gray-800 mb-3 md:mb-4 font-light leading-relaxed">
+            <p className="text-xs md:text-base text-gray-800 mb-3 md:mb-4 font-assistant leading-relaxed max-w-[280px] md:max-w-none mx-auto opacity-80">
               {t('common.hero_subtitle')} {t('common.hero_tagline')} {t('common.hero_cta')}
             </p>
-            <Link href="/catalog" className="inline-block border text-black border-black px-6 py-2 text-xs md:text-sm font-bold tracking-widest hover:bg-black hover:text-white transition duration-300 uppercase">
+            <Link href="/catalog" className="inline-block border text-black border-black px-8 py-3 text-xs md:text-sm font-bold tracking-widest hover:bg-black hover:text-white transition duration-500 uppercase rounded-full">
               {t('homepage.shop_now')}
             </Link>
           </div>
         </div>
       </section>
 
-      {/* Live Stats Strip */}
-      <LiveStats stats={stats} />
-
-      {/* New Arrivals + Hot Catalogs - Client Component for translations */}
+      <div className="relative z-30 -mt-20 md:mt-0 pb-6 md:pb-0">
+        <LiveStats stats={stats} />
+      </div>
       <HomeClient newArrivals={newArrivals} topCatalogs={topCatalogs} />
-
-      {/* Free Samples Logic Visualization */}
-      {/* Free Samples Logic Visualization (Redesigned) */}
       <BonusesSection />
-
       <BrandCarousel brands={stats.allBrands} />
 
-      {/* Collections Grid - Moved Bottom */}
       <section className="py-12 bg-white border-t">
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-
-            {/* Collection 1: Exclusive */}
             <Link href="/catalog?category=נדיר" className="group relative h-[400px] overflow-hidden rounded-lg">
-              <Image
-                src="/collection-exclusive.png"
-                alt={t('homepage.exclusive_title').replace('\n', ' ')}
-                fill
-                className="object-cover transition-transform duration-700 group-hover:scale-110"
-              />
+              <Image src="/collection-exclusive.png" alt={t('homepage.exclusive_title').replace('\n', ' ')} fill className="object-cover transition-transform duration-700 group-hover:scale-110" />
               <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition-colors" />
               <div className="absolute inset-0 flex flex-col items-center justify-center text-white text-center p-6">
                 <span className="text-sm tracking-[0.2em] uppercase mb-2">{t('homepage.exclusive_tagline')}</span>
                 <h3 className="text-3xl font-serif font-medium mb-4 whitespace-pre-line">{t('homepage.exclusive_title')}</h3>
                 <div className="w-8 h-0.5 bg-white mb-4" />
-                <span className="text-xs font-bold underline decoration-1 underline-offset-4 opacity-0 group-hover:opacity-100 transition-opacity transform translate-y-4 group-hover:translate-y-0 duration-300">
-                  {t('homepage.shop_collection')}
-                </span>
+                <span className="text-xs font-bold underline decoration-1 underline-offset-4 opacity-0 group-hover:opacity-100 transition-opacity transform translate-y-4 group-hover:translate-y-0 duration-300">{t('homepage.shop_collection')}</span>
               </div>
             </Link>
-
-            {/* Collection 2: Summer/Fresh */}
             <Link href="/catalog?category=קיץ" className="group relative h-[400px] overflow-hidden rounded-lg">
-              <Image
-                src="/collection-summer.png"
-                alt={t('homepage.summer_title').replace('\n', ' ')}
-                fill
-                className="object-cover transition-transform duration-700 group-hover:scale-110"
-              />
+              <Image src="/collection-summer.png" alt={t('homepage.summer_title').replace('\n', ' ')} fill className="object-cover transition-transform duration-700 group-hover:scale-110" />
               <div className="absolute inset-0 bg-black/20 group-hover:bg-black/30 transition-colors" />
               <div className="absolute inset-0 flex flex-col items-center justify-center text-white text-center p-6">
                 <span className="text-sm tracking-[0.2em] uppercase mb-2">{t('homepage.summer_tagline')}</span>
                 <h3 className="text-3xl font-serif font-medium mb-4 whitespace-pre-line">{t('homepage.summer_title')}</h3>
                 <div className="w-8 h-0.5 bg-white mb-4" />
-                <span className="text-xs font-bold underline decoration-1 underline-offset-4 opacity-0 group-hover:opacity-100 transition-opacity transform translate-y-4 group-hover:translate-y-0 duration-300">
-                  {t('homepage.shop_collection')}
-                </span>
+                <span className="text-xs font-bold underline decoration-1 underline-offset-4 opacity-0 group-hover:opacity-100 transition-opacity transform translate-y-4 group-hover:translate-y-0 duration-300">{t('homepage.shop_collection')}</span>
               </div>
             </Link>
-
-            {/* Collection 3: Evening/Sexy */}
             <Link href="/catalog?category=ערב" className="group relative h-[400px] overflow-hidden rounded-lg">
-              <Image
-                src="/collection-datenight.png"
-                alt={t('homepage.datenight_title').replace('\n', ' ')}
-                fill
-                className="object-cover transition-transform duration-700 group-hover:scale-110"
-              />
+              <Image src="/collection-datenight.png" alt={t('homepage.datenight_title').replace('\n', ' ')} fill className="object-cover transition-transform duration-700 group-hover:scale-110" />
               <div className="absolute inset-0 bg-black/30 group-hover:bg-black/40 transition-colors" />
               <div className="absolute inset-0 flex flex-col items-center justify-center text-white text-center p-6">
                 <span className="text-sm tracking-[0.2em] uppercase mb-2">{t('homepage.datenight_tagline')}</span>
                 <h3 className="text-3xl font-serif font-medium mb-4 whitespace-pre-line">{t('homepage.datenight_title')}</h3>
                 <div className="w-8 h-0.5 bg-white mb-4" />
-                <span className="text-xs font-bold underline decoration-1 underline-offset-4 opacity-0 group-hover:opacity-100 transition-opacity transform translate-y-4 group-hover:translate-y-0 duration-300">
-                  {t('homepage.shop_collection')}
-                </span>
+                <span className="text-xs font-bold underline decoration-1 underline-offset-4 opacity-0 group-hover:opacity-100 transition-opacity transform translate-y-4 group-hover:translate-y-0 duration-300">{t('homepage.shop_collection')}</span>
               </div>
             </Link>
-
-          </div >
-        </div >
-      </section >
+          </div>
+        </div>
+      </section>
       <HomeSEOContent />
-    </div >
+    </div>
   );
 }

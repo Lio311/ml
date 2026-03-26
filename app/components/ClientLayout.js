@@ -29,7 +29,7 @@ export default function ClientLayout({ children, brands, menu }) {
     return (
         <>
             <div id="site-content" className={isV2 ? 'v2-page' : ''}>
-                {isV2 ? <HeaderV2 brands={brands} /> : <Header brands={brands} menu={menu} />}
+                {isV2 ? <HeaderV2 brands={brands} menu={menu} /> : <Header brands={brands} />}
                 <main className="min-h-screen">
                     {children}
                 </main>
