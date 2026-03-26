@@ -104,7 +104,6 @@
         "meta_search_desc": "Search results for {q} in ml_tlv's perfume samples catalog.",
         "out_of_stock_toast": "Product out of stock!",
         "added_to_cart_toast": "Added to cart: {name} ({size} ml)",
-        "stock_limit_reached": "Stock limit reached!",
         "new": "New",
         "out_of_stock": "Out of Stock",
         "last_units": "Last units",
