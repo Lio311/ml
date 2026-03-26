@@ -41,59 +41,59 @@ export default function HeaderV2({ brands = [] }) {
             <div className="frosted-nav h-24 md:h-28 relative z-40 flex items-center">
                 <div className="w-full max-w-[1800px] mx-auto px-6 md:px-12 h-full flex items-center justify-between">
                     
-                    {/* User Actions & Search (Physical Right in RTL, Left in LTR) */}
-                    <div className="flex items-center gap-4 v2-user-actions flex-1">
-                        <UserActions />
-                        <div className="hidden lg:flex w-[1px] h-4 bg-black/10 mx-2"></div>
-                        <div className="hidden lg:block">
-                            <LanguageSwitcher variant="header" />
-                        </div>
+                    {/* Right Side: Navigation */}
+                    <div className="flex-1 flex items-center">
+                        <nav className="hidden xl:flex items-center gap-6 text-black">
+                            {navLinks.map((link) => (
+                                <div 
+                                    key={link.label}
+                                    className="relative py-2 group"
+                                    onMouseEnter={() => link.type ? setActiveMenu(link.type) : setActiveMenu(null)}
+                                >
+                                    <Link 
+                                        href={link.href}
+                                        className={`text-[12px] font-bold tracking-[0.1em] uppercase transition-all duration-500 ${
+                                            link.active ? 'text-black opacity-100' : 'text-black opacity-40 hover:opacity-100'
+                                        }`}
+                                    >
+                                        {link.label}
+                                    </Link>
+                                    
+                                    {link.active && (
+                                        <div className="absolute -bottom-1 left-0 w-full h-[1.5px] bg-black/80 scale-x-100 transition-transform duration-500"></div>
+                                    )}
+                                    {!link.active && (
+                                        <div className="absolute -bottom-1 left-0 w-full h-[1.5px] bg-black scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-center"></div>
+                                    )}
+                                </div>
+                            ))}
+                        </nav>
                     </div>
 
-                    {/* Navigation - Centered horizontally relative to the logo if possible, or just center-aligned */}
-                    <nav className="hidden xl:flex items-center justify-center gap-8 text-black px-6">
-                        {navLinks.map((link) => (
-                            <div 
-                                key={link.label}
-                                className="relative py-2 group"
-                                onMouseEnter={() => link.type ? setActiveMenu(link.type) : setActiveMenu(null)}
-                            >
-                                <Link 
-                                    href={link.href}
-                                    className={`text-[12px] font-bold tracking-[0.1em] uppercase transition-all duration-500 ${
-                                        link.active ? 'text-black opacity-100' : 'text-black opacity-40 hover:opacity-100'
-                                    }`}
-                                >
-                                    {link.label}
-                                </Link>
-                                
-                                {link.active && (
-                                    <div className="absolute -bottom-1 left-0 w-full h-[1.5px] bg-black/80 scale-x-100 transition-transform duration-500"></div>
-                                )}
-                                {!link.active && (
-                                    <div className="absolute -bottom-1 left-0 w-full h-[1.5px] bg-black scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-center"></div>
-                                )}
-                            </div>
-                        ))}
-                    </nav>
-
                     {/* Center: Logo */}
-                    <div className="flex justify-center px-4">
+                    <div className="flex-shrink-0 flex justify-center px-8">
                         <Link href="/v2" className="block transform hover:scale-105 transition-transform duration-700">
                             <Image 
                                 src="/logo_v5.png" 
                                 alt="ml." 
-                                width={160} 
-                                height={60} 
-                                className="h-10 md:h-14 w-auto object-contain inverted-logo-v2" 
+                                width={180} 
+                                height={70} 
+                                className="h-12 md:h-16 w-auto object-contain inverted-logo-v2" 
                                 priority 
                             />
                         </Link>
                     </div>
 
-                    {/* Right side: Desktop Icons (Wishlist/Cart) */}
-                    <div className="flex items-center justify-end gap-6 v2-desktop-icons flex-1">
-                        <DesktopIcons cartCount={cartCount} wishlistCount={wishlistCount} />
+                    {/* Left Side: Actions (Icons, Search, Language) */}
+                    <div className="flex-1 flex items-center justify-end gap-6">
+                        <div className="flex items-center gap-4 v2-user-actions">
+                            <LanguageSwitcher variant="header" />
+                            <div className="hidden lg:flex w-[1px] h-4 bg-black/10 mx-2"></div>
+                            <UserActions />
+                        </div>
+                        <div className="flex items-center gap-6 v2-desktop-icons">
+                            <DesktopIcons cartCount={cartCount} wishlistCount={wishlistCount} />
+                        </div>
                     </div>
                 </div>
             </div>
