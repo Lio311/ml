@@ -49,7 +49,7 @@ export default function HeaderV2({ brands = [] }) {
                     <div className="hidden xl:flex w-full items-center justify-between h-full">
                         {/* Right Side: Navigation & User */}
                         <div className="flex-1 flex items-center gap-8">
-                            <div className="flex items-center gap-4 border-r border-black/5 pr-6">
+                            <div className="flex items-center gap-4 border-r border-black/5 pr-3">
                                 <SignedIn>
                                     <div className="flex items-center">
                                         <UserButton afterSignOutUrl="/" />
