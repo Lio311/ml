@@ -31,17 +31,17 @@ export default function Header({ brands = [] }) {
         user?.publicMetadata?.role?.toLowerCase() === 'deputy' ||
         user?.publicMetadata?.isAdmin === true;
 
-    const navLinks = [
-        { label: t('common.home'), href: '/', active: true },
-        { label: t('common.brands'), href: '/brands', type: 'brands' },
-        { label: t('common.catalog'), href: '/catalog', type: 'catalog' },
-        { label: t('common.matching'), href: '/matching' },
-        { label: t('common.requests'), href: '/requests' },
-        { label: t('common.contact'), href: '/contact' },
-    ];
-
     const pathname = usePathname();
     const isHome = pathname === '/';
+
+    const navLinks = [
+        { label: t('common.home'), href: '/', active: pathname === '/' },
+        { label: t('common.brands'), href: '/brands', type: 'brands', active: pathname === '/brands' },
+        { label: t('common.catalog'), href: '/catalog', type: 'catalog', active: pathname === '/catalog' },
+        { label: t('common.matching'), href: '/matching', active: pathname === '/matching' },
+        { label: t('common.requests'), href: '/requests', active: pathname === '/requests' },
+        { label: t('common.contact'), href: '/contact', active: pathname === '/contact' },
+    ];
 
     useEffect(() => {
         const handleScroll = () => {
@@ -58,7 +58,7 @@ export default function Header({ brands = [] }) {
             dir={dir}
         >
             <div className={`frosted-nav !w-screen h-20 md:h-28 relative z-40 flex items-center overflow-hidden transition-all duration-500 ${
-                !isScrolled && isHome ? 'bg-white !backdrop-blur-none shadow-none' : ''
+                !isScrolled && isHome ? '!bg-white !backdrop-blur-none !shadow-none' : ''
             }`}>
                 <div className="w-full max-w-[1800px] mx-auto px-4 md:px-12 h-full flex items-center justify-between">
                     
