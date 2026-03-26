@@ -91,18 +91,16 @@ export default function CatalogProductActions({ item, slug }) {
                             <span className="font-bold text-gray-900" dir={dir}>{size.replace(/ml/gi, '').trim()} {t('common.ml_unit')}</span>
                             <div className="flex items-center gap-4">
                                 <span className="text-gray-700 font-medium">{price} ₪</span>
-                                <button
-                                    type="button"
-                                    disabled={wouldExceed && !inCart}
-                                    className={`w-8 h-8 rounded-full flex items-center justify-center p-0 leading-none transition-all ${
+                                <div
+                                    className={`w-8 h-8 rounded-full grid place-items-center transition-all ${
                                         inCart ? 'bg-green-500 text-white' :
                                         isAdded ? 'bg-green-500 text-white scale-110' :
                                         wouldExceed ? 'bg-gray-300 text-white' :
                                         'bg-black text-white hover:bg-gray-800 group-hover:scale-110'
                                     }`}
                                 >
-                                    {inCart || isAdded ? <Check size={20} strokeWidth={3} className="shrink-0" /> : wouldExceed ? <X size={20} strokeWidth={3} className="shrink-0" /> : <Plus size={20} strokeWidth={3} className="shrink-0" />}
-                                </button>
+                                    {inCart || isAdded ? <Check size={18} strokeWidth={3} /> : wouldExceed ? <X size={18} strokeWidth={3} /> : <Plus size={18} strokeWidth={3} />}
+                                </div>
                             </div>
                         </div>
                     );
