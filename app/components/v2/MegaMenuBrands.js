@@ -47,7 +47,7 @@ export default function MegaMenuBrands({ brands = [], isOpen, onClose }) {
                                 className={`flex-shrink-0 w-7 h-7 md:w-9 md:h-9 rounded-md md:rounded-lg flex items-center justify-center text-[10px] md:text-sm font-serif transition-all duration-300 border ${
                                     hoveredLetter === letter 
                                     ? 'bg-white text-black border-white shadow-[0_0_15px_rgba(255,255,255,0.3)] scale-110' 
-                                    : 'bg-white/5 text-white/40 border-white/10 hover:bg-white/10 hover:text-white hover:scale-105'
+                                    : 'bg-white/5 text-white/70 border-white/15 hover:bg-white/10 hover:text-white hover:scale-105'
                                 }`}
                             >
                                 {letter}
@@ -82,11 +82,11 @@ export default function MegaMenuBrands({ brands = [], isOpen, onClose }) {
                                             />
                                         ) : (
                                             <div className="w-full h-full flex items-center justify-center">
-                                                <span className="text-xl font-serif text-white/20">{brand.name.charAt(0)}</span>
+                                                <span className="text-xl font-serif text-white/50">{brand.name.charAt(0)}</span>
                                             </div>
                                         )}
                                     </div>
-                                    <span className="text-[10px] font-bold text-white/50 group-hover:text-white transition-colors uppercase tracking-[0.15em] text-center p-1 break-words w-full">
+                                    <span className="text-[10px] font-bold text-white/80 group-hover:text-white transition-colors uppercase tracking-[0.15em] text-center p-1 break-words w-full">
                                         {brand.name}
                                     </span>
                                 </Link>
@@ -99,7 +99,7 @@ export default function MegaMenuBrands({ brands = [], isOpen, onClose }) {
                 <div className="mt-8 pt-4 w-full text-center border-t border-white/5">
                     <Link 
                         href="/brands" 
-                        className="text-white/30 hover:text-white transition-all inline-flex items-center gap-2 group text-[9px] uppercase tracking-[0.3em]"
+                        className="text-white/50 hover:text-white transition-all inline-flex items-center gap-2 group text-[9px] uppercase tracking-[0.3em]"
                     >
                         <span>כל המותגים</span>
                         <span className="group-hover:translate-x-1 group-hover:-translate-x-1 transition-transform duration-500 inline-block">
