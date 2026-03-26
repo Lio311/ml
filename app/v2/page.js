@@ -136,7 +136,7 @@ export default async function HomeV2() {
             <h2 className="text-xs md:text-sm font-assistant tracking-[0.2em] uppercase mb-1 opacity-90 animate-fadeIn font-bold">
               {t('homepage.discover_sig')}
             </h2>
-            <h1 className={`${dancingScript.className} text-3xl md:text-6xl mb-2 md:mb-4 text-black leading-tight tracking-wide`}>
+            <h1 className={`${dancingScript.className} font-dancing text-3xl md:text-6xl mb-2 md:mb-4 text-black leading-tight tracking-wide`}>
               {t('homepage.hero_title_p1')} {t('homepage.hero_title_p2')}
             </h1>
             <p className="text-xs md:text-base text-gray-800 mb-3 md:mb-4 font-light leading-relaxed">

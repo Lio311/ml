@@ -17,6 +17,10 @@
     font-family: 'Assistant', var(--font-assistant), sans-serif !important;
 }
 
+.v2-page .font-dancing {
+    font-family: 'Dancing Script', cursive !important;
+}
+
 /* Hide scrollbar for Chrome, Safari and Opera */
 .no-scrollbar::-webkit-scrollbar {
     display: none;

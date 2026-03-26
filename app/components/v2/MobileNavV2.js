@@ -2,7 +2,8 @@
 
 import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
-import { X, ChevronLeft, ChevronRight, User, ShoppingBag, Heart, Search } from 'lucide-react';
+import { X, ChevronLeft, ChevronRight, Settings } from 'lucide-react';
+import { SignedIn, SignedOut, SignInButton, UserButton } from '@clerk/nextjs';
 import { useLanguage } from '../../context/LanguageContext';
 import LanguageSwitcher from '../header/LanguageSwitcher';
 
@@ -50,8 +51,30 @@ export default function MobileNavV2({ isOpen, onClose, navLinks = [], isAdmin })
                             </button>
                         </div>
 
+                        {/* Language Switcher */}
+                        <div className="flex justify-end px-6 pt-4">
+                            <LanguageSwitcher variant="mobile" />
+                        </div>
+
+                        {/* User + My Catalogs */}
+                        <div className="flex justify-center items-center gap-4 py-5 px-6">
+                            <SignedIn>
+                                <UserButton afterSignOutUrl="/" appearance={{ elements: { userButtonAvatarBox: "w-12 h-12" } }} />
+                                <Link href="/my-catalogs" onClick={onClose} className="bg-yellow-400 text-black px-4 py-2 rounded-full text-sm font-bold shadow-sm hover:bg-yellow-300 transition-colors">
+                                    {t('common.my_catalogs_mobile')}
+                                </Link>
+                            </SignedIn>
+                            <SignedOut>
+                                <SignInButton mode="modal">
+                                    <button className="bg-yellow-400 text-black px-6 py-2 rounded-full text-sm font-bold shadow-sm hover:bg-yellow-300 transition-colors">
+                                        {t('common.login_register')}
+                                    </button>
+                                </SignInButton>
+                            </SignedOut>
+                        </div>
+
                         {/* Navigation Links */}
-                        <div className="flex-1 overflow-y-auto py-8 px-6 space-y-6">
+                        <div className="flex-1 overflow-y-auto py-4 px-6 space-y-6">
                             {navLinks.map((link, i) => (
                                 <motion.div
                                     key={link.label}
@@ -71,44 +94,26 @@ export default function MobileNavV2({ isOpen, onClose, navLinks = [], isAdmin })
                                     </Link>
                                 </motion.div>
                             ))}
+                        </div>
 
+                        {/* Bottom Actions */}
+                        <div className="p-6 space-y-4 bg-black/20 border-t border-white/5">
                             {isAdmin && (
                                 <motion.div
                                     initial={{ opacity: 0, y: 10 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     transition={{ delay: 0.4 }}
-                                    className="pt-6 border-t border-white/5"
                                 >
                                     <Link 
                                         href="/admin" 
                                         onClick={onClose}
-                                        className="flex items-center gap-3 text-white/40 hover:text-white transition-colors text-sm font-bold tracking-widest uppercase"
+                                        className="flex items-center justify-center gap-3 text-white/60 hover:text-white transition-colors border border-white/10 py-3 rounded-xl text-sm font-bold tracking-widest uppercase"
                                     >
-                                        <span className="w-8 h-8 rounded-full bg-white/5 flex items-center justify-center">
-                                            <User size={16} />
-                                        </span>
-                                        ממשק ניהול
+                                        <Settings size={18} />
+                                        <span>{t('common.admin_management')}</span>
                                     </Link>
                                 </motion.div>
                             )}
-                        </div>
-
-                        {/* Bottom Actions */}
-                        <div className="p-8 space-y-8 bg-black/20 border-t border-white/5">
-                            <div className="flex justify-center">
-                                <LanguageSwitcher variant="mobile" />
-                            </div>
-                            
-                            <div className="grid grid-cols-2 gap-4">
-                                <Link href="/wishlist" onClick={onClose} className="flex flex-col items-center gap-2 text-white/40 hover:text-white transition-colors">
-                                    <Heart size={20} />
-                                    <span className="text-[10px] uppercase tracking-widest font-bold">מועדפים</span>
-                                </Link>
-                                <Link href="/cart" onClick={onClose} className="flex flex-col items-center gap-2 text-white/40 hover:text-white transition-colors">
-                                    <ShoppingBag size={20} />
-                                    <span className="text-[10px] uppercase tracking-widest font-bold">עגלה</span>
-                                </Link>
-                            </div>
 
                             <p className="text-[9px] text-white/20 text-center uppercase tracking-[0.3em] font-light">
                                 ml-tlv. luxury sample boutique
