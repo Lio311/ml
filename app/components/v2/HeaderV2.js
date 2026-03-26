@@ -8,11 +8,20 @@ import MegaMenuCatalog from './MegaMenuCatalog';
 import { usePathname } from 'next/navigation';
 import LiveVisitorCounter from '../LiveVisitorCounter';
 import { useLanguage } from '../../context/LanguageContext';
+import { useCart } from '../../context/CartContext';
+import { useWishlist } from '../../context/WishlistContext';
+import { useUser } from '@clerk/nextjs';
+import UserActions from '../header/UserActions';
+import DesktopIcons from '../header/DesktopIcons';
+import LanguageSwitcher from '../header/LanguageSwitcher';
 import './v2.css';
 
 export default function HeaderV2({ brands = [] }) {
     const [activeMenu, setActiveMenu] = useState(null); 
-    const { t } = useLanguage();
+    const { t, dir } = useLanguage();
+    const { globalItemsCount: cartCount } = useCart();
+    const { count: wishlistCount } = useWishlist();
+    const { user } = useUser();
 
     const navLinks = [
         { label: 'דף הבית', href: '/v2', active: true },
@@ -27,72 +36,77 @@ export default function HeaderV2({ brands = [] }) {
         <header 
             className="fixed top-0 w-full z-50 transition-all duration-500"
             onMouseLeave={() => setActiveMenu(null)}
+            dir={dir}
         >
             {/* Top Bar - Black Promo Strip */}
-            <div className="hidden md:flex justify-between items-center bg-black/80 text-white text-[10px] md:text-xs py-1 px-4 tracking-widest uppercase relative z-50 backdrop-blur-sm">
+            <div className="hidden md:flex justify-between items-center bg-black/90 text-white text-[10px] md:text-xs py-1.5 px-6 tracking-widest uppercase relative z-50 backdrop-blur-md border-b border-white/5">
                 <div className="flex-1 flex justify-start gap-4 items-center">
+                    <LanguageSwitcher variant="header" />
+                    <div className="w-[1px] h-3 bg-white/20 mx-2"></div>
                     <LiveVisitorCounter />
                 </div>
                 <div className="text-center font-bold">{t('common.free_shipping_strip')}</div>
                 <div className="flex-1"></div>
             </div>
 
-            <div className="frosted-nav h-20 md:h-24 relative z-40 flex items-center">
-                <div className="container mx-auto h-full px-6 flex items-center justify-between">
-                
-                {/* Header Icons (Left Side - LTR Layout for icons) */}
-                <div className="flex items-center gap-6 order-last md:order-first">
-                    <button className="icon-glow p-2 rounded-lg text-black/80 hover:text-black transition-all">
-                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                        </svg>
-                    </button>
-                    <button className="icon-glow p-2 rounded-lg text-black/80 hover:text-black transition-all">
-                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                        </svg>
-                    </button>
-                    <Link href="/catalog?flavor=checkout" className="icon-glow p-2 rounded-lg text-black/80 hover:text-black transition-all relative">
-                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M16 11V7a4 4 0 118 0m-4 15V11m-4 11H8m12 0a2 2 0 100-4 2 2 0 000 4z" />
-                        </svg>
-                    </Link>
-                    <div className="h-4 w-[1px] bg-black/10 mx-2"></div>
-                    <button className="text-[10px] font-bold tracking-widest hover:opacity-100 opacity-60 transition-opacity">EN / עב</button>
-                </div>
-
-                {/* Navigation Links */}
-                <nav className="hidden lg:flex items-center gap-8 dir-rtl text-black">
-                    {navLinks.map((link) => (
-                        <div 
-                            key={link.label}
-                            className="relative py-2 group"
-                            onMouseEnter={() => link.type ? setActiveMenu(link.type) : setActiveMenu(null)}
-                        >
-                            <Link 
-                                href={link.href}
-                                className={`text-[13px] font-medium tracking-wide uppercase transition-all duration-300 ${
-                                    link.active ? 'text-black' : 'text-black/60 hover:text-black'
-                                }`}
-                            >
-                                {link.label}
-                            </Link>
-                            
-                            {/* Active Indicator (Glow Frosted Square) */}
-                            {link.active && (
-                                <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 w-1.5 h-1.5 rounded-full bg-black/80 shadow-[0_0_10px_rgba(0,0,0,0.4)]"></div>
-                            )}
+            <div className="frosted-nav h-28 md:h-32 relative z-40 flex flex-col justify-center">
+                <div className="container mx-auto px-6 h-full flex flex-col justify-around py-3">
+                    
+                    {/* Top Row: User Actions (Search/Profile) + Logo + Icons (Wishlist/Cart) */}
+                    <div className="grid grid-cols-3 items-center w-full">
+                        
+                        {/* Right (Start): Search + Profile */}
+                        <div className="flex items-center justify-start gap-4 v2-user-actions">
+                            <UserActions />
                         </div>
-                    ))}
-                </nav>
 
-                {/* Logo (Centered) */}
-                <div className="absolute left-1/2 -translate-x-1/2">
-                    <Link href="/v2">
-                        <span className="text-2xl font-bold tracking-tighter text-black select-none">ml-tlv.</span>
-                    </Link>
+                        {/* Center: Logo */}
+                        <div className="flex justify-center">
+                            <Link href="/v2" className="block transform hover:scale-105 transition-transform duration-700">
+                                <Image 
+                                    src="/logo_v5.png" 
+                                    alt="ml." 
+                                    width={200} 
+                                    height={80} 
+                                    className="h-14 md:h-20 w-auto object-contain inverted-logo-v2" 
+                                    priority 
+                                />
+                            </Link>
+                        </div>
+
+                        {/* Left (End): Wishlist + Cart */}
+                        <div className="flex items-center justify-end gap-6 v2-desktop-icons">
+                            <DesktopIcons cartCount={cartCount} wishlistCount={wishlistCount} />
+                        </div>
+                    </div>
+
+                    {/* Bottom Row: Navigation Links */}
+                    <nav className="hidden lg:flex items-center justify-center gap-12 text-black">
+                        {navLinks.map((link) => (
+                            <div 
+                                key={link.label}
+                                className="relative py-2 group"
+                                onMouseEnter={() => link.type ? setActiveMenu(link.type) : setActiveMenu(null)}
+                            >
+                                <Link 
+                                    href={link.href}
+                                    className={`text-[13px] font-bold tracking-[0.15em] uppercase transition-all duration-500 ${
+                                        link.active ? 'text-black opacity-100' : 'text-black opacity-60 hover:opacity-100'
+                                    }`}
+                                >
+                                    {link.label}
+                                </Link>
+                                
+                                {link.active && (
+                                    <div className="absolute -bottom-1 left-0 w-full h-[1.5px] bg-black/80 scale-x-100 transition-transform duration-500"></div>
+                                )}
+                                {!link.active && (
+                                    <div className="absolute -bottom-1 left-0 w-full h-[1.5px] bg-black scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-center"></div>
+                                )}
+                            </div>
+                        ))}
+                    </nav>
                 </div>
-
             </div>
 
             {/* Mega Menus */}
@@ -106,12 +120,19 @@ export default function HeaderV2({ brands = [] }) {
                 onClose={() => setActiveMenu(null)} 
             />
 
-            </div>
-
-            <style jsx>{`
-                .icon-glow:hover {
-                    background: rgba(255, 255, 255, 0.4);
-                    box-shadow: inset 0 0 15px rgba(255, 255, 255, 0.6), 0 0 20px rgba(255, 255, 255, 0.2);
+            <style jsx global>{`
+                .inverted-logo-v2 {
+                    filter: brightness(0);
+                }
+                .v2-user-actions input {
+                    background: transparent !important;
+                    border-bottom-color: rgba(0,0,0,0.2) !important;
+                }
+                .v2-user-actions input:focus {
+                    border-bottom-color: black !important;
+                }
+                .v2-desktop-icons svg {
+                    color: black !important;
                 }
                 .dir-rtl {
                     direction: rtl;
