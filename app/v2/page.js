@@ -130,7 +130,7 @@ export default async function HomeV2() {
           </video>
         </div>
 
-        <div className="absolute inset-0 z-10 container mx-auto flex items-center justify-center px-6 md:px-12">
+        <div className="absolute inset-0 z-10 container mx-auto flex items-center justify-center pt-20 md:pt-28 px-6 md:px-12">
           {/* Hero Content Box */}
           <div className="max-w-xs md:max-w-2xl text-black text-center bg-white/85 p-6 rounded-2xl backdrop-blur-md shadow-2xl transform scale-90 md:scale-100 origin-center border border-white/20">
             <h2 className="text-xs md:text-sm font-assistant tracking-[0.2em] uppercase mb-1 opacity-90 animate-fadeIn font-bold">
@@ -149,7 +149,7 @@ export default async function HomeV2() {
         </div>
       </section>
 
-      <div className="-mt-20 relative z-30">
+      <div className="relative z-30">
         <LiveStats stats={stats} />
       </div>
       <HomeClient newArrivals={newArrivals} topCatalogs={topCatalogs} />
