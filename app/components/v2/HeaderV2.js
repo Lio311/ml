@@ -12,8 +12,10 @@ import { useLanguage } from '../../context/LanguageContext';
 import { useCart } from '../../context/CartContext';
 import { useWishlist } from '../../context/WishlistContext';
 import { Menu, Search, User } from 'lucide-react';
-import { SignInButton, SignedIn, SignedOut, UserButton } from '@clerk/nextjs';
+import { SignInButton, SignedIn, SignedOut, UserButton, useUser } from '@clerk/nextjs';
 import SearchAutocomplete from '../SearchAutocomplete';
+import DesktopIcons from '../header/DesktopIcons';
+import LanguageSwitcher from '../header/LanguageSwitcher';
 import './v2.css';
 
 export default function HeaderV2({ brands = [] }) {
