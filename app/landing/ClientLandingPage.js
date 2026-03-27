@@ -181,13 +181,9 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
                             <h2 className="text-xs tracking-[0.2em] uppercase mb-2 font-bold opacity-90">
                                 Discover Your Signature Scent
                             </h2>
-                            {/* Mobile Title (Stacked on 2 lines) */}
-                            <p className={`${dancingScript.className} block md:hidden text-[1.5rem] font-bold mb-3 leading-tight text-center`}>
+                            {/* Simple 2-line Title for All Devices */}
+                            <p className={`${dancingScript.className} text-[1.5rem] md:text-[2.25rem] font-bold mb-3 leading-tight text-center`}>
                                 Niche & Boutique <br /> Sample Collections
-                            </p>
-                            {/* Desktop Title (Always on 1 line) */}
-                            <p className={`${dancingScript.className} hidden md:block hero-title-nowrap text-[2rem] font-bold mb-3 leading-tight text-center`} style={{ whiteSpace: 'nowrap' }}>
-                                Niche & Boutique Sample Collections
                             </p>
                             <p className="text-sm md:text-base mb-6 font-light leading-relaxed text-gray-800">
                                 הדרך החכמה לגלות בשמי נישה יוקרתיים.<br />
