@@ -126,9 +126,9 @@ export default async function Home() {
           </video>
         </div>
 
-        <div className="absolute inset-0 z-10 container mx-auto flex items-start justify-center pt-32 md:pt-52 px-6 md:px-12">
-          {/* Hero Content Box - Adjusted pt to compensate for -mt-20 */}
-          <div className="w-[95%] md:w-fit max-w-lg md:max-w-fit text-black text-center bg-white/85 p-5 md:px-8 md:py-6 rounded-2xl backdrop-blur-md shadow-2xl transform scale-90 md:scale-100 origin-center border border-white/20 mt-4 md:mt-0 mx-auto">
+        <div className="absolute inset-0 z-10 container mx-auto flex items-center justify-center px-6 md:px-12">
+          {/* Hero Content Box */}
+          <div className="w-[95%] md:w-fit max-w-lg md:max-w-fit text-black text-center bg-white/85 p-5 md:px-8 md:py-6 rounded-2xl backdrop-blur-md shadow-2xl transform scale-90 md:scale-100 origin-center border border-white/20 mx-auto">
             <h2 className="text-xs md:text-sm font-assistant tracking-[0.2em] uppercase mb-1 opacity-90 animate-fadeIn font-bold">
               {t('homepage.discover_sig')}
             </h2>
