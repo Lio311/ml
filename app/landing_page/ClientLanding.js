@@ -184,7 +184,7 @@ function Section({ section, isActive, newArrivals, stats }) {
                         </div>
                         <div className="relative z-10 text-center px-4 max-w-4xl">
                             <h2 className="text-sm md:text-lg tracking-[0.3em] font-light uppercase mb-4 text-white drop-shadow-lg">{section.title}</h2>
-                            <h1 className="text-5xl md:text-8xl font-bold mb-6 text-white drop-shadow-2xl">{section.subtitle}</h1>
+                            <h1 className="text-5xl md:text-8xl font-bold mb-6 text-white drop-shadow-2xl whitespace-nowrap">{section.subtitle}</h1>
                             <p className="text-lg md:text-xl text-white/90 mb-8 font-light leading-relaxed">{section.description}</p>
                             <Link href="/catalog">
                                 <Button size="lg" className="bg-white text-black hover:bg-gray-200 rounded-full px-12 py-8 text-xl tracking-wider uppercase border-0">

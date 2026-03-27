@@ -133,7 +133,9 @@ export default async function Home() {
               {t('homepage.discover_sig')}
             </h2>
             <h1 className={`${dancingScript.className} font-dancing text-3xl md:text-6xl mb-2 md:mb-4 text-black leading-tight tracking-wide`}>
-              {t('homepage.hero_title_p1')} {t('homepage.hero_title_p2')}
+              <span className="block md:inline">{t('homepage.hero_title_p1')}</span>
+              <span className="hidden md:inline"> </span>
+              <span className="block md:inline whitespace-nowrap">{t('homepage.hero_title_p2')}</span>
             </h1>
             <p className="text-xs md:text-base text-gray-800 mb-3 md:mb-4 font-assistant leading-relaxed max-w-[280px] md:max-w-none mx-auto opacity-80">
               {t('common.hero_subtitle')} {t('common.hero_tagline')} {t('common.hero_cta')}
