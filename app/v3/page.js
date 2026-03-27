@@ -151,12 +151,14 @@ export default async function Home() {
         </div>
       </section>
 
-      <div className="relative z-30 -mt-36 md:mt-0 pb-6 md:pb-0">
-        <LiveStats stats={stats} />
+      <div className="relative z-30 bg-white -mt-36 md:mt-0 w-full flex flex-col">
+        <div className="pb-6 md:pb-0">
+          <LiveStats stats={stats} />
+        </div>
+        <HomeClient newArrivals={newArrivals} topCatalogs={topCatalogs} />
+        <BonusesSection />
+        <BrandCarousel brands={stats.allBrands} />
       </div>
-      <HomeClient newArrivals={newArrivals} topCatalogs={topCatalogs} />
-      <BonusesSection />
-      <BrandCarousel brands={stats.allBrands} />
 
       <section className="py-12 bg-white border-t">
         <div className="container mx-auto px-4">
