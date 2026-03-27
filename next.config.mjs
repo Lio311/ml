@@ -80,6 +80,10 @@ const nextConfig = {
       },
       {
         protocol: 'https',
+        hostname: 'www.lessenteurs.com',
+      },
+      {
+        protocol: 'https',
         hostname: 'cdn.shopify.com',
       },
       {

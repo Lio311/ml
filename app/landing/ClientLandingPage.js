@@ -186,7 +186,7 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
                                 Niche & Boutique <br /> Sample Collections
                             </p>
                             {/* Desktop Title (Always on 1 line) */}
-                            <p className={`${dancingScript.className} hidden md:block hero-title-nowrap text-[2.15rem] font-bold mb-3 leading-tight text-center`}>
+                            <p className={`${dancingScript.className} hidden md:block hero-title-nowrap text-[2rem] font-bold mb-3 leading-tight text-center`} style={{ whiteSpace: 'nowrap' }}>
                                 Niche & Boutique Sample Collections
                             </p>
                             <p className="text-sm md:text-base mb-6 font-light leading-relaxed text-gray-800">
