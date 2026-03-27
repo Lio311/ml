@@ -181,9 +181,9 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
                             <h2 className="text-xs tracking-[0.2em] uppercase mb-2 font-bold opacity-90">
                                 Discover Your Signature Scent
                             </h2>
-                            {/* Simple 2-line Title for All Devices */}
+                            {/* Simple 2-line Title Matching V1/V2 Arrangement */}
                             <p className={`${dancingScript.className} text-[1.5rem] md:text-[2.25rem] font-bold mb-3 leading-tight text-center`}>
-                                Niche & Boutique <br /> Sample Collections
+                                Niche & Boutique Sample <br /> Collections
                             </p>
                             <p className="text-sm md:text-base mb-6 font-light leading-relaxed text-gray-800">
                                 הדרך החכמה לגלות בשמי נישה יוקרתיים.<br />
