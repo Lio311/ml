@@ -181,7 +181,7 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
                             <h2 className="text-xs tracking-[0.2em] uppercase mb-2 font-bold opacity-90">
                                 Discover Your Signature Scent
                             </h2>
-                            <p className={`${dancingScript.className} hero-title text-3xl md:text-[2.5rem] font-bold mb-3 leading-tight`}>
+                            <p className={`${dancingScript.className} hero-title-nowrap text-3xl md:text-[2.25rem] font-bold mb-3 leading-tight`}>
                                 Niche & Boutique <br className="md:hidden" /> Sample Collections
                             </p>
                             <p className="text-sm md:text-base mb-6 font-light leading-relaxed text-gray-800">
@@ -192,23 +192,10 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
                                 קנית אותי, בוא נתחיל
                             </Link>
                         </div>
-
-                        <style jsx>{`
-                            .hero-title {
-                                white-space: normal;
-                            }
-                            @media (min-width: 768px) {
-                                .hero-title {
-                                    white-space: nowrap !important;
-                                    max-width: none !important;
-                                    width: auto !important;
-                                }
-                            }
-                        `}</style>
                     </div>
 
                     {/* Stats Area - 40% Height (Attached to video, Black Background to match) */}
-                    <div className="w-full h-[40%] flex items-start justify-center bg-black relative z-20">
+                <div className="w-full h-[40%] flex items-start justify-center bg-black relative z-20">
                         <div className="w-full">
                             <LiveStats stats={stats} />
                         </div>

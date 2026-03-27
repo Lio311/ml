@@ -220,3 +220,12 @@ input[autocomplete="one-time-code"] {
     font-size: 16px !important;
   }
 }
+/* Definitive Hero Title Fix */
+@media (min-width: 768px) {
+  .hero-title-nowrap {
+    white-space: nowrap !important;
+    max-width: none !important;
+    width: auto !important;
+    display: block !important;
+  }
+}
