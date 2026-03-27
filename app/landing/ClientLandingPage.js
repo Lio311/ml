@@ -183,9 +183,8 @@ export default function ClientLiquidLanding({ newArrivals, stats }) {
                             </h2>
                             {/* Final 2-line Title: Niche & Boutique / Sample Collections */}
                             <p className={`${dancingScript.className} text-[1.5rem] md:text-[2.25rem] font-bold mb-3 leading-tight text-center`}>
-                                <span className="block md:inline">Niche & Boutique</span>
-                                <span className="hidden md:inline"> </span>
-                                <span className="block md:inline whitespace-nowrap">Sample Collections</span>
+                                <span className="block">Niche & Boutique</span>
+                                <span className="block">Sample Collections</span>
                             </p>
                             <p className="text-sm md:text-base mb-6 font-light leading-relaxed text-gray-800">
                                 הדרך החכמה לגלות בשמי נישה יוקרתיים.<br />

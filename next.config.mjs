@@ -84,6 +84,10 @@ const nextConfig = {
       },
       {
         protocol: 'https',
+        hostname: 'images.seeklogo.com',
+      },
+      {
+        protocol: 'https',
         hostname: 'sekega.com',
       },
       {
