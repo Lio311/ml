@@ -138,7 +138,8 @@ export default async function Home() {
               <span className="block md:inline whitespace-nowrap">{t('homepage.hero_title_p2')}</span>
             </h1>
             <p className="text-xs md:text-base text-gray-800 mb-3 md:mb-4 font-assistant leading-relaxed max-w-[280px] md:max-w-none mx-auto opacity-80">
-              {t('common.hero_subtitle')} {t('common.hero_tagline')} {t('common.hero_cta')}
+              {t('common.hero_subtitle')} {t('common.hero_tagline_p1')} <br className="hidden md:block" />
+              {t('common.hero_tagline_p2')} {t('common.hero_cta')}
             </p>
             <Link href="/catalog" className="inline-block border text-black border-black px-8 py-3 text-xs md:text-sm font-bold tracking-widest hover:bg-black hover:text-white transition duration-500 uppercase rounded-full">
               {t('homepage.shop_now')}
