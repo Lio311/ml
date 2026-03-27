@@ -24,6 +24,10 @@ const nextConfig = {
       },
       {
         protocol: 'https',
+        hostname: 'www.cp-parfums.com',
+      },
+      {
+        protocol: 'https',
         hostname: 'wp.logos-download.com',
       },
       {
@@ -32,7 +36,15 @@ const nextConfig = {
       },
       {
         protocol: 'https',
+        hostname: 'www.ipiccirilliperfumes.com',
+      },
+      {
+        protocol: 'https',
         hostname: 'aromadilamore.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'www.aromadilamore.com',
       },
       {
         protocol: 'https',
@@ -73,6 +85,10 @@ const nextConfig = {
       {
         protocol: 'https',
         hostname: 'sekega.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'www.sekega.com',
       },
       {
         protocol: 'https',
@@ -132,7 +148,15 @@ const nextConfig = {
       },
       {
         protocol: 'https',
+        hostname: 'www.boadiceaperfume.com',
+      },
+      {
+        protocol: 'https',
         hostname: 'sospiroperfumes.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'www.sospiroperfumes.com',
       },
       {
         protocol: 'https',
@@ -140,7 +164,15 @@ const nextConfig = {
       },
       {
         protocol: 'https',
+        hostname: 'www.asmrfragrances.com',
+      },
+      {
+        protocol: 'https',
         hostname: 'bohobocofragrances.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'www.bohobocofragrances.com',
       },
       {
         protocol: 'https',
