@@ -68,43 +68,42 @@ export default function AdminOrdersListClient({ orders, totalPages, page, canEdi
     return (
         <div className="pb-8 relative">
             
-            {/* Batch Action Bar */}
-            {selectedOrderIds.length > 0 && canEdit && (
-                <div className="fixed bottom-0 inset-x-0 md:bottom-8 md:inset-x-auto md:right-8 md:w-auto bg-gray-900 border border-gray-700 text-white p-4 md:rounded-2xl shadow-2xl z-50 flex flex-col md:flex-row items-center gap-4 animate-in slide-in-from-bottom-5">
-                    <div className="font-bold flex items-center gap-2 w-full md:w-auto text-sm md:text-base border-b md:border-b-0 md:border-l border-gray-700 pb-3 md:pb-0 md:pl-4">
-                        <span className="bg-blue-600 text-white w-6 h-6 rounded-full flex items-center justify-center text-xs">{selectedOrderIds.length}</span>
-                        <span>סומנו</span>
-                    </div>
-                    
-                    <div className="flex w-full md:w-auto items-center gap-2">
-                         <div className="bg-white rounded-lg p-0.5 text-black min-w-[140px]">
-                            <CustomDropdown
-                                options={STATUS_OPTIONS}
-                                value={batchStatus}
-                                onChange={setBatchStatus}
-                                variant="status"
-                            />
+            {/* Header and Batch Action Bar */}
+            <div className="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-4 mb-8">
+                <h1 className="text-2xl md:text-3xl font-bold text-gray-900 shrink-0">ניהול הזמנות</h1>
+                
+                {selectedOrderIds.length > 0 && canEdit && (
+                    <div className="bg-white border text-gray-800 p-2.5 md:p-3 rounded-2xl shadow-sm z-40 flex flex-col md:flex-row items-center gap-4 animate-in fade-in zoom-in-95 w-full xl:w-auto">
+                        <div className="font-bold flex items-center gap-2 w-full md:w-auto text-sm md:text-base border-b md:border-b-0 md:border-l border-gray-100 pb-3 md:pb-0 md:pl-4">
+                            <span className="bg-blue-100 text-blue-700 w-6 h-6 rounded-full flex items-center justify-center text-xs font-black">{selectedOrderIds.length}</span>
+                            <span className="text-gray-600 font-bold">סומנו</span>
                         </div>
-                        <button 
-                            onClick={handleApplyBatchStatus}
-                            disabled={isApplyingBatch}
-                            className="bg-blue-600 hover:bg-blue-500 text-white px-4 py-2 rounded-lg text-sm font-bold transition whitespace-nowrap"
-                        >
-                            {isApplyingBatch ? 'מעדכן...' : 'החל סטטוס'}
-                        </button>
+                        
+                        <div className="flex w-full md:w-auto items-center gap-2">
+                            <div className="bg-gray-50 rounded-xl p-0.5 min-w-[140px] border border-gray-100 shadow-inner">
+                                <CustomDropdown
+                                    options={STATUS_OPTIONS}
+                                    value={batchStatus}
+                                    onChange={setBatchStatus}
+                                    variant="status"
+                                />
+                            </div>
+                            <button 
+                                onClick={handleApplyBatchStatus}
+                                disabled={isApplyingBatch}
+                                className="bg-blue-600 border border-blue-700 hover:bg-blue-500 text-white px-4 py-2 rounded-xl text-sm font-bold transition whitespace-nowrap shadow-sm"
+                            >
+                                {isApplyingBatch ? 'מעדכן...' : 'החל סטטוס'}
+                            </button>
+                        </div>
+
+                        <div className="w-full md:block hidden h-8 w-px bg-gray-200"></div>
+
+                        <div className="w-full md:w-auto pt-3 md:pt-0 border-t border-gray-100 md:border-t-0 flex justify-center">
+                            <DownloadBatchOrderPDF selectedOrders={selectedOrdersData} onComplete={() => setSelectedOrderIds([])} />
+                        </div>
                     </div>
-
-                    <div className="w-full md:block hidden h-8 w-px bg-gray-700"></div>
-
-                    <div className="w-full md:w-auto pt-3 md:pt-0 border-t border-gray-700 md:border-t-0 flex justify-center">
-                        <DownloadBatchOrderPDF selectedOrders={selectedOrdersData} onComplete={() => setSelectedOrderIds([])} />
-                    </div>
-                </div>
-            )}
-
-
-            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8 text-right md:text-right">
-                <h1 className="text-2xl md:text-3xl font-bold text-gray-900">ניהול הזמנות</h1>
+                )}
             </div>
 
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
