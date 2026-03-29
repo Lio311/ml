@@ -59,7 +59,8 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
             original_size: product.original_size || 100,
             seasons: product.seasons || '',
             perfumers: product.perfumers || '',
-            country: product.country || ''
+            country: product.country || '',
+            active: product.active ?? true
         });
     };
 
@@ -87,7 +88,8 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
             original_size: 100,
             seasons: '',
             perfumers: '',
-            country: ''
+            country: '',
+            active: true
         });
     };
 
@@ -492,14 +494,25 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                             />
                         </div>
                     </div>
-                    <div className="flex items-center gap-2 mb-4">
-                        <input
-                            type="checkbox"
-                            checked={editForm.in_lottery ?? true}
-                            onChange={e => setEditForm({ ...editForm, in_lottery: e.target.checked })}
-                            className="w-5 h-5 accent-red-600 cursor-pointer"
-                        />
-                        <label className="text-sm font-bold select-none">לכלול במאגר ההגרלות? (רנדומלי)</label>
+                    <div className="flex flex-col gap-3 mb-4 p-4 rounded-xl bg-gray-50/50 border border-gray-100">
+                        <div className="flex items-center gap-2">
+                            <input
+                                type="checkbox"
+                                checked={editForm.in_lottery ?? true}
+                                onChange={e => setEditForm({ ...editForm, in_lottery: e.target.checked })}
+                                className="w-5 h-5 accent-red-600 cursor-pointer rounded"
+                            />
+                            <label className="text-sm font-bold select-none">לכלול במאגר ההגרלות? (רנדומלי)</label>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <input
+                                type="checkbox"
+                                checked={editForm.active === false}
+                                onChange={e => setEditForm({ ...editForm, active: !e.target.checked })}
+                                className="w-5 h-5 accent-gray-500 cursor-pointer rounded"
+                            />
+                            <label className="text-sm font-bold select-none text-gray-700">מצב טיוטה (לא יופיע בקטלוג)</label>
+                        </div>
                     </div>
                     <div className="flex gap-2 justify-end">
                         <button onClick={handleCancel} className="bg-gray-200 text-black px-6 py-2 rounded font-bold">ביטול</button>
@@ -680,14 +693,25 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                             />
                                         </div>
                                     </div>
-                                    <div className="flex items-center gap-3 bg-gray-50/50 p-3 rounded-xl border border-gray-100 w-fit">
-                                        <input
-                                            type="checkbox"
-                                            checked={editForm.in_lottery ?? true}
-                                            onChange={e => setEditForm({ ...editForm, in_lottery: e.target.checked })}
-                                            className="w-5 h-5 accent-black cursor-pointer rounded-lg"
-                                        />
-                                        <label className="text-xs font-black uppercase tracking-widest select-none text-gray-700">כלול בהגרלות רנדומליות</label>
+                                    <div className="flex flex-wrap gap-3">
+                                        <div className="flex items-center gap-3 bg-gray-50/50 p-3 rounded-xl border border-gray-100 w-fit">
+                                            <input
+                                                type="checkbox"
+                                                checked={editForm.in_lottery ?? true}
+                                                onChange={e => setEditForm({ ...editForm, in_lottery: e.target.checked })}
+                                                className="w-5 h-5 accent-black cursor-pointer rounded-lg"
+                                            />
+                                            <label className="text-xs font-black uppercase tracking-widest select-none text-gray-700">כלול בהגרלות רנדומליות</label>
+                                        </div>
+                                        <div className="flex items-center gap-3 bg-gray-50/50 p-3 rounded-xl border border-gray-100 w-fit">
+                                            <input
+                                                type="checkbox"
+                                                checked={editForm.active === false}
+                                                onChange={e => setEditForm({ ...editForm, active: !e.target.checked })}
+                                                className="w-5 h-5 accent-gray-500 cursor-pointer rounded-lg"
+                                            />
+                                            <label className="text-xs font-black uppercase tracking-widest select-none text-gray-700">מצב טיוטה (מוסתר)</label>
+                                        </div>
                                     </div>
 
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2 p-4 bg-white rounded-2xl border border-gray-100">
@@ -759,6 +783,11 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                             }`}>
                                             מלאי: {product.stock || 0}מ״ל
                                         </div>
+                                        {product.active === false && (
+                                            <div className="font-black text-[9px] md:text-[10px] px-2.5 py-1 rounded-full uppercase tracking-widest border shadow-sm bg-gray-800 text-white border-gray-900">
+                                                טיוטה
+                                            </div>
+                                        )}
                                     </div>
                                     <div className="text-gray-500 font-bold text-sm md:text-base leading-tight line-clamp-1">
                                         {product.brand_he || product.brand} • {product.model_he || product.model}
