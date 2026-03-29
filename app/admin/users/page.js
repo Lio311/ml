@@ -160,7 +160,7 @@ export default async function AdminUsersPage(props) {
                                     <td className="p-4 text-xs text-gray-500 text-right space-y-1">
                                         <div className="flex justify-between items-center bg-gray-50 px-2 py-1 rounded">
                                             <span className="font-bold">נוצר:</span>
-                                            <span>{new Date(u.createdAt).toLocaleDateString('he-IL')}</span>
+                                            <span dir="ltr">{new Date(u.createdAt).toLocaleDateString('he-IL', { day: '2-digit', month: '2-digit', year: '2-digit' })}</span>
                                         </div>
                                         {u.lastLogin && (
                                             <div className="flex justify-between items-center bg-green-50 text-green-700 px-2 py-1 rounded border border-green-100">
@@ -193,8 +193,8 @@ export default async function AdminUsersPage(props) {
                                         {u.id.length > 12 ? `${u.id.slice(0, 8)}...${u.id.slice(-4)}` : u.id}
                                     </div>
                                 </div>
-                                <div className="text-[10px] text-gray-400 font-bold bg-gray-50 px-2 py-1 rounded-lg border border-gray-100">
-                                    {new Date(u.createdAt).toLocaleDateString('he-IL', { day: '2-digit', month: '2-digit' })}
+                                <div className="text-[10px] text-gray-400 font-bold bg-gray-50 px-2 py-1 rounded-lg border border-gray-100" dir="ltr">
+                                    {new Date(u.createdAt).toLocaleDateString('he-IL', { day: '2-digit', month: '2-digit', year: '2-digit' })}
                                 </div>
                             </div>
                             
