@@ -74,28 +74,27 @@ export default function AdminOrdersListClient({ orders, totalPages, page, canEdi
                 
                 {selectedOrderIds.length > 0 && canEdit && (
                     <div className="bg-white border text-gray-800 p-2.5 md:p-3 rounded-2xl shadow-sm z-40 flex flex-col md:flex-row items-center gap-4 animate-in fade-in zoom-in-95 w-full xl:w-auto relative">
-                        <div className="font-bold flex items-center justify-center gap-2 w-full md:w-auto text-sm md:text-base pr-2">
+                        <div className="font-bold flex items-center justify-center gap-2.5 w-full md:w-auto text-sm md:text-base border-b md:border-b-0 border-gray-100 pb-3 md:pb-0 md:pl-2">
                             <span className="bg-blue-100 text-blue-700 w-6 h-6 rounded-full flex items-center justify-center text-xs font-black">{selectedOrderIds.length}</span>
                             <span className="text-gray-600 font-bold">סומנו</span>
                         </div>
                         
-                        <div className="flex w-full md:w-auto items-center gap-2">
-                            <div className="min-w-[140px]">
-                                <CustomDropdown
-                                    options={STATUS_OPTIONS}
-                                    value={batchStatus}
-                                    onChange={setBatchStatus}
-                                    variant="status"
-                                />
-                            </div>
-                            <button 
-                                onClick={handleApplyBatchStatus}
-                                disabled={isApplyingBatch}
-                                className="bg-blue-600 border border-blue-700 hover:bg-blue-500 text-white px-4 py-2 rounded-xl text-sm font-bold transition whitespace-nowrap shadow-sm"
-                            >
-                                {isApplyingBatch ? 'מעדכן...' : 'החל סטטוס'}
-                            </button>
+                        <div className="min-w-[140px] w-full md:w-auto">
+                            <CustomDropdown
+                                options={STATUS_OPTIONS}
+                                value={batchStatus}
+                                onChange={setBatchStatus}
+                                variant="status"
+                            />
                         </div>
+
+                        <button 
+                            onClick={handleApplyBatchStatus}
+                            disabled={isApplyingBatch}
+                            className="bg-blue-600 border border-blue-700 hover:bg-blue-500 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition whitespace-nowrap shadow-sm w-full md:w-auto"
+                        >
+                            {isApplyingBatch ? 'מעדכן...' : 'החל סטטוס'}
+                        </button>
 
                         <div className="w-full md:block hidden h-8 w-px bg-gray-200"></div>
 
