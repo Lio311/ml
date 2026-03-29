@@ -79,7 +79,7 @@ export default function AdminOrdersListClient({ orders, totalPages, page, canEdi
                             <span className="text-gray-600 font-bold">סומנו</span>
                         </div>
                         
-                        <div className="min-w-[140px] w-full md:w-auto">
+                        <div className="min-w-[140px] w-full md:w-auto md:mr-4">
                             <CustomDropdown
                                 options={STATUS_OPTIONS}
                                 value={batchStatus}
