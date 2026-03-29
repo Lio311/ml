@@ -164,7 +164,7 @@ export default async function AdminUsersPage(props) {
                                         </div>
                                         {u.lastLogin && (
                                             <div className="flex justify-between items-center bg-green-50 text-green-700 px-2 py-1 rounded border border-green-100">
-                                                <span className="font-bold">התחברות עכשווית:</span>
+                                                <span className="font-bold">התחברות אחרונה:</span>
                                                 <span dir="ltr">{new Date(u.lastLogin).toLocaleDateString('he-IL', { day: '2-digit', month: '2-digit', year: '2-digit' })}</span>
                                             </div>
                                         )}
