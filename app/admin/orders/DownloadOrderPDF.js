@@ -130,13 +130,13 @@ export default function DownloadOrderPDF({ order }) {
         <button 
             onClick={handleDownload}
             disabled={isGenerating}
-            className="w-full md:w-auto bg-gray-800 text-white rounded-lg px-3 py-1.5 text-xs font-bold hover:bg-black transition flex items-center justify-center gap-1.5"
+            className="w-full md:w-auto bg-gray-800 text-white rounded-lg px-3 py-1.5 text-xs font-bold hover:bg-black transition flex items-center justify-center gap-1.5 flex-row-reverse"
             title="הורד מדבקות PDF לכל מוצרי ההזמנה"
         >
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-3.5 h-3.5">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M6.72 13.829c-.24.03-.48.062-.724.092m6.524-4.65b.921.921m-6.797-3.66L3 12.5m0 0 9 5.5m-9-5.5 9-5.5m0 0 9 5.5m0 0-9 5.5M3 12.5v6.5a2.25 2.25 0 0 0 2.25 2.25h13.5A2.25 2.25 0 0 0 21 19v-6.5" />
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
+              <path strokeLinecap="round" strokeLinejoin="round" d="M3 16.5v2.25A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75V16.5M7.5 12 12 16.5m0 0 4.5-4.5M12 16.5V3" />
             </svg>
-            {isGenerating ? 'מייצר...' : 'הורד מדבקות'}
+            <span>{isGenerating ? 'מייצר...' : 'הורד מדבקות'}</span>
         </button>
     );
 }
