@@ -74,7 +74,7 @@ export default function AdminOrdersListClient({ orders, totalPages, page, canEdi
                 
                 {selectedOrderIds.length > 0 && canEdit && (
                     <div className="bg-white border text-gray-800 p-2.5 md:p-3 rounded-2xl shadow-sm z-40 flex flex-col md:flex-row items-center gap-4 animate-in fade-in zoom-in-95 w-full xl:w-auto relative">
-                        <div className="font-bold flex items-center justify-center gap-2 w-full md:w-auto text-sm md:text-base bg-gray-50 p-1.5 px-3 rounded-xl border border-gray-200 shadow-inner">
+                        <div className="font-bold flex items-center justify-center gap-2 w-full md:w-auto text-sm md:text-base pr-2">
                             <span className="bg-blue-100 text-blue-700 w-6 h-6 rounded-full flex items-center justify-center text-xs font-black">{selectedOrderIds.length}</span>
                             <span className="text-gray-600 font-bold">סומנו</span>
                         </div>
