@@ -20,13 +20,10 @@ export default async function AdminProductsPage(props) {
     let products = [];
     let totalProducts = 0;
     let filteredCount = 0;
+    let counts = { all: 0, out_of_stock: 0, drafts: 0 };
 
     const client = await pool.connect();
     try {
-        // Total Count (All products)
-        const totalRes = await client.query('SELECT COUNT(*) FROM products');
-        totalProducts = parseInt(totalRes.rows[0].count);
-
         let query = 'SELECT * FROM products';
         let countQuery = 'SELECT COUNT(*) FROM products';
         const params = [];
@@ -43,7 +40,24 @@ export default async function AdminProductsPage(props) {
         // View Filter
         if (view === 'out_of_stock') {
             whereClauses.push(`stock <= 0`);
+        } else if (view === 'drafts') {
+            whereClauses.push(`active = false`);
         }
+
+        // Fetch Global Counts (Quickly, without search/letter filtering)
+        const countsRes = await client.query(`
+            SELECT 
+                COUNT(*) as all,
+                COUNT(*) FILTER (WHERE stock <= 0) as out_of_stock,
+                COUNT(*) FILTER (WHERE active = false) as drafts
+            FROM products
+        `);
+        counts = {
+            all: parseInt(countsRes.rows[0].all),
+            out_of_stock: parseInt(countsRes.rows[0].out_of_stock),
+            drafts: parseInt(countsRes.rows[0].drafts)
+        };
+        totalProducts = counts.all;
 
         if (whereClauses.length > 0) {
             const whereStmt = ' WHERE ' + whereClauses.join(' AND ');
@@ -82,6 +96,7 @@ export default async function AdminProductsPage(props) {
             initialSearch={search}
             totalProducts={totalProducts}
             filteredCount={filteredCount}
+            counts={counts}
             currentPage={page}
             totalPages={Math.ceil(filteredCount / limit)}
             currentLetter={letter}

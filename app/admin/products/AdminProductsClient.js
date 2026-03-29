@@ -6,7 +6,7 @@ import TagInput from "../../components/TagInput";
 import toast from 'react-hot-toast';
 import AdminFilterBar from "../../components/admin/AdminFilterBar";
 
-export default function AdminProductsClient({ products, initialSearch, totalProducts, filteredCount, currentPage, totalPages, currentLetter, currentView, currentSort, canEdit }) {
+export default function AdminProductsClient({ products, initialSearch, totalProducts, filteredCount, counts, currentPage, totalPages, currentLetter, currentView, currentSort, canEdit }) {
 
     const router = useRouter();
     const [editingId, setEditingId] = useState(null);
@@ -211,22 +211,28 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
             </div>
 
             {/* View Tabs */}
-            <div className="flex gap-4 border-b mb-6">
+            <div className="flex gap-4 border-b mb-6 overflow-x-auto scrollbar-hide">
                 <button
                     onClick={() => router.push('/admin/products?view=all')}
-                    className={`pb-2 px-4 font-bold transition ${currentView === 'all' ? 'border-b-2 border-black text-black' : 'text-gray-500 hover:text-black'}`}
+                    className={`pb-2 px-4 font-bold transition whitespace-nowrap ${currentView === 'all' ? 'border-b-2 border-black text-black' : 'text-gray-500 hover:text-black'}`}
                 >
-                    כל המוצרים
+                    כל המוצרים ({counts?.all || 0})
                 </button>
                 <button
                     onClick={() => router.push('/admin/products?view=out_of_stock')}
-                    className={`pb-2 px-4 font-bold transition ${currentView === 'out_of_stock' ? 'border-b-2 border-red-600 text-red-600' : 'text-gray-500 hover:text-red-600'}`}
+                    className={`pb-2 px-4 font-bold transition whitespace-nowrap ${currentView === 'out_of_stock' ? 'border-b-2 border-red-600 text-red-600' : 'text-gray-500 hover:text-red-600'}`}
                 >
-                    חסרים במלאי
+                    חסרים במלאי ({counts?.out_of_stock || 0})
+                </button>
+                <button
+                    onClick={() => router.push('/admin/products?view=drafts')}
+                    className={`pb-2 px-4 font-bold transition whitespace-nowrap ${currentView === 'drafts' ? 'border-b-2 border-gray-600 text-gray-600' : 'text-gray-500 hover:text-gray-600'}`}
+                >
+                    טיוטות ({counts?.drafts || 0})
                 </button>
                 <button
                     onClick={() => router.push('/admin/products?view=stock_list')}
-                    className={`pb-2 px-4 font-bold transition ${currentView === 'stock_list' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-500 hover:text-blue-600'}`}
+                    className={`pb-2 px-4 font-bold transition whitespace-nowrap ${currentView === 'stock_list' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-500 hover:text-blue-600'}`}
                 >
                     דו״ח מלאי
                 </button>
