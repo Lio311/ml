@@ -4,6 +4,7 @@ import { currentUser } from "@clerk/nextjs/server";
 import Link from "next/link";
 import DeleteOrderButton from "./DeleteOrderButton";
 import AdminOrderStatusSelect from "./AdminOrderStatusSelect";
+import DownloadOrderPDF from "./DownloadOrderPDF";
 
 export const metadata = {
     title: "ניהול הזמנות | ml_tlv",
@@ -217,6 +218,7 @@ export default async function AdminOrdersPage(props) {
                                             {canEdit ? (
                                                 <>
                                                     <AdminOrderStatusSelect orderId={order.id} initialStatus={order.status} />
+                                                    <DownloadOrderPDF order={order} />
                                                     <DeleteOrderButton orderId={order.id} deleteAction={deleteOrder} />
                                                 </>
                                             ) : (
@@ -303,11 +305,14 @@ export default async function AdminOrdersPage(props) {
                             </div>
 
                             {canEdit && (
-                                <div className="mt-5 flex gap-3 pt-4 border-t border-gray-100/50">
-                                    <div className="flex-1">
-                                        <AdminOrderStatusSelect orderId={order.id} initialStatus={order.status} />
+                                <div className="mt-5 flex flex-col gap-3 pt-4 border-t border-gray-100/50">
+                                    <div className="flex gap-3 w-full">
+                                        <div className="flex-1">
+                                            <AdminOrderStatusSelect orderId={order.id} initialStatus={order.status} />
+                                        </div>
+                                        <DeleteOrderButton orderId={order.id} deleteAction={deleteOrder} />
                                     </div>
-                                    <DeleteOrderButton orderId={order.id} deleteAction={deleteOrder} />
+                                    <DownloadOrderPDF order={order} />
                                 </div>
                             )}
                         </div>
