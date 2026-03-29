@@ -134,7 +134,7 @@ export default function DownloadBatchOrderPDF({ selectedOrders, onComplete }) {
         <button 
             onClick={handleDownloadBatch}
             disabled={isGenerating}
-            className="w-full md:w-auto bg-white border border-gray-200 shadow-sm text-gray-800 rounded-xl px-4 py-2 text-sm font-bold hover:bg-gray-50 transition flex items-center justify-center gap-2"
+            className="w-full md:w-auto bg-white border border-gray-200 shadow-sm text-gray-800 rounded-xl px-4 py-2 text-sm font-bold hover:bg-gray-50 transition flex flex-row-reverse items-center justify-center gap-2"
             title="הורד קובץ PDF עם כל המדבקות להזמנות שסומנו"
         >
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">

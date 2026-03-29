@@ -69,18 +69,18 @@ export default function AdminOrdersListClient({ orders, totalPages, page, canEdi
         <div className="pb-8 relative">
             
             {/* Header and Batch Action Bar */}
-            <div className="flex flex-col xl:flex-row justify-between items-start xl:items-center gap-4 mb-8">
-                <h1 className="text-2xl md:text-3xl font-bold text-gray-900 shrink-0">ניהול הזמנות</h1>
+            <div className="flex flex-col xl:flex-row items-start xl:items-center justify-center gap-4 mb-8 relative min-h-[44px]">
+                <h1 className="text-2xl md:text-3xl font-bold text-gray-900 shrink-0 xl:absolute xl:right-0 xl:top-1/2 xl:-translate-y-1/2">ניהול הזמנות</h1>
                 
                 {selectedOrderIds.length > 0 && canEdit && (
-                    <div className="bg-white border text-gray-800 p-2.5 md:p-3 rounded-2xl shadow-sm z-40 flex flex-col md:flex-row items-center gap-4 animate-in fade-in zoom-in-95 w-full xl:w-auto">
-                        <div className="font-bold flex items-center gap-2 w-full md:w-auto text-sm md:text-base border-b md:border-b-0 md:border-l border-gray-100 pb-3 md:pb-0 md:pl-4">
+                    <div className="bg-white border text-gray-800 p-2.5 md:p-3 rounded-2xl shadow-sm z-40 flex flex-col md:flex-row items-center gap-4 animate-in fade-in zoom-in-95 w-full xl:w-auto relative">
+                        <div className="font-bold flex items-center justify-center gap-2 w-full md:w-auto text-sm md:text-base bg-gray-50 p-1.5 px-3 rounded-xl border border-gray-200 shadow-inner">
                             <span className="bg-blue-100 text-blue-700 w-6 h-6 rounded-full flex items-center justify-center text-xs font-black">{selectedOrderIds.length}</span>
                             <span className="text-gray-600 font-bold">סומנו</span>
                         </div>
                         
                         <div className="flex w-full md:w-auto items-center gap-2">
-                            <div className="bg-gray-50 rounded-xl p-0.5 min-w-[140px] border border-gray-100 shadow-inner">
+                            <div className="min-w-[140px]">
                                 <CustomDropdown
                                     options={STATUS_OPTIONS}
                                     value={batchStatus}
