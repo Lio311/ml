@@ -85,7 +85,7 @@ async function getProducts(search, brand, category, minPrice, maxPrice, sort, pa
     const LIMIT = 16;
     const OFFSET = (page - 1) * LIMIT;
 
-    const joinType = sort === 'bestsellers' ? 'INNER JOIN' : 'LEFT JOIN';
+    const joinType = 'LEFT JOIN';
 
     let query = `
     SELECT p.*, COALESCE(ps.sales_count, 0) as sales_count 
