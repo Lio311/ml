@@ -2,6 +2,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 
 export default function ShellGame({ prize, onComplete }) {
     const [gameState, setGameState] = useState('shuffle'); // shuffle, pick, reveal
@@ -56,7 +57,7 @@ export default function ShellGame({ prize, onComplete }) {
                         {gameState === 'reveal' && idx === winningCup && (
                             <div className="absolute top-20 left-0 w-full h-full flex flex-col items-center animate-fade-in-up z-10">
                                 {prize.image_url ? (
-                                    <img src={prize.image_url} alt="prize" className="w-16 h-16 object-contain drop-shadow-md bg-white rounded-full p-1" />
+                                    <Image src={prize.image_url} alt="prize" width={64} height={64} className="w-16 h-16 object-contain drop-shadow-md bg-white rounded-full p-1" />
                                 ) : (
                                     <span className="text-4xl">🧴</span>
                                 )}

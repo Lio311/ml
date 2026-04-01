@@ -1,5 +1,6 @@
 "use client";
 import { useState, useRef, useEffect } from 'react';
+import Image from 'next/image';
 
 export default function TruthOrDareGame({ prize, onComplete, allImages = [] }) {
     const [spinning, setSpinning] = useState(false);
@@ -65,7 +66,7 @@ export default function TruthOrDareGame({ prize, onComplete, allImages = [] }) {
                             }}
                         >
                             {item.img ? (
-                                <img src={item.img} alt="item" className="w-10 h-10 object-contain" />
+                                <Image src={item.img} alt="item" width={40} height={40} className="w-10 h-10 object-contain" />
                             ) : (
                                 <span className="text-xl">item</span>
                             )}

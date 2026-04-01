@@ -13,7 +13,8 @@ export async function GET(req, props) {
 
         // Fetch order details
         const query = await pool.query(`
-            SELECT * FROM orders WHERE id = $1
+            SELECT id, user_id, items, total, status, customer_details, created_at, invoice_url, catalog_id, free_samples_count, payment_intent_id 
+            FROM orders WHERE id = $1
         `, [orderId]);
 
         if (query.rows.length === 0) {

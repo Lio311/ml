@@ -28,21 +28,29 @@ const localize = (obj, field, locale) => {
 
 export const dynamic = 'force-dynamic';
 
-export async function generateMetadata() {
+export async function generateMetadata(props) {
     const cookieStore = await cookies();
     const locale = cookieStore.get('NEXT_LOCALE')?.value || 'he';
     const t = getT(locale);
+
+    const searchParams = await props.searchParams;
+    const page = searchParams?.page;
+    
+    let canonical = 'https://www.ml-tlv.com/blog';
+    if (page) {
+        canonical = `${canonical}?page=${page}`;
+    }
 
     return {
         title: `${t('common.magazine_title')} | ml_tlv`,
         description: t('common.magazine_desc'),
         alternates: {
-            canonical: 'https://www.ml-tlv.com/blog',
+            canonical: canonical,
         },
         openGraph: {
             title: `${t('common.magazine_title')} | ml_tlv`,
             description: t('common.magazine_desc'),
-            url: 'https://www.ml-tlv.com/blog',
+            url: canonical,
             type: 'website'
         }
     };
@@ -50,22 +58,8 @@ export async function generateMetadata() {
 
 async function getArticles(page = 1, tag = null) {
     const GRID_SIZE = 9;
-    const hasFeaturedPost = !tag;
-
     let offset = (page - 1) * GRID_SIZE;
     let limit = GRID_SIZE;
-
-    if (hasFeaturedPost) {
-        if (page === 1) {
-            offset = 0;
-            limit = GRID_SIZE + 1; // 1 featured + 9 grid
-        } else {
-            offset = ((page - 1) * GRID_SIZE) + 1; // skip the 1 featured post from page 1
-            limit = GRID_SIZE;
-        }
-    } else {
-        limit = GRID_SIZE;
-    }
 
     const client = await pool.connect();
     try {
@@ -90,15 +84,7 @@ async function getArticles(page = 1, tag = null) {
         const countRes = await client.query(countQuery, countParams);
 
         const totalCount = parseInt(countRes.rows[0].count);
-        let totalPages = 1;
-        
-        if (hasFeaturedPost) {
-            if (totalCount > GRID_SIZE + 1) {
-                totalPages = 1 + Math.ceil((totalCount - (GRID_SIZE + 1)) / GRID_SIZE);
-            }
-        } else {
-            totalPages = Math.ceil(totalCount / GRID_SIZE);
-        }
+        let totalPages = Math.ceil(totalCount / GRID_SIZE);
 
         // Fetch all unique tags for the filter bar
         const tagsRes = await client.query('SELECT DISTINCT unnest(tags) as tag FROM blog_posts LIMIT 20');
@@ -124,10 +110,7 @@ export default async function BlogIndex(props) {
     const page = parseInt(searchParams?.page || '1');
     const activeTag = searchParams?.tag || null;
     const { articles, totalPages, allTags } = await getArticles(page, activeTag);
-
-    // Featured article for the first page
-    const featuredArticle = (page === 1 && articles.length > 0 && !activeTag) ? articles[0] : null;
-    const gridArticles = featuredArticle ? articles.slice(1) : articles;
+    const gridArticles = articles;
 
     return (
         <div className="min-h-screen bg-[#fafafa] py-12 md:py-20" dir={dir}>
@@ -164,45 +147,6 @@ export default async function BlogIndex(props) {
                         </div>
                     </div>
 
-                    {/* Featured Hero Article */}
-                    {featuredArticle && (
-                        <Link 
-                            href={`/blog/${featuredArticle.slug}`}
-                            className="group relative block w-full h-[600px] rounded-[3rem] overflow-hidden shadow-2xl border border-gray-100 mb-20 bg-black"
-                        >
-                             <Image 
-                                src={featuredArticle.image_url} 
-                                alt={featuredArticle.title}
-                                fill
-                                className="object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-1000"
-                                priority
-                                sizes="100vw"
-                            />
-                            <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/40 to-transparent"></div>
-                            
-                            <div className={`absolute bottom-0 left-0 right-0 p-8 md:p-16 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
-                                <div className="flex gap-2 mb-6">
-                                    {featuredArticle.tags && featuredArticle.tags.map(tag => (
-                                        <span key={tag} className="bg-blue-600 text-white text-[10px] font-bold uppercase tracking-widest px-4 py-1.5 rounded-full shadow-lg">
-                                            {tag}
-                                        </span>
-                                    ))}
-                                </div>
-                                <h2 className="text-4xl md:text-6xl font-serif font-bold text-white mb-6 leading-tight max-w-4xl tracking-tight">
-                                    {localize(featuredArticle, 'title', locale)}
-                                </h2>
-                                <p className="text-gray-300 text-lg md:text-xl max-w-2xl font-light leading-relaxed mb-8 line-clamp-2">
-                                    {localize(featuredArticle, 'excerpt', locale)}
-                                </p>
-                                <div className="inline-flex items-center gap-3 bg-white text-black px-8 py-3.5 rounded-full font-bold text-sm group-hover:bg-blue-600 group-hover:text-white transition duration-300 transform group-hover:translate-x-2">
-                                    {t('common.read_more')}
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className={`w-4 h-4 ${dir === 'rtl' ? 'rotate-180' : ''}`}>
-                                        <path strokeLinecap="round" strokeLinejoin="round" d="M13.5 4.5 21 12m0 0-7.5 7.5M21 12H3" />
-                                    </svg>
-                                </div>
-                            </div>
-                        </Link>
-                    )}
                 </header>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16 mb-20">
@@ -272,9 +216,10 @@ export default async function BlogIndex(props) {
                             <Link
                                 href={`/blog?page=${page - 1}${activeTag ? `&tag=${activeTag}` : ''}`}
                                 className="w-12 h-12 flex items-center justify-center rounded-2xl border border-gray-200 bg-white hover:border-black transition"
+                                title={t('common.previous')}
                             >
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className={`w-5 h-5 ${dir === 'rtl' ? 'rotate-180' : ''}`}>
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className={`w-5 h-5 ${dir === 'rtl' ? '' : 'rotate-180'}`}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5" />
                                 </svg>
                             </Link>
                         )}
@@ -302,9 +247,10 @@ export default async function BlogIndex(props) {
                             <Link
                                 href={`/blog?page=${page + 1}${activeTag ? `&tag=${activeTag}` : ''}`}
                                 className="w-12 h-12 flex items-center justify-center rounded-2xl border border-gray-200 bg-white hover:border-black transition"
+                                title={t('common.next')}
                             >
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className={`w-5 h-5 ${dir === 'rtl' ? 'rotate-180' : ''}`}>
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className={`w-5 h-5 ${dir === 'rtl' ? '' : 'rotate-180'}`}>
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5" />
                                 </svg>
                             </Link>
                         )}

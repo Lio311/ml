@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect, useRef } from 'react';
+import Image from 'next/image';
 
 export default function SpeedGame({ prize, onComplete, allImages = [] }) {
     const [running, setRunning] = useState(true);
@@ -36,12 +37,14 @@ export default function SpeedGame({ prize, onComplete, allImages = [] }) {
             <h3 className="text-2xl font-bold text-red-500 mb-8">משחק המהירות</h3>
 
             <div className="relative inline-block bg-white rounded-2xl border-4 border-red-500 shadow-[0_0_20px_rgba(239,68,68,0.5)] p-4 mb-8">
-                <div className="w-40 h-40 flex items-center justify-center overflow-hidden">
+                <div className="w-40 h-40 flex items-center justify-center overflow-hidden relative">
                     {currentImg ? (
-                        <img
+                        <Image
                             src={currentImg}
                             alt="item"
-                            className={`w-full h-full object-contain transition-transform duration-75 ${running ? 'scale-90 blur-[1px]' : 'scale-110 blur-none'}`}
+                            fill
+                            sizes="160px"
+                            className={`object-contain transition-transform duration-75 ${running ? 'scale-90 blur-[1px]' : 'scale-110 blur-none'}`}
                         />
                     ) : (
                         <span className="text-6xl animate-pulse">🧴</span>

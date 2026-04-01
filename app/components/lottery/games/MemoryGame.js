@@ -1,5 +1,6 @@
 "use client";
 import { useState } from 'react';
+import Image from 'next/image';
 
 export default function MemoryGame({ prize, onComplete, allImages = [] }) {
     // 9 Cards
@@ -137,10 +138,12 @@ export default function MemoryGame({ prize, onComplete, allImages = [] }) {
 
                                 {/* Back (Revealed) */}
                                 <div className="absolute inset-0 w-full h-full bg-white rounded-xl border-2 border-red-500 flex items-center justify-center backface-hidden rotate-y-180 shadow-xl overflow-hidden p-2">
-                                    <img
+                                    <Image
                                         src={card.content}
                                         alt="brand"
-                                        className="w-full h-full object-contain"
+                                        fill
+                                        sizes="(max-width: 768px) 33vw, 150px"
+                                        className="object-contain p-2"
                                     />
                                 </div>
                             </div>
@@ -156,10 +159,12 @@ export default function MemoryGame({ prize, onComplete, allImages = [] }) {
                         {/* Transformation: Begins as Logo, Fades into Bottle */}
                         <div className="relative w-40 h-40 mb-4">
                             {prize.image_url ? (
-                                <img
+                                <Image
                                     src={prize.image_url}
                                     alt="prize"
-                                    className="absolute inset-0 w-full h-full object-contain animate-fade-in-slow"
+                                    fill
+                                    sizes="160px"
+                                    className="object-contain animate-fade-in-slow"
                                     onError={(e) => e.target.style.display = 'none'}
                                 />
                             ) : (

@@ -57,8 +57,7 @@ export async function generateMetadata(props) {
 
     const params = await props.params;
     const { slug } = params;
-
-    const res = await pool.query(`SELECT * FROM products WHERE slug = $1 OR id::text = $1`, [slug]);
+    const res = await pool.query(`SELECT id, slug, brand, brand_he, model, model_he, name, name_he, description, description_he, image_url, category, stock, top_notes, middle_notes, base_notes, price_2ml, price_5ml, price_10ml FROM products WHERE slug = $1 OR id::text = $1`, [slug]);
     const product = res.rows[0];
 
     if (!product) {
@@ -129,7 +128,7 @@ export default async function ProductPage(props) {
     const { slug } = params;
 
     const res = await pool.query(`
-        SELECT p.*, b.logo_url,
+        SELECT p.id, p.slug, p.brand, p.brand_he, p.model, p.model_he, p.name, p.name_he, p.description, p.description_he, p.image_url, p.category, p.stock, p.top_notes, p.middle_notes, p.base_notes, p.price_2ml, p.price_5ml, p.price_10ml, p.seasons, p.country, p.perfumers, b.logo_url,
         (SELECT AVG(rating) FROM reviews WHERE product_id = p.id) as average_rating,
         (SELECT COUNT(*) FROM reviews WHERE product_id = p.id) as review_count
         FROM products p 

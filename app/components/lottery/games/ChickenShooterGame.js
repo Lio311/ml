@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 
 export default function ChickenShooterGame({ prize, onComplete }) {
     const [aim, setAim] = useState(50); // 0-100
@@ -75,7 +76,7 @@ export default function ChickenShooterGame({ prize, onComplete }) {
                         <div className="bg-white/10 backdrop-blur-md p-6 rounded-xl border border-white/20 shadow-lg text-center">
                             <p className="text-red-500 font-bold text-xl mb-2">ברכות!</p>
                             {prize.image_url ? (
-                                <img src={prize.image_url} alt="prize" className="w-32 h-32 object-contain mx-auto mb-2 bg-white rounded-full p-2" />
+                                <Image src={prize.image_url} alt="prize" width={128} height={128} className="w-32 h-32 object-contain mx-auto mb-2 bg-white rounded-full p-2" />
                             ) : (
                                 <span className="text-6xl block mb-2">🧴</span>
                             )}

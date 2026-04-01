@@ -1,6 +1,7 @@
 
 "use client";
 import { useState } from 'react';
+import Image from 'next/image';
 
 export default function SlotMachineGame({ prize, onComplete, allImages = [] }) {
     const [spinning, setSpinning] = useState(false);
@@ -30,7 +31,7 @@ export default function SlotMachineGame({ prize, onComplete, allImages = [] }) {
                             {finished ? (
                                 <div className="h-28 flex flex-col items-center justify-center p-2">
                                     {prize.image_url ? (
-                                        <img src={prize.image_url} alt="Prize" className="w-full h-full object-contain" />
+                                        <Image src={prize.image_url} alt="Prize" width={80} height={112} className="w-full h-full object-contain" />
                                     ) : (
                                         <span className="text-4xl">🧴</span>
                                     )}
@@ -41,7 +42,7 @@ export default function SlotMachineGame({ prize, onComplete, allImages = [] }) {
                                     {[1, 2, 3, 4].map((_, idx) => {
                                         const randomImg = pool[(colIndex + idx) % pool.length];
                                         return randomImg ? (
-                                            <img key={idx} src={randomImg} alt="rolling" className="w-14 h-14 object-contain mx-auto filter grayscale opacity-70" />
+                                            <Image key={idx} src={randomImg} alt="rolling" width={56} height={56} className="w-14 h-14 object-contain mx-auto filter grayscale opacity-70" />
                                         ) : (
                                             <span key={idx} className="text-4xl block">🧴</span>
                                         );

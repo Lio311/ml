@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import Link from "next/link";
+import Image from "next/image";
 import { ArrowRight, CheckCircle2, ShoppingBag, Globe, Zap, ShieldCheck, Mail, Phone, ExternalLink } from "lucide-react";
 import { useLanguage } from "../context/LanguageContext";
 
@@ -82,13 +83,13 @@ export default function InfoPageClient({ userId }) {
                                         className="relative w-full mx-auto rounded-[1.5rem] shadow-xl overflow-hidden border border-white bg-white z-10"
                                         style={{ rotateX: 12, rotateY: -15, transformPerspective: 1200 }}
                                     >
-                                        <img src="/info-page/media__1773582608518.png" className="w-full h-auto block" alt="Catalog Preview" />
+                                        <Image src="/info-page/media__1773582608518.png" width={800} height={600} className="w-full h-auto block" alt="Catalog Preview" />
                                     </motion.div>
                                     <motion.div 
                                         className="absolute -bottom-8 -left-8 w-44 shadow-xl rounded-xl border border-white/80 overflow-hidden bg-white/90 backdrop-blur-sm p-2 z-30"
                                         style={{ rotateX: 10, rotateY: 15, transformPerspective: 1200 }}
                                     >
-                                        <img src="/info-page/media__1773582785226.png" alt="Cart Preview" className="w-full h-auto block rounded-lg" />
+                                        <Image src="/info-page/media__1773582785226.png" alt="Cart Preview" width={800} height={600} className="w-full h-auto block rounded-lg" />
                                     </motion.div>
                                 </div>
                             </motion.div>
@@ -127,8 +128,9 @@ export default function InfoPageClient({ userId }) {
                                     whileHover={{ rotateY: -8, scale: 1.05 }}
                                     transition={{ duration: 0.8 }}
                                 >
-                                    <img 
+                                    <Image 
                                         src="/info-page/media__1773582608518.png" 
+                                        width={800} height={600}
                                         className="w-full h-auto block" 
                                         alt="Catalog Preview" 
                                     />
@@ -144,7 +146,7 @@ export default function InfoPageClient({ userId }) {
                                     transition={{ duration: 2, repeat: Infinity, repeatType: "mirror", ease: "easeInOut" }}
                                     style={{ rotateX: 10, rotateY: 15, transformPerspective: 1200 }}
                                 >
-                                    <img src="/info-page/media__1773582785226.png" alt="Cart Preview" className="w-full h-auto block rounded-xl" />
+                                    <Image src="/info-page/media__1773582785226.png" alt="Cart Preview" width={800} height={600} className="w-full h-auto block rounded-xl" />
                                 </motion.div>
                             </div>
                         </motion.div>
@@ -207,7 +209,7 @@ export default function InfoPageClient({ userId }) {
                                     whileInView={{ opacity: 1, y: 0 }}
                                     viewport={{ once: true }}
                                 >
-                                    <img src="/info-page/media__1773582785213.png" alt="Admin UI Mobile" className="w-full" />
+                                    <Image src="/info-page/media__1773582785213.png" alt="Admin UI Mobile" width={1200} height={800} className="w-full h-auto" />
                                 </motion.div>
 
                                 <p className="text-gray-500 text-lg mb-6 leading-relaxed order-3">
@@ -236,7 +238,7 @@ export default function InfoPageClient({ userId }) {
                                 whileInView={{ x: 0, opacity: 1 }}
                                 viewport={{ once: true }}
                             >
-                                <img src="/info-page/media__1773582785213.png" alt="Admin UI" className="w-full" />
+                                <Image src="/info-page/media__1773582785213.png" alt="Admin UI" width={1200} height={800} className="w-full h-auto" />
                             </motion.div>
                         </div>
                     </div>
@@ -256,9 +258,10 @@ export default function InfoPageClient({ userId }) {
                                 whileInView={{ x: 0, opacity: 1 }}
                                 viewport={{ once: true }}
                             >
-                                <img 
+                                <Image 
                                     src="/info-page/media__1773586658987.png" 
                                     alt="Catalog Preview Desktop" 
+                                    width={1200} height={800}
                                     className="w-full h-auto block" 
                                 />
                             </motion.div>
@@ -284,7 +287,7 @@ export default function InfoPageClient({ userId }) {
                                     whileInView={{ opacity: 1, scale: 1 }}
                                     viewport={{ once: true }}
                                 >
-                                    <img src="/info-page/media__1773586658987.png" alt="Catalog Preview Mobile" className="w-full" />
+                                    <Image src="/info-page/media__1773586658987.png" alt="Catalog Preview Mobile" width={800} height={600} className="w-full h-auto" />
                                 </motion.div>
 
                                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 order-4 w-full">
@@ -330,7 +333,7 @@ export default function InfoPageClient({ userId }) {
                                 <p className="text-gray-500 text-sm leading-relaxed">{t('catalogs_info.growth_shipping_desc')}</p>
                             </div>
                             <div className="rounded-2xl overflow-hidden shadow-2xl border border-white group-hover:scale-[1.03] transition-transform duration-700">
-                                <img src="/info-page/media__1773582608466.png" alt="Shipping" className="w-full" />
+                                <Image src="/info-page/media__1773582608466.png" alt="Shipping" width={800} height={600} className="w-full h-auto" />
                             </div>
                         </motion.div>
 
@@ -347,7 +350,7 @@ export default function InfoPageClient({ userId }) {
                                 <p className="text-gray-500 text-sm leading-relaxed">{t('catalogs_info.growth_samples_desc')}</p>
                             </div>
                             <div className="rounded-2xl overflow-hidden shadow-2xl border border-white group-hover:scale-[1.03] transition-transform duration-700">
-                                <img src="/info-page/media__1773586516781.png" alt="Samples" className="w-full" />
+                                <Image src="/info-page/media__1773586516781.png" alt="Samples" width={800} height={600} className="w-full h-auto" />
                             </div>
                         </motion.div>
 
@@ -369,7 +372,7 @@ export default function InfoPageClient({ userId }) {
                                 whileHover={{ scale: 1.01 }}
                                 transition={{ duration: 0.4 }}
                             >
-                                <img src="/info-page/media__1773582785243.png" alt="Orders Mobile" className="w-full" />
+                                <Image src="/info-page/media__1773582785243.png" alt="Orders Mobile" width={1200} height={800} className="w-full h-auto" />
                             </motion.div>
 
                             <p className="text-black/70 text-lg mb-10 leading-relaxed font-medium order-3">
@@ -387,7 +390,7 @@ export default function InfoPageClient({ userId }) {
                             whileHover={{ scale: 1.01 }}
                             transition={{ duration: 0.4 }}
                         >
-                            <img src="/info-page/media__1773582785243.png" alt="Orders Admin" className="w-full" />
+                            <Image src="/info-page/media__1773582785243.png" alt="Orders Admin" width={1200} height={800} className="w-full h-auto" />
                         </motion.div>
                     </div>
                 </div>

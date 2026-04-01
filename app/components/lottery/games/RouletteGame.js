@@ -1,6 +1,7 @@
 
 "use client";
 import { useState } from 'react';
+import Image from 'next/image';
 
 export default function RouletteGame({ prize, onComplete, allImages = [] }) {
     const [spinning, setSpinning] = useState(false);
@@ -66,7 +67,7 @@ export default function RouletteGame({ prize, onComplete, allImages = [] }) {
                 {finished && (
                     <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/90 rounded-full animate-fade-in z-30 p-6 border-4 border-white/20">
                         {prize.image_url ? (
-                            <img src={prize.image_url} alt="prize" className="w-24 h-24 object-contain mb-3 bg-white rounded-full p-2 shadow-lg" />
+                            <Image src={prize.image_url} alt="prize" width={96} height={96} className="w-24 h-24 object-contain mb-3 bg-white rounded-full p-2 shadow-lg" />
                         ) : (
                             <span className="text-4xl mb-2">🧴</span>
                         )}

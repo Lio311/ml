@@ -4,6 +4,7 @@
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 
 import { chatbotKnowledge } from '../../data/chatbot_knowledge';
 
@@ -164,8 +165,8 @@ export default function ChatWidget() {
                     <div className="bg-black text-white p-4 flex justify-between items-center">
                         <div className="flex items-center gap-3">
                             <div className="relative">
-                                <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-green-500">
-                                    <img src={rep.image} alt={rep.name} className="w-full h-full object-cover" />
+                                <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-green-500 relative">
+                                    <Image src={rep.image} alt={rep.name} fill sizes="40px" className="object-cover" />
                                 </div>
                                 <div className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full border border-white z-10"></div>
                             </div>
@@ -197,7 +198,7 @@ export default function ChatWidget() {
                                             {msg.data.map(p => (
                                                 <Link key={p.id} href={`/product/${p.slug || p.id}`} className="min-w-[120px] bg-white border rounded-lg p-2 flex flex-col items-center hover:shadow-md transition">
                                                     <div className="w-20 h-20 relative mb-2">
-                                                        <img src={p.image} alt={p.name} className="w-full h-full object-contain" />
+                                                        <Image src={p.image} alt={p.name} fill sizes="80px" className="object-contain" />
                                                     </div>
                                                     <div className="text-xs font-bold text-center line-clamp-2 h-8">{p.name}</div>
                                                     <div className="text-xs text-gray-500">{p.brand}</div>
@@ -333,7 +334,7 @@ export default function ChatWidget() {
                         </svg>
                     ) : (
                         <div className="relative w-full h-full rounded-full overflow-hidden border-2 border-green-500">
-                            <img src={rep.image} alt="Support" className="w-full h-full object-cover" />
+                            <Image src={rep.image} alt="Support" fill sizes="56px" className="object-cover" />
                         </div>
                     )}
 

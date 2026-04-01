@@ -30,7 +30,7 @@ export async function generateMetadata(props) {
     const t = getT(locale);
 
     const searchParams = await props.searchParams;
-    const { q, brand, category } = searchParams;
+    const { q, brand, category, page } = searchParams;
 
     let title = t('common.meta_catalog_title');
     let description = t('common.meta_catalog_desc');
@@ -55,6 +55,7 @@ export async function generateMetadata(props) {
     if (q) params.set('q', q);
     if (brand) params.set('brand', brand);
     if (category) params.set('category', category);
+    if (page) params.set('page', page);
 
     const queryString = params.toString();
     
@@ -62,7 +63,7 @@ export async function generateMetadata(props) {
 
     // SEO Hack: If ONLY brand is selected, canonicalize to the dedicated brand page
     if (brand && !q && !category) {
-        canonical = `${baseUrl}/brands/${encodeURIComponent(brand)}`;
+        canonical = page ? `${baseUrl}/brands/${encodeURIComponent(brand)}?page=${page}` : `${baseUrl}/brands/${encodeURIComponent(brand)}`;
     }
 
     return {
@@ -440,7 +441,7 @@ export default async function CatalogPage(props) {
 
                     {/* Pagination Controls */}
                     {totalPages > 1 && (
-                        <div className="mt-12 flex justify-center gap-2 flex-wrap" dir={dir}>
+                        <div className="mt-12 pb-12 flex justify-center gap-2 flex-wrap" dir={dir}>
                             {/* Previous Button */}
                             {page > 1 && (
                                 <Link
@@ -503,9 +504,9 @@ export default async function CatalogPage(props) {
             </div>
 
             {/* SEO Content Section */}
-            <div className="border-t border-gray-100 px-4 mt-16 pt-8">
+            <div className="border-t border-gray-100 px-4 mt-16 pt-10">
                 <div className="max-w-5xl mx-auto">
-                    <h2 className="text-2xl font-serif font-bold mb-8 text-center text-gray-900 mt-12">
+                    <h2 className="text-2xl font-serif font-bold mb-8 text-center text-gray-900">
                         {t('common.catalog_seo_title')}
                     </h2>
                     <div className={`grid md:grid-cols-2 gap-6 pb-12 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>

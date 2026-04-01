@@ -58,12 +58,12 @@ export default async function BrandPage(props) {
 
     try {
         // Fetch Brand Data (Logo)
-        const brandRes = await client.query('SELECT * FROM brands WHERE name ILIKE $1', [brandName]);
+        const brandRes = await client.query('SELECT id, name, logo_url FROM brands WHERE name ILIKE $1', [brandName]);
         brandData = brandRes.rows[0];
 
         // Fetch Products
         const res = await client.query(`
-            SELECT p.*, s.sales_count 
+            SELECT p.id, p.brand, p.model, p.price_2ml, p.price_5ml, p.price_10ml, p.image_url, p.category, p.in_lottery, p.slug, p.description, p.stock, p.brand_he, p.model_he, p.original_size, p.created_at, s.sales_count 
             FROM products p 
             LEFT JOIN product_sales s ON p.id = s.product_id
             WHERE p.active = true AND p.brand ILIKE $1
