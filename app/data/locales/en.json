@@ -477,6 +477,7 @@
     "matching": {
         "title": "Smart Perfume Matching",
         "description": "Our algorithm will find the perfumes that best match your personal taste based on ingredients and notes.",
+        "how_it_works": "Our advanced algorithm is based on an in-depth analysis of thousands of perfume types, scent notes, and aromatic families. The process combines weightings of top, middle, and base notes alongside extract concentrations to identify unique patterns that trigger your perfect connection to a fragrance. In real-time, the system scans new vintages and current trends, ensuring every recommendation is accurate, personal, and relevant to your evolving preferences. We have created a system that shortens the path to your next signature scent, saving time and trial-and-error in the challenging selection process of the fragrance world.",
         "quantity_label": "How many perfumes in the bundle?",
         "size_label": "Bottle Size (ml)",
         "budget_label": "Estimated Budget",

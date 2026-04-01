@@ -46,8 +46,11 @@ export default async function MatchingPage() {
             <div className="container mx-auto px-4">
                 <div className="text-center mb-12">
                     <h1 className="text-4xl md:text-5xl font-bold mb-4 font-serif">{t('matching.title')}</h1>
-                    <p className="text-gray-600 text-lg max-w-none mx-auto whitespace-nowrap overflow-hidden text-ellipsis px-4">
+                    <p className="text-gray-400 text-sm max-w-none mx-auto whitespace-nowrap overflow-hidden text-ellipsis px-4 font-light">
                         {t('matching.description')}
+                    </p>
+                    <p className="text-gray-500 text-base max-w-3xl mx-auto mt-6 leading-relaxed text-center px-4">
+                        {t('matching.how_it_works')}
                     </p>
                 </div>
 
