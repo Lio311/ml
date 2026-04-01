@@ -6,7 +6,7 @@ import Image from 'next/image';
 import MegaMenuBrands from './v2/MegaMenuBrands';
 import MegaMenuCatalog from './v2/MegaMenuCatalog';
 import MobileNav from './header/MobileNav';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import LiveVisitorCounter from './LiveVisitorCounter';
 import { useLanguage } from '../context/LanguageContext';
 import { useCart } from '../context/CartContext';
@@ -26,6 +26,7 @@ export default function Header({ brands = [] }) {
     const { globalItemsCount: cartCount } = useCart();
     const { count: wishlistCount } = useWishlist();
     const { user } = useUser();
+    const router = useRouter();
     const isAdmin = 
         user?.publicMetadata?.role?.toLowerCase() === 'admin' || 
         user?.publicMetadata?.role?.toLowerCase() === 'deputy' ||
@@ -141,13 +142,28 @@ export default function Header({ brands = [] }) {
                         </div>
                     </div>
 
-                    {/* Mobile/Tablet Layout (< XL) */}
                     <div className="xl:hidden flex w-full items-center justify-between h-full">
-                        {/* Hamburger */}
+                        {/* Hamburger & Back */}
                         <div className="flex-1 flex items-center">
+                            {!isHome && (
+                                <button
+                                    onClick={() => router.back()}
+                                    className="p-2 -ms-4 me-1 text-black hover:opacity-100 opacity-70 transition-opacity"
+                                >
+                                    {dir === 'rtl' ? (
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+                                        </svg>
+                                    ) : (
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+                                        </svg>
+                                    )}
+                                </button>
+                            )}
                             <button 
                                 onClick={() => setIsMobileMenuOpen(true)}
-                                className="p-2 -ms-2 text-black hover:opacity-100 opacity-70 transition-opacity"
+                                className={`p-2 ${isHome ? '-ms-2' : ''} text-black hover:opacity-100 opacity-70 transition-opacity`}
                             >
                                 <Menu size={28} />
                             </button>

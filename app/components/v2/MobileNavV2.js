@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { usePathname, useRouter } from 'next/navigation';
 import { SignedIn, SignedOut, SignInButton, UserButton } from '@clerk/nextjs';
 import SearchAutocomplete from '../SearchAutocomplete';
 import { Settings, MessageSquare, Star } from 'lucide-react';
@@ -14,6 +15,10 @@ export default function MobileNavV2({ menu = [], cartCount, wishlistCount, isAdm
     const { t, locale, dir } = useLanguage();
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isSearchOpen, setIsSearchOpen] = useState(false);
+    const pathname = usePathname();
+    const router = useRouter();
+
+    const isHome = pathname === '/' || pathname === '/v2' || pathname === `/${locale}` || pathname === `/${locale}/v2`;
 
     return (
         <>
@@ -37,8 +42,24 @@ export default function MobileNavV2({ menu = [], cartCount, wishlistCount, isAdm
             {/* Mobile Header Icons Container */}
             <div className="flex md:hidden justify-between items-center w-full z-20">
                 <div className="flex items-center gap-0.5">
+                    {!isHome && (
+                        <button
+                            onClick={() => router.back()}
+                            className="p-2 -ms-2 me-1 text-black hover:opacity-100 opacity-70 transition-opacity"
+                        >
+                            {dir === 'rtl' ? (
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
+                                </svg>
+                            ) : (
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
+                                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
+                                </svg>
+                            )}
+                        </button>
+                    )}
                     {/* Hamburger */}
-                    <button className="p-2 -ms-2" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+                    <button className={`p-2 ${isHome ? '-ms-2' : ''}`} onClick={() => setIsMenuOpen(!isMenuOpen)}>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
                         </svg>

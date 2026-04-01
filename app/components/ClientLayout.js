@@ -7,6 +7,7 @@ import Footer from "./Footer";
 import ChatWidget from "./Chatbot/ChatWidget";
 import AccessibilityWidget from "./AccessibilityWidget";
 import InstagramPopup from "./InstagramPopup";
+import SwipeNavigator from "./SwipeNavigator";
 
 export default function ClientLayout({ children, brands, menu }) {
     const pathname = usePathname();
@@ -41,6 +42,7 @@ export default function ClientLayout({ children, brands, menu }) {
             <ChatWidget />
             <AccessibilityWidget />
             <InstagramPopup />
+            <SwipeNavigator />
         </>
     );
 }

@@ -30,10 +30,10 @@ export default function OrderStatusTimeline({ status }) {
     const progressPercentage = activeIndex === -1 ? 0 : (activeIndex / (statusSteps.length - 1)) * 100;
 
     return (
-        <div className="w-full py-4 px-10 mb-2">
+        <div className="w-full py-4 px-1 md:px-10 mb-2 overflow-x-hidden">
             <div className="relative">
                 {/* Line Container (Centered on circles) */}
-                <div className="absolute top-6 right-12 left-12 -translate-y-1/2 h-1.5">
+                <div className="absolute top-5 md:top-6 right-6 left-6 md:right-12 md:left-12 -translate-y-1/2 h-1">
                     {/* Background Line */}
                     <div className="w-full h-full bg-gray-100 dark:bg-zinc-800" />
                     
@@ -62,24 +62,24 @@ export default function OrderStatusTimeline({ status }) {
                                 <motion.div
                                     initial={false}
                                     animate={{ 
-                                        scale: isActive ? 1.2 : 1,
+                                        scale: isActive ? 1.15 : 1,
                                         backgroundColor: isCompleted || isActive ? (isActive ? '#000' : '#111') : '#fff',
                                         color: isCompleted || isActive ? '#fff' : '#999',
                                         borderColor: isCompleted || isActive ? '#000' : '#e5e7eb'
                                     }}
                                     className={cn(
-                                        "w-12 h-12 rounded-full flex items-center justify-center border-2 transition-all duration-300 shadow-sm",
-                                        isActive && "ring-4 ring-black/5 dark:ring-white/10 shadow-lg",
+                                        "w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center border hover:border-2 transition-all duration-300 shadow-sm",
+                                        isActive && "ring-4 ring-black/5 dark:ring-white/10 shadow-lg border-2",
                                         isCompleted && "bg-black dark:bg-white border-black dark:border-white",
                                         isPending && "bg-white dark:bg-zinc-900 border-gray-200 dark:border-zinc-800"
                                     )}
                                 >
-                                    <Icon className={cn("w-6 h-6", isActive && "animate-pulse")} />
+                                    <Icon className={cn("w-5 h-5 md:w-6 md:h-6", isActive && "animate-pulse")} />
                                 </motion.div>
                                 
                                 <div className="mt-4 flex flex-col items-center text-center min-h-[65px]">
                                     <span className={cn(
-                                        "text-sm font-bold transition-colors duration-300",
+                                        "text-[11px] md:text-sm font-bold transition-colors duration-300 leading-tight",
                                         isActive ? "text-black dark:text-white" : "text-gray-400 dark:text-zinc-500"
                                     )}>
                                         {step.label}
@@ -88,7 +88,7 @@ export default function OrderStatusTimeline({ status }) {
                                         <motion.span 
                                             initial={{ opacity: 0, y: 5 }}
                                             animate={{ opacity: 1, y: 0 }}
-                                            className="text-[10px] text-gray-500 dark:text-zinc-400 mt-1 max-w-[120px] leading-tight whitespace-normal text-center"
+                                            className="text-[9px] md:text-[10px] text-gray-500 dark:text-zinc-400 mt-1 max-w-[120px] leading-tight whitespace-normal text-center"
                                         >
                                             {step.description}
                                         </motion.span>
