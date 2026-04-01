@@ -52,10 +52,12 @@ export async function mapHebrewQuery(query) {
 
     for (const [hebrew, english] of sortedMappings) {
         if (currentResult.includes(hebrew)) {
-            // Use regex with lookahead and group capture to only match whole words (or words bounded by spaces/punctuation)
-            // This prevents "בלו" from breaking "בלונד", converting it purely to "Bleuנד"
-            // We use (?=...) so the trailing boundary is not consumed, allowing adjacent matches
-            const regex = new RegExp(`(^|[\\s\\W])${hebrew}(?=[\\s\\W]|$)`, 'gu');
+            // Updated regex to handle Hebrew/English boundaries. 
+            // It matches the hebrew term only if it's preceded by start of string or a non-word/non-hebrew char,
+            // and followed by a non-word/non-hebrew char or end of string.
+            // This prevents "בלו" from matching inside "בלונד".
+            const boundaryPattern = `[^a-zA-Z0-9\\u0590-\\u05FF]`;
+            const regex = new RegExp(`(^|${boundaryPattern})${hebrew}(?=${boundaryPattern}|$)`, 'gu');
             currentResult = currentResult.replace(regex, `$1${english}`);
         }
     }

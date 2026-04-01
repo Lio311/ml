@@ -22,8 +22,8 @@ export default async function LandingPage() {
 
         // Fetch Stats
         try {
-            const productCountRes = await client.query('SELECT COUNT(*) FROM products WHERE active = true');
-            const brandCountRes = await client.query('SELECT COUNT(DISTINCT brand) FROM products WHERE active = true');
+            const productCountRes = await client.query('SELECT COUNT(*) FROM products WHERE active = true AND stock > 0');
+            const brandCountRes = await client.query('SELECT COUNT(DISTINCT brand) FROM products WHERE active = true AND stock > 0');
 
             stats.products = parseInt(productCountRes.rows[0].count);
             stats.brands = parseInt(brandCountRes.rows[0].count);
