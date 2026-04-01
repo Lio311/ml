@@ -334,7 +334,7 @@ export default async function CatalogPage(props) {
     const pageTitle = sort === 'bestsellers' ? t('common.bestsellers') : t('common.full_catalog');
 
     return (
-        <div className={`container py-12 ${dir === 'rtl' ? 'text-right' : 'text-left'}`} dir={dir}>
+        <div className={`container pt-12 pb-4 ${dir === 'rtl' ? 'text-right' : 'text-left'}`} dir={dir}>
             <h1 className="text-3xl font-serif font-bold mb-2 text-center">{pageTitle}</h1>
             <p className="hidden md:block text-sm text-gray-400 text-center mb-10">
                 {t('common.showing_products').replace('{count}', products.length).replace('{page}', page).replace('{total}', totalPages)}
@@ -509,7 +509,7 @@ export default async function CatalogPage(props) {
                     <h2 className="text-2xl font-serif font-bold mb-8 text-center text-gray-900">
                         {t('common.catalog_seo_title')}
                     </h2>
-                    <div className={`grid md:grid-cols-2 gap-6 pb-12 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
+                    <div className={`grid md:grid-cols-2 gap-6 pb-4 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
                         <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm hover:border-gray-200 transition-all group">
                             <div className="flex items-center gap-3 mb-4">
                                 <div className="p-2 bg-gray-50 rounded-lg group-hover:bg-black group-hover:text-white transition-colors">
