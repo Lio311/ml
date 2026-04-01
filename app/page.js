@@ -110,6 +110,28 @@ export default async function Home() {
 
   return (
     <div className="flex flex-col min-h-screen overflow-x-hidden">
+      {/* WebSite Schema — enables Sitelinks Search Box + AI engine understanding */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            "name": "ml-tlv",
+            "alternateName": "ml_tlv",
+            "url": "https://www.ml-tlv.com",
+            "description": locale === 'he'
+              ? "ml-tlv - דוגמיות בושם מקוריות מבתי בושם יוקרתיים ונישה. דיקאנטים ב-2, 5 ו-10 מ\"ל באריזת זכוכית עם מתז."
+              : "ml-tlv - Authentic luxury niche perfume samples and decants in 2ml, 5ml, and 10ml glass atomizers.",
+            "inLanguage": ["he-IL", "en-US"],
+            "potentialAction": {
+              "@type": "SearchAction",
+              "target": "https://www.ml-tlv.com/catalog?q={search_term_string}",
+              "query-input": "required name=search_term_string"
+            }
+          })
+        }}
+      />
       {/* Hero Section - Tall and pulled to top on mobile */}
       <section className="relative h-[68vh] md:h-[70vh] w-full m-0 p-0 overflow-hidden bg-white block !-mt-20 md:mt-0">
         <div className="absolute inset-0 w-full h-full overflow-hidden">

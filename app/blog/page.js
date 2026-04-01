@@ -87,6 +87,28 @@ export default async function BlogIndex(props) {
                     </p>
                 </div>
 
+                {/* Blog ItemList Schema for rich search results */}
+                <script
+                    type="application/ld+json"
+                    dangerouslySetInnerHTML={{
+                        __html: JSON.stringify({
+                            "@context": "https://schema.org",
+                            "@type": "ItemList",
+                            "name": locale === 'he' ? "מגזין הבשמים של ml-tlv" : "ml-tlv Fragrance Magazine",
+                            "description": locale === 'he'
+                                ? "מדריכים, סקירות וטיפים מעולם הבשמים והנישה"
+                                : "Guides, reviews, and tips from the world of niche perfumery",
+                            "numberOfItems": articles.length,
+                            "itemListElement": articles.map((article, i) => ({
+                                "@type": "ListItem",
+                                "position": i + 1,
+                                "url": `https://www.ml-tlv.com/blog/${article.slug}`,
+                                "name": localize(article, 'title', locale),
+                            }))
+                        })
+                    }}
+                />
+
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-12">
                     {articles.map((article) => {
                         const readingTime = Math.ceil((article.excerpt?.length || 0) / 100) + 1; // Simple estimate

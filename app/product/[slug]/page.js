@@ -108,7 +108,7 @@ export async function generateMetadata(props) {
                 },
             ],
             locale: 'he_IL',
-            type: 'website',
+            type: 'product',
         },
         twitter: {
             card: 'summary_large_image',
@@ -322,7 +322,7 @@ export default async function ProductPage(props) {
                     {product.image_url ? (
                         <Image
                             src={product.image_url}
-                            alt={`${localizedName_val}`}
+                            alt={locale === 'he' ? `דוגמית בושם ${localizedName_val} בנפח 2-10 מ"ל, בקבוקון זכוכית עם מתז - ml-tlv` : `${localizedName_val} perfume sample decant 2-10ml glass atomizer - ml-tlv`}
                             fill
                             priority
                             className="object-contain p-8 md:p-12 hover:scale-105 transition-transform duration-500"
