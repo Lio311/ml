@@ -119,7 +119,7 @@ export async function generateMetadata(props) {
                     },
                 ],
                 locale: 'he_IL',
-                type: 'product',
+                type: 'website',
             },
             twitter: {
                 card: 'summary_large_image',

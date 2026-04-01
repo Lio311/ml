@@ -45,20 +45,19 @@ export function sanitizeProduct(obj) {
     const sanitized = Array.isArray(obj) ? [] : {};
 
     for (const [key, value] of Object.entries(obj)) {
-        if (value instanceof Date) {
-            sanitized[key] = value.toISOString();
-        } else if (value !== null && typeof value === 'object' && !(value instanceof Date)) {
-            sanitized[key] = sanitizeProduct(value);
-        } else if (typeof value === 'bigint') {
-            sanitized[key] = Number(value);
-        } else if (['price_2ml', 'price_5ml', 'price_10ml', 'stock', 'average_rating', 'review_count', 'count'].includes(key)) {
-            sanitized[key] = value === null ? 0 : Number(value) || 0;
-        } else if (value === null) {
-            sanitized[key] = '';
-        } else {
-            sanitized[key] = value;
+            if (value instanceof Date) {
+                sanitized[key] = value.toISOString();
+            } else if (typeof value === 'bigint') {
+                sanitized[key] = Number(value);
+            } else if (value !== null && typeof value === 'object') {
+                sanitized[key] = sanitizeProduct(value);
+            } else {
+                // Next.js 15 serialization can be picky about nulls in certain contexts
+                // but generally supports them. To be 100% safe, we keep them as is 
+                // unless we know they cause issues.
+                sanitized[key] = value ?? '';
+            }
         }
-    }
 
     return sanitized;
 }

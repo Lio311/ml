@@ -9,6 +9,11 @@ import ClientLayout from "./components/ClientLayout";
 import { validateEnv } from "./lib/env";
 import { cookies } from "next/headers";
 import { LanguageProvider } from "./context/LanguageContext";
+import { CartProvider } from "./context/CartContext";
+import { WishlistProvider } from "./context/WishlistContext";
+import pool, { getBrands, getMenuItems } from "./lib/db";
+import { sanitizeProductArray } from "./lib/productUtils";
+import { Toaster } from 'react-hot-toast';
 
 // Validate env vars on server start/request
 validateEnv();
@@ -60,16 +65,12 @@ export const metadata = {
   },
 };
 
-import { CartProvider } from "./context/CartContext";
-import { WishlistProvider } from "./context/WishlistContext";
-
-import pool, { getBrands, getMenuItems } from "./lib/db";
-
-import { Toaster } from 'react-hot-toast';
-
 export default async function RootLayout({ children }) {
-  const brands = await getBrands();
-  const menu = await getMenuItems();
+  const brandsRaw = await getBrands();
+  const menuRaw = await getMenuItems();
+  
+  const brands = sanitizeProductArray(brandsRaw);
+  const menu = sanitizeProductArray(menuRaw);
   
   const cookieStore = await cookies();
   const locale = cookieStore.get('NEXT_LOCALE')?.value || 'he';
@@ -101,7 +102,7 @@ export default async function RootLayout({ children }) {
       }}
     >
       <html lang={locale} dir={dir}>
-        <body className="antialiased">
+        <body className={`${assistant.variable} ${dancingScript.variable} antialiased`}>
           <LanguageProvider initialLocale={locale}>
             <CartProvider>
               <WishlistProvider>
