@@ -46,13 +46,8 @@ export default async function MatchingPage() {
             <div className="container mx-auto px-4">
                 <div className="text-center mb-12">
                     <h1 className="text-4xl md:text-5xl font-bold mb-4 font-serif">{t('matching.title')}</h1>
-                    <p className="text-gray-600 text-lg max-w-2xl mx-auto">
+                    <p className="text-gray-600 text-lg max-w-none mx-auto whitespace-nowrap overflow-hidden text-ellipsis px-4">
                         {t('matching.description')}
-                    </p>
-                    <p className="text-gray-400 text-sm w-full max-w-6xl mx-auto mt-4 leading-relaxed whitespace-nowrap overflow-hidden text-ellipsis text-center">
-                        {locale === 'he'
-                            ? 'האלגוריתם שלנו ימצא עבורך את הבשמים שהכי מתאימים לטעם האישי שלך על סמך מרכיבים ותווים.'
-                            : 'Our algorithm will find the perfumes that best match your personal taste based on ingredients and notes.'}
                     </p>
                 </div>
 
