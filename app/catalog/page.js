@@ -441,7 +441,7 @@ export default async function CatalogPage(props) {
 
                     {/* Pagination Controls */}
                     {totalPages > 1 && (
-                        <div className="mt-12 pb-12 flex justify-center gap-2 flex-wrap" dir={dir}>
+                        <div className="mt-12 flex justify-center gap-2 flex-wrap" dir={dir}>
                             {/* Previous Button */}
                             {page > 1 && (
                                 <Link
@@ -504,7 +504,7 @@ export default async function CatalogPage(props) {
             </div>
 
             {/* SEO Content Section */}
-            <div className="border-t border-gray-100 px-4 mt-16 pt-10">
+            <div className="border-t border-gray-100 px-4 mt-6 pt-10">
                 <div className="max-w-5xl mx-auto">
                     <h2 className="text-2xl font-serif font-bold mb-8 text-center text-gray-900">
                         {t('common.catalog_seo_title')}
