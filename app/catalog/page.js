@@ -503,7 +503,7 @@ export default async function CatalogPage(props) {
             </div>
 
             {/* SEO Content Section */}
-            <div className="border-t border-gray-100 px-4">
+            <div className="border-t border-gray-100 px-4 mt-16 pt-8">
                 <div className="max-w-5xl mx-auto">
                     <h2 className="text-2xl font-serif font-bold mb-8 text-center text-gray-900 mt-12">
                         {t('common.catalog_seo_title')}
