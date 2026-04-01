@@ -219,6 +219,26 @@ input[autocomplete="one-time-code"] {
   input, select, textarea {
     font-size: 16px !important;
   }
+
+  /* Disable selection and tap highlights for a native app feel */
+  * {
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  /* Re-enable selection for inputs and textareas */
+  input, textarea, select, [contenteditable="true"] {
+    -webkit-user-select: text;
+    user-select: text;
+  }
+
+  /* Prevent image dragging */
+  img {
+    -webkit-user-drag: none;
+    user-drag: none;
+  }
 }
 /* Definitive Hero Title Fix */
 @media (min-width: 768px) {

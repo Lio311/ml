@@ -67,7 +67,7 @@ export default function QuickViewModal({ product, isOpen, onClose }) {
     return (
         <AnimatePresence>
             {isOpen && (
-                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 sm:p-6">
+                <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 sm:p-6">
                     {/* Backdrop */}
                     <motion.div
                         initial={{ opacity: 0 }}
@@ -83,30 +83,31 @@ export default function QuickViewModal({ product, isOpen, onClose }) {
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.95, y: 20 }}
                         transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-                        className={`relative w-full max-w-4xl bg-white rounded-2xl shadow-2xl overflow-hidden flex flex-col md:flex-row max-h-[90vh] ${dir === 'rtl' ? 'text-right' : 'text-left'}`}
+                        className={`relative w-full max-w-4xl bg-white rounded-2xl md:rounded-3xl shadow-2xl overflow-hidden flex flex-col md:flex-row max-h-[95vh] md:max-h-[90vh] ${dir === 'rtl' ? 'text-right' : 'text-left'}`}
                         dir={dir}
                     >
                         {/* Close Button */}
                         <button
                             onClick={onClose}
-                            className="absolute top-4 end-4 z-10 p-2 bg-white/80 hover:bg-gray-100 rounded-full transition-colors backdrop-blur-md"
+                            className="absolute top-4 end-4 z-20 p-2 bg-white/90 hover:bg-black hover:text-white rounded-full transition-all shadow-lg backdrop-blur-md"
                         >
                             <X size={20} />
                         </button>
 
-                        <div className="absolute top-6 start-6 z-10">
+                        <div className="absolute top-4 start-4 z-20">
                             <WishlistHeart productId={product.id} />
                         </div>
 
                         {/* Image Section */}
                         <div className="w-full md:w-1/2 bg-gray-50 flex-shrink-0 relative">
-                            <div className="aspect-square md:aspect-auto md:h-full relative overflow-hidden py-10">
+                            <div className="aspect-[4/3] md:aspect-auto md:h-full relative overflow-hidden py-6 md:py-10">
                                 {product.image_url ? (
                                     <Image
                                         src={product.image_url}
                                         alt={localize(product, 'name')}
                                         fill
-                                        className="object-contain p-8 md:p-12 hover:scale-105 transition-transform duration-700"
+                                        className="object-contain p-6 md:p-12 hover:scale-105 transition-transform duration-700"
+                                        priority
                                     />
                                 ) : (
                                     <div className="absolute inset-0 flex items-center justify-center text-4xl">
