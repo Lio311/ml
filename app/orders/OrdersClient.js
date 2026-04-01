@@ -127,7 +127,7 @@ export default function OrdersClient() {
                                 </div>
                                 <div className="flex flex-col items-end gap-2">
                                     <div className="font-bold text-xl">{order.total_amount} ₪</div>
-                                    {(order.status === 'completed' || order.status === 'הושלם') && (
+                                    {['completed', 'shipped', 'הושלם', 'נשלח'].includes(order.status) && !order.has_review && (
                                         <button 
                                             onClick={() => toggleReview(order.id)}
                                             className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all duration-300 shadow-sm border ${
@@ -146,7 +146,7 @@ export default function OrdersClient() {
 
                             <OrderStatusTimeline status={order.status} />
 
-                            {(order.status === 'completed' || order.status === 'הושלם') && openReviewId === order.id && (
+                            {['completed', 'shipped', 'הושלם', 'נשלח'].includes(order.status) && openReviewId === order.id && (
                                 <div className="mt-4 animate-fadeIn">
                                     <OrderReviewPrompt 
                                         orderId={order.id} 

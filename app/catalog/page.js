@@ -98,7 +98,14 @@ async function getProducts(search, brand, category, minPrice, maxPrice, sort, pa
 
     if (search) {
         params.push(`%${search}%`);
-        query += ` AND (p.name ILIKE $${params.length} OR p.brand ILIKE $${params.length} OR p.model ILIKE $${params.length} OR p.description ILIKE $${params.length} OR p.name_he ILIKE $${params.length})`;
+        query += ` AND (p.name ILIKE $${params.length} 
+            OR p.brand ILIKE $${params.length} 
+            OR p.model ILIKE $${params.length} 
+            OR p.description ILIKE $${params.length} 
+            OR p.name_he ILIKE $${params.length}
+            OR p.brand_he ILIKE $${params.length}
+            OR p.model_he ILIKE $${params.length}
+        )`;
     }
 
     if (brand) {
@@ -207,7 +214,9 @@ async function getProducts(search, brand, category, minPrice, maxPrice, sort, pa
         const res = await client.query(query, params);
         return { products: res.rows, totalProducts, totalPages: Math.ceil(totalProducts / LIMIT) };
     }).catch(error => {
-        console.error("DB Error:", error);
+        console.error("SEARCH DEBUG - DB Error:", error);
+        console.error("SEARCH DEBUG - Query:", query);
+        console.error("SEARCH DEBUG - Params:", params);
         return { products: [], totalProducts: 0, totalPages: 0 };
     });
 }
@@ -306,7 +315,17 @@ export default async function CatalogPage(props) {
         return `/catalog${qs ? `?${qs}` : ''}`;
     };
 
-    const { products, totalPages } = await getProducts(mappedSearch, brand, category, minPrice, maxPrice, sort, page, searchParams);
+    let { products, totalPages } = await getProducts(mappedSearch, brand, category, minPrice, maxPrice, sort, page, searchParams);
+
+    // FIX: Fallback to original search if mapped search yields no results
+    // This handles cases where mapping is too aggressive or translation isn't in the DB
+    if (products.length === 0 && search && mappedSearch !== search) {
+        const fallback = await getProducts(search, brand, category, minPrice, maxPrice, sort, page, searchParams);
+        if (fallback.products.length > 0) {
+            products = fallback.products;
+            totalPages = fallback.totalPages;
+        }
+    }
     const allBrands = await getBrands();
     const allCategories = await getCategories();
     const { countries: allCountries, perfumers: allPerfumers } = await getMetadataOptions();
