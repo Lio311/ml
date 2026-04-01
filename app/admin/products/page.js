@@ -1,6 +1,7 @@
 import pool from "../../lib/db";
 import AdminProductsClient from "./AdminProductsClient";
 import { currentUser } from "@clerk/nextjs/server";
+import { sanitizeProductArray } from "../../lib/productUtils";
 
 
 export const dynamic = "force-dynamic";
@@ -80,7 +81,7 @@ export default async function AdminProductsPage(props) {
         query += ` ORDER BY ${orderBy} LIMIT ${limit} OFFSET ${offset}`;
 
         const res = await client.query(query, params);
-        products = res.rows;
+        products = sanitizeProductArray(res.rows);
 
     } finally {
         client.release();

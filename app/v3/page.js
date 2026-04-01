@@ -12,6 +12,8 @@ import { withClient } from "../lib/db";
 import { cookies } from 'next/headers';
 import he from '../data/locales/he.json';
 import en from '../data/locales/en.json';
+import { sanitizeProductArray } from "../lib/productUtils";
+
 
 const getT = (locale) => {
   const dict = locale === 'en' ? en : he;
@@ -64,7 +66,7 @@ export default async function Home() {
     await withClient(async (client) => {
       // Fetch New Arrivals (Only in stock)
       const res = await client.query('SELECT id, brand, model, price_2ml, price_5ml, price_10ml, image_url, category, in_lottery, slug, description, stock, brand_he, model_he, original_size, created_at FROM products WHERE active = true AND stock > 0 ORDER BY created_at DESC LIMIT 6');
-      newArrivals = res.rows;
+      newArrivals = sanitizeProductArray(res.rows);
 
       // Fetch Stats
       try {
@@ -76,7 +78,7 @@ export default async function Home() {
 
         // Fetch all brands for carousel (Randomized) 
         const brandsRes = await client.query('SELECT name, logo_url FROM brands WHERE logo_url IS NOT NULL ORDER BY RANDOM()');
-        stats.allBrands = brandsRes.rows;
+        stats.allBrands = sanitizeProductArray(brandsRes.rows);
 
         // Try to get orders count for samples estimation
         try {
@@ -103,7 +105,7 @@ export default async function Home() {
             ORDER BY order_count DESC, c.created_at DESC
             LIMIT 3
         `);
-        topCatalogs = topCatRes.rows;
+        topCatalogs = sanitizeProductArray(topCatRes.rows);
       } catch (e) {
         console.error("Top catalogs error", e);
       }

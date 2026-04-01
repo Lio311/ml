@@ -1,6 +1,7 @@
 import pool from '../lib/db';
 import BrandsClient from './BrandsClient';
 import { cookies } from 'next/headers';
+import { sanitizeProductArray } from '../lib/productUtils';
 import he from '../data/locales/he.json';
 import en from '../data/locales/en.json';
 
@@ -39,7 +40,7 @@ export default async function BrandsPage() {
     try {
         const client = await pool.connect();
         const res = await client.query('SELECT name, logo_url FROM brands ORDER BY LOWER(name) ASC');
-        brands = res.rows;
+        brands = sanitizeProductArray(res.rows);
         client.release();
     } catch (e) {
         console.error("Failed to fetch brands", e);

@@ -1,4 +1,11 @@
+import pool from "../../../../lib/db";
+import { notFound } from "next/navigation";
+import Link from "next/link";
 import { checkAdmin } from "../../../../lib/admin";
+import { sanitizeProduct } from "../../../../lib/productUtils";
+import CatalogProductActions from "./CatalogProductActions";
+import ShareButton from "../../../../components/ShareButton";
+import FragrancePyramid from "../../../../components/FragrancePyramid";
 
 export async function generateMetadata({ params }) {
     const { slug, itemId } = await params;
@@ -10,15 +17,16 @@ export async function generateMetadata({ params }) {
         WHERE i.id = $1 AND c.slug = $2
     `, [itemId, slug]);
     
-    const item = res.rows[0];
+    const item = sanitizeProduct(res.rows[0]);
     const isAdmin = await checkAdmin();
     if (!item || (item.is_hidden && !isAdmin)) return { title: "מוצר לא נמצא" };
 
     return {
-        title: `${item.name} | ${item.catalog_name}`,
-        description: item.description || `קנו את ${item.name} בקטלוג של ${item.catalog_name}`,
+        title: `${item.brand} ${item.fragrance_name} | ${item.catalog_name}`,
+        description: item.description || `קנו את ${item.brand} ${item.fragrance_name} בקטלוג של ${item.catalog_name}`,
     };
 }
+
 
 export default async function CatalogProductPage({ params }) {
     const { slug, itemId } = await params;
@@ -31,8 +39,7 @@ export default async function CatalogProductPage({ params }) {
         WHERE i.id = $1 AND c.slug = $2
     `, [itemId, slug]);
 
-    const item = res.rows[0];
-
+    const item = sanitizeProduct(res.rows[0]);
     if (!item || (item.is_hidden && !isAdmin)) {
         notFound();
     }

@@ -4,6 +4,8 @@ import Link from 'next/link';
 import { cookies } from 'next/headers';
 import he from '../../data/locales/he.json';
 import en from '../../data/locales/en.json';
+import { sanitizeProductArray, sanitizeProduct } from "../../lib/productUtils";
+
 
 export const revalidate = 3600; // Cache for 1 hour
 
@@ -59,7 +61,7 @@ export default async function BrandPage(props) {
     try {
         // Fetch Brand Data (Logo)
         const brandRes = await client.query('SELECT id, name, logo_url FROM brands WHERE name ILIKE $1', [brandName]);
-        brandData = brandRes.rows[0];
+        brandData = sanitizeProduct(brandRes.rows[0]);
 
         // Fetch Products
         const res = await client.query(`
@@ -70,7 +72,7 @@ export default async function BrandPage(props) {
             ORDER BY p.stock > 0 DESC, s.sales_count DESC NULLS LAST
         `, [brandName]);
 
-        products = res.rows;
+        products = sanitizeProductArray(res.rows);
     } finally {
         client.release();
     }

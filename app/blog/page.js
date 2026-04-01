@@ -4,6 +4,7 @@ import pool from '../lib/db';
 import { cookies } from 'next/headers';
 import he from '../data/locales/he.json';
 import en from '../data/locales/en.json';
+import { sanitizeProductArray } from '../lib/productUtils';
 
 const getT = (locale) => {
     const dict = locale === 'en' ? en : he;
@@ -90,10 +91,10 @@ async function getArticles(page = 1, tag = null) {
         const tagsRes = await client.query('SELECT DISTINCT unnest(tags) as tag FROM blog_posts LIMIT 20');
 
         return {
-            articles: res.rows,
+            articles: sanitizeProductArray(res.rows),
             total: totalCount,
             totalPages: totalPages,
-            allTags: tagsRes.rows.map(r => r.tag)
+            allTags: sanitizeProductArray(tagsRes.rows).map(r => r.tag)
         };
     } finally {
         client.release();

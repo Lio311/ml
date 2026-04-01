@@ -2,6 +2,9 @@ import ReviewsClient from './ReviewsClient';
 import pool from '../lib/db';
 import { clerkClient } from '@clerk/nextjs/server';
 import { cookies } from 'next/headers';
+import { sanitizeProductArray } from '../lib/productUtils';
+
+
 
 export const dynamic = 'force-dynamic';
 
@@ -24,8 +27,9 @@ export default async function ReviewsPage() {
             ORDER BY r.created_at DESC
         `);
 
+        const sanitizedRows = sanitizeProductArray(result.rows);
         const client = await clerkClient();
-        reviews = await Promise.all(result.rows.map(async (review) => {
+        reviews = await Promise.all(sanitizedRows.map(async (review) => {
             try {
                 const user = await client.users.getUser(review.user_id);
                 return {

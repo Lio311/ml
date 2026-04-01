@@ -3,6 +3,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { parse } from 'marked';
 import { cookies } from 'next/headers';
+import { sanitizeProduct, sanitizeProductArray } from '../../lib/productUtils';
 import he from '../../data/locales/he.json';
 import en from '../../data/locales/en.json';
 
@@ -67,7 +68,7 @@ async function getArticle(slug) {
     const client = await pool.connect();
     try {
         const res = await client.query('SELECT * FROM blog_posts WHERE slug = $1', [slug]);
-        return res.rows[0];
+        return sanitizeProduct(res.rows[0]);
     } finally {
         client.release();
     }
@@ -110,7 +111,7 @@ export default async function BlogPost({ params }) {
                 AND active = true
                 LIMIT 5
             `, [article.tags.map(t => `%${t}%`)]);
-            mentionedProducts = res.rows;
+            mentionedProducts = sanitizeProductArray(res.rows);
         }
 
         // Fetch Related Articles
@@ -121,7 +122,7 @@ export default async function BlogPost({ params }) {
             ORDER BY created_at DESC 
             LIMIT 3
         `, [slug]);
-        relatedArticles = relatedRes.rows;
+        relatedArticles = sanitizeProductArray(relatedRes.rows);
     } catch (err) {
         console.error("Error fetching ancillary data:", err);
     } finally {

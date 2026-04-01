@@ -5,6 +5,8 @@ import Link from "next/link";
 import { redirect } from 'next/navigation';
 import { cookies } from 'next/headers';
 import { getT } from '../lib/getT';
+import { sanitizeProductArray } from "../lib/productUtils";
+
 
 export async function generateMetadata() {
     const locale = (await cookies()).get('NEXT_LOCALE')?.value || 'he';
@@ -35,7 +37,7 @@ export default async function WishlistPage() {
             WHERE w.user_id = $1
             ORDER BY w.created_at DESC
         `, [userId]);
-        products = res.rows;
+        products = sanitizeProductArray(res.rows);
         client.release();
     } catch (err) {
         console.error("Wishlist Page Error:", err);

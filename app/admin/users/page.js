@@ -1,5 +1,6 @@
 import pool from "../../lib/db";
 import { currentUser, createClerkClient } from "@clerk/nextjs/server";
+import { sanitizeProductArray } from "../../lib/productUtils";
 import Link from "next/link";
 import UserRoleSelect from "./UserRoleSelect";
 import SyncUsersButton from "./SyncUsersButton";
@@ -71,9 +72,10 @@ export default async function AdminUsersPage(props) {
             `, queryParams),
             client.query(`SELECT COUNT(*) FROM users ${whereClause.replace(/\$(\d+)/g, (match, num) => `$${parseInt(num) - 2}`)}`, queryParams.slice(2))
         ]);
+        const sanitizedUsersRows = sanitizeProductArray(usersRes.rows);
 
         // Fetch last login from Clerk if possible
-        const userIds = usersRes.rows.map(u => u.id);
+        const userIds = sanitizedUsersRows.map(u => u.id);
         const clerkClient = createClerkClient({ secretKey: process.env.CLERK_SECRET_KEY });
         let clerkUsersMap = {};
         
@@ -89,7 +91,7 @@ export default async function AdminUsersPage(props) {
             }
         }
 
-        users = usersRes.rows.map(u => ({
+        users = sanitizedUsersRows.map(u => ({
             id: u.id,
             firstName: u.first_name,
             lastName: u.last_name,

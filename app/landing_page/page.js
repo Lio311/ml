@@ -1,6 +1,8 @@
 
 import pool from "../lib/db";
 import ClientLanding from "./ClientLanding";
+import { sanitizeProductArray } from "../lib/productUtils";
+
 
 export const revalidate = 3600;
 
@@ -18,7 +20,7 @@ export default async function LandingPage() {
 
         // Fetch New Arrivals
         const res = await client.query('SELECT id, brand, model, price_2ml, price_5ml, price_10ml, image_url, category, in_lottery, slug, description, stock, brand_he, model_he, original_size, created_at FROM products WHERE stock > 0 ORDER BY created_at DESC LIMIT 4');
-        newArrivals = res.rows;
+        newArrivals = sanitizeProductArray(res.rows);
 
         // Fetch Stats
         try {
@@ -30,7 +32,7 @@ export default async function LandingPage() {
 
             // Fetch brands
             const brandsRes = await client.query('SELECT name, logo_url FROM brands WHERE logo_url IS NOT NULL ORDER BY RANDOM()');
-            stats.allBrands = brandsRes.rows;
+            stats.allBrands = sanitizeProductArray(brandsRes.rows);
 
             // Try to get orders count for samples estimation
             try {

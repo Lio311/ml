@@ -1,6 +1,7 @@
 import pool from '../../lib/db';
 import { clerkClient } from '@clerk/nextjs/server';
 import AdminReviewsClient from './AdminReviewsClient';
+import { sanitizeProductArray } from '../../lib/productUtils';
 
 export const metadata = {
     title: 'ניהול ביקורות | ml_tlv Admin',
@@ -17,7 +18,8 @@ export default async function AdminReviewsPage() {
 
     // Merge with Clerk user images
     const client = await clerkClient();
-    const reviewsWithUsers = await Promise.all(result.rows.map(async (review) => {
+    const sanitizedRows = sanitizeProductArray(result.rows);
+    const reviewsWithUsers = await Promise.all(sanitizedRows.map(async (review) => {
         try {
             const user = await client.users.getUser(review.user_id);
             return {

@@ -13,6 +13,9 @@ import ShareButton from "../../components/ShareButton";
 import Breadcrumbs from "../../components/Breadcrumbs";
 import BrandInsight from "../../components/BrandInsight";
 import ProductFAQ from "../../components/ProductFAQ";
+import { sanitizeProduct, sanitizeProductArray } from "../../lib/productUtils";
+
+
 import AdditionalDetails from "../../components/AdditionalDetails";
 import ProductActionsClient from "./ProductActionsClient";
 import * as Sentry from "@sentry/nextjs";
@@ -27,42 +30,6 @@ const localize = (obj, field, locale) => {
     return val ? String(val) : '';
 };
 
-/**
- * Robust sanitizer for Postgres rows to ensure serializability 
- * and prevent "Server Components render" crashes in React 19 / Next 15.
- */
-const sanitizeProduct = (row) => {
-    if (!row) return null;
-    const sanitized = { ...row };
-    
-    // Convert Dates to ISO strings (Next.js can sometimes struggle with raw Date objects in RSC -> Client boundary)
-    if (row.created_at) sanitized.created_at = new Date(row.created_at).toISOString();
-    
-    // Ensure numeric fields are actually numbers and not strings or nulls
-    sanitized.id = parseInt(row.id);
-    sanitized.stock = parseInt(row.stock) || 0;
-    sanitized.price_2ml = parseFloat(row.price_2ml) || 0;
-    sanitized.price_5ml = parseFloat(row.price_5ml) || 0;
-    sanitized.price_10ml = parseFloat(row.price_10ml) || 0;
-    sanitized.average_rating = parseFloat(row.average_rating) || 0;
-    sanitized.review_count = parseInt(row.review_count) || 0;
-
-    // Ensure strings are strings and not nulls
-    const stringFields = [
-        'slug', 'brand', 'brand_he', 'model', 'model_he', 'name', 'name_he', 
-        'description', 'description_he', 'image_url', 'category', 
-        'top_notes', 'middle_notes', 'base_notes', 'seasons', 'country', 'perfumers', 'logo_url'
-    ];
-    stringFields.forEach(field => {
-        if (sanitized[field] === null || sanitized[field] === undefined) {
-            sanitized[field] = '';
-        } else {
-            sanitized[field] = String(sanitized[field]);
-        }
-    });
-
-    return sanitized;
-};
 
 const translateCategory = (cat, locale) => {
     if (!cat || locale !== 'en') return cat;
@@ -216,7 +183,7 @@ export default async function ProductPage(props) {
             ORDER BY rating DESC, created_at DESC
             LIMIT 3
         `, [product.id]);
-        topReviews = reviewsRes.rows;
+        topReviews = sanitizeProductArray(reviewsRes.rows);
     } catch(e) {
         // Non-critical: reviews fetch failed, schema will just omit Review nodes
     }
@@ -253,7 +220,7 @@ export default async function ProductPage(props) {
             LIMIT 4
         `, [product.id, product.category, product.brand, searchPatterns]);
         
-        related = relatedRes.rows;
+        related = sanitizeProductArray(relatedRes.rows);
 
         // If still not enough, fill with random items
         if (related.length < 4) {
@@ -265,11 +232,8 @@ export default async function ProductPage(props) {
             ORDER BY RANDOM()
             LIMIT $2
         `, [excludeIds, 4 - related.length]);
-        related = [...related, ...fillRes.rows].map(r => sanitizeProduct(r));
-    } else {
-        related = related.map(r => sanitizeProduct(r));
-    }
-
+            related = [...related, ...sanitizeProductArray(fillRes.rows)];
+        }
     } catch (e) {
         Sentry.captureException(e);
         console.error("Related products fetch error:", e);

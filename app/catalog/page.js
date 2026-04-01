@@ -7,6 +7,8 @@ import { mapHebrewQuery } from "../lib/hebrewMapping";
 import { cookies } from 'next/headers';
 import he from '../data/locales/he.json';
 import en from '../data/locales/en.json';
+import { sanitizeProductArray } from "../lib/productUtils";
+
 
 const getT = (locale) => {
     const dict = locale === 'en' ? en : he;
@@ -213,7 +215,7 @@ async function getProducts(search, brand, category, minPrice, maxPrice, sort, pa
         const totalProducts = parseInt(countRes.rows[0].count);
 
         const res = await client.query(query, params);
-        return { products: res.rows, totalProducts, totalPages: Math.ceil(totalProducts / LIMIT) };
+        return { products: sanitizeProductArray(res.rows), totalProducts, totalPages: Math.ceil(totalProducts / LIMIT) };
     }).catch(error => {
         console.error("SEARCH DEBUG - DB Error:", error);
         console.error("SEARCH DEBUG - Query:", query);

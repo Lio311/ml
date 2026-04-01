@@ -32,3 +32,38 @@ export function cleanProductName(name, brand) {
     
     return cleaned.trim() || name;
 }
+
+/**
+ * Sanitizes an object from the database for serialization.
+ * Recursively converts Dates to strings and ensures numbers are numbers.
+ * React 19 / Next 15 serialization requirement.
+ */
+export function sanitizeProduct(obj) {
+    if (!obj || typeof obj !== 'object') return obj;
+    
+    // Create a new object to avoid mutating the original
+    const sanitized = Array.isArray(obj) ? [] : {};
+
+    for (const [key, value] of Object.entries(obj)) {
+        if (value instanceof Date) {
+            sanitized[key] = value.toISOString();
+        } else if (value !== null && typeof value === 'object' && !(value instanceof Date)) {
+            sanitized[key] = sanitizeProduct(value);
+        } else if (typeof value === 'bigint') {
+            sanitized[key] = Number(value);
+        } else if (['price_2ml', 'price_5ml', 'price_10ml', 'stock', 'average_rating', 'review_count', 'count'].includes(key)) {
+            sanitized[key] = value === null ? 0 : Number(value) || 0;
+        } else if (value === null) {
+            sanitized[key] = '';
+        } else {
+            sanitized[key] = value;
+        }
+    }
+
+    return sanitized;
+}
+
+export function sanitizeProductArray(products) {
+    if (!Array.isArray(products)) return [];
+    return products.map(p => sanitizeProduct(p)).filter(Boolean);
+}

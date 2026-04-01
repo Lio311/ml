@@ -3,7 +3,9 @@ import Link from "next/link";
 import DashboardCharts from "../components/admin/DashboardCharts";
 import AnalyticsTables from "../components/admin/AnalyticsTables";
 import InventoryForecast from "../components/admin/InventoryForecast";
+import { sanitizeProductArray } from "@/app/lib/productUtils";
 import { FlaskConical, TrendingUp, ShoppingBag, Users, Eye, Wallet, Package, ShoppingCart, ChevronRight, ChevronLeft } from 'lucide-react';
+
 
 export const dynamic = 'force-dynamic';
 
@@ -306,16 +308,31 @@ export default async function AdminDashboard({ searchParams }) {
         ]);
 
         // --- 2. PROCESS DATA (Sync) ---
+        const sanitizedOrders = sanitizeProductArray(ordersRes.rows);
+        const sanitizedBottleInv = sanitizeProductArray(bottleInvRes.rows);
+        const sanitizedCoupons = sanitizeProductArray(couponsRes.rows);
+        const sanitizedYearlyOrders = sanitizeProductArray(yearlyOrdersRes.rows);
+        const sanitizedUserCurrentMonth = sanitizeProductArray(userCurrentMonthRes.rows);
+        const sanitizedUserPrevMonth = sanitizeProductArray(userPrevMonthRes.rows);
+        const sanitizedLast30Days = sanitizeProductArray(last30DaysRes.rows);
+        const sanitizedMonthlyOrders = sanitizeProductArray(monthlyOrdersRes.rows);
+        const sanitizedProducts = sanitizeProductArray(productsRes.rows);
+        const sanitizedCurrentMonth = sanitizeProductArray(currentMonthRes.rows);
+        const sanitizedPrevMonth = sanitizeProductArray(prevMonthRes.rows);
+        const sanitizedCurrentMonthVisits = sanitizeProductArray(currentMonthVisitsRes.rows);
+        const sanitizedPrevMonthVisits = sanitizeProductArray(prevMonthVisitsRes.rows);
+        const sanitizedSamplesBreakdown = sanitizeProductArray(samplesBreakdownRes.rows);
 
         // Basic KPIs
-        kpis.recentOrders = ordersRes.rows;
+        kpis.recentOrders = sanitizedOrders;
         kpis.totalOrders = parseInt(countRes.rows[0]?.count || 0);
         kpis.totalRevenue = parseInt(revRes.rows[0]?.sum || 0);
         kpis.totalSamples = parseInt(samplesSoldRes.rows[0]?.count || 0);
-        kpis.bottleInventory = bottleInvRes.rows;
+        kpis.bottleInventory = sanitizedBottleInv;
         kpis.totalUsers = parseInt(countResUsers.rows[0]?.count || 0);
         kpis.monthlyVisits = parseInt(visitsRes.rows[0]?.count || 0);
-        kpis.recentCoupons = couponsRes.rows;
+        kpis.recentCoupons = sanitizedCoupons;
+
 
         // Cumulative Data
         // Note: The Promise.all array index must match the added queries.
@@ -327,7 +344,7 @@ export default async function AdminDashboard({ searchParams }) {
         kpis.cumulativeProfit = Math.round(totalRevenueAllTime - totalExpensesAllTime - totalCOGSAllTime);
 
         // Samples Breakdown
-        samplesBreakdownRes.rows.forEach(r => {
+        sanitizedSamplesBreakdown.forEach(r => {
             const sizeKey = r.size?.replace(/[^0-9]/g, '');
             if (kpis.samplesBreakdown[sizeKey] !== undefined) {
                 kpis.samplesBreakdown[sizeKey] += parseInt(r.count || 0);
@@ -342,7 +359,7 @@ export default async function AdminDashboard({ searchParams }) {
 
         // Profit Calculation
         const productMap = {};
-        productsRes.rows.forEach(p => {
+        sanitizedProducts.forEach(p => {
             productMap[p.id] = {
                 cost: parseFloat(p.cost_price || 0),
                 size: parseFloat(p.original_size || 100)
@@ -353,7 +370,8 @@ export default async function AdminDashboard({ searchParams }) {
         const brandStatsYearly = {};
         const sizeStatsYearly = {};
 
-        yearlyOrdersRes.rows.forEach(order => {
+        sanitizedYearlyOrders.forEach(order => {
+
             const items = typeof order.items === 'string' ? JSON.parse(order.items) : order.items;
             let orderGrossSales = 0;
             items.forEach(item => {
@@ -386,7 +404,7 @@ export default async function AdminDashboard({ searchParams }) {
         // EXTRA: Recalculate monthly profit for the KPI card from monthlyOrdersRes (FROM b7a4bb8)
         let monthlyProfit = 0;
         let monthlyCOGS = 0;
-        monthlyOrdersRes.rows.forEach(order => {
+        sanitizedMonthlyOrders.forEach(order => {
             const items = typeof order.items === 'string' ? JSON.parse(order.items) : order.items;
             let orderItemsCost = 0;
             let orderGrossSales = 0;
@@ -422,8 +440,8 @@ export default async function AdminDashboard({ searchParams }) {
         // Chart Mapping (Common Loop)
         for (let i = 1; i <= daysInMonth; i++) {
             // Users
-            const curUserDay = userCurrentMonthRes.rows.find(r => Number(r.day) === i);
-            const prevUserDay = userPrevMonthRes.rows.find(r => Number(r.day) === i);
+            const curUserDay = sanitizedUserCurrentMonth.find(r => Number(r.day) === i);
+            const prevUserDay = sanitizedUserPrevMonth.find(r => Number(r.day) === i);
             usersChartData.push({
                 day: i,
                 current: curUserDay ? Number(curUserDay.count) : 0,
@@ -431,12 +449,12 @@ export default async function AdminDashboard({ searchParams }) {
             });
 
             // Orders/Revenue
-            const curOrd = currentMonthRes.rows.find(r => parseInt(r.day) === i);
-            const prevOrd = prevMonthRes.rows.find(r => parseInt(r.day) === i);
+            const curOrd = sanitizedCurrentMonth.find(r => parseInt(r.day) === i);
+            const prevOrd = sanitizedPrevMonth.find(r => parseInt(r.day) === i);
 
             // Visits
-            const curVis = currentMonthVisitsRes.rows.find(r => parseInt(r.day) === i);
-            const prevVis = prevMonthVisitsRes.rows.find(r => parseInt(r.day) === i);
+            const curVis = sanitizedCurrentMonthVisits.find(r => parseInt(r.day) === i);
+            const prevVis = sanitizedPrevMonthVisits.find(r => parseInt(r.day) === i);
 
             kpis.visitsChartData.push({
                 day: i,
@@ -460,7 +478,7 @@ export default async function AdminDashboard({ searchParams }) {
         // Inventory Forecast Logic (Sync)
         try {
             const sizeConsumption = { '2': 0, '5': 0, '10': 0, '11': 0 };
-            last30DaysRes.rows.forEach(order => {
+            sanitizedLast30Days.forEach(order => {
                 const items = typeof order.items === 'string' ? JSON.parse(order.items) : order.items;
                 items.forEach(item => {
                     const s = item.size ? item.size.toString() : '10';

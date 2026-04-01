@@ -6,6 +6,7 @@ import DeleteOrderButton from "./DeleteOrderButton";
 import AdminOrderStatusSelect from "./AdminOrderStatusSelect";
 import DownloadOrderPDF from "./DownloadOrderPDF";
 import AdminOrdersListClient from "./AdminOrdersListClient";
+import { sanitizeProductArray } from "../../lib/productUtils";
 
 export const metadata = {
     title: "ניהול הזמנות | ml_tlv",
@@ -27,7 +28,7 @@ export default async function AdminOrdersPage(props) {
             client.query('SELECT id, items, total, status, customer_details, created_at, invoice_url, catalog_id, free_samples_count, notes, delivery_method FROM orders WHERE catalog_id IS NULL ORDER BY created_at DESC LIMIT $1 OFFSET $2', [LIMIT, offset]),
             client.query('SELECT COUNT(*) FROM orders WHERE catalog_id IS NULL')
         ]);
-        orders = ordersRes.rows;
+        orders = sanitizeProductArray(ordersRes.rows);
         totalOrders = parseInt(countRes.rows[0].count);
     } finally {
         client.release();
