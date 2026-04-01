@@ -17,6 +17,11 @@ export default function OrdersClient() {
     const [orders, setOrders] = useState([]);
     const [loading, setLoading] = useState(true);
     const [unreadCount, setUnreadCount] = useState(0);
+    const [openReviewId, setOpenReviewId] = useState(null);
+
+    const toggleReview = (orderId) => {
+        setOpenReviewId(prev => prev === orderId ? null : orderId);
+    };
 
     useEffect(() => {
         if (!isLoaded || !isSignedIn) return;
@@ -120,18 +125,34 @@ export default function OrdersClient() {
                                         )}
                                     </div>
                                 </div>
-                                <div className="text-left">
+                                <div className="flex flex-col items-end gap-2">
                                     <div className="font-bold text-xl">{order.total_amount} ₪</div>
+                                    {(order.status === 'completed' || order.status === 'הושלם') && (
+                                        <button 
+                                            onClick={() => toggleReview(order.id)}
+                                            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all duration-300 shadow-sm border ${
+                                                openReviewId === order.id 
+                                                ? 'bg-black text-white border-black' 
+                                                : 'bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100'
+                                            }`}
+                                            title={t('common.orders.review.write_review')}
+                                        >
+                                            <Star className={`w-4 h-4 ${openReviewId === order.id ? 'fill-white' : 'fill-amber-500 text-amber-500'}`} />
+                                            {t('common.orders.review.write_review')}
+                                        </button>
+                                    )}
                                 </div>
                             </div>
 
                             <OrderStatusTimeline status={order.status} />
 
-                            {(order.status === 'completed' || order.status === 'הושלם') && (
-                                <OrderReviewPrompt 
-                                    orderId={order.id} 
-                                    initialHasSubmitted={order.has_review} 
-                                />
+                            {(order.status === 'completed' || order.status === 'הושלם') && openReviewId === order.id && (
+                                <div className="mt-4 animate-fadeIn">
+                                    <OrderReviewPrompt 
+                                        orderId={order.id} 
+                                        initialHasSubmitted={order.has_review} 
+                                    />
+                                </div>
                             )}
 
                             <div className="divide-y">

@@ -52,8 +52,11 @@ export async function mapHebrewQuery(query) {
 
     for (const [hebrew, english] of sortedMappings) {
         if (currentResult.includes(hebrew)) {
-            // Use split/join for global replace without complex regex issues
-            currentResult = currentResult.split(hebrew).join(english);
+            // Use regex with lookahead and group capture to only match whole words (or words bounded by spaces/punctuation)
+            // This prevents "בלו" from breaking "בלונד", converting it purely to "Bleuנד"
+            // We use (?=...) so the trailing boundary is not consumed, allowing adjacent matches
+            const regex = new RegExp(`(^|[\\s\\W])${hebrew}(?=[\\s\\W]|$)`, 'gu');
+            currentResult = currentResult.replace(regex, `$1${english}`);
         }
     }
 

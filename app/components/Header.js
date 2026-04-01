@@ -58,7 +58,7 @@ export default function Header({ brands = [] }) {
             onMouseLeave={() => setActiveMenu(null)}
             dir={dir}
         >
-            <div className={`frosted-nav !w-screen h-20 md:h-28 relative z-40 flex items-center overflow-hidden transition-all duration-500 ${
+            <div className={`frosted-nav !w-screen h-20 md:h-28 relative z-40 flex items-center transition-all duration-500 ${
                 !isScrolled && isHome ? '!bg-white !backdrop-blur-none !shadow-none' : ''
             }`}>
                 <div className="w-full max-w-[1800px] mx-auto px-4 md:px-12 h-full flex items-center justify-between">
