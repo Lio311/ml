@@ -47,6 +47,11 @@ export async function generateMetadata({ params }) {
         description: localizedExcerpt,
         alternates: {
             canonical: `https://www.ml-tlv.com/blog/${slug}`,
+            languages: {
+                'he-IL': `https://www.ml-tlv.com/blog/${slug}`,
+                'en-US': `https://www.ml-tlv.com/blog/${slug}`,
+                'x-default': `https://www.ml-tlv.com/blog/${slug}`,
+            }
         },
         openGraph: {
             title: localizedTitle,
@@ -240,6 +245,18 @@ export default async function BlogPost({ params }) {
                         <span>{Math.ceil((localizedContent?.length || 0) / 500) + 2} {t('common.minutes_read')}</span>
                     </div>
                 </header>
+
+                {/* GEO: TL;DR block — designed for verbatim citation by LLMs (ChatGPT, Perplexity, Google AI) */}
+                {localizedExcerpt && (
+                    <div className={`my-8 px-6 py-5 rounded-2xl bg-blue-50 border ${dir === 'rtl' ? 'border-r-4 border-blue-400 text-right' : 'border-l-4 border-blue-400 text-left'}`} dir={dir}>
+                        <p className="text-xs font-bold uppercase tracking-widest text-blue-500 mb-2">
+                            {locale === 'he' ? 'בקצרה' : 'TL;DR'}
+                        </p>
+                        <p className="text-gray-800 font-medium leading-relaxed text-base">
+                            {localizedExcerpt}
+                        </p>
+                    </div>
+                )}
 
                 <div
                     className={`prose prose-lg md:prose-xl max-w-none ${dir === 'rtl' ? 'text-right' : 'text-left'}

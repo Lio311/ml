@@ -396,6 +396,59 @@ export default async function ProductPage(props) {
                             }}
                         />
 
+                        {/* GEO: FAQPage Schema per-product — enables Google rich FAQ snippets per product URL */}
+                        <script
+                            type="application/ld+json"
+                            dangerouslySetInnerHTML={{
+                                __html: JSON.stringify({
+                                    "@context": "https://schema.org",
+                                    "@type": "FAQPage",
+                                    "mainEntity": [
+                                        {
+                                            "@type": "Question",
+                                            "name": locale === 'he' ? `האם ה${localizedName_val} מקורי ב-100%?` : `Is the ${localizedName_val} 100% original?`,
+                                            "acceptedAnswer": {
+                                                "@type": "Answer",
+                                                "text": locale === 'he'
+                                                    ? 'כן. כל הבשמים נרכשים מהיבואנים הרשמיים בלבד. אנחנו לא מתעסקים עם חיקויים או בשמי טסטר ממקורות לא ידועים.'
+                                                    : 'Yes. All perfumes are purchased exclusively from official importers. We do not deal with imitations or testers from unknown sources.'
+                                            }
+                                        },
+                                        {
+                                            "@type": "Question",
+                                            "name": locale === 'he' ? 'כמה התזות יש בכל גודל?' : 'How many sprays are in each size?',
+                                            "acceptedAnswer": {
+                                                "@type": "Answer",
+                                                "text": locale === 'he'
+                                                    ? 'דוגמית 2 מ"ל: כ-25–30 התזות. 5 מ"ל: כ-75 התזות. 10 מ"ל: כ-150 התזות — מה שמספיק לשבועות של שימוש יומיומי.'
+                                                    : '2ml sample: ~25–30 sprays. 5ml: ~75 sprays. 10ml: ~150 sprays — enough for weeks of daily use.'
+                                            }
+                                        },
+                                        {
+                                            "@type": "Question",
+                                            "name": locale === 'he' ? 'איך מתבצע תהליך המילוי?' : 'How is the decanting process done?',
+                                            "acceptedAnswer": {
+                                                "@type": "Answer",
+                                                "text": locale === 'he'
+                                                    ? 'המילוי מתבצע בסביבה סטרילית עם מזרקים חד-פעמיים, ישירות מהבקבוק המקורי ללא מגע יד אדם.'
+                                                    : 'Filling is done in a sterile environment using disposable syringes directly from the original bottle, with no human contact.'
+                                            }
+                                        },
+                                        {
+                                            "@type": "Question",
+                                            "name": locale === 'he' ? 'כמה זמן לוקח המשלוח?' : 'How long does shipping take?',
+                                            "acceptedAnswer": {
+                                                "@type": "Answer",
+                                                "text": locale === 'he'
+                                                    ? 'משלוח עד 7 ימי עסקים לפי תקנון UPS. ניתן גם לאסוף בחינם מצפון תל אביב.'
+                                                    : 'Up to 7 business days via UPS policy. Free pickup available from North Tel Aviv.'
+                                            }
+                                        }
+                                    ]
+                                })
+                            }}
+                        />
+
                         {
                             product.logo_url && (
                                 <div className={`mb-4 flex`} dir={dir}>
@@ -451,6 +504,64 @@ export default async function ProductPage(props) {
                             country={localize(product, 'country', locale)}
                             perfumers={localize(product, 'perfumers', locale)}
                         />
+
+                        {/* GEO: Specifications Table — structured fact density for AI scanability */}
+                        {(product.brand || product.seasons || product.category || product.gender) && (
+                            <div className={`mt-4 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
+                                <table className="w-full text-sm border-collapse">
+                                    <tbody>
+                                        {product.brand && (
+                                            <tr className="border-b border-gray-100">
+                                                <td className="py-2 pe-4 text-gray-400 font-medium whitespace-nowrap w-1/3">
+                                                    {locale === 'he' ? 'מותג' : 'Brand'}
+                                                </td>
+                                                <td className="py-2 text-gray-800 font-semibold">{product.brand}</td>
+                                            </tr>
+                                        )}
+                                        {localize(product, 'seasons', locale) && (
+                                            <tr className="border-b border-gray-100">
+                                                <td className="py-2 pe-4 text-gray-400 font-medium whitespace-nowrap w-1/3">
+                                                    {locale === 'he' ? 'עונה מומלצת' : 'Recommended Season'}
+                                                </td>
+                                                <td className="py-2 text-gray-800">{localize(product, 'seasons', locale)}</td>
+                                            </tr>
+                                        )}
+                                        {localize(product, 'category', locale) && (
+                                            <tr className="border-b border-gray-100">
+                                                <td className="py-2 pe-4 text-gray-400 font-medium whitespace-nowrap w-1/3">
+                                                    {locale === 'he' ? 'משפחת ריח' : 'Scent Family'}
+                                                </td>
+                                                <td className="py-2 text-gray-800">{translateCategory(localize(product, 'category', locale), locale)}</td>
+                                            </tr>
+                                        )}
+                                        {product.gender && (
+                                            <tr className="border-b border-gray-100">
+                                                <td className="py-2 pe-4 text-gray-400 font-medium whitespace-nowrap w-1/3">
+                                                    {locale === 'he' ? 'מיועד ל' : 'Gender'}
+                                                </td>
+                                                <td className="py-2 text-gray-800">{product.gender}</td>
+                                            </tr>
+                                        )}
+                                        {product.concentration && (
+                                            <tr className="border-b border-gray-100">
+                                                <td className="py-2 pe-4 text-gray-400 font-medium whitespace-nowrap w-1/3">
+                                                    {locale === 'he' ? 'ריכוז' : 'Concentration'}
+                                                </td>
+                                                <td className="py-2 text-gray-800 font-semibold">{product.concentration}</td>
+                                            </tr>
+                                        )}
+                                        {localize(product, 'country', locale) && (
+                                            <tr>
+                                                <td className="py-2 pe-4 text-gray-400 font-medium whitespace-nowrap w-1/3">
+                                                    {locale === 'he' ? 'מדינת ייצור' : 'Country of Origin'}
+                                                </td>
+                                                <td className="py-2 text-gray-800">{localize(product, 'country', locale)}</td>
+                                            </tr>
+                                        )}
+                                    </tbody>
+                                </table>
+                            </div>
+                        )}
                     </div>
 
                 </div >
