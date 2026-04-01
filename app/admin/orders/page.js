@@ -24,7 +24,7 @@ export default async function AdminOrdersPage(props) {
 
     try {
         const [ordersRes, countRes] = await Promise.all([
-            client.query('SELECT id, items, total_amount, status, customer_details, created_at, catalog_id, free_samples_count, notes, delivery_method FROM orders WHERE catalog_id IS NULL ORDER BY created_at DESC LIMIT $1 OFFSET $2', [LIMIT, offset]),
+            client.query('SELECT id, items, total, status, customer_details, created_at, invoice_url, catalog_id, free_samples_count, notes, delivery_method FROM orders WHERE catalog_id IS NULL ORDER BY created_at DESC LIMIT $1 OFFSET $2', [LIMIT, offset]),
             client.query('SELECT COUNT(*) FROM orders WHERE catalog_id IS NULL')
         ]);
         orders = ordersRes.rows;
