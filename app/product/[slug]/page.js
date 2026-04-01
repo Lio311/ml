@@ -51,6 +51,7 @@ const getT = (locale) => {
 export const revalidate = 3600; // SEO Improvement: Cache for 1 hour
 
 export async function generateMetadata(props) {
+    try {
     const cookieStore = await cookies();
     const locale = cookieStore.get('NEXT_LOCALE')?.value || 'he';
     const t = getT(locale);
@@ -116,6 +117,11 @@ export async function generateMetadata(props) {
             images: [imageUrl],
         },
     };
+    } catch (metaErr) {
+        console.error('[ProductPage] generateMetadata crashed:', metaErr);
+        Sentry.captureException(metaErr);
+        return { title: 'ml-tlv | Product' };
+    }
 }
 
 export default async function ProductPage(props) {
@@ -127,15 +133,22 @@ export default async function ProductPage(props) {
     const params = await props.params;
     const { slug } = params;
 
-    const res = await pool.query(`
-        SELECT p.id, p.slug, p.brand, p.brand_he, p.model, p.model_he, p.name, p.name_he, p.description, p.description_en, p.image_url, p.category, p.stock, p.top_notes, p.middle_notes, p.base_notes, p.price_2ml, p.price_5ml, p.price_10ml, p.seasons, p.country, p.perfumers, b.logo_url,
-        (SELECT AVG(rating) FROM reviews WHERE product_id = p.id) as average_rating,
-        (SELECT COUNT(*) FROM reviews WHERE product_id = p.id) as review_count
-        FROM products p 
-        LEFT JOIN brands b ON p.brand = b.name 
-        WHERE p.slug = $1 OR p.id::text = $1
-    `, [slug]);
-    const product = res.rows[0];
+    let product;
+    try {
+        const res = await pool.query(`
+            SELECT p.id, p.slug, p.brand, p.brand_he, p.model, p.model_he, p.name, p.name_he, p.description, p.description_en, p.image_url, p.category, p.stock, p.top_notes, p.middle_notes, p.base_notes, p.price_2ml, p.price_5ml, p.price_10ml, p.seasons, p.country, p.perfumers, b.logo_url,
+            (SELECT AVG(rating) FROM reviews WHERE product_id = p.id) as average_rating,
+            (SELECT COUNT(*) FROM reviews WHERE product_id = p.id) as review_count
+            FROM products p 
+            LEFT JOIN brands b ON p.brand = b.name 
+            WHERE p.slug = $1 OR p.id::text = $1
+        `, [slug]);
+        product = res.rows[0];
+    } catch (dbErr) {
+        console.error('[ProductPage] Main query crashed:', dbErr);
+        Sentry.captureException(dbErr);
+        return <div className="p-20 text-center text-red-600">שגיאה בטעינת המוצר. אנא נסו שוב מאוחר יותר.</div>;
+    }
 
     if (!product) {
         return <div className="p-20 text-center">{t('common.product_not_found')}</div>;
