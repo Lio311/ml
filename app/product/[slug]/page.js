@@ -490,10 +490,13 @@ export default async function ProductPage(props) {
                             sub: locale === 'he' ? 'מזרקים חד-פעמיים, ללא מגע יד' : 'Disposable syringes, no hand contact',
                             icon: (
                                 <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                                    <path d="M14.5 2L16 3.5 7.5 12 6 10.5z" />
-                                    <path d="M15 6l3 3" />
-                                    <path d="M11 10l-6 6v3h3l6-6" />
-                                    <line x1="2" y1="22" x2="8" y2="16" />
+                                    <line x1="19" y1="5" x2="5" y2="19" />
+                                    <circle cx="6.5" cy="17.5" r="2.5" />
+                                    <path d="M15 5l4 4" />
+                                    <path d="M13 7l-1.5 1.5" />
+                                    <path d="M16 10l-1.5 1.5" />
+                                    <path d="M11 5h2a2 2 0 0 1 2 2v0" />
+                                    <path d="M9 3l6 6" />
                                 </svg>
                             )
                         },
@@ -537,7 +540,7 @@ export default async function ProductPage(props) {
                 <h2 className={`text-2xl font-bold mb-8 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
                     {locale === 'he' ? 'שאלות נפוצות' : 'Frequently Asked Questions'}
                 </h2>
-                <div className="space-y-2 max-w-3xl">
+                <div className="space-y-2 w-full">
                     {(locale === 'he' ? [
                         { q: 'האם הבושם מקורי ב-100%?', a: 'כן. כל הבשמים נרכשים מהיבואנים הרשמיים בלבד. אנחנו לא מתעסקים עם חיקויים או בשמי טסטר ממקורות לא ידועים.' },
                         { q: 'כמה התזות יש בכל גודל?', a: 'דוגמית 2 מ"ל: כ-25–30 התזות. 5 מ"ל: כ-75 התזות. 10 מ"ל: כ-150 התזות — מה שמספיק לשבועות של שימוש יומיומי.' },
