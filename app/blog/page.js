@@ -185,7 +185,7 @@ export default async function BlogIndex(props) {
                                 href={`/blog?page=${page - 1}`}
                                 className="w-10 h-10 flex items-center justify-center rounded-lg border bg-white hover:bg-gray-50 text-gray-600"
                             >
-                                {dir === 'rtl' ? '&gt;' : '&lt;'}
+                                {dir === 'rtl' ? '›' : '‹'}
                             </Link>
                         )}
 
@@ -197,7 +197,7 @@ export default async function BlogIndex(props) {
                                     key={p}
                                     href={`/blog?page=${p}`}
                                     className={`w-10 h-10 flex items-center justify-center rounded-lg border transition ${isCurrent
-                                        ? 'bg-black text-white border-black'
+                                        ? 'bg-black text-white border-black font-bold'
                                         : 'bg-white text-gray-700 hover:bg-gray-50'
                                         }`}
                                 >
@@ -211,7 +211,7 @@ export default async function BlogIndex(props) {
                                 href={`/blog?page=${page + 1}`}
                                 className="w-10 h-10 flex items-center justify-center rounded-lg border bg-white hover:bg-gray-50 text-gray-600"
                             >
-                                {dir === 'rtl' ? '&lt;' : '&gt;'}
+                                {dir === 'rtl' ? '‹' : '›'}
                             </Link>
                         )}
                     </div>
