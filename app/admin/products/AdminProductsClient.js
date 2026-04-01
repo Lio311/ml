@@ -787,7 +787,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                             (product.stock || 0) <= 50 ? 'bg-orange-50 text-orange-700 border-orange-100/50' :
                                                 'bg-green-50 text-green-700 border-green-100/50'
                                             }`}>
-                                            מלאי: {product.stock || 0}מ״ל
+                                            מלאי: {product.stock || 0} מ״ל
                                         </div>
                                         {product.active === false && (
                                             <div className="font-black text-[9px] md:text-[10px] px-2.5 py-1 rounded-full uppercase tracking-widest border shadow-sm bg-gray-800 text-white border-gray-900">
