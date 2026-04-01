@@ -24,7 +24,7 @@ export async function GET(req, { params }) {
         // Verify user is part of the conversation (or is admin/catalog_owner)
         // Simplified check: since they know the ID, we could just fetch it, but let's be secure
         const check = await pool.query(`
-            SELECT * FROM conversations WHERE id = $1
+            SELECT id, participant1_id, participant2_id, catalog_id, order_id, created_at, updated_at FROM conversations WHERE id = $1
         `, [conversationId]);
         
         if (check.rows.length === 0) return new NextResponse('Not Found', { status: 404 });
@@ -136,7 +136,7 @@ export async function POST(req, { params }) {
                 VALUES ($1, $2, $3)
                 RETURNING id, sender_id, content, is_read, created_at
             )
-            SELECT i.*, u.role as sender_role
+            SELECT i.id, i.sender_id, i.content, i.is_read, i.created_at, u.role as sender_role
             FROM inserted i
             LEFT JOIN users u ON i.sender_id = u.id
         `, [conversationId, userId, content.trim()]);

@@ -38,7 +38,8 @@ export async function GET(req) {
 
         // Fetch all reviews with user details
         const result = await pool.query(`
-            SELECT r.*, u.first_name, u.last_name, u.role
+            SELECT r.id, r.user_id, r.order_id, r.product_id, r.content, r.rating, r.created_at, r.is_public, 
+                   u.first_name, u.last_name, u.role
             FROM reviews r
             LEFT JOIN users u ON r.user_id = u.id
             WHERE r.is_public = TRUE
@@ -99,7 +100,7 @@ export async function POST(req) {
             const result = await pool.query(`
                 INSERT INTO reviews (user_id, order_id, content, rating)
                 VALUES ($1, $2, $3, $4)
-                RETURNING *
+                RETURNING id, user_id, order_id, content, rating, created_at
             `, [userId, orderId, content, rating]);
 
             return NextResponse.json(result.rows[0]);
@@ -113,7 +114,8 @@ export async function POST(req) {
                 // Update existing rating
                 const result = await pool.query(`
                     UPDATE reviews SET rating = $1, created_at = NOW() 
-                    WHERE id = $2 RETURNING *
+                    WHERE id = $2 
+                    RETURNING id, rating, created_at
                 `, [rating, existing.rows[0].id]);
                 return NextResponse.json(result.rows[0]);
             } else {
@@ -121,7 +123,7 @@ export async function POST(req) {
                 const result = await pool.query(`
                     INSERT INTO reviews (user_id, product_id, rating, is_public)
                     VALUES ($1, $2, $3, true)
-                    RETURNING *
+                    RETURNING id, user_id, product_id, rating, created_at, is_public
                 `, [userId, productId, rating]);
                 return NextResponse.json(result.rows[0]);
             }

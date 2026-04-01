@@ -2,6 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import { Star, Quote, MessageSquare, Sparkles } from 'lucide-react';
+import Image from 'next/image';
 import { useLanguage } from '../context/LanguageContext';
 
 export default function ReviewsClient({ initialReviews = [] }) {
@@ -86,7 +87,13 @@ export default function ReviewsClient({ initialReviews = [] }) {
                                 <div className="flex items-center gap-4 pt-6 border-t border-gray-50">
                                     <div className="w-12 h-12 rounded-2xl bg-gray-100 overflow-hidden border border-gray-100 shadow-inner">
                                         {review.user_image ? (
-                                            <img src={review.user_image} alt="" className="w-full h-full object-cover" />
+                                            <Image 
+                                                src={review.user_image} 
+                                                alt={review.user_name || "User"} 
+                                                width={48}
+                                                height={48}
+                                                className="w-full h-full object-cover" 
+                                            />
                                         ) : (
                                             <div className="w-full h-full flex items-center justify-center bg-black text-white font-bold text-lg">
                                                 {review.user_name?.[0] || 'L'}
@@ -121,7 +128,17 @@ export default function ReviewsClient({ initialReviews = [] }) {
                         <div className="flex -space-x-3 rtl:space-x-reverse">
                             {reviews.slice(0, 5).map((r, i) => (
                                 <div key={i} className="w-10 h-10 rounded-full border-2 border-black bg-gray-800 overflow-hidden">
-                                    {r.user_image ? <img src={r.user_image} className="w-full h-full object-cover" /> : <div className="w-full h-full flex items-center justify-center text-[10px] font-bold">L</div>}
+                                    {r.user_image ? (
+                                        <Image 
+                                            src={r.user_image} 
+                                            alt=""
+                                            width={40}
+                                            height={40}
+                                            className="w-full h-full object-cover" 
+                                        />
+                                    ) : (
+                                        <div className="w-full h-full flex items-center justify-center text-[10px] font-bold">L</div>
+                                    )}
                                 </div>
                             ))}
                         </div>

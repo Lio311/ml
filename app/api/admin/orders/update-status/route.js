@@ -30,7 +30,7 @@ export async function POST(req) {
 
     const client = await pool.connect();
     try {
-        const res = await client.query('SELECT * FROM orders WHERE id = $1', [orderId]);
+        const res = await client.query('SELECT id, status, items, free_samples_count, customer_details FROM orders WHERE id = $1', [orderId]);
         const order = res.rows[0];
         if (!order) return NextResponse.json({ error: 'Not found' }, { status: 404 });
 

@@ -9,7 +9,7 @@ const pool = new Pool({
 export async function GET() {
     try {
         const client = await pool.connect();
-        const result = await client.query('SELECT * FROM brands ORDER BY name ASC');
+        const result = await client.query('SELECT id, name, logo_url, created_at, title, description, perfumer, highlights, title_en, description_en, highlights_en, perfumer_en FROM brands ORDER BY name ASC');
         client.release();
         return NextResponse.json(result.rows);
     } catch (error) {

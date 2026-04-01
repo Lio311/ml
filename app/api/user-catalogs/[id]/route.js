@@ -21,7 +21,7 @@ export async function GET(req, context) {
         }
 
         client = await getAuthenticatedClient(userId);
-        const res = await client.query('SELECT * FROM user_catalogs WHERE id = $1', [id]);
+        const res = await client.query('SELECT id, user_id, slug, name, description, contact_email, created_at, image_url, self_pickup_active, delivery_active, delivery_price, sample_tiers, is_hidden FROM user_catalogs WHERE id = $1', [id]);
         if (res.rows.length === 0) {
             return NextResponse.json({ error: 'Catalog not found or unauthorized' }, { status: 404 });
         }
@@ -86,7 +86,8 @@ export async function PUT(req, context) {
                  delivery_active = COALESCE($8, delivery_active),
                  delivery_price = COALESCE($9, delivery_price),
                  sample_tiers = COALESCE($10, sample_tiers)
-             WHERE id = $6 RETURNING *`,
+             WHERE id = $6 
+             RETURNING id, name, slug, description, image_url, self_pickup_active, delivery_active, delivery_price, sample_tiers`,
             [
                 name, description, contact_email, slug, image_url || null, id,
                 self_pickup_active, delivery_active, delivery_price, 

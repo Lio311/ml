@@ -1,5 +1,6 @@
 "use client";
 
+import Image from 'next/image';
 import { useState } from 'react';
 import { Eye, EyeOff, Trash2, Loader2, MessageSquare, ExternalLink, Calendar, Star } from 'lucide-react';
 import toast from 'react-hot-toast';
@@ -85,9 +86,14 @@ export default function AdminReviewsClient({ initialReviews = [] }) {
                             <div className="flex flex-col md:flex-row gap-6 md:items-center">
                                 {/* User Info */}
                                 <div className="flex items-center gap-4 min-w-[200px]">
-                                    <div className="w-12 h-12 rounded-2xl bg-gray-100 overflow-hidden border border-gray-200 shadow-inner">
+                                    <div className="w-12 h-12 rounded-2xl bg-gray-100 overflow-hidden border border-gray-200 shadow-inner relative">
                                         {review.user_image ? (
-                                            <img src={review.user_image} alt="" className="w-full h-full object-cover" />
+                                            <Image 
+                                                src={review.user_image} 
+                                                alt="" 
+                                                fill 
+                                                className="object-cover" 
+                                            />
                                         ) : (
                                             <div className="w-full h-full flex items-center justify-center bg-black text-white font-bold text-sm">
                                                 {review.user_name?.[0] || 'L'}

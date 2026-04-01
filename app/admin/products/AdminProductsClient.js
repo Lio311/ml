@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import TagInput from "../../components/TagInput";
 import toast from 'react-hot-toast';
 import AdminFilterBar from "../../components/admin/AdminFilterBar";
@@ -772,8 +773,8 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                         ) : (
                             <div className="flex-1 flex items-center gap-4 md:gap-6 w-full rtl">
                                 {product.image_url ? (
-                                    <div className="w-16 h-16 md:w-20 md:h-20 flex-shrink-0 bg-white rounded-[1.5rem] border border-gray-100 overflow-hidden shadow-sm shadow-gray-100/50">
-                                        <img src={product.image_url} alt={product.model} className="w-full h-full object-contain p-1" />
+                                    <div className="w-16 h-16 md:w-20 md:h-20 flex-shrink-0 bg-white rounded-[1.5rem] border border-gray-100 overflow-hidden shadow-sm shadow-gray-100/50 relative">
+                                        <Image src={product.image_url} alt={product.model} fill className="object-contain p-1" sizes="(max-width: 768px) 64px, 80px" />
                                     </div>
                                 ) : (
                                     <div className="w-16 h-16 md:w-20 md:h-20 flex-shrink-0 bg-gray-50 rounded-[1.5rem] border border-gray-100 flex items-center justify-center text-[10px] font-black text-gray-300 uppercase tracking-widest">

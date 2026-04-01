@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 
 // --- Icons (Inline SVGs for performance & no deps) ---
 const Icons = {
@@ -207,11 +208,15 @@ export default function AccessibilityWidget() {
                     style={{ filter: 'none' }} // Extra safety
                 >
                     {/* Custom Accessibility Image Icon */}
-                    <img
-                        src="/images/accessibility-icon.png"
-                        alt="Accessibility"
-                        className="w-10 h-10 object-contain rounded-full"
-                    />
+                    <div className="relative w-10 h-10 flex items-center justify-center rounded-full overflow-hidden">
+                        <Image
+                            src="/images/accessibility-icon.png"
+                            alt="Accessibility"
+                            fill
+                            className="object-contain"
+                            priority
+                        />
+                    </div>
                 </button>
 
                 {/* The Widget Panel - Reduced size and max-height */}

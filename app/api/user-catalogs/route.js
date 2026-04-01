@@ -13,7 +13,7 @@ export async function GET() {
 
         const client = await pool.connect();
         try {
-            const res = await client.query('SELECT * FROM user_catalogs WHERE user_id = $1 ORDER BY created_at DESC', [userId]);
+            const res = await client.query('SELECT id, user_id, slug, name, description, contact_email, created_at, image_url, self_pickup_active, delivery_active, delivery_price, sample_tiers, is_hidden FROM user_catalogs WHERE user_id = $1 ORDER BY created_at DESC', [userId]);
             return NextResponse.json(res.rows);
         } finally {
             client.release();
@@ -55,7 +55,8 @@ export async function POST(req) {
 
             const res = await client.query(
                 `INSERT INTO user_catalogs (user_id, slug, name, description, contact_email, image_url) 
-                 VALUES ($1, $2, $3, $4, $5, $6) RETURNING *`,
+                 VALUES ($1, $2, $3, $4, $5, $6) 
+                 RETURNING id, user_id, slug, name, description, contact_email, created_at, image_url`,
                 [userId, slug, name, description, contact_email, image_url || null]
             );
 

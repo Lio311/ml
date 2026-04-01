@@ -23,7 +23,7 @@ export async function GET(req, context) {
         }
 
         // Fetch orders
-        const ordersRes = await client.query('SELECT * FROM orders WHERE catalog_id = $1 ORDER BY created_at DESC', [catalogId]);
+        const ordersRes = await client.query('SELECT id, customer_details, total_amount, status, items, free_samples_count, created_at, notes, delivery_method, catalog_id, total, invoice_url FROM orders WHERE catalog_id = $1 ORDER BY created_at DESC', [catalogId]);
         
         return NextResponse.json(ordersRes.rows);
     } catch (error) {

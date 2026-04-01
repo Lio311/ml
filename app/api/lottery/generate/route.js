@@ -24,7 +24,7 @@ export async function POST(req) {
             // Attempt 1: Fetch active products strict with lottery flag
             try {
                 const res = await client.query(`
-                    SELECT * FROM products 
+                    SELECT id, name, brand, image_url, price_2ml, price_5ml, price_10ml, stock, active, in_lottery FROM products 
                     WHERE stock > 0 
                     AND active = true
                     AND in_lottery = true
@@ -34,7 +34,7 @@ export async function POST(req) {
                 // If column 'in_lottery' does not exist yet (migration skipped), fallback to all products
                 console.warn("Lottery DB Query failed (likely missing column), falling back to all products:", dbError.message);
                 const resFallback = await client.query(`
-                    SELECT * FROM products 
+                    SELECT id, name, brand, image_url, price_2ml, price_5ml, price_10ml, stock, active FROM products 
                     WHERE stock > 0 
                     AND active = true
                 `);
@@ -45,7 +45,7 @@ export async function POST(req) {
             // This ensures we never return empty if the store has products.
             if (allCandidates.length === 0) {
                 const resAll = await client.query(`
-                    SELECT * FROM products 
+                    SELECT id, name, brand, image_url, price_2ml, price_5ml, price_10ml, stock, active FROM products 
                     WHERE stock > 0 
                     AND active = true
                 `);

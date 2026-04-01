@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import AdminFilterBar from "@/app/components/admin/AdminFilterBar";
 import { useUser } from "@clerk/nextjs";
 import toast from 'react-hot-toast';
@@ -104,9 +105,9 @@ export default function AdminBrandsPage() {
                                     <tr key={brand.id} className="border-b hover:bg-gray-50 transition-colors">
                                         <td className="p-4 font-bold text-center">{brand.name}</td>
                                         <td className="p-4 text-center">
-                                            <div className="flex justify-center">
+                                            <div className="flex justify-center relative h-10 w-24">
                                                 {brand.logo_url ? (
-                                                    <img src={brand.logo_url} alt={brand.name} className="h-10 object-contain" />
+                                                    <Image src={brand.logo_url} alt={brand.name} fill className="object-contain" sizes="96px" />
                                                 ) : (
                                                     <span className="text-gray-300 text-xs">אין לוגו</span>
                                                 )}
@@ -170,9 +171,9 @@ export default function AdminBrandsPage() {
                             <div key={brand.id} className="p-5 bg-white space-y-4">
                                 <div className="flex justify-between items-center">
                                     <div className="font-bold text-gray-900 text-lg">{brand.name}</div>
-                                    <div className="w-12 h-12 flex-shrink-0 bg-gray-50 rounded-lg border border-gray-100 flex items-center justify-center p-1">
+                                    <div className="w-12 h-12 flex-shrink-0 bg-gray-50 rounded-lg border border-gray-100 flex items-center justify-center p-1 relative">
                                         {brand.logo_url ? (
-                                            <img src={brand.logo_url} alt={brand.name} className="w-full h-full object-contain" />
+                                            <Image src={brand.logo_url} alt={brand.name} fill className="object-contain p-1" sizes="48px" />
                                         ) : (
                                             <span className="text-[10px] text-gray-300">No Logo</span>
                                         )}

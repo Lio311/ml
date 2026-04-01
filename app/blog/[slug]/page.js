@@ -67,7 +67,7 @@ export async function generateMetadata({ params }) {
 async function getArticle(slug) {
     const client = await pool.connect();
     try {
-        const res = await client.query('SELECT * FROM blog_posts WHERE slug = $1', [slug]);
+        const res = await client.query('SELECT id, title, title_en, content, content_en, excerpt, excerpt_en, slug, image_url, created_at, tags FROM blog_posts WHERE slug = $1', [slug]);
         return sanitizeProduct(res.rows[0]);
     } finally {
         client.release();

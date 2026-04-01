@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import toast from "react-hot-toast";
 
 export default function AdminCatalogItemsClient({ catalogId }) {
@@ -287,7 +288,7 @@ export default function AdminCatalogItemsClient({ catalogId }) {
                             <div key={item.id} className="bg-white border rounded-xl overflow-hidden shadow-sm hover:shadow-md transition flex flex-col group relative">
                                 <div className="h-40 bg-gray-100 flex items-center justify-center overflow-hidden relative">
                                     {item.image_url ? (
-                                        <img src={item.image_url} alt={item.name} className="w-full h-full object-cover" />
+                                        <Image src={item.image_url} alt={item.name} fill className="object-cover" sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw" />
                                     ) : (
                                         <div className="text-4xl opacity-20">📦</div>
                                     )}

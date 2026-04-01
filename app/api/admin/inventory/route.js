@@ -7,10 +7,10 @@ export async function GET() {
         const client = await pool.connect();
         try {
             // 1. Get Inventory
-            const invRes = await client.query('SELECT * FROM bottle_inventory ORDER BY size ASC');
+            const invRes = await client.query('SELECT size, quantity FROM bottle_inventory ORDER BY size ASC');
 
             // 2. Get Recent Purchases (Last 50)
-            const histRes = await client.query('SELECT * FROM bottle_purchases ORDER BY purchase_date DESC LIMIT 50');
+            const histRes = await client.query('SELECT id, size, quantity, purchase_date, notes, created_at FROM bottle_purchases ORDER BY purchase_date DESC LIMIT 50');
 
             return NextResponse.json({
                 inventory: invRes.rows,
@@ -75,7 +75,7 @@ export async function DELETE(req) {
             await client.query('BEGIN');
 
             // 1. Get the purchase details to know what to revert
-            const res = await client.query('SELECT * FROM bottle_purchases WHERE id = $1', [id]);
+            const res = await client.query('SELECT size, quantity FROM bottle_purchases WHERE id = $1', [id]);
             if (res.rows.length === 0) {
                 await client.query('ROLLBACK');
                 return NextResponse.json({ error: "Purchase not found" }, { status: 404 });
@@ -116,7 +116,7 @@ export async function PUT(req) {
             await client.query('BEGIN');
 
             // 1. Get Old Details
-            const res = await client.query('SELECT * FROM bottle_purchases WHERE id = $1', [id]);
+            const res = await client.query('SELECT size, quantity FROM bottle_purchases WHERE id = $1', [id]);
             if (res.rows.length === 0) {
                 await client.query('ROLLBACK');
                 return NextResponse.json({ error: "Purchase not found" }, { status: 404 });

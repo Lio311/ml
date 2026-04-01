@@ -9,7 +9,7 @@ export async function GET(req) {
 
     const client = await pool.connect();
     try {
-        let query = 'SELECT * FROM expenses ORDER BY date DESC';
+        let query = 'SELECT id, description, amount, type, date, created_at FROM expenses ORDER BY date DESC';
         let values = [];
 
         if (month && year) {
@@ -39,7 +39,7 @@ export async function POST(req) {
     const client = await pool.connect();
     try {
         const res = await client.query(
-            'INSERT INTO expenses (description, amount, type, date) VALUES ($1, $2, $3, $4) RETURNING *',
+            'INSERT INTO expenses (description, amount, type, date) VALUES ($1, $2, $3, $4) RETURNING id, description, amount, type, date, created_at',
             [description, amount, type || 'monthly', date || new Date()]
         );
         return NextResponse.json(res.rows[0]);
@@ -62,7 +62,7 @@ export async function PUT(req) {
     const client = await pool.connect();
     try {
         const res = await client.query(
-            'UPDATE expenses SET description = $1, amount = $2, type = $3, date = $4 WHERE id = $5 RETURNING *',
+            'UPDATE expenses SET description = $1, amount = $2, type = $3, date = $4 WHERE id = $5 RETURNING id, description, amount, type, date, created_at',
             [description, amount, type, date, id]
         );
         return NextResponse.json(res.rows[0]);

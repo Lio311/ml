@@ -5,7 +5,7 @@ export async function GET() {
     try {
         const client = await pool.connect();
         try {
-            const result = await client.query('SELECT * FROM search_mappings ORDER BY created_at DESC');
+            const result = await client.query('SELECT id, hebrew_term, english_term, type, created_at FROM search_mappings ORDER BY created_at DESC');
             return NextResponse.json(result.rows);
         } finally {
             client.release();
@@ -28,7 +28,7 @@ export async function POST(req) {
                 `INSERT INTO search_mappings (hebrew_term, english_term, type) 
                  VALUES ($1, $2, $3) 
                  ON CONFLICT (hebrew_term) DO UPDATE SET english_term = $2, type = $3
-                 RETURNING *`,
+                 RETURNING id, hebrew_term, english_term, type, created_at`,
                 [hebrew, english, type || 'general']
             );
             return NextResponse.json(result.rows[0]);
@@ -51,7 +51,7 @@ export async function PUT(req) {
                 `UPDATE search_mappings 
                  SET hebrew_term = $1, english_term = $2, type = $3 
                  WHERE id = $4 
-                 RETURNING *`,
+                 RETURNING id, hebrew_term, english_term, type, created_at`,
                 [hebrew, english, type || 'general', id]
             );
 

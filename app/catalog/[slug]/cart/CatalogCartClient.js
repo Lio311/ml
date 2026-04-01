@@ -1,6 +1,7 @@
 "use client";
 
 import { useCart } from "../../../context/CartContext";
+import Image from "next/image";
 import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useRouter } from 'next/navigation';
@@ -122,7 +123,12 @@ export default function CatalogCartClient({ slug }) {
                     <div key={item.id} className="flex items-center gap-6 border border-gray-100 p-5 rounded-3xl bg-white shadow-sm hover:shadow-md transition">
                         <div className="w-24 h-24 bg-gray-50 flex items-center justify-center rounded-2xl overflow-hidden relative border border-gray-100 flex-shrink-0">
                             {item.image_url ? (
-                                <img src={item.image_url} alt={item.name} className="w-full h-full object-cover" />
+                                <Image 
+                                    src={item.image_url} 
+                                    alt={item.name} 
+                                    fill 
+                                    className="object-cover" 
+                                />
                             ) : (
                                 <span className="text-3xl">📦</span>
                             )}

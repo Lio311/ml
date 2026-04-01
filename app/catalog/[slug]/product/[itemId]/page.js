@@ -1,6 +1,7 @@
 import pool from "../../../../lib/db";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { checkAdmin } from "../../../../lib/admin";
 import { sanitizeProduct } from "../../../../lib/productUtils";
 import CatalogProductActions from "./CatalogProductActions";
@@ -11,7 +12,7 @@ export async function generateMetadata({ params }) {
     const { slug, itemId } = await params;
 
     const res = await pool.query(`
-        SELECT i.*, c.name as catalog_name, c.is_hidden
+        SELECT i.id, i.brand, i.fragrance_name, i.description, i.image_url, i.category, i.gender, i.top_notes, i.middle_notes, i.base_notes, i.prices, i.stock_ml, c.name as catalog_name, c.is_hidden
         FROM user_catalog_items i
         JOIN user_catalogs c ON i.catalog_id = c.id
         WHERE i.id = $1 AND c.slug = $2
@@ -33,7 +34,7 @@ export default async function CatalogProductPage({ params }) {
     const isAdmin = await checkAdmin();
 
     const res = await pool.query(`
-        SELECT i.*, c.name as catalog_name, c.slug as catalog_slug, c.image_url as catalog_image, c.is_hidden
+        SELECT i.id, i.brand, i.fragrance_name, i.description, i.image_url, i.category, i.gender, i.top_notes, i.middle_notes, i.base_notes, i.prices, i.stock_ml, c.name as catalog_name, c.slug as catalog_slug, c.image_url as catalog_image, c.is_hidden
         FROM user_catalog_items i
         JOIN user_catalogs c ON i.catalog_id = c.id
         WHERE i.id = $1 AND c.slug = $2
@@ -64,10 +65,13 @@ export default async function CatalogProductPage({ params }) {
                 <div className="w-full md:w-1/2 aspect-square flex items-center justify-center relative overflow-hidden p-8 md:p-12 group bg-white rounded-xl shadow-sm">
                     {item.image_url ? (
                         <>
-                            <img
+                            <Image
                                 src={item.image_url}
                                 alt={`${item.brand} ${item.fragrance_name}`}
-                                className="w-full h-full object-contain p-8 md:p-12 hover:scale-105 transition-transform duration-500"
+                                fill
+                                className="object-contain p-8 md:p-12 hover:scale-105 transition-transform duration-500"
+                                sizes="(max-width: 768px) 100vw, 50vw"
+                                priority
                             />
                             <div className="absolute top-4 right-4 z-10">
                                 <ShareButton name={`${item.brand} ${item.fragrance_name}`} />

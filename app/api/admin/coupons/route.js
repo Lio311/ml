@@ -6,7 +6,7 @@ export async function GET() {
         const client = await pool.connect();
         try {
             const res = await client.query(`
-                SELECT * FROM coupons 
+                SELECT id, code, discount_percent, expires_at, status, email, created_at, limitations FROM coupons 
                 ORDER BY created_at DESC 
                 LIMIT 50
             `);

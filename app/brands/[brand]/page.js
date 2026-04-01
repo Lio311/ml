@@ -1,4 +1,5 @@
 import pool from '../../lib/db';
+import Image from 'next/image';
 import ProductCard from '../../components/ProductCard';
 import Link from 'next/link';
 import { cookies } from 'next/headers';
@@ -98,19 +99,19 @@ export default async function BrandPage(props) {
                         "itemListElement": [
                             {
                                 "@type": "ListItem",
-                                "position": 1,
+                                position: 1,
                                 "name": t('brands_page.home'),
                                 "item": "https://www.ml-tlv.com"
                             },
                             {
                                 "@type": "ListItem",
-                                "position": 2,
+                                position: 2,
                                 "name": t('brands_page.brands'),
                                 "item": "https://www.ml-tlv.com/brands"
                             },
                             {
                                 "@type": "ListItem",
-                                "position": 3,
+                                position: 3,
                                 "name": displayName,
                                 "item": `https://www.ml-tlv.com/brands/${brand}`
                             }
@@ -123,10 +124,11 @@ export default async function BrandPage(props) {
             <div className="flex flex-col items-center mb-12 text-center">
                 {brandData?.logo_url ? (
                     <div className="w-32 h-32 relative mb-6 p-4 border rounded-full bg-white shadow-sm flex items-center justify-center">
-                        <img
+                        <Image
                             src={brandData.logo_url}
                             alt={brandData.name}
-                            className="w-full h-full object-contain"
+                            fill
+                            className="object-contain p-4"
                         />
                     </div>
                 ) : (

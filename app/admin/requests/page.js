@@ -17,7 +17,7 @@ export default async function AdminRequestsPage(props) {
 
     try {
         const [reqRes, countRes] = await Promise.all([
-            client.query('SELECT * FROM perfume_requests ORDER BY created_at DESC LIMIT $1 OFFSET $2', [LIMIT, offset]),
+            client.query('SELECT id, user_email, brand, model, created_at FROM perfume_requests ORDER BY created_at DESC LIMIT $1 OFFSET $2', [LIMIT, offset]),
             client.query('SELECT COUNT(*) FROM perfume_requests')
         ]);
         requests = reqRes.rows;

@@ -33,7 +33,7 @@ export async function GET(req) {
         if (asAdmin) {
             // Check if user is admin (you can add your admin validation logic here)
             query = await pool.query(`
-                SELECT c.*, 
+                SELECT c.id, c.participant1_id, c.participant2_id, c.catalog_id, c.order_id, c.created_at, c.updated_at, 
                        (SELECT content FROM messages m WHERE m.conversation_id = c.id ORDER BY created_at DESC LIMIT 1) as last_message,
                        (SELECT created_at FROM messages m WHERE m.conversation_id = c.id ORDER BY created_at DESC LIMIT 1) as last_message_time,
                        (SELECT COUNT(*) FROM messages m WHERE m.conversation_id = c.id AND sender_id != $1 AND is_read = false) as unread_count
@@ -43,7 +43,7 @@ export async function GET(req) {
             `, [userId]);
         } else if (catalogId) {
             query = await pool.query(`
-                SELECT c.*, 
+                SELECT c.id, c.participant1_id, c.participant2_id, c.catalog_id, c.order_id, c.created_at, c.updated_at, 
                        (SELECT content FROM messages m WHERE m.conversation_id = c.id ORDER BY created_at DESC LIMIT 1) as last_message,
                        (SELECT created_at FROM messages m WHERE m.conversation_id = c.id ORDER BY created_at DESC LIMIT 1) as last_message_time,
                        (SELECT COUNT(*) FROM messages m WHERE m.conversation_id = c.id AND sender_id != $1 AND is_read = false) as unread_count
@@ -60,7 +60,7 @@ export async function GET(req) {
                     WHERE customer_details->>'clerk_id' = $1
                 ),
                 existing_convs AS (
-                    SELECT * FROM conversations WHERE participant1_id = $2
+                    SELECT id, participant1_id, participant2_id, catalog_id, order_id, created_at, updated_at FROM conversations WHERE participant1_id = $2
                 )
                 SELECT 
                     COALESCE(c.id::text, 'order_' || o.order_id::text) as id,
@@ -246,9 +246,9 @@ export async function POST(req) {
             WITH inserted AS (
                 INSERT INTO messages (conversation_id, sender_id, content)
                 VALUES ($1, $2, $3)
-                RETURNING *
+                RETURNING id, conversation_id, sender_id, content, is_read, created_at
             )
-            SELECT i.*, u.role as sender_role
+            SELECT i.id, i.conversation_id, i.sender_id, i.content, i.is_read, i.created_at, u.role as sender_role
             FROM inserted i
             LEFT JOIN users u ON i.sender_id = u.id
         `, [conversationId, userId, content]);

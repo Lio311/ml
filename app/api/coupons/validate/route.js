@@ -24,7 +24,7 @@ export async function POST(req) {
             } catch (e) { /* Ignore if already exists or fails for other reasons */ }
 
             const res = await client.query(`
-                SELECT * FROM coupons 
+                SELECT id, code, discount_percent, expires_at, status, email, limitations FROM coupons 
                 WHERE code = $1 
                 AND status = 'active'
                 AND (expires_at IS NULL OR expires_at > NOW())

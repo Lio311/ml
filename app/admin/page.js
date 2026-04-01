@@ -125,7 +125,7 @@ export default async function AdminDashboard({ searchParams }) {
             cogsAllTimeRes
         ] = await Promise.all([
             // 1. Recent Orders
-            safeQuery("SELECT * FROM orders WHERE catalog_id IS NULL ORDER BY created_at DESC LIMIT 3"),
+            safeQuery("SELECT id, customer_details, created_at, total_amount, status FROM orders WHERE catalog_id IS NULL ORDER BY created_at DESC LIMIT 3"),
             // 2. Total Orders Count
             safeQuery("SELECT COUNT(*) FROM orders WHERE catalog_id IS NULL"),
             // 3. Total Monthly Revenue
@@ -276,9 +276,8 @@ export default async function AdminDashboard({ searchParams }) {
                 GROUP BY day
                 ORDER BY day
             `, [prevMonth, prevYear]),
-            // 20. Recent Coupons
             safeQuery(`
-                SELECT * FROM coupons 
+                SELECT id, code, discount_percent, email, status, expires_at, created_at FROM coupons 
                 WHERE status = 'active' 
                 AND (expires_at IS NULL OR expires_at > NOW())
                 ORDER BY created_at DESC 

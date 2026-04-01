@@ -22,7 +22,7 @@ export async function GET(req, { params }) {
                  return NextResponse.json({ error: 'Catalog not found or unauthorized' }, { status: 404 });
             }
 
-            const res = await client.query('SELECT * FROM user_catalog_items WHERE catalog_id = $1 ORDER BY created_at DESC', [id]);
+            const res = await client.query('SELECT id, catalog_id, name, description, price, image_url, created_at, prices, brand, fragrance_name, top_notes, middle_notes, base_notes, gender, category, stock_ml FROM user_catalog_items WHERE catalog_id = $1 ORDER BY created_at DESC', [id]);
             return NextResponse.json(res.rows);
         } finally {
             client.release();
@@ -75,7 +75,8 @@ export async function POST(req, { params }) {
                     catalog_id, brand, fragrance_name, name, description, prices, image_url, 
                     top_notes, middle_notes, base_notes, gender, category, stock_ml
                 ) 
-                 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) RETURNING *`,
+                 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13) 
+                 RETURNING id, catalog_id, brand, fragrance_name, name, description, prices, image_url, top_notes, middle_notes, base_notes, gender, category, stock_ml`,
                 [id, brand, fragrance_name, `${brand} ${fragrance_name}`, description, JSON.stringify(prices), image_url, top_notes, middle_notes, base_notes, gender, category, Number(stock_ml) || 0]
             );
 

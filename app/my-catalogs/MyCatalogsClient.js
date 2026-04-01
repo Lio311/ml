@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
 import { useLanguage } from "../context/LanguageContext";
 
 export default function MyCatalogsClient() {
@@ -194,7 +195,14 @@ export default function MyCatalogsClient() {
                                 {imageUrl && (
                                     <div className="mt-2">
                                         <p className="text-xs text-gray-500 mb-2">תצוגה מקדימה:</p>
-                                        <img src={imageUrl} alt="Preview" className="w-20 h-20 object-cover rounded-md border border-gray-200 shadow-sm" />
+                                        <div className="relative w-20 h-20 overflow-hidden rounded-md border border-gray-200 shadow-sm">
+                                            <Image 
+                                                src={imageUrl} 
+                                                alt="Preview" 
+                                                fill 
+                                                className="object-cover" 
+                                            />
+                                        </div>
                                     </div>
                                 )}
                             </div>
@@ -234,8 +242,13 @@ export default function MyCatalogsClient() {
                                 <div className="absolute top-0 right-0 w-full h-1 bg-gradient-to-r from-gray-400 to-black"></div>
                                 <div className="flex items-center gap-4 mb-4">
                                     {catalog.image_url ? (
-                                        <div className="w-12 h-12 rounded-full overflow-hidden border bg-gray-50 flex-shrink-0">
-                                            <img src={catalog.image_url} alt={catalog.name} className="w-full h-full object-cover" />
+                                        <div className="w-12 h-12 rounded-full overflow-hidden border bg-gray-50 flex-shrink-0 relative">
+                                            <Image 
+                                                src={catalog.image_url} 
+                                                alt={catalog.name} 
+                                                fill
+                                                className="object-cover" 
+                                            />
                                         </div>
                                     ) : (
                                         <div className="w-12 h-12 rounded-full border bg-gray-50 flex items-center justify-center text-xl flex-shrink-0">

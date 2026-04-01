@@ -17,7 +17,7 @@ export async function GET(req) {
             const threeHoursAgo = new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString();
 
             const res = await client.query(`
-                SELECT * FROM abandoned_carts 
+                SELECT email, items, updated_at, recovery_status FROM abandoned_carts 
                 WHERE updated_at < $1 
                 AND recovery_status = 'pending'
                 AND email IS NOT NULL

@@ -11,7 +11,7 @@ export async function PATCH(req, { params }) {
         const { id: conversationId } = await params;
 
         // Verify conversation access
-        const check = await pool.query(`SELECT * FROM conversations WHERE id = $1`, [conversationId]);
+        const check = await pool.query(`SELECT id, participant1_id, participant2_id, catalog_id FROM conversations WHERE id = $1`, [conversationId]);
         if (check.rows.length === 0) return new NextResponse('Not Found', { status: 404 });
         
         const conv = check.rows[0];

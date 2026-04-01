@@ -8,7 +8,7 @@ export async function GET() {
     try {
         client = await pool.connect();
         const res = await client.query(`
-            SELECT * FROM notifications 
+            SELECT id, type, message, is_read, created_at, meta FROM notifications 
             ORDER BY created_at DESC 
             LIMIT 10
         `);

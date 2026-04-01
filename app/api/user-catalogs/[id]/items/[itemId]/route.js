@@ -45,7 +45,8 @@ export async function PUT(req, context) {
             `UPDATE user_catalog_items 
              SET brand = $1, fragrance_name = $2, name = $3, description = $4, prices = $5, image_url = $6, 
                  top_notes = $7, middle_notes = $8, base_notes = $9, gender = $10, category = $11, stock_ml = $14
-             WHERE id = $12 AND catalog_id = $13 RETURNING *`,
+             WHERE id = $12 AND catalog_id = $13 
+             RETURNING id, catalog_id, brand, fragrance_name, name, description, prices, image_url, top_notes, middle_notes, base_notes, gender, category, stock_ml`,
             [brand, fragrance_name, `${brand} ${fragrance_name}`, description, JSON.stringify(prices), image_url, top_notes || '', middle_notes || '', base_notes || '', gender, category, itemId, id, Number(stock_ml) || 0]
         );
 
@@ -83,7 +84,7 @@ export async function DELETE(req, context) {
         }
 
         const res = await client.query(
-            'DELETE FROM user_catalog_items WHERE id = $1 AND catalog_id = $2 RETURNING *',
+            'DELETE FROM user_catalog_items WHERE id = $1 AND catalog_id = $2 RETURNING id, name',
             [itemId, id]
         );
 

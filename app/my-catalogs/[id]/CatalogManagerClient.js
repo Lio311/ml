@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
@@ -766,7 +767,14 @@ export default function CatalogManagerClient({ catalogId }) {
 
                                 {editImage && (
                                     <div className="flex items-center gap-2">
-                                        <img src={editImage} alt="Preview" className="w-10 h-10 object-cover rounded border" />
+                                        <div className="relative w-10 h-10 overflow-hidden rounded border">
+                                            <Image 
+                                                src={editImage} 
+                                                alt="Preview" 
+                                                fill 
+                                                className="object-cover" 
+                                            />
+                                        </div>
                                         <span className="text-[10px] text-gray-400">תצוגה מקדימה</span>
                                     </div>
                                 )}
@@ -1110,7 +1118,12 @@ export default function CatalogManagerClient({ catalogId }) {
                                     <div className="flex flex-col gap-2">
                                         <label className="w-full flex flex-col items-center justify-center h-20 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50 bg-white transition-colors relative overflow-hidden">
                                             {(editingItemId ? editItemData.image_url : newItemImage) ? (
-                                                <img src={editingItemId ? editItemData.image_url : newItemImage} alt="Preview" className="absolute inset-0 w-full h-full object-cover opacity-50" />
+                                                <Image 
+                                                    src={editingItemId ? editItemData.image_url : newItemImage} 
+                                                    alt="Preview" 
+                                                    fill 
+                                                    className="object-cover opacity-50" 
+                                                />
                                             ) : null}
                                             <span className="text-xs font-semibold text-gray-700 z-10">בחר תמונה מהמחשב</span>
                                             <input type="file" className="hidden" accept="image/*" onChange={(e) => {
@@ -1245,10 +1258,11 @@ export default function CatalogManagerClient({ catalogId }) {
 
                                                         <Link href={`/catalog/${catalog.slug}/product/${item.id}`} className="block relative aspect-square bg-white overflow-hidden cursor-pointer p-2">
                                                             {item.image_url ? (
-                                                                <img
+                                                                <Image
                                                                     src={item.image_url}
                                                                     alt={item.fragrance_name}
-                                                                    className="w-full h-full object-contain group-hover:scale-110 transition duration-700"
+                                                                    fill
+                                                                    className="object-contain group-hover:scale-110 transition duration-700"
                                                                 />
                                                             ) : (
                                                                 <div className="absolute inset-0 flex items-center justify-center text-gray-300 text-4xl group-hover:scale-105 transition duration-500">
