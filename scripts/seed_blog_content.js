@@ -52,10 +52,41 @@ function getRandomItem(arr) {
     return arr[Math.floor(Math.random() * arr.length)];
 }
 
-let imageDeck = [];
-function getUniqueImageFromDeck() {
-    if (imageDeck.length === 0) imageDeck = [...BASE_IMAGES].sort(() => 0.5 - Math.random());
-    return imageDeck.pop();
+const SLUG_IMAGE_MAP = {
+    'why-buy-perfume-decants': '/images/blog_assets/blog_decants_main.png',
+    'xerjoff-brand-review': '/images/blog_assets/blog_xerjoff_luxury.png',
+    'how-to-choose-signature-scent': '/images/blog_assets/blog_signature_scent.png',
+    'roja-parfums-review': '/images/blog_assets/blog_roja_dove.png',
+    'edt-vs-edp-vs-parfum': '/images/blog_assets/blog_edp_vs_edt.png',
+    '5-best-date-night-perfumes': '/images/blog_assets/blog_date_night.png',
+    'niche-vs-designer-perfumes': '/images/blog_assets/blog_niche_vs_designer.png',
+    'creed-aventus-review-2025': '/images/blog_assets/blog_creed_aventus.png',
+    'how-to-store-perfume': '/images/blog_assets/blog_perfume_storage.png',
+    'montale-mancera-powerhouses': '/images/blog_assets/blog_montale_mancera.png',
+    'what-is-unisex-perfume': '/images/blog_assets/blog_unisex_scents.png',
+    'mfk-baccarat-rouge-540-review': '/images/blog_assets/blog_mfk_baccarat.png',
+    'best-summer-perfumes-israel': '/images/blog_assets/blog_summer_israel.png',
+    'wedding-perfumes': '/images/blog_assets/luxury-bottle.png',
+    'initio-brand-intro': '/images/blog_assets/blog_concentration_guide.png',
+    'le-labo-santal-33-review': '/images/blog_assets/lifestyle-tray.png',
+    'what-are-gourmand-perfumes': '/images/blog_assets/vanilla-macro.png',
+    'perfume-notes-explained': '/images/blog_assets/ingredients.png',
+    'office-friendly-perfumes': '/images/blog_assets/blog_trends_2025.png',
+    'creed-git-review': '/images/blog_assets/blog_summer_trends.png',
+    'history-of-perfume': '/images/blog_assets/perfumer-lab.png',
+    'what-is-oud': '/images/blog_assets/blog_roja_dove.png',
+    'perfume-mood-matching': '/images/blog_assets/woman-smelling.png',
+    'perfume-mistakes-to-avoid': '/images/blog_assets/decant-process.png',
+    'pdm-delina-review': '/images/blog_assets/blog_signature_scent.png',
+    'skin-chemistry-explained': '/images/blog_assets/blog_edp_vs_edt.png',
+    'perfume-trends-2025': '/images/blog_assets/blog_trends_2025.png',
+    'packing-perfume-for-travel': '/images/blog_assets/blog_decants_main.png',
+    'buying-perfume-as-gift': '/images/blog_assets/store-shelf.png',
+    'ml-tlv-boutique-collection': '/images/blog_assets/luxury-bottle.png'
+};
+
+function getSlugImage(slug) {
+    return SLUG_IMAGE_MAP[slug] || '/images/blog_assets/luxury-bottle.png';
 }
 
 const layouts = {
@@ -65,10 +96,10 @@ const layouts = {
     twoCol: (img1, img2, alt) => `<div class="grid grid-cols-1 md:grid-cols-2 gap-4 my-8"><img src="${img1}" alt="${alt} 1" class="w-full rounded-xl shadow-md object-cover h-48"><img src="${img2}" alt="${alt} 2" class="w-full rounded-xl shadow-md object-cover h-48"></div>`
 };
 
-function generateLongFormHTML(title, excerpt, specificContent, articleImages) {
-    // Deck logic for images
-    const coverDetails = getUniqueImageFromDeck();
-    const secondaryDetails = getUniqueImageFromDeck();
+function generateLongFormHTML(slug, title, excerpt, specificContent, articleImages) {
+    // Slug-based mapping for primary and secondary images to ensure uniqueness
+    const coverDetails = getSlugImage(slug);
+    const secondaryDetails = getSlugImage(slug + '-2'); // Deterministic secondary image
 
     // Product images for context
     const pImg1 = articleImages[0] || coverDetails;
@@ -103,7 +134,7 @@ function generateLongFormHTML(title, excerpt, specificContent, articleImages) {
 
             <h2 class="text-3xl font-bold mt-12 mb-6">מדריך פרקטי: איך ליישם?</h2>
             <p class="mb-6">אחרי שהבנו את התיאוריה, בואו נדבר תכלס. הנה כמה דברים שחשוב לזכור:</p>
-            ${layouts.floatRight(getUniqueImageFromDeck(), "טיפים", getRandomItem(CONTENT_LIBRARIES.tips))}
+            ${layouts.floatRight(secondaryDetails, "טיפים", getRandomItem(CONTENT_LIBRARIES.tips))}
             <p class="mb-6">${getRandomItem(CONTENT_LIBRARIES.tips)}</p>
 
             <h2 class="text-3xl font-bold mt-12 mb-6">שאלות נפוצות (FAQ)</h2>
@@ -196,8 +227,8 @@ async function seedBlog() {
             const excerpt = topic.desc || `המדריך המקיף ביותר ל${topic.t} לשנת 2025. כל מה שרציתם לדעת, טיפים מקצועיים והמלצות חמות מהצוות שלנו.`;
 
             // Generate Full HTML
-            const finalContent = generateLongFormHTML(topic.t, excerpt, deepContent, relevantImages);
-            const coverImage = getUniqueImageFromDeck();
+            const finalContent = generateLongFormHTML(topic.s, topic.t, excerpt, deepContent, relevantImages);
+            const coverImage = getSlugImage(topic.s);
 
             await client.query(`
                 INSERT INTO blog_posts (title, slug, excerpt, content, image_url, tags)
