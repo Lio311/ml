@@ -106,7 +106,12 @@ export default async function RootLayout({ children }) {
             <CartProvider>
               <WishlistProvider>
               <AnalyticsTracker />
-              <Toaster position="top-center" toastOptions={{ duration: 3000 }} />
+              <Toaster position="top-center" toastOptions={{ 
+                duration: 3000,
+                style: {
+                  textAlign: 'center',
+                }
+              }} />
 
               <ClientLayout brands={brands} menu={menu}>
                 {children}
