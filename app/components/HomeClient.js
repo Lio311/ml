@@ -9,6 +9,7 @@ import toast from 'react-hot-toast';
 import { useLanguage } from '../context/LanguageContext';
 import { cleanProductName } from '../lib/productUtils';
 import WishlistHeart from './WishlistHeart';
+import QuickViewModal from './QuickViewModal';
 
 export default function HomeClient({ newArrivals, topCatalogs }) {
     const { t, dir, localize, locale } = useLanguage();
@@ -82,6 +83,7 @@ function ProductCardWrapper({ product }) {
     const { t, localize, dir } = useLanguage();
     const { addToCart, cartItems } = useCart();
     const [added, setAdded] = useState(false);
+    const [isQuickViewOpen, setIsQuickViewOpen] = useState(false);
     const router = useRouter();
 
     useEffect(() => {
@@ -133,6 +135,25 @@ function ProductCardWrapper({ product }) {
                     <div className="w-full h-full flex items-center justify-center text-4xl opacity-20">🌸</div>
                 )}
             </Link>
+
+            {/* Quick View Button Overlay */}
+            <div className="absolute top-[40%] left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none group-hover:pointer-events-auto mt-4">
+                <button
+                    onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setIsQuickViewOpen(true);
+                    }}
+                    className="bg-white/90 backdrop-blur-md text-black shadow-xl hover:bg-black hover:text-white rounded-full px-4 py-2 font-bold text-xs uppercase tracking-widest transition-all duration-300 flex items-center justify-center gap-2"
+                    title={t('common.quick_view')}
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                    </svg>
+                    <span className="hidden md:inline">{t('common.quick_view')}</span>
+                </button>
+            </div>
 
             <div className="p-3 text-center flex flex-col items-center justify-center flex-1">
                 {dir === 'rtl' ? (
@@ -205,6 +226,12 @@ function ProductCardWrapper({ product }) {
                     </Link>
                 </div>
             </div>
+
+            <QuickViewModal 
+                product={product} 
+                isOpen={isQuickViewOpen} 
+                onClose={() => setIsQuickViewOpen(false)} 
+            />
         </div>
     );
 }

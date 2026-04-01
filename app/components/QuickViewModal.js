@@ -89,12 +89,12 @@ export default function QuickViewModal({ product, isOpen, onClose }) {
                         {/* Close Button */}
                         <button
                             onClick={onClose}
-                            className={`absolute top-4 ${dir === 'rtl' ? 'start-4' : 'end-4'} z-10 p-2 bg-white/80 hover:bg-gray-100 rounded-full transition-colors backdrop-blur-md`}
+                            className="absolute top-4 end-4 z-10 p-2 bg-white/80 hover:bg-gray-100 rounded-full transition-colors backdrop-blur-md"
                         >
                             <X size={20} />
                         </button>
 
-                        <div className="absolute top-6 z-10" style={{ [dir === 'rtl' ? 'right' : 'left']: '24px' }}>
+                        <div className="absolute top-6 start-6 z-10">
                             <WishlistHeart productId={product.id} />
                         </div>
 

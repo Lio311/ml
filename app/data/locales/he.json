@@ -1,6 +1,9 @@
 {
     "common": {
         "home": "דף הבית",
+        "select_size": "בחר/י גודל",
+        "view_full_details": "לפרטי המוצר המלאים",
+        "quick_view": "תצוגה מהירה",
         "price": "מחיר",
         "up_to": "עד",
         "brands": "מותגים",

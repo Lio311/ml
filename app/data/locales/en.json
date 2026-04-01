@@ -1,6 +1,9 @@
 {
     "common": {
         "home": "Home",
+        "select_size": "Select Size",
+        "view_full_details": "View Full Details",
+        "quick_view": "Quick View",
         "price": "Price",
         "up_to": "Up to",
         "brands": "Brands",
