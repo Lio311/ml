@@ -295,7 +295,11 @@ export default async function BlogPost({ params }) {
                             {mentionedProducts.map(p => (
                                 <Link key={p.id} href={`/catalog/${p.slug}`} className="group bg-white p-4 rounded-2xl border border-gray-100 hover:shadow-xl transition duration-500">
                                     <div className="h-32 mb-4 relative rounded-xl overflow-hidden bg-gray-50">
-                                        <Image src={p.image_url} alt={p.name} fill className="object-contain group-hover:scale-110 transition duration-700" />
+                                        {p.image_url ? (
+                                            <Image src={p.image_url} alt={p.name} fill className="object-contain group-hover:scale-110 transition duration-700" />
+                                        ) : (
+                                            <div className="w-full h-full flex items-center justify-center text-3xl">🧴</div>
+                                        )}
                                     </div>
                                     <p className="text-xs font-bold truncate mb-1">{locale === 'he' ? p.name_he : p.name}</p>
                                     <p className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">{p.brand}</p>
@@ -330,7 +334,11 @@ export default async function BlogPost({ params }) {
                         {relatedArticles.map((article) => (
                             <Link key={article.slug} href={`/blog/${article.slug}`} className="group block">
                                 <div className="aspect-[16/9] relative rounded-2xl overflow-hidden mb-4 shadow-sm group-hover:shadow-xl transition duration-500">
-                                    <Image src={article.image_url} alt={article.title} fill className="object-cover group-hover:scale-110 transition duration-700" />
+                                    {article.image_url ? (
+                                        <Image src={article.image_url} alt={article.title || 'Article'} fill className="object-cover group-hover:scale-110 transition duration-700" />
+                                    ) : (
+                                        <div className="w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center text-4xl">🧴</div>
+                                    )}
                                 </div>
                                 <h4 className={`font-serif font-bold group-hover:text-blue-600 transition ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
                                     {localize(article, 'title', locale)}
