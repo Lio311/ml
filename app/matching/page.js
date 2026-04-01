@@ -49,10 +49,10 @@ export default async function MatchingPage() {
                     <p className="text-gray-600 text-lg max-w-2xl mx-auto">
                         {t('matching.description')}
                     </p>
-                    <p className="text-gray-400 text-sm max-w-2xl mx-auto mt-4 leading-relaxed">
+                    <p className="text-gray-400 text-sm max-w-4xl mx-auto mt-4 leading-relaxed md:whitespace-nowrap overflow-hidden text-ellipsis">
                         {locale === 'he'
-                            ? 'הכלי שלנו מנתח את העדפות תווי הריח שלך ומצליב אותן עם פירמידות ההרחה של מאות בשמים בקטלוג שלנו כדי למצוא התאמות מדויקות. התוצאות מדורגות לפי אחוז התאמה בין הפרופיל שלך לפרופיל הניחוח.'
-                            : 'Our tool analyzes your scent note preferences and cross-references them with the fragrance pyramids of hundreds of perfumes in our catalog to find precise matches. Results are ranked by match percentage between your profile and each fragrance profile.'}
+                            ? 'האלגוריתם שלנו ימצא עבורך את הבשמים שהכי מתאימים לטעם האישי שלך על סמך מרכיבים ותווים.'
+                            : 'Our algorithm will find the perfumes that best match your personal taste based on ingredients and notes.'}
                     </p>
                 </div>
 
