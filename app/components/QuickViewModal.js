@@ -7,6 +7,7 @@ import { X } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 import { useCart } from '../context/CartContext';
 import { useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import toast from 'react-hot-toast';
 import WishlistHeart from './WishlistHeart';
 
@@ -14,8 +15,10 @@ export default function QuickViewModal({ product, isOpen, onClose }) {
     const { t, dir, localize, locale } = useLanguage();
     const { addToCart, cartItems } = useCart();
     const [addedSize, setAddedSize] = useState(null);
+    const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
+        setMounted(true);
         if (isOpen) {
             document.body.style.overflow = 'hidden';
         } else {
@@ -34,7 +37,7 @@ export default function QuickViewModal({ product, isOpen, onClose }) {
         return () => clearTimeout(timer);
     }, [addedSize]);
 
-    if (!product) return null;
+    if (!product || !mounted) return null;
 
     const translateCategory = (cat) => {
         if (!cat || locale === 'he') return cat;
@@ -64,10 +67,10 @@ export default function QuickViewModal({ product, isOpen, onClose }) {
         setAddedSize(size);
     };
 
-    return (
+    const modalContent = (
         <AnimatePresence>
             {isOpen && (
-                <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 sm:p-6">
+                <div className="fixed inset-0 z-[10000] flex items-center justify-center p-4 sm:p-6" dir={dir}>
                     {/* Backdrop */}
                     <motion.div
                         initial={{ opacity: 0 }}
@@ -84,7 +87,6 @@ export default function QuickViewModal({ product, isOpen, onClose }) {
                         exit={{ opacity: 0, scale: 0.95, y: 20 }}
                         transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
                         className={`relative w-full max-w-4xl bg-white rounded-2xl md:rounded-3xl shadow-2xl overflow-hidden flex flex-col md:flex-row max-h-[95vh] md:max-h-[90vh] ${dir === 'rtl' ? 'text-right' : 'text-left'}`}
-                        dir={dir}
                     >
                         {/* Close Button */}
                         <button
@@ -123,20 +125,20 @@ export default function QuickViewModal({ product, isOpen, onClose }) {
                                 {translateCategory(localize(product, 'category'))}
                             </div>
                             
-                            <h2 className="text-2xl md:text-3xl font-black mb-2">
+                            <div className="mb-2">
                                 {locale === 'he' ? (
                                     <div className="flex flex-col">
                                         <span className="text-gray-500 font-medium text-sm md:text-base uppercase tracking-wider mb-1">
                                             {product.brand_he || product.brand}
                                         </span>
-                                        <span className="text-black">
+                                        <h2 className="text-2xl md:text-3xl font-black text-black">
                                             {product.model_he || product.model}
-                                        </span>
+                                        </h2>
                                     </div>
                                 ) : (
-                                    <span>{localize(product, 'name')}</span>
+                                    <h2 className="text-2xl md:text-3xl font-black">{localize(product, 'name')}</h2>
                                 )}
-                            </h2>
+                            </div>
 
                             {product.description && (
                                 <p className="text-gray-600 text-sm mt-4 line-clamp-3 leading-relaxed">
@@ -201,4 +203,6 @@ export default function QuickViewModal({ product, isOpen, onClose }) {
             )}
         </AnimatePresence>
     );
+
+    return createPortal(modalContent, document.body);
 }

@@ -81,7 +81,12 @@ export default function ProductCard({ product }) {
                     e.preventDefault();
                 }
             }}
-            style={{ WebkitTouchCallout: 'none' }}
+            style={{ 
+                WebkitTouchCallout: 'none',
+                WebkitUserSelect: 'none',
+                userSelect: 'none',
+                WebkitTapHighlightColor: 'transparent'
+            }}
             className={`group border rounded-lg overflow-hidden hover:shadow-xl transition bg-white flex flex-col h-full relative ${dir === 'rtl' ? 'text-right' : 'text-left'}`}
             onMouseEnter={() => {
                 const identifier = product.slug || product.id;
@@ -128,11 +133,11 @@ export default function ProductCard({ product }) {
                         alt={t('common.perfume_sample_alt').replace('{name}', localize(product, 'name')).replace('{brand}', product.brand)}
                         width={300}
                         height={300}
-                        className="w-full h-full object-contain group-hover:scale-110 transition duration-700"
+                        className="w-full h-full object-contain md:group-hover:scale-110 transition duration-700"
                         sizes="(max-width: 768px) 50vw, 25vw"
                     />
                 ) : (
-                    <div className="absolute inset-0 flex items-center justify-center text-gray-300 text-4xl group-hover:scale-105 transition duration-500">
+                    <div className="absolute inset-0 flex items-center justify-center text-gray-300 text-4xl md:group-hover:scale-105 transition duration-500">
                         🧴
                     </div>
                 )}

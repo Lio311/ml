@@ -8,8 +8,7 @@ import { useState, useEffect, useRef } from 'react';
 import toast from 'react-hot-toast';
 import { useLanguage } from '../context/LanguageContext';
 import { cleanProductName } from '../lib/productUtils';
-import WishlistHeart from './WishlistHeart';
-import QuickViewModal from './QuickViewModal';
+import ProductCard from './ProductCard';
 
 export default function HomeClient({ newArrivals, topCatalogs }) {
     const { t, dir, localize, locale } = useLanguage();
@@ -25,7 +24,7 @@ export default function HomeClient({ newArrivals, topCatalogs }) {
 
                     <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4 md:gap-6">
                         {newArrivals.map((product) => (
-                            <ProductCardWrapper key={product.id} product={product} />
+                            <ProductCard key={product.id} product={product} />
                         ))}
                     </div>
 
@@ -74,191 +73,5 @@ export default function HomeClient({ newArrivals, topCatalogs }) {
                 </section>
             )}
         </>
-    );
-}
-
-// This is a simple wrapper to use ProductCard inside a client component
-// We import it inline to avoid the server/client boundary issue
-function ProductCardWrapper({ product }) {
-    const { t, localize, dir } = useLanguage();
-    const { addToCart, cartItems } = useCart();
-    const [added, setAdded] = useState(false);
-    const [isQuickViewOpen, setIsQuickViewOpen] = useState(false);
-    const router = useRouter();
-
-    useEffect(() => {
-        let timer;
-        if (added) {
-            timer = setTimeout(() => setAdded(false), 2000);
-        }
-        return () => clearTimeout(timer);
-    }, [added]);
-
-    const handleAdd = (size, price) => {
-        const stock = product.stock || 0;
-        const currentInCart = (cartItems || []).reduce((total, item) => {
-            if (item.id === product.id) {
-                return total + (item.size * item.quantity);
-            }
-            return total;
-        }, 0);
-
-        if (currentInCart + size > stock) {
-            toast.error(t('common.out_of_stock_toast'));
-            return;
-        }
-
-        addToCart(product, size, price);
-        toast.success(t('common.added_to_cart_toast').replace('{name}', localize(product, 'name')).replace('{size}', size));
-        setAdded(true);
-    };
-
-    const touchTimeout = useRef(null);
-
-    const handleTouchStart = () => {
-        if (window.innerWidth <= 768) {
-            touchTimeout.current = setTimeout(() => {
-                setIsQuickViewOpen(true);
-            }, 500);
-        }
-    };
-
-    const handleTouchEndOrMove = () => {
-        if (touchTimeout.current) {
-            clearTimeout(touchTimeout.current);
-        }
-    };
-
-    return (
-        <div 
-            onTouchStart={handleTouchStart}
-            onTouchEnd={handleTouchEndOrMove}
-            onTouchMove={handleTouchEndOrMove}
-            onTouchCancel={handleTouchEndOrMove}
-            onContextMenu={(e) => {
-                if (window.innerWidth <= 768) {
-                    e.preventDefault();
-                }
-            }}
-            style={{ WebkitTouchCallout: 'none' }}
-            className="group border rounded-xl overflow-hidden shadow-sm hover:shadow-md transition-all duration-300 bg-white flex flex-col h-full relative"
-        >
-            <div className="absolute top-2 start-2 z-10">
-                <WishlistHeart productId={product.id} />
-            </div>
-
-            <Link 
-                href={product.slug || product.id ? `/product/${product.slug || product.id}` : '#'} 
-                className={`relative aspect-square bg-gray-50 overflow-hidden block ${!product.slug && !product.id ? 'pointer-events-none' : ''}`}
-            >
-                {product.image_url ? (
-                    <Image
-                        src={product.image_url}
-                        alt={product.name}
-                        fill
-                        className="object-contain p-3 group-hover:scale-105 transition-transform duration-500"
-                        sizes="(max-width: 768px) 50vw, 16vw"
-                    />
-                ) : (
-                    <div className="w-full h-full flex items-center justify-center text-4xl opacity-20">🌸</div>
-                )}
-            </Link>
-
-            {/* Quick View Button Overlay */}
-            <div className="absolute top-[40%] left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none group-hover:pointer-events-auto mt-4">
-                <button
-                    onClick={(e) => {
-                        e.preventDefault();
-                        e.stopPropagation();
-                        setIsQuickViewOpen(true);
-                    }}
-                    className="bg-white/90 backdrop-blur-md text-black shadow-xl hover:bg-black hover:text-white rounded-full p-3 transition-all duration-300 flex items-center justify-center pointer-events-auto"
-                    title={t('common.quick_view')}
-                >
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M2.036 12.322a1.012 1.012 0 0 1 0-.639C3.423 7.51 7.36 4.5 12 4.5c4.638 0 8.573 3.007 9.963 7.178.07.207.07.431 0 .639C20.577 16.49 16.64 19.5 12 19.5c-4.638 0-8.573-3.007-9.963-7.178Z" />
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
-                    </svg>
-                </button>
-            </div>
-
-            <div className="p-3 text-center flex flex-col items-center justify-center flex-1">
-                {dir === 'rtl' ? (
-                    <div className="flex flex-col items-center mb-1">
-                        <div className="text-[10px] text-gray-400 uppercase tracking-wider font-medium">
-                            {product.brand_he || product.brand}
-                        </div>
-                        <Link href={product.slug || product.id ? `/product/${product.slug || product.id}` : '#'} className="w-full">
-                            <p className="text-sm font-bold text-black truncate w-full hover:underline">
-                                {product.model_he || product.model}
-                            </p>
-                        </Link>
-                    </div>
-                ) : (
-                    <>
-                        <div className="text-[10px] text-gray-400 mb-0.5 line-clamp-1 uppercase tracking-wider font-medium">{product.brand || 'No Brand'}</div>
-                        <Link href={product.slug || product.id ? `/product/${product.slug || product.id}` : '#'} className="w-full">
-                            <p className="text-sm font-bold text-black truncate w-full hover:underline">
-                                {cleanProductName(localize(product, 'name'), product.brand)}
-                            </p>
-                        </Link>
-                    </>
-                )}
-
-                <div className="w-full mt-3 space-y-2">
-                    {Number(product.price_2ml) > 0 && (
-                        <div className="flex items-center justify-between text-[11px] text-gray-600">
-                            <span>2 {t('common.ml_unit')}</span>
-                            <div className="flex items-center gap-2">
-                                <span className="font-bold">{product.price_2ml} ₪</span>
-                                <button
-                                    onClick={() => handleAdd(2, product.price_2ml)}
-                                    className="bg-gray-100 hover:bg-black hover:text-white w-5 h-5 rounded flex items-center justify-center transition"
-                                >+</button>
-                            </div>
-                        </div>
-                    )}
-
-                    {Number(product.price_5ml) > 0 && (
-                        <div className="flex items-center justify-between text-[11px] text-gray-600">
-                            <span>5 {t('common.ml_unit')}</span>
-                            <div className="flex items-center gap-2">
-                                <span className="font-bold">{product.price_5ml} ₪</span>
-                                <button
-                                    onClick={() => handleAdd(5, product.price_5ml)}
-                                    className="bg-gray-100 hover:bg-black hover:text-white w-5 h-5 rounded flex items-center justify-center transition"
-                                >+</button>
-                            </div>
-                        </div>
-                    )}
-
-                    {Number(product.price_10ml) > 0 && (
-                        <div className="flex items-center justify-between text-[11px] text-gray-600">
-                            <span>10 {t('common.ml_unit')}</span>
-                            <div className="flex items-center gap-2">
-                                <span className="font-bold">{product.price_10ml} ₪</span>
-                                <button
-                                    onClick={() => handleAdd(10, product.price_10ml)}
-                                    className="bg-gray-100 hover:bg-black hover:text-white w-5 h-5 rounded flex items-center justify-center transition"
-                                >+</button>
-                            </div>
-                        </div>
-                    )}
-
-                    <Link 
-                        href={product.slug || product.id ? `/product/${product.slug || product.id}` : '#'} 
-                        className={`block w-full text-center text-[11px] py-1.5 mt-2 rounded transition ${added ? 'bg-green-600 text-white' : 'bg-black text-white hover:bg-gray-800'} ${!product.slug && !product.id ? 'pointer-events-none opacity-50' : ''}`}
-                    >
-                        {added ? t('common.added_to_cart_btn') : t('common.more_details')}
-                    </Link>
-                </div>
-            </div>
-
-            <QuickViewModal 
-                product={product} 
-                isOpen={isQuickViewOpen} 
-                onClose={() => setIsQuickViewOpen(false)} 
-            />
-        </div>
     );
 }
