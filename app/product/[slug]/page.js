@@ -504,64 +504,6 @@ export default async function ProductPage(props) {
                             country={localize(product, 'country', locale)}
                             perfumers={localize(product, 'perfumers', locale)}
                         />
-
-                        {/* GEO: Specifications Table — structured fact density for AI scanability */}
-                        {(product.brand || product.seasons || product.category || product.gender) && (
-                            <div className={`mt-4 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
-                                <table className="w-full text-sm border-collapse">
-                                    <tbody>
-                                        {product.brand && (
-                                            <tr className="border-b border-gray-100">
-                                                <td className="py-2 pe-4 text-gray-400 font-medium whitespace-nowrap w-1/3">
-                                                    {locale === 'he' ? 'מותג' : 'Brand'}
-                                                </td>
-                                                <td className="py-2 text-gray-800 font-semibold">{product.brand}</td>
-                                            </tr>
-                                        )}
-                                        {localize(product, 'seasons', locale) && (
-                                            <tr className="border-b border-gray-100">
-                                                <td className="py-2 pe-4 text-gray-400 font-medium whitespace-nowrap w-1/3">
-                                                    {locale === 'he' ? 'עונה מומלצת' : 'Recommended Season'}
-                                                </td>
-                                                <td className="py-2 text-gray-800">{localize(product, 'seasons', locale)}</td>
-                                            </tr>
-                                        )}
-                                        {localize(product, 'category', locale) && (
-                                            <tr className="border-b border-gray-100">
-                                                <td className="py-2 pe-4 text-gray-400 font-medium whitespace-nowrap w-1/3">
-                                                    {locale === 'he' ? 'משפחת ריח' : 'Scent Family'}
-                                                </td>
-                                                <td className="py-2 text-gray-800">{translateCategory(localize(product, 'category', locale), locale)}</td>
-                                            </tr>
-                                        )}
-                                        {product.gender && (
-                                            <tr className="border-b border-gray-100">
-                                                <td className="py-2 pe-4 text-gray-400 font-medium whitespace-nowrap w-1/3">
-                                                    {locale === 'he' ? 'מיועד ל' : 'Gender'}
-                                                </td>
-                                                <td className="py-2 text-gray-800">{product.gender}</td>
-                                            </tr>
-                                        )}
-                                        {product.concentration && (
-                                            <tr className="border-b border-gray-100">
-                                                <td className="py-2 pe-4 text-gray-400 font-medium whitespace-nowrap w-1/3">
-                                                    {locale === 'he' ? 'ריכוז' : 'Concentration'}
-                                                </td>
-                                                <td className="py-2 text-gray-800 font-semibold">{product.concentration}</td>
-                                            </tr>
-                                        )}
-                                        {localize(product, 'country', locale) && (
-                                            <tr>
-                                                <td className="py-2 pe-4 text-gray-400 font-medium whitespace-nowrap w-1/3">
-                                                    {locale === 'he' ? 'מדינת ייצור' : 'Country of Origin'}
-                                                </td>
-                                                <td className="py-2 text-gray-800">{localize(product, 'country', locale)}</td>
-                                            </tr>
-                                        )}
-                                    </tbody>
-                                </table>
-                            </div>
-                        )}
                     </div>
 
                 </div >
