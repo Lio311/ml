@@ -12,6 +12,7 @@ import FragrancePyramid from "../../components/FragrancePyramid";
 import ShareButton from "../../components/ShareButton";
 import Breadcrumbs from "../../components/Breadcrumbs";
 import BrandInsight from "../../components/BrandInsight";
+import ProductFAQ from "../../components/ProductFAQ";
 import AdditionalDetails from "../../components/AdditionalDetails";
 import ProductActionsClient from "./ProductActionsClient";
 import * as Sentry from "@sentry/nextjs";
@@ -592,8 +593,9 @@ export default async function ProductPage(props) {
                 <h2 className={`text-2xl font-bold mb-8 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
                     {locale === 'he' ? 'שאלות נפוצות' : 'Frequently Asked Questions'}
                 </h2>
-                <div className="space-y-2 w-full">
-                    {(locale === 'he' ? [
+                <ProductFAQ
+                    dir={dir}
+                    items={locale === 'he' ? [
                         { q: 'האם הבושם מקורי ב-100%?', a: 'כן. כל הבשמים נרכשים מהיבואנים הרשמיים בלבד. אנחנו לא מתעסקים עם חיקויים או בשמי טסטר ממקורות לא ידועים.' },
                         { q: 'כמה התזות יש בכל גודל?', a: 'דוגמית 2 מ"ל: כ-25–30 התזות. 5 מ"ל: כ-75 התזות. 10 מ"ל: כ-150 התזות — מה שמספיק לשבועות של שימוש יומיומי.' },
                         { q: 'איך מתבצע תהליך המילוי?', a: 'המילוי מתבצע בסביבה סטרילית עם מזרקים חד-פעמיים, ישירות מהבקבוק המקורי ללא מגע יד אדם.' },
@@ -603,16 +605,8 @@ export default async function ProductPage(props) {
                         { q: 'How many sprays per size?', a: '2ml sample: ~25–30 sprays. 5ml: ~75 sprays. 10ml: ~150 sprays — enough for weeks of daily use.' },
                         { q: 'How is the decanting process done?', a: 'Filling is done in a sterile environment using disposable syringes directly from the original bottle, with no human contact. The perfume is 100% identical to the original.' },
                         { q: 'How long does shipping take?', a: '3–5 business days on average. Free pickup is also available from 19 Washington St, Tel Aviv.' },
-                    ]).map((item, i) => (
-                        <details key={i} className="border border-gray-100 rounded-xl overflow-hidden group">
-                            <summary className={`px-5 py-4 font-medium cursor-pointer bg-white hover:bg-gray-50 transition-colors list-none flex items-center justify-between ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
-                                <span>{item.q}</span>
-                                <span className="text-gray-400 ms-3 shrink-0 transition-transform group-open:rotate-180">▾</span>
-                            </summary>
-                            <p className={`px-5 py-4 text-sm text-gray-600 bg-gray-50 leading-relaxed ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>{item.a}</p>
-                        </details>
-                    ))}
-                </div>
+                    ]}
+                />
             </div>
 
             {/* Brand Insight Section (SEO) */}
