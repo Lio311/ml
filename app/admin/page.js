@@ -385,6 +385,7 @@ export default async function AdminDashboard({ searchParams }) {
 
         // EXTRA: Recalculate monthly profit for the KPI card from monthlyOrdersRes (FROM b7a4bb8)
         let monthlyProfit = 0;
+        let monthlyCOGS = 0;
         monthlyOrdersRes.rows.forEach(order => {
             const items = typeof order.items === 'string' ? JSON.parse(order.items) : order.items;
             let orderItemsCost = 0;
@@ -410,10 +411,12 @@ export default async function AdminDashboard({ searchParams }) {
                 }
             });
             monthlyProfit += (orderNetTotal - orderItemsCost);
+            monthlyCOGS += orderItemsCost;
         });
 
         monthlyProfit -= totalMonthlyExpenses;
         kpis.monthlyProfit = Math.round(monthlyProfit);
+        kpis.monthlyCOGS = Math.round(monthlyCOGS);
 
 
         // Chart Mapping (Common Loop)
@@ -573,6 +576,14 @@ export default async function AdminDashboard({ searchParams }) {
                             <div className="text-right">
                                 <span className="text-lg md:text-xl font-bold text-red-700">
                                     <span dir="ltr" className="inline-block">{kpis.totalExpenses.toLocaleString()}</span> ₪
+                                </span>
+                            </div>
+                        </div>
+                        <div className="flex justify-between items-center border-b border-gray-50 pb-2">
+                            <span className="text-orange-600 font-bold text-xs md:text-sm">עלויות בשמים</span>
+                            <div className="text-right">
+                                <span className="text-lg md:text-xl font-bold text-orange-700">
+                                    <span dir="ltr" className="inline-block">{kpis.monthlyCOGS ? kpis.monthlyCOGS.toLocaleString() : '0'}</span> ₪
                                 </span>
                             </div>
                         </div>
