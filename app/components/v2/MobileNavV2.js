@@ -6,7 +6,7 @@ import Image from 'next/image';
 import { usePathname, useRouter } from 'next/navigation';
 import { SignedIn, SignedOut, SignInButton, UserButton } from '@clerk/nextjs';
 import SearchAutocomplete from '../SearchAutocomplete';
-import { Settings, MessageSquare, Star } from 'lucide-react';
+import { Settings, MessageSquare, Star, ChevronRight, ChevronLeft } from 'lucide-react';
 import AdminInboxCounter from '../header/AdminInboxCounter';
 import { useLanguage } from '../../context/LanguageContext';
 import LanguageSwitcher from '../header/LanguageSwitcher';
@@ -48,13 +48,9 @@ export default function MobileNavV2({ menu = [], cartCount, wishlistCount, isAdm
                             className="p-2 -ms-2 me-1 text-black hover:opacity-100 opacity-70 transition-opacity"
                         >
                             {dir === 'rtl' ? (
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
-                                </svg>
+                                <ChevronRight className="w-6 h-6" />
                             ) : (
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
-                                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
-                                </svg>
+                                <ChevronLeft className="w-6 h-6" />
                             )}
                         </button>
                     )}

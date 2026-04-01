@@ -11,7 +11,7 @@ import LiveVisitorCounter from './LiveVisitorCounter';
 import { useLanguage } from '../context/LanguageContext';
 import { useCart } from '../context/CartContext';
 import { useWishlist } from '../context/WishlistContext';
-import { Menu, Search, User } from 'lucide-react';
+import { Menu, Search, User, ChevronRight, ChevronLeft } from 'lucide-react';
 import { SignInButton, SignedIn, SignedOut, UserButton, useUser } from '@clerk/nextjs';
 import SearchAutocomplete from './SearchAutocomplete';
 import DesktopIcons from './header/DesktopIcons';
@@ -151,13 +151,9 @@ export default function Header({ brands = [] }) {
                                     className="p-2 -ms-4 me-1 text-black hover:opacity-100 opacity-70 transition-opacity"
                                 >
                                     {dir === 'rtl' ? (
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
-                                            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
-                                        </svg>
+                                        <ChevronRight className="w-6 h-6" />
                                     ) : (
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
-                                            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
-                                        </svg>
+                                        <ChevronLeft className="w-6 h-6" />
                                     )}
                                 </button>
                             )}
