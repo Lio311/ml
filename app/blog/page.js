@@ -49,13 +49,28 @@ export async function generateMetadata() {
 }
 
 async function getArticles(page = 1, tag = null) {
-    const LIMIT = 10;
-    const OFFSET = (page - 1) * LIMIT;
+    const GRID_SIZE = 9;
+    const hasFeaturedPost = !tag;
+
+    let offset = (page - 1) * GRID_SIZE;
+    let limit = GRID_SIZE;
+
+    if (hasFeaturedPost) {
+        if (page === 1) {
+            offset = 0;
+            limit = GRID_SIZE + 1; // 1 featured + 9 grid
+        } else {
+            offset = ((page - 1) * GRID_SIZE) + 1; // skip the 1 featured post from page 1
+            limit = GRID_SIZE;
+        }
+    } else {
+        limit = GRID_SIZE;
+    }
 
     const client = await pool.connect();
     try {
         let query = 'SELECT title, slug, excerpt, image_url, created_at, tags, title_en, excerpt_en FROM blog_posts';
-        let params = [LIMIT, OFFSET];
+        let params = [limit, offset];
         
         if (tag) {
             query += ' WHERE $3 = ANY(tags)';
@@ -74,13 +89,24 @@ async function getArticles(page = 1, tag = null) {
         }
         const countRes = await client.query(countQuery, countParams);
 
+        const totalCount = parseInt(countRes.rows[0].count);
+        let totalPages = 1;
+        
+        if (hasFeaturedPost) {
+            if (totalCount > GRID_SIZE + 1) {
+                totalPages = 1 + Math.ceil((totalCount - (GRID_SIZE + 1)) / GRID_SIZE);
+            }
+        } else {
+            totalPages = Math.ceil(totalCount / GRID_SIZE);
+        }
+
         // Fetch all unique tags for the filter bar
         const tagsRes = await client.query('SELECT DISTINCT unnest(tags) as tag FROM blog_posts LIMIT 20');
 
         return {
             articles: res.rows,
-            total: parseInt(countRes.rows[0].count),
-            totalPages: Math.ceil(parseInt(countRes.rows[0].count) / LIMIT),
+            total: totalCount,
+            totalPages: totalPages,
             allTags: tagsRes.rows.map(r => r.tag)
         };
     } finally {
@@ -241,13 +267,13 @@ export default async function BlogIndex(props) {
 
                 {/* Pagination */}
                 {totalPages > 1 && (
-                    <div className="flex justify-center items-center gap-3 mt-12 py-12 border-t border-gray-100" dir="ltr">
+                    <div className="flex justify-center items-center gap-3 mt-12 py-12 border-t border-gray-100">
                         {page > 1 && (
                             <Link
                                 href={`/blog?page=${page - 1}${activeTag ? `&tag=${activeTag}` : ''}`}
                                 className="w-12 h-12 flex items-center justify-center rounded-2xl border border-gray-200 bg-white hover:border-black transition"
                             >
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className={`w-5 h-5 ${dir === 'rtl' ? 'rotate-180' : ''}`}>
                                     <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 19.5 8.25 12l7.5-7.5" />
                                 </svg>
                             </Link>
@@ -277,7 +303,7 @@ export default async function BlogIndex(props) {
                                 href={`/blog?page=${page + 1}${activeTag ? `&tag=${activeTag}` : ''}`}
                                 className="w-12 h-12 flex items-center justify-center rounded-2xl border border-gray-200 bg-white hover:border-black transition"
                             >
-                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className={`w-5 h-5 ${dir === 'rtl' ? 'rotate-180' : ''}`}>
                                     <path strokeLinecap="round" strokeLinejoin="round" d="m8.25 4.5 7.5 7.5-7.5 7.5" />
                                 </svg>
                             </Link>
