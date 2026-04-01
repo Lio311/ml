@@ -185,7 +185,7 @@ export default async function BlogIndex(props) {
                                 href={`/blog?page=${page - 1}`}
                                 className="w-10 h-10 flex items-center justify-center rounded-lg border bg-white hover:bg-gray-50 text-gray-600"
                             >
-                                {dir === 'rtl' ? '›' : '‹'}
+                                {dir === 'rtl' ? '‹' : '‹'}
                             </Link>
                         )}
 
@@ -211,7 +211,7 @@ export default async function BlogIndex(props) {
                                 href={`/blog?page=${page + 1}`}
                                 className="w-10 h-10 flex items-center justify-center rounded-lg border bg-white hover:bg-gray-50 text-gray-600"
                             >
-                                {dir === 'rtl' ? '‹' : '›'}
+                                {dir === 'rtl' ? '›' : '›'}
                             </Link>
                         )}
                     </div>
