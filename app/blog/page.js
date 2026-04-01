@@ -179,13 +179,13 @@ export default async function BlogIndex(props) {
 
                 {/* Pagination */}
                 {totalPages > 1 && (
-                    <div className="flex justify-center items-center gap-2" dir="ltr">
+                    <div className="flex justify-center items-center gap-2" dir={dir}>
                         {page > 1 && (
                             <Link
                                 href={`/blog?page=${page - 1}`}
                                 className="w-10 h-10 flex items-center justify-center rounded-lg border bg-white hover:bg-gray-50 text-gray-600"
                             >
-                                &lt;
+                                {dir === 'rtl' ? '&gt;' : '&lt;'}
                             </Link>
                         )}
 
@@ -211,7 +211,7 @@ export default async function BlogIndex(props) {
                                 href={`/blog?page=${page + 1}`}
                                 className="w-10 h-10 flex items-center justify-center rounded-lg border bg-white hover:bg-gray-50 text-gray-600"
                             >
-                                &gt;
+                                {dir === 'rtl' ? '&lt;' : '&gt;'}
                             </Link>
                         )}
                     </div>

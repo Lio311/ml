@@ -30,6 +30,8 @@ export default function Footer() {
                         <li><Link href="/brands/Amouage" className="hover:text-white transition">Amouage</Link></li>
                         <li><Link href="/brands/Clive%20Christian" className="hover:text-white transition">Clive Christian</Link></li>
                         <li><Link href="/brands/Roja" className="hover:text-white transition">Roja</Link></li>
+                        <li><Link href="/brands/Sospiro" className="hover:text-white transition">Sospiro</Link></li>
+                        <li><Link href="/brands/Maison%20Francis%20Kurkdjian" className="hover:text-white transition">Maison Francis Kurkdjian</Link></li>
                     </ul>
                 </div>
 
