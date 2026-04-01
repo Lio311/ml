@@ -1,6 +1,7 @@
 import pool, { updateUserActivity } from '../../../../lib/db';
 import { auth as clerkAuth, clerkClient } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
+import { sanitizeProductArray } from '../../../../lib/productUtils';
 
 export async function GET(req, { params }) {
     try {
@@ -69,11 +70,11 @@ export async function GET(req, { params }) {
         }
 
         return NextResponse.json({
-            messages: messages.rows,
-            other_participant: {
+            messages: sanitizeProductArray(messages.rows),
+            other_participant: sanitizeProductArray([{
                 id: otherId,
                 last_active_at: lastSeen
-            }
+            }])[0]
         });
     } catch (error) {
         console.error('Error fetching messages:', error);
@@ -144,7 +145,7 @@ export async function POST(req, { params }) {
             UPDATE conversations SET updated_at = CURRENT_TIMESTAMP WHERE id = $1
         `, [conversationId]);
 
-        return NextResponse.json(insertMsg.rows[0]);
+        return NextResponse.json(sanitizeProductArray([insertMsg.rows[0]])[0]);
     } catch (error) {
         console.error('Error sending message:', error);
         return NextResponse.json({ error: 'Internal Error', details: error.message }, { status: 500 });

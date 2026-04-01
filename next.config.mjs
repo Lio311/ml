@@ -177,8 +177,8 @@ const nextConfig = {
       {
         protocol: 'https',
         hostname: 'www.bohobocofragrances.com',
-      },
-      {
+    },
+    {
         protocol: 'https',
         hostname: 'www.thameenfragrance.com',
       },
@@ -194,7 +194,10 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'www.dulcie.world',
       },
-
+      {
+        protocol: 'https',
+        hostname: 'img.clerk.com',
+      },
     ],
     formats: ['image/avif', 'image/webp'],
   },

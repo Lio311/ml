@@ -525,20 +525,18 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
                             )}
 
                             {messages.map((msg, idx) => {
-                                    // Rule: Admin (staff) always LEFT (black), Customer always RIGHT (gray)
-                                    // This applies to BOTH user and admin interfaces (absolute alignment)
-                                    const isClientMessage = msg.sender_role === 'customer' || 
-                                                          (msg.sender_role !== 'admin' && msg.sender_id === activeConversation?.participant1_id);
+                                    // Me vs Them alignment
+                                    const isMe = msg.sender_id === user?.id;
 
                                     return (
-                                        <div key={idx} className={`flex w-full mb-4 px-4 ${isClientMessage ? 'justify-start' : 'justify-end'}`} dir="rtl">
+                                        <div key={idx} className={`flex w-full mb-4 px-4 ${isMe ? 'justify-start' : 'justify-end'}`} dir="rtl">
                                             <div className={`max-w-[78%] md:max-w-[75%] rounded-2xl px-5 py-2.5 text-sm shadow-sm transition-all duration-300 transform hover:scale-[1.01] ${
-                                                isClientMessage
-                                                ? 'bg-gray-200 text-black rounded-tr-none ml-6' 
-                                                : 'bg-black text-white rounded-tl-none mr-6'
+                                                isMe
+                                                ? 'bg-black text-white rounded-tr-none ml-6' 
+                                                : 'bg-gray-200 text-black rounded-tl-none mr-6'
                                             }`}>
-                                                <p className="whitespace-pre-wrap leading-relaxed break-words">{msg.content}</p>
-                                                <div className={`text-[9px] mt-1.5 flex ${isClientMessage ? 'justify-end' : 'justify-start'} opacity-50`}>
+                                                <p className="whitespace-pre-wrap leading-relaxed break-words font-medium">{msg.content}</p>
+                                                <div className={`text-[9px] mt-1.5 flex ${isMe ? 'justify-end' : 'justify-start'} opacity-60 font-bold`}>
                                                     {new Date(msg.created_at).toLocaleTimeString(locale === 'he' ? 'he-IL' : 'en-US', { hour: '2-digit', minute: '2-digit', hour12: false })}
                                                 </div>
                                             </div>

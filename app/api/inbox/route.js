@@ -1,6 +1,7 @@
 import pool, { updateUserActivity } from '../../lib/db';
 import { auth as clerkAuth, clerkClient } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
+import { sanitizeProductArray } from '../../lib/productUtils';
 
 export async function GET(req) {
     try {
@@ -129,7 +130,7 @@ export async function GET(req) {
             }
         }
 
-        return NextResponse.json(convs);
+        return NextResponse.json(sanitizeProductArray(convs));
     } catch (error) {
         console.error('ERROR: GET /api/inbox failed:', error);
         return NextResponse.json({ 
@@ -257,7 +258,7 @@ export async function POST(req) {
             UPDATE conversations SET updated_at = CURRENT_TIMESTAMP WHERE id = $1
         `, [conversationId]);
 
-        return NextResponse.json(insertMsg.rows[0]);
+        return NextResponse.json(sanitizeProductArray([insertMsg.rows[0]])[0]);
     } catch (error) {
         console.error('ERROR: POST /api/inbox failed:', error);
         return NextResponse.json({ 
