@@ -9,6 +9,7 @@ import { MapPin, Package, Gift, RefreshCw, MessageSquare, Star } from 'lucide-re
 import { toast } from 'react-hot-toast';
 import OrderReviewPrompt from '../components/OrderReviewPrompt';
 import { useLanguage } from '../context/LanguageContext';
+import Image from 'next/image';
 
 export default function OrdersClient() {
     const { t, locale } = useLanguage();
@@ -159,9 +160,9 @@ export default function OrdersClient() {
                                 {order.items.map((item, idx) => (
                                     <div key={idx} className="flex items-center gap-4 py-2">
                                         {/* Product Image */}
-                                        <div className="w-16 h-16 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0 border">
+                                        <div className="w-16 h-16 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0 border relative">
                                             {item.image_url ? (
-                                                <img src={item.image_url} alt={item.name} className="w-full h-full object-contain" />
+                                                <Image src={item.image_url} alt={item.name || "Product"} fill sizes="64px" className="object-contain" />
                                             ) : (
                                                 <div className="w-full h-full flex items-center justify-center text-xl">🧴</div>
                                             )}

@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useUser } from "@clerk/nextjs";
 import toast from 'react-hot-toast';
+import Image from 'next/image';
 
 
 export default function LotteryAdminPage() {
@@ -145,12 +146,14 @@ export default function LotteryAdminPage() {
                             {paginatedProducts.map(product => (
                                 <tr key={product.id} className={`hover:bg-gray-50/50 transition-colors ${(product.in_lottery ?? true) ? '' : 'opacity-60 bg-gray-50/20'}`}>
                                     <td className="p-4">
-                                        <div className="w-16 h-16 bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden flex items-center justify-center p-1.5 mx-auto">
+                                        <div className="w-16 h-16 bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden flex items-center justify-center p-1.5 mx-auto relative">
                                             {product.image_url ? (
-                                                <img 
+                                                <Image 
                                                     src={product.image_url} 
-                                                    alt={product.model} 
-                                                    className="max-w-full max-h-full object-contain" 
+                                                    alt={product.model || "Product"} 
+                                                    fill
+                                                    sizes="64px"
+                                                    className="object-contain p-1.5" 
                                                 />
                                             ) : (
                                                 <span className="text-2xl opacity-40">🧴</span>
@@ -203,12 +206,14 @@ export default function LotteryAdminPage() {
                 <div className="md:hidden space-y-4">
                     {paginatedProducts.map(product => (
                         <div key={product.id} className={`bg-white p-5 rounded-[2rem] shadow-sm border border-gray-100 flex gap-5 transition-all ${(product.in_lottery ?? true) ? '' : 'opacity-70 grayscale-[0.3]'}`}>
-                            <div className="w-24 h-24 bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex items-center justify-center p-2.5 flex-shrink-0">
+                            <div className="w-24 h-24 bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex items-center justify-center p-2.5 flex-shrink-0 relative">
                                 {product.image_url ? (
-                                    <img 
+                                    <Image 
                                         src={product.image_url} 
-                                        alt={product.model} 
-                                        className="max-w-full max-h-full object-contain" 
+                                        alt={product.model || "Product"} 
+                                        fill
+                                        sizes="96px"
+                                        className="object-contain p-2.5" 
                                     />
                                 ) : (
                                     <span className="text-3xl opacity-30">🧴</span>

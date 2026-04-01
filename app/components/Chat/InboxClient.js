@@ -7,6 +7,7 @@ import { useUser } from '@clerk/nextjs';
 import { useLanguage } from '../../context/LanguageContext';
 import toast from 'react-hot-toast';
 import Link from 'next/link';
+import Image from 'next/image';
 import OrderStatusTimeline from '../OrderStatusTimeline';
 
 export default function InboxClient({ role = 'buyer', catalogId = null, preSelectConversationWith = null, initialOrderId = null, initialCatalogId = null }) {
@@ -379,18 +380,18 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
                             >
                                 {activeConvId === conv.id && <div className="absolute right-0 top-0 bottom-0 w-1 bg-black rounded-r-full" />}
                                 
-                                <div className={`w-12 h-12 rounded-full flex-shrink-0 flex items-center justify-center overflow-hidden border ${((role === 'buyer' && !conv.catalog_id) || (role === 'seller' && !conv.catalog_id && conv.participant2_id === 'admin')) ? 'bg-white border-gray-100' : 'bg-gray-200 border-gray-300'}`}>
+                                <div className={`w-12 h-12 rounded-full flex-shrink-0 flex items-center justify-center overflow-hidden border relative ${((role === 'buyer' && !conv.catalog_id) || (role === 'seller' && !conv.catalog_id && conv.participant2_id === 'admin')) ? 'bg-white border-gray-100' : 'bg-gray-200 border-gray-300'}`}>
                                     {(role === 'buyer' && !conv.catalog_id) || (role === 'seller' && !conv.catalog_id && conv.participant2_id === 'admin') ? (
-                                        <img src="/ml_CHAT.png" alt="ml_tlv" className="w-full h-full object-cover" />
+                                        <Image src="/ml_CHAT.png" alt="ml_tlv" fill sizes="48px" className="object-cover" />
                                     ) : role === 'buyer' && conv.catalog_id ? (
                                         catalogsData[conv.catalog_id]?.logo_url ? (
-                                            <img src={catalogsData[conv.catalog_id].logo_url} alt="Store" className="w-full h-full object-cover" />
+                                            <Image src={catalogsData[conv.catalog_id].logo_url} alt="Store" fill sizes="48px" className="object-cover" />
                                         ) : (
                                             <Store className="w-6 h-6 text-gray-500" />
                                         )
                                     ) : (
                                         conv.participant1_image ? (
-                                            <img src={conv.participant1_image} alt="User" className="w-full h-full object-cover" />
+                                            <Image src={conv.participant1_image} alt="User" fill sizes="48px" className="object-cover" />
                                         ) : (
                                             <UserIcon className="w-6 h-6 text-gray-500" />
                                         )
@@ -436,18 +437,18 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
                             <button className="md:hidden text-gray-500 p-2 ml-2 bg-gray-100 rounded-full" onClick={() => setActiveConvId(null)}>
                                 {t('inbox.back')}
                             </button>
-                            <div className={`w-10 h-10 rounded-full flex items-center justify-center overflow-hidden border flex-shrink-0 ${((role === 'buyer' && !activeConversation?.catalog_id) || (role === 'seller' && !activeConversation?.catalog_id && activeConversation?.participant2_id === 'admin')) ? 'bg-white border-gray-100' : 'bg-gray-200 border-gray-300'}`}>
+                            <div className={`w-10 h-10 rounded-full flex items-center justify-center overflow-hidden border flex-shrink-0 relative ${((role === 'buyer' && !activeConversation?.catalog_id) || (role === 'seller' && !activeConversation?.catalog_id && activeConversation?.participant2_id === 'admin')) ? 'bg-white border-gray-100' : 'bg-gray-200 border-gray-300'}`}>
                                 {(role === 'buyer' && !activeConversation?.catalog_id) || (role === 'seller' && !activeConversation?.catalog_id && activeConversation?.participant2_id === 'admin') ? (
-                                    <img src="/ml_CHAT.png" alt="ml_tlv" className="w-full h-full object-cover" />
+                                    <Image src="/ml_CHAT.png" alt="ml_tlv" fill sizes="40px" className="object-cover" />
                                 ) : role === 'buyer' && activeConversation?.catalog_id ? (
                                     catalogsData[activeConversation.catalog_id]?.logo_url ? (
-                                        <img src={catalogsData[activeConversation.catalog_id].logo_url} alt="Store" className="w-full h-full object-cover" />
+                                        <Image src={catalogsData[activeConversation.catalog_id].logo_url} alt="Store" fill sizes="40px" className="object-cover" />
                                     ) : (
                                         <Store className="w-5 h-5 text-gray-500" />
                                     )
                                 ) : (
                                     activeConversation?.participant1_image ? (
-                                        <img src={activeConversation.participant1_image} alt="User" className="w-full h-full object-cover" />
+                                        <Image src={activeConversation.participant1_image} alt="User" fill sizes="40px" className="object-cover" />
                                     ) : (
                                         <UserIcon className="w-5 h-5 text-gray-500" />
                                     )
@@ -499,8 +500,8 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
                                     <div className="flex gap-4 overflow-x-auto pb-1 custom-scrollbar">
                                         {orderData[activeConversation.order_id].items?.map((item, idx) => (
                                             <div key={idx} className="flex items-center gap-2 bg-gray-50/80 rounded-xl p-1.5 border border-gray-100/50 flex-shrink-0 group hover:bg-white hover:shadow-sm transition-all duration-300">
-                                                <div className="w-10 h-10 rounded-lg overflow-hidden border border-gray-100 bg-white">
-                                                    <img src={item.image_url || '/placeholder.png'} alt="" className="w-full h-full object-contain group-hover:scale-110 transition-transform" />
+                                                <div className="w-10 h-10 rounded-lg overflow-hidden border border-gray-100 bg-white relative">
+                                                    <Image src={item.image_url || '/placeholder.png'} alt={item.name || "Product"} fill sizes="40px" className="object-contain group-hover:scale-110 transition-transform" />
                                                 </div>
                                                 <div className="flex flex-col min-w-0 flex-1">
                                                     <span className="text-[10px] font-bold text-gray-800 leading-tight">{item.name}</span>

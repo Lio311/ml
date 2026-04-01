@@ -9,6 +9,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import LuckyWheel from "../components/LuckyWheel";
 import toast from 'react-hot-toast';
 import { useLanguage } from "../context/LanguageContext";
+import Image from "next/image";
 
 // Modular Components
 import CartItem from "./components/CartItem";
@@ -357,8 +358,8 @@ export default function CartClient() {
                                     <div className="space-y-2">
                                         {recommendations.map(rec => (
                                             <div key={rec.id} className="flex items-center gap-3 bg-white border p-2 rounded-lg shadow-sm hover:shadow-md transition">
-                                                <div className="w-10 h-10 bg-gray-50 rounded flex-shrink-0 flex items-center justify-center overflow-hidden">
-                                                    {rec.image_url ? <img src={rec.image_url} alt="" className="w-full h-full object-contain p-1" /> : '🧴'}
+                                                <div className="w-10 h-10 bg-gray-50 rounded flex-shrink-0 flex items-center justify-center overflow-hidden relative">
+                                                    {rec.image_url ? <Image src={rec.image_url} alt={rec.name || "Product"} fill sizes="40px" className="object-contain p-1" /> : '🧴'}
                                                 </div>
                                                 <div className="flex-1 min-w-0">
                                                     <div className="font-bold text-xs truncate">{rec.name}</div>
