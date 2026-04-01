@@ -451,56 +451,6 @@ export default async function ProductPage(props) {
                             country={localize(product, 'country', locale)}
                             perfumers={localize(product, 'perfumers', locale)}
                         />
-
-                        {/* GEO: Trust & Quality Boilerplate — signals sterility, authenticity, and professionalism */}
-                        <div className={`mt-6 p-4 bg-gray-50 rounded-xl border-s-4 border-black text-sm text-gray-600 space-y-1.5 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
-                            <p className="font-semibold text-black text-xs uppercase tracking-widest mb-3">
-                                {locale === 'he' ? 'הבטחת האיכות שלנו' : 'Our Quality Guarantee'}
-                            </p>
-                            {locale === 'he' ? (
-                                <>
-                                    <p>✓ בשמים מקוריים 100% — נרכשים מיבואנים רשמיים בלבד</p>
-                                    <p>✓ מילוי בסביבה סטרילית עם מזרקים חד-פעמיים</p>
-                                    <p>✓ בקבוקוני זכוכית איכותיים עם ראש התזה מקצועי (Atomizer)</p>
-                                    <p>✓ משלוח עד הבית | פיקאפ חינם — וושינגטון 19, תל אביב</p>
-                                </>
-                            ) : (
-                                <>
-                                    <p>✓ 100% Original perfumes — sourced from official importers only</p>
-                                    <p>✓ Filled in a sterile environment using disposable syringes</p>
-                                    <p>✓ Premium glass vials with professional atomizer heads</p>
-                                    <p>✓ Home delivery | Free pickup — 19 Washington St, Tel Aviv</p>
-                                </>
-                            )}
-                        </div>
-
-                        {/* GEO: Embedded Product FAQ — structured Q&A for AI snippet & rich-result extraction */}
-                        <div className="mt-8" dir={dir}>
-                            <h3 className={`font-bold text-base mb-4 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
-                                {locale === 'he' ? 'שאלות נפוצות' : 'Frequently Asked Questions'}
-                            </h3>
-                            <div className="space-y-2">
-                                {(locale === 'he' ? [
-                                    { q: 'האם הבושם מקורי ב-100%?', a: 'כן. כל הבשמים נרכשים מהיבואנים הרשמיים בלבד. אנחנו לא מתעסקים עם חיקויים או בשמי טסטר ממקורות לא ידועים.' },
-                                    { q: 'כמה התזות יש בכל גודל?', a: 'דוגמית 2 מ"ל: כ-25–30 התזות. 5 מ"ל: כ-75 התזות. 10 מ"ל: כ-150 התזות — מה שמספיק לשבועות של שימוש יומיומי.' },
-                                    { q: 'איך מתבצע תהליך המילוי?', a: 'המילוי מתבצע בסביבה סטרילית עם מזרקים חד-פעמיים, ישירות מהבקבוק המקורי ללא מגע יד אדם. הבושם זהה ב-100% למקורי.' },
-                                    { q: 'כמה זמן לוקח המשלוח?', a: '3–5 ימי עסקים בממוצע. ניתן גם לאסוף בחינם מרחוב וושינגטון 19, תל אביב.' },
-                                ] : [
-                                    { q: 'Are the perfumes 100% original?', a: 'Yes. All perfumes are purchased exclusively from official importers. We do not deal with imitations or testers from unknown sources.' },
-                                    { q: 'How many sprays per size?', a: '2ml sample: ~25–30 sprays. 5ml: ~75 sprays. 10ml: ~150 sprays — enough for weeks of daily use.' },
-                                    { q: 'How is the decanting process done?', a: 'Filling is done in a sterile environment using disposable syringes directly from the original bottle, with no human contact. The perfume is 100% identical to the original.' },
-                                    { q: 'How long does shipping take?', a: '3–5 business days on average. Free pickup is also available from 19 Washington St, Tel Aviv.' },
-                                ]).map((item, i) => (
-                                    <details key={i} className="border border-gray-100 rounded-xl overflow-hidden group">
-                                        <summary className={`px-4 py-3 font-medium cursor-pointer bg-white hover:bg-gray-50 transition-colors list-none flex items-center justify-between ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
-                                            <span>{item.q}</span>
-                                            <span className="text-gray-400 ms-3 shrink-0 transition-transform group-open:rotate-180">▾</span>
-                                        </summary>
-                                        <p className={`px-4 py-3 text-sm text-gray-600 bg-gray-50 leading-relaxed ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>{item.a}</p>
-                                    </details>
-                                ))}
-                            </div>
-                        </div>
                     </div>
 
                 </div >
@@ -517,6 +467,98 @@ export default async function ProductPage(props) {
                     </div>
                 </div>
             )}
+
+            {/* GEO: Why Buy From Us — full-width icon grid (Trust signals for users & AI engines) */}
+            <div className="mt-16 py-12 border-t border-gray-100" dir={dir}>
+                <h2 className="text-2xl font-bold text-center mb-10">
+                    {locale === 'he' ? 'למה לקנות אצלנו' : 'Why Buy From Us'}
+                </h2>
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+                    {[
+                        {
+                            label: locale === 'he' ? 'בשמים מקוריים באחריות' : '100% Original Perfumes',
+                            sub: locale === 'he' ? 'נרכשים מיבואנים רשמיים בלבד' : 'From official importers only',
+                            icon: (
+                                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                                    <polyline points="9 12 11 14 15 10" />
+                                </svg>
+                            )
+                        },
+                        {
+                            label: locale === 'he' ? 'מילוי סטרילי ומקצועי' : 'Sterile & Professional Filling',
+                            sub: locale === 'he' ? 'מזרקים חד-פעמיים, ללא מגע יד' : 'Disposable syringes, no hand contact',
+                            icon: (
+                                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                                    <path d="M14.5 2L16 3.5 7.5 12 6 10.5z" />
+                                    <path d="M15 6l3 3" />
+                                    <path d="M11 10l-6 6v3h3l6-6" />
+                                    <line x1="2" y1="22" x2="8" y2="16" />
+                                </svg>
+                            )
+                        },
+                        {
+                            label: locale === 'he' ? 'משלוח עד הבית' : 'Fast Home Delivery',
+                            sub: locale === 'he' ? 'עד 4 ימי עסקים | פיקאפ חינם' : 'Up to 4 business days | Free pickup',
+                            icon: (
+                                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                                    <rect x="1" y="3" width="15" height="13" rx="1" />
+                                    <path d="M16 8h4l3 5v3h-7V8z" />
+                                    <circle cx="5.5" cy="18.5" r="2.5" />
+                                    <circle cx="18.5" cy="18.5" r="2.5" />
+                                </svg>
+                            )
+                        },
+                        {
+                            label: locale === 'he' ? 'שירות לקוחות מעולה' : 'Excellent Customer Service',
+                            sub: locale === 'he' ? 'זמינים בוואטסאפ ובמייל' : 'Available via WhatsApp & email',
+                            icon: (
+                                <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+                                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                                    <line x1="9" y1="10" x2="15" y2="10" />
+                                    <line x1="12" y1="7" x2="12" y2="13" />
+                                </svg>
+                            )
+                        },
+                    ].map((item, i) => (
+                        <div key={i} className="flex flex-col items-center text-center gap-3">
+                            <div className="text-gray-700">{item.icon}</div>
+                            <div>
+                                <p className="font-bold text-sm text-gray-900 leading-snug">{item.label}</p>
+                                <p className="text-xs text-gray-500 mt-1 leading-relaxed">{item.sub}</p>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+            </div>
+
+            {/* GEO: Embedded Product FAQ — structured Q&A for AI snippet & rich-result extraction */}
+            <div className="mt-12 pb-8" dir={dir}>
+                <h2 className={`text-2xl font-bold mb-8 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
+                    {locale === 'he' ? 'שאלות נפוצות' : 'Frequently Asked Questions'}
+                </h2>
+                <div className="space-y-2 max-w-3xl">
+                    {(locale === 'he' ? [
+                        { q: 'האם הבושם מקורי ב-100%?', a: 'כן. כל הבשמים נרכשים מהיבואנים הרשמיים בלבד. אנחנו לא מתעסקים עם חיקויים או בשמי טסטר ממקורות לא ידועים.' },
+                        { q: 'כמה התזות יש בכל גודל?', a: 'דוגמית 2 מ"ל: כ-25–30 התזות. 5 מ"ל: כ-75 התזות. 10 מ"ל: כ-150 התזות — מה שמספיק לשבועות של שימוש יומיומי.' },
+                        { q: 'איך מתבצע תהליך המילוי?', a: 'המילוי מתבצע בסביבה סטרילית עם מזרקים חד-פעמיים, ישירות מהבקבוק המקורי ללא מגע יד אדם. הבושם זהה ב-100% למקורי.' },
+                        { q: 'כמה זמן לוקח המשלוח?', a: '3–5 ימי עסקים בממוצע. ניתן גם לאסוף בחינם מרחוב וושינגטון 19, תל אביב.' },
+                    ] : [
+                        { q: 'Are the perfumes 100% original?', a: 'Yes. All perfumes are purchased exclusively from official importers. We do not deal with imitations or testers from unknown sources.' },
+                        { q: 'How many sprays per size?', a: '2ml sample: ~25–30 sprays. 5ml: ~75 sprays. 10ml: ~150 sprays — enough for weeks of daily use.' },
+                        { q: 'How is the decanting process done?', a: 'Filling is done in a sterile environment using disposable syringes directly from the original bottle, with no human contact. The perfume is 100% identical to the original.' },
+                        { q: 'How long does shipping take?', a: '3–5 business days on average. Free pickup is also available from 19 Washington St, Tel Aviv.' },
+                    ]).map((item, i) => (
+                        <details key={i} className="border border-gray-100 rounded-xl overflow-hidden group">
+                            <summary className={`px-5 py-4 font-medium cursor-pointer bg-white hover:bg-gray-50 transition-colors list-none flex items-center justify-between ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
+                                <span>{item.q}</span>
+                                <span className="text-gray-400 ms-3 shrink-0 transition-transform group-open:rotate-180">▾</span>
+                            </summary>
+                            <p className={`px-5 py-4 text-sm text-gray-600 bg-gray-50 leading-relaxed ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>{item.a}</p>
+                        </details>
+                    ))}
+                </div>
+            </div>
 
             {/* Brand Insight Section (SEO) */}
             <BrandInsight brand={product.brand} />
