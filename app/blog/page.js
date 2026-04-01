@@ -267,7 +267,7 @@ export default async function BlogIndex(props) {
 
                 {/* Pagination */}
                 {totalPages > 1 && (
-                    <div className="flex justify-center items-center gap-3 mt-12 py-12 border-t border-gray-100">
+                    <div className="flex justify-center items-center gap-3 mt-12 pt-12 pb-24 border-t border-gray-100">
                         {page > 1 && (
                             <Link
                                 href={`/blog?page=${page - 1}${activeTag ? `&tag=${activeTag}` : ''}`}
