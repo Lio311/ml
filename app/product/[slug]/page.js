@@ -501,7 +501,7 @@ export default async function ProductPage(props) {
                         },
                         {
                             label: locale === 'he' ? 'משלוח עד הבית' : 'Fast Home Delivery',
-                            sub: locale === 'he' ? 'עד 4 ימי עסקים | פיקאפ חינם' : 'Up to 4 business days | Free pickup',
+                            sub: locale === 'he' ? 'עד 7 ימי עסקים | פיקאפ חינם' : 'Up to 7 business days | Free pickup',
                             icon: (
                                 <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                                     <rect x="1" y="3" width="15" height="13" rx="1" />
