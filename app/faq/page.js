@@ -37,8 +37,29 @@ export default async function FAQPage() {
     const t = getT(locale);
     const categories = locale === 'en' ? faq_en : faq_he;
 
+    // GEO: Build FAQPage schema for rich snippets and AI engine citation
+    const allFaqItems = categories.flatMap(cat => cat.items);
+    const faqSchema = {
+        "@context": "https://schema.org",
+        "@type": "FAQPage",
+        "mainEntity": allFaqItems.map(item => ({
+            "@type": "Question",
+            "name": item.q,
+            "acceptedAnswer": {
+                "@type": "Answer",
+                "text": item.a
+            }
+        }))
+    };
+
     return (
         <div className="min-h-screen bg-gray-50 pb-20">
+            {/* GEO: FAQPage Structured Data — enables rich snippets and AI citation */}
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+            />
+
             {/* Header section with background pattern */}
             <div className="bg-black text-white py-20 mb-12 relative overflow-hidden">
                 <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_center,white_0%,transparent_70%)]" />
@@ -62,3 +83,4 @@ export default async function FAQPage() {
         </div>
     );
 }
+

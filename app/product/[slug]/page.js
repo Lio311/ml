@@ -77,7 +77,8 @@ export async function generateMetadata(props) {
         : localize(product, 'name', locale);
     const localizedDesc = localize(product, 'description', locale);
     
-    const title = `${localizedName} | ${t('common.from')}${product.price_2ml}₪`;
+    const sampleLabel = locale === 'he' ? 'דוגמית בושם מקורית' : 'Original Perfume Sample';
+    const title = `${localizedName} - ${sampleLabel} | ml-tlv`;
     const description = localizedDesc ? localizedDesc.substring(0, 160) : t('common.buy_sample_at').replace('{name}', localizedName);
     const imageUrl = product.image_url || `${baseUrl}/logo_v3.png`;
 
@@ -86,12 +87,17 @@ export async function generateMetadata(props) {
         description: description,
         alternates: {
             canonical: `${baseUrl}/product/${product.slug || product.id}`,
+            languages: {
+                'he-IL': `${baseUrl}/product/${product.slug || product.id}`,
+                'en-US': `${baseUrl}/product/${product.slug || product.id}?lang=en`,
+                'x-default': `${baseUrl}/product/${product.slug || product.id}`,
+            },
         },
         openGraph: {
             title: title,
             description: description,
             url: `${baseUrl}/product/${product.slug || product.id}`,
-            siteName: 'ml_tlv',
+            siteName: 'ml-tlv',
             images: [
                 {
                     url: imageUrl,
@@ -138,6 +144,21 @@ export default async function ProductPage(props) {
     // SEO Redirect: If accessed via ID (or wrong slug case), redirect to canonical slug
     if (product.slug && product.slug !== slug) {
         redirect(`/product/${product.slug}`);
+    }
+
+    // GEO: Fetch top reviews for Schema.org Review markup (AI citability signals)
+    let topReviews = [];
+    try {
+        const reviewsRes = await pool.query(`
+            SELECT rating, content, created_at
+            FROM reviews
+            WHERE product_id = $1 AND content IS NOT NULL AND content != '' AND rating >= 4
+            ORDER BY rating DESC, created_at DESC
+            LIMIT 3
+        `, [product.id]);
+        topReviews = reviewsRes.rows;
+    } catch(e) {
+        // Non-critical: reviews fetch failed, schema will just omit Review nodes
     }
 
     // Efficient Related Products Fetch (SQL-based similarity)
@@ -204,65 +225,81 @@ export default async function ProductPage(props) {
     const localizedDesc_val = localize(product, 'description', locale);
     const localizedCategory = translateCategory(localize(product, 'category', locale), locale);
 
+    // GEO: Shared shipping & return details (reused across all per-size offers)
+    const shippingDetails = {
+        "@type": "OfferShippingDetails",
+        "shippingRate": { "@type": "MonetaryAmount", "value": 30, "currency": "ILS" },
+        "deliveryTime": {
+            "@type": "ShippingDeliveryTime",
+            "handlingTime": { "@type": "QuantitativeValue", "minValue": 1, "maxValue": 2, "unitCode": "DAY" },
+            "transitTime": { "@type": "QuantitativeValue", "minValue": 3, "maxValue": 5, "unitCode": "DAY" }
+        }
+    };
+    const returnPolicy = {
+        "@type": "MerchantReturnPolicy",
+        "applicableCountry": "IL",
+        "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
+        "merchantReturnDays": 14,
+        "returnMethod": "https://schema.org/ReturnByMail"
+    };
+    const inStock = (product.stock && product.stock > 0);
+    const availability = inStock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock";
+    const productUrl = `https://www.ml-tlv.com/product/${product.slug || product.id}`;
+
+    const buildOffer = (size, price) => ({
+        "@type": "Offer",
+        "name": `${localizedName_val} - ${size}ml`,
+        "sku": `ML${product.id}-${size}ML`,
+        "price": price,
+        "priceCurrency": "ILS",
+        "availability": availability,
+        "itemCondition": "https://schema.org/NewCondition",
+        "priceValidUntil": priceValidUntil,
+        "url": productUrl,
+        "shippingDetails": shippingDetails,
+        "hasMerchantReturnPolicy": returnPolicy
+    });
+
     const jsonLd = {
         "@context": "https://schema.org",
         "@type": "Product",
         "name": localizedName_val,
         "image": product.image_url,
-        "description": localizedDesc_val || `Buy ${localizedName_val} sample - Original Niche Perfume`,
-        "brand": {
-            "@type": "Brand",
-            "name": product.brand
-        },
-        "offers": {
-            "@type": "Offer",
-            "url": `https://www.ml-tlv.com/product/${product.slug || product.id}`,
-            "priceCurrency": "ILS",
-            "price": product.price_10ml || product.price_5ml || product.price_2ml,
-            "availability": (product.stock && product.stock > 0) ? "https://schema.org/InStock" : "https://schema.org/OutOfStock",
-            "itemCondition": "https://schema.org/NewCondition",
-            "priceValidUntil": priceValidUntil,
-            "shippingDetails": {
-                "@type": "OfferShippingDetails",
-                "shippingRate": {
-                    "@type": "MonetaryAmount",
-                    "value": 30,
-                    "currency": "ILS"
-                },
-                "deliveryTime": {
-                    "@type": "ShippingDeliveryTime",
-                    "handlingTime": {
-                        "@type": "QuantitativeValue",
-                        "minValue": 1,
-                        "maxValue": 2,
-                        "unitCode": "DAY"
-                    },
-                    "transitTime": {
-                        "@type": "QuantitativeValue",
-                        "minValue": 3,
-                        "maxValue": 5,
-                        "unitCode": "DAY"
-                    }
-                }
-            },
-            "hasMerchantReturnPolicy": {
-                "@type": "MerchantReturnPolicy",
-                "applicableCountry": "IL",
-                "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
-                "merchantReturnDays": 14,
-                "returnMethod": "https://schema.org/ReturnByMail"
-            }
-        }
+        "description": localizedDesc_val || `${localizedName_val} - Original Niche Perfume Sample | ml-tlv`,
+        "sku": `ML${product.id}`,
+        "mpn": `ML${product.id}`,
+        "brand": { "@type": "Brand", "name": product.brand },
+        "offers": [
+            ...(product.price_2ml ? [buildOffer(2, product.price_2ml)] : []),
+            ...(product.price_5ml ? [buildOffer(5, product.price_5ml)] : []),
+            ...(product.price_10ml ? [buildOffer(10, product.price_10ml)] : []),
+        ].filter(Boolean),
     };
 
-    // Add AggregateRating only if there are reviews
+    // GEO: AggregateRating — required for star rich snippets in Google SERPs
     if (parseInt(product.review_count) > 0) {
         jsonLd.aggregateRating = {
             "@type": "AggregateRating",
             "ratingValue": parseFloat(product.average_rating || 0).toFixed(1),
-            "reviewCount": product.review_count
+            "reviewCount": parseInt(product.review_count),
+            "bestRating": 5,
+            "worstRating": 1
         };
     }
+
+    // GEO: Inject Review nodes — signals to AI engines (Perplexity, ChatGPT) for citation quality
+    if (topReviews.length > 0) {
+        jsonLd.review = topReviews
+            .filter(r => r.content && r.content.trim().length > 10)
+            .map(r => ({
+                "@type": "Review",
+                "reviewRating": { "@type": "Rating", "ratingValue": r.rating, "bestRating": 5, "worstRating": 1 },
+                "author": { "@type": "Person", "name": locale === 'he' ? 'לקוח מאומת' : 'Verified Customer' },
+                "reviewBody": r.content.trim(),
+                "datePublished": new Date(r.created_at).toISOString().split('T')[0]
+            }));
+    }
+
 
     // Prepare breadcrumbs
     const breadcrumbItems = [
@@ -414,7 +451,58 @@ export default async function ProductPage(props) {
                             country={localize(product, 'country', locale)}
                             perfumers={localize(product, 'perfumers', locale)}
                         />
+
+                        {/* GEO: Trust & Quality Boilerplate — signals sterility, authenticity, and professionalism */}
+                        <div className={`mt-6 p-4 bg-gray-50 rounded-xl border-s-4 border-black text-sm text-gray-600 space-y-1.5 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
+                            <p className="font-semibold text-black text-xs uppercase tracking-widest mb-3">
+                                {locale === 'he' ? 'הבטחת האיכות שלנו' : 'Our Quality Guarantee'}
+                            </p>
+                            {locale === 'he' ? (
+                                <>
+                                    <p>✓ בשמים מקוריים 100% — נרכשים מיבואנים רשמיים בלבד</p>
+                                    <p>✓ מילוי בסביבה סטרילית עם מזרקים חד-פעמיים</p>
+                                    <p>✓ בקבוקוני זכוכית איכותיים עם ראש התזה מקצועי (Atomizer)</p>
+                                    <p>✓ משלוח עד הבית | פיקאפ חינם — וושינגטון 19, תל אביב</p>
+                                </>
+                            ) : (
+                                <>
+                                    <p>✓ 100% Original perfumes — sourced from official importers only</p>
+                                    <p>✓ Filled in a sterile environment using disposable syringes</p>
+                                    <p>✓ Premium glass vials with professional atomizer heads</p>
+                                    <p>✓ Home delivery | Free pickup — 19 Washington St, Tel Aviv</p>
+                                </>
+                            )}
+                        </div>
+
+                        {/* GEO: Embedded Product FAQ — structured Q&A for AI snippet & rich-result extraction */}
+                        <div className="mt-8" dir={dir}>
+                            <h3 className={`font-bold text-base mb-4 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
+                                {locale === 'he' ? 'שאלות נפוצות' : 'Frequently Asked Questions'}
+                            </h3>
+                            <div className="space-y-2">
+                                {(locale === 'he' ? [
+                                    { q: 'האם הבושם מקורי ב-100%?', a: 'כן. כל הבשמים נרכשים מהיבואנים הרשמיים בלבד. אנחנו לא מתעסקים עם חיקויים או בשמי טסטר ממקורות לא ידועים.' },
+                                    { q: 'כמה התזות יש בכל גודל?', a: 'דוגמית 2 מ"ל: כ-25–30 התזות. 5 מ"ל: כ-75 התזות. 10 מ"ל: כ-150 התזות — מה שמספיק לשבועות של שימוש יומיומי.' },
+                                    { q: 'איך מתבצע תהליך המילוי?', a: 'המילוי מתבצע בסביבה סטרילית עם מזרקים חד-פעמיים, ישירות מהבקבוק המקורי ללא מגע יד אדם. הבושם זהה ב-100% למקורי.' },
+                                    { q: 'כמה זמן לוקח המשלוח?', a: '3–5 ימי עסקים בממוצע. ניתן גם לאסוף בחינם מרחוב וושינגטון 19, תל אביב.' },
+                                ] : [
+                                    { q: 'Are the perfumes 100% original?', a: 'Yes. All perfumes are purchased exclusively from official importers. We do not deal with imitations or testers from unknown sources.' },
+                                    { q: 'How many sprays per size?', a: '2ml sample: ~25–30 sprays. 5ml: ~75 sprays. 10ml: ~150 sprays — enough for weeks of daily use.' },
+                                    { q: 'How is the decanting process done?', a: 'Filling is done in a sterile environment using disposable syringes directly from the original bottle, with no human contact. The perfume is 100% identical to the original.' },
+                                    { q: 'How long does shipping take?', a: '3–5 business days on average. Free pickup is also available from 19 Washington St, Tel Aviv.' },
+                                ]).map((item, i) => (
+                                    <details key={i} className="border border-gray-100 rounded-xl overflow-hidden group">
+                                        <summary className={`px-4 py-3 font-medium cursor-pointer bg-white hover:bg-gray-50 transition-colors list-none flex items-center justify-between ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
+                                            <span>{item.q}</span>
+                                            <span className="text-gray-400 ms-3 shrink-0 transition-transform group-open:rotate-180">▾</span>
+                                        </summary>
+                                        <p className={`px-4 py-3 text-sm text-gray-600 bg-gray-50 leading-relaxed ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>{item.a}</p>
+                                    </details>
+                                ))}
+                            </div>
+                        </div>
                     </div>
+
                 </div >
             </div >
 
