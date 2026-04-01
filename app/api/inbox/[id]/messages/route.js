@@ -24,7 +24,7 @@ export async function GET(req, { params }) {
         // Verify user is part of the conversation (or is admin/catalog_owner)
         // Simplified check: since they know the ID, we could just fetch it, but let's be secure
         const check = await pool.query(`
-            SELECT id, participant1_id, participant2_id, catalog_id, order_id, created_at, updated_at FROM conversations WHERE id = $1
+            SELECT id, participant1_id, participant2_id, catalog_id, order_id, updated_at FROM conversations WHERE id = $1
         `, [conversationId]);
         
         if (check.rows.length === 0) return new NextResponse('Not Found', { status: 404 });
