@@ -490,13 +490,12 @@ export default async function ProductPage(props) {
                             sub: locale === 'he' ? 'מזרקים חד-פעמיים, ללא מגע יד' : 'Disposable syringes, no hand contact',
                             icon: (
                                 <svg xmlns="http://www.w3.org/2000/svg" width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-                                    <line x1="19" y1="5" x2="5" y2="19" />
-                                    <circle cx="6.5" cy="17.5" r="2.5" />
-                                    <path d="M15 5l4 4" />
-                                    <path d="M13 7l-1.5 1.5" />
-                                    <path d="M16 10l-1.5 1.5" />
-                                    <path d="M11 5h2a2 2 0 0 1 2 2v0" />
-                                    <path d="M9 3l6 6" />
+                                    <path d="m18 2 4 4"/>
+                                    <path d="m17 7 3-3"/>
+                                    <path d="M19 9 8.7 19.3c-1 1-2.5 1-3.4 0l-.6-.6c-1-1-1-2.5 0-3.4L15 5"/>
+                                    <path d="m9 11 4 4"/>
+                                    <path d="m5 19-3 3"/>
+                                    <path d="m14 4 6 6"/>
                                 </svg>
                             )
                         },
