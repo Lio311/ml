@@ -45,11 +45,11 @@ export default async function MatchingPage() {
         <div className="bg-neutral-50 min-h-screen py-12" dir={dir}>
             <div className="container mx-auto px-4">
                 <div className="text-center mb-12">
-                    <h1 className="text-4xl md:text-5xl font-bold mb-4 font-serif">{t('matching.title')}</h1>
-                    <p className="text-gray-400 text-sm max-w-none mx-auto whitespace-nowrap overflow-hidden text-ellipsis px-4 font-light">
+                    <h1 className="text-4xl md:text-5xl font-bold mb-6 font-serif tracking-tight text-neutral-900">{t('matching.title')}</h1>
+                    <p className="text-xl md:text-2xl font-semibold text-neutral-800 max-w-none mx-auto whitespace-nowrap overflow-hidden text-ellipsis px-4 mb-6">
                         {t('matching.description')}
                     </p>
-                    <p className="text-gray-500 text-base max-w-3xl mx-auto mt-6 leading-relaxed text-center px-4">
+                    <p className="text-neutral-600 text-lg max-w-3xl mx-auto leading-relaxed text-center px-4">
                         {t('matching.how_it_works')}
                     </p>
                 </div>
