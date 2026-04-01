@@ -18,13 +18,17 @@ export default function ProductCard({ product }) {
     const router = useRouter();
 
     const translateCategory = (cat) => {
-        if (!cat || locale === 'he') return cat;
-        return cat.split(',').map(part => {
-            const trimmed = part.trim();
-            const mapped = t(`category_map.${trimmed}`);
-            // If t() returns the key itself, it means it's not found in the map
-            return mapped.startsWith('category_map.') ? trimmed : mapped;
-        }).join(', ');
+        if (!cat) return '';
+        if (locale === 'he') return cat;
+        try {
+            return String(cat).split(',').map(part => {
+                const trimmed = part.trim();
+                const mapped = t(`category_map.${trimmed}`);
+                return (mapped && !mapped.startsWith('category_map.')) ? mapped : trimmed;
+            }).join(', ');
+        } catch (e) {
+            return String(cat);
+        }
     };
 
     useEffect(() => {

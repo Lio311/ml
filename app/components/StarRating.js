@@ -14,23 +14,39 @@ export default function StarRating({ productId, readOnly = false }) {
     const [count, setCount] = useState(0);
 
     useEffect(() => {
-        // Fetch rating data
-        fetch(`/api/reviews?productId=${productId}${isSignedIn ? '&myReview=true' : ''}`)
-            .then(res => res.json())
-            .then(data => {
-                if (data.rating) setRating(data.rating); // My rating
+        if (!productId) return;
 
-                // Also get stats if separate call needed, but let's assume one call for stats
-                // Actually, let's fetch stats separately or adjust API.
-                // Current API fetches myReview OR average depending on param.
-                // Let's fetch average always.
-                fetch(`/api/reviews?productId=${productId}`)
-                    .then(res2 => res2.json())
-                    .then(stats => {
-                        setAverage(stats.average);
-                        setCount(stats.count);
-                    });
-            });
+        let isMounted = true;
+
+        const fetchData = async () => {
+            try {
+                // Fetch personal rating if signed in
+                if (isSignedIn) {
+                    const myRes = await fetch(`/api/reviews?productId=${productId}&myReview=true`);
+                    if (myRes.ok) {
+                        const data = await myRes.json();
+                        if (isMounted && data && typeof data.rating === 'number') {
+                            setRating(data.rating);
+                        }
+                    }
+                }
+
+                // Fetch global stats
+                const statsRes = await fetch(`/api/reviews?productId=${productId}`);
+                if (statsRes.ok) {
+                    const stats = await statsRes.json();
+                    if (isMounted && stats) {
+                        setAverage(Number(stats.average) || 0);
+                        setCount(Number(stats.count) || 0);
+                    }
+                }
+            } catch (err) {
+                console.error('[StarRating] Fetch error:', err);
+            }
+        };
+
+        fetchData();
+        return () => { isMounted = false; };
     }, [productId, isSignedIn]);
 
     const handleRating = async (newRating) => {

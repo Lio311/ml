@@ -20,9 +20,48 @@ import * as Sentry from "@sentry/nextjs";
 const localize = (obj, field, locale) => {
     if (!obj) return '';
     if (locale === 'en') {
-        return obj[`${field}_en`] || obj[`${field}_EN`] || obj[field] || '';
+        const val = obj[`${field}_en`] || obj[`${field}_EN`] || obj[field];
+        return val ? String(val) : '';
     }
-    return obj[`${field}_he`] || obj[`${field}_HE`] || obj[field] || '';
+    const val = obj[`${field}_he`] || obj[`${field}_HE`] || obj[field];
+    return val ? String(val) : '';
+};
+
+/**
+ * Robust sanitizer for Postgres rows to ensure serializability 
+ * and prevent "Server Components render" crashes in React 19 / Next 15.
+ */
+const sanitizeProduct = (row) => {
+    if (!row) return null;
+    const sanitized = { ...row };
+    
+    // Convert Dates to ISO strings (Next.js can sometimes struggle with raw Date objects in RSC -> Client boundary)
+    if (row.created_at) sanitized.created_at = new Date(row.created_at).toISOString();
+    
+    // Ensure numeric fields are actually numbers and not strings or nulls
+    sanitized.id = parseInt(row.id);
+    sanitized.stock = parseInt(row.stock) || 0;
+    sanitized.price_2ml = parseFloat(row.price_2ml) || 0;
+    sanitized.price_5ml = parseFloat(row.price_5ml) || 0;
+    sanitized.price_10ml = parseFloat(row.price_10ml) || 0;
+    sanitized.average_rating = parseFloat(row.average_rating) || 0;
+    sanitized.review_count = parseInt(row.review_count) || 0;
+
+    // Ensure strings are strings and not nulls
+    const stringFields = [
+        'slug', 'brand', 'brand_he', 'model', 'model_he', 'name', 'name_he', 
+        'description', 'description_he', 'image_url', 'category', 
+        'top_notes', 'middle_notes', 'base_notes', 'seasons', 'country', 'perfumers', 'logo_url'
+    ];
+    stringFields.forEach(field => {
+        if (sanitized[field] === null || sanitized[field] === undefined) {
+            sanitized[field] = '';
+        } else {
+            sanitized[field] = String(sanitized[field]);
+        }
+    });
+
+    return sanitized;
 };
 
 const translateCategory = (cat, locale) => {
@@ -52,71 +91,76 @@ export const revalidate = 3600; // SEO Improvement: Cache for 1 hour
 
 export async function generateMetadata(props) {
     try {
-    const cookieStore = await cookies();
-    const locale = cookieStore.get('NEXT_LOCALE')?.value || 'he';
-    const t = getT(locale);
+        const cookieStore = await cookies();
+        const locale = cookieStore.get('NEXT_LOCALE')?.value || 'he';
+        const t = getT(locale);
 
-    const params = await props.params;
-    const { slug } = params;
-    const res = await pool.query(`SELECT id, slug, brand, brand_he, model, model_he, name, name_he, description, description_he, image_url, category, stock, top_notes, middle_notes, base_notes, price_2ml, price_5ml, price_10ml FROM products WHERE slug = $1 OR id::text = $1`, [slug]);
-    const product = res.rows[0];
+        const params = await props.params;
+        const { slug } = params;
+        
+        // Lean query for metadata
+        const res = await pool.query(`
+            SELECT id, slug, brand, brand_he, model, model_he, name, name_he, description, description_he, image_url, category, stock 
+            FROM products 
+            WHERE slug = $1 OR id::text = $1 
+            LIMIT 1
+        `, [slug]);
+        
+        const rawProduct = res.rows[0];
+        if (!rawProduct) {
+            return {
+                title: `${t('common.product_not_found')} | ml-tlv`,
+                description: t('common.not_found_desc'),
+            };
+        }
 
-    if (!product) {
+        const product = sanitizeProduct(rawProduct);
+
+        const baseUrl = 'https://www.ml-tlv.com';
+        const localizedName = locale === 'he' 
+            ? `${product.brand_he || product.brand} ${product.model_he || product.model}` 
+            : localize(product, 'name', locale);
+        const localizedDesc = localize(product, 'description', locale);
+        
+        const sampleLabel = locale === 'he' ? 'דוגמית בושם מקורית' : 'Original Perfume Sample';
+        const title = `${localizedName} - ${sampleLabel} | ml-tlv`;
+        const description = localizedDesc ? localizedDesc.substring(0, 160) : t('common.buy_sample_at').replace('{name}', localizedName);
+        const imageUrl = product.image_url || `${baseUrl}/logo_v3.png`;
+
         return {
-            title: `${t('common.product_not_found')} | ml_tlv`,
-            description: t('common.not_found_desc'),
-        };
-    }
-
-    // SEO: Redirect numeric ID links to Slug links (301)
-    // generateMetadata is called before page, so we can't redirect here easily without throwing.
-    // We let the Page component handle the redirect. Here we just return canonical.
-
-    const baseUrl = 'https://www.ml-tlv.com';
-    const localizedName = locale === 'he' 
-        ? `${product.brand_he || product.brand} ${product.model_he || product.model}` 
-        : localize(product, 'name', locale);
-    const localizedDesc = localize(product, 'description', locale);
-    
-    const sampleLabel = locale === 'he' ? 'דוגמית בושם מקורית' : 'Original Perfume Sample';
-    const title = `${localizedName} - ${sampleLabel} | ml-tlv`;
-    const description = localizedDesc ? localizedDesc.substring(0, 160) : t('common.buy_sample_at').replace('{name}', localizedName);
-    const imageUrl = product.image_url || `${baseUrl}/logo_v3.png`;
-
-    return {
-        title: title,
-        description: description,
-        alternates: {
-            canonical: `${baseUrl}/product/${product.slug || product.id}`,
-            languages: {
-                'he-IL': `${baseUrl}/product/${product.slug || product.id}`,
-                'en-US': `${baseUrl}/product/${product.slug || product.id}?lang=en`,
-                'x-default': `${baseUrl}/product/${product.slug || product.id}`,
-            },
-        },
-        openGraph: {
             title: title,
             description: description,
-            url: `${baseUrl}/product/${product.slug || product.id}`,
-            siteName: 'ml-tlv',
-            images: [
-                {
-                    url: imageUrl,
-                    width: 800,
-                    height: 800,
-                    alt: product.name,
+            alternates: {
+                canonical: `${baseUrl}/product/${product.slug || product.id}`,
+                languages: {
+                    'he-IL': `${baseUrl}/product/${product.slug || product.id}`,
+                    'en-US': `${baseUrl}/product/${product.slug || product.id}?lang=en`,
+                    'x-default': `${baseUrl}/product/${product.slug || product.id}`,
                 },
-            ],
-            locale: 'he_IL',
-            type: 'product',
-        },
-        twitter: {
-            card: 'summary_large_image',
-            title: title,
-            description: description,
-            images: [imageUrl],
-        },
-    };
+            },
+            openGraph: {
+                title: title,
+                description: description,
+                url: `${baseUrl}/product/${product.slug || product.id}`,
+                siteName: 'ml-tlv',
+                images: [
+                    {
+                        url: imageUrl,
+                        width: 800,
+                        height: 800,
+                        alt: product.name || 'Perfume Sample',
+                    },
+                ],
+                locale: 'he_IL',
+                type: 'product',
+            },
+            twitter: {
+                card: 'summary_large_image',
+                title: title,
+                description: description,
+                images: [imageUrl],
+            },
+        };
     } catch (metaErr) {
         console.error('[ProductPage] generateMetadata crashed:', metaErr);
         Sentry.captureException(metaErr);
@@ -133,7 +177,7 @@ export default async function ProductPage(props) {
     const params = await props.params;
     const { slug } = params;
 
-    let product;
+    let rawProduct;
     try {
         const res = await pool.query(`
             SELECT p.id, p.slug, p.brand, p.brand_he, p.model, p.model_he, p.name, p.name_he, p.description, p.description_he, p.image_url, p.category, p.stock, p.top_notes, p.middle_notes, p.base_notes, p.price_2ml, p.price_5ml, p.price_10ml, p.seasons, p.country, p.perfumers, b.logo_url,
@@ -142,17 +186,20 @@ export default async function ProductPage(props) {
             FROM products p 
             LEFT JOIN brands b ON p.brand = b.name 
             WHERE p.slug = $1 OR p.id::text = $1
+            LIMIT 1
         `, [slug]);
-        product = res.rows[0];
+        rawProduct = res.rows[0];
     } catch (dbErr) {
         console.error('[ProductPage] Main query crashed:', dbErr);
         Sentry.captureException(dbErr);
         return <div className="p-20 text-center text-red-600">שגיאה בטעינת המוצר. אנא נסו שוב מאוחר יותר.</div>;
     }
 
-    if (!product) {
+    if (!rawProduct) {
         return <div className="p-20 text-center">{t('common.product_not_found')}</div>;
     }
+
+    const product = sanitizeProduct(rawProduct);
 
     // SEO Redirect: If accessed via ID (or wrong slug case), redirect to canonical slug
     if (product.slug && product.slug !== slug) {
@@ -212,14 +259,16 @@ export default async function ProductPage(props) {
         if (related.length < 4) {
             const excludeIds = [product.id, ...related.map(r => r.id)];
             const fillRes = await pool.query(`
-                SELECT id, slug, name, brand, brand_he, model, model_he, image_url, price_2ml, price_5ml, price_10ml, stock, category, created_at
-                FROM products 
-                WHERE active = true AND id != ALL($1)
-                ORDER BY RANDOM()
-                LIMIT $2
-            `, [excludeIds, 4 - related.length]);
-            related = [...related, ...fillRes.rows];
-        }
+            SELECT id, slug, name, brand, brand_he, model, model_he, image_url, price_2ml, price_5ml, price_10ml, stock, category, created_at
+            FROM products 
+            WHERE active = true AND id != ALL($1)
+            ORDER BY RANDOM()
+            LIMIT $2
+        `, [excludeIds, 4 - related.length]);
+        related = [...related, ...fillRes.rows].map(r => sanitizeProduct(r));
+    } else {
+        related = related.map(r => sanitizeProduct(r));
+    }
 
     } catch (e) {
         Sentry.captureException(e);
@@ -304,13 +353,18 @@ export default async function ProductPage(props) {
     if (topReviews.length > 0) {
         jsonLd.review = topReviews
             .filter(r => r.content && r.content.trim().length > 10)
-            .map(r => ({
-                "@type": "Review",
-                "reviewRating": { "@type": "Rating", "ratingValue": r.rating, "bestRating": 5, "worstRating": 1 },
-                "author": { "@type": "Person", "name": locale === 'he' ? 'לקוח מאומת' : 'Verified Customer' },
-                "reviewBody": r.content.trim(),
-                "datePublished": new Date(r.created_at).toISOString().split('T')[0]
-            }));
+            .map(r => {
+                const reviewDate = r.created_at ? new Date(r.created_at) : new Date();
+                const isoDate = !isNaN(reviewDate.getTime()) ? reviewDate.toISOString().split('T')[0] : new Date().toISOString().split('T')[0];
+                
+                return {
+                    "@type": "Review",
+                    "reviewRating": { "@type": "Rating", "ratingValue": r.rating, "bestRating": 5, "worstRating": 1 },
+                    "author": { "@type": "Person", "name": locale === 'he' ? 'לקוח מאומת' : 'Verified Customer' },
+                    "reviewBody": String(r.content || '').trim(),
+                    "datePublished": isoDate
+                };
+            });
     }
 
 

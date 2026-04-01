@@ -25,13 +25,14 @@ export default function ProductActionsClient({ product }) {
     }, [isSignedIn, product]);
 
     const handleAdd = (size, price) => {
-        const stock = parseInt(product.stock) || 0;
+        if (!product) return;
+        const stock = Number(product.stock) || 0;
 
         // Calculate current amount of this product in cart
         const currentInCart = (cartItems || []).reduce((total, item) => {
             // Ensure ID comparison is type-safe (string vs number)
-            if (String(item.id) === String(product.id)) {
-                return total + (item.size * item.quantity);
+            if (item && String(item.id) === String(product.id)) {
+                return total + (Number(item.size || 0) * Number(item.quantity || 0));
             }
             return total;
         }, 0);
