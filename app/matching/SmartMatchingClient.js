@@ -26,6 +26,7 @@ export default function SmartMatchingClient({ initialNotes }) {
     const [suggestions, setSuggestions] = useState([]);
     const [isAddedToCart, setIsAddedToCart] = useState(false);
     const [flyingItems, setFlyingItems] = useState([]);
+    const [animatingProductIds, setAnimatingProductIds] = useState(new Set());
     const productRefs = useRef({});
 
 
@@ -122,17 +123,14 @@ export default function SmartMatchingClient({ initialNotes }) {
 
         // Actual API call logic
         try {
-            for (const p of results.products) {
-                await addItem({
-                    id: p.id,
-                    name: localize(p, 'name'),
-                    brand: p.brand,
-                    price: p.price,
-                    image_url: p.image_url,
-                    volume: p.volume || '10ml',
-                    quantity: 1
-                });
-            }
+            const itemsToBatch = results.products.map(p => ({
+                product: p,
+                size: p.volume || '10ml',
+                price: p.price,
+                quantity: 1
+            }));
+            
+            await addMultipleToCart(itemsToBatch, { successKey: 'matching.all_added_toast' });
             setIsAddedToCart(true);
         } catch (error) {
             console.error("Failed to add all items to cart:", error);
@@ -148,6 +146,7 @@ export default function SmartMatchingClient({ initialNotes }) {
         setResults(null);
         setIsAddedToCart(false);
         setStep(1);
+        setAnimatingProductIds(new Set());
     };
 
     return (
