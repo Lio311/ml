@@ -550,7 +550,7 @@ function CouponRow({ coupon, onDelete, onEdit, canEdit }) {
             <td className="p-4 text-center">{coupon.discount_percent}%</td>
             <td className="p-4 font-mono text-center">
                 {coupon.expires_at ? (
-                    <span className={isExpired ? 'text-red-500 font-bold' : 'text-green-600 font-bold'}>
+                    <span suppressHydrationWarning className={isExpired ? 'text-red-500 font-bold' : 'text-green-600 font-bold'}>
                         {timeLeft}
                     </span>
                 ) : (
@@ -669,7 +669,7 @@ function CouponCard({ coupon, onDelete, onEdit, canEdit }) {
             <div className="grid grid-cols-2 gap-4 pt-2 border-t border-gray-50">
                 <div>
                     <div className="text-[10px] uppercase font-bold text-gray-400 mb-1">תוקף:</div>
-                    <div className={`font-mono text-sm ${isExpired ? 'text-red-500 font-bold' : 'text-green-600 font-bold'}`}>
+                    <div suppressHydrationWarning className={`font-mono text-sm ${isExpired ? 'text-red-500 font-bold' : 'text-green-600 font-bold'}`}>
                         {coupon.expires_at ? (timeLeft || 'פג תוקף') : 'ללא הגבלה'}
                     </div>
                 </div>
