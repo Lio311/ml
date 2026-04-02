@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import * as Sentry from "@sentry/nextjs";
+import pool from "../../../lib/db";
 
 export async function POST(req) {
     try {

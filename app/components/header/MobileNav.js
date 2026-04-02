@@ -54,7 +54,7 @@ export default function MobileNav({ isOpen, onClose, navLinks = [], isAdmin }) {
                         {/* User + My Catalogs */}
                         <div className="flex justify-center items-center gap-4 py-5 px-6">
                             <SignedIn>
-                                <UserButton afterSignOutUrl="/" appearance={{ elements: { userButtonAvatarBox: "w-12 h-12" } }} />
+                                <UserButton fallbackRedirectUrl="/" appearance={{ elements: { userButtonAvatarBox: "w-12 h-12" } }} />
                                 <Link href="/my-catalogs" onClick={onClose} className="bg-yellow-400 text-black px-4 py-2 rounded-full text-sm font-bold shadow-sm hover:bg-yellow-300 transition-colors">
                                     {t('common.my_catalogs_mobile')}
                                 </Link>

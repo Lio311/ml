@@ -146,7 +146,7 @@ export default function MobileNavV2({ menu = [], cartCount, wishlistCount, isAdm
                     <div className="flex flex-col gap-6 text-xl font-bold text-center pb-10">
                         <div className="flex justify-center items-center gap-4 py-4">
                             <SignedIn>
-                                <UserButton afterSignOutUrl="/" appearance={{ elements: { userButtonAvatarBox: "w-12 h-12" } }} />
+                                <UserButton fallbackRedirectUrl="/" appearance={{ elements: { userButtonAvatarBox: "w-12 h-12" } }} />
                                 <Link href="/my-catalogs" onClick={() => setIsMenuOpen(false)} className="bg-yellow-400 text-black px-4 py-2 rounded-full text-sm font-bold shadow-sm">
                                     {t('common.my_catalogs_mobile')}
                                 </Link>

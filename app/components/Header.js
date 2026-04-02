@@ -71,7 +71,7 @@ export default function Header({ brands = [] }) {
                                 <SignedIn>
                                     <div className="flex items-center">
                                         <UserButton 
-                                            afterSignOutUrl="/" 
+                                            fallbackRedirectUrl="/" 
                                             userProfileProps={{
                                                 appearance: {
                                                     elements: {
