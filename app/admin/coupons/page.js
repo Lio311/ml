@@ -650,6 +650,8 @@ function CouponCard({ coupon, onDelete, onEdit, canEdit }) {
     if (limits.allowed_products?.length > 0) activeFilters.push('מוצר');
     if (limits.allowed_users?.length > 0) activeFilters.push('שייכות');
     if (limits.min_cart_total > 0) activeFilters.push('מינימום סל');
+    
+    const affiliate = limits.allowed_users?.[0] || null;
 
     return (
         <div className="p-5 bg-white space-y-4">
