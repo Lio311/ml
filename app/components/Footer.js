@@ -96,7 +96,7 @@ export default function Footer() {
                 </div>
 
             </div>
-            <div className="container mt-8 pt-4 border-t border-gray-800 text-center text-xs text-gray-500">
+            <div className="container mt-2 pt-2 border-t border-gray-800 text-center text-xs text-gray-500">
                 © 2022 ml_tlv. {t('common.all_rights_reserved')}
             </div>
         </footer>
