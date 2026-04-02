@@ -92,7 +92,10 @@ export async function generateMetadata(props) {
         const sampleLabel = locale === 'he' ? 'דוגמית בושם מקורית' : 'Original Perfume Sample';
         const title = `${localizedName} - ${sampleLabel} | ml-tlv`;
         const description = localizedDesc ? localizedDesc.substring(0, 160) : t('common.buy_sample_at').replace('{name}', localizedName);
-        const imageUrl = product.image_url || `${baseUrl}/logo_v3.png`;
+        const rawImageUrl = product.image_url || `${baseUrl}/logo_v3.png`;
+        const ogImageUrl = product.image_url 
+            ? `${baseUrl}/api/og/product?url=${encodeURIComponent(product.image_url)}`
+            : rawImageUrl;
 
         return {
             title: title,
@@ -112,9 +115,9 @@ export async function generateMetadata(props) {
                 siteName: 'ml-tlv',
                 images: [
                     {
-                        url: imageUrl,
-                        width: 800,
-                        height: 800,
+                        url: ogImageUrl,
+                        width: 1200,
+                        height: 630,
                         alt: product.name || 'Perfume Sample',
                     },
                 ],
@@ -125,7 +128,7 @@ export async function generateMetadata(props) {
                 card: 'summary_large_image',
                 title: title,
                 description: description,
-                images: [imageUrl],
+                images: [ogImageUrl],
             },
         };
     } catch (metaErr) {

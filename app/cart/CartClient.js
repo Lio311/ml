@@ -106,11 +106,20 @@ export default function CartClient() {
             });
             if (res.ok) {
                 const data = await res.json();
-                const url = `${window.location.origin}/cart?share=${data.id}`;
+                const shareId = data.id;
+                const url = `${window.location.origin}/cart?share=${shareId}`;
+                const shareText = t('cart.share_message') || "בוא תראה את העגלה ששיתפתי איתך";
+
                 if (navigator.share) {
-                    navigator.share({ title: `ml_tlv - ${t('cart.title')}`, url }).catch(console.error);
+                    navigator.share({ 
+                        title: `ml_tlv - ${t('cart.title')}`, 
+                        text: shareText,
+                        url 
+                    }).catch(console.error);
                 } else {
-                    navigator.clipboard.writeText(url).then(() => toast.success(t('cart.link_copied')));
+                    navigator.clipboard.writeText(`${shareText}\n${url}`).then(() => {
+                        toast.success(t('cart.link_copied'));
+                    });
                 }
             }
         } catch (e) { console.error(e); }
