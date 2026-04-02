@@ -472,6 +472,7 @@
         "seo_guide_badge": "Premium Fragrance Guide"
     },
     "matching": {
+        "step_info": "Step {step} of 3",
         "title": "Smart Perfume Matching",
         "description": "Our algorithm will find the perfumes that best match your personal taste based on ingredients and notes.",
         "preferences_title": "Your Preferences",

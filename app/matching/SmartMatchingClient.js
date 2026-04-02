@@ -186,7 +186,7 @@ export default function SmartMatchingClient({ initialNotes }) {
                             {step === 1 ? t('matching.preferences_title') : step === 2 ? t('matching.analyzing') : t('matching.results_title')}
                         </span>
                         <span className="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-400">
-                            Step {step} of 3
+                            {t('matching.step_info', { step })}
                         </span>
                     </div>
                     <div className="w-full bg-zinc-200 h-1 rounded-full overflow-hidden">

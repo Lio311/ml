@@ -18,12 +18,9 @@ const STATUS_OPTIONS = [
 ];
 
 export default function AdminOrdersListClient({ 
-    mainOrders, 
-    totalMainPages, 
-    mainPage, 
-    catalogOrders, 
-    totalCatalogPages, 
-    catalogPage, 
+    orders, 
+    totalPages, 
+    currentPage, 
     canEdit, 
     deleteOrder 
 }) {
@@ -31,17 +28,11 @@ export default function AdminOrdersListClient({
     const [batchStatus, setBatchStatus] = useState('pending');
     const [isApplyingBatch, setIsApplyingBatch] = useState(false);
 
-    const allOrders = [...mainOrders, ...catalogOrders];
-
-    const handleSelectAll = (ordersToSelect) => (e) => {
+    const handleSelectAll = (e) => {
         if (e.target.checked) {
-            setSelectedOrderIds(prev => {
-                const newIds = ordersToSelect.map(o => o.id).filter(id => !prev.includes(id));
-                return [...prev, ...newIds];
-            });
+            setSelectedOrderIds(orders.map(o => o.id));
         } else {
-            const idsToRemove = ordersToSelect.map(o => o.id);
-            setSelectedOrderIds(prev => prev.filter(id => !idsToRemove.includes(id)));
+            setSelectedOrderIds([]);
         }
     };
 
@@ -78,13 +69,10 @@ export default function AdminOrdersListClient({
         }
     };
 
-    const selectedOrdersData = allOrders.filter(o => selectedOrderIds.includes(o.id));
+    const selectedOrdersData = orders.filter(o => selectedOrderIds.includes(o.id));
 
-    const renderOrdersTable = (orders, totalPages, currentPage, type = 'main') => {
-        const isMain = type === 'main';
-        const themeColor = isMain ? 'blue' : 'amber';
-        const pageParam = isMain ? 'page' : 'cpage';
-        const otherParam = isMain ? `cpage=${catalogPage}` : `page=${mainPage}`;
+    const renderOrdersTable = () => {
+        const themeColor = 'blue';
 
         if (orders.length === 0) {
             return (
@@ -97,7 +85,7 @@ export default function AdminOrdersListClient({
         return (
             <div className={`bg-white rounded-2xl shadow-sm border border-${themeColor}-100 overflow-hidden mb-12`}>
                 <div className={`bg-${themeColor}-600 text-white p-4 font-black flex justify-between items-center`}>
-                    <span>{isMain ? 'הזמנות מהאתר הראשי' : 'הזמנות מהקטלוגים'}</span>
+                    <span>רשימת הזמנות</span>
                     <span className="text-[10px] opacity-70 uppercase tracking-widest bg-white/20 px-2 py-0.5 rounded-lg border border-white/10">
                         {orders.length} הזמנות בעמוד
                     </span>
@@ -113,7 +101,7 @@ export default function AdminOrdersListClient({
                                         type="checkbox" 
                                         className={`w-4 h-4 rounded border-gray-300 text-${themeColor}-600 focus:ring-${themeColor}-500 cursor-pointer`}
                                         checked={orders.length > 0 && orders.every(o => selectedOrderIds.includes(o.id))}
-                                        onChange={handleSelectAll(orders)}
+                                        onChange={handleSelectAll}
                                     />
                                 </th>
                                 <th className="p-4 text-center">#</th>
@@ -332,11 +320,11 @@ export default function AdminOrdersListClient({
                     ))}
                 </div>
 
-                {/* Pagination Controls - Specific to this table */}
+                {/* Pagination Controls */}
                 {totalPages > 1 && (
                     <div className={`flex justify-center items-center gap-4 py-6 bg-gray-50/50 border-t border-${themeColor}-50`}>
                         <Link
-                            href={`/admin/orders?${pageParam}=${Math.max(1, currentPage - 1)}&${otherParam}`}
+                            href={`/admin/orders?page=${Math.max(1, currentPage - 1)}`}
                             className={`w-10 h-10 flex items-center justify-center border rounded-xl hover:bg-gray-100 transition-all ${currentPage === 1 ? 'opacity-30 pointer-events-none' : 'shadow-sm'}`}
                             aria-disabled={currentPage === 1}
                         >
@@ -347,7 +335,7 @@ export default function AdminOrdersListClient({
                             {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
                                 <Link
                                     key={p}
-                                    href={`/admin/orders?${pageParam}=${p}&${otherParam}`}
+                                    href={`/admin/orders?page=${p}`}
                                     className={`w-8 h-8 flex items-center justify-center rounded-lg text-xs font-bold transition-all ${currentPage === p ? `bg-${themeColor}-600 text-white shadow-md scale-110` : 'text-gray-400 hover:bg-gray-100'}`}
                                 >
                                     {p}
@@ -356,7 +344,7 @@ export default function AdminOrdersListClient({
                         </div>
 
                         <Link
-                            href={`/admin/orders?${pageParam}=${Math.min(totalPages, currentPage + 1)}&${otherParam}`}
+                            href={`/admin/orders?page=${Math.min(totalPages, currentPage + 1)}`}
                             className={`w-10 h-10 flex items-center justify-center border rounded-xl hover:bg-gray-100 transition-all ${currentPage === totalPages ? 'opacity-30 pointer-events-none' : 'shadow-sm'}`}
                             aria-disabled={currentPage === totalPages}
                         >
@@ -407,13 +395,8 @@ export default function AdminOrdersListClient({
                 )}
             </div>
 
-            {/* Main Site Orders Section */}
-            {renderOrdersTable(mainOrders, totalMainPages, mainPage, 'main')}
-
-            {/* Catalog Orders Section */}
-            <div className="mt-12 pt-12 border-t-2 border-dashed border-gray-100">
-                {renderOrdersTable(catalogOrders, totalCatalogPages, catalogPage, 'catalog')}
-            </div>
+            {/* Orders Section */}
+            {renderOrdersTable()}
         </div>
     );
 }
