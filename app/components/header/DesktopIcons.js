@@ -43,6 +43,17 @@ export default function DesktopIcons({ cartCount, wishlistCount }) {
                     </span>
                 )}
             </Link>
+
+            <style jsx>{`
+                @keyframes cart-pop {
+                    0% { transform: scale(1); }
+                    50% { transform: scale(1.4) rotate(-10deg); }
+                    100% { transform: scale(1) rotate(0deg); }
+                }
+                :global(.animate-cart-pop) {
+                    animation: cart-pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                }
+            `}</style>
         </div>
     );
 }

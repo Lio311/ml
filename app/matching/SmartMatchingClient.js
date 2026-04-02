@@ -91,11 +91,11 @@ export default function SmartMatchingClient({ initialNotes }) {
     const addToCartAll = async () => {
         if (!results || !results.products || isAddedToCart) return;
 
-        // 1. Trigger Animation
+        // 1. Trigger Premium Animation
         const cartIcon = document.getElementById('cart-icon-main');
         const cartRect = cartIcon?.getBoundingClientRect() || { left: window.innerWidth - 50, top: 20 };
 
-        const newFlyingItems = results.products.map(p => {
+        const newFlyingItems = results.products.map((p, idx) => {
             const el = productRefs.current[p.id];
             if (!el) return null;
             const rect = el.getBoundingClientRect();
@@ -103,30 +103,30 @@ export default function SmartMatchingClient({ initialNotes }) {
                 id: Math.random(),
                 image: p.image_url,
                 start: { x: rect.left, y: rect.top },
-                end: { x: cartRect.left, y: cartRect.top }
+                end: { x: cartRect.left, y: cartRect.top },
+                delay: idx * 0.1, // Staggered launch every 100ms
+                rotation: Math.random() * 360 - 180 // Random initial/flight rotation
             };
         }).filter(Boolean);
 
         setFlyingItems(newFlyingItems);
 
-        // 2. Clear flying items after animation
+        // 2. Add to cart backend
+        const itemsToAdd = results.products.map(p => ({
+            product: p,
+            size: parseInt(preferences.size),
+            price: p.price
+        }));
+
+        addMultipleToCart(itemsToAdd, {
+            successKey: 'matching.added_success'
+        });
+        setIsAddedToCart(true);
+
+        // 3. Clear flying items after animation
         setTimeout(() => {
             setFlyingItems([]);
-        }, 1000);
-
-        // 3. Add to cart with slight delay for visuals
-        setTimeout(() => {
-            const itemsToAdd = results.products.map(p => ({
-                product: p,
-                size: parseInt(preferences.size),
-                price: p.price
-            }));
-
-            addMultipleToCart(itemsToAdd, {
-                successKey: 'matching.added_success'
-            });
-            setIsAddedToCart(true);
-        }, 300);
+        }, 2000 + (newFlyingItems.length * 100));
     };
 
     const resetWizard = () => {
@@ -436,25 +436,46 @@ export default function SmartMatchingClient({ initialNotes }) {
                                 x: item.start.x, 
                                 y: item.start.y, 
                                 scale: 1, 
-                                opacity: 1 
+                                opacity: 1,
+                                rotate: 0 
                             }}
                             animate={{ 
-                                x: item.end.x, 
-                                y: item.end.y, 
-                                scale: 0.1, 
-                                opacity: 0 
+                                x: item.end.x,
+                                // Parabolic arc: middle point is much higher than both start and end
+                                y: [item.start.y, Math.min(item.start.y, item.end.y) - 250, item.end.y],
+                                scale: [1, 1.2, 0.1], 
+                                opacity: [1, 1, 0],
+                                rotate: item.rotation
                             }}
                             transition={{ 
-                                duration: 0.8, 
-                                ease: [0.4, 0, 0.2, 1] 
+                                duration: 1.2, 
+                                delay: item.delay,
+                                ease: "circOut",
+                                // Physics-based pop for landing
+                                onComplete: () => {
+                                    const cartIcon = document.getElementById('cart-icon-main');
+                                    if (cartIcon) {
+                                        cartIcon.classList.remove('animate-cart-pop');
+                                        void cartIcon.offsetWidth; // Trigger reflow
+                                        cartIcon.classList.add('animate-cart-pop');
+                                    }
+                                }
                             }}
-                            className="absolute w-12 h-12 bg-white rounded-xl shadow-2xl p-2 border border-zinc-200 flex items-center justify-center overflow-hidden"
+                            className="absolute w-16 h-16 bg-white rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.15)] p-3 border border-zinc-100 flex items-center justify-center overflow-hidden"
+                            style={{ zIndex: 10000 }}
                         >
+                            <div className="absolute inset-0 bg-gradient-to-tr from-zinc-50 to-white opacity-50" />
                             {item.image ? (
-                                <img src={item.image} alt="" className="w-full h-full object-contain" />
+                                <img src={item.image} alt="" className="w-full h-full object-contain relative z-10" />
                             ) : (
-                                <span className="text-xl">🧴</span>
+                                <span className="text-3xl relative z-10">🧴</span>
                             )}
+                            {/* Motion Blur Trail effect */}
+                            <motion.div 
+                                className="absolute inset-0 bg-white/20 blur-sm -z-10"
+                                animate={{ opacity: [0, 0.5, 0] }}
+                                transition={{ duration: 0.3, repeat: Infinity }}
+                            />
                         </motion.div>
                     ))}
                 </AnimatePresence>
