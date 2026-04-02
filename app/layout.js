@@ -1,6 +1,6 @@
 import { Assistant, Dancing_Script } from "next/font/google";
 import { ClerkProvider } from '@clerk/nextjs';
-import { heIL } from "@clerk/localizations";
+import { heIL, enUS } from "@clerk/localizations";
 import "./globals.css";
 import AnalyticsTracker from "./components/AnalyticsTracker";
 import GoogleAnalytics from "./components/GoogleAnalytics";
@@ -75,10 +75,11 @@ export default async function RootLayout({ children }) {
   const cookieStore = await cookies();
   const locale = cookieStore.get('NEXT_LOCALE')?.value || 'he';
   const dir = locale === 'he' ? 'rtl' : 'ltr';
+  const clerkLocale = locale === 'he' ? heIL : enUS;
 
   return (
     <ClerkProvider
-      localization={heIL}
+      localization={clerkLocale}
       appearance={{
         layout: {
           logoImageUrl: '/logo_v3.png',
