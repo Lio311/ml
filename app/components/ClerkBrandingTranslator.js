@@ -3,18 +3,19 @@
 import { useEffect } from 'react';
 
 /**
- * Translates "Secured by Clerk" branding text to Hebrew.
- * Uses MutationObserver to detect when Clerk modals appear
- * and replaces the branding text, including inside Shadow DOM.
+ * Adjusts Clerk UI for Hebrew RTL:
+ * 1. Translates "Secured by Clerk" branding text to Hebrew.
+ * 2. Moves the close (X) button to the left side for RTL layout.
+ * Uses MutationObserver to detect when Clerk modals appear,
+ * including inside Shadow DOM.
  */
 export default function ClerkBrandingTranslator() {
   useEffect(() => {
-    function translateBranding(root) {
-      // Search in regular DOM
+    function adjustClerkUI(root) {
+      // --- 1. Translate branding ---
       const links = root.querySelectorAll('a[href*="clerk"], a[aria-label*="Clerk"]');
       links.forEach(link => {
         if (link.textContent.includes('Secured by')) {
-          // Find the text node containing "Secured by" and replace it
           const walker = document.createTreeWalker(link, NodeFilter.SHOW_TEXT);
           let node;
           while ((node = walker.nextNode())) {
@@ -25,7 +26,6 @@ export default function ClerkBrandingTranslator() {
         }
       });
 
-      // Also search for any element containing the exact text
       const allElements = root.querySelectorAll('*');
       allElements.forEach(el => {
         if (el.children.length === 0 && el.textContent.trim() === 'Secured by') {
@@ -33,25 +33,56 @@ export default function ClerkBrandingTranslator() {
         }
       });
 
+      // --- 2. Move close button to left side ---
+      const closeButtons = root.querySelectorAll('button[aria-label="Close"], button[aria-label="סגור"]');
+      closeButtons.forEach(btn => {
+        const style = getComputedStyle(btn);
+        // Only move if it's positioned on the right side
+        if (style.position === 'absolute' || style.position === 'fixed') {
+          btn.style.right = 'unset';
+          btn.style.left = '16px';
+        }
+      });
+
+      // Also look for close buttons by their typical Clerk class patterns
+      const allButtons = root.querySelectorAll('button');
+      allButtons.forEach(btn => {
+        // Clerk close buttons typically contain only an X/close SVG icon
+        // and are positioned absolutely in the top-right corner
+        const svg = btn.querySelector('svg');
+        if (svg && btn.childElementCount === 1) {
+          const style = getComputedStyle(btn);
+          const rect = btn.getBoundingClientRect();
+          const parentRect = btn.offsetParent?.getBoundingClientRect();
+          
+          // Check if this button is in the top-right area (likely a close button)
+          if (parentRect && (style.position === 'absolute' || style.position === 'fixed')) {
+            const isTopRight = (rect.right - parentRect.right) > -50 && (rect.top - parentRect.top) < 50;
+            if (isTopRight) {
+              btn.style.right = 'unset';
+              btn.style.left = '16px';
+            }
+          }
+        }
+      });
+
       // Recurse into shadow roots
       allElements.forEach(el => {
         if (el.shadowRoot) {
-          translateBranding(el.shadowRoot);
+          adjustClerkUI(el.shadowRoot);
         }
       });
     }
 
-    function scanAndTranslate() {
-      translateBranding(document);
+    function scanAndAdjust() {
+      adjustClerkUI(document);
 
-      // Also check all elements for shadow roots we might have missed
       document.querySelectorAll('*').forEach(el => {
         if (el.shadowRoot) {
-          translateBranding(el.shadowRoot);
+          adjustClerkUI(el.shadowRoot);
 
-          // Observe shadow root for changes too
           const shadowObserver = new MutationObserver(() => {
-            translateBranding(el.shadowRoot);
+            adjustClerkUI(el.shadowRoot);
           });
           shadowObserver.observe(el.shadowRoot, {
             childList: true,
@@ -63,11 +94,11 @@ export default function ClerkBrandingTranslator() {
     }
 
     // Initial scan
-    scanAndTranslate();
+    scanAndAdjust();
 
     // Observe document for new elements (Clerk modals opening)
     const observer = new MutationObserver(() => {
-      scanAndTranslate();
+      scanAndAdjust();
     });
 
     observer.observe(document.body, {
