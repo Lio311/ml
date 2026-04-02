@@ -148,29 +148,41 @@ export default function AdminInventoryPage() {
                 ניהול מלאי בקבוקנים
             </h1>
 
-            {/* Status Cards */}
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
                 {BOTTLE_Types.map(type => {
                     const count = getStock(type.id);
-                    const isLow = count < 20;
-                    const isLuxury = type.id === 11;
+                    
+                    // 3-tier logic: 0-10 Red (Critical), 10-20 Orange (Low), 20+ Green (OK)
+                    let statusTheme = '';
+                    let statusLabel = '';
+                    let Icon = CheckCircle;
+
+                    if (count <= 10) {
+                        statusTheme = 'bg-red-50 border-red-200 text-red-600';
+                        statusLabel = 'מלאי קריטי!';
+                        Icon = AlertTriangle;
+                    } else if (count <= 20) {
+                        statusTheme = 'bg-amber-50 border-amber-200 text-amber-600';
+                        statusLabel = 'מלאי נמוך';
+                        Icon = AlertTriangle;
+                    } else {
+                        statusTheme = 'bg-green-50 border-green-200 text-green-600';
+                        statusLabel = 'מלאי תקין';
+                        Icon = CheckCircle;
+                    }
 
                     return (
-                        <div key={type.id} className={`p-4 md:p-6 rounded-2xl border-2 shadow-sm transition-all flex flex-col justify-between
-                            ${isLuxury
-                                ? 'bg-amber-50 border-amber-200'
-                                : isLow ? 'bg-red-50 border-red-200' : 'bg-green-50 border-green-200'
-                            }`}>
+                        <div key={type.id} className={`p-4 md:p-6 rounded-2xl border-2 shadow-sm transition-all flex flex-col justify-between ${statusTheme}`}>
                             <div className="flex justify-between items-start mb-2 md:mb-4">
-                                <h3 className={`text-xs md:text-lg font-bold ${isLuxury ? 'text-amber-800' : 'text-gray-800'} leading-tight`}>{type.label}</h3>
-                                {isLow ? <AlertTriangle className="text-red-500 w-4 h-4 md:w-5 md:h-5" /> : <CheckCircle className={`${isLuxury ? "text-amber-600" : "text-green-500"} w-4 h-4 md:w-5 md:h-5`} />}
+                                <h3 className="text-xs md:text-lg font-black text-gray-900 leading-tight">{type.label}</h3>
+                                <Icon className="w-4 h-4 md:w-5 md:h-5" />
                             </div>
                             <div>
-                                <div className={`text-2xl md:text-4xl font-black ${isLuxury ? 'text-amber-600' : isLow ? 'text-red-600' : 'text-green-600'}`}>
+                                <div className="text-2xl md:text-4xl font-black">
                                     {count}
                                 </div>
-                                <div className="mt-1 text-[10px] md:text-xs font-bold uppercase tracking-wider text-gray-400">
-                                    {isLow ? 'מלאי נמוך!' : 'מלאי תקין'}
+                                <div className="mt-1 text-[10px] md:text-xs font-bold uppercase tracking-wider opacity-60">
+                                    {statusLabel}
                                 </div>
                             </div>
                         </div>

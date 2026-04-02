@@ -642,25 +642,24 @@ export default async function AdminDashboard({ searchParams }) {
 
                     <div className="grid grid-cols-2 gap-2">
                         {kpis.bottleInventory && kpis.bottleInventory.map(item => {
-                            const isLow = item.quantity < 20;
+                            const qty = parseInt(item.quantity || 0);
                             const sizeLabel = item.size === 11 ? '10 מ"ל יוקרתי' : `${item.size} מ"ל`;
                             
-                            // Choose a color theme based on size and stock status
+                            // 3-tier color logic: 0-10 Red, 10-20 Orange, 20+ Green
                             let theme = '';
-                            if (isLow) {
+                            if (qty <= 10) {
                                 theme = 'bg-red-50/50 border-red-200 text-red-700 animate-pulse-subtle';
+                            } else if (qty <= 20) {
+                                theme = 'bg-amber-50/50 border-amber-200 text-amber-700';
                             } else {
-                                theme = item.size === 2 ? 'bg-amber-50/50 border-amber-100 text-amber-700' :
-                                        item.size === 5 ? 'bg-orange-50/50 border-orange-100 text-orange-700' :
-                                        item.size === 10 ? 'bg-yellow-50/50 border-yellow-100 text-yellow-700' :
-                                        'bg-emerald-50/50 border-emerald-100 text-emerald-700';
+                                theme = 'bg-emerald-50/60 border-emerald-200 text-emerald-700';
                             }
 
                             return (
                                 <div key={item.size} className={`flex flex-col items-center p-2 rounded-xl border ${theme}`}>
                                     <span className="text-[9px] font-bold mb-1">{sizeLabel}</span>
-                                    <span className={`font-black text-base leading-none ${isLow ? 'text-red-600' : ''}`}>
-                                        {item.quantity}
+                                    <span className="font-black text-base leading-none">
+                                        {qty}
                                     </span>
                                 </div>
                             );
