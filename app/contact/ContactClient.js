@@ -105,7 +105,7 @@ export default function ContactClient() {
                                     type="email"
                                     required
                                     className="w-full bg-black/40 border border-white/10 rounded-2xl px-5 py-4 text-sm focus:outline-none focus:ring-1 focus:ring-white/30 transition-all placeholder:text-gray-700 shadow-inner"
-                                    placeholder="your@email.com"
+                                    placeholder={t('common.contact_email_placeholder')}
                                     value={formData.email}
                                     onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                                 />
@@ -118,7 +118,7 @@ export default function ContactClient() {
                                 </label>
                                 <input
                                     type="tel"
-                                    className="w-full bg-black/40 border border-white/10 rounded-2xl px-5 py-4 text-sm focus:outline-none focus:ring-1 focus:ring-white/30 transition-all placeholder:text-gray-700 shadow-inner text-right"
+                                    className="w-full bg-black/40 border border-white/10 rounded-2xl px-5 py-4 text-sm focus:outline-none focus:ring-1 focus:ring-white/30 transition-all placeholder:text-gray-700 shadow-inner"
                                     placeholder={t('common.contact_phone_placeholder')}
                                     value={formData.phone}
                                     onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
