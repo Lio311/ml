@@ -566,7 +566,7 @@ function CouponRow({ coupon, onDelete, onEdit, canEdit }) {
                         <span className="text-[10px] font-bold text-gray-800 bg-blue-50 px-2 py-0.5 rounded-full border border-blue-100">
                             {typeof affiliate === 'string' ? affiliate.split('@')[0] : (affiliate.label || affiliate.id?.split('@')[0])}
                         </span>
-                        {limits.allowed_users.length > 1 && (
+                        {limits.allowed_users?.length > 1 && (
                             <span className="text-[9px] text-gray-400">+{limits.allowed_users.length - 1} נוספים</span>
                         )}
                     </div>
@@ -670,7 +670,7 @@ function CouponCard({ coupon, onDelete, onEdit, canEdit }) {
                 <div>
                     <div className="text-[10px] uppercase font-bold text-gray-400 mb-1">תוקף:</div>
                     <div className={`font-mono text-sm ${isExpired ? 'text-red-500 font-bold' : 'text-green-600 font-bold'}`}>
-                        {coupon.expires_at ? timeLeft : 'ללא הגבלה'}
+                        {coupon.expires_at ? (timeLeft || 'פג תוקף') : 'ללא הגבלה'}
                     </div>
                 </div>
                 <div>
@@ -679,18 +679,25 @@ function CouponCard({ coupon, onDelete, onEdit, canEdit }) {
                         {activeFilters.length > 0 ? activeFilters.join(', ') : 'כל האתר'}
                     </div>
                 </div>
-                <div>
-                    <div className="text-[10px] uppercase font-bold text-gray-400 mb-1">שייכות:</div>
-                    <div className="text-xs text-gray-800 font-bold">
+                <div className="col-span-2">
+                    <div className="text-[10px] uppercase font-bold text-gray-400 mb-1">שיוך:</div>
+                    <div className="text-xs text-gray-600">
                         {affiliate ? (
-                            <span>{typeof affiliate === 'string' ? affiliate.split('@')[0] : (affiliate.label || affiliate.id?.split('@')[0])} {limits.allowed_users.length > 1 ? `(+${limits.allowed_users.length - 1})` : ''}</span>
+                            <div className="flex items-center gap-1">
+                                <span className="font-bold text-blue-600">
+                                    {typeof affiliate === 'string' ? affiliate.split('@')[0] : (affiliate.label || affiliate.id?.split('@')[0])}
+                                </span>
+                                {limits.allowed_users?.length > 1 && (
+                                    <span className="text-[10px] text-gray-400">+{limits.allowed_users.length - 1} נוספים</span>
+                                )}
+                            </div>
                         ) : 'כללי'}
                     </div>
                 </div>
             </div>
 
             {canEdit && (
-                <div className="flex gap-2 pt-2">
+                <div className="flex gap-2 pt-2 border-t border-gray-50 mt-4">
                     <button
                         onClick={() => onEdit(coupon)}
                         className="bg-blue-50 text-blue-600 flex-1 py-2.5 rounded-xl text-sm font-bold active:scale-95 transition border border-blue-100 flex items-center justify-center gap-2"
