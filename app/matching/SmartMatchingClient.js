@@ -117,11 +117,20 @@ export default function SmartMatchingClient({ initialNotes }) {
                         <p className="text-zinc-500 text-xs md:text-sm animate-fadeIn delay-100 italic tracking-wide whitespace-normal opacity-60 border-x border-white/5 px-6 leading-relaxed max-w-2xl">
                             {t('matching.description')}
                         </p>
+                        {/* Algorithm Info Block */}
+                        <div className="mt-4 p-4 md:p-6 bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 max-w-2xl animate-fadeIn delay-200">
+                            <p className="text-[10px] md:text-xs text-zinc-400 leading-relaxed text-center italic opacity-80">
+                                {t('matching.how_it_works')}
+                            </p>
+                        </div>
                     </div>
                 </div>
                 {/* Progress Tracking */}
                 <div className="mb-8 overflow-hidden">
                     <div className="flex justify-between items-end mb-2 px-1">
+                        <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/60">
+                            {step === 1 ? t('matching.preferences_title') : step === 2 ? t('matching.analyzing') : t('matching.results_title')}
+                        </span>
                         <span className="text-[10px] font-black uppercase tracking-[0.3em] text-white/40">
                             Step {step} of 3
                         </span>
