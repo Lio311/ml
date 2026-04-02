@@ -45,17 +45,19 @@ export default function ContactClient() {
             <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-zinc-800/20 rounded-full blur-[120px] pointer-events-none" />
             <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-zinc-800/20 rounded-full blur-[120px] pointer-events-none" />
 
-            <div className="container max-w-2xl mx-auto relative z-10">
-                <div className="text-center mb-16">
-                    <h1 className="text-5xl md:text-6xl font-serif font-black mb-6 tracking-tight text-white">
+            <div className="container max-w-4xl mx-auto relative z-10 px-4">
+                <div className="pt-24 pb-16 text-center overflow-visible">
+                    <h1 className="text-6xl md:text-9xl font-serif font-black mb-8 text-white tracking-tighter animate-fadeIn">
                         {t('common.contact_title')}
                     </h1>
-                    <p className="text-zinc-400 text-lg md:text-xl max-w-md mx-auto font-light leading-relaxed">
-                        {t('common.contact_subtitle')}
-                    </p>
+                    <div className="flex justify-center overflow-visible">
+                        <p className="text-zinc-400 text-sm md:text-lg animate-fadeIn delay-100 italic tracking-wide whitespace-nowrap opacity-80 border-x border-white/5 px-8">
+                            {t('common.contact_subtitle')}
+                        </p>
+                    </div>
                 </div>
 
-                <div className="bg-[#111111]/60 backdrop-blur-3xl p-10 md:p-14 rounded-[3rem] border border-white/5 shadow-2xl relative overflow-hidden group">
+                <div className="bg-white/10 backdrop-blur-3xl p-10 md:p-14 rounded-[3.5rem] border border-white/20 shadow-[0_20px_50px_rgba(0,0,0,0.3)] relative overflow-hidden group">
                     {/* Subtle Internal Glow */}
                     <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -translate-y-16 translate-x-16 blur-2xl group-hover:scale-110 transition-transform duration-700" />
 
@@ -80,7 +82,7 @@ export default function ContactClient() {
                     ) : (
                         <form onSubmit={handleSubmit} className="space-y-8 relative z-10">
                             <div>
-                                <label htmlFor="name" className={`block text-xs uppercase tracking-widest font-bold text-zinc-500 mb-3 px-1 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
+                                <label htmlFor="name" className={`block text-xs uppercase tracking-widest font-bold text-zinc-400 mb-3 px-1 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
                                     {t('common.contact_name_label')}
                                 </label>
                                 <input
@@ -88,13 +90,13 @@ export default function ContactClient() {
                                     id="name"
                                     name="name"
                                     required
-                                    className="w-full bg-zinc-900/50 border border-white/5 rounded-2xl p-4 text-white placeholder-zinc-600 focus:outline-none focus:ring-1 focus:ring-white/30 focus:border-white/20 transition-all text-lg"
+                                    className="w-full bg-black/20 border border-white/10 rounded-2xl p-4 text-white placeholder-zinc-600 focus:outline-none focus:ring-1 focus:ring-white/30 focus:border-white/20 transition-all text-lg"
                                     placeholder={t('common.contact_name_placeholder')}
                                 />
                             </div>
 
                             <div>
-                                <label htmlFor="email" className={`block text-xs uppercase tracking-widest font-bold text-zinc-500 mb-3 px-1 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
+                                <label htmlFor="email" className={`block text-xs uppercase tracking-widest font-bold text-zinc-400 mb-3 px-1 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
                                     {t('common.contact_email_label')}
                                 </label>
                                 <input
@@ -102,13 +104,13 @@ export default function ContactClient() {
                                     id="email"
                                     name="email"
                                     required
-                                    className="w-full bg-zinc-900/50 border border-white/5 rounded-2xl p-4 text-white placeholder-zinc-600 focus:outline-none focus:ring-1 focus:ring-white/30 focus:border-white/20 transition-all text-lg"
+                                    className="w-full bg-black/20 border border-white/10 rounded-2xl p-4 text-white placeholder-zinc-600 focus:outline-none focus:ring-1 focus:ring-white/30 focus:border-white/20 transition-all text-lg"
                                     placeholder="your@email.com"
                                 />
                             </div>
 
                             <div>
-                                <label htmlFor="message" className={`block text-xs uppercase tracking-widest font-bold text-zinc-500 mb-3 px-1 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
+                                <label htmlFor="message" className={`block text-xs uppercase tracking-widest font-bold text-zinc-400 mb-3 px-1 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
                                     {t('common.contact_message_label')}
                                 </label>
                                 <textarea
@@ -116,7 +118,7 @@ export default function ContactClient() {
                                     name="message"
                                     rows="5"
                                     required
-                                    className="w-full bg-zinc-900/50 border border-white/5 rounded-2xl p-4 text-white placeholder-zinc-600 focus:outline-none focus:ring-1 focus:ring-white/30 focus:border-white/20 transition-all text-lg resize-none"
+                                    className="w-full bg-black/20 border border-white/10 rounded-2xl p-4 text-white placeholder-zinc-600 focus:outline-none focus:ring-1 focus:ring-white/30 focus:border-white/20 transition-all text-lg resize-none"
                                     placeholder={t('common.contact_message_placeholder')}
                                 ></textarea>
                             </div>
@@ -136,13 +138,6 @@ export default function ContactClient() {
                             )}
                         </form>
                     )}
-                </div>
-
-                {/* Bottom decorative spacer */}
-                <div className="mt-20 text-center">
-                    <p className="text-zinc-600 text-sm tracking-widest uppercase font-bold">
-                        ml_tlv premium experience
-                    </p>
                 </div>
             </div>
         </div>
