@@ -1,12 +1,13 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { useCart } from '../context/CartContext';
 import { useLanguage } from '../context/LanguageContext';
 import TagInput from '../components/TagInput';
 import toast from 'react-hot-toast';
 import Image from 'next/image';
 import Link from 'next/link';
+import { motion, AnimatePresence } from 'framer-motion';
 
 
 export default function SmartMatchingClient({ initialNotes }) {
@@ -24,6 +25,8 @@ export default function SmartMatchingClient({ initialNotes }) {
     const [noteInput, setNoteInput] = useState('');
     const [suggestions, setSuggestions] = useState([]);
     const [isAddedToCart, setIsAddedToCart] = useState(false);
+    const [flyingItems, setFlyingItems] = useState([]);
+    const productRefs = useRef({});
 
 
     const handleNoteInputChange = (e) => {
@@ -85,19 +88,45 @@ export default function SmartMatchingClient({ initialNotes }) {
         }
     };
 
-    const addToCartAll = () => {
+    const addToCartAll = async () => {
         if (!results || !results.products || isAddedToCart) return;
 
-        const itemsToAdd = results.products.map(p => ({
-            product: p,
-            size: parseInt(preferences.size),
-            price: p.price
-        }));
+        // 1. Trigger Animation
+        const cartIcon = document.getElementById('cart-icon-main');
+        const cartRect = cartIcon?.getBoundingClientRect() || { left: window.innerWidth - 50, top: 20 };
 
-        addMultipleToCart(itemsToAdd, {
-            successKey: 'matching.added_success'
-        });
-        setIsAddedToCart(true);
+        const newFlyingItems = results.products.map(p => {
+            const el = productRefs.current[p.id];
+            if (!el) return null;
+            const rect = el.getBoundingClientRect();
+            return {
+                id: Math.random(),
+                image: p.image_url,
+                start: { x: rect.left, y: rect.top },
+                end: { x: cartRect.left, y: cartRect.top }
+            };
+        }).filter(Boolean);
+
+        setFlyingItems(newFlyingItems);
+
+        // 2. Clear flying items after animation
+        setTimeout(() => {
+            setFlyingItems([]);
+        }, 1000);
+
+        // 3. Add to cart with slight delay for visuals
+        setTimeout(() => {
+            const itemsToAdd = results.products.map(p => ({
+                product: p,
+                size: parseInt(preferences.size),
+                price: p.price
+            }));
+
+            addMultipleToCart(itemsToAdd, {
+                successKey: 'matching.added_success'
+            });
+            setIsAddedToCart(true);
+        }, 300);
     };
 
     const resetWizard = () => {
@@ -307,6 +336,7 @@ export default function SmartMatchingClient({ initialNotes }) {
                                 {results.products.map((p, idx) => (
                                     <div 
                                         key={p.id} 
+                                        ref={el => productRefs.current[p.id] = el}
                                         className="flex gap-5 p-5 bg-white/50 border border-zinc-100 rounded-[1.5rem] items-center hover:bg-white hover:border-zinc-200 hover:shadow-md transition-all duration-300 group"
                                         style={{ animationDelay: `${idx * 100}ms` }}
                                     >
@@ -351,7 +381,7 @@ export default function SmartMatchingClient({ initialNotes }) {
                                     </button>
                                     {isAddedToCart ? (
                                         <Link
-                                            href="/app/cart"
+                                            href="/cart"
                                             className="px-10 py-4 rounded-full bg-emerald-500 text-white font-black text-xs uppercase tracking-[0.2em] hover:bg-emerald-600 transition-all shadow-xl active:scale-95 flex items-center gap-2 animate-bounceSuccess"
                                         >
                                             <span className="text-sm">✓</span>
@@ -395,6 +425,40 @@ export default function SmartMatchingClient({ initialNotes }) {
                     animation: bounceSuccess 0.5s ease-out;
                 }
             `}</style>
+
+            {/* Fly-to-cart Animation Overlay */}
+            <div className="fixed inset-0 pointer-events-none z-[9999]">
+                <AnimatePresence>
+                    {flyingItems.map(item => (
+                        <motion.div
+                            key={item.id}
+                            initial={{ 
+                                x: item.start.x, 
+                                y: item.start.y, 
+                                scale: 1, 
+                                opacity: 1 
+                            }}
+                            animate={{ 
+                                x: item.end.x, 
+                                y: item.end.y, 
+                                scale: 0.1, 
+                                opacity: 0 
+                            }}
+                            transition={{ 
+                                duration: 0.8, 
+                                ease: [0.4, 0, 0.2, 1] 
+                            }}
+                            className="absolute w-12 h-12 bg-white rounded-xl shadow-2xl p-2 border border-zinc-200 flex items-center justify-center overflow-hidden"
+                        >
+                            {item.image ? (
+                                <img src={item.image} alt="" className="w-full h-full object-contain" />
+                            ) : (
+                                <span className="text-xl">🧴</span>
+                            )}
+                        </motion.div>
+                    ))}
+                </AnimatePresence>
+            </div>
         </div>
     );
 }
