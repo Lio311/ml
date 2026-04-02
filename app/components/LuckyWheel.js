@@ -14,13 +14,13 @@ const LuckyWheel = ({ onWin, onClose }) => {
     // isWinning: Determines if this prize can actually be won.
     // weight: Higher number = higher chance to win.
     const prizes = [
-        { label: t('common.discount_5'), color: '#FFB6C1', type: 'discount', value: 0.05, isWinning: true, weight: 40 },
+        { label: t('common.discount_5'), color: '#FFB6C1', type: 'discount', value: 0.05, isWinning: true, weight: 50 },
         { label: t('common.niche_perfume_gift'), color: '#FF69B4', type: 'item', size: 'bottle', name: t('common.niche_perfume_gift'), price: 0, isWinning: false, weight: 0 },
-        { label: t('common.sample_2ml_gift'), color: '#87CEFA', type: 'item', size: 2, name: t('common.sample_2ml_gift'), price: 0, isWinning: true, image_url: 'https://www.dulcie.world/cdn/shop/files/DREAMLANDSAMPLESQUARE.png?v=1751633413&width=2366', weight: 40 },
+        { label: t('common.sample_2ml_gift'), color: '#87CEFA', type: 'item', size: 2, name: t('common.sample_2ml_gift'), price: 0, isWinning: true, image_url: 'https://www.dulcie.world/cdn/shop/files/DREAMLANDSAMPLESQUARE.png?v=1751633413&width=2366', weight: 50 },
         { label: t('common.discount_25'), color: '#FF6347', type: 'discount', value: 0.25, isWinning: false, weight: 0 },
-        { label: t('common.discovery_set'), color: '#FFD700', type: 'item', size: 'set', name: t('common.discovery_set'), price: 0, isWinning: true, image_url: 'https://www.francescadelloro.it/images/galleries/original/Icon-yul2umy6sshp7qbpeh2t25.jpg', weight: 5 },
+        { label: t('common.discovery_set'), color: '#FFD700', type: 'item', size: 'set', name: t('common.discovery_set'), price: 0, isWinning: false, weight: 0 },
         { label: t('common.discount_10'), color: '#90EE90', type: 'discount', value: 0.10, isWinning: false, weight: 0 },
-        { label: t('common.sample_10ml_gift'), color: '#FFA07A', type: 'item', size: 10, name: t('common.sample_10ml_gift'), price: 0, isWinning: true, image_url: 'https://allbottlesusa.com/cdn/shop/products/10mlClearTallBCOpen.jpg?v=1662849592&width=2048', weight: 15 },
+        { label: t('common.sample_10ml_gift'), color: '#FFA07A', type: 'item', size: 10, name: t('common.sample_10ml_gift'), price: 0, isWinning: false, weight: 0 },
     ];
 
     const spinWheel = () => {

@@ -29,7 +29,7 @@ export default function CartClient() {
         isSelfPickup, setIsSelfPickup
     } = useCart();
 
-    const { user } = useUser();
+    const { user, isLoaded } = useUser();
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [upsellProducts, setUpsellProducts] = useState([]);
     const prevSamplesCount = useRef(freeSamplesCount);
@@ -139,15 +139,17 @@ export default function CartClient() {
     const [couponError, setCouponError] = useState('');
 
     useEffect(() => {
-        const fetchPersonalPhone = async () => {
-            const res = await fetch('/api/user/phone');
-            if (res.ok) {
-                const data = await res.json();
-                if (data.phone) setPhoneNumber(data.phone);
-            }
-        };
-        fetchPersonalPhone();
-    }, []);
+        if (isLoaded && user) {
+            const fetchPersonalPhone = async () => {
+                const res = await fetch('/api/user/phone');
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.phone) setPhoneNumber(data.phone);
+                }
+            };
+            fetchPersonalPhone();
+        }
+    }, [isLoaded, user]);
 
     // Tier Celebration (Confetti)
     useEffect(() => {
