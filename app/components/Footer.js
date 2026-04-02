@@ -4,8 +4,8 @@ import { useLanguage } from '../context/LanguageContext';
 export default function Footer() {
     const { t, dir } = useLanguage();
     return (
-        <footer className="border-t bg-black text-white py-6 overflow-hidden mt-auto">
-            <div className={`container grid grid-cols-2 md:grid-cols-5 gap-10 text-center py-10 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
+        <footer className="border-t bg-black text-white py-2 overflow-hidden mt-auto">
+            <div className={`container grid grid-cols-2 md:grid-cols-5 gap-4 text-center py-4 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
 
                 <div>
                     <h3 className="text-lg font-bold mb-4 tracking-widest">ml_tlv</h3>
