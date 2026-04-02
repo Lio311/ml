@@ -200,7 +200,7 @@ export function CartProvider({ children }) {
 
                         if (changed) {
                             setTimeout(() => {
-                                toast.success(t('common.cart_restored'));
+                                toast.success(t('cart.cart_restored'));
                             }, 500);
                             return newCart;
                         }
@@ -230,7 +230,7 @@ export function CartProvider({ children }) {
 
     const addToCart = (product, size, price, vendorId = 'main', vendorName = 'האתר הרשמי') => {
         if (isCartLocked && vendorId === 'main') {
-            toast.error(t('common.cart_locked_lottery'));
+            toast.error(t('cart.cart_locked_lottery'));
             return;
         }
 
@@ -260,7 +260,7 @@ export function CartProvider({ children }) {
                     }, 0);
                     const addedVolume = parseSizeML(size);
                     if (currentVolumeInCart + addedVolume > stockLimit) {
-                        toast.error(t('common.stock_limit_ml_reached', { limit: stockLimit }));
+                        toast.error(t('cart.stock_limit_ml_reached', { limit: stockLimit }));
                         return prev;
                     }
                 }
@@ -303,7 +303,7 @@ export function CartProvider({ children }) {
 
     const addMultipleToCart = (itemsToAdd) => {
         if (isCartLocked) {
-            toast.error(t('common.cart_locked_lottery'));
+            toast.error(t('cart.cart_locked_lottery'));
             return;
         }
 
@@ -394,7 +394,7 @@ export function CartProvider({ children }) {
 
     const removeFromCart = (id, size, vendorId = 'main') => {
         if (isCartLocked && vendorId === 'main') {
-            toast.error(t('common.cart_locked_lottery'));
+            toast.error(t('cart.cart_locked_lottery'));
             return;
         }
         setCartItems((prev) => prev.filter((item) => !(item.id === id && item.size === size && (item.vendorId || 'main') === vendorId)));
@@ -402,7 +402,7 @@ export function CartProvider({ children }) {
 
     const updateQuantity = (id, size, quantity, vendorId = 'main') => {
         if (isCartLocked && vendorId === 'main') {
-            toast.error(t('common.cart_locked_lottery'));
+            toast.error(t('cart.cart_locked_lottery'));
             return;
         }
         if (quantity < 1) {
@@ -430,7 +430,7 @@ export function CartProvider({ children }) {
                     }, 0);
                     const newVolume = otherItemsVolume + (Number(quantity) * parseSizeML(size));
                     if (newVolume > stockLimit) {
-                        toast.error(t('common.stock_limit_ml_reached', { limit: stockLimit }));
+                        toast.error(t('cart.stock_limit_ml_reached', { limit: stockLimit }));
                         return prev;
                     }
                 }
@@ -450,7 +450,7 @@ export function CartProvider({ children }) {
                         return sum;
                     }, 0);
                     if (otherML + newML > stockML) {
-                        toast.error(t('common.stock_limit_reached'));
+                        toast.error(t('cart.stock_limit_reached'));
                         return prev;
                     }
                 }
