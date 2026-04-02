@@ -267,19 +267,22 @@ export function CartProvider({ children }) {
             } else {
                 // Main vendor: stock is total ML available for this product
                 const stockML = parseFloat(String(product.stock)) || 0;
-                if (stockML === 0) {
-                    toast.error(t('cart.stock_limit_reached'));
-                    return prev;
-                }
-                if (stockML > 0) {
-                    const addedML = parseSizeML(size);
-                    const currentML = prev.reduce((sum, item) => {
-                        if (item.id === product.id && (item.vendorId || 'main') === 'main') {
-                            return sum + (Number(item.quantity) * parseSizeML(item.size));
+                // Official site stock check (only if stock is defined)
+                if (product.stock !== undefined && product.stock !== null) {
+                    const stockVal = Number(product.stock) || 0;
+                    if (stockVal > 0) {
+                        const currentML = prev.reduce((sum, item) => {
+                            if (item.id === product.id && (item.vendorId || 'main') === 'main') {
+                                return sum + (Number(item.quantity) * parseSizeML(item.size));
+                            }
+                            return sum;
+                        }, 0);
+                        const addedML = parseSizeML(size);
+                        if (currentML + addedML > stockVal) {
+                            toast.error(t('cart.stock_limit_reached'));
+                            return prev;
                         }
-                        return sum;
-                    }, 0);
-                    if (currentML + addedML > stockML) {
+                    } else if (stockVal === 0) {
                         toast.error(t('cart.stock_limit_reached'));
                         return prev;
                     }
@@ -336,22 +339,24 @@ export function CartProvider({ children }) {
                     }
                 }
             } else {
-                // Official site stock check
-                const stockVal = parseFloat(String(product.stock)) || 0;
-                if (stockVal > 0) {
-                    const currentML = currentItems.reduce((sum, cartItem) => {
-                        if (cartItem.id === product.id && (cartItem.vendorId || 'main') === 'main') {
-                            return sum + (Number(cartItem.quantity) * parseSizeML(cartItem.size));
+                // Official site stock check (only if stock is defined)
+                if (product.stock !== undefined && product.stock !== null) {
+                    const stockVal = Number(product.stock) || 0;
+                    if (stockVal > 0) {
+                        const currentML = currentItems.reduce((sum, cartItem) => {
+                            if (cartItem.id === product.id && (cartItem.vendorId || 'main') === 'main') {
+                                return sum + (Number(cartItem.quantity) * parseSizeML(cartItem.size));
+                            }
+                            return sum;
+                        }, 0);
+                        if (currentML + addedML > stockVal) {
+                            skippedCount++;
+                            return;
                         }
-                        return sum;
-                    }, 0);
-                    if (currentML + addedML > stockVal) {
+                    } else if (stockVal === 0) {
                         skippedCount++;
                         return;
                     }
-                } else if (stockVal === 0) {
-                    skippedCount++;
-                    return;
                 }
             }
 
@@ -390,6 +395,8 @@ export function CartProvider({ children }) {
         } else if (addedCount > 0) {
             toast.success(t('cart.shared_cart_added'));
         }
+
+        return { addedCount, skippedCount };
     };
 
     const removeFromCart = (id, size, vendorId = 'main') => {

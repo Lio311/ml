@@ -205,7 +205,8 @@ export async function POST(request) {
                 name: p.name,
                 brand: p.brand,
                 image_url: p.image_url,
-                price: p.price
+                price: p.price,
+                stock: p.stock
             })),
             totalPrice: currentTotal,
             message

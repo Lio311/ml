@@ -91,7 +91,6 @@ export default function SmartMatchingClient({ initialNotes }) {
         }));
 
         addMultipleToCart(itemsToAdd);
-        toast.success(t('matching.success_toast').replace('{count}', itemsToAdd.length));
     };
 
     const resetWizard = () => {
