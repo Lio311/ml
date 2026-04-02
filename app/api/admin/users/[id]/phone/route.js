@@ -27,12 +27,12 @@ export async function PATCH(req, { params }) {
             );
             
             const userEmail = userRes.rows[0]?.email;
+            console.log(`Syncing phone update for user ${id} (${userEmail}) to phone: ${phone}`);
 
             // 2. Sync with existing orders
-            // Try to match by clerk_id first (preferred)
-            // AND also by email as a fallback for older orders or different entry points
+            let updateRes;
             if (userEmail) {
-                await client.query(
+                updateRes = await client.query(
                     `UPDATE orders 
                      SET customer_details = jsonb_set(customer_details, '{phone}', to_jsonb($1::text))
                      WHERE customer_details->>'clerk_id' = $2 
@@ -40,7 +40,7 @@ export async function PATCH(req, { params }) {
                     [phone, id, userEmail]
                 );
             } else {
-                await client.query(
+                updateRes = await client.query(
                     `UPDATE orders 
                      SET customer_details = jsonb_set(customer_details, '{phone}', to_jsonb($1::text))
                      WHERE customer_details->>'clerk_id' = $2`,
@@ -48,8 +48,10 @@ export async function PATCH(req, { params }) {
                 );
             }
 
+            console.log(`Orders sync complete. Rows affected: ${updateRes.rowCount}`);
+
             await client.query('COMMIT');
-            return NextResponse.json({ success: true });
+            return NextResponse.json({ success: true, rowsAffected: updateRes.rowCount });
         } catch (err) {
             await client.query('ROLLBACK');
             throw err;
