@@ -383,12 +383,12 @@ export function CartProvider({ children }) {
         // Feedback toasts
         if (skippedCount > 0) {
             if (addedCount === 0) {
-                toast.error(t('common.shared_cart_all_out_of_stock'));
+                toast.error(t('cart.shared_cart_all_out_of_stock'));
             } else {
-                toast.success(t('common.shared_cart_mixed'));
+                toast.success(t('cart.shared_cart_mixed'));
             }
         } else if (addedCount > 0) {
-            toast.success(t('common.shared_cart_added'));
+            toast.success(t('cart.shared_cart_added'));
         }
     };
 
