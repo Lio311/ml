@@ -122,14 +122,6 @@ export async function generateMetadata(props) {
                 description: description,
                 url: canonicalUrl,
                 siteName: 'ml-tlv',
-                images: [
-                    {
-                        url: ogImageUrl,
-                        width: 800,
-                        height: 800,
-                        alt: product.name || 'Perfume Sample',
-                    },
-                ],
                 locale: 'he_IL',
                 type: 'website',
             },
@@ -137,7 +129,6 @@ export async function generateMetadata(props) {
                 card: 'summary_large_image',
                 title: title,
                 description: description,
-                images: [ogImageUrl],
             },
         };
     } catch (metaErr) {
