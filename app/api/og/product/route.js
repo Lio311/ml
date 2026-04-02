@@ -12,10 +12,9 @@ export async function GET(request) {
             return new Response('Missing image URL', { status: 400 });
         }
 
-        // Decode URL in case it's double encoded
+        // Decode URL - absolute URLs are now guaranteed by the caller
         const decodedUrl = decodeURIComponent(imageUrl);
 
-        // Fetch image to ensure we have it and to determine content type
         let imageDataUrl = decodedUrl;
         try {
             const imageRes = await fetch(decodedUrl);
@@ -23,11 +22,12 @@ export async function GET(request) {
                 const contentType = imageRes.headers.get('content-type') || 'image/png';
                 const arrayBuffer = await imageRes.arrayBuffer();
                 
-                // Edge-compatible base64 conversion (no Buffer)
+                // Optimized Edge-compatible base64 conversion
                 const uint8Array = new Uint8Array(arrayBuffer);
                 let binary = '';
-                for (let i = 0; i < uint8Array.length; i++) {
-                    binary += String.fromCharCode(uint8Array[i]);
+                const CHUNK_SIZE = 0x8000; // 32KB chunks to avoid stack limits
+                for (let i = 0; i < uint8Array.length; i += CHUNK_SIZE) {
+                    binary += String.fromCharCode.apply(null, uint8Array.subarray(i, i + CHUNK_SIZE));
                 }
                 const base64 = btoa(binary);
                 imageDataUrl = `data:${contentType};base64,${base64}`;
@@ -35,7 +35,7 @@ export async function GET(request) {
         } catch (fetchErr) {
             console.error("Failed to fetch image for OG:", fetchErr);
             Sentry.captureException(fetchErr);
-            // Fallback to original URL if fetch fails
+            // If fetch fails, we still have the original URL as fallback
         }
 
         return new ImageResponse(
@@ -48,11 +48,11 @@ export async function GET(request) {
                         flexDirection: 'column',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        backgroundColor: 'white', // Guaranteed white background
+                        backgroundColor: 'white',
                         position: 'relative',
                     }}
                 >
-                    {/* Extra background layer to guarantee no transparency issues in some platforms */}
+                    {/* Background layer */}
                     <div style={{
                         position: 'absolute',
                         top: 0,

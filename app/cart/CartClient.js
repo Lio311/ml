@@ -38,6 +38,7 @@ export default function CartClient() {
     const [showWheel, setShowWheel] = useState(false);
     const [hasSeenWheel, setHasSeenWheel] = useState(false);
     const [sharedCart, setSharedCart] = useState(null);
+    const [isConfirmingLoad, setIsConfirmingLoad] = useState(false);
 
     // Grouping items by vendor
     const vendorBuckets = useMemo(() => {
@@ -81,22 +82,22 @@ export default function CartClient() {
 
     const handleLoadSharedCart = () => {
         if (!sharedCart) return;
-        if (confirm(t('cart.load_shared_cart_confirm'))) {
-            // Convert simple items to the format addMultipleToCart expects
-            const itemsToAdd = sharedCart.map(item => ({
-                product: item, // Shared items already contain base product fields
-                size: item.size,
-                price: item.price,
-                quantity: item.quantity || 1,
-                vendorId: item.vendorId || 'main',
-                vendorName: item.vendorName || (item.vendorId === 'main' ? t('cart.official_site') : t('cart.external_supplier'))
-            }));
+        
+        // Convert simple items to the format addMultipleToCart expects
+        const itemsToAdd = sharedCart.map(item => ({
+            product: item, 
+            size: item.size,
+            price: item.price,
+            quantity: item.quantity || 1,
+            vendorId: item.vendorId || 'main',
+            vendorName: item.vendorName || (item.vendorId === 'main' ? t('cart.official_site') : t('cart.external_supplier'))
+        }));
 
-            clearCart();
-            addMultipleToCart(itemsToAdd);
-            setSharedCart(null);
-            router.replace('/cart');
-        }
+        clearCart();
+        addMultipleToCart(itemsToAdd);
+        setSharedCart(null);
+        setIsConfirmingLoad(false);
+        router.replace('/cart');
     };
 
     const handleShareCart = async () => {
@@ -277,8 +278,35 @@ export default function CartClient() {
 
                 {sharedCart && (
                     <div className="bg-blue-600 text-white p-4 rounded-xl mb-8 shadow-lg flex items-center justify-between">
-                        <p>{t('cart.shared_cart_received', { count: sharedCart.length })}</p>
-                        <button onClick={handleLoadSharedCart} className="bg-white text-blue-600 px-4 py-2 rounded-lg font-bold">{t('cart.load_cart_btn')}</button>
+                        {!isConfirmingLoad ? (
+                            <>
+                                <p>{t('cart.shared_cart_received', { count: sharedCart.length })}</p>
+                                <button 
+                                    onClick={() => setIsConfirmingLoad(true)} 
+                                    className="bg-white text-blue-600 px-4 py-2 rounded-lg font-bold hover:bg-opacity-90 transition"
+                                >
+                                    {t('cart.load_cart_btn')}
+                                </button>
+                            </>
+                        ) : (
+                            <>
+                                <p className="font-bold">{t('cart.shared_cart_confirm_prompt')}</p>
+                                <div className="flex gap-2">
+                                    <button 
+                                        onClick={handleLoadSharedCart} 
+                                        className="bg-white text-blue-600 px-4 py-2 rounded-lg font-bold hover:bg-green-50 transition"
+                                    >
+                                        {t('cart.confirm_load')}
+                                    </button>
+                                    <button 
+                                        onClick={() => setIsConfirmingLoad(false)} 
+                                        className="bg-blue-800 text-white px-4 py-2 rounded-lg border border-blue-400 hover:bg-blue-700 transition"
+                                    >
+                                        {t('cart.cancel')}
+                                    </button>
+                                </div>
+                            </>
+                        )}
                     </div>
                 )}
 

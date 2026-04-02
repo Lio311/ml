@@ -93,8 +93,14 @@ export async function generateMetadata(props) {
         const title = `${localizedName} - ${sampleLabel} | ml-tlv`;
         const description = localizedDesc ? localizedDesc.substring(0, 160) : t('common.buy_sample_at').replace('{name}', localizedName);
         const rawImageUrl = product.image_url || `${baseUrl}/logo_v3.png`;
-        const ogImageUrl = product.image_url 
-            ? `${baseUrl}/api/og/product?url=${encodeURIComponent(product.image_url)}`
+        
+        // Ensure image URL is absolute for the OG route to fetch it
+        const absoluteProductImageUrl = product.image_url 
+            ? (product.image_url.startsWith('http') ? product.image_url : `${baseUrl}${product.image_url}`)
+            : null;
+
+        const ogImageUrl = absoluteProductImageUrl 
+            ? `${baseUrl}/api/og/product?url=${encodeURIComponent(absoluteProductImageUrl)}`
             : rawImageUrl;
 
         const productSlug = product.slug || product.id;
