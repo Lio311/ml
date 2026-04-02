@@ -5,14 +5,40 @@ import { useEffect } from 'react';
 /**
  * Adjusts Clerk UI for Hebrew RTL:
  * 1. Translates "Secured by Clerk" branding text to Hebrew.
- * 2. Moves the close (X) button to the left side for RTL layout.
- * Uses MutationObserver to detect when Clerk modals appear,
- * including inside Shadow DOM.
+ * 2. Moves the close (X) button to the left side for RTL layout 
+ *    using robust CSS injection into Shadow DOM.
  */
+const CLERK_RTL_CSS = `
+  .cl-modalCloseButton,
+  button[aria-label^="Close"],
+  button[aria-label^="סגור"] {
+    left: 16px !important;
+    right: auto !important;
+    position: absolute !important;
+  }
+`;
+
 export default function ClerkBrandingTranslator() {
   useEffect(() => {
+    function injectShadowStyles(root) {
+      // Create a style element if it doesn't exist in this shadow root
+      if (!root.querySelector('style[data-antigravity-clerk]')) {
+        const style = document.createElement('style');
+        style.setAttribute('data-antigravity-clerk', 'true');
+        style.textContent = CLERK_RTL_CSS;
+        root.appendChild(style);
+      }
+    }
+
     function adjustClerkUI(root) {
-      // --- 1. Translate branding ---
+      if (!root) return;
+
+      // 1. If this is a ShadowRoot, inject our custom CSS
+      if (root instanceof ShadowRoot) {
+        injectShadowStyles(root);
+      }
+
+      // --- 2. Translate branding ---
       const links = root.querySelectorAll('a[href*="clerk"], a[aria-label*="Clerk"]');
       links.forEach(link => {
         if (link.textContent.includes('Secured by')) {
@@ -28,46 +54,12 @@ export default function ClerkBrandingTranslator() {
 
       const allElements = root.querySelectorAll('*');
       allElements.forEach(el => {
+        // Direct text translation for simple elements
         if (el.children.length === 0 && el.textContent.trim() === 'Secured by') {
           el.textContent = 'מאובטח על ידי';
         }
-      });
-
-      // --- 2. Move close button to left side ---
-      const closeButtons = root.querySelectorAll('button[aria-label="Close"], button[aria-label="Close modal"], button[aria-label="סגור"], .cl-modalCloseButton');
-      closeButtons.forEach(btn => {
-        const style = getComputedStyle(btn);
-        // Only move if it's positioned (Clerk close buttons are usually absolute/fixed)
-        if (style.position === 'absolute' || style.position === 'fixed') {
-          btn.style.setProperty('right', 'unset', 'important');
-          btn.style.setProperty('left', '16px', 'important');
-        }
-      });
-
-      // Also look for close buttons by their typical Clerk class patterns
-      const allButtons = root.querySelectorAll('button');
-      allButtons.forEach(btn => {
-        // Clerk close buttons typically contain only an X/close SVG icon
-        // and are positioned absolutely in the top-right corner
-        const svg = btn.querySelector('svg');
-        if (svg && btn.childElementCount === 1) {
-          const style = getComputedStyle(btn);
-          const rect = btn.getBoundingClientRect();
-          const parentRect = btn.offsetParent?.getBoundingClientRect();
-          
-          // Check if this button is in the top-right area (likely a close button)
-          if (parentRect && (style.position === 'absolute' || style.position === 'fixed')) {
-            const isTopRight = (rect.right - parentRect.right) > -50 && (rect.top - parentRect.top) < 50;
-            if (isTopRight) {
-              btn.style.setProperty('right', 'unset', 'important');
-              btn.style.setProperty('left', '16px', 'important');
-            }
-          }
-        }
-      });
-
-      // Recurse into shadow roots
-      allElements.forEach(el => {
+        
+        // --- 3. Recurse into Shadow Roots ---
         if (el.shadowRoot) {
           adjustClerkUI(el.shadowRoot);
         }
@@ -75,20 +67,27 @@ export default function ClerkBrandingTranslator() {
     }
 
     function scanAndAdjust() {
+      // Check the main document
       adjustClerkUI(document);
 
+      // Search for any existing Shadow Roots that might have been missed
       document.querySelectorAll('*').forEach(el => {
         if (el.shadowRoot) {
           adjustClerkUI(el.shadowRoot);
 
-          const shadowObserver = new MutationObserver(() => {
-            adjustClerkUI(el.shadowRoot);
-          });
-          shadowObserver.observe(el.shadowRoot, {
-            childList: true,
-            subtree: true,
-            characterData: true,
-          });
+          // Observe the shadow root for internal changes
+          // We use a flag to avoid multiple observers on same shadow root
+          if (!el.hasAttribute('data-clerk-observed')) {
+            el.setAttribute('data-clerk-observed', 'true');
+            const shadowObserver = new MutationObserver(() => {
+              adjustClerkUI(el.shadowRoot);
+            });
+            shadowObserver.observe(el.shadowRoot, {
+              childList: true,
+              subtree: true,
+              characterData: true,
+            });
+          }
         }
       });
     }
