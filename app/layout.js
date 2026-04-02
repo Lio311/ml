@@ -99,7 +99,22 @@ export default async function RootLayout({ children }) {
           identityPreviewText: {
             direction: 'ltr !important'
           },
-
+          clerkBranding: locale === 'he' ? {
+            '&::after': {
+              content: '"מאובטח על ידי Clerk"',
+              display: 'inline-block',
+              visibility: 'visible',
+              fontSize: '12px',
+              color: '#6e6e6e',
+            },
+            color: 'transparent !important',
+            fontSize: '0 !important',
+            display: 'flex !important',
+            alignItems: 'center !important',
+            justifyContent: 'center !important',
+            gap: '4px !important',
+            flexDirection: 'row-reverse !important',
+          } : {}
         }
       }}
     >
