@@ -34,13 +34,13 @@ export default function ClerkBrandingTranslator() {
       });
 
       // --- 2. Move close button to left side ---
-      const closeButtons = root.querySelectorAll('button[aria-label="Close"], button[aria-label="סגור"]');
+      const closeButtons = root.querySelectorAll('button[aria-label="Close"], button[aria-label="Close modal"], button[aria-label="סגור"], .cl-modalCloseButton');
       closeButtons.forEach(btn => {
         const style = getComputedStyle(btn);
-        // Only move if it's positioned on the right side
+        // Only move if it's positioned (Clerk close buttons are usually absolute/fixed)
         if (style.position === 'absolute' || style.position === 'fixed') {
-          btn.style.right = 'unset';
-          btn.style.left = '16px';
+          btn.style.setProperty('right', 'unset', 'important');
+          btn.style.setProperty('left', '16px', 'important');
         }
       });
 
@@ -59,8 +59,8 @@ export default function ClerkBrandingTranslator() {
           if (parentRect && (style.position === 'absolute' || style.position === 'fixed')) {
             const isTopRight = (rect.right - parentRect.right) > -50 && (rect.top - parentRect.top) < 50;
             if (isTopRight) {
-              btn.style.right = 'unset';
-              btn.style.left = '16px';
+              btn.style.setProperty('right', 'unset', 'important');
+              btn.style.setProperty('left', '16px', 'important');
             }
           }
         }
