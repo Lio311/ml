@@ -100,6 +100,16 @@ export default async function RootLayout({ children }) {
           identityPreviewText: {
             direction: 'ltr !important'
           },
+          cardBox: {
+            position: 'relative'
+          },
+          modalCloseButton: {
+            position: 'absolute',
+            left: '12px',
+            right: 'auto',
+            top: '12px',
+            zIndex: '1000'
+          },
           clerkBranding: {}
         }
       }}
