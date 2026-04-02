@@ -69,6 +69,25 @@ export default async function Image({ params }) {
     // Default to a branded placeholder if image missing or unsupported
     const displayImage = !fallbackLogo ? imageData : `${baseUrl}/logo_v5.png`;
 
+    // Helper to reverse Hebrew text for rendering in Satori (which does not support RTL shaping)
+    const reverseRtl = (text) => {
+        if (!text) return "";
+        // If it contains Hebrew characters, we need to reverse it visually
+        if (/[א-ת]/.test(text)) {
+            return text.split(" ").reverse().map(word => {
+                if (/[א-ת]/.test(word)) {
+                    return word.split("").reverse().join("");
+                }
+                return word;
+            }).join(" ");
+        }
+        return text;
+    };
+
+    const brandDisplay = reverseRtl(product.brand_he || product.brand);
+    const modelDisplay = reverseRtl(product.model_he || product.model);
+    const sloganDisplay = reverseRtl("יוקרה בחתיכות קטנות");
+
     return new ImageResponse(
         (
             <div
@@ -77,14 +96,14 @@ export default async function Image({ params }) {
                     width: '100%',
                     height: '100%',
                     display: 'flex',
-                    flexDirection: 'row', // Left-to-right flex container
+                    flexDirection: 'row',
                     alignItems: 'center',
                     justifyContent: 'space-between',
                     padding: '80px',
                     fontFamily: 'NarkissBlock',
                 }}
             >
-                {/* Product Image (Left Side) */}
+                {/* Product Image (Left Side) - Keeping it as is */}
                 <div style={{ display: 'flex', width: '480px', height: '480px', justifyContent: 'center', alignItems: 'center' }}>
                     <img
                         src={displayImage}
@@ -105,16 +124,16 @@ export default async function Image({ params }) {
                         />
                     </div>
                     
-                    <div style={{ fontSize: 72, fontWeight: 'bold', color: '#000', marginBottom: '15px', direction: 'rtl' }}>
-                        {product.brand_he || product.brand}
+                    <div style={{ fontSize: 72, fontWeight: 'bold', color: '#000', marginBottom: '15px' }}>
+                        {brandDisplay}
                     </div>
-                    <div style={{ fontSize: 48, color: '#444', marginBottom: '40px', direction: 'rtl' }}>
-                        {product.model_he || product.model}
+                    <div style={{ fontSize: 48, color: '#444', marginBottom: '40px' }}>
+                        {modelDisplay}
                     </div>
                     
                     <div style={{ display: 'flex', borderTop: '2px solid #f0f0f0', paddingTop: '30px', width: '100%', justifyContent: 'flex-end' }}>
                         <div style={{ fontSize: 26, color: '#888', fontWeight: 'normal' }}>
-                            יוקרה בחתיכות קטנות
+                            {sloganDisplay}
                         </div>
                     </div>
                 </div>
