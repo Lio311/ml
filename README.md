@@ -39,8 +39,9 @@ A high-performance, enterprise-grade Israeli commerce platform designed for the 
 ### 📊 Operational Excellence (Admin Dashboard)
 - **Predictive Inventory**: An advanced forecasting engine that calculates daily consumption rates (30-day window) to predict exactly when bottle supplies (2ml, 5ml, 10ml) will deplete.
 - **Financial Intelligence**: Real-time Profit/Loss tracking, including COGS (Cost of Goods Sold) calculation, monthly expense balancing, and cumulative net profit analysis.
+- **Coupon Management 3.0**: A robust discounting engine supporting percentage-based rewards, expiration timers, and **User Affiliation**—allowing coupons to be restricted to specific high-value customers.
+- **Data Synchronization**: Automated historical update logic ensuring customer metadata (like phone numbers) remains consistent across the `users` table and `JSONB` order history via dual-key matching (`clerk_id` & `email`).
 - **Traffic Observability**: Real-time unique visitor monitoring with bot-filtering logic for clean analytics.
-- **Review Curation**: Verified-purchase linked review system with global aggregate stats and administrative moderation tools.
 
 ---
 
@@ -48,6 +49,7 @@ A high-performance, enterprise-grade Israeli commerce platform designed for the 
 
 ### Frontend & UX
 - **Next.js 15 (App Router)**: Utilizing fine-grained Server Components and optimized Server Actions.
+- **Hydration Guarding**: Advanced use of `suppressHydrationWarning` and client-side rendering strategies to manage cross-timezone date synchronization without React hydration mismatches.
 - **Accessibility Suite**: A custom, WCAG-compliant accessibility widget that remains isolated from global CSS filters (Invert/Contrast).
 - **Premium Design System**: Glassmorphism, tailored Framer Motion animations, and bi-directional RTL support.
 

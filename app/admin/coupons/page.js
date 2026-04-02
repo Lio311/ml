@@ -264,15 +264,16 @@ export default function AdminCouponsPage() {
                                 <th className="p-4 text-center">הנחה</th>
                                 <th className="p-4 text-center">תוקף (שעון עצר)</th>
                                 <th className="p-4 text-center">הגבלות</th>
+                                <th className="p-4 text-center">שייכות</th>
                                 <th className="p-4 text-center">סטטוס</th>
                                 <th className="p-4 text-center">פעולות</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y">
                             {loading ? (
-                                <tr><td colSpan="6" className="p-8 text-center">טוען...</td></tr>
+                                <tr><td colSpan="7" className="p-8 text-center">טוען...</td></tr>
                             ) : coupons.length === 0 ? (
-                                <tr><td colSpan="6" className="p-8 text-center text-gray-500">אין קופונים במערכת</td></tr>
+                                <tr><td colSpan="7" className="p-8 text-center text-gray-500">אין קופונים במערכת</td></tr>
                             ) : (
                                 coupons
                                     .slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE)
@@ -541,6 +542,8 @@ function CouponRow({ coupon, onDelete, onEdit, canEdit }) {
     if (limits.allowed_users?.length > 0) activeFilters.push('שייכות');
     if (limits.min_cart_total > 0) activeFilters.push('מינימום סל');
 
+    const affiliate = limits.allowed_users?.[0] || null;
+
     return (
         <tr className="hover:bg-gray-50 transition group">
             <td className="p-4 font-mono font-bold text-blue-600 select-all text-center">{coupon.code}</td>
@@ -556,6 +559,20 @@ function CouponRow({ coupon, onDelete, onEdit, canEdit }) {
             </td>
             <td className="p-4 text-center text-xs text-gray-500 max-w-[200px] truncate" title={activeFilters.join(', ')}>
                 {activeFilters.length > 0 ? activeFilters.join(', ') : 'כל האתר'}
+            </td>
+            <td className="p-4 text-center">
+                {affiliate ? (
+                    <div className="flex flex-col items-center gap-0.5">
+                        <span className="text-[10px] font-bold text-gray-800 bg-blue-50 px-2 py-0.5 rounded-full border border-blue-100">
+                            {typeof affiliate === 'string' ? affiliate.split('@')[0] : (affiliate.label || affiliate.id?.split('@')[0])}
+                        </span>
+                        {limits.allowed_users.length > 1 && (
+                            <span className="text-[9px] text-gray-400">+{limits.allowed_users.length - 1} נוספים</span>
+                        )}
+                    </div>
+                ) : (
+                    <span className="text-gray-300 text-xs">—</span>
+                )}
             </td>
             <td className="p-4 text-center">
                 <span className={`px-2 py-1 rounded-full text-xs font-bold inline-block min-w-[60px] ${isActive ? 'bg-green-100 text-green-800 border border-green-200' : 'bg-red-100 text-red-800 border border-red-200'
@@ -658,6 +675,14 @@ function CouponCard({ coupon, onDelete, onEdit, canEdit }) {
                     <div className="text-[10px] uppercase font-bold text-gray-400 mb-1">הגבלות:</div>
                     <div className="text-xs text-gray-600 truncate" title={activeFilters.join(', ')}>
                         {activeFilters.length > 0 ? activeFilters.join(', ') : 'כל האתר'}
+                    </div>
+                </div>
+                <div>
+                    <div className="text-[10px] uppercase font-bold text-gray-400 mb-1">שייכות:</div>
+                    <div className="text-xs text-gray-800 font-bold">
+                        {affiliate ? (
+                            <span>{typeof affiliate === 'string' ? affiliate.split('@')[0] : (affiliate.label || affiliate.id?.split('@')[0])} {limits.allowed_users.length > 1 ? `(+${limits.allowed_users.length - 1})` : ''}</span>
+                        ) : 'כללי'}
                     </div>
                 </div>
             </div>
