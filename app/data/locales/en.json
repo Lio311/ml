@@ -31,7 +31,6 @@
         "manage_catalogs": "Manage my catalogs",
         "my_orders": "My orders",
         "wishlist_title": "Wishlist",
-        "cart_title": "Cart",
         "hello": "Hello",
         "login_register": "Login / Register",
         "all": "All",
@@ -99,6 +98,7 @@
         "meta_category_desc": "Variety of perfume samples from the {category} category. Selected boutique and niche perfumes with {category} scents.",
         "meta_search_title": "Search: {q} | ml_tlv",
         "meta_search_desc": "Search results for {q} in ml_tlv's perfume samples catalog.",
+        "product_not_found": "Product not found.",
         "out_of_stock_toast": "Product out of stock!",
         "added_to_cart_toast": "Added to cart: {name} ({size} ml)",
         "new": "New",
@@ -113,7 +113,6 @@
         "remove_from_wishlist": "Remove from Wishlist",
         "from": "From ",
         "top_brands": "Top Brands",
-        "product_not_found": "Product Not Found",
         "not_found_desc": "The perfume you're looking for was not found.",
         "limited_stock": "Limited Stock",
         "select_size_add_to_cart": "Select size and add to cart:",
@@ -505,6 +504,7 @@
         "meta_desc": "Your wishlist."
     },
     "cart": {
+        "cart_title": "Cart",
         "title": "My Cart",
         "empty": "Your cart is empty",
         "back_to_catalog": "Back to Catalog",

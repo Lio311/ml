@@ -103,6 +103,7 @@
         "meta_category_desc": "מגוון דוגמיות בשמים מקטגוריית {category}. בשמי בוטיק ונישה בריחות {category} מובחרים.",
         "meta_search_title": "חיפוש: {q} | ml_tlv",
         "meta_search_desc": "תוצאות חיפוש עבור {q} בקטלוג דוגמיות הבשמים של ml_tlv.",
+        "product_not_found": "המוצר לא נמצא.",
         "out_of_stock_toast": "לא ניתן להוסיף את המוצר, אזל המלאי!",
         "added_to_cart_toast": "התווסף לסל: {name} ({size} מ\"ל)",
         "new": "חדש",
@@ -117,7 +118,6 @@
         "remove_from_wishlist": "הסר מהמועדפים",
         "from": "החל מ-",
         "top_brands": "מותגים מובילים",
-        "product_not_found": "מוצר לא נמצא",
         "not_found_desc": "הבושם שחיפשת לא נמצא.",
         "limited_stock": "מלאי מוגבל",
         "select_size_add_to_cart": "בחר גודל והוסף לסל:",
@@ -458,6 +458,7 @@
         "meta_desc": "רשימת המשאלות שלך."
     },
     "cart": {
+        "cart_title": "סל קניות",
         "title": "העגלה שלי",
         "empty": "העגלה שלך ריקה",
         "back_to_catalog": "חזרה לקטלוג",

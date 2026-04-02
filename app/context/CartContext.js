@@ -268,7 +268,7 @@ export function CartProvider({ children }) {
                 // Main vendor: stock is total ML available for this product
                 const stockML = parseFloat(String(product.stock)) || 0;
                 if (stockML === 0) {
-                    toast.error(t('common.out_of_stock_toast'));
+                    toast.error(t('cart.stock_limit_reached'));
                     return prev;
                 }
                 if (stockML > 0) {
@@ -280,7 +280,7 @@ export function CartProvider({ children }) {
                         return sum;
                     }, 0);
                     if (currentML + addedML > stockML) {
-                        toast.error(t('common.out_of_stock_toast'));
+                        toast.error(t('cart.stock_limit_reached'));
                         return prev;
                     }
                 }
@@ -437,7 +437,7 @@ export function CartProvider({ children }) {
             } else {
                 const stockML = parseFloat(String(itemToUpdate.stock)) || 0;
                 if (stockML === 0) {
-                    toast.error(t('common.out_of_stock_toast'));
+                    toast.error(t('cart.stock_limit_reached'));
                     return prev;
                 }
                 if (stockML > 0) {
