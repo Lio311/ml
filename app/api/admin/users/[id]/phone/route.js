@@ -21,19 +21,32 @@ export async function PATCH(req, { params }) {
             await client.query('BEGIN');
             
             // 1. Update users table
-            await client.query(
-                `UPDATE users SET phone = $1 WHERE id = $2`,
+            const userRes = await client.query(
+                `UPDATE users SET phone = $1 WHERE id = $2 RETURNING email`,
                 [phone, id]
             );
+            
+            const userEmail = userRes.rows[0]?.email;
 
-            // 2. Sync with existing orders (where clerk_id matches)
-            // We use jsonb_set to update the 'phone' key inside customer_details
-            await client.query(
-                `UPDATE orders 
-                 SET customer_details = jsonb_set(customer_details, '{phone}', to_jsonb($1::text))
-                 WHERE customer_details->>'clerk_id' = $2`,
-                [phone, id]
-            );
+            // 2. Sync with existing orders
+            // Try to match by clerk_id first (preferred)
+            // AND also by email as a fallback for older orders or different entry points
+            if (userEmail) {
+                await client.query(
+                    `UPDATE orders 
+                     SET customer_details = jsonb_set(customer_details, '{phone}', to_jsonb($1::text))
+                     WHERE customer_details->>'clerk_id' = $2 
+                        OR customer_details->>'email' = $3`,
+                    [phone, id, userEmail]
+                );
+            } else {
+                await client.query(
+                    `UPDATE orders 
+                     SET customer_details = jsonb_set(customer_details, '{phone}', to_jsonb($1::text))
+                     WHERE customer_details->>'clerk_id' = $2`,
+                    [phone, id]
+                );
+            }
 
             await client.query('COMMIT');
             return NextResponse.json({ success: true });
