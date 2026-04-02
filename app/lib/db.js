@@ -68,7 +68,8 @@ export const getBrands = unstable_cache(
             return res.rows;
         } catch (err) {
             Sentry.captureException(err);
-            throw err;
+            console.error("Error fetching brands from DB, using empty array fallback during build:", err.message);
+            return []; // Fallback to empty array to allow build to continue
         }
     },
     ['global-brands-v2'],
