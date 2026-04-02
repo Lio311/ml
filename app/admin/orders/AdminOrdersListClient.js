@@ -127,15 +127,15 @@ export default function AdminOrdersListClient({
                                         />
                                     </td>
                                     <td className="p-4 font-bold text-gray-900">{order.id}</td>
-                                    <td className="p-4 text-right">
-                                        <div className="font-bold text-gray-900">{order.customer_details?.name}</div>
-                                        <div className="text-xs text-gray-500">{order.customer_details?.email}</div>
+                                    <td className="p-4 text-center">
+                                        <div className="font-bold text-gray-900 leading-tight mb-1 uppercase tracking-tight">{order.customer_details?.name}</div>
+                                        <div className="text-[11px] text-gray-400 font-medium mb-1.5 break-all max-w-[180px] mx-auto">{order.customer_details?.email}</div>
                                         {order.customer_details?.phone && (
-                                            <div className="text-xs font-bold text-gray-700 mt-1 flex items-center justify-end gap-1">
-                                                <a href={`tel:${order.customer_details.phone}`} className="hover:text-blue-600 transition-colors">{order.customer_details.phone}</a>
-                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-3 h-3 text-gray-400">
+                                            <div className="text-[11px] font-black text-blue-600/90 flex items-center justify-center gap-1.5 bg-blue-50/50 py-1 px-2 rounded-lg border border-blue-100/50 w-fit mx-auto cursor-pointer hover:bg-blue-100/50 transition-colors">
+                                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-3.5 h-3.5 opacity-70">
                                                     <path fillRule="evenodd" d="M2 3.5A1.5 1.5 0 013.5 2h1.148a1.5 1.5 0 011.465 1.175l.716 3.223a1.5 1.5 0 01-1.052 1.767l-.933.267c-.41.117-.643.555-.48.95a11.542 11.542 0 006.254 6.254c.395.163.833-.07.95-.48l.267-.933a1.5 1.5 0 011.767-1.052l3.223.716A1.5 1.5 0 0118 15.352V16.5a1.5 1.5 0 01-1.5 1.5H15c-1.149 0-2.261-.15-3.326-.43a13.006 13.006 0 01-9.244-9.244A13.006 13.006 0 012 5V3.5z" clipRule="evenodd" />
                                                 </svg>
+                                                <a href={`tel:${order.customer_details.phone}`} dir="ltr">{order.customer_details.phone}</a>
                                             </div>
                                         )}
                                     </td>

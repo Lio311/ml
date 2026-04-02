@@ -18,11 +18,28 @@ export async function PATCH(req, { params }) {
 
         const client = await pool.connect();
         try {
+            await client.query('BEGIN');
+            
+            // 1. Update users table
             await client.query(
                 `UPDATE users SET phone = $1 WHERE id = $2`,
                 [phone, id]
             );
+
+            // 2. Sync with existing orders (where clerk_id matches)
+            // We use jsonb_set to update the 'phone' key inside customer_details
+            await client.query(
+                `UPDATE orders 
+                 SET customer_details = jsonb_set(customer_details, '{phone}', to_jsonb($1::text))
+                 WHERE customer_details->>'clerk_id' = $2`,
+                [phone, id]
+            );
+
+            await client.query('COMMIT');
             return NextResponse.json({ success: true });
+        } catch (err) {
+            await client.query('ROLLBACK');
+            throw err;
         } finally {
             client.release();
         }
