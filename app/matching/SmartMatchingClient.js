@@ -100,26 +100,26 @@ export default function SmartMatchingClient({ initialNotes }) {
     };
 
     return (
-        <div className="min-h-screen bg-black text-white relative flex flex-col items-center justify-start pt-4 md:pt-6 pb-12 px-4 overflow-hidden" dir={dir}>
-            {/* Ambient Background Gradient */}
-            <div className="absolute inset-0 opacity-40 bg-[radial-gradient(circle_at_center,_rgba(255,255,255,0.1)_0%,_transparent_70%)] pointer-events-none" />
+        <div className="min-h-screen bg-[#fafafa] text-zinc-900 relative flex flex-col items-center justify-start pt-4 md:pt-6 pb-12 px-4 overflow-hidden" dir={dir}>
+            {/* Ambient Background Gradient (Subtle for Light Theme) */}
+            <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_center,_rgba(0,0,0,0.03)_0%,_transparent_70%)] pointer-events-none" />
             
             {/* Secondary Decorator */}
-            <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-zinc-800/20 rounded-full blur-[120px] pointer-events-none" />
-            <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-zinc-800/20 rounded-full blur-[120px] pointer-events-none" />
+            <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-zinc-200/50 rounded-full blur-[120px] pointer-events-none" />
+            <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-zinc-200/50 rounded-full blur-[120px] pointer-events-none" />
 
             <div className="container max-w-4xl mx-auto relative z-10 px-4">
                 <div className="mb-6 text-center overflow-visible">
-                    <h1 className="text-4xl md:text-5xl font-bold mb-3 text-white tracking-tight animate-fadeIn">
+                    <h1 className="text-4xl md:text-5xl font-bold mb-3 text-zinc-900 tracking-tight animate-fadeIn">
                         {t('matching.title') || 'התאמה אישית'}
                     </h1>
                     <div className="flex flex-col items-center gap-4 overflow-visible">
-                        <p className="text-zinc-500 text-xs md:text-sm animate-fadeIn delay-100 italic tracking-wide whitespace-normal opacity-60 border-x border-white/5 px-6 leading-relaxed max-w-2xl">
+                        <p className="text-zinc-500 text-xs md:text-sm animate-fadeIn delay-100 italic tracking-wide whitespace-normal opacity-70 border-x border-zinc-200 px-6 leading-relaxed max-w-2xl">
                             {t('matching.description')}
                         </p>
                         {/* Algorithm Info Block */}
-                        <div className="mt-4 p-4 md:p-6 bg-white/5 backdrop-blur-xl rounded-2xl border border-white/10 max-w-2xl animate-fadeIn delay-200">
-                            <p className="text-[10px] md:text-xs text-zinc-400 leading-relaxed text-center italic opacity-80">
+                        <div className="mt-4 p-4 md:p-6 bg-white/70 backdrop-blur-xl rounded-2xl border border-zinc-200 max-w-2xl animate-fadeIn delay-200 shadow-sm">
+                            <p className="text-[10px] md:text-xs text-zinc-500 leading-relaxed text-center italic opacity-90">
                                 {t('matching.how_it_works')}
                             </p>
                         </div>
@@ -128,24 +128,24 @@ export default function SmartMatchingClient({ initialNotes }) {
                 {/* Progress Tracking */}
                 <div className="mb-8 overflow-hidden">
                     <div className="flex justify-between items-end mb-2 px-1">
-                        <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-white/60">
+                        <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-500">
                             {step === 1 ? t('matching.preferences_title') : step === 2 ? t('matching.analyzing') : t('matching.results_title')}
                         </span>
-                        <span className="text-[10px] font-black uppercase tracking-[0.3em] text-white/40">
+                        <span className="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-400">
                             Step {step} of 3
                         </span>
                     </div>
-                    <div className="w-full bg-white/5 h-1 rounded-full overflow-hidden">
+                    <div className="w-full bg-zinc-200 h-1 rounded-full overflow-hidden">
                         <div
-                            className="bg-white h-full transition-all duration-700 ease-out shadow-[0_0_10px_rgba(255,255,255,0.5)]"
+                            className="bg-zinc-900 h-full transition-all duration-700 ease-out shadow-[0_0_10px_rgba(0,0,0,0.1)]"
                             style={{ width: step === 1 ? '33%' : step === 2 ? '66%' : '100%' }}
                         ></div>
                     </div>
                 </div>
 
-                <div className="bg-white/10 backdrop-blur-3xl p-6 md:p-12 rounded-[2.5rem] border border-white/20 shadow-[0_40px_100px_rgba(0,0,0,0.5)] relative overflow-hidden group min-h-[500px] flex flex-col">
+                <div className="bg-white/70 backdrop-blur-3xl p-6 md:p-12 rounded-[2.5rem] border border-zinc-200 shadow-[0_40px_100px_rgba(0,0,0,0.05)] relative overflow-hidden group min-h-[500px] flex flex-col">
                     {/* Subtle Internal Glow */}
-                    <div className="absolute top-0 right-0 w-64 h-64 bg-white/5 rounded-full -translate-y-32 translate-x-32 blur-[100px] pointer-events-none" />
+                    <div className="absolute top-0 right-0 w-64 h-64 bg-zinc-50/50 rounded-full -translate-y-32 translate-x-32 blur-[100px] pointer-events-none" />
 
                     {/* STEP 1: PREFERENCES */}
                     {step === 1 && (
@@ -153,30 +153,30 @@ export default function SmartMatchingClient({ initialNotes }) {
                             {/* 1. Bundle Size & Sample Size */}
                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
                                 <div className="space-y-4">
-                                    <label className="block text-lg font-serif font-black tracking-tight">{t('matching.quantity_label')}</label>
-                                    <div className="flex items-center gap-6 bg-black/40 p-6 rounded-2xl border border-white/5">
+                                    <label className="block text-lg font-serif font-black tracking-tight text-zinc-900">{t('matching.quantity_label')}</label>
+                                    <div className="flex items-center gap-6 bg-zinc-50/50 p-6 rounded-2xl border border-zinc-100 shadow-inner">
                                         <input
                                             type="range"
                                             min="3"
                                             max="12"
                                             value={preferences.quantity}
                                             onChange={(e) => setPreferences({ ...preferences, quantity: parseInt(e.target.value) })}
-                                            className="w-full accent-white h-1.5 bg-white/10 rounded-lg appearance-none cursor-pointer"
+                                            className="w-full accent-zinc-900 h-1.5 bg-zinc-200 rounded-lg appearance-none cursor-pointer"
                                         />
-                                        <span className="text-3xl font-black w-12 text-center text-white">{preferences.quantity}</span>
+                                        <span className="text-3xl font-black w-12 text-center text-zinc-900">{preferences.quantity}</span>
                                     </div>
                                 </div>
 
                                 <div className="space-y-4">
-                                    <label className="block text-lg font-serif font-black tracking-tight">{t('matching.size_label')}</label>
+                                    <label className="block text-lg font-serif font-black tracking-tight text-zinc-900">{t('matching.size_label')}</label>
                                     <div className="flex gap-3">
                                         {[2, 5, 10].map((s) => (
                                             <button
                                                 key={s}
                                                 onClick={() => setPreferences({ ...preferences, size: s.toString() })}
                                                 className={`flex-1 py-4 rounded-2xl border-2 font-black text-sm tracking-widest transition-all ${preferences.size === s.toString()
-                                                    ? 'border-white bg-white text-black shadow-lg scale-[1.02]'
-                                                    : 'border-white/10 bg-black/40 text-zinc-500 hover:border-white/30 hover:text-white'
+                                                    ? 'border-zinc-900 bg-zinc-900 text-white shadow-lg scale-[1.02]'
+                                                    : 'border-zinc-200 bg-white/50 text-zinc-500 hover:border-zinc-300 hover:text-zinc-700'
                                                     }`}
                                             >
                                                 {s} {t('common.ml_unit')}
@@ -188,20 +188,20 @@ export default function SmartMatchingClient({ initialNotes }) {
 
                             {/* 2. Budget */}
                             <div className="space-y-4">
-                                <label className="block text-lg font-serif font-black tracking-tight flex justify-between">
+                                <label className="block text-lg font-serif font-black tracking-tight flex justify-between text-zinc-900">
                                     <span>{t('matching.budget_label')}</span>
-                                    <span className="text-white font-black">{preferences.budget} ₪</span>
+                                    <span className="text-zinc-900 font-black">{preferences.budget} ₪</span>
                                 </label>
-                                <div className="bg-black/40 p-6 rounded-2xl border border-white/5">
+                                <div className="bg-zinc-50/50 p-6 rounded-2xl border border-zinc-100 shadow-inner">
                                     <input
                                         type="range"
                                         min={getBudgetRange().min / 2}
                                         max={getBudgetRange().max * 1.5}
                                         value={preferences.budget}
                                         onChange={(e) => setPreferences({ ...preferences, budget: parseInt(e.target.value) })}
-                                        className="w-full accent-white h-1.5 bg-white/10 rounded-lg appearance-none cursor-pointer"
+                                        className="w-full accent-zinc-900 h-1.5 bg-zinc-200 rounded-lg appearance-none cursor-pointer"
                                     />
-                                    <div className="flex justify-between text-[10px] uppercase font-bold tracking-[0.2em] text-zinc-500 mt-4 px-1">
+                                    <div className="flex justify-between text-[10px] uppercase font-bold tracking-[0.2em] text-zinc-400 mt-4 px-1">
                                         <span>{t('matching.economy')}</span>
                                         <span>{t('matching.premium')}</span>
                                     </div>
@@ -210,7 +210,7 @@ export default function SmartMatchingClient({ initialNotes }) {
 
                             {/* 3. Notes (Autocomplete) */}
                             <div className="space-y-4">
-                                <label className="block text-lg font-serif font-black tracking-tight">{t('matching.favorite_notes')}</label>
+                                <label className="block text-lg font-serif font-black tracking-tight text-zinc-900">{t('matching.favorite_notes')}</label>
                                 
                                 <div className="relative">
                                     <input
@@ -218,37 +218,37 @@ export default function SmartMatchingClient({ initialNotes }) {
                                         value={noteInput}
                                         onChange={handleNoteInputChange}
                                         placeholder={t('matching.search_placeholder')}
-                                        className="w-full bg-black/40 border border-white/10 rounded-2xl px-6 py-5 text-sm focus:outline-none focus:ring-1 focus:ring-white/30 transition-all placeholder:text-gray-700 shadow-inner"
+                                        className="w-full bg-white/50 border border-zinc-200 rounded-2xl px-6 py-5 text-sm focus:outline-none focus:ring-1 focus:ring-zinc-900/30 transition-all placeholder:text-zinc-400 shadow-sm"
                                     />
                                     {suggestions.length > 0 && (
-                                        <div className="absolute z-20 w-full bg-zinc-900/95 backdrop-blur-xl border border-white/10 rounded-2xl mt-3 shadow-2xl max-h-60 overflow-y-auto divide-y divide-white/5">
+                                        <div className="absolute z-20 w-full bg-white/95 backdrop-blur-xl border border-zinc-200 rounded-2xl mt-3 shadow-2xl max-h-60 overflow-y-auto divide-y divide-zinc-100">
                                             {suggestions.map((note) => (
                                                 <button
                                                     key={note}
                                                     onClick={() => addNote(note)}
-                                                    className={`w-full px-6 py-4 hover:bg-white/10 transition flex justify-between items-center group ${dir === 'rtl' ? 'text-right' : 'text-left'}`}
+                                                    className={`w-full px-6 py-4 hover:bg-zinc-50 transition flex justify-between items-center group ${dir === 'rtl' ? 'text-right' : 'text-left'}`}
                                                 >
-                                                    <span className="font-bold text-zinc-200 group-hover:text-white">{note}</span>
-                                                    <span className="text-[10px] uppercase font-black tracking-widest text-zinc-600 group-hover:text-white/60">{t('matching.add_note')}</span>
+                                                    <span className="font-bold text-zinc-700 group-hover:text-zinc-900">{note}</span>
+                                                    <span className="text-[10px] uppercase font-black tracking-widest text-zinc-400 group-hover:text-zinc-600">{t('matching.add_note')}</span>
                                                 </button>
                                             ))}
                                         </div>
                                     )}
                                 </div>
 
-                                <div className="flex flex-wrap gap-2 min-h-[60px] p-5 bg-black/20 rounded-2xl border border-dashed border-white/10">
+                                <div className="flex flex-wrap gap-2 min-h-[60px] p-5 bg-zinc-50/50 rounded-2xl border border-dashed border-zinc-200 shadow-inner">
                                     {preferences.notes.length === 0 && (
-                                        <span className="text-zinc-600 text-xs font-medium italic p-2">{t('matching.no_notes_selected')}</span>
+                                        <span className="text-zinc-400 text-xs font-medium italic p-2">{t('matching.no_notes_selected')}</span>
                                     )}
                                     {preferences.notes.map(note => (
                                         <div
                                             key={note}
-                                            className="px-4 py-2 bg-white/10 hover:bg-white/20 border border-white/10 text-white rounded-full text-xs font-black tracking-wide flex items-center gap-3 transition-colors animate-fadeIn"
+                                            className="px-4 py-2 bg-zinc-100 hover:bg-zinc-200 border border-zinc-200 text-zinc-900 rounded-full text-xs font-black tracking-wide flex items-center gap-3 transition-colors animate-fadeIn"
                                         >
                                             {note}
                                             <button
                                                 onClick={() => removeNote(note)}
-                                                className="w-4 h-4 bg-white/10 rounded-full flex items-center justify-center hover:bg-red-500/50 transition-colors"
+                                                className="w-4 h-4 bg-zinc-200/50 rounded-full flex items-center justify-center hover:bg-red-500/50 hover:text-white transition-colors"
                                             >
                                                 ×
                                             </button>
@@ -261,7 +261,7 @@ export default function SmartMatchingClient({ initialNotes }) {
                             <div className="pt-6">
                                 <button
                                     onClick={handleMatch}
-                                    className="w-full py-5 bg-white text-black font-black rounded-full hover:bg-gray-200 hover:scale-[1.01] transition-all active:scale-[0.98] text-xs uppercase tracking-[0.4em] shadow-[0_20px_50px_rgba(255,255,255,0.1)]"
+                                    className="w-full py-5 bg-zinc-900 text-white font-black rounded-full hover:bg-black hover:scale-[1.01] transition-all active:scale-[0.98] text-xs uppercase tracking-[0.4em] shadow-xl"
                                 >
                                     {t('matching.submit_btn')}
                                 </button>
@@ -273,15 +273,15 @@ export default function SmartMatchingClient({ initialNotes }) {
                     {step === 2 && (
                         <div className="flex-1 flex flex-col items-center justify-center space-y-8 animate-fadeIn text-center">
                             <div className="relative">
-                                <div className="w-24 h-24 border-2 border-white/5 rounded-full"></div>
-                                <div className="absolute inset-0 w-24 h-24 border-t-2 border-white rounded-full animate-spin"></div>
+                                <div className="w-24 h-24 border-2 border-zinc-100 rounded-full"></div>
+                                <div className="absolute inset-0 w-24 h-24 border-t-2 border-zinc-900 rounded-full animate-spin"></div>
                                 <div className="absolute inset-0 flex items-center justify-center">
                                     <span className="text-2xl animate-pulse">✨</span>
                                 </div>
                             </div>
                             <div>
-                                <h3 className="text-3xl font-serif font-black mb-3 tracking-tight">{t('matching.loading_title')}</h3>
-                                <p className="text-zinc-500 text-sm max-w-xs mx-auto italic leading-relaxed opacity-70">
+                                <h3 className="text-3xl font-serif font-black mb-3 tracking-tight text-zinc-900">{t('matching.loading_title')}</h3>
+                                <p className="text-zinc-500 text-sm max-w-xs mx-auto italic leading-relaxed opacity-80">
                                     {t('matching.loading_desc')}
                                 </p>
                             </div>
@@ -292,18 +292,18 @@ export default function SmartMatchingClient({ initialNotes }) {
                     {step === 3 && results && (
                         <div className="animate-fadeIn space-y-10 flex-1 flex flex-col">
                             <div className="text-center">
-                                <h2 className="text-3xl md:text-4xl font-serif font-black mb-2 tracking-tight">{t('matching.ready_title')}</h2>
-                                <p className="text-zinc-500 text-sm italic opacity-80 decoration-white/10">{t('matching.ready_desc').replace('{count}', results.products.length)}</p>
+                                <h2 className="text-3xl md:text-4xl font-serif font-black mb-2 tracking-tight text-zinc-900">{t('matching.ready_title')}</h2>
+                                <p className="text-zinc-500 text-sm italic opacity-90">{t('matching.ready_desc').replace('{count}', results.products.length)}</p>
                             </div>
 
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
                                 {results.products.map((p, idx) => (
                                     <div 
                                         key={p.id} 
-                                        className="flex gap-5 p-5 bg-white/5 border border-white/10 rounded-[1.5rem] items-center hover:bg-white/10 hover:border-white/20 transition-all duration-300 group"
+                                        className="flex gap-5 p-5 bg-white/50 border border-zinc-100 rounded-[1.5rem] items-center hover:bg-white hover:border-zinc-200 hover:shadow-md transition-all duration-300 group"
                                         style={{ animationDelay: `${idx * 100}ms` }}
                                     >
-                                        <div className="w-20 h-20 bg-white/5 rounded-2xl flex-shrink-0 flex items-center justify-center relative overflow-hidden group-hover:scale-105 transition-transform">
+                                        <div className="w-20 h-20 bg-zinc-50 rounded-2xl flex-shrink-0 flex items-center justify-center relative overflow-hidden group-hover:scale-105 transition-transform">
                                             {p.image_url ? (
                                                 <Image src={p.image_url} alt={localize(p, 'name') || "Product"} fill sizes="80px" className="object-contain p-2" />
                                             ) : (
@@ -311,32 +311,32 @@ export default function SmartMatchingClient({ initialNotes }) {
                                             )}
                                         </div>
                                         <div className="flex-1">
-                                            <div className="font-serif font-black text-white text-sm line-clamp-1 mb-0.5">{localize(p, 'name')}</div>
-                                            <div className="text-zinc-500 text-[10px] uppercase font-bold tracking-widest mb-2 opacity-60">{p.brand}</div>
-                                            <div className="text-lg font-black text-white">{p.price} ₪</div>
+                                            <div className="font-serif font-black text-zinc-900 text-sm line-clamp-1 mb-0.5">{localize(p, 'name')}</div>
+                                            <div className="text-zinc-500 text-[10px] uppercase font-bold tracking-widest mb-2 opacity-70">{p.brand}</div>
+                                            <div className="text-lg font-black text-zinc-900">{p.price} ₪</div>
                                         </div>
                                     </div>
                                 ))}
                             </div>
 
                             {/* Summary & Actions */}
-                            <div className="mt-auto bg-white/10 backdrop-blur-xl border border-white/20 p-8 rounded-[2rem] flex flex-col md:flex-row items-center justify-between gap-8 animate-fadeUp">
+                            <div className="mt-auto bg-zinc-50/80 backdrop-blur-xl border border-zinc-200 p-8 rounded-[2rem] flex flex-col md:flex-row items-center justify-between gap-8 animate-fadeUp shadow-sm">
                                 <div className={`${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
                                     <div className="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-400 mb-1">{t('matching.final_price')}</div>
-                                    <div className="text-4xl font-black text-white drop-shadow-sm">{results.totalPrice} ₪</div>
+                                    <div className="text-4xl font-black text-zinc-900 drop-shadow-sm">{results.totalPrice} ₪</div>
                                     <div className="text-xs font-bold text-zinc-500 mt-2 italic">{results.message}</div>
                                 </div>
 
                                 <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
                                     <button
                                         onClick={resetWizard}
-                                        className="px-8 py-4 rounded-full border border-white/10 text-xs font-black uppercase tracking-widest hover:bg-white/5 transition-all text-zinc-400 hover:text-white"
+                                        className="px-8 py-4 rounded-full border border-zinc-200 text-xs font-black uppercase tracking-widest hover:bg-white transition-all text-zinc-500 hover:text-zinc-900"
                                     >
                                         {t('matching.rematch')}
                                     </button>
                                     <button
                                         onClick={addToCartAll}
-                                        className="px-10 py-4 rounded-full bg-white text-black font-black text-xs uppercase tracking-[0.2em] hover:bg-gray-200 transition-all shadow-[0_15px_40px_rgba(255,255,255,0.1)] active:scale-95"
+                                        className="px-10 py-4 rounded-full bg-zinc-900 text-white font-black text-xs uppercase tracking-[0.2em] hover:bg-black transition-all shadow-xl active:scale-95"
                                     >
                                         {t('matching.add_all')}
                                     </button>
@@ -352,15 +352,15 @@ export default function SmartMatchingClient({ initialNotes }) {
                     width: 4px;
                 }
                 .custom-scrollbar::-webkit-scrollbar-track {
-                    background: rgba(255, 255, 255, 0.05);
+                    background: rgba(0, 0, 0, 0.03);
                     border-radius: 10px;
                 }
                 .custom-scrollbar::-webkit-scrollbar-thumb {
-                    background: rgba(255, 255, 255, 0.1);
+                    background: rgba(0, 0, 0, 0.1);
                     border-radius: 10px;
                 }
                 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-                    background: rgba(255, 255, 255, 0.2);
+                    background: rgba(0, 0, 0, 0.2);
                 }
             `}</style>
         </div>
