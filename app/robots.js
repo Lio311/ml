@@ -13,11 +13,9 @@ export default function robots() {
                     '/*?sort=*',
                     '/*?min=*',
                     '/*?max=*',
-                    '/*?page=*',
                     '/*&sort=*',
                     '/*&min=*',
                     '/*&max=*',
-                    '/*&page=*',
                 ],
             },
             // Explicitly allow AI crawlers
