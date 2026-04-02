@@ -69,7 +69,7 @@ export default function RequestsClient() {
             {!submitted ? (
                 <div className="container max-w-md mx-auto relative z-10 px-4">
                     <div className="mb-10 text-center overflow-visible">
-                        <h1 className="text-4xl md:text-5xl font-serif font-black mb-3 text-white tracking-tighter animate-fadeIn">
+                        <h1 className="text-4xl md:text-5xl font-bold mb-3 text-white tracking-tight animate-fadeIn">
                              {t('requests.title') || 'בקשת בשמים'}
                         </h1>
                         <div className="flex justify-center overflow-visible">
@@ -86,7 +86,7 @@ export default function RequestsClient() {
                         {loading ? (
                             <div className="flex flex-col items-center justify-center py-12 animate-fadeIn text-center">
                                 <div className="w-16 h-16 border-4 border-white/10 border-t-white rounded-full animate-spin mb-6"></div>
-                                <p className="text-xl font-serif font-black animate-pulse tracking-widest">{t('requests.sending')}</p>
+                                <p className="text-xl font-bold animate-pulse tracking-widest">{t('requests.sending')}</p>
                             </div>
                         ) : (
                             <form onSubmit={handleSubmit} className="space-y-6">

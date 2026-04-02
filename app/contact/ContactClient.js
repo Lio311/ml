@@ -47,7 +47,7 @@ export default function ContactClient() {
 
             <div className="container max-w-md mx-auto relative z-10 px-4">
                 <div className="mb-10 text-center overflow-visible">
-                    <h1 className="text-4xl md:text-5xl font-serif font-black mb-3 text-white tracking-tighter animate-fadeIn">
+                    <h1 className="text-4xl md:text-5xl font-bold mb-3 text-white tracking-tight animate-fadeIn">
                         {t('common.contact_title')}
                     </h1>
                     <div className="flex justify-center overflow-visible">
@@ -66,7 +66,7 @@ export default function ContactClient() {
                             <div className="w-16 h-16 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-6 backdrop-blur-xl">
                                 <span className="text-3xl">✅</span>
                             </div>
-                            <h3 className="text-2xl font-serif font-black mb-3 text-white">
+                        <h3 className="text-2xl font-bold mb-3 text-white">
                                 {t('common.contact_success_title')}
                             </h3>
                             <p className="text-zinc-500 text-sm mb-8 max-w-xs mx-auto leading-relaxed">
