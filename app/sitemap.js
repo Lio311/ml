@@ -50,25 +50,6 @@ export default async function sitemap() {
                 priority: 0.7,
             }));
 
-        // Categories (Distinct)
-        // Categories typically stored as comma separated strings in this DB, need to split? 
-        // Based on previous files, they seem to be simple strings usually. Assuming simple string first.
-        const catRes = await client.query('SELECT DISTINCT category FROM products WHERE active = true');
-        const uniqueCats = new Set();
-        catRes.rows.forEach(r => {
-            if (r.category) {
-                // Split by comma just in case
-                r.category.split(',').forEach(c => uniqueCats.add(c.trim()));
-            }
-        });
-
-        categories = Array.from(uniqueCats).map((cat) => ({
-            url: `${baseUrl}/catalog?category=${encodeURIComponent(cat)}`,
-            lastModified: new Date(),
-            changeFrequency: 'daily',
-            priority: 0.7,
-        }));
-
         // Blog Posts
         const blogRes = await client.query('SELECT id, slug, created_at FROM blog_posts');
         const blogs = blogRes.rows.map((post) => ({
@@ -86,7 +67,7 @@ export default async function sitemap() {
         };
 
         client.release();
-        return [...staticRoutes, blogIndex, ...products, ...brands, ...categories, ...blogs];
+        return [...staticRoutes, blogIndex, ...products, ...brands, ...blogs];
     } catch (error) {
         console.error("Sitemap generation error:", error);
         return [...staticRoutes];

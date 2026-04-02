@@ -57,16 +57,27 @@ export async function generateMetadata(props) {
     if (q) params.set('q', q);
     if (brand) params.set('brand', brand);
     if (category) params.set('category', category);
-    if (page) params.set('page', page);
+    if (page && page !== '1') params.set('page', page);
 
     const queryString = params.toString();
-    
-    let canonical = queryString ? `${baseUrl}/catalog?${queryString}` : `${baseUrl}/catalog`;
+    const isFiltered = !!(q || brand || category);
+    const hasMultipleFilters = [!!q, !!brand, !!category].filter(Boolean).length > 1;
 
-    // SEO Hack: If ONLY brand is selected, canonicalize to the dedicated brand page
-    if (brand && !q && !category) {
-        canonical = page ? `${baseUrl}/brands/${encodeURIComponent(brand)}?page=${page}` : `${baseUrl}/brands/${encodeURIComponent(brand)}`;
+    let canonical = `${baseUrl}/catalog`;
+    if (queryString) {
+        canonical = `${baseUrl}/catalog?${queryString}`;
     }
+
+    // SEO Optimization: If ONLY brand is selected, canonicalize to /brands/ page
+    if (brand && !q && !category) {
+        const brandSlug = encodeURIComponent(brand);
+        canonical = page && page !== '1'
+            ? `${baseUrl}/brands/${brandSlug}?page=${page}`
+            : `${baseUrl}/brands/${brandSlug}`;
+    }
+
+    // Prevent indexing of pages with multiple filters to avoid "Alternative page with proper canonical"
+    const robots = hasMultipleFilters ? { index: false, follow: true } : { index: true, follow: true };
 
     return {
         title,
@@ -74,11 +85,12 @@ export async function generateMetadata(props) {
         alternates: {
             canonical,
         },
+        robots,
         openGraph: {
             title,
             description,
             url: canonical,
-            siteName: 'ml_tlv',
+            siteName: 'ml-tlv',
             type: 'website',
         },
     };

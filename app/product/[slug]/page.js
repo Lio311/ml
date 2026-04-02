@@ -97,21 +97,24 @@ export async function generateMetadata(props) {
             ? `${baseUrl}/api/og/product?url=${encodeURIComponent(product.image_url)}`
             : rawImageUrl;
 
+        const productSlug = product.slug || product.id;
+        const canonicalUrl = `${baseUrl}/product/${productSlug}`;
+
         return {
             title: title,
             description: description,
             alternates: {
-                canonical: `${baseUrl}/product/${product.slug || product.id}`,
+                canonical: canonicalUrl,
                 languages: {
-                    'he-IL': `${baseUrl}/product/${product.slug || product.id}`,
-                    'en-US': `${baseUrl}/product/${product.slug || product.id}?lang=en`,
-                    'x-default': `${baseUrl}/product/${product.slug || product.id}`,
+                    'he-IL': canonicalUrl,
+                    'en-US': `${canonicalUrl}?lang=en`,
+                    'x-default': canonicalUrl,
                 },
             },
             openGraph: {
                 title: title,
                 description: description,
-                url: `${baseUrl}/product/${product.slug || product.id}`,
+                url: canonicalUrl,
                 siteName: 'ml-tlv',
                 images: [
                     {
