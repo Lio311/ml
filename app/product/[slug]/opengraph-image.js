@@ -37,9 +37,36 @@ export default async function Image({ params }) {
 
     // Base URL for assets
     const baseUrl = 'https://www.ml-tlv.com';
-    const imageUrl = product.image_url 
-        ? (product.image_url.startsWith('http') ? product.image_url : `${baseUrl}${product.image_url}`)
-        : `${baseUrl}/logo_v5.png`;
+    let imageData;
+    let fallbackLogo = true;
+
+    if (product.image_url) {
+        const imageUrl = product.image_url.startsWith('http') ? product.image_url : `${baseUrl}${product.image_url}`;
+        
+        // Satori (engine behind next/og) does not support AVIF.
+        // We only attempt to fetch if it's NOT .avif
+        if (!imageUrl.toLowerCase().endsWith('.avif')) {
+            try {
+                const response = await fetch(imageUrl);
+                if (response.ok) {
+                    const buffer = await response.arrayBuffer();
+                    const contentType = response.headers.get('content-type');
+                    // Check if the content type is supported by Satori (PNG, JPG, SVG)
+                    if (contentType && (contentType.includes('png') || contentType.includes('jpeg') || contentType.includes('jpg') || contentType.includes('svg'))) {
+                        imageData = `data:${contentType};base64,${Buffer.from(buffer).toString('base64')}`;
+                        fallbackLogo = false;
+                    }
+                }
+            } catch (e) {
+                console.error("Failed to fetch OG image:", imageUrl, e);
+            }
+        } else {
+            console.warn("AVIF image skipped for OG (unsupported by Satori):", imageUrl);
+        }
+    }
+
+    // Default to a branded placeholder if image missing or unsupported
+    const displayImage = !fallbackLogo ? imageData : `${baseUrl}/logo_v5.png`;
 
     return new ImageResponse(
         (
@@ -49,40 +76,46 @@ export default async function Image({ params }) {
                     width: '100%',
                     height: '100%',
                     display: 'flex',
-                    flexDirection: 'row',
+                    flexDirection: 'row', // Left-to-right flex container
                     alignItems: 'center',
                     justifyContent: 'space-between',
                     padding: '80px',
                     fontFamily: 'NarkissBlock',
                 }}
             >
-                {/* Product Details (Right Side for RTL feel) */}
-                <div style={{ display: 'flex', flexDirection: 'column', flex: 1, textAlign: 'right', alignItems: 'flex-end' }}>
-                    <img 
-                        src={`${baseUrl}/logo_v5.png`} 
-                        width="180" 
-                        height="60" 
-                        style={{ marginBottom: '60px', objectFit: 'contain' }} 
-                    />
-                    <div style={{ fontSize: 72, fontWeight: 'bold', color: '#000', marginBottom: '15px' }}>
-                        {product.brand_he || product.brand}
-                    </div>
-                    <div style={{ fontSize: 48, color: '#555' }}>
-                        {product.model_he || product.model}
-                    </div>
-                    <div style={{ fontSize: 24, color: '#888', marginTop: '60px' }}>
-                        יוקרה בחתיכות קטנות
-                    </div>
-                </div>
-
                 {/* Product Image (Left Side) */}
-                <div style={{ display: 'flex', flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+                <div style={{ display: 'flex', width: '480px', height: '480px', justifyContent: 'center', alignItems: 'center' }}>
                     <img
-                        src={imageUrl}
-                        width="480"
-                        height="480"
+                        src={displayImage}
+                        width={fallbackLogo ? "320" : "480"}
+                        height={fallbackLogo ? "120" : "480"}
                         style={{ objectFit: 'contain' }}
                     />
+                </div>
+
+                {/* Product Details (Right Side) */}
+                <div style={{ display: 'flex', flexDirection: 'column', flex: 1, textAlign: 'right', alignItems: 'flex-end', paddingLeft: '40px' }}>
+                    <div style={{ display: 'flex', marginBottom: '40px' }}>
+                        <img 
+                            src={`${baseUrl}/logo_v5.png`} 
+                            width="200" 
+                            height="70" 
+                            style={{ objectFit: 'contain' }} 
+                        />
+                    </div>
+                    
+                    <div style={{ fontSize: 72, fontWeight: 'bold', color: '#000', marginBottom: '15px', direction: 'rtl' }}>
+                        {product.brand_he || product.brand}
+                    </div>
+                    <div style={{ fontSize: 48, color: '#444', marginBottom: '40px', direction: 'rtl' }}>
+                        {product.model_he || product.model}
+                    </div>
+                    
+                    <div style={{ display: 'flex', borderTop: '2px solid #f0f0f0', paddingTop: '30px', width: '100%', justifyContent: 'flex-end' }}>
+                        <div style={{ fontSize: 26, color: '#888', fontWeight: 'normal' }}>
+                            יוקרה בחתיכות קטנות
+                        </div>
+                    </div>
                 </div>
             </div>
         ),

@@ -13,8 +13,8 @@ export default function HomeSEOContent() {
                 <div className={isRTL ? 'text-right' : 'text-left'}>
                     {/* Premium Header */}
                     <div className={`mb-16 text-center ${isRTL ? 'md:text-right' : 'md:text-left'}`}>
-                        <span className="text-xs uppercase tracking-[0.3em] text-gray-400 font-bold mb-3 block">{t('homepage.seo_guide_badge') || 'Premium Fragrance Guide'}</span>
-                        <h2 className="text-[clamp(14px,3.1vw,38px)] lg:text-[36.5px] font-serif font-black text-gray-900 mb-6 leading-tight whitespace-normal md:whitespace-nowrap">
+                        <span className="text-[13px] md:text-xs uppercase tracking-[0.3em] text-gray-400 font-bold mb-4 block">{t('homepage.seo_guide_badge') || 'Premium Fragrance Guide'}</span>
+                        <h2 className="text-[clamp(22px,6vw,38px)] lg:text-[36.5px] font-serif font-black text-gray-900 mb-8 leading-tight whitespace-normal md:whitespace-nowrap">
                             {t('common.seo_title')}
                         </h2>
                         <div className={`w-20 h-1.5 bg-black rounded-full mx-auto ${isRTL ? 'md:mx-0' : 'md:ml-0'}`}></div>
