@@ -86,7 +86,7 @@ export const getNewProductTemplate = (product) => {
 export const getOrderConfirmationTemplate = (orderId, items, total, freeSamples, notes, deliveryMethod, shippingCost) => {
     const itemsHtml = items.map(item => `
         <tr>
-            <td style="padding: 8px; border-bottom: 1px solid #ddd;">${item.name} (${item.size} מ"ל)</td>
+            <td style="padding: 8px; border-bottom: 1px solid #ddd;">${item.name || (item.brand + ' ' + item.model)} (${item.size} מ"ל)</td>
             <td style="padding: 8px; border-bottom: 1px solid #ddd;">${item.quantity}</td>
             <td style="padding: 8px; border-bottom: 1px solid #ddd;">${item.price} ₪</td>
         </tr>
@@ -185,7 +185,7 @@ export const getStatusUpdateTemplate = (orderId, status, customerName) => {
 };
 
 export const getAdminNewOrderTemplate = (orderId, customerName, total, items, deliveryMethod, shippingCost, phoneNumber) => {
-    const itemsHtml = items.map(item => `<li>${item.name} (${item.size}ml) x${item.quantity}</li>`).join('');
+    const itemsHtml = items.map(item => `<li>${item.name || (item.brand + ' ' + item.model)} (${item.size}ml) x${item.quantity}</li>`).join('');
     const deliveryText = deliveryMethod === 'self_pickup' ? 'איסוף עצמי (תל אביב)' : 'משלוח בדואר';
     
     return `

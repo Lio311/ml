@@ -17,16 +17,31 @@ const STATUS_OPTIONS = [
     { value: 'cancelled', label: 'בוטל', icon: <div className="w-2 h-2 rounded-full bg-gray-400" /> },
 ];
 
-export default function AdminOrdersListClient({ orders, totalPages, page, canEdit, deleteOrder }) {
+export default function AdminOrdersListClient({ 
+    mainOrders, 
+    totalMainPages, 
+    mainPage, 
+    catalogOrders, 
+    totalCatalogPages, 
+    catalogPage, 
+    canEdit, 
+    deleteOrder 
+}) {
     const [selectedOrderIds, setSelectedOrderIds] = useState([]);
     const [batchStatus, setBatchStatus] = useState('pending');
     const [isApplyingBatch, setIsApplyingBatch] = useState(false);
 
-    const handleSelectAll = (e) => {
+    const allOrders = [...mainOrders, ...catalogOrders];
+
+    const handleSelectAll = (ordersToSelect) => (e) => {
         if (e.target.checked) {
-            setSelectedOrderIds(orders.map(o => o.id));
+            setSelectedOrderIds(prev => {
+                const newIds = ordersToSelect.map(o => o.id).filter(id => !prev.includes(id));
+                return [...prev, ...newIds];
+            });
         } else {
-            setSelectedOrderIds([]);
+            const idsToRemove = ordersToSelect.map(o => o.id);
+            setSelectedOrderIds(prev => prev.filter(id => !idsToRemove.includes(id)));
         }
     };
 
@@ -54,7 +69,7 @@ export default function AdminOrdersListClient({ orders, totalPages, page, canEdi
             toast.success('הסטטוס המשותף התעדכן בהצלחה', { id: toastId });
             setSelectedOrderIds([]);
             setTimeout(() => {
-                window.location.reload(); // Quick way to refresh server component data without complex router.refresh payload handling
+                window.location.reload();
             }, 500);
         } catch (e) {
             toast.error('שגיאה בעדכון חלק מההזמנות', { id: toastId });
@@ -63,60 +78,42 @@ export default function AdminOrdersListClient({ orders, totalPages, page, canEdi
         }
     };
 
-    const selectedOrdersData = orders.filter(o => selectedOrderIds.includes(o.id));
+    const selectedOrdersData = allOrders.filter(o => selectedOrderIds.includes(o.id));
 
-    return (
-        <div className="pb-8 relative">
-            
-            {/* Header and Batch Action Bar */}
-            <div className="flex flex-col xl:flex-row items-start xl:items-center justify-center gap-4 mb-4 lg:mb-8 relative min-h-[44px] xl:min-h-[72px]">
-                <h1 className="text-2xl md:text-3xl font-bold text-gray-900 shrink-0 xl:absolute xl:right-0 xl:top-1/2 xl:-translate-y-1/2">ניהול הזמנות</h1>
-                
-                {selectedOrderIds.length > 0 && canEdit && (
-                    <div className="bg-white border text-gray-800 p-2.5 md:p-3 rounded-2xl shadow-sm z-40 flex flex-col md:flex-row items-center gap-4 animate-in fade-in zoom-in-95 w-full xl:w-auto relative xl:absolute xl:left-1/2 xl:-translate-x-1/2 xl:top-1/2 xl:-translate-y-1/2">
-                        <div className="font-bold flex items-center justify-center gap-2.5 w-full md:w-auto text-sm md:text-base border-b md:border-b-0 border-gray-100 pb-3 md:pb-0 md:pl-2">
-                            <span className="bg-blue-100 text-blue-700 w-6 h-6 rounded-full flex items-center justify-center text-xs font-black">{selectedOrderIds.length}</span>
-                            <span className="text-gray-600 font-bold">סומנו</span>
-                        </div>
-                        
-                        <div className="min-w-[140px] w-full md:w-auto md:mr-4">
-                            <CustomDropdown
-                                options={STATUS_OPTIONS}
-                                value={batchStatus}
-                                onChange={setBatchStatus}
-                                variant="status"
-                            />
-                        </div>
+    const renderOrdersTable = (orders, totalPages, currentPage, type = 'main') => {
+        const isMain = type === 'main';
+        const themeColor = isMain ? 'blue' : 'amber';
+        const pageParam = isMain ? 'page' : 'cpage';
+        const otherParam = isMain ? `cpage=${catalogPage}` : `page=${mainPage}`;
 
-                        <button 
-                            onClick={handleApplyBatchStatus}
-                            disabled={isApplyingBatch}
-                            className="bg-blue-600 border border-blue-700 hover:bg-blue-500 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition whitespace-nowrap shadow-sm w-full md:w-auto"
-                        >
-                            {isApplyingBatch ? 'מעדכן...' : 'החל סטטוס'}
-                        </button>
+        if (orders.length === 0) {
+            return (
+                <div className={`p-8 text-center bg-${themeColor}-50/30 border border-dashed border-${themeColor}-100 rounded-2xl mb-8`}>
+                    <p className={`text-${themeColor}-600 font-bold italic`}>אין הזמנות בקטגוריה זו</p>
+                </div>
+            );
+        }
 
-                        <div className="w-full md:block hidden h-8 w-px bg-gray-200"></div>
+        return (
+            <div className={`bg-white rounded-2xl shadow-sm border border-${themeColor}-100 overflow-hidden mb-12`}>
+                <div className={`bg-${themeColor}-600 text-white p-4 font-black flex justify-between items-center`}>
+                    <span>{isMain ? 'הזמנות מהאתר הראשי' : 'הזמנות מהקטלוגים'}</span>
+                    <span className="text-[10px] opacity-70 uppercase tracking-widest bg-white/20 px-2 py-0.5 rounded-lg border border-white/10">
+                        {orders.length} הזמנות בעמוד
+                    </span>
+                </div>
 
-                        <div className="w-full md:w-auto pt-3 md:pt-0 border-t border-gray-100 md:border-t-0 flex justify-center">
-                            <DownloadBatchOrderPDF selectedOrders={selectedOrdersData} onComplete={() => setSelectedOrderIds([])} />
-                        </div>
-                    </div>
-                )}
-            </div>
-
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
                 {/* Desktop View */}
                 <div className="hidden md:block overflow-x-auto custom-scrollbar">
                     <table className="w-full text-right" dir="rtl">
-                        <thead className="bg-gray-50/80 text-gray-500 text-xs uppercase font-bold">
+                        <thead className={`bg-${themeColor}-50/80 text-${themeColor}-700 text-xs uppercase font-bold`}>
                             <tr>
                                 <th className="p-4 text-center w-12">
                                     <input 
                                         type="checkbox" 
-                                        className="w-4 h-4 rounded border-gray-300 text-black focus:ring-black cursor-pointer"
-                                        checked={orders.length > 0 && selectedOrderIds.length === orders.length}
-                                        onChange={handleSelectAll}
+                                        className={`w-4 h-4 rounded border-gray-300 text-${themeColor}-600 focus:ring-${themeColor}-500 cursor-pointer`}
+                                        checked={orders.length > 0 && orders.every(o => selectedOrderIds.includes(o.id))}
+                                        onChange={handleSelectAll(orders)}
                                     />
                                 </th>
                                 <th className="p-4 text-center">#</th>
@@ -132,25 +129,25 @@ export default function AdminOrdersListClient({ orders, totalPages, page, canEdi
                         </thead>
                         <tbody className="divide-y divide-gray-100 text-center">
                             {orders.map((order) => (
-                                <tr key={order.id} className={`hover:bg-gray-50/50 transition-colors ${selectedOrderIds.includes(order.id) ? 'bg-blue-50/30' : ''}`}>
+                                <tr key={order.id} className={`hover:bg-${themeColor}-50/30 transition-colors ${selectedOrderIds.includes(order.id) ? `bg-${themeColor}-50/50` : ''}`}>
                                     <td className="p-4 text-center">
                                        <input 
                                             type="checkbox" 
-                                            className="w-4 h-4 rounded border-gray-300 text-black focus:ring-black cursor-pointer"
+                                            className={`w-4 h-4 rounded border-gray-300 text-${themeColor}-600 focus:ring-${themeColor}-500 cursor-pointer`}
                                             checked={selectedOrderIds.includes(order.id)}
                                             onChange={() => handleSelectOrder(order.id)}
                                         />
                                     </td>
                                     <td className="p-4 font-bold text-gray-900">{order.id}</td>
-                                    <td className="p-4">
+                                    <td className="p-4 text-right">
                                         <div className="font-bold text-gray-900">{order.customer_details?.name}</div>
                                         <div className="text-xs text-gray-500">{order.customer_details?.email}</div>
                                         {order.customer_details?.phone && (
-                                            <div className="text-xs font-bold text-gray-700 mt-1 flex items-center justify-center gap-1">
+                                            <div className="text-xs font-bold text-gray-700 mt-1 flex items-center justify-end gap-1">
+                                                <a href={`tel:${order.customer_details.phone}`} className="hover:text-blue-600 transition-colors">{order.customer_details.phone}</a>
                                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-3 h-3 text-gray-400">
                                                     <path fillRule="evenodd" d="M2 3.5A1.5 1.5 0 013.5 2h1.148a1.5 1.5 0 011.465 1.175l.716 3.223a1.5 1.5 0 01-1.052 1.767l-.933.267c-.41.117-.643.555-.48.95a11.542 11.542 0 006.254 6.254c.395.163.833-.07.95-.48l.267-.933a1.5 1.5 0 011.767-1.052l3.223.716A1.5 1.5 0 0118 15.352V16.5a1.5 1.5 0 01-1.5 1.5H15c-1.149 0-2.261-.15-3.326-.43a13.006 13.006 0 01-9.244-9.244A13.006 13.006 0 012 5V3.5z" clipRule="evenodd" />
                                                 </svg>
-                                                <a href={`tel:${order.customer_details.phone}`} className="hover:text-blue-600 transition-colors">{order.customer_details.phone}</a>
                                             </div>
                                         )}
                                     </td>
@@ -158,9 +155,9 @@ export default function AdminOrdersListClient({ orders, totalPages, page, canEdi
                                         <ul className="space-y-1">
                                             {order.items?.map((item, idx) => (
                                                 <li key={idx} className="flex gap-2 text-gray-700 justify-start">
-                                                    <span className="font-bold whitespace-nowrap text-blue-600">{item.quantity}x</span>
-                                                    <span>{item.name}</span>
-                                                    <span className="text-gray-400 whitespace-nowrap" dir="ltr">{item.size.toString().includes('ml') ? item.size : `${item.size} ml`}</span>
+                                                    <span className={`font-bold whitespace-nowrap text-${themeColor}-600`}>{item.quantity}x</span>
+                                                    <span>{item.name || `${item.brand} ${item.model}`}</span>
+                                                    <span className="text-gray-400 whitespace-nowrap" dir="ltr">{String(item.size).includes('ml') ? item.size : `${item.size} ml`}</span>
                                                 </li>
                                             ))}
                                         </ul>
@@ -175,7 +172,7 @@ export default function AdminOrdersListClient({ orders, totalPages, page, canEdi
                                     <td className="p-4">
                                         <div className="flex justify-center">
                                             {order.free_samples_count > 0 ? (
-                                                <div className="inline-flex flex-col items-center text-[10px] text-blue-700 bg-blue-50 px-2 py-1 rounded-lg border border-blue-100" title="דוגמיות מתנה">
+                                                <div className={`inline-flex flex-col items-center text-[10px] text-${themeColor}-700 bg-${themeColor}-50 px-2 py-1 rounded-lg border border-${themeColor}-100`} title="דוגמיות מתנה">
                                                     <span className="text-sm">🎁</span>
                                                     <span className="font-bold whitespace-nowrap">{order.free_samples_count} דוגמיות</span>
                                                 </div>
@@ -242,35 +239,15 @@ export default function AdminOrdersListClient({ orders, totalPages, page, canEdi
 
                 {/* Mobile View - Card Layout */}
                 <div className="md:hidden divide-y divide-gray-100/50">
-                    {/* Select All Bar (Mobile) */}
-                    {orders.length > 0 && canEdit && (
-                         <div className="p-4 bg-gray-50 flex items-center justify-between border-b">
-                             <div className="flex items-center gap-2">
-                                 <input 
-                                     type="checkbox" 
-                                     id="selectAllMobile"
-                                     className="w-5 h-5 rounded border-gray-300 text-black focus:ring-black cursor-pointer"
-                                     checked={orders.length > 0 && selectedOrderIds.length === orders.length}
-                                     onChange={handleSelectAll}
-                                 />
-                                 <label htmlFor="selectAllMobile" className="text-sm font-bold opacity-70">
-                                     בחר הכל
-                                 </label>
-                             </div>
-                             {selectedOrderIds.length > 0 && (
-                                <span className="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded-md">{selectedOrderIds.length} נבחרו</span>
-                             )}
-                         </div>
-                    )}
                     {orders.map((order) => (
-                        <div key={order.id} className={`p-5 hover:bg-gray-50/50 transition-colors ${selectedOrderIds.includes(order.id) ? 'bg-blue-50/30' : 'bg-white'}`}>
+                        <div key={order.id} className={`p-5 hover:bg-${themeColor}-50/30 transition-colors ${selectedOrderIds.includes(order.id) ? `bg-${themeColor}-50/30` : 'bg-white'}`}>
                             <div className="flex justify-between items-start mb-4">
                                 <div className="space-y-1">
                                     <div className="flex items-center gap-2 mb-1">
                                         {canEdit && (
                                             <input 
                                                 type="checkbox" 
-                                                className="w-5 h-5 rounded border-gray-300 text-black focus:ring-black cursor-pointer ml-1"
+                                                className={`w-5 h-5 rounded border-gray-300 text-${themeColor}-600 focus:ring-${themeColor}-500 cursor-pointer ml-1`}
                                                 checked={selectedOrderIds.includes(order.id)}
                                                 onChange={() => handleSelectOrder(order.id)}
                                             />
@@ -303,17 +280,17 @@ export default function AdminOrdersListClient({ orders, totalPages, page, canEdi
                                 </div>
                             </div>
 
-                            <div className="mb-5 bg-gray-50/50 rounded-[1.5rem] border border-gray-100/50 p-4">
+                            <div className={`mb-5 bg-${themeColor}-50/30 rounded-[1.5rem] border border-${themeColor}-100/50 p-4`}>
                                 <h4 className="text-[9px] uppercase font-black text-gray-400 mb-3 tracking-widest opacity-60">תכולת ההזמנה</h4>
                                 <ul className="space-y-2.5">
                                     {order.items?.map((item, idx) => (
                                         <li key={idx} className="flex justify-between items-start text-[13px]">
                                             <div className="flex gap-2.5 flex-1">
-                                                <span className="font-black text-blue-600 bg-blue-50 w-6 h-6 rounded-lg flex items-center justify-center text-[11px] shrink-0 border border-blue-100/50">{item.quantity}</span>
-                                                <span className="font-bold text-gray-800 leading-tight pt-0.5">{item.name}</span>
+                                                <span className={`font-black text-${themeColor}-600 bg-${themeColor}-50 w-6 h-6 rounded-lg flex items-center justify-center text-[11px] shrink-0 border border-${themeColor}-100/50`}>{item.quantity}</span>
+                                                <span className="font-bold text-gray-800 leading-tight pt-0.5">{item.name || `${item.brand} ${item.model}`}</span>
                                             </div>
                                             <span className="text-gray-400 font-black text-[10px] uppercase tracking-tighter pt-1 shrink-0 bg-white px-2 py-0.5 rounded-lg border border-gray-100" dir="ltr">
-                                                {item.size.toString().includes('ml') ? item.size : `${item.size}ml`}
+                                                {String(item.size).includes('ml') ? item.size : `${item.size}ml`}
                                             </span>
                                         </li>
                                     ))}
@@ -328,7 +305,7 @@ export default function AdminOrdersListClient({ orders, totalPages, page, canEdi
 
                             <div className="flex flex-wrap items-center gap-2 mb-4">
                                 {order.free_samples_count > 0 && (
-                                    <div className="flex items-center gap-2 text-[10px] font-black text-blue-700 bg-blue-50 px-3 py-1.5 rounded-xl border border-blue-100 shadow-sm">
+                                    <div className={`flex items-center gap-2 text-[10px] font-black text-${themeColor}-700 bg-${themeColor}-50 px-3 py-1.5 rounded-xl border border-${themeColor}-100 shadow-sm`}>
                                         <span className="text-xs">🎁</span>
                                         <span className="uppercase tracking-widest">{order.free_samples_count} דוגמיות</span>
                                     </div>
@@ -354,40 +331,89 @@ export default function AdminOrdersListClient({ orders, totalPages, page, canEdi
                         </div>
                     ))}
                 </div>
+
+                {/* Pagination Controls - Specific to this table */}
+                {totalPages > 1 && (
+                    <div className={`flex justify-center items-center gap-4 py-6 bg-gray-50/50 border-t border-${themeColor}-50`}>
+                        <Link
+                            href={`/admin/orders?${pageParam}=${Math.max(1, currentPage - 1)}&${otherParam}`}
+                            className={`w-10 h-10 flex items-center justify-center border rounded-xl hover:bg-gray-100 transition-all ${currentPage === 1 ? 'opacity-30 pointer-events-none' : 'shadow-sm'}`}
+                            aria-disabled={currentPage === 1}
+                        >
+                            →
+                        </Link>
+
+                        <div className="flex gap-2">
+                            {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+                                <Link
+                                    key={p}
+                                    href={`/admin/orders?${pageParam}=${p}&${otherParam}`}
+                                    className={`w-8 h-8 flex items-center justify-center rounded-lg text-xs font-bold transition-all ${currentPage === p ? `bg-${themeColor}-600 text-white shadow-md scale-110` : 'text-gray-400 hover:bg-gray-100'}`}
+                                >
+                                    {p}
+                                </Link>
+                            ))}
+                        </div>
+
+                        <Link
+                            href={`/admin/orders?${pageParam}=${Math.min(totalPages, currentPage + 1)}&${otherParam}`}
+                            className={`w-10 h-10 flex items-center justify-center border rounded-xl hover:bg-gray-100 transition-all ${currentPage === totalPages ? 'opacity-30 pointer-events-none' : 'shadow-sm'}`}
+                            aria-disabled={currentPage === totalPages}
+                        >
+                            ←
+                        </Link>
+                    </div>
+                )}
+            </div>
+        );
+    };
+
+    return (
+        <div className="pb-8 relative">
+            {/* Header and Batch Action Bar */}
+            <div className="flex flex-col xl:flex-row items-start xl:items-center justify-center gap-4 mb-4 lg:mb-8 relative min-h-[44px] xl:min-h-[72px]">
+                <h1 className="text-2xl md:text-3xl font-bold text-gray-900 shrink-0 xl:absolute xl:right-0 xl:top-1/2 xl:-translate-y-1/2 font-black tracking-tighter">ניהול הזמנות</h1>
+                
+                {selectedOrderIds.length > 0 && canEdit && (
+                    <div className="bg-white border-2 border-black text-gray-800 p-2.5 md:p-3 rounded-2xl shadow-xl z-40 flex flex-col md:flex-row items-center gap-4 animate-in fade-in zoom-in-95 w-full xl:w-auto relative xl:absolute xl:left-1/2 xl:-translate-x-1/2 xl:top-1/2 xl:-translate-y-1/2">
+                        <div className="font-bold flex items-center justify-center gap-2.5 w-full md:w-auto text-sm md:text-base border-b md:border-b-0 border-gray-100 pb-3 md:pb-0 md:pl-2">
+                            <span className="bg-black text-white w-6 h-6 rounded-full flex items-center justify-center text-xs font-black">{selectedOrderIds.length}</span>
+                            <span className="text-black font-black uppercase tracking-widest text-[10px]">סומנו לעדכון</span>
+                        </div>
+                        
+                        <div className="min-w-[140px] w-full md:w-auto md:mr-4">
+                            <CustomDropdown
+                                options={STATUS_OPTIONS}
+                                value={batchStatus}
+                                onChange={setBatchStatus}
+                                variant="status"
+                            />
+                        </div>
+
+                        <button 
+                            onClick={handleApplyBatchStatus}
+                            disabled={isApplyingBatch}
+                            className="bg-black hover:bg-gray-800 text-white px-6 py-2.5 rounded-xl text-xs font-black transition whitespace-nowrap shadow-sm w-full md:w-auto uppercase tracking-widest"
+                        >
+                            {isApplyingBatch ? 'מעדכן...' : 'החל שינויים'}
+                        </button>
+
+                        <div className="w-full md:block hidden h-8 w-px bg-gray-200"></div>
+
+                        <div className="w-full md:w-auto pt-3 md:pt-0 border-t border-gray-100 md:border-t-0 flex justify-center">
+                            <DownloadBatchOrderPDF selectedOrders={selectedOrdersData} onComplete={() => setSelectedOrderIds([])} />
+                        </div>
+                    </div>
+                )}
             </div>
 
-            {/* Pagination Controls - Brand Style */}
-            {totalPages > 1 && (
-                <div className="flex justify-center items-center gap-4 mt-8">
-                    <Link
-                        href={`/admin/orders?page=${Math.max(1, page - 1)}`}
-                        className={`w-10 h-10 flex items-center justify-center border rounded-xl hover:bg-gray-100 transition-all ${page === 1 ? 'opacity-30 pointer-events-none' : 'shadow-sm'}`}
-                        aria-disabled={page === 1}
-                    >
-                        →
-                    </Link>
+            {/* Main Site Orders Section */}
+            {renderOrdersTable(mainOrders, totalMainPages, mainPage, 'main')}
 
-                    <div className="flex gap-2">
-                        {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
-                            <Link
-                                key={p}
-                                href={`/admin/orders?page=${p}`}
-                                className={`w-8 h-8 flex items-center justify-center rounded-lg text-xs font-bold transition-all ${page === p ? 'bg-black text-white shadow-md scale-110' : 'text-gray-400 hover:bg-gray-100'}`}
-                            >
-                                {p}
-                            </Link>
-                        ))}
-                    </div>
-
-                    <Link
-                        href={`/admin/orders?page=${Math.min(totalPages, page + 1)}`}
-                        className={`w-10 h-10 flex items-center justify-center border rounded-xl hover:bg-gray-100 transition-all ${page === totalPages ? 'opacity-30 pointer-events-none' : 'shadow-sm'}`}
-                        aria-disabled={page === totalPages}
-                    >
-                        ←
-                    </Link>
-                </div>
-            )}
+            {/* Catalog Orders Section */}
+            <div className="mt-12 pt-12 border-t-2 border-dashed border-gray-100">
+                {renderOrdersTable(catalogOrders, totalCatalogPages, catalogPage, 'catalog')}
+            </div>
         </div>
     );
 }

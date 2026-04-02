@@ -504,7 +504,7 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
                                                     <Image src={item.image_url || '/placeholder.png'} alt={item.name || "Product"} fill sizes="40px" className="object-contain group-hover:scale-110 transition-transform" />
                                                 </div>
                                                 <div className="flex flex-col min-w-0 flex-1">
-                                                    <span className="text-[10px] font-bold text-gray-800 leading-tight">{item.name}</span>
+                                                    <span className="text-[10px] font-bold text-gray-800 leading-tight">{item.name || `${item.brand || ''} ${item.model || ''}`.trim()}</span>
                                                     <div className="flex items-center gap-1 text-[9px] text-gray-400 mt-0.5">
                                                         <span className="bg-gray-200 px-1 rounded font-medium text-gray-600">{String(item.size).replace(/ml|מ"ל/gi, '').trim()} {t('common.ml_unit')}</span>
                                                         <span className="font-bold text-black">x{item.quantity}</span>

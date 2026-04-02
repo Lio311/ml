@@ -162,7 +162,7 @@ export default function OrdersClient() {
                                         {/* Product Image */}
                                         <div className="w-16 h-16 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0 border relative">
                                             {item.image_url ? (
-                                                <Image src={item.image_url} alt={item.name || "Product"} fill sizes="64px" className="object-contain" />
+                                                <Image src={item.image_url} alt={(item.name || (item.brand + ' ' + item.model)) || "Product"} fill sizes="64px" className="object-contain" />
                                             ) : (
                                                 <div className="w-full h-full flex items-center justify-center text-xl">🧴</div>
                                             )}
@@ -170,7 +170,7 @@ export default function OrdersClient() {
 
                                         {/* Details */}
                                         <div className="flex-1">
-                                            <div className="font-bold text-gray-900">{item.name}</div>
+                                            <div className="font-bold text-gray-900">{item.name || (item.brand + ' ' + item.model)}</div>
                                             <div className="text-sm text-gray-500 flex items-center gap-3 mt-1">
                                                 <span className="bg-gray-100 px-2 py-0.5 rounded text-xs text-gray-700" dir="ltr">
                                                     {item.size.toString().includes('ml') ? item.size : `${item.size} ml`}
@@ -188,7 +188,7 @@ export default function OrdersClient() {
                                                     // Add to cart (assuming item has id, name, etc)
                                                     addToCart({
                                                         id: item.id,
-                                                        name: item.name,
+                                                        name: item.name || (item.brand + ' ' + item.model),
                                                         image_url: item.image_url,
                                                         // Use old stock or standard default? 
                                                         // We'll trust backend validation at checkout.

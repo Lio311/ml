@@ -16,25 +16,41 @@ export const metadata = {
 export default async function AdminOrdersPage(props) {
     const searchParams = await props.searchParams;
     const page = Number(searchParams?.page) || 1;
+    const cpage = Number(searchParams?.cpage) || 1;
     const LIMIT = 5;
+    
     const offset = (page - 1) * LIMIT;
+    const coffset = (cpage - 1) * LIMIT;
 
     const client = await pool.connect();
-    let orders = [];
-    let totalOrders = 0;
+    let mainOrders = [];
+    let totalMainOrders = 0;
+    
+    let catalogOrders = [];
+    let totalCatalogOrders = 0;
 
     try {
-        const [ordersRes, countRes] = await Promise.all([
+        // Fetch Main Site Orders
+        const [mainRes, mainCountRes] = await Promise.all([
             client.query('SELECT id, items, total_amount, status, customer_details, created_at, invoice_url, catalog_id, free_samples_count, notes, delivery_method FROM orders WHERE catalog_id IS NULL ORDER BY created_at DESC LIMIT $1 OFFSET $2', [LIMIT, offset]),
             client.query('SELECT COUNT(*) FROM orders WHERE catalog_id IS NULL')
         ]);
-        orders = sanitizeProductArray(ordersRes.rows);
-        totalOrders = parseInt(countRes.rows[0].count);
+        mainOrders = sanitizeProductArray(mainRes.rows);
+        totalMainOrders = parseInt(mainCountRes.rows[0].count);
+
+        // Fetch Catalog Orders
+        const [catalogRes, catalogCountRes] = await Promise.all([
+            client.query('SELECT id, items, total_amount, status, customer_details, created_at, invoice_url, catalog_id, free_samples_count, notes, delivery_method FROM orders WHERE catalog_id IS NOT NULL ORDER BY created_at DESC LIMIT $1 OFFSET $2', [LIMIT, coffset]),
+            client.query('SELECT COUNT(*) FROM orders WHERE catalog_id IS NOT NULL')
+        ]);
+        catalogOrders = sanitizeProductArray(catalogRes.rows);
+        totalCatalogOrders = parseInt(catalogCountRes.rows[0].count);
     } finally {
         client.release();
     }
 
-    const totalPages = Math.ceil(totalOrders / LIMIT);
+    const totalMainPages = Math.ceil(totalMainOrders / LIMIT);
+    const totalCatalogPages = Math.ceil(totalCatalogOrders / LIMIT);
 
     const user = await currentUser();
     const email = user?.emailAddresses[0]?.emailAddress;
@@ -111,9 +127,12 @@ export default async function AdminOrdersPage(props) {
 
     return (
         <AdminOrdersListClient 
-            orders={orders} 
-            totalPages={totalPages} 
-            page={page} 
+            mainOrders={mainOrders} 
+            totalMainPages={totalMainPages}
+            mainPage={page}
+            catalogOrders={catalogOrders}
+            totalCatalogPages={totalCatalogPages}
+            catalogPage={cpage}
             canEdit={canEdit} 
             deleteOrder={deleteOrder} 
         />
