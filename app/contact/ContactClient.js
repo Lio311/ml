@@ -45,31 +45,31 @@ export default function ContactClient() {
             <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-zinc-800/20 rounded-full blur-[120px] pointer-events-none" />
             <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-zinc-800/20 rounded-full blur-[120px] pointer-events-none" />
 
-            <div className="container max-w-4xl mx-auto relative z-10 px-4">
-                <div className="pt-24 pb-16 text-center overflow-visible">
-                    <h1 className="text-6xl md:text-9xl font-serif font-black mb-8 text-white tracking-tighter animate-fadeIn">
+            <div className="container max-w-xl mx-auto relative z-10 px-4">
+                <div className="pt-8 pb-8 text-center overflow-visible">
+                    <h1 className="text-4xl md:text-6xl font-serif font-black mb-4 text-white tracking-tighter animate-fadeIn">
                         {t('common.contact_title')}
                     </h1>
                     <div className="flex justify-center overflow-visible">
-                        <p className="text-zinc-400 text-sm md:text-lg animate-fadeIn delay-100 italic tracking-wide whitespace-nowrap opacity-80 border-x border-white/5 px-8">
+                        <p className="text-zinc-400 text-xs md:text-sm animate-fadeIn delay-100 italic tracking-widest whitespace-nowrap opacity-70 border-x border-white/5 px-6">
                             {t('common.contact_subtitle')}
                         </p>
                     </div>
                 </div>
 
-                <div className="bg-white/10 backdrop-blur-3xl p-10 md:p-14 rounded-[3.5rem] border border-white/20 shadow-[0_20px_50px_rgba(0,0,0,0.3)] relative overflow-hidden group">
+                <div className="bg-white/10 backdrop-blur-3xl p-6 md:p-10 rounded-[2.5rem] border border-white/20 shadow-[0_20px_50px_rgba(0,0,0,0.3)] relative overflow-hidden group">
                     {/* Subtle Internal Glow */}
-                    <div className="absolute top-0 right-0 w-32 h-32 bg-white/5 rounded-full -translate-y-16 translate-x-16 blur-2xl group-hover:scale-110 transition-transform duration-700" />
+                    <div className="absolute top-0 right-0 w-24 h-24 bg-white/5 rounded-full -translate-y-12 translate-x-12 blur-2xl group-hover:scale-110 transition-transform duration-700" />
 
                     {status === 'success' ? (
-                        <div className="text-center py-16 animate-fadeIn">
-                            <div className="w-20 h-20 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-8 backdrop-blur-xl">
-                                <span className="text-4xl">✅</span>
+                        <div className="text-center py-10 animate-fadeIn">
+                            <div className="w-16 h-16 bg-white/10 rounded-full flex items-center justify-center mx-auto mb-6 backdrop-blur-xl">
+                                <span className="text-3xl">✅</span>
                             </div>
-                            <h3 className="text-3xl font-serif font-black mb-4 text-white">
+                            <h3 className="text-2xl font-serif font-black mb-2 text-white">
                                 {t('common.contact_success_title')}
                             </h3>
-                            <p className="text-zinc-400 text-lg mb-8 max-w-sm mx-auto">
+                            <p className="text-zinc-500 text-sm mb-6 max-w-xs mx-auto leading-relaxed">
                                 {t('common.contact_success_desc')}
                             </p>
                             <button
@@ -80,9 +80,9 @@ export default function ContactClient() {
                             </button>
                         </div>
                     ) : (
-                        <form onSubmit={handleSubmit} className="space-y-8 relative z-10">
+                        <form onSubmit={handleSubmit} className="space-y-5 relative z-10">
                             <div>
-                                <label htmlFor="name" className={`block text-xs uppercase tracking-widest font-bold text-zinc-400 mb-3 px-1 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
+                                <label htmlFor="name" className={`block text-[10px] uppercase tracking-[0.2em] font-bold text-zinc-500 mb-2 px-1 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
                                     {t('common.contact_name_label')}
                                 </label>
                                 <input
@@ -90,13 +90,13 @@ export default function ContactClient() {
                                     id="name"
                                     name="name"
                                     required
-                                    className="w-full bg-black/20 border border-white/10 rounded-2xl p-4 text-white placeholder-zinc-600 focus:outline-none focus:ring-1 focus:ring-white/30 focus:border-white/20 transition-all text-lg"
+                                    className="w-full bg-black/30 border border-white/10 rounded-xl p-3.5 text-white placeholder-zinc-700 focus:outline-none focus:ring-1 focus:ring-white/30 transition-all text-base"
                                     placeholder={t('common.contact_name_placeholder')}
                                 />
                             </div>
 
                             <div>
-                                <label htmlFor="email" className={`block text-xs uppercase tracking-widest font-bold text-zinc-400 mb-3 px-1 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
+                                <label htmlFor="email" className={`block text-[10px] uppercase tracking-[0.2em] font-bold text-zinc-500 mb-2 px-1 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
                                     {t('common.contact_email_label')}
                                 </label>
                                 <input
@@ -104,21 +104,21 @@ export default function ContactClient() {
                                     id="email"
                                     name="email"
                                     required
-                                    className="w-full bg-black/20 border border-white/10 rounded-2xl p-4 text-white placeholder-zinc-600 focus:outline-none focus:ring-1 focus:ring-white/30 focus:border-white/20 transition-all text-lg"
+                                    className="w-full bg-black/30 border border-white/10 rounded-xl p-3.5 text-white placeholder-zinc-700 focus:outline-none focus:ring-1 focus:ring-white/30 transition-all text-base"
                                     placeholder="your@email.com"
                                 />
                             </div>
 
                             <div>
-                                <label htmlFor="message" className={`block text-xs uppercase tracking-widest font-bold text-zinc-400 mb-3 px-1 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
+                                <label htmlFor="message" className={`block text-[10px] uppercase tracking-[0.2em] font-bold text-zinc-500 mb-2 px-1 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
                                     {t('common.contact_message_label')}
                                 </label>
                                 <textarea
                                     id="message"
                                     name="message"
-                                    rows="5"
+                                    rows="4"
                                     required
-                                    className="w-full bg-black/20 border border-white/10 rounded-2xl p-4 text-white placeholder-zinc-600 focus:outline-none focus:ring-1 focus:ring-white/30 focus:border-white/20 transition-all text-lg resize-none"
+                                    className="w-full bg-black/30 border border-white/10 rounded-xl p-3.5 text-white placeholder-zinc-700 focus:outline-none focus:ring-1 focus:ring-white/30 transition-all text-base resize-none"
                                     placeholder={t('common.contact_message_placeholder')}
                                 ></textarea>
                             </div>
@@ -126,13 +126,13 @@ export default function ContactClient() {
                             <button
                                 type="submit"
                                 disabled={status === 'loading'}
-                                className="w-full py-5 bg-white text-black rounded-full font-black text-base tracking-[0.2em] uppercase hover:bg-gray-200 transition-all shadow-[0_10px_30px_rgba(255,255,255,0.1)] active:scale-[0.98] disabled:opacity-50"
+                                className="w-full py-4 mt-2 bg-white text-black rounded-full font-black text-sm tracking-[0.2em] uppercase hover:bg-gray-200 transition-all shadow-xl active:scale-[0.98] disabled:opacity-50"
                             >
                                 {status === 'loading' ? t('common.contact_sending') : t('common.contact_send')}
                             </button>
 
                             {status === 'error' && (
-                                <div className="text-red-400 text-sm text-center font-medium animate-pulse">
+                                <div className="text-red-400 text-xs text-center font-medium animate-pulse">
                                     {t('common.contact_error')}
                                 </div>
                             )}
