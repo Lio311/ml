@@ -56,8 +56,10 @@ export default async function AdminUsersPage(props) {
             client.query(`
                 SELECT 
                     id, first_name, last_name, email, phone, role, created_at, updated_at,
-                    (SELECT COUNT(*) FROM orders WHERE customer_details->>'clerk_id' = users.id AND status != 'cancelled') as total_orders,
-                    (SELECT COALESCE(SUM(total_amount), 0) FROM orders WHERE customer_details->>'clerk_id' = users.id AND status != 'cancelled') as total_spent
+                    (SELECT COUNT(*) FROM orders WHERE customer_details->>'clerk_id' = users.id AND status != 'cancelled' AND catalog_id IS NULL) as site_orders,
+                    (SELECT COALESCE(SUM(total_amount), 0) FROM orders WHERE customer_details->>'clerk_id' = users.id AND status != 'cancelled' AND catalog_id IS NULL) as site_spent,
+                    (SELECT COUNT(*) FROM orders WHERE customer_details->>'clerk_id' = users.id AND status != 'cancelled' AND catalog_id IS NOT NULL) as catalog_orders,
+                    (SELECT COALESCE(SUM(total_amount), 0) FROM orders WHERE customer_details->>'clerk_id' = users.id AND status != 'cancelled' AND catalog_id IS NOT NULL) as catalog_spent
                 FROM users 
                 ${whereClause}
                 ORDER BY 
@@ -101,8 +103,10 @@ export default async function AdminUsersPage(props) {
             createdAt: u.created_at,
             updatedAt: u.updated_at,
             lastLogin: clerkUsersMap[u.id] || u.updated_at, // Fallback to updated_at if clerk fails
-            totalOrders: parseInt(u.total_orders) || 0,
-            totalSpent: parseFloat(u.total_spent) || 0,
+            siteOrders: parseInt(u.site_orders) || 0,
+            siteSpent: parseFloat(u.site_spent) || 0,
+            catalogOrders: parseInt(u.catalog_orders) || 0,
+            catalogSpent: parseFloat(u.catalog_spent) || 0,
         }));
 
         totalUsers = parseInt(countRes.rows[0].count);
@@ -153,10 +157,25 @@ export default async function AdminUsersPage(props) {
                                             canEdit={canEdit} 
                                         />
                                     </td>
-                                    <td className="p-4 text-sm bg-blue-50/20">
-                                        <div className="flex flex-col items-center justify-center gap-1">
-                                            <div className="font-black text-gray-900 leading-none">₪{u.totalSpent}</div>
-                                            <div className="text-[10px] font-bold text-blue-600 bg-blue-100 px-2 py-0.5 rounded-md leading-none">{u.totalOrders} הזמנות</div>
+                                    <td className="p-4 text-sm bg-gray-50/20">
+                                        <div className="flex flex-col items-center justify-center gap-1.5 min-w-[120px]">
+                                            {/* Site Orders - Blue */}
+                                            <div className="w-full flex items-center justify-between gap-3 bg-blue-50/50 px-3 py-1.5 rounded-lg border border-blue-100/50">
+                                                <div className="flex flex-col items-start leading-tight">
+                                                    <span className="text-[9px] font-black text-blue-400 uppercase tracking-tighter">אתר</span>
+                                                    <div className="font-black text-blue-900">₪{u.siteSpent}</div>
+                                                </div>
+                                                <div className="text-[10px] font-bold text-blue-600 bg-blue-100 px-1.5 py-0.5 rounded leading-none">{u.siteOrders}</div>
+                                            </div>
+
+                                            {/* Catalog Orders - Yellow */}
+                                            <div className="w-full flex items-center justify-between gap-3 bg-amber-50/50 px-3 py-1.5 rounded-lg border border-amber-100/50">
+                                                <div className="flex flex-col items-start leading-tight">
+                                                    <span className="text-[9px] font-black text-amber-500/80 uppercase tracking-tighter">קטלוגים</span>
+                                                    <div className="font-black text-amber-900">₪{u.catalogSpent}</div>
+                                                </div>
+                                                <div className="text-[10px] font-bold text-amber-600 bg-amber-100 px-1.5 py-0.5 rounded leading-none">{u.catalogOrders}</div>
+                                            </div>
                                         </div>
                                     </td>
                                     <td className="p-4 text-xs text-gray-500 text-right space-y-1">
@@ -200,15 +219,29 @@ export default async function AdminUsersPage(props) {
                                 </div>
                             </div>
                             
-                            <div className="flex justify-between items-center bg-blue-50 p-3 rounded-xl border border-blue-100 my-2">
-                                <div className="text-center">
-                                    <div className="text-[10px] uppercase font-black text-blue-400 tracking-widest mb-1">הוצאות באתר</div>
-                                    <div className="font-black text-gray-900 leading-none">₪{u.totalSpent}</div>
+                            <div className="grid grid-cols-1 gap-2 my-2">
+                                {/* Site Orders - Blue */}
+                                <div className="flex justify-between items-center bg-blue-50 p-3 rounded-xl border border-blue-100">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center text-blue-600">🌐</div>
+                                        <div>
+                                            <div className="text-[10px] uppercase font-black text-blue-400 tracking-widest">הזמנות מהאתר</div>
+                                            <div className="font-black text-blue-900">₪{u.siteSpent}</div>
+                                        </div>
+                                    </div>
+                                    <div className="text-[12px] font-bold text-blue-700 bg-white px-3 py-1 rounded-md shadow-sm border border-blue-100 leading-none">{u.siteOrders}</div>
                                 </div>
-                                <div className="w-px h-8 bg-blue-200"></div>
-                                <div className="text-center">
-                                    <div className="text-[10px] uppercase font-black text-blue-400 tracking-widest mb-1">הזמנות</div>
-                                    <div className="text-[12px] font-bold text-blue-700 bg-white px-3 py-1 rounded-md shadow-sm border border-blue-100 leading-none">{u.totalOrders}</div>
+
+                                {/* Catalog Orders - Yellow/Amber */}
+                                <div className="flex justify-between items-center bg-amber-50 p-3 rounded-xl border border-amber-100">
+                                    <div className="flex items-center gap-3">
+                                        <div className="w-8 h-8 bg-amber-100 rounded-lg flex items-center justify-center text-amber-600">📖</div>
+                                        <div>
+                                            <div className="text-[10px] uppercase font-black text-amber-500 tracking-widest">הזמנות מקטלוגים</div>
+                                            <div className="font-black text-amber-900">₪{u.catalogSpent}</div>
+                                        </div>
+                                    </div>
+                                    <div className="text-[12px] font-bold text-amber-700 bg-white px-3 py-1 rounded-md shadow-sm border border-amber-100 leading-none">{u.catalogOrders}</div>
                                 </div>
                             </div>
 

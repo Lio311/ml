@@ -89,39 +89,54 @@ export default function SmartMatchingClient({ initialNotes }) {
     };
 
     const addToCartAll = async () => {
-        if (!results || !results.products || isAddedToCart) return;
+        if (!results) return;
 
-        // 1. Trigger Premium Animation
+        const newAnimatingIds = new Set(animatingProductIds);
+        const newFlyingItems = [];
         const cartIcon = document.getElementById('cart-icon-main');
-        const cartRect = cartIcon?.getBoundingClientRect() || { left: window.innerWidth - 50, top: 20 };
+        const cartRect = cartIcon?.getBoundingClientRect() || { left: window.innerWidth - 100, top: 20 };
 
-        const newFlyingItems = results.products.map((p, idx) => {
+        results.products.forEach((p, index) => {
             const el = productRefs.current[p.id];
-            if (!el) return null;
+            if (!el) return;
+
             const rect = el.getBoundingClientRect();
-            return {
-                id: Math.random(),
+            newAnimatingIds.add(p.id);
+
+            newFlyingItems.push({
+                id: `${p.id}-${Date.now()}`,
+                productId: p.id,
+                name: localize(p, 'name'),
+                brand: p.brand,
                 image: p.image_url,
                 start: { x: rect.left, y: rect.top },
                 end: { x: cartRect.left, y: cartRect.top },
-                delay: idx * 0.1, // Staggered launch every 100ms
-                rotation: Math.random() * 360 - 180 // Random initial/flight rotation
-            };
-        }).filter(Boolean);
+                dimensions: { width: rect.width, height: rect.height },
+                delay: index * 0.15, // Staggered entry
+                rotation: dir === 'rtl' ? -15 : 15 // Slight rotation for physics feel
+            });
+        });
 
+        setAnimatingProductIds(newAnimatingIds);
         setFlyingItems(newFlyingItems);
 
-        // 2. Add to cart backend
-        const itemsToAdd = results.products.map(p => ({
-            product: p,
-            size: parseInt(preferences.size),
-            price: p.price
-        }));
-
-        addMultipleToCart(itemsToAdd, {
-            successKey: 'matching.added_success'
-        });
-        setIsAddedToCart(true);
+        // Actual API call logic
+        try {
+            for (const p of results.products) {
+                await addItem({
+                    id: p.id,
+                    name: localize(p, 'name'),
+                    brand: p.brand,
+                    price: p.price,
+                    image_url: p.image_url,
+                    volume: p.volume || '10ml',
+                    quantity: 1
+                });
+            }
+            setIsAddedToCart(true);
+        } catch (error) {
+            console.error("Failed to add all items to cart:", error);
+        }
 
         // 3. Clear flying items after animation
         setTimeout(() => {
@@ -337,8 +352,11 @@ export default function SmartMatchingClient({ initialNotes }) {
                                     <div 
                                         key={p.id} 
                                         ref={el => productRefs.current[p.id] = el}
-                                        className="flex gap-5 p-5 bg-white/50 border border-zinc-100 rounded-[1.5rem] items-center hover:bg-white hover:border-zinc-200 hover:shadow-md transition-all duration-300 group"
-                                        style={{ animationDelay: `${idx * 100}ms` }}
+                                        className={`flex gap-5 p-5 bg-white/50 border border-zinc-100 rounded-[1.5rem] items-center hover:bg-white hover:border-zinc-200 hover:shadow-md transition-all duration-300 group ${animatingProductIds.has(p.id) ? 'opacity-0 scale-90' : 'opacity-100 scale-100'}`}
+                                        style={{ 
+                                            animationDelay: `${idx * 100}ms`,
+                                            visibility: animatingProductIds.has(p.id) ? 'hidden' : 'visible'
+                                        }}
                                     >
                                         <div className="w-20 h-20 bg-zinc-50 rounded-2xl flex-shrink-0 flex items-center justify-center relative overflow-hidden group-hover:scale-105 transition-transform">
                                             {p.image_url ? (
@@ -435,47 +453,47 @@ export default function SmartMatchingClient({ initialNotes }) {
                             initial={{ 
                                 x: item.start.x, 
                                 y: item.start.y, 
+                                width: item.dimensions.width,
+                                height: item.dimensions.height,
                                 scale: 1, 
                                 opacity: 1,
                                 rotate: 0 
                             }}
                             animate={{ 
                                 x: item.end.x,
-                                // Parabolic arc: middle point is much higher than both start and end
-                                y: [item.start.y, Math.min(item.start.y, item.end.y) - 250, item.end.y],
-                                scale: [1, 1.2, 0.1], 
+                                // Smooth hover arc
+                                y: [item.start.y, item.start.y - 150, item.end.y],
+                                scale: [1, 0.8, 0.05], 
                                 opacity: [1, 1, 0],
                                 rotate: item.rotation
                             }}
                             transition={{ 
-                                duration: 1.2, 
+                                duration: 1.1, 
                                 delay: item.delay,
-                                ease: "circOut",
-                                // Physics-based pop for landing
+                                ease: "easeInOut",
                                 onComplete: () => {
                                     const cartIcon = document.getElementById('cart-icon-main');
                                     if (cartIcon) {
                                         cartIcon.classList.remove('animate-cart-pop');
-                                        void cartIcon.offsetWidth; // Trigger reflow
+                                        void cartIcon.offsetWidth; 
                                         cartIcon.classList.add('animate-cart-pop');
                                     }
                                 }
                             }}
-                            className="absolute w-16 h-16 bg-white rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.15)] p-3 border border-zinc-100 flex items-center justify-center overflow-hidden"
+                            className="absolute bg-white/90 backdrop-blur-md rounded-[1.5rem] shadow-[0_30px_70px_rgba(0,0,0,0.2)] p-5 border border-zinc-200/50 flex items-center gap-5 overflow-hidden origin-top-left"
                             style={{ zIndex: 10000 }}
                         >
-                            <div className="absolute inset-0 bg-gradient-to-tr from-zinc-50 to-white opacity-50" />
-                            {item.image ? (
-                                <img src={item.image} alt="" className="w-full h-full object-contain relative z-10" />
-                            ) : (
-                                <span className="text-3xl relative z-10">🧴</span>
-                            )}
-                            {/* Motion Blur Trail effect */}
-                            <motion.div 
-                                className="absolute inset-0 bg-white/20 blur-sm -z-10"
-                                animate={{ opacity: [0, 0.5, 0] }}
-                                transition={{ duration: 0.3, repeat: Infinity }}
-                            />
+                            <div className="w-16 h-16 bg-zinc-50 rounded-xl flex-shrink-0 flex items-center justify-center relative overflow-hidden">
+                                {item.image ? (
+                                    <img src={item.image} alt="" className="w-full h-full object-contain p-2" />
+                                ) : (
+                                    <span className="text-2xl">🧴</span>
+                                )}
+                            </div>
+                            <div className="flex-1 opacity-80">
+                                <div className="font-serif font-black text-zinc-900 text-xs line-clamp-1">{item.name}</div>
+                                <div className="text-zinc-500 text-[8px] uppercase font-bold tracking-widest">{item.brand}</div>
+                            </div>
                         </motion.div>
                     ))}
                 </AnimatePresence>
