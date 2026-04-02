@@ -314,10 +314,10 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
         const isToday = lastActive.toDateString() === now.toDateString();
         const timeStr = lastActive.toLocaleTimeString(locale === 'he' ? 'he-IL' : 'en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
         
-        if (isToday) return t('inbox.seen_today').replace('{time}', timeStr);
+        if (isToday) return <span suppressHydrationWarning>{t('inbox.seen_today').replace('{time}', timeStr)}</span>;
         
         const dateStr = lastActive.toLocaleDateString(locale === 'he' ? 'he-IL' : 'en-US', { day: '2-digit', month: '2-digit' });
-        return t('inbox.seen_on').replace('{date}', dateStr).replace('{time}', timeStr);
+        return <span suppressHydrationWarning>{t('inbox.seen_on').replace('{date}', dateStr).replace('{time}', timeStr)}</span>;
     };
 
     const getChatName = (conv) => {
@@ -403,7 +403,7 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
                                         <h3 className={`font-bold text-sm truncate ${Number(conv.unread_count) > 0 ? 'text-black' : 'text-gray-800'}`}>
                                             {getChatName(conv)}
                                         </h3>
-                                        <span className="text-[10px] text-gray-400 font-medium">
+                                        <span className="text-[10px] text-gray-400 font-medium" suppressHydrationWarning>
                                             {conv.last_message_time ? new Date(conv.last_message_time).toLocaleDateString(locale === 'he' ? 'he-IL' : 'en-US') : ''}
                                         </span>
                                     </div>
@@ -460,7 +460,10 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
                                             </h2>
                                             <div className="flex items-center gap-1.5">
                                                 <div className={`w-2 h-2 rounded-full shadow-sm ${otherParticipantStatus?.last_active_at && (new Date() - new Date(otherParticipantStatus.last_active_at)) < 60000 ? 'bg-green-500 animate-pulse ring-2 ring-green-100' : 'bg-gray-300'}`} />
-                                                <span className={`text-[10px] font-medium ${otherParticipantStatus?.last_active_at && (new Date() - new Date(otherParticipantStatus.last_active_at)) < 60000 ? 'text-green-600' : 'text-gray-500'}`}>
+                                                <span 
+                                                    className={`text-[10px] font-medium ${otherParticipantStatus?.last_active_at && (new Date() - new Date(otherParticipantStatus.last_active_at)) < 60000 ? 'text-green-600' : 'text-gray-500'}`}
+                                                    suppressHydrationWarning
+                                                >
                                                     {formatLastSeen(otherParticipantStatus?.last_active_at) || t('inbox.status_now')}
                                                 </span>
                                             </div>
@@ -536,7 +539,10 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
                                                 : 'bg-gray-200 text-black rounded-tl-none mr-6'
                                             }`}>
                                                 <p className="whitespace-pre-wrap leading-relaxed break-words font-medium">{msg.content}</p>
-                                                <div className={`text-[9px] mt-1.5 flex ${isMe ? 'justify-end' : 'justify-start'} opacity-60 font-bold`}>
+                                                <div 
+                                                    className={`text-[9px] mt-1.5 flex ${isMe ? 'justify-end' : 'justify-start'} opacity-60 font-bold`}
+                                                    suppressHydrationWarning
+                                                >
                                                     {new Date(msg.created_at).toLocaleTimeString(locale === 'he' ? 'he-IL' : 'en-US', { hour: '2-digit', minute: '2-digit', hour12: false })}
                                                 </div>
                                             </div>
