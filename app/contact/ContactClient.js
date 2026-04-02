@@ -37,7 +37,7 @@ export default function ContactClient() {
     }
 
     return (
-        <div className="min-h-screen bg-black text-white relative flex flex-col items-center justify-start pt-20 md:pt-32 pb-12 px-4 overflow-hidden" dir={dir}>
+        <div className="min-h-screen bg-black text-white relative flex flex-col items-center justify-start pt-4 md:pt-6 pb-12 px-4 overflow-hidden" dir={dir}>
             {/* Ambient Background Gradient */}
             <div className="absolute inset-0 opacity-40 bg-[radial-gradient(circle_at_center,_rgba(255,255,255,0.1)_0%,_transparent_70%)] pointer-events-none" />
             
