@@ -57,7 +57,7 @@ export default function ContactClient() {
                     </div>
                 </div>
 
-                <div className="bg-white/70 backdrop-blur-3xl p-8 md:p-12 rounded-[2.5rem] border border-zinc-200 shadow-[0_30px_60px_-15px_rgba(0,0,0,0.08)] relative overflow-hidden group">
+                <div className="bg-white/70 backdrop-blur-3xl p-8 md:p-12 rounded-[2.5rem] border border-zinc-200 shadow-[0_50px_100px_-20px_rgba(0,0,0,0.12),0_30px_60px_-15px_rgba(0,0,0,0.08)] relative overflow-hidden group">
                     {/* Subtle Internal Glow */}
                     <div className="absolute top-0 right-0 w-32 h-32 bg-zinc-50/50 rounded-full -translate-y-16 translate-x-16 blur-3xl group-hover:scale-110 transition-transform duration-700 pointer-events-none" />
 

@@ -114,7 +114,7 @@ export default function SmartMatchingClient({ initialNotes }) {
                         {t('matching.title') || 'התאמה אישית'}
                     </h1>
                     <div className="flex flex-col items-center gap-4 overflow-visible">
-                        <p className="text-zinc-500 text-xs md:text-sm animate-fadeIn delay-100 italic tracking-wide whitespace-normal opacity-70 border-x border-zinc-200 px-6 leading-relaxed max-w-2xl">
+                        <p className="text-zinc-500 text-xs md:text-sm animate-fadeIn delay-100 italic tracking-wide whitespace-normal opacity-70 px-6 leading-relaxed max-w-2xl">
                             {t('matching.description')}
                         </p>
                         {/* Algorithm Info Block */}
@@ -143,7 +143,7 @@ export default function SmartMatchingClient({ initialNotes }) {
                     </div>
                 </div>
 
-                <div className="bg-white/70 backdrop-blur-3xl p-6 md:p-12 rounded-[2.5rem] border border-zinc-200 shadow-[0_40px_100px_rgba(0,0,0,0.05)] relative overflow-hidden group min-h-[500px] flex flex-col">
+                <div className="bg-white/70 backdrop-blur-3xl p-6 md:p-12 rounded-[2.5rem] border border-zinc-200 shadow-[0_50px_100px_-20px_rgba(0,0,0,0.12),0_30px_60px_-15px_rgba(0,0,0,0.08)] relative overflow-hidden group min-h-[500px] flex flex-col">
                     {/* Subtle Internal Glow */}
                     <div className="absolute top-0 right-0 w-64 h-64 bg-zinc-50/50 rounded-full -translate-y-32 translate-x-32 blur-[100px] pointer-events-none" />
 
