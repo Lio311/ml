@@ -99,13 +99,9 @@ export async function generateMetadata(props) {
         const rawImageUrl = product.image_url || `${baseUrl}/logo_v3.png`;
         
         // Ensure image URL is absolute for the OG route to fetch it
-        const absoluteProductImageUrl = product.image_url 
+        const ogImageUrl = product.image_url 
             ? (product.image_url.startsWith('http') ? product.image_url : `${baseUrl}${product.image_url}`)
-            : null;
-
-        const ogImageUrl = absoluteProductImageUrl 
-            ? `${baseUrl}/api/og/product?url=${encodeURIComponent(absoluteProductImageUrl)}`
-            : rawImageUrl.startsWith('http') ? rawImageUrl : `${baseUrl}${rawImageUrl}`;
+            : `${baseUrl}/logo_v5.png`;
 
         const productSlug = product.slug || product.id;
         const canonicalUrl = `${baseUrl}/product/${productSlug}`;
@@ -129,8 +125,8 @@ export async function generateMetadata(props) {
                 images: [
                     {
                         url: ogImageUrl,
-                        width: 1200,
-                        height: 630,
+                        width: 800,
+                        height: 800,
                         alt: product.name || 'Perfume Sample',
                     },
                 ],

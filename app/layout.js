@@ -116,6 +116,9 @@ export default async function RootLayout({ children }) {
                 duration: 3000,
                 style: {
                   textAlign: 'center',
+                  whiteSpace: 'nowrap',
+                  maxWidth: '90vw',
+                  padding: '12px 24px',
                 }
               }} />
 
