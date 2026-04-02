@@ -501,7 +501,9 @@
         "error_no_stock": "Not enough perfumes in stock matching the requested size.",
         "budget_too_low": "The budget was too low for this bundle, we got as close as possible ({total} ₪)",
         "great_value": "We found a great bundle at a special price! ({total} ₪)",
-        "perfect_match": "Perfect match! Correct budget bundle for you."
+        "perfect_match": "Perfect match! Correct budget bundle for you.",
+        "added_success": "The recommended perfumes were added to your cart!",
+        "view_cart": "View Cart"
     },
     "wishlist": {
         "title": "My Wishlist ❤️",

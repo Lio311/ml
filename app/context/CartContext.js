@@ -304,7 +304,7 @@ export function CartProvider({ children }) {
         });
     };
 
-    const addMultipleToCart = (itemsToAdd) => {
+    const addMultipleToCart = (itemsToAdd, options = {}) => {
         if (isCartLocked) {
             toast.error(t('cart.cart_locked_lottery'));
             return;
@@ -388,12 +388,12 @@ export function CartProvider({ children }) {
         // Feedback toasts
         if (skippedCount > 0) {
             if (addedCount === 0) {
-                toast.error(t('cart.shared_cart_all_out_of_stock'));
+                toast.error(t(options.errorAllKey || 'cart.shared_cart_all_out_of_stock'));
             } else {
-                toast.success(t('cart.shared_cart_mixed'));
+                toast.success(t(options.mixedKey || 'cart.shared_cart_mixed'));
             }
         } else if (addedCount > 0) {
-            toast.success(t('cart.shared_cart_added'));
+            toast.success(t(options.successKey || 'cart.shared_cart_added'));
         }
 
         return { addedCount, skippedCount };

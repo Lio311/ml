@@ -6,6 +6,8 @@ import { useLanguage } from '../context/LanguageContext';
 import TagInput from '../components/TagInput';
 import toast from 'react-hot-toast';
 import Image from 'next/image';
+import Link from 'next/link';
+
 
 export default function SmartMatchingClient({ initialNotes }) {
     const { addMultipleToCart } = useCart();
@@ -21,6 +23,8 @@ export default function SmartMatchingClient({ initialNotes }) {
     const [results, setResults] = useState(null);
     const [noteInput, setNoteInput] = useState('');
     const [suggestions, setSuggestions] = useState([]);
+    const [isAddedToCart, setIsAddedToCart] = useState(false);
+
 
     const handleNoteInputChange = (e) => {
         const val = e.target.value;
@@ -82,7 +86,7 @@ export default function SmartMatchingClient({ initialNotes }) {
     };
 
     const addToCartAll = () => {
-        if (!results || !results.products) return;
+        if (!results || !results.products || isAddedToCart) return;
 
         const itemsToAdd = results.products.map(p => ({
             product: p,
@@ -90,11 +94,15 @@ export default function SmartMatchingClient({ initialNotes }) {
             price: p.price
         }));
 
-        addMultipleToCart(itemsToAdd);
+        addMultipleToCart(itemsToAdd, {
+            successKey: 'matching.added_success'
+        });
+        setIsAddedToCart(true);
     };
 
     const resetWizard = () => {
         setResults(null);
+        setIsAddedToCart(false);
         setStep(1);
     };
 
@@ -312,7 +320,15 @@ export default function SmartMatchingClient({ initialNotes }) {
                                         <div className="flex-1">
                                             <div className="font-serif font-black text-zinc-900 text-sm line-clamp-1 mb-0.5">{localize(p, 'name')}</div>
                                             <div className="text-zinc-500 text-[10px] uppercase font-bold tracking-widest mb-2 opacity-70">{p.brand}</div>
-                                            <div className="text-lg font-black text-zinc-900">{p.price} ₪</div>
+                                            <div className="flex items-center gap-3">
+                                                <div className="text-lg font-black text-zinc-900">{p.price} ₪</div>
+                                                {isAddedToCart && (
+                                                    <span className="text-xs font-bold text-emerald-500 animate-fadeIn flex items-center gap-1">
+                                                        <span className="text-sm">✓</span>
+                                                        {t('common.added_to_cart_btn')}
+                                                    </span>
+                                                )}
+                                            </div>
                                         </div>
                                     </div>
                                 ))}
@@ -333,12 +349,22 @@ export default function SmartMatchingClient({ initialNotes }) {
                                     >
                                         {t('matching.rematch')}
                                     </button>
-                                    <button
-                                        onClick={addToCartAll}
-                                        className="px-10 py-4 rounded-full bg-zinc-900 text-white font-black text-xs uppercase tracking-[0.2em] hover:bg-black transition-all shadow-xl active:scale-95"
-                                    >
-                                        {t('matching.add_all')}
-                                    </button>
+                                    {isAddedToCart ? (
+                                        <Link
+                                            href="/app/cart"
+                                            className="px-10 py-4 rounded-full bg-emerald-500 text-white font-black text-xs uppercase tracking-[0.2em] hover:bg-emerald-600 transition-all shadow-xl active:scale-95 flex items-center gap-2 animate-bounceSuccess"
+                                        >
+                                            <span className="text-sm">✓</span>
+                                            {t('matching.view_cart')}
+                                        </Link>
+                                    ) : (
+                                        <button
+                                            onClick={addToCartAll}
+                                            className="px-10 py-4 rounded-full bg-zinc-900 text-white font-black text-xs uppercase tracking-[0.2em] hover:bg-black transition-all shadow-xl active:scale-95"
+                                        >
+                                            {t('matching.add_all')}
+                                        </button>
+                                    )}
                                 </div>
                             </div>
                         </div>
@@ -360,6 +386,13 @@ export default function SmartMatchingClient({ initialNotes }) {
                 }
                 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
                     background: rgba(0, 0, 0, 0.2);
+                }
+                @keyframes bounceSuccess {
+                    0%, 100% { transform: scale(1); }
+                    50% { transform: scale(1.05); }
+                }
+                .animate-bounceSuccess {
+                    animation: bounceSuccess 0.5s ease-out;
                 }
             `}</style>
         </div>
