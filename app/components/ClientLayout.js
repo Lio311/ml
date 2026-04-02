@@ -2,7 +2,6 @@
 
 import { usePathname } from "next/navigation";
 import Header from "./Header";
-import HeaderV2 from "./v2/HeaderV2";
 import Footer from "./Footer";
 import ChatWidget from "./Chatbot/ChatWidget";
 import AccessibilityWidget from "./AccessibilityWidget";
@@ -13,7 +12,6 @@ export default function ClientLayout({ children, brands, menu }) {
     const pathname = usePathname();
     // Only hide header if we're in admin
     const isAdmin = pathname && typeof pathname === 'string' && pathname.startsWith('/admin');
-    const isV2 = pathname && typeof pathname === 'string' && pathname.startsWith('/v2');
 
     if (isAdmin) {
         return (
@@ -31,8 +29,8 @@ export default function ClientLayout({ children, brands, menu }) {
 
     return (
         <>
-            <div id="site-content" className={isV2 ? 'v2-page' : ''}>
-                {isV2 ? <HeaderV2 brands={brands} menu={menu} /> : <Header brands={brands} />}
+            <div id="site-content">
+                <Header brands={brands} />
                 <main className={`min-h-screen ${!isHome ? 'pt-20 md:pt-28' : ''}`}>
                     {children}
                 </main>

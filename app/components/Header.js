@@ -3,8 +3,8 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
-import MegaMenuBrands from './v2/MegaMenuBrands';
-import MegaMenuCatalog from './v2/MegaMenuCatalog';
+import MegaMenuBrands from './header/MegaMenuBrands';
+import MegaMenuCatalog from './header/MegaMenuCatalog';
 import MobileNav from './header/MobileNav';
 import { usePathname, useRouter } from 'next/navigation';
 import LiveVisitorCounter from './LiveVisitorCounter';
@@ -16,7 +16,7 @@ import { SignInButton, SignedIn, SignedOut, UserButton, useUser } from '@clerk/n
 import SearchAutocomplete from './SearchAutocomplete';
 import DesktopIcons from './header/DesktopIcons';
 import LanguageSwitcher from './header/LanguageSwitcher';
-import './v2/v2.css';
+import './header/header_v2.css';
 
 export default function Header({ brands = [] }) {
     const [isScrolled, setIsScrolled] = useState(false);
