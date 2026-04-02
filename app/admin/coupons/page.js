@@ -9,7 +9,7 @@ export default function AdminCouponsPage() {
     // Force rebuild: Fix toast import and API caching issues
     const [coupons, setCoupons] = useState([]);
     const [page, setPage] = useState(1);
-    const ITEMS_PER_PAGE = 6;
+    const ITEMS_PER_PAGE = 7;
     const [loading, setLoading] = useState(true);
     const [showModal, setShowModal] = useState(false);
 
@@ -542,7 +542,7 @@ function CouponRow({ coupon, onDelete, onEdit, canEdit }) {
     if (limits.allowed_users?.length > 0) activeFilters.push('שייכות');
     if (limits.min_cart_total > 0) activeFilters.push('מינימום סל');
 
-    const affiliate = limits.allowed_users?.[0] || null;
+    const affiliate = (limits.allowed_users?.[0]) || (coupon.email ? { id: coupon.email, label: coupon.email } : null);
 
     return (
         <tr className="hover:bg-gray-50 transition group">
@@ -651,7 +651,7 @@ function CouponCard({ coupon, onDelete, onEdit, canEdit }) {
     if (limits.allowed_users?.length > 0) activeFilters.push('שייכות');
     if (limits.min_cart_total > 0) activeFilters.push('מינימום סל');
     
-    const affiliate = limits.allowed_users?.[0] || null;
+    const affiliate = (limits.allowed_users?.[0]) || (coupon.email ? { id: coupon.email, label: coupon.email } : null);
 
     return (
         <div className="p-5 bg-white space-y-4">
