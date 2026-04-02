@@ -100,20 +100,34 @@ export default async function RootLayout({ children }) {
             direction: 'ltr !important'
           },
           clerkBranding: locale === 'he' ? {
+            position: 'relative',
+            backgroundColor: 'white',
+            '&::before': {
+              content: '""',
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              backgroundColor: 'white',
+              zIndex: 1,
+            },
             '&::after': {
               content: '"מאובטח על ידי Clerk"',
-              display: 'inline-block',
-              visibility: 'visible',
-              fontSize: '12px',
-              color: '#6e6e6e',
-            },
-            color: 'transparent !important',
-            fontSize: '0 !important',
-            display: 'flex !important',
-            alignItems: 'center !important',
-            justifyContent: 'center !important',
-            gap: '4px !important',
-            flexDirection: 'row-reverse !important',
+              position: 'absolute',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: '#6c7278',
+              fontSize: '11px',
+              zIndex: 2,
+              pointerEvents: 'none',
+              whiteSpace: 'nowrap',
+            }
           } : {}
         }
       }}
