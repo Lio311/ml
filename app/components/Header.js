@@ -70,7 +70,16 @@ export default function Header({ brands = [] }) {
                             <div className="flex items-center gap-2">
                                 <SignedIn>
                                     <div className="flex items-center">
-                                        <UserButton afterSignOutUrl="/" />
+                                        <UserButton 
+                                            afterSignOutUrl="/" 
+                                            userProfileProps={{
+                                                appearance: {
+                                                    elements: {
+                                                        modalCloseButton: { display: 'none !important' },
+                                                    },
+                                                },
+                                            }}
+                                        />
                                     </div>
                                 </SignedIn>
                                 <SignedOut>

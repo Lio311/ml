@@ -33,38 +33,8 @@ export default function ClerkBrandingTranslator() {
         }
       });
 
-      // --- 2. Move close button to left side ---
-      const closeButtons = root.querySelectorAll('button[aria-label="Close"], button[aria-label="סגור"]');
-      closeButtons.forEach(btn => {
-        const style = getComputedStyle(btn);
-        // Only move if it's positioned on the right side
-        if (style.position === 'absolute' || style.position === 'fixed') {
-          btn.style.right = 'unset';
-          btn.style.left = '16px';
-        }
-      });
 
-      // Also look for close buttons by their typical Clerk class patterns
-      const allButtons = root.querySelectorAll('button');
-      allButtons.forEach(btn => {
-        // Clerk close buttons typically contain only an X/close SVG icon
-        // and are positioned absolutely in the top-right corner
-        const svg = btn.querySelector('svg');
-        if (svg && btn.childElementCount === 1) {
-          const style = getComputedStyle(btn);
-          const rect = btn.getBoundingClientRect();
-          const parentRect = btn.offsetParent?.getBoundingClientRect();
-          
-          // Check if this button is in the top-right area (likely a close button)
-          if (parentRect && (style.position === 'absolute' || style.position === 'fixed')) {
-            const isTopRight = (rect.right - parentRect.right) > -50 && (rect.top - parentRect.top) < 50;
-            if (isTopRight) {
-              btn.style.right = 'unset';
-              btn.style.left = '16px';
-            }
-          }
-        }
-      });
+      // Note: Close button is hidden via ClerkProvider appearance.elements in layout.js
 
       // Recurse into shadow roots
       allElements.forEach(el => {

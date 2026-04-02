@@ -12,7 +12,16 @@ export default function UserActions({ cartCount, wishlistCount }) {
             {/* User Icon (Start in current direction) */}
             <SignedIn>
                 <div className="flex items-center gap-2">
-                    <UserButton afterSignOutUrl="/" />
+                    <UserButton 
+                        afterSignOutUrl="/" 
+                        userProfileProps={{
+                            appearance: {
+                                elements: {
+                                    modalCloseButton: { display: 'none !important' },
+                                },
+                            },
+                        }}
+                    />
                 </div>
             </SignedIn>
             <SignedOut>

@@ -100,7 +100,8 @@ export default async function RootLayout({ children }) {
           identityPreviewText: {
             direction: 'ltr !important'
           },
-          clerkBranding: {}
+          clerkBranding: {},
+          modalCloseButton: { display: 'none !important' }
         }
       }}
     >
