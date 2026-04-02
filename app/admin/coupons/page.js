@@ -498,8 +498,13 @@ export default function AdminCouponsPage() {
 
 function CouponRow({ coupon, onDelete, onEdit, canEdit }) {
 
-    const [timeLeft, setTimeLeft] = useState(null);
+    const [timeLeft, setTimeLeft] = useState('...');
     const [isExpired, setIsExpired] = useState(false);
+    const [isMounted, setIsMounted] = useState(false);
+
+    useEffect(() => {
+        setIsMounted(true);
+    }, []);
 
     useEffect(() => {
         if (!coupon.expires_at) {
@@ -549,7 +554,9 @@ function CouponRow({ coupon, onDelete, onEdit, canEdit }) {
             <td className="p-4 font-mono font-bold text-blue-600 select-all text-center">{coupon.code}</td>
             <td className="p-4 text-center">{coupon.discount_percent}%</td>
             <td className="p-4 font-mono text-center">
-                {coupon.expires_at ? (
+                {!isMounted ? (
+                    <span className="text-gray-400">...</span>
+                ) : coupon.expires_at ? (
                     <span suppressHydrationWarning className={isExpired ? 'text-red-500 font-bold' : 'text-green-600 font-bold'}>
                         {timeLeft}
                     </span>
@@ -608,8 +615,13 @@ function CouponRow({ coupon, onDelete, onEdit, canEdit }) {
 }
 
 function CouponCard({ coupon, onDelete, onEdit, canEdit }) {
-    const [timeLeft, setTimeLeft] = useState(null);
+    const [timeLeft, setTimeLeft] = useState('...');
     const [isExpired, setIsExpired] = useState(false);
+    const [isMounted, setIsMounted] = useState(false);
+
+    useEffect(() => {
+        setIsMounted(true);
+    }, []);
 
     useEffect(() => {
         if (!coupon.expires_at) {
@@ -669,9 +681,13 @@ function CouponCard({ coupon, onDelete, onEdit, canEdit }) {
             <div className="grid grid-cols-2 gap-4 pt-2 border-t border-gray-50">
                 <div>
                     <div className="text-[10px] uppercase font-bold text-gray-400 mb-1">תוקף:</div>
-                    <div suppressHydrationWarning className={`font-mono text-sm ${isExpired ? 'text-red-500 font-bold' : 'text-green-600 font-bold'}`}>
-                        {coupon.expires_at ? (timeLeft || 'פג תוקף') : 'ללא הגבלה'}
-                    </div>
+                    {!isMounted ? (
+                        <div className="text-gray-400 text-sm">...</div>
+                    ) : (
+                        <div suppressHydrationWarning className={`font-mono text-sm ${isExpired ? 'text-red-500 font-bold' : 'text-green-600 font-bold'}`}>
+                            {coupon.expires_at ? (timeLeft || 'פג תוקף') : 'ללא הגבלה'}
+                        </div>
+                    )}
                 </div>
                 <div>
                     <div className="text-[10px] uppercase font-bold text-gray-400 mb-1">הגבלות:</div>
