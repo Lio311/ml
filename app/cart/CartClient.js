@@ -115,7 +115,7 @@ export default function CartClient() {
                 const data = await res.json();
                 const shareId = data.id;
                 const url = `${window.location.origin}/cart?share=${shareId}`;
-                const shareText = "בוא תראה את העגלה ששיתפתי איתך";
+                const shareText = t('cart.share_message');
 
                 if (navigator.share) {
                     navigator.share({ 

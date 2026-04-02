@@ -1,7 +1,7 @@
 import pool from "../../lib/db";
 import Link from "next/link";
 import Image from "next/image";
-import { cookies } from 'next/headers';
+import { cookies, headers } from 'next/headers';
 import he from '../../data/locales/he.json';
 import en from '../../data/locales/en.json';
 import { redirect } from 'next/navigation';
@@ -83,7 +83,11 @@ export async function generateMetadata(props) {
 
         const product = sanitizeProduct(rawProduct);
 
-        const baseUrl = 'https://www.ml-tlv.com';
+        const headerData = await headers();
+        const host = headerData.get('host') || 'www.ml-tlv.com';
+        const protocol = host.includes('localhost') ? 'http' : 'https';
+        const baseUrl = `${protocol}://${host}`;
+
         const localizedName = locale === 'he' 
             ? `${product.brand_he || product.brand} ${product.model_he || product.model}` 
             : localize(product, 'name', locale);
@@ -101,7 +105,7 @@ export async function generateMetadata(props) {
 
         const ogImageUrl = absoluteProductImageUrl 
             ? `${baseUrl}/api/og/product?url=${encodeURIComponent(absoluteProductImageUrl)}`
-            : rawImageUrl;
+            : rawImageUrl.startsWith('http') ? rawImageUrl : `${baseUrl}${rawImageUrl}`;
 
         const productSlug = product.slug || product.id;
         const canonicalUrl = `${baseUrl}/product/${productSlug}`;
@@ -263,10 +267,16 @@ export default async function ProductPage(props) {
     const localizedDesc_val = localize(product, 'description', locale);
     const localizedCategory = translateCategory(localize(product, 'category', locale), locale);
 
+    const headerData = await headers();
+    const host = headerData.get('host') || 'www.ml-tlv.com';
+    const protocol = host.includes('localhost') ? 'http' : 'https';
+    const baseUrl = `${protocol}://${host}`;
+
     // GEO: Shared shipping & return details (reused across all per-size offers)
     const shippingDetails = {
         "@type": "OfferShippingDetails",
         "shippingRate": { "@type": "MonetaryAmount", "value": 30, "currency": "ILS" },
+        "shippingDestination": { "@type": "DefinedRegion", "addressCountry": "IL" },
         "deliveryTime": {
             "@type": "ShippingDeliveryTime",
             "handlingTime": { "@type": "QuantitativeValue", "minValue": 1, "maxValue": 2, "unitCode": "DAY" },
@@ -278,11 +288,12 @@ export default async function ProductPage(props) {
         "applicableCountry": "IL",
         "returnPolicyCategory": "https://schema.org/MerchantReturnFiniteReturnWindow",
         "merchantReturnDays": 14,
-        "returnMethod": "https://schema.org/ReturnByMail"
+        "returnMethod": "https://schema.org/ReturnByMail",
+        "returnFees": "https://schema.org/ReturnFeesCustomerResponsibility"
     };
     const inStock = (product.stock && product.stock > 0);
     const availability = inStock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock";
-    const productUrl = `https://www.ml-tlv.com/product/${product.slug || product.id}`;
+    const productUrl = `${baseUrl}/product/${product.slug || product.id}`;
 
     const buildOffer = (size, price) => ({
         "@type": "Offer",
