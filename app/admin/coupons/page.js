@@ -569,7 +569,7 @@ function CouponRow({ coupon, onDelete, onEdit, canEdit }) {
                 {affiliate ? (
                     <div className="flex flex-col items-center gap-0.5">
                         <span className="text-[10px] font-bold text-gray-800 bg-blue-50 px-2 py-0.5 rounded-full border border-blue-100">
-                            {typeof affiliate === 'string' ? affiliate.split('@')[0] : (affiliate.label || affiliate.id?.split('@')[0])}
+                            {typeof affiliate === 'string' ? affiliate : (affiliate.id || affiliate.label)}
                         </span>
                         {limits.allowed_users?.length > 1 && (
                             <span className="text-[9px] text-gray-400">+{limits.allowed_users.length - 1} נוספים</span>
@@ -699,7 +699,7 @@ function CouponCard({ coupon, onDelete, onEdit, canEdit }) {
                         {affiliate ? (
                             <div className="flex items-center gap-1">
                                 <span className="font-bold text-blue-600">
-                                    {typeof affiliate === 'string' ? affiliate.split('@')[0] : (affiliate.label || affiliate.id?.split('@')[0])}
+                                    {typeof affiliate === 'string' ? affiliate : (affiliate.id || affiliate.label)}
                                 </span>
                                 {limits.allowed_users?.length > 1 && (
                                     <span className="text-[10px] text-gray-400">+{limits.allowed_users.length - 1} נוספים</span>
