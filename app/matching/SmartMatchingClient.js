@@ -109,6 +109,19 @@ export default function SmartMatchingClient({ initialNotes }) {
             <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-zinc-800/20 rounded-full blur-[120px] pointer-events-none" />
 
             <div className="container max-w-4xl mx-auto relative z-10 px-4">
+                <div className="mb-10 text-center overflow-visible">
+                    <h1 className="text-4xl md:text-5xl font-serif font-black mb-3 text-white tracking-tighter animate-fadeIn">
+                        {t('matching.title') || 'התאמה אישית'}
+                    </h1>
+                    <div className="flex flex-col items-center gap-4 overflow-visible">
+                        <p className="text-zinc-500 text-xs md:text-sm animate-fadeIn delay-100 italic tracking-wide whitespace-normal opacity-60 border-x border-white/5 px-6 leading-relaxed max-w-2xl">
+                            {t('matching.description')}
+                        </p>
+                        <p className="text-[10px] uppercase font-bold tracking-[0.2em] text-white/20 animate-fadeIn delay-200">
+                            {t('matching.how_it_works')}
+                        </p>
+                    </div>
+                </div>
                 {/* Progress Tracking */}
                 <div className="mb-8 overflow-hidden">
                     <div className="flex justify-between items-end mb-2 px-1">
