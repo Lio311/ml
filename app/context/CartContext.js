@@ -307,86 +307,89 @@ export function CartProvider({ children }) {
             return;
         }
 
+        // We calculate the new state based on current cartItems
+        // Then we call setCartItems with the new array
+        let currentItems = [...cartItems];
         let skippedCount = 0;
         let addedCount = 0;
 
-        setCartItems((prev) => {
-            let newItems = [...prev];
-            const parseSizeML = (s) => parseFloat(String(s)) || 0;
+        const parseSizeML = (s) => parseFloat(String(s)) || 0;
 
-            itemsToAdd.forEach((item) => {
-                const { product, size, price, vendorId = 'main', vendorName = 'האתר הרשמי' } = item;
-                const addedML = parseSizeML(size) * (item.quantity || 1);
+        itemsToAdd.forEach((item) => {
+            const { product, size, price, vendorId = 'main', vendorName = 'האתר הרשמי' } = item;
+            const addedML = parseSizeML(size) * (item.quantity || 1);
 
-                // STOCK CHECK logic similar to addToCart
-                if (vendorId !== 'main') {
-                    if (product.stock_ml !== undefined) {
-                        const stockLimit = Number(product.stock_ml) || 0;
-                        const currentVolumeInCart = newItems.reduce((sum, cartItem) => {
-                            if (cartItem.vendorId === vendorId && (cartItem.originalId === product.originalId || cartItem.id === product.id)) {
-                                return sum + (Number(cartItem.quantity) * parseSizeML(cartItem.size));
-                            }
-                            return sum;
-                        }, 0);
-                        if (currentVolumeInCart + addedML > stockLimit) {
-                            skippedCount++;
-                            return;
+            // STOCK CHECK logic mirroring standard addToCart
+            if (vendorId !== 'main') {
+                // Vendor stock check
+                if (product.stock_ml !== undefined) {
+                    const stockLimit = Number(product.stock_ml) || 0;
+                    const currentVolumeInCart = currentItems.reduce((sum, cartItem) => {
+                        if (cartItem.vendorId === vendorId && (cartItem.originalId === product.originalId || cartItem.id === product.id)) {
+                            return sum + (Number(cartItem.quantity) * parseSizeML(cartItem.size));
                         }
-                    }
-                } else {
-                    const stockML = parseFloat(String(product.stock)) || 0;
-                    if (stockML > 0) {
-                        const currentML = newItems.reduce((sum, cartItem) => {
-                            if (cartItem.id === product.id && (cartItem.vendorId || 'main') === 'main') {
-                                return sum + (Number(cartItem.quantity) * parseSizeML(cartItem.size));
-                            }
-                            return sum;
-                        }, 0);
-                        if (currentML + addedML > stockML) {
-                            skippedCount++;
-                            return;
-                        }
-                    } else if (stockML === 0) {
+                        return sum;
+                    }, 0);
+                    if (currentVolumeInCart + addedML > stockLimit) {
                         skippedCount++;
                         return;
                     }
                 }
-
-                const existingIndex = newItems.findIndex(
-                    (i) => i.id === product.id && String(i.size) === String(size) && (i.vendorId || 'main') === vendorId
-                );
-
-                if (existingIndex >= 0) {
-                    newItems[existingIndex] = {
-                        ...newItems[existingIndex],
-                        quantity: newItems[existingIndex].quantity + (item.quantity || 1)
-                    };
-                } else {
-                    newItems.push({
-                        ...product,
-                        size,
-                        price,
-                        quantity: item.quantity || 1,
-                        vendorId,
-                        vendorName
-                    });
+            } else {
+                // Official site stock check
+                const stockVal = parseFloat(String(product.stock)) || 0;
+                if (stockVal > 0) {
+                    const currentML = currentItems.reduce((sum, cartItem) => {
+                        if (cartItem.id === product.id && (cartItem.vendorId || 'main') === 'main') {
+                            return sum + (Number(cartItem.quantity) * parseSizeML(cartItem.size));
+                        }
+                        return sum;
+                    }, 0);
+                    if (currentML + addedML > stockVal) {
+                        skippedCount++;
+                        return;
+                    }
+                } else if (stockVal === 0) {
+                    skippedCount++;
+                    return;
                 }
-                addedCount++;
-            });
-
-            // Final feedback
-            if (skippedCount > 0) {
-                if (addedCount === 0) {
-                    toast.error(t('common.shared_cart_all_out_of_stock') || 'כל המוצרים בעגלה המשותפת אזלו מהמלאי');
-                } else {
-                    toast.error(t('common.shared_cart_some_skipped') || 'חלק מהמוצרים בעגלה המשותפת דולגו עקב חוסר במלאי');
-                }
-            } else if (addedCount > 0) {
-                toast.success(t('common.cart_updated'));
             }
 
-            return newItems;
+            const existingIndex = currentItems.findIndex(
+                (i) => i.id === product.id && String(i.size) === String(size) && (i.vendorId || 'main') === vendorId
+            );
+
+            if (existingIndex >= 0) {
+                currentItems[existingIndex] = {
+                    ...currentItems[existingIndex],
+                    quantity: currentItems[existingIndex].quantity + (item.quantity || 1)
+                };
+            } else {
+                currentItems.push({
+                    ...product,
+                    size,
+                    price,
+                    quantity: item.quantity || 1,
+                    vendorId,
+                    vendorName
+                });
+            }
+            addedCount++;
         });
+
+        // Update state once
+        setCartItems(currentItems);
+
+        // Feedback toasts
+        if (skippedCount > 0) {
+            if (addedCount === 0) {
+                toast.error(t('common.shared_cart_all_out_of_stock'));
+            } else {
+                toast.success(t('common.shared_cart_mixed'));
+            }
+        } else if (addedCount > 0) {
+            toast.success(t('common.shared_cart_added'));
+        }
     };
 
     const removeFromCart = (id, size, vendorId = 'main') => {

@@ -15,17 +15,27 @@ export async function GET(request) {
         // Decode URL in case it's double encoded
         const decodedUrl = decodeURIComponent(imageUrl);
 
-        // Fetch image buffer to ensure it loads before rendering
-        // This avoids issues with Satori failing to fetch during rendering
-        let imageBuffer;
+        // Fetch image to ensure we have it and to determine content type
+        let imageDataUrl = decodedUrl;
         try {
             const imageRes = await fetch(decodedUrl);
             if (imageRes.ok) {
-                imageBuffer = await imageRes.arrayBuffer();
+                const contentType = imageRes.headers.get('content-type') || 'image/png';
+                const arrayBuffer = await imageRes.arrayBuffer();
+                
+                // Edge-compatible base64 conversion (no Buffer)
+                const uint8Array = new Uint8Array(arrayBuffer);
+                let binary = '';
+                for (let i = 0; i < uint8Array.length; i++) {
+                    binary += String.fromCharCode(uint8Array[i]);
+                }
+                const base64 = btoa(binary);
+                imageDataUrl = `data:${contentType};base64,${base64}`;
             }
         } catch (fetchErr) {
             console.error("Failed to fetch image for OG:", fetchErr);
             Sentry.captureException(fetchErr);
+            // Fallback to original URL if fetch fails
         }
 
         return new ImageResponse(
@@ -38,11 +48,11 @@ export async function GET(request) {
                         flexDirection: 'column',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        backgroundColor: 'white', // Ensure absolute white background
+                        backgroundColor: 'white', // Guaranteed white background
                         position: 'relative',
                     }}
                 >
-                    {/* Background layer to guarantee no transparency */}
+                    {/* Extra background layer to guarantee no transparency issues in some platforms */}
                     <div style={{
                         position: 'absolute',
                         top: 0,
@@ -53,28 +63,24 @@ export async function GET(request) {
                         zIndex: -1,
                     }} />
 
-                    {imageBuffer ? (
-                        <div style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            width: '100%',
-                            height: '100%',
-                            padding: '40px',
-                        }}>
-                            <img
-                                src={imageBuffer}
-                                alt="Product"
-                                style={{
-                                    height: '550px',
-                                    width: 'auto',
-                                    objectFit: 'contain',
-                                }}
-                            />
-                        </div>
-                    ) : (
-                        <div style={{ fontSize: '100px' }}>🧴</div>
-                    )}
+                    <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        width: '100%',
+                        height: '100%',
+                        padding: '40px',
+                    }}>
+                        <img
+                            src={imageDataUrl}
+                            alt="Product"
+                            style={{
+                                height: '550px',
+                                width: 'auto',
+                                objectFit: 'contain',
+                            }}
+                        />
+                    </div>
                 </div>
             ),
             {

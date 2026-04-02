@@ -254,7 +254,7 @@ export default function CartClient() {
         );
     }
 
-    if (cartItems.length === 0) {
+    if (cartItems.length === 0 && !sharedCart) {
         return (
             <div className="container py-20 text-center">
                 <h1 className="text-3xl font-bold mb-4">{t('cart.empty')}</h1>
