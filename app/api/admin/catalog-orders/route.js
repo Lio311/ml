@@ -23,7 +23,7 @@ export async function GET() {
 
         // Fetch all orders that belong to a user catalog
         const res = await client.query(`
-            SELECT o.id, o.catalog_id, o.items, o.total_price, o.status, o.customer_details, o.created_at, o.payment_details,
+            SELECT o.id, o.catalog_id, o.items, o.total_amount, o.status, o.customer_details, o.created_at, o.payment_details,
                    c.name as catalog_name, c.user_id as catalog_owner_id
             FROM orders o
             JOIN user_catalogs c ON o.catalog_id = c.id
