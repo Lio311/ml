@@ -99,18 +99,7 @@ export default async function RootLayout({ children }) {
           identityPreviewText: {
             direction: 'ltr !important'
           },
-          // Translation for "Secured by Clerk"
-          clerkBranding: locale === 'he' ? {
-            '&::after': {
-              content: '"מאובטח על ידי Clerk"',
-              display: 'inline-block',
-              visibility: 'visible',
-              position: 'relative',
-              fontSize: '12px',
-            },
-            fontSize: 0,
-            visibility: 'hidden',
-          } : {}
+
         }
       }}
     >
