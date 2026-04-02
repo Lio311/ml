@@ -233,6 +233,8 @@
         "contact_name_label": "שם מלא",
         "contact_name_placeholder": "ישראל ישראלי",
         "contact_email_label": "אימייל לחזרה",
+        "contact_phone_label": "מספר טלפון",
+        "contact_phone_placeholder": "05X-XXXXXXX",
         "contact_message_label": "תוכן ההודעה",
         "contact_message_placeholder": "בוקר טוב, רציתי לשאול...",
         "contact_send": "שלח הודעה",
