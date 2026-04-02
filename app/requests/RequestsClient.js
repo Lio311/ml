@@ -75,7 +75,7 @@ export default function RequestsClient() {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50 flex flex-col items-center py-12 px-4 shadow-inner">
+        <div className="min-h-screen bg-gradient-to-b from-[#1a1a1a] to-black flex flex-col items-center py-12 px-4">
 
             {/* Logic: If NOT submitted, show Form. If Submitted, show Wall. */}
 
