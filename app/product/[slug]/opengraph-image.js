@@ -41,27 +41,28 @@ export default async function Image({ params }) {
     let fallbackLogo = true;
 
     if (product.image_url) {
-        const imageUrl = product.image_url.startsWith('http') ? product.image_url : `${baseUrl}${product.image_url}`;
+        let imageUrl = product.image_url.startsWith('http') ? product.image_url : `${baseUrl}${product.image_url}`;
         
         // Satori (engine behind next/og) does not support AVIF.
-        // We only attempt to fetch if it's NOT .avif
-        if (!imageUrl.toLowerCase().endsWith('.avif')) {
-            try {
-                const response = await fetch(imageUrl);
-                if (response.ok) {
-                    const buffer = await response.arrayBuffer();
-                    const contentType = response.headers.get('content-type');
-                    // Check if the content type is supported by Satori (PNG, JPG, SVG)
-                    if (contentType && (contentType.includes('png') || contentType.includes('jpeg') || contentType.includes('jpg') || contentType.includes('svg'))) {
-                        imageData = `data:${contentType};base64,${Buffer.from(buffer).toString('base64')}`;
-                        fallbackLogo = false;
-                    }
+        // If it's an .avif file, especially from fimgs.net (Fragrantica),
+        // we attempt to fetch its .jpg equivalent.
+        if (imageUrl.toLowerCase().endsWith('.avif')) {
+            imageUrl = imageUrl.replace(/\.avif$/i, '.jpg');
+        }
+
+        try {
+            const response = await fetch(imageUrl);
+            if (response.ok) {
+                const buffer = await response.arrayBuffer();
+                const contentType = response.headers.get('content-type');
+                // Check if the content type is supported by Satori (PNG, JPG, SVG)
+                if (contentType && (contentType.includes('png') || contentType.includes('jpeg') || contentType.includes('jpg') || contentType.includes('svg'))) {
+                    imageData = `data:${contentType};base64,${Buffer.from(buffer).toString('base64')}`;
+                    fallbackLogo = false;
                 }
-            } catch (e) {
-                console.error("Failed to fetch OG image:", imageUrl, e);
             }
-        } else {
-            console.warn("AVIF image skipped for OG (unsupported by Satori):", imageUrl);
+        } catch (e) {
+            console.error("Failed to fetch OG image:", imageUrl, e);
         }
     }
 
