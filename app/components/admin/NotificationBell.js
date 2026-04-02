@@ -27,6 +27,9 @@ export default function NotificationBell() {
         return () => clearInterval(interval);
     }, []);
 
+    const [isMounted, setIsMounted] = useState(false);
+    useEffect(() => setIsMounted(true), []);
+
     const markAsRead = async () => {
         if (unreadCount === 0) return;
         try {
@@ -80,8 +83,8 @@ export default function NotificationBell() {
                             notifications.map(n => (
                                 <div key={n.id} className={`p-3 border-b border-gray-50 hover:bg-gray-50 transition`}>
                                     <p className="text-sm text-gray-800">{n.message}</p>
-                                    <p className="text-[10px] text-gray-400 mt-1">
-                                        {n.created_at ? new Date(n.created_at).toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' }) : ''}
+                                    <p suppressHydrationWarning className="text-[10px] text-gray-400 mt-1">
+                                        {(isMounted && n.created_at) ? new Date(n.created_at).toLocaleTimeString('he-IL', { hour: '2-digit', minute: '2-digit' }) : ''}
                                     </p>
                                 </div>
                             ))
