@@ -21,7 +21,7 @@ export default function CartClient() {
     const { t } = useLanguage();
     const {
         cartItems, activeVendorId, setActiveVendorId, activeItems,
-        removeFromCart, updateQuantity, addToCart, clearCart, clearActiveVendorCart,
+        removeFromCart, updateQuantity, addToCart, addMultipleToCart, clearCart, clearActiveVendorCart,
         subtotal, total, freeSamplesCount, nextTier,
         luckyPrize, setLuckyPrize, discountAmount,
         lotteryMode, lotteryTimeLeft,
@@ -82,12 +82,18 @@ export default function CartClient() {
     const handleLoadSharedCart = () => {
         if (!sharedCart) return;
         if (confirm(t('cart.load_shared_cart_confirm'))) {
+            // Convert simple items to the format addMultipleToCart expects
+            const itemsToAdd = sharedCart.map(item => ({
+                product: item, // Shared items already contain base product fields
+                size: item.size,
+                price: item.price,
+                quantity: item.quantity || 1,
+                vendorId: item.vendorId || 'main',
+                vendorName: item.vendorName || (item.vendorId === 'main' ? t('cart.official_site') : t('cart.external_supplier'))
+            }));
+
             clearCart();
-            sharedCart.forEach(item => {
-                for (let k = 0; k < item.quantity; k++) {
-                    addToCart(item, item.size, item.price, item.vendorId || 'main', item.vendorName || t('cart.official_site'));
-                }
-            });
+            addMultipleToCart(itemsToAdd);
             setSharedCart(null);
             router.replace('/cart');
         }
@@ -108,7 +114,7 @@ export default function CartClient() {
                 const data = await res.json();
                 const shareId = data.id;
                 const url = `${window.location.origin}/cart?share=${shareId}`;
-                const shareText = t('cart.share_message') || "בוא תראה את העגלה ששיתפתי איתך";
+                const shareText = "בוא תראה את העגלה ששיתפתי איתך";
 
                 if (navigator.share) {
                     navigator.share({ 

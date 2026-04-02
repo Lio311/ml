@@ -307,23 +307,85 @@ export function CartProvider({ children }) {
             return;
         }
 
+        let skippedCount = 0;
+        let addedCount = 0;
+
         setCartItems((prev) => {
-            let newCart = [...prev];
-            itemsToAdd.forEach(({ product, size, price }) => {
-                const vendorId = 'main';
-                const vendorName = 'האתר הרשמי';
-                const existingIndex = newCart.findIndex(
-                    (item) => item.id === product.id && String(item.size) === String(size) && (item.vendorId || 'main') === vendorId
-                );
-                if (existingIndex >= 0) {
-                    let updatedItem = { ...newCart[existingIndex] };
-                    updatedItem.quantity += 1;
-                    newCart[existingIndex] = updatedItem;
+            let newItems = [...prev];
+            const parseSizeML = (s) => parseFloat(String(s)) || 0;
+
+            itemsToAdd.forEach((item) => {
+                const { product, size, price, vendorId = 'main', vendorName = 'האתר הרשמי' } = item;
+                const addedML = parseSizeML(size) * (item.quantity || 1);
+
+                // STOCK CHECK logic similar to addToCart
+                if (vendorId !== 'main') {
+                    if (product.stock_ml !== undefined) {
+                        const stockLimit = Number(product.stock_ml) || 0;
+                        const currentVolumeInCart = newItems.reduce((sum, cartItem) => {
+                            if (cartItem.vendorId === vendorId && (cartItem.originalId === product.originalId || cartItem.id === product.id)) {
+                                return sum + (Number(cartItem.quantity) * parseSizeML(cartItem.size));
+                            }
+                            return sum;
+                        }, 0);
+                        if (currentVolumeInCart + addedML > stockLimit) {
+                            skippedCount++;
+                            return;
+                        }
+                    }
                 } else {
-                    newCart.push({ ...product, size, price, quantity: 1, vendorId, vendorName });
+                    const stockML = parseFloat(String(product.stock)) || 0;
+                    if (stockML > 0) {
+                        const currentML = newItems.reduce((sum, cartItem) => {
+                            if (cartItem.id === product.id && (cartItem.vendorId || 'main') === 'main') {
+                                return sum + (Number(cartItem.quantity) * parseSizeML(cartItem.size));
+                            }
+                            return sum;
+                        }, 0);
+                        if (currentML + addedML > stockML) {
+                            skippedCount++;
+                            return;
+                        }
+                    } else if (stockML === 0) {
+                        skippedCount++;
+                        return;
+                    }
                 }
+
+                const existingIndex = newItems.findIndex(
+                    (i) => i.id === product.id && String(i.size) === String(size) && (i.vendorId || 'main') === vendorId
+                );
+
+                if (existingIndex >= 0) {
+                    newItems[existingIndex] = {
+                        ...newItems[existingIndex],
+                        quantity: newItems[existingIndex].quantity + (item.quantity || 1)
+                    };
+                } else {
+                    newItems.push({
+                        ...product,
+                        size,
+                        price,
+                        quantity: item.quantity || 1,
+                        vendorId,
+                        vendorName
+                    });
+                }
+                addedCount++;
             });
-            return newCart;
+
+            // Final feedback
+            if (skippedCount > 0) {
+                if (addedCount === 0) {
+                    toast.error(t('common.shared_cart_all_out_of_stock') || 'כל המוצרים בעגלה המשותפת אזלו מהמלאי');
+                } else {
+                    toast.error(t('common.shared_cart_some_skipped') || 'חלק מהמוצרים בעגלה המשותפת דולגו עקב חוסר במלאי');
+                }
+            } else if (addedCount > 0) {
+                toast.success(t('common.cart_updated'));
+            }
+
+            return newItems;
         });
     };
 
