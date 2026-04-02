@@ -100,7 +100,13 @@ export default async function RootLayout({ children }) {
           identityPreviewText: {
             direction: 'ltr !important'
           },
-          clerkBranding: {}
+          clerkBranding: {},
+          ...(locale === 'he' ? {
+            modalCloseButton: {
+              left: '16px',
+              right: 'unset',
+            }
+          } : {})
         }
       }}
     >
