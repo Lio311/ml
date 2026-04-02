@@ -95,7 +95,11 @@ export default function SmartMatchingClient({ initialNotes }) {
         const newAnimatingIds = new Set(animatingProductIds);
         const newFlyingItems = [];
         const cartIcon = document.getElementById('cart-icon-main');
-        const cartRect = cartIcon?.getBoundingClientRect() || { left: window.innerWidth - 100, top: 20 };
+        const isRtl = dir === 'rtl';
+        const cartRect = cartIcon?.getBoundingClientRect() || { 
+            left: isRtl ? 40 : window.innerWidth - 100, 
+            top: 40 
+        };
 
         results.products.forEach((p, index) => {
             const el = productRefs.current[p.id];
@@ -351,10 +355,9 @@ export default function SmartMatchingClient({ initialNotes }) {
                                     <div 
                                         key={p.id} 
                                         ref={el => productRefs.current[p.id] = el}
-                                        className={`flex gap-5 p-5 bg-white/50 border border-zinc-100 rounded-[1.5rem] items-center hover:bg-white hover:border-zinc-200 hover:shadow-md transition-all duration-300 group ${animatingProductIds.has(p.id) ? 'opacity-0 scale-90' : 'opacity-100 scale-100'}`}
+                                        className={`flex gap-5 p-5 bg-white/50 border border-zinc-100 rounded-[1.5rem] items-center hover:bg-white hover:border-zinc-200 hover:shadow-md transition-all duration-300 group`}
                                         style={{ 
-                                            animationDelay: `${idx * 100}ms`,
-                                            visibility: animatingProductIds.has(p.id) ? 'hidden' : 'visible'
+                                            animationDelay: `${idx * 100}ms`
                                         }}
                                     >
                                         <div className="w-20 h-20 bg-zinc-50 rounded-2xl flex-shrink-0 flex items-center justify-center relative overflow-hidden group-hover:scale-105 transition-transform">
@@ -444,7 +447,7 @@ export default function SmartMatchingClient({ initialNotes }) {
             `}</style>
 
             {/* Fly-to-cart Animation Overlay */}
-            <div className="fixed inset-0 pointer-events-none z-[9999]">
+            <div className="fixed inset-0 pointer-events-none z-[9999]" dir="ltr">
                 <AnimatePresence>
                     {flyingItems.map(item => (
                         <motion.div
@@ -480,7 +483,7 @@ export default function SmartMatchingClient({ initialNotes }) {
                                 }
                             }}
                             className="absolute bg-white/90 backdrop-blur-md rounded-[1.5rem] shadow-[0_30px_70px_rgba(0,0,0,0.2)] p-5 border border-zinc-200/50 flex items-center gap-5 overflow-hidden origin-top-left"
-                            style={{ zIndex: 10000 }}
+                            style={{ zIndex: 10000, left: 0, top: 0 }}
                         >
                             <div className="w-16 h-16 bg-zinc-50 rounded-xl flex-shrink-0 flex items-center justify-center relative overflow-hidden">
                                 {item.image ? (
