@@ -15,6 +15,7 @@ export default function AdminInventoryPage() {
     const [quantity, setQuantity] = useState('');
     const [notes, setNotes] = useState('');
     const [editingId, setEditingId] = useState(null); // ID of item being edited
+    const [mode, setMode] = useState('add'); // 'add' or 'consume'
     const [page, setPage] = useState(1);
     const ITEMS_PER_PAGE = 10;
 
@@ -49,6 +50,7 @@ export default function AdminInventoryPage() {
         setQuantity('');
         setNotes('');
         setSize('2');
+        setMode('add');
     };
 
     const handleDeleteClick = (id) => {
@@ -101,11 +103,12 @@ export default function AdminInventoryPage() {
         setSubmitting(true);
         try {
             const method = editingId ? 'PUT' : 'POST';
+            const finalQuantity = mode === 'consume' ? -Math.abs(Number(quantity)) : Number(quantity);
             const payload = {
                 id: editingId, // Only for PUT
                 size: Number(size),
-                quantity: Number(quantity),
-                notes
+                quantity: finalQuantity,
+                notes: mode === 'consume' ? `[צריכה] ${notes}`.trim() : notes
             };
 
             const res = await fetch('/api/admin/inventory', {
@@ -180,8 +183,25 @@ export default function AdminInventoryPage() {
                 <div className={`p-5 md:p-8 rounded-2xl shadow-sm border transition-all duration-300 ${editingId ? 'bg-blue-50/50 border-blue-200 ring-4 ring-blue-50' : 'bg-white border-gray-100'}`}>
                     <h2 className="text-lg md:text-xl font-bold mb-6 flex items-center gap-3 text-gray-900">
                         {editingId ? <Edit2 className="w-5 h-5 text-blue-600" /> : <div className="bg-black text-white rounded-xl p-1.5"><Plus className="w-4 h-4" /></div>}
-                        {editingId ? 'עריכת רשומה' : 'הוספת רכש חדש / עדכון מלאי'}
+                        {editingId ? 'עריכת רשומה' : mode === 'consume' ? 'דיווח צריכת בקבוקנים' : 'הוספת רכש חדש / עדכון מלאי'}
                     </h2>
+
+                    <div className="flex bg-gray-100 p-1 rounded-xl mb-6">
+                        <button 
+                            type="button"
+                            onClick={() => setMode('add')}
+                            className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all ${mode === 'add' ? 'bg-white text-black shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+                        >
+                            הוספת רכש
+                        </button>
+                        <button 
+                            type="button"
+                            onClick={() => setMode('consume')}
+                            className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all ${mode === 'consume' ? 'bg-white text-red-600 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+                        >
+                            דיווח צריכה
+                        </button>
+                    </div>
 
                     <form onSubmit={handleSubmit} className="space-y-5">
                         <div className="space-y-1.5">
@@ -195,7 +215,9 @@ export default function AdminInventoryPage() {
                         </div>
 
                         <div className="space-y-1.5">
-                            <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider">כמות {editingId ? '(המספר החדש)' : 'להוספה'}</label>
+                            <label className="block text-xs font-bold text-gray-400 uppercase tracking-wider">
+                                {editingId ? 'כמות (המספר החדש)' : mode === 'consume' ? 'כמות לצריכה' : 'כמות להוספה'}
+                            </label>
                             <input
                                 type="number"
                                 value={quantity}
@@ -223,9 +245,9 @@ export default function AdminInventoryPage() {
                             <button
                                 type="submit"
                                 disabled={submitting}
-                                className={`flex-1 py-4 rounded-xl font-bold text-white shadow-lg transition-all active:scale-95 disabled:opacity-50 ${editingId ? 'bg-blue-600 hover:bg-blue-700 shadow-blue-200' : 'bg-black hover:bg-gray-800 shadow-gray-200'}`}
+                                className={`flex-1 py-4 rounded-xl font-bold text-white shadow-lg transition-all active:scale-95 disabled:opacity-50 ${editingId ? 'bg-blue-600 hover:bg-blue-700 shadow-blue-200' : mode === 'consume' ? 'bg-red-600 hover:bg-red-700 shadow-red-200' : 'bg-black hover:bg-gray-800 shadow-gray-200'}`}
                             >
-                                {submitting ? 'מעדכן...' : editingId ? 'עדכן רשומה' : 'עדכן מלאי'}
+                                {submitting ? 'מעדכן...' : editingId ? 'עדכן רשומה' : mode === 'consume' ? 'דווח צריכה' : 'עדכן מלאי'}
                             </button>
 
                             {editingId && (
@@ -274,7 +296,9 @@ export default function AdminInventoryPage() {
                                                     {new Date(h.purchase_date).toLocaleDateString('he-IL')}
                                                 </td>
                                                 <td className="p-4 font-bold text-gray-900">{typeLabel}</td>
-                                                <td className="p-4 text-green-600 font-black ltr" dir="ltr">+{h.quantity}</td>
+                                                <td className={`p-4 font-black ltr ${h.quantity < 0 ? 'text-red-600' : 'text-green-600'}`} dir="ltr">
+                                                    {h.quantity > 0 ? `+${h.quantity}` : h.quantity}
+                                                </td>
                                                 <td className="p-4 text-gray-400 truncate max-w-[150px] text-xs" title={h.notes}>
                                                     {h.notes || '—'}
                                                 </td>
@@ -323,7 +347,9 @@ export default function AdminInventoryPage() {
                                                 </div>
                                                 <div className="font-black text-gray-900 text-base leading-tight">{typeLabel}</div>
                                             </div>
-                                            <div className="text-xl font-black text-green-600 bg-green-50 border border-green-100 px-3 py-1 rounded-xl shadow-sm" dir="ltr">+{h.quantity}</div>
+                                            <div className={`text-xl font-black bg-opacity-10 border px-3 py-1 rounded-xl shadow-sm ${h.quantity < 0 ? 'text-red-600 bg-red-50 border-red-100' : 'text-green-600 bg-green-50 border-green-100'}`} dir="ltr">
+                                                {h.quantity > 0 ? `+${h.quantity}` : h.quantity}
+                                            </div>
                                         </div>
                                         
                                         {h.notes && (

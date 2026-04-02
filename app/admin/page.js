@@ -642,17 +642,24 @@ export default async function AdminDashboard({ searchParams }) {
 
                     <div className="grid grid-cols-2 gap-2">
                         {kpis.bottleInventory && kpis.bottleInventory.map(item => {
-                            const sizeLabel = item.size === 11 ? 'ויאלים' : `${item.size} מ"ל`;
-                            // Choose a color theme based on size for consistency
-                            const theme = item.size === 2 ? 'bg-amber-50/50 border-amber-100 text-amber-700' :
-                                          item.size === 5 ? 'bg-orange-50/50 border-orange-100 text-orange-700' :
-                                          item.size === 10 ? 'bg-yellow-50/50 border-yellow-100 text-yellow-700' :
-                                          'bg-emerald-50/50 border-emerald-100 text-emerald-700';
+                            const isLow = item.quantity < 20;
+                            const sizeLabel = item.size === 11 ? '10 מ"ל יוקרתי' : `${item.size} מ"ל`;
+                            
+                            // Choose a color theme based on size and stock status
+                            let theme = '';
+                            if (isLow) {
+                                theme = 'bg-red-50/50 border-red-200 text-red-700 animate-pulse-subtle';
+                            } else {
+                                theme = item.size === 2 ? 'bg-amber-50/50 border-amber-100 text-amber-700' :
+                                        item.size === 5 ? 'bg-orange-50/50 border-orange-100 text-orange-700' :
+                                        item.size === 10 ? 'bg-yellow-50/50 border-yellow-100 text-yellow-700' :
+                                        'bg-emerald-50/50 border-emerald-100 text-emerald-700';
+                            }
 
                             return (
                                 <div key={item.size} className={`flex flex-col items-center p-2 rounded-xl border ${theme}`}>
                                     <span className="text-[9px] font-bold mb-1">{sizeLabel}</span>
-                                    <span className={`font-black text-base leading-none ${item.quantity < 20 ? 'text-red-600' : ''}`}>
+                                    <span className={`font-black text-base leading-none ${isLow ? 'text-red-600' : ''}`}>
                                         {item.quantity}
                                     </span>
                                 </div>
@@ -693,7 +700,7 @@ export default async function AdminDashboard({ searchParams }) {
                             <span className="font-black text-base text-blue-800 leading-none">{kpis.samplesBreakdown['10']}</span>
                         </div>
                         <div className="flex flex-col items-center bg-amber-50/50 p-2 rounded-xl border border-amber-100">
-                            <span className="text-[10px] text-amber-600 font-bold mb-1">ויאלים</span>
+                            <span className="text-[10px] text-amber-600 font-bold mb-1">10 מ"ל יוקרתי</span>
                             <span className="font-black text-base text-amber-800 leading-none">{kpis.samplesBreakdown['11']}</span>
                         </div>
                     </div>
