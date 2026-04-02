@@ -533,6 +533,7 @@
         "cancel": "Cancel",
         "shared_cart_added": "The shared cart has been successfully added!",
         "shared_cart_mixed": "Some products were added, but some are out of stock.",
+        "shared_cart_all_out_of_stock": "All products in the shared cart are out of stock.",
         "shared_cart_error": "Could not load the shared cart. It may have expired.",
         "flash_sale": "Flash sale active! 15% off",
         "delivery_method": "Shipping Method",
