@@ -14,6 +14,7 @@ import { WishlistProvider } from "./context/WishlistContext";
 import pool, { getBrands, getMenuItems } from "./lib/db";
 import { sanitizeProductArray } from "./lib/productUtils";
 import { Toaster } from 'react-hot-toast';
+import ClerkBrandingTranslator from "./components/ClerkBrandingTranslator";
 
 // Validate env vars on server start/request
 validateEnv();
@@ -99,36 +100,7 @@ export default async function RootLayout({ children }) {
           identityPreviewText: {
             direction: 'ltr !important'
           },
-          clerkBranding: locale === 'he' ? {
-            position: 'relative',
-            backgroundColor: 'white',
-            '&::before': {
-              content: '""',
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              backgroundColor: 'white',
-              zIndex: 1,
-            },
-            '&::after': {
-              content: '"מאובטח על ידי Clerk"',
-              position: 'absolute',
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: '#6c7278',
-              fontSize: '11px',
-              zIndex: 2,
-              pointerEvents: 'none',
-              whiteSpace: 'nowrap',
-            }
-          } : {}
+          clerkBranding: {}
         }
       }}
     >
@@ -138,6 +110,7 @@ export default async function RootLayout({ children }) {
             <CartProvider>
               <WishlistProvider>
               <AnalyticsTracker />
+              {locale === 'he' && <ClerkBrandingTranslator />}
               <Toaster position="top-center" toastOptions={{ 
                 duration: 3000,
                 style: {
