@@ -428,7 +428,7 @@ export default function CartClient() {
                                                 </div>
                                                 <div className="flex-1 min-w-0">
                                                     <div className="font-bold text-xs truncate">{rec.name}</div>
-                                                    <div className="text-xs text-gray-500 font-mono flex items-center gap-2">
+                                                    <div className="text-xs text-gray-500 flex items-center gap-2">
                                                         <span>{rec.size} {t('common.ml_unit')}</span>
                                                         <span className="text-gray-300">•</span>
                                                         {rec.originalPrice && rec.originalPrice !== rec.price ? (
