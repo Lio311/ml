@@ -354,7 +354,7 @@ export default function AdminOrdersListClient({
     return (
         <div className="pb-8 relative">
             {/* Header and Batch Action Bar */}
-            <div className="flex flex-col xl:flex-row items-start xl:items-center justify-center gap-4 mb-4 lg:mb-12 relative min-h-[44px] xl:min-h-[80px]">
+            <div className="flex flex-col xl:flex-row items-start xl:items-center justify-center gap-4 mb-4 lg:mb-6 relative min-h-[44px] xl:min-h-[64px]">
                 <div className="flex flex-col xl:absolute xl:right-0 xl:top-1/2 xl:-translate-y-1/2">
                     <h1 className="text-2xl md:text-3xl font-bold text-gray-900 shrink-0 font-black tracking-tighter">ניהול הזמנות</h1>
                     <p className="text-xs md:text-sm font-bold text-blue-600 mt-1">סה"כ הזמנות שבוצעו באתר: {totalOrders}</p>
