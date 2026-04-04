@@ -154,7 +154,7 @@ export default function Header({ brands = [] }) {
 
                     <div className="xl:hidden flex w-full items-center justify-between h-full">
                         {/* Hamburger & Back */}
-                        <div className="flex-1 flex items-center">
+                        <div className="flex-1 flex items-center basis-0">
                             {!isHome && (
                                 <button
                                     onClick={() => router.back()}
@@ -176,7 +176,7 @@ export default function Header({ brands = [] }) {
                         </div>
 
                         {/* Center: Logo */}
-                        <div className="flex-shrink-0">
+                        <div className="flex-shrink-0 px-4">
                             <Link href="/">
                                 <Image 
                                     src="/logo_v5.png" 
@@ -190,7 +190,7 @@ export default function Header({ brands = [] }) {
                         </div>
 
                         {/* Left: Icons (Simplified for mobile) */}
-                        <div className="flex-1 flex items-center justify-end gap-2 text-black">
+                        <div className="flex-1 flex items-center justify-end gap-2 text-black basis-0 min-w-0 ps-4">
                              <DesktopIcons 
                                 cartCount={cartCount} 
                                 wishlistCount={wishlistCount} 
@@ -199,17 +199,17 @@ export default function Header({ brands = [] }) {
                         </div>
                     </div>
                 </div>
+            </div>
 
-                {/* Mobile Search Bar Expansion */}
-                <div className={`md:hidden bg-white/95 backdrop-blur-md border-t border-gray-100 overflow-hidden transition-all duration-300 ease-in-out ${
-                    isMobileSearchOpen ? 'h-16 opacity-100 border-b' : 'h-0 opacity-0'
-                }`}>
-                    <div className="px-4 h-full flex items-center">
-                        <SearchAutocomplete 
-                            fullWidth={true} 
-                            onSelect={() => setIsMobileSearchOpen(false)} 
-                        />
-                    </div>
+            {/* Mobile Search Bar Expansion - Moved outside frosted-nav for better layout */}
+            <div className={`md:hidden bg-white/95 backdrop-blur-md border-b border-gray-100 overflow-hidden transition-all duration-300 ease-in-out relative z-30 ${
+                isMobileSearchOpen ? 'h-16 opacity-100' : 'h-0 opacity-0'
+            }`}>
+                <div className="w-full max-w-[1800px] mx-auto px-4 h-full flex items-center">
+                    <SearchAutocomplete 
+                        fullWidth={true} 
+                        onSelect={() => setIsMobileSearchOpen(false)} 
+                    />
                 </div>
             </div>
 
