@@ -56,11 +56,6 @@ export default function ChatWidget() {
         ]);
     }, []);
 
-    const [input, setInput] = useState("");
-    const [isTyping, setIsTyping] = useState(false);
-    const scrollRef = useRef(null);
-    const router = useRouter();
-
     // Auto-scroll to bottom of chat
     useEffect(() => {
         if (scrollRef.current) {
@@ -165,7 +160,6 @@ export default function ChatWidget() {
     };
 
     // Render nothing if user closed the widget completely (state could be persisted in localStorage)
-    const [isVisible, setIsVisible] = useState(true);
     if (!isVisible) return null;
 
     return (
