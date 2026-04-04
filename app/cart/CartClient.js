@@ -219,6 +219,13 @@ export default function CartClient() {
 
     const recommendations = useMemo(() => {
         if (!isMainVendor || nextTier <= 0) return [];
+        
+        const getDiscountedPrice = (product, size, originalPrice) => {
+            const hasDiscount = product.discount_percentage > 0 && product.discount_sizes?.includes(`${size}ml`);
+            if (!hasDiscount) return originalPrice;
+            return Math.round((originalPrice * (1 - product.discount_percentage / 100)) / 5) * 5;
+        };
+
         return upsellProducts
             .filter(p => !cartItems.some(item => item.id === p.id))
             .map(p => {
@@ -227,9 +234,22 @@ export default function CartClient() {
                     { size: '5', price: Number(p.price_5ml) },
                     { size: '10', price: Number(p.price_10ml) }
                 ].filter(s => s.price > 0);
+                
                 let bestMatch = sizes.find(s => s.price >= nextTier) || sizes[sizes.length - 1];
-                return { ...p, ...bestMatch };
-            }).slice(0, 3);
+                if (!bestMatch) return null;
+
+                const originalPrice = bestMatch.price;
+                const discountedPrice = getDiscountedPrice(p, bestMatch.size, originalPrice);
+
+                return { 
+                    ...p, 
+                    size: bestMatch.size, 
+                    price: discountedPrice, 
+                    originalPrice: originalPrice 
+                };
+            })
+            .filter(Boolean)
+            .slice(0, 3);
     }, [isMainVendor, nextTier, upsellProducts, cartItems]);
 
     // Lucky Wheel
@@ -408,16 +428,21 @@ export default function CartClient() {
                                                 </div>
                                                 <div className="flex-1 min-w-0">
                                                     <div className="font-bold text-xs truncate">{rec.name}</div>
-                                                    <div className="text-xs text-gray-500">
-                                                        {t('cart.upsell_item_format', { 
-                                                            size: rec.size, 
-                                                            ml: t('common.ml_unit'), 
-                                                            price: rec.price 
-                                                        })}
+                                                    <div className="text-xs text-gray-500 font-mono flex items-center gap-2">
+                                                        <span>{rec.size} {t('common.ml_unit')}</span>
+                                                        <span className="text-gray-300">•</span>
+                                                        {rec.originalPrice && rec.originalPrice !== rec.price ? (
+                                                            <span className="flex items-center gap-1.5">
+                                                                <span className="line-through text-gray-400 opacity-70">{rec.originalPrice} ₪</span>
+                                                                <span className="text-green-600 font-bold">{rec.price} ₪</span>
+                                                            </span>
+                                                        ) : (
+                                                            <span>{rec.price} ₪</span>
+                                                        )}
                                                     </div>
                                                 </div>
                                                 <button
-                                                    onClick={() => addToCart(rec, rec.size, rec.price)}
+                                                    onClick={() => addToCart(rec, rec.size, rec.price, 'main', 'האתר הרשמי', rec.originalPrice)}
                                                     className="w-8 h-8 flex items-center justify-center bg-black text-white rounded-full hover:bg-gray-800 transition"
                                                     title="הוסף לעגלה"
                                                 >
