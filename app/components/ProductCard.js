@@ -154,8 +154,11 @@ export default function ProductCard({ product }) {
                         sizes="(max-width: 768px) 50vw, 25vw"
                     />
                 ) : (
-                    <div className="absolute inset-0 flex items-center justify-center text-gray-300 text-4xl md:group-hover:scale-105 transition duration-500">
-                        🧴
+                    <div className="absolute inset-0 flex items-center justify-center text-gray-300 md:group-hover:scale-105 transition duration-500">
+                        <svg viewBox="0 0 24 24" className="w-16 h-16 opacity-20" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M6 3a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3h12a3 3 0 0 0 3-3V6a3 3 0 0 0-3-3H6z" />
+                            <path d="M9 3v18M15 3v18M3 9h18M3 15h18" />
+                        </svg>
                     </div>
                 )}
             </Link>

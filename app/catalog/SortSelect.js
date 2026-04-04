@@ -3,7 +3,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import CustomDropdown from "../components/ui/CustomDropdown";
 import { useLanguage } from "../context/LanguageContext";
 
-export default function SortSelect() {
+export default function SortSelect({ basePath = "/catalog" }) {
     const router = useRouter();
     const searchParams = useSearchParams();
     const { t } = useLanguage();
@@ -20,7 +20,7 @@ export default function SortSelect() {
         const params = new URLSearchParams(searchParams);
         params.set("sort", newSort);
         params.delete("page");
-        router.push(`/catalog?${params.toString()}`);
+        router.push(`${basePath}?${params.toString()}`);
     };
 
     return (

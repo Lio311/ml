@@ -156,9 +156,7 @@ export default async function SalesPage(props) {
         <div className={`container pt-12 pb-20 ${dir === 'rtl' ? 'text-right' : 'text-left'}`} dir={dir}>
             <div className="text-center mb-12">
                 <h1 className="text-4xl md:text-5xl font-serif font-black mb-4 flex items-center justify-center gap-3">
-                    <span className="text-red-600">🔥</span>
                     {t('common.sales')}
-                    <span className="text-red-600">🔥</span>
                 </h1>
                 <p className="text-gray-500 max-w-2xl mx-auto">
                     {locale === 'he' 
@@ -168,15 +166,17 @@ export default async function SalesPage(props) {
             </div>
 
             <div className="flex flex-col md:flex-row gap-8">
-                <FilterSidebar
-                    allBrands={brands}
-                    allCategories={categories}
-                    allCountries={countries}
-                    allPerfumers={perfumers}
-                    minPrice={minPrice}
-                    maxPrice={maxPrice}
-                    basePath="/sales"
-                />
+                <div className="hidden md:block">
+                    <FilterSidebar
+                        allBrands={brands}
+                        allCategories={categories}
+                        allCountries={countries}
+                        allPerfumers={perfumers}
+                        minPrice={minPrice}
+                        maxPrice={maxPrice}
+                        basePath="/sales"
+                    />
+                </div>
 
                 <div className="flex-1">
                     <div className="mb-6 flex justify-between items-center bg-green-50 p-4 rounded-2xl border border-green-100">
@@ -194,7 +194,13 @@ export default async function SalesPage(props) {
 
                     {products.length === 0 && (
                         <div className="text-center py-20 bg-gray-50 rounded-3xl border-2 border-dashed border-gray-200">
-                            <span className="text-5xl mb-4 block">💨</span>
+                            <span className="text-gray-300 mb-4 block">
+                                <svg xmlns="http://www.w3.org/2000/svg" className="w-16 h-16 mx-auto" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
+                                    <path d="M12 2v20M2 12h20" className="opacity-20" />
+                                    <path d="M6 3a3 3 0 0 0-3 3v12a3 3 0 0 0 3 3h12a3 3 0 0 0 3-3V6a3 3 0 0 0-3-3H6z" />
+                                    <path d="M9 3v18M15 3v18" />
+                                </svg>
+                            </span>
                             <p className="text-xl text-gray-500 font-bold">{t('common.no_products_found')}</p>
                             <Link href="/catalog" className="text-black mt-4 inline-block font-black underline">{t('common.clear_all')}</Link>
                         </div>
