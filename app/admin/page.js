@@ -751,22 +751,8 @@ export default async function AdminDashboard({ searchParams }) {
             </div>
 
             {/* Main Operational KPIs */}
-            {/* Core Operational KPIs */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-4 mb-4">
-                {/* Total Orders (Now first in RTL) */}
-                <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100 relative overflow-hidden group hover:shadow-md transition-shadow">
-                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-cyan-500"></div>
-                    <div className="text-gray-500 text-[10px] font-bold uppercase mb-2 flex items-center gap-2">
-                        <ShoppingCart className="w-3.5 h-3.5 text-blue-500" />
-                        סה"כ הזמנות
-                    </div>
-                    <div className="text-2xl font-bold mb-2">{kpis.totalOrders}</div>
-                    <div className="border-t border-gray-50 pt-2 mt-2">
-                        <Link href="/admin/orders" className="text-[10px] text-blue-500 hover:underline font-bold transition-all">לניהול הזמנות ←</Link>
-                    </div>
-                </div>
-
-                {/* Site Visits (Now second - to the left of orders in RTL) */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-4 mb-8">
+                {/* Site Visits (Rightmost in RTL) */}
                 <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100 relative overflow-hidden group hover:shadow-md transition-shadow">
                     <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-sky-400 to-indigo-400"></div>
                     <div className="text-gray-500 text-[10px] font-bold uppercase mb-2 flex items-center gap-2">
@@ -777,6 +763,19 @@ export default async function AdminDashboard({ searchParams }) {
                         {kpis.monthlyVisits}
                     </div>
                     <div className="text-[9px] text-gray-400 font-medium italic">נספר לפי ביקורים ייחודיים</div>
+                </div>
+
+                {/* Total Orders */}
+                <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100 relative overflow-hidden group hover:shadow-md transition-shadow">
+                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-cyan-500"></div>
+                    <div className="text-gray-500 text-[10px] font-bold uppercase mb-2 flex items-center gap-2">
+                        <ShoppingCart className="w-3.5 h-3.5 text-blue-500" />
+                        סה"כ הזמנות
+                    </div>
+                    <div className="text-2xl font-bold mb-2">{kpis.totalOrders}</div>
+                    <div className="border-t border-gray-50 pt-2 mt-2">
+                        <Link href="/admin/orders" className="text-[10px] text-blue-500 hover:underline font-bold transition-all">לניהול הזמנות ←</Link>
+                    </div>
                 </div>
 
                 {/* Registered Users */}
@@ -803,35 +802,6 @@ export default async function AdminDashboard({ searchParams }) {
                         {Math.round(kpis.avgOrderValue || 0).toLocaleString()} ₪
                     </div>
                     <div className="text-[9px] text-gray-400 font-medium italic">מחושב לפי כל ההזמנות במערכת</div>
-                </div>
-            </div>
-
-            {/* Growth & Cumulative KPIs (Moved Below) */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6 mb-8 md:mb-12">
-                {/* Cumulative Sales Total Card */}
-                <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100 relative overflow-hidden group hover:shadow-md transition-shadow">
-                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-600 to-purple-600"></div>
-                    <div className="text-gray-500 text-[10px] font-bold uppercase mb-2 flex items-center gap-2">
-                        <ShoppingCart className="w-3.5 h-3.5 text-indigo-600" />
-                        מכירות מצטברות (All-Time)
-                    </div>
-                    <div className="text-2xl font-bold mb-2 text-gray-900">
-                        {Math.round(kpis.totalRevenueAllTime || 0).toLocaleString()} <span className="text-sm font-normal text-gray-400 italic">₪</span>
-                    </div>
-                    <div className="text-[9px] text-gray-400 font-medium italic">מרגע פתיחת האתר</div>
-                </div>
-
-                {/* Cumulative Volume Card */}
-                <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100 relative overflow-hidden group hover:shadow-md transition-shadow">
-                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-fuchsia-500 to-pink-600"></div>
-                    <div className="text-gray-500 text-[10px] font-bold uppercase mb-2 flex items-center gap-2" dir="rtl">
-                        <FlaskConical className="w-3.5 h-3.5 text-fuchsia-500" />
-                        נפח נוזל מצטבר שנמכר
-                    </div>
-                    <div className="text-2xl font-bold mb-2 text-gray-900" dir="ltr">
-                        {Math.round(kpis.totalVolumeAllTime || 0).toLocaleString()}ml
-                    </div>
-                    <div className="text-[9px] text-gray-400 font-medium italic">סה"כ נפח בושם (מ"ל) שנמכר באתר</div>
                 </div>
             </div>
 
