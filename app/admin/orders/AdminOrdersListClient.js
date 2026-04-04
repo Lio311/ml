@@ -21,6 +21,7 @@ export default function AdminOrdersListClient({
     orders, 
     totalPages, 
     currentPage, 
+    totalOrders,
     canEdit, 
     deleteOrder 
 }) {
@@ -83,13 +84,7 @@ export default function AdminOrdersListClient({
         }
 
         return (
-            <div className={`bg-white rounded-2xl shadow-sm border border-${themeColor}-100 overflow-hidden mb-12`}>
-                <div className={`bg-${themeColor}-600 text-white p-4 font-black flex justify-between items-center`}>
-                    <span>רשימת הזמנות</span>
-                    <span className="text-[10px] opacity-70 uppercase tracking-widest bg-white/20 px-2 py-0.5 rounded-lg border border-white/10">
-                        {orders.length} הזמנות בעמוד
-                    </span>
-                </div>
+            <div className={`bg-white rounded-2xl shadow-sm border border-${themeColor}-100 overflow-hidden mb-12 relative`}>
 
                 {/* Desktop View */}
                 <div className="hidden md:block overflow-x-auto custom-scrollbar">
@@ -359,8 +354,11 @@ export default function AdminOrdersListClient({
     return (
         <div className="pb-8 relative">
             {/* Header and Batch Action Bar */}
-            <div className="flex flex-col xl:flex-row items-start xl:items-center justify-center gap-4 mb-4 lg:mb-8 relative min-h-[44px] xl:min-h-[72px]">
-                <h1 className="text-2xl md:text-3xl font-bold text-gray-900 shrink-0 xl:absolute xl:right-0 xl:top-1/2 xl:-translate-y-1/2 font-black tracking-tighter">ניהול הזמנות</h1>
+            <div className="flex flex-col xl:flex-row items-start xl:items-center justify-center gap-4 mb-4 lg:mb-12 relative min-h-[44px] xl:min-h-[80px]">
+                <div className="flex flex-col xl:absolute xl:right-0 xl:top-1/2 xl:-translate-y-1/2">
+                    <h1 className="text-2xl md:text-3xl font-bold text-gray-900 shrink-0 font-black tracking-tighter">ניהול הזמנות</h1>
+                    <p className="text-xs md:text-sm font-bold text-blue-600 mt-1">סה"כ הזמנות שבוצעו באתר: {totalOrders}</p>
+                </div>
                 
                 {selectedOrderIds.length > 0 && canEdit && (
                     <div className="bg-white border-2 border-black text-gray-800 p-2.5 md:p-3 rounded-2xl shadow-xl z-40 flex flex-col md:flex-row items-center gap-4 animate-in fade-in zoom-in-95 w-full xl:w-auto relative xl:absolute xl:left-1/2 xl:-translate-x-1/2 xl:top-1/2 xl:-translate-y-1/2">

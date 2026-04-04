@@ -18,7 +18,7 @@ export const metadata = {
 export default async function AdminOrdersPage(props) {
     const searchParams = await props.searchParams;
     const page = Number(searchParams?.page) || 1;
-    const LIMIT = 10; // Increased limit slightly now that it's a single table
+    const LIMIT = 4; // Limited to 4 orders per page as requested
     
     const offset = (page - 1) * LIMIT;
 
@@ -129,6 +129,7 @@ export default async function AdminOrdersPage(props) {
             orders={orders} 
             totalPages={totalPages}
             currentPage={page}
+            totalOrders={totalOrders}
             canEdit={canEdit} 
             deleteOrder={deleteOrder} 
         />
