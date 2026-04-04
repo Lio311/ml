@@ -151,17 +151,23 @@ export async function POST(req) {
                 if (!item.isPrize && !isNaN(item.size)) {
                     const deduction = Number(item.size) * item.quantity;
                     const stockRes = await client.query(
-                        `UPDATE products SET stock = stock - $1 WHERE id = $2 RETURNING stock, name_he, name`,
+                        `UPDATE products SET stock = stock - $1 WHERE id = $2 RETURNING stock, name_he, name, original_size`,
                         [deduction, dbId]
                     );
 
-                    // Check Low Stock for Product
-                    if (stockRes.rows[0] && stockRes.rows[0].stock < 500) { // 500ml threshold (approx 10 bottles)
-                        const pName = stockRes.rows[0].name_he || stockRes.rows[0].name || 'מוצר לא ידוע';
-                        await client.query(
-                            `INSERT INTO notifications (type, message, is_read) VALUES ($1, $2, $3)`,
-                            ['warning', `מלאי נמוך למוצר: ${pName} (נותרו ${stockRes.rows[0].stock} מ"ל)`, false]
-                        );
+                    // Check Low Stock for Product (Dynamic 20% of original size)
+                    if (stockRes.rows[0]) {
+                        const currentStock = stockRes.rows[0].stock;
+                        const originalSize = Number(stockRes.rows[0].original_size || 100);
+                        const threshold = originalSize * 0.2; // 20% threshold
+
+                        if (currentStock < threshold) {
+                            const pName = stockRes.rows[0].name_he || stockRes.rows[0].name || 'מוצר לא ידוע';
+                            await client.query(
+                                `INSERT INTO notifications (type, message, is_read) VALUES ($1, $2, $3)`,
+                                ['warning', `מלאי נמוך למוצר: ${pName} (נותרו ${currentStock} מ"ל)`, false]
+                            );
+                        }
                     }
 
                     // --- BOTTLE INVENTORY DEDUCTION ---

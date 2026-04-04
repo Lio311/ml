@@ -153,31 +153,8 @@ export default function Header({ brands = [] }) {
                     </div>
 
                     <div className="xl:hidden flex w-full items-center justify-between h-full px-2 text-black">
-                        {/* Left: Icons (Simplified for mobile) */}
-                        <div className="flex-shrink-0 flex items-center justify-start min-w-0">
-                             <DesktopIcons 
-                                cartCount={cartCount} 
-                                wishlistCount={wishlistCount} 
-                                onSearchToggle={() => setIsMobileSearchOpen(!isMobileSearchOpen)}
-                            />
-                        </div>
-
-                        {/* Center: Logo (Between Icons and Hamburger) */}
-                        <div className="flex-shrink-0">
-                            <Link href="/">
-                                <Image 
-                                    src="/logo_v5.png" 
-                                    alt="ml." 
-                                    width={120} 
-                                    height={40} 
-                                    className="h-8 w-auto object-contain inverted-logo-v2" 
-                                    priority 
-                                />
-                            </Link>
-                        </div>
-
-                        {/* Right: Hamburger & Back */}
-                        <div className="flex-shrink-0 flex items-center justify-end">
+                        {/* Right: Hamburger & Back (First child in RTL = Far Right) */}
+                        <div className="flex-shrink-0 flex items-center justify-start">
                             {!isHome && (
                                 <button
                                     onClick={() => router.back()}
@@ -192,10 +169,33 @@ export default function Header({ brands = [] }) {
                             )}
                             <button 
                                 onClick={() => setIsMobileMenuOpen(true)}
-                                className={`p-2 ${isHome ? '' : ''} text-black hover:opacity-100 opacity-70 transition-opacity`}
+                                className={`p-2 text-black hover:opacity-100 opacity-70 transition-opacity`}
                             >
                                 <Menu size={28} />
                             </button>
+                        </div>
+
+                        {/* Center: Logo (Between Icons and Hamburger) */}
+                        <div className="flex-shrink-0 absolute left-1/2 -translate-x-1/2">
+                            <Link href="/">
+                                <Image 
+                                    src="/logo_v5.png" 
+                                    alt="ml." 
+                                    width={120} 
+                                    height={40} 
+                                    className="h-8 w-auto object-contain inverted-logo-v2" 
+                                    priority 
+                                />
+                            </Link>
+                        </div>
+
+                        {/* Left: Icons (Simplified for mobile - Last child in RTL = Far Left) */}
+                        <div className="flex-shrink-0 flex items-center justify-end min-w-0">
+                             <DesktopIcons 
+                                cartCount={cartCount} 
+                                wishlistCount={wishlistCount} 
+                                onSearchToggle={() => setIsMobileSearchOpen(!isMobileSearchOpen)}
+                            />
                         </div>
                     </div>
                 </div>
