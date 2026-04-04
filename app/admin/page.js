@@ -580,11 +580,7 @@ export default async function AdminDashboard({ searchParams }) {
             />
 
 
-            <AnalyticsTables
-                topBrands={kpis.topBrands}
-                topSizes={kpis.topSizes}
-                monthName={currentYearLabel}
-            />
+
 
             {/* KPI Cards Grid */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 mb-8 md:mb-12">
@@ -727,19 +723,6 @@ export default async function AdminDashboard({ searchParams }) {
 
             {/* Main Operational KPIs */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 md:gap-4 mb-8">
-                {/* Total Orders */}
-                <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100 relative overflow-hidden group hover:shadow-md transition-shadow">
-                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-cyan-500"></div>
-                    <div className="text-gray-500 text-[10px] font-bold uppercase mb-2 flex items-center gap-2">
-                        <ShoppingCart className="w-3.5 h-3.5 text-blue-500" />
-                        סה"כ הזמנות
-                    </div>
-                    <div className="text-2xl font-bold mb-2">{kpis.totalOrders}</div>
-                    <div className="border-t border-gray-50 pt-2 mt-2">
-                        <Link href="/admin/orders" className="text-[10px] text-blue-500 hover:underline font-bold transition-all">לניהול הזמנות ←</Link>
-                    </div>
-                </div>
-
                 {/* Site Visits */}
                 <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100 relative overflow-hidden group hover:shadow-md transition-shadow">
                     <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-sky-400 to-indigo-400"></div>
@@ -751,6 +734,19 @@ export default async function AdminDashboard({ searchParams }) {
                         {kpis.monthlyVisits}
                     </div>
                     <div className="text-[9px] text-gray-400 font-medium italic">נספר לפי ביקורים ייחודיים</div>
+                </div>
+
+                {/* Total Orders */}
+                <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100 relative overflow-hidden group hover:shadow-md transition-shadow">
+                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-cyan-500"></div>
+                    <div className="text-gray-500 text-[10px] font-bold uppercase mb-2 flex items-center gap-2">
+                        <ShoppingCart className="w-3.5 h-3.5 text-blue-500" />
+                        סה"כ הזמנות
+                    </div>
+                    <div className="text-2xl font-bold mb-2">{kpis.totalOrders}</div>
+                    <div className="border-t border-gray-50 pt-2 mt-2">
+                        <Link href="/admin/orders" className="text-[10px] text-blue-500 hover:underline font-bold transition-all">לניהול הזמנות ←</Link>
+                    </div>
                 </div>
 
                 {/* Registered Users */}
@@ -792,6 +788,12 @@ export default async function AdminDashboard({ searchParams }) {
                     <div className="text-[9px] text-gray-400 font-medium italic">מרגע פתיחת האתר</div>
                 </div>
             </div>
+
+            <AnalyticsTables
+                topBrands={kpis.topBrands}
+                topSizes={kpis.topSizes}
+                monthName={currentYearLabel}
+            />
 
             {/* Recent Orders List */}
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden mb-8">
