@@ -59,7 +59,7 @@ export async function POST(req) {
 
                     // Apply discount if applicable
                     if (p.discount_percentage > 0 && Array.isArray(p.discount_sizes) && p.discount_sizes.includes(`${item.size}ml`)) {
-                        realPrice = Math.round(realPrice * (1 - p.discount_percentage / 100));
+                        realPrice = Math.round((realPrice * (1 - p.discount_percentage / 100)) / 5) * 5;
                     }
                     
                     if (realPrice !== item.price) {

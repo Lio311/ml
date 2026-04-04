@@ -42,7 +42,7 @@ export default function ProductCard({ product }) {
     const getDiscountedPrice = (size, originalPrice) => {
         const hasDiscount = product.discount_percentage > 0 && (product.discount_sizes || []).includes(`${size}ml`);
         if (!hasDiscount) return originalPrice;
-        return Math.floor(originalPrice * (1 - product.discount_percentage / 100));
+        return Math.round((originalPrice * (1 - product.discount_percentage / 100)) / 5) * 5;
     };
 
     const handleAdd = (size, price) => {
@@ -125,7 +125,7 @@ export default function ProductCard({ product }) {
 
             {product.discount_percentage > 0 && (
                 <div className="absolute top-2 end-2 z-10 text-[10px] leading-3 font-black bg-green-600 text-white px-2 py-1 rounded shadow-sm text-center animate-pulse">
-                    {product.discount_percentage}% OFF
+                    {locale === 'he' ? `${product.discount_percentage}% הנחה` : `${product.discount_percentage}% OFF`}
                 </div>
             )}
 
