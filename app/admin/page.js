@@ -11,6 +11,7 @@ export const dynamic = 'force-dynamic';
 
 import { clerkClient, currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
+import { cookies } from "next/headers";
 
 
 export async function generateMetadata() {
