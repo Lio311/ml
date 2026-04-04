@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X, Home, Users, Package, CreditCard, Inbox, ShoppingBag, Tag, Ticket, Dice5, Library, Map, Store, ClipboardList, LogOut, MessageSquare, Star } from "lucide-react";
+import { Menu, X, Home, Users, Package, CreditCard, Inbox, ShoppingBag, Tag, Ticket, Dice5, Library, Map, Store, ClipboardList, LogOut, MessageSquare, Star, History } from "lucide-react";
 import { SignOutButton } from "@clerk/nextjs";
 
 export default function AdminMobileNav({ role = 'customer' }) {
