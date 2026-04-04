@@ -402,7 +402,7 @@ export default function SmartMatchingClient({ initialNotes }) {
                                     {isAddedToCart ? (
                                         <Link
                                             href="/cart"
-                                            className="px-10 py-4 rounded-full bg-emerald-500 text-white font-black text-xs uppercase tracking-[0.2em] hover:bg-emerald-600 transition-all shadow-xl active:scale-95 flex items-center gap-2 animate-bounceSuccess"
+                                            className="px-10 py-4 rounded-full bg-emerald-500 text-white font-black text-xs uppercase tracking-[0.2em] hover:bg-emerald-600 transition-all shadow-xl active:scale-95 flex items-center gap-2 animate-bounceSuccess whitespace-nowrap"
                                         >
                                             <span className="text-sm">✓</span>
                                             {t('matching.view_cart')}

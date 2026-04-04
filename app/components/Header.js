@@ -152,31 +152,18 @@ export default function Header({ brands = [] }) {
                         </div>
                     </div>
 
-                    <div className="xl:hidden flex w-full items-center justify-between h-full">
-                        {/* Hamburger & Back */}
-                        <div className="flex-1 flex items-center basis-0">
-                            {!isHome && (
-                                <button
-                                    onClick={() => router.back()}
-                                    className="p-2 -ms-4 me-1 text-black hover:opacity-100 opacity-70 transition-opacity"
-                                >
-                                    {dir === 'rtl' ? (
-                                        <ChevronRight className="w-6 h-6" />
-                                    ) : (
-                                        <ChevronLeft className="w-6 h-6" />
-                                    )}
-                                </button>
-                            )}
-                            <button 
-                                onClick={() => setIsMobileMenuOpen(true)}
-                                className={`p-2 ${isHome ? '-ms-2' : ''} text-black hover:opacity-100 opacity-70 transition-opacity`}
-                            >
-                                <Menu size={28} />
-                            </button>
+                    <div className="xl:hidden flex w-full items-center justify-between h-full px-2 text-black">
+                        {/* Left: Icons (Simplified for mobile) */}
+                        <div className="flex-shrink-0 flex items-center justify-start min-w-0">
+                             <DesktopIcons 
+                                cartCount={cartCount} 
+                                wishlistCount={wishlistCount} 
+                                onSearchToggle={() => setIsMobileSearchOpen(!isMobileSearchOpen)}
+                            />
                         </div>
 
-                        {/* Center: Logo */}
-                        <div className="flex-shrink-0 px-4">
+                        {/* Center: Logo (Between Icons and Hamburger) */}
+                        <div className="flex-shrink-0">
                             <Link href="/">
                                 <Image 
                                     src="/logo_v5.png" 
@@ -189,21 +176,34 @@ export default function Header({ brands = [] }) {
                             </Link>
                         </div>
 
-                        {/* Left: Icons (Simplified for mobile) */}
-                        <div className="flex-1 flex items-center justify-end gap-2 text-black basis-0 min-w-0 ps-4">
-                             <DesktopIcons 
-                                cartCount={cartCount} 
-                                wishlistCount={wishlistCount} 
-                                onSearchToggle={() => setIsMobileSearchOpen(!isMobileSearchOpen)}
-                            />
+                        {/* Right: Hamburger & Back */}
+                        <div className="flex-shrink-0 flex items-center justify-end">
+                            {!isHome && (
+                                <button
+                                    onClick={() => router.back()}
+                                    className="p-2 text-black hover:opacity-100 opacity-70 transition-opacity"
+                                >
+                                    {dir === 'rtl' ? (
+                                        <ChevronRight className="w-6 h-6" />
+                                    ) : (
+                                        <ChevronLeft className="w-6 h-6" />
+                                    )}
+                                </button>
+                            )}
+                            <button 
+                                onClick={() => setIsMobileMenuOpen(true)}
+                                className={`p-2 ${isHome ? '' : ''} text-black hover:opacity-100 opacity-70 transition-opacity`}
+                            >
+                                <Menu size={28} />
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
 
             {/* Mobile Search Bar Expansion - Moved outside frosted-nav for better layout */}
-            <div className={`md:hidden bg-white/95 backdrop-blur-md border-b border-gray-100 overflow-hidden transition-all duration-300 ease-in-out relative z-30 ${
-                isMobileSearchOpen ? 'h-16 opacity-100' : 'h-0 opacity-0'
+            <div className={`md:hidden bg-white/95 backdrop-blur-md border-b border-gray-100 transition-all duration-300 ease-in-out relative z-30 ${
+                isMobileSearchOpen ? 'h-16 opacity-100 overflow-visible' : 'h-0 opacity-0 overflow-hidden'
             }`}>
                 <div className="w-full max-w-[1800px] mx-auto px-4 h-full flex items-center">
                     <SearchAutocomplete 
