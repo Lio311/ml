@@ -8,10 +8,22 @@ import { sanitizeProductArray } from '../lib/productUtils';
 
 export const dynamic = 'force-dynamic';
 
-export const metadata = {
-    title: 'Customer Reviews | ml_tlv',
-    description: 'What our customers think about their shopping experience and the perfumes at ml_tlv.',
-};
+export async function generateMetadata() {
+    const cookieStore = await cookies();
+    const locale = cookieStore.get('NEXT_LOCALE')?.value || 'he';
+    
+    if (locale === 'he') {
+        return {
+            title: 'ביקורות לקוחות | ml_tlv',
+            description: 'מה הלקוחות שלנו חושבים על חוויית הקנייה והבשמים ב-ml_tlv.',
+        };
+    }
+    
+    return {
+        title: 'Customer Reviews | ml_tlv',
+        description: 'What our customers think about their shopping experience and the perfumes at ml_tlv.',
+    };
+}
 
 export default async function ReviewsPage() {
     const cookieStore = await cookies();

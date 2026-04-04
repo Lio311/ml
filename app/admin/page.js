@@ -13,10 +13,15 @@ import { clerkClient, currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 
 
-export const metadata = {
-    title: "לוח בקרה | ml_tlv",
-    robots: "noindex, nofollow",
-};
+export async function generateMetadata() {
+    const cookieStore = await cookies();
+    const locale = cookieStore.get('NEXT_LOCALE')?.value || 'he';
+    
+    return {
+        title: locale === 'he' ? "לוח בקרה | ml_tlv" : "Admin Dashboard | ml_tlv",
+        robots: "noindex, nofollow",
+    };
+}
 
 export default async function AdminDashboard({ searchParams }) {
     // Safe Auth Check

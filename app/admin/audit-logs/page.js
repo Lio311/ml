@@ -2,8 +2,19 @@ import pool from '../../lib/db';
 import { auth as clerkAuth } from '@clerk/nextjs/server';
 import { redirect } from 'next/navigation';
 import AuditLogsClient from './AuditLogsClient';
+import { cookies } from 'next/headers';
 
 export const dynamic = 'force-dynamic';
+
+export async function generateMetadata() {
+    const cookieStore = await cookies();
+    const locale = cookieStore.get('NEXT_LOCALE')?.value || 'he';
+    
+    return {
+        title: locale === 'he' ? "יומן פעולות | ml_tlv" : "Audit Logs | ml_tlv",
+        robots: "noindex, nofollow",
+    };
+}
 
 export default async function AuditLogsPage({ searchParams }) {
     const params = await searchParams;

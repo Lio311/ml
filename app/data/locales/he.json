@@ -297,7 +297,8 @@
                 "write_review": "כתבו ביקורת",
                 "upload_photo": "הוספת תמונה",
                 "change_photo": "החלפת תמונה",
-                "uploading": "מעלה..."
+                "uploading": "מעלה...",
+                "photo_uploaded_success": "התמונה הועלתה בהצלחה!"
             }
         }
     },

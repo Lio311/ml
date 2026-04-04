@@ -296,7 +296,8 @@
                 "write_review": "Write a Review",
                 "upload_photo": "Add Photo",
                 "change_photo": "Change Photo",
-                "uploading": "Uploading..."
+                "uploading": "Uploading...",
+                "photo_uploaded_success": "Photo uploaded successfully!"
             }
         }
     },
