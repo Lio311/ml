@@ -6,7 +6,7 @@ export default function AnalyticsTables({ topBrands, topSizes, monthName }) {
             {/* Top Brands Table */}
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
                 <div className="p-6 border-b bg-gray-50/50">
-                    <h3 className="font-bold text-gray-800 text-lg">חמשת המותגים הכי מוכרים - {monthName}</h3>
+                    <h3 className="font-bold text-gray-800 text-lg">המותגים הכי מוכרים - {monthName}</h3>
                 </div>
                 <div className="overflow-x-auto custom-scrollbar">
                     <table className="w-full text-right min-w-[300px]" dir="rtl">
@@ -48,7 +48,7 @@ export default function AnalyticsTables({ topBrands, topSizes, monthName }) {
             {/* Top Sizes Table */}
             <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
                 <div className="p-6 border-b bg-gray-50/50">
-                    <h3 className="font-bold text-gray-800 text-lg">חמשת הגדלים הכי מוכרים - {monthName}</h3>
+                    <h3 className="font-bold text-gray-800 text-lg">הגדלים הכי מוכרים - {monthName}</h3>
                 </div>
                 <div className="overflow-x-auto custom-scrollbar">
                     <table className="w-full text-right min-w-[300px]" dir="rtl">
