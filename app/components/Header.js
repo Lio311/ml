@@ -152,7 +152,7 @@ export default function Header({ brands = [] }) {
                         </div>
                     </div>
 
-                    <div className="xl:hidden flex w-full items-center justify-between h-full px-4 text-black" dir="rtl">
+                    <div className="xl:hidden flex w-full items-center justify-between h-full px-2 text-black" dir="rtl">
                         {/* Right side: Back & Menu - Pushed to right edge */}
                         <div className="flex items-center gap-2">
                             {!isHome && (
