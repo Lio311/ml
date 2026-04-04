@@ -10,12 +10,19 @@ import { chatbotKnowledge } from '../../data/chatbot_knowledge';
 
 const REPRESENTATIVES = [
     { name: 'רוני', role: 'שירות לקוחות', image: '/images/team/ron.jpg', gender: 'female' },
+    { name: 'נטלי', role: 'שירות לקוחות', image: '/images/team/natalie.jpg', gender: 'female' },
+    { name: 'אריאל', role: 'שירות לקוחות', image: '/images/team/ariel.jpg', gender: 'male' },
+    { name: 'קורל', role: 'שירות לקוחות', image: '/images/team/coral.jpg', gender: 'female' },
 ];
 
 export default function ChatWidget() {
     // Helper to determine Rep of the Day (Synchronous)
     const getDailyRep = () => {
-        return REPRESENTATIVES[0];
+        // Simple consistent rotation based on date
+        if (typeof window === 'undefined') return REPRESENTATIVES[0]; // SSR safety
+        const today = new Date();
+        const dayOfYear = Math.floor((today - new Date(today.getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24));
+        return REPRESENTATIVES[dayOfYear % REPRESENTATIVES.length];
     };
 
     const [isOpen, setIsOpen] = useState(false);
