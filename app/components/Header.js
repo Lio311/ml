@@ -22,6 +22,7 @@ export default function Header({ brands = [] }) {
     const [isScrolled, setIsScrolled] = useState(false);
     const [activeMenu, setActiveMenu] = useState(null); 
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+    const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
     const { t, dir } = useLanguage();
     const { globalItemsCount: cartCount } = useCart();
     const { count: wishlistCount } = useWishlist();
@@ -190,8 +191,24 @@ export default function Header({ brands = [] }) {
 
                         {/* Left: Icons (Simplified for mobile) */}
                         <div className="flex-1 flex items-center justify-end gap-2 text-black">
-                             <DesktopIcons cartCount={cartCount} wishlistCount={wishlistCount} />
+                             <DesktopIcons 
+                                cartCount={cartCount} 
+                                wishlistCount={wishlistCount} 
+                                onSearchToggle={() => setIsMobileSearchOpen(!isMobileSearchOpen)}
+                            />
                         </div>
+                    </div>
+                </div>
+
+                {/* Mobile Search Bar Expansion */}
+                <div className={`md:hidden bg-white/95 backdrop-blur-md border-t border-gray-100 overflow-hidden transition-all duration-300 ease-in-out ${
+                    isMobileSearchOpen ? 'h-16 opacity-100 border-b' : 'h-0 opacity-0'
+                }`}>
+                    <div className="px-4 h-full flex items-center">
+                        <SearchAutocomplete 
+                            fullWidth={true} 
+                            onSelect={() => setIsMobileSearchOpen(false)} 
+                        />
                     </div>
                 </div>
             </div>

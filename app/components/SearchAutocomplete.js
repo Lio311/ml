@@ -104,7 +104,7 @@ export default function SearchAutocomplete({ fullWidth = false, onSelect }) {
 
             {/* Dropdown Results */}
             {isOpen && results.length > 0 && (
-                <div className={`absolute top-full w-80 bg-white shadow-xl border border-gray-100 rounded-lg mt-2 overflow-hidden z-50 ${contextDir === 'rtl' ? 'right-0' : 'left-0'}`}>
+                <div className={`absolute top-full w-[calc(100vw-2rem)] md:w-80 bg-white shadow-xl border border-gray-100 rounded-lg mt-2 overflow-hidden z-50 ${contextDir === 'rtl' ? 'right-0 md:right-0' : 'left-0 md:left-0'}`}>
                     <div className="p-2 max-h-[70vh] overflow-y-auto divide-y divide-gray-50">
                         {results.map((product) => (
                                 <Link
