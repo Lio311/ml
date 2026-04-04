@@ -6,6 +6,7 @@ import AuditLogsClient from './AuditLogsClient';
 export const dynamic = 'force-dynamic';
 
 export default async function AuditLogsPage({ searchParams }) {
+    const params = await searchParams;
     const authData = await clerkAuth();
     const userId = authData?.userId;
     if (!userId) redirect('/sign-in');
@@ -16,7 +17,7 @@ export default async function AuditLogsPage({ searchParams }) {
         redirect('/admin');
     }
 
-    const page = parseInt(searchParams.page || '1');
+    const page = parseInt(params.page || '1');
     const limit = 8;
     const offset = (page - 1) * limit;
 

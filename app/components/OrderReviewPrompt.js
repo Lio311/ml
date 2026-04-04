@@ -22,7 +22,7 @@ export default function OrderReviewPrompt({ orderId, initialHasSubmitted = false
         const file = e.target.files?.[0];
         if (!file) return;
 
-        // Simple validation
+        // Simple validation (2MB limit)
         if (file.size > 2 * 1024 * 1024) {
             toast.error(t('common.my_catalogs.file_too_large'));
             return;
@@ -30,26 +30,20 @@ export default function OrderReviewPrompt({ orderId, initialHasSubmitted = false
 
         setIsUploading(true);
         try {
-            const fileExt = file.name.split('.').pop();
-            const fileName = `review_${orderId}_${Date.now()}.${fileExt}`;
-            const filePath = `reviews/${fileName}`;
-
-            const { error: uploadError } = await supabase.storage
-                .from('public') // Assuming a public bucket
-                .upload(filePath, file);
-
-            if (uploadError) throw uploadError;
-
-            const { data: { publicUrl } } = supabase.storage
-                .from('public')
-                .getPublicUrl(filePath);
-
-            setImageUrl(publicUrl);
-            toast.success(t('common.orders.review.photo_uploaded_success') || "התמונה הועלתה בהצלחה!");
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setImageUrl(reader.result);
+                setIsUploading(false);
+                toast.success(t('common.orders.review.photo_uploaded_success') || "התמונה הועלתה בהצלחה!");
+            };
+            reader.onerror = () => {
+                setIsUploading(false);
+                toast.error(t('common.orders.review.error'));
+            };
+            reader.readAsDataURL(file);
         } catch (error) {
-            console.error('Upload error:', error);
+            console.error('File reading error:', error);
             toast.error(t('common.orders.review.error'));
-        } finally {
             setIsUploading(false);
         }
     };

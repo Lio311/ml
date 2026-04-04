@@ -127,7 +127,7 @@ export default async function AdminDashboard({ searchParams }) {
             cumulativeVolumeRes
         ] = await Promise.all([
             // 1. Recent Orders
-            safeQuery("SELECT id, customer_details, created_at, total_amount, status FROM orders WHERE catalog_id IS NULL ORDER BY created_at DESC LIMIT 8"),
+            safeQuery("SELECT id, customer_details, created_at, total_amount, status FROM orders WHERE catalog_id IS NULL ORDER BY created_at DESC LIMIT 5"),
             // 2. Total Orders Count
             safeQuery("SELECT COUNT(*) FROM orders WHERE catalog_id IS NULL"),
             // 3. Total Monthly Revenue
@@ -283,7 +283,7 @@ export default async function AdminDashboard({ searchParams }) {
                 WHERE status = 'active' 
                 AND (expires_at IS NULL OR expires_at > NOW())
                 ORDER BY created_at DESC 
-                LIMIT 8
+                LIMIT 5
             `),
             // 21. Total Revenue (All Time)
             safeQuery("SELECT SUM(total_amount) as sum FROM orders WHERE status != 'cancelled' AND catalog_id IS NULL"),
@@ -316,18 +316,18 @@ export default async function AdminDashboard({ searchParams }) {
                 GROUP BY DATE_TRUNC('day', created_at)
                 ORDER BY day
             `),
-            // 25. Cumulative Volume (ML) (All Time)
+            // 25. Cumulative Volume (ml) (All Time)
             safeQuery(`
                 WITH expanded_items AS (
                     SELECT 
-                        DATE_TRUNC('day', created_at) as day,
+                        DATE_TRUNC('day', o.created_at) as day,
+                        (item->>'quantity')::numeric * 
                         CASE 
-                            WHEN (json_array_elements(items::json)::json->>'size') ~ '^[0-9.]+$' 
-                            THEN (json_array_elements(items::json)::json->>'size')::numeric * (json_array_elements(items::json)::json->>'quantity')::numeric
+                            WHEN (item->>'size') ~ '^[0-9.]+$' THEN (item->>'size')::numeric 
                             ELSE 0 
                         END as ml
-                    FROM orders
-                    WHERE status != 'cancelled' AND catalog_id IS NULL
+                    FROM orders o, jsonb_array_elements(o.items) as item
+                    WHERE o.status != 'cancelled' AND o.catalog_id IS NULL
                 )
                 SELECT 
                     day,
@@ -836,8 +836,8 @@ export default async function AdminDashboard({ searchParams }) {
             </div>
 
             <AnalyticsTables
-                topBrands={kpis.topBrands?.slice(0, 8)}
-                topSizes={kpis.topSizes?.slice(0, 8)}
+                topBrands={kpis.topBrands}
+                topSizes={kpis.topSizes}
                 monthName={currentYearLabel}
             />
 
