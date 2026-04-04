@@ -824,12 +824,12 @@ export default async function AdminDashboard({ searchParams }) {
                 {/* Cumulative Volume Card */}
                 <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100 relative overflow-hidden group hover:shadow-md transition-shadow">
                     <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-fuchsia-500 to-pink-600"></div>
-                    <div className="text-gray-500 text-[10px] font-bold uppercase mb-2 flex items-center gap-2">
+                    <div className="text-gray-500 text-[10px] font-bold uppercase mb-2 flex items-center gap-2" dir="rtl">
                         <FlaskConical className="w-3.5 h-3.5 text-fuchsia-500" />
-                        נפח בושם מצטבר (All-Time)
+                        נפח נוזל מצטבר שנמכר
                     </div>
-                    <div className="text-2xl font-bold mb-2 text-gray-900">
-                        {Math.round(kpis.totalVolumeAllTime || 0).toLocaleString()} <span className="text-sm font-normal text-gray-400 italic">ml</span>
+                    <div className="text-2xl font-bold mb-2 text-gray-900" dir="ltr">
+                        {Math.round(kpis.totalVolumeAllTime || 0).toLocaleString()}ml
                     </div>
                     <div className="text-[9px] text-gray-400 font-medium italic">סה"כ נפח בושם (מ"ל) שנמכר באתר</div>
                 </div>

@@ -258,7 +258,7 @@ export default function DashboardCharts({ orderData, revenueData, visitsData, us
                 {cumulativeVolumeData && cumulativeVolumeData.length > 0 && (
                     <div className="bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-gray-100">
                         <div className="flex justify-between items-center mb-6" dir="rtl">
-                            <h3 className="text-base md:text-lg font-bold text-gray-800">נפח בושם מצטבר (ml)</h3>
+                            <h3 className="text-base md:text-lg font-bold text-gray-800">נפח נוזל מצטבר שנמכר</h3>
                         </div>
                         <div className="h-[250px] md:h-[300px] w-full">
                             <ResponsiveContainer width="100%" height="100%">
@@ -279,7 +279,7 @@ export default function DashboardCharts({ orderData, revenueData, visitsData, us
                                         axisLine={false}
                                         tick={{ fill: '#9ca3af' }}
                                         orientation="left"
-                                        tickFormatter={(value) => `${value >= 1000 ? (value / 1000).toFixed(1) + 'L' : value + 'ml'}`}
+                                        tickFormatter={(value) => `${value >= 1000 ? (value / 1000).toFixed(1) + 'l' : value + 'ml'}`}
                                     />
                                     <Tooltip 
                                         content={({ active, payload, label }) => {
@@ -288,9 +288,9 @@ export default function DashboardCharts({ orderData, revenueData, visitsData, us
                                                     <div className="bg-white p-3 border rounded shadow-xl text-right z-50 overflow-hidden" dir="rtl">
                                                         <p className="font-bold mb-2 text-gray-800 border-b pb-1 text-sm">{label}</p>
                                                         <div className="flex justify-between gap-4 items-center">
-                                                            <span className="text-xs text-gray-400 font-bold">סך נפח (ml):</span>
-                                                            <span className="text-sm font-mono font-bold text-fuchsia-600">
-                                                                {payload[0].value.toLocaleString()} ml
+                                                            <span className="text-xs text-gray-400 font-bold">סך נפח:</span>
+                                                            <span className="text-sm font-mono font-bold text-fuchsia-600" dir="ltr">
+                                                                {payload[0].value.toLocaleString()}ml
                                                             </span>
                                                         </div>
                                                     </div>
