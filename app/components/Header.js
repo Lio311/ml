@@ -36,15 +36,43 @@ export default function Header({ brands = [] }) {
     const pathname = usePathname();
     const isHome = pathname === '/';
 
-    const navLinks = [
-        { label: t('common.home'), href: '/', active: pathname === '/' },
-        { label: t('common.brands'), href: '/brands', type: 'brands', active: pathname === '/brands' },
-        { label: t('common.catalog'), href: '/catalog', type: 'catalog', active: pathname === '/catalog' },
-        { label: t('common.sales'), href: '/sales', active: pathname === '/sales' },
-        { label: t('common.matching'), href: '/matching', active: pathname === '/matching' },
-        { label: t('common.requests'), href: '/requests', active: pathname === '/requests' },
-        { label: t('common.contact'), href: '/contact', active: pathname === '/contact' },
-    ];
+    const [menuItems, setMenuItems] = useState([]);
+    const [menuLoading, setMenuLoading] = useState(true);
+
+    useEffect(() => {
+        const fetchMenu = async () => {
+            try {
+                const res = await fetch('/api/admin/settings');
+                const data = await res.json();
+                if (data.menu) {
+                    setMenuItems(data.menu.filter(item => item.visible));
+                }
+            } catch (error) {
+                console.error('Header Menu Fetch Error:', error);
+            } finally {
+                setMenuLoading(false);
+            }
+        };
+        fetchMenu();
+    }, []);
+
+    const navLinks = !menuLoading && menuItems.length > 0 
+        ? menuItems.map(item => ({
+            label: t(`common.${item.id}`) !== `common.${item.id}` ? t(`common.${item.id}`) : item.label,
+            href: item.path,
+            type: item.id === 'brands' ? 'brands' : (item.id === 'catalog' ? 'catalog' : null),
+            active: pathname === item.path,
+            isRed: item.isRed
+        }))
+        : [
+            { label: t('common.home'), href: '/', active: pathname === '/' },
+            { label: t('common.brands'), href: '/brands', type: 'brands', active: pathname === '/brands' },
+            { label: t('common.catalog'), href: '/catalog', type: 'catalog', active: pathname === '/catalog' },
+            { label: t('common.sales'), href: '/sales', active: pathname === '/sales' },
+            { label: t('common.matching'), href: '/matching', active: pathname === '/matching' },
+            { label: t('common.requests'), href: '/requests', active: pathname === '/requests' },
+            { label: t('common.contact'), href: '/contact', active: pathname === '/contact' },
+        ];
 
     useEffect(() => {
         const handleScroll = () => {
@@ -104,16 +132,18 @@ export default function Header({ brands = [] }) {
                                         <Link 
                                             href={link.href}
                                             className={`text-[12px] font-bold tracking-[0.1em] uppercase transition-all duration-500 ${
-                                                link.active ? 'text-black opacity-100' : 'text-black opacity-40 hover:opacity-100'
+                                                link.isRed 
+                                                    ? 'text-red-600 opacity-100 hover:text-red-700' 
+                                                    : (link.active ? 'text-black opacity-100' : 'text-black opacity-40 hover:opacity-100')
                                             }`}
                                         >
                                             {link.label}
                                         </Link>
                                         
-                                        {link.active && (
+                                        {link.active && !link.isRed && (
                                             <div className="absolute -bottom-1 left-0 w-full h-[1.5px] bg-black/80 scale-x-100 transition-transform duration-500"></div>
                                         )}
-                                        {!link.active && (
+                                        {!link.active && !link.isRed && (
                                             <div className="absolute -bottom-1 left-0 w-full h-[1.5px] bg-black scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-center"></div>
                                         )}
                                     </div>
