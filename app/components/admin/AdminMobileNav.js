@@ -96,7 +96,7 @@ export default function AdminMobileNav({ role = 'customer' }) {
             )}
 
             {/* Side Drawer */}
-            <div className={`fixed top-0 right-0 h-full w-72 bg-white z-50 transform transition-transform duration-300 ease-in-out shadow-2xl ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}>
+            <div className={`fixed top-0 right-0 h-full w-72 bg-white z-50 transform transition-transform duration-300 ease-in-out shadow-2xl ${isOpen ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0 invisible'}`}>
                 <div className="p-6 flex flex-col h-full bg-gray-50">
                     <div className="flex justify-between items-center mb-8">
                         <div>
