@@ -623,20 +623,23 @@ export default async function AdminDashboard({ searchParams }) {
                                 </span>
                             </div>
                         </div>
-                        <div className="flex justify-between items-center bg-gray-50/50 p-2 rounded-xl mb-2">
-                            <span className={`${kpis.monthlyProfit < 0 ? 'text-red-600' : 'text-green-600'} font-bold text-sm`}>רווח</span>
-                            <div className="text-right">
-                                <span className={`text-xl md:text-2xl font-bold ${kpis.monthlyProfit < 0 ? 'text-red-700' : 'text-green-700'}`}>
-                                    <span dir="ltr" className="inline-block">{kpis.monthlyProfit.toLocaleString()}</span> ₪
-                                </span>
+                        
+                        <div className="pt-2">
+                            <div className="flex justify-between items-center bg-gray-50/50 p-2 rounded-xl mb-2">
+                                <span className={`${kpis.monthlyProfit < 0 ? 'text-red-600' : 'text-green-600'} font-bold text-sm`}>רווח החודש</span>
+                                <div className="text-right">
+                                    <span className={`text-xl font-bold ${kpis.monthlyProfit < 0 ? 'text-red-700' : 'text-green-700'}`}>
+                                        <span dir="ltr" className="inline-block">{kpis.monthlyProfit.toLocaleString()}</span> ₪
+                                    </span>
+                                </div>
                             </div>
-                        </div>
-                        <div className="flex justify-between items-center border-t border-gray-100 pt-2 mt-2">
-                            <span className="text-gray-400 font-bold text-[10px]">רווח מצטבר (כלל המערכת)</span>
-                            <div className="text-right">
-                                <span className={`text-xs font-bold ${kpis.cumulativeProfit < 0 ? 'text-red-600' : 'text-green-600'}`}>
-                                    <span dir="ltr" className="inline-block">{kpis.cumulativeProfit ? kpis.cumulativeProfit.toLocaleString() : '0'}</span> ₪
-                                </span>
+                            <div className="flex justify-between items-center px-1">
+                                <span className="text-gray-400 font-bold text-[10px]">רווח מצטבר (כלל המערכת)</span>
+                                <div className="text-right">
+                                    <span className={`text-xs font-bold ${kpis.cumulativeProfit < 0 ? 'text-red-600' : 'text-green-600'}`}>
+                                        <span dir="ltr" className="inline-block">{kpis.cumulativeProfit ? kpis.cumulativeProfit.toLocaleString() : '0'}</span> ₪
+                                    </span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -684,9 +687,6 @@ export default async function AdminDashboard({ searchParams }) {
                             );
                         })}
                     </div>
-                    <div className="text-[10px] text-gray-400 mt-4 text-center border-t border-gray-50 pt-3">
-                        <Link href="/admin/inventory" className="text-blue-500 hover:underline font-bold transition-all">לניהול מלאי וחיזוי ←</Link>
-                    </div>
                 </div>
 
                 {/* Samples Sold */}
@@ -723,83 +723,73 @@ export default async function AdminDashboard({ searchParams }) {
                         </div>
                     </div>
                 </div>
+            </div>
 
+            {/* Main Operational KPIs */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 md:gap-4 mb-8">
                 {/* Total Orders */}
-                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 relative overflow-hidden group hover:shadow-md transition-shadow">
+                <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100 relative overflow-hidden group hover:shadow-md transition-shadow">
                     <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-cyan-500"></div>
-                    <div className="text-gray-500 text-sm font-bold uppercase mb-2 flex items-center gap-2">
-                        <ShoppingCart className="w-4 h-4 text-blue-500" />
+                    <div className="text-gray-500 text-[10px] font-bold uppercase mb-2 flex items-center gap-2">
+                        <ShoppingCart className="w-3.5 h-3.5 text-blue-500" />
                         סה"כ הזמנות
                     </div>
-                    <div className="text-3xl font-bold mb-4">{kpis.totalOrders}</div>
-                    <div className="text-[10px] text-center border-t border-gray-50 pt-3 mt-2">
-                        <Link href="/admin/orders" className="text-blue-500 hover:underline font-bold transition-all">לניהול הזמנות ←</Link>
+                    <div className="text-2xl font-bold mb-2">{kpis.totalOrders}</div>
+                    <div className="border-t border-gray-50 pt-2 mt-2">
+                        <Link href="/admin/orders" className="text-[10px] text-blue-500 hover:underline font-bold transition-all">לניהול הזמנות ←</Link>
                     </div>
                 </div>
 
                 {/* Site Visits */}
-                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 relative overflow-hidden group hover:shadow-md transition-shadow">
+                <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100 relative overflow-hidden group hover:shadow-md transition-shadow">
                     <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-sky-400 to-indigo-400"></div>
-                    <div className="flex justify-between items-start mb-2">
-                        <div className="text-gray-500 text-sm font-bold uppercase flex items-center gap-2">
-                            <Eye className="w-4 h-4 text-sky-500" />
-                            כניסות לאתר
-                        </div>
+                    <div className="text-gray-500 text-[10px] font-bold uppercase mb-2 flex items-center gap-2">
+                        <Eye className="w-3.5 h-3.5 text-sky-500" />
+                        כניסות לאתר
                     </div>
-                    <div className="text-3xl font-bold mb-4 text-gray-900">
+                    <div className="text-2xl font-bold mb-2 text-gray-900">
                         {kpis.monthlyVisits}
                     </div>
-                    <div className="text-[10px] text-gray-400 font-medium italic">נספר לפי ביקורים ייחודיים</div>
+                    <div className="text-[9px] text-gray-400 font-medium italic">נספר לפי ביקורים ייחודיים</div>
                 </div>
 
                 {/* Registered Users */}
-                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 relative overflow-hidden group hover:shadow-md transition-shadow">
+                <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100 relative overflow-hidden group hover:shadow-md transition-shadow">
                     <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-500 to-purple-600"></div>
-                    <div className="text-gray-500 text-sm font-bold uppercase mb-2 flex items-center gap-2">
-                        <Users className="w-4 h-4 text-indigo-500" />
+                    <div className="text-gray-500 text-[10px] font-bold uppercase mb-2 flex items-center gap-2">
+                        <Users className="w-3.5 h-3.5 text-indigo-500" />
                         משתמשים רשומים
                     </div>
-                    <div className="text-3xl font-bold mb-4 text-gray-900">{kpis.totalUsers}</div>
-                    <div className="text-[10px] text-center border-t border-gray-50 pt-3 mt-2">
-                        <Link href="/admin/users" className="text-blue-500 hover:underline font-bold transition-all">לניהול משתמשים ←</Link>
+                    <div className="text-2xl font-bold mb-2 text-gray-900">{kpis.totalUsers}</div>
+                    <div className="border-t border-gray-50 pt-2 mt-2">
+                        <Link href="/admin/users" className="text-[10px] text-blue-500 hover:underline font-bold transition-all">לניהול משתמשים ←</Link>
                     </div>
                 </div>
-            </div>
 
-            {/* New KPI Cards (AOV & Cumulative Graph) */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                 {/* AOV Card */}
-                <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 relative overflow-hidden group hover:shadow-md transition-shadow">
+                <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100 relative overflow-hidden group hover:shadow-md transition-shadow">
                     <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-600 to-indigo-600"></div>
-                    <div className="flex justify-between items-start mb-4">
-                        <div className="text-gray-500 text-sm font-bold uppercase flex items-center gap-2">
-                            <TrendingUp className="w-4 h-4 text-blue-600" />
-                            סל ממוצע (AOV)
-                        </div>
+                    <div className="text-gray-500 text-[10px] font-bold uppercase mb-2 flex items-center gap-2">
+                        <TrendingUp className="w-3.5 h-3.5 text-blue-600" />
+                        סל ממוצע (AOV)
                     </div>
-                    <div className="flex items-baseline gap-2">
-                        <span className="text-4xl font-bold text-gray-900">
-                            {kpis.avgOrderValue?.toLocaleString()} ₪
-                        </span>
+                    <div className="text-2xl font-bold mb-2 text-gray-900">
+                        {Math.round(kpis.avgOrderValue || 0).toLocaleString()} ₪
                     </div>
-                    <div className="text-[10px] text-gray-400 mt-2 font-medium italic">מחושב לפי כל ההזמנות במערכת</div>
+                    <div className="text-[9px] text-gray-400 font-medium italic">מחושב לפי כל ההזמנות במערכת</div>
                 </div>
 
                 {/* Cumulative Sales Total Card */}
-                <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 relative overflow-hidden group hover:shadow-md transition-shadow">
+                <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100 relative overflow-hidden group hover:shadow-md transition-shadow">
                     <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-600 to-purple-600"></div>
-                    <div className="flex justify-between items-start mb-4">
-                        <div className="text-gray-500 text-sm font-bold uppercase flex items-center gap-2">
-                            <ShoppingCart className="w-4 h-4 text-indigo-600" />
-                            מכירות מצטברות
-                        </div>
+                    <div className="text-gray-500 text-[10px] font-bold uppercase mb-2 flex items-center gap-2">
+                        <ShoppingCart className="w-3.5 h-3.5 text-indigo-600" />
+                        מכירות מצטברות
                     </div>
-                    <div className="flex items-baseline gap-2">
-                        <span className="text-4xl font-bold text-gray-900">
-                            {Math.round(kpis.totalRevenueAllTime || 0).toLocaleString()} ₪
-                        </span>
+                    <div className="text-2xl font-bold mb-2 text-gray-900">
+                        {Math.round(kpis.totalRevenueAllTime || 0).toLocaleString()} ₪
                     </div>
-                    <div className="text-[10px] text-gray-400 mt-2 font-medium italic">מרגע פתיחת האתר</div>
+                    <div className="text-[9px] text-gray-400 font-medium italic">מרגע פתיחת האתר</div>
                 </div>
             </div>
 

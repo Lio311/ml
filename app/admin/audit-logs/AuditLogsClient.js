@@ -38,7 +38,8 @@ export default function AuditLogsClient({ initialLogs, totalCount, currentPage, 
     return (
         <div dir="rtl" className="space-y-6">
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                <div className="overflow-x-auto">
+                {/* Table View (Desktop) */}
+                <div className="hidden md:block overflow-x-auto">
                     <table className="w-full text-right">
                         <thead className="bg-gray-50 border-b border-gray-100">
                             <tr>
@@ -81,13 +82,48 @@ export default function AuditLogsClient({ initialLogs, totalCount, currentPage, 
                                             className="text-blue-600 hover:text-blue-800 font-bold flex items-center gap-1 transition"
                                         >
                                             <Info className="w-4 h-4" />
-                                            צפה בפרטים
+                                            צפה
                                         </button>
                                     </td>
                                 </tr>
                             ))}
                         </tbody>
                     </table>
+                </div>
+
+                {/* Card View (Mobile) */}
+                <div className="md:hidden divide-y divide-gray-100">
+                    {initialLogs.map((log) => (
+                        <div key={log.id} className="p-4 space-y-3">
+                            <div className="flex justify-between items-start">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-600">
+                                        <User className="w-5 h-5" />
+                                    </div>
+                                    <div className="flex flex-col">
+                                        <span className="text-sm font-bold text-gray-900">{log.user_name || 'מערכת'}</span>
+                                        <span className="text-[10px] text-gray-500">{format(new Date(log.created_at), 'dd/MM/yy HH:mm', { locale: he })}</span>
+                                    </div>
+                                </div>
+                                <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${actionColors[log.action] || 'bg-gray-100 text-gray-600'}`}>
+                                    {actionLabels[log.action] || log.action}
+                                </span>
+                            </div>
+                            
+                            <div className="flex justify-between items-center bg-gray-50 p-3 rounded-xl">
+                                <div className="text-xs text-gray-600">
+                                    <span className="font-bold">{log.entity_type}</span>
+                                    {log.entity_id && <span className="text-gray-400 mr-1">#{log.entity_id}</span>}
+                                </div>
+                                <button 
+                                    onClick={() => setSelectedLog(log)}
+                                    className="text-blue-600 font-bold text-xs flex items-center gap-1"
+                                >
+                                    פרטים <ChevronLeft className="w-3 h-3" />
+                                </button>
+                            </div>
+                        </div>
+                    ))}
                 </div>
 
                 {/* Pagination */}

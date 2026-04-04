@@ -7,6 +7,8 @@ import AdminOrderStatusSelect from "./AdminOrderStatusSelect";
 import DownloadOrderPDF from "./DownloadOrderPDF";
 import AdminOrdersListClient from "./AdminOrdersListClient";
 import { sanitizeProductArray } from "../../lib/productUtils";
+import { recordAuditLog } from "../../lib/audit";
+import { headers } from "next/headers";
 
 export const metadata = {
     title: "ניהול הזמנות | ml_tlv",
@@ -105,6 +107,17 @@ export default async function AdminOrdersPage(props) {
 
             // 2. Delete
             await client.query('DELETE FROM orders WHERE id = $1', [orderId]);
+
+            // --- AUDIT LOG ---
+            const heads = await headers();
+            await recordAuditLog({
+                userId: user?.id,
+                action: 'delete_order',
+                entityType: 'order',
+                entityId: String(orderId),
+                details: { orderId, deletedBy: email },
+                req: { headers: heads } // Mocking request object for metadata extraction
+            });
         } finally {
             client.release();
         }

@@ -21,12 +21,18 @@ export default async function AuditLogsPage({ searchParams }) {
     const offset = (page - 1) * limit;
 
     const logsRes = await pool.query(`
-        SELECT al.*, CONCAT(u.first_name, ' ', u.last_name) as user_name
+        SELECT al.id, al.user_id, al.action, al.entity_type, al.entity_id, al.details, al.created_at,
+               CONCAT(u.first_name, ' ', u.last_name) as user_name
         FROM audit_logs al
         LEFT JOIN users u ON al.user_id = u.id
         ORDER BY al.created_at DESC
         LIMIT $1 OFFSET $2
     `, [limit, offset]);
+
+    const formattedLogs = logsRes.rows.map(log => ({
+        ...log,
+        created_at: log.created_at.toISOString() // Stable ISO string for hydration
+    }));
 
     const countRes = await pool.query('SELECT COUNT(*) FROM audit_logs');
     const totalCount = parseInt(countRes.rows[0].count);
@@ -35,7 +41,7 @@ export default async function AuditLogsPage({ searchParams }) {
         <div className="p-4 md:p-6 max-w-7xl mx-auto">
             <h1 className="text-2xl md:text-3xl font-bold mb-8 text-right">יומן פעולות</h1>
             <AuditLogsClient 
-                initialLogs={logsRes.rows} 
+                initialLogs={formattedLogs} 
                 totalCount={totalCount} 
                 currentPage={page} 
                 limit={limit}
