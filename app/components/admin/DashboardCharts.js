@@ -46,7 +46,7 @@ const CustomTooltip = ({ active, payload, label, prefix = "" }) => {
     return null;
 };
 
-export default function DashboardCharts({ orderData, revenueData, visitsData, usersData, cumulativeData = [] }) {
+export default function DashboardCharts({ orderData, revenueData, visitsData, usersData, cumulativeData = [], cumulativeVolumeData = [] }) {
     const [rightChartMode, setRightChartMode] = React.useState('revenue'); // 'revenue' | 'orders'
     const [leftChartMode, setLeftChartMode] = React.useState('visits'); // 'visits' | 'users'
 
@@ -191,66 +191,130 @@ export default function DashboardCharts({ orderData, revenueData, visitsData, us
                 </div>
             </div>
 
-            {/* Cumulative Sales Graph (Full Width) */}
-            {cumulativeData && cumulativeData.length > 0 && (
-                <div className="bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-gray-100">
-                    <div className="flex justify-between items-center mb-6" dir="rtl">
-                        <h3 className="text-base md:text-lg font-bold text-gray-800">צמיחת מכירות מצטברת (All-Time)</h3>
-                    </div>
-                    <div className="h-[250px] md:h-[300px] w-full">
-                        <ResponsiveContainer width="100%" height="100%">
-                            <LineChart data={cumulativeData} margin={{ top: 10, right: 20, left: -10, bottom: 0 }}>
-                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
-                                <XAxis
-                                    dataKey="date"
-                                    fontSize={9}
-                                    tickLine={false}
-                                    axisLine={false}
-                                    tick={{ fill: '#9ca3af' }}
-                                    interval="preserveStartEnd"
-                                    minTickGap={30}
-                                />
-                                <YAxis
-                                    fontSize={9}
-                                    tickLine={false}
-                                    axisLine={false}
-                                    tick={{ fill: '#9ca3af' }}
-                                    orientation="left"
-                                    tickFormatter={(value) => `₪${value >= 1000 ? (value / 1000).toFixed(1) + 'k' : value}`}
-                                />
-                                <Tooltip 
-                                    content={({ active, payload, label }) => {
-                                        if (active && payload && payload.length) {
-                                            return (
-                                                <div className="bg-white p-3 border rounded shadow-xl text-right z-50 overflow-hidden" dir="rtl">
-                                                    <p className="font-bold mb-2 text-gray-800 border-b pb-1 text-sm">{label}</p>
-                                                    <div className="flex justify-between gap-4 items-center">
-                                                        <span className="text-xs text-gray-400 font-bold">סך מכירות:</span>
-                                                        <span className="text-sm font-mono font-bold text-indigo-600">
-                                                            ₪{payload[0].value.toLocaleString()}
-                                                        </span>
+            {/* Cumulative All-Time Charts (2 Columns) */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                {/* Cumulative Sales Graph */}
+                {cumulativeData && cumulativeData.length > 0 && (
+                    <div className="bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-gray-100">
+                        <div className="flex justify-between items-center mb-6" dir="rtl">
+                            <h3 className="text-base md:text-lg font-bold text-gray-800">צמיחת מכירות מצטברת</h3>
+                        </div>
+                        <div className="h-[250px] md:h-[300px] w-full">
+                            <ResponsiveContainer width="100%" height="100%">
+                                <LineChart data={cumulativeData} margin={{ top: 10, right: 20, left: -10, bottom: 0 }}>
+                                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
+                                    <XAxis
+                                        dataKey="date"
+                                        fontSize={9}
+                                        tickLine={false}
+                                        axisLine={false}
+                                        tick={{ fill: '#9ca3af' }}
+                                        interval="preserveStartEnd"
+                                        minTickGap={30}
+                                    />
+                                    <YAxis
+                                        fontSize={9}
+                                        tickLine={false}
+                                        axisLine={false}
+                                        tick={{ fill: '#9ca3af' }}
+                                        orientation="left"
+                                        tickFormatter={(value) => `₪${value >= 1000 ? (value / 1000).toFixed(1) + 'k' : value}`}
+                                    />
+                                    <Tooltip 
+                                        content={({ active, payload, label }) => {
+                                            if (active && payload && payload.length) {
+                                                return (
+                                                    <div className="bg-white p-3 border rounded shadow-xl text-right z-50 overflow-hidden" dir="rtl">
+                                                        <p className="font-bold mb-2 text-gray-800 border-b pb-1 text-sm">{label}</p>
+                                                        <div className="flex justify-between gap-4 items-center">
+                                                            <span className="text-xs text-gray-400 font-bold">סך מכירות:</span>
+                                                            <span className="text-sm font-mono font-bold text-indigo-600">
+                                                                ₪{payload[0].value.toLocaleString()}
+                                                            </span>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                            );
-                                        }
-                                        return null;
-                                    }} 
-                                    cursor={{ stroke: '#f3f4f6', strokeWidth: 2 }} 
-                                />
-                                <Line
-                                    name="מכירות מצטברות"
-                                    type="monotone"
-                                    dataKey="value"
-                                    stroke="#6366f1" 
-                                    strokeWidth={4}
-                                    dot={false}
-                                    activeDot={{ r: 6, strokeWidth: 0, fill: '#6366f1' }}
-                                />
-                            </LineChart>
-                        </ResponsiveContainer>
+                                                );
+                                            }
+                                            return null;
+                                        }} 
+                                        cursor={{ stroke: '#f3f4f6', strokeWidth: 2 }} 
+                                    />
+                                    <Line
+                                        name="מכירות מצטברות"
+                                        type="monotone"
+                                        dataKey="value"
+                                        stroke="#6366f1" 
+                                        strokeWidth={4}
+                                        dot={false}
+                                        activeDot={{ r: 6, strokeWidth: 0, fill: '#6366f1' }}
+                                    />
+                                </LineChart>
+                            </ResponsiveContainer>
+                        </div>
                     </div>
-                </div>
-            )}
+                )}
+
+                {/* Cumulative ML Volume Graph */}
+                {cumulativeVolumeData && cumulativeVolumeData.length > 0 && (
+                    <div className="bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-gray-100">
+                        <div className="flex justify-between items-center mb-6" dir="rtl">
+                            <h3 className="text-base md:text-lg font-bold text-gray-800">נפח בושם מצטבר (ml)</h3>
+                        </div>
+                        <div className="h-[250px] md:h-[300px] w-full">
+                            <ResponsiveContainer width="100%" height="100%">
+                                <LineChart data={cumulativeVolumeData} margin={{ top: 10, right: 20, left: -10, bottom: 0 }}>
+                                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
+                                    <XAxis
+                                        dataKey="date"
+                                        fontSize={9}
+                                        tickLine={false}
+                                        axisLine={false}
+                                        tick={{ fill: '#9ca3af' }}
+                                        interval="preserveStartEnd"
+                                        minTickGap={30}
+                                    />
+                                    <YAxis
+                                        fontSize={9}
+                                        tickLine={false}
+                                        axisLine={false}
+                                        tick={{ fill: '#9ca3af' }}
+                                        orientation="left"
+                                        tickFormatter={(value) => `${value >= 1000 ? (value / 1000).toFixed(1) + 'L' : value + 'ml'}`}
+                                    />
+                                    <Tooltip 
+                                        content={({ active, payload, label }) => {
+                                            if (active && payload && payload.length) {
+                                                return (
+                                                    <div className="bg-white p-3 border rounded shadow-xl text-right z-50 overflow-hidden" dir="rtl">
+                                                        <p className="font-bold mb-2 text-gray-800 border-b pb-1 text-sm">{label}</p>
+                                                        <div className="flex justify-between gap-4 items-center">
+                                                            <span className="text-xs text-gray-400 font-bold">סך נפח (ml):</span>
+                                                            <span className="text-sm font-mono font-bold text-fuchsia-600">
+                                                                {payload[0].value.toLocaleString()} ml
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                );
+                                            }
+                                            return null;
+                                        }} 
+                                        cursor={{ stroke: '#f3f4f6', strokeWidth: 2 }} 
+                                    />
+                                    <Line
+                                        name="נפח מצטבר"
+                                        type="monotone"
+                                        dataKey="value"
+                                        stroke="#d946ef" 
+                                        strokeWidth={4}
+                                        dot={false}
+                                        activeDot={{ r: 6, strokeWidth: 0, fill: '#d946ef' }}
+                                    />
+                                </LineChart>
+                            </ResponsiveContainer>
+                        </div>
+                    </div>
+                )}
+            </div>
         </div>
     );
 }

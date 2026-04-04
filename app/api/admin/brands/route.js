@@ -1,10 +1,8 @@
 import { NextResponse } from 'next/server';
-import { Pool } from 'pg';
+import pool from '../../../lib/db';
+import { recordAuditLog } from '../../../lib/audit';
+import { auth as clerkAuth } from '@clerk/nextjs/server';
 
-const pool = new Pool({
-    connectionString: process.env.DATABASE_URL || process.env.POSTGRES_URL,
-    ssl: { rejectUnauthorized: false }
-});
 
 export async function GET() {
     try {
@@ -26,6 +24,16 @@ export async function PUT(req) {
         const client = await pool.connect();
         await client.query('UPDATE brands SET logo_url = $1 WHERE id = $2', [logo_url, id]);
         client.release();
+
+        const authData = await clerkAuth();
+        await recordAuditLog({
+            userId: authData?.userId,
+            action: 'update_brand',
+            entityType: 'brand',
+            entityId: String(id),
+            details: body,
+            req
+        });
 
         return NextResponse.json({ success: true });
     } catch (error) {

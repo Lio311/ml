@@ -1,6 +1,7 @@
-import { clerkClient } from "@clerk/nextjs/server";
+import { clerkClient, auth as clerkAuth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import pool from '../../../lib/db';
+import { recordAuditLog } from '../../../lib/audit';
 
 export const dynamic = 'force-dynamic';
 
@@ -68,6 +69,16 @@ export async function PUT(request) {
 
         // 2. Update Local DB (Source of Dashboard Truth)
         await client.query('UPDATE users SET role = $1, updated_at = NOW() WHERE id = $2', [role, userId]);
+
+        const authData = await clerkAuth();
+        await recordAuditLog({
+            userId: authData?.userId,
+            action: 'update_user_role',
+            entityType: 'user',
+            entityId: String(userId),
+            details: { newRole: role },
+            req: request
+        });
 
         return NextResponse.json({ success: true, userId, role });
 

@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
 import pool from '@/app/lib/db';
+import { recordAuditLog } from '@/app/lib/audit';
+import { auth as clerkAuth } from '@clerk/nextjs/server';
 
 export async function GET() {
     try {
@@ -45,6 +47,16 @@ export async function POST(req) {
                 INSERT INTO coupons (code, discount_percent, expires_at, status, email, limitations)
                 VALUES ($1, $2, $3, 'active', $4, $5)
             `, [code, discountValue, expires_at, email || null, limitations ? JSON.stringify(limitations) : null]);
+
+            const authData = await clerkAuth();
+            await recordAuditLog({
+                userId: authData?.userId,
+                action: 'create_coupon',
+                entityType: 'coupon',
+                entityId: code,
+                details: body,
+                req
+            });
 
             return NextResponse.json({ success: true });
         } finally {

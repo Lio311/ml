@@ -1,6 +1,7 @@
 import pool from '../../../lib/db';
 import { auth as clerkAuth } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
+import { recordAuditLog } from '../../../lib/audit';
 
 export async function PATCH(req) {
     try {
@@ -23,6 +24,15 @@ export async function PATCH(req) {
         }
 
         await pool.query('UPDATE reviews SET is_public = $1 WHERE id = $2', [isPublic, reviewId]);
+
+        await recordAuditLog({
+            userId,
+            action: 'update_review_visibility',
+            entityType: 'review',
+            entityId: String(reviewId),
+            details: { isPublic },
+            req
+        });
 
         return NextResponse.json({ success: true });
     } catch (error) {
@@ -50,6 +60,15 @@ export async function DELETE(req) {
         if (!reviewId) return new NextResponse('Review ID is required', { status: 400 });
 
         await pool.query('DELETE FROM reviews WHERE id = $1', [reviewId]);
+
+        await recordAuditLog({
+            userId,
+            action: 'delete_review',
+            entityType: 'review',
+            entityId: String(reviewId),
+            details: { id: reviewId },
+            req
+        });
 
         return NextResponse.json({ success: true });
     } catch (error) {

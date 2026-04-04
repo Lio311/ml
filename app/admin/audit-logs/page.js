@@ -17,7 +17,7 @@ export default async function AuditLogsPage({ searchParams }) {
     }
 
     const page = parseInt(searchParams.page || '1');
-    const limit = 50;
+    const limit = 8;
     const offset = (page - 1) * limit;
 
     const logsRes = await pool.query(`

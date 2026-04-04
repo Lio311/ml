@@ -123,10 +123,11 @@ export default async function AdminDashboard({ searchParams }) {
             revAllTimeRes,
             expAllTimeRes,
             cogsAllTimeRes,
-            cumulativeSalesRes
+            cumulativeSalesRes,
+            cumulativeVolumeRes
         ] = await Promise.all([
             // 1. Recent Orders
-            safeQuery("SELECT id, customer_details, created_at, total_amount, status FROM orders WHERE catalog_id IS NULL ORDER BY created_at DESC LIMIT 3"),
+            safeQuery("SELECT id, customer_details, created_at, total_amount, status FROM orders WHERE catalog_id IS NULL ORDER BY created_at DESC LIMIT 8"),
             // 2. Total Orders Count
             safeQuery("SELECT COUNT(*) FROM orders WHERE catalog_id IS NULL"),
             // 3. Total Monthly Revenue
@@ -282,7 +283,7 @@ export default async function AdminDashboard({ searchParams }) {
                 WHERE status = 'active' 
                 AND (expires_at IS NULL OR expires_at > NOW())
                 ORDER BY created_at DESC 
-                LIMIT 20
+                LIMIT 8
             `),
             // 21. Total Revenue (All Time)
             safeQuery("SELECT SUM(total_amount) as sum FROM orders WHERE status != 'cancelled' AND catalog_id IS NULL"),
@@ -313,6 +314,26 @@ export default async function AdminDashboard({ searchParams }) {
                 FROM orders
                 WHERE status != 'cancelled' AND catalog_id IS NULL
                 GROUP BY DATE_TRUNC('day', created_at)
+                ORDER BY day
+            `),
+            // 25. Cumulative Volume (ML) (All Time)
+            safeQuery(`
+                WITH expanded_items AS (
+                    SELECT 
+                        DATE_TRUNC('day', created_at) as day,
+                        CASE 
+                            WHEN (json_array_elements(items::json)::json->>'size') ~ '^[0-9.]+$' 
+                            THEN (json_array_elements(items::json)::json->>'size')::numeric * (json_array_elements(items::json)::json->>'quantity')::numeric
+                            ELSE 0 
+                        END as ml
+                    FROM orders
+                    WHERE status != 'cancelled' AND catalog_id IS NULL
+                )
+                SELECT 
+                    day,
+                    SUM(SUM(ml)) OVER (ORDER BY day) as cumulative
+                FROM expanded_items
+                GROUP BY day
                 ORDER BY day
             `)
         ]);
@@ -357,6 +378,13 @@ export default async function AdminDashboard({ searchParams }) {
             date: new Date(r.day).toLocaleDateString('he-IL', { day: 'numeric', month: 'short' }),
             value: Math.round(parseFloat(r.cumulative || 0))
         })) || [];
+
+        kpis.cumulativeVolumeData = cumulativeVolumeRes?.rows.map(r => ({
+            date: new Date(r.day).toLocaleDateString('he-IL', { day: 'numeric', month: 'short' }),
+            value: Math.round(parseFloat(r.cumulative || 0))
+        })) || [];
+
+        kpis.totalVolumeAllTime = cumulativeVolumeRes?.rows[cumulativeVolumeRes.rows.length - 1]?.cumulative || 0;
 
         kpis.cumulativeProfit = Math.round(totalRevenueAllTime - totalExpensesAllTime - totalCOGSAllTime);
 
@@ -577,6 +605,7 @@ export default async function AdminDashboard({ searchParams }) {
                 visitsData={kpis.visitsChartData}
                 usersData={usersChartData || []}
                 cumulativeData={kpis.cumulativeRevenueData}
+                cumulativeVolumeData={kpis.cumulativeVolumeData}
             />
 
 
@@ -722,21 +751,9 @@ export default async function AdminDashboard({ searchParams }) {
             </div>
 
             {/* Main Operational KPIs */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 md:gap-4 mb-8">
-                {/* Site Visits */}
-                <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100 relative overflow-hidden group hover:shadow-md transition-shadow">
-                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-sky-400 to-indigo-400"></div>
-                    <div className="text-gray-500 text-[10px] font-bold uppercase mb-2 flex items-center gap-2">
-                        <Eye className="w-3.5 h-3.5 text-sky-500" />
-                        כניסות לאתר
-                    </div>
-                    <div className="text-2xl font-bold mb-2 text-gray-900">
-                        {kpis.monthlyVisits}
-                    </div>
-                    <div className="text-[9px] text-gray-400 font-medium italic">נספר לפי ביקורים ייחודיים</div>
-                </div>
-
-                {/* Total Orders */}
+            {/* Core Operational KPIs */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-4 mb-4">
+                {/* Total Orders (Now first in RTL) */}
                 <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100 relative overflow-hidden group hover:shadow-md transition-shadow">
                     <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-cyan-500"></div>
                     <div className="text-gray-500 text-[10px] font-bold uppercase mb-2 flex items-center gap-2">
@@ -747,6 +764,19 @@ export default async function AdminDashboard({ searchParams }) {
                     <div className="border-t border-gray-50 pt-2 mt-2">
                         <Link href="/admin/orders" className="text-[10px] text-blue-500 hover:underline font-bold transition-all">לניהול הזמנות ←</Link>
                     </div>
+                </div>
+
+                {/* Site Visits (Now second - to the left of orders in RTL) */}
+                <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100 relative overflow-hidden group hover:shadow-md transition-shadow">
+                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-sky-400 to-indigo-400"></div>
+                    <div className="text-gray-500 text-[10px] font-bold uppercase mb-2 flex items-center gap-2">
+                        <Eye className="w-3.5 h-3.5 text-sky-500" />
+                        כניסות לאתר
+                    </div>
+                    <div className="text-2xl font-bold mb-2 text-gray-900">
+                        {kpis.monthlyVisits}
+                    </div>
+                    <div className="text-[9px] text-gray-400 font-medium italic">נספר לפי ביקורים ייחודיים</div>
                 </div>
 
                 {/* Registered Users */}
@@ -774,24 +804,40 @@ export default async function AdminDashboard({ searchParams }) {
                     </div>
                     <div className="text-[9px] text-gray-400 font-medium italic">מחושב לפי כל ההזמנות במערכת</div>
                 </div>
+            </div>
 
+            {/* Growth & Cumulative KPIs (Moved Below) */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6 mb-8 md:mb-12">
                 {/* Cumulative Sales Total Card */}
                 <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100 relative overflow-hidden group hover:shadow-md transition-shadow">
                     <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-600 to-purple-600"></div>
                     <div className="text-gray-500 text-[10px] font-bold uppercase mb-2 flex items-center gap-2">
                         <ShoppingCart className="w-3.5 h-3.5 text-indigo-600" />
-                        מכירות מצטברות
+                        מכירות מצטברות (All-Time)
                     </div>
                     <div className="text-2xl font-bold mb-2 text-gray-900">
-                        {Math.round(kpis.totalRevenueAllTime || 0).toLocaleString()} ₪
+                        {Math.round(kpis.totalRevenueAllTime || 0).toLocaleString()} <span className="text-sm font-normal text-gray-400 italic">₪</span>
                     </div>
                     <div className="text-[9px] text-gray-400 font-medium italic">מרגע פתיחת האתר</div>
+                </div>
+
+                {/* Cumulative Volume Card */}
+                <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100 relative overflow-hidden group hover:shadow-md transition-shadow">
+                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-fuchsia-500 to-pink-600"></div>
+                    <div className="text-gray-500 text-[10px] font-bold uppercase mb-2 flex items-center gap-2">
+                        <FlaskConical className="w-3.5 h-3.5 text-fuchsia-500" />
+                        נפח בושם מצטבר (All-Time)
+                    </div>
+                    <div className="text-2xl font-bold mb-2 text-gray-900">
+                        {Math.round(kpis.totalVolumeAllTime || 0).toLocaleString()} <span className="text-sm font-normal text-gray-400 italic">ml</span>
+                    </div>
+                    <div className="text-[9px] text-gray-400 font-medium italic">סה"כ נפח בושם (מ"ל) שנמכר באתר</div>
                 </div>
             </div>
 
             <AnalyticsTables
-                topBrands={kpis.topBrands}
-                topSizes={kpis.topSizes}
+                topBrands={kpis.topBrands?.slice(0, 8)}
+                topSizes={kpis.topSizes?.slice(0, 8)}
                 monthName={currentYearLabel}
             />
 
@@ -841,8 +887,8 @@ export default async function AdminDashboard({ searchParams }) {
 
             {/* Coupons Table */}
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden mt-8">
-                <div className="p-6 border-b flex justify-between items-center">
-                    <h3 className="font-bold text-gray-900">קופונים אחרונים</h3>
+                <div className="p-6 border-b bg-gray-50/50 flex justify-between items-center">
+                    <h3 className="font-bold text-gray-800 text-lg">קופונים אחרונים</h3>
                     <Link href="/admin/coupons" className="text-blue-600 text-sm font-bold hover:underline">לכל הקופונים</Link>
                 </div>
                 <div className="overflow-x-auto custom-scrollbar">

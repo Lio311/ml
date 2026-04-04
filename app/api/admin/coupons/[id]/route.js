@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
 import pool from '@/app/lib/db';
+import { recordAuditLog } from '@/app/lib/audit';
+import { auth as clerkAuth } from '@clerk/nextjs/server';
 
 export async function DELETE(req, { params }) {
     try {
@@ -7,6 +9,17 @@ export async function DELETE(req, { params }) {
         const client = await pool.connect();
         try {
             await client.query('DELETE FROM coupons WHERE id = $1', [id]);
+
+            const authData = await clerkAuth();
+            await recordAuditLog({
+                userId: authData?.userId,
+                action: 'delete_coupon',
+                entityType: 'coupon',
+                entityId: String(id),
+                details: { id },
+                req
+            });
+
             return NextResponse.json({ success: true });
         } finally {
             client.release();
@@ -56,6 +69,17 @@ export async function PUT(req, { params }) {
             values.push(id);
 
             await client.query(query, values);
+
+            const authData = await clerkAuth();
+            await recordAuditLog({
+                userId: authData?.userId,
+                action: 'update_coupon',
+                entityType: 'coupon',
+                entityId: String(id),
+                details: body,
+                req
+            });
+
             return NextResponse.json({ success: true });
         } finally {
             client.release();

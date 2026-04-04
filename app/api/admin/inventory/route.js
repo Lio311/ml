@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server';
 import pool from '../../../lib/db';
+import { recordAuditLog } from '../../../lib/audit';
+import { auth as clerkAuth } from '@clerk/nextjs/server';
 
 // GET: Fetch current inventory and recent purchases
 export async function GET() {
@@ -53,6 +55,16 @@ export async function POST(req) {
 
             await client.query('COMMIT');
 
+            const authData = await clerkAuth();
+            await recordAuditLog({
+                userId: authData?.userId,
+                action: 'create_bottle_purchase',
+                entityType: 'inventory',
+                entityId: 'bottle_inventory',
+                details: { size, quantity, date, notes },
+                req
+            });
+
             return NextResponse.json({ success: true });
         } catch (dbError) {
             await client.query('ROLLBACK');
@@ -93,6 +105,17 @@ export async function DELETE(req) {
             await client.query('DELETE FROM bottle_purchases WHERE id = $1', [id]);
 
             await client.query('COMMIT');
+
+            const authData = await clerkAuth();
+            await recordAuditLog({
+                userId: authData?.userId,
+                action: 'delete_bottle_purchase',
+                entityType: 'inventory',
+                entityId: String(id),
+                details: purchase,
+                req
+            });
+
             return NextResponse.json({ success: true });
         } catch (dbError) {
             await client.query('ROLLBACK');
@@ -150,6 +173,17 @@ export async function PUT(req) {
             `, [size, quantity, notes, id]);
 
             await client.query('COMMIT');
+
+            const authData = await clerkAuth();
+            await recordAuditLog({
+                userId: authData?.userId,
+                action: 'update_bottle_purchase',
+                entityType: 'inventory',
+                entityId: String(id),
+                details: { id, size, quantity, notes, oldPurchase },
+                req
+            });
+
             return NextResponse.json({ success: true });
         } catch (dbError) {
             await client.query('ROLLBACK');

@@ -1,6 +1,7 @@
 import { auth as clerkAuth, clerkClient } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
 import pool from '@/app/lib/db';
+import { recordAuditLog } from '@/app/lib/audit';
 import * as Sentry from "@sentry/nextjs";
 
 export async function GET(req) {
@@ -92,9 +93,6 @@ export async function POST(req) {
             if (orderCheck.rows.length === 0) {
                 return NextResponse.json({ error: 'Order not found or unauthorized' }, { status: 404 });
             }
-            if (orderCheck.rows[0].status !== 'completed' && orderCheck.rows[0].status !== 'הושלם') {
-                 // Allow both if translated
-            }
 
             // Insert review
             const result = await pool.query(`
@@ -103,13 +101,25 @@ export async function POST(req) {
                 RETURNING id, user_id, order_id, content, rating, created_at, image_url
             `, [userId, orderId, content, rating, image_url]);
 
-            return NextResponse.json(result.rows[0]);
+            const insertedReview = result.rows[0];
+
+            await recordAuditLog({
+                userId,
+                action: 'create_review',
+                entityType: 'review',
+                entityId: insertedReview.id.toString(),
+                details: { orderId, rating, contentLength: content?.length },
+                req
+            });
+
+            return NextResponse.json(insertedReview);
         }
 
         // Mode 2: Simple product rating without orderId
         if (productId) {
             // Check if user already rated this product
             const existing = await pool.query(`SELECT id FROM reviews WHERE user_id = $1 AND product_id = $2 AND order_id IS NULL`, [userId, productId]);
+            
             if (existing.rows.length > 0) {
                 // Update existing rating
                 const result = await pool.query(`
@@ -117,7 +127,18 @@ export async function POST(req) {
                     WHERE id = $2 
                     RETURNING id, rating, created_at
                 `, [rating, existing.rows[0].id]);
-                return NextResponse.json(result.rows[0]);
+                
+                const updatedRating = result.rows[0];
+                await recordAuditLog({
+                    userId,
+                    action: 'update_product_rating',
+                    entityType: 'review',
+                    entityId: updatedRating.id.toString(),
+                    details: { productId, rating },
+                    req
+                });
+                
+                return NextResponse.json(updatedRating);
             } else {
                 // Insert new simple rating
                 const result = await pool.query(`
@@ -125,7 +146,18 @@ export async function POST(req) {
                     VALUES ($1, $2, $3, true)
                     RETURNING id, user_id, product_id, rating, created_at, is_public
                 `, [userId, productId, rating]);
-                return NextResponse.json(result.rows[0]);
+
+                const insertedRating = result.rows[0];
+                await recordAuditLog({
+                    userId,
+                    action: 'create_product_rating',
+                    entityType: 'review',
+                    entityId: insertedRating.id.toString(),
+                    details: { productId, rating },
+                    req
+                });
+
+                return NextResponse.json(insertedRating);
             }
         }
 
