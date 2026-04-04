@@ -141,7 +141,7 @@ const LuckyWheel = ({ onWin, onClose }) => {
                 {winnerIndex !== null ? (
                     <div className="animate-pulse">
                         <h3 className="text-2xl font-bold text-green-600 mb-4">
-                            {t('common.lucky_wheel_win').replace('{prize}', prizes[winnerIndex].label)} 🎁
+                            {t('common.lucky_wheel_win').replace('{prize}', prizes[winnerIndex].label)}
                         </h3>
                         <p className="text-sm text-gray-500 mb-4">{t('common.loading_brands')}</p>
                     </div>

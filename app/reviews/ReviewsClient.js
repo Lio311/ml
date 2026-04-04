@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useMemo } from 'react';
-import { Star, Quote, MessageSquare, Sparkles } from 'lucide-react';
+import { Star, Quote, MessageSquare, Check } from 'lucide-react';
 import Image from 'next/image';
 import { useLanguage } from '../context/LanguageContext';
 
@@ -70,46 +70,46 @@ export default function ReviewsClient({ initialReviews = [] }) {
                             >
                                 <Quote className="absolute top-6 left-6 w-8 h-8 text-gray-50 opacity-0 group-hover:opacity-100 transition-opacity" />
 
-                                {/* Rating Stars */}
-                                <div className="flex items-center gap-1 mb-4">
-                                    {[1, 2, 3, 4, 5].map((s) => (
-                                        <Star
-                                            key={s}
-                                            className={`w-4 h-4 ${s <= (review.rating || 5) ? 'fill-amber-400 text-amber-400' : 'text-gray-200'}`}
-                                        />
-                                    ))}
-                                </div>
+                {/* Rating Stars */}
+                <div className="flex items-center justify-center gap-1 mb-4">
+                    {[1, 2, 3, 4, 5].map((s) => (
+                        <Star
+                            key={s}
+                            className={`w-4 h-4 ${s <= (review.rating || 5) ? 'fill-amber-400 text-amber-400' : 'text-gray-200'}`}
+                        />
+                    ))}
+                </div>
 
-                                <p className={`text-gray-800 text-sm md:text-base leading-relaxed mb-8 font-medium italic relative z-10 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
-                                    "{review.content}"
-                                </p>
+                <p className="text-gray-800 text-sm md:text-base leading-relaxed mb-8 font-medium italic relative z-10 text-center">
+                    "{review.content}"
+                </p>
 
-                                <div className="flex items-center gap-4 pt-6 border-t border-gray-50">
-                                    <div className="w-12 h-12 rounded-2xl bg-gray-100 overflow-hidden border border-gray-100 shadow-inner">
-                                        {review.user_image ? (
-                                            <Image 
-                                                src={review.user_image} 
-                                                alt={review.user_name || "User"} 
-                                                width={48}
-                                                height={48}
-                                                className="w-full h-full object-cover" 
-                                            />
-                                        ) : (
-                                            <div className="w-full h-full flex items-center justify-center bg-black text-white font-bold text-lg">
-                                                {review.user_name?.[0] || 'L'}
-                                            </div>
-                                        )}
-                                    </div>
-                                    <div>
-                                        <div className="font-black text-sm text-black uppercase tracking-tight">
-                                            {review.user_name}
-                                        </div>
-                                        <div className="flex items-center gap-1.5 text-[10px] text-emerald-500 font-black uppercase tracking-widest mt-0.5">
-                                            <Sparkles className="w-3 h-3" />
-                                            {t('common.verified_buyer')}
-                                        </div>
-                                    </div>
-                                </div>
+                <div className="flex flex-col items-center gap-4 pt-6 border-t border-gray-50">
+                    <div className="w-12 h-12 rounded-2xl bg-gray-100 overflow-hidden border border-gray-100 shadow-inner">
+                        {review.user_image ? (
+                            <Image 
+                                src={review.user_image} 
+                                alt={review.user_name || "User"} 
+                                width={48}
+                                height={48}
+                                className="w-full h-full object-cover" 
+                            />
+                        ) : (
+                            <div className="w-full h-full flex items-center justify-center bg-black text-white font-bold text-lg">
+                                {review.user_name?.[0] || 'L'}
+                            </div>
+                        )}
+                    </div>
+                    <div className="text-center">
+                        <div className="font-black text-sm text-black uppercase tracking-tight">
+                            {review.user_name}
+                        </div>
+                        <div className="flex items-center justify-center gap-1.5 text-[10px] text-green-500 font-black uppercase tracking-widest mt-0.5">
+                            <Check className="w-3 h-3" />
+                            {t('common.verified_buyer')}
+                        </div>
+                    </div>
+                </div>
                             </div>
                         ))}
                     </div>
