@@ -19,7 +19,17 @@ export default function CartItem({ item, updateQuantity, removeFromCart, activeV
             <div className="flex-1 min-w-0">
                 <h3 className="font-bold truncate">{item.name}</h3>
                 <div className="text-sm text-gray-500">{t('cart.size')}: {item.size === 'set' ? t('cart.set') : `${String(item.size).replace(/ml$/i, '')} ${t('common.ml_unit')}`}</div>
-                <div className={`text-sm font-bold mt-1 ${item.isPrize ? 'text-green-600' : 'text-primary'}`}>{item.price} ₪ {item.isPrize && `(${t('cart.prize')})`}</div>
+                <div className={`text-sm font-bold mt-1`}>
+                    {item.originalPrice && item.originalPrice !== item.price && !item.isPrize ? (
+                        <span className="flex items-center gap-2">
+                            <span className="line-through text-gray-400 font-normal">{item.originalPrice} ₪</span>
+                            <span className="text-green-600">{item.price} ₪</span>
+                        </span>
+                    ) : (
+                        <span className={item.isPrize ? 'text-green-600' : 'text-primary'}>{item.price} ₪</span>
+                    )}
+                    {item.isPrize && ` (${t('cart.prize')})`}
+                </div>
             </div>
 
             {!item.isPrize && (

@@ -60,7 +60,7 @@ export default function ProductCard({ product }) {
             return;
         }
 
-        addToCart(product, size, discountedPrice);
+        addToCart(product, size, discountedPrice, 'main', 'האתר הרשמי', price);
         toast.success(t('common.added_to_cart_toast').replace('{name}', localize(product, 'name')).replace('{size}', size));
         setAdded(true);
     };

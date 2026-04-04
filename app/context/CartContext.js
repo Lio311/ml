@@ -228,7 +228,7 @@ export function CartProvider({ children }) {
         return () => clearTimeout(syncCart);
     }, [cartItems, user]);
 
-    const addToCart = (product, size, price, vendorId = 'main', vendorName = 'האתר הרשמי') => {
+    const addToCart = (product, size, price, vendorId = 'main', vendorName = 'האתר הרשמי', originalPrice = null) => {
         if (isCartLocked && vendorId === 'main') {
             toast.error(t('cart.cart_locked_lottery'));
             return;
@@ -244,7 +244,7 @@ export function CartProvider({ children }) {
                     (item) => item.id === product.id && item.size === size && (item.vendorId || 'main') === vendorId
                 );
                 if (existingPrize) return prev; // Don't add multiple prizes of same type
-                return [...prev, { ...product, size, price, quantity: 1, vendorId, vendorName }];
+                return [...prev, { ...product, size, price, originalPrice, quantity: 1, vendorId, vendorName }];
             }
 
             // STOCK CHECK (ML-based for catalogs, ML-based for main too)
@@ -296,11 +296,11 @@ export function CartProvider({ children }) {
             if (existing) {
                 return prev.map((item) =>
                     item.id === product.id && item.size === size && (item.vendorId || 'main') === vendorId
-                        ? { ...item, ...product, quantity: item.quantity + 1, size, price, vendorId, vendorName }
+                        ? { ...item, ...product, quantity: item.quantity + 1, size, price, originalPrice, vendorId, vendorName }
                         : item
                 );
             }
-            return [...prev, { ...product, size, price, quantity: 1, vendorId, vendorName }];
+            return [...prev, { ...product, size, price, originalPrice, quantity: 1, vendorId, vendorName }];
         });
     };
 
@@ -319,7 +319,7 @@ export function CartProvider({ children }) {
         const parseSizeML = (s) => parseFloat(String(s)) || 0;
 
         itemsToAdd.forEach((item) => {
-            const { product, size, price, vendorId = 'main', vendorName = 'האתר הרשמי' } = item;
+            const { product, size, price, originalPrice = null, vendorId = 'main', vendorName = 'האתר הרשמי' } = item;
             const addedML = parseSizeML(size) * (item.quantity || 1);
 
             // STOCK CHECK logic mirroring standard addToCart
@@ -374,6 +374,7 @@ export function CartProvider({ children }) {
                     ...product,
                     size,
                     price,
+                    originalPrice,
                     quantity: item.quantity || 1,
                     vendorId,
                     vendorName

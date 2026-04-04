@@ -49,7 +49,7 @@ export default function ProductActionsClient({ product }) {
             return;
         }
 
-        addToCart(product, size, discountedPrice);
+        addToCart(product, size, discountedPrice, 'main', 'האתר הרשמי', price);
         toast.success(t('common.added_to_cart_toast').replace('{name}', localize(product, 'name')).replace('{size}', size));
         setAddedId(size);
         setTimeout(() => setAddedId(null), 2000);
