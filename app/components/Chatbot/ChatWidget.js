@@ -16,25 +16,30 @@ const REPRESENTATIVES = [
 ];
 
 export default function ChatWidget() {
-    // Helper to determine Rep of the Day (Synchronous)
+    const [isVisible, setIsVisible] = useState(true);
+    const [isOpen, setIsOpen] = useState(false);
+    const [rep, setRep] = useState(REPRESENTATIVES[0]); // Default to first for SSR
+    const [messages, setMessages] = useState([]);
+    
+    const [input, setInput] = useState("");
+    const [isTyping, setIsTyping] = useState(false);
+    const scrollRef = useRef(null);
+    const router = useRouter();
+
+    // Helper to determine Rep of the Day
     const getDailyRep = () => {
-        // Simple consistent rotation based on date
-        if (typeof window === 'undefined') return REPRESENTATIVES[0]; // SSR safety
         const today = new Date();
         const dayOfYear = Math.floor((today - new Date(today.getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24));
         return REPRESENTATIVES[dayOfYear % REPRESENTATIVES.length];
     };
 
-    const [isOpen, setIsOpen] = useState(false);
-
-    // Initialize Rep immediately to avoid flicker
-    const [rep] = useState(getDailyRep);
-
-    // Initialize Messages immediately based on the selected rep
-    const [messages, setMessages] = useState(() => {
+    // Initialize on client only to avoid SSR mismatch
+    useEffect(() => {
         const selectedRep = getDailyRep();
+        setRep(selectedRep);
+        
         const helpVerb = selectedRep.gender === 'female' ? 'יכולה' : 'יכול';
-        return [
+        setMessages([
             { id: 1, text: `היי! 👋 אני ${selectedRep.name} מ-ml_tlv. איך אני ${helpVerb} לעזור לך היום?`, sender: 'bot', type: 'text' },
             {
                 id: 2,
@@ -48,8 +53,8 @@ export default function ChatWidget() {
                     "איך מחזירים מוצר?"
                 ]
             }
-        ];
-    });
+        ]);
+    }, []);
 
     const [input, setInput] = useState("");
     const [isTyping, setIsTyping] = useState(false);
