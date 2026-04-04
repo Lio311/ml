@@ -61,7 +61,9 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
             seasons: product.seasons || '',
             perfumers: product.perfumers || '',
             country: product.country || '',
-            active: product.active ?? true
+            active: product.active ?? true,
+            discount_percentage: product.discount_percentage || 0,
+            discount_sizes: product.discount_sizes || []
         });
     };
 
@@ -90,7 +92,9 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
             seasons: '',
             perfumers: '',
             country: '',
-            active: true
+            active: true,
+            discount_percentage: 0,
+            discount_sizes: []
         });
     };
 
@@ -520,6 +524,44 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                             />
                             <label className="text-sm font-bold select-none text-gray-700">מצב טיוטה (לא יופיע בקטלוג)</label>
                         </div>
+                        
+                        <div className="mt-4 p-4 bg-green-50 rounded-xl border border-green-100">
+                            <h4 className="text-sm font-black text-green-800 uppercase tracking-widest mb-3">ניהול מבצע (Promotion)</h4>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label className="text-[10px] font-black text-green-700 uppercase tracking-widest block mb-1">אחוז הנחה (%)</label>
+                                    <input
+                                        type="number"
+                                        value={editForm.discount_percentage}
+                                        onChange={e => setEditForm({ ...editForm, discount_percentage: Number(e.target.value) })}
+                                        className="border-2 border-green-200 rounded-xl p-2 w-full bg-white focus:border-green-500 outline-none transition-colors font-bold text-sm"
+                                        placeholder="0"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="text-[10px] font-black text-green-700 uppercase tracking-widest block mb-1">חל על הגדלים:</label>
+                                    <div className="flex gap-4 mt-1">
+                                        {['2ml', '5ml', '10ml'].map(size => (
+                                            <label key={size} className="flex items-center gap-2 cursor-pointer">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={(editForm.discount_sizes || []).includes(size)}
+                                                    onChange={(e) => {
+                                                        const current = editForm.discount_sizes || [];
+                                                        const next = e.target.checked 
+                                                            ? [...current, size] 
+                                                            : current.filter(s => s !== size);
+                                                        setEditForm({ ...editForm, discount_sizes: next });
+                                                    }}
+                                                    className="w-4 h-4 accent-green-600"
+                                                />
+                                                <span className="text-xs font-bold text-green-800">{size}</span>
+                                            </label>
+                                        ))}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <div className="flex gap-2 justify-end">
                         <button onClick={handleCancel} className="bg-gray-200 text-black px-6 py-2 rounded font-bold">ביטול</button>
@@ -758,9 +800,51 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                             <TagInput
                                                 tags={editForm.perfumers ? editForm.perfumers.split(',').filter(Boolean) : []}
                                                 onChange={(newTags) => setEditForm({ ...editForm, perfumers: newTags.join(',') })}
-                                                suggestions={[]}
-                                                placeholder="הוסף שם..."
+                                                suggestions={availableNotes}
+                                                placeholder="..."
                                             />
+                                        </div>
+                                    </div>
+                                    
+                                    <div className="mt-4 p-4 bg-green-50 rounded-2xl border border-green-100">
+                                        <h4 className="text-[10px] font-black text-green-800 uppercase tracking-widest mb-3 flex items-center gap-2">
+                                            <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
+                                            ניהול מבצע (Promotion)
+                                        </h4>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                            <div>
+                                                <label className="text-[9px] font-black text-green-700 uppercase tracking-widest block mb-1 opacity-70">אחוז הנחה (%)</label>
+                                                <input
+                                                    type="number"
+                                                    value={editForm.discount_percentage}
+                                                    onChange={e => setEditForm({ ...editForm, discount_percentage: Number(e.target.value) })}
+                                                    onWheel={(e) => e.target.blur()}
+                                                    className="border-2 border-green-100 rounded-xl p-2 w-full bg-white focus:border-green-600 outline-none transition-all font-black text-sm text-green-600"
+                                                    placeholder="0"
+                                                />
+                                            </div>
+                                            <div>
+                                                <label className="text-[9px] font-black text-green-700 uppercase tracking-widest block mb-1 opacity-70">גדלים במבצע:</label>
+                                                <div className="flex gap-3 mt-1.5">
+                                                    {['2ml', '5ml', '10ml'].map(size => (
+                                                        <label key={size} className="flex items-center gap-2 cursor-pointer group bg-white/50 p-1.5 px-3 rounded-lg border border-green-50 hover:bg-white transition-colors">
+                                                            <input
+                                                                type="checkbox"
+                                                                checked={(editForm.discount_sizes || []).includes(size)}
+                                                                onChange={(e) => {
+                                                                    const current = editForm.discount_sizes || [];
+                                                                    const next = e.target.checked 
+                                                                        ? [...current, size] 
+                                                                        : current.filter(s => s !== size);
+                                                                    setEditForm({ ...editForm, discount_sizes: next });
+                                                                }}
+                                                                className="w-4 h-4 accent-green-600"
+                                                            />
+                                                            <span className="text-xs font-black text-green-800 group-hover:text-green-600 transition-colors">{size}</span>
+                                                        </label>
+                                                    ))}
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>

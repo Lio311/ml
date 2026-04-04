@@ -39,7 +39,14 @@ export default function ProductCard({ product }) {
         return () => clearTimeout(timer);
     }, [added]);
 
+    const getDiscountedPrice = (size, originalPrice) => {
+        const hasDiscount = product.discount_percentage > 0 && (product.discount_sizes || []).includes(`${size}ml`);
+        if (!hasDiscount) return originalPrice;
+        return Math.floor(originalPrice * (1 - product.discount_percentage / 100));
+    };
+
     const handleAdd = (size, price) => {
+        const discountedPrice = getDiscountedPrice(size, price);
         const stock = product.stock || 0;
         const currentInCart = (cartItems || []).reduce((total, item) => {
             if (item.id === product.id) {
@@ -53,7 +60,7 @@ export default function ProductCard({ product }) {
             return;
         }
 
-        addToCart(product, size, price);
+        addToCart(product, size, discountedPrice);
         toast.success(t('common.added_to_cart_toast').replace('{name}', localize(product, 'name')).replace('{size}', size));
         setAdded(true);
     };
@@ -115,6 +122,12 @@ export default function ProductCard({ product }) {
                         {t('common.new')}
                     </div>
                 )}
+
+            {product.discount_percentage > 0 && (
+                <div className="absolute top-2 end-2 z-10 text-[10px] leading-3 font-black bg-green-600 text-white px-2 py-1 rounded shadow-sm text-center animate-pulse">
+                    {product.discount_percentage}% OFF
+                </div>
+            )}
 
             {((product.stock || 0) <= 20) && (
                 <div className={`absolute top-10 start-2 z-10 text-[10px] leading-3 font-bold px-2 py-1 rounded shadow-sm text-center text-white ${(product.stock || 0) <= 0 ? 'bg-gray-400' : 'bg-red-600'
@@ -189,7 +202,14 @@ export default function ProductCard({ product }) {
                         <div className="flex items-center justify-between text-xs text-gray-600">
                             <span>2 {t('common.ml_unit')}</span>
                             <div className="flex items-center gap-2">
-                                <span className="font-bold">{product.price_2ml} ₪</span>
+                                {getDiscountedPrice(2, product.price_2ml) !== product.price_2ml ? (
+                                    <div className="flex flex-col items-end">
+                                        <span className="text-[10px] text-gray-400 line-through leading-none">{product.price_2ml} ₪</span>
+                                        <span className="font-black text-green-600">{getDiscountedPrice(2, product.price_2ml)} ₪</span>
+                                    </div>
+                                ) : (
+                                    <span className="font-bold">{product.price_2ml} ₪</span>
+                                )}
                                 <button
                                     onClick={() => handleAdd(2, product.price_2ml)}
                                     className="bg-gray-100 hover:bg-black hover:text-white w-6 h-6 rounded flex items-center justify-center transition"
@@ -203,7 +223,14 @@ export default function ProductCard({ product }) {
                         <div className="flex items-center justify-between text-xs text-gray-600">
                             <span>5 {t('common.ml_unit')}</span>
                             <div className="flex items-center gap-2">
-                                <span className="font-bold">{product.price_5ml} ₪</span>
+                                {getDiscountedPrice(5, product.price_5ml) !== product.price_5ml ? (
+                                    <div className="flex flex-col items-end">
+                                        <span className="text-[10px] text-gray-400 line-through leading-none">{product.price_5ml} ₪</span>
+                                        <span className="font-black text-green-600">{getDiscountedPrice(5, product.price_5ml)} ₪</span>
+                                    </div>
+                                ) : (
+                                    <span className="font-bold">{product.price_5ml} ₪</span>
+                                )}
                                 <button
                                     onClick={() => handleAdd(5, product.price_5ml)}
                                     className="bg-gray-100 hover:bg-black hover:text-white w-6 h-6 rounded flex items-center justify-center transition"
@@ -217,7 +244,14 @@ export default function ProductCard({ product }) {
                         <div className="flex items-center justify-between text-xs text-gray-600">
                             <span>10 {t('common.ml_unit')}</span>
                             <div className="flex items-center gap-2">
-                                <span className="font-bold">{product.price_10ml} ₪</span>
+                                {getDiscountedPrice(10, product.price_10ml) !== product.price_10ml ? (
+                                    <div className="flex flex-col items-end">
+                                        <span className="text-[10px] text-gray-400 line-through leading-none">{product.price_10ml} ₪</span>
+                                        <span className="font-black text-green-600">{getDiscountedPrice(10, product.price_10ml)} ₪</span>
+                                    </div>
+                                ) : (
+                                    <span className="font-bold">{product.price_10ml} ₪</span>
+                                )}
                                 <button
                                     onClick={() => handleAdd(10, product.price_10ml)}
                                     className="bg-gray-100 hover:bg-black hover:text-white w-6 h-6 rounded flex items-center justify-center transition"
