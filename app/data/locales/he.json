@@ -536,7 +536,7 @@
         "received_samples": "קיבלת {count} דוגמיות מתנה!",
         "meta_title": "העגלה שלי | ml_tlv",
         "meta_desc": "צפו בפריטים שבעגלה שלכם והשלימו את ההזמנה ב-ml_tlv.",
-        "cart_restored": "שחזרנו עבורך את העגלה מהביקור הקודם! תתחדשו :)",
+        "cart_restored": "שחזרנו עבורך את העגלה מהביקור הקודם!",
         "cart_locked_lottery": "העגלה נעולה בזמן שהגרלת הבשמים פעילה!",
         "stock_limit_ml_reached": "לא ניתן להוסיף - המלאי מוגבל ל-{limit} מ\"ל סה\"כ!",
         "stock_limit_reached": "אזל המלאי ממוצר זה"

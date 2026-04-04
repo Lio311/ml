@@ -581,7 +581,7 @@
         "received_samples": "You received {count} free samples!",
         "meta_title": "My Cart | ml_tlv",
         "meta_desc": "View your cart items and complete your order at ml_tlv.",
-        "cart_restored": "We've restored your cart from your previous visit! Enjoy :)",
+        "cart_restored": "We've restored your cart from your previous visit!",
         "cart_locked_lottery": "Cart is locked while perfume lottery is active!",
         "stock_limit_ml_reached": "Cannot add - Stock limited to {limit}ml total!",
         "stock_limit_reached": "Out of stock"
