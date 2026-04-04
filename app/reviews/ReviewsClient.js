@@ -66,12 +66,24 @@ export default function ReviewsClient({ initialReviews = [] }) {
                         {reviews.map((review) => (
                             <div
                                 key={review.id}
-                                className="break-inside-avoid bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-500 group relative"
+                                className="break-inside-avoid bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-sm hover:shadow-xl transition-all duration-500 group relative mb-6"
                             >
                                 <Quote className="absolute top-6 left-6 w-8 h-8 text-gray-50 opacity-0 group-hover:opacity-100 transition-opacity" />
 
+                                {/* Review Image */}
+                                {review.image_url && (
+                                    <div className="relative w-full h-56 rounded-[2rem] overflow-hidden mb-6 shadow-md group-hover:shadow-lg transition-shadow">
+                                        <Image
+                                            src={review.image_url}
+                                            alt={review.user_name || "Review image"}
+                                            fill
+                                            className="object-cover transition-transform duration-700 group-hover:scale-105"
+                                        />
+                                    </div>
+                                )}
+
                 {/* Rating Stars */}
-                <div className="flex items-center justify-center gap-1 mb-4">
+                <div className="flex items-center justify-start gap-1 mb-4">
                     {[1, 2, 3, 4, 5].map((s) => (
                         <Star
                             key={s}
@@ -80,12 +92,12 @@ export default function ReviewsClient({ initialReviews = [] }) {
                     ))}
                 </div>
 
-                <p className="text-gray-800 text-sm md:text-base leading-relaxed mb-4 font-medium italic relative z-10 text-right">
+                <p className="text-gray-800 text-sm md:text-base leading-relaxed mb-6 font-medium italic relative z-10">
                     "{review.content}"
                 </p>
 
-                <div className="flex flex-col items-start gap-2 pt-4 border-t border-gray-50">
-                    <div className="w-12 h-12 rounded-2xl bg-gray-100 overflow-hidden border border-gray-100 shadow-inner">
+                <div className="flex items-center gap-4 pt-4 border-t border-gray-50">
+                    <div className="w-12 h-12 rounded-2xl bg-gray-100 overflow-hidden border border-gray-100 shadow-inner flex-shrink-0">
                         {review.user_image ? (
                             <Image 
                                 src={review.user_image} 

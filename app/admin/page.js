@@ -122,7 +122,8 @@ export default async function AdminDashboard({ searchParams }) {
             couponsRes,
             revAllTimeRes,
             expAllTimeRes,
-            cogsAllTimeRes
+            cogsAllTimeRes,
+            cumulativeSalesRes
         ] = await Promise.all([
             // 1. Recent Orders
             safeQuery("SELECT id, customer_details, created_at, total_amount, status FROM orders WHERE catalog_id IS NULL ORDER BY created_at DESC LIMIT 3"),
@@ -303,7 +304,17 @@ export default async function AdminDashboard({ searchParams }) {
                 FROM expanded_items ei
                 JOIN products p ON ei.product_id = p.id
                 WHERE ei.catalog_id IS NULL
-                `)
+                `),
+            // 24. Cumulative Revenue (All Time)
+            safeQuery(`
+                SELECT 
+                    DATE_TRUNC('day', created_at) as day,
+                    SUM(SUM(total_amount)) OVER (ORDER BY DATE_TRUNC('day', created_at)) as cumulative
+                FROM orders
+                WHERE status != 'cancelled' AND catalog_id IS NULL
+                GROUP BY DATE_TRUNC('day', created_at)
+                ORDER BY day
+            `)
         ]);
 
         // --- 2. PROCESS DATA (Sync) ---
@@ -339,6 +350,13 @@ export default async function AdminDashboard({ searchParams }) {
         const totalRevenueAllTime = parseFloat(revAllTimeRes.rows[0]?.sum || 0);
         const totalExpensesAllTime = parseFloat(expAllTimeRes.rows[0]?.sum || 0);
         const totalCOGSAllTime = parseFloat(cogsAllTimeRes.rows[0]?.sum || 0);
+        const totalOrdersAllTime = parseInt(countRes.rows[0]?.count || 0);
+
+        kpis.avgOrderValue = totalOrdersAllTime > 0 ? Math.round(totalRevenueAllTime / totalOrdersAllTime) : 0;
+        kpis.cumulativeRevenueData = cumulativeSalesRes?.rows.map(r => ({
+            date: new Date(r.day).toLocaleDateString('he-IL', { day: 'numeric', month: 'short' }),
+            value: Math.round(parseFloat(r.cumulative || 0))
+        })) || [];
 
         kpis.cumulativeProfit = Math.round(totalRevenueAllTime - totalExpensesAllTime - totalCOGSAllTime);
 
@@ -558,6 +576,7 @@ export default async function AdminDashboard({ searchParams }) {
                 revenueData={kpis.revenueChartData}
                 visitsData={kpis.visitsChartData}
                 usersData={usersChartData || []}
+                cumulativeData={kpis.cumulativeRevenueData}
             />
 
 
@@ -710,7 +729,7 @@ export default async function AdminDashboard({ searchParams }) {
                     <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-cyan-500"></div>
                     <div className="text-gray-500 text-sm font-bold uppercase mb-2 flex items-center gap-2">
                         <ShoppingCart className="w-4 h-4 text-blue-500" />
-                        הזמנות החודש
+                        סה"כ הזמנות
                     </div>
                     <div className="text-3xl font-bold mb-4">{kpis.totalOrders}</div>
                     <div className="text-[10px] text-center border-t border-gray-50 pt-3 mt-2">
@@ -744,6 +763,43 @@ export default async function AdminDashboard({ searchParams }) {
                     <div className="text-[10px] text-center border-t border-gray-50 pt-3 mt-2">
                         <Link href="/admin/users" className="text-blue-500 hover:underline font-bold transition-all">לניהול משתמשים ←</Link>
                     </div>
+                </div>
+            </div>
+
+            {/* New KPI Cards (AOV & Cumulative Graph) */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+                {/* AOV Card */}
+                <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 relative overflow-hidden group hover:shadow-md transition-shadow">
+                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-600 to-indigo-600"></div>
+                    <div className="flex justify-between items-start mb-4">
+                        <div className="text-gray-500 text-sm font-bold uppercase flex items-center gap-2">
+                            <TrendingUp className="w-4 h-4 text-blue-600" />
+                            סל ממוצע (AOV)
+                        </div>
+                    </div>
+                    <div className="flex items-baseline gap-2">
+                        <span className="text-4xl font-bold text-gray-900">
+                            {kpis.avgOrderValue?.toLocaleString()} ₪
+                        </span>
+                    </div>
+                    <div className="text-[10px] text-gray-400 mt-2 font-medium italic">מחושב לפי כל ההזמנות במערכת</div>
+                </div>
+
+                {/* Cumulative Sales Total Card */}
+                <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 relative overflow-hidden group hover:shadow-md transition-shadow">
+                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-600 to-purple-600"></div>
+                    <div className="flex justify-between items-start mb-4">
+                        <div className="text-gray-500 text-sm font-bold uppercase flex items-center gap-2">
+                            <ShoppingCart className="w-4 h-4 text-indigo-600" />
+                            מכירות מצטברות
+                        </div>
+                    </div>
+                    <div className="flex items-baseline gap-2">
+                        <span className="text-4xl font-bold text-gray-900">
+                            {parseInt(revAllTimeRes.rows[0]?.sum || 0).toLocaleString()} ₪
+                        </span>
+                    </div>
+                    <div className="text-[10px] text-gray-400 mt-2 font-medium italic">מרגע פתיחת האתר</div>
                 </div>
             </div>
 

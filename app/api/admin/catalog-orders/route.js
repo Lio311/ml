@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { auth as clerkAuth, clerkClient } from '@clerk/nextjs/server';
 import pool from '@/app/lib/db';
+import { recordAuditLog } from '@/app/lib/audit';
 
 export const dynamic = 'force-dynamic';
 
@@ -104,6 +105,16 @@ export async function PUT(req) {
             }
 
             await client.query('COMMIT');
+
+            await recordAuditLog({
+                userId: authData?.userId,
+                action: 'update_catalog_order_status',
+                entityType: 'order',
+                entityId: String(orderId),
+                details: { previousStatus: oldStatus, newStatus: status, isCatalog: true },
+                req
+            });
+
             return NextResponse.json({ success: true });
         } catch (txErr) {
             await client.query('ROLLBACK');
@@ -169,6 +180,16 @@ export async function DELETE(req) {
             await client.query('DELETE FROM orders WHERE id = $1', [orderId]);
             
             await client.query('COMMIT');
+
+            await recordAuditLog({
+                userId: authData?.userId,
+                action: 'delete_order',
+                entityType: 'order',
+                entityId: String(orderId),
+                details: { id: orderId, isCatalog: true },
+                req
+            });
+
             return NextResponse.json({ success: true });
         } catch (txErr) {
             await client.query('ROLLBACK');

@@ -38,7 +38,7 @@ export async function GET(req) {
 
         // Fetch all reviews with user details
         const result = await pool.query(`
-            SELECT r.id, r.user_id, r.order_id, r.product_id, r.content, r.rating, r.created_at, r.is_public, 
+            SELECT r.id, r.user_id, r.order_id, r.product_id, r.content, r.rating, r.created_at, r.is_public, r.image_url,
                    u.first_name, u.last_name, u.role
             FROM reviews r
             LEFT JOIN users u ON r.user_id = u.id
@@ -79,7 +79,7 @@ export async function POST(req) {
         if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
 
         const body = await req.json();
-        const { orderId, content, rating = 5, productId } = body;
+        const { orderId, content, rating = 5, productId, image_url } = body;
 
         // Mode 1: Full review with orderId
         if (orderId) {
@@ -98,10 +98,10 @@ export async function POST(req) {
 
             // Insert review
             const result = await pool.query(`
-                INSERT INTO reviews (user_id, order_id, content, rating)
-                VALUES ($1, $2, $3, $4)
-                RETURNING id, user_id, order_id, content, rating, created_at
-            `, [userId, orderId, content, rating]);
+                INSERT INTO reviews (user_id, order_id, content, rating, image_url)
+                VALUES ($1, $2, $3, $4, $5)
+                RETURNING id, user_id, order_id, content, rating, created_at, image_url
+            `, [userId, orderId, content, rating, image_url]);
 
             return NextResponse.json(result.rows[0]);
         }

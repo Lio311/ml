@@ -5,6 +5,8 @@ import { sendEmail, getNewProductTemplate } from '../../lib/email';
 import { checkAdmin } from '../../lib/admin';
 import { revalidatePath } from 'next/cache';
 import { translateList, translateText } from '../../lib/translate';
+import { recordAuditLog } from '../../lib/audit';
+import { auth as clerkAuth } from '@clerk/nextjs/server';
 
 const generateSlug = (brand, model) => {
     return `${brand} ${model}`.toLowerCase().replace(/[^a-z0-9\u0590-\u05FF]+/g, '-').replace(/(^-|-$)+/g, '');
@@ -110,6 +112,16 @@ export async function PUT(req) {
             revalidatePath('/catalog');
             revalidatePath('/brands/[brand]', 'page');
             revalidatePath('/product/[slug]', 'page');
+
+            const authData = await clerkAuth();
+            await recordAuditLog({
+                userId: authData?.userId,
+                action: 'update_product',
+                entityType: 'product',
+                entityId: String(id),
+                details: body,
+                req
+            });
 
             return NextResponse.json({ success: true });
         } finally {
@@ -217,6 +229,16 @@ export async function POST(req) {
             revalidatePath('/brands/[brand]', 'page');
             revalidatePath('/product/[slug]', 'page');
 
+            const authData = await clerkAuth();
+            await recordAuditLog({
+                userId: authData?.userId,
+                action: 'create_product',
+                entityType: 'product',
+                entityId: String(newProductId),
+                details: body,
+                req
+            });
+
             return NextResponse.json({ success: true, id: newProductId });
         } finally {
             client.release();
@@ -300,6 +322,16 @@ export async function DELETE(req) {
             revalidatePath('/');
             revalidatePath('/catalog');
             
+            const authData = await clerkAuth();
+            await recordAuditLog({
+                userId: authData?.userId,
+                action: 'delete_product',
+                entityType: 'product',
+                entityId: String(id),
+                details: { id },
+                req
+            });
+
             return NextResponse.json({ success: true });
         } finally {
             client.release();

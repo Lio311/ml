@@ -293,7 +293,10 @@
                 "success": "Thank you for the review! It will be published after admin approval.",
                 "error": "Error submitting review",
                 "empty_error": "Please write something before submitting",
-                "write_review": "Write a Review"
+                "write_review": "Write a Review",
+                "upload_photo": "Add Photo",
+                "change_photo": "Change Photo",
+                "uploading": "Uploading..."
             }
         }
     },

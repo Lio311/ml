@@ -3,6 +3,8 @@ import { currentUser } from '@clerk/nextjs/server';
 import pool from '@/app/lib/db';
 import { revalidatePath } from 'next/cache';
 import { sendEmail, getStatusUpdateTemplate } from '@/app/lib/email';
+import { recordAuditLog } from '@/app/lib/audit';
+import { auth as clerkAuth } from '@clerk/nextjs/server';
 
 export async function POST(req) {
     const user = await currentUser();
@@ -98,6 +100,17 @@ export async function POST(req) {
         }
 
         revalidatePath('/admin/orders');
+
+        const authData = await clerkAuth();
+        await recordAuditLog({
+            userId: authData?.userId,
+            action: 'update_order_status',
+            entityType: 'order',
+            entityId: String(orderId),
+            details: { previousStatus: oldStatus, newStatus: status },
+            req
+        });
+
         return NextResponse.json({ success: true });
     } finally {
         client.release();

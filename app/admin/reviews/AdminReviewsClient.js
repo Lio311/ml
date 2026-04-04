@@ -113,6 +113,16 @@ export default function AdminReviewsClient({ initialReviews = [] }) {
 
                                 {/* Content */}
                                 <div className="flex-1">
+                                    {review.image_url && (
+                                        <div className="relative w-24 h-24 rounded-2xl overflow-hidden mb-3 border border-gray-100 shadow-sm">
+                                            <Image 
+                                                src={review.image_url} 
+                                                alt="Review" 
+                                                fill 
+                                                className="object-cover" 
+                                            />
+                                        </div>
+                                    )}
                                     <p className="text-gray-700 text-sm leading-relaxed italic line-clamp-2 md:line-clamp-none">
                                         "{review.content}"
                                     </p>

@@ -46,177 +46,211 @@ const CustomTooltip = ({ active, payload, label, prefix = "" }) => {
     return null;
 };
 
-export default function DashboardCharts({ orderData, revenueData, visitsData, usersData }) {
+export default function DashboardCharts({ orderData, revenueData, visitsData, usersData, cumulativeData = [] }) {
     const [rightChartMode, setRightChartMode] = React.useState('revenue'); // 'revenue' | 'orders'
     const [leftChartMode, setLeftChartMode] = React.useState('visits'); // 'visits' | 'users'
 
     return (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
-            {/* User Configurable Chart (Visits OR Registrations) */}
-            <div className="bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-gray-100">
-                <div className="flex justify-between items-center mb-6" dir="rtl">
-                    <h3 className="text-base md:text-lg font-bold text-gray-800">
-                        {leftChartMode === 'visits' ? 'סטטיסטיקת ביקורים' : 'רישום משתמשים'}
-                    </h3>
-                    <div className="flex bg-gray-100 p-1 rounded-lg scale-90 md:scale-100">
-                        <button
-                            onClick={() => setLeftChartMode('visits')}
-                            className={`px-3 py-1 text-[10px] md:text-xs font-bold rounded-md transition ${leftChartMode === 'visits' ? 'bg-white shadow text-black' : 'text-gray-500 hover:text-black'}`}
-                        >
-                            ביקורים
-                        </button>
-                        <button
-                            onClick={() => setLeftChartMode('users')}
-                            className={`px-3 py-1 text-[10px] md:text-xs font-bold rounded-md transition ${leftChartMode === 'users' ? 'bg-white shadow text-black' : 'text-gray-500 hover:text-black'}`}
-                        >
-                            משתמשים
-                        </button>
+        <div className="space-y-8 mb-12">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                {/* User Configurable Chart (Visits OR Registrations) */}
+                <div className="bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-gray-100">
+                    <div className="flex justify-between items-center mb-6" dir="rtl">
+                        <h3 className="text-base md:text-lg font-bold text-gray-800">
+                            {leftChartMode === 'visits' ? 'סטטיסטיקת ביקורים' : 'רישום משתמשים'}
+                        </h3>
+                        <div className="flex bg-gray-100 p-1 rounded-lg scale-90 md:scale-100">
+                            <button
+                                onClick={() => setLeftChartMode('visits')}
+                                className={`px-3 py-1 text-[10px] md:text-xs font-bold rounded-md transition ${leftChartMode === 'visits' ? 'bg-white shadow text-black' : 'text-gray-500 hover:text-black'}`}
+                            >
+                                ביקורים
+                            </button>
+                            <button
+                                onClick={() => setLeftChartMode('users')}
+                                className={`px-3 py-1 text-[10px] md:text-xs font-bold rounded-md transition ${leftChartMode === 'users' ? 'bg-white shadow text-black' : 'text-gray-500 hover:text-black'}`}
+                            >
+                                משתמשים
+                            </button>
+                        </div>
+                    </div>
+                    <div className="h-[250px] md:h-[320px] w-full">
+                        <ResponsiveContainer width="100%" height="100%">
+                            <LineChart data={leftChartMode === 'visits' ? visitsData : usersData} margin={{ top: 10, right: 10, left: -30, bottom: 0 }}>
+                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
+                                <XAxis
+                                    dataKey="day"
+                                    fontSize={9}
+                                    tickLine={false}
+                                    axisLine={false}
+                                    tick={{ fill: '#9ca3af' }}
+                                    tickCount={(typeof window !== 'undefined' && window.innerWidth < 768) ? 6 : undefined}
+                                />
+                                <YAxis
+                                    fontSize={9}
+                                    tickLine={false}
+                                    axisLine={false}
+                                    tick={{ fill: '#9ca3af' }}
+                                    orientation="left"
+                                />
+                                <Tooltip content={<CustomTooltip />} cursor={{ stroke: '#f3f4f6', strokeWidth: 2 }} />
+                                <Legend content={<CustomLegend />} verticalAlign="bottom" align="center" />
+                                <Line
+                                    name="החודש"
+                                    type="monotone"
+                                    dataKey="current"
+                                    stroke="#ef4444" 
+                                    strokeWidth={3}
+                                    dot={{ r: 3, fill: '#ef4444', strokeWidth: 2, stroke: '#fff' }}
+                                    activeDot={{ r: 5, strokeWidth: 0 }}
+                                    connectNulls
+                                />
+                                <Line
+                                    name="חודש קודם"
+                                    type="monotone"
+                                    dataKey="previous"
+                                    stroke="#f97316" 
+                                    strokeWidth={2}
+                                    strokeDasharray="4 4"
+                                    dot={false}
+                                    activeDot={{ r: 3 }}
+                                    connectNulls
+                                />
+                            </LineChart>
+                        </ResponsiveContainer>
                     </div>
                 </div>
-                <div className="h-[250px] md:h-[320px] w-full">
-                    <ResponsiveContainer width="100%" height="100%">
-                        <LineChart data={leftChartMode === 'visits' ? visitsData : usersData} margin={{ top: 10, right: 10, left: -30, bottom: 0 }}>
-                            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
-                            <XAxis
-                                dataKey="day"
-                                fontSize={9}
-                                tickLine={false}
-                                axisLine={false}
-                                tick={{ fill: '#9ca3af' }}
-                                tickCount={(typeof window !== 'undefined' && window.innerWidth < 768) ? 6 : undefined}
-                            />
-                            <YAxis
-                                fontSize={9}
-                                tickLine={false}
-                                axisLine={false}
-                                tick={{ fill: '#9ca3af' }}
-                                orientation="left"
-                            />
-                            <Tooltip content={<CustomTooltip />} cursor={{ stroke: '#f3f4f6', strokeWidth: 2 }} />
-                            <Legend content={<CustomLegend />} verticalAlign="bottom" align="center" />
 
-                            {leftChartMode === 'visits' ? (
-                                <>
-                                    <Line
-                                        name="החודש"
-                                        type="monotone"
-                                        dataKey="current"
-                                        stroke="#ef4444" 
-                                        strokeWidth={3}
-                                        dot={{ r: 3, fill: '#ef4444', strokeWidth: 2, stroke: '#fff' }}
-                                        activeDot={{ r: 5, strokeWidth: 0 }}
-                                        connectNulls
-                                    />
-                                    <Line
-                                        name="חודש קודם"
-                                        type="monotone"
-                                        dataKey="previous"
-                                        stroke="#f97316" 
-                                        strokeWidth={2}
-                                        strokeDasharray="4 4"
-                                        dot={false}
-                                        activeDot={{ r: 3 }}
-                                        connectNulls
-                                    />
-                                </>
-                            ) : (
-                                <>
-                                    <Line
-                                        name="החודש"
-                                        type="monotone"
-                                        dataKey="current"
-                                        stroke="#ef4444" 
-                                        strokeWidth={3}
-                                        dot={{ r: 3, fill: '#ef4444', strokeWidth: 2, stroke: '#fff' }}
-                                        activeDot={{ r: 5, strokeWidth: 0 }}
-                                        connectNulls
-                                    />
-                                    <Line
-                                        name="חודש קודם"
-                                        type="monotone"
-                                        dataKey="previous"
-                                        stroke="#f97316" 
-                                        strokeWidth={2}
-                                        strokeDasharray="4 4"
-                                        dot={false}
-                                        activeDot={{ r: 3 }}
-                                        connectNulls
-                                    />
-                                </>
-                            )}
-                        </LineChart>
-                    </ResponsiveContainer>
+                {/* Configurable Chart (Revenue OR Orders) */}
+                <div className="bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-gray-100">
+                    <div className="flex justify-between items-center mb-6" dir="rtl">
+                        <h3 className="text-base md:text-lg font-bold text-gray-800">
+                            {rightChartMode === 'revenue' ? 'מכירות' : 'הזמנות'}
+                        </h3>
+                        <div className="flex bg-gray-100 p-1 rounded-lg scale-90 md:scale-100">
+                            <button
+                                onClick={() => setRightChartMode('orders')}
+                                className={`px-3 py-1 text-[10px] md:text-xs font-bold rounded-md transition ${rightChartMode === 'orders' ? 'bg-white shadow text-black' : 'text-gray-500 hover:text-black'}`}
+                            >
+                                הזמנות
+                            </button>
+                            <button
+                                onClick={() => setRightChartMode('revenue')}
+                                className={`px-3 py-1 text-[10px] md:text-xs font-bold rounded-md transition ${rightChartMode === 'revenue' ? 'bg-white shadow text-black' : 'text-gray-500 hover:text-black'}`}
+                            >
+                                מכירות
+                            </button>
+                        </div>
+                    </div>
+                    <div className="h-[250px] md:h-[320px] w-full">
+                        <ResponsiveContainer width="100%" height="100%">
+                            <LineChart data={rightChartMode === 'revenue' ? revenueData : orderData} margin={{ top: 10, right: 10, left: -30, bottom: 0 }}>
+                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
+                                <XAxis
+                                    dataKey="day"
+                                    fontSize={9}
+                                    tickLine={false}
+                                    axisLine={false}
+                                    tick={{ fill: '#9ca3af' }}
+                                    tickCount={(typeof window !== 'undefined' && window.innerWidth < 768) ? 6 : undefined}
+                                />
+                                <YAxis
+                                    fontSize={9}
+                                    tickLine={false}
+                                    axisLine={false}
+                                    tick={{ fill: '#9ca3af' }}
+                                    orientation="left"
+                                    tickFormatter={rightChartMode === 'revenue' ? ((value) => `₪${value >= 1000 ? (value / 1000).toFixed(0) + 'k' : value}`) : undefined}
+                                />
+                                <Tooltip content={<CustomTooltip prefix={rightChartMode === 'revenue' ? "₪" : ""} />} cursor={{ stroke: '#f3f4f6', strokeWidth: 2 }} />
+                                <Legend content={<CustomLegend />} verticalAlign="bottom" align="center" />
+                                <Line
+                                    name="החודש"
+                                    type="monotone"
+                                    dataKey="current"
+                                    stroke="#10b981" 
+                                    strokeWidth={3}
+                                    dot={{ r: 3, fill: '#10b981', strokeWidth: 2, stroke: '#fff' }}
+                                    activeDot={{ r: 5, strokeWidth: 0 }}
+                                    connectNulls
+                                />
+                                <Line
+                                    name="חודש קודם"
+                                    type="monotone"
+                                    dataKey="previous"
+                                    stroke="#3b82f6" 
+                                    strokeWidth={2}
+                                    strokeDasharray="4 4"
+                                    dot={false}
+                                    activeDot={{ r: 3 }}
+                                    connectNulls
+                                />
+                            </LineChart>
+                        </ResponsiveContainer>
+                    </div>
                 </div>
             </div>
 
-            {/* Configurable Chart (Revenue OR Orders) */}
-            <div className="bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-gray-100">
-                <div className="flex justify-between items-center mb-6" dir="rtl">
-                    <h3 className="text-base md:text-lg font-bold text-gray-800">
-                        {rightChartMode === 'revenue' ? 'מכירות' : 'הזמנות'}
-                    </h3>
-                    <div className="flex bg-gray-100 p-1 rounded-lg scale-90 md:scale-100">
-                        <button
-                            onClick={() => setRightChartMode('orders')}
-                            className={`px-3 py-1 text-[10px] md:text-xs font-bold rounded-md transition ${rightChartMode === 'orders' ? 'bg-white shadow text-black' : 'text-gray-500 hover:text-black'}`}
-                        >
-                            הזמנות
-                        </button>
-                        <button
-                            onClick={() => setRightChartMode('revenue')}
-                            className={`px-3 py-1 text-[10px] md:text-xs font-bold rounded-md transition ${rightChartMode === 'revenue' ? 'bg-white shadow text-black' : 'text-gray-500 hover:text-black'}`}
-                        >
-                            מכירות
-                        </button>
+            {/* Cumulative Sales Graph (Full Width) */}
+            {cumulativeData && cumulativeData.length > 0 && (
+                <div className="bg-white p-4 md:p-6 rounded-2xl shadow-sm border border-gray-100">
+                    <div className="flex justify-between items-center mb-6" dir="rtl">
+                        <h3 className="text-base md:text-lg font-bold text-gray-800">צמיחת מכירות מצטברת (All-Time)</h3>
+                    </div>
+                    <div className="h-[250px] md:h-[300px] w-full">
+                        <ResponsiveContainer width="100%" height="100%">
+                            <LineChart data={cumulativeData} margin={{ top: 10, right: 20, left: -10, bottom: 0 }}>
+                                <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
+                                <XAxis
+                                    dataKey="date"
+                                    fontSize={9}
+                                    tickLine={false}
+                                    axisLine={false}
+                                    tick={{ fill: '#9ca3af' }}
+                                    interval="preserveStartEnd"
+                                    minTickGap={30}
+                                />
+                                <YAxis
+                                    fontSize={9}
+                                    tickLine={false}
+                                    axisLine={false}
+                                    tick={{ fill: '#9ca3af' }}
+                                    orientation="left"
+                                    tickFormatter={(value) => `₪${value >= 1000 ? (value / 1000).toFixed(1) + 'k' : value}`}
+                                />
+                                <Tooltip 
+                                    content={({ active, payload, label }) => {
+                                        if (active && payload && payload.length) {
+                                            return (
+                                                <div className="bg-white p-3 border rounded shadow-xl text-right z-50 overflow-hidden" dir="rtl">
+                                                    <p className="font-bold mb-2 text-gray-800 border-b pb-1 text-sm">{label}</p>
+                                                    <div className="flex justify-between gap-4 items-center">
+                                                        <span className="text-xs text-gray-400 font-bold">סך מכירות:</span>
+                                                        <span className="text-sm font-mono font-bold text-indigo-600">
+                                                            ₪{payload[0].value.toLocaleString()}
+                                                        </span>
+                                                    </div>
+                                                </div>
+                                            );
+                                        }
+                                        return null;
+                                    }} 
+                                    cursor={{ stroke: '#f3f4f6', strokeWidth: 2 }} 
+                                />
+                                <Line
+                                    name="מכירות מצטברות"
+                                    type="monotone"
+                                    dataKey="value"
+                                    stroke="#6366f1" 
+                                    strokeWidth={4}
+                                    dot={false}
+                                    activeDot={{ r: 6, strokeWidth: 0, fill: '#6366f1' }}
+                                />
+                            </LineChart>
+                        </ResponsiveContainer>
                     </div>
                 </div>
-                <div className="h-[250px] md:h-[320px] w-full">
-                    <ResponsiveContainer width="100%" height="100%">
-                        <LineChart data={rightChartMode === 'revenue' ? revenueData : orderData} margin={{ top: 10, right: 10, left: -30, bottom: 0 }}>
-                            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
-                            <XAxis
-                                dataKey="day"
-                                fontSize={9}
-                                tickLine={false}
-                                axisLine={false}
-                                tick={{ fill: '#9ca3af' }}
-                                tickCount={(typeof window !== 'undefined' && window.innerWidth < 768) ? 6 : undefined}
-                            />
-                            <YAxis
-                                fontSize={9}
-                                tickLine={false}
-                                axisLine={false}
-                                tick={{ fill: '#9ca3af' }}
-                                orientation="left"
-                                tickFormatter={rightChartMode === 'revenue' ? ((value) => `₪${value >= 1000 ? (value / 1000).toFixed(0) + 'k' : value}`) : undefined}
-                            />
-                            <Tooltip content={<CustomTooltip prefix={rightChartMode === 'revenue' ? "₪" : ""} />} cursor={{ stroke: '#f3f4f6', strokeWidth: 2 }} />
-                            <Legend content={<CustomLegend />} verticalAlign="bottom" align="center" />
-                            <Line
-                                name="החודש"
-                                type="monotone"
-                                dataKey="current"
-                                stroke="#10b981" 
-                                strokeWidth={3}
-                                dot={{ r: 3, fill: '#10b981', strokeWidth: 2, stroke: '#fff' }}
-                                activeDot={{ r: 5, strokeWidth: 0 }}
-                                connectNulls
-                            />
-                            <Line
-                                name="חודש קודם"
-                                type="monotone"
-                                dataKey="previous"
-                                stroke="#3b82f6" 
-                                strokeWidth={2}
-                                strokeDasharray="4 4"
-                                dot={false}
-                                activeDot={{ r: 3 }}
-                                connectNulls
-                            />
-                        </LineChart>
-                    </ResponsiveContainer>
-                </div>
-            </div>
+            )}
         </div>
     );
 }

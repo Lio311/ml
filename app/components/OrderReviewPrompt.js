@@ -1,17 +1,63 @@
-"use client";
-
-import { useState } from 'react';
-import { Loader2, Sparkles, Star } from 'lucide-react';
+import { useState, useRef } from 'react';
+import { Loader2, Sparkles, Star, Camera, X, Image as ImageIcon } from 'lucide-react';
 import toast from 'react-hot-toast';
+import Image from 'next/image';
 import { useLanguage } from '../context/LanguageContext';
+import { supabase } from '../lib/supabase';
 
 export default function OrderReviewPrompt({ orderId, initialHasSubmitted = false, onSubmitted }) {
     const { t, dir } = useLanguage();
+    const fileInputRef = useRef(null);
     const [hasSubmitted, setHasSubmitted] = useState(initialHasSubmitted);
     const [content, setContent] = useState('');
     const [rating, setRating] = useState(5);
     const [hoverRating, setHoverRating] = useState(0);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    
+    // Image handling
+    const [imageUrl, setImageUrl] = useState(null);
+    const [isUploading, setIsUploading] = useState(false);
+
+    const handleImageUpload = async (e) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        // Simple validation
+        if (file.size > 2 * 1024 * 1024) {
+            toast.error(t('common.my_catalogs.file_too_large'));
+            return;
+        }
+
+        setIsUploading(true);
+        try {
+            const fileExt = file.name.split('.').pop();
+            const fileName = `review_${orderId}_${Date.now()}.${fileExt}`;
+            const filePath = `reviews/${fileName}`;
+
+            const { error: uploadError } = await supabase.storage
+                .from('public') // Assuming a public bucket
+                .upload(filePath, file);
+
+            if (uploadError) throw uploadError;
+
+            const { data: { publicUrl } } = supabase.storage
+                .from('public')
+                .getPublicUrl(filePath);
+
+            setImageUrl(publicUrl);
+            toast.success(t('common.orders.review.photo_uploaded_success') || "התמונה הועלתה בהצלחה!");
+        } catch (error) {
+            console.error('Upload error:', error);
+            toast.error(t('common.orders.review.error'));
+        } finally {
+            setIsUploading(false);
+        }
+    };
+
+    const removeImage = () => {
+        setImageUrl(null);
+        if (fileInputRef.current) fileInputRef.current.value = '';
+    };
 
     const handleSubmit = async () => {
         if (!content.trim()) {
@@ -24,7 +70,12 @@ export default function OrderReviewPrompt({ orderId, initialHasSubmitted = false
             const res = await fetch('/api/reviews', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ orderId, content, rating })
+                body: JSON.stringify({ 
+                    orderId, 
+                    content, 
+                    rating,
+                    image_url: imageUrl 
+                })
             });
 
             if (res.ok) {
@@ -73,7 +124,7 @@ export default function OrderReviewPrompt({ orderId, initialHasSubmitted = false
                 </div>
             </div>
             
-            <div className="relative group">
+            <div className="relative group mb-4">
                 <textarea
                     value={content}
                     onChange={(e) => setContent(e.target.value)}
@@ -82,9 +133,58 @@ export default function OrderReviewPrompt({ orderId, initialHasSubmitted = false
                 />
             </div>
             
+            {/* Image Upload UI */}
+            <div className="flex flex-wrap items-center gap-4">
+                <input 
+                    type="file" 
+                    ref={fileInputRef}
+                    onChange={handleImageUpload}
+                    accept="image/*"
+                    className="hidden" 
+                />
+                
+                {!imageUrl ? (
+                    <button
+                        type="button"
+                        onClick={() => fileInputRef.current?.click()}
+                        disabled={isUploading}
+                        className="flex items-center gap-2 px-5 py-3 bg-white/5 border border-white/10 rounded-2xl text-white text-xs font-bold hover:bg-white/10 transition-colors disabled:opacity-50"
+                    >
+                        {isUploading ? (
+                            <Loader2 className="w-4 h-4 animate-spin" />
+                        ) : (
+                            <Camera className="w-4 h-4" />
+                        )}
+                        {isUploading ? t('common.orders.review.uploading') : t('common.orders.review.upload_photo')}
+                    </button>
+                ) : (
+                    <div className="relative w-20 h-20 rounded-2xl overflow-hidden group shadow-lg ring-2 ring-white/10">
+                        <Image 
+                            src={imageUrl} 
+                            alt="Preview" 
+                            fill 
+                            className="object-cover" 
+                        />
+                        <button
+                            type="button"
+                            onClick={removeImage}
+                            className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                        >
+                            <X className="w-5 h-5 text-white" />
+                        </button>
+                    </div>
+                )}
+                
+                {imageUrl && (
+                    <div className="text-[10px] text-gray-400 font-bold uppercase tracking-wider bg-white/5 px-3 py-1.5 rounded-full border border-white/5">
+                        {t('common.orders.review.photo_uploaded_success') || "תמונה צורפה!"}
+                    </div>
+                )}
+            </div>
+            
             <button
                 onClick={handleSubmit}
-                disabled={isSubmitting || !content.trim()}
+                disabled={isSubmitting || !content.trim() || isUploading}
                 className="mt-6 w-full bg-emerald-500 text-white font-black py-4 rounded-3xl text-sm transition-all hover:bg-emerald-600 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_10px_30px_rgba(16,185,129,0.1)] flex items-center justify-center gap-2 uppercase tracking-tight"
             >
                 {isSubmitting ? <Loader2 className="w-4 h-4 animate-spin" /> : t('common.orders.review.submit')}

@@ -59,6 +59,7 @@ export default function AdminMobileNav({ role = 'customer' }) {
             items: [
                 { href: "/admin/coupons", label: "קופונים", icon: Ticket, roles: ['admin', 'deputy'] },
                 { href: "/admin/lottery", label: "הגרלות", icon: Dice5, roles: ['admin', 'deputy'] },
+                { href: "/admin/audit-logs", label: "יומן פעולות", icon: History, roles: ['admin'] },
                 { href: "/admin/reviews", label: "ביקורות", icon: Star, roles: ['admin', 'deputy'] },
                 { href: "/admin/expenses", label: "הוצאות", icon: CreditCard, roles: ['admin', 'deputy'] },
             ]

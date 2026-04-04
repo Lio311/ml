@@ -1,0 +1,45 @@
+import pool from '../../lib/db';
+import { auth as clerkAuth } from '@clerk/nextjs/server';
+import { redirect } from 'next/navigation';
+import AuditLogsClient from './AuditLogsClient';
+
+export const dynamic = 'force-dynamic';
+
+export default async function AuditLogsPage({ searchParams }) {
+    const authData = await clerkAuth();
+    const userId = authData?.userId;
+    if (!userId) redirect('/sign-in');
+
+    const adminCheck = await pool.query('SELECT role FROM users WHERE id = $1', [userId]);
+    const role = adminCheck.rows[0]?.role;
+    if (role !== 'admin') {
+        redirect('/admin');
+    }
+
+    const page = parseInt(searchParams.page || '1');
+    const limit = 50;
+    const offset = (page - 1) * limit;
+
+    const logsRes = await pool.query(`
+        SELECT al.*, u.name as user_name
+        FROM audit_logs al
+        LEFT JOIN users u ON al.user_id = u.id
+        ORDER BY al.created_at DESC
+        LIMIT $1 OFFSET $2
+    `, [limit, offset]);
+
+    const countRes = await pool.query('SELECT COUNT(*) FROM audit_logs');
+    const totalCount = parseInt(countRes.rows[0].count);
+
+    return (
+        <div className="p-4 md:p-6 max-w-7xl mx-auto">
+            <h1 className="text-2xl md:text-3xl font-bold mb-8 text-right">יומן פעולות</h1>
+            <AuditLogsClient 
+                initialLogs={logsRes.rows} 
+                totalCount={totalCount} 
+                currentPage={page} 
+                limit={limit}
+            />
+        </div>
+    );
+}
