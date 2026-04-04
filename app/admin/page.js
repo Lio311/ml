@@ -346,12 +346,12 @@ export default async function AdminDashboard({ searchParams }) {
 
         // Cumulative Data
         // Note: The Promise.all array index must match the added queries.
-        // We added 3 queries at the end (Indices 20, 21, 22 if 0-based and we had 20 items before [0-19])
         const totalRevenueAllTime = parseFloat(revAllTimeRes.rows[0]?.sum || 0);
         const totalExpensesAllTime = parseFloat(expAllTimeRes.rows[0]?.sum || 0);
         const totalCOGSAllTime = parseFloat(cogsAllTimeRes.rows[0]?.sum || 0);
         const totalOrdersAllTime = parseInt(countRes.rows[0]?.count || 0);
 
+        kpis.totalRevenueAllTime = totalRevenueAllTime; // Add this
         kpis.avgOrderValue = totalOrdersAllTime > 0 ? Math.round(totalRevenueAllTime / totalOrdersAllTime) : 0;
         kpis.cumulativeRevenueData = cumulativeSalesRes?.rows.map(r => ({
             date: new Date(r.day).toLocaleDateString('he-IL', { day: 'numeric', month: 'short' }),
@@ -796,7 +796,7 @@ export default async function AdminDashboard({ searchParams }) {
                     </div>
                     <div className="flex items-baseline gap-2">
                         <span className="text-4xl font-bold text-gray-900">
-                            {parseInt(revAllTimeRes.rows[0]?.sum || 0).toLocaleString()} ₪
+                            {Math.round(kpis.totalRevenueAllTime || 0).toLocaleString()} ₪
                         </span>
                     </div>
                     <div className="text-[10px] text-gray-400 mt-2 font-medium italic">מרגע פתיחת האתר</div>
