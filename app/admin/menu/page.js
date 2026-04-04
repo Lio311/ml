@@ -71,8 +71,8 @@ export default function AdminMenuPage() {
     if (loading) return <div className="p-8 text-center">טוען...</div>;
 
     return (
-        <div className="p-8 max-w-4xl mx-auto" dir="rtl">
-            <h1 className="text-3xl font-bold mb-8">ניהול תפריט ראשי</h1>
+        <div className="px-8 pb-8 pt-0 max-w-4xl mx-auto" dir="rtl">
+            <h1 className="text-2xl md:text-3xl font-bold mb-6 font-black tracking-tighter">ניהול תפריט ראשי</h1>
 
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
                 {/* Desktop View Table */}
