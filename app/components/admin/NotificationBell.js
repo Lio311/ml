@@ -1,6 +1,7 @@
 "use client";
 import React, { useState, useEffect } from 'react';
-import { Bell } from 'lucide-react';
+import { Bell, Trash2 } from 'lucide-react';
+import toast from 'react-hot-toast';
 
 export default function NotificationBell() {
     const [notifications, setNotifications] = useState([]);
@@ -40,6 +41,41 @@ export default function NotificationBell() {
         }
     };
 
+    const handleClearAll = async () => {
+        toast((t) => (
+            <div className="flex flex-col gap-2 min-w-[200px]" dir="rtl">
+                <p className="font-bold text-sm text-gray-900">לנקות את כל ההתראות?</p>
+                <div className="flex gap-2 justify-end mt-1">
+                    <button
+                        onClick={async () => {
+                            toast.dismiss(t.id);
+                            try {
+                                const res = await fetch('/api/admin/notifications', { method: 'DELETE' });
+                                if (res.ok) {
+                                    setNotifications([]);
+                                    setUnreadCount(0);
+                                    toast.success('ההתראות נוקו בהצלחה');
+                                }
+                            } catch (err) { 
+                                console.error(err);
+                                toast.error('שגיאה בניקוי ההתראות');
+                            }
+                        }}
+                        className="bg-red-600 text-white text-xs px-3 py-1.5 rounded-lg font-bold hover:bg-red-700 transition shadow-sm"
+                    >
+                        כן, נקה הכל
+                    </button>
+                    <button
+                        onClick={() => toast.dismiss(t.id)}
+                        className="bg-gray-100 text-gray-700 text-xs px-3 py-1.5 rounded-lg border font-bold hover:bg-gray-200 transition"
+                    >
+                        ביטול
+                    </button>
+                </div>
+            </div>
+        ), { duration: 5000, position: 'top-center' });
+    };
+
     return (
         <div className="relative z-50">
             <button
@@ -62,17 +98,13 @@ export default function NotificationBell() {
                     <div className="p-3 bg-gray-50 border-b border-gray-100 font-bold text-xs text-gray-500 flex justify-between items-center">
                         <span>התראות אחרונות</span>
                         <button
-                            onClick={async (e) => {
+                            onClick={(e) => {
                                 e.stopPropagation();
-                                if (!confirm('לנקות את כל ההתראות?')) return;
-                                try {
-                                    await fetch('/api/admin/notifications', { method: 'DELETE' });
-                                    setNotifications([]);
-                                    setUnreadCount(0);
-                                } catch (err) { console.error(err); }
+                                handleClearAll();
                             }}
-                            className="text-red-500 hover:text-red-700 hover:bg-red-50 px-2 py-1 rounded transition"
+                            className="text-red-500 hover:text-red-700 hover:bg-red-50 px-2 py-1 rounded transition flex items-center gap-1"
                         >
+                            <Trash2 size={12} />
                             נקה הכל
                         </button>
                     </div>

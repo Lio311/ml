@@ -152,49 +152,51 @@ export default function Header({ brands = [] }) {
                         </div>
                     </div>
 
-                    <div className="xl:hidden flex w-full items-center justify-between h-full px-2 text-black">
-                        {/* Right: Hamburger & Back (First child in RTL = Far Right) */}
-                        <div className="flex-shrink-0 flex items-center justify-start">
+                    <div className="xl:hidden flex w-full items-center justify-between h-full px-4 text-black" dir="rtl">
+                        {/* Right side: Back & Menu (Grouped to occupy 1/3 of space for centering) */}
+                        <div className="flex-1 flex items-center justify-start gap-1">
                             {!isHome && (
                                 <button
                                     onClick={() => router.back()}
-                                    className="p-2 text-black hover:opacity-100 opacity-70 transition-opacity"
+                                    className="p-1.5 text-black hover:opacity-100 opacity-70 transition-opacity"
                                 >
-                                    {dir === 'rtl' ? (
-                                        <ChevronRight className="w-6 h-6" />
-                                    ) : (
-                                        <ChevronLeft className="w-6 h-6" />
-                                    )}
+                                    <ChevronRight className="w-6 h-6" />
                                 </button>
                             )}
                             <button 
                                 onClick={() => setIsMobileMenuOpen(true)}
-                                className={`p-2 text-black hover:opacity-100 opacity-70 transition-opacity`}
+                                className="p-1.5 text-black hover:opacity-100 opacity-70 transition-opacity"
                             >
-                                <Menu size={28} />
+                                <Menu size={26} />
                             </button>
                         </div>
 
-                        {/* Center: Logo (Between Icons and Hamburger) */}
-                        <div className="flex-shrink-0 absolute left-1/2 -translate-x-1/2">
+                        {/* Center: Logo */}
+                        <div className="flex-shrink-0 flex justify-center">
                             <Link href="/">
                                 <Image 
                                     src="/logo_v5.png" 
                                     alt="ml." 
-                                    width={120} 
-                                    height={40} 
-                                    className="h-8 w-auto object-contain inverted-logo-v2" 
+                                    width={100} 
+                                    height={35} 
+                                    className="h-7 w-auto object-contain inverted-logo-v2" 
                                     priority 
                                 />
                             </Link>
                         </div>
 
-                        {/* Left: Icons (Simplified for mobile - Last child in RTL = Far Left) */}
-                        <div className="flex-shrink-0 flex items-center justify-end min-w-0">
+                        {/* Left side: Icons starting with Search (Grouped to occupy 1/3 for centering) */}
+                        <div className="flex-1 flex items-center justify-end gap-1">
+                            <button 
+                                onClick={() => setIsMobileSearchOpen(!isMobileSearchOpen)}
+                                className="p-1.5 text-black hover:text-blue-600 transition"
+                            >
+                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                            </button>
                              <DesktopIcons 
                                 cartCount={cartCount} 
                                 wishlistCount={wishlistCount} 
-                                onSearchToggle={() => setIsMobileSearchOpen(!isMobileSearchOpen)}
+                                hideSearch={true}
                             />
                         </div>
                     </div>

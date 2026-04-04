@@ -4,18 +4,20 @@ import Link from 'next/link';
 import { SignedIn } from '@clerk/nextjs';
 import { useLanguage } from '../../context/LanguageContext';
 
-export default function DesktopIcons({ cartCount, wishlistCount, onSearchToggle }) {
+export default function DesktopIcons({ cartCount, wishlistCount, onSearchToggle, hideSearch = false }) {
     const { t } = useLanguage();
     return (
         <div className="flex items-center justify-end gap-2 md:gap-5">
             {/* Mobile Search Toggle */}
-            <button 
-                onClick={onSearchToggle}
-                className="relative group text-black md:hidden p-1"
-                title={t('common.search')}
-            >
-                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6 hover:text-blue-600 transition"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
-            </button>
+            {!hideSearch && (
+                <button 
+                    onClick={onSearchToggle}
+                    className="relative group text-black md:hidden p-1"
+                    title={t('common.search')}
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6 hover:text-blue-600 transition"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                </button>
+            )}
 
             {/* Orders & Catalogs (Gated by SignedIn as per original) */}
             <SignedIn>
