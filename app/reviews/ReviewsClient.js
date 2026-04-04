@@ -80,11 +80,11 @@ export default function ReviewsClient({ initialReviews = [] }) {
                     ))}
                 </div>
 
-                <p className="text-gray-800 text-sm md:text-base leading-relaxed mb-8 font-medium italic relative z-10 text-center">
+                <p className="text-gray-800 text-sm md:text-base leading-relaxed mb-4 font-medium italic relative z-10 text-right">
                     "{review.content}"
                 </p>
 
-                <div className="flex flex-col items-center gap-4 pt-6 border-t border-gray-50">
+                <div className="flex flex-col items-start gap-2 pt-4 border-t border-gray-50">
                     <div className="w-12 h-12 rounded-2xl bg-gray-100 overflow-hidden border border-gray-100 shadow-inner">
                         {review.user_image ? (
                             <Image 
@@ -100,11 +100,11 @@ export default function ReviewsClient({ initialReviews = [] }) {
                             </div>
                         )}
                     </div>
-                    <div className="text-center">
+                    <div className="text-right">
                         <div className="font-black text-sm text-black uppercase tracking-tight">
                             {review.user_name}
                         </div>
-                        <div className="flex items-center justify-center gap-1.5 text-[10px] text-green-500 font-black uppercase tracking-widest mt-0.5">
+                        <div className="flex items-center justify-start gap-1.5 text-[10px] text-green-500 font-black uppercase tracking-widest mt-0.5">
                             <Check className="w-3 h-3" />
                             {t('common.verified_buyer')}
                         </div>
