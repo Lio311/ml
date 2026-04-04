@@ -62,7 +62,7 @@ export default function Header({ brands = [] }) {
             <div className={`frosted-nav !w-screen h-20 md:h-28 relative z-40 flex items-center transition-all duration-500 ${
                 !isScrolled && isHome ? '!bg-white !backdrop-blur-none !shadow-none' : ''
             }`}>
-                <div className="w-full max-w-[1800px] mx-auto px-4 md:px-12 h-full flex items-center justify-between">
+                <div className="w-full max-w-[1800px] mx-auto px-0 md:px-12 h-full flex items-center justify-between">
                     
                     {/* Desktop Layout (XL and up) */}
                     <div className="hidden xl:flex w-full items-center justify-between h-full">
