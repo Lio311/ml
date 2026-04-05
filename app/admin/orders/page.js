@@ -18,7 +18,7 @@ export const metadata = {
 export default async function AdminOrdersPage(props) {
     const searchParams = await props.searchParams;
     const page = Number(searchParams?.page) || 1;
-    const LIMIT = 4; // Limited to 4 orders per page as requested
+    const LIMIT = 3; // Limited to 3 orders per page as requested
     
     const offset = (page - 1) * LIMIT;
 

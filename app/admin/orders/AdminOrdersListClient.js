@@ -21,7 +21,7 @@ const STATUS_OPTIONS = [
 const DELIVERY_METHOD_OPTIONS = [
     { value: 'no_change', label: 'ללא שינוי שילוח', icon: <div className="w-2 h-2 rounded-full border border-gray-300 bg-transparent" /> },
     { value: 'self_pickup', label: 'איסוף עצמי', icon: <span className="text-[10px]">📍</span> },
-    { value: 'shipping', label: 'משלוח', icon: <span className="text-[10px]">📦</span> }
+    { value: 'mail', label: 'משלוח', icon: <span className="text-[10px]">📦</span> }
 ];
 
 export default function AdminOrdersListClient({ 
@@ -376,9 +376,9 @@ export default function AdminOrdersListClient({
                 
                 {selectedOrderIds.length > 0 && canEdit && (
                     <div className="bg-white border-2 border-black text-gray-800 p-2.5 md:p-3 rounded-2xl shadow-xl z-40 flex flex-col md:flex-row items-center gap-4 animate-in fade-in zoom-in-95 w-full xl:w-auto relative xl:absolute xl:left-1/2 xl:-translate-x-1/2 xl:top-1/2 xl:-translate-y-1/2">
-                        <div className="font-bold flex items-center justify-center gap-2.5 w-full md:w-auto text-sm md:text-base border-b md:border-b-0 border-gray-100 pb-3 md:pb-0 md:pl-2">
+                        <div className="font-bold flex items-center justify-center gap-2.5 w-full md:w-auto text-sm md:text-base border-b md:border-b-0 border-gray-100 pb-3 md:pb-0 md:pl-2 whitespace-nowrap">
                             <span className="bg-black text-white w-6 h-6 rounded-full flex items-center justify-center text-xs font-black">{selectedOrderIds.length}</span>
-                            <span className="text-black font-black uppercase tracking-widest text-[10px]">סומנו לעדכון</span>
+                            <span className="text-black font-black uppercase tracking-widest text-[10px] whitespace-nowrap">סומנו לעדכון</span>
                         </div>
                         
                         <div className="flex gap-2 w-full md:w-auto md:mr-4">
@@ -410,7 +410,7 @@ export default function AdminOrdersListClient({
 
                         <div className="w-full md:block hidden h-8 w-px bg-gray-200"></div>
 
-                        <div className="w-full md:w-auto pt-3 md:pt-0 border-t border-gray-100 md:border-t-0 flex justify-center">
+                        <div className="w-full md:w-auto pt-3 md:pt-0 border-t border-gray-100 md:border-t-0 flex justify-center whitespace-nowrap">
                             <DownloadBatchOrderPDF selectedOrders={selectedOrdersData} onComplete={() => setSelectedOrderIds([])} />
                         </div>
                     </div>
