@@ -21,7 +21,7 @@ export async function GET(req) {
                    o.customer_details, o.items as original_items
             FROM pending_recommendation_emails p
             JOIN orders o ON p.order_id = o.id
-            WHERE p.status = 'pending'
+            WHERE p.status IN ('pending', 'approved')
             ORDER BY p.created_at DESC
         `);
 
@@ -60,59 +60,14 @@ export async function POST(req) {
 
         const data = recData.rows[0];
         const email = data.customer_details?.email;
-        const firstName = data.customer_details?.first_name || 'לקוח';
-        const suggestions = data.suggested_products || []; // Array of objects! It is stored as JSON
+        const productsHtml = typeof data.suggested_products === 'string' ? JSON.parse(data.suggested_products) : data.suggested_products;
 
         if (!email) {
             await pool.query('UPDATE pending_recommendation_emails SET status = $1 WHERE id = $2', ['rejected_no_email', id]);
             return NextResponse.json({ success: true, message: "No email, rejected." });
         }
 
-        // Generate email HTML for products
-        const productsHtml = typeof suggestions === 'string' ? JSON.parse(suggestions) : suggestions;
-        const mappedProductsHtml = productsHtml.map(p => `
-            <div style="background: white; border: 1px solid #eee; padding: 15px; border-radius: 8px; margin-bottom: 15px; text-align: center;">
-                ${p.image_url ? `<img src="${p.image_url}" alt="${p.name}" style="max-height: 150px; width: auto; margin-bottom: 10px;">` : ''}
-                <br>
-                <strong>${p.name}</strong> - ${p.brand}<br>
-                <span style="color: #666; font-size: 14px;">תווים דומים: ${p.notes}</span>
-            </div>
-        `).join('');
-
-        const transporter = nodemailer.createTransport({
-            service: 'gmail',
-            auth: {
-                user: process.env.EMAIL_USER,
-                pass: process.env.EMAIL_PASS
-            }
-        });
-
-        await transporter.sendMail({
-            from: process.env.EMAIL_USER,
-            to: email,
-            subject: 'במיוחד בשבילך... המלצות ניחוחות שמחכות לך ✨',
-            html: `
-                <div dir="rtl" style="font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto; text-align: right;">
-                    <h2>שלום ${firstName}!</h2>
-                    <p>עבר קצת זמן מאז ההזמנה האחרונה שלך, וכבר למדנו קצת על הטעם האישי שלך.</p>
-                    <p>צוות המומחים שלנו והמערכת החכמה שלנו איתרו במיוחד עבורך כמה בשמים שמבוססים על תווי הריח שאתה אוהב שכדאי לך להכיר:</p>
-                    
-                    <div style="background: #fdfaf6; padding: 20px; border-radius: 8px; margin: 20px 0;">
-                        ${mappedProductsHtml}
-                    </div>
-
-                    <p>כל הניחוחות זמינים כדוגמיות להתנסות אצלנו באתר.</p>
-                    
-                    <div style="text-align: center; margin: 30px 0;">
-                        <a href="https://www.ml-tlv.com" style="background: #000; color: #fff; padding: 12px 25px; text-decoration: none; border-radius: 6px; font-weight: bold;">
-                            למעבר לאתר &gt;&gt;
-                        </a>
-                    </div>
-                </div>
-            `
-        });
-
-        // Mark as approved (sent)
+        // Mark as approved (will be sent later by cron)
         await pool.query('UPDATE pending_recommendation_emails SET status = $1 WHERE id = $2', ['approved', id]);
 
         await recordAuditLog({
