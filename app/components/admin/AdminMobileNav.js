@@ -46,6 +46,7 @@ export default function AdminMobileNav({ role = 'customer' }) {
                 { href: "/admin/inventory", label: "בקבוקונים", icon: Package, roles: ['admin', 'deputy'] },
                 { href: "/admin/brands", label: "מותגים", icon: Tag, roles: ['admin', 'deputy'] },
                 { href: "/admin/requests", label: "בקשות", icon: Inbox, roles: ['admin', 'deputy'] },
+                { href: "/admin/expenses", label: "הוצאות", icon: CreditCard, roles: ['admin', 'deputy'] },
             ]
         },
         {
@@ -61,7 +62,6 @@ export default function AdminMobileNav({ role = 'customer' }) {
                 { href: "/admin/coupons", label: "קופונים", icon: Ticket, roles: ['admin', 'deputy'] },
                 { href: "/admin/lottery", label: "הגרלות", icon: Dice5, roles: ['admin', 'deputy'] },
                 { href: "/admin/reviews", label: "ביקורות", icon: Star, roles: ['admin', 'deputy'] },
-                { href: "/admin/expenses", label: "הוצאות", icon: CreditCard, roles: ['admin', 'deputy'] },
             ]
         },
         {

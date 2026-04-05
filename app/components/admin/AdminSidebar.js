@@ -51,6 +51,7 @@ export default function AdminSidebar({ role = 'customer' }) {
                 { href: "/admin/inventory", label: "בקבוקונים", icon: "🧪", roles: ['admin', 'deputy'] },
                 { href: "/admin/brands", label: "מותגים", icon: "🏷️", roles: ['admin', 'deputy'] },
                 { href: "/admin/requests", label: "בקשות", icon: "🗳️", roles: ['admin', 'deputy'] },
+                { href: "/admin/expenses", label: "הוצאות", icon: "💸", roles: ['admin', 'deputy'] },
             ]
         },
         {
@@ -67,7 +68,6 @@ export default function AdminSidebar({ role = 'customer' }) {
                 { href: "/admin/lottery", label: "הגרלות", icon: "🎰", roles: ['admin', 'deputy'] },
                 { href: "/admin/reviews", label: "ביקורות", icon: "⭐", roles: ['admin', 'deputy'] },
                 { href: "/admin/recommendations", label: "המלצות", icon: "🤖", roles: ['admin', 'deputy'] },
-                { href: "/admin/expenses", label: "הוצאות", icon: "💸", roles: ['admin', 'deputy'] },
             ]
         },
         {
