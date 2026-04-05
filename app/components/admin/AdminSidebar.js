@@ -6,19 +6,28 @@ import { SignOutButton } from "@clerk/nextjs";
 export default function AdminSidebar({ role = 'customer' }) {
     const pathname = usePathname();
     const [unreadCount, setUnreadCount] = useState(0);
+    const [pendingRecsCount, setPendingRecsCount] = useState(0);
 
     useEffect(() => {
-        const fetchUnread = async () => {
+        const fetchCounts = async () => {
             try {
-                const res = await fetch('/api/inbox/unread-count');
-                if (res.ok) {
-                    const data = await res.json();
+                const resUnread = await fetch('/api/inbox/unread-count');
+                if (resUnread.ok) {
+                    const data = await resUnread.json();
                     setUnreadCount(data.count);
                 }
             } catch (err) {}
+
+            try {
+                const resRecs = await fetch('/api/admin/recommendations/pending-count');
+                if (resRecs.ok) {
+                    const data = await resRecs.json();
+                    setPendingRecsCount(data.count);
+                }
+            } catch (err) {}
         };
-        fetchUnread();
-        const interval = setInterval(fetchUnread, 30000);
+        fetchCounts();
+        const interval = setInterval(fetchCounts, 30000);
         return () => clearInterval(interval);
     }, []);
 
@@ -57,6 +66,7 @@ export default function AdminSidebar({ role = 'customer' }) {
                 { href: "/admin/coupons", label: "קופונים", icon: "🎟️", roles: ['admin', 'deputy'] },
                 { href: "/admin/lottery", label: "הגרלות", icon: "🎰", roles: ['admin', 'deputy'] },
                 { href: "/admin/reviews", label: "ביקורות", icon: "⭐", roles: ['admin', 'deputy'] },
+                { href: "/admin/recommendations", label: "המלצות", icon: "🤖", roles: ['admin', 'deputy'] },
                 { href: "/admin/expenses", label: "הוצאות", icon: "💸", roles: ['admin', 'deputy'] },
             ]
         },
@@ -116,6 +126,11 @@ export default function AdminSidebar({ role = 'customer' }) {
                                             {item.href.includes('inbox') && unreadCount > 0 && (
                                                 <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${isActive(item.href) ? 'bg-black text-white' : 'bg-red-600 text-white shadow-md'}`}>
                                                     {unreadCount}
+                                                </span>
+                                            )}
+                                            {item.href === '/admin/recommendations' && pendingRecsCount > 0 && (
+                                                <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${isActive(item.href) ? 'bg-black text-white' : 'bg-indigo-600 text-white shadow-md'}`}>
+                                                    {pendingRecsCount}
                                                 </span>
                                             )}
                                         </Link>
