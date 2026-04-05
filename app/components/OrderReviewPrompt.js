@@ -3,7 +3,6 @@ import { Loader2, Sparkles, Star, Camera, X, Image as ImageIcon } from 'lucide-r
 import toast from 'react-hot-toast';
 import Image from 'next/image';
 import { useLanguage } from '../context/LanguageContext';
-import { supabase } from '../lib/supabase';
 
 export default function OrderReviewPrompt({ orderId, initialHasSubmitted = false, onSubmitted }) {
     const { t, dir } = useLanguage();
