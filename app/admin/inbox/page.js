@@ -6,7 +6,7 @@ export const metadata = {
 
 export default function AdminInboxPage() {
     return (
-        <div className="p-2 md:p-8">
+        <div className="w-full">
             <InboxClient role="admin" />
         </div>
     );

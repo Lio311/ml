@@ -344,9 +344,9 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
     const filteredConversations = displayConversations.filter(c => getChatName(c).toLowerCase().includes(searchQuery.toLowerCase()));
 
     return (
-        <div className="container mx-auto px-2 md:px-4 py-4 md:py-12 max-w-5xl">
-            <h1 className="text-2xl md:text-3xl font-bold mb-4 md:mb-8">{t('inbox.title')}</h1>
-            <div className="flex h-[calc(100vh-140px)] md:h-[calc(100vh-200px)] min-h-[500px] border border-gray-200 rounded-2xl overflow-hidden bg-white shadow-sm font-sans" dir={dir}>
+        <div className="container mx-auto px-2 md:px-4 py-2 md:py-4 max-w-7xl">
+            <h1 className="text-xl md:text-2xl font-bold mb-4">{t('inbox.title')}</h1>
+            <div className="flex h-[calc(100vh-100px)] md:h-[calc(100vh-100px)] min-h-[500px] border border-gray-200 rounded-2xl overflow-hidden bg-white shadow-sm font-sans" dir={dir}>
             {/* Sidebar (Conversations List) */}
             <div className={`w-full md:w-1/3 bg-gray-50 border-l border-gray-200 flex flex-col ${activeConvId ? 'hidden md:flex' : 'flex'}`}>
                 <div className="p-4 border-b border-gray-200 bg-white">
