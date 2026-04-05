@@ -165,7 +165,14 @@ export default function AdminOrdersListClient({
                                             </div>
                                         )}
                                     </td>
-                                    <td className="p-4 font-black text-gray-900 whitespace-nowrap">{order.total_amount} ₪</td>
+                                    <td className="p-4 font-black text-gray-900 whitespace-nowrap">
+                                        <div className="flex items-center justify-center gap-1.5">
+                                            {(order.delivery_method === 'mail' || order.delivery_method === 'shipping') && (
+                                                <span className="text-[11px] text-blue-500/80 font-bold bg-blue-50 px-1.5 py-0.5 rounded-md border border-blue-100" dir="ltr" title="תוספת משלוח">+30</span>
+                                            )}
+                                            <span>{order.total_amount} ₪</span>
+                                        </div>
+                                    </td>
                                     <td className="p-4">
                                         <div className="flex justify-center">
                                             {order.free_samples_count > 0 ? (
@@ -270,7 +277,12 @@ export default function AdminOrdersListClient({
                                     <div className="text-[11px] font-medium text-gray-500">{order.customer_details?.email}</div>
                                 </div>
                                 <div className="flex flex-col items-end shrink-0">
-                                    <div className="font-black text-gray-900 text-lg leading-none mb-1.5" dir="ltr">₪{order.total_amount}</div>
+                                    <div className="flex items-center justify-end gap-1.5 mb-1.5">
+                                        {(order.delivery_method === 'mail' || order.delivery_method === 'shipping') && (
+                                            <span className="text-[11px] text-blue-500/80 font-bold bg-blue-50 px-1.5 py-0.5 rounded-md border border-blue-100" dir="ltr" title="תוספת משלוח">+30</span>
+                                        )}
+                                        <div className="font-black text-gray-900 text-lg leading-none" dir="ltr">₪{order.total_amount}</div>
+                                    </div>
                                     <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none">
                                         {new Date(order.created_at).toLocaleDateString('he-IL', { day: '2-digit', month: '2-digit', year: '2-digit' })}
                                     </div>
@@ -381,21 +393,23 @@ export default function AdminOrdersListClient({
                             <span className="text-black font-black uppercase tracking-widest text-[10px] whitespace-nowrap">סומנו לעדכון</span>
                         </div>
                         
-                        <div className="flex gap-2 w-full md:w-auto md:mr-4">
-                            <div className="min-w-[140px] flex-1">
+                        <div className="flex gap-4 md:gap-6 w-full md:w-auto md:mr-6">
+                            <div className="min-w-[170px] flex-1">
                                 <CustomDropdown
                                     options={STATUS_OPTIONS}
                                     value={batchStatus}
                                     onChange={setBatchStatus}
                                     variant="status"
+                                    fullWidth={true}
                                 />
                             </div>
-                            <div className="min-w-[140px] flex-1">
+                            <div className="min-w-[170px] flex-1">
                                 <CustomDropdown
                                     options={DELIVERY_METHOD_OPTIONS}
                                     value={batchDeliveryMethod}
                                     onChange={setBatchDeliveryMethod}
                                     variant="status"
+                                    fullWidth={true}
                                 />
                             </div>
                         </div>
