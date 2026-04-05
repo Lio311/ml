@@ -10,11 +10,18 @@ import DownloadBatchOrderPDF from "./DownloadBatchOrderPDF";
 import CustomDropdown from "../../components/ui/CustomDropdown";
 
 const STATUS_OPTIONS = [
+    { value: 'no_change', label: 'ללא שינוי סטטוס', icon: <div className="w-2 h-2 rounded-full border border-gray-300 bg-transparent" /> },
     { value: 'pending', label: 'ממתין', icon: <div className="w-2 h-2 rounded-full bg-orange-500" /> },
     { value: 'processing', label: 'בטיפול', icon: <div className="w-2 h-2 rounded-full bg-blue-500" /> },
     { value: 'shipped', label: 'נשלח', icon: <div className="w-2 h-2 rounded-full bg-purple-500" /> },
     { value: 'completed', label: 'הושלם', icon: <div className="w-2 h-2 rounded-full bg-green-500" /> },
     { value: 'cancelled', label: 'בוטל', icon: <div className="w-2 h-2 rounded-full bg-gray-400" /> },
+];
+
+const DELIVERY_METHOD_OPTIONS = [
+    { value: 'no_change', label: 'ללא שינוי שילוח', icon: <div className="w-2 h-2 rounded-full border border-gray-300 bg-transparent" /> },
+    { value: 'self_pickup', label: 'איסוף עצמי', icon: <span className="text-[10px]">📍</span> },
+    { value: 'shipping', label: 'משלוח', icon: <span className="text-[10px]">📦</span> }
 ];
 
 export default function AdminOrdersListClient({ 
@@ -26,7 +33,8 @@ export default function AdminOrdersListClient({
     deleteOrder 
 }) {
     const [selectedOrderIds, setSelectedOrderIds] = useState([]);
-    const [batchStatus, setBatchStatus] = useState('pending');
+    const [batchStatus, setBatchStatus] = useState('no_change');
+    const [batchDeliveryMethod, setBatchDeliveryMethod] = useState('no_change');
     const [isApplyingBatch, setIsApplyingBatch] = useState(false);
 
     const handleSelectAll = (e) => {
@@ -45,6 +53,11 @@ export default function AdminOrdersListClient({
 
     const handleApplyBatchStatus = async () => {
         if (selectedOrderIds.length === 0) return;
+        if (batchStatus === 'no_change' && batchDeliveryMethod === 'no_change') {
+            toast.error('לא נבחרו שינויים להחלה');
+            return;
+        }
+
         setIsApplyingBatch(true);
         const toastId = toast.loading(`מעדכן ${selectedOrderIds.length} הזמנות...`);
         try {
@@ -52,13 +65,14 @@ export default function AdminOrdersListClient({
                 const formData = new FormData();
                 formData.set("orderId", id);
                 formData.set("status", batchStatus);
+                formData.set("deliveryMethod", batchDeliveryMethod);
                 await fetch("/api/admin/orders/update-status", {
                     method: "POST",
                     body: formData,
                 });
             }));
             
-            toast.success('הסטטוס המשותף התעדכן בהצלחה', { id: toastId });
+            toast.success('המקבץ התעדכן בהצלחה', { id: toastId });
             setSelectedOrderIds([]);
             setTimeout(() => {
                 window.location.reload();
@@ -367,13 +381,23 @@ export default function AdminOrdersListClient({
                             <span className="text-black font-black uppercase tracking-widest text-[10px]">סומנו לעדכון</span>
                         </div>
                         
-                        <div className="min-w-[140px] w-full md:w-auto md:mr-4">
-                            <CustomDropdown
-                                options={STATUS_OPTIONS}
-                                value={batchStatus}
-                                onChange={setBatchStatus}
-                                variant="status"
-                            />
+                        <div className="flex gap-2 w-full md:w-auto md:mr-4">
+                            <div className="min-w-[140px] flex-1">
+                                <CustomDropdown
+                                    options={STATUS_OPTIONS}
+                                    value={batchStatus}
+                                    onChange={setBatchStatus}
+                                    variant="status"
+                                />
+                            </div>
+                            <div className="min-w-[140px] flex-1">
+                                <CustomDropdown
+                                    options={DELIVERY_METHOD_OPTIONS}
+                                    value={batchDeliveryMethod}
+                                    onChange={setBatchDeliveryMethod}
+                                    variant="status"
+                                />
+                            </div>
                         </div>
 
                         <button 
