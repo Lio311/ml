@@ -3,16 +3,17 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X, Home, Users, Package, CreditCard, Inbox, ShoppingBag, Tag, Ticket, Dice5, Library, Map, Store, ClipboardList, LogOut, MessageSquare, Star, History } from "lucide-react";
+import { Menu, X, Home, Users, Package, CreditCard, Inbox, ShoppingBag, Tag, Ticket, Dice5, Library, Map, Store, ClipboardList, LogOut, MessageSquare, Star, History, Bot } from "lucide-react";
 import { SignOutButton } from "@clerk/nextjs";
 
 export default function AdminMobileNav({ role = 'customer' }) {
     const [isOpen, setIsOpen] = useState(false);
     const [unreadCount, setUnreadCount] = useState(0);
+    const [pendingRecsCount, setPendingRecsCount] = useState(0);
     const pathname = usePathname();
 
     useEffect(() => {
-        const fetchUnread = async () => {
+        const fetchCounts = async () => {
             try {
                 const res = await fetch('/api/inbox/unread-count');
                 if (res.ok) {
@@ -20,9 +21,17 @@ export default function AdminMobileNav({ role = 'customer' }) {
                     setUnreadCount(data.count);
                 }
             } catch (err) {}
+
+            try {
+                const resRecs = await fetch('/api/admin/recommendations/pending-count');
+                if (resRecs.ok) {
+                    const data = await resRecs.json();
+                    setPendingRecsCount(data.count);
+                }
+            } catch (err) {}
         };
-        fetchUnread();
-        const interval = setInterval(fetchUnread, 30000);
+        fetchCounts();
+        const interval = setInterval(fetchCounts, 30000);
         return () => clearInterval(interval);
     }, []);
 
@@ -62,6 +71,7 @@ export default function AdminMobileNav({ role = 'customer' }) {
                 { href: "/admin/coupons", label: "קופונים", icon: Ticket, roles: ['admin', 'deputy'] },
                 { href: "/admin/lottery", label: "הגרלות", icon: Dice5, roles: ['admin', 'deputy'] },
                 { href: "/admin/reviews", label: "ביקורות", icon: Star, roles: ['admin', 'deputy'] },
+                { href: "/admin/recommendations", label: "המלצות", icon: Bot, roles: ['admin', 'deputy'] },
             ]
         },
         {
@@ -136,6 +146,11 @@ export default function AdminMobileNav({ role = 'customer' }) {
                                                     {item.href.includes('inbox') && unreadCount > 0 && (
                                                         <span className="bg-red-600 text-white text-[10px] w-5 h-5 flex items-center justify-center rounded-full font-bold mr-auto">
                                                             {unreadCount}
+                                                        </span>
+                                                    )}
+                                                    {item.href === '/admin/recommendations' && pendingRecsCount > 0 && (
+                                                        <span className="bg-indigo-600 text-white text-[10px] w-5 h-5 flex items-center justify-center rounded-full font-bold mr-auto">
+                                                            {pendingRecsCount}
                                                         </span>
                                                     )}
                                                 </Link>
