@@ -33,20 +33,57 @@ export default function OrderStatusTimeline({ status }) {
     const progressPercentage = activeIndex === -1 ? 0 : (activeIndex / (statusSteps.length - 1)) * 100;
 
     return (
-        <div className="w-full py-2 mb-0 px-4 md:px-6 relative overflow-visible">
-            {/* The Unified Grid (Handles centering and spacing in 1 go) */}
-            <div className="grid grid-cols-[auto,1fr,auto,1fr,auto,1fr,auto] w-full items-center h-8 md:h-12 relative z-10">
+        <div className="w-full py-2 mb-0 px-2 md:px-4 relative overflow-visible">
+            {/* The 4-Column Responsive Grid */}
+            <div className="grid grid-cols-4 w-full relative z-10">
                 {statusSteps.map((step, index) => {
                     const isCompleted = index < activeIndex;
                     const isActive = index === activeIndex;
                     const isPending = index > activeIndex;
-                    const Icon = step.icon;
+                    const isFirst = index === 0;
                     const isLast = index === statusSteps.length - 1;
+                    const Icon = step.icon;
 
                     return (
-                        <React.Fragment key={step.id}>
-                            {/* Circle Column */}
-                            <div className="flex flex-col items-center">
+                        <div key={step.id} className="relative flex flex-col items-center">
+                            {/* 1. Circle & Line Segment Row */}
+                            <div className="h-8 md:h-12 w-full flex items-center justify-center relative">
+                                
+                                {/* Right Segment (Incoming from prev in RTL/Hebrew) */}
+                                {!isFirst && (
+                                    <div className="absolute right-0 w-1/2 h-0.5 md:h-1 bg-gray-100 dark:bg-zinc-800 z-0">
+                                        <motion.div 
+                                            initial={false}
+                                            animate={{ 
+                                                width: activeIndex >= index ? '100%' : '0%',
+                                                opacity: activeIndex >= index ? 1 : 0
+                                            }}
+                                            className={cn(
+                                                "absolute top-0 right-0 h-full bg-black dark:bg-white overflow-hidden",
+                                                activeIndex >= index ? "visible" : "invisible"
+                                            )}
+                                        />
+                                    </div>
+                                )}
+
+                                {/* Left Segment (Outgoing to next in RTL/Hebrew) */}
+                                {!isLast && (
+                                    <div className="absolute left-0 w-1/2 h-0.5 md:h-1 bg-gray-100 dark:bg-zinc-800 z-0">
+                                        <motion.div 
+                                            initial={false}
+                                            animate={{ 
+                                                width: activeIndex > index ? '100%' : '0%',
+                                                opacity: activeIndex > index ? 1 : 0
+                                            }}
+                                            className={cn(
+                                                "absolute top-0 right-0 h-full bg-black dark:bg-white overflow-hidden",
+                                                activeIndex > index ? "visible" : "invisible"
+                                            )}
+                                        />
+                                    </div>
+                                )}
+
+                                {/* The Circle */}
                                 <motion.div
                                     initial={false}
                                     animate={{ 
@@ -66,36 +103,9 @@ export default function OrderStatusTimeline({ status }) {
                                 </motion.div>
                             </div>
 
-                            {/* Line Column (Between circles) */}
-                            {!isLast && (
-                                <div className="h-0.5 md:h-1 bg-gray-100 dark:bg-zinc-800 relative z-0 min-w-[20px]">
-                                    <motion.div 
-                                        initial={{ width: 0 }}
-                                        animate={{ width: activeIndex > index ? '100%' : '0%' }}
-                                        transition={{ duration: 0.8, ease: "easeInOut" }}
-                                        className={cn(
-                                            "absolute top-0 h-full bg-black dark:bg-white rounded-full shadow-[0_0_8px_rgba(0,0,0,0.1)]",
-                                            locale === 'he' ? "right-0" : "left-0"
-                                        )}
-                                    />
-                                </div>
-                            )}
-                        </React.Fragment>
-                    );
-                })}
-            </div>
-
-            {/* Labels Grid (Matches circle positioning) */}
-            <div className="grid grid-cols-[auto,1fr,auto,1fr,auto,1fr,auto] w-full mt-3 relative z-10">
-                {statusSteps.map((step, index) => {
-                    const isActive = index === activeIndex;
-                    const isLast = index === statusSteps.length - 1;
-
-                    return (
-                        <React.Fragment key={`label-${step.id}`}>
-                            {/* Circle Label Column */}
-                            <div className="flex flex-col items-center w-8 md:w-12 overflow-visible">
-                                <div className="min-h-[44px] flex flex-col items-center w-24 md:w-32 -mx-8 md:-mx-10 text-center overflow-visible">
+                            {/* 2. Labels Area */}
+                            <div className="mt-3 text-center min-w-0 w-full px-1">
+                                <div className="min-h-[44px] flex flex-col items-center w-24 md:w-32 -mx-8 md:-mx-10 overflow-visible">
                                     <span className={cn(
                                         "text-[10px] md:text-sm font-bold transition-colors duration-300 leading-tight",
                                         isActive ? "text-black dark:text-white" : "text-gray-400 dark:text-zinc-500"
@@ -106,16 +116,14 @@ export default function OrderStatusTimeline({ status }) {
                                         <motion.span 
                                             initial={{ opacity: 0, scale: 0.9 }}
                                             animate={{ opacity: 1, scale: 1 }}
-                                            className="text-[8px] md:text-[11px] text-gray-500 font-medium dark:text-zinc-400 mt-1.5 leading-tight block w-full px-1"
+                                            className="text-[8px] md:text-[11px] text-gray-500 font-medium dark:text-zinc-400 mt-1.5 leading-tight block w-full"
                                         >
                                             {step.description}
                                         </motion.span>
                                     )}
                                 </div>
                             </div>
-                            {/* Empty spacer for line column */}
-                            {!isLast && <div />}
-                        </React.Fragment>
+                        </div>
                     );
                 })}
             </div>
