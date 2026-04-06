@@ -47,9 +47,8 @@ export async function GET(req) {
             const html = `
                 <div dir="rtl" style="font-family: Arial, sans-serif; color: #333; line-height: 1.6; max-width: 600px; margin: 0 auto; text-align: right;">
                     <h2 style="color: #111827;">שלום ${firstName},</h2>
-                    <p>ראינו שקיבלת לא מזמן את ההזמנה שלך עם <strong>${firstProductName}</strong> ואנחנו סקרנים לדעת מה דעתך!</p>
-                    
-                    <p>חוות הדעת שלך עוזרת ללקוחות אחרים למצוא את הבושם המושלם עבורם וחשובה לנו מאוד.</p>
+                    <p>ראינו שקיבלת לא מזמן את ההזמנה האחרונה שלך מאיתנו ואנחנו סקרנים לדעת איך הייתה חוויית השירות שלך איתנו!</p>
+                    <p>חוות הדעת שלך על איכות הטיפול בהזמנה ומהירות המשלוח חשובה לנו מאוד ועוזרת לנו להמשיך ולהעניק לך את השירות הטוב ביותר.</p>
                     
                     <div style="text-align: center; margin: 30px 0;">
                         <a href="https://www.ml-tlv.com/review?id=${order.id}&token=${token}" style="background: #000; color: #fff; padding: 12px feeling; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">
