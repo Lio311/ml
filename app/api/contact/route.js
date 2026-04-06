@@ -15,7 +15,7 @@ export async function POST(req) {
         });
 
         const mailOptions = {
-            from: process.env.GMAIL_USER,
+            from: `"ml_tlv" <${process.env.GMAIL_USER}>`,
             to: process.env.GMAIL_USER, // Send to yourself
             replyTo: email, // Allow replying to the customer
             subject: `פנייה חדשה מהאתר: ${name}`,

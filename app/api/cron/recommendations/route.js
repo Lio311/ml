@@ -166,7 +166,7 @@ export async function GET(req) {
 
                     try {
                         await transporter.sendMail({
-                            from: process.env.EMAIL_USER,
+                            from: `"ml_tlv" <${process.env.EMAIL_USER}>`,
                             to: email,
                             subject: 'במיוחד בשבילך... המלצות ניחוחות שמחכות לך ✨',
                             html: `

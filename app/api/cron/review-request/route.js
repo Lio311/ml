@@ -52,7 +52,7 @@ export async function GET(req) {
                 const token = generateReviewToken(order.id);
 
                 const mailOptions = {
-                    from: process.env.EMAIL_USER,
+                    from: `"ml_tlv" <${process.env.EMAIL_USER}>`,
                     to: email,
                     subject: 'נשמח לשמוע מה דעתך! ⭐',
                     html: `

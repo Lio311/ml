@@ -75,7 +75,7 @@ export async function GET(req) {
 
                 // Send Email
                 const mailOptions = {
-                    from: process.env.EMAIL_USER,
+                    from: `"ml_tlv" <${process.env.EMAIL_USER}>`,
                     to: cart.email,
                     subject: 'שכחת משהו אצלנו... קח מתנה!',
                     html: `

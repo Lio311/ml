@@ -46,7 +46,7 @@ export async function GET(req) {
                 if (!email) continue;
 
                 const mailOptions = {
-                    from: process.env.EMAIL_USER,
+                    from: `"ml_tlv" <${process.env.EMAIL_USER}>`,
                     to: email,
                     subject: 'איך להפיק את המרב מהבשמים שלך? ✨',
                     html: `

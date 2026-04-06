@@ -169,7 +169,7 @@ export async function POST(req) {
                 
                 try {
                     await transporter.sendMail({
-                        from: process.env.EMAIL_USER,
+                        from: `"ml_tlv" <${process.env.EMAIL_USER}>`,
                         to: customerEmail,
                         subject: 'תודה על חוות הדעת! הנה מתנה מאיתנו 🎁',
                         html: `
