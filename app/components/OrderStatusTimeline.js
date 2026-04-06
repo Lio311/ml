@@ -33,7 +33,7 @@ export default function OrderStatusTimeline({ status }) {
         <div className="w-full py-2 px-1 md:px-10 mb-0 overflow-x-hidden">
             <div className="relative">
                 {/* Line Container (Centered on circles) */}
-                <div className="absolute top-5 md:top-6 right-6 left-6 md:right-12 md:left-12 -translate-y-1/2 h-1">
+                <div className="absolute top-5 md:top-6 right-[12.5%] left-[12.5%] -translate-y-1/2 h-1">
                     {/* Background Line */}
                     <div className="w-full h-full bg-gray-100 dark:bg-zinc-800" />
                     
@@ -50,7 +50,7 @@ export default function OrderStatusTimeline({ status }) {
                 </div>
 
                 {/* Steps */}
-                <div className="relative flex justify-between items-center w-full">
+                <div className="relative flex justify-between items-start w-full">
                     {statusSteps.map((step, index) => {
                         const isCompleted = index < activeIndex;
                         const isActive = index === activeIndex;
@@ -58,7 +58,7 @@ export default function OrderStatusTimeline({ status }) {
                         const Icon = step.icon;
 
                         return (
-                            <div key={step.id} className="flex flex-col items-center relative z-10 group">
+                            <div key={step.id} className="flex flex-col items-center relative z-10 group flex-1 w-0">
                                 <motion.div
                                     initial={false}
                                     animate={{ 
@@ -88,7 +88,7 @@ export default function OrderStatusTimeline({ status }) {
                                         <motion.span 
                                             initial={{ opacity: 0, y: 5 }}
                                             animate={{ opacity: 1, y: 0 }}
-                                            className="text-[9px] md:text-[10px] text-gray-500 dark:text-zinc-400 mt-1 max-w-[120px] leading-tight whitespace-normal text-center"
+                                            className="text-[9px] md:text-[10px] text-gray-500 dark:text-zinc-400 mt-1 max-w-[90px] md:max-w-[120px] leading-tight whitespace-normal text-center"
                                         >
                                             {step.description}
                                         </motion.span>
