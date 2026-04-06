@@ -46,7 +46,7 @@ export default function OrderStatusTimeline({ status }) {
                     return (
                         <React.Fragment key={step.id}>
                             {/* Circle Column */}
-                            <div className="flex flex-col items-center">
+                            <div className="flex flex-col items-center relative z-20">
                                 <motion.div
                                     initial={false}
                                     animate={{ 
@@ -68,7 +68,7 @@ export default function OrderStatusTimeline({ status }) {
 
                             {/* Line Column (Between circles) */}
                             {!isLast && (
-                                <div className="h-0.5 md:h-1 bg-gray-100 dark:bg-zinc-800 relative z-0 min-w-[12px] -mx-4 md:-mx-6">
+                                <div className="h-0.5 md:h-1 bg-gray-100 dark:bg-zinc-800 relative z-0 min-w-[12px] -mx-4 md:-mx-6 overflow-hidden">
                                     <motion.div 
                                         initial={false}
                                         animate={{ 
