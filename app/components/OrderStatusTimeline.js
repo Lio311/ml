@@ -1,3 +1,5 @@
+"use client";
+
 import { useLanguage } from '../context/LanguageContext';
 import { motion } from "framer-motion";
 import { Package, Phone, Truck, CheckCircle, XCircle } from "lucide-react";
