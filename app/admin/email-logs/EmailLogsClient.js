@@ -47,10 +47,10 @@ export default function EmailLogsClient({ initialLogs, currentPage, totalPages, 
     return (
         <div className="space-y-6">
             {/* Search and Stats */}
-            <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div className="md:col-span-3">
+            <div className="flex flex-col md:grid md:grid-cols-4 gap-4">
+                <div className="md:col-span-3 order-2 md:order-1">
                     <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-2 flex items-center gap-3 pr-4 focus-within:ring-2 focus-within:ring-black/5 transition-all">
-                        <Mail className="w-5 h-5 text-gray-400" />
+                        <Mail className="w-5 h-5 text-gray-400 shrink-0" />
                         <input 
                             type="text" 
                             placeholder="חיפוש לפי נמען או נושא..." 
@@ -60,15 +60,18 @@ export default function EmailLogsClient({ initialLogs, currentPage, totalPages, 
                         />
                     </div>
                 </div>
-                <div className="bg-black text-white rounded-2xl p-4 shadow-xl flex flex-col justify-center">
-                    <span className="text-[10px] font-black uppercase tracking-widest opacity-60">סה"כ מיילים</span>
-                    <span className="text-2xl font-black">{totalCount}</span>
+                <div className="bg-black text-white rounded-2xl p-4 shadow-xl flex flex-col justify-center order-1 md:order-2">
+                    <div className="flex justify-between items-center md:block">
+                        <span className="text-[10px] font-black uppercase tracking-widest opacity-60">סה\"כ מיילים</span>
+                        <span className="text-2xl font-black block leading-none md:mt-1">{totalCount}</span>
+                    </div>
                 </div>
             </div>
 
-            {/* Logs Table */}
+            {/* Logs Main Container */}
             <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
-                <div className="overflow-x-auto">
+                {/* Desktop Table View */}
+                <div className="hidden md:block overflow-x-auto">
                     <table className="w-full text-right">
                         <thead>
                             <tr className="bg-gray-50/50 border-b border-gray-100">
@@ -85,16 +88,16 @@ export default function EmailLogsClient({ initialLogs, currentPage, totalPages, 
                                 <tr key={log.id} className="hover:bg-gray-50/80 transition-colors">
                                     <td className="px-6 py-4">
                                         <div className="flex items-center gap-3">
-                                            <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-400 font-bold text-xs">
+                                            <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-400 font-bold text-xs shrink-0">
                                                 {log.recipient[0].toUpperCase()}
                                             </div>
-                                            <div>
-                                                <div className="text-sm font-bold text-gray-900 leading-tight">{log.recipient}</div>
+                                            <div className="min-w-0">
+                                                <div className="text-sm font-bold text-gray-900 leading-tight truncate">{log.recipient}</div>
                                             </div>
                                         </div>
                                     </td>
                                     <td className="px-6 py-4">
-                                        <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full border ${getTypeColor(log.type)}`}>
+                                        <span className={`text-[10px] font-bold px-2.5 py-1 rounded-full border whitespace-nowrap ${getTypeColor(log.type)}`}>
                                             {getTypeLabel(log.type)}
                                         </span>
                                     </td>
@@ -130,7 +133,7 @@ export default function EmailLogsClient({ initialLogs, currentPage, totalPages, 
                                             <span className="text-gray-300">—</span>
                                         )}
                                     </td>
-                                    <td className="px-6 py-4 text-center">
+                                    <td className="px-6 py-4 text-center text-left">
                                         <div className="text-[11px] font-medium text-gray-500">
                                             {format(new Date(log.sent_at), 'dd/MM/yyyy', { locale: he })}
                                         </div>
@@ -143,7 +146,67 @@ export default function EmailLogsClient({ initialLogs, currentPage, totalPages, 
                         </tbody>
                     </table>
                 </div>
-                
+
+                {/* Mobile Card View */}
+                <div className="md:hidden divide-y divide-gray-100">
+                    {filteredLogs.map((log) => (
+                        <div key={log.id} className="p-4 active:bg-gray-50 transition-colors">
+                            <div className="flex justify-between items-start mb-3">
+                                <div className="flex items-center gap-3 min-w-0">
+                                    <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-400 font-extrabold text-sm shrink-0 border border-gray-200">
+                                        {log.recipient[0].toUpperCase()}
+                                    </div>
+                                    <div className="min-w-0">
+                                        <div className="text-sm font-black text-gray-900 truncate">{log.recipient}</div>
+                                        <div className="flex items-center gap-2 mt-0.5">
+                                            <span className={`text-[9px] font-black px-2 py-0.5 rounded-full border border-opacity-50 ${getTypeColor(log.type)}`}>
+                                                {getTypeLabel(log.type)}
+                                            </span>
+                                            {log.order_id && (
+                                                <Link href={`/admin/orders/${log.order_id}`} className="text-[10px] font-black text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full border border-blue-100">
+                                                    #{log.order_id}
+                                                </Link>
+                                            )}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="text-left shrink-0">
+                                    <div className="text-[10px] font-black text-gray-900">
+                                        {format(new Date(log.sent_at), 'HH:mm', { locale: he })}
+                                    </div>
+                                    <div className="text-[9px] font-bold text-gray-400">
+                                        {format(new Date(log.sent_at), 'dd/MM/yy', { locale: he })}
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="bg-gray-50 rounded-xl p-3 mb-3 border border-gray-100/50">
+                                <div className="text-xs font-bold text-gray-700 leading-snug line-clamp-2">
+                                    {log.subject}
+                                </div>
+                            </div>
+
+                            <div className="flex justify-between items-center">
+                                {log.status === 'sent' ? (
+                                    <div className="flex items-center gap-1.5 text-green-600 font-black text-[10px] bg-green-50 px-2 py-1 rounded-lg">
+                                        <CheckCircle className="w-3 h-3" />
+                                        <span>נשלח בהצלחה</span>
+                                    </div>
+                                ) : (
+                                    <div className="flex items-center gap-1.5 text-red-600 font-black text-[10px] bg-red-50 px-2 py-1 rounded-lg">
+                                        <XCircle className="w-3 h-3" />
+                                        <span>נכשל</span>
+                                    </div>
+                                )}
+                                
+                                <button className="text-[10px] font-black text-gray-400 flex items-center gap-1">
+                                    פרטים נוספים <ChevronLeft className="w-3 h-3" />
+                                </button>
+                            </div>
+                        </div>
+                    ))}
+                </div>
+
                 {filteredLogs.length === 0 && (
                     <div className="p-12 text-center">
                         <div className="w-16 h-16 bg-gray-50 text-gray-300 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -157,11 +220,15 @@ export default function EmailLogsClient({ initialLogs, currentPage, totalPages, 
 
             {/* Pagination */}
             {totalPages > 1 && (
-                <div className="flex items-center justify-between bg-white px-6 py-4 rounded-2xl border border-gray-100 shadow-sm">
-                    <div className="text-xs font-black text-gray-400 uppercase tracking-widest">
-                        עמוד {currentPage} מתוך {totalPages}
+                <div className="flex items-center justify-between bg-white px-4 md:px-6 py-4 rounded-2xl border border-gray-100 shadow-sm transition-all animate-in fade-in slide-in-from-bottom-2 duration-300">
+                    <div className="text-[10px] md:text-xs font-black text-gray-400 uppercase tracking-widest">
+                        {totalPages > 5 ? (
+                            <span>עמוד {currentPage} - {totalPages}</span>
+                        ) : (
+                            <span>עמוד {currentPage} מתוך {totalPages}</span>
+                        )}
                     </div>
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1 md:gap-2">
                         <button 
                             disabled={currentPage === 1}
                             onClick={() => router.push(`/admin/email-logs?page=${currentPage - 1}`)}
