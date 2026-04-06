@@ -9,7 +9,6 @@ export default function robots() {
                 disallow: [
                     '/admin', 
                     '/api',
-                    '/_next/static/',
                     '/*?sort=*',
                     '/*?min=*',
                     '/*?max=*',
