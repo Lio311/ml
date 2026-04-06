@@ -74,14 +74,35 @@ export async function GET(req) {
     }
 }
 
+import { verifyReviewToken } from '@/app/lib/reviewToken';
+
 export async function POST(req) {
     try {
-        const authData = await clerkAuth();
-        const userId = authData?.userId;
-        if (!userId) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-
         const body = await req.json();
-        const { orderId, content, rating = 5, productId, image_url } = body;
+        const { orderId, content, rating = 5, productId, image_url, token } = body;
+
+        let userId = null;
+
+        if (token && orderId) {
+            // Validate the email magic link token
+            const validTokenOrderId = verifyReviewToken(token);
+            if (!validTokenOrderId || String(validTokenOrderId) !== String(orderId)) {
+                return NextResponse.json({ error: 'Invalid or expired review token' }, { status: 403 });
+            }
+            
+            // It's valid, fetch user id from order to attribute the review to the proper account (if exists)
+            const orderRes = await pool.query("SELECT customer_details->>'clerk_id' as clerk_id FROM orders WHERE id = $1", [orderId]);
+            userId = orderRes.rows[0]?.clerk_id || null;
+            
+        } else {
+            // Standard auth
+            const authData = await clerkAuth();
+            userId = authData?.userId;
+            
+            if (!userId) {
+                return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+            }
+        }
 
         // Mode 1: Full review with orderId
         if (orderId) {
@@ -90,7 +111,13 @@ export async function POST(req) {
             }
 
             // Verify order belongs to user and is completed
-            const orderCheck = await pool.query("SELECT status FROM orders WHERE id = $1 AND customer_details->>'clerk_id' = $2", [orderId, userId]);
+            let orderCheck;
+            if (token) {
+                orderCheck = await pool.query("SELECT status FROM orders WHERE id = $1", [orderId]);
+            } else {
+                orderCheck = await pool.query("SELECT status FROM orders WHERE id = $1 AND customer_details->>'clerk_id' = $2", [orderId, userId]);
+            }
+            
             if (orderCheck.rows.length === 0) {
                 return NextResponse.json({ error: 'Order not found or unauthorized' }, { status: 404 });
             }

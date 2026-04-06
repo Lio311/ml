@@ -4,7 +4,7 @@ import toast from 'react-hot-toast';
 import Image from 'next/image';
 import { useLanguage } from '../context/LanguageContext';
 
-export default function OrderReviewPrompt({ orderId, initialHasSubmitted = false, onSubmitted }) {
+export default function OrderReviewPrompt({ orderId, initialHasSubmitted = false, onSubmitted, reviewToken = null }) {
     const { t, dir } = useLanguage();
     const fileInputRef = useRef(null);
     const [hasSubmitted, setHasSubmitted] = useState(initialHasSubmitted);
@@ -67,7 +67,8 @@ export default function OrderReviewPrompt({ orderId, initialHasSubmitted = false
                     orderId, 
                     content, 
                     rating,
-                    image_url: imageUrl 
+                    image_url: imageUrl,
+                    token: reviewToken
                 })
             });
 
