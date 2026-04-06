@@ -1,5 +1,6 @@
 "use client";
 
+import React from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import { motion } from "framer-motion";
 import { Package, Phone, Truck, CheckCircle, XCircle } from "lucide-react";
@@ -32,38 +33,20 @@ export default function OrderStatusTimeline({ status }) {
     const progressPercentage = activeIndex === -1 ? 0 : (activeIndex / (statusSteps.length - 1)) * 100;
 
     return (
-        <div className="w-full py-2 mb-0 overflow-x-hidden relative px-5">
-            {/* The Row Container (Holds both line and circles) */}
-            <div className="relative h-8 md:h-12 w-full flex items-center">
-                {/* 1. The Line Layer (Background and Progress) */}
-                <div className="absolute inset-0 flex items-center z-0 px-[16px] md:px-[24px]">
-                    <div className="relative w-full h-0.5 md:h-1">
-                        {/* Gray Background */}
-                        <div className="w-full h-full bg-gray-100 dark:bg-zinc-800 rounded-full" />
-                        
-                        {/* Active Progress */}
-                        <motion.div 
-                            initial={{ width: 0 }}
-                            animate={{ width: `${progressPercentage}%` }}
-                            transition={{ duration: 1, ease: "easeOut" }}
-                            className={cn(
-                                "absolute top-0 h-full bg-black dark:bg-white rounded-full shadow-[0_0_8px_rgba(0,0,0,0.2)]",
-                                locale === 'he' ? "right-0" : "left-0"
-                            )}
-                        />
-                    </div>
-                </div>
+        <div className="w-full py-2 mb-0 px-4 md:px-6 relative overflow-visible">
+            {/* The Unified Grid (Handles centering and spacing in 1 go) */}
+            <div className="grid grid-cols-[auto,1fr,auto,1fr,auto,1fr,auto] w-full items-center h-8 md:h-12 relative z-10">
+                {statusSteps.map((step, index) => {
+                    const isCompleted = index < activeIndex;
+                    const isActive = index === activeIndex;
+                    const isPending = index > activeIndex;
+                    const Icon = step.icon;
+                    const isLast = index === statusSteps.length - 1;
 
-                {/* 2. The Circles Layer (Flex for perfect spacing) */}
-                <div className="absolute inset-0 flex justify-between items-center z-10 w-full">
-                    {statusSteps.map((step, index) => {
-                        const isCompleted = index < activeIndex;
-                        const isActive = index === activeIndex;
-                        const isPending = index > activeIndex;
-                        const Icon = step.icon;
-
-                        return (
-                            <div key={step.id} className="relative flex flex-col items-center">
+                    return (
+                        <React.Fragment key={step.id}>
+                            {/* Circle Column */}
+                            <div className="flex flex-col items-center">
                                 <motion.div
                                     initial={false}
                                     animate={{ 
@@ -73,7 +56,7 @@ export default function OrderStatusTimeline({ status }) {
                                         borderColor: isCompleted || isActive ? '#000' : '#e5e7eb'
                                     }}
                                     className={cn(
-                                        "w-8 h-8 md:w-12 md:h-12 rounded-full flex items-center justify-center border hover:border-2 transition-all duration-300 shadow-sm",
+                                        "w-8 h-8 md:w-12 md:h-12 rounded-full flex items-center justify-center border hover:border-2 transition-all duration-300 shadow-sm z-20 shrink-0",
                                         isActive && "ring-4 ring-black/5 dark:ring-white/10 shadow-lg border-2",
                                         isCompleted && "bg-black dark:bg-white border-black dark:border-white",
                                         isPending && "bg-white dark:bg-zinc-900 border-gray-200 dark:border-zinc-800"
@@ -82,35 +65,57 @@ export default function OrderStatusTimeline({ status }) {
                                     <Icon className={cn("w-4 h-4 md:w-6 md:h-6", isActive && "animate-pulse")} />
                                 </motion.div>
                             </div>
-                        );
-                    })}
-                </div>
+
+                            {/* Line Column (Between circles) */}
+                            {!isLast && (
+                                <div className="h-0.5 md:h-1 bg-gray-100 dark:bg-zinc-800 relative z-0 min-w-[20px]">
+                                    <motion.div 
+                                        initial={{ width: 0 }}
+                                        animate={{ width: activeIndex > index ? '100%' : '0%' }}
+                                        transition={{ duration: 0.8, ease: "easeInOut" }}
+                                        className={cn(
+                                            "absolute top-0 h-full bg-black dark:bg-white rounded-full shadow-[0_0_8px_rgba(0,0,0,0.1)]",
+                                            locale === 'he' ? "right-0" : "left-0"
+                                        )}
+                                    />
+                                </div>
+                            )}
+                        </React.Fragment>
+                    );
+                })}
             </div>
 
-            {/* 3. The Labels Layer (Below the Row) */}
-            <div className="flex justify-between w-full mt-2 relative z-10">
+            {/* Labels Grid (Matches circle positioning) */}
+            <div className="grid grid-cols-[auto,1fr,auto,1fr,auto,1fr,auto] w-full mt-3 relative z-10">
                 {statusSteps.map((step, index) => {
                     const isActive = index === activeIndex;
+                    const isLast = index === statusSteps.length - 1;
+
                     return (
-                        <div key={step.id} className="flex flex-col items-center text-center w-8 md:w-12 overflow-visible">
-                            <div className="min-h-[40px] md:min-h-[48px] flex flex-col items-center w-20 md:w-32 -mx-6 md:-mx-10 overflow-visible">
-                                <span className={cn(
-                                    "text-[9px] md:text-sm font-bold transition-colors duration-300 leading-tight block",
-                                    isActive ? "text-black dark:text-white" : "text-gray-400 dark:text-zinc-500"
-                                )}>
-                                    {step.label}
-                                </span>
-                                {isActive && (
-                                    <motion.span 
-                                        initial={{ opacity: 0, y: 5 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        className="text-[8px] md:text-[10px] text-gray-500 dark:text-zinc-400 mt-1 leading-tight max-w-full block"
-                                    >
-                                        {step.description}
-                                    </motion.span>
-                                )}
+                        <React.Fragment key={`label-${step.id}`}>
+                            {/* Circle Label Column */}
+                            <div className="flex flex-col items-center w-8 md:w-12 overflow-visible">
+                                <div className="min-h-[44px] flex flex-col items-center w-24 md:w-32 -mx-8 md:-mx-10 text-center overflow-visible">
+                                    <span className={cn(
+                                        "text-[10px] md:text-sm font-bold transition-colors duration-300 leading-tight",
+                                        isActive ? "text-black dark:text-white" : "text-gray-400 dark:text-zinc-500"
+                                    )}>
+                                        {step.label}
+                                    </span>
+                                    {isActive && (
+                                        <motion.span 
+                                            initial={{ opacity: 0, scale: 0.9 }}
+                                            animate={{ opacity: 1, scale: 1 }}
+                                            className="text-[8px] md:text-[11px] text-gray-500 font-medium dark:text-zinc-400 mt-1.5 leading-tight block w-full px-1"
+                                        >
+                                            {step.description}
+                                        </motion.span>
+                                    )}
+                                </div>
                             </div>
-                        </div>
+                            {/* Empty spacer for line column */}
+                            {!isLast && <div />}
+                        </React.Fragment>
                     );
                 })}
             </div>
