@@ -15,7 +15,7 @@ export default async function EmailLogsPage({ searchParams }) {
     }
 
     const page = parseInt(searchParams.page) || 1;
-    const limit = 20;
+    const limit = 6;
     const offset = (page - 1) * limit;
 
     // Fetch logs
@@ -35,7 +35,7 @@ export default async function EmailLogsPage({ searchParams }) {
             <div className="max-w-7xl mx-auto">
                 <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
                     <div>
-                        <h1 className="text-3xl font-black text-gray-900 tracking-tight">יומן מיילים 📧</h1>
+                        <h1 className="text-3xl font-black text-gray-900 tracking-tight">יומן מיילים</h1>
                         <p className="text-gray-500 mt-1">מעקב אחר כל התכתובות שנשלחו מהמערכת ללקוחות.</p>
                     </div>
                 </div>

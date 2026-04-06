@@ -218,38 +218,38 @@ export default function EmailLogsClient({ initialLogs, currentPage, totalPages, 
                 )}
             </div>
 
-            {/* Pagination */}
-            {totalPages > 1 && (
-                <div className="flex items-center justify-between bg-white px-4 md:px-6 py-4 rounded-2xl border border-gray-100 shadow-sm transition-all animate-in fade-in slide-in-from-bottom-2 duration-300">
-                    <div className="text-[10px] md:text-xs font-black text-gray-400 uppercase tracking-widest">
-                        {totalPages > 5 ? (
-                            <span>עמוד {currentPage} - {totalPages}</span>
-                        ) : (
-                            <span>עמוד {currentPage} מתוך {totalPages}</span>
-                        )}
-                    </div>
-                    <div className="flex items-center gap-1 md:gap-2">
-                        <button 
+            {/* Pagination & Count */}
+            <div className="flex flex-col items-center gap-4 mt-8 relative pb-8">
+                {/* Brand Style Pagination - Centered */}
+                {totalPages > 1 && (
+                    <div className="flex justify-center items-center gap-4">
+                        <button
                             disabled={currentPage === 1}
-                            onClick={() => router.push(`/admin/email-logs?page=${currentPage - 1}`)}
-                            className={`p-2 rounded-lg transition-all ${currentPage === 1 
-                                ? 'text-gray-200 cursor-not-allowed' 
-                                : 'text-gray-700 hover:bg-gray-100 active:scale-95'}`}
+                            onClick={() => router.push(`/admin/email-logs?page=${Math.max(1, currentPage - 1)}${searchTerm ? `&q=${encodeURIComponent(searchTerm)}` : ''}`)}
+                            className={`px-4 py-2 border rounded-lg hover:bg-gray-100 transition font-bold text-sm ${currentPage === 1 ? 'opacity-50 pointer-events-none' : ''}`}
                         >
-                            <ChevronRight className="w-5 h-5" />
+                            הקודם
                         </button>
-                        <button 
+
+                        <span className="text-sm font-black text-gray-400 uppercase tracking-widest">
+                            עמוד {currentPage} מתוך {totalPages}
+                        </span>
+
+                        <button
                             disabled={currentPage === totalPages}
-                            onClick={() => router.push(`/admin/email-logs?page=${currentPage + 1}`)}
-                            className={`p-2 rounded-lg transition-all ${currentPage === totalPages 
-                                ? 'text-gray-200 cursor-not-allowed' 
-                                : 'text-gray-700 hover:bg-gray-100 active:scale-95'}`}
+                            onClick={() => router.push(`/admin/email-logs?page=${Math.min(totalPages, currentPage + 1)}${searchTerm ? `&q=${encodeURIComponent(searchTerm)}` : ''}`)}
+                            className={`px-4 py-2 border rounded-lg hover:bg-gray-100 transition font-bold text-sm ${currentPage === totalPages ? 'opacity-50 pointer-events-none' : ''}`}
                         >
-                            <ChevronLeft className="w-5 h-5" />
+                            הבא
                         </button>
                     </div>
+                )}
+
+                {/* Total Count - Absolute positioned to bottom right or kept separate if mobile */}
+                <div className="text-xs text-gray-400 font-black uppercase tracking-widest md:absolute md:right-0 md:bottom-2">
+                    סה״כ {totalCount} מיילים מתועדים
                 </div>
-            )}
+            </div>
         </div>
     );
 }
