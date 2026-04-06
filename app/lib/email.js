@@ -1,3 +1,4 @@
+import nodemailer from 'nodemailer';
 import { logEmail } from './emailLogger';
 
 const transporter = nodemailer.createTransport({

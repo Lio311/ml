@@ -2,7 +2,6 @@ import pool from '@/app/lib/db';
 import { auth as clerkAuth } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
 import { recordAuditLog } from '@/app/lib/audit';
-import nodemailer from 'nodemailer';
 
 export async function GET(req) {
     try {
