@@ -45,40 +45,34 @@ export default function OrderStatusTimeline({ status }) {
                     const Icon = step.icon;
 
                     return (
-                        <div key={step.id} className="relative flex flex-col items-center">
+                        <div key={step.id} className="relative flex flex-col items-center w-full">
                             {/* 1. Circle & Line Segment Row */}
                             <div className="h-8 md:h-12 w-full flex items-center justify-center relative">
                                 
                                 {/* Right Segment (Incoming from prev in RTL/Hebrew) */}
                                 {!isFirst && (
-                                    <div className="absolute right-0 w-1/2 h-0.5 md:h-1 bg-gray-100 dark:bg-zinc-800 z-0">
+                                    <div className="absolute right-0 w-1/2 h-0.5 md:h-1 bg-gray-100 dark:bg-zinc-800 z-0 top-1/2 -translate-y-1/2">
                                         <motion.div 
                                             initial={false}
                                             animate={{ 
                                                 width: activeIndex >= index ? '100%' : '0%',
                                                 opacity: activeIndex >= index ? 1 : 0
                                             }}
-                                            className={cn(
-                                                "absolute top-0 right-0 h-full bg-black dark:bg-white overflow-hidden",
-                                                activeIndex >= index ? "visible" : "invisible"
-                                            )}
+                                            className="absolute top-0 right-0 h-full bg-black dark:bg-white overflow-hidden"
                                         />
                                     </div>
                                 )}
 
                                 {/* Left Segment (Outgoing to next in RTL/Hebrew) */}
                                 {!isLast && (
-                                    <div className="absolute left-0 w-1/2 h-0.5 md:h-1 bg-gray-100 dark:bg-zinc-800 z-0">
+                                    <div className="absolute left-0 w-1/2 h-0.5 md:h-1 bg-gray-100 dark:bg-zinc-800 z-0 top-1/2 -translate-y-1/2">
                                         <motion.div 
                                             initial={false}
                                             animate={{ 
                                                 width: activeIndex > index ? '100%' : '0%',
                                                 opacity: activeIndex > index ? 1 : 0
                                             }}
-                                            className={cn(
-                                                "absolute top-0 right-0 h-full bg-black dark:bg-white overflow-hidden",
-                                                activeIndex > index ? "visible" : "invisible"
-                                            )}
+                                            className="absolute top-0 right-0 h-full bg-black dark:bg-white overflow-hidden"
                                         />
                                     </div>
                                 )}
