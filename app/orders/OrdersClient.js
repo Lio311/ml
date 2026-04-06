@@ -112,8 +112,8 @@ export default function OrdersClient() {
                 <div className="space-y-4">
                     {orders.map((order) => (
                         <div key={order.id} id={`order-${order.id}`} className="border rounded-lg p-6 bg-white shadow-sm">
-                            <div className="flex justify-between items-start mb-2 border-b pb-4">
-                                <div>
+                            <div className="flex flex-wrap sm:flex-nowrap justify-between items-start gap-4 mb-2 border-b pb-4">
+                                <div className="min-w-0 flex-1">
                                     <div className="font-bold text-lg flex items-center gap-2">
                                         {t('orders.order_number').replace('{id}', order.id)}
                                         {order.catalog_id && (
@@ -147,7 +147,7 @@ export default function OrdersClient() {
                                     {(order.status === 'completed' || order.status === 'הושלם') && !order.has_review && (
                                         <button 
                                             onClick={() => toggleReview(order.id)}
-                                            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold transition-all duration-300 shadow-sm border ${
+                                            className={`flex items-center shrink-0 whitespace-nowrap gap-2 px-4 py-2 rounded-full text-xs md:text-sm font-bold transition-all duration-300 shadow-sm border ${
                                                 openReviewId === order.id 
                                                 ? 'bg-black text-white border-black' 
                                                 : 'bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100'
