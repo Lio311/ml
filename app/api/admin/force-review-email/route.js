@@ -56,7 +56,7 @@ export async function GET(req) {
                         </a>
                         <p style="margin-top: 15px;">
                             <a href="https://www.ml-tlv.com/orders?review=${order.id}" style="color: #666; text-decoration: underline; font-size: 14px;">
-                                לדירוג הקנייה באזור האישי &gt;&gt;
+                                לדירוג חוויית השירות באזור האישי &gt;&gt;
                             </a>
                         </p>
                     </div>

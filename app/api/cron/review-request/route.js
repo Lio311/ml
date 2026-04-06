@@ -52,11 +52,11 @@ export async function GET(req) {
                         
                         <div style="text-align: center; margin: 30px 0;">
                             <a href="https://www.ml-tlv.com/review?id=${order.id}&token=${token}" style="background: #000; color: #fff; padding: 12px 25px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">
-                                לדירוג הקנייה בקליק &gt;&gt;
+                                לדירוג חוויית השירות בקליק &gt;&gt;
                             </a>
                             <p style="margin-top: 15px;">
                                 <a href="https://www.ml-tlv.com/orders?review=${order.id}" style="color: #666; text-decoration: underline; font-size: 14px;">
-                                    לדירוג הקנייה באזור האישי &gt;&gt;
+                                    לדירוג באזור האישי &gt;&gt;
                                 </a>
                             </p>
                         </div>

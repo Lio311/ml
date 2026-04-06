@@ -154,7 +154,7 @@ export default function OrdersClient() {
                                         <button 
                                             onClick={() => toggleReview(order.id)}
                                             className={cn(
-                                                "flex items-center shrink-0 whitespace-nowrap gap-2 px-5 py-2.5 rounded-md text-xs md:text-sm font-bold transition-all duration-300 shadow-lg border-2",
+                                                "flex items-center shrink-0 whitespace-nowrap gap-2 px-5 py-2.5 rounded-md text-xs md:text-sm font-bold transition-all duration-300 shadow-xl border-2",
                                                 openReviewId === order.id 
                                                 ? "bg-white text-black border-black" 
                                                 : "bg-black text-white border-black hover:bg-zinc-800"
