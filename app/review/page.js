@@ -41,7 +41,7 @@ export default async function PublicReviewPage(props) {
             const order = res.rows[0];
 
             return (
-                <main className="min-h-screen bg-gray-50 flex items-start justify-center pt-0 pb-12 px-4" dir="rtl">
+                <main className="min-h-screen bg-gray-50 flex items-start justify-center pt-6 pb-12 px-4" dir="rtl">
                     <div className="w-full max-w-2xl">
                         <div className="text-center mb-6">
                             <h1 className="text-3xl font-black tracking-tight text-gray-900 mb-2">דירוג קנייה ⭐️</h1>
@@ -141,7 +141,7 @@ export default async function PublicReviewPage(props) {
 
 function InvalidTokenMessage({ message }) {
     return (
-        <main className="min-h-screen bg-gray-50 flex items-start justify-center pt-0 pb-12 px-4" dir="rtl">
+        <main className="min-h-screen bg-gray-50 flex items-start justify-center pt-6 pb-12 px-4" dir="rtl">
             <div className="bg-white rounded-2xl shadow-sm border p-8 max-w-md w-full text-center">
                 <div className="w-16 h-16 bg-red-100 text-red-500 rounded-full flex items-center justify-center mx-auto mb-4">
                     <XCircle className="w-8 h-8" />

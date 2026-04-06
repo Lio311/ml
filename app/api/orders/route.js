@@ -218,11 +218,11 @@ export async function POST(req) {
 
             if (userEmail && !catalogId) {
                 const html = getOrderConfirmationTemplate(orderId, items, total, freeSamples, notes, deliveryMethod || 'mail', shippingCost);
-                await sendEmail(userEmail, `אישור הזמנה #${orderId} - ml_tlv`, html);
+                await sendEmail(userEmail, `אישור הזמנה #${orderId} - ml_tlv`, html, 'order_confirmation', orderId);
             } else if (userEmail && catalogId) {
                  // For catalog buyers, maybe send a different email? Or the same one. For now same one but with catalog context if we wanted
                 const html = getOrderConfirmationTemplate(orderId, items, total, freeSamples, notes, deliveryMethod || 'mail', shippingCost);
-                await sendEmail(userEmail, `אישור קבלת פנייה מ${catalogName} #${orderId}`, html);
+                await sendEmail(userEmail, `אישור קבלת פנייה מ${catalogName} #${orderId}`, html, 'order_confirmation', orderId);
             }
 
             // Send Admin and Catalog Owner Alerts
@@ -230,11 +230,11 @@ export async function POST(req) {
             
             if (catalogOwnerEmail) {
                 // Send to catalog owner
-                await sendEmail(catalogOwnerEmail, `הזמנה חדשה התקבלה בקטלוג שלך #${orderId} 🔥`, adminHtml);
+                await sendEmail(catalogOwnerEmail, `הזמנה חדשה התקבלה בקטלוג שלך #${orderId} 🔥`, adminHtml, 'admin_alert', orderId);
             }
             
             // Also send to main admin
-            await sendEmail(adminEmail, `חם מהתנור! הזמנה חדשה ${catalogId ? '(מקטלוג משתמש)' : ''} #${orderId} 🔥`, adminHtml);
+            await sendEmail(adminEmail, `חם מהתנור! הזמנה חדשה ${catalogId ? '(מקטלוג משתמש)' : ''} #${orderId} 🔥`, adminHtml, 'admin_alert', orderId);
 
             // Record Audit Log
             await recordAuditLog({

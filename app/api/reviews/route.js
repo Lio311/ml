@@ -158,33 +158,24 @@ export async function POST(req) {
                 // Update order to mark rewarded
                 await pool.query(`UPDATE orders SET coupon_rewarded = true WHERE id = $1`, [orderId]);
 
-                // Send email
-                const transporter = nodemailer.createTransport({
-                    service: 'gmail',
-                    auth: {
-                        user: process.env.EMAIL_USER,
-                        pass: process.env.EMAIL_PASS
-                    }
-                });
-                
+                // Send email via centralized utility
+                const { sendEmail } = await import('@/app/lib/email');
+                const subject = 'תודה על חוות הדעת! הנה מתנה מאיתנו 🎁';
+                const html = `
+                    <div dir="rtl" style="font-family: Arial, sans-serif; color: #333; text-align: right;">
+                        <h2>תודה רבה על הדירוג!</h2>
+                        <p>אנחנו מעריכים מאוד את המשוב שעוזר ללקוחות אחרים למצוא את הבושם המושלם.</p>
+                        <p>כדי להגיד תודה, הנה קוד קופון של <strong>10% הנחה</strong> לקנייה הבאה שלך:</p>
+                        <div style="background: #f0fdf4; border: 2px dashed #16a34a; padding: 15px; text-align: center; margin: 20px 0;">
+                            <h1 style="color: #16a34a; margin: 0;">${couponCode}</h1>
+                            <p style="margin: 5px 0 0 0; color: #666; font-size: 12px;">תקף ל-7 ימים הקרובים בלבד!</p>
+                        </div>
+                        <p><a href="https://www.ml-tlv.com" style="background: #000; color: #fff; padding: 10px 20px; text-decoration: none; border-radius: 5px;">לחזרה לחנות</a></p>
+                    </div>
+                `;
+
                 try {
-                    await transporter.sendMail({
-                        from: `"ml_tlv" <${process.env.EMAIL_USER}>`,
-                        to: customerEmail,
-                        subject: 'תודה על חוות הדעת! הנה מתנה מאיתנו 🎁',
-                        html: `
-                            <div dir="rtl" style="font-family: Arial, sans-serif; color: #333; text-align: right;">
-                                <h2>תודה רבה על הדירוג!</h2>
-                                <p>אנחנו מעריכים מאוד את המשוב שעוזר ללקוחות אחרים למצוא את הבושם המושלם.</p>
-                                <p>כדי להגיד תודה, הנה קוד קופון של <strong>10% הנחה</strong> לקנייה הבאה שלך:</p>
-                                <div style="background: #f0fdf4; border: 2px dashed #16a34a; padding: 15px; text-align: center; margin: 20px 0;">
-                                    <h1 style="color: #16a34a; margin: 0;">${couponCode}</h1>
-                                    <p style="margin: 5px 0 0 0; color: #666; font-size: 12px;">תקף ל-7 ימים הקרובים בלבד!</p>
-                                </div>
-                                <p><a href="https://www.ml-tlv.com" style="background: #000; color: #fff; padding: 10px 20px; text-decoration: none; border-radius: 5px;">לחזרה לחנות</a></p>
-                            </div>
-                        `
-                    });
+                    await sendEmail(customerEmail, subject, html, 'reward', orderId);
                 } catch (e) {
                     console.error("Failed to send review reward email:", e);
                 }

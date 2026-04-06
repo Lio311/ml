@@ -1,5 +1,4 @@
-
-import nodemailer from 'nodemailer';
+import { logEmail } from './emailLogger';
 
 const transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -9,7 +8,7 @@ const transporter = nodemailer.createTransport({
     },
 });
 
-export const sendEmail = async (to, subject, html) => {
+export const sendEmail = async (to, subject, html, type = 'system', orderId = null) => {
     if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
         console.warn("Skipping email send: Missing EMAIL_USER or EMAIL_PASS environment variables.");
         return;
@@ -30,10 +29,19 @@ export const sendEmail = async (to, subject, html) => {
 
         const info = await transporter.sendMail(mailOptions);
         console.log("Message sent: %s", info.messageId);
+
+        // Log successful send
+        const recipient = Array.isArray(to) ? to.join(', ') : to;
+        await logEmail({ recipient, subject, type, status: 'sent', orderId });
+
         return info;
     } catch (error) {
         console.error("Error sending email:", error);
-        // We generally don't want to crash the request if email fails, just log it.
+        
+        // Log failed send
+        const recipient = Array.isArray(to) ? to.join(', ') : to;
+        await logEmail({ recipient, subject, type, status: 'failed', error: error.message, orderId });
+
         return null;
     }
 };
