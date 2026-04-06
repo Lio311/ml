@@ -164,7 +164,7 @@ export default function OrdersClient() {
                             <OrderStatusTimeline status={order.status} />
 
                             {(order.status === 'completed' || order.status === 'הושלם') && openReviewId === order.id && (
-                                <div className="mt-4 animate-fadeIn">
+                                <div className="animate-fadeIn">
                                     <OrderReviewPrompt 
                                         orderId={order.id} 
                                         initialHasSubmitted={order.has_review} 

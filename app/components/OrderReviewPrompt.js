@@ -88,7 +88,7 @@ export default function OrderReviewPrompt({ orderId, initialHasSubmitted = false
     if (hasSubmitted) return null;
 
     return (
-        <div className="mt-4 p-6 bg-black rounded-[2.5rem] shadow-2xl transition-all border border-gray-800" dir={dir}>
+        <div className="mt-2 p-6 bg-black rounded-[2.5rem] shadow-2xl transition-all border border-gray-800" dir={dir}>
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-4">
                 <h3 className="text-white font-bold text-sm flex items-center gap-2">
                     <Sparkles className="w-5 h-5 text-amber-400 animate-pulse" />

@@ -30,7 +30,7 @@ export default function OrderStatusTimeline({ status }) {
     const progressPercentage = activeIndex === -1 ? 0 : (activeIndex / (statusSteps.length - 1)) * 100;
 
     return (
-        <div className="w-full py-4 px-1 md:px-10 mb-2 overflow-x-hidden">
+        <div className="w-full py-2 px-1 md:px-10 mb-0 overflow-x-hidden">
             <div className="relative">
                 {/* Line Container (Centered on circles) */}
                 <div className="absolute top-5 md:top-6 right-6 left-6 md:right-12 md:left-12 -translate-y-1/2 h-1">
@@ -77,7 +77,7 @@ export default function OrderStatusTimeline({ status }) {
                                     <Icon className={cn("w-5 h-5 md:w-6 md:h-6", isActive && "animate-pulse")} />
                                 </motion.div>
                                 
-                                <div className="mt-4 flex flex-col items-center text-center min-h-[65px]">
+                                <div className="mt-2 flex flex-col items-center text-center min-h-[48px]">
                                     <span className={cn(
                                         "text-[11px] md:text-sm font-bold transition-colors duration-300 leading-tight",
                                         isActive ? "text-black dark:text-white" : "text-gray-400 dark:text-zinc-500"
