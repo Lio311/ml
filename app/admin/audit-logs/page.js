@@ -29,7 +29,7 @@ export default async function AuditLogsPage({ searchParams }) {
     }
 
     const page = parseInt(params.page || '1');
-    const limit = 8;
+    const limit = 7;
     const offset = (page - 1) * limit;
 
     const logsRes = await pool.query(`
