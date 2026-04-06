@@ -99,7 +99,7 @@ export async function POST(req) {
             if (order.customer_details?.email) {
                 try {
                     const html = getStatusUpdateTemplate(orderId, newStatus, order.customer_details.name);
-                    await sendEmail(order.customer_details.email, `עדכון סטטוס הזמנה #${orderId} - ml`, html);
+                    await sendEmail(order.customer_details.email, `עדכון סטטוס הזמנה #${orderId} - ml`, html, 'status_update', orderId);
                 } catch (e) { console.error('Email error:', e); }
             }
         }

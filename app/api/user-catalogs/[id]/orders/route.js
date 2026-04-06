@@ -100,14 +100,14 @@ export async function POST(req, { params }) {
             
             // 1. Email to Customer
             const customerHtml = getOrderConfirmationTemplate(orderId, items, total, freeSamples, notes, deliveryMethod || 'mail', 0); // Shipping cost included in total for catalogs
-            await sendEmail(clerkEmail, `אישור הזמנה מ-${catalogName} #${orderId}`, customerHtml);
+            await sendEmail(clerkEmail, `אישור הזמנה מ-${catalogName} #${orderId}`, customerHtml, 'order_confirmation', orderId);
 
             // 2. Email to Catalog Owner
             const ownerHtml = getAdminNewOrderTemplate(orderId, `${user.firstName} ${user.lastName}`, total, items, deliveryMethod || 'mail', 0, phoneNumber);
-            await sendEmail(catalogOwnerEmail, `הזמנה חדשה התקבלה בקטלוג שלך #${orderId} 🔥`, ownerHtml);
+            await sendEmail(catalogOwnerEmail, `הזמנה חדשה התקבלה בקטלוג שלך #${orderId} 🔥`, ownerHtml, 'admin_alert', orderId);
 
             // 3. Email to Site Admin
-            await sendEmail(adminEmail, `הזמנת קטלוג משתמש חדשה #${orderId} (${catalogName})`, ownerHtml);
+            await sendEmail(adminEmail, `הזמנת קטלוג משתמש חדשה #${orderId} (${catalogName})`, ownerHtml, 'admin_alert', orderId);
 
             return NextResponse.json({ success: true, orderId });
 

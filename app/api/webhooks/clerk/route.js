@@ -86,12 +86,12 @@ export async function POST(req) {
                 const adminEmail = process.env.ADMIN_EMAIL;
                 const userObj = { first_name, last_name, email };
                 const adminHtml = getAdminNewUserTemplate(userObj);
-                await sendEmail(adminEmail, `משתמש חדש הצטרף למשפחה! ✨`, adminHtml);
+                await sendEmail(adminEmail, `משתמש חדש הצטרף למשפחה! ✨`, adminHtml, 'admin_alert');
 
                 // Send Customer Welcome Email
                 if (email) {
                     const welcomeHtml = getUserWelcomeTemplate(first_name);
-                    await sendEmail(email, `ברוכים הבאים ל-ml_tlv! ✨`, welcomeHtml);
+                    await sendEmail(email, `ברוכים הבאים ל-ml_tlv! ✨`, welcomeHtml, 'welcome');
                 }
                 console.log(`[Clerk Webhook] Successfully processed new user: ${email}`);
             } else {
