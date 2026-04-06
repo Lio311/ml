@@ -31,7 +31,7 @@ export default async function EmailLogsPage({ searchParams }) {
     const totalPages = Math.ceil(totalCount / limit);
 
     return (
-        <div className="p-4 md:p-8 bg-gray-50 min-h-screen" dir="rtl">
+        <div className="p-4 md:p-8" dir="rtl">
             <div className="max-w-7xl mx-auto">
                 <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
                     <div>
