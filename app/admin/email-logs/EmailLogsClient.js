@@ -60,10 +60,10 @@ export default function EmailLogsClient({ initialLogs, currentPage, totalPages, 
                         />
                     </div>
                 </div>
-                <div className="bg-black text-white rounded-2xl p-4 shadow-xl flex flex-col justify-center order-1 md:order-2">
-                    <div className="flex justify-between items-center md:block">
-                        <span className="text-[10px] font-black uppercase tracking-widest opacity-60">סה"כ מיילים</span>
-                        <span className="text-2xl font-black block leading-none md:mt-1">{totalCount}</span>
+                <div className="bg-black text-white rounded-2xl p-2 px-4 shadow-xl flex items-center justify-center order-1 md:order-2 h-full min-h-[56px]">
+                    <div className="flex items-center gap-3">
+                        <span className="text-[10px] font-black uppercase tracking-widest opacity-60 mt-0.5">סה"כ מיילים:</span>
+                        <span className="text-xl font-black leading-none">{totalCount}</span>
                     </div>
                 </div>
             </div>
