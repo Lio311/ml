@@ -153,16 +153,15 @@ export default function OrdersClient() {
                                     {(order.status === 'completed' || order.status === 'הושלם') && !order.has_review && (
                                         <button 
                                             onClick={() => toggleReview(order.id)}
-                                            className={cn(
-                                                "flex items-center shrink-0 whitespace-nowrap gap-2 px-5 py-2.5 rounded-md text-xs md:text-sm font-bold transition-all duration-300 shadow-xl border-2",
+                                            className={`flex items-center shrink-0 whitespace-nowrap gap-2 px-4 py-2 rounded-full text-xs md:text-sm font-bold transition-all duration-300 shadow-sm border ${
                                                 openReviewId === order.id 
-                                                ? "bg-white text-black border-black" 
-                                                : "bg-black text-white border-black hover:bg-zinc-800"
-                                            )}
+                                                ? 'bg-black text-white border-black' 
+                                                : 'bg-amber-50 text-amber-700 border-amber-200 hover:bg-amber-100'
+                                            }`}
                                             title={t('common.orders.review.write_review')}
                                         >
-                                            <Star className={cn("w-4 h-4", openReviewId === order.id ? "fill-black" : "fill-white")} />
-                                            {t('common.orders.review.write_review')}{" >>"}
+                                            <Star className={`w-4 h-4 ${openReviewId === order.id ? 'fill-white' : 'fill-amber-500 text-amber-500'}`} />
+                                            {t('common.orders.review.write_review')}
                                         </button>
                                     )}
                                 </div>
