@@ -1,3 +1,5 @@
+"use client";
+
 import { useState, useRef } from 'react';
 import { Loader2, Sparkles, Star, Camera, X, Image as ImageIcon } from 'lucide-react';
 import toast from 'react-hot-toast';
