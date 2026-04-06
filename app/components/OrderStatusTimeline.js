@@ -46,27 +46,22 @@ export default function OrderStatusTimeline({ status }) {
                     return (
                         <React.Fragment key={step.id}>
                             {/* Circle Column */}
-                            <div className="flex flex-col items-center">
+                            <div className="flex flex-col items-center relative z-20">
                                 <motion.div
                                     initial={false}
-                                    animate={{ 
-                                        scale: isActive ? 1.15 : 1,
-                                        backgroundColor: isCompleted || isActive ? (isActive ? '#000' : '#111') : '#fff',
-                                        color: isCompleted || isActive ? '#fff' : '#999',
-                                        borderColor: isCompleted || isActive ? '#000' : '#e5e7eb'
-                                    }}
+                                    animate={{ scale: isActive ? 1.15 : 1 }} 
                                     className={cn(
-                                        "w-8 h-8 md:w-12 md:h-12 rounded-full flex items-center justify-center border hover:border-2 transition-all duration-300 shadow-sm z-20 shrink-0",
-                                        isActive && "ring-4 ring-black/5 dark:ring-white/10 shadow-lg border-2",
-                                        isCompleted && "bg-black dark:bg-white border-black dark:border-white",
-                                        isPending && "bg-white dark:bg-zinc-900 border-gray-200 dark:border-zinc-800"
+                                        "w-8 h-8 md:w-12 md:h-12 rounded-full flex items-center justify-center border transition-all duration-300 shadow-sm shrink-0",
+                                        isActive && "bg-black dark:bg-white text-white border-black ring-4 ring-black/5 dark:ring-white/10 shadow-lg border-2",
+                                        isCompleted && "bg-[#111] dark:bg-white text-white border-[#111] dark:border-white",
+                                        isPending && "bg-white dark:bg-zinc-900 text-[#999] border-gray-200 dark:border-zinc-800"
                                     )}
                                 >
                                     <Icon className={cn("w-4 h-4 md:w-6 md:h-6", isActive && "animate-pulse")} />
                                 </motion.div>
                             </div>
 
-                            {/* Line Column (Between circles) */}
+                            {/* Line Column */}
                             {!isLast && (
                                 <div className="h-0.5 md:h-1 bg-gray-100 dark:bg-zinc-800 relative z-0 min-w-[12px] -mx-4 md:-mx-6">
                                     <motion.div 
