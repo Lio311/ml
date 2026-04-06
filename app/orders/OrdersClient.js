@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { useUser } from '@clerk/nextjs';
 import Link from 'next/link';
+import { useSearchParams } from 'next/navigation';
 import { useCart } from '../context/CartContext';
 import OrderStatusTimeline from '../components/OrderStatusTimeline';
 import { MapPin, Package, Gift, RefreshCw, MessageSquare, Star } from 'lucide-react';
@@ -19,6 +20,21 @@ export default function OrdersClient() {
     const [loading, setLoading] = useState(true);
     const [unreadCount, setUnreadCount] = useState(0);
     const [openReviewId, setOpenReviewId] = useState(null);
+    const searchParams = useSearchParams();
+    const reviewOrderId = searchParams.get('review');
+
+    useEffect(() => {
+        if (reviewOrderId && orders.length > 0) {
+            const parsedId = Number(reviewOrderId) || reviewOrderId;
+            setOpenReviewId(parsedId);
+            setTimeout(() => {
+                const el = document.getElementById(`order-${parsedId}`);
+                if (el) {
+                    el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                }
+            }, 300);
+        }
+    }, [reviewOrderId, orders]);
 
     const toggleReview = (orderId) => {
         setOpenReviewId(prev => prev === orderId ? null : orderId);
@@ -95,7 +111,7 @@ export default function OrdersClient() {
             ) : (
                 <div className="space-y-4">
                     {orders.map((order) => (
-                        <div key={order.id} className="border rounded-lg p-6 bg-white shadow-sm">
+                        <div key={order.id} id={`order-${order.id}`} className="border rounded-lg p-6 bg-white shadow-sm">
                             <div className="flex justify-between items-start mb-2 border-b pb-4">
                                 <div>
                                     <div className="font-bold text-lg flex items-center gap-2">

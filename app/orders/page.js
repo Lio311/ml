@@ -18,6 +18,12 @@ export async function generateMetadata() {
     };
 }
 
+import { Suspense } from 'react';
+
 export default function OrdersPage() {
-    return <OrdersClient />;
+    return (
+        <Suspense fallback={<div className="py-20 text-center">Loading...</div>}>
+            <OrdersClient />
+        </Suspense>
+    );
 }

@@ -61,7 +61,7 @@ export async function GET(req) {
                             <p>חוות הדעת שלך עוזרת ללקוחות אחרים למצוא את הבושם המושלם עבורם וחשובה לנו מאוד.</p>
                             
                             <div style="text-align: center; margin: 30px 0;">
-                                <a href="https://www.ml-tlv.com/profile" style="background: #000; color: #fff; padding: 12px 25px; text-decoration: none; border-radius: 6px; font-weight: bold;">
+                                <a href="https://www.ml-tlv.com/orders?review=${order.id}" style="background: #000; color: #fff; padding: 12px 25px; text-decoration: none; border-radius: 6px; font-weight: bold;">
                                     לדירוג הקנייה באזור האישי &gt;&gt;
                                 </a>
                             </div>
