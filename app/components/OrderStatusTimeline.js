@@ -68,14 +68,18 @@ export default function OrderStatusTimeline({ status }) {
 
                             {/* Line Column (Between circles) */}
                             {!isLast && (
-                                <div className="h-0.5 md:h-1 bg-gray-100 dark:bg-zinc-800 relative z-0 min-w-[20px]">
+                                <div className="h-0.5 md:h-1 bg-gray-100 dark:bg-zinc-800 relative z-0 min-w-[12px] -mx-4 md:-mx-6">
                                     <motion.div 
-                                        initial={{ width: 0 }}
-                                        animate={{ width: activeIndex > index ? '100%' : '0%' }}
+                                        initial={false}
+                                        animate={{ 
+                                            width: activeIndex > index ? '100%' : '0%',
+                                            opacity: activeIndex > index ? 1 : 0
+                                        }}
                                         transition={{ duration: 0.8, ease: "easeInOut" }}
                                         className={cn(
                                             "absolute top-0 h-full bg-black dark:bg-white rounded-full shadow-[0_0_8px_rgba(0,0,0,0.1)]",
-                                            locale === 'he' ? "right-0" : "left-0"
+                                            locale === 'he' ? "right-0" : "left-0",
+                                            activeIndex > index ? "visible" : "invisible"
                                         )}
                                     />
                                 </div>
