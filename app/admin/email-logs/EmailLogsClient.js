@@ -62,7 +62,7 @@ export default function EmailLogsClient({ initialLogs, currentPage, totalPages, 
                 </div>
                 <div className="bg-black text-white rounded-2xl p-4 shadow-xl flex flex-col justify-center order-1 md:order-2">
                     <div className="flex justify-between items-center md:block">
-                        <span className="text-[10px] font-black uppercase tracking-widest opacity-60">סה\"כ מיילים</span>
+                        <span className="text-[10px] font-black uppercase tracking-widest opacity-60">סה"כ מיילים</span>
                         <span className="text-2xl font-black block leading-none md:mt-1">{totalCount}</span>
                     </div>
                 </div>
