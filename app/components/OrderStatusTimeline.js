@@ -32,12 +32,12 @@ export default function OrderStatusTimeline({ status }) {
     const progressPercentage = activeIndex === -1 ? 0 : (activeIndex / (statusSteps.length - 1)) * 100;
 
     return (
-        <div className="w-full py-2 px-1 md:px-10 mb-0 overflow-x-hidden">
+        <div className="w-full py-2 md:px-10 mb-0 overflow-x-hidden">
             <div className="relative">
                 {/* Line Container (Centered on circles) */}
-                <div className="absolute top-4 md:top-6 right-[12.5%] left-[12.5%] -translate-y-1/2 h-0.5 md:h-1">
+                <div className="absolute top-4 md:top-6 left-[12.5%] w-[75%] -translate-y-1/2 h-1 md:h-1">
                     {/* Background Line */}
-                    <div className="w-full h-full bg-gray-100 dark:bg-zinc-800" />
+                    <div className="w-full h-full bg-gray-200 dark:bg-zinc-800 rounded-full" />
                     
                     {/* Progress Line */}
                     <motion.div 
@@ -45,8 +45,8 @@ export default function OrderStatusTimeline({ status }) {
                         animate={{ width: `${progressPercentage}%` }}
                         transition={{ duration: 1, ease: "easeOut" }}
                         className={cn(
-                            "absolute top-0 h-full bg-black dark:bg-white shadow-[0_0_10px_rgba(0,0,0,0.1)]",
-                            "start-0"
+                            "absolute top-0 h-full bg-black dark:bg-white shadow-[0_0_10px_rgba(0,0,0,0.1)] rounded-full",
+                            locale === 'he' ? "right-0" : "left-0"
                         )}
                     />
                 </div>
@@ -61,23 +61,25 @@ export default function OrderStatusTimeline({ status }) {
 
                         return (
                             <div key={step.id} className="flex flex-col items-center relative z-10 group flex-1 w-0">
-                                <motion.div
-                                    initial={false}
-                                    animate={{ 
-                                        scale: isActive ? 1.15 : 1,
-                                        backgroundColor: isCompleted || isActive ? (isActive ? '#000' : '#111') : '#fff',
-                                        color: isCompleted || isActive ? '#fff' : '#999',
-                                        borderColor: isCompleted || isActive ? '#000' : '#e5e7eb'
-                                    }}
-                                    className={cn(
-                                        "w-8 h-8 md:w-12 md:h-12 rounded-full flex items-center justify-center border hover:border-2 transition-all duration-300 shadow-sm",
-                                        isActive && "ring-4 ring-black/5 dark:ring-white/10 shadow-lg border-2",
-                                        isCompleted && "bg-black dark:bg-white border-black dark:border-white",
-                                        isPending && "bg-white dark:bg-zinc-900 border-gray-200 dark:border-zinc-800"
-                                    )}
-                                >
-                                    <Icon className={cn("w-4 h-4 md:w-6 md:h-6", isActive && "animate-pulse")} />
-                                </motion.div>
+                                <div className="relative flex items-center justify-center w-full h-8 md:h-12">
+                                    <motion.div
+                                        initial={false}
+                                        animate={{ 
+                                            scale: isActive ? 1.15 : 1,
+                                            backgroundColor: isCompleted || isActive ? (isActive ? '#000' : '#111') : '#fff',
+                                            color: isCompleted || isActive ? '#fff' : '#999',
+                                            borderColor: isCompleted || isActive ? '#000' : '#e5e7eb'
+                                        }}
+                                        className={cn(
+                                            "w-8 h-8 md:w-12 md:h-12 rounded-full flex items-center justify-center border hover:border-2 transition-all duration-300 shadow-sm",
+                                            isActive && "ring-4 ring-black/5 dark:ring-white/10 shadow-lg border-2",
+                                            isCompleted && "bg-black dark:bg-white border-black dark:border-white",
+                                            isPending && "bg-white dark:bg-zinc-900 border-gray-200 dark:border-zinc-800"
+                                        )}
+                                    >
+                                        <Icon className={cn("w-4 h-4 md:w-6 md:h-6", isActive && "animate-pulse")} />
+                                    </motion.div>
+                                </div>
                                 
                                 <div className="mt-2 flex flex-col items-center text-center min-h-[40px] md:min-h-[48px]">
                                     <span className={cn(
