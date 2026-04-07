@@ -539,7 +539,10 @@
         "cart_restored": "שחזרנו עבורך את העגלה מהביקור הקודם!",
         "cart_locked_lottery": "העגלה נעולה בזמן שהגרלת הבשמים פעילה!",
         "stock_limit_ml_reached": "לא ניתן להוסיף - המלאי מוגבל ל-{limit} מ\"ל סה\"כ!",
-        "stock_limit_reached": "אזל המלאי ממוצר זה"
+        "stock_limit_reached": "אזל המלאי ממוצר זה",
+        "clear_cart_btn": "נקה עגלה",
+        "confirm_clear_cart_full": "האם אתה בטוח שברצונך לנקות את כל העגלה? פעולה זו תסיר את הפריטים גם מחשבונך.",
+        "cart_cleared_toast": "העגלה נוקתה בהצלחה"
     },
     "inbox": {
         "title": "תיבת דואר",

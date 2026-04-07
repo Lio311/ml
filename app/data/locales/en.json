@@ -585,7 +585,10 @@
         "cart_restored": "We've restored your cart from your previous visit!",
         "cart_locked_lottery": "Cart is locked while perfume lottery is active!",
         "stock_limit_ml_reached": "Cannot add - Stock limited to {limit}ml total!",
-        "stock_limit_reached": "Out of stock"
+        "stock_limit_reached": "Out of stock",
+        "clear_cart_btn": "Clear Cart",
+        "confirm_clear_cart_full": "Are you sure you want to clear your entire cart? This will also remove the saved items from your account.",
+        "cart_cleared_toast": "Cart has been cleared"
     },
     "inbox": {
         "title": "Inbox",

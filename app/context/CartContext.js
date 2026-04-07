@@ -493,6 +493,18 @@ export function CartProvider({ children }) {
         setActiveVendorId('main');
         setCoupon(null);
         setLuckyPrize(null);
+        
+        // Immediate server sync if logged in
+        if (user?.primaryEmailAddress?.emailAddress) {
+            fetch('/api/cart/sync', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    email: user.primaryEmailAddress.emailAddress,
+                    items: []
+                })
+            }).catch(err => console.error("Failed to clear server cart:", err));
+        }
     };
 
     const startLottery = (items) => {
