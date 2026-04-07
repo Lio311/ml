@@ -1,32 +1,35 @@
 "use client";
 
-import Image from "next/image";
+import Link from "next/link";
 import { useLanguage } from "../../context/LanguageContext";
 
 export default function CartItem({ item, updateQuantity, removeFromCart, activeVendorId }) {
     const { t, localize, locale } = useLanguage();
+    const productUrl = `/product/${item.slug || item.id}`;
     
     return (
         <div key={`${item.id}-${item.size}`} className={`flex items-center gap-4 border p-4 rounded-lg bg-white shadow-sm relative`}>
-            <div className="w-20 h-20 bg-white flex items-center justify-center text-2xl rounded overflow-hidden relative border border-gray-100 flex-shrink-0">
+            <Link href={productUrl} className="w-20 h-20 bg-white flex items-center justify-center text-2xl rounded overflow-hidden relative border border-gray-100 flex-shrink-0 hover:opacity-80 transition-opacity">
                 {item.image_url ? (
                     <Image src={item.image_url} alt={item.name} fill className="object-contain" sizes="80px" />
                 ) : (
                     <span>{item.isPrize ? '🎁' : '🧴'}</span>
                 )}
-            </div>
+            </Link>
 
             <div className="flex-1 min-w-0">
-                <h3 className="font-bold text-gray-900 leading-tight whitespace-normal">
-                    {locale === 'he' ? (
-                        <div className="flex flex-col">
-                            <span className="text-[10px] text-gray-400 font-medium uppercase tracking-wider">{item.brand_he || item.brand}</span>
-                            <span className="text-sm md:text-base">{item.model_he || item.model || item.name}</span>
-                        </div>
-                    ) : (
-                        <span>{localize(item, 'name')}</span>
-                    )}
-                </h3>
+                <Link href={productUrl} className="block group">
+                    <h3 className="font-bold text-gray-900 leading-tight whitespace-normal group-hover:text-blue-600 transition-colors">
+                        {locale === 'he' ? (
+                            <div className="flex flex-col">
+                                <span className="text-[10px] text-gray-400 font-medium uppercase tracking-wider">{item.brand_he || item.brand}</span>
+                                <span className="text-sm md:text-base">{item.model_he || item.model || item.name}</span>
+                            </div>
+                        ) : (
+                            <span>{localize(item, 'name')}</span>
+                        )}
+                    </h3>
+                </Link>
                 <div className="text-sm text-gray-500">{t('cart.size')}: {item.size === 'set' ? t('cart.set') : `${String(item.size).replace(/ml$/i, '')} ${t('common.ml_unit')}`}</div>
                 <div className={`text-sm font-bold mt-1`}>
                     {item.originalPrice && item.originalPrice !== item.price && !item.isPrize ? (
