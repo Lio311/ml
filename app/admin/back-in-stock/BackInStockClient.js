@@ -53,7 +53,7 @@ export default function BackInStockClient() {
 
             const data = await res.json();
             if (res.ok) {
-                toast.success(`נשלחו ${data.notifiedCount} התראות והמלאי עודכן!`);
+                toast.success(`נשלחו ${data.notifiedCount} התראות והמלאי עודכן`);
                 // Refresh internal state and DB
                 fetchProducts();
                 router.refresh();
