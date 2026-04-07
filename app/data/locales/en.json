@@ -588,7 +588,8 @@
         "stock_limit_reached": "Out of stock",
         "clear_cart_btn": "Clear Cart",
         "confirm_clear_cart_full": "Are you sure you want to clear your entire cart? This will also remove the saved items from your account.",
-        "cart_cleared_toast": "Cart has been cleared"
+        "cart_cleared_toast": "Cart has been cleared",
+        "confirm_clear_cart_btn": "Yes, clear cart"
     },
     "inbox": {
         "title": "Inbox",

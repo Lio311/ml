@@ -542,7 +542,8 @@
         "stock_limit_reached": "אזל המלאי ממוצר זה",
         "clear_cart_btn": "נקה עגלה",
         "confirm_clear_cart_full": "האם אתה בטוח שברצונך לנקות את כל העגלה? פעולה זו תסיר את הפריטים גם מחשבונך.",
-        "cart_cleared_toast": "העגלה נוקתה בהצלחה"
+        "cart_cleared_toast": "העגלה נוקתה בהצלחה",
+        "confirm_clear_cart_btn": "כן, נקה עגלה"
     },
     "inbox": {
         "title": "תיבת דואר",
