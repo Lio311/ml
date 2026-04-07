@@ -81,12 +81,12 @@ export async function POST(req) {
                 // If no subscribers, just update stock? 
                 // User said "שם מעדכנים את המלאי החדש... וגם רשימה של המשתמשים".
                 // I'll update stock anyway.
-                await client.query('UPDATE products SET stock = $1, updated_at = NOW() WHERE id = $2', [newStock, productId]);
+                await client.query('UPDATE products SET stock = $1 WHERE id = $2', [newStock, productId]);
                 return NextResponse.json({ success: true, message: 'Stock updated. No subscribers to notify.' });
             }
 
             // 3. Update stock in DB
-            await client.query('UPDATE products SET stock = $1, updated_at = NOW() WHERE id = $2', [newStock, productId]);
+            await client.query('UPDATE products SET stock = $1 WHERE id = $2', [newStock, productId]);
 
             // 4. Send Emails
             const html = getBackInStockTemplate(product);
