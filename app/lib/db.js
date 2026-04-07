@@ -72,8 +72,8 @@ export const getBrands = unstable_cache(
             return []; // Fallback to empty array to allow build to continue
         }
     },
-    ['global-brands-v2'],
-    { revalidate: 3600, tags: ['globals', 'brands', 'v2'] }
+    ['global-brands-v3'],
+    { revalidate: 3600, tags: ['globals', 'brands', 'v3'] }
 );
 
 export const getMenuItems = unstable_cache(
@@ -139,8 +139,8 @@ export const getBrandInsight = unstable_cache(
             }
         }
     },
-    ['brand-insights-v2'],
-    { revalidate: 3600, tags: ['brands', 'insights', 'v2'] }
+    ['brand-insights-v3'],
+    { revalidate: 3600, tags: ['brands', 'insights', 'v3'] }
 );
 
 /**
