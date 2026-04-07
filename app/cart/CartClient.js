@@ -334,7 +334,21 @@ export default function CartClient() {
                 )}
 
                 <div className="flex items-center justify-between mb-8">
-                    <h1 className="text-3xl font-bold">{t('cart.title')}</h1>
+                    <div className="flex items-center gap-4">
+                        <h1 className="text-3xl font-bold">{t('cart.title')}</h1>
+                        <button 
+                            onClick={() => setShowClearConfirm(true)}
+                            className="flex items-center gap-2 text-xs font-bold text-gray-400 hover:text-red-500 transition-all duration-300 px-3 py-1.5 rounded-lg hover:bg-red-50 group"
+                        >
+                            <div className="p-1.5 bg-gray-100 rounded-lg group-hover:bg-red-100 group-hover:text-red-600 transition-colors">
+                                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                </svg>
+                            </div>
+                            <span>{t('cart.clear_cart_btn')}</span>
+                        </button>
+                    </div>
+
                     <button 
                         onClick={handleShareCart} 
                         className="p-2.5 bg-white border border-gray-100 shadow-sm rounded-full hover:bg-gray-50 transition-all hover:scale-110 active:scale-95" 
@@ -401,22 +415,6 @@ export default function CartClient() {
 
                 <div className="flex flex-col lg:flex-row gap-12">
                     <div className="flex-1 space-y-6">
-                        {activeItems.length > 0 && (
-                            <div className="flex justify-between items-center px-1 mb-2">
-                                <div /> {/* Spacer */}
-                                <button 
-                                    onClick={() => setShowClearConfirm(true)}
-                                    className="flex items-center gap-2 text-xs font-bold text-gray-400 hover:text-red-500 transition-all duration-300 px-3 py-1.5 rounded-lg hover:bg-red-50 group"
-                                >
-                                    <div className="p-1.5 bg-gray-100 rounded-lg group-hover:bg-red-100 group-hover:text-red-600 transition-colors">
-                                        <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                        </svg>
-                                    </div>
-                                    <span>{t('cart.clear_cart_btn')}</span>
-                                </button>
-                            </div>
-                        )}
                         {activeItems.map(item => (
                             <CartItem 
                                 key={`${item.id}-${item.size}`} 
