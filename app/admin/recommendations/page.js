@@ -168,9 +168,15 @@ export default function RecommendationsAdminPage() {
                         </h3>
                         <ul className="space-y-3">
                             {originalItems.map((oi, idx) => (
-                                <li key={idx} className="flex items-center justify-between text-sm">
-                                    <span className="font-medium text-gray-900 truncate pr-2 max-w-[200px]">{oi.name}</span>
-                                    <span className="text-gray-500 min-w-max mr-2">{oi.price} ₪</span>
+                                <li key={idx} className="flex items-center justify-between text-sm py-1 border-b border-gray-50 last:border-0">
+                                    <div className="flex flex-col">
+                                        <span className="font-bold text-gray-900">{oi.brand_he || oi.brand}</span>
+                                        <span className="text-xs text-gray-500">{oi.model_he || oi.model} | {oi.size} מ"ל</span>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <span className="text-gray-400 text-xs">{oi.quantity} x</span>
+                                        <span className="font-bold text-indigo-600">{oi.price} ₪</span>
+                                    </div>
                                 </li>
                             ))}
                             {originalItems.length === 0 && (
