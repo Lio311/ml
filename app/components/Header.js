@@ -183,7 +183,7 @@ export default function Header({ brands = [] }) {
                         </div>
                     </div>
 
-                    <div className="xl:hidden flex w-full items-center justify-between h-full px-4 text-black" dir="rtl">
+                    <div className="xl:hidden flex w-full items-center justify-between h-full px-4 text-black" dir={dir}>
                         {/* Right side: Back & Menu - Pushed to right edge */}
                         <div className="flex items-center gap-2">
                             {!isHome && (
@@ -191,7 +191,7 @@ export default function Header({ brands = [] }) {
                                     onClick={() => router.back()}
                                     className="p-1 text-black hover:opacity-100 opacity-70 transition-opacity"
                                 >
-                                    <ChevronRight className="w-6 h-6" />
+                                    {dir === 'rtl' ? <ChevronRight className="w-6 h-6" /> : <ChevronLeft className="w-6 h-6" />}
                                 </button>
                             )}
                             <button 
@@ -217,7 +217,7 @@ export default function Header({ brands = [] }) {
                         </div>
 
                         {/* Left side: Icons - Pushed to left edge */}
-                        <div className="flex items-center gap-2 pl-2">
+                        <div className="flex items-center gap-2">
                             <button 
                                 onClick={() => setIsMobileSearchOpen(!isMobileSearchOpen)}
                                 className="p-1 text-black hover:text-blue-600 transition"
