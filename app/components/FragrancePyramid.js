@@ -1,6 +1,6 @@
 "use client";
 
-import React from 'react';
+import React, { useState } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
@@ -64,7 +64,7 @@ function translateNote(note, locale) {
 }
 
 export default function FragrancePyramid({ top, middle, base }) {
-    const [isOpen, setIsOpen] = React.useState(false);
+    const [isOpen, setIsOpen] = useState(false);
     const { t, dir, locale } = useLanguage();
 
     if (!top && !middle && !base) return null;

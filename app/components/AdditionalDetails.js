@@ -1,3 +1,8 @@
+"use client";
+import { useState } from "react";
+import { ChevronDown, Calendar, Globe, Palette } from 'lucide-react';
+import { useLanguage } from '../context/LanguageContext';
+
 const SEASONS_MAP = {
     'חורף': 'Winter',
     'סתיו': 'Autumn',
@@ -12,7 +17,7 @@ function translateSeason(season, locale) {
 }
 
 export default function AdditionalDetails({ seasons, country, perfumers }) {
-    const [isOpen, setIsOpen] = React.useState(false);
+    const [isOpen, setIsOpen] = useState(false);
     const { t, dir, locale } = useLanguage();
 
     if (!seasons && !country && !perfumers) return null;
