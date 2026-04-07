@@ -14,13 +14,13 @@ const HE_TO_EN_NOTES = {
     'אירוס': 'Iris', 'שורש אירים': 'Iris Root', 'ג\'ורג\'יה': 'Gardenia',
     'ברוסליה': 'Freesia', 'מגנוליה': 'Magnolia', 'סחלב': 'Orchid',
     'פרחי תפוז': 'Orange Blossom', 'נרגיס': 'Narcissus', 'ילנג ילנג': 'Ylang Ylang',
-    'ג\'אסמין': 'Jasmine', 'כלניות': 'Carnation',
+    'ג\'אסמין': 'Jasmine', 'כלניות': 'Carnation', 'פרזיה': 'Freesia',
     // Citrus
     'ליים': 'Lime', 'לימון': 'Lemon', 'תפוז': 'Orange', 'אשכולית': 'Grapefruit',
     'ברגמוט': 'Bergamot', 'מנדרינה': 'Mandarin', 'לימון מאייר': 'Meyer Lemon',
-    'ציטרוס': 'Citrus', 'סיטרקס': 'Citrus',
+    'ציטרוס': 'Citrus', 'סיטרקס': 'Citrus', 'תפוז דם': 'Blood Orange',
     // Woods & Resins
-    'עץ ארז': 'Cedarwood', 'ארז': 'Cedar', 'לבנה': 'Labdanum', 'לבונה': 'Frankincense',
+    'עץ ארז': 'Cedarwood', 'ארז': 'Cedar', 'ארז אטלס': 'Atlas Cedar', 'לבנה': 'Labdanum', 'לבונה': 'Frankincense',
     'קונה': 'Guaiac Wood', 'עץ סנדל': 'Sandalwood', 'סנדלווד': 'Sandalwood',
     'עץ קשמיר': 'Cashmeran', 'עץ ורד': 'Rosewood', 'אגר עוד': 'Oud',
     'עוד': 'Oud', 'אמברגריס': 'Ambergris', 'פאטשולי': 'Patchouli',
@@ -31,7 +31,7 @@ const HE_TO_EN_NOTES = {
     'קרדמום': 'Cardamom', 'זעפרן': 'Saffron', 'גינגר': 'Ginger',
     'לעשוש': 'Nutmeg', 'אגוז מוסקט': 'Nutmeg', 'ציפורן': 'Clove',
     // Musks & Gourmands
-    'מוסק': 'Musk', 'ונילה': 'Vanilla', 'קרמל': 'Caramel', 'שולק': 'Caramel',
+    'מוסק': 'Musk', 'מאסק': 'Musk', 'ונילה': 'Vanilla', 'וניל': 'Vanilla', 'קרמל': 'Caramel', 'שולק': 'Caramel',
     'קפה': 'Coffee', 'שוקולד': 'Chocolate', 'טולו': 'Tolu Balsam',
     'בנסם פרו': 'Peru Balsam', 'גומי': 'Gummy',
     // Fruits
@@ -42,10 +42,12 @@ const HE_TO_EN_NOTES = {
     // Animals & Aquatics
     'אמבר': 'Amber', 'בְּיוֹר': "Birch", 'ביר\'': 'Birch',
     'לביח': 'Labdanum', 'ציוות': 'Civet',
+    // Seasons (Added for consistency)
+    'אביב': 'Spring', 'קיץ': 'Summer', 'סתיו': 'Autumn', 'חורף': 'Winter',
     // Other
     'פרנגיפני': 'Frangipani', 'תה': 'Tea', 'תה ירוק': 'Green Tea',
     'מאסם': 'Mace', 'אנג\'ל': 'Angelica', 'אנס': 'Anise',
-    'סיפרס': 'Cypress', 'ברוש': 'Cypress',
+    'סיפרס': 'Cypress', 'ברוש': 'Cypress', 'אורז': 'Rice', 'קוקוס': 'Coconut',
     'קנה': 'Gaiac Wood', 'פְּטִיגְר\'ן': 'Petitgrain',
     'אורן': 'Pine', 'אלדרווד': 'Eldarwood',
     'גחלת': 'Charcoal', 'כחול': 'Blue', 'ים': 'Sea Salt',

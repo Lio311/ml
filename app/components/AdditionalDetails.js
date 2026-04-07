@@ -1,12 +1,19 @@
-"use client";
+const SEASONS_MAP = {
+    'חורף': 'Winter',
+    'סתיו': 'Autumn',
+    'אביב': 'Spring',
+    'קיץ': 'Summer'
+};
 
-import React from 'react';
-import { Calendar, Globe, Palette, ChevronDown } from 'lucide-react';
-import { useLanguage } from '../context/LanguageContext';
+function translateSeason(season, locale) {
+    if (locale !== 'en') return season;
+    const trimmed = season.trim();
+    return SEASONS_MAP[trimmed] || trimmed;
+}
 
 export default function AdditionalDetails({ seasons, country, perfumers }) {
     const [isOpen, setIsOpen] = React.useState(false);
-    const { t, dir } = useLanguage();
+    const { t, dir, locale } = useLanguage();
 
     if (!seasons && !country && !perfumers) return null;
 
@@ -33,11 +40,14 @@ export default function AdditionalDetails({ seasons, country, perfumers }) {
                             <div className={dir === 'rtl' ? 'text-right' : 'text-left'}>
                                 <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none mb-2">{t('common.suitable_seasons')}</div>
                                 <div className="flex flex-wrap gap-2">
-                                    {seasons.split(',').map(s => (
-                                        <span key={s} className="bg-black text-white px-3 py-1 rounded-full text-[11px] font-bold shadow-sm transition-transform hover:scale-105">
-                                            {s.trim()}
-                                        </span>
-                                    ))}
+                                    {seasons.split(',').map(s => {
+                                        const translated = translateSeason(s.trim(), locale);
+                                        return (
+                                            <span key={s} className="bg-black text-white px-3 py-1 rounded-full text-[11px] font-bold shadow-sm transition-transform hover:scale-105">
+                                                {translated}
+                                            </span>
+                                        );
+                                    })}
                                 </div>
                             </div>
                         </div>
