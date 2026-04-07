@@ -349,7 +349,7 @@ export default function CartClient() {
                         </button>
                     </div>
 
-                    <div className="w-full lg:w-96 flex justify-start">
+                    <div className="w-full lg:w-96 flex justify-end">
                         <button 
                             onClick={handleShareCart} 
                             className="p-2.5 bg-white border border-gray-100 shadow-sm rounded-full hover:bg-gray-50 transition-all hover:scale-110 active:scale-95" 
