@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useLanguage } from "../../context/LanguageContext";
 
 export default function CartItem({ item, updateQuantity, removeFromCart, activeVendorId }) {
-    const { t } = useLanguage();
+    const { t, localize, locale } = useLanguage();
     
     return (
         <div key={`${item.id}-${item.size}`} className={`flex items-center gap-4 border p-4 rounded-lg bg-white shadow-sm relative`}>
@@ -17,7 +17,16 @@ export default function CartItem({ item, updateQuantity, removeFromCart, activeV
             </div>
 
             <div className="flex-1 min-w-0">
-                <h3 className="font-bold text-gray-900 leading-tight line-clamp-2 whitespace-normal">{item.name}</h3>
+                <h3 className="font-bold text-gray-900 leading-tight whitespace-normal">
+                    {locale === 'he' ? (
+                        <div className="flex flex-col">
+                            <span className="text-[10px] text-gray-400 font-medium uppercase tracking-wider">{item.brand_he || item.brand}</span>
+                            <span className="text-sm md:text-base">{item.model_he || item.model || item.name}</span>
+                        </div>
+                    ) : (
+                        <span>{localize(item, 'name')}</span>
+                    )}
+                </h3>
                 <div className="text-sm text-gray-500">{t('cart.size')}: {item.size === 'set' ? t('cart.set') : `${String(item.size).replace(/ml$/i, '')} ${t('common.ml_unit')}`}</div>
                 <div className={`text-sm font-bold mt-1`}>
                     {item.originalPrice && item.originalPrice !== item.price && !item.isPrize ? (
