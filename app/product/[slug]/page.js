@@ -23,8 +23,13 @@ import * as Sentry from "@sentry/nextjs";
 const localize = (obj, field, locale) => {
     if (!obj) return '';
     if (locale === 'en') {
-        const val = obj[`${field}_en`] || obj[`${field}_EN`] || obj[field];
-        return val ? String(val) : '';
+        const val = obj[`${field}_en`] || obj[`${field}_EN`];
+        // If we have a non-empty string that isn't 'null' or whitespace, use it
+        if (val && typeof val === 'string' && val.trim() !== '' && val.toLowerCase() !== 'null') {
+            return val;
+        }
+        // Otherwise fallback to the default field
+        return obj[field] ? String(obj[field]) : '';
     }
     const val = obj[`${field}_he`] || obj[`${field}_HE`] || obj[field];
     return val ? String(val) : '';
@@ -150,9 +155,14 @@ export default async function ProductPage(props) {
     let rawProduct;
     try {
         const res = await pool.query(`
-            SELECT p.id, p.slug, p.brand, p.brand_he, p.model, p.model_he, p.name, p.name_he, p.description, p.description_he, p.image_url, p.category, p.stock, p.top_notes, p.middle_notes, p.base_notes, p.price_2ml, p.price_5ml, p.price_10ml, p.seasons, p.country, p.perfumers, b.logo_url,
-            (SELECT AVG(rating) FROM reviews WHERE product_id = p.id) as average_rating,
-            (SELECT COUNT(*) FROM reviews WHERE product_id = p.id) as review_count
+            SELECT p.id, p.slug, p.brand, p.brand_he, p.model, p.model_he, p.name, p.name_he, p.name_en, 
+                   p.description, p.description_he, p.description_en, p.image_url, p.category, p.category_en, 
+                   p.stock, p.top_notes, p.top_notes_en, p.middle_notes, p.middle_notes_en, p.base_notes, p.base_notes_en, 
+                   p.price_2ml, p.price_5ml, p.price_10ml, p.seasons, p.seasons_en, p.country, p.country_en, 
+                   p.perfumers, p.perfumers_en, b.logo_url, b.title_en, b.description_en as brand_description_en, 
+                   b.highlights_en as brand_highlights_en, b.perfumer_en as brand_perfumer_en,
+                   (SELECT AVG(rating) FROM reviews WHERE product_id = p.id) as average_rating,
+                   (SELECT COUNT(*) FROM reviews WHERE product_id = p.id) as review_count
             FROM products p 
             LEFT JOIN brands b ON p.brand = b.name 
             WHERE p.slug = $1 OR p.id::text = $1

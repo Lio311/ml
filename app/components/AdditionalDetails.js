@@ -13,6 +13,8 @@ const SEASONS_MAP = {
 function translateSeason(season, locale) {
     if (locale !== 'en') return season;
     const trimmed = season.trim();
+    // If it's already one of the English values, return as is
+    if (Object.values(SEASONS_MAP).includes(trimmed)) return trimmed;
     return SEASONS_MAP[trimmed] || trimmed;
 }
 

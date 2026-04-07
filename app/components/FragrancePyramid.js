@@ -33,9 +33,9 @@ const HE_TO_EN_NOTES = {
     // Musks & Gourmands
     'מוסק': 'Musk', 'מאסק': 'Musk', 'ונילה': 'Vanilla', 'וניל': 'Vanilla', 'קרמל': 'Caramel', 'שולק': 'Caramel',
     'קפה': 'Coffee', 'שוקולד': 'Chocolate', 'טולו': 'Tolu Balsam',
-    'בנסם פרו': 'Peru Balsam', 'גומי': 'Gummy',
+    'בנסם פרו': 'Peru Balsam', 'גומי': 'Gummy', 'שוקולד': 'Chocolate',
     // Fruits
-    'תפוח': 'Apple', 'אגס': 'Pear', 'אפרסק': 'Peach', 'ליצ\'י': 'Lychee',
+    'תפוח': 'Apple', 'אגס': 'Pear', 'אפרסק': 'Peach', 'ליצ\'י': 'Lychee', 'תאנה': 'Fig',
     'פרחי דובדבן': 'Cherry Blossom', 'פטל': 'Raspberry', 'תות': 'Strawberry', 'תות שדה': 'Strawberry',
     'מנגו': 'Mango', 'פפאיה': 'Papaya', 'גויאבה': 'Guava',
     'אננס': 'Pineapple', 'בלק קארנט': 'Blackcurrant', 'דומדמנית שחורה': 'Blackcurrant',
@@ -50,7 +50,8 @@ const HE_TO_EN_NOTES = {
     'סיפרס': 'Cypress', 'ברוש': 'Cypress', 'אורז': 'Rice', 'קוקוס': 'Coconut',
     'קנה': 'Gaiac Wood', 'פְּטִיגְר\'ן': 'Petitgrain',
     'אורן': 'Pine', 'אלדרווד': 'Eldarwood',
-    'גחלת': 'Charcoal', 'כחול': 'Blue', 'ים': 'Sea Salt',
+    'גחלת': 'Charcoal', 'כחול': 'Blue', 'ים': 'Sea Salt', 'טבק': 'Tobacco', 'עור': 'Leather',
+    'עצים': 'Woods', 'הדרים': 'Citrus', 'פיסטוק': 'Pistachio', 'ורבנה': 'Verbena',
 };
 
 function translateNote(note, locale) {
