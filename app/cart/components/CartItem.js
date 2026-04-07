@@ -21,14 +21,10 @@ export default function CartItem({ item, updateQuantity, removeFromCart, activeV
             <div className="flex-1 min-w-0">
                 <Link href={productUrl} className="block group">
                     <h3 className="font-bold text-gray-900 leading-tight whitespace-normal group-hover:text-blue-600 transition-colors">
-                        {locale === 'he' ? (
-                            <div className="flex flex-col">
-                                <span className="text-[10px] text-gray-400 font-medium uppercase tracking-wider">{item.brand_he || item.brand}</span>
-                                <span className="text-sm md:text-base">{item.model_he || item.model || item.name}</span>
-                            </div>
-                        ) : (
-                            <span>{localize(item, 'name')}</span>
-                        )}
+                        <div className="flex flex-col">
+                            <span className="text-[10px] text-gray-400 font-medium uppercase tracking-wider">{localize(item, 'brand')}</span>
+                            <span className="text-sm md:text-base">{localize(item, 'model') || localize(item, 'name')}</span>
+                        </div>
                     </h3>
                 </Link>
                 <div className="text-sm text-gray-500">{t('cart.size')}: {item.size === 'set' ? t('cart.set') : `${String(item.size).replace(/ml$/i, '')} ${t('common.ml_unit')}`}</div>
