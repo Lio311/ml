@@ -333,12 +333,12 @@ export default function CartClient() {
                     </div>
                 )}
 
-                <div className="flex flex-col lg:flex-row gap-12 mb-8 items-center">
-                    <div className="flex-1 flex items-center justify-between w-full">
-                        <h1 className="text-3xl font-bold">{t('cart.title')}</h1>
+                <div className="flex flex-row lg:flex-row gap-4 lg:gap-12 mb-8 items-center justify-between">
+                    <div className="flex-1 flex items-center justify-between">
+                        <h1 className="text-2xl md:text-3xl font-bold">{t('cart.title')}</h1>
                         <button 
                             onClick={() => setShowClearConfirm(true)}
-                            className="flex items-center gap-2 text-xs font-bold text-gray-400 hover:text-red-500 transition-all duration-300 px-3 py-1.5 rounded-lg hover:bg-red-50 group"
+                            className="hidden lg:flex items-center gap-2 text-xs font-bold text-gray-400 hover:text-red-500 transition-all duration-300 px-3 py-1.5 rounded-lg hover:bg-red-50 group"
                         >
                             <div className="p-1.5 bg-gray-100 rounded-lg group-hover:bg-red-100 group-hover:text-red-600 transition-colors">
                                 <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -349,7 +349,7 @@ export default function CartClient() {
                         </button>
                     </div>
 
-                    <div className="w-full lg:w-96 flex justify-end">
+                    <div className="lg:w-96 flex justify-end">
                         <button 
                             onClick={handleShareCart} 
                             className="p-2.5 bg-white border border-gray-100 shadow-sm rounded-full hover:bg-gray-50 transition-all hover:scale-110 active:scale-95" 
@@ -361,8 +361,6 @@ export default function CartClient() {
                         </button>
                     </div>
                 </div>
-
-                {/* Custom Clear Cart Confirmation Modal */}
 
                 {/* Custom Clear Cart Confirmation Modal */}
                 {showClearConfirm && (
