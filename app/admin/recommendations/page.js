@@ -1,4 +1,5 @@
 'use client';
+// Force push check
 
 import { useState, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
@@ -180,7 +181,7 @@ export default function RecommendationsAdminPage() {
                                 </li>
                             ))}
                             {originalItems.length === 0 && (
-                                <li className="text-gray-400 text-sm italic">לא נמצא פירוט פריטים</li>
+                                <li className="text-gray-400 text-sm italic">לא נמצא פירוט פריטים להזמנה #{item.order_id}</li>
                             )}
                         </ul>
                     </div>
