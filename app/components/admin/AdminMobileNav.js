@@ -53,6 +53,7 @@ export default function AdminMobileNav({ role = 'customer' }) {
             title: "מלאי",
             items: [
                 { href: "/admin/products", label: "מוצרים", icon: Store, roles: ['admin', 'deputy'] },
+                { href: "/admin/back-in-stock", label: "חזרה למלאי", icon: Bell, roles: ['admin', 'deputy'] },
                 { href: "/admin/inventory", label: "בקבוקונים", icon: Package, roles: ['admin', 'deputy'] },
                 { href: "/admin/brands", label: "מותגים", icon: Tag, roles: ['admin', 'deputy'] },
                 { href: "/admin/requests", label: "בקשות", icon: Inbox, roles: ['admin', 'deputy'] },

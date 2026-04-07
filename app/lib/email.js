@@ -256,3 +256,40 @@ export const getUserWelcomeTemplate = (customerName) => {
         </div>
     `;
 };
+
+export const getBackInStockTemplate = (product) => {
+    const productUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'https://www.ml-tlv.com'}/product/${product.id}`;
+    
+    return `
+        <div dir="rtl" style="font-family: 'Open Sans', 'Open Sans Hebrew', Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto;">
+            <div style="text-align: center; font-size: 24px; font-weight: bold; margin-bottom: 20px;">ml_tlv</div>
+            
+            <h1 style="color: #000; text-align: center;">הוא חזר! 🎉</h1>
+            <p style="font-size: 18px; text-align: center;">היי, יש לנו חדשות מעולות בשבילך!</p>
+            
+            <p style="line-height: 1.6; text-align: center;">
+                הבושם שחיכית לו חזר למלאי וזמין כעת לרכישה באתר.
+            </p>
+
+            <div style="text-align: center; margin: 30px 0;">
+                <img src="${product.image_url}" alt="${product.brand} ${product.model}" style="max-width: 200px; height: auto; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08);" />
+            </div>
+            
+            <div style="text-align: center; background-color: #f8f8f8; padding: 25px; border-radius: 16px; margin: 30px 0;">
+                <h2 style="margin: 0; font-size: 20px;">${product.brand_he || product.brand}</h2>
+                <h3 style="margin: 5px 0 15px; color: #666; font-size: 18px;">${product.model_he || product.model}</h3>
+                
+                <p style="font-size: 14px; color: #888; margin-bottom: 20px;">
+                    אל תחכה יותר מדי, המלאי עשוי להיגמר מהר...
+                </p>
+
+                <a href="${productUrl}" style="background-color: #000; color: #fff; padding: 16px 32px; text-decoration: none; border-radius: 32px; font-weight: bold; display: inline-block; font-size: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.2);">
+                    אני רוצה להזמין עכשיו
+                </a>
+            </div>
+            
+            <hr style="margin: 40px 0; border: 0; border-top: 1px solid #eee;">
+            <p style="font-size: 12px; color: #999; text-align: center;">ml - יוקרה בחתיכות קטנות</p>
+        </div>
+    `;
+};

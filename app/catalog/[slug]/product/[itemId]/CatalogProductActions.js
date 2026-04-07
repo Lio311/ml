@@ -56,10 +56,36 @@ export default function CatalogProductActions({ item, slug }) {
     if (isOutOfStock) {
         return (
             <div className="space-y-4">
-                <div className="bg-gray-50 border border-gray-200 rounded-xl p-4 text-center">
-                    <span className="text-2xl block mb-2">😔</span>
-                    <p className="font-bold text-gray-500">{t('common.out_of_stock')}</p>
-                    <p className="text-xs text-gray-400 mt-1">{t('common.no_products_found')}</p> 
+                <div className="bg-gray-50 border border-gray-200 rounded-2xl p-6 text-center shadow-sm">
+                    <span className="text-3xl block mb-3">😔</span>
+                    <p className="font-bold text-gray-900 text-lg mb-1">{t('common.out_of_stock')}</p>
+                    <p className="text-sm text-gray-500 mb-6">{dir === 'rtl' ? 'הבושם הזה אזל זמנית מהמלאי' : 'This fragrance is temporarily out of stock'}</p>
+                    
+                    {subscribed ? (
+                        <div className="bg-green-50 text-green-700 p-3 rounded-xl border border-green-100 flex items-center justify-center gap-2 font-bold text-sm">
+                            <Check size={16} />
+                            <span>{dir === 'rtl' ? 'עדכון יישלח אליך למייל' : 'We will email you when it returns'}</span>
+                        </div>
+                    ) : (
+                        <button
+                            onClick={handleSubscribe}
+                            disabled={isSubscribing}
+                            className="w-full bg-black text-white py-3.5 rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-gray-800 transition-all active:scale-95 disabled:opacity-50"
+                        >
+                            {isSubscribing ? (
+                                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                            ) : (
+                                <Bell size={18} />
+                            )}
+                            <span>{dir === 'rtl' ? 'עדכנו אותי כשהמוצר חוזר' : 'Notify me when back in stock'}</span>
+                        </button>
+                    )}
+                    
+                    {!isSignedIn && !subscribed && (
+                        <p className="text-[10px] text-gray-400 mt-3 font-medium">
+                            {dir === 'rtl' ? '* ההרשמה מיועדת ללקוחות רשומים בלבד.' : '* Notification available for registered users only.'}
+                        </p>
+                    )}
                 </div>
             </div>
         );
