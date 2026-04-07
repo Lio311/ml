@@ -17,7 +17,7 @@ export default function CartItem({ item, updateQuantity, removeFromCart, activeV
             </div>
 
             <div className="flex-1 min-w-0">
-                <h3 className="font-bold leading-tight break-words">{item.name}</h3>
+                <h3 className="font-bold text-gray-900 leading-tight line-clamp-2 whitespace-normal">{item.name}</h3>
                 <div className="text-sm text-gray-500">{t('cart.size')}: {item.size === 'set' ? t('cart.set') : `${String(item.size).replace(/ml$/i, '')} ${t('common.ml_unit')}`}</div>
                 <div className={`text-sm font-bold mt-1`}>
                     {item.originalPrice && item.originalPrice !== item.price && !item.isPrize ? (
