@@ -333,8 +333,8 @@ export default function CartClient() {
                     </div>
                 )}
 
-                <div className="flex items-center justify-between mb-8">
-                    <div className="flex items-center gap-4">
+                <div className="flex flex-col lg:flex-row gap-12 mb-8 items-center">
+                    <div className="flex-1 flex items-center justify-between w-full">
                         <h1 className="text-3xl font-bold">{t('cart.title')}</h1>
                         <button 
                             onClick={() => setShowClearConfirm(true)}
@@ -349,15 +349,17 @@ export default function CartClient() {
                         </button>
                     </div>
 
-                    <button 
-                        onClick={handleShareCart} 
-                        className="p-2.5 bg-white border border-gray-100 shadow-sm rounded-full hover:bg-gray-50 transition-all hover:scale-110 active:scale-95" 
-                        title={t('cart.share_cart')}
-                    >
-                        <svg className="w-5 h-5 text-gray-500" fill="currentColor" viewBox="0 0 24 24">
-                            <path d="M15.75 4.5a3 3 0 1 1 .825 2.066l-8.421 4.679a3.002 3.002 0 0 1 0 1.51l8.421 4.679a3 3 0 1 1-.729 1.31l-8.421-4.678a3 3 0 1 1 0-4.132l8.421-4.679a3 3 0 0 1-.096-.755Z" />
-                        </svg>
-                    </button>
+                    <div className="w-full lg:w-96 flex justify-start">
+                        <button 
+                            onClick={handleShareCart} 
+                            className="p-2.5 bg-white border border-gray-100 shadow-sm rounded-full hover:bg-gray-50 transition-all hover:scale-110 active:scale-95" 
+                            title={t('cart.share_cart')}
+                        >
+                            <svg className="w-5 h-5 text-gray-500" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M15.75 4.5a3 3 0 1 1 .825 2.066l-8.421 4.679a3.002 3.002 0 0 1 0 1.51l8.421 4.679a3 3 0 1 1-.729 1.31l-8.421-4.678a3 3 0 1 1 0-4.132l8.421-4.679a3 3 0 0 1-.096-.755Z" />
+                            </svg>
+                        </button>
+                    </div>
                 </div>
 
                 {/* Custom Clear Cart Confirmation Modal */}
