@@ -3,15 +3,48 @@ import { useCart } from "../../context/CartContext";
 import { useUser } from "@clerk/nextjs";
 import { useState, useEffect } from "react";
 import { useLanguage } from "../../context/LanguageContext";
-import { Check, Plus } from "lucide-react";
+import { Check, Plus, Bell } from "lucide-react";
 
 import toast from 'react-hot-toast';
 
 export default function ProductActionsClient({ product }) {
     const { addToCart, cartItems } = useCart();
     const [addedId, setAddedId] = useState(null);
+    const [isSubscribing, setIsSubscribing] = useState(false);
+    const [subscribed, setSubscribed] = useState(false);
     const { isSignedIn } = useUser();
     const { t, dir, localize } = useLanguage();
+
+    const stock = Number(product.stock) || 0;
+    const isOutOfStock = stock <= 0;
+
+    const handleSubscribe = async () => {
+        if (!isSignedIn) {
+            toast.error(dir === 'rtl' ? 'יש להתחבר כדי להירשם להתראה' : 'Please sign in to subscribe');
+            return;
+        }
+
+        setIsSubscribing(true);
+        try {
+            const res = await fetch('/api/stock-notifications/subscribe', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ productId: product.id })
+            });
+
+            if (res.ok) {
+                toast.success(dir === 'rtl' ? 'נרשמת בהצלחה! נעדכן אותך כשהמוצר יחזור' : 'Subscribed! We will notify you when back in stock.');
+                setSubscribed(true);
+            } else {
+                const data = await res.json();
+                toast.error(data.error || 'שגיאה בהרשמה');
+            }
+        } catch (error) {
+            toast.error('שגיאה בתקשורת');
+        } finally {
+            setIsSubscribing(false);
+        }
+    };
 
     // Track View History
     useEffect(() => {
@@ -54,6 +87,44 @@ export default function ProductActionsClient({ product }) {
         setAddedId(size);
         setTimeout(() => setAddedId(null), 2000);
     };
+
+    if (isOutOfStock) {
+        return (
+            <div className="space-y-4">
+                <div className="bg-gray-50 border border-gray-200 rounded-2xl p-6 text-center shadow-sm">
+                    <span className="text-3xl block mb-3">😔</span>
+                    <p className="font-bold text-gray-900 text-lg mb-1">{t('common.out_of_stock')}</p>
+                    <p className="text-sm text-gray-500 mb-6">{dir === 'rtl' ? 'הבושם הזה אזל זמנית מהמלאי' : 'This fragrance is temporarily out of stock'}</p>
+                    
+                    {subscribed ? (
+                        <div className="bg-green-50 text-green-700 p-3 rounded-xl border border-green-100 flex items-center justify-center gap-2 font-bold text-sm">
+                            <Check size={16} />
+                            <span>{dir === 'rtl' ? 'עדכון יישלח אליך למייל' : 'We will email you when it returns'}</span>
+                        </div>
+                    ) : (
+                        <button
+                            onClick={handleSubscribe}
+                            disabled={isSubscribing}
+                            className="w-full bg-black text-white py-3.5 rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-gray-800 transition-all active:scale-95 disabled:opacity-50"
+                        >
+                            {isSubscribing ? (
+                                <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                            ) : (
+                                <Bell size={18} />
+                            )}
+                            <span>{dir === 'rtl' ? 'עדכנו אותי כשהמוצר חוזר' : 'Notify me when back in stock'}</span>
+                        </button>
+                    )}
+                    
+                    {!isSignedIn && !subscribed && (
+                        <p className="text-[10px] text-gray-400 mt-3 font-medium">
+                            {dir === 'rtl' ? '* ההרשמה מיועדת ללקוחות רשומים בלבד.' : '* Notification available for registered users only.'}
+                        </p>
+                    )}
+                </div>
+            </div>
+        );
+    }
 
     return (
         <div className={`space-y-4 ${dir === 'rtl' ? 'text-right' : 'text-left'}`} dir={dir}>

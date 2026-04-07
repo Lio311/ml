@@ -4,16 +4,48 @@ import { useState } from "react";
 import { useCart } from "../../../../context/CartContext";
 import toast from "react-hot-toast";
 import { useLanguage } from "../../../../context/LanguageContext";
-import { Check, Plus, X } from "lucide-react";
+import { Check, Plus, X, Bell } from "lucide-react";
+import { useUser } from "@clerk/nextjs";
 
 export default function CatalogProductActions({ item, slug }) {
     const { addToCart, cartItems } = useCart();
     const { t, dir } = useLanguage();
+    const { user, isSignedIn } = useUser();
+    const [isSubscribing, setIsSubscribing] = useState(false);
+    const [subscribed, setSubscribed] = useState(false);
     const prices = item.prices || {};
     const [addedSize, setAddedSize] = useState(null);
 
     const stockMl = Number(item.stock_ml) || 0;
     const isOutOfStock = stockMl <= 0;
+
+    const handleSubscribe = async () => {
+        if (!isSignedIn) {
+            toast.error(dir === 'rtl' ? 'יש להתחבר כדי להירשם להתראה' : 'Please sign in to subscribe');
+            return;
+        }
+
+        setIsSubscribing(true);
+        try {
+            const res = await fetch('/api/stock-notifications/subscribe', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ productId: item.id })
+            });
+
+            if (res.ok) {
+                toast.success(dir === 'rtl' ? 'נרשמת בהצלחה! נעדכן אותך כשהמוצר יחזור' : 'Subscribed! We will notify you when back in stock.');
+                setSubscribed(true);
+            } else {
+                const data = await res.json();
+                toast.error(data.error || 'שגיאה בהרשמה');
+            }
+        } catch (error) {
+            toast.error('שגיאה בתקשורת');
+        } finally {
+            setIsSubscribing(false);
+        }
+    };
 
     const handleAddToCart = (size, price) => {
         if (!price) {
