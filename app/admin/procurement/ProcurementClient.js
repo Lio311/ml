@@ -186,10 +186,10 @@ export default function ProcurementClient() {
                 <ChartCard title="מטריצת BCG: פופולריות מול רווחיות" subtitle="Stars (Indigo), Cash Cows (Green), Question Marks (Amber), Dogs (Red)">
                     <div className="h-[350px] w-full mt-4">
                         <ResponsiveContainer width="100%" height="100%">
-                            <ScatterChart margin={{ top: 20, right: 30, bottom: 20, left: 10 }}>
+                            <ScatterChart margin={{ top: 20, right: 30, bottom: 20, left: 30 }}>
                                 <CartesianGrid strokeDasharray="3 3" opacity={0.1} />
                                 <XAxis type="number" dataKey="x" name="נפח מכירות (מ״ל)" tick={{ fontSize: 10 }} />
-                                <YAxis type="number" dataKey="y" name="רווח (₪)" width={50} tick={{ fontSize: 10 }} />
+                                <YAxis type="number" dataKey="y" name="רווח (₪)" width={60} tick={{ fontSize: 10, dx: -10 }} />
                                 <ZAxis type="number" dataKey="z" range={[50, 400]} name="מחזור" />
                                 <Tooltip 
                                     cursor={{ strokeDasharray: '3 3' }} 
@@ -235,7 +235,12 @@ export default function ProcurementClient() {
                                 </defs>
                                 <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} opacity={0.05} />
                                 <XAxis type="number" hide />
-                                <YAxis dataKey="name" type="category" width={110} tick={{ fontSize: 11, fill: '#666', fontWeight: 600 }} />
+                                <YAxis 
+                                    dataKey="name" 
+                                    type="category" 
+                                    width={140} 
+                                    tick={{ fontSize: 11, fill: '#666', fontWeight: 600, dx: -10 }} 
+                                />
                                 <Tooltip 
                                     contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)', textAlign: 'right' }}
                                     cursor={{ fill: 'transparent' }}
