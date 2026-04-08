@@ -319,7 +319,17 @@ export default function ProcurementClient() {
                                     contentStyle={{ textAlign: 'right', direction: 'rtl' }}
                                     formatter={(value) => [`₪${Math.round(value)}`, 'מחזור']} 
                                 />
-                                <Area type="monotone" dataKey="revenue" stroke="#f59e0b" fillOpacity={1} f                            <ScatterChart margin={{ top: 20, right: 30, left: 10, bottom: 20 }}>
+                                <Area type="monotone" dataKey="revenue" stroke="#f59e0b" fillOpacity={1} fill="url(#colorTime)" strokeWidth={3} />
+                            </AreaChart>
+                        </ResponsiveContainer>
+                    </div>
+                </ChartCard>
+
+                {/* 7. Monthly Order Density */}
+                <ChartCard title="Monthly Order Density" subtitle="התפלגות הזמנות לפי יום בחודש ושעת שיא">
+                    <div className="h-[350px] w-full mt-4">
+                        <ResponsiveContainer width="100%" height="100%">
+                            <ScatterChart margin={{ top: 20, right: 30, left: 10, bottom: 20 }}>
                                 <XAxis 
                                     type="number" 
                                     dataKey="day" 
@@ -338,15 +348,6 @@ export default function ProcurementClient() {
                                     axisLine={false} 
                                     tickLine={false}
                                     tick={{ fontSize: 10, fill: '#999', dx: -20 }}
-                                    formatter={(h) => h >= 0 && h <= 23 ? `${String(h).padStart(2, '0')}:00` : ''}
-                                />
-                       dataKey="hour" 
-                                    domain={[-1, 24]} 
-                                    tickCount={13} 
-                                    width={60}
-                                    axisLine={false} 
-                                    tickLine={false}
-                                    tick={{ fontSize: 10, fill: '#999', dx: -10 }}
                                     formatter={(h) => h >= 0 && h <= 23 ? `${String(h).padStart(2, '0')}:00` : ''}
                                 />
                                 <ZAxis type="number" dataKey="count" range={[40, 400]} />
