@@ -23,7 +23,7 @@ export async function GET() {
                 SELECT id, brand, model, name, brand_he, model_he, name_he,
                        stock, original_size, cost_price,
                        price_2ml, price_5ml, price_10ml,
-                       top_notes, middle_notes, base_notes
+                       top_notes, middle_notes, base_notes, image_url
                 FROM products
                 WHERE active = true
             `);
@@ -98,7 +98,8 @@ export async function GET() {
                     volume: sales.total_ml,
                     top_notes: p.top_notes,
                     middle_notes: p.middle_notes,
-                    base_notes: p.base_notes
+                    base_notes: p.base_notes,
+                    image_url: p.image_url
                 };
             });
 

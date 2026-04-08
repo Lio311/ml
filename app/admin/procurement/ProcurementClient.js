@@ -1,13 +1,15 @@
 "use client";
 
 import { useState, useEffect, useMemo } from 'react';
+import { useRouter } from 'next/navigation';
+import Image from 'next/image';
 import { 
     AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, 
     ScatterChart, Scatter, ZAxis, Cell, BarChart, Bar, Legend, PieChart, Pie
 } from 'recharts';
 import { 
     TrendingUp, AlertTriangle, Package, Zap, DollarSign, 
-    Download, RefreshCw, Layers, Map, BarChart3, Search
+    Download, RefreshCw, Layers, Map, BarChart3, Search, ExternalLink
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
@@ -17,6 +19,7 @@ export default function ProcurementClient() {
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
+    const router = useRouter();
 
     useEffect(() => {
         fetchData();
@@ -142,11 +145,15 @@ export default function ProcurementClient() {
                                         if (active && payload && payload.length) {
                                             const item = payload[0].payload;
                                             return (
-                                                <div className="bg-black/90 text-white p-3 rounded-xl shadow-2xl border border-white/10 backdrop-blur-md">
+                                                <div className="bg-black/90 text-white p-3 rounded-xl shadow-2xl border border-white/10 backdrop-blur-md text-right" dir="rtl">
                                                     <p className="font-bold border-b border-white/20 pb-1 mb-2">{item.name}</p>
                                                     <p className="text-xs">נפח: {Math.round(item.x)} מ״ל</p>
                                                     <p className="text-xs">רווח: ₪{Math.round(item.y)}</p>
-                                                    <p className="text-xs font-bold text-blue-400 mt-1 uppercase">{item.category}</p>
+                                                    <p className="text-xs font-bold text-blue-400 mt-1 uppercase">
+                                                        {item.category === 'Star' ? 'כוכב' : 
+                                                         item.category === 'Cash Cow' ? 'פרה חולבת' : 
+                                                         item.category === 'Dog' ? 'מלאי מת' : 'סימן שאלה'}
+                                                    </p>
                                                 </div>
                                             );
                                         }
@@ -178,8 +185,9 @@ export default function ProcurementClient() {
                                 <XAxis type="number" hide />
                                 <YAxis dataKey="name" type="category" width={80} tick={{ fontSize: 12, fill: '#666' }} />
                                 <Tooltip 
-                                    contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)' }}
+                                    contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)', textAlign: 'right' }}
                                     cursor={{ fill: 'transparent' }}
+                                    formatter={(value) => [`${Math.round(value)} מ״ל`, 'נפח']}
                                 />
                                 <Bar dataKey="volume" radius={[0, 4, 4, 0]} barSize={20} fill="url(#barGradient)" />
                             </BarChart>
@@ -200,7 +208,13 @@ export default function ProcurementClient() {
                                 </defs>
                                 <XAxis dataKey="name" hide />
                                 <YAxis hide />
-                                <Tooltip />
+                                <Tooltip 
+                                    contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)', textAlign: 'right' }}
+                                    formatter={(value, name) => [
+                                        `₪${Math.round(value)}`, 
+                                        name === 'profit' ? 'רווח' : 'מחזור'
+                                    ]}
+                                />
                                 <Area type="monotone" dataKey="profit" stroke="#10b981" fillOpacity={1} fill="url(#brandGrad)" strokeWidth={3} />
                                 <Area type="monotone" dataKey="revenue" stroke="#6366f1" fill="none" strokeWidth={2} strokeDasharray="5 5" />
                             </AreaChart>
@@ -220,15 +234,31 @@ export default function ProcurementClient() {
                             data?.insights.filter(i => i.volume === 0).slice(0, 10).map(item => (
                                 <div key={item.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-xl border border-gray-100 hover:shadow-md transition">
                                     <div className="flex items-center gap-3">
-                                        <div className="w-10 h-10 bg-white rounded-lg flex items-center justify-center text-xl shadow-sm">🧴</div>
-                                        <div>
+                                        <div className="relative w-12 h-12 bg-white rounded-lg flex items-center justify-center shadow-sm overflow-hidden">
+                                            {item.image_url ? (
+                                                <Image src={item.image_url} alt={item.model} fill className="object-cover" />
+                                            ) : (
+                                                <span className="text-xl">🧴</span>
+                                            )}
+                                        </div>
+                                        <div className="flex flex-col">
                                             <p className="font-bold text-sm leading-tight">{item.brand}</p>
                                             <p className="text-xs text-gray-500">{item.model}</p>
                                         </div>
                                     </div>
                                     <div className="flex gap-2">
-                                        <button className="text-[10px] bg-indigo-600 text-white px-2 py-1 rounded hover:bg-indigo-700 transition">צור קופון</button>
-                                        <button className="text-[10px] bg-gray-200 text-gray-600 px-2 py-1 rounded hover:bg-gray-300 transition">מארז</button>
+                                        <button 
+                                            onClick={() => router.push(`/admin/coupons?product=${item.id}`)}
+                                            className="text-[10px] bg-indigo-600 text-white px-2 py-1 rounded-lg font-bold hover:bg-black transition shadow-sm"
+                                        >
+                                            צור קופון
+                                        </button>
+                                        <button 
+                                            onClick={() => router.push(`/admin/catalogs?product=${item.id}`)}
+                                            className="text-[10px] bg-gray-200 text-gray-700 px-2 py-1 rounded-lg font-bold hover:bg-gray-300 transition"
+                                        >
+                                            מארז
+                                        </button>
                                     </div>
                                 </div>
                             ))
@@ -288,9 +318,18 @@ export default function ProcurementClient() {
                                     return (
                                         <tr key={item.id} className={`bg-gray-50/50 hover:bg-white transition-all group border rounded-xl ${isUrgent ? 'border-red-100 shadow-[0_0_15px_-5px_rgba(239,68,68,0.2)]' : 'border-transparent'}`}>
                                             <td className="px-4 py-3 rounded-r-xl">
-                                                <div className="flex flex-col">
-                                                    <span className="font-bold text-sm">{item.brand}</span>
-                                                    <span className="text-xs text-gray-500">{item.model}</span>
+                                                <div className="flex items-center gap-3">
+                                                    <div className="relative w-10 h-10 bg-white rounded-lg flex-shrink-0 shadow-sm border border-gray-100 overflow-hidden">
+                                                        {item.image_url ? (
+                                                            <Image src={item.image_url} alt={item.model} fill className="object-cover" />
+                                                        ) : (
+                                                            <span className="text-lg flex items-center justify-center h-full">🧴</span>
+                                                        )}
+                                                    </div>
+                                                    <div className="flex flex-col">
+                                                        <span className="font-bold text-sm">{item.brand}</span>
+                                                        <span className="text-xs text-gray-400">{item.model}</span>
+                                                    </div>
                                                 </div>
                                             </td>
                                             <td className="px-4 py-3">
@@ -329,8 +368,12 @@ export default function ProcurementClient() {
                                                 )}
                                             </td>
                                             <td className="px-4 py-3 rounded-l-xl">
-                                                <button className="p-2 hover:bg-black hover:text-white rounded-lg transition-colors">
-                                                    <RefreshCw className="w-4 h-4" />
+                                                <button 
+                                                    onClick={() => router.push(`/product/${item.id}`)}
+                                                    className="p-2 hover:bg-black hover:text-white rounded-xl transition-all border border-transparent hover:shadow-lg"
+                                                    title="צפה במוצר"
+                                                >
+                                                    <ExternalLink className="w-4 h-4" />
                                                 </button>
                                             </td>
                                         </tr>
@@ -361,9 +404,6 @@ function KPICard({ title, value, icon, trend, sub, isAlert }) {
             <h3 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-1">{title}</h3>
             <p className={`text-2xl font-black tracking-tighter ${isAlert ? 'text-red-500' : 'text-gray-900'}`}>{value}</p>
             {sub && <p className="text-[11px] text-gray-400 mt-2 font-medium">{sub}</p>}
-            
-            {/* Background decoration */}
-            <div className="absolute -bottom-6 -right-6 w-24 h-24 bg-gray-50/50 rounded-full -z-0"></div>
         </div>
     );
 }
