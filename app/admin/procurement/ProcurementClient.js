@@ -435,8 +435,8 @@ export default function ProcurementClient() {
                                 onClick={handleExport}
                                 className="bg-black text-white px-4 py-2 rounded-full text-xs font-bold hover:bg-gray-800 transition flex items-center gap-2"
                             >
-                                <Download className="w-4 h-4" />
                                 ייצוא רכש
+                                <Download className="w-4 h-4" />
                             </button>
                         </div>
                     </div>
