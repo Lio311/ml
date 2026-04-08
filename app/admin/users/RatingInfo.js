@@ -66,7 +66,7 @@ export function RatingLegend() {
                             <div className="flex justify-between items-center mb-4 md:mb-5 bg-white/50 backdrop-blur-md z-10 pb-2 border-b border-gray-100/50">
                                 <div className="flex items-center gap-3 md:gap-4">
                                     <div className="w-9 h-9 md:w-11 md:h-11 bg-amber-50 rounded-xl md:rounded-2xl flex items-center justify-center shadow-inner">
-                                        <Zap className="w-5 h-5 md:w-6 md:h-6 text-amber-500 fill-amber-500" />
+                                        <Star className="w-5 h-5 md:w-6 md:h-6 text-amber-500 fill-amber-500" />
                                     </div>
                                     <div className="text-right">
                                         <h4 className="text-sm md:text-xl font-black text-gray-900 tracking-tight leading-none">מנגנון דירוג לקוחות</h4>
