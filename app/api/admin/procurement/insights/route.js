@@ -222,16 +222,49 @@ export async function GET() {
                 brandStats[item.brand].volume += item.volume;
                 brandStats[item.brand].itemsCount += 1;
             });
-
             const brandPerformance = Object.entries(brandStats)
                 .map(([name, stats]) => ({ name, ...stats }))
                 .sort((a, b) => b.profit - a.profit);
+
+            // 9. Monthly Order Density Grid (Day 1-31 vs Hour 0-23)
+            const monthlyGridMap = {};
+            orders.forEach(order => {
+                const date = new Date(order.created_at);
+                const day = date.getDate(); // 1-31
+                const hour = date.getHours(); // 0-23
+                const key = `${day}-${hour}`;
+                
+                if (!monthlyGridMap[key]) {
+                    monthlyGridMap[key] = { day, hour, count: 0, cats: {} };
+                }
+                monthlyGridMap[key].count += 1;
+                
+                const items = Array.isArray(order.items) ? order.items : [];
+                items.forEach(it => {
+                    const prod = products.find(p => p.id === it.id);
+                    const cat = (prod?.category || 'Unisex').toLowerCase();
+                    if (!monthlyGridMap[key].cats[cat]) monthlyGridMap[key].cats[cat] = 0;
+                    monthlyGridMap[key].cats[cat] += 1;
+                });
+            });
+
+            const monthlyDensityGrid = Object.values(monthlyGridMap).map(cell => {
+                const dominant = Object.entries(cell.cats)
+                    .sort((a,b) => b[1] - a[1])[0]?.[0] || 'unisex';
+                return {
+                    day: cell.day,
+                    hour: cell.hour,
+                    count: cell.count,
+                    category: dominant
+                };
+            });
 
             return NextResponse.json({
                 insights: insights.sort((a, b) => (a.daysRemaining || 999) - (b.daysRemaining || 999)),
                 topNotes,
                 brandPerformance,
                 performanceRadar,
+                monthlyDensityGrid,
                 sizeStats: Object.entries(sizeStats).map(([name, value]) => ({ name, value })),
                 seasonalStats: Object.entries(seasonalStats).map(([name, value]) => ({ name, value })),
                 temporalStats: { hourly: hourlyStats, daily: dailyStats },

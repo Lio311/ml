@@ -227,100 +227,7 @@ export default function ProcurementClient() {
                     </div>
                 </ChartCard>
 
-                {/* 2. Top Fragrance Notes (Trend Intelligence) */}
-                <ChartCard title="Trend Intelligence: תווי ריח מבוקשים" subtitle="נפח מכירות משוקלל לפי רכיבי הבושם">
-                    <div className="h-[350px] w-full mt-4">
-                        <ResponsiveContainer width="100%" height="100%">
-                            <BarChart data={data?.topNotes || []} layout="vertical" margin={{ left: 80 }}>
-                                <defs>
-                                    <linearGradient id="barGradient" x1="0" y1="0" x2="1" y2="0">
-                                        <stop offset="0%" stopColor="#6366f1" />
-                                        <stop offset="100%" stopColor="#ec4899" />
-                                    </linearGradient>
-                                </defs>
-                                <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} opacity={0.05} />
-                                <XAxis type="number" hide />
-                                <YAxis 
-                                    dataKey="name" 
-                                    type="category" 
-                                    width={200} 
-                                    tick={{ fontSize: 11, fill: '#666', fontWeight: 600, dx: -60 }} 
-                                />
-                                <Tooltip 
-                                    contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)', textAlign: 'right' }}
-                                    cursor={{ fill: 'transparent' }}
-                                    formatter={(value) => [`${Math.round(value)} מ״ל`, 'נפח']}
-                                />
-                                <Bar dataKey="volume" radius={[0, 4, 4, 0]} barSize={20} fill="url(#barGradient)" />
-                            </BarChart>
-                        </ResponsiveContainer>
-                    </div>
-                </ChartCard>
-
-                {/* 3. Brand Performance (Grouped Bar Chart) */}
-                <ChartCard title="ביצועי מותגים: רווח מול מחזור" subtitle="השוואה ישירה של רווחיות לכל בית בישום">
-                    <div className="h-[350px] w-full mt-4">
-                        <ResponsiveContainer width="100%" height="100%">
-                            <BarChart data={(data?.brandPerformance || []).slice(0, 6)}>
-                                <CartesianGrid strokeDasharray="3 3" vertical={false} opacity={0.1} />
-                                <XAxis dataKey="name" tick={{ fontSize: 10, fill: '#999' }} interval={0} />
-                                <YAxis hide />
-                                <Tooltip 
-                                    contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)', textAlign: 'right' }}
-                                    formatter={(value, name) => [
-                                        `₪${Math.round(value).toLocaleString()}`, 
-                                        name
-                                    ]}
-                                />
-                                <Bar dataKey="revenue" name="מחזור" fill="#6366f1" radius={[4, 4, 0, 0]}  barSize={15} />
-                                <Bar dataKey="profit" name="רווח" fill="#10b981" radius={[4, 4, 0, 0]} barSize={15} />
-                            </BarChart>
-                        </ResponsiveContainer>
-                    </div>
-                </ChartCard>
-
-                {/* 6. Seasonal Performance (Radar Chart) */}
-                <ChartCard title="ניתוח עונתיות" subtitle="התאמת המכירות לתוויות העונתיות של הבשמים">
-                    <div className="h-[350px] w-full mt-4">
-                        <ResponsiveContainer width="100%" height="100%">
-                            <AreaChart data={data?.seasonalStats?.map(s => ({ ...s, name_he: SEASONS_HE[s.name] })) || []} margin={{ left: 30 }}>
-                                <CartesianGrid strokeDasharray="3 3" opacity={0.1} />
-                                <XAxis dataKey="name_he" />
-                                <YAxis hide />
-                                <Tooltip 
-                                    contentStyle={{ textAlign: 'right', direction: 'rtl' }}
-                                    formatter={(value) => [`₪${Math.round(value)}`, 'רווחיות']} 
-                                />
-                                <Area type="monotone" dataKey="value" stroke="#8b5cf6" fill="#8b5cf6" fillOpacity={0.1} strokeWidth={3} />
-                            </AreaChart>
-                        </ResponsiveContainer>
-                    </div>
-                </ChartCard>
-
-                {/* 7. Temporal Trends (Area Chart - Hourly Sales) */}
-                <ChartCard title="מתי הלקוחות קונים?" subtitle="התפלגות מחזור המכירות לפי שעות היממה">
-                    <div className="h-[350px] w-full mt-4">
-                        <ResponsiveContainer width="100%" height="100%">
-                            <AreaChart data={data?.temporalStats?.hourly || []} margin={{ left: 40, right: 30 }}>
-                                <defs>
-                                    <linearGradient id="colorTime" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="5%" stopColor="#f59e0b" stopOpacity={0.3}/>
-                                        <stop offset="95%" stopColor="#f59e0b" stopOpacity={0}/>
-                                    </linearGradient>
-                                </defs>
-                                <XAxis dataKey="hour" tick={{ fontSize: 10 }} interval={3} />
-                                <YAxis hide />
-                                <Tooltip 
-                                    contentStyle={{ textAlign: 'right', direction: 'rtl' }}
-                                    formatter={(value) => [`₪${Math.round(value)}`, 'מחזור']} 
-                                />
-                                <Area type="monotone" dataKey="revenue" stroke="#f59e0b" fillOpacity={1} fill="url(#colorTime)" strokeWidth={3} />
-                            </AreaChart>
-                        </ResponsiveContainer>
-                    </div>
-                </ChartCard>
-
-                {/* 5. Business Health DNA (Sophisticated Radar) */}
+                {/* 2. Business Health DNA (Radar) - SWAPPED POSITION */}
                 <ChartCard title="Business Health DNA" subtitle="ניתוח רב-ממדי של ביצועי המלאי והמכירות">
                     <div className="h-[350px] w-full mt-4 flex items-center justify-center">
                         <ResponsiveContainer width="100%" height="100%">
@@ -344,31 +251,141 @@ export default function ProcurementClient() {
                     </div>
                 </ChartCard>
 
-                {/* 8. Daily Category Revenue (Sophisticated Stacked Bar) */}
-                <ChartCard title="פילוח מחזור יומי לפי קטגוריה" subtitle="התפלגות המכירות לפי קהל יעד לאורך השבוע">
+                {/* 3. Trend Intelligence: תווי ריח מבוקשים - SWAPPED POSITION */}
+                <ChartCard title="Trend Intelligence: תווי ריח מבוקשים" subtitle="נפח מכירות משוקלל לפי רכיבי הבושם">
                     <div className="h-[350px] w-full mt-4">
                         <ResponsiveContainer width="100%" height="100%">
-                            <BarChart data={data?.temporalStats?.daily || []} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
-                                <CartesianGrid strokeDasharray="3 3" vertical={false} opacity={0.1} />
-                                <XAxis dataKey="name" tick={{ fontSize: 12, fontWeight: 'bold', fill: '#999' }} axisLine={false} tickLine={false} />
-                                <YAxis width={60}>
-                                    <Label value="מחזור (₪)" angle={-90} position="insideLeft" style={{ fontSize: '10px', fontWeight: 'bold', fill: '#999', textAnchor: 'middle' }} />
-                                </YAxis>
-                                <Tooltip 
-                                    cursor={{ fill: 'rgba(0,0,0,0.02)' }}
-                                    contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 20px 25px -5px rgba(0,0,0,0.1)', textAlign: 'right' }}
-                                    formatter={(v, name) => [`₪${Math.round(v)}`, name === 'men' ? 'גברים' : name === 'women' ? 'נשים' : 'יוניסקס']}
+                            <BarChart data={data?.topNotes || []} layout="vertical" margin={{ left: 80 }}>
+                                <defs>
+                                    <linearGradient id="barGradient" x1="0" y1="0" x2="1" y2="0">
+                                        <stop offset="0%" stopColor="#6366f1" />
+                                        <stop offset="100%" stopColor="#ec4899" />
+                                    </linearGradient>
+                                </defs>
+                                <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} opacity={0.05} />
+                                <XAxis type="number" hide />
+                                <YAxis 
+                                    dataKey="name" 
+                                    type="category" 
+                                    width={200} 
+                                    tick={{ fontSize: 11, fill: '#666', fontWeight: 600, dx: -60 }} 
                                 />
-                                <Legend verticalAlign="top" align="right" iconType="circle" wrapperStyle={{ paddingBottom: '20px', fontSize: '12px', fontWeight: 'bold' }} />
-                                <Bar dataKey="men" name="גברים" stackId="a" fill="#6366f1" radius={[0, 0, 0, 0]} barSize={30} />
-                                <Bar dataKey="women" name="נשים" stackId="a" fill="#10b981" radius={[0, 0, 0, 0]} barSize={30} />
-                                <Bar dataKey="unisex" name="יוניסקס" stackId="a" fill="#f59e0b" radius={[4, 4, 0, 0]} barSize={30} />
+                                <Tooltip 
+                                    contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)', textAlign: 'right' }}
+                                    formatter={(v) => [`${Math.round(v)} מ״ל`, 'נפח']}
+                                />
+                                <Bar dataKey="volume" fill="url(#barGradient)" radius={[0, 4, 4, 0]} />
                             </BarChart>
                         </ResponsiveContainer>
                     </div>
                 </ChartCard>
 
-                {/* 4. Dead Stock & Alerts */}
+                {/* 4. Brand Performance (Grouped Bar Chart) */}
+                <ChartCard title="ביצועי מותגים: רווח מול מחזור" subtitle="השוואה ישירה של רווחיות לכל בית בישום">
+                    <div className="h-[350px] w-full mt-4">
+                        <ResponsiveContainer width="100%" height="100%">
+                            <BarChart data={(data?.brandPerformance || []).slice(0, 6)}>
+                                <CartesianGrid strokeDasharray="3 3" vertical={false} opacity={0.1} />
+                                <XAxis dataKey="name" tick={{ fontSize: 10, fill: '#999' }} interval={0} />
+                                <YAxis hide />
+                                <Tooltip 
+                                    contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)', textAlign: 'right' }}
+                                    formatter={(value, name) => [
+                                        `₪${Math.round(value).toLocaleString()}`, 
+                                        name
+                                    ]}
+                                />
+                                <Bar dataKey="revenue" name="מחזור" fill="#6366f1" radius={[4, 4, 0, 0]}  barSize={15} />
+                                <Bar dataKey="profit" name="רווח" fill="#10b981" radius={[4, 4, 0, 0]} barSize={15} />
+                            </BarChart>
+                        </ResponsiveContainer>
+                    </div>
+                </ChartCard>
+
+                {/* 5. Seasonal Performance (Area Chart) */}
+                <ChartCard title="ניתוח עונתיות" subtitle="התאמת המכירות לתוויות העונתיות של הבשמים">
+                    <div className="h-[350px] w-full mt-4">
+                        <ResponsiveContainer width="100%" height="100%">
+                            <AreaChart data={data?.seasonalStats?.map(s => ({ ...s, name_he: SEASONS_HE[s.name] })) || []} margin={{ left: 30 }}>
+                                <CartesianGrid strokeDasharray="3 3" opacity={0.1} />
+                                <XAxis dataKey="name_he" />
+                                <YAxis hide />
+                                <Tooltip 
+                                    contentStyle={{ textAlign: 'right', direction: 'rtl' }}
+                                    formatter={(value) => [`₪${Math.round(value)}`, 'רווחיות']} 
+                                />
+                                <Area type="monotone" dataKey="value" stroke="#8b5cf6" fill="#8b5cf6" fillOpacity={0.1} strokeWidth={3} />
+                            </AreaChart>
+                        </ResponsiveContainer>
+                    </div>
+                </ChartCard>
+
+                {/* 6. Temporal Trends (Area Chart - Hourly Sales) */}
+                <ChartCard title="מתי הלקוחות קונים?" subtitle="התפלגות מחזור המכירות לפי שעות היממה">
+                    <div className="h-[350px] w-full mt-4">
+                        <ResponsiveContainer width="100%" height="100%">
+                            <AreaChart data={data?.temporalStats?.hourly || []} margin={{ left: 40, right: 30 }}>
+                                <defs>
+                                    <linearGradient id="colorTime" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="5%" stopColor="#f59e0b" stopOpacity={0.3}/>
+                                        <stop offset="95%" stopColor="#f59e0b" stopOpacity={0}/>
+                                    </linearGradient>
+                                </defs>
+                                <XAxis dataKey="hour" tick={{ fontSize: 10 }} interval={3} />
+                                <YAxis hide />
+                                <Tooltip 
+                                    contentStyle={{ textAlign: 'right', direction: 'rtl' }}
+                                    formatter={(value) => [`₪${Math.round(value)}`, 'מחזור']} 
+                                />
+                                <Area type="monotone" dataKey="revenue" stroke="#f59e0b" fillOpacity={1} fill="url(#colorTime)" strokeWidth={3} />
+                            </AreaChart>
+                        </ResponsiveContainer>
+                    </div>
+                </ChartCard>
+
+                {/* 7. Monthly Order Density (Sophisticated Dot Matrix) */}
+                <ChartCard title="Monthly Order Density" subtitle="התפלגות הזמנות לפי יום בחודש ושעת שיא">
+                    <div className="h-[350px] w-full mt-4">
+                        <ResponsiveContainer width="100%" height="100%">
+                            <ScatterChart margin={{ top: 20, right: 30, left: 30, bottom: 20 }}>
+                                <XAxis 
+                                    type="number" 
+                                    dataKey="day" 
+                                    domain={[1, 31]} 
+                                    tickCount={31} 
+                                    axisLine={false} 
+                                    tickLine={false}
+                                    tick={{ fontSize: 10, fill: '#999' }}
+                                />
+                                <YAxis 
+                                    type="number" 
+                                    dataKey="hour" 
+                                    domain={[0, 23]} 
+                                    tickCount={12} 
+                                    axisLine={false} 
+                                    tickLine={false}
+                                    tick={{ fontSize: 10, fill: '#999' }}
+                                    formatter={(h) => `${String(h).padStart(2, '0')}:00`}
+                                />
+                                <ZAxis type="number" dataKey="count" range={[40, 200]} />
+                                <Tooltip 
+                                    cursor={{ strokeDasharray: '3 3' }}
+                                    contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 20px 25px -5px rgba(0,0,0,0.1)', textAlign: 'right' }}
+                                    formatter={(v, name, p) => [
+                                        `${v} הזמנות`, 
+                                        name === 'day' ? 'יום' : name === 'hour' ? 'שעה' : 'קטגוריה'
+                                    ]}
+                                />
+                                <Legend verticalAlign="top" align="right" iconType="circle" wrapperStyle={{ paddingBottom: '20px', fontSize: '10px' }} />
+                                <Scatter name="גברים" data={data?.monthlyDensityGrid?.filter(d => d.category === 'men') || []} fill="#6366f1" />
+                                <Scatter name="נשים" data={data?.monthlyDensityGrid?.filter(d => d.category === 'women') || []} fill="#10b981" />
+                                <Scatter name="יוניסקס" data={data?.monthlyDensityGrid?.filter(d => d.category === 'unisex') || []} fill="#f59e0b" />
+                            </ScatterChart>
+                        </ResponsiveContainer>
+                    </div>
+                </ChartCard>
+
+                {/* 8. Dead Stock & Alerts */}
                 <ChartCard title="התראות מלאי מת (Dead Stock)" subtitle="מוצרים שלא נמכרו ב-30 הימים האחרונים">
                     <div className="space-y-4 max-h-[350px] overflow-y-auto pr-2 mt-4 custom-scrollbar">
                         {data?.insights.filter(i => i.volume === 0).length === 0 ? (
