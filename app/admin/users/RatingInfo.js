@@ -42,8 +42,8 @@ export default function RatingInfo({ score }) {
                         className="fixed inset-0 z-[100] bg-black/5" 
                         onClick={() => setShowLegend(false)}
                     />
-                    <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 md:absolute md:inset-auto md:top-full md:left-0 md:mt-2 md:bg-transparent">
-                        <div className="bg-white rounded-[2.5rem] shadow-2xl border border-gray-100 p-8 w-full max-w-[420px] text-right animate-in fade-in zoom-in duration-200" dir="rtl">
+                    <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 md:absolute md:inset-auto md:top-full md:left-0 md:mt-2 md:bg-transparent" onClick={() => setShowLegend(false)}>
+                        <div className="bg-white rounded-[2.5rem] shadow-2xl border border-gray-100 p-8 w-full max-w-[420px] text-right animate-in fade-in zoom-in duration-200" dir="rtl" onClick={(e) => e.stopPropagation()}>
                             <div className="flex justify-between items-center mb-6">
                                 <div className="flex items-center gap-2">
                                     <div className="w-8 h-8 bg-amber-50 rounded-xl flex items-center justify-center">
