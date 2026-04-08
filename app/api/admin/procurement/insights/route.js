@@ -155,7 +155,10 @@ export async function GET() {
 
             // New: Temporal Analysis (Time of Day / Day of Week)
             const daysOfWeek = ['א׳', 'ב׳', 'ג׳', 'ד׳', 'ה׳', 'ו׳', 'ש׳'];
-            const hourlyStats = Array.from({ length: 24 }, (_, i) => ({ hour: `${i}:00`, revenue: 0 }));
+            const hourlyStats = Array.from({ length: 24 }, (_, i) => ({ 
+                hour: `${String(i).padStart(2, '0')}:00`, 
+                revenue: 0 
+            }));
             const dailyStats = daysOfWeek.map(name => ({ name, revenue: 0 }));
 
             orders.forEach(order => {
