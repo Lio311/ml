@@ -192,8 +192,8 @@ export default function ProcurementClient() {
                                 <XAxis type="number" dataKey="x" tick={{ fontSize: 10 }}>
                                     <Label value="נפח מכירות (מ״ל)" offset={-5} position="insideBottom" style={{ fontSize: '10px', fontWeight: 'bold', fill: '#999' }} />
                                 </XAxis>
-                                <YAxis type="number" dataKey="y" width={100} tick={{ fontSize: 10, dx: -20 }}>
-                                    <Label value="רווחיות (₪)" angle={-90} position="insideLeft" style={{ fontSize: '10px', fontWeight: 'bold', fill: '#999', textAnchor: 'middle' }} offset={-25} />
+                                <YAxis type="number" dataKey="y" width={80} tick={{ fontSize: 10, dx: -5 }}>
+                                    <Label value="רווחיות (₪)" angle={-90} position="insideLeft" style={{ fontSize: '10px', fontWeight: 'bold', fill: '#999', textAnchor: 'middle' }} offset={10} />
                                 </YAxis>
                                 <ZAxis type="number" dataKey="z" range={[50, 400]} name="מחזור" />
                                 <Tooltip 
@@ -325,10 +325,10 @@ export default function ProcurementClient() {
                                     width={80}
                                     axisLine={false} 
                                     tickLine={false}
-                                    tick={{ fontSize: 10, fill: '#999', dx: -20 }}
+                                    tick={{ fontSize: 10, fill: '#999', dx: -5 }}
                                     formatter={(h) => h >= 0 && h <= 23 ? `${String(h).padStart(2, '0')}:00` : ''}
                                 >
-                                    <Label value="שעות היממה" angle={-90} position="insideLeft" style={{ fontSize: '10px', fontWeight: 'bold', fill: '#999', textAnchor: 'middle' }} offset={-25} />
+                                    <Label value="שעות היממה" angle={-90} position="insideLeft" style={{ fontSize: '10px', fontWeight: 'bold', fill: '#999', textAnchor: 'middle' }} offset={10} />
                                 </YAxis>
                                 <ZAxis type="number" dataKey="count" range={[40, 400]} />
                                 <Tooltip 
