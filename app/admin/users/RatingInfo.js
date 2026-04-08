@@ -100,7 +100,7 @@ export function RatingLegend() {
                                         <h5 className="text-[9px] md:text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none">הרכב הציון (Algorithm)</h5>
                                         <div className="h-px bg-gray-100 flex-grow mr-4 md:mr-6"></div>
                                     </div>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 md:gap-2.5">
+                                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 md:gap-2.5">
                                         <MetricBadge icon={<DollarSign size={13} />} label="סך רכישות" weight="40%" />
                                         <MetricBadge icon={<Layers size={13} />} label="צפיפות" weight="30%" />
                                         <MetricBadge icon={<BarChart3 size={13} />} label="סל ממוצע" weight="20%" />
