@@ -83,7 +83,7 @@ export function RatingLegend() {
                             </div>
 
                             {/* Vertical Stacking Layout */}
-                            <div className="flex flex-col gap-3 md:gap-10 pb-4 md:pb-0">
+                            <div className="flex flex-col gap-3 md:gap-10">
                                 
                                 {/* Section 1: Tiers */}
                                 <div className="flex flex-col gap-2 md:gap-4">
