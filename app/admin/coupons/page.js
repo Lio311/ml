@@ -36,6 +36,7 @@ export default function AdminCouponsPage() {
         allowed_sizes: [],
         allowed_categories: [], // Reverted to Categories
         allowed_brands: [],
+        allowed_products: [],
         allowed_users: [], // New User Affiliation
         min_cart_total: 0
     });
