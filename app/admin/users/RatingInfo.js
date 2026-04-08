@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Info, X, Zap, Award, Star, TrendingUp, Clock, DollarSign, Layers, BarChart3 } from 'lucide-react';
+import { Info, X, Star, DollarSign, Layers, BarChart3, Clock } from 'lucide-react';
 
 const TIERS = [
     { label: 'AAA', color: 'bg-indigo-600', text: 'text-indigo-600', desc: 'Platinum Elite', detail: 'הטופ 5% עם סל ממוצע מקסימלי' },
@@ -51,10 +51,10 @@ export function RatingLegend() {
                         className="fixed inset-0 z-[100] bg-black/5 backdrop-blur-[2px]" 
                         onClick={() => setShowLegend(false)}
                     />
-                    <div className="fixed inset-0 z-[110] flex items-center justify-center p-4" onClick={() => setShowLegend(false)}>
+                    <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 px-2" onClick={() => setShowLegend(false)}>
                         <div 
-                            className="bg-white/95 backdrop-blur-xl rounded-[2.5rem] md:rounded-[3rem] shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-white p-4 md:p-8 
-                                       w-full max-w-[320px] max-h-[85vh] md:max-h-[75vh] 
+                            className="bg-white/95 backdrop-blur-xl rounded-[2.5rem] md:rounded-[3rem] shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-white p-4 md:p-10 
+                                       w-full max-w-[320px] md:max-w-4xl max-h-[85vh] md:max-h-[75vh] 
                                        overflow-y-auto scrollbar-hide text-right animate-in fade-in zoom-in duration-200" 
                             dir="rtl" 
                             onClick={(e) => e.stopPropagation()}
@@ -66,9 +66,9 @@ export function RatingLegend() {
                             <style dangerouslySetInnerHTML={{ __html: `.scrollbar-hide::-webkit-scrollbar { display: none; }` }} />
 
                             {/* Header */}
-                            <div className="flex justify-between items-center mb-4 md:mb-5 bg-white/50 backdrop-blur-md z-10 pb-2 border-b border-gray-100/50">
+                            <div className="flex justify-between items-center mb-4 md:mb-8 bg-white/50 backdrop-blur-md z-10 pb-2 border-b border-gray-100/50">
                                 <div className="flex items-center gap-3 md:gap-4">
-                                    <div className="w-8 h-8 md:w-11 md:h-11 bg-amber-50 rounded-xl md:rounded-2xl flex items-center justify-center shadow-inner">
+                                    <div className="w-8 h-8 md:w-12 md:h-12 bg-amber-50 rounded-xl md:rounded-2xl flex items-center justify-center shadow-inner">
                                         <Star className="w-4 h-4 md:w-6 md:h-6 text-amber-500 fill-amber-500" />
                                     </div>
                                     <div className="text-right">
@@ -82,15 +82,15 @@ export function RatingLegend() {
                             </div>
 
                             {/* Vertical Stacking Layout */}
-                            <div className="flex flex-col gap-3 md:gap-4 pb-4 md:pb-0">
+                            <div className="flex flex-col gap-3 md:gap-10 pb-4 md:pb-0">
                                 
                                 {/* Section 1: Tiers */}
-                                <div className="flex flex-col gap-2 md:gap-3.5">
+                                <div className="flex flex-col gap-2 md:gap-4">
                                     <div className="flex items-center justify-between px-1">
                                         <h5 className="text-[8px] md:text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none">סיווג רמות (Tiers)</h5>
                                         <div className="h-px bg-gray-100 flex-grow mr-3 md:mr-6"></div>
                                     </div>
-                                    <div className="grid grid-cols-2 lg:grid-cols-3 gap-2 md:gap-2.5">
+                                    <div className="grid grid-cols-2 lg:grid-cols-3 gap-2 md:gap-3">
                                         {TIERS.map(t => (
                                             <TierItem key={t.label} {...t} />
                                         ))}
@@ -98,19 +98,19 @@ export function RatingLegend() {
                                 </div>
 
                                 {/* Section 2: Algorithm Weights */}
-                                <div className="flex flex-col gap-2 md:gap-3 border-t border-gray-50 pt-2 md:pt-4">
+                                <div className="flex flex-col gap-2 md:gap-4 border-t border-gray-50 pt-2 md:pt-8">
                                     <div className="flex items-center justify-between px-1">
                                         <h5 className="text-[8px] md:text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none">הרכב הציון (Algorithm)</h5>
                                         <div className="h-px bg-gray-100 flex-grow mr-3 md:mr-6"></div>
                                     </div>
-                                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 md:gap-2.5">
+                                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 md:gap-3">
                                         <MetricBadge icon={<DollarSign size={12} />} label="סך רכישות" weight="40%" />
                                         <MetricBadge icon={<Layers size={12} />} label="צפיפות" weight="30%" />
                                         <MetricBadge icon={<BarChart3 size={12} />} label="סל ממוצע" weight="20%" />
                                         <MetricBadge icon={<Clock size={12} />} label="וותק" weight="10%" />
                                     </div>
-                                    <div className="mt-1 p-2 bg-blue-50/20 rounded-xl border border-blue-100/30">
-                                        <p className="text-[8px] text-blue-600/70 font-bold leading-relaxed text-center italic">
+                                    <div className="mt-1 p-2 md:p-4 bg-blue-50/20 rounded-xl border border-blue-100/30">
+                                        <p className="text-[8px] md:text-[10px] text-blue-600/70 font-bold leading-relaxed text-center italic">
                                             האלגוריתם מתעדכן בזמן אמת עם כל הזמנה חדשה
                                         </p>
                                     </div>
