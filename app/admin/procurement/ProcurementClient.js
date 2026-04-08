@@ -273,8 +273,8 @@ export default function ProcurementClient() {
                                     contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)', textAlign: 'right' }}
                                     formatter={(v) => [`${Math.round(v)} מ״ל`, 'נפח']}
                                 />
-                                <Bar dataKey="volume" fill="url(#barGradient)" radius={[0, 4, 4, 0]} barSize={22}>
-                                    <LabelList dataKey="name" position="insideLeft" offset={10} style={{ fill: '#fff', fontSize: '11px', fontWeight: 'bold' }} />
+                                <Bar dataKey="volume" fill="url(#barGradient)" radius={[0, 4, 4, 0]} barSize={24}>
+                                    <LabelList dataKey="name" position="center" style={{ fill: '#fff', fontSize: '11px', fontWeight: 'bold' }} />
                                 </Bar>
                             </BarChart>
                         </ResponsiveContainer>
@@ -316,7 +316,9 @@ export default function ProcurementClient() {
                                     axisLine={false} 
                                     tickLine={false}
                                     tick={{ fontSize: 10, fill: '#999' }}
-                                />
+                                >
+                                    <Label value="ימי החודש" offset={-5} position="insideBottom" style={{ fontSize: '10px', fontWeight: 'bold', fill: '#999' }} />
+                                </XAxis>
                                 <YAxis 
                                     type="number" 
                                     dataKey="hour" 
