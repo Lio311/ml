@@ -84,6 +84,7 @@ export async function GET() {
                     brand_he: p.brand_he,
                     model_he: p.model_he,
                     stock: p.stock,
+                    original_size: p.original_size,
                     velocity,
                     daysRemaining: burnRate,
                     revenue: sales.revenue,
@@ -148,40 +149,69 @@ export async function GET() {
                 });
             });
 
+            console.log('DEBUG Seasonal Stats:', seasonalStats);
+
             const topNotes = Object.entries(notesStats)
                 .map(([name, volume]) => ({ name, volume }))
                 .sort((a, b) => b.volume - a.volume)
                 .slice(0, 20);
 
-            // New: Temporal Analysis (Time of Day / Day of Week)
+            // 6. Sophisticated Business Health Radar (Normalized 0-100)
+            const totalRevenue = insights.reduce((sum, i) => sum + i.revenue, 0);
+            const totalProfit = insights.reduce((sum, i) => sum + i.profit, 0);
+            const totalVelocity = insights.reduce((sum, i) => sum + (i.velocity || 0), 0);
+
+            const performanceRadar = [
+                { subject: 'מחזור', value: Math.min(100, (totalRevenue / 50000) * 100), fullMark: 100 }, 
+                { subject: 'רווחיות', value: Math.min(100, (totalProfit / 20000) * 100), fullMark: 100 },
+                { subject: 'קצב מכירה', value: Math.min(100, (totalVelocity / 50) * 100), fullMark: 100 },
+                { subject: 'יעילות מלאי', value: Math.min(100, (insights.filter(i => i.velocity > 0).length / (insights.length || 1)) * 100), fullMark: 100 },
+                { subject: 'חשיפה', value: Math.min(100, (orders.length / 200) * 100), fullMark: 100 }
+            ];
+
+            // 7. Categorized Daily Revenue (Men, Women, Unisex)
             const daysOfWeek = ['א׳', 'ב׳', 'ג׳', 'ד׳', 'ה׳', 'ו׳', 'ש׳'];
             const hourlyStats = Array.from({ length: 24 }, (_, i) => ({ 
                 hour: `${String(i).padStart(2, '0')}:00`, 
                 revenue: 0 
             }));
-            const dailyStats = daysOfWeek.map(name => ({ name, revenue: 0 }));
+            
+            const dailyStats = daysOfWeek.map(name => ({ 
+                name, 
+                revenue: 0,
+                men: 0,
+                women: 0,
+                unisex: 0
+            }));
 
             orders.forEach(order => {
                 const date = new Date(order.created_at);
                 const hour = date.getHours();
                 const day = date.getDay();
                 
-                const total = Array.isArray(order.items) ? order.items.reduce((sum, item) => sum + (parseFloat(item.price) * parseInt(item.quantity) || 0), 0) : 0;
-                
-                hourlyStats[hour].revenue += total;
-                dailyStats[day].revenue += total;
-
-                // Also aggregate size distribution from items
                 const items = Array.isArray(order.items) ? order.items : [];
                 items.forEach(it => {
+                    const price = parseFloat(it.price) || 0;
+                    const qty = parseInt(it.quantity) || 0;
+                    const amount = price * qty;
+                    
+                    hourlyStats[hour].revenue += amount;
+                    dailyStats[day].revenue += amount;
+
+                    const prod = products.find(p => p.id === it.id);
+                    const cat = (prod?.category || '').toLowerCase();
+                    if (cat.includes('men')) dailyStats[day].men += amount;
+                    else if (cat.includes('women')) dailyStats[day].women += amount;
+                    else dailyStats[day].unisex += amount;
+
                     const sizeKey = `${Math.round(parseFloat(it.size))}ml`;
                     if (sizeStats.hasOwnProperty(sizeKey)) {
-                        sizeStats[sizeKey] += parseInt(it.quantity) || 0;
+                        sizeStats[sizeKey] += qty;
                     }
                 });
             });
 
-            // 6. Brand Performance
+            // 8. Brand Performance
             const brandStats = {};
             insights.forEach(item => {
                 if (!brandStats[item.brand]) {
@@ -201,9 +231,14 @@ export async function GET() {
                 insights: insights.sort((a, b) => (a.daysRemaining || 999) - (b.daysRemaining || 999)),
                 topNotes,
                 brandPerformance,
+                performanceRadar,
                 sizeStats: Object.entries(sizeStats).map(([name, value]) => ({ name, value })),
                 seasonalStats: Object.entries(seasonalStats).map(([name, value]) => ({ name, value })),
                 temporalStats: { hourly: hourlyStats, daily: dailyStats },
+                debug: {
+                    rawSeasons: products.slice(0, 5).map(p => p.seasons),
+                    seasonalStatsRaw: seasonalStats
+                },
                 meta: {
                     periodDays: 90,
                     totalRevenue: insights.reduce((sum, i) => sum + i.revenue, 0),

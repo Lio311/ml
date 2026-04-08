@@ -1,8 +1,8 @@
-"use client";
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useUser } from "@clerk/nextjs";
 import ObjectTagInput from '@/app/components/ObjectTagInput';
+import { useSearchParams } from 'next/navigation';
 import toast from 'react-hot-toast';
 
 export default function AdminCouponsPage() {
@@ -35,10 +35,25 @@ export default function AdminCouponsPage() {
         allowed_sizes: [],
         allowed_categories: [], // Reverted to Categories
         allowed_brands: [],
-        allowed_products: [], // IDs
         allowed_users: [], // New User Affiliation
         min_cart_total: 0
     });
+
+    const searchParams = useSearchParams();
+    const urlProductId = searchParams.get('productId');
+    const isNewFromDashboard = searchParams.get('new') === 'true';
+
+    useEffect(() => {
+        if (isNewFromDashboard && urlProductId) {
+            // Wait for products to load first to ensure we don't clear it later
+            setFormData(prev => ({
+                ...prev,
+                allowed_products: [urlProductId],
+                code: `SALE-${Math.random().toString(36).substring(2, 8).toUpperCase()}`
+            }));
+            setShowModal(true);
+        }
+    }, [isNewFromDashboard, urlProductId]);
 
     useEffect(() => {
         fetchCoupons();

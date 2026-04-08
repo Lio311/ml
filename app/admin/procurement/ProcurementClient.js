@@ -5,7 +5,8 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { 
     AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, 
-    ScatterChart, Scatter, ZAxis, Cell, BarChart, Bar, Legend, PieChart, Pie
+    ScatterChart, Scatter, ZAxis, Cell, BarChart, Bar, Legend, PieChart, Pie,
+    Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis
 } from 'recharts';
 import { 
     TrendingUp, AlertTriangle, Package, Zap, DollarSign, 
@@ -186,10 +187,10 @@ export default function ProcurementClient() {
                 <ChartCard title="מטריצת BCG: פופולריות מול רווחיות" subtitle="Stars (Indigo), Cash Cows (Green), Question Marks (Amber), Dogs (Red)">
                     <div className="h-[350px] w-full mt-4">
                         <ResponsiveContainer width="100%" height="100%">
-                            <ScatterChart margin={{ top: 20, right: 30, bottom: 20, left: 30 }}>
+                            <ScatterChart margin={{ top: 20, right: 30, bottom: 20, left: 50 }}>
                                 <CartesianGrid strokeDasharray="3 3" opacity={0.1} />
                                 <XAxis type="number" dataKey="x" name="נפח מכירות (מ״ל)" tick={{ fontSize: 10 }} />
-                                <YAxis type="number" dataKey="y" name="רווח (₪)" width={60} tick={{ fontSize: 10, dx: -10 }} />
+                                <YAxis type="number" dataKey="y" name="רווח (₪)" width={80} tick={{ fontSize: 10, dx: -20 }} />
                                 <ZAxis type="number" dataKey="z" range={[50, 400]} name="מחזור" />
                                 <Tooltip 
                                     cursor={{ strokeDasharray: '3 3' }} 
@@ -238,8 +239,8 @@ export default function ProcurementClient() {
                                 <YAxis 
                                     dataKey="name" 
                                     type="category" 
-                                    width={140} 
-                                    tick={{ fontSize: 11, fill: '#666', fontWeight: 600, dx: -10 }} 
+                                    width={160} 
+                                    tick={{ fontSize: 11, fill: '#666', fontWeight: 600, dx: -20 }} 
                                 />
                                 <Tooltip 
                                     contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)', textAlign: 'right' }}
@@ -264,7 +265,7 @@ export default function ProcurementClient() {
                                     contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)', textAlign: 'right' }}
                                     formatter={(value, name) => [
                                         `₪${Math.round(value).toLocaleString()}`, 
-                                        name === 'revenue' ? 'מחזור' : 'רווח'
+                                        name
                                     ]}
                                 />
                                 <Bar dataKey="revenue" name="מחזור" fill="#6366f1" radius={[4, 4, 0, 0]}  barSize={15} />
@@ -278,11 +279,14 @@ export default function ProcurementClient() {
                 <ChartCard title="ניתוח עונתיות" subtitle="התאמת המכירות לתוויות העונתיות של הבשמים">
                     <div className="h-[350px] w-full mt-4">
                         <ResponsiveContainer width="100%" height="100%">
-                            <AreaChart data={data?.seasonalStats?.map(s => ({ ...s, name_he: SEASONS_HE[s.name] })) || []}>
+                            <AreaChart data={data?.seasonalStats?.map(s => ({ ...s, name_he: SEASONS_HE[s.name] })) || []} margin={{ left: 30 }}>
                                 <CartesianGrid strokeDasharray="3 3" opacity={0.1} />
                                 <XAxis dataKey="name_he" />
                                 <YAxis hide />
-                                <Tooltip formatter={(value) => [`₪${Math.round(value)}`, 'רווחיות']} />
+                                <Tooltip 
+                                    contentStyle={{ textAlign: 'right', direction: 'rtl' }}
+                                    formatter={(value) => [`₪${Math.round(value)}`, 'רווחיות']} 
+                                />
                                 <Area type="monotone" dataKey="value" stroke="#8b5cf6" fill="#8b5cf6" fillOpacity={0.1} strokeWidth={3} />
                             </AreaChart>
                         </ResponsiveContainer>
@@ -293,7 +297,7 @@ export default function ProcurementClient() {
                 <ChartCard title="מתי הלקוחות קונים?" subtitle="התפלגות מחזור המכירות לפי שעות היממה">
                     <div className="h-[350px] w-full mt-4">
                         <ResponsiveContainer width="100%" height="100%">
-                            <AreaChart data={data?.temporalStats?.hourly || []}>
+                            <AreaChart data={data?.temporalStats?.hourly || []} margin={{ left: 40, right: 30 }}>
                                 <defs>
                                     <linearGradient id="colorTime" x1="0" y1="0" x2="0" y2="1">
                                         <stop offset="5%" stopColor="#f59e0b" stopOpacity={0.3}/>
@@ -302,9 +306,58 @@ export default function ProcurementClient() {
                                 </defs>
                                 <XAxis dataKey="hour" tick={{ fontSize: 10 }} interval={3} />
                                 <YAxis hide />
-                                <Tooltip formatter={(value) => [`₪${Math.round(value)}`, 'מחזור']} />
-                                <Area type="monotone" dataKey="revenue" stroke="#f59e0b" fillOpacity={1} fill="url(#colorTime)" strokeWidth={2} />
+                                <Tooltip 
+                                    contentStyle={{ textAlign: 'right', direction: 'rtl' }}
+                                    formatter={(value) => [`₪${Math.round(value)}`, 'מחזור']} 
+                                />
+                                <Area type="monotone" dataKey="revenue" stroke="#f59e0b" fillOpacity={1} fill="url(#colorTime)" strokeWidth={3} />
                             </AreaChart>
+                        </ResponsiveContainer>
+                    </div>
+                </ChartCard>
+
+                {/* 5. Business Health DNA (Sophisticated Radar) */}
+                <ChartCard title="Business Health DNA" subtitle="ניתוח רב-ממדי של ביצועי המלאי והמכירות">
+                    <div className="h-[350px] w-full mt-4 flex items-center justify-center">
+                        <ResponsiveContainer width="100%" height="100%">
+                            <RadarChart cx="50%" cy="50%" outerRadius="80%" data={data?.performanceRadar || []}>
+                                <PolarGrid strokeDasharray="3 3" stroke="#e5e7eb" />
+                                <PolarAngleAxis dataKey="subject" tick={{ fill: '#6b7280', fontSize: 12, fontWeight: 600 }} />
+                                <PolarRadiusAxis angle={30} domain={[0, 100]} hide />
+                                <Radar
+                                    name="ביצועים"
+                                    dataKey="value"
+                                    stroke="#6366f1"
+                                    fill="#6366f1"
+                                    fillOpacity={0.5}
+                                />
+                                <Tooltip 
+                                    contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 20px 25px -5px rgba(0,0,0,0.1)', textAlign: 'right' }}
+                                    formatter={(v) => [`${Math.round(v)}%`, 'ציון']}
+                                />
+                            </RadarChart>
+                        </ResponsiveContainer>
+                    </div>
+                </ChartCard>
+
+                {/* 8. Daily Category Revenue (Sophisticated Stacked Bar) */}
+                <ChartCard title="פילוח מחזור יומי לפי קטגוריה" subtitle="התפלגות המכירות לפי קהל יעד לאורך השבוע">
+                    <div className="h-[350px] w-full mt-4">
+                        <ResponsiveContainer width="100%" height="100%">
+                            <BarChart data={data?.temporalStats?.daily || []} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
+                                <CartesianGrid strokeDasharray="3 3" vertical={false} opacity={0.1} />
+                                <XAxis dataKey="name" tick={{ fontSize: 12, fontWeight: 'bold', fill: '#999' }} axisLine={false} tickLine={false} />
+                                <YAxis hide />
+                                <Tooltip 
+                                    cursor={{ fill: 'rgba(0,0,0,0.02)' }}
+                                    contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 20px 25px -5px rgba(0,0,0,0.1)', textAlign: 'right' }}
+                                    formatter={(v, name) => [`₪${Math.round(v)}`, name === 'men' ? 'גברים' : name === 'women' ? 'נשים' : 'יוניסקס']}
+                                />
+                                <Legend verticalAlign="top" align="right" iconType="circle" wrapperStyle={{ paddingBottom: '20px', fontSize: '12px', fontWeight: 'bold' }} />
+                                <Bar dataKey="men" name="גברים" stackId="a" fill="#6366f1" radius={[0, 0, 0, 0]} barSize={30} />
+                                <Bar dataKey="women" name="נשים" stackId="a" fill="#10b981" radius={[0, 0, 0, 0]} barSize={30} />
+                                <Bar dataKey="unisex" name="יוניסקס" stackId="a" fill="#f59e0b" radius={[4, 4, 0, 0]} barSize={30} />
+                            </BarChart>
                         </ResponsiveContainer>
                     </div>
                 </ChartCard>
@@ -418,11 +471,14 @@ export default function ProcurementClient() {
                                             </td>
                                             <td className="px-4 py-3">
                                                 <div className="flex flex-col">
-                                                    <span className="text-sm font-bold">{Math.round(item.stock)} מ״ל</span>
-                                                    <div className="w-16 h-1 bg-gray-200 rounded-full mt-1 overflow-hidden">
+                                                    <div className="flex justify-between items-center mb-1">
+                                                        <span className="text-sm font-bold">{Math.round(item.stock)} מ״ל</span>
+                                                        <span className="text-[10px] text-gray-400">מתוך {item.original_size} מ״ל</span>
+                                                    </div>
+                                                    <div className="w-24 h-1.5 bg-gray-200 rounded-full overflow-hidden">
                                                         <div 
                                                             className={`h-full rounded-full ${isUrgent ? 'bg-red-500' : 'bg-blue-500'}`} 
-                                                            style={{ width: `${Math.min(100, (item.stock / maxStock) * 100)}%` }}
+                                                            style={{ width: `${Math.min(100, (item.stock / (item.original_size || 100)) * 100)}%` }}
                                                         ></div>
                                                     </div>
                                                 </div>
@@ -480,9 +536,11 @@ function KPICard({ title, value, icon, trend, sub, isAlert }) {
                     {icon}
                 </div>
                 {trend && (
-                    <span className="text-[10px] bg-emerald-50 text-emerald-600 font-bold px-2 py-1 rounded-full border border-emerald-100 flex items-center justify-center">
-                        <span className="inline-block translate-y-[-1px] font-mono mr-0.5">{trend.startsWith('+') ? '+' : ''}</span>
-                        {trend.replace('+', '')}
+                    <span 
+                        className="text-[10px] bg-emerald-50 text-emerald-600 font-bold px-2 py-1 rounded-full border border-emerald-100 flex items-center justify-center whitespace-nowrap" 
+                        dir="ltr"
+                    >
+                        {trend}
                     </span>
                 )}
             </div>
@@ -495,10 +553,10 @@ function KPICard({ title, value, icon, trend, sub, isAlert }) {
 
 function ChartCard({ title, subtitle, children }) {
     return (
-        <div className="bg-white p-6 rounded-[2rem] border border-gray-100 shadow-sm relative overflow-hidden h-full">
+        <div className="bg-white/80 backdrop-blur-md p-6 rounded-[2.5rem] border border-white/20 shadow-[0_10px_40px_-15px_rgba(0,0,0,0.05)] relative overflow-hidden h-full">
             <div className="mb-4">
-                <h3 className="text-lg font-bold text-gray-900 tracking-tight">{title}</h3>
-                <p className="text-xs text-gray-400 font-medium">{subtitle}</p>
+                <h3 className="text-xl font-black text-gray-900 tracking-tight">{title}</h3>
+                <p className="text-[11px] text-gray-400 font-bold uppercase tracking-wider">{subtitle}</p>
             </div>
             {children}
         </div>
