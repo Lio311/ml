@@ -192,8 +192,8 @@ export default function ProcurementClient() {
                                 <XAxis type="number" dataKey="x" tick={{ fontSize: 10 }}>
                                     <Label value="נפח מכירות (מ״ל)" offset={-5} position="insideBottom" style={{ fontSize: '10px', fontWeight: 'bold', fill: '#999' }} />
                                 </XAxis>
-                                <YAxis type="number" dataKey="y" width={80} tick={{ fontSize: 10, dx: -35 }}>
-                                    <Label value="רווחיות (₪)" angle={-90} position="insideLeft" style={{ fontSize: '10px', fontWeight: 'bold', fill: '#999', textAnchor: 'middle' }} offset={10} />
+                                <YAxis type="number" dataKey="y" width={80} tick={{ fontSize: 10, dx: -14 }}>
+                                    <Label value="רווחיות (₪)" angle={-90} position="insideLeft" style={{ fontSize: '10px', fontWeight: 'bold', fill: '#999', textAnchor: 'middle' }} offset={50} />
                                 </YAxis>
                                 <ZAxis type="number" dataKey="z" range={[50, 400]} name="מחזור" />
                                 <Tooltip 
@@ -327,10 +327,10 @@ export default function ProcurementClient() {
                                     width={80}
                                     axisLine={false} 
                                     tickLine={false}
-                                    tick={{ fontSize: 10, fill: '#999', dx: -35 }}
+                                    tick={{ fontSize: 10, fill: '#999', dx: -14 }}
                                     formatter={(h) => h >= 0 && h <= 23 ? `${String(h).padStart(2, '0')}:00` : ''}
                                 >
-                                    <Label value="שעות היממה" angle={-90} position="insideLeft" style={{ fontSize: '10px', fontWeight: 'bold', fill: '#999', textAnchor: 'middle' }} offset={10} />
+                                    <Label value="שעות היממה" angle={-90} position="insideLeft" style={{ fontSize: '10px', fontWeight: 'bold', fill: '#999', textAnchor: 'middle' }} offset={50} />
                                 </YAxis>
                                 <ZAxis type="number" dataKey="count" range={[40, 400]} />
                                 <Tooltip 
@@ -355,9 +355,9 @@ export default function ProcurementClient() {
                                 <Legend 
                                     verticalAlign="top" 
                                     align="left" 
-                                    wrapperStyle={{ top: 0, left: 20, paddingTop: '0px' }}
+                                    wrapperStyle={{ top: -10, left: 10 }}
                                     content={({ payload }) => (
-                                        <div className="inline-flex items-center gap-4 px-3 py-1.5 bg-black/70 backdrop-blur-md rounded-xl border border-white/10 shadow-lg mb-4 translate-y-[-10px] w-fit">
+                                        <div className="inline-flex items-center gap-4 px-3 py-1.5 bg-black/70 backdrop-blur-md rounded-xl border border-white/10 shadow-lg mb-4 w-fit">
                                             {payload.filter(p => p.value !== 'ללא הזמנות').map((entry, index) => (
                                                 <div key={`item-${index}`} className="flex items-center gap-2">
                                                     <div className="w-2 h-2 rounded-full" style={{ backgroundColor: entry.color }} />
@@ -424,19 +424,17 @@ export default function ProcurementClient() {
 
             {/* Smart Order List Section */}
             <div className="px-4 md:px-0 mt-8">
-                <div className="bg-white rounded-3xl border shadow-xl p-6 relative overflow-hidden">
-                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 via-indigo-500 to-purple-500"></div>
-                    
+                <div className="bg-white rounded-3xl border shadow-xl p-6 relative overflow-hidden transition-all duration-500">
                     <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-8">
                         <div>
                             <h2 className="text-xl font-bold flex items-center gap-2">
                                 <BarChart3 className="text-blue-600 w-5 h-5" />
                                 מחשבון רכש חכם (Order Optimizer)
                             </h2>
-                            <p className="text-gray-500 text-xs mt-1">כמויות מומלצות להזמנה לפי קצב מכירות ויתרת מלאי</p>
+                            <p className="text-gray-500 text-xs mt-1 font-medium">כמויות מומלצות להזמנה לפי קצב מכירות ויתרת מלאי</p>
                         </div>
-                        <div className="flex items-center gap-3 w-full md:w-auto">
-                            <div className="relative flex-1 md:w-64">
+                        <div className="flex items-center gap-3 w-full md:w-auto overflow-x-auto pb-2 md:pb-0 scrollbar-hide">
+                            <div className="relative flex-1 min-w-[180px] md:w-64">
                                 <input 
                                     type="text" 
                                     placeholder="חפש בושם..." 
@@ -448,30 +446,106 @@ export default function ProcurementClient() {
                             </div>
                             <button 
                                 onClick={handleExport}
-                                className="bg-black text-white px-4 py-2 rounded-full text-xs font-bold hover:bg-gray-800 transition flex items-center gap-2"
+                                className="bg-black text-white px-4 py-2 rounded-full text-[10px] md:text-xs font-bold hover:bg-gray-800 transition flex items-center gap-2 whitespace-nowrap shadow-lg shadow-black/10"
                             >
-                                ייצוא רכש
+                                <span className="hidden xs:inline">ייצוא דו״ח</span>
+                                <span className="xs:hidden">ייצוא</span>
                                 <Download className="w-4 h-4" />
                             </button>
                         </div>
                     </div>
 
-                    <div className="overflow-x-auto w-full">
+                    {/* Mobile Card-Based List */}
+                    <div className="md:hidden space-y-4">
+                        {filteredInsights.slice(0, 30).map((item) => {
+                            const isUrgent = (item.daysRemaining || 999) < 14;
+                            const recommendedOrder = item.daysRemaining < 30 ? Math.ceil(item.velocity * 60) : 0;
+                            
+                            return (
+                                <div key={item.id} className={`p-4 rounded-3xl border bg-gray-50/30 ${isUrgent ? 'border-red-100 bg-red-50/10' : 'border-gray-100 dark:border-gray-800'}`}>
+                                    <div className="flex items-center gap-4 mb-4">
+                                        <div className="relative w-16 h-16 bg-white rounded-2xl flex-shrink-0 shadow-sm border border-gray-100 overflow-hidden">
+                                            {item.image_url ? (
+                                                <Image src={item.image_url} alt={item.model} fill className="object-contain p-1" />
+                                            ) : (
+                                                <span className="text-2xl flex items-center justify-center h-full">🧴</span>
+                                            )}
+                                        </div>
+                                        <div className="flex-1 text-right">
+                                            <p className="font-black text-lg leading-tight uppercase tracking-tight text-gray-900">{item.brand}</p>
+                                            <p className="text-xs text-gray-500 font-bold">{item.model}</p>
+                                            <div className="mt-2 flex gap-2 justify-end">
+                                                 <span className={`text-[10px] font-black px-2 py-0.5 rounded-full ${isUrgent ? 'bg-red-100 text-red-600' : 'bg-blue-100 text-blue-600'}`}>
+                                                    {item.velocity > 0 ? `${Math.round(item.daysRemaining)} ימים למלאי` : 'מלאי מצטבר'}
+                                                </span>
+                                            </div>
+                                        </div>
+                                        <button 
+                                            onClick={() => router.push(`/product/${item.id}`)}
+                                            className="p-3 bg-white hover:bg-black hover:text-white rounded-2xl transition border shadow-sm"
+                                        >
+                                            <ExternalLink className="w-4 h-4" />
+                                        </button>
+                                    </div>
+                                    
+                                    <div className="grid grid-cols-2 gap-3 mb-4 text-right">
+                                        <div className="bg-white p-3 rounded-2xl border border-gray-50 shadow-sm">
+                                            <p className="text-[10px] text-gray-400 font-black uppercase mb-1">מלאי נוכחי</p>
+                                            <p className="text-sm font-black text-gray-800">{Math.round(item.stock)} מ״ל</p>
+                                            <div className="w-full h-1 bg-gray-100 rounded-full mt-2 overflow-hidden">
+                                                <div 
+                                                    className={`h-full rounded-full ${isUrgent ? 'bg-red-500' : 'bg-blue-500'}`} 
+                                                    style={{ width: `${Math.min(100, (item.stock / (item.original_size || 100)) * 100)}%` }}
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="bg-white p-3 rounded-2xl border border-gray-50 shadow-sm">
+                                            <p className="text-[10px] text-gray-400 font-black uppercase mb-1">קצב שבועי</p>
+                                            <p className="text-sm font-black text-emerald-600">{Math.round(item.velocity * 7)} מ״ל</p>
+                                        </div>
+                                    </div>
+
+                                    {recommendedOrder > 0 ? (
+                                        <div className="bg-amber-500 text-white p-3 rounded-2xl flex items-center justify-between shadow-lg shadow-amber-500/20 text-right">
+                                            <div className="flex items-center gap-2">
+                                                <Zap className="w-4 h-4 fill-white" />
+                                                <p className="text-xs font-black uppercase italic">המלצת רכש דחופה</p>
+                                            </div>
+                                            <p className="text-lg font-black tracking-tighter">הזמן {recommendedOrder} מ״ל</p>
+                                        </div>
+                                    ) : (
+                                        <div className="bg-emerald-50 text-emerald-600 p-2 rounded-xl text-center text-[10px] font-black uppercase tracking-widest border border-emerald-100">
+                                            מלאי תקין - אין צורך בהזמנה
+                                        </div>
+                                    )}
+                                </div>
+                            );
+                        })}
+                        {filteredInsights.length === 0 && (
+                            <div className="text-center p-12 bg-gray-50 rounded-3xl border border-dashed border-gray-200">
+                                <Search className="w-12 h-12 text-gray-300 mx-auto mb-3" />
+                                <p className="text-gray-500 font-bold">לא נמצאו תוצאות לחיפוש שלך</p>
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Desktop Table */}
+                    <div className="hidden md:block overflow-x-auto w-full">
                         <table className="w-full text-right border-separate border-spacing-y-2">
                             <thead>
-                                <tr className="text-gray-400 text-[11px] uppercase tracking-widest">
-                                    <th className="px-4 py-2 font-black">בושם</th>
-                                    <th className="px-4 py-2 font-black">מלאי נוכחי</th>
-                                    <th className="px-4 py-2 font-black">קצב (שבוע)</th>
-                                    <th className="px-4 py-2 font-black">צפי לסיום</th>
-                                    <th className="px-4 py-2 font-black text-center">המלצה לרכש</th>
-                                    <th className="px-4 py-2 font-black">פעולה</th>
+                                <tr className="text-gray-400 text-[11px] uppercase tracking-widest font-black">
+                                    <th className="px-4 py-2">בושם</th>
+                                    <th className="px-4 py-2">מלאי נוכחי</th>
+                                    <th className="px-4 py-2">קצב (שבוע)</th>
+                                    <th className="px-4 py-2">צפי לסיום</th>
+                                    <th className="px-4 py-2 text-center">המלצה לרכש</th>
+                                    <th className="px-4 py-2">פעולה</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {filteredInsights.slice(0, 50).map((item) => {
                                     const isUrgent = (item.daysRemaining || 999) < 14;
-                                    const recommendedOrder = item.daysRemaining < 30 ? Math.ceil(item.velocity * 60) : 0; // Target 60 days of stock
+                                    const recommendedOrder = item.daysRemaining < 30 ? Math.ceil(item.velocity * 60) : 0;
 
                                     return (
                                         <tr key={item.id} className={`bg-gray-50/50 hover:bg-white transition-all group border rounded-xl ${isUrgent ? 'border-red-100 shadow-[0_0_15px_-5px_rgba(239,68,68,0.2)]' : 'border-transparent'}`}>
@@ -485,16 +559,16 @@ export default function ProcurementClient() {
                                                         )}
                                                     </div>
                                                     <div className="flex flex-col">
-                                                        <span className="font-bold text-sm">{item.brand}</span>
-                                                        <span className="text-xs text-gray-400">{item.model}</span>
+                                                        <span className="font-bold text-sm text-gray-900">{item.brand}</span>
+                                                        <span className="text-xs text-gray-400 font-medium">{item.model}</span>
                                                     </div>
                                                 </div>
                                             </td>
                                             <td className="px-4 py-3">
                                                 <div className="flex flex-col">
                                                     <div className="flex justify-between items-center mb-1">
-                                                        <span className="text-sm font-bold">{Math.round(item.stock)} מ״ל</span>
-                                                        <span className="text-[10px] text-gray-400">מתוך {item.original_size} מ״ל</span>
+                                                        <span className="text-sm font-bold text-gray-800">{Math.round(item.stock)} מ״ל</span>
+                                                        <span className="text-[10px] text-gray-400 font-bold uppercase">מתוך {item.original_size} מ״ל</span>
                                                     </div>
                                                     <div className="w-24 h-1.5 bg-gray-200 rounded-full overflow-hidden">
                                                         <div 
@@ -504,34 +578,34 @@ export default function ProcurementClient() {
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td className="px-4 py-3 text-sm font-medium">
+                                            <td className="px-4 py-3 text-sm font-bold text-emerald-600">
                                                 {Math.round(item.velocity * 7)} מ״ל
                                             </td>
                                             <td className="px-4 py-3">
                                                 {item.velocity > 0 ? (
-                                                    <span className={`text-xs font-bold px-2 py-1 rounded-lg ${isUrgent ? 'bg-red-100 text-red-600' : 'bg-blue-100 text-blue-600'}`}>
+                                                    <span className={`text-[10px] font-black px-2 py-1 rounded-lg uppercase ${isUrgent ? 'bg-red-100 text-red-600' : 'bg-blue-100 text-blue-600'}`}>
                                                         {Math.round(item.daysRemaining)} ימים
                                                     </span>
                                                 ) : (
-                                                    <span className="text-gray-300 italic text-[10px]">מלאי מצטבר</span>
+                                                    <span className="text-gray-300 italic text-[10px] font-bold uppercase tracking-wider">מלאי מצטבר</span>
                                                 )}
                                             </td>
                                             <td className="px-4 py-3 text-center">
                                                 {recommendedOrder > 0 ? (
                                                     <div className="flex flex-col items-center">
-                                                        <span className="text-xs font-black text-amber-600 bg-amber-50 px-3 py-1 rounded-full border border-amber-100">
+                                                        <span className="text-[10px] font-black text-amber-600 bg-amber-50 px-3 py-1 rounded-full border border-amber-100 uppercase tracking-tighter">
                                                             הזמן {recommendedOrder} מ״ל
                                                         </span>
-                                                        <span className="text-[9px] text-gray-400 mt-0.5">כיסוי ל-60 יום</span>
+                                                        <span className="text-[9px] text-gray-400 mt-1 font-bold">כיסוי ל-60 יום</span>
                                                     </div>
                                                 ) : (
-                                                    <span className="text-green-500 text-xs font-bold">מלאי מספיק</span>
+                                                    <span className="text-green-500 text-[10px] font-black uppercase tracking-widest text-center">מלאי מספיק</span>
                                                 )}
                                             </td>
                                             <td className="px-4 py-3 rounded-l-xl">
                                                 <button 
                                                     onClick={() => router.push(`/product/${item.id}`)}
-                                                    className="p-2 hover:bg-black hover:text-white rounded-xl transition-all border border-transparent hover:shadow-lg"
+                                                    className="p-2 hover:bg-black hover:text-white rounded-xl transition-all border border-gray-100 hover:border-black shadow-sm"
                                                     title="צפה במוצר"
                                                 >
                                                     <ExternalLink className="w-4 h-4" />
@@ -542,6 +616,11 @@ export default function ProcurementClient() {
                                 })}
                             </tbody>
                         </table>
+                        {filteredInsights.length === 0 && (
+                            <div className="text-center py-20">
+                                <p className="text-gray-400 font-bold italic tracking-widest">לא נמצאו מוצרים תואמים לרכש</p>
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>
