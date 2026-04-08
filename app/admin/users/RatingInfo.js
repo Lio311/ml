@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Info, X, Zap, Award, Star, TrendingUp, Clock } from 'lucide-react';
+import { Info, X, Zap, Award, Star, TrendingUp, Clock, DollarSign, Layers, BarChart3 } from 'lucide-react';
 
 export default function RatingInfo({ score }) {
     const [showLegend, setShowLegend] = useState(false);
