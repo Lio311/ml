@@ -141,7 +141,7 @@ export default function QuickViewModal({ product, isOpen, onClose }) {
                             </div>
 
                             {product.description && (
-                                <p className="text-gray-600 text-sm mt-4 line-clamp-3 leading-relaxed">
+                                <p className="md:hidden text-gray-600 text-sm mt-4 line-clamp-3 leading-relaxed">
                                     {localize(product, 'description')}
                                 </p>
                             )}
