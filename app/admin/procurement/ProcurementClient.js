@@ -302,29 +302,6 @@ export default function ProcurementClient() {
                     </div>
                 </ChartCard>
 
-                {/* 6. Temporal Trends (Area Chart - Hourly Sales) */}
-                <ChartCard title="מתי הלקוחות קונים?" subtitle="התפלגות מחזור המכירות לפי שעות היממה">
-                    <div className="h-[350px] w-full mt-4">
-                        <ResponsiveContainer width="100%" height="100%">
-                            <AreaChart data={data?.temporalStats?.hourly || []} margin={{ left: 40, right: 30 }}>
-                                <defs>
-                                    <linearGradient id="colorTime" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="5%" stopColor="#f59e0b" stopOpacity={0.3}/>
-                                        <stop offset="95%" stopColor="#f59e0b" stopOpacity={0}/>
-                                    </linearGradient>
-                                </defs>
-                                <XAxis dataKey="hour" tick={{ fontSize: 10 }} interval={3} />
-                                <YAxis hide />
-                                <Tooltip 
-                                    contentStyle={{ textAlign: 'right', direction: 'rtl' }}
-                                    formatter={(value) => [`₪${Math.round(value)}`, 'מחזור']} 
-                                />
-                                <Area type="monotone" dataKey="revenue" stroke="#f59e0b" fillOpacity={1} fill="url(#colorTime)" strokeWidth={3} />
-                            </AreaChart>
-                        </ResponsiveContainer>
-                    </div>
-                </ChartCard>
-
                 {/* 7. Monthly Order Density */}
                 <ChartCard title="Monthly Order Density" subtitle="התפלגות הזמנות לפי יום בחודש ושעת שיא">
                     <div className="h-[350px] w-full mt-4">
