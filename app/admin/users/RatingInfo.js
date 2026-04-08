@@ -79,7 +79,7 @@ export function RatingLegend() {
                             </div>
 
                             {/* Vertical Stacking Layout */}
-                            <div className="flex flex-col gap-6 md:gap-8">
+                            <div className="flex flex-col gap-2 md:gap-4">
                                 
                                 {/* Section 1: Tiers */}
                                 <div className="flex flex-col gap-2.5 md:gap-3.5">
@@ -95,7 +95,7 @@ export function RatingLegend() {
                                 </div>
 
                                 {/* Section 2: Algorithm Weights */}
-                                <div className="flex flex-col gap-2 md:gap-3 border-t border-gray-50 pt-3 md:pt-4">
+                                <div className="flex flex-col gap-1.5 md:gap-2.5 border-t border-gray-50 pt-1 md:pt-2">
                                     <div className="flex items-center justify-between px-1">
                                         <h5 className="text-[9px] md:text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none">הרכב הציון (Algorithm)</h5>
                                         <div className="h-px bg-gray-100 flex-grow mr-4 md:mr-6"></div>
