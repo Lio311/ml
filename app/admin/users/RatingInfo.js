@@ -4,11 +4,11 @@ import React, { useState } from 'react';
 import { Info, X, Star, DollarSign, Layers, BarChart3, Clock } from 'lucide-react';
 
 const TIERS = [
-    { label: 'AAA', color: 'bg-indigo-600', text: 'text-indigo-600', desc: 'Platinum Elite', detail: 'הטופ 5% עם סל ממוצע מקסימלי' },
-    { label: 'AA', color: 'bg-emerald-600', text: 'text-emerald-600', desc: 'Gold Partner', detail: 'רכישה גבוהה ועקביות לטווח ארוך' },
-    { label: 'A', color: 'bg-blue-600', text: 'text-blue-600', desc: 'Silver Loyal', detail: 'לקוחות נאמנים עם רכישות קבועות' },
-    { label: 'B', color: 'bg-amber-500', text: 'text-amber-500', desc: 'Active User', detail: 'פעילות רגילה בטווח חודשי תקין' },
-    { label: 'C', color: 'bg-gray-400', text: 'text-gray-400', desc: 'New/Casual', detail: 'לקוחות מזדמנים או בשלבי הצטרפות' },
+    { label: 'AAA', color: 'bg-emerald-600', text: 'text-emerald-600', desc: 'Platinum Elite', detail: 'הטופ 5% עם סל ממוצע מקסימלי' },
+    { label: 'AA', color: 'bg-amber-500', text: 'text-amber-500', desc: 'Gold Partner', detail: 'רכישה גבוהה ועקביות לטווח ארוך' },
+    { label: 'A', color: 'bg-slate-400', text: 'text-slate-400', desc: 'Silver Loyal', detail: 'לקוחות נאמנים עם רכישות קבועות' },
+    { label: 'B', color: 'bg-indigo-400', text: 'text-indigo-400', desc: 'Active User', detail: 'פעילות רגילה בטווח חודשי תקין' },
+    { label: 'C', color: 'bg-blue-600', text: 'text-blue-600', desc: 'New/Casual', detail: 'לקוחות מזדמנים או בשלבי הצטרפות' },
 ];
 
 export function RatingBadge({ score }) {
