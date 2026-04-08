@@ -326,7 +326,9 @@ export default function ProcurementClient() {
                                     tickLine={false}
                                     tick={{ fontSize: 10, fill: '#999', dx: -20 }}
                                     formatter={(h) => h >= 0 && h <= 23 ? `${String(h).padStart(2, '0')}:00` : ''}
-                                />
+                                >
+                                    <Label value="שעות היממה" angle={-90} position="insideLeft" style={{ fontSize: '10px', fontWeight: 'bold', fill: '#999', textAnchor: 'middle' }} offset={-25} />
+                                </YAxis>
                                 <ZAxis type="number" dataKey="count" range={[40, 400]} />
                                 <Tooltip 
                                     cursor={{ strokeDasharray: '3 3' }}
