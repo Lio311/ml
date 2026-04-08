@@ -46,16 +46,18 @@ export default function AdminCouponsPage() {
     const isNewFromDashboard = searchParams.get('new') === 'true';
 
     useEffect(() => {
-        if (isNewFromDashboard && urlProductId) {
-            // Wait for products to load first to ensure we don't clear it later
+        if (isNewFromDashboard && urlProductId && products.length > 0) {
+            const prod = products.find(p => String(p.id) === String(urlProductId));
+            const label = searchParams.get('pName') || (prod ? `${prod.brand} - ${prod.name}` : urlProductId);
+            
             setFormData(prev => ({
                 ...prev,
-                allowed_products: [urlProductId],
+                allowed_products: prod ? [{ id: prod.id, label: `${prod.brand} - ${prod.name}` }] : [urlProductId],
                 code: `SALE-${Math.random().toString(36).substring(2, 8).toUpperCase()}`
             }));
             setShowModal(true);
         }
-    }, [isNewFromDashboard, urlProductId]);
+    }, [isNewFromDashboard, urlProductId, products.length]);
 
     useEffect(() => {
         fetchCoupons();

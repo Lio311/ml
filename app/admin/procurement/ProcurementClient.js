@@ -411,7 +411,7 @@ export default function ProcurementClient() {
                                     </div>
                                     <div className="flex gap-2">
                                         <button 
-                                            onClick={() => router.push(`/admin/coupons?new=true&productId=${item.id}`)}
+                                            onClick={() => router.push(`/admin/coupons?new=true&productId=${item.id}&pName=${encodeURIComponent(`${item.brand} - ${item.model}`)}`)}
                                             className="text-[10px] bg-indigo-600 text-white px-3 py-1.5 rounded-lg font-bold hover:bg-black transition shadow-sm"
                                         >
                                             צור קופון
