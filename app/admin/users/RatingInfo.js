@@ -73,8 +73,8 @@ export function RatingLegend() {
                                         <p className="text-[8px] md:text-[10px] text-gray-400 font-bold uppercase tracking-[0.2em] mt-1 md:mt-2">Premium Scoring Engine</p>
                                     </div>
                                 </div>
-                                <button onClick={() => setShowLegend(false)} className="p-1.5 md:p-2 hover:bg-gray-100 rounded-full transition-all group">
-                                    <X className="w-5 h-5 md:w-6 md:h-6 text-gray-300 group-hover:text-red-500 group-hover:rotate-90 duration-300" />
+                                <button onClick={() => setShowLegend(false)} className="p-1.5 md:p-2 hover:bg-red-50 rounded-full transition-all group">
+                                    <X className="w-5 h-5 md:w-6 md:h-6 text-red-500 group-hover:rotate-90 duration-300" />
                                 </button>
                             </div>
 
