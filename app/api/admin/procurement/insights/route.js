@@ -77,13 +77,6 @@ export async function GET() {
                 const velocity = sales.total_ml / 90; // ml per day
                 const burnRate = velocity > 0 ? (p.stock / velocity) : null; // days until out of stock
                 
-                // BCG Matrix Logic
-                // STARS: High Volume, High Profit
-                // CASH COWS: High Volume, Low Profit
-                // QUESTION MARKS: Low Volume, High Profit
-                // DOGS: Low Volume, Low Profit
-                // (Median values are used as thresholds)
-                
                 return {
                     id: p.id,
                     brand: p.brand,
@@ -99,33 +92,48 @@ export async function GET() {
                     top_notes: p.top_notes,
                     middle_notes: p.middle_notes,
                     base_notes: p.base_notes,
+                    seasons: p.seasons,
                     image_url: p.image_url
                 };
             });
 
             // 5. Aggregate Trend Intelligence (Notes)
             const notesStats = {};
+            // New: Size analysis
+            const sizeStats = { '2ml': 0, '5ml': 0, '10ml': 0 };
+            // New: Seasonal analysis
+            const seasonalStats = { 'Winter': 0, 'Summer': 0, 'Spring': 0, 'Autumn': 0 };
+
             insights.forEach(item => {
                 if (item.volume <= 0) return;
                 
-                // Helper to get notes from different formats
-                const processNotes = (val) => {
+                // Helper to get notes/seasons from different formats
+                const processTags = (val) => {
                     if (Array.isArray(val)) return val;
                     if (typeof val === 'string') return val.split(',').map(n => n.trim());
                     return [];
                 };
 
                 const allNotes = [
-                    ...processNotes(item.top_notes),
-                    ...processNotes(item.middle_notes),
-                    ...processNotes(item.base_notes)
+                    ...processTags(item.top_notes),
+                    ...processTags(item.middle_notes),
+                    ...processTags(item.base_notes)
                 ];
                 
                 allNotes.forEach(note => {
                     const normalized = (note || '').trim().toLowerCase();
                     if (!normalized || normalized === 'none') return;
                     if (!notesStats[normalized]) notesStats[normalized] = 0;
-                    notesStats[normalized] += item.volume; // Weight notes by volume sold
+                    notesStats[normalized] += item.volume;
+                });
+
+                // Seasonal distribution
+                const seasons = processTags(item.seasons);
+                seasons.forEach(s => {
+                    const capitalized = s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
+                    if (seasonalStats.hasOwnProperty(capitalized)) {
+                        seasonalStats[capitalized] += item.revenue;
+                    }
                 });
             });
 
@@ -133,6 +141,31 @@ export async function GET() {
                 .map(([name, volume]) => ({ name, volume }))
                 .sort((a, b) => b.volume - a.volume)
                 .slice(0, 20);
+
+            // New: Temporal Analysis (Time of Day / Day of Week)
+            const daysOfWeek = ['א׳', 'ב׳', 'ג׳', 'ד׳', 'ה׳', 'ו׳', 'ש׳'];
+            const hourlyStats = Array.from({ length: 24 }, (_, i) => ({ hour: `${i}:00`, revenue: 0 }));
+            const dailyStats = daysOfWeek.map(name => ({ name, revenue: 0 }));
+
+            orders.forEach(order => {
+                const date = new Date(order.created_at);
+                const hour = date.getHours();
+                const day = date.getDay();
+                
+                const total = Array.isArray(order.items) ? order.items.reduce((sum, item) => sum + (parseFloat(item.price) * parseInt(item.quantity) || 0), 0) : 0;
+                
+                hourlyStats[hour].revenue += total;
+                dailyStats[day].revenue += total;
+
+                // Also aggregate size distribution from items
+                const items = Array.isArray(order.items) ? order.items : [];
+                items.forEach(it => {
+                    const sizeKey = `${Math.round(parseFloat(it.size))}ml`;
+                    if (sizeStats.hasOwnProperty(sizeKey)) {
+                        sizeStats[sizeKey] += parseInt(it.quantity) || 0;
+                    }
+                });
+            });
 
             // 6. Brand Performance
             const brandStats = {};
@@ -154,6 +187,9 @@ export async function GET() {
                 insights: insights.sort((a, b) => (a.daysRemaining || 999) - (b.daysRemaining || 999)),
                 topNotes,
                 brandPerformance,
+                sizeStats: Object.entries(sizeStats).map(([name, value]) => ({ name, value })),
+                seasonalStats: Object.entries(seasonalStats).map(([name, value]) => ({ name, value })),
+                temporalStats: { hourly: hourlyStats, daily: dailyStats },
                 meta: {
                     periodDays: 90,
                     totalRevenue: insights.reduce((sum, i) => sum + i.revenue, 0),

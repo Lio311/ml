@@ -13,7 +13,9 @@ import {
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 
-const COLORS = ['#6366f1', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899'];
+const COLORS = ['#6366f1', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#ec4899', '#06b6d4', '#f97316'];
+const SEASONS_ORDER = ['Winter', 'Spring', 'Summer', 'Autumn'];
+const SEASONS_HE = { 'Winter': 'חורף', 'Spring': 'אביב', 'Summer': 'קיץ', 'Autumn': 'סתיו' };
 
 export default function ProcurementClient() {
     const [data, setData] = useState(null);
@@ -32,17 +34,17 @@ export default function ProcurementClient() {
             
             // Add Hebrew font support if available, or use standard table
             doc.setFontSize(22);
-            doc.text("ML_TLV - Procurement Draft Order", 20, 20);
+            doc.text("ml_tlv - Procurement Draft Order", 20, 20);
             doc.setFontSize(12);
             doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 20, 30);
             
             let y = 50;
             doc.text("Product", 20, y);
-            doc.text("Stock", 100, y);
-            doc.text("Recommended Order", 140, y);
+            doc.text("Stock", 130, y);
+            doc.text("Need to Order", 160, y);
             
             y += 10;
-            doc.line(20, y - 5, 190, y - 5);
+            doc.line(20, y - 5, 200, y - 5);
             
             const toOrder = data.insights.filter(i => i.daysRemaining < 30);
             
@@ -52,9 +54,13 @@ export default function ProcurementClient() {
                     y = 20;
                 }
                 const recommendedAmount = Math.ceil(item.velocity * 60);
-                doc.text(`${item.brand} ${item.model}`, 20, y);
-                doc.text(`${Math.round(item.stock)} ml`, 100, y);
-                doc.text(`${recommendedAmount} ml`, 140, y);
+                const fullName = `${item.brand} ${item.model}`;
+                // Truncate if too long to avoid overlap
+                const displayName = fullName.length > 45 ? fullName.substring(0, 42) + '...' : fullName;
+                
+                doc.text(displayName, 20, y);
+                doc.text(`${Math.round(item.stock)} ml`, 130, y);
+                doc.text(`${recommendedAmount} ml`, 160, y);
                 y += 10;
             });
             
@@ -175,10 +181,10 @@ export default function ProcurementClient() {
                 <ChartCard title="מטריצת BCG: פופולריות מול רווחיות" subtitle="Stars (Indigo), Cash Cows (Green), Question Marks (Amber), Dogs (Red)">
                     <div className="h-[350px] w-full mt-4">
                         <ResponsiveContainer width="100%" height="100%">
-                            <ScatterChart margin={{ top: 20, right: 20, bottom: 20, left: 20 }}>
+                            <ScatterChart margin={{ top: 20, right: 30, bottom: 20, left: 10 }}>
                                 <CartesianGrid strokeDasharray="3 3" opacity={0.1} />
-                                <XAxis type="number" dataKey="x" name="נפח מכירות (מ״ל)" />
-                                <YAxis type="number" dataKey="y" name="רווח (₪)" />
+                                <XAxis type="number" dataKey="x" name="נפח מכירות (מ״ל)" tick={{ fontSize: 10 }} />
+                                <YAxis type="number" dataKey="y" name="רווח (₪)" width={50} tick={{ fontSize: 10 }} />
                                 <ZAxis type="number" dataKey="z" range={[50, 400]} name="מחזור" />
                                 <Tooltip 
                                     cursor={{ strokeDasharray: '3 3' }} 
@@ -215,7 +221,7 @@ export default function ProcurementClient() {
                 <ChartCard title="Trend Intelligence: תווי ריח מבוקשים" subtitle="נפח מכירות משוקלל לפי רכיבי הבושם">
                     <div className="h-[350px] w-full mt-4">
                         <ResponsiveContainer width="100%" height="100%">
-                            <BarChart data={data?.topNotes || []} layout="vertical">
+                            <BarChart data={data?.topNotes || []} layout="vertical" margin={{ left: 40 }}>
                                 <defs>
                                     <linearGradient id="barGradient" x1="0" y1="0" x2="1" y2="0">
                                         <stop offset="0%" stopColor="#6366f1" />
@@ -224,7 +230,7 @@ export default function ProcurementClient() {
                                 </defs>
                                 <CartesianGrid strokeDasharray="3 3" horizontal={true} vertical={false} opacity={0.05} />
                                 <XAxis type="number" hide />
-                                <YAxis dataKey="name" type="category" width={80} tick={{ fontSize: 12, fill: '#666' }} />
+                                <YAxis dataKey="name" type="category" width={110} tick={{ fontSize: 11, fill: '#666', fontWeight: 600 }} />
                                 <Tooltip 
                                     contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)', textAlign: 'right' }}
                                     cursor={{ fill: 'transparent' }}
@@ -236,28 +242,78 @@ export default function ProcurementClient() {
                     </div>
                 </ChartCard>
 
-                {/* 3. Brand Performance */}
-                <ChartCard title="ביצועי מותגים מקבילים" subtitle="השוואת רווחיות ומחזור לפי בתי בישום">
+                {/* 3. Brand Performance (Grouped Bar Chart) */}
+                <ChartCard title="ביצועי מותגים: רווח מול מחזור" subtitle="השוואה ישירה של רווחיות לכל בית בישום">
                     <div className="h-[350px] w-full mt-4">
                         <ResponsiveContainer width="100%" height="100%">
-                            <AreaChart data={(data?.brandPerformance || []).slice(0, 8)}>
-                                <defs>
-                                    <linearGradient id="brandGrad" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="5%" stopColor="#10b981" stopOpacity={0.3}/>
-                                        <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
-                                    </linearGradient>
-                                </defs>
-                                <XAxis dataKey="name" hide />
+                            <BarChart data={(data?.brandPerformance || []).slice(0, 6)}>
+                                <CartesianGrid strokeDasharray="3 3" vertical={false} opacity={0.1} />
+                                <XAxis dataKey="name" tick={{ fontSize: 10, fill: '#999' }} interval={0} />
                                 <YAxis hide />
                                 <Tooltip 
                                     contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)', textAlign: 'right' }}
-                                    formatter={(value, name) => [
-                                        `₪${Math.round(value)}`, 
-                                        name === 'profit' ? 'רווח' : 'מחזור'
-                                    ]}
+                                    formatter={(value) => [`₪${Math.round(value)}`, '']}
                                 />
-                                <Area type="monotone" dataKey="profit" stroke="#10b981" fillOpacity={1} fill="url(#brandGrad)" strokeWidth={3} />
-                                <Area type="monotone" dataKey="revenue" stroke="#6366f1" fill="none" strokeWidth={2} strokeDasharray="5 5" />
+                                <Bar dataKey="revenue" name="מחזור" fill="#6366f1" radius={[4, 4, 0, 0]}  barSize={15} />
+                                <Bar dataKey="profit" name="רווח" fill="#10b981" radius={[4, 4, 0, 0]} barSize={15} />
+                            </BarChart>
+                        </ResponsiveContainer>
+                    </div>
+                </ChartCard>
+
+                {/* 5. Size Popularity (Donut Chart) */}
+                <ChartCard title="פופולריות נפחים" subtitle="התפלגות מכירות לפי גודל בקבוק (2/5/10 מ״ל)">
+                    <div className="h-[350px] w-full mt-4">
+                        <ResponsiveContainer width="100%" height="100%">
+                            <PieChart>
+                                <Pie
+                                    data={data?.sizeStats || []}
+                                    innerRadius={60}
+                                    outerRadius={80}
+                                    paddingAngle={5}
+                                    dataKey="value"
+                                >
+                                    {(data?.sizeStats || []).map((entry, index) => (
+                                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                                    ))}
+                                </Pie>
+                                <Tooltip formatter={(value) => [`${value} יחידות`, 'כמות']} />
+                                <Legend verticalAlign="bottom" height={36}/>
+                            </PieChart>
+                        </ResponsiveContainer>
+                    </div>
+                </ChartCard>
+
+                {/* 6. Seasonal Performance (Radar Chart) */}
+                <ChartCard title="ניתוח עונתיות" subtitle="התאמת המכירות לתוויות העונתיות של הבשמים">
+                    <div className="h-[350px] w-full mt-4">
+                        <ResponsiveContainer width="100%" height="100%">
+                            <AreaChart data={data?.seasonalStats?.map(s => ({ ...s, name_he: SEASONS_HE[s.name] })) || []}>
+                                <CartesianGrid strokeDasharray="3 3" opacity={0.1} />
+                                <XAxis dataKey="name_he" />
+                                <YAxis hide />
+                                <Tooltip formatter={(value) => [`₪${Math.round(value)}`, 'רווחיות']} />
+                                <Area type="monotone" dataKey="value" stroke="#8b5cf6" fill="#8b5cf6" fillOpacity={0.1} strokeWidth={3} />
+                            </AreaChart>
+                        </ResponsiveContainer>
+                    </div>
+                </ChartCard>
+
+                {/* 7. Temporal Trends (Area Chart - Hourly Sales) */}
+                <ChartCard title="מתי הלקוחות קונים?" subtitle="התפלגות מחזור המכירות לפי שעות היממה">
+                    <div className="h-[350px] w-full mt-4">
+                        <ResponsiveContainer width="100%" height="100%">
+                            <AreaChart data={data?.temporalStats?.hourly || []}>
+                                <defs>
+                                    <linearGradient id="colorTime" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="5%" stopColor="#f59e0b" stopOpacity={0.3}/>
+                                        <stop offset="95%" stopColor="#f59e0b" stopOpacity={0}/>
+                                    </linearGradient>
+                                </defs>
+                                <XAxis dataKey="hour" tick={{ fontSize: 10 }} interval={3} />
+                                <YAxis hide />
+                                <Tooltip formatter={(value) => [`₪${Math.round(value)}`, 'מחזור']} />
+                                <Area type="monotone" dataKey="revenue" stroke="#f59e0b" fillOpacity={1} fill="url(#colorTime)" strokeWidth={2} />
                             </AreaChart>
                         </ResponsiveContainer>
                     </div>
@@ -277,7 +333,7 @@ export default function ProcurementClient() {
                                     <div className="flex items-center gap-3">
                                         <div className="relative w-12 h-12 bg-white rounded-lg flex items-center justify-center shadow-sm overflow-hidden">
                                             {item.image_url ? (
-                                                <Image src={item.image_url} alt={item.model} fill className="object-cover" />
+                                                <Image src={item.image_url} alt={item.model} fill className="object-contain" />
                                             ) : (
                                                 <span className="text-xl">🧴</span>
                                             )}
@@ -440,8 +496,9 @@ function KPICard({ title, value, icon, trend, sub, isAlert }) {
                     {icon}
                 </div>
                 {trend && (
-                    <span className="text-[10px] bg-emerald-50 text-emerald-600 font-bold px-2 py-1 rounded-full border border-emerald-100">
-                        {trend}
+                    <span className="text-[10px] bg-emerald-50 text-emerald-600 font-bold px-2 py-1 rounded-full border border-emerald-100 flex items-center justify-center">
+                        <span className="inline-block translate-y-[-1px] font-mono mr-0.5">{trend.startsWith('+') ? '+' : ''}</span>
+                        {trend.replace('+', '')}
                     </span>
                 )}
             </div>
