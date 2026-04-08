@@ -137,7 +137,7 @@ export default async function AdminUsersPage(props) {
                                 <th className="p-4 text-center">משתמש</th>
                                 <th className="p-4 text-center">אימייל</th>
                                 <th className="p-4 text-center">דירוג</th>
-                                <th className="p-4 text-center font-black text-blue-700 bg-blue-50/50 italic tracking-tighter">Performance</th>
+                                <th className="p-4 text-center font-black text-blue-700 bg-blue-50/50">סטטיסטיקה</th>
                                 <th className="p-4 text-center">תאריכים</th>
                                 <th className="p-4 text-center">תפקיד</th>
                             </tr>
