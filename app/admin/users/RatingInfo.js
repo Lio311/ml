@@ -91,9 +91,9 @@ export function RatingLegend() {
                                         <h5 className="text-[8px] md:text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none">סיווג רמות (Tiers)</h5>
                                         <div className="h-px bg-gray-100 flex-grow mr-3 md:mr-6"></div>
                                     </div>
-                                    <div className="flex flex-wrap justify-center gap-2 md:gap-3">
+                                    <div className="flex flex-wrap justify-center gap-2 md:gap-1.5">
                                         {TIERS.map(t => (
-                                            <div key={t.label} className="w-[calc(50%-4px)] md:w-[calc(50%-6px)] lg:w-[calc(33.333%-8px)]">
+                                            <div key={t.label} className="w-[calc(50%-4px)] md:w-[calc(50%-3px)] lg:w-[calc(33.333%-4px)]">
                                                 <TierItem {...t} />
                                             </div>
                                         ))}
@@ -106,7 +106,7 @@ export function RatingLegend() {
                                         <h5 className="text-[8px] md:text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none">הרכב הציון (Algorithm)</h5>
                                         <div className="h-px bg-gray-100 flex-grow mr-3 md:mr-6"></div>
                                     </div>
-                                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 md:gap-3">
+                                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 md:gap-1.5">
                                         <MetricBadge icon={<DollarSign size={12} />} label="סך רכישות" weight="40%" />
                                         <MetricBadge icon={<Layers size={12} />} label="צפיפות" weight="30%" />
                                         <MetricBadge icon={<BarChart3 size={12} />} label="סל ממוצע" weight="20%" />
