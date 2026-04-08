@@ -6,7 +6,7 @@ import Image from 'next/image';
 import { 
     AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, 
     ScatterChart, Scatter, ZAxis, Cell, BarChart, Bar, Legend, PieChart, Pie,
-    Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis
+    Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Label
 } from 'recharts';
 import { 
     TrendingUp, AlertTriangle, Package, Zap, DollarSign, 
@@ -189,8 +189,12 @@ export default function ProcurementClient() {
                         <ResponsiveContainer width="100%" height="100%">
                             <ScatterChart margin={{ top: 20, right: 30, bottom: 20, left: 50 }}>
                                 <CartesianGrid strokeDasharray="3 3" opacity={0.1} />
-                                <XAxis type="number" dataKey="x" name="נפח מכירות (מ״ל)" tick={{ fontSize: 10 }} />
-                                <YAxis type="number" dataKey="y" name="רווח (₪)" width={80} tick={{ fontSize: 10, dx: -20 }} />
+                                <XAxis type="number" dataKey="x" tick={{ fontSize: 10 }}>
+                                    <Label value="נפח מכירות (מ״ל)" offset={-5} position="insideBottom" style={{ fontSize: '10px', fontWeight: 'bold', fill: '#999' }} />
+                                </XAxis>
+                                <YAxis type="number" dataKey="y" width={80} tick={{ fontSize: 10, dx: -20 }}>
+                                    <Label value="רווחיות (₪)" angle={-90} position="insideLeft" style={{ fontSize: '10px', fontWeight: 'bold', fill: '#999', textAnchor: 'middle' }} />
+                                </YAxis>
                                 <ZAxis type="number" dataKey="z" range={[50, 400]} name="מחזור" />
                                 <Tooltip 
                                     cursor={{ strokeDasharray: '3 3' }} 
@@ -347,7 +351,9 @@ export default function ProcurementClient() {
                             <BarChart data={data?.temporalStats?.daily || []} margin={{ top: 20, right: 30, left: 0, bottom: 0 }}>
                                 <CartesianGrid strokeDasharray="3 3" vertical={false} opacity={0.1} />
                                 <XAxis dataKey="name" tick={{ fontSize: 12, fontWeight: 'bold', fill: '#999' }} axisLine={false} tickLine={false} />
-                                <YAxis hide />
+                                <YAxis width={60}>
+                                    <Label value="מחזור (₪)" angle={-90} position="insideLeft" style={{ fontSize: '10px', fontWeight: 'bold', fill: '#999', textAnchor: 'middle' }} />
+                                </YAxis>
                                 <Tooltip 
                                     cursor={{ fill: 'rgba(0,0,0,0.02)' }}
                                     contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 20px 25px -5px rgba(0,0,0,0.1)', textAlign: 'right' }}
