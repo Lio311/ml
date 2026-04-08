@@ -43,49 +43,52 @@ export default function RatingInfo({ score }) {
                         onClick={() => setShowLegend(false)}
                     />
                     <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 md:absolute md:inset-auto md:top-full md:left-0 md:mt-2 md:bg-transparent" onClick={() => setShowLegend(false)}>
-                        <div className="bg-white rounded-[3rem] shadow-2xl border border-gray-100 p-10 w-full max-w-2xl text-right animate-in fade-in zoom-in duration-200" dir="rtl" onClick={(e) => e.stopPropagation()}>
-                            <div className="flex justify-between items-center mb-8">
+                        {/* Wrapper with Responsive Constraints */}
+                        <div 
+                            className="bg-white rounded-[2.5rem] shadow-2xl border border-gray-100 p-8 
+                                       w-full max-w-[300px] max-h-[85vh] 
+                                       md:max-w-4xl md:max-h-[30vh] 
+                                       overflow-y-auto scrollbar-hide text-right animate-in fade-in zoom-in duration-200" 
+                            dir="rtl" 
+                            onClick={(e) => e.stopPropagation()}
+                        >
+                            {/* Header - Sticky for Desktop short view */}
+                            <div className="flex justify-between items-center mb-6 md:mb-4 sticky top-0 bg-white z-10 pb-2 border-b border-gray-50">
                                 <div className="flex items-center gap-3">
-                                    <div className="w-10 h-10 bg-amber-50 rounded-2xl flex items-center justify-center shadow-sm">
-                                        <Zap className="w-6 h-6 text-amber-500 fill-amber-500" />
-                                    </div>
-                                    <div>
-                                        <h4 className="text-xl font-black text-gray-900 tracking-tight leading-none">מערכת דירוג הלקוחות</h4>
-                                        <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest mt-1">Smart Customer Analytics Engine</p>
-                                    </div>
+                                    <Zap className="w-5 h-5 text-amber-500 fill-amber-500" />
+                                    <h4 className="text-sm md:text-base font-black text-gray-900 tracking-tight">דירוג לקוחות חכם</h4>
                                 </div>
-                                <button onClick={() => setShowLegend(false)} className="p-2 hover:bg-gray-100 rounded-full transition group">
-                                    <X className="w-6 h-6 text-gray-300 group-hover:text-red-500 transition-colors" />
+                                <button onClick={() => setShowLegend(false)} className="p-1.5 hover:bg-gray-100 rounded-full transition group">
+                                    <X className="w-5 h-5 text-gray-300 group-hover:text-red-500" />
                                 </button>
                             </div>
 
-                            <div className="space-y-8">
-                                <div className="p-4 bg-gray-50/50 rounded-2xl border border-gray-100/50">
-                                    <p className="text-xs text-gray-500 font-bold leading-relaxed">
-                                        הדירוג מחושב באופן אוטומטי על בסיס שקלול ביצועי רכישה, עקביות הזמנות וותק הלקוח במערכת.
-                                    </p>
-                                </div>
+                            {/* Content Grid: Vertical on Mobile, Horizontal on Desktop */}
+                            <div className="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8">
                                 
-                                <div className="space-y-4">
-                                    <h5 className="text-[11px] font-black text-gray-400 uppercase tracking-widest border-b border-gray-100 pb-2">סיווג רמות לקוח (Tiers)</h5>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                                        <TierItem label="AAA" color="bg-indigo-600" desc="Platinum Elite - לקוחות העל" />
-                                        <TierItem label="AA" color="bg-emerald-600" desc="Gold - רכישה גבוהה ועקבית" />
+                                {/* Tiers Section */}
+                                <div className="md:col-span-8 flex flex-col gap-3">
+                                    <h5 className="text-[10px] font-black text-gray-400 uppercase tracking-widest px-1">סיווג רמות (Tiers)</h5>
+                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+                                        <TierItem label="AAA" color="bg-indigo-600" desc="Platinum Elite" />
+                                        <TierItem label="AA" color="bg-emerald-600" desc="Gold - רכישה גבוהה" />
                                         <TierItem label="A" color="bg-blue-600" desc="Silver - לקוחות נאמנים" />
                                         <TierItem label="B" color="bg-amber-500" desc="Active - פוטנציאל גבוה" />
                                         <TierItem label="C" color="bg-gray-400" desc="New - לקוחות מזדמנים" />
                                     </div>
                                 </div>
 
-                                <div className="pt-6 border-t border-gray-100">
-                                    <h5 className="text-[11px] font-black text-gray-400 uppercase tracking-widest mb-4">הרכב הציון (Algorithm Weights)</h5>
-                                    <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
-                                        <MetricBadge icon={<TrendingUp size={12} />} label="רכישות" weight="40%" />
-                                        <MetricBadge icon={<Award size={12} />} label="צפיפות" weight="30%" />
-                                        <MetricBadge icon={<Star size={12} />} label="סל" weight="20%" />
-                                        <MetricBadge icon={<Clock size={12} />} label="וותק" weight="10%" />
+                                {/* Weights Section */}
+                                <div className="md:col-span-4 flex flex-col gap-3 md:border-r md:border-gray-50 md:pr-6">
+                                    <h5 className="text-[10px] font-black text-gray-400 uppercase tracking-widest px-1">הרכב הציון (%)</h5>
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                                        <MetricBadge icon={<TrendingUp size={10} />} label="רכישות" weight="40%" />
+                                        <MetricBadge icon={<Award size={10} />} label="צפיפות" weight="30%" />
+                                        <MetricBadge icon={<Star size={10} />} label="סל" weight="20%" />
+                                        <MetricBadge icon={<Clock size={10} />} label="וותק" weight="10%" />
                                     </div>
                                 </div>
+
                             </div>
                         </div>
                     </div>
@@ -97,21 +100,23 @@ export default function RatingInfo({ score }) {
 
 function TierItem({ label, color, desc }) {
     return (
-        <div className="flex items-center gap-3 p-3 bg-gray-50/20 rounded-2xl border border-transparent hover:border-gray-100 hover:bg-white transition-all duration-300 hover:shadow-sm">
-            <div className={`w-9 h-6 rounded-lg flex items-center justify-center text-white text-[10px] font-black shadow-sm shrink-0 ${color}`}>
+        <div className="flex items-center gap-3 p-2 bg-gray-50/20 rounded-xl border border-transparent hover:bg-white hover:shadow-sm hover:border-gray-100 transition-all cursor-default">
+            <div className={`w-9 h-5 rounded-lg flex items-center justify-center text-white text-[9px] font-black shadow-sm shrink-0 ${color}`}>
                 {label}
             </div>
-            <span className="text-[11px] font-bold text-gray-700 leading-tight">{desc}</span>
+            <span className="text-[10px] font-bold text-gray-650 leading-tight">{desc}</span>
         </div>
     );
 }
 
 function MetricBadge({ icon, label, weight }) {
     return (
-        <div className="flex flex-col items-center gap-1.5 p-3 bg-gray-50/50 rounded-2xl border border-gray-100/50 text-center transition-all hover:bg-white hover:shadow-sm">
-            <div className="text-blue-500 bg-white p-1.5 rounded-lg shadow-sm">{icon}</div>
-            <div className="text-[9px] font-black text-gray-400 uppercase tracking-tighter">{label}</div>
-            <div className="text-sm font-black text-blue-600 leading-none">{weight}</div>
+        <div className="flex items-center justify-between gap-3 p-2 bg-gray-50/50 rounded-xl border border-gray-100/50">
+            <div className="flex items-center gap-1.5 min-w-0">
+                <span className="text-blue-500 opacity-70 shrink-0">{icon}</span>
+                <span className="text-[9px] font-black text-gray-400 uppercase tracking-tighter truncate">{label}</span>
+            </div>
+            <span className="text-[10px] font-black text-blue-600 shrink-0">{weight}</span>
         </div>
     );
 }
