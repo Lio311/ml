@@ -187,13 +187,13 @@ export default function ProcurementClient() {
                 <ChartCard title="מטריצת BCG: פופולריות מול רווחיות" subtitle="Stars (Indigo), Cash Cows (Green), Question Marks (Amber), Dogs (Red)">
                     <div className="h-[350px] w-full mt-4">
                         <ResponsiveContainer width="100%" height="100%">
-                            <ScatterChart margin={{ top: 20, right: 30, bottom: 20, left: 50 }}>
+                            <ScatterChart margin={{ top: 20, right: 30, bottom: 20, left: 100 }}>
                                 <CartesianGrid strokeDasharray="3 3" opacity={0.1} />
                                 <XAxis type="number" dataKey="x" tick={{ fontSize: 10 }}>
                                     <Label value="נפח מכירות (מ״ל)" offset={-5} position="insideBottom" style={{ fontSize: '10px', fontWeight: 'bold', fill: '#999' }} />
                                 </XAxis>
-                                <YAxis type="number" dataKey="y" width={80} tick={{ fontSize: 10, dx: -20 }}>
-                                    <Label value="רווחיות (₪)" angle={-90} position="insideLeft" style={{ fontSize: '10px', fontWeight: 'bold', fill: '#999', textAnchor: 'middle' }} />
+                                <YAxis type="number" dataKey="y" width={120} tick={{ fontSize: 10, dx: -40 }}>
+                                    <Label value="רווחיות (₪)" angle={-90} position="insideLeft" style={{ fontSize: '10px', fontWeight: 'bold', fill: '#999', textAnchor: 'middle' }} offset={-20} />
                                 </YAxis>
                                 <ZAxis type="number" dataKey="z" range={[50, 400]} name="מחזור" />
                                 <Tooltip 
@@ -231,7 +231,7 @@ export default function ProcurementClient() {
                 <ChartCard title="Trend Intelligence: תווי ריח מבוקשים" subtitle="נפח מכירות משוקלל לפי רכיבי הבושם">
                     <div className="h-[350px] w-full mt-4">
                         <ResponsiveContainer width="100%" height="100%">
-                            <BarChart data={data?.topNotes || []} layout="vertical" margin={{ left: 40 }}>
+                            <BarChart data={data?.topNotes || []} layout="vertical" margin={{ left: 80 }}>
                                 <defs>
                                     <linearGradient id="barGradient" x1="0" y1="0" x2="1" y2="0">
                                         <stop offset="0%" stopColor="#6366f1" />
@@ -243,8 +243,8 @@ export default function ProcurementClient() {
                                 <YAxis 
                                     dataKey="name" 
                                     type="category" 
-                                    width={160} 
-                                    tick={{ fontSize: 11, fill: '#666', fontWeight: 600, dx: -20 }} 
+                                    width={200} 
+                                    tick={{ fontSize: 11, fill: '#666', fontWeight: 600, dx: -60 }} 
                                 />
                                 <Tooltip 
                                     contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)', textAlign: 'right' }}
