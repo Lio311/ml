@@ -350,7 +350,21 @@ export default function ProcurementClient() {
                                         return null;
                                     }}
                                 />
-                                <Legend verticalAlign="top" align="left" iconType="circle" wrapperStyle={{ paddingTop: '0px', paddingBottom: '20px', fontSize: '10px', fontWeight: 'bold' }} />
+                                <Legend 
+                                    verticalAlign="top" 
+                                    align="left" 
+                                    wrapperStyle={{ top: 0, left: 20, paddingTop: '0px' }}
+                                    content={({ payload }) => (
+                                        <div className="flex items-center gap-4 px-3 py-1.5 bg-black/70 backdrop-blur-md rounded-xl border border-white/10 shadow-lg mb-4 translate-y-[-10px]">
+                                            {payload.filter(p => p.value !== 'ללא הזמנות').map((entry, index) => (
+                                                <div key={`item-${index}`} className="flex items-center gap-2">
+                                                    <div className="w-2 h-2 rounded-full" style={{ backgroundColor: entry.color }} />
+                                                    <span className="text-[11px] font-bold text-white leading-none">{entry.value}</span>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                />
                                 {/* Background Grid (Empty slots) */}
                                 <Scatter 
                                     name="ללא הזמנות" 
