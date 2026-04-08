@@ -255,7 +255,7 @@ export default function ProcurementClient() {
                 <ChartCard title="Trend Intelligence: תווי ריח מבוקשים" subtitle="נפח מכירות משוקלל לפי רכיבי הבושם">
                     <div className="h-[350px] w-full mt-4">
                         <ResponsiveContainer width="100%" height="100%">
-                            <BarChart data={data?.topNotes || []} layout="vertical" margin={{ left: 10 }}>
+                            <BarChart data={data?.topNotes || []} layout="vertical" margin={{ left: 5, right: 30 }}>
                                 <defs>
                                     <linearGradient id="barGradient" x1="0" y1="0" x2="1" y2="0">
                                         <stop offset="0%" stopColor="#6366f1" />
@@ -267,14 +267,15 @@ export default function ProcurementClient() {
                                 <YAxis 
                                     dataKey="name" 
                                     type="category" 
-                                    width={140} 
-                                    tick={{ fontSize: 11, fill: '#666', fontWeight: 600, dx: -25 }} 
+                                    hide
                                 />
                                 <Tooltip 
                                     contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)', textAlign: 'right' }}
                                     formatter={(v) => [`${Math.round(v)} מ״ל`, 'נפח']}
                                 />
-                                <Bar dataKey="volume" fill="url(#barGradient)" radius={[0, 4, 4, 0]} />
+                                <Bar dataKey="volume" fill="url(#barGradient)" radius={[0, 4, 4, 0]} barSize={22}>
+                                    <LabelList dataKey="name" position="insideLeft" offset={10} style={{ fill: '#fff', fontSize: '11px', fontWeight: 'bold' }} />
+                                </Bar>
                             </BarChart>
                         </ResponsiveContainer>
                     </div>
