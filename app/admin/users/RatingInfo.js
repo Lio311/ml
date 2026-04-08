@@ -47,11 +47,19 @@ export default function RatingInfo({ score }) {
                         <div 
                             className="bg-white/95 backdrop-blur-xl rounded-[3rem] shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-white p-6 md:p-10 
                                        w-full max-w-[320px] 
-                                       md:max-w-5xl md:max-h-[42vh] 
-                                       overflow-hidden text-right animate-in fade-in zoom-in duration-200" 
+                                       md:max-w-5xl md:max-h-[65vh] 
+                                       overflow-y-auto scrollbar-hide text-right animate-in fade-in zoom-in duration-200" 
                             dir="rtl" 
                             onClick={(e) => e.stopPropagation()}
+                            style={{ 
+                                scrollbarWidth: 'none', 
+                                msOverflowStyle: 'none'
+                            }}
                         >
+                            {/* Hidden scrollbar CSS helper */}
+                            <style dangerouslySetInnerHTML={{ __html: `
+                                .scrollbar-hide::-webkit-scrollbar { display: none; }
+                            ` }} />
                             {/* Sticky Header with Modern Typography */}
                             <div className="flex justify-between items-center mb-6 md:mb-8 bg-white/50 backdrop-blur-md z-10 pb-4 border-b border-gray-100/50">
                                 <div className="flex items-center gap-4">
