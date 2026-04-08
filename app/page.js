@@ -135,7 +135,7 @@ export default async function Home() {
         }}
       />
       {/* Hero Section - Tall and pulled to top on mobile */}
-      <section className="relative h-[68vh] md:h-[73vh] w-full m-0 p-0 overflow-hidden bg-white block !-mt-20 md:mt-0">
+      <section className="relative h-[68vh] md:h-[76vh] w-full m-0 p-0 overflow-hidden bg-white block !-mt-20 md:mt-0">
         <div className="absolute inset-0 w-full h-full overflow-hidden">
           <video
             autoPlay
