@@ -141,14 +141,14 @@ function TierItem({ label, color, desc, detail }) {
 
 function MetricBadge({ icon, label, weight }) {
     return (
-        <div className="flex items-center justify-between md:flex-col md:justify-center md:text-center gap-3 md:gap-2 p-3 md:p-4 bg-gray-50/50 rounded-xl md:rounded-2xl border border-gray-100/50 hover:bg-white hover:shadow-xl transition-all">
-            <div className="flex items-center gap-2.5 md:flex-col md:gap-2 min-w-0">
+        <div className="flex flex-col items-center justify-center text-center gap-2 p-3 md:p-4 bg-gray-50/50 rounded-xl md:rounded-2xl border border-gray-100/50 hover:bg-white hover:shadow-xl transition-all">
+            <div className="flex flex-col items-center gap-2 min-w-0">
                 <div className="w-8 h-8 md:w-10 md:h-10 bg-white rounded-lg md:rounded-xl flex items-center justify-center shadow-sm text-blue-600 shrink-0">
                     {icon}
                 </div>
-                <div className="text-[9px] font-black text-gray-400 uppercase tracking-widest leading-none truncate">{label}</div>
+                <div className="text-[8px] md:text-[9px] font-black text-gray-400 uppercase tracking-widest leading-none truncate">{label}</div>
             </div>
-            <div className="text-[11px] md:text-sm font-black text-gray-900 tabular-nums bg-white px-2 md:px-2.5 py-1 rounded-lg shadow-sm shrink-0">{weight}</div>
+            <div className="text-[10px] md:text-sm font-black text-gray-900 tabular-nums bg-white px-2 md:px-2.5 py-0.5 md:py-1 rounded-lg shadow-sm shrink-0">{weight}</div>
         </div>
     );
 }
