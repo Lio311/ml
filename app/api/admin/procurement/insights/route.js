@@ -226,7 +226,7 @@ export async function GET() {
                 .map(([name, stats]) => ({ name, ...stats }))
                 .sort((a, b) => b.profit - a.profit);
 
-            // 9. Monthly Order Density Grid (Day 1-31 vs Hour 0-23)
+            // 9. Monthly Order Density Grid (Full 31x24 Matrix)
             const monthlyGridMap = {};
             orders.forEach(order => {
                 const date = new Date(order.created_at);
@@ -235,7 +235,7 @@ export async function GET() {
                 const key = `${day}-${hour}`;
                 
                 if (!monthlyGridMap[key]) {
-                    monthlyGridMap[key] = { day, hour, count: 0, cats: {} };
+                    monthlyGridMap[key] = { count: 0, cats: {} };
                 }
                 monthlyGridMap[key].count += 1;
                 
@@ -248,16 +248,20 @@ export async function GET() {
                 });
             });
 
-            const monthlyDensityGrid = Object.values(monthlyGridMap).map(cell => {
-                const dominant = Object.entries(cell.cats)
-                    .sort((a,b) => b[1] - a[1])[0]?.[0] || 'unisex';
-                return {
-                    day: cell.day,
-                    hour: cell.hour,
-                    count: cell.count,
-                    category: dominant
-                };
-            });
+            const monthlyDensityGrid = [];
+            for (let d = 1; d <= 31; d++) {
+                for (let h = 0; h <= 23; h++) {
+                    const key = `${d}-${h}`;
+                    const cell = monthlyGridMap[key];
+                    const dominant = cell ? (Object.entries(cell.cats).sort((a,b) => b[1] - a[1])[0]?.[0] || 'unisex') : 'none';
+                    monthlyDensityGrid.push({
+                        day: d,
+                        hour: h,
+                        count: cell ? cell.count : 0,
+                        category: dominant
+                    });
+                }
+            }
 
             return NextResponse.json({
                 insights: insights.sort((a, b) => (a.daysRemaining || 999) - (b.daysRemaining || 999)),

@@ -187,13 +187,13 @@ export default function ProcurementClient() {
                 <ChartCard title="מטריצת BCG: פופולריות מול רווחיות" subtitle="Stars (Indigo), Cash Cows (Green), Question Marks (Amber), Dogs (Red)">
                     <div className="h-[350px] w-full mt-4">
                         <ResponsiveContainer width="100%" height="100%">
-                            <ScatterChart margin={{ top: 20, right: 30, bottom: 20, left: 0 }}>
+                            <ScatterChart margin={{ top: 20, right: 30, bottom: 20, left: 10 }}>
                                 <CartesianGrid strokeDasharray="3 3" opacity={0.1} />
                                 <XAxis type="number" dataKey="x" tick={{ fontSize: 10 }}>
                                     <Label value="נפח מכירות (מ״ל)" offset={-5} position="insideBottom" style={{ fontSize: '10px', fontWeight: 'bold', fill: '#999' }} />
                                 </XAxis>
-                                <YAxis type="number" dataKey="y" width={60} tick={{ fontSize: 10, dx: -5 }}>
-                                    <Label value="רווחיות (₪)" angle={-90} position="insideLeft" style={{ fontSize: '10px', fontWeight: 'bold', fill: '#999', textAnchor: 'middle' }} offset={-5} />
+                                <YAxis type="number" dataKey="y" width={100} tick={{ fontSize: 10, dx: -20 }}>
+                                    <Label value="רווחיות (₪)" angle={-90} position="insideLeft" style={{ fontSize: '10px', fontWeight: 'bold', fill: '#999', textAnchor: 'middle' }} offset={-25} />
                                 </YAxis>
                                 <ZAxis type="number" dataKey="z" range={[50, 400]} name="מחזור" />
                                 <Tooltip 
@@ -255,7 +255,7 @@ export default function ProcurementClient() {
                 <ChartCard title="Trend Intelligence: תווי ריח מבוקשים" subtitle="נפח מכירות משוקלל לפי רכיבי הבושם">
                     <div className="h-[350px] w-full mt-4">
                         <ResponsiveContainer width="100%" height="100%">
-                            <BarChart data={data?.topNotes || []} layout="vertical" margin={{ left: 0 }}>
+                            <BarChart data={data?.topNotes || []} layout="vertical" margin={{ left: 10 }}>
                                 <defs>
                                     <linearGradient id="barGradient" x1="0" y1="0" x2="1" y2="0">
                                         <stop offset="0%" stopColor="#6366f1" />
@@ -267,8 +267,8 @@ export default function ProcurementClient() {
                                 <YAxis 
                                     dataKey="name" 
                                     type="category" 
-                                    width={100} 
-                                    tick={{ fontSize: 11, fill: '#666', fontWeight: 600, dx: -5 }} 
+                                    width={140} 
+                                    tick={{ fontSize: 11, fill: '#666', fontWeight: 600, dx: -25 }} 
                                 />
                                 <Tooltip 
                                     contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)', textAlign: 'right' }}
@@ -319,22 +319,12 @@ export default function ProcurementClient() {
                                     contentStyle={{ textAlign: 'right', direction: 'rtl' }}
                                     formatter={(value) => [`₪${Math.round(value)}`, 'מחזור']} 
                                 />
-                                <Area type="monotone" dataKey="revenue" stroke="#f59e0b" fillOpacity={1} fill="url(#colorTime)" strokeWidth={3} />
-                            </AreaChart>
-                        </ResponsiveContainer>
-                    </div>
-                </ChartCard>
-
-                {/* 7. Monthly Order Density (Sophisticated Dot Matrix) */}
-                <ChartCard title="Monthly Order Density" subtitle="התפלגות הזמנות לפי יום בחודש ושעת שיא">
-                    <div className="h-[350px] w-full mt-4">
-                        <ResponsiveContainer width="100%" height="100%">
-                            <ScatterChart margin={{ top: 20, right: 30, left: 0, bottom: 20 }}>
+                                <Area type="monotone" dataKey="revenue" stroke="#f59e0b" fillOpacity={1} f                            <ScatterChart margin={{ top: 20, right: 30, left: 10, bottom: 20 }}>
                                 <XAxis 
                                     type="number" 
                                     dataKey="day" 
-                                    domain={[1, 31]} 
-                                    tickCount={31} 
+                                    domain={[0, 32]} 
+                                    tickCount={33} 
                                     axisLine={false} 
                                     tickLine={false}
                                     tick={{ fontSize: 10, fill: '#999' }}
@@ -342,27 +332,54 @@ export default function ProcurementClient() {
                                 <YAxis 
                                     type="number" 
                                     dataKey="hour" 
-                                    domain={[0, 23]} 
-                                    tickCount={12} 
-                                    width={40}
+                                    domain={[-1, 24]} 
+                                    tickCount={13} 
+                                    width={80}
                                     axisLine={false} 
                                     tickLine={false}
-                                    tick={{ fontSize: 10, fill: '#999' }}
-                                    formatter={(h) => `${String(h).padStart(2, '0')}:00`}
+                                    tick={{ fontSize: 10, fill: '#999', dx: -20 }}
+                                    formatter={(h) => h >= 0 && h <= 23 ? `${String(h).padStart(2, '0')}:00` : ''}
                                 />
-                                <ZAxis type="number" dataKey="count" range={[40, 200]} />
+                       dataKey="hour" 
+                                    domain={[-1, 24]} 
+                                    tickCount={13} 
+                                    width={60}
+                                    axisLine={false} 
+                                    tickLine={false}
+                                    tick={{ fontSize: 10, fill: '#999', dx: -10 }}
+                                    formatter={(h) => h >= 0 && h <= 23 ? `${String(h).padStart(2, '0')}:00` : ''}
+                                />
+                                <ZAxis type="number" dataKey="count" range={[40, 400]} />
                                 <Tooltip 
                                     cursor={{ strokeDasharray: '3 3' }}
-                                    contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 20px 25px -5px rgba(0,0,0,0.1)', textAlign: 'right' }}
-                                    formatter={(v, name, p) => [
-                                        `${v} הזמנות`, 
-                                        name === 'day' ? 'יום' : name === 'hour' ? 'שעה' : 'קטגוריה'
-                                    ]}
+                                    content={({ active, payload }) => {
+                                        if (active && payload && payload.length) {
+                                            const d = payload[0].payload;
+                                            if (d.count === 0) return null;
+                                            return (
+                                                <div className="bg-white/90 backdrop-blur-md p-3 rounded-2xl shadow-xl border border-gray-100 text-right min-w-[120px]">
+                                                    <p className="font-bold text-gray-800 border-b pb-1 mb-1">פרטי הזמנות</p>
+                                                    <p className="text-xs text-gray-500">יום: <span className="text-black font-semibold">{d.day} לחודש</span></p>
+                                                    <p className="text-xs text-gray-500">שעה: <span className="text-black font-semibold">{String(d.hour).padStart(2, '0')}:00</span></p>
+                                                    <p className="text-sm font-bold mt-1 text-indigo-600">{d.count} הזמנות</p>
+                                                    <p className="text-[10px] uppercase tracking-wider text-gray-400 mt-1">{d.category}</p>
+                                                </div>
+                                            );
+                                        }
+                                        return null;
+                                    }}
                                 />
-                                <Legend verticalAlign="top" align="right" iconType="circle" wrapperStyle={{ paddingBottom: '20px', fontSize: '10px' }} />
-                                <Scatter name="גברים" data={data?.monthlyDensityGrid?.filter(d => d.category === 'men') || []} fill="#6366f1" />
-                                <Scatter name="נשים" data={data?.monthlyDensityGrid?.filter(d => d.category === 'women') || []} fill="#10b981" />
-                                <Scatter name="יוניסקס" data={data?.monthlyDensityGrid?.filter(d => d.category === 'unisex') || []} fill="#f59e0b" />
+                                {/* Background Grid (Empty slots) */}
+                                <Scatter 
+                                    name="ללא הזמנות" 
+                                    data={data?.monthlyDensityGrid?.filter(d => d.count === 0) || []} 
+                                    fill="#f1f5f9" 
+                                    shape={(props) => <circle {...props} r={2} fill="#f1f5f9" stroke="none" />} 
+                                />
+                                {/* Active Dots */}
+                                <Scatter name="גברים" data={data?.monthlyDensityGrid?.filter(d => d.category === 'men' && d.count > 0) || []} fill="#6366f1" />
+                                <Scatter name="נשים" data={data?.monthlyDensityGrid?.filter(d => d.category === 'women' && d.count > 0) || []} fill="#10b981" />
+                                <Scatter name="יוניסקס" data={data?.monthlyDensityGrid?.filter(d => d.category === 'unisex' && d.count > 0) || []} fill="#f59e0b" />
                             </ScatterChart>
                         </ResponsiveContainer>
                     </div>
