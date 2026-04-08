@@ -193,7 +193,7 @@ export default function ProcurementClient() {
                                     <Label value="נפח מכירות (מ״ל)" offset={-5} position="insideBottom" style={{ fontSize: '10px', fontWeight: 'bold', fill: '#999' }} />
                                 </XAxis>
                                 <YAxis type="number" dataKey="y" width={80} tick={{ fontSize: 10, dx: -14 }}>
-                                    <Label value="רווחיות (₪)" angle={-90} position="insideLeft" style={{ fontSize: '10px', fontWeight: 'bold', fill: '#999', textAnchor: 'middle' }} offset={50} />
+                                    <Label value="רווחיות (₪)" angle={-90} position="insideLeft" style={{ fontSize: '10px', fontWeight: 'bold', fill: '#999', textAnchor: 'middle' }} offset={20} />
                                 </YAxis>
                                 <ZAxis type="number" dataKey="z" range={[50, 400]} name="מחזור" />
                                 <Tooltip 
@@ -330,7 +330,7 @@ export default function ProcurementClient() {
                                     tick={{ fontSize: 10, fill: '#999', dx: -14 }}
                                     formatter={(h) => h >= 0 && h <= 23 ? `${String(h).padStart(2, '0')}:00` : ''}
                                 >
-                                    <Label value="שעות היממה" angle={-90} position="insideLeft" style={{ fontSize: '10px', fontWeight: 'bold', fill: '#999', textAnchor: 'middle' }} offset={50} />
+                                    <Label value="שעות היממה" angle={-90} position="insideLeft" style={{ fontSize: '10px', fontWeight: 'bold', fill: '#999', textAnchor: 'middle' }} offset={20} />
                                 </YAxis>
                                 <ZAxis type="number" dataKey="count" range={[40, 400]} />
                                 <Tooltip 
@@ -355,7 +355,11 @@ export default function ProcurementClient() {
                                 <Legend 
                                     verticalAlign="top" 
                                     align="left" 
-                                    wrapperStyle={{ top: -10, left: 10 }}
+                                    wrapperStyle={{ 
+                                        top: -15, 
+                                        left: 0,
+                                        width: 'fit-content'
+                                    }}
                                     content={({ payload }) => (
                                         <div className="inline-flex items-center gap-4 px-3 py-1.5 bg-black/70 backdrop-blur-md rounded-xl border border-white/10 shadow-lg mb-4 w-fit">
                                             {payload.filter(p => p.value !== 'ללא הזמנות').map((entry, index) => (
