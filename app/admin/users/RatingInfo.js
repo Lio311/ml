@@ -54,7 +54,7 @@ export function RatingLegend() {
                     />
                     <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 px-2" onClick={() => setShowLegend(false)}>
                         <div 
-                            className="bg-white/95 backdrop-blur-xl rounded-[2.5rem] md:rounded-[3rem] shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-white p-4 md:p-10 
+                            className="bg-white/95 backdrop-blur-xl rounded-[2.5rem] md:rounded-[3rem] shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-white p-4 md:p-4 
                                        w-full max-w-[320px] md:max-w-4xl max-h-[85vh] md:max-h-[75vh] 
                                        overflow-y-auto scrollbar-hide text-right animate-in fade-in zoom-in duration-200" 
                             dir="rtl" 
@@ -67,10 +67,10 @@ export function RatingLegend() {
                             <style dangerouslySetInnerHTML={{ __html: `.scrollbar-hide::-webkit-scrollbar { display: none; }` }} />
 
                             {/* Header */}
-                            <div className="flex justify-between items-center mb-4 md:mb-8 bg-white/50 backdrop-blur-md z-10 pb-2 border-b border-gray-100/50">
+                            <div className="flex justify-between items-center mb-4 md:mb-3 bg-white/50 backdrop-blur-md z-10 pb-2 border-b border-gray-100/50">
                                 <div className="flex items-center gap-3 md:gap-4">
-                                    <div className="w-8 h-8 md:w-12 md:h-12 bg-amber-50 rounded-xl md:rounded-2xl flex items-center justify-center shadow-inner">
-                                        <Star className="w-4 h-4 md:w-6 md:h-6 text-amber-500 fill-amber-500" />
+                                    <div className="w-8 h-8 md:w-10 md:h-10 bg-amber-50 rounded-xl md:rounded-2xl flex items-center justify-center shadow-inner">
+                                        <Star className="w-4 h-4 md:w-5 md:h-5 text-amber-500 fill-amber-500" />
                                     </div>
                                     <div className="text-right">
                                         <h4 className="text-[13px] md:text-xl font-black text-gray-900 tracking-tight leading-none">מנגנון דירוג לקוחות</h4>
@@ -83,10 +83,10 @@ export function RatingLegend() {
                             </div>
 
                             {/* Vertical Stacking Layout */}
-                            <div className="flex flex-col gap-3 md:gap-4">
+                            <div className="flex flex-col gap-3 md:gap-1.5">
                                 
                                 {/* Section 1: Tiers */}
-                                <div className="flex flex-col gap-2 md:gap-3.5">
+                                <div className="flex flex-col gap-2 md:gap-1.5">
                                     <div className="flex items-center justify-between px-1">
                                         <h5 className="text-[8px] md:text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none">סיווג רמות (Tiers)</h5>
                                         <div className="h-px bg-gray-100 flex-grow mr-3 md:mr-6"></div>
@@ -101,7 +101,7 @@ export function RatingLegend() {
                                 </div>
 
                                 {/* Section 2: Algorithm Weights */}
-                                <div className="flex flex-col gap-2 md:gap-3 border-t border-gray-50 pt-2 md:pt-4">
+                                <div className="flex flex-col gap-2 md:gap-1.5 border-t border-gray-50 pt-2 md:pt-1.5">
                                     <div className="flex items-center justify-between px-1">
                                         <h5 className="text-[8px] md:text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none">הרכב הציון (Algorithm)</h5>
                                         <div className="h-px bg-gray-100 flex-grow mr-3 md:mr-6"></div>
