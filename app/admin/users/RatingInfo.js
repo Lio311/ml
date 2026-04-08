@@ -91,9 +91,11 @@ export function RatingLegend() {
                                         <h5 className="text-[8px] md:text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none">סיווג רמות (Tiers)</h5>
                                         <div className="h-px bg-gray-100 flex-grow mr-3 md:mr-6"></div>
                                     </div>
-                                    <div className="grid grid-cols-2 lg:grid-cols-3 gap-2 md:gap-3">
+                                    <div className="flex flex-wrap justify-center gap-2 md:gap-3">
                                         {TIERS.map(t => (
-                                            <TierItem key={t.label} {...t} />
+                                            <div key={t.label} className="w-[calc(50%-4px)] md:w-[calc(50%-6px)] lg:w-[calc(33.333%-8px)]">
+                                                <TierItem {...t} />
+                                            </div>
                                         ))}
                                     </div>
                                 </div>
