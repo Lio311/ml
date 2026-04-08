@@ -426,7 +426,7 @@ export default function ProcurementClient() {
                                                 <div className="flex items-center gap-3">
                                                     <div className="relative w-10 h-10 bg-white rounded-lg flex-shrink-0 shadow-sm border border-gray-100 overflow-hidden">
                                                         {item.image_url ? (
-                                                            <Image src={item.image_url} alt={item.model} fill className="object-cover" />
+                                                            <Image src={item.image_url} alt={item.model} fill className="object-contain" />
                                                         ) : (
                                                             <span className="text-lg flex items-center justify-center h-full">🧴</span>
                                                         )}
