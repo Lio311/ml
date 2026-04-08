@@ -257,7 +257,10 @@ export default function ProcurementClient() {
                                 <YAxis hide />
                                 <Tooltip 
                                     contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)', textAlign: 'right' }}
-                                    formatter={(value) => [`₪${Math.round(value)}`, '']}
+                                    formatter={(value, name) => [
+                                        `₪${Math.round(value).toLocaleString()}`, 
+                                        name === 'revenue' ? 'מחזור' : 'רווח'
+                                    ]}
                                 />
                                 <Bar dataKey="revenue" name="מחזור" fill="#6366f1" radius={[4, 4, 0, 0]}  barSize={15} />
                                 <Bar dataKey="profit" name="רווח" fill="#10b981" radius={[4, 4, 0, 0]} barSize={15} />

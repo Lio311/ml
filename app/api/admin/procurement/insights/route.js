@@ -128,11 +128,22 @@ export async function GET() {
                 });
 
                 // Seasonal distribution
+                const SEASON_MAP = {
+                    'חורף': 'Winter',
+                    'קיץ': 'Summer',
+                    'אביב': 'Spring',
+                    'סתיו': 'Autumn',
+                    'winter': 'Winter',
+                    'summer': 'Summer',
+                    'spring': 'Spring',
+                    'autumn': 'Autumn'
+                };
+
                 const seasons = processTags(item.seasons);
                 seasons.forEach(s => {
-                    const capitalized = s.charAt(0).toUpperCase() + s.slice(1).toLowerCase();
-                    if (seasonalStats.hasOwnProperty(capitalized)) {
-                        seasonalStats[capitalized] += item.revenue;
+                    const mapped = SEASON_MAP[s] || SEASON_MAP[s.trim().toLowerCase()];
+                    if (mapped && seasonalStats.hasOwnProperty(mapped)) {
+                        seasonalStats[mapped] += item.revenue;
                     }
                 });
             });
