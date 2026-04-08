@@ -107,15 +107,23 @@ export async function GET() {
             const notesStats = {};
             insights.forEach(item => {
                 if (item.volume <= 0) return;
+                
+                // Helper to get notes from different formats
+                const processNotes = (val) => {
+                    if (Array.isArray(val)) return val;
+                    if (typeof val === 'string') return val.split(',').map(n => n.trim());
+                    return [];
+                };
+
                 const allNotes = [
-                    ...(Array.isArray(item.top_notes) ? item.top_notes : []),
-                    ...(Array.isArray(item.middle_notes) ? item.middle_notes : []),
-                    ...(Array.isArray(item.base_notes) ? item.base_notes : [])
+                    ...processNotes(item.top_notes),
+                    ...processNotes(item.middle_notes),
+                    ...processNotes(item.base_notes)
                 ];
                 
                 allNotes.forEach(note => {
                     const normalized = (note || '').trim().toLowerCase();
-                    if (!normalized) return;
+                    if (!normalized || normalized === 'none') return;
                     if (!notesStats[normalized]) notesStats[normalized] = 0;
                     notesStats[normalized] += item.volume; // Weight notes by volume sold
                 });

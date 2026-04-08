@@ -25,6 +25,47 @@ export default function ProcurementClient() {
         fetchData();
     }, []);
 
+    const handleExport = () => {
+        try {
+            const { jsPDF } = require('jspdf');
+            const doc = new jsPDF();
+            
+            // Add Hebrew font support if available, or use standard table
+            doc.setFontSize(22);
+            doc.text("ML_TLV - Procurement Draft Order", 20, 20);
+            doc.setFontSize(12);
+            doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 20, 30);
+            
+            let y = 50;
+            doc.text("Product", 20, y);
+            doc.text("Stock", 100, y);
+            doc.text("Recommended Order", 140, y);
+            
+            y += 10;
+            doc.line(20, y - 5, 190, y - 5);
+            
+            const toOrder = data.insights.filter(i => i.daysRemaining < 30);
+            
+            toOrder.forEach(item => {
+                if (y > 270) {
+                    doc.addPage();
+                    y = 20;
+                }
+                const recommendedAmount = Math.ceil(item.velocity * 60);
+                doc.text(`${item.brand} ${item.model}`, 20, y);
+                doc.text(`${Math.round(item.stock)} ml`, 100, y);
+                doc.text(`${recommendedAmount} ml`, 140, y);
+                y += 10;
+            });
+            
+            doc.save(`Procurement_Order_${new Date().toISOString().split('T')[0]}.pdf`);
+            toast.success("דו״ח רכש יוצא בהצלחה");
+        } catch (err) {
+            console.error(err);
+            toast.error("שגיאה בהפקת הדו״ח");
+        }
+    };
+
     const fetchData = async () => {
         setLoading(true);
         try {
@@ -291,7 +332,10 @@ export default function ProcurementClient() {
                                 />
                                 <Search className="w-4 h-4 text-gray-400 absolute right-3.5 top-1/2 -translate-y-1/2" />
                             </div>
-                            <button className="bg-black text-white px-4 py-2 rounded-full text-xs font-bold hover:bg-gray-800 transition flex items-center gap-2">
+                            <button 
+                                onClick={handleExport}
+                                className="bg-black text-white px-4 py-2 rounded-full text-xs font-bold hover:bg-gray-800 transition flex items-center gap-2"
+                            >
                                 <Download className="w-4 h-4" />
                                 ייצוא רכש
                             </button>
