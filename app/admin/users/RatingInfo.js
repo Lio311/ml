@@ -53,19 +53,19 @@ export function RatingLegend() {
                     />
                     <div className="fixed inset-0 z-[110] flex items-center justify-center p-4" onClick={() => setShowLegend(false)}>
                         <div 
-                            className="bg-white/95 backdrop-blur-xl rounded-[2.5rem] md:rounded-[3rem] shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-white p-6 md:p-10 
-                                       w-full max-w-[300px] md:max-w-4xl max-h-[85vh] md:max-h-[70vh]
-                                       overflow-y-auto scrollbar-hide text-right animate-in fade-in zoom-in duration-200" 
+                            className="bg-white/95 backdrop-blur-xl rounded-[3rem] shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-white p-5 md:p-8 
+                                       w-full max-w-[320px] max-h-[75vh] 
+                                       md:max-w-4xl md:max-h-[65vh] 
+                                       overflow-hidden text-right animate-in fade-in zoom-in duration-200" 
                             dir="rtl" 
                             onClick={(e) => e.stopPropagation()}
-                            style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
                         >
                             <style dangerouslySetInnerHTML={{ __html: `.scrollbar-hide::-webkit-scrollbar { display: none; }` }} />
 
                             {/* Header */}
-                            <div className="flex justify-between items-center mb-6 md:mb-8 bg-white/50 backdrop-blur-md z-10 pb-4 border-b border-gray-100/50">
+                            <div className="flex justify-between items-center mb-5 md:mb-7 bg-white/50 backdrop-blur-md z-10 pb-3 border-b border-gray-100/50">
                                 <div className="flex items-center gap-3 md:gap-4">
-                                    <div className="w-9 h-9 md:w-12 md:h-12 bg-amber-50 rounded-xl md:rounded-2xl flex items-center justify-center shadow-inner">
+                                    <div className="w-9 h-9 md:w-11 md:h-11 bg-amber-50 rounded-xl md:rounded-2xl flex items-center justify-center shadow-inner">
                                         <Zap className="w-5 h-5 md:w-6 md:h-6 text-amber-500 fill-amber-500" />
                                     </div>
                                     <div className="text-right">
@@ -79,15 +79,15 @@ export function RatingLegend() {
                             </div>
 
                             {/* Vertical Stacking Layout */}
-                            <div className="flex flex-col gap-8 md:gap-10">
+                            <div className="flex flex-col gap-6 md:gap-8">
                                 
                                 {/* Section 1: Tiers */}
-                                <div className="flex flex-col gap-3 md:gap-4">
-                                    <div className="flex items-center justify-between px-2">
+                                <div className="flex flex-col gap-2.5 md:gap-3.5">
+                                    <div className="flex items-center justify-between px-1">
                                         <h5 className="text-[9px] md:text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none">סיווג רמות (Tiers)</h5>
                                         <div className="h-px bg-gray-100 flex-grow mr-4 md:mr-6"></div>
                                     </div>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 md:gap-3">
+                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2 md:gap-2.5">
                                         {TIERS.map(t => (
                                             <TierItem key={t.label} {...t} />
                                         ))}
@@ -95,16 +95,21 @@ export function RatingLegend() {
                                 </div>
 
                                 {/* Section 2: Algorithm Weights */}
-                                <div className="flex flex-col gap-3 md:gap-4 border-t border-gray-50 pt-6 md:pt-8">
-                                    <div className="flex items-center justify-between px-2">
+                                <div className="flex flex-col gap-2.5 md:gap-3.5 border-t border-gray-50 pt-5 md:pt-7">
+                                    <div className="flex items-center justify-between px-1">
                                         <h5 className="text-[9px] md:text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none">הרכב הציון (Algorithm)</h5>
                                         <div className="h-px bg-gray-100 flex-grow mr-4 md:mr-6"></div>
                                     </div>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 md:gap-3">
-                                        <MetricBadge icon={<DollarSign size={14} />} label="סך רכישות" weight="40%" />
-                                        <MetricBadge icon={<Layers size={14} />} label="צפיפות רכישה" weight="30%" />
-                                        <MetricBadge icon={<BarChart3 size={14} />} label="סל ממוצע" weight="20%" />
-                                        <MetricBadge icon={<Clock size={14} />} label="וותק לקוח" weight="10%" />
+                                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2 md:gap-2.5">
+                                        <MetricBadge icon={<DollarSign size={13} />} label="סך רכישות" weight="40%" />
+                                        <MetricBadge icon={<Layers size={13} />} label="צפיפות" weight="30%" />
+                                        <MetricBadge icon={<BarChart3 size={13} />} label="סל ממוצע" weight="20%" />
+                                        <MetricBadge icon={<Clock size={13} />} label="וותק" weight="10%" />
+                                    </div>
+                                    <div className="mt-1 p-3 bg-blue-50/20 rounded-xl border border-blue-100/30">
+                                        <p className="text-[9px] text-blue-600/70 font-bold leading-relaxed text-center italic">
+                                            האלגוריתם מתעדכן בזמן אמת עם כל הזמנה חדשה
+                                        </p>
                                     </div>
                                 </div>
 
