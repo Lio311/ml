@@ -6,7 +6,7 @@ import Image from 'next/image';
 import { 
     AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, 
     ScatterChart, Scatter, ZAxis, Cell, BarChart, Bar, Legend, PieChart, Pie,
-    Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Label
+    Radar, RadarChart, PolarGrid, PolarAngleAxis, PolarRadiusAxis, Label, LabelList
 } from 'recharts';
 import { 
     TrendingUp, AlertTriangle, Package, Zap, DollarSign, 
