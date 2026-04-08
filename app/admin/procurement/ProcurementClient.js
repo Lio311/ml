@@ -302,24 +302,6 @@ export default function ProcurementClient() {
                     </div>
                 </ChartCard>
 
-                {/* 5. Seasonal Performance (Area Chart) */}
-                <ChartCard title="ניתוח עונתיות" subtitle="התאמת המכירות לתוויות העונתיות של הבשמים">
-                    <div className="h-[350px] w-full mt-4">
-                        <ResponsiveContainer width="100%" height="100%">
-                            <AreaChart data={data?.seasonalStats?.map(s => ({ ...s, name_he: SEASONS_HE[s.name] })) || []} margin={{ left: 30 }}>
-                                <CartesianGrid strokeDasharray="3 3" opacity={0.1} />
-                                <XAxis dataKey="name_he" />
-                                <YAxis hide />
-                                <Tooltip 
-                                    contentStyle={{ textAlign: 'right', direction: 'rtl' }}
-                                    formatter={(value) => [`₪${Math.round(value)}`, 'רווחיות']} 
-                                />
-                                <Area type="monotone" dataKey="value" stroke="#8b5cf6" fill="#8b5cf6" fillOpacity={0.1} strokeWidth={3} />
-                            </AreaChart>
-                        </ResponsiveContainer>
-                    </div>
-                </ChartCard>
-
                 {/* 6. Temporal Trends (Area Chart - Hourly Sales) */}
                 <ChartCard title="מתי הלקוחות קונים?" subtitle="התפלגות מחזור המכירות לפי שעות היממה">
                     <div className="h-[350px] w-full mt-4">
