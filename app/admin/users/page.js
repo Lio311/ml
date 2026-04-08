@@ -134,12 +134,12 @@ export default async function AdminUsersPage(props) {
                     <table className="w-full text-center" dir="rtl">
                         <thead className="bg-gray-50 text-gray-500 text-[11px] uppercase tracking-widest font-black">
                             <tr>
-                                <th className="p-4 text-center">משתמש</th>
-                                <th className="p-4 text-center">אימייל</th>
-                                <th className="p-4 text-center">דירוג</th>
-                                <th className="p-4 text-center font-black text-blue-700 bg-blue-50/50">סטטיסטיקה</th>
-                                <th className="p-4 text-center">תאריכים</th>
-                                <th className="p-4 text-center">תפקיד</th>
+                                <th className="p-4 text-right w-[18%]">משתמש</th>
+                                <th className="p-4 text-center w-[22%]">אימייל</th>
+                                <th className="p-4 text-center w-[10%]">דירוג</th>
+                                <th className="p-4 text-center font-black text-blue-700 bg-blue-50/50 w-[20%]">סטטיסטיקה</th>
+                                <th className="p-4 text-center w-[18%]">תאריכים</th>
+                                <th className="p-4 text-center w-[12%]">תפקיד</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100">
