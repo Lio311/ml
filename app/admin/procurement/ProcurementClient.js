@@ -176,7 +176,7 @@ export default function ProcurementClient() {
                     title="מלאי פעיל (מ״ל)" 
                     value={`${Math.round(data?.insights.reduce((sum, i) => sum + i.stock, 0)).toLocaleString()} מ״ל`} 
                     icon={<Package className="text-amber-500" />}
-                    sub={`סך הכל נוזל בבקבוקי אם : ${data?.insights.filter(i => i.stock > 0).length} בקבוקים`}
+                    sub={`סך הכל בקבוקי אם : ${data?.insights.filter(i => i.stock > 0).length} בקבוקים`}
                 />
             </div>
 
