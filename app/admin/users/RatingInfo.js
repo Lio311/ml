@@ -46,7 +46,7 @@ export default function RatingInfo({ score }) {
                         {/* Premium Glassmorphic Container - No Scroll forced */}
                         <div 
                             className="bg-white/95 backdrop-blur-xl rounded-[3rem] shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-white p-6 md:p-10 
-                                       w-full max-w-[320px] 
+                                       w-full max-w-[320px] max-h-[65vh] 
                                        md:max-w-5xl md:max-h-[65vh] 
                                        overflow-y-auto scrollbar-hide text-right animate-in fade-in zoom-in duration-200" 
                             dir="rtl" 
