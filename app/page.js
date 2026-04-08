@@ -172,7 +172,7 @@ export default async function Home() {
       </section>
 
       <div className="relative z-30 bg-white -mt-16 md:mt-0 w-full flex flex-col">
-        <div className="pb-6 md:pb-0">
+        <div className="pb-6 md:pb-0 md:mt-6">
           <LiveStats stats={stats} />
         </div>
         <HomeClient newArrivals={newArrivals} topCatalogs={topCatalogs} />
