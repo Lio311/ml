@@ -176,8 +176,8 @@ export default async function AdminUsersPage(props) {
                                                 </div>
                                             </div>
                                         </td>
-                                        <td className="p-4 text-right">
-                                            <div className="flex flex-col gap-1">
+                                        <td className="p-4 text-center">
+                                            <div className="flex flex-col items-center gap-1">
                                                 <div className="text-gray-600 text-[11px] font-bold tracking-tight">{u.email}</div>
                                                 <EditPhoneInput 
                                                     userId={u.id} 
