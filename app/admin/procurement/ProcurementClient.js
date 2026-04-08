@@ -173,9 +173,9 @@ export default function ProcurementClient() {
                 />
                 <KPICard 
                     title="מלאי פעיל (מ״ל)" 
-                    value={`${Math.round(data?.insights.reduce((sum, i) => sum + i.stock, 0)).toLocaleString()}`} 
+                    value={`${Math.round(data?.insights.reduce((sum, i) => sum + i.stock, 0)).toLocaleString()} מ״ל`} 
                     icon={<Package className="text-amber-500" />}
-                    sub="סך הכל בקבוקי אם"
+                    sub={`סך הכל נוזל בבקבוקי אם : ${data?.insights.filter(i => i.stock > 0).length} בקבוקים`}
                 />
             </div>
 
@@ -327,16 +327,10 @@ export default function ProcurementClient() {
                                     </div>
                                     <div className="flex gap-2">
                                         <button 
-                                            onClick={() => router.push(`/admin/coupons?product=${item.id}`)}
-                                            className="text-[10px] bg-indigo-600 text-white px-2 py-1 rounded-lg font-bold hover:bg-black transition shadow-sm"
+                                            onClick={() => router.push(`/admin/coupons?new=true&productId=${item.id}`)}
+                                            className="text-[10px] bg-indigo-600 text-white px-3 py-1.5 rounded-lg font-bold hover:bg-black transition shadow-sm"
                                         >
                                             צור קופון
-                                        </button>
-                                        <button 
-                                            onClick={() => router.push(`/admin/catalogs?product=${item.id}`)}
-                                            className="text-[10px] bg-gray-200 text-gray-700 px-2 py-1 rounded-lg font-bold hover:bg-gray-300 transition"
-                                        >
-                                            מארז
                                         </button>
                                     </div>
                                 </div>
