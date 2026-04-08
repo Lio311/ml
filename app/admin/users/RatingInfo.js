@@ -56,14 +56,18 @@ export function RatingLegend() {
                             className="bg-white/95 backdrop-blur-xl rounded-[3rem] shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-white p-5 md:p-8 
                                        w-full max-w-[320px] max-h-[75vh] 
                                        md:max-w-4xl md:max-h-[75vh] 
-                                       overflow-hidden text-right animate-in fade-in zoom-in duration-200" 
+                                       overflow-y-auto scrollbar-hide text-right animate-in fade-in zoom-in duration-200" 
                             dir="rtl" 
                             onClick={(e) => e.stopPropagation()}
+                            style={{ 
+                                scrollbarWidth: 'none', 
+                                msOverflowStyle: 'none'
+                            }}
                         >
                             <style dangerouslySetInnerHTML={{ __html: `.scrollbar-hide::-webkit-scrollbar { display: none; }` }} />
 
                             {/* Header */}
-                            <div className="flex justify-between items-center mb-4 md:mb-5 bg-white/50 backdrop-blur-md z-10 pb-2 border-b border-gray-100/50">
+                            <div className="flex justify-between items-center mb-3 md:mb-5 bg-white/50 backdrop-blur-md z-10 pb-2 border-b border-gray-100/50">
                                 <div className="flex items-center gap-3 md:gap-4">
                                     <div className="w-9 h-9 md:w-11 md:h-11 bg-amber-50 rounded-xl md:rounded-2xl flex items-center justify-center shadow-inner">
                                         <Star className="w-5 h-5 md:w-6 md:h-6 text-amber-500 fill-amber-500" />
