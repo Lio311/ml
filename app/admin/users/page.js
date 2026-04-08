@@ -6,7 +6,7 @@ import UserRoleSelect from "./UserRoleSelect";
 import SyncUsersButton from "./SyncUsersButton";
 import EditPhoneInput from "./EditPhoneInput";
 import AdminUsersFilter from "./AdminUsersFilter";
-import RatingInfo from "./RatingInfo";
+import { RatingBadge, RatingLegend } from "./RatingInfo";
 import React from 'react';
 
 export const metadata = {
@@ -136,7 +136,12 @@ export default async function AdminUsersPage(props) {
                             <tr>
                                 <th className="p-4 text-right w-[18%]">משתמש</th>
                                 <th className="p-4 text-center w-[22%]">אימייל</th>
-                                <th className="p-4 text-center w-[10%]">דירוג</th>
+                                <th className="p-4 text-center w-[10%]">
+                                    <div className="flex items-center justify-center gap-1">
+                                        <span>דירוג</span>
+                                        <RatingLegend />
+                                    </div>
+                                </th>
                                 <th className="p-4 text-center font-black text-blue-700 bg-blue-50/50 w-[20%]">סטטיסטיקה</th>
                                 <th className="p-4 text-center w-[18%]">תאריכים</th>
                                 <th className="p-4 text-center w-[12%]">תפקיד</th>
@@ -186,8 +191,8 @@ export default async function AdminUsersPage(props) {
                                                 />
                                             </div>
                                         </td>
-                                        <td className="p-4">
-                                            <RatingInfo score={score} />
+                                        <td className="p-4 text-center">
+                                            <RatingBadge score={score} />
                                         </td>
                                         <td className="p-4 text-sm bg-gray-50/30">
                                             <div className="flex flex-col items-center justify-center gap-1.5 min-w-[120px]">
