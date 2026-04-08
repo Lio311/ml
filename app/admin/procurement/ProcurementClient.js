@@ -355,7 +355,7 @@ export default function ProcurementClient() {
                                     align="left" 
                                     wrapperStyle={{ top: 0, left: 20, paddingTop: '0px' }}
                                     content={({ payload }) => (
-                                        <div className="flex items-center gap-4 px-3 py-1.5 bg-black/70 backdrop-blur-md rounded-xl border border-white/10 shadow-lg mb-4 translate-y-[-10px]">
+                                        <div className="inline-flex items-center gap-4 px-3 py-1.5 bg-black/70 backdrop-blur-md rounded-xl border border-white/10 shadow-lg mb-4 translate-y-[-10px] w-fit">
                                             {payload.filter(p => p.value !== 'ללא הזמנות').map((entry, index) => (
                                                 <div key={`item-${index}`} className="flex items-center gap-2">
                                                     <div className="w-2 h-2 rounded-full" style={{ backgroundColor: entry.color }} />
