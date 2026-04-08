@@ -347,6 +347,7 @@ export default function ProcurementClient() {
                                         return null;
                                     }}
                                 />
+                                <Legend verticalAlign="top" align="left" iconType="circle" wrapperStyle={{ paddingTop: '0px', paddingBottom: '20px', fontSize: '10px', fontWeight: 'bold' }} />
                                 {/* Background Grid (Empty slots) */}
                                 <Scatter 
                                     name="ללא הזמנות" 
