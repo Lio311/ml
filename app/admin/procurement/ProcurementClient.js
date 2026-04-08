@@ -134,6 +134,11 @@ export default function ProcurementClient() {
         );
     }, [data, searchTerm]);
 
+    const maxStock = useMemo(() => {
+        if (!data?.insights || data.insights.length === 0) return 100;
+        return Math.max(...data.insights.map(i => i.stock || 0), 10);
+    }, [data]);
+
     if (loading) {
         return (
             <div className="flex flex-col items-center justify-center min-h-[400px] gap-4">
@@ -438,7 +443,7 @@ export default function ProcurementClient() {
                                                     <div className="w-16 h-1 bg-gray-200 rounded-full mt-1 overflow-hidden">
                                                         <div 
                                                             className={`h-full rounded-full ${isUrgent ? 'bg-red-500' : 'bg-blue-500'}`} 
-                                                            style={{ width: `${Math.min(100, (item.stock / 200) * 100)}%` }}
+                                                            style={{ width: `${Math.min(100, (item.stock / maxStock) * 100)}%` }}
                                                         ></div>
                                                     </div>
                                                 </div>
