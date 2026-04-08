@@ -48,11 +48,10 @@ export default function AdminCouponsPage() {
     useEffect(() => {
         if (isNewFromDashboard && urlProductId && products.length > 0) {
             const prod = products.find(p => String(p.id) === String(urlProductId));
-            const label = searchParams.get('pName') || (prod ? `${prod.brand} - ${prod.name}` : urlProductId);
             
             setFormData(prev => ({
                 ...prev,
-                allowed_products: prod ? [{ id: prod.id, label: `${prod.brand} - ${prod.name}` }] : [urlProductId],
+                allowed_products: prod ? [prod.id] : [urlProductId],
                 code: `SALE-${Math.random().toString(36).substring(2, 8).toUpperCase()}`
             }));
             setShowModal(true);
