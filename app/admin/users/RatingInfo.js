@@ -42,7 +42,7 @@ export default function RatingInfo({ score }) {
                         className="fixed inset-0 z-[100] bg-black/5" 
                         onClick={() => setShowLegend(false)}
                     />
-                    <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 md:absolute md:inset-auto md:top-full md:left-0 md:mt-2 md:bg-transparent" onClick={() => setShowLegend(false)}>
+                    <div className="fixed inset-0 z-[110] flex items-center justify-center p-4" onClick={() => setShowLegend(false)}>
                         {/* Premium Glassmorphic Container */}
                         <div 
                             className="bg-white/95 backdrop-blur-xl rounded-[3rem] shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-white p-8 md:p-12 
