@@ -23,8 +23,9 @@ export function RatingBadge({ score }) {
     const tier = getTier(score);
 
     return (
-        <div className={`px-2 py-0.5 rounded-md text-white text-[10px] font-black shadow-sm inline-block ${tier.color}`}>
-            {tier.label}
+        <div className={`relative px-2.5 py-1 rounded-lg text-white text-[10px] font-black shadow-[0_4px_12px_rgba(0,0,0,0.15),inset_0_-2px_0_0_rgba(0,0,0,0.2),inset_0_1px_0_0_rgba(255,255,255,0.3)] inline-block overflow-hidden ${tier.color}`}>
+            <div className="absolute inset-0 bg-gradient-to-tr from-black/10 via-transparent to-white/20" />
+            <div className="relative z-10 drop-shadow-sm">{tier.label}</div>
         </div>
     );
 }
@@ -129,8 +130,9 @@ function TierItem({ label, color, desc, detail }) {
     return (
         <div className="flex items-center md:flex-col gap-3 md:gap-2 p-3 md:p-4 bg-gray-50/20 md:bg-gray-50/30 rounded-xl md:rounded-[1.5rem] border border-transparent hover:bg-white hover:shadow-xl hover:shadow-gray-200/50 hover:border-gray-100 transition-all duration-300 group">
             <div className="flex items-center gap-3">
-                <div className={`w-9 h-5 md:w-10 md:h-6 rounded-lg flex items-center justify-center text-white text-[9px] md:text-[10px] font-black shadow-lg shrink-0 ${color}`}>
-                    {label}
+                <div className={`relative w-10 h-6 md:w-11 md:h-7 rounded-lg flex items-center justify-center text-white text-[10px] md:text-[11px] font-black shadow-[0_4px_10px_rgba(0,0,0,0.2),inset_0_-2px_0_0_rgba(0,0,0,0.2),inset_0_1px_0_0_rgba(255,255,255,0.3)] shrink-0 overflow-hidden ${color}`}>
+                    <div className="absolute inset-0 bg-gradient-to-tr from-black/10 via-transparent to-white/20" />
+                    <span className="relative z-10 drop-shadow-sm">{label}</span>
                 </div>
                 <span className="text-[11px] md:text-xs font-black text-gray-900 tracking-tight">{desc}</span>
             </div>
