@@ -274,8 +274,11 @@ export default async function AdminUsersPage(props) {
                                             </div>
                                         </div>
                                     </div>
-                                    <div className="flex flex-col items-end gap-2">
-                                        <RatingBadge score={score} />
+                                    <div className="flex flex-col items-end gap-2 text-right">
+                                        <div className="flex items-center gap-2">
+                                            <RatingLegend />
+                                            <RatingBadge score={score} />
+                                        </div>
                                         <div className="text-[9px] text-gray-400 font-black bg-gray-50 px-2 py-1 rounded-lg border border-gray-100 uppercase tracking-tighter" dir="ltr">
                                             {new Date(u.createdAt).toLocaleDateString('he-IL', { day: '2-digit', month: '2-digit', year: '2-digit' })}
                                         </div>
