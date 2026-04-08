@@ -266,29 +266,6 @@ export default function ProcurementClient() {
                     </div>
                 </ChartCard>
 
-                {/* 5. Size Popularity (Donut Chart) */}
-                <ChartCard title="פופולריות נפחים" subtitle="התפלגות מכירות לפי גודל בקבוק (2/5/10 מ״ל)">
-                    <div className="h-[350px] w-full mt-4">
-                        <ResponsiveContainer width="100%" height="100%">
-                            <PieChart>
-                                <Pie
-                                    data={data?.sizeStats || []}
-                                    innerRadius={60}
-                                    outerRadius={80}
-                                    paddingAngle={5}
-                                    dataKey="value"
-                                >
-                                    {(data?.sizeStats || []).map((entry, index) => (
-                                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
-                                    ))}
-                                </Pie>
-                                <Tooltip formatter={(value) => [`${value} יחידות`, 'כמות']} />
-                                <Legend verticalAlign="bottom" height={36}/>
-                            </PieChart>
-                        </ResponsiveContainer>
-                    </div>
-                </ChartCard>
-
                 {/* 6. Seasonal Performance (Radar Chart) */}
                 <ChartCard title="ניתוח עונתיות" subtitle="התאמת המכירות לתוויות העונתיות של הבשמים">
                     <div className="h-[350px] w-full mt-4">
