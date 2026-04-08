@@ -63,7 +63,7 @@ export function RatingLegend() {
                             <style dangerouslySetInnerHTML={{ __html: `.scrollbar-hide::-webkit-scrollbar { display: none; }` }} />
 
                             {/* Header */}
-                            <div className="flex justify-between items-center mb-5 md:mb-7 bg-white/50 backdrop-blur-md z-10 pb-3 border-b border-gray-100/50">
+                            <div className="flex justify-between items-center mb-4 md:mb-5 bg-white/50 backdrop-blur-md z-10 pb-2 border-b border-gray-100/50">
                                 <div className="flex items-center gap-3 md:gap-4">
                                     <div className="w-9 h-9 md:w-11 md:h-11 bg-amber-50 rounded-xl md:rounded-2xl flex items-center justify-center shadow-inner">
                                         <Zap className="w-5 h-5 md:w-6 md:h-6 text-amber-500 fill-amber-500" />
@@ -95,7 +95,7 @@ export function RatingLegend() {
                                 </div>
 
                                 {/* Section 2: Algorithm Weights */}
-                                <div className="flex flex-col gap-2.5 md:gap-3.5 border-t border-gray-50 pt-5 md:pt-7">
+                                <div className="flex flex-col gap-2 md:gap-3 border-t border-gray-50 pt-3 md:pt-4">
                                     <div className="flex items-center justify-between px-1">
                                         <h5 className="text-[9px] md:text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none">הרכב הציון (Algorithm)</h5>
                                         <div className="h-px bg-gray-100 flex-grow mr-4 md:mr-6"></div>
