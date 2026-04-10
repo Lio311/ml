@@ -57,14 +57,18 @@ export async function POST(req) {
                 email: customer.email,
                 phone: customer.phone || '',
                 is_phone_order: true,
-                created_by: adminId
+                created_by: adminId,
+                coupon_code: couponCode || null,
+                discount_amount: discountAmount || 0
             };
 
+            // Note: The 'orders' table does not have 'discount_amount' or 'coupon_code' columns.
+            // We store these details within customer_details JSONB to maintain tracking.
             const orderResult = await client.query(
-                `INSERT INTO orders (customer_details, total_amount, items, status, notes, delivery_method, discount_amount, coupon_code)
-                 VALUES ($1, $2, $3, 'pending', $4, $5, $6, $7)
+                `INSERT INTO orders (customer_details, total_amount, items, status, notes, delivery_method)
+                 VALUES ($1, $2, $3, 'pending', $4, $5)
                  RETURNING id`,
-                [JSON.stringify(customerDetails), total, JSON.stringify(items), notes || 'הזמנה טלפונית', deliveryMethod || 'mail', discountAmount || 0, couponCode || null]
+                [JSON.stringify(customerDetails), total, JSON.stringify(items), notes || 'הזמנה טלפונית', deliveryMethod || 'mail']
             );
 
             const orderId = orderResult.rows[0].id;
