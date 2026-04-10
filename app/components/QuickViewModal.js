@@ -48,7 +48,14 @@ export default function QuickViewModal({ product, isOpen, onClose }) {
         }).join(', ');
     };
 
+    const getDiscountedPrice = (size, originalPrice) => {
+        const hasDiscount = product.discount_percentage > 0 && (product.discount_sizes || []).includes(`${size}ml`);
+        if (!hasDiscount) return originalPrice;
+        return Math.round((originalPrice * (1 - product.discount_percentage / 100)) / 5) * 5;
+    };
+
     const handleAdd = (size, price) => {
+        const discountedPrice = getDiscountedPrice(size, price);
         const stock = product.stock || 0;
         const currentInCart = (cartItems || []).reduce((total, item) => {
             if (item.id === product.id) {
@@ -62,7 +69,7 @@ export default function QuickViewModal({ product, isOpen, onClose }) {
             return;
         }
 
-        addToCart(product, size, price);
+        addToCart(product, size, discountedPrice);
         toast.success(t('common.added_to_cart_toast')?.replace('{name}', localize(product, 'name'))?.replace('{size}', size) || 'Added to cart');
         setAddedSize(size);
     };
@@ -154,37 +161,49 @@ export default function QuickViewModal({ product, isOpen, onClose }) {
                                         { size: 2, price: product.price_2ml },
                                         { size: 5, price: product.price_5ml },
                                         { size: 10, price: product.price_10ml }
-                                    ].filter(opt => Number(opt.price) > 0).map(option => (
-                                        <div key={option.size} className="flex items-center justify-between p-4 rounded-xl border border-gray-100 hover:border-black transition-colors group">
-                                            <div className="flex items-center gap-3">
-                                                <div className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center font-bold text-lg">
-                                                    {option.size}
+                                    ].filter(opt => Number(opt.price) > 0).map(option => {
+                                        const discountedPrice = getDiscountedPrice(option.size, option.price);
+                                        const hasDiscount = discountedPrice !== option.price;
+
+                                        return (
+                                            <div key={option.size} className="flex items-center justify-between p-4 rounded-xl border border-gray-100 hover:border-black transition-colors group">
+                                                <div className="flex items-center gap-3">
+                                                    <div className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center font-bold text-lg">
+                                                        {option.size}
+                                                    </div>
+                                                    <span className="text-sm font-medium">{t('common.ml_unit')}</span>
                                                 </div>
-                                                <span className="text-sm font-medium">{t('common.ml_unit')}</span>
+                                                <div className="flex items-center gap-4">
+                                                    <div className="flex flex-col items-end">
+                                                        {hasDiscount && (
+                                                            <span className="text-[10px] text-gray-400 line-through leading-none mb-1">{option.price} ₪</span>
+                                                        )}
+                                                        <span className={`font-bold text-lg leading-none ${hasDiscount ? 'text-green-600' : ''}`}>
+                                                            {discountedPrice} ₪
+                                                        </span>
+                                                    </div>
+                                                    <button
+                                                        onClick={() => handleAdd(option.size, option.price)}
+                                                        className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${
+                                                            addedSize === option.size 
+                                                            ? 'bg-green-500 text-white' 
+                                                            : 'bg-black text-white hover:bg-gray-800 hover:scale-105'
+                                                        }`}
+                                                    >
+                                                        {addedSize === option.size ? (
+                                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
+                                                              <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                                                            </svg>
+                                                        ) : (
+                                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
+                                                              <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                                                            </svg>
+                                                        )}
+                                                    </button>
+                                                </div>
                                             </div>
-                                            <div className="flex items-center gap-4">
-                                                <span className="font-bold text-lg">{option.price} ₪</span>
-                                                <button
-                                                    onClick={() => handleAdd(option.size, option.price)}
-                                                    className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${
-                                                        addedSize === option.size 
-                                                        ? 'bg-green-500 text-white' 
-                                                        : 'bg-black text-white hover:bg-gray-800 hover:scale-105'
-                                                    }`}
-                                                >
-                                                    {addedSize === option.size ? (
-                                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
-                                                          <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
-                                                        </svg>
-                                                    ) : (
-                                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
-                                                          <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                                                        </svg>
-                                                    )}
-                                                </button>
-                                            </div>
-                                        </div>
-                                    ))}
+                                        );
+                                    })}
                                 </div>
                             </div>
 

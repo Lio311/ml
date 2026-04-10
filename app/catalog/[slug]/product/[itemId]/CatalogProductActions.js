@@ -47,9 +47,17 @@ export default function CatalogProductActions({ item, slug }) {
         }
     };
 
+    const getDiscountedPrice = (size, originalPrice) => {
+        const sizeStr = `${size}`.toLowerCase().includes('ml') ? `${size}`.toLowerCase() : `${size}ml`;
+        const hasDiscount = item.discount_percentage > 0 && (item.discount_sizes || []).includes(sizeStr);
+        if (!hasDiscount) return originalPrice;
+        return Math.round((originalPrice * (1 - item.discount_percentage / 100)) / 5) * 5;
+    };
+
     const handleAddToCart = (size, price) => {
+        const discountedPrice = getDiscountedPrice(size, price);
         if (!price) {
-            toast.error(t('common.rating_save_error')); // Or a better key for missing price
+            toast.error(t('common.rating_save_error'));
             return;
         }
 
@@ -66,11 +74,11 @@ export default function CatalogProductActions({ item, slug }) {
                 id: cartItemId,
                 originalId: item.id,
                 size: size,
-                price: price,
+                price: discountedPrice,
                 stock_ml: stockMl
             },
             size,
-            price,
+            discountedPrice,
             item.catalog_id || slug,
             item.catalog_name || 'ספק חיצוני'
         );
@@ -80,9 +88,10 @@ export default function CatalogProductActions({ item, slug }) {
     };
 
     const sizeEntries = Object.entries(prices);
+    const hasAnyDiscount = item.discount_percentage > 0;
 
     if (sizeEntries.length === 0) {
-        return <p className="text-gray-400 text-sm">{t('common.no_ratings')}</p>; // Or "No price available"
+        return <p className="text-gray-400 text-sm">{t('common.no_ratings')}</p>;
     }
 
     if (isOutOfStock) {
@@ -125,8 +134,19 @@ export default function CatalogProductActions({ item, slug }) {
 
     return (
         <div className="space-y-4">
+            {hasAnyDiscount && (
+                <div className="bg-red-50 border-s-4 border-red-600 p-3 rounded-r-lg flex items-center justify-between">
+                    <div>
+                        <span className="block text-[10px] font-black uppercase text-red-600 leading-none mb-1">{t('common.special_offer') || 'מבצע מיוחד'}</span>
+                        <span className="text-sm font-bold text-gray-900">{item.discount_percentage}% {t('common.discount') || 'הנחה'}</span>
+                    </div>
+                    <span className="text-2xl">🔥</span>
+                </div>
+            )}
             <div className="space-y-3">
                 {sizeEntries.map(([size, price]) => {
+                    const discountedPrice = getDiscountedPrice(size, price);
+                    const hasDiscount = discountedPrice !== price;
                     const cartItemId = `${item.id}_${size}`;
                     const inCart = cartItems.find(i => i.id === cartItemId);
                     const isAdded = addedSize === size;
@@ -144,16 +164,22 @@ export default function CatalogProductActions({ item, slug }) {
                         <div
                             key={size}
                             onClick={() => !inCart && !wouldExceed && handleAddToCart(size, price)}
-                            className={`flex items-center justify-between p-3 border rounded-lg bg-white transition cursor-pointer group ${inCart ? 'border-green-300 bg-green-50' : wouldExceed ? 'border-gray-200 bg-gray-50 cursor-not-allowed opacity-60' : 'hover:border-black'}`}
+                            className={`flex items-center justify-between p-3 border rounded-lg bg-white transition cursor-pointer group ${inCart ? 'border-green-300 bg-green-50' : wouldExceed ? 'border-gray-200 bg-gray-50 cursor-not-allowed opacity-60' : hasDiscount ? 'border-red-100 hover:border-red-600' : 'hover:border-black'}`}
                         >
                             <span className="font-bold text-gray-900" dir={dir}>{size.replace(/ml/gi, '').trim()} {t('common.ml_unit')}</span>
                             <div className="flex items-center gap-4">
-                                <span className="text-gray-700 font-medium">{price} ₪</span>
+                                <div className="flex flex-col items-end">
+                                    {hasDiscount && (
+                                        <span className="text-[10px] text-gray-400 line-through leading-none mb-1">{price} ₪</span>
+                                    )}
+                                    <span className={`font-bold ${hasDiscount ? 'text-red-600' : 'text-gray-700'}`}>{discountedPrice} ₪</span>
+                                </div>
                                 <div
                                     className={`w-8 h-8 rounded-full grid place-items-center transition-all ${
                                         inCart ? 'bg-green-500 text-white' :
                                         isAdded ? 'bg-green-500 text-white scale-110' :
                                         wouldExceed ? 'bg-gray-300 text-white' :
+                                        hasDiscount ? 'bg-red-600 text-white group-hover:scale-110' :
                                         'bg-black text-white hover:bg-gray-800 group-hover:scale-110'
                                     }`}
                                 >

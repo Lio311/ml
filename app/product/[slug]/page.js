@@ -72,7 +72,8 @@ export async function generateMetadata(props) {
         
         // Lean query for metadata
         const res = await pool.query(`
-            SELECT id, slug, brand, brand_he, model, model_he, name, name_he, description, description_he, image_url, category, stock 
+            SELECT id, slug, brand, brand_he, model, model_he, name, name_he, description, description_he, image_url, category, stock,
+                   discount_percentage, discount_sizes
             FROM products 
             WHERE slug = $1 OR id::text = $1 
             LIMIT 1
@@ -159,7 +160,7 @@ export default async function ProductPage(props) {
                    p.description, p.description_he, p.description_en, p.image_url, p.category, p.category_en, 
                    p.stock, p.top_notes, p.top_notes_en, p.middle_notes, p.middle_notes_en, p.base_notes, p.base_notes_en, 
                    p.price_2ml, p.price_5ml, p.price_10ml, p.seasons, p.seasons_en, p.country, p.country_en, 
-                   p.perfumers, p.perfumers_en, b.logo_url, b.title_en, b.description_en as brand_description_en, 
+                   p.perfumers, p.perfumers_en, p.discount_percentage, p.discount_sizes, b.logo_url, b.title_en, b.description_en as brand_description_en, 
                    b.highlights_en as brand_highlights_en, b.perfumer_en as brand_perfumer_en,
                    (SELECT AVG(rating) FROM reviews WHERE product_id = p.id) as average_rating,
                    (SELECT COUNT(*) FROM reviews WHERE product_id = p.id) as review_count
@@ -216,7 +217,8 @@ export default async function ProductPage(props) {
         const searchPatterns = notesArray.length > 0 ? notesArray.map(n => `%${n}%`) : ['%NONE%'];
 
         const relatedRes = await pool.query(`
-            SELECT id, slug, name, brand, brand_he, model, model_he, image_url, price_2ml, price_5ml, price_10ml, stock, category, created_at
+            SELECT id, slug, name, brand, brand_he, model, model_he, image_url, price_2ml, price_5ml, price_10ml, stock, category, created_at,
+                   discount_percentage, discount_sizes
             FROM products 
             WHERE active = true AND id != $1
             AND (
@@ -239,7 +241,8 @@ export default async function ProductPage(props) {
         if (related.length < 4) {
             const excludeIds = [product.id, ...related.map(r => r.id)];
             const fillRes = await pool.query(`
-            SELECT id, slug, name, brand, brand_he, model, model_he, image_url, price_2ml, price_5ml, price_10ml, stock, category, created_at
+            SELECT id, slug, name, brand, brand_he, model, model_he, image_url, price_2ml, price_5ml, price_10ml, stock, category, created_at,
+                   discount_percentage, discount_sizes
             FROM products 
             WHERE active = true AND id != ALL($1)
             ORDER BY RANDOM()

@@ -34,7 +34,7 @@ export async function GET(req, { params }) {
             }
 
             // Fetch Items
-            const itemsRes = await client.query('SELECT id, name, brand, fragrance_name, description, price, prices, image_url, top_notes, middle_notes, base_notes, gender, category, stock_ml FROM user_catalog_items WHERE catalog_id = $1 ORDER BY created_at DESC', [catalog.id]);
+            const itemsRes = await client.query('SELECT id, name, brand, fragrance_name, description, price, prices, image_url, top_notes, middle_notes, base_notes, gender, category, stock_ml, discount_percentage, discount_sizes FROM user_catalog_items WHERE catalog_id = $1 ORDER BY created_at DESC', [catalog.id]);
 
             return NextResponse.json({
                 catalog: catalog,

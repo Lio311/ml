@@ -12,7 +12,7 @@ export async function generateMetadata({ params }) {
     const { slug, itemId } = await params;
 
     const res = await pool.query(`
-        SELECT i.id, i.brand, i.fragrance_name, i.description, i.image_url, i.category, i.gender, i.top_notes, i.middle_notes, i.base_notes, i.prices, i.stock_ml, c.name as catalog_name, c.is_hidden
+        SELECT i.id, i.brand, i.fragrance_name, i.description, i.image_url, i.category, i.gender, i.top_notes, i.middle_notes, i.base_notes, i.prices, i.stock_ml, i.discount_percentage, i.discount_sizes, c.name as catalog_name, c.is_hidden
         FROM user_catalog_items i
         JOIN user_catalogs c ON i.catalog_id = c.id
         WHERE i.id = $1 AND c.slug = $2
@@ -34,7 +34,7 @@ export default async function CatalogProductPage({ params }) {
     const isAdmin = await checkAdmin();
 
     const res = await pool.query(`
-        SELECT i.id, i.brand, i.fragrance_name, i.description, i.image_url, i.category, i.gender, i.top_notes, i.middle_notes, i.base_notes, i.prices, i.stock_ml, c.name as catalog_name, c.slug as catalog_slug, c.image_url as catalog_image, c.is_hidden
+        SELECT i.id, i.brand, i.fragrance_name, i.description, i.image_url, i.category, i.gender, i.top_notes, i.middle_notes, i.base_notes, i.prices, i.stock_ml, i.discount_percentage, i.discount_sizes, c.name as catalog_name, c.slug as catalog_slug, c.image_url as catalog_image, c.is_hidden
         FROM user_catalog_items i
         JOIN user_catalogs c ON i.catalog_id = c.id
         WHERE i.id = $1 AND c.slug = $2

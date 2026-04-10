@@ -49,7 +49,16 @@ function CatalogProductCard({ item, slug, catalogId, catalogName }) {
         return () => clearTimeout(timer);
     }, [added]);
 
+    const getDiscountedPrice = (size, originalPrice) => {
+        // Normalize size string to match discount_sizes format (e.g. "2ml")
+        const sizeStr = `${size}`.toLowerCase().includes('ml') ? `${size}`.toLowerCase() : `${size}ml`;
+        const hasDiscount = item.discount_percentage > 0 && (item.discount_sizes || []).includes(sizeStr);
+        if (!hasDiscount) return originalPrice;
+        return Math.round((originalPrice * (1 - item.discount_percentage / 100)) / 5) * 5;
+    };
+
     const handleAdd = (size, price) => {
+        const discountedPrice = getDiscountedPrice(size, price);
         const stockMl = Number(item.stock_ml) || 0;
         if (stockMl <= 0) {
             toast.error(t('common.out_of_stock_toast'));
@@ -57,9 +66,9 @@ function CatalogProductCard({ item, slug, catalogId, catalogName }) {
         }
 
         addToCart(
-            { ...item, id: `${item.id}_${size}`, originalId: item.id, size, price, stock_ml: stockMl },
+            { ...item, id: `${item.id}_${size}`, originalId: item.id, size, price: discountedPrice, stock_ml: stockMl },
             size,
-            price,
+            discountedPrice,
             slug,
             catalogName
         );
@@ -68,10 +77,15 @@ function CatalogProductCard({ item, slug, catalogId, catalogName }) {
     };
 
     const sizeEntries = Object.entries(item.prices || {});
+    const hasAnyDiscount = item.discount_percentage > 0;
 
     return (
         <div className="group border rounded-lg overflow-hidden hover:shadow-xl transition bg-white flex flex-col h-full relative">
-
+            {hasAnyDiscount && (
+                <div className="absolute top-2 left-2 z-10 bg-red-600 text-white text-[10px] font-black px-2 py-0.5 rounded shadow-sm">
+                    {item.discount_percentage}% OFF
+                </div>
+            )}
 
             {item.gender && (
                 <div className="absolute top-2 right-2 z-10 text-[10px] leading-3 font-bold bg-gray-900 text-white px-2 py-1 rounded shadow-sm text-center uppercase tracking-wide">
@@ -110,29 +124,50 @@ function CatalogProductCard({ item, slug, catalogId, catalogName }) {
                 </Link>
 
                 <div className="mt-auto space-y-2">
-                    {sizeEntries.length > 0 ? sizeEntries.map(([size, price]) => (
-                        <div key={size} className="flex items-center justify-between text-xs text-gray-600">
-                            <span>{size.replace(/ml/gi, '').trim()} {t('common.ml_unit')}</span>
-                            <div className="flex items-center gap-2">
-                                <span className="font-bold">{price} ₪</span>
-                                <button
-                                    onClick={(e) => { e.preventDefault(); handleAdd(size, price); }}
-                                    className="bg-gray-100 hover:bg-black hover:text-white w-6 h-6 rounded flex items-center justify-center transition"
-                                    title={t('common.add_to_cart')}
-                                >+</button>
+                    {sizeEntries.length > 0 ? sizeEntries.map(([size, price]) => {
+                        const discountedPrice = getDiscountedPrice(size, price);
+                        const hasDiscount = discountedPrice !== price;
+
+                        return (
+                            <div key={size} className="flex items-center justify-between text-xs text-gray-600">
+                                <span>{size.replace(/ml/gi, '').trim()} {t('common.ml_unit')}</span>
+                                <div className="flex items-center gap-2">
+                                    <div className="flex flex-col items-end">
+                                        {hasDiscount && (
+                                            <span className="text-[9px] text-gray-400 line-through leading-none">{price} ₪</span>
+                                        )}
+                                        <span className={`font-bold ${hasDiscount ? 'text-red-600' : ''}`}>{discountedPrice} ₪</span>
+                                    </div>
+                                    <button
+                                        onClick={(e) => { e.preventDefault(); handleAdd(size, price); }}
+                                        className={`w-6 h-6 rounded flex items-center justify-center transition ${hasDiscount ? 'bg-red-50 hover:bg-red-600 hover:text-white' : 'bg-gray-100 hover:bg-black hover:text-white'}`}
+                                        title={t('common.add_to_cart')}
+                                    >+</button>
+                                </div>
                             </div>
-                        </div>
-                    )) : (
-                        <div className="flex items-center justify-between text-xs text-gray-600">
-                            <span>1 {t('common.ml_unit')}</span>
-                            <div className="flex items-center gap-2">
-                                <span className="font-bold">{item.price || 0} ₪</span>
-                                <button
-                                    onClick={(e) => { e.preventDefault(); handleAdd('1', item.price); }}
-                                    className="bg-gray-100 hover:bg-black hover:text-white w-6 h-6 rounded flex items-center justify-center transition"
-                                >+</button>
-                            </div>
-                        </div>
+                        );
+                    }) : (
+                        (() => {
+                            const discountedPrice = getDiscountedPrice('1', item.price);
+                            const hasDiscount = discountedPrice !== item.price;
+                            return (
+                                <div className="flex items-center justify-between text-xs text-gray-600">
+                                    <span>1 {t('common.ml_unit')}</span>
+                                    <div className="flex items-center gap-2">
+                                        <div className="flex flex-col items-end">
+                                            {hasDiscount && (
+                                                <span className="text-[9px] text-gray-400 line-through leading-none">{item.price} ₪</span>
+                                            )}
+                                            <span className={`font-bold ${hasDiscount ? 'text-red-600' : ''}`}>{discountedPrice || 0} ₪</span>
+                                        </div>
+                                        <button
+                                            onClick={(e) => { e.preventDefault(); handleAdd('1', item.price); }}
+                                            className={`w-6 h-6 rounded flex items-center justify-center transition ${hasDiscount ? 'bg-red-50 hover:bg-red-600 hover:text-white' : 'bg-gray-100 hover:bg-black hover:text-white'}`}
+                                        >+</button>
+                                    </div>
+                                </div>
+                            );
+                        })()
                     )}
 
                     <Link href={`/catalog/${slug}/product/${item.id}`} className={`block w-full text-center text-xs py-2 mt-3 rounded transition ${added ? 'bg-green-600 text-white' : 'bg-black text-white hover:bg-gray-800'}`}>
