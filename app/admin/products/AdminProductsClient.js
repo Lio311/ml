@@ -894,6 +894,11 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                             }`}>
                                             מלאי: {product.stock || 0} מ״ל
                                         </div>
+                                        {product.discount_percentage > 0 && (!product.discount_end_date || new Date(product.discount_end_date) > new Date()) && (
+                                            <div className="font-black text-[9px] md:text-[10px] px-2.5 py-1 rounded-full uppercase tracking-widest border shadow-sm bg-[#8cc63f] text-white border-[#7ab337]">
+                                                SALE {product.discount_percentage}%
+                                            </div>
+                                        )}
                                         {product.active === false && (
                                             <div className="font-black text-[9px] md:text-[10px] px-2.5 py-1 rounded-full uppercase tracking-widest border shadow-sm bg-gray-800 text-white border-gray-900">
                                                 טיוטה

@@ -111,7 +111,7 @@ export default function ProductCard({ product }) {
             }}
             dir={dir}
         >
-            <div className="absolute top-2 start-2 z-10">
+            <div className="absolute top-2 end-2 z-10">
                 <WishlistHeart productId={product.id} />
             </div>
 
@@ -130,7 +130,7 @@ export default function ProductCard({ product }) {
                 )}
 
             {isDiscountActive() && (
-                <div className="absolute top-2 start-2 z-20 text-[10px] leading-3 font-bold bg-[#8cc63f] text-white px-2 py-1.5 rounded shadow-sm text-center">
+                <div className="absolute top-3 start-3 z-20 text-[11px] font-black bg-[#8cc63f] text-white px-3 py-1.5 rounded-lg shadow-md text-center transform hover:scale-105 transition-transform cursor-default">
                     {locale === 'he' ? `${product.discount_percentage}% הנחה` : `${product.discount_percentage}% OFF`}
                 </div>
             )}
