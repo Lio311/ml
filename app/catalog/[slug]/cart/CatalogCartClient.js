@@ -77,6 +77,7 @@ export default function CatalogCartClient({ slug }) {
     };
 
     const handleCheckout = async (overridePhone, overrideNotes) => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
         if (!user) {
             sessionStorage.setItem('pending_catalog_checkout', 'true');
             sessionStorage.setItem('pending_catalog_phone', phoneNumber);

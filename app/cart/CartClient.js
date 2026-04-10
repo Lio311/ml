@@ -183,6 +183,7 @@ export default function CartClient() {
     }, [isLoaded, user]);
 
     const handleCheckout = async (overridePhone, overrideNotes) => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
         if (!user) {
             sessionStorage.setItem('pending_checkout', 'true');
             sessionStorage.setItem('pending_phone', phoneNumber);
