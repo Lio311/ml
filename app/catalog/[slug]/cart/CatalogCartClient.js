@@ -287,7 +287,7 @@ export default function CatalogCartClient({ slug }) {
                     </div>
 
                      <button
-                        onClick={handleCheckout}
+                        onClick={() => handleCheckout()}
                         disabled={isSubmitting || !catalogInfo}
                         className="w-full py-5 bg-blue-600 text-white text-xl rounded-2xl font-black hover:bg-blue-700 transition shadow-xl active:scale-[0.98] disabled:opacity-50 group/btn overflow-hidden relative"
                     >

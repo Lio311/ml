@@ -589,7 +589,7 @@ export default function CartClient() {
 
                                 <div className="pt-6">
                                     <button 
-                                        onClick={handleCheckout}
+                                        onClick={() => handleCheckout()}
                                         className="w-full bg-black text-white py-4 rounded-xl font-bold text-lg hover:bg-gray-900 transition-all shadow-lg active:scale-95"
                                     >
                                         {t('cart.checkout_btn')}
