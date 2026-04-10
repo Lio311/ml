@@ -385,31 +385,7 @@ export default async function ProductPage(props) {
                         <div className="text-6xl text-gray-300">🧴</div>
                     )}
 
-                     {(() => {
-                        const isExpired = product.discount_end_date && new Date(product.discount_end_date) < new Date();
-                        const hasDiscount = product.discount_percentage > 0 && !isExpired;
-                        if (hasDiscount) {
-                            return (
-                                <div className="absolute top-4 start-4 z-20 flex flex-col items-start translate-x-2 translate-y-2">
-                                    <div className="bg-green-600 text-white text-xs font-black px-4 py-1.5 rounded-full shadow-xl border-2 border-green-500/30 animate-pulse flex items-center gap-2 backdrop-blur-md">
-                                        <span className="w-2 h-2 rounded-full bg-white animate-ping"></span>
-                                        {locale === 'he' ? `${product.discount_percentage}% הנחה` : `${product.discount_percentage}% OFF`}
-                                    </div>
-                                    {product.discount_end_date && (
-                                        <div className="mt-2 bg-black/70 backdrop-blur-lg text-white text-[9px] px-3 py-1 rounded-full uppercase tracking-widest font-black shadow-lg">
-                                            {locale === 'he' ? 'זמן מוגבל' : 'LIMITED TIME Offer'}
-                                        </div>
-                                    )}
-                                </div>
-                            );
-                        }
-                        return null;
-                    })()}
-
-                    <div className={`absolute z-30 transition-all duration-500 ${(() => {
-                        const isExpired = product.discount_end_date && new Date(product.discount_end_date) < new Date();
-                        return product.discount_percentage > 0 && !isExpired;
-                    })() ? 'top-24 start-4' : 'top-4 start-4'}`}>
+                    <div className="absolute top-4 start-4 z-10">
                         <WishlistHeart productId={product.id} />
                     </div>
 

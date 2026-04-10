@@ -130,16 +130,8 @@ export default function ProductCard({ product }) {
                 )}
 
             {isDiscountActive() && (
-                <div className="absolute top-2 end-2 z-20 flex flex-col items-center">
-                    <div className="bg-green-600 text-white text-[10px] font-black px-2.5 py-1 rounded-full shadow-lg border border-green-500/50 animate-pulse flex items-center gap-1.5 backdrop-blur-sm">
-                        <span className="w-1.5 h-1.5 rounded-full bg-white animate-ping"></span>
-                        {locale === 'he' ? `${product.discount_percentage}% הנחה` : `${product.discount_percentage}% OFF`}
-                    </div>
-                    {product.discount_end_date && (
-                        <div className="mt-1 bg-black/60 backdrop-blur-md text-white text-[7px] px-1.5 py-0.5 rounded-full uppercase tracking-tighter opacity-80">
-                            {locale === 'he' ? 'זמן מוגבל' : 'LIMITED TIME'}
-                        </div>
-                    )}
+                <div className="absolute top-2 start-2 z-20 text-[10px] leading-3 font-bold bg-[#8cc63f] text-white px-2 py-1.5 rounded shadow-sm text-center">
+                    {locale === 'he' ? `${product.discount_percentage}% הנחה` : `${product.discount_percentage}% OFF`}
                 </div>
             )}
 
