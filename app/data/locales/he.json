@@ -543,7 +543,12 @@
         "clear_cart_btn": "נקה עגלה",
         "confirm_clear_cart_full": "האם אתה בטוח שברצונך לנקות את כל העגלה? פעולה זו תסיר את הפריטים גם מחשבונך.",
         "cart_cleared_toast": "העגלה נוקתה בהצלחה",
-        "confirm_clear_cart_btn": "כן, נקה עגלה"
+        "confirm_clear_cart_btn": "כן, נקה עגלה",
+        "auth_overlay_title": "ביצוע ההזמנה מחייב התחברות",
+        "auth_overlay_desc": "התחברו כדי לשמור את פרטי ההזמנה שלכם ולהשלים את הרכישה במהירות",
+        "auth_overlay_cta": "התחברו כעת",
+        "catalog_auth_overlay_title": "הזמנות לקטלוג מחייבות התחברות",
+        "catalog_auth_overlay_desc": "כדי שתוכלו לתקשר עם {name} ולעקוב אחר ההזמנה, עליכם להתחבר למערכת."
     },
     "inbox": {
         "title": "תיבת דואר",

@@ -7,6 +7,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 import { useUser, useClerk } from "@clerk/nextjs";
+import { useLanguage } from "../../../context/LanguageContext";
 
 export default function CatalogCartClient({ slug }) {
     const { 
@@ -15,6 +16,7 @@ export default function CatalogCartClient({ slug }) {
         total, isSelfPickup, setIsSelfPickup
     } = useCart();
     
+    const { t } = useLanguage();
     const [catalogInfo, setCatalogInfo] = useState(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const router = useRouter();
@@ -179,15 +181,15 @@ export default function CatalogCartClient({ slug }) {
                                     <path fillRule="evenodd" d="M12 1.5a5.25 5.25 0 0 0-5.25 5.25v3a3 3 0 0 0-3 3v6.75a3 3 0 0 0 3 3h10.5a3 3 0 0 0 3-3v-6.75a3 3 0 0 0-3-3v-3c0-2.9-2.35-5.25-5.25-5.25Zm3.75 8.25v-3a3.75 3.75 0 1 0-7.5 0v3h7.5Z" clipRule="evenodd" />
                                 </svg>
                             </div>
-                            <h3 className="text-2xl font-black mb-3 text-gray-900">הזמנות לקטלוג מחייבות התחברות</h3>
+                            <h3 className="text-2xl font-black mb-3 text-gray-900">{t('cart.catalog_auth_overlay_title')}</h3>
                             <p className="text-gray-600 mb-8 leading-relaxed font-medium">
-                                כדי שתוכלו לתקשר עם {catalogInfo?.name || 'בעל הקטלוג'} ולעקוב אחר ההזמנה, עליכם להתחבר למערכת.
+                                {t('cart.catalog_auth_overlay_desc', { name: catalogInfo?.name || t('common.catalog') })}
                             </p>
                             <button 
                                 onClick={() => openSignIn({ mode: 'modal' })}
                                 className="w-full bg-blue-600 text-white py-5 rounded-2xl font-black text-lg shadow-xl hover:bg-blue-700 transition-all active:scale-95 flex items-center justify-center gap-2"
                             >
-                                <span>התחברו כעת</span>
+                                <span>{t('cart.auth_overlay_cta')}</span>
                             </button>
                         </div>
                     )}

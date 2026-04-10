@@ -444,15 +444,15 @@ export default function CartClient() {
                                             <path fillRule="evenodd" d="M12 1.5a5.25 5.25 0 0 0-5.25 5.25v3a3 3 0 0 0-3 3v6.75a3 3 0 0 0 3 3h10.5a3 3 0 0 0 3-3v-6.75a3 3 0 0 0-3-3v-3c0-2.9-2.35-5.25-5.25-5.25Zm3.75 8.25v-3a3.75 3.75 0 1 0-7.5 0v3h7.5Z" clipRule="evenodd" />
                                         </svg>
                                     </div>
-                                    <h3 className="text-xl font-black mb-2 text-black">ביצוע ההזמנה מחייב התחברות</h3>
+                                    <h3 className="text-xl font-black mb-2 text-black">{t('cart.auth_overlay_title')}</h3>
                                     <p className="text-gray-600 text-sm mb-6 leading-relaxed">
-                                        התחברו כדי לשמור את פרטי ההזמנה שלכם ולהשלים את הרכישה במהירות
+                                        {t('cart.auth_overlay_desc')}
                                     </p>
                                     <button 
                                         onClick={() => openSignIn({ mode: 'modal' })}
                                         className="w-full bg-black text-white py-4 rounded-xl font-bold shadow-lg hover:bg-gray-900 transition-all active:scale-95 flex items-center justify-center gap-2"
                                     >
-                                        <span>התחברו כעת</span>
+                                        <span>{t('cart.auth_overlay_cta')}</span>
                                     </button>
                                 </div>
                             )}

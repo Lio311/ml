@@ -589,7 +589,12 @@
         "clear_cart_btn": "Clear Cart",
         "confirm_clear_cart_full": "Are you sure you want to clear your entire cart? This will also remove the saved items from your account.",
         "cart_cleared_toast": "Cart has been cleared",
-        "confirm_clear_cart_btn": "Yes, clear cart"
+        "confirm_clear_cart_btn": "Yes, clear cart",
+        "auth_overlay_title": "Login Required to Checkout",
+        "auth_overlay_desc": "Please log in to save your order details and complete your purchase quickly.",
+        "auth_overlay_cta": "Log In Now",
+        "catalog_auth_overlay_title": "Catalog Orders Require Login",
+        "catalog_auth_overlay_desc": "To communicate with {name} and track your order, please log in."
     },
     "inbox": {
         "title": "Inbox",
