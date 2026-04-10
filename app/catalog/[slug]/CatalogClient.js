@@ -39,15 +39,15 @@ function CollapsibleSection({ title, children }) {
 function CatalogProductCard({ item, slug, catalogId, catalogName }) {
     const { addToCart } = useCart();
     const { t, dir, localize } = useLanguage();
-    const [added, setAdded] = useState(false);
+    const [addedSize, setAddedSize] = useState(null);
 
     useEffect(() => {
         let timer;
-        if (added) {
-            timer = setTimeout(() => setAdded(false), 2000);
+        if (addedSize) {
+            timer = setTimeout(() => setAddedSize(null), 3000);
         }
         return () => clearTimeout(timer);
-    }, [added]);
+    }, [addedSize]);
 
     const getDiscountedPrice = (size, originalPrice) => {
         // Normalize size string to match discount_sizes format (e.g. "2ml")
@@ -73,7 +73,7 @@ function CatalogProductCard({ item, slug, catalogId, catalogName }) {
             catalogName
         );
         toast.success(t('common.added_to_cart_toast').replace('{name}', item.fragrance_name).replace('{size}', size));
-        setAdded(true);
+        setAddedSize(size);
     };
 
     const sizeEntries = Object.entries(item.prices || {});
@@ -140,9 +140,15 @@ function CatalogProductCard({ item, slug, catalogId, catalogName }) {
                                     </div>
                                     <button
                                         onClick={(e) => { e.preventDefault(); handleAdd(size, price); }}
-                                        className={`w-6 h-6 rounded flex items-center justify-center transition ${hasDiscount ? 'bg-red-50 hover:bg-red-600 hover:text-white' : 'bg-gray-100 hover:bg-black hover:text-white'}`}
+                                        className={`w-6 h-6 rounded flex items-center justify-center transition shadow-sm ${addedSize === size ? 'bg-green-500 text-white' : hasDiscount ? 'bg-red-50 hover:bg-red-600 hover:text-white' : 'bg-gray-100 hover:bg-black hover:text-white'}`}
                                         title={t('common.add_to_cart')}
-                                    >+</button>
+                                    >
+                                        {addedSize === size ? (
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor" className="w-3.5 h-3.5">
+                                                <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                                            </svg>
+                                        ) : '+'}
+                                    </button>
                                 </div>
                             </div>
                         );
@@ -162,16 +168,22 @@ function CatalogProductCard({ item, slug, catalogId, catalogName }) {
                                         </div>
                                         <button
                                             onClick={(e) => { e.preventDefault(); handleAdd('1', item.price); }}
-                                            className={`w-6 h-6 rounded flex items-center justify-center transition ${hasDiscount ? 'bg-red-50 hover:bg-red-600 hover:text-white' : 'bg-gray-100 hover:bg-black hover:text-white'}`}
-                                        >+</button>
+                                            className={`w-6 h-6 rounded flex items-center justify-center transition shadow-sm ${addedSize === '1' ? 'bg-green-500 text-white' : hasDiscount ? 'bg-red-50 hover:bg-red-600 hover:text-white' : 'bg-gray-100 hover:bg-black hover:text-white'}`}
+                                        >
+                                            {addedSize === '1' ? (
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor" className="w-3.5 h-3.5">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                                                </svg>
+                                            ) : '+'}
+                                        </button>
                                     </div>
                                 </div>
                             );
                         })()
                     )}
 
-                    <Link href={`/catalog/${slug}/product/${item.id}`} className={`block w-full text-center text-xs py-2 mt-3 rounded transition ${added ? 'bg-green-600 text-white' : 'bg-black text-white hover:bg-gray-800'}`}>
-                        {added ? t('common.added_to_cart_btn') : t('common.more_details')}
+                    <Link href={`/catalog/${slug}/product/${item.id}`} className={`block w-full text-center text-xs py-2 mt-3 rounded transition ${addedSize ? 'bg-green-600 text-white' : 'bg-black text-white hover:bg-gray-800'}`}>
+                        {addedSize ? t('common.added_to_cart_btn') : t('common.more_details')}
                     </Link>
                 </div>
             </div>

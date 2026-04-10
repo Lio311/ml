@@ -12,7 +12,7 @@ import toast from 'react-hot-toast';
 
 export default function ProductCard({ product }) {
     const { addToCart, cartItems } = useCart();
-    const [added, setAdded] = useState(false);
+    const [addedSize, setAddedSize] = useState(null);
     const [isQuickViewOpen, setIsQuickViewOpen] = useState(false);
     const { t, dir, localize, locale } = useLanguage();
     const router = useRouter();
@@ -33,11 +33,11 @@ export default function ProductCard({ product }) {
 
     useEffect(() => {
         let timer;
-        if (added) {
-            timer = setTimeout(() => setAdded(false), 2000);
+        if (addedSize) {
+            timer = setTimeout(() => setAddedSize(null), 3000);
         }
         return () => clearTimeout(timer);
-    }, [added]);
+    }, [addedSize]);
 
     const isDiscountActive = (size) => {
         if (!product.discount_percentage || product.discount_percentage <= 0) return false;
@@ -68,7 +68,7 @@ export default function ProductCard({ product }) {
 
         addToCart(product, size, discountedPrice, 'main', 'האתר הרשמי', price);
         toast.success(t('common.added_to_cart_toast').replace('{name}', localize(product, 'name')).replace('{size}', size));
-        setAdded(true);
+        setAddedSize(size);
     };
 
     const touchTimeout = useRef(null);
@@ -221,9 +221,15 @@ export default function ProductCard({ product }) {
                                 )}
                                 <button
                                     onClick={() => handleAdd(2, product.price_2ml)}
-                                    className="bg-gray-100 hover:bg-black hover:text-white w-6 h-6 rounded flex items-center justify-center transition"
+                                    className={`w-6 h-6 rounded flex items-center justify-center transition shadow-sm ${addedSize === 2 ? 'bg-green-500 text-white' : 'bg-gray-100 hover:bg-black hover:text-white'}`}
                                     title={t('common.add_to_cart')}
-                                >+</button>
+                                >
+                                    {addedSize === 2 ? (
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor" className="w-3.5 h-3.5">
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                                        </svg>
+                                    ) : '+'}
+                                </button>
                             </div>
                         </div>
                     )}
@@ -242,9 +248,15 @@ export default function ProductCard({ product }) {
                                 )}
                                 <button
                                     onClick={() => handleAdd(5, product.price_5ml)}
-                                    className="bg-gray-100 hover:bg-black hover:text-white w-6 h-6 rounded flex items-center justify-center transition"
+                                    className={`w-6 h-6 rounded flex items-center justify-center transition shadow-sm ${addedSize === 5 ? 'bg-green-500 text-white' : 'bg-gray-100 hover:bg-black hover:text-white'}`}
                                     title={t('common.add_to_cart')}
-                                >+</button>
+                                >
+                                    {addedSize === 5 ? (
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor" className="w-3.5 h-3.5">
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                                        </svg>
+                                    ) : '+'}
+                                </button>
                             </div>
                         </div>
                     )}
@@ -263,9 +275,15 @@ export default function ProductCard({ product }) {
                                 )}
                                 <button
                                     onClick={() => handleAdd(10, product.price_10ml)}
-                                    className="bg-gray-100 hover:bg-black hover:text-white w-6 h-6 rounded flex items-center justify-center transition"
+                                    className={`w-6 h-6 rounded flex items-center justify-center transition shadow-sm ${addedSize === 10 ? 'bg-green-500 text-white' : 'bg-gray-100 hover:bg-black hover:text-white'}`}
                                     title={t('common.add_to_cart')}
-                                >+</button>
+                                >
+                                    {addedSize === 10 ? (
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor" className="w-3.5 h-3.5">
+                                            <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                                        </svg>
+                                    ) : '+'}
+                                </button>
                             </div>
                         </div>
                     )}

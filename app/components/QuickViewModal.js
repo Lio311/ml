@@ -32,7 +32,7 @@ export default function QuickViewModal({ product, isOpen, onClose }) {
     useEffect(() => {
         let timer;
         if (addedSize) {
-            timer = setTimeout(() => setAddedSize(null), 2000);
+            timer = setTimeout(() => setAddedSize(null), 3000);
         }
         return () => clearTimeout(timer);
     }, [addedSize]);
