@@ -7,15 +7,6 @@ export const metadata = {
 };
 
 export default async function PhoneOrderPage() {
-    const { sessionClaims, publicMetadata } = await auth();
-    const role = sessionClaims?.metadata?.role || publicMetadata?.role || 'customer';
-
-    const isAdmin = role === 'admin' || role === 'deputy';
-
-    if (!isAdmin) {
-        redirect("/admin");
-    }
-
     return (
         <div className="min-h-screen bg-gray-50/50">
             <PhoneOrderClient />

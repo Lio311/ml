@@ -1,20 +1,19 @@
 import { NextResponse } from 'next/server';
-import { auth as clerkAuth } from '@clerk/nextjs/server';
+import { currentUser } from '@clerk/nextjs/server';
 import pool from '../../../../lib/db';
 import { sendEmail, getOrderConfirmationTemplate, getAdminNewOrderTemplate } from '../../../../lib/email';
 import { recordAuditLog } from '../../../../lib/audit';
+import { checkAdmin } from '../../../../lib/admin';
 
 export async function POST(req) {
     try {
-        const authData = await clerkAuth();
-        const adminId = authData?.userId;
-        const adminRole = authData?.sessionClaims?.metadata?.role || authData?.publicMetadata?.role;
-
-        // Admin Auth Check
-        const isAdmin = adminRole === 'admin' || adminRole === 'deputy';
+        const isAdmin = await checkAdmin();
         if (!isAdmin) {
             return NextResponse.json({ error: 'Unauthorized. Admin access required.' }, { status: 403 });
         }
+
+        const adminUser = await currentUser();
+        const adminId = adminUser?.id;
 
         const body = await req.json();
         const { customerId, items, total, discountAmount, couponCode, notes, deliveryMethod, shippingCost } = body;
