@@ -25,7 +25,7 @@ export default async function AdminProductsPage(props) {
 
     const client = await pool.connect();
     try {
-        let query = 'SELECT id, brand, model, name, name_he, brand_he, model_he, price_2ml, price_5ml, price_10ml, image_url, category, description, stock, top_notes, middle_notes, base_notes, in_lottery, cost_price, original_size, seasons, perfumers, country, active FROM products';
+        let query = 'SELECT id, brand, model, name, name_he, brand_he, model_he, price_2ml, price_5ml, price_10ml, image_url, category, description, stock, top_notes, middle_notes, base_notes, in_lottery, cost_price, original_size, seasons, perfumers, country, active, discount_percentage, discount_sizes FROM products';
         let countQuery = 'SELECT COUNT(*) FROM products';
         const params = [];
         let whereClauses = [];
