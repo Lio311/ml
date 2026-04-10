@@ -46,6 +46,9 @@ export async function GET(req) {
                 name: product.name,
                 brand: product.brand,
                 image: product.image_url,
+                price_2ml: product.price_2ml,
+                price_5ml: product.price_5ml,
+                price_10ml: product.price_10ml,
                 price: Math.min(
                     Number(product.price_2ml) || Infinity,
                     Number(product.price_5ml) || Infinity,

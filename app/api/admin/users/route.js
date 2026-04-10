@@ -21,7 +21,7 @@ export async function GET(request) {
 
         if (query) {
             sql += `
-                WHERE (first_name ILIKE $1 OR last_name ILIKE $1 OR email ILIKE $1)
+                WHERE (first_name ILIKE $1 OR last_name ILIKE $1 OR email ILIKE $1 OR phone ILIKE $1 OR id ILIKE $1)
             `;
             params.push(`%${query}%`);
         }
