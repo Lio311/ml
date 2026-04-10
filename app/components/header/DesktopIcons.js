@@ -7,7 +7,7 @@ import { useLanguage } from '../../context/LanguageContext';
 export default function DesktopIcons({ cartCount, wishlistCount, onSearchToggle, hideSearch = false }) {
     const { t } = useLanguage();
     return (
-        <div className="flex items-center justify-end gap-2 md:gap-5">
+        <div className="flex items-center justify-end gap-2 md:gap-5 pe-1 md:pe-2">
             {/* Mobile Search Toggle */}
             {!hideSearch && (
                 <button 
