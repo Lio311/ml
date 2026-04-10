@@ -8,7 +8,7 @@ export const metadata = {
 
 export default async function PhoneOrderPage() {
     return (
-        <div className="min-h-screen bg-gray-50/50">
+        <div className="min-h-screen">
             <PhoneOrderClient />
         </div>
     );

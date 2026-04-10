@@ -231,7 +231,7 @@ export default function PhoneOrderClient() {
                 <div className="lg:col-span-2 space-y-6">
                     
                     {/* Step 1: Customer */}
-                    <section className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
+                    <section className="bg-white rounded-3xl shadow-sm border border-gray-100 relative">
                         <div className="bg-gray-50/50 p-4 border-b border-gray-100 flex items-center gap-2">
                             <User className="w-5 h-5 text-gray-400" />
                             <h2 className="font-bold text-gray-800">1. פרטי לקוח</h2>
@@ -306,7 +306,7 @@ export default function PhoneOrderClient() {
                     </section>
 
                     {/* Step 2: Products */}
-                    <section className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
+                    <section className="bg-white rounded-3xl shadow-sm border border-gray-100 relative">
                         <div className="bg-gray-50/50 p-4 border-b border-gray-100 flex items-center gap-2">
                             <ShoppingCart className="w-5 h-5 text-gray-400" />
                             <h2 className="font-bold text-gray-800">2. בחירת בשמים</h2>
