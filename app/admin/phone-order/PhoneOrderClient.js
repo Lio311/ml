@@ -44,6 +44,7 @@ export default function PhoneOrderClient() {
     
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [showProductModal, setShowProductModal] = useState(null);
+    const [placedOrderId, setPlacedOrderId] = useState(null);
 
     // -- Refs --
     const customerRef = useRef(null);
@@ -218,7 +219,7 @@ export default function PhoneOrderClient() {
             const data = await res.json();
             if (res.ok) {
                 toast.success(`הזמנה #${data.orderId} נוצרה בהצלחה!`);
-                router.push('/admin/orders');
+                setPlacedOrderId(data.orderId);
             } else {
                 toast.error(data.error || 'שגיאה ביצירת הזמנה');
             }
@@ -228,6 +229,56 @@ export default function PhoneOrderClient() {
             setIsSubmitting(false);
         }
     };
+
+    if (placedOrderId) {
+        return (
+            <div className="max-w-6xl mx-auto p-4 md:p-8 min-h-[70vh] flex items-center justify-center" dir="rtl">
+                <motion.div 
+                    initial={{ opacity: 0, scale: 0.9 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    className="bg-white rounded-[3rem] shadow-2xl border border-gray-100 p-12 text-center max-w-xl w-full relative overflow-hidden"
+                >
+                    {/* Background decoration */}
+                    <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-600 via-green-500 to-blue-600" />
+                    
+                    <div className="w-24 h-24 bg-green-50 rounded-full flex items-center justify-center mx-auto mb-8 shadow-inner">
+                        <CheckCircle2 className="w-12 h-12 text-green-500" />
+                    </div>
+
+                    <h1 className="text-4xl font-black text-gray-900 mb-4 tracking-tight">ההזמנה נוצרה!</h1>
+                    <p className="text-xl text-gray-600 mb-8 leading-relaxed">
+                        הזמנה <span className="text-blue-600 font-bold">#{placedOrderId}</span> נוצרה בהצלחה עבור <span className="font-bold text-gray-900">{customer?.firstName} {customer?.lastName}</span>.
+                        <br />
+                        אישור הזמנה נשלח ללקוח במייל.
+                    </p>
+
+                    <div className="flex flex-col gap-4">
+                        <button
+                            onClick={() => {
+                                setPlacedOrderId(null);
+                                setCustomer(null);
+                                setCustomerQuery('');
+                                setCart([]);
+                                setCouponCode('');
+                                setCouponDiscount(null);
+                                setNotes('');
+                            }}
+                            className="w-full py-5 bg-blue-600 text-white font-black rounded-2xl hover:bg-blue-700 transition-all shadow-xl shadow-blue-200 text-lg flex items-center justify-center gap-2 group"
+                        >
+                            <Plus className="w-5 h-5 group-hover:rotate-90 transition-transform" />
+                            צור הזמנה חדשה
+                        </button>
+                        <button
+                            onClick={() => router.push('/admin/orders')}
+                            className="w-full py-5 bg-gray-50 text-gray-600 font-bold rounded-2xl hover:bg-gray-100 transition-all text-lg"
+                        >
+                            מעבר לניהול הזמנות
+                        </button>
+                    </div>
+                </motion.div>
+            </div>
+        );
+    }
 
     return (
         <div className="max-w-6xl mx-auto p-4 md:p-8" dir="rtl">
