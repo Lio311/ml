@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Image from "@/app/components/CImage";
 import TagInput from "../../components/TagInput";
+import ModernDateTimePicker from "../../components/ui/ModernDateTimePicker";
 import toast from 'react-hot-toast';
 import AdminFilterBar from "../../components/admin/AdminFilterBar";
 
@@ -529,7 +530,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                         
                         <div className="mt-4 p-4 bg-green-50 rounded-xl border border-green-100">
                             <h4 className="text-sm font-black text-green-800 uppercase tracking-widest mb-3">ניהול מבצע (Promotion)</h4>
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                                 <div>
                                     <label className="text-[10px] font-black text-green-700 uppercase tracking-widest block mb-1">אחוז הנחה (%)</label>
                                     <input
@@ -538,6 +539,14 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                         onChange={e => setEditForm({ ...editForm, discount_percentage: Number(e.target.value) })}
                                         className="border-2 border-green-200 rounded-xl p-2 w-full bg-white focus:border-green-500 outline-none transition-colors font-bold text-sm"
                                         placeholder="0"
+                                    />
+                                </div>
+                                <div className="flex flex-col">
+                                    <label className="text-[10px] font-black text-green-700 uppercase tracking-widest block mb-1">תאריך סיום (אופציונלי):</label>
+                                    <ModernDateTimePicker 
+                                        value={editForm.discount_end_date}
+                                        onChange={val => setEditForm({ ...editForm, discount_end_date: val })}
+                                        placeholder="בחר תאריך סיום..."
                                     />
                                 </div>
                                 <div>
@@ -825,13 +834,12 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                                     placeholder="0"
                                                 />
                                             </div>
-                                            <div>
+                                            <div className="flex flex-col">
                                                 <label className="text-[9px] font-black text-green-700 uppercase tracking-widest block mb-1 opacity-70">תאריך סיום (אופציונלי):</label>
-                                                <input
-                                                    type="datetime-local"
-                                                    value={editForm.discount_end_date ? new Date(editForm.discount_end_date).toISOString().slice(0, 16) : ''}
-                                                    onChange={e => setEditForm({ ...editForm, discount_end_date: e.target.value })}
-                                                    className="border-2 border-green-100 rounded-xl p-2 w-full bg-white focus:border-green-600 outline-none transition-all font-black text-sm text-green-600"
+                                                <ModernDateTimePicker 
+                                                    value={editForm.discount_end_date}
+                                                    onChange={val => setEditForm({ ...editForm, discount_end_date: val })}
+                                                    placeholder="בחר תאריך סיום..."
                                                 />
                                                 <p className="text-[8px] text-green-500 mt-1">השאר ריק למבצע ללא הגבלת זמן</p>
                                             </div>
