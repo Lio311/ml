@@ -173,6 +173,9 @@ export default function CartClient() {
             const savedPhone = sessionStorage.getItem('pending_phone');
             const savedNotes = sessionStorage.getItem('pending_notes');
             
+            if (savedPhone) setPhoneNumber(savedPhone);
+            if (savedNotes) setNotes(savedNotes);
+            
             sessionStorage.removeItem('pending_checkout');
             sessionStorage.removeItem('pending_phone');
             sessionStorage.removeItem('pending_notes');
@@ -184,20 +187,23 @@ export default function CartClient() {
 
     const handleCheckout = async (overridePhone, overrideNotes) => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
+        
+        // Use provided values or current state
+        const phoneToUse = (typeof overridePhone === 'string' ? overridePhone : phoneNumber) || '';
+        const notesToUse = (typeof overrideNotes === 'string' ? overrideNotes : notes) || '';
+
         if (!user) {
             sessionStorage.setItem('pending_checkout', 'true');
-            sessionStorage.setItem('pending_phone', phoneNumber);
-            sessionStorage.setItem('pending_notes', notes);
+            sessionStorage.setItem('pending_phone', phoneToUse);
+            sessionStorage.setItem('pending_notes', notesToUse);
             openSignIn({ mode: 'modal' });
             return;
         }
 
-        const phoneToUse = overridePhone || phoneNumber;
-        const notesToUse = overrideNotes || notes;
-
         const cleanPhone = phoneToUse.replace(/\D/g, '');
-        if (cleanPhone.length !== 10 || !cleanPhone.startsWith('05')) {
+        if (cleanPhone.length < 9 || cleanPhone.length > 10 || !cleanPhone.startsWith('0')) {
             setPhoneError("מספר טלפון לא תקין");
+            toast.error("אנא הזן מספר טלפון תקין");
             return;
         }
 

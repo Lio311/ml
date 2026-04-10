@@ -78,16 +78,19 @@ export default function CatalogCartClient({ slug }) {
 
     const handleCheckout = async (overridePhone, overrideNotes) => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
+        
+        // Use provided values or current state
+        const phoneToUse = (typeof overridePhone === 'string' ? overridePhone : phoneNumber) || '';
+        const notesToUse = (typeof overrideNotes === 'string' ? overrideNotes : notes) || '';
+
         if (!user) {
             sessionStorage.setItem('pending_catalog_checkout', 'true');
-            sessionStorage.setItem('pending_catalog_phone', phoneNumber);
-            sessionStorage.setItem('pending_catalog_notes', notes);
+            sessionStorage.setItem('pending_catalog_phone', phoneToUse);
+            sessionStorage.setItem('pending_catalog_notes', notesToUse);
             openSignIn({ mode: 'modal' });
             return;
         }
 
-        const phoneToUse = overridePhone || phoneNumber;
-        const notesToUse = overrideNotes || notes;
 
         const pError = validatePhone(phoneToUse);
         if (pError) { setPhoneError(pError); toast.error(pError); return; }
