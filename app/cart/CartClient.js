@@ -166,41 +166,16 @@ export default function CartClient() {
         prevSamplesCount.current = freeSamplesCount;
     }, [freeSamplesCount]);
     
-    // Auto-checkout after login
-    useEffect(() => {
-        const shouldCheckout = sessionStorage.getItem('pending_checkout');
-        if (isLoaded && user && shouldCheckout === 'true') {
-            const savedPhone = sessionStorage.getItem('pending_phone');
-            const savedNotes = sessionStorage.getItem('pending_notes');
-            
-            if (savedPhone) setPhoneNumber(savedPhone);
-            if (savedNotes) setNotes(savedNotes);
-            
-            sessionStorage.removeItem('pending_checkout');
-            sessionStorage.removeItem('pending_phone');
-            sessionStorage.removeItem('pending_notes');
-            
-            // Trigger checkout with saved values
-            handleCheckout(savedPhone, savedNotes);
-        }
-    }, [isLoaded, user]);
 
-    const handleCheckout = async (overridePhone, overrideNotes) => {
+    const handleCheckout = async () => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
         
-        // Use provided values or current state
-        const phoneToUse = (typeof overridePhone === 'string' ? overridePhone : phoneNumber) || '';
-        const notesToUse = (typeof overrideNotes === 'string' ? overrideNotes : notes) || '';
-
         if (!user) {
-            sessionStorage.setItem('pending_checkout', 'true');
-            sessionStorage.setItem('pending_phone', phoneToUse);
-            sessionStorage.setItem('pending_notes', notesToUse);
             openSignIn({ mode: 'modal' });
             return;
         }
 
-        const cleanPhone = phoneToUse.replace(/\D/g, '');
+        const cleanPhone = phoneNumber.replace(/\D/g, '');
         if (cleanPhone.length < 9 || cleanPhone.length > 10 || !cleanPhone.startsWith('0')) {
             setPhoneError("מספר טלפון לא תקין");
             toast.error("אנא הזן מספר טלפון תקין");
@@ -212,7 +187,7 @@ export default function CartClient() {
             const body = {
                 items: activeItems,
                 total,
-                notes: notesToUse,
+                notes: notes,
                 phoneNumber: cleanPhone,
                 activeVendorId,
                 freeSamples: freeSamplesCount,
@@ -460,7 +435,31 @@ export default function CartClient() {
                     </div>
 
                     <div className="w-full lg:w-96 space-y-6">
-                        <div className="bg-white p-6 rounded-xl border shadow-xl space-y-6 sticky top-24">
+                        <div className="bg-white p-6 rounded-xl border shadow-xl space-y-6 sticky top-24 relative overflow-hidden">
+                            {/* Auth Overlay for Guests */}
+                            {isLoaded && !user && (
+                                <div className="absolute inset-0 z-50 flex flex-col items-center justify-center p-6 text-center bg-white/60 backdrop-blur-md animate-in fade-in duration-300">
+                                    <div className="w-16 h-16 bg-black text-white rounded-full flex items-center justify-center mb-4 shadow-xl">
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-8 h-8">
+                                            <path fillRule="evenodd" d="M12 1.5a5.25 5.25 0 0 0-5.25 5.25v3a3 3 0 0 0-3 3v6.75a3 3 0 0 0 3 3h10.5a3 3 0 0 0 3-3v-6.75a3 3 0 0 0-3-3v-3c0-2.9-2.35-5.25-5.25-5.25Zm3.75 8.25v-3a3.75 3.75 0 1 0-7.5 0v3h7.5Z" clipRule="evenodd" />
+                                        </svg>
+                                    </div>
+                                    <h3 className="text-xl font-black mb-2 text-black">ביצוע ההזמנה מחייב התחברות</h3>
+                                    <p className="text-gray-600 text-sm mb-6 leading-relaxed">
+                                        התחברו כדי לשמור את פרטי ההזמנה שלכם ולהשלים את הרכישה במהירות
+                                    </p>
+                                    <button 
+                                        onClick={() => openSignIn({ mode: 'modal' })}
+                                        className="w-full bg-black text-white py-4 rounded-xl font-bold shadow-lg hover:bg-gray-900 transition-all active:scale-95 flex items-center justify-center gap-2"
+                                    >
+                                        <span>התחברו כעת</span>
+                                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-5 h-5">
+                                            <path fillRule="evenodd" d="M3 10a.75.75 0 0 1 .75-.75h10.638L10.23 5.29a.75.75 0 1 1 1.04-1.08l5.5 5.25a.75.75 0 0 1 0 1.08l-5.5 5.25a.75.75 0 1 1-1.04-1.08l4.158-3.96H3.75A.75.75 0 0 1 3 10Z" clipRule="evenodd" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            )}
+
                             <h2 className="text-xl font-bold border-b pb-4">{t('cart.order_summary')}</h2>
 
                             <div className="flex justify-between text-lg items-center">

@@ -41,25 +41,6 @@ export default function CatalogCartClient({ slug }) {
         fetchCat();
     }, [slug, setActiveVendorId]);
 
-    // Auto-checkout after login
-    useEffect(() => {
-        const shouldCheckout = sessionStorage.getItem('pending_catalog_checkout');
-        if (isLoaded && user && shouldCheckout === 'true') {
-            const savedPhone = sessionStorage.getItem('pending_catalog_phone');
-            const savedNotes = sessionStorage.getItem('pending_catalog_notes');
-            
-            sessionStorage.removeItem('pending_catalog_checkout');
-            sessionStorage.removeItem('pending_catalog_phone');
-            sessionStorage.removeItem('pending_catalog_notes');
-            
-            // Restore values to state (optional but good for UI)
-            if (savedPhone) setPhoneNumber(savedPhone);
-            if (savedNotes) setNotes(savedNotes);
-
-            // Trigger checkout with saved values
-            handleCheckout(savedPhone, savedNotes);
-        }
-    }, [isLoaded, user]);
 
     // Use calculations from CartContext
     const catalogCartItems = activeItems;
@@ -76,23 +57,15 @@ export default function CatalogCartClient({ slug }) {
         return "";
     };
 
-    const handleCheckout = async (overridePhone, overrideNotes) => {
+    const handleCheckout = async () => {
         window.scrollTo({ top: 0, behavior: 'smooth' });
         
-        // Use provided values or current state
-        const phoneToUse = (typeof overridePhone === 'string' ? overridePhone : phoneNumber) || '';
-        const notesToUse = (typeof overrideNotes === 'string' ? overrideNotes : notes) || '';
-
         if (!user) {
-            sessionStorage.setItem('pending_catalog_checkout', 'true');
-            sessionStorage.setItem('pending_catalog_phone', phoneToUse);
-            sessionStorage.setItem('pending_catalog_notes', notesToUse);
             openSignIn({ mode: 'modal' });
             return;
         }
 
-
-        const pError = validatePhone(phoneToUse);
+        const pError = validatePhone(phoneNumber);
         if (pError) { setPhoneError(pError); toast.error(pError); return; }
         if (!catalogInfo) { toast.error("שגיאה בטעינת הקטלוג"); return; }
 
@@ -198,6 +171,30 @@ export default function CatalogCartClient({ slug }) {
             {/* Checkout Area */}
             <div className="w-full lg:w-[420px]">
                 <div className="bg-white p-8 rounded-[2.5rem] border border-gray-100 shadow-2xl sticky top-24 overflow-hidden relative">
+                    {/* Auth Overlay for Guests */}
+                    {isLoaded && !user && (
+                        <div className="absolute inset-0 z-50 flex flex-col items-center justify-center p-8 text-center bg-white/70 backdrop-blur-md animate-in fade-in duration-500">
+                            <div className="w-20 h-20 bg-blue-600 text-white rounded-full flex items-center justify-center mb-6 shadow-2xl animate-bounce">
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-10 h-10">
+                                    <path fillRule="evenodd" d="M12 1.5a5.25 5.25 0 0 0-5.25 5.25v3a3 3 0 0 0-3 3v6.75a3 3 0 0 0 3 3h10.5a3 3 0 0 0 3-3v-6.75a3 3 0 0 0-3-3v-3c0-2.9-2.35-5.25-5.25-5.25Zm3.75 8.25v-3a3.75 3.75 0 1 0-7.5 0v3h7.5Z" clipRule="evenodd" />
+                                </svg>
+                            </div>
+                            <h3 className="text-2xl font-black mb-3 text-gray-900">הזמנות לקטלוג מחייבות התחברות</h3>
+                            <p className="text-gray-600 mb-8 leading-relaxed font-medium">
+                                כדי שתוכלו לתקשר עם {catalogInfo?.name || 'בעל הקטלוג'} ולעקוב אחר ההזמנה, עליכם להתחבר למערכת.
+                            </p>
+                            <button 
+                                onClick={() => openSignIn({ mode: 'modal' })}
+                                className="w-full bg-blue-600 text-white py-5 rounded-2xl font-black text-lg shadow-xl hover:bg-blue-700 transition-all active:scale-95 flex items-center justify-center gap-2"
+                            >
+                                <span>התחברו כעת</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-6 h-6">
+                                    <path fillRule="evenodd" d="M3 10a.75.75 0 0 1 .75-.75h10.638L10.23 5.29a.75.75 0 1 1 1.04-1.08l5.5 5.25a.75.75 0 0 1 0 1.08l-5.5 5.25a.75.75 0 1 1-1.04-1.08l4.158-3.96H3.75A.75.75 0 0 1 3 10Z" clipRule="evenodd" />
+                                </svg>
+                            </button>
+                        </div>
+                    )}
+
                      <div className="absolute top-0 left-0 w-full h-2 bg-gradient-to-r from-blue-400 to-blue-600"></div>
                      <h2 className="text-2xl font-bold pb-4 mb-8 border-b border-gray-50">סיכום הזמנה</h2>
 
