@@ -3,7 +3,7 @@
 import { useState, useRef } from 'react';
 import { Loader2, Sparkles, Star, Camera, X, Image as ImageIcon } from 'lucide-react';
 import toast from 'react-hot-toast';
-import Image from 'next/image';
+import Image from './CImage';
 import { useLanguage } from '../context/LanguageContext';
 
 export default function OrderReviewPrompt({ orderId, initialHasSubmitted = false, onSubmitted, reviewToken = null }) {

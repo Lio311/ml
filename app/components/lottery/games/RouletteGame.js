@@ -1,7 +1,7 @@
 
 "use client";
 import { useState } from 'react';
-import Image from 'next/image';
+import Image from '../../CImage';
 
 export default function RouletteGame({ prize, onComplete, allImages = [] }) {
     const [spinning, setSpinning] = useState(false);

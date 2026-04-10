@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from 'react';
-import Image from 'next/image';
+import Image from '../../CImage';
 
 export default function ChickenShooterGame({ prize, onComplete }) {
     const [aim, setAim] = useState(50); // 0-100

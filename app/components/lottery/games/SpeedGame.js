@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect, useRef } from 'react';
-import Image from 'next/image';
+import Image from '../../CImage';
 
 export default function SpeedGame({ prize, onComplete, allImages = [] }) {
     const [running, setRunning] = useState(true);

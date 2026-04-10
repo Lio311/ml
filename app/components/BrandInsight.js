@@ -1,4 +1,4 @@
-import Image from 'next/image';
+import Image from './CImage';
 import { getBrandInsight } from '../lib/db';
 import { cookies } from 'next/headers';
 import he from '../data/locales/he.json';

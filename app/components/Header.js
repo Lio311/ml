@@ -91,12 +91,12 @@ export default function Header({ brands = [] }) {
             <div className={`frosted-nav !w-screen h-20 md:h-28 relative z-40 flex items-center transition-all duration-500 ${
                 !isScrolled && isHome ? '!bg-white !backdrop-blur-none !shadow-none' : ''
             }`}>
-                <div className="w-full max-w-[1800px] mx-auto px-0 md:px-12 h-full flex items-center justify-between">
+                <div className="w-full max-w-[1800px] mx-auto px-0 md:px-4 xl:px-6 h-full flex items-center justify-between">
                     
                     {/* Desktop Layout (XL and up) */}
                     <div className="hidden xl:flex w-full items-center justify-between h-full">
                         {/* Right Side: Navigation & User */}
-                        <div className="flex-1 flex items-center gap-8">
+                        <div className="flex-1 flex items-center gap-4 xl:gap-8 pe-2 xl:pe-4">
                             <div className="flex items-center gap-2">
                                 <SignedIn>
                                     <div className="flex items-center">
@@ -122,7 +122,7 @@ export default function Header({ brands = [] }) {
                                 </SignedOut>
                             </div>
                             
-                            <nav className="flex items-center gap-6 text-black">
+                            <nav className="flex items-center gap-3 xl:gap-6 text-black">
                                 {navLinks.map((link) => (
                                     <div 
                                         key={link.label}
@@ -131,7 +131,7 @@ export default function Header({ brands = [] }) {
                                     >
                                         <Link 
                                             href={link.href}
-                                            className={`text-[12px] font-bold tracking-[0.1em] uppercase transition-all duration-500 ${
+                                            className={`text-[12px] font-bold tracking-[0.1em] uppercase whitespace-nowrap transition-all duration-500 ${
                                                 link.isRed 
                                                     ? 'text-red-600 opacity-100 hover:text-red-700' 
                                                     : (link.active ? 'text-black opacity-100' : 'text-black opacity-40 hover:opacity-100')

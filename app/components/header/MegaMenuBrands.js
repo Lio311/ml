@@ -2,7 +2,7 @@
 
 import { useState, useMemo } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
+import Image from '../CImage';
 import { useLanguage } from '../../context/LanguageContext';
 
 export default function MegaMenuBrands({ brands = [], isOpen, onClose }) {

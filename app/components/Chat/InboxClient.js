@@ -7,7 +7,7 @@ import { useUser } from '@clerk/nextjs';
 import { useLanguage } from '../../context/LanguageContext';
 import toast from 'react-hot-toast';
 import Link from 'next/link';
-import Image from 'next/image';
+import Image from '../CImage';
 import OrderStatusTimeline from '../OrderStatusTimeline';
 
 export default function InboxClient({ role = 'buyer', catalogId = null, preSelectConversationWith = null, initialOrderId = null, initialCatalogId = null }) {

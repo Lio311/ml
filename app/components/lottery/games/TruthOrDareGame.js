@@ -1,6 +1,6 @@
 "use client";
 import { useState, useRef, useEffect } from 'react';
-import Image from 'next/image';
+import Image from '../../CImage';
 
 export default function TruthOrDareGame({ prize, onComplete, allImages = [] }) {
     const [spinning, setSpinning] = useState(false);

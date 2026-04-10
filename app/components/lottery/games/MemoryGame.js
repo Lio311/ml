@@ -1,6 +1,6 @@
 "use client";
 import { useState } from 'react';
-import Image from 'next/image';
+import Image from '../../CImage';
 
 export default function MemoryGame({ prize, onComplete, allImages = [] }) {
     // 9 Cards

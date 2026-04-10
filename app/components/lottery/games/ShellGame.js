@@ -2,7 +2,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import Image from 'next/image';
+import Image from '../../CImage';
 
 export default function ShellGame({ prize, onComplete }) {
     const [gameState, setGameState] = useState('shuffle'); // shuffle, pick, reveal

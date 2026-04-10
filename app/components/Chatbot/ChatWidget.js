@@ -4,7 +4,7 @@
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import Image from 'next/image';
+import Image from '../CImage';
 
 import { chatbotKnowledge } from '../../data/chatbot_knowledge';
 
