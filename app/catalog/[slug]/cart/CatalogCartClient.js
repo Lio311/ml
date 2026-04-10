@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useState, useEffect } from "react";
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
+import { useUser, useClerk } from "@clerk/nextjs";
 
 export default function CatalogCartClient({ slug }) {
     const { 
@@ -17,6 +18,8 @@ export default function CatalogCartClient({ slug }) {
     const [catalogInfo, setCatalogInfo] = useState(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const router = useRouter();
+    const { user, isLoaded } = useUser();
+    const { openSignIn } = useClerk();
 
     const [notes, setNotes] = useState('');
     const [phoneNumber, setPhoneNumber] = useState('');
@@ -38,6 +41,26 @@ export default function CatalogCartClient({ slug }) {
         fetchCat();
     }, [slug, setActiveVendorId]);
 
+    // Auto-checkout after login
+    useEffect(() => {
+        const shouldCheckout = sessionStorage.getItem('pending_catalog_checkout');
+        if (isLoaded && user && shouldCheckout === 'true') {
+            const savedPhone = sessionStorage.getItem('pending_catalog_phone');
+            const savedNotes = sessionStorage.getItem('pending_catalog_notes');
+            
+            sessionStorage.removeItem('pending_catalog_checkout');
+            sessionStorage.removeItem('pending_catalog_phone');
+            sessionStorage.removeItem('pending_catalog_notes');
+            
+            // Restore values to state (optional but good for UI)
+            if (savedPhone) setPhoneNumber(savedPhone);
+            if (savedNotes) setNotes(savedNotes);
+
+            // Trigger checkout with saved values
+            handleCheckout(savedPhone, savedNotes);
+        }
+    }, [isLoaded, user]);
+
     // Use calculations from CartContext
     const catalogCartItems = activeItems;
     const effectiveTotal = total;
@@ -53,8 +76,19 @@ export default function CatalogCartClient({ slug }) {
         return "";
     };
 
-    const handleCheckout = async () => {
-        const pError = validatePhone(phoneNumber);
+    const handleCheckout = async (overridePhone, overrideNotes) => {
+        if (!user) {
+            sessionStorage.setItem('pending_catalog_checkout', 'true');
+            sessionStorage.setItem('pending_catalog_phone', phoneNumber);
+            sessionStorage.setItem('pending_catalog_notes', notes);
+            openSignIn({ mode: 'modal' });
+            return;
+        }
+
+        const phoneToUse = overridePhone || phoneNumber;
+        const notesToUse = overrideNotes || notes;
+
+        const pError = validatePhone(phoneToUse);
         if (pError) { setPhoneError(pError); toast.error(pError); return; }
         if (!catalogInfo) { toast.error("שגיאה בטעינת הקטלוג"); return; }
 
@@ -66,9 +100,9 @@ export default function CatalogCartClient({ slug }) {
                 body: JSON.stringify({
                     items: catalogCartItems,
                     total: effectiveTotal,
-                    notes,
+                    notes: notesToUse,
                     deliveryMethod: isSelfPickup ? 'self_pickup' : 'mail',
-                    phoneNumber: phoneNumber.replace(/\D/g, ''),
+                    phoneNumber: phoneToUse.replace(/\D/g, ''),
                     activeVendorId: slug
                 })
             });

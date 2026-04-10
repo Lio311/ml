@@ -2,7 +2,7 @@
 
 import { useCart } from "../context/CartContext";
 import Link from "next/link";
-import { useUser } from "@clerk/nextjs";
+import { useUser, useClerk } from "@clerk/nextjs";
 import { useState, useEffect, useRef, useMemo } from "react";
 import confetti from 'canvas-confetti';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -30,6 +30,7 @@ export default function CartClient() {
     } = useCart();
 
     const { user, isLoaded } = useUser();
+    const { openSignIn } = useClerk();
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [upsellProducts, setUpsellProducts] = useState([]);
     const prevSamplesCount = useRef(freeSamplesCount);
@@ -164,9 +165,36 @@ export default function CartClient() {
         }
         prevSamplesCount.current = freeSamplesCount;
     }, [freeSamplesCount]);
+    
+    // Auto-checkout after login
+    useEffect(() => {
+        const shouldCheckout = sessionStorage.getItem('pending_checkout');
+        if (isLoaded && user && shouldCheckout === 'true') {
+            const savedPhone = sessionStorage.getItem('pending_phone');
+            const savedNotes = sessionStorage.getItem('pending_notes');
+            
+            sessionStorage.removeItem('pending_checkout');
+            sessionStorage.removeItem('pending_phone');
+            sessionStorage.removeItem('pending_notes');
+            
+            // Trigger checkout with saved values
+            handleCheckout(savedPhone, savedNotes);
+        }
+    }, [isLoaded, user]);
 
-    const handleCheckout = async () => {
-        const cleanPhone = phoneNumber.replace(/\D/g, '');
+    const handleCheckout = async (overridePhone, overrideNotes) => {
+        if (!user) {
+            sessionStorage.setItem('pending_checkout', 'true');
+            sessionStorage.setItem('pending_phone', phoneNumber);
+            sessionStorage.setItem('pending_notes', notes);
+            openSignIn({ mode: 'modal' });
+            return;
+        }
+
+        const phoneToUse = overridePhone || phoneNumber;
+        const notesToUse = overrideNotes || notes;
+
+        const cleanPhone = phoneToUse.replace(/\D/g, '');
         if (cleanPhone.length !== 10 || !cleanPhone.startsWith('05')) {
             setPhoneError("מספר טלפון לא תקין");
             return;
@@ -177,7 +205,7 @@ export default function CartClient() {
             const body = {
                 items: activeItems,
                 total,
-                notes,
+                notes: notesToUse,
                 phoneNumber: cleanPhone,
                 activeVendorId,
                 freeSamples: freeSamplesCount,
