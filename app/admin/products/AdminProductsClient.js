@@ -63,7 +63,8 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
             country: product.country || '',
             active: product.active ?? true,
             discount_percentage: product.discount_percentage || 0,
-            discount_sizes: product.discount_sizes || []
+            discount_sizes: product.discount_sizes || [],
+            discount_end_date: product.discount_end_date || ''
         });
     };
 
@@ -94,7 +95,8 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
             country: '',
             active: true,
             discount_percentage: 0,
-            discount_sizes: []
+            discount_sizes: [],
+            discount_end_date: ''
         });
     };
 
@@ -811,7 +813,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                             <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
                                             ניהול מבצע (Promotion)
                                         </h4>
-                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                                             <div>
                                                 <label className="text-[9px] font-black text-green-700 uppercase tracking-widest block mb-1 opacity-70">אחוז הנחה (%)</label>
                                                 <input
@@ -824,8 +826,18 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                                 />
                                             </div>
                                             <div>
+                                                <label className="text-[9px] font-black text-green-700 uppercase tracking-widest block mb-1 opacity-70">תאריך סיום (אופציונלי):</label>
+                                                <input
+                                                    type="datetime-local"
+                                                    value={editForm.discount_end_date ? new Date(editForm.discount_end_date).toISOString().slice(0, 16) : ''}
+                                                    onChange={e => setEditForm({ ...editForm, discount_end_date: e.target.value })}
+                                                    className="border-2 border-green-100 rounded-xl p-2 w-full bg-white focus:border-green-600 outline-none transition-all font-black text-sm text-green-600"
+                                                />
+                                                <p className="text-[8px] text-green-500 mt-1">השאר ריק למבצע ללא הגבלת זמן</p>
+                                            </div>
+                                            <div>
                                                 <label className="text-[9px] font-black text-green-700 uppercase tracking-widest block mb-1 opacity-70">גדלים במבצע:</label>
-                                                <div className="flex gap-3 mt-1.5">
+                                                <div className="flex flex-wrap gap-2 mt-1.5">
                                                     {['2ml', '5ml', '10ml'].map(size => (
                                                         <label key={size} className="flex items-center gap-2 cursor-pointer group bg-white/50 p-1.5 px-3 rounded-lg border border-green-50 hover:bg-white transition-colors">
                                                             <input

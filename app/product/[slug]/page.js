@@ -73,7 +73,7 @@ export async function generateMetadata(props) {
         // Lean query for metadata
         const res = await pool.query(`
             SELECT id, slug, brand, brand_he, model, model_he, name, name_he, description, description_he, image_url, category, stock,
-                   discount_percentage, discount_sizes
+                   discount_percentage, discount_sizes, discount_end_date
             FROM products 
             WHERE slug = $1 OR id::text = $1 
             LIMIT 1
@@ -160,7 +160,7 @@ export default async function ProductPage(props) {
                    p.description, p.description_he, p.description_en, p.image_url, p.category, p.category_en, 
                    p.stock, p.top_notes, p.top_notes_en, p.middle_notes, p.middle_notes_en, p.base_notes, p.base_notes_en, 
                    p.price_2ml, p.price_5ml, p.price_10ml, p.seasons, p.seasons_en, p.country, p.country_en, 
-                   p.perfumers, p.perfumers_en, p.discount_percentage, p.discount_sizes, b.logo_url, b.title_en, b.description_en as brand_description_en, 
+                   p.perfumers, p.perfumers_en, p.discount_percentage, p.discount_sizes, p.discount_end_date, b.logo_url, b.title_en, b.description_en as brand_description_en, 
                    b.highlights_en as brand_highlights_en, b.perfumer_en as brand_perfumer_en,
                    (SELECT AVG(rating) FROM reviews WHERE product_id = p.id) as average_rating,
                    (SELECT COUNT(*) FROM reviews WHERE product_id = p.id) as review_count
@@ -218,7 +218,7 @@ export default async function ProductPage(props) {
 
         const relatedRes = await pool.query(`
             SELECT id, slug, name, brand, brand_he, model, model_he, image_url, price_2ml, price_5ml, price_10ml, stock, category, created_at,
-                   discount_percentage, discount_sizes
+                   discount_percentage, discount_sizes, discount_end_date
             FROM products 
             WHERE active = true AND id != $1
             AND (
@@ -242,7 +242,7 @@ export default async function ProductPage(props) {
             const excludeIds = [product.id, ...related.map(r => r.id)];
             const fillRes = await pool.query(`
             SELECT id, slug, name, brand, brand_he, model, model_he, image_url, price_2ml, price_5ml, price_10ml, stock, category, created_at,
-                   discount_percentage, discount_sizes
+                   discount_percentage, discount_sizes, discount_end_date
             FROM products 
             WHERE active = true AND id != ALL($1)
             ORDER BY RANDOM()
@@ -385,7 +385,31 @@ export default async function ProductPage(props) {
                         <div className="text-6xl text-gray-300">🧴</div>
                     )}
 
-                    <div className="absolute top-4 start-4 z-10">
+                     {(() => {
+                        const isExpired = product.discount_end_date && new Date(product.discount_end_date) < new Date();
+                        const hasDiscount = product.discount_percentage > 0 && !isExpired;
+                        if (hasDiscount) {
+                            return (
+                                <div className="absolute top-4 start-4 z-20 flex flex-col items-start translate-x-2 translate-y-2">
+                                    <div className="bg-green-600 text-white text-xs font-black px-4 py-1.5 rounded-full shadow-xl border-2 border-green-500/30 animate-pulse flex items-center gap-2 backdrop-blur-md">
+                                        <span className="w-2 h-2 rounded-full bg-white animate-ping"></span>
+                                        {locale === 'he' ? `${product.discount_percentage}% הנחה` : `${product.discount_percentage}% OFF`}
+                                    </div>
+                                    {product.discount_end_date && (
+                                        <div className="mt-2 bg-black/70 backdrop-blur-lg text-white text-[9px] px-3 py-1 rounded-full uppercase tracking-widest font-black shadow-lg">
+                                            {locale === 'he' ? 'זמן מוגבל' : 'LIMITED TIME Offer'}
+                                        </div>
+                                    )}
+                                </div>
+                            );
+                        }
+                        return null;
+                    })()}
+
+                    <div className={`absolute z-30 transition-all duration-500 ${(() => {
+                        const isExpired = product.discount_end_date && new Date(product.discount_end_date) < new Date();
+                        return product.discount_percentage > 0 && !isExpired;
+                    })() ? 'top-24 start-4' : 'top-4 start-4'}`}>
                         <WishlistHeart productId={product.id} />
                     </div>
 

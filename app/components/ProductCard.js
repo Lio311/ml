@@ -39,9 +39,15 @@ export default function ProductCard({ product }) {
         return () => clearTimeout(timer);
     }, [added]);
 
+    const isDiscountActive = (size) => {
+        if (!product.discount_percentage || product.discount_percentage <= 0) return false;
+        if (size && !(product.discount_sizes || []).includes(`${size}ml`)) return false;
+        if (product.discount_end_date && new Date(product.discount_end_date) < new Date()) return false;
+        return true;
+    };
+
     const getDiscountedPrice = (size, originalPrice) => {
-        const hasDiscount = product.discount_percentage > 0 && (product.discount_sizes || []).includes(`${size}ml`);
-        if (!hasDiscount) return originalPrice;
+        if (!isDiscountActive(size)) return originalPrice;
         return Math.round((originalPrice * (1 - product.discount_percentage / 100)) / 5) * 5;
     };
 
@@ -123,9 +129,17 @@ export default function ProductCard({ product }) {
                     </div>
                 )}
 
-            {product.discount_percentage > 0 && (
-                <div className="absolute top-2 end-2 z-10 text-[10px] leading-3 font-black bg-green-600 text-white px-2 py-1 rounded shadow-sm text-center animate-pulse">
-                    {locale === 'he' ? `${product.discount_percentage}% הנחה` : `${product.discount_percentage}% OFF`}
+            {isDiscountActive() && (
+                <div className="absolute top-2 end-2 z-20 flex flex-col items-center">
+                    <div className="bg-green-600 text-white text-[10px] font-black px-2.5 py-1 rounded-full shadow-lg border border-green-500/50 animate-pulse flex items-center gap-1.5 backdrop-blur-sm">
+                        <span className="w-1.5 h-1.5 rounded-full bg-white animate-ping"></span>
+                        {locale === 'he' ? `${product.discount_percentage}% הנחה` : `${product.discount_percentage}% OFF`}
+                    </div>
+                    {product.discount_end_date && (
+                        <div className="mt-1 bg-black/60 backdrop-blur-md text-white text-[7px] px-1.5 py-0.5 rounded-full uppercase tracking-tighter opacity-80">
+                            {locale === 'he' ? 'זמן מוגבל' : 'LIMITED TIME'}
+                        </div>
+                    )}
                 </div>
             )}
 

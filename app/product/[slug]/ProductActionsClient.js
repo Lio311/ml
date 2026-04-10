@@ -57,9 +57,15 @@ export default function ProductActionsClient({ product }) {
         }
     }, [isSignedIn, product]);
 
+    const isDiscountActive = (size) => {
+        if (!product.discount_percentage || product.discount_percentage <= 0) return false;
+        if (size && !(product.discount_sizes || []).includes(`${size}ml`)) return false;
+        if (product.discount_end_date && new Date(product.discount_end_date) < new Date()) return false;
+        return true;
+    };
+
     const getDiscountedPrice = (size, originalPrice) => {
-        const hasDiscount = product.discount_percentage > 0 && (product.discount_sizes || []).includes(`${size}ml`);
-        if (!hasDiscount) return originalPrice;
+        if (!isDiscountActive(size)) return originalPrice;
         return Math.round((originalPrice * (1 - product.discount_percentage / 100)) / 5) * 5;
     };
 

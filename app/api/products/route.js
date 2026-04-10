@@ -21,10 +21,7 @@ export async function GET(req) {
         const client = await pool.connect();
         try {
             let query = `
-                SELECT id, brand, model, price_2ml, price_5ml, price_10ml, image_url, 
-                       category, description, stock, top_notes, middle_notes, base_notes, 
-                       name, in_lottery, name_he, brand_he, model_he, original_size, created_at,
-                       seasons, perfumers, country, discount_percentage, discount_sizes
+                       seasons, perfumers, country, discount_percentage, discount_sizes, discount_end_date
                 FROM products WHERE active = true
             `;
             const values = [];
@@ -64,7 +61,7 @@ export async function PUT(req) {
             category, description, stock, top_notes, middle_notes, base_notes,
             in_lottery, name_he, brand_he, model_he, cost_price, original_size,
             seasons, perfumers, country, active,
-            discount_percentage, discount_sizes
+            discount_percentage, discount_sizes, discount_end_date
         } = body;
 
         const client = await pool.connect();
@@ -87,7 +84,7 @@ export async function PUT(req) {
                      category_en = $24, description_en = $25, top_notes_en = $26,
                      middle_notes_en = $27, base_notes_en = $28, seasons_en = $29,
                      active = $30,
-                     discount_percentage = $31, discount_sizes = $32
+                     discount_percentage = $31, discount_sizes = $32, discount_end_date = $33
                  WHERE id = $23`,
                 [
                     brand, model, price_2ml, price_5ml, price_10ml, image_url,
@@ -96,7 +93,7 @@ export async function PUT(req) {
                     cost_price, original_size, seasons, perfumers, country, id,
                     category_en, description_en, top_notes_en, middle_notes_en, base_notes_en, seasons_en,
                     active ?? true,
-                    discount_percentage || 0, discount_sizes || []
+                    discount_percentage || 0, discount_sizes || [], discount_end_date || null
                 ]
             );
 
@@ -145,7 +142,7 @@ export async function POST(req) {
             category, description, stock, top_notes, middle_notes, base_notes,
             in_lottery, name_he, brand_he, model_he, cost_price, original_size,
             seasons, perfumers, country, active,
-            discount_percentage, discount_sizes
+            discount_percentage, discount_sizes, discount_end_date
         } = body;
 
         const client = await pool.connect();
@@ -166,8 +163,8 @@ export async function POST(req) {
                    name_he, brand_he, model_he, cost_price, original_size,
                    seasons, perfumers, country,
                    category_en, description_en, top_notes_en, middle_notes_en, base_notes_en, seasons_en, slug, active,
-                   discount_percentage, discount_sizes) 
-                  VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30, $31, $32) 
+                   discount_percentage, discount_sizes, discount_end_date) 
+                  VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30, $31, $32, $33) 
                  RETURNING id`,
                 [
                     brand + ' ' + model, category || 'General', brand, model, price_2ml, price_5ml, price_10ml, image_url,
@@ -175,7 +172,7 @@ export async function POST(req) {
                     name_he, brand_he, model_he, cost_price, original_size,
                     seasons, perfumers, country,
                     category_en, description_en, top_notes_en, middle_notes_en, base_notes_en, seasons_en, newSlug, active ?? true,
-                    discount_percentage || 0, discount_sizes || []
+                    discount_percentage || 0, discount_sizes || [], discount_end_date || null
                 ]
             );
 
