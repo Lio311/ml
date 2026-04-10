@@ -1,5 +1,5 @@
 import pool from '../../lib/db';
-import Image from 'next/image';
+import Image from "@/app/components/CImage";
 import ProductCard from '../../components/ProductCard';
 import Link from 'next/link';
 import { cookies } from 'next/headers';

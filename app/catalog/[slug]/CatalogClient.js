@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
-import Image from "next/image";
+import Image from "@/app/components/CImage";
 import toast from "react-hot-toast";
 import { useCart } from "../../context/CartContext";
 import CustomDropdown from "../../components/ui/CustomDropdown";

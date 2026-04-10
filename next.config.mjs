@@ -203,6 +203,7 @@ const nextConfig = {
         hostname: 'img.clerk.com',
       },
     ],
+    unoptimized: process.env.NEXT_PUBLIC_DISABLE_IMAGE_OPTIMIZATION === 'true',
     formats: ['image/avif', 'image/webp'],
   },
   async redirects() {

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Image from "next/image";
+import Image from "@/app/components/CImage";
 import AdminFilterBar from "@/app/components/admin/AdminFilterBar";
 import { useUser } from "@clerk/nextjs";
 import toast from 'react-hot-toast';

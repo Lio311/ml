@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Image from "next/image";
+import Image from "@/app/components/CImage";
 import toast from "react-hot-toast";
 import { Bell, Package, Search, Loader2, CheckCircle, AlertCircle, XCircle } from "lucide-react";
 import { useRouter } from "next/navigation";

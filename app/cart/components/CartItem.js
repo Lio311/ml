@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+import Image from "@/app/components/CImage";
 import Link from "next/link";
 import { useLanguage } from "../../context/LanguageContext";
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, AnimatePresence } from 'framer-motion';
-import Image from 'next/image';
+import Image from "@/app/components/CImage";
 import Link from 'next/link';
 import { X } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';

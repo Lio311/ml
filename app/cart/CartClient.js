@@ -9,7 +9,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import LuckyWheel from "../components/LuckyWheel";
 import toast from 'react-hot-toast';
 import { useLanguage } from "../context/LanguageContext";
-import Image from "next/image";
+import Image from "@/app/components/CImage";
 
 // Modular Components
 import CartItem from "./components/CartItem";
