@@ -5,16 +5,30 @@ import { recordAuditLog } from '../../../lib/audit';
 
 export const dynamic = 'force-dynamic';
 
-export async function GET() {
+export async function GET(request) {
+    const { searchParams } = new URL(request.url);
+    const query = searchParams.get('q');
+
     const client = await pool.connect();
     try {
         console.log("Fetching users from Local DB...");
 
-        const res = await client.query(`
+        let sql = `
             SELECT id, first_name, last_name, email, role, created_at 
             FROM users 
-            ORDER BY created_at DESC
-        `);
+        `;
+        let params = [];
+
+        if (query) {
+            sql += `
+                WHERE (first_name ILIKE $1 OR last_name ILIKE $1 OR email ILIKE $1)
+            `;
+            params.push(`%${query}%`);
+        }
+
+        sql += ` ORDER BY created_at DESC `;
+        
+        const res = await client.query(sql, params);
 
         const users = res.rows.map(user => ({
             id: user.id,

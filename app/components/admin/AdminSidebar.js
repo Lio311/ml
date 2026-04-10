@@ -40,6 +40,7 @@ export default function AdminSidebar({ role = 'customer' }) {
                 { href: "/admin", label: "דשבורד", icon: "🏠", roles: ['admin', 'deputy'] },
                 { href: "/admin/inbox", label: "תיבת דואר", icon: "💬", roles: ['admin', 'deputy'] },
                 { href: "/admin/orders", label: "הזמנות", icon: "📦", roles: ['admin', 'deputy', 'warehouse'] },
+                { href: "/admin/phone-order", label: "הזמנה טלפונית", icon: "📞", roles: ['admin', 'deputy'] },
                 { href: "/admin/users", label: "משתמשים", icon: "👥", roles: ['admin', 'deputy'] },
                 { href: "/admin/audit-logs", label: "יומן פעולות", icon: "📜", roles: ['admin'] },
                 { href: "/admin/email-logs", label: "יומן מיילים", icon: "📧", roles: ['admin'] },
