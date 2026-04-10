@@ -104,12 +104,28 @@ export default function PhoneOrderClient() {
     
     const total = Math.max(0, subtotal - discountAmount + shippingPrice);
 
+    // -- Helpers --
+    const getDiscountedPrice = (product, size) => {
+        if (!product) return 0;
+        const originalPrice = Number(product[`price_${size}ml`]);
+        if (!originalPrice) return 0;
+
+        const sizeStr = `${size}ml`;
+        const hasDiscount = product.discount_percentage > 0 && (product.discount_sizes || []).includes(sizeStr);
+        
+        // Optional: check discount_end_date if you want to be super strict
+        if (product.discount_end_date && new Date(product.discount_end_date) < new Date()) {
+            return originalPrice;
+        }
+
+        if (!hasDiscount) return originalPrice;
+        // Match site rounding logic: round to nearest 5
+        return Math.round((originalPrice * (1 - product.discount_percentage / 100)) / 5) * 5;
+    };
+
     // -- Actions --
     const handleAddProduct = (product, size) => {
-        const sizePrice = product[`price_${size}ml`];
-        
-        // Handle discounts for specific sizes if available in product data
-        // For simplicity in admin, we trust the database price.
+        const discountedPrice = getDiscountedPrice(product, size);
         
         const cartItem = {
             id: product.id,
@@ -117,7 +133,8 @@ export default function PhoneOrderClient() {
             brand: product.brand,
             image: product.image,
             size: size,
-            price: sizePrice,
+            price: discountedPrice,
+            originalPrice: Number(product[`price_${size}ml`]),
             quantity: 1,
             itemKey: `${product.id}-${size}`
         };
@@ -572,23 +589,39 @@ export default function PhoneOrderClient() {
                                     {[2, 5, 10].map(size => {
                                         const price = showProductModal[`price_${size}ml`];
                                         if (!price) return null;
-                                        
+                                        const discountedPrice = getDiscountedPrice(showProductModal, size);
+                                        const isDiscounted = discountedPrice !== Number(price);
+
                                         return (
                                             <button 
                                                 key={size}
                                                 onClick={() => handleAddProduct(showProductModal, size)}
-                                                className="group flex items-center justify-between p-5 rounded-2xl border-2 border-gray-100 hover:border-blue-600 hover:bg-blue-50 transition-all text-right"
+                                                className={`group flex items-center justify-between p-5 rounded-2xl border-2 transition-all text-right relative ${isDiscounted ? 'border-red-100 bg-red-50/30 hover:border-red-600 hover:bg-red-50' : 'border-gray-100 hover:border-blue-600 hover:bg-blue-50'}`}
                                             >
+                                                {isDiscounted && (
+                                                    <div className="absolute -top-2 -left-2 bg-red-600 text-white text-[10px] font-black px-2 py-0.5 rounded shadow-sm z-10 animate-pulse">
+                                                        SALE
+                                                    </div>
+                                                )}
                                                 <div className="flex items-center gap-4">
-                                                    <div className="w-10 h-10 rounded-xl bg-white border border-gray-100 flex items-center justify-center font-bold text-gray-900 group-hover:border-blue-200">
+                                                    <div className={`w-10 h-10 rounded-xl border flex items-center justify-center font-bold transition-colors ${isDiscounted ? 'bg-white border-red-200 text-red-600 group-hover:border-red-400' : 'bg-white border-gray-100 text-gray-900 group-hover:border-blue-200'}`}>
                                                         {size}
                                                     </div>
                                                     <div>
-                                                        <div className="font-black text-gray-900">{size}ml</div>
-                                                        <div className="text-xs text-gray-500 uppercase font-black tracking-widest">נסיון / דוגמית</div>
+                                                        <div className={`font-black ${isDiscounted ? 'text-red-700' : 'text-gray-900'}`}>{size}ml</div>
+                                                        <div className="text-xs text-gray-500 uppercase font-black tracking-widest">דוגמית</div>
                                                     </div>
                                                 </div>
-                                                <div className="text-xl font-black text-blue-600">₪{price}</div>
+                                                <div className="flex flex-col items-end">
+                                                    {isDiscounted ? (
+                                                        <>
+                                                            <div className="text-[10px] text-gray-400 line-through leading-none mb-1">₪{price}</div>
+                                                            <div className="text-xl font-black text-red-600">₪{discountedPrice}</div>
+                                                        </>
+                                                    ) : (
+                                                        <div className="text-xl font-black text-blue-600">₪{price}</div>
+                                                    )}
+                                                </div>
                                             </button>
                                         );
                                     })}

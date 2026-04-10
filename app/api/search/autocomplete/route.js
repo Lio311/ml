@@ -20,7 +20,8 @@ export async function GET(req) {
             // Case insensitive (ILIKE)
             // Limit to 5 results for dropdown
             const res = await client.query(`
-                SELECT id, name, brand, model, image_url, price_2ml, price_5ml, price_10ml, stock, slug
+                SELECT id, name, brand, model, image_url, price_2ml, price_5ml, price_10ml, stock, slug,
+                discount_percentage, discount_sizes, discount_end_date
                 FROM products 
                 WHERE active = true 
                 AND (
@@ -49,6 +50,9 @@ export async function GET(req) {
                 price_2ml: product.price_2ml,
                 price_5ml: product.price_5ml,
                 price_10ml: product.price_10ml,
+                discount_percentage: product.discount_percentage,
+                discount_sizes: product.discount_sizes,
+                discount_end_date: product.discount_end_date,
                 price: Math.min(
                     Number(product.price_2ml) || Infinity,
                     Number(product.price_5ml) || Infinity,
