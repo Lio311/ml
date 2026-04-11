@@ -650,7 +650,7 @@ export default async function AdminDashboard({ searchParams }) {
                         <div className="flex justify-between items-center border-b border-gray-50 pb-2">
                             <span className="text-orange-600 font-bold text-xs md:text-sm">עלויות בשמים</span>
                             <div className="text-right">
-                                <span className="text-lg md:text-xl font-bold text-orange-700">
+                                <span className="text-lg md:text-xl font-bold text-orange-600">
                                     <span dir="ltr" className="inline-block">{kpis.monthlyCOGS ? kpis.monthlyCOGS.toLocaleString() : '0'}</span> ₪
                                 </span>
                             </div>
