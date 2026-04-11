@@ -190,9 +190,10 @@ export async function POST(req) {
                     console.error("Failed to send review reward email:", e);
                 }
             }
-
-            return NextResponse.json(insertedReview);
         }
+
+        return NextResponse.json(insertedReview);
+    }
 
         // Mode 2: Simple product rating without orderId
         if (productId) {
