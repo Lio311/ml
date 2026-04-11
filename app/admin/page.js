@@ -93,7 +93,7 @@ export default async function AdminDashboard({ searchParams }) {
         recentOrders: [],
         bottleInventory: [],
         recentCoupons: [],
-        samplesBreakdown: { '2': 0, '5': 0, '10': 0, '11': 0 },
+        samplesBreakdown: { '2': 0, '5': 0, '10': 0 },
         totalExpenses: 0,
         monthlyVisits: 0
     };
@@ -154,7 +154,7 @@ export default async function AdminDashboard({ searchParams }) {
                  AND (
                     item->>'name' LIKE '%דוגמיות%' 
                     OR item->>'name' ILIKE '%sample%'
-                    OR item->>'size' IN ('2', '5', '10', '11')
+                    OR item->>'size' IN ('2', '5', '10')
                  )
             `),
             // 5. Samples Breakdown
@@ -166,7 +166,7 @@ export default async function AdminDashboard({ searchParams }) {
                  AND (
                     item->>'name' LIKE '%דוגמיות%' 
                     OR item->>'name' ILIKE '%sample%'
-                    OR item->>'size' IN ('2', '5', '10', '11')
+                    OR item->>'size' IN ('2', '5', '10')
                  )
                  GROUP BY size
             `),
@@ -529,7 +529,7 @@ export default async function AdminDashboard({ searchParams }) {
 
         // Inventory Forecast Logic (Sync)
         try {
-            const sizeConsumption = { '2': 0, '5': 0, '10': 0, '11': 0 };
+            const sizeConsumption = { '2': 0, '5': 0, '10': 0 };
             sanitizedLast30Days.forEach(order => {
                 const items = typeof order.items === 'string' ? JSON.parse(order.items) : order.items;
                 items.forEach(item => {
@@ -695,9 +695,9 @@ export default async function AdminDashboard({ searchParams }) {
                     </div>
 
                     <div className="grid grid-cols-2 gap-2">
-                        {kpis.bottleInventory && kpis.bottleInventory.map(item => {
+                        {kpis.bottleInventory && kpis.bottleInventory.filter(item => item.size !== 11).map(item => {
                             const qty = parseInt(item.quantity || 0);
-                            const sizeLabel = item.size === 11 ? '10 מ"ל יוקרתי' : `${item.size} מ"ל`;
+                            const sizeLabel = `${item.size} מ"ל`;
                             
                             // 3-tier color logic: 0-10 Red, 10-20 Orange, 20+ Green
                             let theme = '';
@@ -745,13 +745,9 @@ export default async function AdminDashboard({ searchParams }) {
                             <span className="text-[10px] text-pink-600 font-bold mb-1">5 מ"ל</span>
                             <span className="font-black text-base text-pink-800 leading-none">{kpis.samplesBreakdown['5']}</span>
                         </div>
-                        <div className="flex flex-col items-center bg-blue-50/50 p-2 rounded-xl border border-blue-100">
+                        <div className="flex flex-col items-center bg-blue-50/50 p-2 rounded-xl border border-blue-100 col-span-2">
                             <span className="text-[10px] text-blue-600 font-bold mb-1">10 מ"ל</span>
                             <span className="font-black text-base text-blue-800 leading-none">{kpis.samplesBreakdown['10']}</span>
-                        </div>
-                        <div className="flex flex-col items-center bg-amber-50/50 p-2 rounded-xl border border-amber-100">
-                            <span className="text-[10px] text-amber-600 font-bold mb-1">10 מ"ל יוקרתי</span>
-                            <span className="font-black text-base text-amber-800 leading-none">{kpis.samplesBreakdown['11']}</span>
                         </div>
                     </div>
                 </div>
