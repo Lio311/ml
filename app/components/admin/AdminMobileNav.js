@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X, Home, Users, Package, CreditCard, Inbox, ShoppingBag, Tag, Ticket, Dice5, Library, Map, Store, ClipboardList, LogOut, MessageSquare, Star, History, Bot, Mail, Bell } from "lucide-react";
+import { Menu, X, Home, Users, Package, CreditCard, Inbox, ShoppingBag, Tag, Ticket, Dice5, Library, Map, Store, ClipboardList, LogOut, MessageSquare, Star, History, Bot, Mail, Bell, Phone } from "lucide-react";
 import { SignOutButton } from "@clerk/nextjs";
 
 export default function AdminMobileNav({ role = 'customer' }) {
@@ -44,6 +44,7 @@ export default function AdminMobileNav({ role = 'customer' }) {
                 { href: "/admin", label: "דשבורד", icon: Home, roles: ['admin', 'deputy'] },
                 { href: "/admin/inbox", label: "תיבת דואר", icon: MessageSquare, roles: ['admin', 'deputy'] },
                 { href: "/admin/orders", label: "הזמנות", icon: ShoppingBag, roles: ['admin', 'deputy', 'warehouse'] },
+                { href: "/admin/phone-order", label: "הזמנה טלפונית", icon: Phone, roles: ['admin', 'deputy'] },
                 { href: "/admin/users", label: "משתמשים", icon: Users, roles: ['admin', 'deputy'] },
                 { href: "/admin/audit-logs", label: "יומן פעולות", icon: History, roles: ['admin'] },
                 { href: "/admin/email-logs", label: "יומן מיילים", icon: Mail, roles: ['admin'] },

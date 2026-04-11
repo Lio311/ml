@@ -175,18 +175,18 @@ export default function PhoneOrderClient() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ 
                     code: couponCode, 
-                    email: customer?.email,
-                    total: subtotal,
+                    userEmail: customer?.email,
+                    subtotal: subtotal,
                     items: cart.map(i => ({ id: i.id, size: i.size }))
                 })
             });
             const data = await res.json();
-            if (res.ok) {
+            if (res.ok && data.success) {
                 setCouponDiscount({ 
-                    percent: data.discount_percent, 
+                    percent: data.coupon.discount_value, 
                     code: couponCode 
                 });
-                toast.success(`קופון הופעל: ${data.discount_percent}% הנחה`);
+                toast.success(`קופון הופעל: ${data.coupon.discount_value}% הנחה`);
             } else {
                 toast.error(data.error || 'קופון לא תקף');
             }
