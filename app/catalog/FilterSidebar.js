@@ -9,14 +9,15 @@ import { useLanguage } from '../context/LanguageContext';
 
 const VIRTUAL_CATEGORIES = ['בוטיק', 'נישה'];
 
-export default function FilterSidebar({ allBrands, allCategories, allCountries, allPerfumers, minPrice, maxPrice }) {
+export default function FilterSidebar({ allBrands = [], allCategories = [], allCountries = [], allPerfumers = [], allNotes = [], minPrice, maxPrice, basePath = '/catalog' }) {
     const { t, dir, locale } = useLanguage();
+    const router = useRouter();
+    const searchParams = useSearchParams();
 
     // Translate category names from Hebrew DB values to the current locale
     const translateCategory = (hebrewCat) => {
         if (locale === 'he') return hebrewCat;
         const mapped = t(`category_map.${hebrewCat}`);
-        // If t() returns the key itself (not found), fall back to the original
         return mapped.startsWith('category_map.') ? hebrewCat : mapped;
     };
     
@@ -27,19 +28,10 @@ export default function FilterSidebar({ allBrands, allCategories, allCountries, 
         { value: 'unisex', label: t('common.unisex'), icon: <UserRound className="w-4 h-4 text-blue-500" /> },
     ];
 
-    // Merge virtual categories (remove duplicates just in case)
     const combinedCategories = Array.from(new Set([...VIRTUAL_CATEGORIES, ...allCategories]));
-    const router = useRouter();
-    const searchParams = useSearchParams();
 
     // Parse current filters from URL
-    const getSelected = (key) => {
-        const val = searchParams.getAll(key);
-        // Note: in Next.js app router client 'useSearchParams', .getAll() returns array of strings
-        // But we need to handle comma separated if we used that before. 
-        // Let's stick to standard array params `?brand=A&brand=B`.
-        return val;
-    };
+    const getSelected = (key) => searchParams.getAll(key);
 
     const ABSOLUTE_MAX = 2000;
     const ABSOLUTE_MIN = 0;
@@ -49,8 +41,10 @@ export default function FilterSidebar({ allBrands, allCategories, allCountries, 
     const [selectedSeasons, setSelectedSeasons] = useState(getSelected('season'));
     const [selectedCountries, setSelectedCountries] = useState(getSelected('country'));
     const [selectedPerfumers, setSelectedPerfumers] = useState(getSelected('perfumer'));
+    const [selectedNotes, setSelectedNotes] = useState(getSelected('note'));
     const [searchTerm, setSearchTerm] = useState(searchParams.get('q') || '');
     const [price, setPrice] = useState(Number(searchParams.get("max")) || ABSOLUTE_MAX);
+    const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
 
     useEffect(() => {
         setSelectedBrands(searchParams.getAll('brand'));
@@ -58,6 +52,7 @@ export default function FilterSidebar({ allBrands, allCategories, allCountries, 
         setSelectedSeasons(searchParams.getAll('season'));
         setSelectedCountries(searchParams.getAll('country'));
         setSelectedPerfumers(searchParams.getAll('perfumer'));
+        setSelectedNotes(searchParams.getAll('note'));
         setSearchTerm(searchParams.get('q') || '');
         setPrice(Number(searchParams.get("max")) || ABSOLUTE_MAX);
     }, [searchParams]);
@@ -68,49 +63,44 @@ export default function FilterSidebar({ allBrands, allCategories, allCountries, 
     };
 
     const toggleBrand = (brand) => {
-        const newBrands = selectedBrands.includes(brand)
-            ? selectedBrands.filter(b => b !== brand)
-            : [...selectedBrands, brand];
+        const newBrands = selectedBrands.includes(brand) ? selectedBrands.filter(b => b !== brand) : [...selectedBrands, brand];
         setSelectedBrands(newBrands);
-        applyFilters({ brand: newBrands, resetPage: true }); // Apply immediately
+        applyFilters({ brand: newBrands, resetPage: true });
     };
 
     const toggleCategory = (cat) => {
-        const newCats = selectedCategories.includes(cat)
-            ? selectedCategories.filter(c => c !== cat)
-            : [...selectedCategories, cat];
+        const newCats = selectedCategories.includes(cat) ? selectedCategories.filter(c => c !== cat) : [...selectedCategories, cat];
         setSelectedCategories(newCats);
         applyFilters({ category: newCats, resetPage: true });
     };
 
     const toggleSeason = (season) => {
-        const newSeasons = selectedSeasons.includes(season)
-            ? selectedSeasons.filter(s => s !== season)
-            : [...selectedSeasons, season];
+        const newSeasons = selectedSeasons.includes(season) ? selectedSeasons.filter(s => s !== season) : [...selectedSeasons, season];
         setSelectedSeasons(newSeasons);
         applyFilters({ season: newSeasons, resetPage: true });
     };
 
     const toggleCountry = (country) => {
-        const newCountries = selectedCountries.includes(country)
-            ? selectedCountries.filter(c => c !== country)
-            : [...selectedCountries, country];
+        const newCountries = selectedCountries.includes(country) ? selectedCountries.filter(c => c !== country) : [...selectedCountries, country];
         setSelectedCountries(newCountries);
         applyFilters({ country: newCountries, resetPage: true });
     };
 
     const togglePerfumer = (perfumer) => {
-        const newPerfumers = selectedPerfumers.includes(perfumer)
-            ? selectedPerfumers.filter(p => p !== perfumer)
-            : [...selectedPerfumers, perfumer];
+        const newPerfumers = selectedPerfumers.includes(perfumer) ? selectedPerfumers.filter(p => p !== perfumer) : [...selectedPerfumers, perfumer];
         setSelectedPerfumers(newPerfumers);
         applyFilters({ perfumer: newPerfumers, resetPage: true });
+    };
+
+    const toggleNote = (note) => {
+        const newNotes = selectedNotes.includes(note) ? selectedNotes.filter(n => n !== note) : [...selectedNotes, note];
+        setSelectedNotes(newNotes);
+        applyFilters({ note: newNotes, resetPage: true });
     };
 
     const applyFilters = (updates) => {
         const params = new URLSearchParams(searchParams.toString());
 
-        // Helper to update array params
         const updateArrayParam = (key, values) => {
             params.delete(key);
             if (values && Array.isArray(values)) {
@@ -126,6 +116,7 @@ export default function FilterSidebar({ allBrands, allCategories, allCountries, 
         if (updates.season !== undefined) updateArrayParam('season', updates.season);
         if (updates.country !== undefined) updateArrayParam('country', updates.country);
         if (updates.perfumer !== undefined) updateArrayParam('perfumer', updates.perfumer);
+        if (updates.note !== undefined) updateArrayParam('note', updates.note);
         if (updates.gender !== undefined) {
             if (updates.gender === null) params.delete('gender');
             else params.set('gender', updates.gender);
@@ -136,39 +127,12 @@ export default function FilterSidebar({ allBrands, allCategories, allCountries, 
         }
         if (updates.resetPage) params.set('page', '1');
 
-        router.push(`/catalog?${params.toString()}`);
+        router.push(`${basePath}?${params.toString()}`);
     };
 
-    // ... existing logic ...
-
-    return (
-        <aside className="w-full md:w-64 space-y-6">
-
-            {/* Search - Always Visible */}
-            <div className={`bg-gray-50 p-4 rounded-lg border ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
-                <h3 className="font-bold mb-4 border-b pb-2">{t('common.search_filter')}</h3>
-                <form onSubmit={handleSearch} className="relative">
-                    <input
-                        type="text"
-                        value={searchTerm}
-                        onChange={(e) => setSearchTerm(e.target.value)}
-                        placeholder={t('common.search_perfume_placeholder')}
-                        className="w-full p-2 ps-10 border rounded text-sm bg-white"
-                        dir={dir}
-                    />
-                    <button
-                        type="submit"
-                        className={`absolute top-1/2 -translate-y-1/2 text-gray-400 hover:text-black transition ${dir === 'rtl' ? 'left-2' : 'right-2'}`}
-                        title={t('common.search_filter')}
-                    >
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
-                            <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
-                        </svg>
-                    </button>
-                </form>
-            </div>
-
-            {/* Gender Filter - Repositioned here */}
+    const filterContent = (
+        <div className="space-y-6">
+            {/* Gender Filter */}
             <div className={`bg-gray-50 p-4 rounded-lg border ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
                 <h3 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-3">{t('common.gender_filter')}</h3>
                 <CustomDropdown 
@@ -214,7 +178,7 @@ export default function FilterSidebar({ allBrands, allCategories, allCountries, 
                 </div>
             </CollapsibleSection>
 
-            {/* Price Filter Slider - Collapsible */}
+            {/* Price Filter Slider */}
             <CollapsibleSection title={`${t('common.price')} (${t('common.up_to')} ${price} ₪)`} initialOpen={true}>
                 <PriceFilter 
                     price={price} 
@@ -225,7 +189,7 @@ export default function FilterSidebar({ allBrands, allCategories, allCountries, 
                 />
             </CollapsibleSection>
 
-            {/* Season Filter - Collapsible */}
+            {/* Season Filter */}
             <CollapsibleSection title={t('common.season_filter')} initialOpen={true}>
                 <div className="grid grid-cols-2 gap-2">
                     {['חורף', 'סתיו', 'אביב', 'קיץ'].map(s => (
@@ -246,6 +210,25 @@ export default function FilterSidebar({ allBrands, allCategories, allCountries, 
                     ))}
                 </div>
             </CollapsibleSection>
+
+            {/* Notes Filter */}
+            {allNotes && allNotes.length > 0 && (
+                <CollapsibleSection title={`${t('common.notes_filter')} (${allNotes.length})`} initialOpen={true}>
+                    <div className={`space-y-2 text-sm max-h-[200px] overflow-y-auto custom-scrollbar ps-2 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
+                        {allNotes.map(n => (
+                            <label key={n} className="flex items-center gap-2 cursor-pointer hover:bg-gray-100 p-1 rounded">
+                                <input
+                                    type="checkbox"
+                                    checked={selectedNotes.includes(n)}
+                                    onChange={() => toggleNote(n)}
+                                    className="w-4 h-4 rounded border-gray-300 text-black focus:ring-black"
+                                />
+                                <span className={selectedNotes.includes(n) ? 'font-bold' : ''}>{n}</span>
+                            </label>
+                        ))}
+                    </div>
+                </CollapsibleSection>
+            )}
 
             {/* Country Filter */}
             {allCountries && allCountries.length > 0 && (
@@ -284,6 +267,67 @@ export default function FilterSidebar({ allBrands, allCategories, allCountries, 
                     </div>
                 </CollapsibleSection>
             )}
+        </div>
+    );
+
+    return (
+        <aside className="w-full md:w-64 space-y-6">
+
+            {/* Search - Always Visible */}
+            <div className={`bg-gray-50 p-4 rounded-lg border ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
+                <h3 className="font-bold mb-4 border-b pb-2">{t('common.search_filter')}</h3>
+                <form onSubmit={handleSearch} className="relative">
+                    <input
+                        type="text"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        placeholder={t('common.search_perfume_placeholder')}
+                        className="w-full p-2 ps-10 border rounded text-sm bg-white"
+                        dir={dir}
+                    />
+                    <button
+                        type="submit"
+                        className={`absolute top-1/2 -translate-y-1/2 text-gray-400 hover:text-black transition ${dir === 'rtl' ? 'left-2' : 'right-2'}`}
+                        title={t('common.search_filter')}
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                        </svg>
+                    </button>
+                </form>
+            </div>
+
+            {/* Desktop Filters */}
+            <div className="hidden md:block">
+                {filterContent}
+            </div>
+
+            {/* Mobile Filters Collapsible */}
+            <div className="md:hidden">
+                <div className="bg-gray-50 rounded-lg border overflow-hidden">
+                    <button
+                        type="button"
+                        onClick={() => setIsMobileFiltersOpen(!isMobileFiltersOpen)}
+                        className={`w-full flex justify-between items-center p-4 font-bold bg-gray-50 hover:bg-gray-100 transition ${dir === 'rtl' ? 'text-right' : 'text-left'}`}
+                    >
+                        <div className="flex items-center gap-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M10.5 6h9.75M10.5 12h9.75M10.5 18h9.75M3 6h.008v.008H3V6Zm0 6h.008v.008H3v-.008Zm0 6h.008v.008H3v-.008Z" />
+                            </svg>
+                            <span>{t('common.filters_title')}</span>
+                        </div>
+                        <span className={`transform transition ${isMobileFiltersOpen ? 'rotate-180' : ''}`}>
+                            ▼
+                        </span>
+                    </button>
+
+                    {isMobileFiltersOpen && (
+                        <div className="p-4 border-t border-gray-100 animate-in slide-in-from-top-2 fade-in duration-200">
+                            {filterContent}
+                        </div>
+                    )}
+                </div>
+            </div>
 
         </aside>
     );
@@ -313,7 +357,7 @@ function CollapsibleSection({ title, children, initialOpen = false }) {
             <button
                 type="button"
                 onClick={() => setIsOpen(!isOpen)}
-                className={`w-full flex justify-between items-center p-4 font-bold bg-gray-50 hover:bg-gray-100 transition ${dir === 'rtl' ? 'text-right' : 'text-left'}`}
+                className={`w-full flex justify-between items-center p-4 font-bold bg-transparent hover:bg-gray-100 transition ${dir === 'rtl' ? 'text-right' : 'text-left'}`}
             >
                 <span>{title}</span>
                 <span className={`transform transition ${isOpen ? 'rotate-180' : ''}`}>

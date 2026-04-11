@@ -68,6 +68,8 @@
         "season_filter": "Season",
         "country_filter": "Country",
         "perfumer_filter": "Perfumer",
+        "notes_filter": "Notes",
+        "filters_title": "Filters",
         "no_products_found": "No matching products found.",
         "clear_all": "Clear All",
         "previous": "Previous",

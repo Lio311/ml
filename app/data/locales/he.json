@@ -73,6 +73,8 @@
         "season_filter": "עונה",
         "country_filter": "מדינה",
         "perfumer_filter": "פרפיומר",
+        "notes_filter": "תווים",
+        "filters_title": "פילטרים",
         "no_products_found": "לא נמצאו מוצרים תואמים.",
         "clear_all": "נקה הכל",
         "previous": "הקודם",

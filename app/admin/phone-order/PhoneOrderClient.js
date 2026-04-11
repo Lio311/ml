@@ -536,7 +536,7 @@ export default function PhoneOrderClient() {
                                 {discountAmount > 0 && (
                                     <div className="flex justify-between text-emerald-400 font-bold">
                                         <span>הנחה ({couponDiscount.percent}%)</span>
-                                        <span>-₪{discountAmount}</span>
+                                        <span dir="ltr">-{discountAmount} ₪</span>
                                     </div>
                                 )}
                                 <div className="flex justify-between text-gray-400 font-medium">

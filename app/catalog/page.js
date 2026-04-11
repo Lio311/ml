@@ -186,6 +186,15 @@ async function getProducts(search, brand, category, minPrice, maxPrice, sort, pa
         }
     }
 
+    if (searchParams?.note) {
+        const notes = Array.isArray(searchParams.note) ? searchParams.note : [searchParams.note];
+        if (notes.length > 0) {
+            const conditions = notes.map((_, i) => `(p.top_notes ILIKE $${params.length + i + 1} OR p.middle_notes ILIKE $${params.length + i + 1} OR p.base_notes ILIKE $${params.length + i + 1})`).join(' OR ');
+            query += ` AND (${conditions})`;
+            params.push(...notes.map(n => `%${n}%`));
+        }
+    }
+
     if (searchParams?.country) {
         const countries = Array.isArray(searchParams.country) ? searchParams.country : [searchParams.country];
         if (countries.length > 0) {
@@ -267,7 +276,10 @@ async function getMetadataOptions() {
         const res = await pool.query(`
             SELECT 
                 array_agg(DISTINCT country) as countries,
-                array_agg(DISTINCT perfumers) as perfumers
+                array_agg(DISTINCT perfumers) as perfumers,
+                array_agg(DISTINCT top_notes) as top_notes,
+                array_agg(DISTINCT middle_notes) as middle_notes,
+                array_agg(DISTINCT base_notes) as base_notes
             FROM products 
             WHERE active = true
         `);
@@ -280,10 +292,18 @@ async function getMetadataOptions() {
         });
         const perfumers = Array.from(perfumersSet).filter(Boolean).sort();
 
-        return { countries, perfumers };
+        const notesSet = new Set();
+        ['top_notes', 'middle_notes', 'base_notes'].forEach(field => {
+            (res.rows[0][field] || []).forEach(nStr => {
+                if (nStr) nStr.split(',').forEach(n => notesSet.add(n.trim()));
+            });
+        });
+        const notes = Array.from(notesSet).filter(Boolean).sort();
+
+        return { countries, perfumers, notes };
     } catch (e) {
         console.error("Error fetching metadata options:", e);
-        return { countries: [], perfumers: [] };
+        return { countries: [], perfumers: [], notes: [] };
     }
 }
 
@@ -343,7 +363,7 @@ export default async function CatalogPage(props) {
     }
     const allBrands = await getBrands();
     const allCategories = await getCategories();
-    const { countries: allCountries, perfumers: allPerfumers } = await getMetadataOptions();
+    const { countries: allCountries, perfumers: allPerfumers, notes: allNotes } = await getMetadataOptions();
 
     const pageTitle = sort === 'bestsellers' ? t('common.bestsellers') : t('common.full_catalog');
 
@@ -362,6 +382,7 @@ export default async function CatalogPage(props) {
                     allCategories={allCategories}
                     allCountries={allCountries}
                     allPerfumers={allPerfumers}
+                    allNotes={allNotes}
                     minPrice={minPrice}
                     maxPrice={maxPrice}
                 />
@@ -424,6 +445,12 @@ export default async function CatalogPage(props) {
                                 {(Array.isArray(searchParams.perfumer) ? searchParams.perfumer : [searchParams.perfumer]).filter(Boolean).map(p => (
                                     <Link key={p} href={getRemoveLink('perfumer', p)} className="bg-black text-white px-2 py-1 rounded flex items-center gap-2 hover:bg-gray-800 transition-colors group">
                                         <span className="font-medium">{t('common.perfumer_filter')}: {p}</span>
+                                        <span className="w-4 h-4 flex items-center justify-center rounded-full bg-white/10 group-hover:bg-white/20 transition-colors text-[14px] leading-none pb-0.5">×</span>
+                                    </Link>
+                                ))}
+                                {(Array.isArray(searchParams.note) ? searchParams.note : [searchParams.note]).filter(Boolean).map(n => (
+                                    <Link key={n} href={getRemoveLink('note', n)} className="bg-black text-white px-2 py-1 rounded flex items-center gap-2 hover:bg-gray-800 transition-colors group">
+                                        <span className="font-medium">{t('common.notes_filter')}: {n}</span>
                                         <span className="w-4 h-4 flex items-center justify-center rounded-full bg-white/10 group-hover:bg-white/20 transition-colors text-[14px] leading-none pb-0.5">×</span>
                                     </Link>
                                 ))}

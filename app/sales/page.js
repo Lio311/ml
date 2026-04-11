@@ -77,6 +77,15 @@ async function getSalesProducts(search, brand, category, minPrice, maxPrice, sor
         }
     }
 
+    if (searchParams?.note) {
+        const notes = Array.isArray(searchParams.note) ? searchParams.note : [searchParams.note];
+        if (notes.length > 0) {
+            const conditions = notes.map((_, i) => `(p.top_notes ILIKE $${params.length + i + 1} OR p.middle_notes ILIKE $${params.length + i + 1} OR p.base_notes ILIKE $${params.length + i + 1})`).join(' OR ');
+            query += ` AND (${conditions})`;
+            params.push(...notes.map(n => `%${n}%`));
+        }
+    }
+
     const countQuery = `SELECT COUNT(*) FROM (${query}) AS total`;
 
     let orderBy = 'p.discount_percentage DESC';
@@ -107,7 +116,10 @@ async function getFilterOptions() {
                 array_agg(DISTINCT brand) as brands,
                 string_agg(category, ',') as all_categories,
                 array_agg(DISTINCT country) as countries,
-                string_agg(perfumers, ',') as all_perfumers
+                string_agg(perfumers, ',') as all_perfumers,
+                string_agg(top_notes, ',') as top_notes,
+                string_agg(middle_notes, ',') as middle_notes,
+                string_agg(base_notes, ',') as base_notes
             FROM products 
             WHERE active = true AND discount_percentage > 0
         `);
@@ -127,9 +139,17 @@ async function getFilterOptions() {
         }
         const perfumers = Array.from(perfumersSet).filter(Boolean).sort();
 
-        return { brands, categories, countries, perfumers };
+        const notesSet = new Set();
+        ['top_notes', 'middle_notes', 'base_notes'].forEach(field => {
+            if (res.rows[0][field]) {
+                res.rows[0][field].split(',').forEach(n => notesSet.add(n.trim()));
+            }
+        });
+        const notes = Array.from(notesSet).filter(Boolean).sort();
+
+        return { brands, categories, countries, perfumers, notes };
     } catch (e) {
-        return { brands: [], categories: [], countries: [], perfumers: [] };
+        return { brands: [], categories: [], countries: [], perfumers: [], notes: [] };
     }
 }
 
@@ -149,8 +169,8 @@ export default async function SalesPage(props) {
     const page = parseInt(searchParams?.page || '1');
 
     const mappedSearch = await mapHebrewQuery(search);
-    const { products, totalPages, totalProducts } = await getSalesProducts(mappedSearch, brand, category, minPrice, maxPrice, sort, page, searchParams);
-    const { brands, categories, countries, perfumers } = await getFilterOptions();
+    const { products, totalPages } = await getSalesProducts(mappedSearch, brand, category, minPrice, maxPrice, sort, page, searchParams);
+    const { brands, categories, countries, perfumers, notes } = await getFilterOptions();
 
     return (
         <div className={`container pt-12 pb-20 ${dir === 'rtl' ? 'text-right' : 'text-left'}`} dir={dir}>
@@ -172,6 +192,7 @@ export default async function SalesPage(props) {
                         allCategories={categories}
                         allCountries={countries}
                         allPerfumers={perfumers}
+                        allNotes={notes}
                         minPrice={minPrice}
                         maxPrice={maxPrice}
                         basePath="/sales"

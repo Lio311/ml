@@ -57,6 +57,10 @@ export const terms_he = [
             { 
                 q: "חוק הגנת הצרכן", 
                 a: "ביטול עסקאות יתבצע בהתאם להוראות חוק הגנת הצרכן. זכות הביטול לא תחול על טובין שיוצרו/נמזגו במיוחד עבור הצרכן (דיקנטים), בשל אופיים המיוחד." 
+            },
+            { 
+                q: "מוצרים פגומים או שבורים", 
+                a: "במקרה של קבלת מוצר שבור או פגום, יינתן החזר כספי או החלפה אך ורק אם הלקוח שלח תמונה ברורה של הנזק לשירות הלקוחות ביום קבלת ההזמנה. ללא דיווח ותמונה ביום המסירה, לא יתאפשר החזר." 
             }
         ]
     },
@@ -134,6 +138,10 @@ export const terms_en = [
             { 
                 q: "Consumer Protection Law", 
                 a: "Cancellation of transactions will be carried out in accordance with the provisions of the Consumer Protection Law. The right of cancellation shall not apply to goods manufactured/poured specifically for the consumer (decants), due to their special nature." 
+            },
+            { 
+                q: "Damaged or Broken Products", 
+                a: "In case of receiving a broken or damaged product, a refund or replacement will be granted only if the customer sends a clear photo of the damage to customer service on the day of delivery. Without a report and photo on the day of delivery, no refund will be issued." 
             }
         ]
     },
