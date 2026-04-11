@@ -130,25 +130,14 @@ export default function CustomDropdown({
             <button
                 type="button"
                 onClick={handleOpen}
+                dir={dir}
                 className={`flex items-center justify-between gap-2 px-4 py-2.5 rounded-2xl font-bold text-sm border transition-all shadow-sm ${getTriggerStyles()} ${fullWidth ? 'w-full' : ''} ${className} active:scale-[0.98] outline-none`}
             >
-                {isRTL ? (
-                    <>
-                        <div className="flex items-center gap-2 truncate">
-                            {selectedOption?.icon}
-                            <span className="truncate">{selectedOption?.label || placeholder}</span>
-                        </div>
-                        <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform duration-300 flex-shrink-0 ${isOpen ? 'rotate-180' : ''}`} />
-                    </>
-                ) : (
-                    <>
-                        <div className="flex items-center gap-2 truncate">
-                            {selectedOption?.icon}
-                            <span className="truncate">{selectedOption?.label || placeholder}</span>
-                        </div>
-                        <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform duration-300 flex-shrink-0 ${isOpen ? 'rotate-180' : ''}`} />
-                    </>
-                )}
+                <div className="flex items-center gap-2 truncate">
+                    {selectedOption?.icon}
+                    <span className="truncate">{selectedOption?.label || placeholder}</span>
+                </div>
+                <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform duration-300 flex-shrink-0 ${isOpen ? 'rotate-180' : ''}`} />
             </button>
 
             {typeof document !== "undefined" && createPortal(menu, document.body)}

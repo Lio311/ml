@@ -20,6 +20,8 @@ const CREATE_TABLE_SQL = `
 
 export async function GET() {
     try {
+        // Ensure table exists
+        await pool.query(CREATE_TABLE_SQL);
         const res = await pool.query('SELECT * FROM bulk_pricing_log ORDER BY created_at DESC LIMIT 50');
         return NextResponse.json({ logs: res.rows });
     } catch (error) {

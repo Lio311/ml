@@ -120,7 +120,7 @@ export default function SmartPricingPage() {
                     <h1 className="text-2xl md:text-3xl font-black text-gray-900">
                         תמחור חכם וגורף
                     </h1>
-                    <p className="text-gray-500 text-sm font-medium mr-12">ניהול מחירים מהיר ומדויק לכל האתר</p>
+                    <p className="text-gray-500 text-sm font-medium">ניהול מחירים מהיר ומדויק לכל האתר</p>
                 </div>
             </div>
 
