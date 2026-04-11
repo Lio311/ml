@@ -91,7 +91,7 @@ export async function POST(req) {
                         const newVisiblePrice = Math.max(0, currentVisiblePrice + Number(amount));
                         const newBasePrice = discFactor > 0 ? (newVisiblePrice / discFactor) : newVisiblePrice;
                         
-                        updates[priceCol] = Math.round(newBasePrice * 100) / 100; // Round to 2 decimals
+                        updates[priceCol] = Math.round(newBasePrice);
                     }
                 });
 
