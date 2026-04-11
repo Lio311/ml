@@ -191,7 +191,8 @@ export default function CartClient() {
                 phoneNumber: cleanPhone,
                 activeVendorId,
                 freeSamples: freeSamplesCount,
-                deliveryMethod: isSelfPickup ? 'self_pickup' : 'mail'
+                deliveryMethod: isSelfPickup ? 'self_pickup' : 'mail',
+                couponCode: coupon?.code
             };
 
             const endpoint = isMainVendor ? '/api/orders' : `/api/user-catalogs/${activeVendorId}/orders`;
