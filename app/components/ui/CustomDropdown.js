@@ -17,8 +17,23 @@ export default function CustomDropdown({
     fullWidth = false,
     variant = "standard"
 }) {
-    const { dir } = useLanguage();
-    const isRTL = dir === 'rtl';
+    const { dir: langDir } = useLanguage();
+    const [isRTL, setIsRTL] = useState(langDir === 'rtl');
+
+    useEffect(() => {
+        const checkRTL = () => {
+            const currentDir = langDir || 
+                               document.documentElement.getAttribute('dir') || 
+                               document.body.getAttribute('dir') || 
+                               getComputedStyle(document.body).direction;
+            setIsRTL(currentDir === 'rtl');
+        };
+        checkRTL();
+        // Also check if className contains explicit rtl
+        if (className.includes('rtl')) setIsRTL(true);
+    }, [langDir, className]);
+
+    const dir = isRTL ? 'rtl' : 'ltr';
     const [isOpen, setIsOpen] = useState(false);
     const [menuStyle, setMenuStyle] = useState({});
     const triggerRef = useRef(null);
@@ -106,12 +121,12 @@ export default function CustomDropdown({
                                 }}
                                 className={`w-full flex items-center justify-between px-4 py-3 text-sm font-bold transition-colors hover:bg-gray-50 ${value === opt.value ? 'text-black bg-gray-50' : 'text-gray-500 hover:text-black'}`}
                             >
-                                <div className="flex items-center gap-3">
+                                <div className={`flex items-center gap-3 ${isRTL ? 'order-first' : ''}`}>
                                     {opt.icon}
                                     <span>{opt.label}</span>
                                 </div>
                                 {value === opt.value && (
-                                    <Check className="w-4 h-4 text-emerald-500 flex-shrink-0" />
+                                    <Check className={`w-4 h-4 text-emerald-500 flex-shrink-0 ${isRTL ? 'order-first' : ''}`} />
                                 )}
                             </button>
                         ))}
@@ -131,13 +146,13 @@ export default function CustomDropdown({
                 type="button"
                 onClick={handleOpen}
                 dir={dir}
-                className={`flex items-center justify-between gap-2 px-4 py-2.5 rounded-2xl font-bold text-sm border transition-all shadow-sm ${getTriggerStyles()} ${fullWidth ? 'w-full' : ''} ${className} active:scale-[0.98] outline-none`}
+                className={`flex items-center justify-between gap-2 px-4 py-2.5 rounded-2xl font-bold text-sm border transition-all shadow-sm ${getTriggerStyles()} ${fullWidth ? 'w-full' : ''} ${className} active:scale-[0.98] outline-none ${isRTL ? 'flex-row' : 'flex-row'}`}
             >
-                <div className="flex items-center gap-2 truncate">
+                <div className={`flex items-center gap-2 truncate ${isRTL ? 'order-1' : 'order-1'}`}>
                     {selectedOption?.icon}
                     <span className="truncate">{selectedOption?.label || placeholder}</span>
                 </div>
-                <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform duration-300 flex-shrink-0 ${isOpen ? 'rotate-180' : ''}`} />
+                <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform duration-300 flex-shrink-0 ${isOpen ? 'rotate-180' : ''} ${isRTL ? 'order-2' : 'order-2'}`} />
             </button>
 
             {typeof document !== "undefined" && createPortal(menu, document.body)}

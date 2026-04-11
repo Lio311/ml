@@ -46,8 +46,32 @@ export default function SmartPricingPage() {
         }
 
         const confirmText = `האם אתה בטוח שברצונך ${Number(amount) > 0 ? 'להוסיף' : 'להפחית'} ${Math.abs(amount)} ש"ח לכל המוצרים המסומנים?`;
-        if (!confirm(confirmText)) return;
+        
+        toast((t) => (
+            <div className="flex flex-col gap-4 p-2 min-w-[280px]" dir="rtl">
+                <p className="font-bold text-gray-800 text-sm leading-relaxed">{confirmText}</p>
+                <div className="flex justify-end gap-2 mt-2">
+                    <button 
+                        onClick={async () => { 
+                            toast.dismiss(t.id);
+                            executeApply();
+                        }}
+                        className="px-6 py-2 bg-blue-600 text-white rounded-xl text-xs font-black shadow-lg shadow-blue-100 hover:bg-blue-700 transition-all"
+                    >
+                        כן, בצע
+                    </button>
+                    <button 
+                        onClick={() => toast.dismiss(t.id)}
+                        className="px-6 py-2 bg-gray-100 text-gray-400 rounded-xl text-xs font-black hover:bg-gray-200 transition-all"
+                    >
+                        ביטול
+                    </button>
+                </div>
+            </div>
+        ), { duration: 6000, position: 'top-center' });
+    };
 
+    const executeApply = async () => {
         setSubmitting(true);
         try {
             const res = await fetch('/api/admin/bulk-pricing', {
@@ -77,7 +101,33 @@ export default function SmartPricingPage() {
     };
 
     const handleUndo = async (id) => {
-        if (!confirm('האם אתה בטוח שברצונך לבטל פעולה זו? המחירים יחזרו למצבם הקודם.')) return;
+        toast((t) => (
+            <div className="flex flex-col gap-4 p-2 min-w-[280px]" dir="rtl">
+                <p className="font-bold text-gray-800 text-sm leading-relaxed">
+                    האם אתה בטוח שברצונך לבטל פעולה זו? המחירים יחזרו למצבם הקודם.
+                </p>
+                <div className="flex justify-end gap-2 mt-2">
+                    <button 
+                        onClick={async () => { 
+                            toast.dismiss(t.id);
+                            executeUndo(id);
+                        }}
+                        className="px-6 py-2 bg-red-600 text-white rounded-xl text-xs font-black shadow-lg shadow-red-100 hover:bg-red-700 transition-all"
+                    >
+                        כן, בטל
+                    </button>
+                    <button 
+                        onClick={() => toast.dismiss(t.id)}
+                        className="px-6 py-2 bg-gray-100 text-gray-400 rounded-xl text-xs font-black hover:bg-gray-200 transition-all"
+                    >
+                        ביטול
+                    </button>
+                </div>
+            </div>
+        ), { duration: 6000, position: 'top-center' });
+    };
+
+    const executeUndo = async (id) => {
 
         const loadingToast = toast.loading('מבטל פעולה...');
         try {
