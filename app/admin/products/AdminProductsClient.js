@@ -227,6 +227,12 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                     כל המוצרים ({counts?.all || 0})
                 </button>
                 <button
+                    onClick={() => router.push('/admin/products?view=on_sale')}
+                    className={`pb-2 px-4 font-bold transition whitespace-nowrap ${currentView === 'on_sale' ? 'border-b-2 border-green-600 text-green-600' : 'text-gray-500 hover:text-green-600'}`}
+                >
+                    מבצעים ({counts?.on_sale || 0})
+                </button>
+                <button
                     onClick={() => router.push('/admin/products?view=out_of_stock')}
                     className={`pb-2 px-4 font-bold transition whitespace-nowrap ${currentView === 'out_of_stock' ? 'border-b-2 border-red-600 text-red-600' : 'text-gray-500 hover:text-red-600'}`}
                 >
@@ -243,12 +249,6 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                     className={`pb-2 px-4 font-bold transition whitespace-nowrap ${currentView === 'stock_list' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-500 hover:text-blue-600'}`}
                 >
                     דו״ח מלאי
-                </button>
-                <button
-                    onClick={() => router.push('/admin/products?view=on_sale')}
-                    className={`pb-2 px-4 font-bold transition whitespace-nowrap ${currentView === 'on_sale' ? 'border-b-2 border-green-600 text-green-600' : 'text-gray-500 hover:text-green-600'}`}
-                >
-                    מבצעים ({counts?.on_sale || 0})
                 </button>
             </div>
 
