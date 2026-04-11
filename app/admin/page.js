@@ -138,7 +138,8 @@ export default async function AdminDashboard({ searchParams }) {
             safeQuery("SELECT COUNT(*) FROM orders WHERE catalog_id IS NULL"),
             // 3. Total Monthly Revenue
             safeQuery(`
-                SELECT SUM(total_amount) FROM orders 
+                SELECT SUM(total_amount - COALESCE((customer_details->>'shipping_cost')::numeric, CASE WHEN (delivery_method IN ('mail', 'shipping')) THEN 30 ELSE 0 END)) as sum 
+                FROM orders 
                 WHERE status != 'cancelled'
                 AND catalog_id IS NULL
                 AND EXTRACT(MONTH FROM created_at) = $1
@@ -239,7 +240,7 @@ export default async function AdminDashboard({ searchParams }) {
                 SELECT 
                     EXTRACT(DAY FROM created_at) as day,
                     COUNT(*) as orders,
-                    SUM(total_amount) as revenue
+                    SUM(total_amount - COALESCE((customer_details->>'shipping_cost')::numeric, CASE WHEN (delivery_method IN ('mail', 'shipping')) THEN 30 ELSE 0 END)) as revenue
                 FROM orders
                 WHERE status != 'cancelled'
                 AND catalog_id IS NULL
@@ -253,7 +254,7 @@ export default async function AdminDashboard({ searchParams }) {
                 SELECT 
                     EXTRACT(DAY FROM created_at) as day,
                     COUNT(*) as orders,
-                    SUM(total_amount) as revenue
+                    SUM(total_amount - COALESCE((customer_details->>'shipping_cost')::numeric, CASE WHEN (delivery_method IN ('mail', 'shipping')) THEN 30 ELSE 0 END)) as revenue
                 FROM orders
                 WHERE status != 'cancelled'
                 AND catalog_id IS NULL
@@ -292,7 +293,7 @@ export default async function AdminDashboard({ searchParams }) {
                 LIMIT 5
             `),
             // 21. Total Revenue (All Time)
-            safeQuery("SELECT SUM(total_amount) as sum FROM orders WHERE status != 'cancelled' AND catalog_id IS NULL"),
+            safeQuery("SELECT SUM(total_amount - COALESCE((customer_details->>'shipping_cost')::numeric, CASE WHEN (delivery_method IN ('mail', 'shipping')) THEN 30 ELSE 0 END)) as sum FROM orders WHERE status != 'cancelled' AND catalog_id IS NULL"),
             // 22. Total Expenses (All Time)
             safeQuery("SELECT SUM(amount) as sum FROM expenses"),
             // 23. Total COGS (All Time) - SQL Calculation
@@ -316,7 +317,7 @@ export default async function AdminDashboard({ searchParams }) {
             safeQuery(`
                 SELECT 
                     DATE_TRUNC('day', created_at) as day,
-                    SUM(SUM(total_amount)) OVER (ORDER BY DATE_TRUNC('day', created_at)) as cumulative
+                    SUM(SUM(total_amount - COALESCE((customer_details->>'shipping_cost')::numeric, CASE WHEN (delivery_method IN ('mail', 'shipping')) THEN 30 ELSE 0 END))) OVER (ORDER BY DATE_TRUNC('day', created_at)) as cumulative
                 FROM orders
                 WHERE status != 'cancelled' AND catalog_id IS NULL
                 GROUP BY DATE_TRUNC('day', created_at)
@@ -464,8 +465,8 @@ export default async function AdminDashboard({ searchParams }) {
                 orderGrossSales += parseFloat(item.price || 0) * parseInt(item.quantity || 1);
             });
 
-            const orderNetTotal = parseFloat(order.total_amount) || 0;
-            const ratio = orderGrossSales > 0 ? (orderNetTotal / orderGrossSales) : 0;
+            const shippingCost = parseFloat(order.customer_details?.shipping_cost || (order.delivery_method === 'mail' || order.delivery_method === 'shipping' ? 30 : 0));
+            const orderNetTotal = (parseFloat(order.total_amount) || 0) - shippingCost;
 
             items.forEach(item => {
                 let dbId = item.id;
