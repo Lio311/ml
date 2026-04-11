@@ -147,7 +147,7 @@ export default function AdminInventoryPage() {
                 ניהול מלאי בקבוקנים
             </h1>
 
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 md:gap-6">
+            <div className="grid grid-cols-2 lg:grid-cols-3 gap-3 md:gap-6">
                 {BOTTLE_Types.map(type => {
                     const count = getStock(type.id);
                     

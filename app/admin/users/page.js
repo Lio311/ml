@@ -7,6 +7,7 @@ import SyncUsersButton from "./SyncUsersButton";
 import EditPhoneInput from "./EditPhoneInput";
 import AdminUsersFilter from "./AdminUsersFilter";
 import { RatingBadge, RatingLegend } from "./RatingInfo";
+import DeleteUserButton from "./DeleteUserButton";
 import React from 'react';
 
 export const metadata = {
@@ -144,7 +145,8 @@ export default async function AdminUsersPage(props) {
                                 </th>
                                 <th className="p-4 text-center font-black text-blue-700 bg-blue-50/50 w-[20%]">סטטיסטיקה</th>
                                 <th className="p-4 text-center w-[18%]">תאריכים</th>
-                                <th className="p-4 text-center w-[12%]">תפקיד</th>
+                                <th className="p-4 text-center w-[10%]">תפקיד</th>
+                                <th className="p-4 text-center w-[2%]">פעולות</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100">
@@ -227,12 +229,15 @@ export default async function AdminUsersPage(props) {
                                                 </div>
                                             )}
                                         </td>
-                                        <td className="p-4 flex justify-center">
+                                        <td className="p-4 text-center">
                                             <UserRoleSelect
                                                 userId={u.id}
                                                 initialRole={u.role}
                                                 canEdit={canEdit}
                                             />
+                                        </td>
+                                        <td className="p-4 text-center">
+                                            {canEdit && <DeleteUserButton userId={u.id} userName={`${u.firstName} ${u.lastName}`} />}
                                         </td>
                                     </tr>
                                 );
@@ -330,12 +335,15 @@ export default async function AdminUsersPage(props) {
                                 </div>
     
                                 <div className="pt-4 mt-4 border-t border-gray-100 flex items-center justify-between">
-                                    <div className="text-[9px] uppercase font-black text-gray-400 tracking-widest">הרשאת מערכת:</div>
-                                    <UserRoleSelect
-                                        userId={u.id}
-                                        initialRole={u.role}
-                                        canEdit={canEdit}
-                                    />
+                                    <div className="flex items-center gap-3">
+                                        <div className="text-[9px] uppercase font-black text-gray-400 tracking-widest">הרשאת מערכת:</div>
+                                        <UserRoleSelect
+                                            userId={u.id}
+                                            initialRole={u.role}
+                                            canEdit={canEdit}
+                                        />
+                                    </div>
+                                    {canEdit && <DeleteUserButton userId={u.id} userName={`${u.firstName} ${u.lastName}`} />}
                                 </div>
                             </div>
                         );
