@@ -51,6 +51,7 @@ export default function FilterSidebar({ allBrands = [], allCategories = [], allC
     const [searchTerm, setSearchTerm] = useState(searchParams.get('q') || '');
     const [price, setPrice] = useState(Number(searchParams.get("max")) || ABSOLUTE_MAX);
     const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
+    const [noteSearch, setNoteSearch] = useState('');
 
     useEffect(() => {
         setSelectedBrands(searchParams.getAll('brand'));
@@ -220,18 +221,41 @@ export default function FilterSidebar({ allBrands = [], allCategories = [], allC
             {/* Notes Filter */}
             {allNotes && allNotes.length > 0 && (
                 <CollapsibleSection title={`${t('common.notes_filter')} (${allNotes.length})`} initialOpen={true}>
-                    <div className={`space-y-2 text-sm max-h-[200px] overflow-y-auto custom-scrollbar ps-2 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
-                        {allNotes.map(n => (
-                            <label key={n} className="flex items-center gap-2 cursor-pointer hover:bg-gray-100 p-1 rounded">
-                                <input
-                                    type="checkbox"
-                                    checked={selectedNotes.includes(n)}
-                                    onChange={() => toggleNote(n)}
-                                    className="w-4 h-4 rounded border-gray-300 text-black focus:ring-black"
-                                />
-                                <span className={selectedNotes.includes(n) ? 'font-bold' : ''}>{translateNote(n)}</span>
-                            </label>
-                        ))}
+                    <div className="space-y-4">
+                        {/* Note Search */}
+                        <div className="relative">
+                            <input
+                                type="text"
+                                value={noteSearch}
+                                onChange={(e) => setNoteSearch(e.target.value)}
+                                placeholder={t('common.search')}
+                                className="w-full p-2 ps-8 text-xs border border-gray-100 rounded-lg bg-white focus:outline-none focus:border-black"
+                            />
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={`absolute top-1/2 -translate-y-1/2 w-4 h-4 text-gray-300 ${dir === 'rtl' ? 'right-2' : 'left-2'}`}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                            </svg>
+                        </div>
+
+                        <div className={`space-y-2 text-sm max-h-[200px] overflow-y-auto custom-scrollbar ps-2 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
+                            {allNotes
+                                .map(n => ({ original: n, translated: translateNote(n) }))
+                                .sort((a, b) => a.translated.localeCompare(b.translated, locale === 'he' ? 'he' : 'en'))
+                                .filter(item => 
+                                    item.translated.toLowerCase().includes(noteSearch.toLowerCase()) || 
+                                    item.original.toLowerCase().includes(noteSearch.toLowerCase())
+                                )
+                                .map(item => (
+                                    <label key={item.original} className="flex items-center gap-2 cursor-pointer hover:bg-gray-100 p-1 rounded">
+                                        <input
+                                            type="checkbox"
+                                            checked={selectedNotes.includes(item.original)}
+                                            onChange={() => toggleNote(item.original)}
+                                            className="w-4 h-4 rounded border-gray-300 text-black focus:ring-black"
+                                        />
+                                        <span className={selectedNotes.includes(item.original) ? 'font-bold' : ''}>{item.translated}</span>
+                                    </label>
+                                ))}
+                        </div>
                     </div>
                 </CollapsibleSection>
             )}
