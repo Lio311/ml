@@ -138,7 +138,6 @@ export default function AdminInventoryPage() {
         { id: 2, label: '2 מ"ל' },
         { id: 5, label: '5 מ"ל' },
         { id: 10, label: '10 מ"ל' },
-        { id: 11, label: '10 מ"ל יוקרתי' },
     ];
 
     return (
