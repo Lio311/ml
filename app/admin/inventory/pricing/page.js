@@ -117,10 +117,7 @@ export default function SmartPricingPage() {
             {/* Header */}
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div className="space-y-1">
-                    <h1 className="text-2xl md:text-3xl font-black flex items-center gap-3 text-gray-900">
-                        <div className="bg-blue-600 text-white p-2 rounded-2xl shadow-lg shadow-blue-100 italic">
-                            <DollarSign className="w-6 h-6 md:w-8 md:h-8" />
-                        </div>
+                    <h1 className="text-2xl md:text-3xl font-black text-gray-900">
                         תמחור חכם וגורף
                     </h1>
                     <p className="text-gray-500 text-sm font-medium mr-12">ניהול מחירים מהיר ומדויק לכל האתר</p>
