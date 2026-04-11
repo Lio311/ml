@@ -83,7 +83,7 @@ export async function POST(req) {
                 const discFactor = 1 - (p.discount_percentage || 0) / 100;
                 
                 sizes.forEach(size => {
-                    const priceCol = `price_${size}`;
+                    const priceCol = `price_${size}ml`;
                     const currentBasePrice = p[priceCol];
                     
                     if (currentBasePrice && currentBasePrice > 0) {

@@ -48,31 +48,38 @@ export default function SmartPricingPage() {
         const confirmText = `האם אתה בטוח שברצונך ${Number(amount) > 0 ? 'להוסיף' : 'להפחית'} ${Math.abs(amount)} ש"ח לכל המוצרים המסומנים?`;
         
         toast((t) => (
-            <div className="flex flex-col gap-4 p-2 min-w-[280px]" dir="rtl">
-                <p className="font-bold text-gray-800 text-sm leading-relaxed">{confirmText}</p>
-                <div className="flex justify-end gap-2 mt-2">
+            <div className="flex flex-col gap-4 p-5 min-w-[320px] bg-white rounded-[2rem] shadow-2xl border border-gray-100" dir="rtl">
+                <div className="flex items-center gap-3 mb-1">
+                    <div className="bg-blue-50 text-blue-600 p-2 rounded-xl">
+                        <History className="w-5 h-5" />
+                    </div>
+                    <p className="font-black text-gray-900 text-sm">אישור פעולה</p>
+                </div>
+                <p className="font-bold text-gray-600 text-xs leading-relaxed">{confirmText}</p>
+                <div className="flex justify-end gap-3 mt-2">
+                    <button 
+                        onClick={() => toast.dismiss(t.id)}
+                        className="flex-1 px-4 py-3 bg-gray-50 text-gray-400 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-gray-100 transition-all active:scale-95"
+                    >
+                        ביטול
+                    </button>
                     <button 
                         onClick={async () => { 
                             toast.dismiss(t.id);
                             executeApply();
                         }}
-                        className="px-6 py-2 bg-blue-600 text-white rounded-xl text-xs font-black shadow-lg shadow-blue-100 hover:bg-blue-700 transition-all"
+                        className="flex-1 px-4 py-3 bg-black text-white rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-lg shadow-gray-200 hover:bg-gray-800 transition-all active:scale-95"
                     >
                         כן, בצע
                     </button>
-                    <button 
-                        onClick={() => toast.dismiss(t.id)}
-                        className="px-6 py-2 bg-gray-100 text-gray-400 rounded-xl text-xs font-black hover:bg-gray-200 transition-all"
-                    >
-                        ביטול
-                    </button>
                 </div>
             </div>
-        ), { duration: 6000, position: 'top-center' });
+        ), { duration: 8000, position: 'top-center' });
     };
 
     const executeApply = async () => {
         setSubmitting(true);
+        const loadingToast = toast.loading('מעדכן מחירים...');
         try {
             const res = await fetch('/api/admin/bulk-pricing', {
                 method: 'POST',
@@ -87,44 +94,55 @@ export default function SmartPricingPage() {
 
             const data = await res.json();
             if (res.ok) {
-                toast.success(`התמחור עודכן בהצלחה עבור ${data.count} מוצרים!`);
-                setAmount('');
-                fetchLogs();
+                if (data.count === 0) {
+                    toast.error('הפעולה הסתיימה אך לא עודכנו מוצרים. וודא שבחרת גדלים שיש להם מחיר מוגדר במוצרים המסוננים.', { duration: 6000 });
+                } else {
+                    toast.success(`התמחור עודכן בהצלחה עבור ${data.count} מוצרים!`);
+                    setAmount('');
+                    fetchLogs();
+                }
             } else {
                 toast.error(data.error || 'שגיאה בעדכון התמחור');
             }
         } catch (error) {
             toast.error('שגיאה בתקשורת');
         } finally {
+            toast.dismiss(loadingToast);
             setSubmitting(false);
         }
     };
 
     const handleUndo = async (id) => {
         toast((t) => (
-            <div className="flex flex-col gap-4 p-2 min-w-[280px]" dir="rtl">
-                <p className="font-bold text-gray-800 text-sm leading-relaxed">
+            <div className="flex flex-col gap-4 p-5 min-w-[320px] bg-white rounded-[2rem] shadow-2xl border border-gray-100" dir="rtl">
+                <div className="flex items-center gap-3 mb-1">
+                    <div className="bg-red-50 text-red-600 p-2 rounded-xl">
+                        <Trash2 className="w-5 h-5" />
+                    </div>
+                    <p className="font-black text-gray-900 text-sm">ביטול פעולה</p>
+                </div>
+                <p className="font-bold text-gray-600 text-xs leading-relaxed">
                     האם אתה בטוח שברצונך לבטל פעולה זו? המחירים יחזרו למצבם הקודם.
                 </p>
-                <div className="flex justify-end gap-2 mt-2">
+                <div className="flex justify-end gap-3 mt-2">
+                    <button 
+                        onClick={() => toast.dismiss(t.id)}
+                        className="flex-1 px-4 py-3 bg-gray-50 text-gray-400 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-gray-100 transition-all active:scale-95"
+                    >
+                        חזור
+                    </button>
                     <button 
                         onClick={async () => { 
                             toast.dismiss(t.id);
                             executeUndo(id);
                         }}
-                        className="px-6 py-2 bg-red-600 text-white rounded-xl text-xs font-black shadow-lg shadow-red-100 hover:bg-red-700 transition-all"
+                        className="flex-1 px-4 py-3 bg-black text-white rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-lg shadow-gray-200 hover:bg-gray-800 transition-all active:scale-95"
                     >
                         כן, בטל
                     </button>
-                    <button 
-                        onClick={() => toast.dismiss(t.id)}
-                        className="px-6 py-2 bg-gray-100 text-gray-400 rounded-xl text-xs font-black hover:bg-gray-200 transition-all"
-                    >
-                        ביטול
-                    </button>
                 </div>
             </div>
-        ), { duration: 6000, position: 'top-center' });
+        ), { duration: 8000, position: 'top-center' });
     };
 
     const executeUndo = async (id) => {
@@ -314,9 +332,12 @@ export default function SmartPricingPage() {
                                                         {new Date(log.created_at).toLocaleString('he-IL', { dateStyle: 'short', timeStyle: 'short' })}
                                                     </span>
                                                 </div>
-                                                <h3 className="font-black text-gray-900">
+                                                <h3 className="font-black text-gray-900 flex items-center gap-1.5" dir="rtl">
                                                     {log.undone ? 'בוטל: ' : ''} 
-                                                    {Number(log.amount) > 0 ? '+' : ''}{log.amount} ש"ח 
+                                                    <span className="flex items-center gap-1" dir="ltr" style={{ unicodeBidi: 'plaintext' }}>
+                                                        <span>{Number(log.amount) > 0 ? '+' : ''}{log.amount}</span>
+                                                        <span>ש"ח</span>
+                                                    </span>
                                                     <span className="text-gray-400 text-xs font-bold mr-2">
                                                         ({log.sizes.map(s => s + 'ml').join(', ')})
                                                     </span>
