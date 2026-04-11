@@ -479,6 +479,8 @@ export function CartProvider({ children }) {
         if (activeVendorId === 'main') {
             setLotteryMode({ active: false, expiresAt: null });
             setLotteryTimeLeft(null);
+            setCoupon(null);
+            setLuckyPrize(null);
             localStorage.removeItem("lotteryMode");
         }
         if (remaining.length > 0) setActiveVendorId(remaining[0].vendorId || 'main');
