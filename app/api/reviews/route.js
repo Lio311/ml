@@ -145,8 +145,19 @@ export async function POST(req) {
             
             if (orderData && orderData.coupon_rewarded === false && orderData.customer_details?.email) {
                 const customerEmail = orderData.customer_details.email;
-                const randomPart = Math.random().toString(36).substring(2, 7).toUpperCase();
-                const couponCode = `SAVE10-${randomPart}`;
+                const clerkId = orderData.customer_details.clerk_id || userId;
+
+                // GLOBAL check: Has this user EVER been rewarded?
+                const globalRewardCheck = await pool.query(`
+                    SELECT 1 FROM orders 
+                    WHERE (customer_details->>'email' = $1 OR customer_details->>'clerk_id' = $2) 
+                    AND coupon_rewarded = true 
+                    LIMIT 1
+                `, [customerEmail, clerkId]);
+
+                if (globalRewardCheck.rows.length === 0) {
+                    const randomPart = Math.random().toString(36).substring(2, 7).toUpperCase();
+                    const couponCode = `SAVE10-${randomPart}`;
 
                 // Insert Coupon (10% discount, 7 days valid)
                 await pool.query(`

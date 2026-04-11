@@ -17,8 +17,14 @@ export default function FilterSidebar({ allBrands = [], allCategories = [], allC
     // Translate category names from Hebrew DB values to the current locale
     const translateCategory = (hebrewCat) => {
         if (locale === 'he') return hebrewCat;
-        const mapped = t(`category_map.${hebrewCat}`);
-        return mapped.startsWith('category_map.') ? hebrewCat : mapped;
+        const mapped = t(`common.category_map.${hebrewCat}`);
+        return mapped.startsWith('common.category_map.') ? hebrewCat : mapped;
+    };
+
+    const translateNote = (hebrewNote) => {
+        if (locale === 'he') return hebrewNote;
+        const mapped = t(`common.notes_map.${hebrewNote}`);
+        return mapped.startsWith('common.notes_map.') ? hebrewNote : mapped;
     };
     
     const GENDER_OPTIONS = [
@@ -223,7 +229,7 @@ export default function FilterSidebar({ allBrands = [], allCategories = [], allC
                                     onChange={() => toggleNote(n)}
                                     className="w-4 h-4 rounded border-gray-300 text-black focus:ring-black"
                                 />
-                                <span className={selectedNotes.includes(n) ? 'font-bold' : ''}>{n}</span>
+                                <span className={selectedNotes.includes(n) ? 'font-bold' : ''}>{translateNote(n)}</span>
                             </label>
                         ))}
                     </div>

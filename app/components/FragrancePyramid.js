@@ -4,64 +4,14 @@ import React, { useState } from 'react';
 import { ChevronDown } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
-// Hebrew → English lookup for common fragrance notes
-// Covers the most common notes that appear in the DB in Hebrew
-const HE_TO_EN_NOTES = {
-    // Florals
-    'ורד': 'Rose', 'ורד דמשק': 'Damascus Rose', 'רוז דה מאי': 'Rose de Mai',
-    'סיגליות': 'Violet', 'סיגלית': 'Violet', 'עלי סיגלית': 'Violet Leaves', 'יסמין': 'Jasmine', 'לבנדר': 'Lavender',
-    'טובארוז': 'Tuberose', 'אורכידיה': 'Orchid', 'פרחי תפוח': 'Apple Blossom',
-    'אירוס': 'Iris', 'שורש אירים': 'Iris Root', 'ג\'ורג\'יה': 'Gardenia',
-    'ברוסליה': 'Freesia', 'מגנוליה': 'Magnolia', 'סחלב': 'Orchid',
-    'פרחי תפוז': 'Orange Blossom', 'נרגיס': 'Narcissus', 'ילנג ילנג': 'Ylang Ylang',
-    'ג\'אסמין': 'Jasmine', 'כלניות': 'Carnation', 'פרזיה': 'Freesia',
-    // Citrus
-    'ליים': 'Lime', 'לימון': 'Lemon', 'תפוז': 'Orange', 'אשכולית': 'Grapefruit',
-    'ברגמוט': 'Bergamot', 'מנדרינה': 'Mandarin', 'לימון מאייר': 'Meyer Lemon',
-    'ציטרוס': 'Citrus', 'סיטרקס': 'Citrus', 'תפוז דם': 'Blood Orange',
-    // Woods & Resins
-    'עץ ארז': 'Cedarwood', 'ארז': 'Cedar', 'ארז אטלס': 'Atlas Cedar', 'לבנה': 'Labdanum', 'לבונה': 'Frankincense',
-    'קונה': 'Guaiac Wood', 'עץ סנדל': 'Sandalwood', 'סנדלווד': 'Sandalwood',
-    'עץ קשמיר': 'Cashmeran', 'עץ ורד': 'Rosewood', 'אגר עוד': 'Oud',
-    'עוד': 'Oud', 'אמברגריס': 'Ambergris', 'פאטשולי': 'Patchouli',
-    'ענבר': 'Amber', 'בנזואין': 'Benzoin', 'בנסואין': 'Benzoin',
-    'ראדיקס': 'Radix', 'וטיבר': 'Vetiver', 'וטיוור': 'Vetiver',
-    // Spices
-    'פלפל': 'Pepper', 'פלפל שחור': 'Black Pepper', 'קינמון': 'Cinnamon',
-    'קרדמום': 'Cardamom', 'זעפרן': 'Saffron', 'גינגר': 'Ginger',
-    'לעשוש': 'Nutmeg', 'אגוז מוסקט': 'Nutmeg', 'ציפורן': 'Clove',
-    // Musks & Gourmands
-    'מוסק': 'Musk', 'מאסק': 'Musk', 'ונילה': 'Vanilla', 'וניל': 'Vanilla', 'קרמל': 'Caramel', 'שולק': 'Caramel',
-    'קפה': 'Coffee', 'שוקולד': 'Chocolate', 'טולו': 'Tolu Balsam',
-    'בנסם פרו': 'Peru Balsam', 'גומי': 'Gummy', 'שוקולד': 'Chocolate',
-    // Fruits
-    'תפוח': 'Apple', 'אגס': 'Pear', 'אפרסק': 'Peach', 'ליצ\'י': 'Lychee', 'תאנה': 'Fig',
-    'פרחי דובדבן': 'Cherry Blossom', 'פטל': 'Raspberry', 'תות': 'Strawberry', 'תות שדה': 'Strawberry',
-    'מנגו': 'Mango', 'פפאיה': 'Papaya', 'גויאבה': 'Guava',
-    'אננס': 'Pineapple', 'בלק קארנט': 'Blackcurrant', 'דומדמנית שחורה': 'Blackcurrant',
-    // Animals & Aquatics
-    'אמבר': 'Amber', 'בְּיוֹר': "Birch", 'ביר\'': 'Birch',
-    'לביח': 'Labdanum', 'ציוות': 'Civet',
-    // Seasons (Added for consistency)
-    'אביב': 'Spring', 'קיץ': 'Summer', 'סתיו': 'Autumn', 'חורף': 'Winter',
-    // Other
-    'פרנגיפני': 'Frangipani', 'תה': 'Tea', 'תה ירוק': 'Green Tea',
-    'מאסם': 'Mace', 'אנג\'ל': 'Angelica', 'אנס': 'Anise',
-    'סיפרס': 'Cypress', 'ברוש': 'Cypress', 'אורז': 'Rice', 'קוקוס': 'Coconut',
-    'קנה': 'Gaiac Wood', 'פְּטִיגְר\'ן': 'Petitgrain',
-    'אורן': 'Pine', 'אלדרווד': 'Eldarwood',
-    'גחלת': 'Charcoal', 'כחול': 'Blue', 'ים': 'Sea Salt', 'טבק': 'Tobacco', 'עור': 'Leather',
-    'עצים': 'Woods', 'הדרים': 'Citrus', 'פיסטוק': 'Pistachio', 'ורבנה': 'Verbena',
-};
-
-function translateNote(note, locale) {
-    if (locale !== 'en') return note;
-    const trimmed = note.trim();
-    // Direct match (case insensitive)
-    const key = Object.keys(HE_TO_EN_NOTES).find(
-        k => k === trimmed || k.toLowerCase() === trimmed.toLowerCase()
-    );
-    return key ? HE_TO_EN_NOTES[key] : trimmed;
+function translateNote(note, locale, t) {
+    if (locale !== 'he') {
+        const mapped = t(`common.notes_map.${note.trim()}`);
+        if (mapped && !mapped.startsWith('common.notes_map.')) {
+            return mapped;
+        }
+    }
+    return note.trim();
 }
 
 export default function FragrancePyramid({ top, middle, base }) {
@@ -72,7 +22,7 @@ export default function FragrancePyramid({ top, middle, base }) {
 
     const parseNotes = (notesStr) => {
         if (!notesStr) return [];
-        return notesStr.split(',').map(n => translateNote(n.trim(), locale)).filter(Boolean);
+        return notesStr.split(',').map(n => translateNote(n.trim(), locale, t)).filter(Boolean);
     };
 
     const topNotes = parseNotes(top);

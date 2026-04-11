@@ -38,10 +38,18 @@ export async function GET(req) {
 
                 if (!email) continue;
                 
-                // Get a product name to mention (first item the user bought)
                 const items = order.items || [];
                 const firstProductName = items.length > 0 ? items[0].name : "הבשמים שלנו";
                 const token = generateReviewToken(order.id);
+
+                // Check if user already received a coupon for any other order
+                const rewardedCheck = await client.query(`
+                    SELECT 1 FROM orders 
+                    WHERE (customer_details->>'email' = $1 OR customer_details->>'clerk_id' = $2) 
+                    AND coupon_rewarded = true 
+                    LIMIT 1
+                `, [email, customer.clerk_id]);
+                const alreadyRewarded = rewardedCheck.rows.length > 0;
 
                 const subject = 'נשמח לשמוע מה דעתך! ⭐';
                 const html = `
@@ -61,9 +69,11 @@ export async function GET(req) {
                             </p>
                         </div>
 
+                        ${!alreadyRewarded ? `
                         <p style="text-align: center; color: #d97706; font-weight: bold; background: #fef3c7; padding: 10px; border-radius: 6px;">
                             🎁 בונוס קטן: על כל דירוג שתשאיר/י באתר, נשלח אליך למייל קופון של 10% הנחה לקנייה הבאה!
                         </p>
+                        ` : ''}
                         
                         <p>תודה מראש,<br>צוות ml_tlv</p>
                     </div>

@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import pool from '../../../../lib/db';
+import pool from '@/app/lib/db';
 import { auth as clerkAuth } from '@clerk/nextjs/server';
 
 // DDL for the table (Safe to keep here for auto-creation)
