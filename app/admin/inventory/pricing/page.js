@@ -47,8 +47,8 @@ export default function SmartPricingPage() {
 
         const confirmText = `האם אתה בטוח שברצונך ${Number(amount) > 0 ? 'להוסיף' : 'להפחית'} ${Math.abs(amount)} ש"ח לכל המוצרים המסומנים?`;
         
-        toast((t) => (
-            <div className="flex flex-col gap-4 p-5 min-w-[320px] bg-white rounded-[2rem] shadow-2xl border border-gray-100" dir="rtl">
+        toast.custom((t) => (
+            <div className={`${t.visible ? 'animate-in fade-in zoom-in-95 duration-300' : 'animate-out fade-out zoom-out-95 duration-300'} flex flex-col gap-4 p-6 min-w-[320px] bg-white rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-gray-100 pointer-events-auto`} dir="rtl">
                 <div className="flex items-center gap-3 mb-1">
                     <div className="bg-blue-50 text-blue-600 p-2 rounded-xl">
                         <History className="w-5 h-5" />
@@ -113,8 +113,8 @@ export default function SmartPricingPage() {
     };
 
     const handleUndo = async (id) => {
-        toast((t) => (
-            <div className="flex flex-col gap-4 p-5 min-w-[320px] bg-white rounded-[2rem] shadow-2xl border border-gray-100" dir="rtl">
+        toast.custom((t) => (
+            <div className={`${t.visible ? 'animate-in fade-in zoom-in-95 duration-300' : 'animate-out fade-out zoom-out-95 duration-300'} flex flex-col gap-4 p-6 min-w-[320px] bg-white rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-gray-100 pointer-events-auto`} dir="rtl">
                 <div className="flex items-center gap-3 mb-1">
                     <div className="bg-red-50 text-red-600 p-2 rounded-xl">
                         <Trash2 className="w-5 h-5" />
