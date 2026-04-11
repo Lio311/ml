@@ -43,7 +43,8 @@ export default function CouponSection({
                 // Map error messages to translation keys
                 const errorMap = {
                     "הקופון הזה אינו זמין עבור משתמש זה": "cart.coupon_not_available",
-                    "קוד קופון לא תקין או פג תוקף": "cart.coupon_invalid"
+                    "קוד קופון לא תקין או פג תוקף": "cart.coupon_invalid",
+                    "קוד קופון זה כבר נוצל": "cart.coupon_already_used"
                 };
                 
                 let errorKey = errorMap[data.error] || "cart.coupon_invalid";

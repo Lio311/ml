@@ -518,6 +518,7 @@
         "coupon_min_total": "קופון דורש מינימום הזמנה של ₪{total}",
         "coupon_not_eligible": "קופון זה אינו חל על הפריטים בעגלה שלך",
         "coupon_invalid": "קוד קופון לא תקין",
+        "coupon_already_used": "קוד קופון זה כבר נוצל",
         "coupon_error": "שגיאה באימות קופון",
         "coupon_applied": "קופון {code} הוחל",
         "discount": "{percent}% הנחה",

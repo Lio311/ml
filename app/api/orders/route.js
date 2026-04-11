@@ -80,7 +80,7 @@ export async function POST(req) {
             let discountAmount = 0;
             if (couponCode) {
                 const coupRes = await client.query(`
-                    SELECT discount_percent, limitations FROM coupons 
+                    SELECT code, discount_percent, limitations, email FROM coupons 
                     WHERE code = $1 AND status = 'active' AND (expires_at IS NULL OR expires_at > NOW())
                 `, [couponCode.toUpperCase()]);
 
@@ -91,12 +91,53 @@ export async function POST(req) {
                 const coupon = coupRes.rows[0];
                 const limitations = coupon.limitations || {};
 
-                if (limitations.min_total && calculatedTotal < limitations.min_total) {
+                // 1. Ownership Check
+                const user = userId ? await currentUser() : null;
+                const userEmail = user?.emailAddresses?.[0]?.emailAddress;
+                if (coupon.email && userEmail && coupon.email.toLowerCase() !== userEmail.toLowerCase()) {
+                    throw new Error('הקופון הזה אינו זמין עבור משתמש זה');
+                }
+
+                // 2. Single-Use Check
+                const usageRes = await client.query('SELECT id FROM orders WHERE coupon_code = $1 LIMIT 1', [coupon.code]);
+                if (usageRes.rows.length > 0) {
+                    throw new Error('קוד קופון זה כבר נוצל');
+                }
+
+                // 3. Min Total Check (Already calculated subtotal from loop)
+                const subtotalBeforeShipping = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                if (limitations.min_total && subtotalBeforeShipping < limitations.min_total) {
                     throw new Error(`סכום מינימלי לשימוש בקופון זה הוא ${limitations.min_total} ₪`);
                 }
 
-                discountAmount = Math.round(calculatedTotal * (coupon.discount_percent / 100));
-                calculatedTotal -= discountAmount;
+                // 4. Product/Brand Restrictions
+                if (limitations.eligible_brands || limitations.eligible_products || limitations.excluded_products) {
+                    const itemDict = items.reduce((acc, item) => {
+                        let cleanId = item.id;
+                        if (typeof cleanId === 'string' && cleanId.includes('-')) cleanId = cleanId.split('-')[0];
+                        acc[cleanId] = item;
+                        return acc;
+                    }, {});
+
+                    const productIds = Object.keys(itemDict).filter(id => !isNaN(id)).map(id => parseInt(id));
+                    const productsRes = await client.query('SELECT id, brand FROM products WHERE id = ANY($1)', [productIds]);
+                    const productsData = productsRes.rows;
+
+                    const matchesWhitelist = (p) => {
+                        const brandMatch = !limitations.eligible_brands || limitations.eligible_brands.includes(p.brand);
+                        const productMatch = !limitations.eligible_products || limitations.eligible_products.includes(p.id);
+                        const notExcluded = !limitations.excluded_products || !limitations.excluded_products.includes(p.id);
+                        return brandMatch && productMatch && notExcluded;
+                    };
+
+                    const eligibleItemsCount = productsData.filter(matchesWhitelist).length;
+                    if (eligibleItemsCount === 0) {
+                        throw new Error('קופון זה אינו חל על הפריטים בעגלה שלך');
+                    }
+                }
+
+                discountAmount = Math.round(subtotalBeforeShipping * (coupon.discount_percent / 100));
+                calculatedTotal = subtotalBeforeShipping - discountAmount;
             }
 
             // Add shipping cost (0 for self_pickup, 30 for mail)
