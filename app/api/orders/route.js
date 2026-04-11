@@ -185,10 +185,11 @@ export async function POST(req) {
             // 1. Create Order
             // We save minimal user info snapshot for the order record
             const customerDetails = {
-                clerk_id: userId,
-                name: `${user.firstName} ${user.lastName}`,
-                email: user.emailAddresses[0]?.emailAddress,
+                clerk_id: userId || null,
+                name: body.customerDetails?.name || (user ? `${user.firstName} ${user.lastName}` : ''),
+                email: body.customerDetails?.email || (user ? user.emailAddresses[0].emailAddress : ''),
                 phone: phoneNumber || '',
+                shipping_cost: shippingCost || 0
             };
 
             const orderResult = await client.query(

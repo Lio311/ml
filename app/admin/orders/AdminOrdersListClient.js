@@ -170,7 +170,7 @@ export default function AdminOrdersListClient({
                                             {(order.delivery_method === 'mail' || order.delivery_method === 'shipping') && (
                                                 <span className="text-[11px] text-blue-500/80 font-bold bg-blue-50 px-1.5 py-0.5 rounded-md border border-blue-100" dir="ltr" title="תוספת משלוח">+30</span>
                                             )}
-                                            <span>{order.total_amount} ₪</span>
+                                            <span>{order.total_amount - (order.delivery_method === 'mail' || order.delivery_method === 'shipping' ? (order.customer_details?.shipping_cost ?? 30) : 0)} ₪</span>
                                         </div>
                                     </td>
                                     <td className="p-4">
@@ -281,7 +281,7 @@ export default function AdminOrdersListClient({
                                         {(order.delivery_method === 'mail' || order.delivery_method === 'shipping') && (
                                             <span className="text-[11px] text-blue-500/80 font-bold bg-blue-50 px-1.5 py-0.5 rounded-md border border-blue-100" dir="ltr" title="תוספת משלוח">+30</span>
                                         )}
-                                        <div className="font-black text-gray-900 text-lg leading-none" dir="ltr">₪{order.total_amount}</div>
+                                        <div className="font-black text-gray-900 text-lg leading-none" dir="ltr">₪{order.total_amount - (order.delivery_method === 'mail' || order.delivery_method === 'shipping' ? (order.customer_details?.shipping_cost ?? 30) : 0)}</div>
                                     </div>
                                     <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none">
                                         {new Date(order.created_at).toLocaleDateString('he-IL', { day: '2-digit', month: '2-digit', year: '2-digit' })}
