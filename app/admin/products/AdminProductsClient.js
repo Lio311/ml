@@ -244,6 +244,12 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                 >
                     דו״ח מלאי
                 </button>
+                <button
+                    onClick={() => router.push('/admin/products?view=on_sale')}
+                    className={`pb-2 px-4 font-bold transition whitespace-nowrap ${currentView === 'on_sale' ? 'border-b-2 border-green-600 text-green-600' : 'text-gray-500 hover:text-green-600'}`}
+                >
+                    מבצעים ({counts?.on_sale || 0})
+                </button>
             </div>
 
             {/* Sorting Controls (Visible mainly in Stock List or All) */}

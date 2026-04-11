@@ -21,7 +21,7 @@ export default async function AdminProductsPage(props) {
     let products = [];
     let totalProducts = 0;
     let filteredCount = 0;
-    let counts = { all: 0, out_of_stock: 0, drafts: 0 };
+    let counts = { all: 0, out_of_stock: 0, drafts: 0, on_sale: 0 };
 
     const client = await pool.connect();
     try {
@@ -43,6 +43,8 @@ export default async function AdminProductsPage(props) {
             whereClauses.push(`stock <= 0`);
         } else if (view === 'drafts') {
             whereClauses.push(`active = false`);
+        } else if (view === 'on_sale') {
+            whereClauses.push(`discount_percentage > 0`);
         }
 
         // Fetch Global Counts (Quickly, without search/letter filtering)
@@ -50,13 +52,15 @@ export default async function AdminProductsPage(props) {
             SELECT 
                 COUNT(*) as all,
                 COUNT(*) FILTER (WHERE stock <= 0) as out_of_stock,
-                COUNT(*) FILTER (WHERE active = false) as drafts
+                COUNT(*) FILTER (WHERE active = false) as drafts,
+                COUNT(*) FILTER (WHERE discount_percentage > 0) as on_sale
             FROM products
         `);
         counts = {
             all: parseInt(countsRes.rows[0].all),
             out_of_stock: parseInt(countsRes.rows[0].out_of_stock),
-            drafts: parseInt(countsRes.rows[0].drafts)
+            drafts: parseInt(countsRes.rows[0].drafts),
+            on_sale: parseInt(countsRes.rows[0].on_sale)
         };
         totalProducts = counts.all;
 
