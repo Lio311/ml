@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import pool from '@/app/lib/db';
 import { sendEmail } from '@/app/lib/email';
+import { generateRecommendationForOrder } from '@/app/lib/recommendations';
 
 export async function GET(req) {
     const authHeader = req.headers.get('authorization');
@@ -33,76 +34,8 @@ export async function GET(req) {
                 const existCheck = await client.query(`SELECT id FROM pending_recommendation_emails WHERE order_id = $1`, [order.id]);
                 if (existCheck.rows.length > 0) continue;
 
-                const items = order.items || [];
-                const boughtProductIds = items.map(item => item.id);
-                if (boughtProductIds.length === 0) continue;
-
-                let avgPrice = 0;
-                if (items.length > 0) {
-                    const sum = items.reduce((acc, item) => acc + (parseFloat(item.price) || 0), 0);
-                    avgPrice = sum / items.length;
-                }
-
-                const boughtProducts = await client.query(`
-                    SELECT top_notes, middle_notes, base_notes
-                    FROM products 
-                    WHERE id = ANY($1)
-                `, [boughtProductIds]);
-
-                const userNotes = new Set();
-                boughtProducts.rows.forEach(p => {
-                    [...(p.top_notes || '').split(','), 
-                     ...(p.middle_notes || '').split(','), 
-                     ...(p.base_notes || '').split(',')].forEach(n => {
-                        const note = n.trim();
-                        if (note) userNotes.add(note);
-                     });
-                });
-
-                const allOtherProducts = await client.query(`
-                    SELECT id, name, brand, image_url, top_notes, middle_notes, base_notes, price_5ml, price_10ml
-                    FROM products 
-                    WHERE active = true 
-                    AND NOT (id = ANY($1))
-                `, [boughtProductIds]);
-
-                let candidates = allOtherProducts.rows.map(p => {
-                    const pNotes = new Set([
-                        ...(p.top_notes || '').split(',').map(n => n.trim()).filter(Boolean),
-                        ...(p.middle_notes || '').split(',').map(n => n.trim()).filter(Boolean),
-                        ...(p.base_notes || '').split(',').map(n => n.trim()).filter(Boolean)
-                    ]);
-                    
-                    let intersection = 0;
-                    pNotes.forEach(note => {
-                        if (userNotes.has(note)) intersection++;
-                    });
-
-                    const price = parseFloat(p.price_5ml) || parseFloat(p.price_10ml) || 0;
-                    const priceDiff = avgPrice > 0 ? Math.abs(price - avgPrice) : 0;
-                    const pricePenalty = Math.floor(priceDiff / 50);
-
-                    return {
-                        id: p.id,
-                        name: p.name,
-                        brand: p.brand,
-                        image_url: p.image_url,
-                        price: price,
-                        notes: [...pNotes].slice(0, 3).join(', '),
-                        score: intersection - pricePenalty
-                    };
-                });
-
-                candidates.sort((a, b) => b.score - a.score);
-                const suggested = candidates.slice(0, 3);
-                if (suggested.length === 0) continue;
-
-                await client.query(`
-                    INSERT INTO pending_recommendation_emails (user_id, order_id, suggested_products, status)
-                    VALUES ($1, $2, $3, 'pending')
-                `, [clerkId, order.id, JSON.stringify(suggested)]);
-
-                processedCount++;
+                const result = await generateRecommendationForOrder(client, order.id, clerkId);
+                if (result) processedCount++;
             }
 
             // ==========================================

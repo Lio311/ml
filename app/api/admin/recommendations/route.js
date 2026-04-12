@@ -2,6 +2,7 @@ import pool from '@/app/lib/db';
 import { auth as clerkAuth } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
 import { recordAuditLog } from '@/app/lib/audit';
+import { generateRecommendationForOrder } from '@/app/lib/recommendations';
 
 export async function GET(req) {
     try {
@@ -102,16 +103,35 @@ export async function DELETE(req) {
 
         if (!id) return new NextResponse('ID is required', { status: 400 });
 
+        // Get details before updating
+        const recData = await pool.query('SELECT order_id, user_id FROM pending_recommendation_emails WHERE id = $1', [id]);
+        if (recData.rows.length === 0) return new NextResponse('Not found', { status: 404 });
+        
+        const { order_id, user_id } = recData.rows[0];
+
+        // Mark current as rejected
         await pool.query('UPDATE pending_recommendation_emails SET status = $1 WHERE id = $2', ['rejected', id]);
 
+        // Record audit log
         await recordAuditLog({
             userId,
             action: 'reject_recommendation_email',
             entityType: 'recommendation_email',
             entityId: String(id),
-            details: {},
+            details: { order_id },
             req
         });
+
+        // Loop: Generate a NEW recommendation immediately for this order
+        const client = await pool.connect();
+        try {
+            await generateRecommendationForOrder(client, order_id, user_id);
+        } catch (genError) {
+            console.error('Error regenerating recommendation in loop:', genError);
+            // We don't fail the whole request if regeneration fails, but we log it
+        } finally {
+            client.release();
+        }
 
         return NextResponse.json({ success: true });
     } catch (error) {
