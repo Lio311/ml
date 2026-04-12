@@ -33,7 +33,7 @@ export default function RecommendationsAdminPage() {
 
     const handleApprove = async (id) => {
         setProcessingId(id);
-        const loadingToast = toast.loading('שולח אימייל...');
+        const loadingToast = toast.loading('מעדכן המלצה...');
         try {
             const res = await fetch('/api/admin/recommendations', {
                 method: 'POST',
@@ -42,10 +42,10 @@ export default function RecommendationsAdminPage() {
             });
 
             if (res.ok) {
-                toast.success('המייל נשלח בהצלחה!', { id: loadingToast });
+                toast.success('ההמלצה אושרה ותשלח במועד המתוכנן (30 יום מההזמנה)', { id: loadingToast });
                 setItems(prev => prev.map(item => item.id === id ? { ...item, status: 'approved' } : item));
             } else {
-                toast.error('שגיאה בשליחה', { id: loadingToast });
+                toast.error('שגיאה באישור ההמלצה', { id: loadingToast });
             }
         } catch (error) {
             toast.error('שגיאת רשת', { id: loadingToast });
