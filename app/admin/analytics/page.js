@@ -165,13 +165,10 @@ export default function AnalyticsDashboard() {
                 <Tooltip 
                   labelStyle={{ color: '#111827', fontWeight: 'bold', marginBottom: '4px' }}
                   contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }} 
-                  formatter={(value, name) => [
-                    value.toLocaleString(), 
-                    name === 'users' ? 'משתמשים' : 'צפיות'
-                  ]}
+                  formatter={(value, name) => [value.toLocaleString(), name]}
                 />
                 <Line name="צפיות" type="monotone" dataKey="views" stroke="#2dd4bf" strokeWidth={3} dot={false} strokeDasharray="5 5" />
-                <Line name="משתמשים" type="monotone" dataKey="users" stroke="#3b82f6" strokeWidth={4} dot={{r: 0}} activeDot={{r: 6, strokeWidth: 0}} />
+                <Line name="גולשים" type="monotone" dataKey="users" stroke="#3b82f6" strokeWidth={4} dot={{r: 0}} activeDot={{r: 6, strokeWidth: 0}} />
               </LineChart>
             </ResponsiveContainer>
           </div>
@@ -198,10 +195,7 @@ export default function AnalyticsDashboard() {
                 <Tooltip 
                   labelStyle={{ color: '#111827', fontWeight: 'bold', marginBottom: '4px' }}
                   contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }} 
-                  formatter={(value, name) => [
-                    value.toLocaleString(), 
-                    name === 'clicks' ? 'קליקים' : 'חשיפות'
-                  ]}
+                  formatter={(value, name) => [value.toLocaleString(), name]}
                 />
                 <Bar name="קליקים" dataKey="clicks" fill="#8b5cf6" radius={[4, 4, 0, 0]} barSize={20} />
                 <Line name="חשיפות" type="monotone" dataKey="impressions" stroke="#fb923c" strokeWidth={3} dot={false} />
