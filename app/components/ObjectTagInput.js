@@ -11,7 +11,8 @@ export default function ObjectTagInput({ value = [], onChange, options = [], pla
     const wrapperRef = useRef(null);
 
     // Filter available options (exclude already selected)
-    const availableOptions = options.filter(opt => !value.includes(opt.id));
+    const selectedIds = value.map(v => typeof v === 'object' ? v.id : v);
+    const availableOptions = options.filter(opt => !selectedIds.includes(opt.id));
 
     // Filter suggestions based on input
     const filteredSuggestions = availableOptions.filter(opt =>
@@ -36,7 +37,10 @@ export default function ObjectTagInput({ value = [], onChange, options = [], pla
     };
 
     const removeTag = (idToRemove) => {
-        onChange(value.filter(id => id !== idToRemove));
+        onChange(value.filter(v => {
+            const id = typeof v === 'object' ? v.id : v;
+            return id !== idToRemove;
+        }));
     };
 
     const handleKeyDown = (e) => {
@@ -52,20 +56,23 @@ export default function ObjectTagInput({ value = [], onChange, options = [], pla
     };
 
     // Helper to get label for selected ID
-    const getLabel = (id) => {
-        const opt = options.find(o => o.id === id);
-        return opt ? opt.label : id;
+    const getLabel = (item) => {
+        if (typeof item === 'object' && item.label) return item.label;
+        const opt = options.find(o => o.id === item);
+        return opt ? opt.label : item;
     };
+
+    const getItemId = (item) => typeof item === 'object' ? item.id : item;
 
     return (
         <div className="relative" ref={wrapperRef}>
             <div className="flex flex-wrap gap-2 border p-2 rounded bg-white focus-within:ring-2 focus-within:ring-black focus-within:border-transparent min-h-[42px]">
-                {value.map(id => (
-                    <span key={id} className="bg-gray-100 text-gray-800 px-2 py-1 rounded text-sm flex items-center gap-1 border">
-                        {getLabel(id)}
+                {value.map(item => (
+                    <span key={getItemId(item)} className="bg-gray-100 text-gray-800 px-2 py-1 rounded text-sm flex items-center gap-1 border">
+                        {getLabel(item)}
                         <button
                             type="button"
-                            onClick={() => removeTag(id)}
+                            onClick={() => removeTag(getItemId(item))}
                             className="text-gray-400 hover:text-red-500 font-bold ml-1 focus:outline-none"
                         >
                             &times;
