@@ -112,6 +112,50 @@ export default function MailingClient() {
         }
     };
 
+    const handleResetToDefault = async (slug) => {
+        if (!slug) return;
+        
+        toast((t) => (
+            <div className="flex flex-col gap-3 text-right" dir="rtl">
+                <span className="font-bold text-sm text-gray-900">האם לשחזר את העיצוב להגדרות המערכת המקוריות?</span>
+                <p className="text-[10px] text-gray-500 font-bold uppercase tracking-wider">פעולה זו תדרוס את הטקסט הנוכחי בעורך (אל תשכח לשמור לאחר מכן)</p>
+                <div className="flex gap-2 justify-end">
+                    <button 
+                        onClick={() => toast.dismiss(t.id)}
+                        className="px-3 py-1.5 text-xs font-bold text-gray-500 hover:bg-gray-100 rounded-lg transition-all"
+                    >
+                        ביטול
+                    </button>
+                    <button 
+                        onClick={async () => {
+                            toast.dismiss(t.id);
+                            const tid = toast.loading('מושך עיצוב מהמערכת...');
+                            try {
+                                const res = await fetch(`/api/admin/mailing/templates?default=true&slug=${slug}`);
+                                if (res.ok) {
+                                    const data = await res.json();
+                                    setActiveTemplate(prev => ({
+                                        ...prev,
+                                        subject: data.subject,
+                                        content_html: data.content_html
+                                    }));
+                                    toast.success('העיצוב המקורי נטען לעורך! אל תשכח ללחוץ על שמירה.', { id: tid });
+                                } else {
+                                    toast.error('לא נמצא עיצוב מערכת לטמפלייט זה', { id: tid });
+                                }
+                            } catch (err) {
+                                toast.error('שגיאה בתקשורת', { id: tid });
+                            }
+                        }}
+                        className="px-3 py-1.5 text-xs font-black bg-blue-600 text-white rounded-lg hover:bg-blue-700 shadow-lg shadow-blue-200 transition-all"
+                    >
+                        שחזר עכשיו
+                    </button>
+                </div>
+            </div>
+        ), { duration: 6000, position: 'top-center' });
+    };
+
     const handleSendTest = async (subject, html) => {
         toast.promise(
             fetch('/api/admin/mailing/send', {
@@ -445,6 +489,15 @@ export default function MailingClient() {
                                 </div>
 
                                 <div className="flex gap-3 justify-end pt-4">
+                                    {activeTemplate.slug && (
+                                        <button 
+                                            onClick={() => handleResetToDefault(activeTemplate.slug)}
+                                            className="px-6 py-3 rounded-2xl font-bold bg-gray-100 text-gray-600 hover:bg-gray-200 transition-all flex items-center gap-2"
+                                            title="שחזר לעיצוב המקורי של המערכת (600px)"
+                                        >
+                                            <RefreshCcw size={18} /> שחזר עיצוב
+                                        </button>
+                                    )}
                                     <button 
                                         onClick={() => handleSendTest(activeTemplate.subject, activeTemplate.content_html)}
                                         className="px-6 py-3 rounded-2xl font-bold bg-blue-50 text-blue-600 hover:bg-blue-100 transition-all flex items-center gap-2"

@@ -46,11 +46,24 @@ async function ensureTables() {
     }
 }
 
-export async function GET() {
+export async function GET(req) {
     const user = await currentUser();
     const role = user?.publicMetadata?.role;
     if (role !== 'admin' && role !== 'deputy') {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
+    }
+
+    const { searchParams } = new URL(req.url);
+    const isDefaultRequest = searchParams.get('default') === 'true';
+    const slug = searchParams.get('slug');
+
+    if (isDefaultRequest && slug) {
+        const defaults = getSystemDefaults();
+        const template = defaults[slug];
+        if (!template) {
+            return NextResponse.json({ error: 'System default not found for this slug' }, { status: 404 });
+        }
+        return NextResponse.json(template);
     }
 
     try {

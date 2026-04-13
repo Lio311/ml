@@ -161,8 +161,26 @@ export const getOrderConfirmationTemplate = (orderId, items, total, freeSamples,
                 </table>
 
                 <div style="background-color: #fcfcfc; padding: 20px; border-radius: 16px; border: 1px solid #f5f5f5;">
-                    <div style="margin-top: 12px; font-size: 18px; font-weight: 900; color: #000; display: block; width: 100%; text-align: left;">
-                        סה"כ לתשלום: ${total} ₪
+                    ${deliveryMethod ? `
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px; color: #666;">
+                            <span>שיטת שילוח:</span>
+                            <strong>${deliveryMethod}</strong>
+                        </div>
+                    ` : ''}
+                    ${shippingCost > 0 ? `
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px; color: #666;">
+                            <span>עלות משלוח:</span>
+                            <strong>${shippingCost} ₪</strong>
+                        </div>
+                    ` : deliveryMethod ? `
+                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px; color: #16a34a;">
+                            <span>דמי משלוח:</span>
+                            <strong>חינם</strong>
+                        </div>
+                    ` : ''}
+                    <div style="margin-top: 12px; padding-top: 12px; border-top: 1px dashed #ddd; font-size: 18px; font-weight: 900; color: #000; display: flex; justify-content: space-between;">
+                        <span>סה"כ:</span>
+                        <span>${total} ₪</span>
                     </div>
                 </div>
 
