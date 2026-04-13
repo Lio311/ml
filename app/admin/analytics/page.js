@@ -230,7 +230,7 @@ export default function AnalyticsDashboard() {
                 <tbody className="divide-y divide-gray-50 text-[13px]">
                   {gscData.queries.slice((queryPage - 1) * itemsPerPage, queryPage * itemsPerPage).map((q, i) => (
                     <tr key={i} className="hover:bg-gray-50/80 transition-colors">
-                      <td className="px-5 py-2.5 text-sm font-bold text-gray-800 break-words max-w-[150px]">{q.keys[0]}</td>
+                      <td className="px-5 py-2.5 text-sm font-bold text-gray-800 truncate max-w-[200px]" title={q.keys[0]}>{q.keys[0]}</td>
                       <td className="px-5 py-2.5 text-sm text-gray-600 font-medium">{(q.clicks || 0).toLocaleString()}</td>
                       <td className="px-5 py-2.5 text-sm text-gray-500">{(q.impressions || 0).toLocaleString()}</td>
                       <td className="px-5 py-2.5 text-xs font-bold text-blue-600">{(q.ctr * 100).toFixed(1)}%</td>
