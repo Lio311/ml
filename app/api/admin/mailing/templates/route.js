@@ -35,20 +35,13 @@ async function ensureTables() {
         );
     `);
 
-    // Ensure system templates exist and are updated to the latest layouts
+    // Ensure system templates exist in the database (DO NOT overwrite existing ones on every GET)
     const defaults = getSystemDefaults();
     for (const [slug, data] of Object.entries(defaults)) {
-        // We update the system templates to ensure the new 600px width and image fixes are applied.
-        // Since the user explicitly asked for 'Save' to overwrite, we ensure the initial sync 
-        // also brings the system to the latest state.
         await pool.query(`
             INSERT INTO email_templates (slug, name, type, content_html, subject)
             VALUES ($1, $2, 'system', $3, $4)
-            ON CONFLICT (slug) DO UPDATE 
-            SET content_html = EXCLUDED.content_html, 
-                subject = EXCLUDED.subject, 
-                updated_at = NOW()
-            WHERE email_templates.type = 'system'
+            ON CONFLICT (slug) DO NOTHING
         `, [slug, slug, data.content_html, data.subject]);
     }
 }

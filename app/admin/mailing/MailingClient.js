@@ -816,26 +816,28 @@ function CampaignRow({ campaign, onDelete, onSend }) {
                 </div>
             </td>
             <td className="p-6">
-                <div className="flex justify-center gap-2">
+                <div className="flex justify-center gap-1.5">
                     {!isSent && !isSending && (
                         <button 
                             onClick={onSend}
-                            className="p-2.5 bg-black text-white rounded-xl hover:bg-gray-800 transition-all shadow-lg shadow-black/5 hover:scale-110 active:scale-95"
+                            className="p-1.5 bg-black text-white rounded-lg hover:bg-gray-800 transition-all hover:scale-105 active:scale-95"
                             title="שלח עכשיו"
                         >
-                            <Play size={16} fill="currentColor" />
+                            <Play size={14} fill="currentColor" />
                         </button>
                     )}
                     
-                    {isSent ? (
-                        <Link href="/admin/email-logs" className="p-2.5 text-gray-400 hover:text-black hover:bg-gray-50 rounded-xl transition-all">
+                    {isSent && (
+                        <Link href="/admin/email-logs" className="p-1.5 text-gray-400 hover:text-black hover:bg-gray-50 rounded-lg transition-all" title="צפה בדו''ח">
                             <ExternalLink size={16} />
                         </Link>
-                    ) : !isSending && (
+                    )}
+
+                    {!isSending && (
                         <button 
                             onClick={onDelete}
-                            className="p-2.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"
-                            title="מחק דיוור"
+                            className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
+                            title="מחק דיווח"
                         >
                             <Trash2 size={16} />
                         </button>
