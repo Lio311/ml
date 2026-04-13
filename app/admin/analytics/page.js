@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, BarChart, Bar, ComposedChart, Cell } from 'recharts';
-import { Search, Globe, MousePointer2, Eye, TrendingUp, Layers, MapPin, ExternalLink, ArrowUpRight, ArrowDownRight } from 'lucide-react';
+import { Search, Globe, MousePointer2, Eye, TrendingUp, Layers, MapPin, ExternalLink, ArrowUpRight, ArrowDownRight, ChevronLeft, ChevronRight } from 'lucide-react';
 
 export default function AnalyticsDashboard() {
   const [gaData, setGaData] = useState({ daily: [], sources: [], pages: [] });
@@ -10,6 +10,10 @@ export default function AnalyticsDashboard() {
   const [error, setError] = useState(null);
   
   const [totals, setTotals] = useState({ users: 0, views: 0, clicks: 0, impressions: 0 });
+  
+  // Pagination State for Queries
+  const [queryPage, setQueryPage] = useState(1);
+  const queriesPerPage = 6;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -213,18 +217,43 @@ export default function AnalyticsDashboard() {
                   <th className="px-6 py-3">CTR</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-50">
-                {gscData.queries.map((q, i) => (
+              <tbody className="divide-y divide-gray-50 text-[13px]">
+                {gscData.queries.slice((queryPage - 1) * queriesPerPage, queryPage * queriesPerPage).map((q, i) => (
                   <tr key={i} className="hover:bg-gray-50/80 transition-colors">
                     <td className="px-6 py-3 text-sm font-bold text-gray-800 break-words max-w-[150px]">{q.keys[0]}</td>
-                    <td className="px-6 py-3 text-sm text-gray-600">{q.clicks}</td>
-                    <td className="px-6 py-3 text-sm text-gray-500">{q.impressions.toLocaleString()}</td>
+                    <td className="px-6 py-3 text-sm text-gray-600 font-medium">{(q.clicks || 0).toLocaleString()}</td>
+                    <td className="px-6 py-3 text-sm text-gray-500">{(q.impressions || 0).toLocaleString()}</td>
                     <td className="px-6 py-3 text-xs font-bold text-blue-600">{(q.ctr * 100).toFixed(1)}%</td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
+          
+          {/* Pagination Controls */}
+          {gscData.queries.length > queriesPerPage && (
+            <div className="p-4 border-t border-gray-50 flex items-center justify-between bg-white">
+               <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                  עמוד {queryPage} מתוך {Math.ceil(gscData.queries.length / queriesPerPage)}
+               </div>
+               <div className="flex gap-2">
+                  <button 
+                    onClick={() => setQueryPage(p => Math.max(1, p - 1))}
+                    disabled={queryPage === 1}
+                    className="p-1.5 rounded-lg border border-gray-100 disabled:opacity-30 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"
+                  >
+                    <ChevronRight className="w-4 h-4 text-gray-600" />
+                  </button>
+                  <button 
+                    onClick={() => setQueryPage(p => Math.min(Math.ceil(gscData.queries.length / queriesPerPage), p + 1))}
+                    disabled={queryPage >= Math.ceil(gscData.queries.length / queriesPerPage)}
+                    className="p-1.5 rounded-lg border border-gray-100 disabled:opacity-30 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"
+                  >
+                    <ChevronLeft className="w-4 h-4 text-gray-600" />
+                  </button>
+               </div>
+            </div>
+          )}
         </div>
 
         {/* Traffic Sources */}

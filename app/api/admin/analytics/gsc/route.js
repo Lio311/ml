@@ -44,7 +44,7 @@ export async function GET() {
         requestBody: {
           startDate, endDate,
           dimensions: ['query'],
-          rowLimit: 15,
+          rowLimit: 100,
         },
       }),
        // 3. Top Pages
