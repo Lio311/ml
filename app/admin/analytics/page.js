@@ -216,27 +216,29 @@ export default function AnalyticsDashboard() {
             </h3>
             <span className="text-[10px] bg-purple-100 text-purple-700 px-2 py-1 rounded-full font-bold">Search Console</span>
           </div>
-          <div className="overflow-x-auto min-h-[320px]">
-            <table className="w-full text-right min-w-[500px] border-collapse">
-              <thead className="bg-gray-50/50 text-[10px] text-gray-400 font-bold uppercase tracking-wider">
-                <tr>
-                  <th className="px-5 py-2">ביטוי חיפוש</th>
-                  <th className="px-5 py-2">קליקים</th>
-                  <th className="px-5 py-2">חשיפות</th>
-                  <th className="px-5 py-2">CTR</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-50 text-[13px]">
-                {gscData.queries.slice((queryPage - 1) * itemsPerPage, queryPage * itemsPerPage).map((q, i) => (
-                  <tr key={i} className="hover:bg-gray-50/80 transition-colors">
-                    <td className="px-5 py-2.5 text-sm font-bold text-gray-800 break-words max-w-[150px]">{q.keys[0]}</td>
-                    <td className="px-5 py-2.5 text-sm text-gray-600 font-medium">{(q.clicks || 0).toLocaleString()}</td>
-                    <td className="px-5 py-2.5 text-sm text-gray-500">{(q.impressions || 0).toLocaleString()}</td>
-                    <td className="px-5 py-2.5 text-xs font-bold text-blue-600">{(q.ctr * 100).toFixed(1)}%</td>
+          <div className="p-5 min-h-[350px]">
+            <div className="overflow-x-auto">
+              <table className="w-full text-right min-w-[500px] border-collapse">
+                <thead className="bg-gray-50/50 text-[10px] text-gray-400 font-bold uppercase tracking-wider">
+                  <tr>
+                    <th className="px-5 py-2">ביטוי חיפוש</th>
+                    <th className="px-5 py-2">קליקים</th>
+                    <th className="px-5 py-2">חשיפות</th>
+                    <th className="px-5 py-2">CTR</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
+                </thead>
+                <tbody className="divide-y divide-gray-50 text-[13px]">
+                  {gscData.queries.slice((queryPage - 1) * itemsPerPage, queryPage * itemsPerPage).map((q, i) => (
+                    <tr key={i} className="hover:bg-gray-50/80 transition-colors">
+                      <td className="px-5 py-2.5 text-sm font-bold text-gray-800 break-words max-w-[150px]">{q.keys[0]}</td>
+                      <td className="px-5 py-2.5 text-sm text-gray-600 font-medium">{(q.clicks || 0).toLocaleString()}</td>
+                      <td className="px-5 py-2.5 text-sm text-gray-500">{(q.impressions || 0).toLocaleString()}</td>
+                      <td className="px-5 py-2.5 text-xs font-bold text-blue-600">{(q.ctr * 100).toFixed(1)}%</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
           </div>
           
           {/* Pagination Controls */}
@@ -274,8 +276,8 @@ export default function AnalyticsDashboard() {
             </h3>
              <span className="text-[10px] bg-blue-100 text-blue-700 px-2 py-1 rounded-full font-bold">GA4</span>
           </div>
-          <div className="p-5">
-            <div className="space-y-3.5 min-h-[320px]">
+          <div className="p-5 min-h-[350px]">
+            <div className="space-y-3.5">
               {gaData.sources.slice((sourcePage - 1) * itemsPerPage, sourcePage * itemsPerPage).map((s, i) => {
                 const percentage = Math.round((s.users / totals.users) * 100);
                 return (
