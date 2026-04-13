@@ -630,7 +630,7 @@ export default async function AdminDashboard({ searchParams }) {
 
                 {/* Cash Flow */}
                 <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 relative overflow-hidden group hover:shadow-md transition-shadow">
-                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-green-500 to-emerald-500"></div>
+                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-emerald-500 to-teal-600"></div>
                     <div className="flex justify-between items-start mb-4">
                         <div className="text-gray-500 text-sm font-bold uppercase flex items-center gap-2">
                             <Wallet className="w-4 h-4 text-green-500" />
@@ -730,7 +730,7 @@ export default async function AdminDashboard({ searchParams }) {
 
                 {/* Sales by Size Card (Reverted) */}
                 <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 relative overflow-hidden group hover:shadow-md transition-shadow">
-                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-600 to-indigo-600"></div>
+                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-600 to-violet-700"></div>
                     <div className="flex justify-between items-start mb-2">
                         <div className="text-gray-500 text-sm font-bold uppercase flex items-center gap-2">
                             <ShoppingBag className="w-4 h-4 text-blue-600" />
@@ -764,7 +764,7 @@ export default async function AdminDashboard({ searchParams }) {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 md:gap-4 mb-8">
                 {/* Site Visits (Rightmost in RTL) */}
                 <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100 relative overflow-hidden group hover:shadow-md transition-shadow">
-                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-sky-400 to-indigo-400"></div>
+                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-cyan-400 to-sky-500"></div>
                     <div className="text-gray-500 text-[10px] font-bold uppercase mb-2 flex items-center gap-2">
                         <Eye className="w-3.5 h-3.5 text-sky-500" />
                         כניסות לאתר
@@ -777,7 +777,7 @@ export default async function AdminDashboard({ searchParams }) {
 
                 {/* Total Orders */}
                 <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100 relative overflow-hidden group hover:shadow-md transition-shadow">
-                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-500 to-cyan-500"></div>
+                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-600 to-indigo-700"></div>
                     <div className="text-gray-500 text-[10px] font-bold uppercase mb-2 flex items-center gap-2">
                         <ShoppingCart className="w-3.5 h-3.5 text-blue-500" />
                         סה"כ הזמנות
@@ -790,7 +790,7 @@ export default async function AdminDashboard({ searchParams }) {
 
                 {/* Registered Users */}
                 <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100 relative overflow-hidden group hover:shadow-md transition-shadow">
-                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-indigo-500 to-purple-600"></div>
+                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-600 to-fuchsia-700"></div>
                     <div className="text-gray-500 text-[10px] font-bold uppercase mb-2 flex items-center gap-2">
                         <Users className="w-3.5 h-3.5 text-indigo-500" />
                         משתמשים רשומים
@@ -803,7 +803,7 @@ export default async function AdminDashboard({ searchParams }) {
 
                 {/* AOV Card */}
                 <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100 relative overflow-hidden group hover:shadow-md transition-shadow">
-                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-600 to-indigo-600"></div>
+                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-rose-400 to-red-500"></div>
                     <div className="text-gray-500 text-[10px] font-bold uppercase mb-2 flex items-center gap-2">
                         <TrendingUp className="w-3.5 h-3.5 text-blue-600" />
                         סל ממוצע (AOV)
@@ -816,7 +816,7 @@ export default async function AdminDashboard({ searchParams }) {
 
                 {/* LTV Card (New - Leftmost in RTL) */}
                 <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100 relative overflow-hidden group hover:shadow-md transition-shadow">
-                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 to-pink-500"></div>
+                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-fuchsia-500 to-pink-600"></div>
                     <div className="text-gray-500 text-[10px] font-bold uppercase mb-2 flex items-center gap-2">
                         <Users className="w-3.5 h-3.5 text-purple-500" />
                         ערך לקוח (LTV)
