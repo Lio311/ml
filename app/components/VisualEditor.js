@@ -39,6 +39,9 @@ export default function VisualEditor({ value, onChange, placeholder = "כאן כ
     }, [onInsertHTML, isMounted]);
 
     const execCommand = (command, val = null) => {
+        if (editorRef.current) {
+            editorRef.current.focus();
+        }
         document.execCommand(command, false, val);
         if (editorRef.current) {
             onChange(editorRef.current.innerHTML);

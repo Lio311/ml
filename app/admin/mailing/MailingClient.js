@@ -66,7 +66,7 @@ export default function MailingClient() {
 
     const fetchAllProducts = async () => {
         try {
-            const res = await fetch('/api/products?limit=100');
+            const res = await fetch('/api/products?limit=1000');
             if (res.ok) {
                 const data = await res.json();
                 setAllProducts(data.products || []);
@@ -221,13 +221,19 @@ export default function MailingClient() {
             </header>
 
             {/* Navigation Tabs */}
-            {(view === 'templates' || view === 'campaigns') && (
+            {(view === 'templates' || view === 'campaigns' || view === 'admin-alerts') && (
                 <div className="flex gap-2 mb-8 bg-gray-100 p-1.5 rounded-[2rem] w-fit mx-auto md:mx-0">
                     <button 
                         onClick={() => setView('templates')}
                         className={`px-8 py-3 rounded-3xl font-black text-sm transition-all ${view === 'templates' ? 'bg-white text-black shadow-lg shadow-white/20' : 'text-gray-400 hover:text-gray-600'}`}
                     >
-                        טמפלייטים
+                        מייל ללקוחות
+                    </button>
+                    <button 
+                        onClick={() => setView('admin-alerts')}
+                        className={`px-8 py-3 rounded-3xl font-black text-sm transition-all ${view === 'admin-alerts' ? 'bg-white text-black shadow-lg shadow-white/20' : 'text-gray-400 hover:text-gray-600'}`}
+                    >
+                        התראות מנהל
                     </button>
                     <button 
                         onClick={() => setView('campaigns')}
@@ -247,7 +253,7 @@ export default function MailingClient() {
                 <>
                     {view === 'templates' && (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {templates.map(t => (
+                            {templates.filter(t => !t.slug?.includes('admin_') && !t.slug?.includes('contact_form')).map(t => (
                                 <TemplateCard 
                                     key={t.id} 
                                     template={t} 
@@ -264,6 +270,20 @@ export default function MailingClient() {
                                         }); 
                                         setView('create-campaign'); 
                                     }}
+                                />
+                            ))}
+                        </div>
+                    )}
+
+                    {view === 'admin-alerts' && (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {templates.filter(t => t.slug?.includes('admin_') || t.slug?.includes('contact_form')).map(t => (
+                                <TemplateCard 
+                                    key={t.id} 
+                                    template={t} 
+                                    onEdit={() => { setActiveTemplate(t); setView('edit-template'); }}
+                                    onDelete={() => deleteTemplate(t.id)}
+                                    onSend={null} // Usually no direct send for admin alerts
                                 />
                             ))}
                         </div>

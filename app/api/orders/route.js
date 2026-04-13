@@ -280,15 +280,25 @@ export async function POST(req) {
             }
 
             // Send Admin and Catalog Owner Alerts
-            const adminHtml = getAdminNewOrderTemplate(orderId, `${user.firstName} ${user.lastName}`, total, items, deliveryMethod || 'mail', shippingCost, phoneNumber);
+            const adminTmpl = await getTemplate('admin_order_alert', 
+                { 
+                    orderId, 
+                    name: `${user.firstName} ${user.lastName}`, 
+                    total, 
+                    deliveryMethod: deliveryMethod || 'mail', 
+                    shippingCost, 
+                    phone: phoneNumber 
+                },
+                () => getAdminNewOrderTemplate(orderId, `${user.firstName} ${user.lastName}`, total, items, deliveryMethod || 'mail', shippingCost, phoneNumber)
+            );
             
             if (catalogOwnerEmail) {
                 // Send to catalog owner
-                await sendEmail(catalogOwnerEmail, `הזמנה חדשה התקבלה בקטלוג שלך #${orderId} 🔥`, adminHtml, 'admin_alert', orderId);
+                await sendEmail(catalogOwnerEmail, adminTmpl.subject, adminTmpl.html, 'admin_alert', orderId);
             }
             
             // Also send to main admin
-            await sendEmail(adminEmail, `חם מהתנור! הזמנה חדשה ${catalogId ? '(מקטלוג משתמש)' : ''} #${orderId} 🔥`, adminHtml, 'admin_alert', orderId);
+            await sendEmail(adminEmail, adminTmpl.subject, adminTmpl.html, 'admin_alert', orderId);
 
             // Record Audit Log
             await recordAuditLog({

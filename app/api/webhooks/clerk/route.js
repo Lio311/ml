@@ -3,7 +3,7 @@ import { Webhook } from 'svix';
 import { headers } from 'next/headers';
 import { NextResponse } from 'next/server';
 import pool from '../../../lib/db';
-import { sendEmail, getAdminNewUserTemplate, getUserWelcomeTemplate } from '../../../lib/email';
+import { sendEmail, getTemplate, getAdminNewUserTemplate, getUserWelcomeTemplate } from '../../../lib/email';
 
 export async function POST(req) {
     // You can find this in the Clerk Dashboard -> Webhooks -> choose the webhook
@@ -83,15 +83,20 @@ export async function POST(req) {
                 );
 
                 // Send Admin Email Alert
-                const adminEmail = process.env.ADMIN_EMAIL;
-                const userObj = { first_name, last_name, email };
-                const adminHtml = getAdminNewUserTemplate(userObj);
-                await sendEmail(adminEmail, `משתמש חדש הצטרף למשפחה! ✨`, adminHtml, 'admin_alert');
+                const adminEmail = process.env.ADMIN_EMAIL || process.env.GMAIL_USER;
+                const adminTmpl = await getTemplate('admin_user_alert', 
+                    { firstName: first_name, lastName: last_name, email: email },
+                    () => getAdminNewUserTemplate({ first_name, last_name, email })
+                );
+                await sendEmail(adminEmail, adminTmpl.subject, adminTmpl.html, 'admin_alert');
 
                 // Send Customer Welcome Email
                 if (email) {
-                    const welcomeHtml = getUserWelcomeTemplate(first_name);
-                    await sendEmail(email, `ברוכים הבאים ל-ml_tlv! ✨`, welcomeHtml, 'welcome');
+                    const welcomeTmpl = await getTemplate('welcome', 
+                        { firstName: first_name },
+                        () => getUserWelcomeTemplate(first_name)
+                    );
+                    await sendEmail(email, welcomeTmpl.subject, welcomeTmpl.html, 'welcome');
                 }
                 console.log(`[Clerk Webhook] Successfully processed new user: ${email}`);
             } else {

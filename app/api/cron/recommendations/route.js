@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import pool from '@/app/lib/db';
-import { sendEmail } from '@/app/lib/email';
+import { sendEmail, getTemplate } from '@/app/lib/email';
 import { generateRecommendationForOrder } from '@/app/lib/recommendations';
 
 export async function GET(req) {
@@ -77,26 +77,25 @@ export async function GET(req) {
                     </div>
                 `).join('');
 
-                const subject = 'במיוחד בשבילך... המלצות ניחוחות שמחכות לך ✨';
-                const html = `
-                    <div dir="rtl" style="font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto; text-align: right;">
-                        <h2>שלום ${firstName}!</h2>
-                        <p>עבר קצת זמן מאז ההזמנה האחרונה שלך, וכבר למדנו קצת על הטעם האישי שלך.</p>
-                        <p>צוות המומחים שלנו והמערכת החכמה שלנו איתרו במיוחד עבורך כמה בשמים שמבוססים על תווי הריח שאתה אוהב שכדאי לך להכיר:</p>
-                        
-                        <div style="background: #fdfaf6; padding: 20px; border-radius: 8px; margin: 20px 0;">
-                            ${mappedProductsHtml}
-                        </div>
-
-                        <p>כל הניחוחות זמינים כדוגמיות להתנסות אצלנו באתר.</p>
-                        
-                        <div style="text-align: center; margin: 30px 0;">
-                            <a href="https://www.ml-tlv.com" style="background: #000; color: #fff; padding: 12px 25px; text-decoration: none; border-radius: 6px; font-weight: bold;">
-                                למעבר לאתר &gt;&gt;
-                            </a>
-                        </div>
-                    </div>
-                `;
+                const { html, subject } = await getTemplate('recommendations', 
+                    { name: firstName, productsHtml: mappedProductsHtml },
+                    () => {
+                        return `
+                        <div dir="rtl" style="font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto; text-align: right;">
+                            <h2>שלום ${firstName}!</h2>
+                            <p>עבדנו קצת על הטעם האישי שלך והכנו לך המלצות מיוחדות מבוססות על הרכישות הקודמות שלך:</p>
+                            <div style="background: #fdfaf6; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                                ${mappedProductsHtml}
+                            </div>
+                            <p>כל הניחוחות זמינים כדוגמיות להתנסות אצלנו באתר.</p>
+                            <div style="text-align: center; margin: 30px 0;">
+                                <a href="https://www.ml-tlv.com" style="background: #000; color: #fff; padding: 12px 25px; text-decoration: none; border-radius: 6px; font-weight: bold;">
+                                    למעבר לאתר >>
+                                </a>
+                            </div>
+                        </div>`;
+                    }
+                );
 
                 try {
                     await sendEmail(email, subject, html, 'recommendations', rec.order_id);

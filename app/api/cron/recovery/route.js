@@ -55,24 +55,26 @@ export async function GET(req) {
                     VALUES ($1, 5, NOW() + INTERVAL '24 hours', 'active', $2)
                 `, [couponCode, cart.email]);
 
-                // Send Email via centralized utility
-                const subject = 'שכחת משהו אצלנו... קח מתנה!';
-                const html = `
-                    <div dir="rtl" style="font-family: Arial, sans-serif; color: #333;">
-                        <h2>ראינו שהשארת מספר פריטים בסל... 👀</h2>
-                        <p>אנחנו שומרים לך עליהם, אבל המלאי מוגבל!</p>
-                        <p>כדי להקל עליך, הנה קוד קופון מיוחד של <strong>5% הנחה</strong>:</p>
-                        <div style="background: #f0fdf4; border: 2px dashed #16a34a; padding: 15px; text-align: center; margin: 20px 0;">
-                            <h1 style="color: #16a34a; margin: 0;">${couponCode}</h1>
-                            <p style="margin: 5px 0 0 0; color: #666; font-size: 12px;">תקף ל-24 השעות הקרובות בלבד!</p>
-                        </div>
-                        <p>
-                            <a href="https://www.ml-tlv.com/cart" style="background: #000; color: #fff; padding: 10px 20px; text-decoration: none; border-radius: 5px;">
-                                לחזרה לעגלה >>
-                            </a>
-                        </p>
-                    </div>
-                `;
+                const { html, subject } = await getTemplate('cart_recovery', 
+                    { couponCode },
+                    () => {
+                        return `
+                        <div dir="rtl" style="font-family: Arial, sans-serif; color: #333;">
+                            <h2>ראינו שהשארת מספר פריטים בסל... 👀</h2>
+                            <p>אנחנו שומרים לך עליהם, אבל המלאי מוגבל!</p>
+                            <p>כדי להקל עליך, הנה קוד קופון מיוחד של <strong>5% הנחה</strong>:</p>
+                            <div style="background: #f0fdf4; border: 2px dashed #16a34a; padding: 15px; text-align: center; margin: 20px 0;">
+                                <h1 style="color: #16a34a; margin: 0;">${couponCode}</h1>
+                                <p style="margin: 5px 0 0 0; color: #666; font-size: 12px;">תקף ל-24 השעות הקרובות בלבד!</p>
+                            </div>
+                            <p>
+                                <a href="https://www.ml-tlv.com/cart" style="background: #000; color: #fff; padding: 10px 20px; text-decoration: none; border-radius: 5px;">
+                                    לחזרה לעגלה >>
+                                </a>
+                            </p>
+                        </div>`;
+                    }
+                );
 
                 try {
                     await sendEmail(cart.email, subject, html, 'cart_recovery');

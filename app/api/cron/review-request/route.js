@@ -51,33 +51,27 @@ export async function GET(req) {
                 `, [email, customer.clerk_id]);
                 const alreadyRewarded = rewardedCheck.rows.length > 0;
 
-                const subject = 'נשמח לשמוע מה דעתך! ⭐';
-                const html = `
-                    <div dir="rtl" style="font-family: Arial, sans-serif; color: #333; line-height: 1.6; max-width: 600px; margin: 0 auto; text-align: right;">
-                        <h2 style="color: #111827;">שלום ${firstName},</h2>
-                        <p>ראינו שקיבלת לא מזמן את ההזמנה האחרונה שלך מאיתנו ואנחנו סקרנים לדעת איך הייתה חוויית השירות שלך איתנו!</p>
-                        <p>חוות הדעת שלך על איכות הטיפול בהזמנה ומהירות המשלוח חשובה לנו מאוד ועוזרת לנו להמשיך ולהעניק לך את השירות הטוב ביותר.</p>
-                        
-                        <div style="text-align: center; margin: 30px 0;">
-                            <a href="https://www.ml-tlv.com/review?id=${order.id}&token=${token}" style="background: #000; color: #fff; padding: 12px 25px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">
-                                לדירוג חוויית השירות בקליק &gt;&gt;
-                            </a>
-                            <p style="margin-top: 15px;">
-                                <a href="https://www.ml-tlv.com/orders?review=${order.id}" style="color: #666; text-decoration: underline; font-size: 14px;">
-                                    לדירוג באזור האישי &gt;&gt;
+                const { html, subject } = await getTemplate('review_request', 
+                    { name: firstName, orderId: order.id },
+                    () => {
+                        // Fallback static template (matching what was there before)
+                        return `
+                        <div dir="rtl" style="font-family: Arial, sans-serif; color: #333; line-height: 1.6; max-width: 600px; margin: 0 auto; text-align: right;">
+                            <h2 style="color: #111827;">שלום ${firstName},</h2>
+                            <p>ראינו שקיבלת לא מזמן את ההזמנה האחרונה שלך מאיתנו ואנחנו סקרנים לדעת איך הייתה חוויית השירות שלך איתנו!</p>
+                            <div style="text-align: center; margin: 30px 0;">
+                                <a href="https://www.ml-tlv.com/review?id=${order.id}&token=${token}" style="background: #000; color: #fff; padding: 12px 25px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">
+                                    לדירוג חוויית השירות בקליק >>
                                 </a>
-                            </p>
-                        </div>
-
-                        ${!alreadyRewarded ? `
-                        <p style="text-align: center; color: #d97706; font-weight: bold; background: #fef3c7; padding: 10px; border-radius: 6px;">
-                            🎁 בונוס קטן: על כל דירוג שתשאיר/י באתר, נשלח אליך למייל קופון של 10% הנחה לקנייה הבאה!
-                        </p>
-                        ` : ''}
-                        
-                        <p>תודה מראש,<br>צוות ml_tlv</p>
-                    </div>
-                `;
+                            </div>
+                            ${!alreadyRewarded ? `
+                            <p style="text-align: center; color: #d97706; font-weight: bold; background: #fef3c7; padding: 10px; border-radius: 6px;">
+                                🎁 בונוס קטן: על כל דירוג שתשאיר/י באתר, נשלח אליך למייל קופון של 10% הנחה לקנייה הבאה!
+                            </p>` : ''}
+                            <p>תודה מראש,<br>צוות ml_tlv</p>
+                        </div>`;
+                    }
+                );
 
                 try {
                     await sendEmail(email, subject, html, 'review_request', order.id);

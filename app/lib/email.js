@@ -354,8 +354,85 @@ export function getSystemDefaults() {
                 id: '{{productId}}', 
                 brand: '{{brand}}', 
                 model: '{{model}}', 
-                image_url: 'https://www.ml-tlv.com/placeholder-perfume.jpg' 
+                image_url: 'https://www.ml-tlv.com/logo-black.png' 
             })
+        },
+        'review_request': {
+            subject: 'נשמח לשמוע מה דעתך! ⭐',
+            content_html: `<div dir="rtl" style="font-family: Arial, sans-serif; color: #333; line-height: 1.6; max-width: 600px; margin: 0 auto; text-align: right;">
+                <h2 style="color: #111827;">שלום {{name}},</h2>
+                <p>ראינו שקיבלת לא מזמן את ההזמנה האחרונה שלך מאיתנו ואנחנו סקרנים לדעת איך הייתה חוויית השירות שלך איתנו!</p>
+                <div style="text-align: center; margin: 30px 0;">
+                    <a href="https://www.ml-tlv.com/review?id={{orderId}}" style="background: #000; color: #fff; padding: 12px 25px; text-decoration: none; border-radius: 6px; font-weight: bold; display: inline-block;">
+                        לדירוג חוויית השירות בקליק >>
+                    </a>
+                </div>
+                <p style="text-align: center; color: #d97706; font-weight: bold; background: #fef3c7; padding: 10px; border-radius: 6px;">
+                    🎁 בונוס קטן: על כל דירוג שתשאיר/י באתר, נשלח אליך למייל קופון של 10% הנחה לקנייה הבאה!
+                </p>
+                <p>תודה מראש,<br>צוות ml_tlv</p>
+            </div>`
+        },
+        'cart_recovery': {
+            subject: 'שכחת משהו אצלנו... קח מתנה! 👀',
+            content_html: `<div dir="rtl" style="font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto;">
+                <h2>ראינו שהשארת מספר פריטים בסל... 👀</h2>
+                <p>אנחנו שומרים לך עליהם, אבל המלאי מוגבל!</p>
+                <p>כדי להקל עליך, הנה קוד קופון מיוחד של <strong>5% הנחה</strong>:</p>
+                <div style="background: #f0fdf4; border: 2px dashed #16a34a; padding: 15px; text-align: center; margin: 20px 0;">
+                    <h1 style="color: #16a34a; margin: 0;">{{couponCode}}</h1>
+                    <p style="margin: 5px 0 0 0; color: #666; font-size: 12px;">תקף ל-24 השעות הקרובות בלבד!</p>
+                </div>
+                <p><a href="https://www.ml-tlv.com/cart" style="background: #000; color: #fff; padding: 10px 20px; text-decoration: none; border-radius: 5px;">לחזרה לעגלה >></a></p>
+            </div>`
+        },
+        'recommendations': {
+            subject: 'במיוחד בשבילך... המלצות ניחוחות שמחכות לך ✨',
+            content_html: `<div dir="rtl" style="font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto; text-align: right;">
+                <h2>שלום {{name}}!</h2>
+                <p>עבדנו קצת על הטעם האישי שלך והכנו לך המלצות מיוחדות:</p>
+                <div style="background: #fdfaf6; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                    {{productsHtml}}
+                </div>
+                <p>כל הניחוחות זמינים כדוגמיות להתנסות אצלנו באתר.</p>
+                <div style="text-align: center; margin: 30px 0;">
+                    <a href="https://www.ml-tlv.com" style="background: #000; color: #fff; padding: 12px 25px; text-decoration: none; border-radius: 6px; font-weight: bold;">למעבר לאתר >></a>
+                </div>
+            </div>`
+        },
+        'educational': {
+            subject: 'איך להפיק את המרב מהבשמים שלך? ✨',
+            content_html: `<div dir="rtl" style="font-family: Arial, sans-serif; color: #333; line-height: 1.6; max-width: 600px; margin: 0 auto; text-align: right;">
+                <h2>היי {{name}},</h2>
+                <p>הנה כמה טיפים לשימוש נכון בבושם שקיבלת:</p>
+                <div style="background: #f9fafb; border: 1px solid #e5e7eb; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                    <h3 style="margin-top: 0; color: #111827;">💡 טיפים לשימוש נכון בבושם:</h3>
+                    <ul>
+                        <li><strong>הנקודות החמות:</strong> רסס על נקודות הדופק - צוואר ומפרקי הידיים.</li>
+                        <li><strong>לא לשפשף!</strong> זה "שובר" את מולקולות הריח.</li>
+                        <li><strong>אחסון:</strong> שמור את הבשמים במקום קריר ומוצל.</li>
+                    </ul>
+                </div>
+                <p>באהבה,<br>צוות ml_tlv</p>
+            </div>`
+        },
+        'admin_order_alert': {
+            subject: 'הזמנה חדשה התקבלה! #{{orderId}} 🔥',
+            content_html: getAdminNewOrderTemplate('{{orderId}}', '{{name}}', '{{total}}', [], '{{deliveryMethod}}', '{{shippingCost}}', '{{phone}}')
+        },
+        'admin_user_alert': {
+            subject: 'משתמש חדש נרשם למערכת! ✨',
+            content_html: getAdminNewUserTemplate({ first_name: '{{firstName}}', last_name: '{{lastName}}', email: '{{email}}' })
+        },
+        'contact_form_alert': {
+            subject: 'פנייה חדשה מהאתר: {{name}}',
+            content_html: `<div dir="rtl" style="font-family: Arial, sans-serif;">
+                <h2>פנייה חדשה מהאתר</h2>
+                <p><strong>מאת:</strong> {{name}}</p>
+                <p><strong>אימייל:</strong> {{email}}</p>
+                <hr /><p><strong>תוכן ההודעה:</strong></p>
+                <p style="white-space: pre-wrap;">{{message}}</p>
+            </div>`
         }
     };
 }

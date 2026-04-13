@@ -40,7 +40,14 @@ async function ensureTables() {
             ('order_confirmation', 'אישור הזמנה (מערכת)', 'system'),
             ('status_update', 'עדכון סטטוס הזמנה (מערכת)', 'system'),
             ('welcome', 'ברוכים הבאים (מערכת)', 'system'),
-            ('back_in_stock', 'חזרה למלאי (מערכת)', 'system')
+            ('back_in_stock', 'חזרה למלאי (מערכת)', 'system'),
+            ('review_request', 'בקשת חוות דעת (מערכת)', 'system'),
+            ('cart_recovery', 'שחזור סל נטוש (מערכת)', 'system'),
+            ('recommendations', 'המלצות אישיות (מערכת)', 'system'),
+            ('educational', 'מייל לימודי/טיפים (מערכת)', 'system'),
+            ('admin_order_alert', 'התראת הזמנה חדשה (ניהול)', 'system'),
+            ('admin_user_alert', 'התראת משתמש חדש (ניהול)', 'system'),
+            ('contact_form_alert', 'פנייה מצור קשר (ניהול)', 'system')
         ON CONFLICT (slug) DO NOTHING;
     `);
 }
