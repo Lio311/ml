@@ -88,7 +88,10 @@ export default async function AdminUsersPage(props) {
                 // Fetch user data from clerk by their IDs for lastSignInAt
                 const clerkResponse = await clerkClient.users.getUserList({ userId: userIds });
                 clerkResponse.data.forEach(cu => {
-                    clerkUsersMap[cu.id] = cu.lastSignInAt;
+                    clerkUsersMap[cu.id] = {
+                        lastSignInAt: cu.lastSignInAt,
+                        imageUrl: cu.imageUrl
+                    };
                 });
             } catch (clerkErr) {
                 console.error("Error fetching Clerk lastSignInAt:", clerkErr);
@@ -104,7 +107,8 @@ export default async function AdminUsersPage(props) {
             role: u.role || 'customer',
             createdAt: u.created_at,
             updatedAt: u.updated_at,
-            lastLogin: clerkUsersMap[u.id] || u.updated_at, // Fallback to updated_at if clerk fails
+            lastLogin: clerkUsersMap[u.id]?.lastSignInAt || u.updated_at, // Fallback to updated_at if clerk fails
+            imageUrl: clerkUsersMap[u.id]?.imageUrl || null,
             siteOrders: parseInt(u.site_orders) || 0,
             siteSpent: parseFloat(u.site_spent) || 0,
             catalogOrders: parseInt(u.catalog_orders) || 0,
@@ -172,8 +176,12 @@ export default async function AdminUsersPage(props) {
                                     <tr key={u.id} className="hover:bg-gray-50/80 group">
                                         <td className="p-4 text-right">
                                             <div className="flex items-center gap-3">
-                                                <div className="w-9 h-9 rounded-2xl bg-gray-100 flex items-center justify-center font-black text-gray-400 text-[10px] border border-gray-200">
-                                                    {u.firstName[0]}{u.lastName[0]}
+                                                <div className="w-9 h-9 rounded-2xl bg-gray-100 flex items-center justify-center font-black text-gray-400 text-[10px] border border-gray-200 overflow-hidden shrink-0">
+                                                    {u.imageUrl ? (
+                                                        <img src={u.imageUrl} alt="" className="w-full h-full object-cover" />
+                                                    ) : (
+                                                        <span className="uppercase">{u.firstName?.[0]}{u.lastName?.[0]}</span>
+                                                    )}
                                                 </div>
                                                 <div className="flex flex-col">
                                                     <div className="font-black text-gray-900 leading-tight text-sm uppercase">{u.firstName} {u.lastName}</div>
@@ -269,8 +277,12 @@ export default async function AdminUsersPage(props) {
                             <div key={u.id} className="p-6 bg-white space-y-5">
                                 <div className="flex justify-between items-start">
                                     <div className="flex items-center gap-3 text-right">
-                                        <div className="w-11 h-11 rounded-[1.2rem] bg-gray-50 flex items-center justify-center font-black text-gray-400 text-sm border border-gray-100">
-                                            {u.firstName[0]}{u.lastName[0]}
+                                        <div className="w-11 h-11 rounded-[1.2rem] bg-gray-50 flex items-center justify-center font-black text-gray-400 text-sm border border-gray-100 overflow-hidden shrink-0">
+                                            {u.imageUrl ? (
+                                                <img src={u.imageUrl} alt="" className="w-full h-full object-cover" />
+                                            ) : (
+                                                <span className="uppercase">{u.firstName?.[0]}{u.lastName?.[0]}</span>
+                                            )}
                                         </div>
                                         <div>
                                             <div className="font-black text-gray-900 text-base leading-tight uppercase tracking-tight">{u.firstName} {u.lastName}</div>
