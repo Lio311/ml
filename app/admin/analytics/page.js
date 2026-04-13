@@ -161,9 +161,16 @@ export default function AnalyticsDashboard() {
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
                 <XAxis dataKey="date" tickLine={false} axisLine={false} tick={{fontSize: 10, fill: '#64748b'}} tickFormatter={(d) => d.split('-')[2]} />
                 <YAxis hide />
-                <Tooltip contentStyle={{borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)'}} />
-                <Line type="monotone" dataKey="views" stroke="#2dd4bf" strokeWidth={3} dot={false} strokeDasharray="5 5" />
-                <Line type="monotone" dataKey="users" stroke="#3b82f6" strokeWidth={4} dot={{r: 0}} activeDot={{r: 6, strokeWidth: 0}} />
+                <Tooltip 
+                  labelStyle={{ color: '#111827', fontWeight: 'bold', marginBottom: '4px' }}
+                  contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }} 
+                  formatter={(value, name) => [
+                    value.toLocaleString(), 
+                    name === 'users' ? 'משתמשים' : 'צפיות'
+                  ]}
+                />
+                <Line name="צפיות" type="monotone" dataKey="views" stroke="#2dd4bf" strokeWidth={3} dot={false} strokeDasharray="5 5" />
+                <Line name="משתמשים" type="monotone" dataKey="users" stroke="#3b82f6" strokeWidth={4} dot={{r: 0}} activeDot={{r: 6, strokeWidth: 0}} />
               </LineChart>
             </ResponsiveContainer>
           </div>
@@ -187,9 +194,16 @@ export default function AnalyticsDashboard() {
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
                 <XAxis dataKey="date" tickLine={false} axisLine={false} tick={{fontSize: 10, fill: '#64748b'}} tickFormatter={(d) => d.split('-')[2]} />
                 <YAxis hide />
-                <Tooltip contentStyle={{borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)'}} />
-                <Bar dataKey="clicks" fill="#8b5cf6" radius={[4, 4, 0, 0]} barSize={20} />
-                <Line type="monotone" dataKey="impressions" stroke="#fb923c" strokeWidth={3} dot={false} />
+                <Tooltip 
+                  labelStyle={{ color: '#111827', fontWeight: 'bold', marginBottom: '4px' }}
+                  contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }} 
+                  formatter={(value, name) => [
+                    value.toLocaleString(), 
+                    name === 'clicks' ? 'קליקים' : 'חשיפות'
+                  ]}
+                />
+                <Bar name="קליקים" dataKey="clicks" fill="#8b5cf6" radius={[4, 4, 0, 0]} barSize={20} />
+                <Line name="חשיפות" type="monotone" dataKey="impressions" stroke="#fb923c" strokeWidth={3} dot={false} />
               </ComposedChart>
             </ResponsiveContainer>
           </div>
