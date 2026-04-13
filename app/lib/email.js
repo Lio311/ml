@@ -163,7 +163,7 @@ export const getOrderConfirmationTemplate = (orderId, items, total, freeSamples,
                 <div style="background-color: #fcfcfc; padding: 20px; border-radius: 16px; border: 1px solid #f5f5f5;">
                     ${deliveryMethod ? `
                         <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px; color: #666;">
-                            <span>שיטת שילוח:</span>
+                            <span>שיטת מסירה:</span>
                             <strong>${deliveryMethod}</strong>
                         </div>
                     ` : ''}
