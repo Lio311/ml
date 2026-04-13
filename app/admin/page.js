@@ -632,7 +632,7 @@ export default async function AdminDashboard({ searchParams }) {
                     </div>
                     <div className="space-y-3">
                         <div className="flex justify-between items-center border-b border-gray-50 pb-2">
-                            <span className="text-blue-600 font-bold text-xs md:text-sm">הכנסות</span>
+                            <span className="text-blue-600 font-bold text-xs md:text-sm">הכנסות (Gross Revenue)</span>
                             <div className="text-right">
                                 <span className="text-lg md:text-xl font-bold text-blue-700">
                                     <span dir="ltr" className="inline-block">{kpis.totalRevenue.toLocaleString()}</span> ₪
@@ -640,7 +640,7 @@ export default async function AdminDashboard({ searchParams }) {
                             </div>
                         </div>
                         <div className="flex justify-between items-center border-b border-gray-50 pb-2">
-                            <span className="text-red-600 font-bold text-xs md:text-sm">הוצאות</span>
+                            <span className="text-red-600 font-bold text-xs md:text-sm">הוצאות (OpEx)</span>
                             <div className="text-right">
                                 <span className="text-lg md:text-xl font-bold text-red-700">
                                     <span dir="ltr" className="inline-block">{kpis.totalExpenses.toLocaleString()}</span> ₪
@@ -648,7 +648,7 @@ export default async function AdminDashboard({ searchParams }) {
                             </div>
                         </div>
                         <div className="flex justify-between items-center border-b border-gray-50 pb-2">
-                            <span className="text-orange-600 font-bold text-xs md:text-sm">עלויות בשמים</span>
+                            <span className="text-orange-600 font-bold text-xs md:text-sm">עלויות בשמים (COGS)</span>
                             <div className="text-right">
                                 <span className="text-lg md:text-xl font-bold text-orange-600">
                                     <span dir="ltr" className="inline-block">{kpis.monthlyCOGS ? kpis.monthlyCOGS.toLocaleString() : '0'}</span> ₪
@@ -658,7 +658,7 @@ export default async function AdminDashboard({ searchParams }) {
                         
                         <div className="pt-2">
                             <div className="flex justify-between items-center bg-gray-50/50 p-2 rounded-xl mb-2">
-                                <span className={`${kpis.monthlyProfit < 0 ? 'text-red-600' : 'text-green-600'} font-bold text-sm`}>רווח החודש</span>
+                                <span className={`${kpis.monthlyProfit < 0 ? 'text-red-600' : 'text-green-600'} font-bold text-sm`}>רווח החודש (Net Margin)</span>
                                 <div className="text-right">
                                     <span className={`text-xl font-bold ${kpis.monthlyProfit < 0 ? 'text-red-700' : 'text-green-700'}`}>
                                         <span dir="ltr" className="inline-block">{kpis.monthlyProfit.toLocaleString()}</span> ₪
