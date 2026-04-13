@@ -20,7 +20,8 @@ export default function MailingClient() {
     const [users, setUsers] = useState([]);
     const [allProducts, setAllProducts] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [view, setView] = useState('templates'); // 'templates' | 'campaigns' | 'edit-template' | 'create-campaign'
+    const [view, setView] = useState('templates'); // 'templates' | 'campaigns' | 'admin-alerts' | 'edit-template' | 'create-campaign'
+    const [lastTab, setLastTab] = useState('templates'); 
     
     // Editor / Form States
     const [activeTemplate, setActiveTemplate] = useState(null);
@@ -91,7 +92,7 @@ export default function MailingClient() {
             if (res.ok) {
                 toast.success('הטמפלייט נשמר בהצלחה');
                 fetchData();
-                setView('templates');
+                setView(lastTab);
             } else {
                 const err = await res.json();
                 toast.error(err.error || 'שגיאה בשמירה');
@@ -200,9 +201,9 @@ export default function MailingClient() {
                     <p className="text-gray-500 font-bold mt-1 uppercase text-[10px] tracking-widest">Email Templates & Campaigns</p>
                 </div>
                 <div className="flex gap-3">
-                    {view !== 'templates' && view !== 'campaigns' && (
+                    {view !== 'templates' && view !== 'campaigns' && view !== 'admin-alerts' && (
                         <button 
-                            onClick={() => setView('templates')}
+                            onClick={() => setView(lastTab)}
                             className="btn btn-ghost rounded-2xl flex items-center gap-2"
                         >
                             <ChevronRight size={18} /> חזרה
@@ -211,6 +212,7 @@ export default function MailingClient() {
                     <button 
                         onClick={() => {
                             setActiveTemplate({ name: '', subject: '', content_html: '', type: 'manual' });
+                            setLastTab(view);
                             setView('edit-template');
                         }}
                         className="bg-black text-white px-6 py-3 rounded-2xl font-black text-sm shadow-xl shadow-black/10 hover:shadow-black/20 hover:scale-[1.02] active:scale-95 transition-all flex items-center gap-2"
@@ -224,19 +226,19 @@ export default function MailingClient() {
             {(view === 'templates' || view === 'campaigns' || view === 'admin-alerts') && (
                 <div className="flex gap-2 mb-8 bg-gray-100 p-1.5 rounded-[2rem] w-fit mx-auto md:mx-0">
                     <button 
-                        onClick={() => setView('templates')}
+                        onClick={() => { setView('templates'); setLastTab('templates'); }}
                         className={`px-8 py-3 rounded-3xl font-black text-sm transition-all ${view === 'templates' ? 'bg-white text-black shadow-lg shadow-white/20' : 'text-gray-400 hover:text-gray-600'}`}
                     >
                         מייל ללקוחות
                     </button>
                     <button 
-                        onClick={() => setView('admin-alerts')}
+                        onClick={() => { setView('admin-alerts'); setLastTab('admin-alerts'); }}
                         className={`px-8 py-3 rounded-3xl font-black text-sm transition-all ${view === 'admin-alerts' ? 'bg-white text-black shadow-lg shadow-white/20' : 'text-gray-400 hover:text-gray-600'}`}
                     >
                         התראות מנהל
                     </button>
                     <button 
-                        onClick={() => setView('campaigns')}
+                        onClick={() => { setView('campaigns'); setLastTab('campaigns'); }}
                         className={`px-8 py-3 rounded-3xl font-black text-sm transition-all ${view === 'campaigns' ? 'bg-white text-black shadow-lg shadow-white/20' : 'text-gray-400 hover:text-gray-600'}`}
                     >
                         דיוורים מתוזמנים
@@ -257,19 +259,12 @@ export default function MailingClient() {
                                 <TemplateCard 
                                     key={t.id} 
                                     template={t} 
-                                    onEdit={() => { setActiveTemplate(t); setView('edit-template'); }}
+                                    onEdit={() => { setLastTab('templates'); setActiveTemplate(t); setView('edit-template'); }}
                                     onDelete={() => deleteTemplate(t.id)}
                                     onSend={() => { 
+                                        setLastTab(view);
                                         setActiveCampaign({ 
                                             template_id: t.id, 
-                                            title: `קמפיין - ${t.name}`, 
-                                            subject: t.subject || '', 
-                                            content_html: t.content_html || '',
-                                            recipient_type: 'all',
-                                            scheduled_at: null
-                                        }); 
-                                        setView('create-campaign'); 
-                                    }}
                                 />
                             ))}
                         </div>
@@ -281,7 +276,7 @@ export default function MailingClient() {
                                 <TemplateCard 
                                     key={t.id} 
                                     template={t} 
-                                    onEdit={() => { setActiveTemplate(t); setView('edit-template'); }}
+                                    onEdit={() => { setLastTab('admin-alerts'); setActiveTemplate(t); setView('edit-template'); }}
                                     onDelete={() => deleteTemplate(t.id)}
                                     onSend={null} // Usually no direct send for admin alerts
                                 />
