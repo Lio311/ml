@@ -310,7 +310,7 @@ export default function AnalyticsDashboard() {
                <tbody className="divide-y divide-gray-50">
                  {gaData.pages.map((p, i) => (
                    <tr key={i} className="hover:bg-gray-50/80 transition-colors">
-                     <td className="px-6 py-3 text-sm font-medium text-gray-600 dir-ltr text-right truncate max-w-xs">{p.path}</td>
+                     <td className="px-6 py-3 text-sm font-medium text-gray-600 truncate max-w-xs" dir="ltr" style={{ textAlign: 'right' }}>{p.path}</td>
                      <td className="px-6 py-4">
                         <div className="flex items-center gap-3">
                            <span className="text-sm font-black text-gray-800">{p.views.toLocaleString()}</span>
