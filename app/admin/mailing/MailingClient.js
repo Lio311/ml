@@ -384,8 +384,8 @@ export default function MailingClient() {
                                         <label className="block text-xs font-black text-gray-400 uppercase tracking-widest px-2">שם הטמפלייט (לשימוש פנימי)</label>
                                         <input 
                                             className="w-full px-5 py-4 bg-gray-50 rounded-2xl outline-none focus:ring-2 focus:ring-blue-100 transition-all font-bold text-lg"
-                                            value={activeTemplate.name}
-                                            onChange={e => setActiveTemplate({...activeTemplate, name: e.target.value})}
+                                            value={activeTemplate.name || ''}
+                                            onChange={e => setActiveTemplate(prev => ({...prev, name: e.target.value}))}
                                             placeholder="לדוגמה: מייל ברוכים הבאים חגיגי"
                                         />
                                     </div>
@@ -393,8 +393,8 @@ export default function MailingClient() {
                                         <label className="block text-xs font-black text-gray-400 uppercase tracking-widest px-2">נושא המייל (Subject)</label>
                                         <input 
                                             className="w-full px-5 py-4 bg-gray-50 rounded-2xl outline-none focus:ring-2 focus:ring-blue-100 transition-all font-bold text-lg"
-                                            value={activeTemplate.subject}
-                                            onChange={e => setActiveTemplate({...activeTemplate, subject: e.target.value})}
+                                            value={activeTemplate.subject || ''}
+                                            onChange={e => setActiveTemplate(prev => ({...prev, subject: e.target.value}))}
                                             placeholder="מה הלקוח יראה בכותרת המייל?"
                                         />
                                     </div>
@@ -411,8 +411,8 @@ export default function MailingClient() {
                                         </button>
                                     </label>
                                     <VisualEditor 
-                                        value={activeTemplate.content_html} 
-                                        onChange={val => setActiveTemplate({...activeTemplate, content_html: val})}
+                                        value={activeTemplate.content_html || ''} 
+                                        onChange={val => setActiveTemplate(prev => ({...prev, content_html: val}))}
                                         onInsertHTML={editorInsertRef}
                                     />
                                 </div>
@@ -463,8 +463,8 @@ export default function MailingClient() {
                                             <label className="block text-xs font-black text-gray-400 uppercase tracking-widest px-2">כותרת הקמפיין (לשימוש פנימי)</label>
                                             <input 
                                                 className="w-full px-5 py-4 bg-gray-50 rounded-2xl outline-none focus:ring-2 focus:ring-blue-100 transition-all font-bold"
-                                                value={activeCampaign.title}
-                                                onChange={e => setActiveCampaign({...activeCampaign, title: e.target.value})}
+                                                value={activeCampaign.title || ''}
+                                                onChange={e => setActiveCampaign(prev => ({...prev, title: e.target.value}))}
                                             />
                                         </div>
 
@@ -472,8 +472,8 @@ export default function MailingClient() {
                                             <label className="block text-xs font-black text-gray-400 uppercase tracking-widest px-2">נושא המייל</label>
                                             <input 
                                                 className="w-full px-5 py-4 bg-gray-50 rounded-2xl outline-none focus:ring-2 focus:ring-blue-100 transition-all font-bold"
-                                                value={activeCampaign.subject}
-                                                onChange={e => setActiveCampaign({...activeCampaign, subject: e.target.value})}
+                                                value={activeCampaign.subject || ''}
+                                                onChange={e => setActiveCampaign(prev => ({...prev, subject: e.target.value}))}
                                             />
                                         </div>
 
@@ -481,7 +481,7 @@ export default function MailingClient() {
                                             <label className="block text-xs font-black text-gray-400 uppercase tracking-widest px-2">תזמון שליחה</label>
                                             <ModernDateTimePicker 
                                                 value={activeCampaign.scheduled_at}
-                                                onChange={val => setActiveCampaign({...activeCampaign, scheduled_at: val})}
+                                                onChange={val => setActiveCampaign(prev => ({...prev, scheduled_at: val}))}
                                                 placeholder="שלח מיד (או בחר זמן...)"
                                             />
                                             <p className="text-[10px] text-gray-400 font-bold px-2">אם לא נבחר זמן, המייל יישלח בהרצה הקרובה של המערכת.</p>
@@ -501,7 +501,7 @@ export default function MailingClient() {
                                                 כל המשתמשים
                                             </button>
                                             <button 
-                                                onClick={() => setActiveCampaign({...activeCampaign, recipient_type: 'specific'})}
+                                                onClick={() => setActiveCampaign(prev => ({...prev, recipient_type: 'specific'}))}
                                                 className={`flex-1 py-3 rounded-xl font-bold text-sm transition-all ${activeCampaign.recipient_type === 'specific' ? 'bg-black text-white' : 'text-gray-400 hover:text-gray-600'}`}
                                             >
                                                 רשימה ספציפית
@@ -513,7 +513,7 @@ export default function MailingClient() {
                                                 <ObjectTagInput 
                                                     options={users.map(u => ({ id: u.email, label: `${u.firstName || ''} ${u.lastName || ''}`, subLabel: u.email }))}
                                                     value={activeCampaign.recipients || []}
-                                                    onChange={newVal => setActiveCampaign({...activeCampaign, recipients: newVal})}
+                                                    onChange={newVal => setActiveCampaign(prev => ({...prev, recipients: newVal}))}
                                                     placeholder="חפש משתמשים לפי שם או מייל..."
                                                 />
                                             </div>
