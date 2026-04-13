@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { auth as clerkAuth, currentUser } from '@clerk/nextjs/server';
 import pool from '@/app/lib/db';
 import { sendEmail, getTemplate, getOrderConfirmationTemplate, getAdminNewOrderTemplate } from '@/app/lib/email';
-import { recordAuditLog } from '@/app/lib/auditLogger';
+import { recordAuditLog } from '@/app/lib/audit';
 import * as Sentry from "@sentry/nextjs";
 
 export async function POST(req) {
