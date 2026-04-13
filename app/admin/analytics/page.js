@@ -217,22 +217,22 @@ export default function AnalyticsDashboard() {
             <span className="text-[10px] bg-purple-100 text-purple-700 px-2 py-1 rounded-full font-bold">Search Console</span>
           </div>
           <div className="overflow-x-auto">
-            <table className="w-full text-right min-w-[500px]">
-              <thead className="bg-gray-50/50 text-[11px] text-gray-400 font-bold uppercase tracking-wider">
+            <table className="w-full text-right min-w-[500px] border-collapse">
+              <thead className="bg-gray-50/50 text-[10px] text-gray-400 font-bold uppercase tracking-wider">
                 <tr>
-                  <th className="px-6 py-3">ביטוי חיפוש</th>
-                  <th className="px-6 py-3">קליקים</th>
-                  <th className="px-6 py-3">חשיפות</th>
-                  <th className="px-6 py-3">CTR</th>
+                  <th className="px-5 py-2">ביטוי חיפוש</th>
+                  <th className="px-5 py-2">קליקים</th>
+                  <th className="px-5 py-2">חשיפות</th>
+                  <th className="px-5 py-2">CTR</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-50 text-[13px]">
                 {gscData.queries.slice((queryPage - 1) * itemsPerPage, queryPage * itemsPerPage).map((q, i) => (
                   <tr key={i} className="hover:bg-gray-50/80 transition-colors">
-                    <td className="px-6 py-3 text-sm font-bold text-gray-800 break-words max-w-[150px]">{q.keys[0]}</td>
-                    <td className="px-6 py-3 text-sm text-gray-600 font-medium">{(q.clicks || 0).toLocaleString()}</td>
-                    <td className="px-6 py-3 text-sm text-gray-500">{(q.impressions || 0).toLocaleString()}</td>
-                    <td className="px-6 py-3 text-xs font-bold text-blue-600">{(q.ctr * 100).toFixed(1)}%</td>
+                    <td className="px-5 py-2.5 text-sm font-bold text-gray-800 break-words max-w-[150px]">{q.keys[0]}</td>
+                    <td className="px-5 py-2.5 text-sm text-gray-600 font-medium">{(q.clicks || 0).toLocaleString()}</td>
+                    <td className="px-5 py-2.5 text-sm text-gray-500">{(q.impressions || 0).toLocaleString()}</td>
+                    <td className="px-5 py-2.5 text-xs font-bold text-blue-600">{(q.ctr * 100).toFixed(1)}%</td>
                   </tr>
                 ))}
               </tbody>
@@ -241,7 +241,7 @@ export default function AnalyticsDashboard() {
           
           {/* Pagination Controls */}
           {gscData.queries.length > itemsPerPage && (
-            <div className="p-4 border-t border-gray-50 flex items-center justify-between bg-white">
+            <div className="px-4 py-2 border-t border-gray-50 flex items-center justify-between bg-white">
                <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
                   עמוד {queryPage} מתוך {Math.ceil(gscData.queries.length / itemsPerPage)}
                </div>
@@ -274,8 +274,8 @@ export default function AnalyticsDashboard() {
             </h3>
              <span className="text-[10px] bg-blue-100 text-blue-700 px-2 py-1 rounded-full font-bold">GA4</span>
           </div>
-          <div className="p-6">
-            <div className="space-y-4 min-h-[360px]">
+          <div className="p-5">
+            <div className="space-y-3.5 min-h-[280px]">
               {gaData.sources.slice((sourcePage - 1) * itemsPerPage, sourcePage * itemsPerPage).map((s, i) => {
                 const percentage = Math.round((s.users / totals.users) * 100);
                 return (
@@ -298,7 +298,7 @@ export default function AnalyticsDashboard() {
 
           {/* Pagination Controls for Sources */}
           {gaData.sources.length > itemsPerPage && (
-            <div className="p-4 border-t border-gray-50 flex items-center justify-between bg-white">
+            <div className="px-4 py-2 border-t border-gray-50 flex items-center justify-between bg-white">
                <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
                   עמוד {sourcePage} מתוך {Math.ceil(gaData.sources.length / itemsPerPage)}
                </div>
@@ -334,19 +334,19 @@ export default function AnalyticsDashboard() {
              </h3>
            </div>
            <div className="overflow-x-auto">
-             <table className="w-full text-right min-w-[600px]">
-               <thead className="bg-gray-50/50 text-[11px] text-gray-400 font-bold uppercase tracking-wider">
+             <table className="w-full text-right min-w-[600px] border-collapse">
+               <thead className="bg-gray-50/50 text-[10px] text-gray-400 font-bold uppercase tracking-wider">
                  <tr>
-                   <th className="px-6 py-3">דף (Path)</th>
-                   <th className="px-6 py-3">צפיות</th>
-                   <th className="px-6 py-3 text-center">פעולה</th>
+                   <th className="px-5 py-2">דף (Path)</th>
+                   <th className="px-5 py-2">צפיות</th>
+                   <th className="px-5 py-2 text-center">פעולה</th>
                  </tr>
                </thead>
                <tbody className="divide-y divide-gray-50">
                  {gaData.pages.map((p, i) => (
                    <tr key={i} className="hover:bg-gray-50/80 transition-colors">
-                     <td className="px-6 py-3 text-sm font-medium text-gray-600 truncate max-w-xs" dir="ltr" style={{ textAlign: 'right' }}>{p.path}</td>
-                     <td className="px-6 py-4">
+                     <td className="px-5 py-2 text-sm font-medium text-gray-600 truncate max-w-xs" dir="ltr" style={{ textAlign: 'right' }}>{p.path}</td>
+                     <td className="px-5 py-2">
                         <div className="flex items-center gap-3">
                            <span className="text-sm font-black text-gray-800">{p.views.toLocaleString()}</span>
                            <div className="flex-1 h-1 bg-gray-100 rounded-full min-w-[60px] hidden sm:block">
