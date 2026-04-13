@@ -216,7 +216,7 @@ export default function AnalyticsDashboard() {
             </h3>
             <span className="text-[10px] bg-purple-100 text-purple-700 px-2 py-1 rounded-full font-bold">Search Console</span>
           </div>
-          <div className="overflow-x-auto">
+          <div className="overflow-x-auto min-h-[320px]">
             <table className="w-full text-right min-w-[500px] border-collapse">
               <thead className="bg-gray-50/50 text-[10px] text-gray-400 font-bold uppercase tracking-wider">
                 <tr>
@@ -275,7 +275,7 @@ export default function AnalyticsDashboard() {
              <span className="text-[10px] bg-blue-100 text-blue-700 px-2 py-1 rounded-full font-bold">GA4</span>
           </div>
           <div className="p-5">
-            <div className="space-y-3.5 min-h-[280px]">
+            <div className="space-y-3.5 min-h-[320px]">
               {gaData.sources.slice((sourcePage - 1) * itemsPerPage, sourcePage * itemsPerPage).map((s, i) => {
                 const percentage = Math.round((s.users / totals.users) * 100);
                 return (
