@@ -77,9 +77,14 @@ export default function AnalyticsDashboard() {
           parsedGscDaily.sort((a,b) => new Date(a.date) - new Date(b.date));
         }
 
+        const sortedQueries = [...(gscJson.queries || [])].sort((a, b) => {
+          if (b.clicks !== a.clicks) return (b.clicks || 0) - (a.clicks || 0);
+          return (b.impressions || 0) - (a.impressions || 0);
+        });
+
         setTotals({ users: tUsers, views: tViews, clicks: tClicks, impressions: tImpressions });
         setGaData({ daily: parsedGaDaily, sources: parsedSources, pages: parsedGaPages });
-        setGscData({ daily: parsedGscDaily, queries: gscJson.queries || [], pages: gscJson.pages || [] });
+        setGscData({ daily: parsedGscDaily, queries: sortedQueries, pages: gscJson.pages || [] });
         
       } catch (err) {
         setError(err.message);
