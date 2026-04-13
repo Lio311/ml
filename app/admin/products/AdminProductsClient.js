@@ -923,20 +923,17 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
 
                                             return (
                                                 <>
-                                                    <span className="text-[10px] font-black text-pink-600 bg-pink-50 px-2.5 py-1 rounded-xl border border-pink-100 flex items-center gap-1 shadow-sm">
-                                                        <span className="opacity-50">₪</span>
-                                                        <span>{profit2ml.toLocaleString()}</span>
-                                                        <span className="text-[8px] opacity-40">(2ml)</span>
+                                                    <span className="text-[10px] font-black text-pink-600 bg-pink-50 px-2.5 py-1 rounded-xl border border-pink-100 flex items-center gap-2 shadow-sm">
+                                                        <span dir="ltr">₪ {profit2ml.toLocaleString()}</span>
+                                                        <span className="text-[8px] opacity-40 font-bold">(2ml)</span>
                                                     </span>
-                                                    <span className="text-[10px] font-black text-violet-600 bg-violet-50 px-2.5 py-1 rounded-xl border border-violet-100 flex items-center gap-1 shadow-sm">
-                                                        <span className="opacity-50">₪</span>
-                                                        <span>{profit5ml.toLocaleString()}</span>
-                                                        <span className="text-[8px] opacity-40">(5ml)</span>
+                                                    <span className="text-[10px] font-black text-violet-600 bg-violet-50 px-2.5 py-1 rounded-xl border border-violet-100 flex items-center gap-2 shadow-sm">
+                                                        <span dir="ltr">₪ {profit5ml.toLocaleString()}</span>
+                                                        <span className="text-[8px] opacity-40 font-bold">(5ml)</span>
                                                     </span>
-                                                    <span className="text-[10px] font-black text-fuchsia-600 bg-fuchsia-50 px-2.5 py-1 rounded-xl border border-fuchsia-100 flex items-center gap-1 shadow-sm">
-                                                        <span className="opacity-50">₪</span>
-                                                        <span>{profit10ml.toLocaleString()}</span>
-                                                        <span className="text-[8px] opacity-40">(10ml)</span>
+                                                    <span className="text-[10px] font-black text-fuchsia-600 bg-fuchsia-50 px-2.5 py-1 rounded-xl border border-fuchsia-100 flex items-center gap-2 shadow-sm">
+                                                        <span dir="ltr">₪ {profit10ml.toLocaleString()}</span>
+                                                        <span className="text-[8px] opacity-40 font-bold">(10ml)</span>
                                                     </span>
                                                 </>
                                             );
