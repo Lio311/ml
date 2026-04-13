@@ -265,6 +265,14 @@ export default function MailingClient() {
                                         setLastTab(view);
                                         setActiveCampaign({ 
                                             template_id: t.id, 
+                                            title: `קמפיין - ${t.name}`, 
+                                            subject: t.subject || '', 
+                                            content_html: t.content_html || '',
+                                            recipient_type: 'all',
+                                            scheduled_at: null
+                                        }); 
+                                        setView('create-campaign'); 
+                                    }}
                                 />
                             ))}
                         </div>
