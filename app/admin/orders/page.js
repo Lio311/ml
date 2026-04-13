@@ -60,7 +60,7 @@ export default async function AdminOrdersPage(props) {
         const client = await pool.connect();
         try {
             // 1. Get items to restore stock
-            const res = await client.query('SELECT items FROM orders WHERE id = $1', [orderId]);
+            const res = await client.query('SELECT items, free_samples_count FROM orders WHERE id = $1', [orderId]);
             if (res.rows.length > 0) {
                 const items = res.rows[0].items;
                 for (const item of items) {
