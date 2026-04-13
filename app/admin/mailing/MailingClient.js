@@ -525,11 +525,23 @@ export default function MailingClient() {
                                         id: p.id, 
                                         label: `${p.brand_he || p.brand} ${p.model_he || p.model}`,
                                         subLabel: `₪${p.price_10ml}`,
-                                        image: p.image_url,
+                                        image_url: p.image_url,
                                         ...p
                                     }))}
                                     value={selectedProducts}
-                                    onChange={setSelectedProducts}
+                                    onChange={(ids) => {
+                                        // Filter IDs and map back to full objects from allProducts
+                                        const fullObjects = ids.map(idOrObj => {
+                                            const id = typeof idOrObj === 'object' ? idOrObj.id : idOrObj;
+                                            const originalProduct = allProducts.find(p => p.id === id);
+                                            if (!originalProduct) return null;
+                                            return {
+                                                ...originalProduct,
+                                                label: `${originalProduct.brand_he || originalProduct.brand} ${originalProduct.model_he || originalProduct.model}`
+                                            };
+                                        }).filter(Boolean);
+                                        setSelectedProducts(fullObjects);
+                                    }}
                                     placeholder="חפש מוצר להוספה..."
                                 />
                             </div>
