@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import pool from '@/app/lib/db';
 import { currentUser } from '@clerk/nextjs/server';
+import { getSystemDefaults } from '@/app/lib/email';
 
 // Helper to ensure tables exist (Lazy migration)
 async function ensureTables() {
@@ -54,7 +55,20 @@ export async function GET() {
     try {
         await ensureTables();
         const res = await pool.query('SELECT * FROM email_templates ORDER BY type DESC, name ASC');
-        return NextResponse.json(res.rows);
+        const systemDefaults = getSystemDefaults();
+        
+        const rows = res.rows.map(row => {
+            if (row.type === 'system' && !row.content_html && systemDefaults[row.slug]) {
+                return {
+                    ...row,
+                    subject: row.subject || systemDefaults[row.slug].subject,
+                    content_html: systemDefaults[row.slug].content_html
+                };
+            }
+            return row;
+        });
+
+        return NextResponse.json(rows);
     } catch (err) {
         console.error('Error fetching templates:', err);
         return NextResponse.json({ error: err.message }, { status: 500 });

@@ -329,3 +329,33 @@ export const getBackInStockTemplate = (product) => {
         </div>
     `;
 };
+
+/**
+ * Returns a mapping of slug to default subject and content for system templates.
+ * Used to pre-fill the editor for administrators.
+ */
+export function getSystemDefaults() {
+    return {
+        'order_confirmation': {
+            subject: 'אישור הזמנה #{{orderId}} - ml_tlv',
+            content_html: getOrderConfirmationTemplate('{{orderId}}', [], '{{total}}', '{{freeSamples}}', '{{notes}}', '{{deliveryMethod}}', '{{shippingCost}}')
+        },
+        'status_update': {
+            subject: 'עדכון לגבי הזמנה #{{orderId}} - ml_tlv',
+            content_html: getStatusUpdateTemplate('{{orderId}}', '{{status}}', '{{name}}')
+        },
+        'welcome': {
+            subject: 'ברוכים הבאים ל-ml_tlv! ✨',
+            content_html: getUserWelcomeTemplate('{{name}}')
+        },
+        'back_in_stock': {
+            subject: 'הוא חזר! הבושם שחיכית לו זמין שוב ✨',
+            content_html: getBackInStockTemplate({ 
+                id: '{{productId}}', 
+                brand: '{{brand}}', 
+                model: '{{model}}', 
+                image_url: 'https://www.ml-tlv.com/placeholder-perfume.jpg' 
+            })
+        }
+    };
+}
