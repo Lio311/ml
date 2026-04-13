@@ -917,15 +917,15 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                     <div className="flex items-center gap-2 md:gap-3">
                                         <span className="text-[10px] font-black text-blue-600 bg-blue-50 px-2 py-0.5 rounded-lg border border-blue-100 flex items-center gap-1">
                                             <span dir="ltr">₪ {product.price_2ml?.toLocaleString()}</span>
-                                            <span className="text-[8px] opacity-40 uppercase">(2ml)</span>
+                                            <span className="text-[8px] opacity-40">(2ml)</span>
                                         </span>
                                         <span className="text-[10px] font-black text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-lg border border-indigo-100 flex items-center gap-1">
                                             <span dir="ltr">₪ {product.price_5ml?.toLocaleString()}</span>
-                                            <span className="text-[8px] opacity-40 uppercase">(5ml)</span>
+                                            <span className="text-[8px] opacity-40">(5ml)</span>
                                         </span>
                                         <span className="text-[10px] font-black text-purple-600 bg-purple-50 px-2 py-0.5 rounded-lg border border-purple-100 flex items-center gap-1">
                                             <span dir="ltr">₪ {product.price_10ml?.toLocaleString()}</span>
-                                            <span className="text-[8px] opacity-40 uppercase">(10ml)</span>
+                                            <span className="text-[8px] opacity-40">(10ml)</span>
                                         </span>
                                         {(() => {
                                             const profitPerMl = Math.round((product.price_2ml / 2) - ((product.cost_price || 0) / (product.original_size || 100)));
