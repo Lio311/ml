@@ -96,6 +96,21 @@ export default function VisualEditor({ value, onChange, placeholder = "כאן כ
                     <ToolbarButton onClick={() => execCommand('underline')} icon={<Underline size={16} />} title="קו תחתון" />
                 </div>
 
+                <div className="flex items-center gap-2 border-l border-gray-200 pl-2 ml-1">
+                    <select 
+                        onChange={(e) => execCommand('fontName', e.target.value)}
+                        className="text-[10px] font-bold border-none bg-transparent focus:ring-0 cursor-pointer text-gray-600 hover:text-black transition-colors"
+                        title="בחר פונט"
+                    >
+                        <option value="inherit">פונט</option>
+                        <option value="Assistant, sans-serif">Assistant</option>
+                        <option value="Arial, sans-serif">Arial</option>
+                        <option value="Georgia, serif">Georgia</option>
+                        <option value="Times New Roman, serif">Times</option>
+                        <option value="Courier New, monospace">Courier</option>
+                    </select>
+                </div>
+
                 <div className="flex items-center gap-0.5 border-l border-gray-200 pl-2 ml-1">
                     <ToolbarButton onClick={() => formatBlock('<h1>')} icon={<span className="font-bold text-xs">H1</span>} title="כותרת 1" />
                     <ToolbarButton onClick={() => formatBlock('<h2>')} icon={<span className="font-bold text-xs">H2</span>} title="כותרת 2" />
