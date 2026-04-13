@@ -256,7 +256,7 @@ export default function SmartPricingPage() {
                                             <div className="space-y-1">
                                                 <div className="flex items-center gap-2">
                                                     <span className={`text-[10px] font-black uppercase px-2 py-0.5 rounded-full ${
-                                                        log.undone ? 'bg-gray-200 text-gray-500' : 'bg-blue-100 text-blue-600'
+                                                        log.undone ? 'bg-gray-200 text-gray-500' : 'bg-green-100 text-green-600'
                                                     }`}>
                                                         {log.undone ? 'בוטל' : 'בוצע'}
                                                     </span>
