@@ -46,40 +46,9 @@ export default function SmartPricingPage() {
         }
 
         const confirmText = `האם אתה בטוח שברצונך ${Number(amount) > 0 ? 'להוסיף' : 'להפחית'} ${Math.abs(amount)} ש"ח לכל המוצרים המסומנים?`;
-        
-        toast.custom((t) => (
-            <div className={`${t.visible ? 'animate-in fade-in zoom-in-95 duration-300' : 'animate-out fade-out zoom-out-95 duration-300'} flex flex-col gap-4 p-6 min-w-[320px] bg-white rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-gray-100 pointer-events-auto`} dir="rtl">
-                <div className="flex items-center gap-3 mb-1">
-                    <div className="bg-blue-50 text-blue-600 p-2 rounded-xl">
-                        <History className="w-5 h-5" />
-                    </div>
-                    <p className="font-black text-gray-900 text-sm">אישור פעולה</p>
-                </div>
-                <p className="font-bold text-gray-600 text-xs leading-relaxed">{confirmText}</p>
-                <div className="flex justify-end gap-3 mt-2">
-                    <button 
-                        onClick={() => toast.dismiss(t.id)}
-                        className="flex-1 px-4 py-3 bg-gray-50 text-gray-400 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-gray-100 transition-all active:scale-95"
-                    >
-                        ביטול
-                    </button>
-                    <button 
-                        onClick={async () => { 
-                            toast.dismiss(t.id);
-                            executeApply();
-                        }}
-                        className="flex-1 px-4 py-3 bg-black text-white rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-lg shadow-gray-200 hover:bg-gray-800 transition-all active:scale-95"
-                    >
-                        כן, בצע
-                    </button>
-                </div>
-            </div>
-        ), { duration: 8000, position: 'top-center' });
-    };
+        if (!confirm(confirmText)) return;
 
-    const executeApply = async () => {
         setSubmitting(true);
-        const loadingToast = toast.loading('מעדכן מחירים...');
         try {
             const res = await fetch('/api/admin/bulk-pricing', {
                 method: 'POST',
@@ -94,58 +63,21 @@ export default function SmartPricingPage() {
 
             const data = await res.json();
             if (res.ok) {
-                if (data.count === 0) {
-                    toast.error('הפעולה הסתיימה אך לא עודכנו מוצרים. וודא שבחרת גדלים שיש להם מחיר מוגדר במוצרים המסוננים.', { duration: 6000 });
-                } else {
-                    toast.success(`התמחור עודכן בהצלחה עבור ${data.count} מוצרים!`);
-                    setAmount('');
-                    fetchLogs();
-                }
+                toast.success(`התמחור עודכן בהצלחה עבור ${data.count} מוצרים!`);
+                setAmount('');
+                fetchLogs();
             } else {
                 toast.error(data.error || 'שגיאה בעדכון התמחור');
             }
         } catch (error) {
             toast.error('שגיאה בתקשורת');
         } finally {
-            toast.dismiss(loadingToast);
             setSubmitting(false);
         }
     };
 
     const handleUndo = async (id) => {
-        toast.custom((t) => (
-            <div className={`${t.visible ? 'animate-in fade-in zoom-in-95 duration-300' : 'animate-out fade-out zoom-out-95 duration-300'} flex flex-col gap-4 p-6 min-w-[320px] bg-white rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.15)] border border-gray-100 pointer-events-auto`} dir="rtl">
-                <div className="flex items-center gap-3 mb-1">
-                    <div className="bg-red-50 text-red-600 p-2 rounded-xl">
-                        <Trash2 className="w-5 h-5" />
-                    </div>
-                    <p className="font-black text-gray-900 text-sm">ביטול פעולה</p>
-                </div>
-                <p className="font-bold text-gray-600 text-xs leading-relaxed">
-                    האם אתה בטוח שברצונך לבטל פעולה זו? המחירים יחזרו למצבם הקודם.
-                </p>
-                <div className="flex justify-end gap-3 mt-2">
-                    <button 
-                        onClick={() => toast.dismiss(t.id)}
-                        className="flex-1 px-4 py-3 bg-gray-50 text-gray-400 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:bg-gray-100 transition-all active:scale-95"
-                    >
-                        חזור
-                    </button>
-                    <button 
-                        onClick={async () => { 
-                            toast.dismiss(t.id);
-                            executeUndo(id);
-                        }}
-                        className="flex-1 px-4 py-3 bg-black text-white rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-lg shadow-gray-200 hover:bg-gray-800 transition-all active:scale-95"
-                    >
-                        כן, בטל
-                    </button>
-                </div>
-            </div>
-        ), { duration: 8000, position: 'top-center' });
-    };
-
-    const executeUndo = async (id) => {
+        if (!confirm('האם אתה בטוח שברצונך לבטל פעולה זו? המחירים יחזרו למצבם הקודם.')) return;
 
         const loadingToast = toast.loading('מבטל פעולה...');
         try {
@@ -260,12 +192,11 @@ export default function SmartPricingPage() {
                                         value={amount}
                                         onChange={(e) => setAmount(e.target.value)}
                                         onWheel={(e) => e.target.blur()}
-                                        placeholder="לדוגמה: 5 או ‎-5"
-                                        className="w-full bg-gray-50 border-gray-100 border-2 rounded-2xl p-4 pr-12 focus:border-blue-600 focus:bg-white focus:ring-4 focus:ring-blue-50 outline-none transition-all font-black text-2xl text-left"
-                                        dir="ltr"
+                                        placeholder="לדוגמה: 5 או -5"
+                                        className="w-full bg-gray-50 border-gray-100 border-2 rounded-2xl p-4 pr-12 focus:border-blue-600 focus:bg-white focus:ring-4 focus:ring-blue-50 outline-none transition-all font-black text-2xl"
                                         required
                                     />
-                                    <span className="absolute left-4 top-1/2 -translate-y-1/2 font-black text-xl text-gray-400">₪</span>
+                                    <span className="absolute right-4 top-1/2 -translate-y-1/2 font-black text-xl text-gray-400">₪</span>
                                 </div>
                                 <p className="text-[10px] text-gray-400 font-medium ps-1">המחיר החדש יחושב נטו. מחיר הבסיס יגדל בהתאם להנחה הקיימת.</p>
                             </div>
@@ -333,11 +264,9 @@ export default function SmartPricingPage() {
                                                         {new Date(log.created_at).toLocaleString('he-IL', { dateStyle: 'short', timeStyle: 'short' })}
                                                     </span>
                                                 </div>
-                                                <h3 className="font-black text-gray-900 flex items-center gap-1.5" dir="rtl">
+                                                <h3 className="font-black text-gray-900">
                                                     {log.undone ? 'בוטל: ' : ''} 
-                                                    <span className="flex items-center gap-1" dir="ltr">
-                                                        <span>₪ {Number(log.amount) > 0 ? '+' : ''}{Math.abs(log.amount)}</span>
-                                                    </span>
+                                                    {Number(log.amount) > 0 ? '+' : ''}{log.amount} ש"ח 
                                                     <span className="text-gray-400 text-xs font-bold mr-2">
                                                         ({log.sizes.map(s => s + 'ml').join(', ')})
                                                     </span>
