@@ -266,7 +266,9 @@ export default function SmartPricingPage() {
                                                 </div>
                                                 <h3 className="font-black text-gray-900">
                                                     {log.undone ? 'בוטל: ' : ''} 
-                                                    {Number(log.amount) > 0 ? '+' : ''}{log.amount} ש"ח 
+                                                    <span dir="ltr" className="inline-block">
+                                                        ₪ {Number(log.amount) > 0 ? '+' : ''}{log.amount}
+                                                    </span>
                                                     <span className="text-gray-400 text-xs font-bold mr-2">
                                                         ({log.sizes.map(s => s + 'ml').join(', ')})
                                                     </span>
