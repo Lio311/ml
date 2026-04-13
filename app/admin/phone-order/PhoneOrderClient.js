@@ -436,7 +436,7 @@ export default function PhoneOrderClient() {
                                                 <div className="font-bold text-gray-900 truncate">{cleanProductName(item.name, item.brand)}</div>
                                                 <div className="flex items-center gap-3 mt-1">
                                                     <span className="text-xs px-2 py-0.5 bg-blue-50 text-blue-600 rounded-full font-bold">{item.size}ml</span>
-                                                    <span className="text-sm font-bold text-gray-900">₪{item.price}</span>
+                                                    <span className="text-sm font-bold text-gray-900">{item.price} ₪</span>
                                                 </div>
                                             </div>
                                             
@@ -491,7 +491,7 @@ export default function PhoneOrderClient() {
                                     }`}
                                 >
                                     <Truck className={deliveryMethod === 'mail' ? 'text-blue-600' : ''} />
-                                    <span className="font-black text-sm">משלוח (30₪)</span>
+                                    <span className="font-black text-sm">משלוח (30 ₪)</span>
                                 </button>
                                 <button 
                                     onClick={() => setDeliveryMethod('self_pickup')}
@@ -502,7 +502,7 @@ export default function PhoneOrderClient() {
                                     }`}
                                 >
                                     <Store className={deliveryMethod === 'self_pickup' ? 'text-blue-600' : ''} />
-                                    <span className="font-black text-sm">איסוף עצמי (0₪)</span>
+                                    <span className="font-black text-sm">איסוף עצמי (0 ₪)</span>
                                 </button>
                             </div>
 
@@ -531,21 +531,21 @@ export default function PhoneOrderClient() {
                             <div className="space-y-4 mb-8">
                                 <div className="flex justify-between text-gray-400 font-medium">
                                     <span>סכום ביניים</span>
-                                    <span>₪{subtotal}</span>
+                                    <span>{subtotal} ₪</span>
                                 </div>
                                 {discountAmount > 0 && (
                                     <div className="flex justify-between text-emerald-400 font-bold">
                                         <span>הנחה ({couponDiscount.percent}%)</span>
-                                        <span dir="ltr">-{discountAmount} ₪</span>
+                                        <span dir="ltr">-₪ {discountAmount}</span>
                                     </div>
                                 )}
                                 <div className="flex justify-between text-gray-400 font-medium">
                                     <span>משלוח</span>
-                                    <span>{shippingPrice === 0 ? 'חינם' : `₪${shippingPrice}`}</span>
+                                    <span>{shippingPrice === 0 ? 'חינם' : `${shippingPrice} ₪`}</span>
                                 </div>
                                 <div className="pt-4 border-t border-white/10 flex justify-between items-end">
                                     <span className="text-sm font-bold opacity-60">סה"כ לתשלום</span>
-                                    <span className="text-4xl font-black text-blue-400 tracking-tight">₪{total}</span>
+                                    <span className="text-4xl font-black text-blue-400 tracking-tight">{total} ₪</span>
                                 </div>
                             </div>
 
@@ -666,11 +666,11 @@ export default function PhoneOrderClient() {
                                                 <div className="flex flex-col items-end">
                                                     {isDiscounted ? (
                                                         <>
-                                                            <div className="text-[10px] text-gray-400 line-through leading-none mb-1">₪{price}</div>
-                                                            <div className="text-xl font-black text-red-600">₪{discountedPrice}</div>
+                                                            <div className="text-[10px] text-gray-400 line-through leading-none mb-1">{price} ₪</div>
+                                                            <div className="text-xl font-black text-red-600">{discountedPrice} ₪</div>
                                                         </>
                                                     ) : (
-                                                        <div className="text-xl font-black text-blue-600">₪{price}</div>
+                                                        <div className="text-xl font-black text-blue-600">{price} ₪</div>
                                                     )}
                                                 </div>
                                             </button>

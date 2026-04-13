@@ -21,6 +21,9 @@ export async function GET(req) {
         const client = await pool.connect();
         try {
             let query = `
+                SELECT id, name, brand, model, price_2ml, price_5ml, price_10ml, image_url, 
+                       category, description, stock, top_notes, middle_notes, base_notes,
+                       in_lottery, name_he, brand_he, model_he, cost_price, original_size,
                        seasons, perfumers, country, discount_percentage, discount_sizes, discount_end_date
                 FROM products WHERE active = true
             `;

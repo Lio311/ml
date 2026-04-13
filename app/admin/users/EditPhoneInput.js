@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import { Pencil, Check, X, Loader2 } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import toast from 'react-hot-toast';
 
 export default function EditPhoneInput({ userId, initialPhone, canEdit }) {
     const [isEditing, setIsEditing] = useState(false);
@@ -19,16 +20,16 @@ export default function EditPhoneInput({ userId, initialPhone, canEdit }) {
                 body: JSON.stringify({ phone: phone.trim() || null })
             });
 
-            if (res.ok) {
+                toast.success('מספר הטלפון עודכן');
                 setIsEditing(false);
                 router.refresh(); // Refresh the page to update the UI
             } else {
                 console.error('Failed to update phone');
-                alert('שגיאה בעדכון מספר הטלפון');
+                toast.error('שגיאה בעדכון מספר הטלפון');
             }
         } catch (error) {
             console.error('Error updating phone', error);
-            alert('שגיאה בעדכון מספר הטלפון');
+            toast.error('שגיאה בעדכון מספר הטלפון');
         } finally {
             setIsLoading(false);
         }

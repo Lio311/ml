@@ -202,7 +202,7 @@ export default async function AdminUsersPage(props) {
                                                 <div className="w-full flex items-center justify-between gap-3 bg-white/50 px-3 py-1.5 rounded-xl border border-blue-100/50 shadow-sm">
                                                     <div className="flex flex-col items-start leading-tight">
                                                         <span className="text-[8px] font-black text-blue-400 uppercase tracking-tighter">אתר</span>
-                                                        <div className="font-black text-blue-900 text-[11px]">₪{Math.round(u.siteSpent).toLocaleString()}</div>
+                                                        <div className="font-bold text-gray-900 leading-none">{u.siteSpent?.toLocaleString()} ₪</div>
                                                     </div>
                                                     <div className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded leading-none">{u.siteOrders}</div>
                                                 </div>
@@ -211,7 +211,7 @@ export default async function AdminUsersPage(props) {
                                                 <div className="w-full flex items-center justify-between gap-3 bg-white/50 px-3 py-1.5 rounded-xl border border-amber-100/50 shadow-sm">
                                                     <div className="flex flex-col items-start leading-tight">
                                                         <span className="text-[8px] font-black text-amber-500/80 uppercase tracking-tighter">קטלוג</span>
-                                                        <div className="font-black text-amber-900 text-[11px]">₪{Math.round(u.catalogSpent).toLocaleString()}</div>
+                                                        <div className="font-bold text-blue-600 leading-none">{u.catalogSpent?.toLocaleString()} ₪</div>
                                                     </div>
                                                     <div className="text-[10px] font-bold text-amber-600 bg-amber-50 px-2 py-0.5 rounded leading-none">{u.catalogOrders}</div>
                                                 </div>
@@ -297,7 +297,7 @@ export default async function AdminUsersPage(props) {
                                             <div className="w-7 h-7 bg-blue-100/50 rounded-lg flex items-center justify-center text-[10px]">🌐</div>
                                             <div>
                                                 <div className="text-[8px] uppercase font-black text-blue-400 tracking-tighter">אתר</div>
-                                                <div className="font-black text-blue-900 text-xs">₪{Math.round(u.siteSpent).toLocaleString()}</div>
+                                                <span className="text-sm font-black text-gray-800">{u.siteSpent?.toLocaleString()} ₪</span>
                                             </div>
                                         </div>
                                         <div className="text-[10px] font-black text-blue-700 bg-white px-2 py-0.5 rounded-lg border border-blue-50 leading-none shadow-sm">{u.siteOrders}</div>
@@ -309,7 +309,7 @@ export default async function AdminUsersPage(props) {
                                             <div className="w-7 h-7 bg-amber-100/50 rounded-lg flex items-center justify-center text-[10px]">📖</div>
                                             <div>
                                                 <div className="text-[8px] uppercase font-black text-amber-500 tracking-tighter">קטלוג</div>
-                                                <div className="font-black text-amber-900 text-xs">₪{Math.round(u.catalogSpent).toLocaleString()}</div>
+                                                <p className="text-sm font-black text-blue-600">{u.catalogSpent?.toLocaleString()} ₪</p>
                                             </div>
                                         </div>
                                         <div className="text-[10px] font-black text-amber-700 bg-white px-2 py-0.5 rounded-lg border border-amber-50 leading-none shadow-sm">{u.catalogOrders}</div>

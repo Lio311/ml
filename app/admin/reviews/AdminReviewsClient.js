@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import { useState } from 'react';
-import { Eye, EyeOff, Trash2, Loader2, MessageSquare, ExternalLink, Calendar, Star } from 'lucide-react';
+import { Eye, EyeOff, Trash2, Loader2, MessageSquare, ExternalLink, Calendar, Star, Check, X } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 export default function AdminReviewsClient({ initialReviews = [] }) {
@@ -34,7 +34,49 @@ export default function AdminReviewsClient({ initialReviews = [] }) {
     };
 
     const deleteReview = async (reviewId) => {
-        if (!confirm("האם אתה בטוח שברצונך למחוק ביקורת זו לצמיתות?")) return;
+        toast.custom((t) => (
+            <div
+                className={`${
+                    t.visible ? 'animate-enter' : 'animate-leave'
+                } max-w-md w-full bg-white shadow-2xl rounded-[2rem] pointer-events-auto flex flex-col p-6 border-2 border-red-50`}
+                dir="rtl"
+            >
+                <div className="flex items-center gap-4 mb-5">
+                    <div className="bg-red-50 p-3 rounded-2xl">
+                        <Trash2 className="w-6 h-6 text-red-500" />
+                    </div>
+                    <div>
+                        <h3 className="text-gray-900 font-black text-lg">מחיקת ביקורת לצמיתות</h3>
+                        <p className="text-gray-500 text-sm leading-relaxed mt-0.5">
+                            האם אתה בטוח שברצונך למחוק ביקורת זו? פעולה זו אינה ניתנת לביטול.
+                        </p>
+                    </div>
+                </div>
+                
+                <div className="flex gap-3">
+                    <button
+                        onClick={() => {
+                            toast.dismiss(t.id);
+                            executeDelete(reviewId);
+                        }}
+                        className="flex-1 bg-red-600 hover:bg-red-700 text-white font-black py-4 rounded-2xl transition-all active:scale-95 flex items-center justify-center gap-2 shadow-lg shadow-red-200"
+                    >
+                        <Check className="w-4 h-4" />
+                        כן, מחק
+                    </button>
+                    <button
+                        onClick={() => toast.dismiss(t.id)}
+                        className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 font-black py-4 rounded-2xl transition-all active:scale-95 flex items-center justify-center gap-2 border border-gray-200"
+                    >
+                        <X className="w-4 h-4" />
+                        ביטול
+                    </button>
+                </div>
+            </div>
+        ), { duration: Infinity, position: 'top-center' });
+    };
+
+    const executeDelete = async (reviewId) => {
         
         setIsProcessing(reviewId);
         try {

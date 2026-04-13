@@ -2,7 +2,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { toast } from "react-hot-toast";
-import { Pencil, Trash2, Eye, EyeOff } from "lucide-react";
+import { Pencil, Trash2, Eye, EyeOff, AlertTriangle, Check, X } from "lucide-react";
 
 export default function AdminCatalogsClient() {
     const [catalogs, setCatalogs] = useState([]);
@@ -30,8 +30,50 @@ export default function AdminCatalogsClient() {
         fetchCatalogs();
     }, []);
 
-    const handleDelete = async (id) => {
-        if (!confirm("האם אתה בטוח שברצונך למחוק קטלוג זה ואת כל מוצריו? (פעולה זו בלתי הפיכה)")) return;
+    const handleDelete = (id) => {
+        toast.custom((t) => (
+            <div
+                className={`${
+                    t.visible ? 'animate-enter' : 'animate-leave'
+                } max-w-md w-full bg-white shadow-2xl rounded-[2rem] pointer-events-auto flex flex-col p-6 border-2 border-red-50`}
+                dir="rtl"
+            >
+                <div className="flex items-center gap-4 mb-5">
+                    <div className="bg-red-50 p-3 rounded-2xl">
+                        <AlertTriangle className="w-6 h-6 text-red-500" />
+                    </div>
+                    <div>
+                        <h3 className="text-gray-900 font-black text-lg">מחיקת קטלוג לצמיתות</h3>
+                        <p className="text-gray-500 text-sm leading-relaxed mt-0.5">
+                            האם אתה בטוח שברצונך למחוק קטלוג זה וכל מוצריו? פעולה זו בלתי הפיכה.
+                        </p>
+                    </div>
+                </div>
+                
+                <div className="flex gap-3">
+                    <button
+                        onClick={() => {
+                            toast.dismiss(t.id);
+                            executeDelete(id);
+                        }}
+                        className="flex-1 bg-red-600 hover:bg-red-700 text-white font-black py-4 rounded-2xl transition-all active:scale-95 flex items-center justify-center gap-2 shadow-lg shadow-red-200"
+                    >
+                        <Check className="w-4 h-4" />
+                        כן, מחק הכל
+                    </button>
+                    <button
+                        onClick={() => toast.dismiss(t.id)}
+                        className="flex-1 bg-gray-100 hover:bg-gray-200 text-gray-700 font-black py-4 rounded-2xl transition-all active:scale-95 flex items-center justify-center gap-2 border border-gray-200"
+                    >
+                        <X className="w-4 h-4" />
+                        ביטול
+                    </button>
+                </div>
+            </div>
+        ), { duration: Infinity, position: 'top-center' });
+    };
+
+    const executeDelete = async (id) => {
 
         try {
              const res = await fetch(`/api/admin/catalogs/${id}`, { method: 'DELETE' });

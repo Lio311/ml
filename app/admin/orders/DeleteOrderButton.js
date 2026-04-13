@@ -1,6 +1,7 @@
 'use client';
 
 import { useState } from 'react';
+import toast from 'react-hot-toast';
 
 export default function DeleteOrderButton({ orderId, deleteAction }) {
     const [isOpen, setIsOpen] = useState(false);
@@ -11,7 +12,7 @@ export default function DeleteOrderButton({ orderId, deleteAction }) {
             setIsOpen(false);
         } catch (error) {
             console.error("Failed to delete order:", error);
-            alert("שגיאה במחיקת ההזמנה");
+            toast.error("שגיאה במחיקת ההזמנה");
         }
     };
 
