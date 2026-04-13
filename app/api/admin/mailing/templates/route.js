@@ -33,32 +33,24 @@ async function ensureTables() {
             created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
             updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
         );
-
-        -- Seed system templates if they don't exist
-        INSERT INTO email_templates (slug, name, type)
-        VALUES 
-            ('order_confirmation', 'אישור הזמנה (מערכת)', 'system'),
-            ('status_update', 'עדכון סטטוס הזמנה (מערכת)', 'system'),
-            ('welcome', 'ברוכים הבאים (מערכת)', 'system'),
-            ('back_in_stock', 'חזרה למלאי (מערכת)', 'system'),
-            ('review_request', 'בקשת חוות דעת (מערכת)', 'system'),
-            ('cart_recovery', 'שחזור סל נטוש (מערכת)', 'system'),
-            ('recommendations', 'המלצות אישיות (מערכת)', 'system'),
-            ('educational', 'מייל לימודי/טיפים (מערכת)', 'system'),
-            ('admin_order_alert', 'התראת הזמנה חדשה (ניהול)', 'system'),
-            ('admin_user_alert', 'התראת משתמש חדש (ניהול)', 'system'),
-            ('contact_form_alert', 'פנייה מצור קשר (ניהול)', 'system')
-        ON CONFLICT (slug) DO NOTHING;
     `);
 
-    // Ensure system templates have content (Auto-fix for first migration)
+    // Ensure system templates have content and are up-to-date with the latest logic
     const defaults = getSystemDefaults();
     for (const [slug, data] of Object.entries(defaults)) {
+        // We force update system templates to ensure any mangled/baked-in logic is cleared
         await pool.query(`
             UPDATE email_templates 
-            SET content_html = $1, subject = $2
-            WHERE slug = $3 AND (content_html IS NULL OR content_html = '')
+            SET content_html = $1, subject = $2, type = 'system', updated_at = NOW()
+            WHERE slug = $3
         `, [data.content_html, data.subject, slug]);
+        
+        // If it didn't exist (0 rows updated), insert it
+        await pool.query(`
+            INSERT INTO email_templates (slug, name, type, content_html, subject)
+            VALUES ($1, $2, 'system', $3, $4)
+            ON CONFLICT (slug) DO NOTHING
+        `, [slug, slug, data.content_html, data.subject]);
     }
 }
 
@@ -72,20 +64,7 @@ export async function GET() {
     try {
         await ensureTables();
         const res = await pool.query('SELECT * FROM email_templates ORDER BY type DESC, name ASC');
-        const systemDefaults = getSystemDefaults();
-        
-        const rows = res.rows.map(row => {
-            if (row.type === 'system' && !row.content_html && systemDefaults[row.slug]) {
-                return {
-                    ...row,
-                    subject: row.subject || systemDefaults[row.slug].subject,
-                    content_html: systemDefaults[row.slug].content_html
-                };
-            }
-            return row;
-        });
-
-        return NextResponse.json(rows);
+        return NextResponse.json(res.rows);
     } catch (err) {
         console.error('Error fetching templates:', err);
         return NextResponse.json({ error: err.message }, { status: 500 });
