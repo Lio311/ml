@@ -56,9 +56,9 @@ function renderProductCell(product, siteUrl) {
     <td width="50%" valign="top" style="padding: 10px; border: 1px solid #f0f0f0; border-radius: 15px;">
         <table border="0" cellpadding="0" cellspacing="0" width="100%">
             <tr>
-                <td align="center" style="padding-bottom: 10px;">
-                    <a href="${productUrl}" target="_blank">
-                        <img src="${image}" alt="${name}" width="150" style="display: block; width: 100%; max-width: 150px; height: auto; border-radius: 10px;">
+                <td align="center" style="padding-bottom: 10px; height: 180px; vertical-align: middle;">
+                    <a href="${productUrl}" target="_blank" style="text-decoration: none;">
+                        <img src="${image}" alt="${name}" width="150" style="display: block; width: auto; max-width: 150px; height: auto; max-height: 160px; border-radius: 10px; margin: 0 auto;">
                     </a>
                 </td>
             </tr>

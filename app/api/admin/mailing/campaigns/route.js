@@ -46,7 +46,7 @@ export async function POST(req) {
                     recipient_type = $5, recipients = $6, scheduled_at = $7, status = $8, updated_at = NOW()
                 WHERE id = $9
                 RETURNING *
-            `, [template_id, title, subject, content_html, recipient_type, recipients, scheduled_at, status || 'scheduled', id]);
+            `, [template_id, title, subject, content_html, recipient_type, JSON.stringify(recipients || []), scheduled_at, status || 'scheduled', id]);
             return NextResponse.json(res.rows[0]);
         } else {
             // Create New
@@ -54,7 +54,7 @@ export async function POST(req) {
                 INSERT INTO email_campaigns (template_id, title, subject, content_html, recipient_type, recipients, scheduled_at, status)
                 VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
                 RETURNING *
-            `, [template_id, title, subject, content_html, recipient_type, recipients, scheduled_at, status || 'scheduled']);
+            `, [template_id, title, subject, content_html, recipient_type, JSON.stringify(recipients || []), scheduled_at, status || 'scheduled']);
             return NextResponse.json(res.rows[0]);
         }
     } catch (err) {
