@@ -98,8 +98,13 @@ export async function POST(req) {
             // Email
             if (order.customer_details?.email) {
                 try {
-                    const { html: dynamicHtml, subject: dynamicSubject } = await getTemplate('status_update', { orderId, newStatus: status, customerName: order.customer_details.name }, getStatusUpdateTemplate.bind(null, orderId, newStatus, order.customer_details.name));
-                    await sendEmail(order.customer_details.email, dynamicSubject || `עדכון סטטוס הזמנה #${orderId} - ml`, dynamicHtml, 'status_update', orderId);
+                    const { html: dynamicHtml, subject: dynamicSubject } = await getTemplate('status_update', { 
+                        orderId, 
+                        status: status, 
+                        name: order.customer_details.name 
+                    }, getStatusUpdateTemplate.bind(null, orderId, status, order.customer_details.name));
+                    
+                    await sendEmail(order.customer_details.email, dynamicSubject || `עדכון סטטוס הזמנה #${orderId} - ml_tlv`, dynamicHtml, 'status_update', orderId);
                 } catch (e) { console.error('Email error:', e); }
             }
         }

@@ -129,16 +129,16 @@ export const getNewProductTemplate = (product) => {
 };
 
 export const getOrderConfirmationTemplate = (orderId, items, total, freeSamples, notes, deliveryMethod, shippingCost) => {
-    const itemsHtml = items.map(item => `
+    const itemsContent = Array.isArray(items) ? items.map(item => `
         <tr>
             <td style="padding: 8px; border-bottom: 1px solid #ddd;">${item.name || (item.brand + ' ' + item.model)} (${item.size} מ"ל)</td>
             <td style="padding: 8px; border-bottom: 1px solid #ddd;">${item.quantity}</td>
             <td style="padding: 8px; border-bottom: 1px solid #ddd;">${item.price} ₪</td>
         </tr>
-    `).join('');
+    `).join('') : items; // items could be a pre-rendered string like '{{itemsHtml}}'
 
-    const deliveryText = deliveryMethod === 'self_pickup' ? 'איסוף עצמי (תל אביב)' : 'משלוח בדואר';
-    const shippingCostText = shippingCost === 0 ? 'חינם' : `${shippingCost} ₪`;
+    const deliveryText = deliveryMethod === 'self_pickup' ? 'איסוף עצמי (תל אביב)' : (deliveryMethod === '{{deliveryMethod}}' ? '{{deliveryMethod}}' : 'משלוח בדואר');
+    const shippingCostText = shippingCost === 0 ? 'חינם' : (shippingCost === '{{shippingCost}}' ? '{{shippingCost}}' : `${shippingCost} ₪`);
 
     return `
         <div dir="rtl" style="font-family: 'Open Sans', 'Open Sans Hebrew', Arial, sans-serif; color: #333;">
@@ -155,7 +155,7 @@ export const getOrderConfirmationTemplate = (orderId, items, total, freeSamples,
                     </tr>
                 </thead>
                 <tbody>
-                    ${itemsHtml}
+                    ${itemsContent}
                 </tbody>
             </table>
             
@@ -230,8 +230,8 @@ export const getStatusUpdateTemplate = (orderId, status, customerName) => {
 };
 
 export const getAdminNewOrderTemplate = (orderId, customerName, total, items, deliveryMethod, shippingCost, phoneNumber) => {
-    const itemsHtml = items.map(item => `<li>${item.name || (item.brand + ' ' + item.model)} (${item.size}ml) x${item.quantity}</li>`).join('');
-    const deliveryText = deliveryMethod === 'self_pickup' ? 'איסוף עצמי (תל אביב)' : 'משלוח בדואר';
+    const itemsContent = Array.isArray(items) ? items.map(item => `<li>${item.name || (item.brand + ' ' + item.model)} (${item.size}ml) x${item.quantity}</li>`).join('') : items;
+    const deliveryText = deliveryMethod === 'self_pickup' ? 'איסוף עצמי (תל אביב)' : (deliveryMethod === '{{deliveryMethod}}' ? '{{deliveryMethod}}' : 'משלוח בדואר');
     
     return `
         <div dir="rtl" style="font-family: Arial, sans-serif;">
@@ -243,7 +243,7 @@ export const getAdminNewOrderTemplate = (orderId, customerName, total, items, de
             <p><strong>עלות משלוח:</strong> ${shippingCost} ₪</p>
             <p><strong>סה"כ סופי:</strong> ${total} ₪</p>
             <p><strong>פריטים:</strong></p>
-            <ul>${itemsHtml}</ul>
+            <ul>${itemsContent}</ul>
             <p><a href="${'https://www.ml-tlv.com'}/admin/orders">לצפייה בניהול הזמנות</a></p>
         </div>
     `;
@@ -338,7 +338,7 @@ export function getSystemDefaults() {
     return {
         'order_confirmation': {
             subject: 'אישור הזמנה #{{orderId}} - ml_tlv',
-            content_html: getOrderConfirmationTemplate('{{orderId}}', [], '{{total}}', '{{freeSamples}}', '{{notes}}', '{{deliveryMethod}}', '{{shippingCost}}')
+            content_html: getOrderConfirmationTemplate('{{orderId}}', '{{itemsHtml}}', '{{total}}', '{{freeSamples}}', '{{notes}}', '{{deliveryMethod}}', '{{shippingCost}}')
         },
         'status_update': {
             subject: 'עדכון לגבי הזמנה #{{orderId}} - ml_tlv',
@@ -418,7 +418,7 @@ export function getSystemDefaults() {
         },
         'admin_order_alert': {
             subject: 'הזמנה חדשה התקבלה! #{{orderId}} 🔥',
-            content_html: getAdminNewOrderTemplate('{{orderId}}', '{{name}}', '{{total}}', [], '{{deliveryMethod}}', '{{shippingCost}}', '{{phone}}')
+            content_html: getAdminNewOrderTemplate('{{orderId}}', '{{name}}', '{{total}}', '{{itemsHtml}}', '{{deliveryMethod}}', '{{shippingCost}}', '{{phone}}')
         },
         'admin_user_alert': {
             subject: 'משתמש חדש נרשם למערכת! ✨',

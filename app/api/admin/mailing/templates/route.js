@@ -50,6 +50,16 @@ async function ensureTables() {
             ('contact_form_alert', 'פנייה מצור קשר (ניהול)', 'system')
         ON CONFLICT (slug) DO NOTHING;
     `);
+
+    // Ensure system templates have content (Auto-fix for first migration)
+    const defaults = getSystemDefaults();
+    for (const [slug, data] of Object.entries(defaults)) {
+        await pool.query(`
+            UPDATE email_templates 
+            SET content_html = $1, subject = $2
+            WHERE slug = $3 AND (content_html IS NULL OR content_html = '')
+        `, [data.content_html, data.subject, slug]);
+    }
 }
 
 export async function GET() {

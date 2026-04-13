@@ -267,15 +267,48 @@ export async function POST(req) {
 
             await client.query('COMMIT');
 
+            // Prepare dynamic item lists for templates
+            const itemsHtmlCustomer = items.map(item => `
+                <tr>
+                    <td style="padding: 8px; border-bottom: 1px solid #ddd;">${item.name || (item.brand + ' ' + item.model)} (${item.size} מ"ל)</td>
+                    <td style="padding: 8px; border-bottom: 1px solid #ddd;">${item.quantity}</td>
+                    <td style="padding: 8px; border-bottom: 1px solid #ddd;">${item.price} ₪</td>
+                </tr>
+            `).join('');
+
+            const itemsHtmlAdmin = items.map(item => `<li>${item.name || (item.brand + ' ' + item.model)} (${item.size}ml) x${item.quantity}</li>`).join('');
+            const deliveryText = deliveryMethod === 'self_pickup' ? 'איסוף עצמי (תל אביב)' : 'משלוח בדואר';
+
             // Send Confirmation Email (Async, don't block response)
             const userEmail = user?.emailAddresses[0]?.emailAddress;
             const adminEmail = process.env.ADMIN_EMAIL;
 
             if (userEmail && !catalogId) {
-                const { html: dynamicHtml, subject: dynamicSubject } = await getTemplate('order_confirmation', { orderId, total, freeSamples, notes, customerName: user.firstName }, getOrderConfirmationTemplate.bind(null, orderId, items, total, freeSamples, notes, deliveryMethod || 'mail', shippingCost));
+                const { html: dynamicHtml, subject: dynamicSubject } = await getTemplate('order_confirmation', { 
+                    orderId, 
+                    total, 
+                    freeSamples, 
+                    notes, 
+                    customerName: user.firstName,
+                    itemsHtml: itemsHtmlCustomer,
+                    deliveryMethod: deliveryText,
+                    shippingCost: shippingCost === 0 ? 'חינם' : `${shippingCost} ₪`
+                }, getOrderConfirmationTemplate.bind(null, orderId, items, total, freeSamples, notes, deliveryMethod || 'mail', shippingCost));
+                
                 await sendEmail(userEmail, dynamicSubject || `אישור הזמנה #${orderId} - ml_tlv`, dynamicHtml, 'order_confirmation', orderId);
             } else if (userEmail && catalogId) {
-                const { html: dynamicHtml, subject: dynamicSubject } = await getTemplate('order_confirmation', { orderId, total, freeSamples, notes, customerName: user.firstName, catalogName }, getOrderConfirmationTemplate.bind(null, orderId, items, total, freeSamples, notes, deliveryMethod || 'mail', shippingCost));
+                const { html: dynamicHtml, subject: dynamicSubject } = await getTemplate('order_confirmation', { 
+                    orderId, 
+                    total, 
+                    freeSamples, 
+                    notes, 
+                    customerName: user.firstName, 
+                    catalogName,
+                    itemsHtml: itemsHtmlCustomer,
+                    deliveryMethod: deliveryText,
+                    shippingCost: shippingCost === 0 ? 'חינם' : `${shippingCost} ₪`
+                }, getOrderConfirmationTemplate.bind(null, orderId, items, total, freeSamples, notes, deliveryMethod || 'mail', shippingCost));
+                
                 await sendEmail(userEmail, dynamicSubject || `אישור קבלת פנייה מ${catalogName} #${orderId}`, dynamicHtml, 'order_confirmation', orderId);
             }
 
@@ -285,9 +318,10 @@ export async function POST(req) {
                     orderId, 
                     name: `${user.firstName} ${user.lastName}`, 
                     total, 
-                    deliveryMethod: deliveryMethod || 'mail', 
-                    shippingCost, 
-                    phone: phoneNumber 
+                    deliveryMethod: deliveryText, 
+                    shippingCost: `${shippingCost} ₪`, 
+                    phone: phoneNumber,
+                    itemsHtml: itemsHtmlAdmin
                 },
                 () => getAdminNewOrderTemplate(orderId, `${user.firstName} ${user.lastName}`, total, items, deliveryMethod || 'mail', shippingCost, phoneNumber)
             );
