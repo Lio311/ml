@@ -130,7 +130,8 @@ export default async function AdminDashboard({ searchParams }) {
             expAllTimeRes,
             cogsAllTimeRes,
             cumulativeSalesRes,
-            cumulativeVolumeRes
+            cumulativeVolumeRes,
+            uniqueShoppersRes
         ] = await Promise.all([
             // 1. Recent Orders
             safeQuery("SELECT id, customer_details, created_at, total_amount, status FROM orders WHERE catalog_id IS NULL ORDER BY created_at DESC LIMIT 5"),
@@ -342,7 +343,9 @@ export default async function AdminDashboard({ searchParams }) {
                 FROM expanded_items
                 GROUP BY day
                 ORDER BY day
-            `)
+            `),
+            // 26. Unique Shoppers (For LTV)
+            safeQuery("SELECT COUNT(DISTINCT COALESCE(customer_details->>'email', id::text)) FROM orders WHERE status != 'cancelled' AND catalog_id IS NULL")
         ]);
 
         // --- 2. PROCESS DATA (Sync) ---
@@ -408,6 +411,10 @@ export default async function AdminDashboard({ searchParams }) {
         const yearlySum = parseFloat(yearlyExpRes.rows[0]?.sum || 0);
         const totalMonthlyExpenses = monthlySum + (yearlySum / 12);
         kpis.totalExpenses = Math.round(totalMonthlyExpenses);
+
+        // LTV Calculation
+        const uniqueShoppersCount = parseInt(uniqueShoppersRes.rows[0]?.count || 1); 
+        kpis.lifetimeValue = uniqueShoppersCount > 0 ? Math.round(totalRevenueAllTime / uniqueShoppersCount) : 0;
 
         // Profit Calculation
         const productMap = {};
@@ -754,7 +761,7 @@ export default async function AdminDashboard({ searchParams }) {
             </div>
 
             {/* Main Operational KPIs */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-4 mb-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4 md:gap-4 mb-8">
                 {/* Site Visits (Rightmost in RTL) */}
                 <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100 relative overflow-hidden group hover:shadow-md transition-shadow">
                     <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-sky-400 to-indigo-400"></div>
@@ -805,6 +812,19 @@ export default async function AdminDashboard({ searchParams }) {
                         {Math.round(kpis.avgOrderValue || 0).toLocaleString()} ₪
                     </div>
                     <div className="text-[9px] text-gray-400 font-medium italic">מחושב לפי כל ההזמנות במערכת</div>
+                </div>
+
+                {/* LTV Card (New - Leftmost in RTL) */}
+                <div className="bg-white p-5 rounded-xl shadow-sm border border-gray-100 relative overflow-hidden group hover:shadow-md transition-shadow">
+                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 to-pink-500"></div>
+                    <div className="text-gray-500 text-[10px] font-bold uppercase mb-2 flex items-center gap-2">
+                        <Users className="w-3.5 h-3.5 text-purple-500" />
+                        ערך לקוח (LTV)
+                    </div>
+                    <div className="text-2xl font-bold mb-2 text-gray-900">
+                        {Math.round(kpis.lifetimeValue || 0).toLocaleString()} ₪
+                    </div>
+                    <div className="text-[9px] text-gray-400 font-medium italic text-right">ממוצע הכנסה ללקוח יחיד</div>
                 </div>
             </div>
 
