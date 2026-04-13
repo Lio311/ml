@@ -1,8 +1,8 @@
 import { NextResponse } from 'next/server';
 import { auth as clerkAuth, currentUser } from '@clerk/nextjs/server';
-import pool from '../../lib/db';
-import { sendEmail, getOrderConfirmationTemplate, getAdminNewOrderTemplate } from '../../lib/email';
-import { recordAuditLog } from '../../lib/audit';
+import pool from '@/app/lib/db';
+import { sendEmail, getTemplate, getOrderConfirmationTemplate, getAdminNewOrderTemplate } from '@/app/lib/email';
+import { recordAuditLog } from '@/app/lib/auditLogger';
 import * as Sentry from "@sentry/nextjs";
 
 export async function POST(req) {
@@ -272,12 +272,11 @@ export async function POST(req) {
             const adminEmail = process.env.ADMIN_EMAIL;
 
             if (userEmail && !catalogId) {
-                const html = getOrderConfirmationTemplate(orderId, items, total, freeSamples, notes, deliveryMethod || 'mail', shippingCost);
-                await sendEmail(userEmail, `אישור הזמנה #${orderId} - ml_tlv`, html, 'order_confirmation', orderId);
+                const { html: dynamicHtml, subject: dynamicSubject } = await getTemplate('order_confirmation', { orderId, total, freeSamples, notes, customerName: user.firstName }, getOrderConfirmationTemplate.bind(null, orderId, items, total, freeSamples, notes, deliveryMethod || 'mail', shippingCost));
+                await sendEmail(userEmail, dynamicSubject || `אישור הזמנה #${orderId} - ml_tlv`, dynamicHtml, 'order_confirmation', orderId);
             } else if (userEmail && catalogId) {
-                 // For catalog buyers, maybe send a different email? Or the same one. For now same one but with catalog context if we wanted
-                const html = getOrderConfirmationTemplate(orderId, items, total, freeSamples, notes, deliveryMethod || 'mail', shippingCost);
-                await sendEmail(userEmail, `אישור קבלת פנייה מ${catalogName} #${orderId}`, html, 'order_confirmation', orderId);
+                const { html: dynamicHtml, subject: dynamicSubject } = await getTemplate('order_confirmation', { orderId, total, freeSamples, notes, customerName: user.firstName, catalogName }, getOrderConfirmationTemplate.bind(null, orderId, items, total, freeSamples, notes, deliveryMethod || 'mail', shippingCost));
+                await sendEmail(userEmail, dynamicSubject || `אישור קבלת פנייה מ${catalogName} #${orderId}`, dynamicHtml, 'order_confirmation', orderId);
             }
 
             // Send Admin and Catalog Owner Alerts

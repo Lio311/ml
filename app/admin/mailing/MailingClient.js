@@ -1,0 +1,686 @@
+"use client";
+import { useState, useEffect } from 'react';
+import Link from 'next/link';
+import { 
+    Mail, Plus, Calendar, Clock, Send, Trash2, Edit, ChevronLeft, 
+    User, Users, Sparkles, CheckCircle2, AlertCircle, RefreshCcw, 
+    Settings, Play, ExternalLink, ShoppingBag, Search, X
+} from 'lucide-react';
+import toast from 'react-hot-toast';
+import { format } from 'date-fns';
+import { he } from 'date-fns/locale';
+import VisualEditor from '@/app/components/VisualEditor';
+import ModernDateTimePicker from '@/app/components/ui/ModernDateTimePicker';
+import ObjectTagInput from '@/app/components/ObjectTagInput';
+import { generateCatalogHTML } from '@/app/lib/catalogEmailGenerator';
+
+export default function MailingClient() {
+    const [templates, setTemplates] = useState([]);
+    const [campaigns, setCampaigns] = useState([]);
+    const [users, setUsers] = useState([]);
+    const [allProducts, setAllProducts] = useState([]);
+    const [loading, setLoading] = useState(true);
+    const [view, setView] = useState('templates'); // 'templates' | 'campaigns' | 'edit-template' | 'create-campaign'
+    
+    // Editor / Form States
+    const [activeTemplate, setActiveTemplate] = useState(null);
+    const [activeCampaign, setActiveCampaign] = useState(null);
+    const [isSaving, setIsSaving] = useState(false);
+    
+    // Catalog Selector State
+    const [isCatalogModalOpen, setIsCatalogModalOpen] = useState(false);
+    const [selectedProducts, setSelectedProducts] = useState([]);
+    const [productSearch, setProductSearch] = useState('');
+    const editorInsertRef = useRef(null);
+
+    useEffect(() => {
+        fetchData();
+        fetchUsers();
+    }, []);
+
+    const fetchData = async () => {
+        setLoading(true);
+        try {
+            const [tRes, cRes] = await Promise.all([
+                fetch('/api/admin/mailing/templates'),
+                fetch('/api/admin/mailing/campaigns')
+            ]);
+            if (tRes.ok) setTemplates(await tRes.json());
+            if (cRes.ok) setCampaigns(await cRes.json());
+        } catch (err) {
+            toast.error('שגיאה בטעינת נתונים');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const fetchUsers = async () => {
+        try {
+            const res = await fetch('/api/admin/users');
+            if (res.ok) {
+                const data = await res.json();
+                setUsers(data || []);
+            }
+        } catch (err) {}
+    };
+
+    const fetchAllProducts = async () => {
+        try {
+            const res = await fetch('/api/products?limit=100');
+            if (res.ok) {
+                const data = await res.json();
+                setAllProducts(data.products || []);
+            }
+        } catch (err) {}
+    };
+
+    useEffect(() => {
+        if (isCatalogModalOpen && allProducts.length === 0) {
+            fetchAllProducts();
+        }
+    }, [isCatalogModalOpen]);
+
+    const handleSaveTemplate = async (templateData) => {
+        setIsSaving(true);
+        try {
+            const res = await fetch('/api/admin/mailing/templates', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(templateData)
+            });
+            if (res.ok) {
+                toast.success('הטמפלייט נשמר בהצלחה');
+                fetchData();
+                setView('templates');
+            } else {
+                const err = await res.json();
+                toast.error(err.error || 'שגיאה בשמירה');
+            }
+        } catch (err) {
+            toast.error('שגיאה בתקשורת');
+        } finally {
+            setIsSaving(false);
+        }
+    };
+
+    const handleSendTest = async (subject, html) => {
+        toast.promise(
+            fetch('/api/admin/mailing/send', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    recipient_type: 'specific',
+                    recipients: ['lior31197@gmail.com'],
+                    subject,
+                    content_html: html,
+                    title: 'בדיקת מערכת'
+                })
+            }).then(async res => {
+                if (!res.ok) throw new Error(await res.text());
+                return res.json();
+            }),
+            {
+                loading: 'שולח מייל בדיקה...',
+                success: 'מייל בדיקה נשלח ל-lior31197@gmail.com',
+                error: 'שגיאה בשליחת בדיקה'
+            }
+        );
+    };
+
+    const handleCreateCampaign = async (campaignData) => {
+        setIsSaving(true);
+        try {
+            const res = await fetch('/api/admin/mailing/campaigns', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(campaignData)
+            });
+            if (res.ok) {
+                toast.success('הדיוור תוזמן בהצלחה');
+                fetchData();
+                setView('campaigns');
+            } else {
+                toast.error('שגיאה ביצירת דיוור');
+            }
+        } catch (err) {
+            toast.error('שגיאה בתקשורת');
+        } finally {
+            setIsSaving(false);
+        }
+    };
+
+    const deleteTemplate = async (id) => {
+        if (!confirm('האם אתה בטוח שברצונך למחוק טמפלייט זה?')) return;
+        try {
+            const res = await fetch(`/api/admin/mailing/templates?id=${id}`, { method: 'DELETE' });
+            if (res.ok) {
+                toast.success('נמחק');
+                fetchData();
+            } else {
+                const data = await res.json();
+                toast.error(data.error || 'שגיאה');
+            }
+        } catch (err) {}
+    };
+
+    const deleteCampaign = async (id) => {
+        if (!confirm('האם לבטל ולמחוק דיוור זה?')) return;
+        try {
+            const res = await fetch(`/api/admin/mailing/campaigns?id=${id}`, { method: 'DELETE' });
+            if (res.ok) {
+                toast.success('בוטל');
+                fetchData();
+            }
+        } catch (err) {}
+    };
+
+    const handleInjectCatalog = () => {
+        if (selectedProducts.length === 0) {
+            toast.error('נא לבחור מוצרים לקטלוג');
+            return;
+        }
+        const html = generateCatalogHTML(selectedProducts);
+        if (editorInsertRef.current) {
+            editorInsertRef.current(html);
+            setIsCatalogModalOpen(false);
+            setSelectedProducts([]);
+            toast.success('הקטלוג הוזרק לעורך המייל');
+        } else {
+            toast.error('שגיאה בהזרקה לעורך');
+        }
+    };
+
+    return (
+        <div className="container mx-auto py-8 px-4 text-right" dir="rtl">
+            <header className="flex justify-between items-center mb-8">
+                <div>
+                    <h1 className="text-4xl font-black text-gray-900 tracking-tight flex items-center gap-3">
+                         דיוור ושיווק <Sparkles className="text-blue-500" size={28} />
+                    </h1>
+                    <p className="text-gray-500 font-bold mt-1 uppercase text-[10px] tracking-widest">Email Templates & Campaigns</p>
+                </div>
+                <div className="flex gap-3">
+                    {view !== 'templates' && view !== 'campaigns' && (
+                        <button 
+                            onClick={() => setView('templates')}
+                            className="btn btn-ghost rounded-2xl flex items-center gap-2"
+                        >
+                            <ChevronLeft size={18} /> חזרה
+                        </button>
+                    )}
+                    <button 
+                        onClick={() => {
+                            setActiveTemplate({ name: '', subject: '', content_html: '', type: 'manual' });
+                            setView('edit-template');
+                        }}
+                        className="bg-black text-white px-6 py-3 rounded-2xl font-black text-sm shadow-xl shadow-black/10 hover:shadow-black/20 hover:scale-[1.02] active:scale-95 transition-all flex items-center gap-2"
+                    >
+                        <Plus size={18} /> טמפלייט חדש
+                    </button>
+                </div>
+            </header>
+
+            {/* Navigation Tabs */}
+            {(view === 'templates' || view === 'campaigns') && (
+                <div className="flex gap-2 mb-8 bg-gray-100 p-1.5 rounded-[2rem] w-fit mx-auto md:mx-0">
+                    <button 
+                        onClick={() => setView('templates')}
+                        className={`px-8 py-3 rounded-3xl font-black text-sm transition-all ${view === 'templates' ? 'bg-white text-black shadow-lg shadow-white/20' : 'text-gray-400 hover:text-gray-600'}`}
+                    >
+                        טמפלייטים
+                    </button>
+                    <button 
+                        onClick={() => setView('campaigns')}
+                        className={`px-8 py-3 rounded-3xl font-black text-sm transition-all ${view === 'campaigns' ? 'bg-white text-black shadow-lg shadow-white/20' : 'text-gray-400 hover:text-gray-600'}`}
+                    >
+                        דיוורים מתוזמנים
+                    </button>
+                </div>
+            )}
+
+            {loading ? (
+                <div className="flex flex-col items-center justify-center py-20 gap-4">
+                    <RefreshCcw className="animate-spin text-gray-200" size={48} />
+                    <p className="font-black text-gray-300 uppercase text-xs tracking-widest">טוען מערכת...</p>
+                </div>
+            ) : (
+                <>
+                    {view === 'templates' && (
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                            {templates.map(t => (
+                                <TemplateCard 
+                                    key={t.id} 
+                                    template={t} 
+                                    onEdit={() => { setActiveTemplate(t); setView('edit-template'); }}
+                                    onDelete={() => deleteTemplate(t.id)}
+                                    onSend={() => { 
+                                        setActiveCampaign({ 
+                                            template_id: t.id, 
+                                            title: `קמפיין - ${t.name}`, 
+                                            subject: t.subject || '', 
+                                            content_html: t.content_html || '',
+                                            recipient_type: 'all',
+                                            scheduled_at: null
+                                        }); 
+                                        setView('create-campaign'); 
+                                    }}
+                                />
+                            ))}
+                        </div>
+                    )}
+
+                    {view === 'campaigns' && (
+                        <div className="bg-white rounded-[2.5rem] shadow-sm border border-gray-100 overflow-hidden">
+                            <table className="w-full">
+                                <thead className="bg-gray-50/50 text-gray-400 font-black text-[10px] uppercase tracking-widest border-b border-gray-100">
+                                    <tr>
+                                        <th className="p-6 text-right">קמפיין</th>
+                                        <th className="p-6 text-right">טמפלייט</th>
+                                        <th className="p-6 text-center">זמן שליחה</th>
+                                        <th className="p-6 text-center">נמענים</th>
+                                        <th className="p-6 text-center">סטטוס</th>
+                                        <th className="p-6 text-center">פעולות</th>
+                                    </tr>
+                                </thead>
+                                <tbody className="divide-y divide-gray-50">
+                                    {campaigns.length === 0 ? (
+                                        <tr>
+                                            <td colSpan="6" className="p-20 text-center text-gray-300 font-bold">אין דיוורים ברשימה</td>
+                                        </tr>
+                                    ) : (
+                                        campaigns.map(c => (
+                                            <CampaignRow key={c.id} campaign={c} onDelete={() => deleteCampaign(c.id)} />
+                                        ))
+                                    )}
+                                </tbody>
+                            </table>
+                        </div>
+                    )}
+
+                    {view === 'edit-template' && (
+                        <div className="max-w-4xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                             <div className="bg-white p-8 rounded-[3rem] shadow-xl border border-gray-50 space-y-6">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <div className="space-y-2">
+                                        <label className="block text-xs font-black text-gray-400 uppercase tracking-widest px-2">שם הטמפלייט (לשימוש פנימי)</label>
+                                        <input 
+                                            className="w-full px-5 py-4 bg-gray-50 rounded-2xl outline-none focus:ring-2 focus:ring-blue-100 transition-all font-bold text-lg"
+                                            value={activeTemplate.name}
+                                            onChange={e => setActiveTemplate({...activeTemplate, name: e.target.value})}
+                                            placeholder="לדוגמה: מייל ברוכים הבאים חגיגי"
+                                        />
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="block text-xs font-black text-gray-400 uppercase tracking-widest px-2">נושא המייל (Subject)</label>
+                                        <input 
+                                            className="w-full px-5 py-4 bg-gray-50 rounded-2xl outline-none focus:ring-2 focus:ring-blue-100 transition-all font-bold text-lg"
+                                            value={activeTemplate.subject}
+                                            onChange={e => setActiveTemplate({...activeTemplate, subject: e.target.value})}
+                                            placeholder="מה הלקוח יראה בכותרת המייל?"
+                                        />
+                                    </div>
+                                </div>
+
+                                <div className="space-y-2">
+                                    <label className="block text-xs font-black text-gray-400 uppercase tracking-widest px-2 flex justify-between">
+                                        <span>תוכן המייל</span>
+                                        <button 
+                                            onClick={() => setIsCatalogModalOpen(true)}
+                                            className="text-indigo-600 hover:text-indigo-800 font-black text-[10px] uppercase flex items-center gap-1.5 transition-all"
+                                        >
+                                            <ShoppingBag size={14} /> הוסף קטלוג מוצרים
+                                        </button>
+                                    </label>
+                                    <VisualEditor 
+                                        value={activeTemplate.content_html} 
+                                        onChange={val => setActiveTemplate({...activeTemplate, content_html: val})}
+                                        onInsertHTML={editorInsertRef}
+                                    />
+                                </div>
+
+                                <div className="flex gap-3 justify-end pt-4">
+                                    <button 
+                                        onClick={() => handleSendTest(activeTemplate.subject, activeTemplate.content_html)}
+                                        className="px-6 py-3 rounded-2xl font-bold bg-blue-50 text-blue-600 hover:bg-blue-100 transition-all flex items-center gap-2"
+                                    >
+                                        <Mail size={18} /> שלח בדיקה
+                                    </button>
+                                    <button 
+                                        disabled={isSaving}
+                                        onClick={() => handleSaveTemplate(activeTemplate)}
+                                        className="px-10 py-3 rounded-2xl font-black bg-black text-white hover:bg-gray-800 shadow-xl shadow-black/10 active:scale-95 transition-all"
+                                    >
+                                        {isSaving ? 'שומר...' : 'שמור טמפלייט'}
+                                    </button>
+                                </div>
+                             </div>
+                        </div>
+                    )}
+
+                    {view === 'create-campaign' && (
+                        <div className="max-w-4xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                             <div className="bg-white p-8 rounded-[3rem] shadow-xl border border-gray-50 space-y-8">
+                                <div className="flex items-center gap-4 border-b border-gray-50 pb-6 mb-2">
+                                    <div className="w-16 h-16 bg-blue-50 rounded-[1.5rem] flex items-center justify-center text-blue-500">
+                                        <Send size={32} />
+                                    </div>
+                                    <div>
+                                        <h2 className="text-2xl font-black text-gray-900">הגדרת דיוור חדש</h2>
+                                        <p className="text-gray-400 font-bold text-xs">קמפיין שליחה מתוזמן</p>
+                                    </div>
+                                </div>
+
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                    <div className="space-y-6">
+                                        <div className="space-y-2">
+                                            <label className="block text-xs font-black text-gray-400 uppercase tracking-widest px-2">כותרת הקמפיין (לשימוש פנימי)</label>
+                                            <input 
+                                                className="w-full px-5 py-4 bg-gray-50 rounded-2xl outline-none focus:ring-2 focus:ring-blue-100 transition-all font-bold"
+                                                value={activeCampaign.title}
+                                                onChange={e => setActiveCampaign({...activeCampaign, title: e.target.value})}
+                                            />
+                                        </div>
+
+                                        <div className="space-y-2">
+                                            <label className="block text-xs font-black text-gray-400 uppercase tracking-widest px-2">נושא המייל</label>
+                                            <input 
+                                                className="w-full px-5 py-4 bg-gray-50 rounded-2xl outline-none focus:ring-2 focus:ring-blue-100 transition-all font-bold"
+                                                value={activeCampaign.subject}
+                                                onChange={e => setActiveCampaign({...activeCampaign, subject: e.target.value})}
+                                            />
+                                        </div>
+
+                                        <div className="space-y-2">
+                                            <label className="block text-xs font-black text-gray-400 uppercase tracking-widest px-2">תזמון שליחה</label>
+                                            <ModernDateTimePicker 
+                                                value={activeCampaign.scheduled_at}
+                                                onChange={val => setActiveCampaign({...activeCampaign, scheduled_at: val})}
+                                                placeholder="שלח מיד (או בחר זמן...)"
+                                            />
+                                            <p className="text-[10px] text-gray-400 font-bold px-2">אם לא נבחר זמן, המייל יישלח בהרצה הקרובה של המערכת.</p>
+                                        </div>
+                                    </div>
+
+                                    <div className="bg-gray-50 p-6 rounded-[2.5rem] space-y-6 flex flex-col">
+                                        <h3 className="font-black text-gray-900 flex items-center gap-2">
+                                            <Users size={18} className="text-blue-500" /> בחירת נמענים
+                                        </h3>
+                                        
+                                        <div className="flex bg-white p-1.5 rounded-2xl border border-gray-100">
+                                            <button 
+                                                onClick={() => setActiveCampaign({...activeCampaign, recipient_type: 'all'})}
+                                                className={`flex-1 py-3 rounded-xl font-bold text-sm transition-all ${activeCampaign.recipient_type === 'all' ? 'bg-black text-white' : 'text-gray-400 hover:text-gray-600'}`}
+                                            >
+                                                כל המשתמשים
+                                            </button>
+                                            <button 
+                                                onClick={() => setActiveCampaign({...activeCampaign, recipient_type: 'specific'})}
+                                                className={`flex-1 py-3 rounded-xl font-bold text-sm transition-all ${activeCampaign.recipient_type === 'specific' ? 'bg-black text-white' : 'text-gray-400 hover:text-gray-600'}`}
+                                            >
+                                                רשימה ספציפית
+                                            </button>
+                                        </div>
+
+                                        {activeCampaign.recipient_type === 'specific' && (
+                                            <div className="animate-in fade-in zoom-in-95 duration-300">
+                                                <ObjectTagInput 
+                                                    options={users.map(u => ({ id: u.email, label: `${u.firstName || ''} ${u.lastName || ''}`, subLabel: u.email }))}
+                                                    value={activeCampaign.recipients || []}
+                                                    onChange={newVal => setActiveCampaign({...activeCampaign, recipients: newVal})}
+                                                    placeholder="חפש משתמשים לפי שם או מייל..."
+                                                />
+                                            </div>
+                                        )}
+
+                                        <div className="mt-auto p-4 bg-white/50 rounded-2xl border border-white flex items-center gap-3">
+                                            <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-500">
+                                                {activeCampaign.recipient_type === 'all' ? <Users size={20} /> : <User size={20} />}
+                                            </div>
+                                            <div>
+                                                <div className="font-black text-gray-900 text-sm">
+                                                    {activeCampaign.recipient_type === 'all' ? 'כל רשימת התפוצה' : `${(activeCampaign.recipients?.length || 0)} נמענים נבחרו`}
+                                                </div>
+                                                <div className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">Target Audience</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="flex gap-3 justify-end pt-8 border-t border-gray-50">
+                                    <button 
+                                        onClick={() => handleSendTest(activeCampaign.subject, activeCampaign.content_html)}
+                                        className="px-6 py-3 rounded-2xl font-bold bg-blue-50 text-blue-600 hover:bg-blue-100 transition-all flex items-center gap-2"
+                                    >
+                                        <Mail size={18} /> שלח בדיקה
+                                    </button>
+                                    <button 
+                                        disabled={isSaving}
+                                        onClick={() => handleCreateCampaign(activeCampaign)}
+                                        className="px-10 py-4 bg-black text-white rounded-[1.5rem] font-black hover:bg-gray-800 shadow-2xl shadow-black/20 active:scale-95 transition-all text-lg min-w-[200px]"
+                                    >
+                                        {isSaving ? 'מעבד...' : (activeCampaign.scheduled_at ? 'תזמן דיוור' : 'שלח עכשיו')}
+                                    </button>
+                                </div>
+                             </div>
+                        </div>
+                    )}
+                </>
+            )}
+
+            {/* Catalog Selector Modal */}
+            {isCatalogModalOpen && (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+                    <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setIsCatalogModalOpen(false)} />
+                    <div className="relative bg-white w-full max-w-2xl rounded-[3rem] shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-300 flex flex-col max-h-[90vh]">
+                        <div className="p-8 border-b border-gray-100 flex justify-between items-center">
+                            <div>
+                                <h3 className="text-2xl font-black text-gray-900 flex items-center gap-3">
+                                    <ShoppingBag className="text-indigo-600" /> בחירת מוצרים לקטלוג
+                                </h3>
+                                <p className="text-gray-400 font-bold text-xs uppercase tracking-widest">Select products to generate a catalog grid</p>
+                            </div>
+                            <button onClick={() => setIsCatalogModalOpen(false)} className="p-3 hover:bg-gray-100 rounded-2xl transition-all">
+                                <X size={20} />
+                            </button>
+                        </div>
+
+                        <div className="p-8 flex-1 overflow-y-auto space-y-6 custom-scrollbar">
+                            <div className="space-y-2">
+                                <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest px-2">חיפוש והוספה</label>
+                                <ObjectTagInput 
+                                    options={allProducts.map(p => ({ 
+                                        id: p.id, 
+                                        label: `${p.brand_he || p.brand} ${p.model_he || p.model}`,
+                                        subLabel: `₪${p.price_10ml}`,
+                                        image: p.image_url,
+                                        ...p
+                                    }))}
+                                    value={selectedProducts}
+                                    onChange={setSelectedProducts}
+                                    placeholder="חפש מוצר להוספה..."
+                                />
+                            </div>
+
+                            <div className="space-y-3">
+                                <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest px-2">מוצרים שנבחרו ({selectedProducts.length})</label>
+                                <div className="grid grid-cols-2 gap-3">
+                                    {selectedProducts.map(p => (
+                                        <div key={p.id} className="flex items-center gap-3 p-3 bg-gray-50 rounded-2xl border border-gray-100 group">
+                                            <img src={p.image_url} className="w-10 h-10 object-contain bg-white rounded-lg p-1" />
+                                            <div className="flex-1 min-w-0">
+                                                <div className="text-[11px] font-bold text-gray-900 truncate">{p.label}</div>
+                                                <div className="text-[9px] text-gray-400 font-black">₪{p.price_10ml}</div>
+                                            </div>
+                                            <button 
+                                                onClick={() => setSelectedProducts(selectedProducts.filter(item => item.id !== p.id))}
+                                                className="p-1.5 text-gray-300 hover:text-red-500 hover:bg-white rounded-lg transition-all"
+                                            >
+                                                <X size={14} />
+                                            </button>
+                                        </div>
+                                    ))}
+                                    {selectedProducts.length === 0 && (
+                                        <div className="col-span-2 py-10 text-center text-gray-300 font-bold text-sm bg-gray-50/50 rounded-3xl border-2 border-dashed border-gray-100">
+                                            טרם נבחרו מוצרים
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+
+                            <div className="flex gap-2">
+                                {[4, 8, 12].map(num => (
+                                    <button 
+                                        key={num}
+                                        onClick={() => {
+                                            // Select top N products for convenience
+                                            setSelectedProducts(allProducts.slice(0, num).map(p => ({ 
+                                                id: p.id, 
+                                                label: `${p.brand_he || p.brand} ${p.model_he || p.model}`,
+                                                subLabel: `₪${p.price_10ml}`,
+                                                image: p.image_url,
+                                                ...p
+                                            })));
+                                        }}
+                                        className="flex-1 py-2 bg-indigo-50 text-indigo-600 text-[10px] font-black rounded-xl hover:bg-indigo-100 transition-all uppercase"
+                                    >
+                                        הוסף {num} מוצרים
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+
+                        <div className="p-8 bg-gray-50 border-t border-gray-100 flex gap-4">
+                            <button 
+                                onClick={() => setIsCatalogModalOpen(false)}
+                                className="flex-1 py-4 font-black text-gray-400 hover:text-gray-900 transition-all uppercase text-xs"
+                            >
+                                ביטול
+                            </button>
+                            <button 
+                                onClick={handleInjectCatalog}
+                                disabled={selectedProducts.length === 0}
+                                className="flex-[2] py-4 bg-black text-white rounded-2xl font-black text-sm shadow-xl shadow-black/10 hover:shadow-black/20 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50 disabled:scale-100"
+                            >
+                                ייצר והזרק לעורך
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+        </div>
+    );
+}
+
+function TemplateCard({ template, onEdit, onDelete, onSend }) {
+    return (
+        <div className="bg-white p-6 rounded-[2.5rem] shadow-sm border border-gray-100 hover:shadow-xl hover:shadow-black/5 hover:-translate-y-1 transition-all duration-300 group flex flex-col h-full">
+            <div className="flex justify-between items-start mb-4">
+                <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${template.type === 'system' ? 'bg-blue-50 text-blue-500' : 'bg-green-50 text-green-500'}`}>
+                    <Mail size={24} />
+                </div>
+                {template.type === 'system' && (
+                    <span className="bg-blue-50 text-blue-500 text-[9px] font-black uppercase px-2.5 py-1 rounded-full border border-blue-100 tracking-widest">
+                        System
+                    </span>
+                )}
+            </div>
+
+            <h3 className="text-xl font-black text-gray-900 mb-2 leading-tight">{template.name}</h3>
+            <p className="text-xs text-gray-500 font-bold line-clamp-2 mb-6 flex-grow">{template.subject || '(ללא נושא)'}</p>
+
+            <div className="flex items-center gap-2 pt-4 border-t border-gray-50">
+                <button 
+                    onClick={onSend}
+                    className="flex-1 bg-black text-white py-3 rounded-2xl font-black text-[11px] uppercase tracking-wider flex items-center justify-center gap-2 hover:bg-gray-800 transition-all active:scale-95"
+                >
+                    <Send size={14} /> שליחה
+                </button>
+                <button 
+                    onClick={onEdit}
+                    className="p-3 bg-gray-50 text-gray-500 rounded-2xl hover:bg-gray-100 hover:text-black transition-all"
+                >
+                    <Edit size={16} />
+                </button>
+                {template.type !== 'system' && (
+                    <button 
+                        onClick={onDelete}
+                        className="p-3 bg-gray-50 text-gray-300 hover:bg-red-50 hover:text-red-500 rounded-2xl transition-all"
+                    >
+                        <Trash2 size={16} />
+                    </button>
+                )}
+            </div>
+        </div>
+    );
+}
+
+function CampaignRow({ campaign, onDelete }) {
+    const isSent = campaign.status === 'sent';
+    const isScheduled = campaign.status === 'scheduled';
+    const isFailed = campaign.status === 'failed';
+
+    return (
+        <tr className="hover:bg-gray-50/50 transition-colors group">
+            <td className="p-6">
+                <div className="flex flex-col">
+                    <span className="font-black text-gray-900">{campaign.title}</span>
+                    <span className="text-[11px] text-gray-400 font-bold">{campaign.subject}</span>
+                </div>
+            </td>
+            <td className="p-6">
+                <span className="text-xs font-bold text-gray-600 bg-gray-100 px-3 py-1 rounded-full">{campaign.template_name || 'מותאם ידנית'}</span>
+            </td>
+            <td className="p-6 text-center">
+                <div className="flex flex-col items-center gap-0.5">
+                    <span className="font-mono text-xs font-bold text-gray-800">
+                        {campaign.scheduled_at ? format(new Date(campaign.scheduled_at), 'dd/MM/yy HH:mm') : 'מיידי'}
+                    </span>
+                    {isSent && campaign.sent_at && (
+                        <span className="text-[9px] text-green-500 font-black uppercase tracking-tighter">
+                            נשלח ב-{format(new Date(campaign.sent_at), 'HH:mm')}
+                        </span>
+                    )}
+                </div>
+            </td>
+            <td className="p-6 text-center">
+                <div className="flex flex-col items-center">
+                    <span className="text-xs font-black text-gray-700">{campaign.recipient_type === 'all' ? 'כל הרשימה' : (campaign.recipients?.length || 0)}</span>
+                    <span className="text-[9px] text-gray-400 font-bold uppercase tracking-widest">{campaign.recipient_type === 'all' ? 'All Users' : 'Targeted'}</span>
+                </div>
+            </td>
+            <td className="p-6 text-center">
+                <div className="flex justify-center">
+                    {isSent ? (
+                        <span className="bg-green-50 text-green-600 px-3 py-1 rounded-full text-[10px] font-black uppercase border border-green-100 flex items-center gap-1.5">
+                            <CheckCircle2 size={12} /> Sent
+                        </span>
+                    ) : isFailed ? (
+                        <span className="bg-red-50 text-red-600 px-3 py-1 rounded-full text-[10px] font-black uppercase border border-red-100 flex items-center gap-1.5" title={campaign.error_log}>
+                            <AlertCircle size={12} /> Failed
+                        </span>
+                    ) : (
+                        <span className="bg-blue-50 text-blue-600 px-3 py-1 rounded-full text-[10px] font-black uppercase border border-blue-100 flex items-center gap-1.5">
+                            <Clock size={12} /> Scheduled
+                        </span>
+                    )}
+                </div>
+            </td>
+            <td className="p-6">
+                <div className="flex justify-center gap-2">
+                    {isSent ? (
+                        <Link href="/admin/email-logs" className="p-2 text-gray-300 hover:text-gray-600 transition-colors">
+                            <ExternalLink size={16} />
+                        </Link>
+                    ) : (
+                        <button 
+                            onClick={onDelete}
+                            className="p-2 text-gray-300 hover:text-red-500 transition-colors"
+                        >
+                            <Trash2 size={16} />
+                        </button>
+                    )}
+                </div>
+            </td>
+        </tr>
+    );
+}

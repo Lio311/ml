@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import { currentUser } from '@clerk/nextjs/server';
 import pool from '@/app/lib/db';
 import { revalidatePath } from 'next/cache';
-import { sendEmail, getStatusUpdateTemplate } from '@/app/lib/email';
+import { sendEmail, getTemplate, getStatusUpdateTemplate } from '@/app/lib/email';
 import { recordAuditLog } from '@/app/lib/audit';
 import { auth as clerkAuth } from '@clerk/nextjs/server';
 
@@ -98,8 +98,8 @@ export async function POST(req) {
             // Email
             if (order.customer_details?.email) {
                 try {
-                    const html = getStatusUpdateTemplate(orderId, newStatus, order.customer_details.name);
-                    await sendEmail(order.customer_details.email, `עדכון סטטוס הזמנה #${orderId} - ml`, html, 'status_update', orderId);
+                    const { html: dynamicHtml, subject: dynamicSubject } = await getTemplate('status_update', { orderId, newStatus: status, customerName: order.customer_details.name }, getStatusUpdateTemplate.bind(null, orderId, newStatus, order.customer_details.name));
+                    await sendEmail(order.customer_details.email, dynamicSubject || `עדכון סטטוס הזמנה #${orderId} - ml`, dynamicHtml, 'status_update', orderId);
                 } catch (e) { console.error('Email error:', e); }
             }
         }

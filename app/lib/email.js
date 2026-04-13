@@ -1,5 +1,6 @@
 import nodemailer from 'nodemailer';
 import { logEmail } from './emailLogger';
+import pool from './db';
 
 const transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -46,6 +47,41 @@ export const sendEmail = async (to, subject, html, type = 'system', orderId = nu
         return null;
     }
 };
+
+/**
+ * Replaces placeholders in a template string with actual data.
+ * Supports {{key}} syntax.
+ */
+function replacePlaceholders(html, data = {}) {
+    if (!html) return '';
+    return html.replace(/\{\{(.*?)\}\}/g, (match, key) => {
+        const value = data[key.trim()];
+        return value !== undefined ? value : match;
+    });
+}
+
+/**
+ * Fetches a template from the database and fills its placeholders.
+ * Fallback to a hardcoded function if the database template doesn't exist.
+ */
+export async function getTemplate(slug, data = {}, fallbackFn = null) {
+    try {
+        const res = await pool.query('SELECT content_html, subject FROM email_templates WHERE slug = $1 AND is_active = true', [slug]);
+        if (res.rows.length > 0) {
+            const template = res.rows[0];
+            return {
+                html: replacePlaceholders(template.content_html, data),
+                subject: replacePlaceholders(template.subject, data)
+            };
+        }
+    } catch (err) {
+        console.error('Error fetching dynamic template:', err);
+    }
+    
+    // Fallback to static template
+    const html = fallbackFn ? fallbackFn(data) : '';
+    return { html, subject: null }; // Subject will be handled by the caller if null
+}
 
 export const getNewProductTemplate = (product) => {
     return `

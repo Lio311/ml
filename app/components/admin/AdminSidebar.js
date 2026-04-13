@@ -70,6 +70,7 @@ export default function AdminSidebar({ role = 'customer' }) {
             title: "שיווק",
             items: [
                 { href: "/admin/coupons", label: "קופונים", icon: "🎟️", roles: ['admin', 'deputy'] },
+                { href: "/admin/mailing", label: "דיוור", icon: "📧", roles: ['admin', 'deputy'] },
                 { href: "/admin/lottery", label: "הגרלות", icon: "🎰", roles: ['admin', 'deputy'] },
                 { href: "/admin/reviews", label: "ביקורות", icon: "⭐", roles: ['admin', 'deputy'] },
                 { href: "/admin/recommendations", label: "המלצות", icon: "🤖", roles: ['admin', 'deputy'] },
