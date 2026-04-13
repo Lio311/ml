@@ -130,7 +130,7 @@ export default function DownloadOrderPDF({ order }) {
         <button 
             onClick={handleDownload}
             disabled={isGenerating}
-            className="w-full md:w-auto bg-gray-800 text-white rounded-lg px-3 py-1.5 text-xs font-bold hover:bg-black transition flex items-center justify-center gap-1.5 flex-row-reverse"
+            className="w-full md:w-auto bg-gray-800 text-white rounded-lg px-3 py-1.5 text-xs font-bold hover:bg-black transition flex items-center justify-center gap-1.5 flex-row-reverse whitespace-nowrap"
             title="הורד מדבקות PDF לכל מוצרי ההזמנה"
         >
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
