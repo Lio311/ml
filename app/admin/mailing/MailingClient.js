@@ -589,12 +589,14 @@ function TemplateCard({ template, onEdit, onDelete, onSend }) {
             <p className="text-xs text-gray-500 font-bold line-clamp-2 mb-6 flex-grow">{template.subject || '(ללא נושא)'}</p>
 
             <div className="flex items-center gap-2 pt-4 border-t border-gray-50">
-                <button 
-                    onClick={onSend}
-                    className="flex-1 bg-black text-white py-3 rounded-2xl font-black text-[11px] uppercase tracking-wider flex items-center justify-center gap-2 hover:bg-gray-800 transition-all active:scale-95"
-                >
-                    <Send size={14} /> שליחה
-                </button>
+                {template.type !== 'system' && (
+                    <button 
+                        onClick={onSend}
+                        className="flex-1 bg-black text-white py-3 rounded-2xl font-black text-[11px] uppercase tracking-wider flex items-center justify-center gap-2 hover:bg-gray-800 transition-all active:scale-95"
+                    >
+                        <Send size={14} /> שליחה
+                    </button>
+                )}
                 <button 
                     onClick={onEdit}
                     className="p-3 bg-gray-50 text-gray-500 rounded-2xl hover:bg-gray-100 hover:text-black transition-all"
