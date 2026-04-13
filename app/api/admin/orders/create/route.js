@@ -101,17 +101,16 @@ export async function POST(req) {
                     }
 
                     // Bottle Inventory
-                    let bottleSize = Number(item.size);
-                    if (bottleSize === 10 && item.price >= 300) bottleSize = 11;
+                    const bottleSize = Number(item.size);
 
-                    if ([2, 5, 10, 11].includes(bottleSize)) {
+                    if ([2, 5, 10].includes(bottleSize)) {
                         const bottleRes = await client.query(
                             `UPDATE bottle_inventory SET quantity = quantity - $1 WHERE size = $2 RETURNING quantity`,
                             [item.quantity, bottleSize]
                         );
 
                         if (bottleRes.rows[0] && bottleRes.rows[0].quantity < 20) {
-                            const sizeLabel = bottleSize === 11 ? '10ml (יוקרתי)' : `${bottleSize}ml`;
+                            const sizeLabel = `${bottleSize}ml`;
                             await client.query(
                                 `INSERT INTO notifications (type, message, is_read) VALUES ($1, $2, $3)`,
                                 ['warning', `מלאי בקבוקים נמוך: ${sizeLabel} (נותרו ${bottleRes.rows[0].quantity})`, false]

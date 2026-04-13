@@ -238,6 +238,7 @@ export async function POST(req) {
                         }
                     }
 
+                    const bottleSize = Number(item.size);
                     if ([2, 5, 10].includes(bottleSize)) {
                         const bottleRes = await client.query(
                             `UPDATE bottle_inventory SET quantity = quantity - $1 WHERE size = $2 RETURNING quantity`,

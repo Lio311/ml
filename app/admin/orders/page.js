@@ -80,14 +80,9 @@ export default async function AdminOrdersPage(props) {
                         );
 
                         // --- RESTORE BOTTLE INVENTORY ---
-                        let bottleSize = itemSize;
+                        const bottleSize = itemSize;
 
-                        // Luxury Bottle Logic: 10ml & Price >= 300 -> Size 11
-                        if (bottleSize === 10 && item.price >= 300) {
-                            bottleSize = 11;
-                        }
-
-                        if ([2, 5, 10, 11].includes(bottleSize)) {
+                        if ([2, 5, 10].includes(bottleSize)) {
                             await client.query(
                                 'UPDATE bottle_inventory SET quantity = quantity + $1 WHERE size = $2',
                                 [item.quantity, bottleSize]
