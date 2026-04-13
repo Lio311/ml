@@ -159,28 +159,74 @@ export default function MailingClient() {
     };
 
     const deleteTemplate = async (id) => {
-        if (!confirm('האם אתה בטוח שברצונך למחוק טמפלייט זה?')) return;
-        try {
-            const res = await fetch(`/api/admin/mailing/templates?id=${id}`, { method: 'DELETE' });
-            if (res.ok) {
-                toast.success('נמחק');
-                fetchData();
-            } else {
-                const data = await res.json();
-                toast.error(data.error || 'שגיאה');
-            }
-        } catch (err) {}
+        toast((t) => (
+            <div className="flex flex-col gap-3">
+                <span className="font-bold text-sm text-gray-900">האם אתה בטוח שברצונך למחוק טמפלייט זה?</span>
+                <div className="flex gap-2 justify-end">
+                    <button 
+                        onClick={() => toast.dismiss(t.id)}
+                        className="px-3 py-1.5 text-xs font-bold text-gray-500 hover:bg-gray-100 rounded-lg transition-all"
+                    >
+                        ביטול
+                    </button>
+                    <button 
+                        onClick={async () => {
+                            toast.dismiss(t.id);
+                            try {
+                                const res = await fetch(`/api/admin/mailing/templates?id=${id}`, { method: 'DELETE' });
+                                if (res.ok) {
+                                    toast.success('הטמפלייט נמחק בהצלחה');
+                                    fetchData();
+                                } else {
+                                    const data = await res.json();
+                                    toast.error(data.error || 'שגיאה במחיקה');
+                                }
+                            } catch (err) {
+                                toast.error('שגיאה בתקשורת');
+                            }
+                        }}
+                        className="px-3 py-1.5 text-xs font-black bg-red-500 text-white rounded-lg hover:bg-red-600 shadow-lg shadow-red-200 transition-all"
+                    >
+                        מחק לצמיתות
+                    </button>
+                </div>
+            </div>
+        ), { duration: 5000, position: 'top-center' });
     };
 
     const deleteCampaign = async (id) => {
-        if (!confirm('האם לבטל ולמחוק דיוור זה?')) return;
-        try {
-            const res = await fetch(`/api/admin/mailing/campaigns?id=${id}`, { method: 'DELETE' });
-            if (res.ok) {
-                toast.success('בוטל');
-                fetchData();
-            }
-        } catch (err) {}
+        toast((t) => (
+            <div className="flex flex-col gap-3">
+                <span className="font-bold text-sm text-gray-900">האם לבטל ולמחוק דיוור זה?</span>
+                <div className="flex gap-2 justify-end">
+                    <button 
+                        onClick={() => toast.dismiss(t.id)}
+                        className="px-3 py-1.5 text-xs font-bold text-gray-500 hover:bg-gray-100 rounded-lg transition-all"
+                    >
+                        חזור
+                    </button>
+                    <button 
+                        onClick={async () => {
+                            toast.dismiss(t.id);
+                            try {
+                                const res = await fetch(`/api/admin/mailing/campaigns?id=${id}`, { method: 'DELETE' });
+                                if (res.ok) {
+                                    toast.success('הדיוור בוטל ונמחק');
+                                    fetchData();
+                                } else {
+                                    toast.error('שגיאה בביטול הדיוור');
+                                }
+                            } catch (err) {
+                                toast.error('שגיאה בתקשורת');
+                            }
+                        }}
+                        className="px-3 py-1.5 text-xs font-black bg-black text-white rounded-lg hover:bg-gray-800 shadow-lg transition-all"
+                    >
+                        בטל שליחה
+                    </button>
+                </div>
+            </div>
+        ), { duration: 5000, position: 'top-center' });
     };
 
     const handleInjectCatalog = () => {
