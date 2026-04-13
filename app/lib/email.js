@@ -192,19 +192,19 @@ export const getStatusUpdateTemplate = (orderId, status, customerName) => {
             break;
         case 'processing':
             statusText = 'בטיפול';
-            messageBody = 'ההזמנה שלך נמצאת כעת בטיפול הצוות ומכינים אותה עבורך.';
+            messageBody = 'ההזמנה שלך התקבלה ונמצאת בטיפול הצוות.';
             break;
         case 'shipped':
-            statusText = 'נשלח';
-            messageBody = 'חדשות טובות! ההזמנה שלך נשלחה לדרכה.';
+            statusText = 'נשלחה';
+            messageBody = 'חדשות טובות! ההזמנה שלך נארזה ונמסרה לשליח / יצאה למשלוח.';
             break;
         case 'completed':
-            statusText = 'הושלם';
-            messageBody = 'ההזמנה שלך הושלמה/נמסרה בהצלחה. תודה שבחרת בנו!';
+            statusText = 'הושלמה / נמסרה';
+            messageBody = 'ההזמנה נמסרה בהצלחה. תודה שבחרת בנו!';
             break;
         case 'cancelled':
-            statusText = 'בוטל';
-            messageBody = 'ההזמנה שלך בוטלה. אם לדעתך זו טעות, נא ליצור איתנו קשר.';
+            statusText = 'בוטלה';
+            messageBody = 'ההזמנה בוטלה. אם זו טעות, נא ליצור איתנו קשר.';
             break;
         default:
             statusText = status;
@@ -348,7 +348,23 @@ export function getSystemDefaults() {
         },
         'status_update': {
             subject: 'עדכון לגבי הזמנה #{{orderId}} - ml_tlv',
-            content_html: getStatusUpdateTemplate('{{orderId}}', '{{status}}', '{{name}}')
+            content_html: `
+        <div dir="rtl" style="font-family: 'Open Sans', 'Open Sans Hebrew', Arial, sans-serif; color: #333;">
+            <div style="text-align: center; font-size: 24px; font-weight: bold; margin-bottom: 20px;">ml_tlv</div>
+            <h2 style="color: #000;">עדכון לגבי הזמנה #{{orderId}}</h2>
+            <p>היי {{name}},</p>
+            <p style="font-size: 16px;">
+                סטטוס ההזמנה שלך השתנה ל: <strong>{{status}}</strong>
+            </p>
+            <p>{{messageBody}}</p>
+            <div style="margin-top: 30px;">
+                <a href="https://www.ml-tlv.com/orders" style="background-color: #000; color: #fff; padding: 10px 20px; text-decoration: none; border-radius: 5px;">
+                    לצפייה בפרטי ההזמנה
+                </a>
+            </div>
+            <hr style="margin: 30px 0; border: 0; border-top: 1px solid #eee;">
+            <p style="font-size: 12px; color: #999;">ml - יוקרה בחתיכות קטנות</p>
+        </div>`
         },
         'welcome': {
             subject: 'ברוכים הבאים ל-ml_tlv! ✨',

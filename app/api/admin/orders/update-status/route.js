@@ -99,18 +99,20 @@ export async function POST(req) {
             if (order.customer_details?.email) {
                 try {
                     const statusMap = {
-                        'pending': 'ממתין',
-                        'processing': 'בטיפול',
-                        'shipped': 'נשלח',
-                        'completed': 'הושלם',
-                        'cancelled': 'בוטל'
+                        'pending': { label: 'ממתין', body: 'ההזמנה שלך התקבלה וממתינה לאישור.' },
+                        'processing': { label: 'בטיפול', body: 'ההזמנה שלך התקבלה ונמצאת בטיפול הצוות.' },
+                        'shipped': { label: 'נשלחה', body: 'חדשות טובות! ההזמנה שלך נארזה ונמסרה לשליח / יצאה למשלוח.' },
+                        'completed': { label: 'הושלמה / נמסרה', body: 'ההזמנה נמסרה בהצלחה. תודה שבחרת בנו!' },
+                        'cancelled': { label: 'בוטלה', body: 'ההזמנה בוטלה. אם זו טעות, נא ליצור איתנו קשר.' }
                     };
-                    const hebrewStatus = statusMap[status] || status;
+                    
+                    const mapped = statusMap[status] || { label: status, body: `הסטטוס של ההזמנה שלך עודכן ל-${status}.` };
                     const cleanName = (order.customer_details.name || '').replace(/\bnull\b/gi, '').trim();
 
                     const { html: dynamicHtml, subject: dynamicSubject } = await getTemplate('status_update', { 
                         orderId, 
-                        status: hebrewStatus, 
+                        status: mapped.label, 
+                        messageBody: mapped.body,
                         name: cleanName 
                     }, getStatusUpdateTemplate.bind(null, orderId, status, cleanName));
                     
