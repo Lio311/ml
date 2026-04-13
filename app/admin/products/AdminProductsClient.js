@@ -926,7 +926,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                                         }`}
                                                     dir="ltr"
                                                 >
-                                                    <span className="opacity-50">₪</span>
+                                                    <span className="opacity-50">₪ </span>
                                                     {isNegative ? `-${Math.abs(profitPerMl)}` : profitPerMl}
                                                     <span className="text-[8px] font-black tracking-tighter ml-0.5 opacity-60">/ml</span>
                                                 </div>

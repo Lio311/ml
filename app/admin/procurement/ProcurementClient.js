@@ -155,13 +155,13 @@ export default function ProcurementClient() {
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 px-4 md:px-0">
                 <KPICard 
                     title="רווח גולמי (90 יום)" 
-                    value={`₪${Math.round(data?.meta?.totalProfit || 0).toLocaleString()}`} 
+                    value={`₪ ${Math.round(data?.meta?.totalProfit || 0).toLocaleString()}`} 
                     icon={<DollarSign className="text-blue-500" />}
                     trend="+12.5%"
                 />
                 <KPICard 
                     title="מחזור מכירות" 
-                    value={`₪${Math.round(data?.meta?.totalRevenue || 0).toLocaleString()}`} 
+                    value={`₪ ${Math.round(data?.meta?.totalRevenue || 0).toLocaleString()}`} 
                     icon={<TrendingUp className="text-emerald-500" />}
                     trend="+8.2%"
                 />
@@ -205,7 +205,7 @@ export default function ProcurementClient() {
                                                 <div className="bg-black/90 text-white p-3 rounded-xl shadow-2xl border border-white/10 backdrop-blur-md text-right" dir="rtl">
                                                     <p className="font-bold border-b border-white/20 pb-1 mb-2">{item.name}</p>
                                                     <p className="text-xs">נפח: {Math.round(item.x)} מ״ל</p>
-                                                    <p className="text-xs">רווח: ₪{Math.round(item.y)}</p>
+                                                    <p className="text-xs">רווח: ₪ {Math.round(item.y)}</p>
                                                     <p className="text-xs font-bold text-blue-400 mt-1 uppercase">
                                                         {item.category === 'Star' ? 'כוכב' : 
                                                          item.category === 'Cash Cow' ? 'פרה חולבת' : 
@@ -292,7 +292,7 @@ export default function ProcurementClient() {
                                 <Tooltip 
                                     contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)', textAlign: 'right' }}
                                     formatter={(value, name) => [
-                                        `₪${Math.round(value).toLocaleString()}`, 
+                                        `₪ ${Math.round(value).toLocaleString()}`, 
                                         name
                                     ]}
                                 />
