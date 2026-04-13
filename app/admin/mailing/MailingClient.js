@@ -195,7 +195,7 @@ export default function MailingClient() {
             <header className="flex justify-between items-center mb-8">
                 <div>
                     <h1 className="text-4xl font-black text-gray-900 tracking-tight flex items-center gap-3">
-                         דיוור ושיווק <Sparkles className="text-blue-500" size={28} />
+                         דיוור ושיווק
                     </h1>
                     <p className="text-gray-500 font-bold mt-1 uppercase text-[10px] tracking-widest">Email Templates & Campaigns</p>
                 </div>
@@ -205,7 +205,7 @@ export default function MailingClient() {
                             onClick={() => setView('templates')}
                             className="btn btn-ghost rounded-2xl flex items-center gap-2"
                         >
-                            <ChevronLeft size={18} /> חזרה
+                            <ChevronRight size={18} /> חזרה
                         </button>
                     )}
                     <button 
