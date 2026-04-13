@@ -640,20 +640,20 @@ export default async function AdminDashboard({ searchParams }) {
                     <div className="space-y-3">
                         <div className="flex justify-between items-center border-b border-gray-50 pb-2">
                             <span className="text-blue-600 font-bold text-xs md:text-sm">הכנסות (Gross Revenue)</span>
-                            <div className="text-right">
-                                    <span dir="ltr" className="inline-block">{kpis.totalRevenue.toLocaleString()}</span> ₪
+                            <div className="text-right text-blue-700 font-black">
+                                <span dir="ltr">₪ {kpis.totalRevenue.toLocaleString()}</span>
                             </div>
                         </div>
                         <div className="flex justify-between items-center border-b border-gray-50 pb-2">
                             <span className="text-red-600 font-bold text-xs md:text-sm">הוצאות (OpEx)</span>
-                            <div className="text-right">
-                                    <span dir="ltr" className="inline-block">{kpis.totalExpenses.toLocaleString()}</span> ₪
+                            <div className="text-right text-red-700 font-black">
+                                <span dir="ltr">₪ {kpis.totalExpenses.toLocaleString()}</span>
                             </div>
                         </div>
                         <div className="flex justify-between items-center border-b border-gray-50 pb-2">
                             <span className="text-orange-600 font-bold text-xs md:text-sm">עלויות בשמים (COGS)</span>
-                            <div className="text-right">
-                                    <span dir="ltr" className="inline-block">{kpis.monthlyCOGS ? kpis.monthlyCOGS.toLocaleString() : '0'}</span> ₪
+                            <div className="text-right text-orange-700 font-black">
+                                <span dir="ltr">₪ {kpis.monthlyCOGS ? kpis.monthlyCOGS.toLocaleString() : '0'}</span>
                             </div>
                         </div>
                         
@@ -661,15 +661,15 @@ export default async function AdminDashboard({ searchParams }) {
                             <div className="flex justify-between items-center bg-gray-50/50 p-2 rounded-xl mb-2">
                                 <span className={`${kpis.monthlyProfit < 0 ? 'text-red-600' : 'text-green-600'} font-bold text-sm`}>רווח החודש (Net Margin)</span>
                                 <div className="text-right">
-                                    <span className={`text-xl font-bold ${kpis.monthlyProfit < 0 ? 'text-red-700' : 'text-green-700'}`}>
-                                        <span dir="ltr" className="inline-block">{kpis.monthlyProfit.toLocaleString()}</span> ₪
+                                    <span className={`text-xl font-black ${kpis.monthlyProfit < 0 ? 'text-red-700' : 'text-green-700'}`}>
+                                        <span dir="ltr">₪ {kpis.monthlyProfit.toLocaleString()}</span>
                                     </span>
                                 </div>
                             </div>
                             <div className="flex justify-between items-center px-1">
                                 <span className="text-gray-400 font-bold text-[10px]">רווח מצטבר (כלל המערכת)</span>
-                                <div className="text-right">
-                                        <span dir="ltr" className="inline-block">{kpis.cumulativeProfit ? kpis.cumulativeProfit.toLocaleString() : '0'}</span> ₪
+                                <div className="text-right text-gray-500 font-black">
+                                    <span dir="ltr">₪ {kpis.cumulativeProfit ? kpis.cumulativeProfit.toLocaleString() : '0'}</span>
                                 </div>
                             </div>
                         </div>
@@ -800,8 +800,8 @@ export default async function AdminDashboard({ searchParams }) {
                         <TrendingUp className="w-3.5 h-3.5 text-blue-600" />
                         סל ממוצע (AOV)
                     </div>
-                    <div className="text-2xl font-bold mb-2 text-gray-900">
-                        ₪ {Math.round(kpis.avgOrderValue || 0).toLocaleString()}
+                    <div className="text-2xl font-black mb-2 text-gray-900">
+                        <span dir="ltr">₪ {Math.round(kpis.avgOrderValue || 0).toLocaleString()}</span>
                     </div>
                     <div className="text-[9px] text-gray-400 font-medium italic">מחושב לפי כל ההזמנות במערכת</div>
                 </div>
@@ -813,8 +813,8 @@ export default async function AdminDashboard({ searchParams }) {
                         <Users className="w-3.5 h-3.5 text-purple-500" />
                         ערך לקוח (LTV)
                     </div>
-                    <div className="text-2xl font-bold mb-2 text-gray-900">
-                        ₪ {Math.round(kpis.lifetimeValue || 0).toLocaleString()}
+                    <div className="text-2xl font-black mb-2 text-gray-900">
+                        <span dir="ltr">₪ {Math.round(kpis.lifetimeValue || 0).toLocaleString()}</span>
                     </div>
                     <div className="text-[9px] text-gray-400 font-medium italic text-right">ממוצע הכנסה ללקוח יחיד</div>
                 </div>

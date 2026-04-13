@@ -335,7 +335,7 @@ export default function SmartPricingPage() {
                                                 <h3 className="font-black text-gray-900 flex items-center gap-1.5" dir="rtl">
                                                     {log.undone ? 'בוטל: ' : ''} 
                                                     <span className="flex items-center gap-1" dir="ltr">
-                                                        <span>{Number(log.amount) > 0 ? '+' : ''}{Math.abs(log.amount)} ₪</span>
+                                                        <span>₪ {Number(log.amount) > 0 ? '+' : ''}{Math.abs(log.amount)}</span>
                                                     </span>
                                                     <span className="text-gray-400 text-xs font-bold mr-2">
                                                         ({log.sizes.map(s => s + 'ml').join(', ')})

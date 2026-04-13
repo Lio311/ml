@@ -218,7 +218,7 @@ export default function AdminExpensesPage() {
                             <span className="text-lg md:text-xl font-black text-gray-900">{month}</span>
                             <div className="flex flex-col items-end">
                                 <span className="text-[10px] uppercase font-bold text-gray-400 tracking-wider">סה״כ הוצאות</span>
-                                <span className="text-sm md:text-base font-black text-gray-600">{items.reduce((sum, item) => sum + parseFloat(item.amount), 0).toLocaleString()} ₪</span>
+                                <span className="text-sm md:text-base font-black text-gray-600"><span dir="ltr">₪ {items.reduce((sum, item) => sum + parseFloat(item.amount), 0).toLocaleString()}</span></span>
                             </div>
                         </div>
                         
@@ -246,7 +246,7 @@ export default function AdminExpensesPage() {
                                                     {expense.type === 'yearly' ? 'שנתי' : 'חודשי'}
                                                 </span>
                                             </td>
-                                            <td className="p-4 text-center font-black text-gray-900 text-lg whitespace-nowrap" dir="ltr">{parseFloat(expense.amount).toLocaleString()} ₪</td>
+                                            <td className="p-4 text-left font-black text-gray-900"><span dir="ltr">₪ {parseFloat(expense.amount).toLocaleString()}</span></td>
                                             <td className="p-4">
                                                 {canEdit && (
                                                     <div className="flex justify-center gap-2">
@@ -287,7 +287,7 @@ export default function AdminExpensesPage() {
                                             <span className={`text-[9px] px-2 py-0.5 rounded-lg font-black uppercase mb-2 tracking-widest border ${expense.type === 'yearly' ? 'bg-purple-50 text-purple-700 border-purple-100' : 'bg-gray-50 text-gray-500 border-gray-100'}`}>
                                                 {expense.type === 'yearly' ? 'שנתי' : 'חודשי'}
                                             </span>
-                                            <div className="font-black text-gray-900 text-lg leading-none" dir="ltr">{parseFloat(expense.amount).toLocaleString()} ₪</div>
+                                            <div className="text-lg font-black text-white px-3 py-1 bg-gray-800 rounded-xl shadow-inner"><span dir="ltr">₪ {parseFloat(expense.amount).toLocaleString()}</span></div>
                                         </div>
                                     </div>
 

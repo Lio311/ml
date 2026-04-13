@@ -29,7 +29,7 @@ export default function AnalyticsTables({ topBrands, topSizes, monthName }) {
                                             </div>
                                         </td>
                                         <td className="p-4 text-left font-mono font-bold text-gray-900 text-base whitespace-nowrap">
-                                            {parseFloat(brand.sales).toLocaleString()} ₪
+                                            <span dir="ltr">₪ {parseFloat(brand.sales).toLocaleString()}</span>
                                         </td>
                                     </tr>
                                 ))
@@ -69,7 +69,7 @@ export default function AnalyticsTables({ topBrands, topSizes, monthName }) {
                                             </div>
                                         </td>
                                         <td className="p-4 text-left font-mono font-bold text-gray-900 text-base whitespace-nowrap">
-                                            {parseFloat(size.sales).toLocaleString()} ₪
+                                            <span dir="ltr">₪ {parseFloat(size.sales).toLocaleString()}</span>
                                         </td>
                                     </tr>
                                 ))

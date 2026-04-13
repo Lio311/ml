@@ -197,7 +197,7 @@ export default function CatalogOrdersClient() {
                                             <div className="text-[10px] text-gray-400 font-bold tracking-tight">{customer?.phone}</div>
                                         </td>
                                         <td className="p-4 text-center font-bold text-lg">
-                                            <div className="mb-1.5 text-black">{order.total_amount} ₪</div>
+                                            <div className="mb-1.5 text-black"><span dir="ltr">₪ {order.total_amount?.toLocaleString()}</span></div>
                                             <div className="text-[11px] text-gray-500 font-normal max-w-[250px] min-w-[160px] text-right bg-gray-50/50 p-2 rounded-xl border border-gray-100/50 shadow-sm leading-relaxed">
                                                 <ul className="space-y-1">
                                                     {items.map((item, i) => (
@@ -285,7 +285,7 @@ export default function CatalogOrdersClient() {
                                     </div>
                                     <div className="space-y-1.5 p-3 rounded-2xl bg-gray-900 text-white shadow-lg shadow-gray-200">
                                         <div className="text-[9px] font-black text-gray-400 uppercase tracking-widest">סכום כולל</div>
-                                        <div className="text-xl font-black">{order.total_amount} ₪</div>
+                                        <div className="text-xl font-black"><span dir="ltr">₪ {order.total_amount?.toLocaleString()}</span></div>
                                         <div className="text-[10px] font-bold text-gray-400">{items.length} פריטים שונים</div>
                                     </div>
                                 </div>
@@ -299,7 +299,7 @@ export default function CatalogOrdersClient() {
                                                 <span className="font-black bg-blue-100 text-blue-700 w-6 h-6 flex items-center justify-center rounded-lg text-[10px] shrink-0">{item.quantity}</span>
                                                 <div className="flex-1 space-y-0.5">
                                                     <div className="font-black text-gray-900">{item.name}</div>
-                                                    <div className="text-[10px] text-gray-500">{String(item.size).replace(/ml$/i, '')} מ"ל • {item.price} ₪ ליח'</div>
+                                                    <div className="text-[10px] text-gray-500">{String(item.size).replace(/ml$/i, '')} מ"ל • <span dir="ltr">₪ {item.price?.toLocaleString()}</span> ליח'</div>
                                                 </div>
                                             </li>
                                         ))}

@@ -165,7 +165,7 @@ export default function LotteryAdminPage() {
                                         <div className="text-[12px] text-gray-400 font-medium mt-0.5">{product.model}</div>
                                     </td>
                                     <td className="p-4 text-center">
-                                        <div className="font-mono text-base font-black text-gray-800 tracking-tight">{product.price_10ml} ₪</div>
+                                        <div className="font-mono text-base font-black text-gray-800 tracking-tight"><span dir="ltr">₪ {product.price_10ml?.toLocaleString()}</span></div>
                                     </td>
                                     <td className="p-4 text-center">
                                         <span className={`px-2.5 py-1 rounded-lg text-[11px] font-black uppercase tracking-tight shadow-sm border ${product.stock > 0 ? 'bg-green-50 text-green-700 border-green-100' : 'bg-red-50 text-red-700 border-red-100'}`}>
@@ -224,7 +224,7 @@ export default function LotteryAdminPage() {
                                     <div className="text-sm font-black text-gray-900 leading-tight">{product.brand}</div>
                                     <div className="text-[11px] text-gray-500 font-bold mb-3 tracking-tight">{product.model}</div>
                                     <div className="flex items-center gap-3">
-                                        <div className="text-base font-mono font-black text-black">{product.price_10ml} ₪</div>
+                                        <div className="text-base font-mono font-black text-black"><span dir="ltr">₪ {product.price_10ml?.toLocaleString()}</span></div>
                                         <span className={`px-2.5 py-1 rounded-xl text-[10px] font-black uppercase tracking-tight border shadow-sm ${product.stock > 0 ? 'bg-green-50 text-green-700 border-green-100' : 'bg-red-50 text-red-700 border-red-100'}`}>
                                             {product.stock} מ״ל
                                         </span>

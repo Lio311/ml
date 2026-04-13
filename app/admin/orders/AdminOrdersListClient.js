@@ -170,7 +170,7 @@ export default function AdminOrdersListClient({
                                             {(order.delivery_method === 'mail' || order.delivery_method === 'shipping') && (
                                                 <span className="text-[11px] text-blue-500/80 font-bold bg-blue-50 px-1.5 py-0.5 rounded-md border border-blue-100" dir="ltr" title="תוספת משלוח">+30</span>
                                             )}
-                                            <span>{(order.total_amount - (order.delivery_method === 'mail' || order.delivery_method === 'shipping' ? (order.customer_details?.shipping_cost ?? 30) : 0))} ₪</span>
+                                            <span><span dir="ltr">₪ {(order.total_amount - (order.delivery_method === 'mail' || order.delivery_method === 'shipping' ? (order.customer_details?.shipping_cost ?? 30) : 0))?.toLocaleString()}</span></span>
                                         </div>
                                     </td>
                                     <td className="p-4">

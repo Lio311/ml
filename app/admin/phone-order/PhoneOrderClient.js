@@ -416,7 +416,7 @@ export default function PhoneOrderClient() {
                                                         <div className="font-bold text-gray-900 group-hover:text-blue-700">{cleanProductName(p.name, p.brand)}</div>
                                                         <div className="text-xs text-gray-500">{p.brand}</div>
                                                     </div>
-                                                    <div className="text-blue-600 font-bold">₪{p.price}</div>
+                                                    <div className="text-blue-600 font-black"><span dir="ltr">₪ {p.price?.toLocaleString()}</span></div>
                                                 </button>
                                             ))}
                                         </motion.div>
@@ -436,7 +436,7 @@ export default function PhoneOrderClient() {
                                                 <div className="font-bold text-gray-900 truncate">{cleanProductName(item.name, item.brand)}</div>
                                                 <div className="flex items-center gap-3 mt-1">
                                                     <span className="text-xs px-2 py-0.5 bg-blue-50 text-blue-600 rounded-full font-bold">{item.size}ml</span>
-                                                    <span className="text-sm font-bold text-gray-900">{item.price} ₪</span>
+                                                    <span className="text-sm font-bold text-gray-900"><span dir="ltr">₪ {item.price?.toLocaleString()}</span></span>
                                                 </div>
                                             </div>
                                             
@@ -531,21 +531,21 @@ export default function PhoneOrderClient() {
                             <div className="space-y-4 mb-8">
                                 <div className="flex justify-between text-gray-400 font-medium">
                                     <span>סכום ביניים</span>
-                                    <span>{subtotal} ₪</span>
+                                    <span><span dir="ltr">₪ {subtotal.toLocaleString()}</span></span>
                                 </div>
                                 {discountAmount > 0 && (
                                     <div className="flex justify-between text-emerald-400 font-bold">
                                         <span>הנחה ({couponDiscount.percent}%)</span>
-                                        <span dir="ltr">-₪ {discountAmount}</span>
+                                        <span dir="ltr">-₪ {discountAmount.toLocaleString()}</span>
                                     </div>
                                 )}
                                 <div className="flex justify-between text-gray-400 font-medium">
                                     <span>משלוח</span>
-                                    <span>{shippingPrice === 0 ? 'חינם' : `${shippingPrice} ₪`}</span>
+                                    <span>{shippingPrice === 0 ? 'חינם' : <span dir="ltr">₪ {shippingPrice}</span>}</span>
                                 </div>
                                 <div className="pt-4 border-t border-white/10 flex justify-between items-end">
                                     <span className="text-sm font-bold opacity-60">סה"כ לתשלום</span>
-                                    <span className="text-4xl font-black text-blue-400 tracking-tight">{total} ₪</span>
+                                    <span className="text-4xl font-black text-blue-400 tracking-tight"><span dir="ltr">₪ {total.toLocaleString()}</span></span>
                                 </div>
                             </div>
 
@@ -667,10 +667,10 @@ export default function PhoneOrderClient() {
                                                     {isDiscounted ? (
                                                         <>
                                                             <div className="text-[10px] text-gray-400 line-through leading-none mb-1">{price} ₪</div>
-                                                            <div className="text-xl font-black text-red-600">{discountedPrice} ₪</div>
+                                                            <div className="text-xl font-black text-red-600"><span dir="ltr">₪ {discountedPrice.toLocaleString()}</span></div>
                                                         </>
                                                     ) : (
-                                                        <div className="text-xl font-black text-blue-600">{price} ₪</div>
+                                                        <div className="text-xl font-black text-blue-600"><span dir="ltr">₪ {price.toLocaleString()}</span></div>
                                                     )}
                                                 </div>
                                             </button>

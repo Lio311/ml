@@ -583,40 +583,40 @@ export default async function AdminDashboard({ searchParams }) {
                         <div className="flex justify-between items-center border-b border-gray-50 pb-2">
                             <span className="text-blue-600 font-bold text-xs md:text-sm">הכנסות</span>
                             <div className="text-right">
-                                <span className="text-lg md:text-xl font-bold text-blue-700">
-                                    <span dir="ltr" className="inline-block">{kpis.totalRevenue.toLocaleString()} ₪</span>
+                                <span className="text-lg md:text-xl font-black text-blue-700">
+                                    <span dir="ltr">₪ {kpis.totalRevenue.toLocaleString()}</span>
                                 </span>
                             </div>
                         </div>
                         <div className="flex justify-between items-center border-b border-gray-50 pb-2">
                             <span className="text-red-600 font-bold text-xs md:text-sm">הוצאות</span>
                             <div className="text-right">
-                                <span className="text-lg md:text-xl font-bold text-red-700">
-                                    <span dir="ltr" className="inline-block">{kpis.totalExpenses.toLocaleString()} ₪</span>
+                                <span className="text-lg md:text-xl font-black text-red-700">
+                                    <span dir="ltr">₪ {kpis.totalExpenses.toLocaleString()}</span>
                                 </span>
                             </div>
                         </div>
                         <div className="flex justify-between items-center border-b border-gray-50 pb-2">
                             <span className="text-orange-600 font-bold text-xs md:text-sm">עלויות בשמים</span>
                             <div className="text-right">
-                                <span className="text-lg md:text-xl font-bold text-orange-700">
-                                    <span dir="ltr" className="inline-block">{kpis.monthlyCOGS ? kpis.monthlyCOGS.toLocaleString() : '0'} ₪</span>
+                                <span className="text-lg md:text-xl font-black text-orange-700">
+                                    <span dir="ltr">₪ {kpis.monthlyCOGS ? kpis.monthlyCOGS.toLocaleString() : '0'}</span>
                                 </span>
                             </div>
                         </div>
                         <div className="flex justify-between items-center bg-gray-50/50 p-2 rounded-xl mb-2">
                             <span className={`${kpis.monthlyProfit < 0 ? 'text-red-600' : 'text-green-600'} font-bold text-sm`}>רווח</span>
                             <div className="text-right">
-                                <span className={`text-xl md:text-2xl font-bold ${kpis.monthlyProfit < 0 ? 'text-red-700' : 'text-green-700'}`}>
-                                    <span dir="ltr" className="inline-block">{kpis.monthlyProfit.toLocaleString()} ₪</span>
+                                <span className={`text-xl md:text-2xl font-black ${kpis.monthlyProfit < 0 ? 'text-red-700' : 'text-green-700'}`}>
+                                    <span dir="ltr">₪ {kpis.monthlyProfit.toLocaleString()}</span>
                                 </span>
                             </div>
                         </div>
                         <div className="flex justify-between items-center border-t border-gray-100 pt-2 mt-2">
                             <span className="text-gray-400 font-bold text-[10px]">רווח מצטבר (כלל המערכת)</span>
                             <div className="text-right">
-                                <span className={`text-xs font-bold ${kpis.cumulativeProfit < 0 ? 'text-red-600' : 'text-green-600'}`}>
-                                    <span dir="ltr" className="inline-block">{kpis.cumulativeProfit ? kpis.cumulativeProfit.toLocaleString() : '0'} ₪</span>
+                                <span className={`text-xs font-black ${kpis.cumulativeProfit < 0 ? 'text-red-600' : 'text-green-600'}`}>
+                                    <span dir="ltr">₪ {kpis.cumulativeProfit ? kpis.cumulativeProfit.toLocaleString() : '0'}</span>
                                 </span>
                             </div>
                         </div>
@@ -768,7 +768,7 @@ export default async function AdminDashboard({ searchParams }) {
                                     </div>
                                 </div>
                                 <div className="text-right">
-                                    <div className="text-base font-black text-gray-900 whitespace-nowrap" dir="ltr">{order.total_amount} ₪</div>
+                                    <div className="text-base font-black text-gray-900 whitespace-nowrap"><span dir="ltr">₪ {order.total_amount?.toLocaleString()}</span></div>
                                     <span className={`text-[9px] md:text-xs px-2 py-0.5 rounded-full font-bold uppercase tracking-wider ${order.status === 'pending' ? 'bg-orange-100 text-orange-800' :
                                         order.status === 'processing' ? 'bg-blue-100 text-blue-800' :
                                             order.status === 'shipped' ? 'bg-purple-100 text-purple-800' :
