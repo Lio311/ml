@@ -186,32 +186,38 @@ export const getStatusUpdateTemplate = (orderId, status, customerName) => {
     let messageBody = '';
 
     switch (status) {
-        case 'processing': // Or whatever your statuses are
+        case 'pending':
+            statusText = 'ממתין';
+            messageBody = 'ההזמנה שלך התקבלה וממתינה לאישור.';
+            break;
+        case 'processing':
             statusText = 'בטיפול';
-            messageBody = 'ההזמנה שלך התקבלה ונמצאת בטיפול הצוות.';
+            messageBody = 'ההזמנה שלך נמצאת כעת בטיפול הצוות ומכינים אותה עבורך.';
             break;
         case 'shipped':
-            statusText = 'נשלחה';
-            messageBody = 'חדשות טובות! ההזמנה שלך נארזה ונמסרה לשליח / יצאה למשלוח.';
+            statusText = 'נשלח';
+            messageBody = 'חדשות טובות! ההזמנה שלך נשלחה לדרכה.';
             break;
         case 'completed':
-            statusText = 'הושלמה / נמסרה';
-            messageBody = 'ההזמנה נמסרה בהצלחה. תודה שבחרת בנו!';
+            statusText = 'הושלם';
+            messageBody = 'ההזמנה שלך הושלמה/נמסרה בהצלחה. תודה שבחרת בנו!';
             break;
         case 'cancelled':
-            statusText = 'בוטלה';
-            messageBody = 'ההזמנה בוטלה. אם זו טעות, נא ליצור איתנו קשר.';
+            statusText = 'בוטל';
+            messageBody = 'ההזמנה שלך בוטלה. אם לדעתך זו טעות, נא ליצור איתנו קשר.';
             break;
         default:
             statusText = status;
             messageBody = `הסטטוס של ההזמנה שלך עודכן ל-${status}.`;
     }
 
+    const cleanName = customerName && String(customerName).replace(' null', '').trim();
+
     return `
         <div dir="rtl" style="font-family: 'Open Sans', 'Open Sans Hebrew', Arial, sans-serif; color: #333;">
             <div style="text-align: center; font-size: 24px; font-weight: bold; margin-bottom: 20px;">ml_tlv</div>
             <h2 style="color: #000;">עדכון לגבי הזמנה #${orderId}</h2>
-            <p>היי ${customerName || 'לקוח יקר'},</p>
+            <p>היי ${cleanName || 'לקוח יקר'},</p>
             <p style="font-size: 16px;">
                 סטטוס ההזמנה שלך השתנה ל: <strong>${statusText}</strong>
             </p>
