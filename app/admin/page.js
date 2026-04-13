@@ -721,34 +721,38 @@ export default async function AdminDashboard({ searchParams }) {
                     </div>
                 </div>
 
-                {/* Samples Sold */}
-                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 relative overflow-hidden group hover:shadow-md transition-shadow">
-                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-purple-500 to-pink-500"></div>
-                    <div className="flex justify-between items-start mb-2">
+                    </div>
+                </div>
+
+                {/* Analytics Snapshot Card */}
+                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 relative overflow-hidden group hover:shadow-md transition-shadow bg-gradient-to-br from-white to-blue-50/30">
+                    <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-600 to-indigo-600"></div>
+                    <div className="flex justify-between items-start mb-4">
                         <div className="text-gray-500 text-sm font-bold uppercase flex items-center gap-2">
-                            <FlaskConical className="w-4 h-4 text-purple-500" />
-                            דוגמיות שנמכרו
+                            <TrendingUp className="w-4 h-4 text-blue-600" />
+                            אנליטיקה וביצועי חיפוש
                         </div>
                     </div>
+                    
+                    <div className="space-y-4">
+                        <p className="text-xs text-gray-500 font-medium leading-relaxed">
+                            המערכת מחוברת כעת ל-Google Analytics ו-Search Console. תוכל לצפות במילות חיפוש, מקורות תנועה ודפים נצפים.
+                        </p>
+                        
+                        <div className="flex items-center gap-3 p-3 bg-blue-50/50 rounded-xl border border-blue-100/50">
+                            <div className="p-2 bg-blue-600 rounded-lg text-white">
+                                <Eye className="w-5 h-5" />
+                            </div>
+                            <div>
+                                <div className="text-[10px] text-blue-600 font-bold uppercase">נתוני תנועה</div>
+                                <div className="text-sm font-black text-blue-900">זמינים בדוח המלא</div>
+                            </div>
+                        </div>
 
-                    <div className="flex items-baseline gap-2 mb-4">
-                        <span className="text-4xl font-bold text-gray-900">{kpis.totalSamples}</span>
-                        <span className="text-xs text-gray-400 font-bold uppercase">יחידות</span>
-                    </div>
-
-                    <div className="grid grid-cols-2 gap-2">
-                        <div className="flex flex-col items-center bg-purple-50/50 p-2 rounded-xl border border-purple-100">
-                            <span className="text-[10px] text-purple-600 font-bold mb-1">2 מ"ל</span>
-                            <span className="font-black text-base text-purple-800 leading-none">{kpis.samplesBreakdown['2']}</span>
-                        </div>
-                        <div className="flex flex-col items-center bg-pink-50/50 p-2 rounded-xl border border-pink-100">
-                            <span className="text-[10px] text-pink-600 font-bold mb-1">5 מ"ל</span>
-                            <span className="font-black text-base text-pink-800 leading-none">{kpis.samplesBreakdown['5']}</span>
-                        </div>
-                        <div className="flex flex-col items-center bg-blue-50/50 p-2 rounded-xl border border-blue-100 col-span-2">
-                            <span className="text-[10px] text-blue-600 font-bold mb-1">10 מ"ל</span>
-                            <span className="font-black text-base text-blue-800 leading-none">{kpis.samplesBreakdown['10']}</span>
-                        </div>
+                        <Link href="/admin/analytics" className="flex items-center justify-center gap-2 w-full py-2.5 bg-gray-900 text-white rounded-xl text-sm font-bold hover:bg-black transition-all shadow-sm">
+                            לצפייה בדוח המלא 
+                            <ChevronLeft className="w-4 h-4 ml-1" />
+                        </Link>
                     </div>
                 </div>
             </div>
