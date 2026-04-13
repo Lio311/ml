@@ -202,7 +202,7 @@ export default function RecommendationsAdminPage() {
                                     </div>
                                     <div className="flex items-center gap-2">
                                         <span className="text-gray-400 text-xs">{oi.quantity} x</span>
-                                        <span className="font-bold text-indigo-600">{oi.price} ₪</span>
+                                        <span className="font-bold text-indigo-600"><span dir="ltr">₪ {oi.price?.toLocaleString()}</span></span>
                                     </div>
                                 </li>
                             ))}
@@ -231,7 +231,7 @@ export default function RecommendationsAdminPage() {
                                         </div>
                                     )}
                                     <div className="text-xs font-bold text-gray-900 truncate px-1" title={p.name}>{p.name}</div>
-                                    <div className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">{p.price} ₪</div>
+                                    <div className="text-[10px] text-gray-400 font-bold uppercase tracking-wider"><span dir="ltr">₪ {p.price?.toLocaleString()}</span></div>
                                     <div className="text-[10px] text-gray-500 truncate mt-1">{p.brand}</div>
                                     <div className="mt-2 text-[10px] bg-indigo-50 text-indigo-700 px-2 py-1 rounded inline-block truncate max-w-full">
                                         {p.notes || 'תווים דומים'}

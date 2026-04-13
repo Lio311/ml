@@ -318,7 +318,7 @@ export default function AdminCatalogItemsClient({ catalogId }) {
                                         {item.prices && Object.entries(item.prices).map(([size, price]) => (
                                              <div key={size} className="bg-gray-50 px-2 py-1 rounded text-[10px] border border-gray-100 flex flex-col items-center">
                                                  <span className="text-gray-400 font-bold" dir="ltr">{size}</span>
-                                                 <span className="font-bold text-black">{price} ₪</span>
+                                                 <span className="font-bold text-black"><span dir="ltr">₪ {price.toLocaleString()}</span></span>
                                              </div>
                                         ))}
                                     </div>
