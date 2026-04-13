@@ -701,7 +701,7 @@ export default async function AdminDashboard({ searchParams }) {
                         <span className="text-xs text-gray-400 font-bold uppercase">בקבוקים</span>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-2">
+                    <div className="flex flex-col gap-2">
                         {kpis.bottleInventory && kpis.bottleInventory.filter(item => item.size !== 11).map(item => {
                             const qty = parseInt(item.quantity || 0);
                             const sizeLabel = `${item.size} מ"ל`;
@@ -717,7 +717,7 @@ export default async function AdminDashboard({ searchParams }) {
                             }
 
                             return (
-                                <div key={item.size} className={`flex flex-col items-center p-2 rounded-xl border ${theme}`}>
+                                <div key={item.size} className={`flex flex-col items-center p-2 rounded-xl border ${theme} w-full`}>
                                     <span className="text-[9px] font-bold mb-1">{sizeLabel}</span>
                                     <span className="font-black text-base leading-none">
                                         {qty}
@@ -743,16 +743,16 @@ export default async function AdminDashboard({ searchParams }) {
                         <span className="text-xs text-gray-400 font-bold uppercase">דוגמיות סה"כ</span>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-2">
-                        <div className="flex flex-col items-center bg-emerald-50/50 p-2 rounded-xl border border-emerald-100">
+                    <div className="flex flex-col gap-2">
+                        <div className="flex flex-col items-center bg-emerald-50/50 p-2 rounded-xl border border-emerald-100 w-full">
                             <span className="text-[10px] text-emerald-600 font-bold mb-1">2 מ"ל</span>
                             <span className="font-black text-base text-emerald-800 leading-none">{kpis.samplesBreakdown['2']}</span>
                         </div>
-                        <div className="flex flex-col items-center bg-amber-50/50 p-2 rounded-xl border border-amber-100">
+                        <div className="flex flex-col items-center bg-amber-50/50 p-2 rounded-xl border border-amber-100 w-full">
                             <span className="text-[10px] text-amber-600 font-bold mb-1">5 מ"ל</span>
                             <span className="font-black text-base text-amber-800 leading-none">{kpis.samplesBreakdown['5']}</span>
                         </div>
-                        <div className="flex flex-col items-center bg-blue-50/50 p-2 rounded-xl border border-blue-100 col-span-2">
+                        <div className="flex flex-col items-center bg-blue-50/50 p-2 rounded-xl border border-blue-100 w-full">
                             <span className="text-[10px] text-blue-600 font-bold mb-1">10 מ"ל</span>
                             <span className="font-black text-base text-blue-800 leading-none">{kpis.samplesBreakdown['10']}</span>
                         </div>
