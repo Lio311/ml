@@ -746,6 +746,22 @@ export default async function AdminDashboard({ searchParams }) {
                             </div>
                         </div>
 
+                        {/* Restored Sales by Size Summary */}
+                        <div className="grid grid-cols-3 gap-2">
+                            <div className="flex flex-col items-center p-2 rounded-lg bg-emerald-50/40 border border-emerald-100/50">
+                                <span className="text-[9px] text-emerald-600 font-bold uppercase">2 מ"ל</span>
+                                <span className="text-sm font-black text-emerald-800">{kpis.samplesBreakdown['2']}</span>
+                            </div>
+                            <div className="flex flex-col items-center p-2 rounded-lg bg-amber-50/40 border border-amber-100/50">
+                                <span className="text-[9px] text-amber-600 font-bold uppercase">5 מ"ל</span>
+                                <span className="text-sm font-black text-amber-800">{kpis.samplesBreakdown['5']}</span>
+                            </div>
+                            <div className="flex flex-col items-center p-2 rounded-lg bg-blue-50/40 border border-blue-100/50">
+                                <span className="text-[9px] text-blue-600 font-bold uppercase">10 מ"ל</span>
+                                <span className="text-sm font-black text-blue-800">{kpis.samplesBreakdown['10']}</span>
+                            </div>
+                        </div>
+
                         <Link href="/admin/analytics" className="flex items-center justify-center gap-2 w-full py-2.5 bg-gray-900 text-white rounded-xl text-sm font-bold hover:bg-black transition-all shadow-sm">
                             לצפייה בדוח המלא 
                             <ChevronLeft className="w-4 h-4 ml-1" />
