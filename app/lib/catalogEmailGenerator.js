@@ -48,7 +48,7 @@ export function generateCatalogHTML(products) {
 function renderProductCell(product, siteUrl) {
     const productPrice = product.price_10ml || 0;
     const productUrl = `${siteUrl}/product/${product.slug || product.id}`;
-    const name = product.name_he || product.name || '';
+    const name = product.model_he || product.model || '';
     const brand = product.brand_he || product.brand || '';
     const image = product.image_url || 'https://ml-tlv.com/placeholder.png';
 
