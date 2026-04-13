@@ -178,6 +178,32 @@ export const getOrderConfirmationTemplate = (orderId, items, total, freeSamples,
     `;
 };
 
+export const getStatusUpdateTemplate = (orderId, name, status, messageBody) => {
+    return `
+        <div dir="rtl" style="font-family: 'Open Sans', 'Open Sans Hebrew', Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto; line-height: 1.6;">
+            <div style="text-align: center; padding: 20px 0;">
+                <div style="font-size: 28px; font-weight: 900; letter-spacing: -1px; color: #000;">ml_tlv</div>
+            </div>
+            <div style="background-color: #fff; padding: 30px; border-radius: 24px; border: 1px solid #f0f0f0; box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
+                <h2 style="margin: 0 0 15px; font-size: 22px; font-weight: 900; color: #000;">עדכון לגבי הזמנה #${orderId}</h2>
+                <p style="margin-bottom: 20px;">היי ${name},</p>
+                <div style="background-color: #f8f8f8; padding: 15px; border-radius: 12px; margin-bottom: 20px; border-right: 4px solid #000;">
+                    סטטוס ההזמנה שלך השתנה ל: <strong style="font-size: 18px;">${status}</strong>
+                </div>
+                <p style="color: #666;">${messageBody}</p>
+                <div style="margin-top: 30px; text-align: center;">
+                    <a href="https://www.ml-tlv.com/orders" style="display: inline-block; background-color: #000; color: #fff; padding: 14px 28px; text-decoration: none; border-radius: 14px; font-weight: 900; font-size: 14px;">
+                        לצפייה בסטטוס ההזמנה
+                    </a>
+                </div>
+            </div>
+            <div style="text-align: center; padding: 30px 0; color: #ccc; font-size: 11px;">
+                ml - יוקרה בחתיכות קטנות
+            </div>
+        </div>
+    `;
+};
+
 export const getUserWelcomeTemplate = (name) => {
     return `
         <div dir="rtl" style="font-family: 'Open Sans', 'Open Sans Hebrew', Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto; line-height: 1.6;">
@@ -272,38 +298,6 @@ export const getAdminNewUserTemplate = (user) => {
     `;
 };
 
-export const getUserWelcomeTemplate = (customerName) => {
-    return `
-        <div dir="rtl" style="font-family: 'Open Sans', 'Open Sans Hebrew', Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto;">
-            <div style="text-align: center; font-size: 24px; font-weight: bold; margin-bottom: 20px;">ml_tlv</div>
-            
-            <h1 style="color: #000; text-align: center;">ברוכים הבאים למשפחת ml! ✨</h1>
-            <p style="font-size: 18px; text-align: center;">היי ${customerName || 'יקיר/ה'},</p>
-            
-            <p style="line-height: 1.6; text-align: center;">
-                אנחנו שמחים שהצטרפת אלינו! מהיום יש לך גישה לעולם של ניחוחות יוקרתיים בחתיכות קטנות.
-            </p>
-            
-            <div style="background-color: #f8f8f8; padding: 25px; border-radius: 12px; margin: 30px 0; text-align: center;">
-                <h3 style="margin-top: 0;">מה מחכה לך באתר?</h3>
-                <ul style="list-style: none; padding: 0; display: inline-block; text-align: right;">
-                    <li style="margin-bottom: 10px;">✨ <strong>קטלוג מגוון</strong> - הבשמים הכי נחשקים בעולם</li>
-                    <li style="margin-bottom: 10px;">🎁 <strong>מתנות בכל הזמנה</strong> - דוגמיות חינם לפי גובה הסל</li>
-                    <li style="margin-bottom: 10px;">🚀 <strong>משלוח מהיר</strong> - או איסוף עצמי מתל אביב</li>
-                </ul>
-            </div>
-            
-            <div style="text-align: center; margin-top: 30px;">
-                <a href="${'https://www.ml-tlv.com'}/catalog" style="background-color: #000; color: #fff; padding: 15px 30px; text-decoration: none; border-radius: 30px; font-weight: bold; display: inline-block;">
-                    בואו נתחיל להריח...
-                </a>
-            </div>
-            
-            <hr style="margin: 40px 0; border: 0; border-top: 1px solid #eee;">
-            <p style="font-size: 12px; color: #999; text-align: center;">ml - יוקרה בחתיכות קטנות</p>
-        </div>
-    `;
-};
 
 export const getBackInStockTemplate = (product) => {
     const productUrl = `${process.env.NEXT_PUBLIC_APP_URL || 'https://www.ml-tlv.com'}/product/${product.id}`;
@@ -359,28 +353,7 @@ export function getSystemDefaults() {
         },
         'status_update': {
             subject: 'עדכון לגבי הזמנה #{{orderId}} - ml_tlv',
-            content_html: `
-        <div dir="rtl" style="font-family: 'Open Sans', 'Open Sans Hebrew', Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto; line-height: 1.6;">
-            <div style="text-align: center; padding: 20px 0;">
-                <div style="font-size: 28px; font-weight: 900; letter-spacing: -1px;">ml_tlv</div>
-            </div>
-            <div style="background-color: #fff; padding: 30px; border-radius: 24px; border: 1px solid #f0f0f0; box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
-                <h2 style="margin: 0 0 15px; font-size: 22px; font-weight: 900; color: #000;">עדכון לגבי הזמנה #{{orderId}}</h2>
-                <p style="margin-bottom: 20px;">היי {{name}},</p>
-                <div style="background-color: #f8f8f8; padding: 15px; border-radius: 12px; margin-bottom: 20px; border-right: 4px solid #000;">
-                    סטטוס ההזמנה שלך השתנה ל: <strong style="font-size: 18px;">{{status}}</strong>
-                </div>
-                <p style="color: #666;">{{messageBody}}</p>
-                <div style="margin-top: 30px; text-align: center;">
-                    <a href="https://www.ml-tlv.com/orders" style="display: inline-block; background-color: #000; color: #fff; padding: 14px 28px; text-decoration: none; border-radius: 14px; font-weight: 900; font-size: 14px;">
-                        לצפייה בסטטוס ההזמנה
-                    </a>
-                </div>
-            </div>
-            <div style="text-align: center; padding: 30px 0; color: #ccc; font-size: 11px;">
-                ml - יוקרה בחתיכות קטנות
-            </div>
-        </div>`
+            content_html: getStatusUpdateTemplate('{{orderId}}', '{{name}}', '{{status}}', '{{messageBody}}')
         },
         'welcome': {
             subject: 'ברוכים הבאים ל-ml_tlv! ✨',
