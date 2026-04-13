@@ -260,11 +260,12 @@ export default function SmartPricingPage() {
                                         value={amount}
                                         onChange={(e) => setAmount(e.target.value)}
                                         onWheel={(e) => e.target.blur()}
-                                        placeholder="לדוגמה: 5 או -5"
-                                        className="w-full bg-gray-50 border-gray-100 border-2 rounded-2xl p-4 pr-12 focus:border-blue-600 focus:bg-white focus:ring-4 focus:ring-blue-50 outline-none transition-all font-black text-2xl"
+                                        placeholder="לדוגמה: 5 או ‎-5"
+                                        className="w-full bg-gray-50 border-gray-100 border-2 rounded-2xl p-4 pr-12 focus:border-blue-600 focus:bg-white focus:ring-4 focus:ring-blue-50 outline-none transition-all font-black text-2xl text-left"
+                                        dir="ltr"
                                         required
                                     />
-                                    <span className="absolute right-4 top-1/2 -translate-y-1/2 font-black text-xl text-gray-400">₪</span>
+                                    <span className="absolute left-4 top-1/2 -translate-y-1/2 font-black text-xl text-gray-400">₪</span>
                                 </div>
                                 <p className="text-[10px] text-gray-400 font-medium ps-1">המחיר החדש יחושב נטו. מחיר הבסיס יגדל בהתאם להנחה הקיימת.</p>
                             </div>
