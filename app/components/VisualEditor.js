@@ -14,9 +14,17 @@ export default function VisualEditor({ value, onChange, placeholder = "כאן כ
         setIsMounted(true);
     }, []);
 
+    // Set initial content once mounted
+    useEffect(() => {
+        if (isMounted && editorRef.current && value) {
+            editorRef.current.innerHTML = value;
+        }
+    }, [isMounted]);
+
     useEffect(() => {
         if (editorRef.current && value !== editorRef.current.innerHTML) {
             // Only update if external value is different and not already focused
+            // This handles external changes while avoiding cursor jumps during typing
             if (document.activeElement !== editorRef.current) {
                 editorRef.current.innerHTML = value || "";
             }
