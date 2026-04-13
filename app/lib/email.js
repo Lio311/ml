@@ -10,7 +10,7 @@ const transporter = nodemailer.createTransport({
     },
 });
 
-export const sendEmail = async (to, subject, html, type = 'system', orderId = null) => {
+export const sendEmail = async (to, subject, html, type = 'system', orderId = null, campaignId = null) => {
     if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
         console.warn("Skipping email send: Missing EMAIL_USER or EMAIL_PASS environment variables.");
         return;
@@ -34,7 +34,7 @@ export const sendEmail = async (to, subject, html, type = 'system', orderId = nu
 
         // Log successful send
         const recipient = Array.isArray(to) ? to.join(', ') : to;
-        await logEmail({ recipient, subject, type, status: 'sent', orderId });
+        await logEmail({ recipient, subject, type, status: 'sent', orderId, campaignId });
 
         return info;
     } catch (error) {
@@ -42,7 +42,7 @@ export const sendEmail = async (to, subject, html, type = 'system', orderId = nu
         
         // Log failed send
         const recipient = Array.isArray(to) ? to.join(', ') : to;
-        await logEmail({ recipient, subject, type, status: 'failed', error: error.message, orderId });
+        await logEmail({ recipient, subject, type, status: 'failed', error: error.message, orderId, campaignId });
 
         return null;
     }

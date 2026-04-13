@@ -44,7 +44,7 @@ export async function POST(req) {
 
         for (const email of recipientEmails) {
             try {
-                await sendEmail(email, campaign.subject, campaign.content_html, 'campaign', campaignId);
+                await sendEmail(email, campaign.subject, campaign.content_html, 'campaign', null, campaignId);
                 successCount++;
             } catch (err) {
                 console.error(`Failed to send campaign email to ${email}:`, err);

@@ -20,6 +20,7 @@ export default function EmailLogsClient({ initialLogs, currentPage, totalPages, 
             case 'educational': return 'bg-pink-100 text-pink-700 border-pink-200';
             case 'admin_alert': return 'bg-red-100 text-red-700 border-red-200';
             case 'contact_form': return 'bg-gray-100 text-gray-700 border-gray-200';
+            case 'campaign': return 'bg-blue-600 text-white border-blue-700';
             default: return 'bg-gray-100 text-gray-600 border-gray-200';
         }
     };
@@ -35,6 +36,7 @@ export default function EmailLogsClient({ initialLogs, currentPage, totalPages, 
             case 'admin_alert': return 'התראת מנהל';
             case 'contact_form': return 'פניית צור קשר';
             case 'manual_review_request': return 'בקשת ביקורת ידנית';
+            case 'campaign': return 'דיוור קמפיין';
             default: return type || 'מערכת';
         }
     };
@@ -79,7 +81,7 @@ export default function EmailLogsClient({ initialLogs, currentPage, totalPages, 
                                 <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">סוג מייל</th>
                                 <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">נושא</th>
                                 <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">סטטוס</th>
-                                <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">מספר הזמנה</th>
+                                <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">שיוך</th>
                                 <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">תאריך ושעה</th>
                             </tr>
                         </thead>
@@ -122,13 +124,21 @@ export default function EmailLogsClient({ initialLogs, currentPage, totalPages, 
                                         )}
                                     </td>
                                     <td className="px-6 py-4 text-center">
-                                        {log.order_id ? (
-                                            <Link 
-                                                href={`/admin/orders/${log.order_id}`}
-                                                className="text-black font-black text-sm hover:underline hover:text-blue-600 transition-colors"
-                                            >
-                                                #{log.order_id}
-                                            </Link>
+                                        {log.campaign_id ? (
+                                            <div className="flex flex-col items-center">
+                                                <span className="text-[9px] font-black text-blue-600 uppercase tracking-tighter">קמפיין</span>
+                                                <span className="text-black font-black text-sm">#{log.campaign_id}</span>
+                                            </div>
+                                        ) : log.order_id ? (
+                                            <div className="flex flex-col items-center">
+                                                <span className="text-[9px] font-black text-gray-400 uppercase tracking-tighter">הזמנה</span>
+                                                <Link 
+                                                    href={`/admin/orders/${log.order_id}`}
+                                                    className="text-black font-black text-sm hover:underline hover:text-blue-600 transition-colors"
+                                                >
+                                                    #{log.order_id}
+                                                </Link>
+                                            </div>
                                         ) : (
                                             <span className="text-gray-300">—</span>
                                         )}
@@ -162,9 +172,14 @@ export default function EmailLogsClient({ initialLogs, currentPage, totalPages, 
                                             <span className={`text-[9px] font-black px-2 py-0.5 rounded-full border border-opacity-50 ${getTypeColor(log.type)}`}>
                                                 {getTypeLabel(log.type)}
                                             </span>
+                                            {log.campaign_id && (
+                                                <span className="text-[10px] font-black text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full border border-blue-100 italic">
+                                                    קמפיין #{log.campaign_id}
+                                                </span>
+                                            )}
                                             {log.order_id && (
                                                 <Link href={`/admin/orders/${log.order_id}`} className="text-[10px] font-black text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full border border-blue-100">
-                                                    #{log.order_id}
+                                                    הזמנה #{log.order_id}
                                                 </Link>
                                             )}
                                         </div>
