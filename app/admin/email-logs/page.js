@@ -18,6 +18,18 @@ export default async function EmailLogsPage({ searchParams }) {
     const limit = 6;
     const offset = (page - 1) * limit;
 
+    // Run one-time migration to ensure historical data is correct
+    try {
+        await pool.query('ALTER TABLE email_logs ADD COLUMN IF NOT EXISTS campaign_id INTEGER');
+        await pool.query(`
+            UPDATE email_logs 
+            SET campaign_id = order_id, order_id = NULL 
+            WHERE type = 'campaign' AND order_id IS NOT NULL AND campaign_id IS NULL
+        `);
+    } catch (e) {
+        console.error('Migration failed:', e);
+    }
+
     // Fetch logs
     const logsRes = await pool.query(`
         SELECT * FROM email_logs 

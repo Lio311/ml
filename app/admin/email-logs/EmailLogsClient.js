@@ -143,7 +143,7 @@ export default function EmailLogsClient({ initialLogs, currentPage, totalPages, 
                                             <span className="text-gray-300">—</span>
                                         )}
                                     </td>
-                                    <td className="px-6 py-4 text-center text-left">
+                                    <td className="px-6 py-4 text-center text-left" suppressHydrationWarning>
                                         <div className="text-[11px] font-medium text-gray-500">
                                             {format(new Date(log.sent_at), 'dd/MM/yyyy', { locale: he })}
                                         </div>
@@ -185,7 +185,7 @@ export default function EmailLogsClient({ initialLogs, currentPage, totalPages, 
                                         </div>
                                     </div>
                                 </div>
-                                <div className="text-left shrink-0">
+                                <div className="text-left shrink-0" suppressHydrationWarning>
                                     <div className="text-[10px] font-black text-gray-900">
                                         {format(new Date(log.sent_at), 'HH:mm', { locale: he })}
                                     </div>
