@@ -35,17 +35,11 @@ async function ensureTables() {
         );
     `);
 
-    // Ensure system templates have content and are up-to-date with the latest logic
+    // Ensure system templates exist in the database
     const defaults = getSystemDefaults();
     for (const [slug, data] of Object.entries(defaults)) {
-        // We force update system templates to ensure any mangled/baked-in logic is cleared
-        await pool.query(`
-            UPDATE email_templates 
-            SET content_html = $1, subject = $2, type = 'system', updated_at = NOW()
-            WHERE slug = $3
-        `, [data.content_html, data.subject, slug]);
-        
-        // If it didn't exist (0 rows updated), insert it
+        // We only insert if they don't exist. We DO NOT force update here anymore 
+        // to allow user customizations to persist.
         await pool.query(`
             INSERT INTO email_templates (slug, name, type, content_html, subject)
             VALUES ($1, $2, 'system', $3, $4)
