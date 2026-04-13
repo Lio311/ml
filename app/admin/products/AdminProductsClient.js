@@ -915,33 +915,30 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                         {product.brand_he || product.brand} • {product.model_he || product.model}
                                     </div>
                                     <div className="flex items-center gap-2 md:gap-3">
-                                        <span className="text-[10px] font-black text-blue-600 bg-blue-50 px-2 py-0.5 rounded-lg border border-blue-100 flex items-center gap-1">
-                                            <span dir="ltr">₪ {product.price_2ml?.toLocaleString()}</span>
-                                            <span className="text-[8px] opacity-40">(2ml)</span>
-                                        </span>
-                                        <span className="text-[10px] font-black text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-lg border border-indigo-100 flex items-center gap-1">
-                                            <span dir="ltr">₪ {product.price_5ml?.toLocaleString()}</span>
-                                            <span className="text-[8px] opacity-40">(5ml)</span>
-                                        </span>
-                                        <span className="text-[10px] font-black text-purple-600 bg-purple-50 px-2 py-0.5 rounded-lg border border-purple-100 flex items-center gap-1">
-                                            <span dir="ltr">₪ {product.price_10ml?.toLocaleString()}</span>
-                                            <span className="text-[8px] opacity-40">(10ml)</span>
-                                        </span>
                                         {(() => {
-                                            const profitPerMl = Math.round((product.price_2ml / 2) - ((product.cost_price || 0) / (product.original_size || 100)));
-                                            const isNegative = profitPerMl < 0;
+                                            const costPerMl = (product.cost_price || 0) / (product.original_size || 100);
+                                            const profit2ml = Math.round((product.price_2ml || 0) - (costPerMl * 2));
+                                            const profit5ml = Math.round((product.price_5ml || 0) - (costPerMl * 5));
+                                            const profit10ml = Math.round((product.price_10ml || 0) - (costPerMl * 10));
+
                                             return (
-                                                <div
-                                                    className={`inline-flex items-center gap-1.5 font-black text-[10px] md:text-[11px] px-2.5 py-1 rounded-xl border shadow-sm ${isNegative
-                                                        ? 'bg-red-50 text-red-700 border-red-100'
-                                                        : 'bg-indigo-50 text-indigo-700 border-indigo-100'
-                                                        }`}
-                                                    dir="ltr"
-                                                >
-                                                    <span className="opacity-50">₪ </span>
-                                                    {isNegative ? `-${Math.abs(profitPerMl)}` : profitPerMl}
-                                                    <span className="text-[8px] font-black tracking-tighter ml-0.5 opacity-60">/ml</span>
-                                                </div>
+                                                <>
+                                                    <span className="text-[10px] font-black text-pink-600 bg-pink-50 px-2.5 py-1 rounded-xl border border-pink-100 flex items-center gap-1 shadow-sm">
+                                                        <span className="opacity-50">₪</span>
+                                                        <span>{profit2ml.toLocaleString()}</span>
+                                                        <span className="text-[8px] opacity-40">(2ml)</span>
+                                                    </span>
+                                                    <span className="text-[10px] font-black text-violet-600 bg-violet-50 px-2.5 py-1 rounded-xl border border-violet-100 flex items-center gap-1 shadow-sm">
+                                                        <span className="opacity-50">₪</span>
+                                                        <span>{profit5ml.toLocaleString()}</span>
+                                                        <span className="text-[8px] opacity-40">(5ml)</span>
+                                                    </span>
+                                                    <span className="text-[10px] font-black text-fuchsia-600 bg-fuchsia-50 px-2.5 py-1 rounded-xl border border-fuchsia-100 flex items-center gap-1 shadow-sm">
+                                                        <span className="opacity-50">₪</span>
+                                                        <span>{profit10ml.toLocaleString()}</span>
+                                                        <span className="text-[8px] opacity-40">(10ml)</span>
+                                                    </span>
+                                                </>
                                             );
                                         })()}
                                         <div className="text-[9px] font-black text-gray-400 uppercase tracking-widest opacity-60">רווח ליחידת מידה</div>
