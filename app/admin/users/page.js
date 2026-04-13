@@ -202,7 +202,7 @@ export default async function AdminUsersPage(props) {
                                                 <div className="w-full flex items-center justify-between gap-3 bg-white/50 px-3 py-1.5 rounded-xl border border-blue-100/50 shadow-sm">
                                                     <div className="flex flex-col items-start leading-tight">
                                                         <span className="text-[8px] font-black text-blue-400 uppercase tracking-tighter">אתר</span>
-                                                        <div className="font-bold text-gray-900 leading-none"><span dir="ltr">₪ {u.siteSpent?.toLocaleString()}</span></div>
+                                                        <div className="font-bold text-blue-700 leading-none"><span dir="ltr">₪ {u.siteSpent?.toLocaleString()}</span></div>
                                                     </div>
                                                     <div className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded leading-none">{u.siteOrders}</div>
                                                 </div>
