@@ -721,9 +721,6 @@ export default async function AdminDashboard({ searchParams }) {
                     </div>
                 </div>
 
-                    </div>
-                </div>
-
                 {/* Analytics Snapshot Card */}
                 <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200 relative overflow-hidden group hover:shadow-md transition-shadow bg-gradient-to-br from-white to-blue-50/30">
                     <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-600 to-indigo-600"></div>
