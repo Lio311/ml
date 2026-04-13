@@ -136,6 +136,28 @@ export default function MailingClient() {
         );
     };
 
+    const handleSendCampaign = async (campaignId) => {
+        const toastId = toast.loading('מתחיל שליחת דיוור...');
+        try {
+            const res = await fetch('/api/admin/mailing/campaigns/send', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ campaignId })
+            });
+
+            if (res.ok) {
+                const result = await res.json();
+                toast.success(`הדיוור נשלח בהצלחה ל-${result.sent} נמענים!`, { id: toastId });
+                fetchData();
+            } else {
+                const data = await res.json();
+                toast.error(data.error || 'שגיאה בשליחת הדיוור', { id: toastId });
+            }
+        } catch (err) {
+            toast.error('שגיאה בתקשורת עם השרת', { id: toastId });
+        }
+    };
+
     const handleCreateCampaign = async (campaignData) => {
         setIsSaving(true);
         try {
@@ -360,7 +382,12 @@ export default function MailingClient() {
                                         </tr>
                                     ) : (
                                         campaigns.map(c => (
-                                            <CampaignRow key={c.id} campaign={c} onDelete={() => deleteCampaign(c.id)} />
+                                            <CampaignRow 
+                                                key={c.id} 
+                                                campaign={c} 
+                                                onDelete={() => deleteCampaign(c.id)} 
+                                                onSend={() => handleSendCampaign(c.id)}
+                                            />
                                         ))
                                     )}
                                 </tbody>
@@ -727,30 +754,36 @@ function TemplateCard({ template, onEdit, onDelete, onSend, onSendTest }) {
     );
 }
 
-function CampaignRow({ campaign, onDelete }) {
+function CampaignRow({ campaign, onDelete, onSend }) {
     const isSent = campaign.status === 'sent';
     const isScheduled = campaign.status === 'scheduled';
+    const isSending = campaign.status === 'sending';
     const isFailed = campaign.status === 'failed';
 
     return (
         <tr className="hover:bg-gray-50/50 transition-colors group">
-            <td className="p-6">
+            <td className="p-6 text-right">
                 <div className="flex flex-col">
                     <span className="font-black text-gray-900">{campaign.title}</span>
-                    <span className="text-[11px] text-gray-400 font-bold">{campaign.subject}</span>
+                    <span className="text-[11px] text-gray-400 font-bold line-clamp-1">{campaign.subject}</span>
                 </div>
             </td>
-            <td className="p-6">
-                <span className="text-xs font-bold text-gray-600 bg-gray-100 px-3 py-1 rounded-full">{campaign.template_name || 'מותאם ידנית'}</span>
+            <td className="p-6 text-right">
+                <span className="text-[10px] font-black text-gray-500 bg-gray-100 px-3 py-1 rounded-full uppercase tracking-tighter">{campaign.template_name || 'מותאם ידנית'}</span>
             </td>
             <td className="p-6 text-center">
-                <div className="flex flex-col items-center gap-0.5">
+                <div className="flex flex-col items-center gap-0.5 min-w-[120px]">
                     <span className="font-mono text-xs font-bold text-gray-800">
                         {campaign.scheduled_at ? format(new Date(campaign.scheduled_at), 'dd/MM/yy HH:mm') : 'מיידי'}
                     </span>
                     {isSent && campaign.sent_at && (
                         <span className="text-[9px] text-green-500 font-black uppercase tracking-tighter">
-                            נשלח ב-{format(new Date(campaign.sent_at), 'HH:mm')}
+                            נשלח ב-{format(new Date(campaign.sent_at), 'dd/MM/yy HH:mm')}
+                        </span>
+                    )}
+                    {isSending && (
+                        <span className="text-[9px] text-blue-500 font-black animate-pulse">
+                            שולח כעת...
                         </span>
                     )}
                 </div>
@@ -764,30 +797,45 @@ function CampaignRow({ campaign, onDelete }) {
             <td className="p-6 text-center">
                 <div className="flex justify-center">
                     {isSent ? (
-                        <span className="bg-green-50 text-green-600 px-3 py-1 rounded-full text-[10px] font-black uppercase border border-green-100 flex items-center gap-1.5">
-                            <CheckCircle2 size={12} /> Sent
+                        <span className="bg-green-50 text-green-600 px-3 py-1 rounded-full text-[10px] font-black uppercase border border-green-100 flex items-center gap-1.5 shadow-sm">
+                            <CheckCircle2 size={12} /> נשלח
+                        </span>
+                    ) : isSending ? (
+                        <span className="bg-blue-50 text-blue-600 px-3 py-1 rounded-full text-[10px] font-black uppercase border border-blue-100 flex items-center gap-1.5 animate-pulse">
+                            <RefreshCcw size={12} className="animate-spin" /> שולח
                         </span>
                     ) : isFailed ? (
                         <span className="bg-red-50 text-red-600 px-3 py-1 rounded-full text-[10px] font-black uppercase border border-red-100 flex items-center gap-1.5" title={campaign.error_log}>
-                            <AlertCircle size={12} /> Failed
+                            <AlertCircle size={12} /> נכשל
                         </span>
                     ) : (
                         <span className="bg-blue-50 text-blue-600 px-3 py-1 rounded-full text-[10px] font-black uppercase border border-blue-100 flex items-center gap-1.5">
-                            <Clock size={12} /> Scheduled
+                            <Clock size={12} /> מתוזמן
                         </span>
                     )}
                 </div>
             </td>
             <td className="p-6">
                 <div className="flex justify-center gap-2">
+                    {!isSent && !isSending && (
+                        <button 
+                            onClick={onSend}
+                            className="p-2.5 bg-black text-white rounded-xl hover:bg-gray-800 transition-all shadow-lg shadow-black/5 hover:scale-110 active:scale-95"
+                            title="שלח עכשיו"
+                        >
+                            <Play size={16} fill="currentColor" />
+                        </button>
+                    )}
+                    
                     {isSent ? (
-                        <Link href="/admin/email-logs" className="p-2 text-gray-300 hover:text-gray-600 transition-colors">
+                        <Link href="/admin/email-logs" className="p-2.5 text-gray-400 hover:text-black hover:bg-gray-50 rounded-xl transition-all">
                             <ExternalLink size={16} />
                         </Link>
-                    ) : (
+                    ) : !isSending && (
                         <button 
                             onClick={onDelete}
-                            className="p-2 text-gray-300 hover:text-red-500 transition-colors"
+                            className="p-2.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-xl transition-all"
+                            title="מחק דיוור"
                         >
                             <Trash2 size={16} />
                         </button>

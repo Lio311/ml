@@ -223,10 +223,8 @@ export const getStatusUpdateTemplate = (orderId, status, customerName) => {
             </p>
             <p>${messageBody}</p>
             
-            <div style="margin-top: 30px;">
-                <a href="${'https://www.ml-tlv.com'}/orders" style="background-color: #000; color: #fff; padding: 10px 20px; text-decoration: none; border-radius: 5px;">
-                    לצפייה בפרטי ההזמנה
-                </a>
+            <div style="margin-top: 30px; text-align: center;">
+                <a href="${'https://www.ml-tlv.com'}/orders" style="background-color: #000; color: #fff; padding: 12px 25px; text-decoration: none; border-radius: 5px; font-weight: bold;">לצפייה בפרטי ההזמנה באתר</a>
             </div>
 
             <hr style="margin: 30px 0; border: 0; border-top: 1px solid #eee;">
@@ -359,7 +357,7 @@ export function getSystemDefaults() {
             <p>{{messageBody}}</p>
             <div style="margin-top: 30px;">
                 <a href="https://www.ml-tlv.com/orders" style="background-color: #000; color: #fff; padding: 10px 20px; text-decoration: none; border-radius: 5px;">
-                    לצפייה בפרטי ההזמנה
+                    לצפייה בסטטוס ההזמנה
                 </a>
             </div>
             <hr style="margin: 30px 0; border: 0; border-top: 1px solid #eee;">
