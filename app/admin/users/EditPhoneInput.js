@@ -19,7 +19,7 @@ export default function EditPhoneInput({ userId, initialPhone, canEdit }) {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ phone: phone.trim() || null })
             });
-
+            if (res.ok) {
                 toast.success('מספר הטלפון עודכן');
                 setIsEditing(false);
                 router.refresh(); // Refresh the page to update the UI
