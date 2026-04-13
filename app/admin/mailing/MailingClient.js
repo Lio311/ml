@@ -253,6 +253,7 @@ export default function MailingClient() {
                                     template={t} 
                                     onEdit={() => { setLastTab('templates'); setActiveTemplate(t); setView('edit-template'); }}
                                     onDelete={() => deleteTemplate(t.id)}
+                                    onSendTest={() => handleSendTest(t.subject, t.content_html)}
                                     onSend={() => { 
                                         setLastTab(view);
                                         setActiveCampaign({ 
@@ -278,6 +279,7 @@ export default function MailingClient() {
                                     template={t} 
                                     onEdit={() => { setLastTab('admin-alerts'); setActiveTemplate(t); setView('edit-template'); }}
                                     onDelete={() => deleteTemplate(t.id)}
+                                    onSendTest={() => handleSendTest(t.subject, t.content_html)}
                                     onSend={null} // Usually no direct send for admin alerts
                                 />
                             ))}
@@ -602,7 +604,7 @@ export default function MailingClient() {
     );
 }
 
-function TemplateCard({ template, onEdit, onDelete, onSend }) {
+function TemplateCard({ template, onEdit, onDelete, onSend, onSendTest }) {
     return (
         <div className="bg-white p-6 rounded-[2.5rem] shadow-sm border border-gray-100 hover:shadow-xl hover:shadow-black/5 hover:-translate-y-1 transition-all duration-300 group flex flex-col h-full">
             <div className="flex justify-between items-start mb-4">
@@ -620,7 +622,7 @@ function TemplateCard({ template, onEdit, onDelete, onSend }) {
             <p className="text-xs text-gray-500 font-bold line-clamp-2 mb-6 flex-grow">{template.subject || '(ללא נושא)'}</p>
 
             <div className="flex items-center gap-2 pt-4 border-t border-gray-50">
-                {template.type !== 'system' && (
+                {template.type !== 'system' && onSend && (
                     <button 
                         onClick={onSend}
                         className="flex-1 bg-black text-white py-3 rounded-2xl font-black text-[11px] uppercase tracking-wider flex items-center justify-center gap-2 hover:bg-gray-800 transition-all active:scale-95"
@@ -628,20 +630,32 @@ function TemplateCard({ template, onEdit, onDelete, onSend }) {
                         <Send size={14} /> שליחה
                     </button>
                 )}
-                <button 
-                    onClick={onEdit}
-                    className="p-3 bg-gray-50 text-gray-500 rounded-2xl hover:bg-gray-100 hover:text-black transition-all"
-                >
-                    <Edit size={16} />
-                </button>
-                {template.type !== 'system' && (
+                
+                <div className="flex gap-1 flex-1 justify-end">
                     <button 
-                        onClick={onDelete}
-                        className="p-3 bg-gray-50 text-gray-300 hover:bg-red-50 hover:text-red-500 rounded-2xl transition-all"
+                        onClick={(e) => { e.stopPropagation(); onSendTest(); }}
+                        className="p-3 bg-blue-50 text-blue-500 rounded-2xl hover:bg-blue-100 transition-all"
+                        title="שלח טסט למייל שלי"
                     >
-                        <Trash2 size={16} />
+                        <MailCheck size={16} />
                     </button>
-                )}
+                    <button 
+                        onClick={onEdit}
+                        className="p-3 bg-gray-50 text-gray-500 rounded-2xl hover:bg-gray-100 hover:text-black transition-all"
+                        title="ערוך טמפלייט"
+                    >
+                        <Edit size={16} />
+                    </button>
+                    {template.type !== 'system' && (
+                        <button 
+                            onClick={onDelete}
+                            className="p-3 bg-gray-50 text-gray-300 hover:bg-red-50 hover:text-red-500 rounded-2xl transition-all"
+                            title="מחק"
+                        >
+                            <Trash2 size={16} />
+                        </button>
+                    )}
+                </div>
             </div>
         </div>
     );
