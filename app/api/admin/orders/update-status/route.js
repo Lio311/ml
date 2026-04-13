@@ -98,11 +98,21 @@ export async function POST(req) {
             // Email
             if (order.customer_details?.email) {
                 try {
+                    const statusMap = {
+                        'pending': 'ממתין',
+                        'processing': 'בטיפול',
+                        'shipped': 'נשלח',
+                        'completed': 'הושלם',
+                        'cancelled': 'בוטל'
+                    };
+                    const hebrewStatus = statusMap[status] || status;
+                    const cleanName = (order.customer_details.name || '').replace(/\bnull\b/gi, '').trim();
+
                     const { html: dynamicHtml, subject: dynamicSubject } = await getTemplate('status_update', { 
                         orderId, 
-                        status: status, 
-                        name: order.customer_details.name 
-                    }, getStatusUpdateTemplate.bind(null, orderId, status, order.customer_details.name));
+                        status: hebrewStatus, 
+                        name: cleanName 
+                    }, getStatusUpdateTemplate.bind(null, orderId, status, cleanName));
                     
                     await sendEmail(order.customer_details.email, dynamicSubject || `עדכון סטטוס הזמנה #${orderId} - ml_tlv`, dynamicHtml, 'status_update', orderId);
                 } catch (e) { console.error('Email error:', e); }
