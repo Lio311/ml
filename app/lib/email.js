@@ -309,7 +309,7 @@ export const getBackInStockTemplate = (product) => {
             </p>
 
             <div style="text-align: center; margin: 30px 0;">
-                <img src="${product.image_url}" alt="${product.brand} ${product.model}" style="max-width: 200px; height: auto; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08);" />
+                <img src="${product.imageUrl || product.image_url || 'https://www.ml-tlv.com/logo-black.png'}" alt="${product.brand} ${product.model}" style="max-width: 200px; height: auto; border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,0.08);" />
             </div>
             
             <div style="text-align: center; background-color: #f8f8f8; padding: 25px; border-radius: 16px; margin: 30px 0;">
@@ -376,7 +376,7 @@ export function getSystemDefaults() {
                 id: '{{productId}}', 
                 brand: '{{brand}}', 
                 model: '{{model}}', 
-                image_url: 'https://www.ml-tlv.com/logo-black.png' 
+                imageUrl: 'https://www.ml-tlv.com/favicon.png' 
             })
         },
         'review_request': {

@@ -35,15 +35,20 @@ async function ensureTables() {
         );
     `);
 
-    // Ensure system templates exist in the database
+    // Ensure system templates exist and are updated to the latest layouts
     const defaults = getSystemDefaults();
     for (const [slug, data] of Object.entries(defaults)) {
-        // We only insert if they don't exist. We DO NOT force update here anymore 
-        // to allow user customizations to persist.
+        // We update the system templates to ensure the new 600px width and image fixes are applied.
+        // Since the user explicitly asked for 'Save' to overwrite, we ensure the initial sync 
+        // also brings the system to the latest state.
         await pool.query(`
             INSERT INTO email_templates (slug, name, type, content_html, subject)
             VALUES ($1, $2, 'system', $3, $4)
-            ON CONFLICT (slug) DO NOTHING
+            ON CONFLICT (slug) DO UPDATE 
+            SET content_html = EXCLUDED.content_html, 
+                subject = EXCLUDED.subject, 
+                updated_at = NOW()
+            WHERE email_templates.type = 'system'
         `, [slug, slug, data.content_html, data.subject]);
     }
 }
@@ -80,18 +85,19 @@ export async function POST(req) {
             // Update
             const res = await pool.query(`
                 UPDATE email_templates 
-                SET name = $1, subject = $2, content_html = $3, is_active = $4, updated_at = NOW()
-                WHERE id = $5
+                SET name = $1, subject = $2, content_html = $3, 
+                    type = $4, is_active = $5, updated_at = NOW()
+                WHERE id = $6
                 RETURNING *
-            `, [name, subject, content_html, is_active, id]);
+            `, [name, subject, content_html, type || 'manual', is_active !== false, id]);
             return NextResponse.json(res.rows[0]);
         } else {
-            // Create
+            // Create New
             const res = await pool.query(`
-                INSERT INTO email_templates (name, slug, subject, content_html, type, is_active)
+                INSERT INTO email_templates (name, subject, content_html, type, is_active, slug)
                 VALUES ($1, $2, $3, $4, $5, $6)
                 RETURNING *
-            `, [name, slug || null, subject, content_html, type || 'manual', is_active !== false]);
+            `, [name, subject, content_html, type || 'manual', is_active !== false, slug || `custom_${Date.now()}`]);
             return NextResponse.json(res.rows[0]);
         }
     } catch (err) {
