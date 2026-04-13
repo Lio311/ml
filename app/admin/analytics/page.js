@@ -204,7 +204,7 @@ export default function AnalyticsDashboard() {
             <span className="text-[10px] bg-purple-100 text-purple-700 px-2 py-1 rounded-full font-bold">Search Console</span>
           </div>
           <div className="overflow-x-auto">
-            <table className="w-full text-right">
+            <table className="w-full text-right min-w-[500px]">
               <thead className="bg-gray-50/50 text-[11px] text-gray-400 font-bold uppercase tracking-wider">
                 <tr>
                   <th className="px-6 py-3">ביטוי חיפוש</th>
@@ -216,7 +216,7 @@ export default function AnalyticsDashboard() {
               <tbody className="divide-y divide-gray-50">
                 {gscData.queries.map((q, i) => (
                   <tr key={i} className="hover:bg-gray-50/80 transition-colors">
-                    <td className="px-6 py-3 text-sm font-bold text-gray-800">{q.keys[0]}</td>
+                    <td className="px-6 py-3 text-sm font-bold text-gray-800 break-words max-w-[150px]">{q.keys[0]}</td>
                     <td className="px-6 py-3 text-sm text-gray-600">{q.clicks}</td>
                     <td className="px-6 py-3 text-sm text-gray-500">{q.impressions.toLocaleString()}</td>
                     <td className="px-6 py-3 text-xs font-bold text-blue-600">{(q.ctr * 100).toFixed(1)}%</td>
@@ -270,7 +270,7 @@ export default function AnalyticsDashboard() {
              </h3>
            </div>
            <div className="overflow-x-auto">
-             <table className="w-full text-right">
+             <table className="w-full text-right min-w-[600px]">
                <thead className="bg-gray-50/50 text-[11px] text-gray-400 font-bold uppercase tracking-wider">
                  <tr>
                    <th className="px-6 py-3">דף (Path)</th>
