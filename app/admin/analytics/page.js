@@ -11,9 +11,10 @@ export default function AnalyticsDashboard() {
   
   const [totals, setTotals] = useState({ users: 0, views: 0, clicks: 0, impressions: 0 });
   
-  // Pagination State for Queries
+  // Pagination State for Queries & Sources
   const [queryPage, setQueryPage] = useState(1);
-  const queriesPerPage = 6;
+  const [sourcePage, setSourcePage] = useState(1);
+  const itemsPerPage = 6;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -232,7 +233,7 @@ export default function AnalyticsDashboard() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-50 text-[13px]">
-                {gscData.queries.slice((queryPage - 1) * queriesPerPage, queryPage * queriesPerPage).map((q, i) => (
+                {gscData.queries.slice((queryPage - 1) * itemsPerPage, queryPage * itemsPerPage).map((q, i) => (
                   <tr key={i} className="hover:bg-gray-50/80 transition-colors">
                     <td className="px-6 py-3 text-sm font-bold text-gray-800 break-words max-w-[150px]">{q.keys[0]}</td>
                     <td className="px-6 py-3 text-sm text-gray-600 font-medium">{(q.clicks || 0).toLocaleString()}</td>
@@ -245,10 +246,10 @@ export default function AnalyticsDashboard() {
           </div>
           
           {/* Pagination Controls */}
-          {gscData.queries.length > queriesPerPage && (
+          {gscData.queries.length > itemsPerPage && (
             <div className="p-4 border-t border-gray-50 flex items-center justify-between bg-white">
                <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
-                  עמוד {queryPage} מתוך {Math.ceil(gscData.queries.length / queriesPerPage)}
+                  עמוד {queryPage} מתוך {Math.ceil(gscData.queries.length / itemsPerPage)}
                </div>
                <div className="flex gap-2">
                   <button 
@@ -259,8 +260,8 @@ export default function AnalyticsDashboard() {
                     <ChevronRight className="w-4 h-4 text-gray-600" />
                   </button>
                   <button 
-                    onClick={() => setQueryPage(p => Math.min(Math.ceil(gscData.queries.length / queriesPerPage), p + 1))}
-                    disabled={queryPage >= Math.ceil(gscData.queries.length / queriesPerPage)}
+                    onClick={() => setQueryPage(p => Math.min(Math.ceil(gscData.queries.length / itemsPerPage), p + 1))}
+                    disabled={queryPage >= Math.ceil(gscData.queries.length / itemsPerPage)}
                     className="p-1.5 rounded-lg border border-gray-100 disabled:opacity-30 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"
                   >
                     <ChevronLeft className="w-4 h-4 text-gray-600" />
@@ -280,8 +281,8 @@ export default function AnalyticsDashboard() {
              <span className="text-[10px] bg-blue-100 text-blue-700 px-2 py-1 rounded-full font-bold">GA4</span>
           </div>
           <div className="p-6">
-            <div className="space-y-4">
-              {gaData.sources.map((s, i) => {
+            <div className="space-y-4 min-h-[360px]">
+              {gaData.sources.slice((sourcePage - 1) * itemsPerPage, sourcePage * itemsPerPage).map((s, i) => {
                 const percentage = Math.round((s.users / totals.users) * 100);
                 return (
                   <div key={i} className="space-y-1.5">
@@ -300,6 +301,32 @@ export default function AnalyticsDashboard() {
               })}
             </div>
           </div>
+
+          {/* Pagination Controls for Sources */}
+          {gaData.sources.length > itemsPerPage && (
+            <div className="p-4 border-t border-gray-50 flex items-center justify-between bg-white">
+               <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
+                  עמוד {sourcePage} מתוך {Math.ceil(gaData.sources.length / itemsPerPage)}
+               </div>
+               <div className="flex gap-2">
+                  <button 
+                    onClick={() => setSourcePage(p => Math.max(1, p - 1))}
+                    disabled={sourcePage === 1}
+                    className="p-1.5 rounded-lg border border-gray-100 disabled:opacity-30 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"
+                  >
+                    <ChevronRight className="w-4 h-4 text-gray-600" />
+                  </button>
+                  <button 
+                    onClick={() => setSourcePage(p => Math.min(Math.ceil(gaData.sources.length / itemsPerPage), p + 1))}
+                    disabled={sourcePage >= Math.ceil(gaData.sources.length / itemsPerPage)}
+                    className="p-1.5 rounded-lg border border-gray-100 disabled:opacity-30 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"
+                  >
+                    <ChevronLeft className="w-4 h-4 text-gray-600" />
+                  </button>
+               </div>
+            </div>
+          )}
+
         </div>
       </div>
 

@@ -40,7 +40,7 @@ export async function GET() {
           dateRanges: [{ startDate: '30daysAgo', endDate: 'today' }],
           dimensions: [{ name: 'sessionSource' }],
           metrics: [{ name: 'activeUsers' }],
-          limit: 10
+          limit: 100
         },
       }),
       // 3. Top Pages
