@@ -1,10 +1,9 @@
 "use client";
 import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
-import { 
     Mail, Plus, Calendar, Clock, Send, Trash2, Edit, ChevronRight, 
     User, Users, CheckCircle2, AlertCircle, RefreshCcw, 
-    Settings, Play, ExternalLink, ShoppingBag, Search, X
+    Settings, Play, ExternalLink, ShoppingBag, Search, X, MailCheck
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { format } from 'date-fns';
@@ -81,13 +80,21 @@ export default function MailingClient() {
         }
     }, [isCatalogModalOpen]);
 
-    const handleSaveTemplate = async (templateData) => {
+    const handleSaveTemplate = async (template) => {
         setIsSaving(true);
         try {
             const res = await fetch('/api/admin/mailing/templates', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(templateData)
+                body: JSON.stringify({
+                    id: template.id,
+                    name: template.name,
+                    subject: template.subject,
+                    content_html: template.content_html,
+                    type: template.type || 'manual',
+                    slug: template.slug,
+                    is_active: template.is_active !== false
+                })
             });
             if (res.ok) {
                 toast.success('הטמפלייט נשמר בהצלחה');
