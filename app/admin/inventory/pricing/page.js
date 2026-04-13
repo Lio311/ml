@@ -192,7 +192,7 @@ export default function SmartPricingPage() {
                                         value={amount}
                                         onChange={(e) => setAmount(e.target.value)}
                                         onWheel={(e) => e.target.blur()}
-                                        placeholder="לדוגמה: 5 או -5"
+                                        placeholder="לדוגמה: 5 או ‎-5"
                                         className="w-full bg-gray-50 border-gray-100 border-2 rounded-2xl p-4 pr-12 focus:border-blue-600 focus:bg-white focus:ring-4 focus:ring-blue-50 outline-none transition-all font-black text-2xl"
                                         required
                                     />
