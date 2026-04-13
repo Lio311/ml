@@ -201,14 +201,6 @@ export default function MailingClient() {
                     <p className="text-gray-500 font-bold mt-1 uppercase text-[10px] tracking-widest">Email Templates & Campaigns</p>
                 </div>
                 <div className="flex gap-3">
-                    {view !== 'templates' && view !== 'campaigns' && view !== 'admin-alerts' && (
-                        <button 
-                            onClick={() => setView(lastTab)}
-                            className="btn btn-ghost rounded-2xl flex items-center gap-2"
-                        >
-                            <ChevronRight size={18} /> חזרה
-                        </button>
-                    )}
                     <button 
                         onClick={() => {
                             setActiveTemplate({ name: '', subject: '', content_html: '', type: 'manual' });
@@ -321,8 +313,16 @@ export default function MailingClient() {
                     )}
 
                     {view === 'edit-template' && (
-                        <div className="max-w-4xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                        <div className="max-w-4xl mx-auto space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
                              <div className="bg-white p-8 rounded-[3rem] shadow-xl border border-gray-50 space-y-6">
+                                <div className="flex justify-between items-center mb-2">
+                                    <button 
+                                        onClick={() => setView(lastTab)}
+                                        className="px-4 py-2 hover:bg-gray-50 rounded-2xl flex items-center gap-2 text-gray-500 font-bold transition-all"
+                                    >
+                                        <ChevronRight size={18} /> חזרה
+                                    </button>
+                                </div>
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div className="space-y-2">
                                         <label className="block text-xs font-black text-gray-400 uppercase tracking-widest px-2">שם הטמפלייט (לשימוש פנימי)</label>
@@ -381,8 +381,16 @@ export default function MailingClient() {
                     )}
 
                     {view === 'create-campaign' && (
-                        <div className="max-w-4xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500">
+                        <div className="max-w-4xl mx-auto space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
                              <div className="bg-white p-8 rounded-[3rem] shadow-xl border border-gray-50 space-y-8">
+                                <div className="flex justify-between items-center mb-2">
+                                    <button 
+                                        onClick={() => setView(lastTab)}
+                                        className="px-4 py-2 hover:bg-gray-50 rounded-2xl flex items-center gap-2 text-gray-500 font-bold transition-all"
+                                    >
+                                        <ChevronRight size={18} /> חזרה
+                                    </button>
+                                </div>
                                 <div className="flex items-center gap-4 border-b border-gray-50 pb-6 mb-2">
                                     <div className="w-16 h-16 bg-blue-50 rounded-[1.5rem] flex items-center justify-center text-blue-500">
                                         <Send size={32} />
