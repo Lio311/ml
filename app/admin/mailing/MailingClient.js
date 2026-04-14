@@ -37,6 +37,7 @@ export default function MailingClient() {
     const [isCatalogModalOpen, setIsCatalogModalOpen] = useState(false);
     const [selectedProducts, setSelectedProducts] = useState([]);
     const [productSearch, setProductSearch] = useState('');
+    const [showStarterPicker, setShowStarterPicker] = useState(false);
     const editorInsertRef = useRef(null);
 
     useEffect(() => {
@@ -372,6 +373,106 @@ export default function MailingClient() {
         }
     };
 
+    const starterTemplates = [
+        {
+            id: 'announcement',
+            name: '📢 הודעה / עדכון',
+            desc: 'עדכון כללי, חדשות, או הודעה ללקוחות',
+            preview: 'bg-gradient-to-br from-blue-50 to-indigo-50',
+            html: `<div dir="rtl" style="font-family: 'Open Sans', 'Open Sans Hebrew', Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto; line-height: 1.6;">
+    <div style="text-align: center; padding: 20px 0;">
+        <div style="font-size: 28px; font-weight: 900; letter-spacing: -1px; color: #000;">ml_tlv</div>
+    </div>
+    <div style="background-color: #fff; padding: 30px; border-radius: 24px; border: 1px solid #f0f0f0; box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
+        <h1 style="margin: 0 0 10px; font-size: 24px; font-weight: 900; color: #000; text-align: center;">כותרת ההודעה שלך ✨</h1>
+        <p style="margin: 0 0 25px; color: #666; text-align: center;">היי {{name}},</p>
+        <p style="margin-bottom: 20px; color: #333;">כאן תוכל לכתוב את תוכן ההודעה שלך. תוכל לספר על עדכונים חדשים, שינויים בשירות, או כל מידע שתרצה לשתף עם הלקוחות.</p>
+        <div style="background-color: #f8f8f8; padding: 20px; border-radius: 16px; margin: 25px 0;">
+            <p style="margin: 0; font-weight: 900; color: #000;">💡 טיפ:</p>
+            <p style="margin: 5px 0 0; color: #666; font-size: 14px;">תוכל להוסיף כל מידע חשוב כאן בתיבה המודגשת.</p>
+        </div>
+        <div style="text-align: center; margin-top: 30px;">
+            <a href="https://www.ml-tlv.com" style="display: inline-block; background-color: #000; color: #fff; padding: 16px 32px; text-decoration: none; border-radius: 16px; font-weight: 900; font-size: 14px;">לצפייה באתר</a>
+        </div>
+    </div>
+    <div style="text-align: center; padding: 30px 0; color: #ccc; font-size: 11px;">ml - יוקרה בחתיכות קטנות</div>
+</div>`
+        },
+        {
+            id: 'promotion',
+            name: '🔥 מבצע / הנחה',
+            desc: 'קודי קופון, מבצעים, או הנחות מיוחדות',
+            preview: 'bg-gradient-to-br from-orange-50 to-red-50',
+            html: `<div dir="rtl" style="font-family: 'Open Sans', 'Open Sans Hebrew', Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto; line-height: 1.6;">
+    <div style="text-align: center; padding: 20px 0;">
+        <div style="font-size: 28px; font-weight: 900; letter-spacing: -1px; color: #000;">ml_tlv</div>
+    </div>
+    <div style="background-color: #fff; padding: 30px; border-radius: 24px; border: 1px solid #f0f0f0; box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
+        <h1 style="margin: 0 0 10px; font-size: 24px; font-weight: 900; color: #000; text-align: center;">🔥 מבצע מיוחד רק בשבילך!</h1>
+        <p style="margin: 0 0 25px; color: #666; text-align: center;">היי {{name}}, יש לנו הפתעה קטנה...</p>
+        <div style="background: linear-gradient(135deg, #000 0%, #333 100%); color: #fff; padding: 30px; border-radius: 20px; text-align: center; margin: 25px 0;">
+            <div style="font-size: 12px; font-weight: 900; text-transform: uppercase; letter-spacing: 3px; opacity: 0.7; margin-bottom: 10px;">קוד קופון בלעדי</div>
+            <div style="font-size: 36px; font-weight: 900; letter-spacing: 4px; margin-bottom: 10px;">MLVIP</div>
+            <div style="font-size: 18px; font-weight: 900;">15% הנחה על כל ההזמנה</div>
+            <div style="font-size: 12px; opacity: 0.6; margin-top: 10px;">תקף עד XX/XX/XXXX</div>
+        </div>
+        <p style="margin-bottom: 20px; color: #333; text-align: center;">לא לפספס — המבצע תקף לזמן מוגבל בלבד!</p>
+        <div style="text-align: center; margin-top: 30px;">
+            <a href="https://www.ml-tlv.com/catalog" style="display: inline-block; background-color: #000; color: #fff; padding: 16px 32px; text-decoration: none; border-radius: 16px; font-weight: 900; font-size: 14px;">לקטלוג המלא &gt;&gt;</a>
+        </div>
+    </div>
+    <div style="text-align: center; padding: 30px 0; color: #ccc; font-size: 11px;">ml - יוקרה בחתיכות קטנות</div>
+</div>`
+        },
+        {
+            id: 'info',
+            name: '📋 מידע / טיפים',
+            desc: 'תוכן חינוכי, טיפים, או מדריכים',
+            preview: 'bg-gradient-to-br from-emerald-50 to-teal-50',
+            html: `<div dir="rtl" style="font-family: 'Open Sans', 'Open Sans Hebrew', Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto; line-height: 1.6;">
+    <div style="text-align: center; padding: 20px 0;">
+        <div style="font-size: 28px; font-weight: 900; letter-spacing: -1px; color: #000;">ml_tlv</div>
+    </div>
+    <div style="background-color: #fff; padding: 30px; border-radius: 24px; border: 1px solid #f0f0f0; box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
+        <h1 style="margin: 0 0 10px; font-size: 24px; font-weight: 900; color: #000; text-align: center;">ידעת ש...? 💡</h1>
+        <p style="margin: 0 0 25px; color: #666; text-align: center;">היי {{name}}, הכנו בשבילך כמה טיפים שימושיים</p>
+        <div style="background-color: #f8f8f8; padding: 20px; border-radius: 16px; margin-bottom: 20px; border-right: 4px solid #000;">
+            <h3 style="margin: 0 0 8px; font-size: 16px; font-weight: 900; color: #000;">טיפ #1</h3>
+            <p style="margin: 0; color: #666; font-size: 14px;">כאן תוכל לכתוב את הטיפ הראשון שלך ללקוחות.</p>
+        </div>
+        <div style="background-color: #f8f8f8; padding: 20px; border-radius: 16px; margin-bottom: 20px; border-right: 4px solid #000;">
+            <h3 style="margin: 0 0 8px; font-size: 16px; font-weight: 900; color: #000;">טיפ #2</h3>
+            <p style="margin: 0; color: #666; font-size: 14px;">כאן תוכל לכתוב את הטיפ השני שלך.</p>
+        </div>
+        <div style="background-color: #f8f8f8; padding: 20px; border-radius: 16px; margin-bottom: 20px; border-right: 4px solid #000;">
+            <h3 style="margin: 0 0 8px; font-size: 16px; font-weight: 900; color: #000;">טיפ #3</h3>
+            <p style="margin: 0; color: #666; font-size: 14px;">ואת הטיפ השלישי כאן.</p>
+        </div>
+        <div style="text-align: center; margin-top: 30px;">
+            <a href="https://www.ml-tlv.com/catalog" style="display: inline-block; background-color: #000; color: #fff; padding: 16px 32px; text-decoration: none; border-radius: 16px; font-weight: 900; font-size: 14px;">לגלות עוד &gt;&gt;</a>
+        </div>
+    </div>
+    <div style="text-align: center; padding: 30px 0; color: #ccc; font-size: 11px;">ml - יוקרה בחתיכות קטנות</div>
+</div>`
+        },
+        {
+            id: 'blank',
+            name: '📄 ריק',
+            desc: 'מסגרת בסיסית ריקה עם לוגו ופוטר',
+            preview: 'bg-gradient-to-br from-gray-50 to-gray-100',
+            html: `<div dir="rtl" style="font-family: 'Open Sans', 'Open Sans Hebrew', Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto; line-height: 1.6;">
+    <div style="text-align: center; padding: 20px 0;">
+        <div style="font-size: 28px; font-weight: 900; letter-spacing: -1px; color: #000;">ml_tlv</div>
+    </div>
+    <div style="background-color: #fff; padding: 30px; border-radius: 24px; border: 1px solid #f0f0f0; box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
+        <p>היי {{name}},</p>
+        <p>כאן תוכן המייל שלך...</p>
+    </div>
+    <div style="text-align: center; padding: 30px 0; color: #ccc; font-size: 11px;">ml - יוקרה בחתיכות קטנות</div>
+</div>`
+        }
+    ];
+
     return (
         <div className="container mx-auto py-8 px-4 text-right" dir="rtl">
             <header className="flex justify-between items-center mb-8">
@@ -383,11 +484,7 @@ export default function MailingClient() {
                 </div>
                 <div className="flex gap-3">
                     <button 
-                        onClick={() => {
-                            setActiveTemplate({ name: '', subject: '', content_html: '', type: 'manual' });
-                            setLastTab(view);
-                            setView('edit-template');
-                        }}
+                        onClick={() => setShowStarterPicker(true)}
                         className="bg-black text-white px-6 py-3 rounded-2xl font-black text-sm shadow-xl shadow-black/10 hover:shadow-black/20 hover:scale-[1.02] active:scale-95 transition-all flex items-center gap-2"
                     >
                         <Plus size={18} /> טמפלייט חדש
@@ -693,6 +790,46 @@ export default function MailingClient() {
                         </div>
                     )}
                 </>
+            )}
+
+            {/* Starter Template Picker Modal */}
+            {showStarterPicker && (
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+                    <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setShowStarterPicker(false)} />
+                    <div className="relative bg-white w-full max-w-3xl rounded-[3rem] shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-300 flex flex-col max-h-[90vh]">
+                        <div className="p-8 border-b border-gray-100 flex justify-between items-center">
+                            <div>
+                                <h3 className="text-2xl font-black text-gray-900 flex items-center gap-3">
+                                    ✨ בחר עיצוב בסיס
+                                </h3>
+                                <p className="text-gray-400 font-bold text-xs uppercase tracking-widest">Choose a starter template</p>
+                            </div>
+                            <button onClick={() => setShowStarterPicker(false)} className="p-3 hover:bg-gray-100 rounded-2xl transition-all">
+                                <X size={20} />
+                            </button>
+                        </div>
+                        <div className="p-8 grid grid-cols-1 sm:grid-cols-2 gap-5 overflow-y-auto">
+                            {starterTemplates.map(starter => (
+                                <button
+                                    key={starter.id}
+                                    onClick={() => {
+                                        setActiveTemplate({ name: '', subject: '', content_html: starter.html, type: 'manual' });
+                                        setLastTab(view === 'edit-template' || view === 'create-campaign' ? lastTab : view);
+                                        setShowStarterPicker(false);
+                                        setView('edit-template');
+                                    }}
+                                    className="group text-right p-6 rounded-[2rem] border-2 border-gray-100 hover:border-black/20 hover:shadow-xl transition-all duration-300 hover:scale-[1.02] active:scale-95"
+                                >
+                                    <div className={`w-full h-28 rounded-2xl mb-4 flex items-center justify-center ${starter.preview} transition-all`}>
+                                        <div className="text-4xl group-hover:scale-125 transition-transform duration-300">{starter.name.split(' ')[0]}</div>
+                                    </div>
+                                    <h4 className="font-black text-gray-900 text-lg mb-1">{starter.name}</h4>
+                                    <p className="text-gray-400 text-sm font-bold">{starter.desc}</p>
+                                </button>
+                            ))}
+                        </div>
+                    </div>
+                </div>
             )}
 
             {/* Catalog Selector Modal */}
