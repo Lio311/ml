@@ -14,7 +14,8 @@ export default async function EmailLogsPage({ searchParams }) {
         redirect('/admin');
     }
 
-    const page = parseInt(searchParams.page) || 1;
+    const resolvedParams = await searchParams;
+    const page = parseInt(resolvedParams.page) || 1;
     const limit = 6;
     const offset = (page - 1) * limit;
 
