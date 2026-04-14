@@ -174,6 +174,27 @@ export default function MailingClient() {
             deliveryMethod: 'איסוף עצמי',
             notesHtml: `<div style="margin-top: 20px; background-color: #fffde7; padding: 15px 20px; border-radius: 16px; border: 1px dashed #fde047;"><div style="font-size: 12px; font-weight: 900; color: #ca8a04; margin-bottom: 5px; text-transform: uppercase;">הערות להזמנה:</div><div style="font-size: 14px; color: #854d0e;">זוהי הערת בדיקה במסגרת טסט של המערכת.</div></div>`,
             productsHtml: `<div style="background: white; border: 1px solid #eee; padding: 15px; border-radius: 8px; margin-bottom: 15px; text-align: center;"><br><strong>בושם לדוגמה</strong> - ml_tlv<br><span style="color: #666; font-size: 14px;">תווים דומים: בדיקה</span></div>`,
+            itemsHtml: `
+                <table style="width: 100%; border-collapse: collapse; margin-bottom: 25px;">
+                    <thead>
+                        <tr style="background-color: #f8f8f8; color: #999;">
+                            <th style="padding: 12px 10px; text-align: right; font-size: 10px; font-weight: 900; text-transform: uppercase;">מוצר</th>
+                            <th style="padding: 12px 10px; text-align: center; font-size: 10px; font-weight: 900; text-transform: uppercase;">כמות</th>
+                            <th style="padding: 12px 10px; text-align: left; font-size: 10px; font-weight: 900; text-transform: uppercase;">מחיר</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="border-bottom: 1px solid #f5f5f5;">
+                            <td style="padding: 12px 10px; text-align: right; font-size: 14px; color: #333;">
+                                <img src="https://ml-tlv.com/logo.png" width="40" height="40" style="vertical-align: middle; margin-left: 10px; border-radius: 6px; display: inline-block; border: 1px solid #f0f0f0;" alt="product test" />
+                                <span style="vertical-align: middle;">בושם לדוגמה טסט (10 מ"ל)</span>
+                            </td>
+                            <td style="padding: 12px 10px; text-align: center; font-size: 14px; color: #333;">1</td>
+                            <td style="padding: 12px 10px; text-align: left; font-size: 14px; font-weight: bold; color: #000;">150 ₪</td>
+                        </tr>
+                    </tbody>
+                </table>
+            `,
             message: 'זוהי הודעת בדיקה שנשלחה מעמוד צור קשר באתר.',
             email: adminEmail
         };
