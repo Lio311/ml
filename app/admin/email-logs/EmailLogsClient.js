@@ -1,5 +1,5 @@
 "use client";
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Mail, CheckCircle, XCircle, ChevronLeft, ChevronRight, User, Hash, Clock, FileText } from 'lucide-react';
@@ -9,6 +9,11 @@ import { he } from 'date-fns/locale';
 export default function EmailLogsClient({ initialLogs, currentPage, totalPages, totalCount }) {
     const router = useRouter();
     const [searchTerm, setSearchTerm] = useState('');
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
 
     const getTypeColor = (type) => {
         switch(type) {
@@ -140,12 +145,12 @@ export default function EmailLogsClient({ initialLogs, currentPage, totalPages, 
                                             <span className="text-gray-300">—</span>
                                         )}
                                     </td>
-                                    <td className="px-6 py-4 text-center text-left" suppressHydrationWarning>
+                                    <td className="px-6 py-4 text-center text-left">
                                         <div className="text-[11px] font-medium text-gray-500">
-                                            {format(new Date(log.sent_at), 'dd/MM/yyyy', { locale: he })}
+                                            {mounted ? format(new Date(log.sent_at), 'dd/MM/yyyy', { locale: he }) : '--/--/----'}
                                         </div>
                                         <div className="text-[13px] font-black text-gray-900 leading-none">
-                                            {format(new Date(log.sent_at), 'HH:mm', { locale: he })}
+                                            {mounted ? format(new Date(log.sent_at), 'HH:mm', { locale: he }) : '--:--'}
                                         </div>
                                     </td>
                                 </tr>
@@ -182,12 +187,12 @@ export default function EmailLogsClient({ initialLogs, currentPage, totalPages, 
                                         </div>
                                     </div>
                                 </div>
-                                <div className="text-left shrink-0" suppressHydrationWarning>
+                                <div className="text-left shrink-0">
                                     <div className="text-[10px] font-black text-gray-900">
-                                        {format(new Date(log.sent_at), 'HH:mm', { locale: he })}
+                                        {mounted ? format(new Date(log.sent_at), 'HH:mm', { locale: he }) : '--:--'}
                                     </div>
                                     <div className="text-[9px] font-bold text-gray-400">
-                                        {format(new Date(log.sent_at), 'dd/MM/yy', { locale: he })}
+                                        {mounted ? format(new Date(log.sent_at), 'dd/MM/yy', { locale: he }) : '--/--/--'}
                                     </div>
                                 </div>
                             </div>
