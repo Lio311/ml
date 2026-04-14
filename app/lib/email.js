@@ -184,6 +184,13 @@ export const getOrderConfirmationTemplate = (orderId, items, total, freeSamples,
                     </div>
                 </div>
 
+                ${notes && notes !== '{{notes}}' && notes.trim() !== '' ? `
+                <div style="margin-top: 20px; background-color: #fffde7; padding: 15px 20px; border-radius: 16px; border: 1px dashed #fde047;">
+                    <div style="font-size: 12px; font-weight: 900; color: #ca8a04; margin-bottom: 5px; text-transform: uppercase;">הערות להזמנה:</div>
+                    <div style="font-size: 14px; color: #854d0e;">${notes}</div>
+                </div>
+                ` : '{{#if notes}}<div style="margin-top: 20px; background-color: #fffde7; padding: 15px 20px; border-radius: 16px; border: 1px dashed #fde047;"><div style="font-size: 12px; font-weight: 900; color: #ca8a04; margin-bottom: 5px; text-transform: uppercase;">הערות להזמנה:</div><div style="font-size: 14px; color: #854d0e;">{{notes}}</div></div>{{/if}}'}
+
                 <div style="margin-top: 30px; text-align: center;">
                     <a href="https://www.ml-tlv.com/orders" style="display: inline-block; background-color: #000; color: #fff; padding: 16px 32px; text-decoration: none; border-radius: 16px; font-weight: 900; font-size: 14px;">לצפייה בפרטי ההזמנה באתר</a>
                 </div>
@@ -448,11 +455,54 @@ export function getSystemDefaults() {
                     <div style="margin-bottom: 10px; font-size: 14px;"><span style="color: #888;">מאת:</span> <strong style="color: #000;">{{name}}</strong></div>
                     <div style="margin-bottom: 10px; font-size: 14px;"><span style="color: #888;">אימייל:</span> <strong style="color: #000;">{{email}}</strong></div>
                 </div>
-                <div style="background-color: #fff; border: 1px solid #eee; padding: 20px; border-radius: 16px;">
+            <div style="background-color: #fff; border: 1px solid #eee; padding: 20px; border-radius: 16px;">
                     <h3 style="margin-top: 0; font-size: 12px; font-weight: 900; color: #999; text-transform: uppercase;">תוכן ההודעה:</h3>
                     <div style="white-space: pre-wrap; font-size: 15px; color: #333;">{{message}}</div>
                 </div>
             </div>
+        </div>`
+        },
+        'educational': {
+            subject: 'היי {{name}}, טיפים לשימוש נכון בבשמים שקיבלת! ✨',
+            content_html: `
+        <div dir="rtl" style="font-family: 'Open Sans', 'Open Sans Hebrew', Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto; line-height: 1.6;">
+            <div style="text-align: center; padding: 20px 0;">
+                <div style="font-size: 28px; font-weight: 900; letter-spacing: -1px; color: #000;">ml_tlv</div>
+            </div>
+            <div style="background-color: #fff; padding: 30px; border-radius: 24px; border: 1px solid #f0f0f0; box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
+                <h1 style="margin: 0 0 10px; font-size: 22px; font-weight: 900; color: #000; text-align: center;">טיפים לשימוש נכון בבושם 💡</h1>
+                <p style="text-align: center; color: #666; margin-bottom: 25px;">היי {{name}}, אנחנו מקווים שאתה נהנה מהניחוחות החדשים שלך!</p>
+                <div style="background-color: #fcfcfc; padding: 20px; border-radius: 16px; border: 1px solid #f5f5f5;">
+                    <ul style="margin: 0; padding-right: 20px;">
+                        <li style="margin-bottom: 12px;"><strong>הנקודות החמות:</strong> רסס על נקודות הדופק - צוואר, מפרקי הידיים, ואפילו מאחורי הברכיים.</li>
+                        <li style="margin-bottom: 12px;"><strong>לא לשפשף!</strong> שפשוף הבושם לאחר הריסוס "שובר" את מולקולות הריח ומשנה את התפתחות הניחוח.</li>
+                        <li style="margin-bottom: 12px;"><strong>לחות:</strong> בושם מחזיק מעמד טוב יותר על עור לח.</li>
+                        <li style="margin-bottom: 0;"><strong>אחסון:</strong> שמור את הבשמים במקום קריר ומוצל בחדר.</li>
+                    </ul>
+                </div>
+            </div>
+            <div style="text-align: center; padding: 30px 0; color: #ccc; font-size: 11px;">ml - יוקרה בחתיכות קטנות</div>
+        </div>`
+        },
+        'recommendations': {
+            subject: 'המלצות אישיות (מערכת)',
+            content_html: `
+        <div dir="rtl" style="font-family: 'Open Sans', 'Open Sans Hebrew', Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto; line-height: 1.6;">
+            <div style="text-align: center; padding: 20px 0;">
+                <div style="font-size: 28px; font-weight: 900; letter-spacing: -1px; color: #000;">ml_tlv</div>
+            </div>
+            <div style="background-color: #fff; padding: 30px; border-radius: 24px; border: 1px solid #f0f0f0; box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
+                <h1 style="margin: 0 0 10px; font-size: 22px; font-weight: 900; color: #000; text-align: center;">במיוחד בשבילך... המלצות ניחוחות שמחכות לך ✨</h1>
+                <p style="text-align: center; color: #666; margin-bottom: 25px;">שלום {{name}}!<br>עבדנו קצת על הטעם האישי שלך והכנו לך המלצות מיוחדות:</p>
+                <div style="background-color: #fdfaf6; padding: 20px; border-radius: 16px; margin: 20px 0;">
+                    {{productsHtml}}
+                </div>
+                <p style="text-align: center; color: #666;">כל הניחוחות זמינים כדוגמיות להתנסות אצלנו באתר.</p>
+                <div style="text-align: center; margin-top: 30px;">
+                    <a href="https://www.ml-tlv.com" style="display: inline-block; background-color: #000; color: #fff; padding: 16px 32px; text-decoration: none; border-radius: 16px; font-weight: 900; font-size: 14px;">למעבר לאתר >></a>
+                </div>
+            </div>
+            <div style="text-align: center; padding: 30px 0; color: #ccc; font-size: 11px;">ml - יוקרה בחתיכות קטנות</div>
         </div>`
         }
     };
