@@ -84,9 +84,9 @@ export default function MailingClient() {
 
     const getTemplateCategory = (slug) => {
         if (!slug) return 'general';
-        if (['order_confirmation', 'status_update', 'abandoned_cart'].includes(slug)) return 'orders';
+        if (['order_confirmation', 'status_update'].includes(slug)) return 'orders';
         if (['welcome', 'review_request'].includes(slug)) return 'marketing';
-        if (['nurture_10_days', 'nurture_25_days', 'recommendations'].includes(slug)) return 'retention';
+        if (['abandoned_cart', 'nurture_10_days', 'nurture_25_days', 'recommendations'].includes(slug)) return 'retention';
         if (['educational'].includes(slug)) return 'educational';
         if (['back_in_stock'].includes(slug)) return 'inventory';
         return 'general';
