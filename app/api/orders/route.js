@@ -347,12 +347,15 @@ export async function POST(req) {
             const adminTmpl = await getTemplate('admin_order_alert', 
                 { 
                     orderId, 
+                    customerName: `${user.firstName} ${user.lastName}`,
                     name: `${user.firstName} ${user.lastName}`, 
                     total, 
                     deliveryMethod: deliveryText, 
                     shippingCost: `${shippingCost} ₪`, 
                     phone: phoneNumber,
-                    itemsHtml: itemsHtmlAdmin
+                    phoneNumber: phoneNumber,
+                    itemsHtml: itemsHtmlAdmin,
+                    itemsHtmlAdmin: itemsHtmlAdmin
                 },
                 () => getAdminNewOrderTemplate(orderId, `${user.firstName} ${user.lastName}`, total, items, deliveryMethod || 'mail', shippingCost, phoneNumber)
             );
