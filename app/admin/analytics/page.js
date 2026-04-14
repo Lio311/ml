@@ -134,20 +134,15 @@ export default function AnalyticsDashboard() {
 
   // Funnel helpers
   const funnelSteps = funnelData ? [
-    { key: 'page_visit', label: 'כניסות לאתר', icon: '👁️', value: funnelData.funnel.page_visit, color: 'bg-blue-500' },
-    { key: 'add_to_cart', label: 'הוספה לסל', icon: '🛒', value: funnelData.funnel.add_to_cart, color: 'bg-purple-500' },
-    { key: 'checkout_started', label: 'התחלת צ׳קאאוט', icon: '💳', value: funnelData.funnel.checkout_started, color: 'bg-orange-500' },
-    { key: 'order_completed', label: 'הזמנה הושלמה', icon: '✅', value: funnelData.funnel.order_completed, color: 'bg-green-500' },
+    { key: 'page_visit', label: 'כניסות לאתר', value: funnelData.funnel.page_visit },
+    { key: 'add_to_cart', label: 'הוספה לסל', value: funnelData.funnel.add_to_cart },
+    { key: 'checkout_started', label: 'התחלת צ׳קאאוט', value: funnelData.funnel.checkout_started },
+    { key: 'order_completed', label: 'הזמנה הושלמה', value: funnelData.funnel.order_completed },
   ] : [];
 
   const getConversionRate = (from, to) => {
     if (!from || from === 0) return 0;
     return ((to / from) * 100).toFixed(1);
-  };
-
-  const getDropoffRate = (from, to) => {
-    if (!from || from === 0) return 0;
-    return (((from - to) / from) * 100).toFixed(1);
   };
 
   return (
@@ -183,104 +178,84 @@ export default function AnalyticsDashboard() {
         ))}
       </div>
 
-      {/* Conversion Funnel Section */}
+      {/* Conversion Funnel Section - Minimal */}
       {funnelData && (
         <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-          <div className="p-6 border-b border-gray-50 bg-gray-50/30 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-            <div>
-              <h3 className="text-lg font-bold flex items-center gap-2 text-gray-700">
-                <Filter className="w-5 h-5 text-indigo-600" />
-                משפך המרה (Conversion Funnel)
-              </h3>
-              <p className="text-xs text-gray-400 mt-1">מעקב אחר מסע הלקוח מהכניסה לאתר ועד השלמת ההזמנה</p>
-            </div>
-            <div className="flex gap-2">
+          <div className="px-6 py-5 border-b border-gray-50 flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
+            <h3 className="text-sm font-bold text-gray-700 flex items-center gap-2">
+              <Filter className="w-4 h-4 text-gray-400" />
+              משפך המרה
+            </h3>
+            <div className="flex gap-1.5">
               {[7, 14, 30, 90].map(d => (
                 <button 
                   key={d}
                   onClick={() => { setFunnelDays(d); refetchFunnel(d); }}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${funnelDays === d ? 'bg-black text-white shadow-md' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'}`}
+                  className={`px-2.5 py-1 rounded-md text-[10px] font-bold transition-all ${funnelDays === d ? 'bg-gray-900 text-white' : 'text-gray-400 hover:text-gray-600'}`}
                 >
-                  {d} ימים
+                  {d}d
                 </button>
               ))}
             </div>
           </div>
 
-          <div className="p-6">
-            {/* Visual Funnel */}
-            <div className="flex flex-col items-center gap-0 mb-8">
-              {funnelSteps.map((step, i) => {
-                const maxVal = funnelSteps[0].value || 1;
-                const widthPercent = Math.max(20, (step.value / maxVal) * 100);
-                const prevStep = i > 0 ? funnelSteps[i - 1] : null;
-                const convRate = prevStep ? getConversionRate(prevStep.value, step.value) : 100;
-                const dropRate = prevStep ? getDropoffRate(prevStep.value, step.value) : 0;
+          <div className="p-6 space-y-5">
+            {funnelSteps.map((step, i) => {
+              const maxVal = funnelSteps[0].value || 1;
+              const widthPercent = Math.max(2, (step.value / maxVal) * 100);
+              const prevStep = i > 0 ? funnelSteps[i - 1] : null;
+              const convRate = prevStep ? getConversionRate(prevStep.value, step.value) : null;
 
-                return (
-                  <div key={step.key} className="w-full flex flex-col items-center">
-                    {/* Connector Arrow + Conversion Rate */}
-                    {i > 0 && (
-                      <div className="flex items-center gap-3 my-2">
-                        <div className="text-gray-300 text-lg">▼</div>
-                        <div className="flex items-center gap-2">
-                          <span className="text-xs font-black text-green-600 bg-green-50 px-2 py-0.5 rounded-full border border-green-100">
-                            {convRate}% המרה
-                          </span>
-                          <span className="text-xs font-bold text-red-400 bg-red-50 px-2 py-0.5 rounded-full border border-red-50">
-                            {dropRate}% נטישה
-                          </span>
-                        </div>
-                      </div>
-                    )}
-
-                    {/* Funnel Bar */}
-                    <div
-                      className={`${step.color} rounded-2xl flex items-center justify-between px-6 py-4 text-white transition-all duration-500 shadow-sm hover:shadow-md`}
-                      style={{ width: `${widthPercent}%`, minWidth: '200px' }}
-                    >
-                      <div className="flex items-center gap-3">
-                        <span className="text-xl">{step.icon}</span>
-                        <span className="font-bold text-sm">{step.label}</span>
-                      </div>
-                      <span className="text-2xl font-black">{step.value.toLocaleString()}</span>
+              return (
+                <div key={step.key}>
+                  <div className="flex items-center justify-between mb-1.5">
+                    <div className="flex items-center gap-3">
+                      <span className="text-sm font-bold text-gray-800">{step.label}</span>
+                      {convRate !== null && (
+                        <span className="text-[10px] font-bold text-gray-400">
+                          {convRate}%
+                        </span>
+                      )}
                     </div>
+                    <span className="text-lg font-black text-gray-900">{step.value.toLocaleString()}</span>
                   </div>
-                );
-              })}
-            </div>
+                  <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
+                    <div 
+                      className="h-full bg-gray-900 rounded-full transition-all duration-700"
+                      style={{ width: `${widthPercent}%` }}
+                    />
+                  </div>
+                </div>
+              );
+            })}
 
-            {/* Overall Conversion Rate */}
+            {/* Overall rate - inline */}
             {funnelSteps.length > 0 && funnelSteps[0].value > 0 && (
-              <div className="text-center bg-gradient-to-r from-indigo-50 to-purple-50 rounded-2xl p-6 border border-indigo-100">
-                <div className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">שיעור המרה כולל (כניסה → הזמנה)</div>
-                <div className="text-5xl font-black text-indigo-700">
+              <div className="flex items-center justify-between pt-4 border-t border-gray-100">
+                <span className="text-xs text-gray-400 font-medium">שיעור המרה כולל</span>
+                <span className="text-lg font-black text-gray-900">
                   {getConversionRate(funnelSteps[0].value, funnelSteps[3].value)}%
-                </div>
-                <div className="text-sm text-gray-500 mt-2">
-                  מתוך {funnelSteps[0].value.toLocaleString()} כניסות, {funnelSteps[3].value.toLocaleString()} הזמינו
-                </div>
+                </span>
               </div>
             )}
 
             {/* Daily Trend Chart */}
             {funnelData.daily && funnelData.daily.length > 0 && (
-              <div className="mt-8">
-                <h4 className="text-sm font-bold text-gray-600 mb-4">מגמות יומיות - אירועי המרה</h4>
-                <div className="h-[250px]" dir="ltr">
+              <div className="pt-4 border-t border-gray-100">
+                <div className="h-[180px]" dir="ltr">
                   <ResponsiveContainer width="100%" height="100%">
                     <LineChart data={funnelData.daily}>
-                      <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                      <XAxis dataKey="date" tickLine={false} axisLine={false} tick={{fontSize: 10, fill: '#64748b'}} tickFormatter={(d) => d.split('-')[2]} />
+                      <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f5f5f5" />
+                      <XAxis dataKey="date" tickLine={false} axisLine={false} tick={{fontSize: 9, fill: '#94a3b8'}} tickFormatter={(d) => d.split('-')[2]} />
                       <YAxis hide />
                       <Tooltip 
-                        labelStyle={{ color: '#111827', fontWeight: 'bold', marginBottom: '4px' }}
-                        contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }} 
+                        labelStyle={{ color: '#111827', fontWeight: 'bold', marginBottom: '4px', fontSize: '11px' }}
+                        contentStyle={{ borderRadius: '8px', border: '1px solid #f1f5f9', boxShadow: '0 4px 12px rgb(0 0 0 / 0.06)', fontSize: '11px' }} 
                         formatter={(value, name) => [value.toLocaleString(), name]}
                       />
-                      <Line name="הוספה לסל" type="monotone" dataKey="add_to_cart" stroke="#8b5cf6" strokeWidth={3} dot={false} />
-                      <Line name="התחלת צ׳קאאוט" type="monotone" dataKey="checkout_started" stroke="#f97316" strokeWidth={3} dot={false} />
-                      <Line name="הזמנות" type="monotone" dataKey="order_completed" stroke="#22c55e" strokeWidth={3} dot={{r: 3, strokeWidth: 0}} />
+                      <Line name="הוספה לסל" type="monotone" dataKey="add_to_cart" stroke="#9ca3af" strokeWidth={1.5} dot={false} />
+                      <Line name="התחלת צ׳קאאוט" type="monotone" dataKey="checkout_started" stroke="#6b7280" strokeWidth={1.5} dot={false} />
+                      <Line name="הזמנות" type="monotone" dataKey="order_completed" stroke="#111827" strokeWidth={2} dot={{r: 2, fill: '#111827', strokeWidth: 0}} />
                     </LineChart>
                   </ResponsiveContainer>
                 </div>
