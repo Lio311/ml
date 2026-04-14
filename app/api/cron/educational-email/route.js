@@ -12,13 +12,20 @@ export async function GET(req) {
         const client = await pool.connect();
         try {
             // Find completed orders created between 3 and 4 days ago
+            // Ensure we haven't already sent an educational email to this user in a previous order
             const res = await client.query(`
                 SELECT id, customer_details 
-                FROM orders 
+                FROM orders o1
                 WHERE status = 'completed' 
                 AND educational_email_sent = false
                 AND created_at >= NOW() - INTERVAL '4 days'
                 AND created_at < NOW() - INTERVAL '3 days'
+                AND NOT EXISTS (
+                    SELECT 1 
+                    FROM orders o2 
+                    WHERE o2.customer_details->>'email' = o1.customer_details->>'email'
+                    AND o2.educational_email_sent = true
+                )
             `);
 
             const orders = res.rows;
@@ -29,6 +36,7 @@ export async function GET(req) {
             }
 
             let processed = 0;
+            const processedEmails = new Set();
 
             for (const order of orders) {
                 const customer = order.customer_details || {};
@@ -36,6 +44,16 @@ export async function GET(req) {
                 const firstName = customer.first_name || 'לקוח';
 
                 if (!email) continue;
+                
+                if (processedEmails.has(email)) {
+                    // Mark as sent so we don't pick it up again, even though we skip sending
+                    await client.query(`
+                        UPDATE orders 
+                        SET educational_email_sent = true 
+                        WHERE id = $1
+                    `, [order.id]);
+                    continue;
+                }
 
                 const { html, subject } = await getTemplate('educational', 
                     { name: firstName, orderId: order.id },
@@ -70,6 +88,7 @@ export async function GET(req) {
                         WHERE id = $1
                     `, [order.id]);
 
+                    processedEmails.add(email);
                     processed++;
                 } catch (err) {
                     console.error(`Failed to send educational email to ${email}:`, err);
