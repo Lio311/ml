@@ -1,6 +1,7 @@
 "use client";
 import { useState, useEffect } from 'react';
-import { Bell, BellOff, Loader2 } from 'lucide-react';
+import { usePathname } from 'next/navigation';
+import { Bell, BellOff, Loader2, X } from 'lucide-react';
 import toast from 'react-hot-toast';
 
 // Helper to convert base64 to Uint8Array for VAPID key
@@ -20,10 +21,15 @@ export default function PushManager() {
   const [subscription, setSubscription] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isDismissed, setIsDismissed] = useState(false);
+  const pathname = usePathname();
 
   const VAPID_PUBLIC_KEY = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
 
   useEffect(() => {
+    const dismissed = localStorage.getItem('push_manager_dismissed');
+    if (dismissed) setIsDismissed(true);
+
     if (typeof window !== 'undefined' && 'serviceWorker' in navigator && 'PushManager' in window) {
       setIsSupported(true);
       checkSubscription();
@@ -107,35 +113,66 @@ export default function PushManager() {
     }
   };
 
+  // Hide in Admin or if already subscribed or dismissed
   if (!isSupported) return null;
+  if (pathname?.startsWith('/admin')) return null;
+  if (subscription || isDismissed) return null;
+
+  const handleDismiss = (e) => {
+    e.stopPropagation();
+    setIsDismissed(true);
+    localStorage.setItem('push_manager_dismissed', 'true');
+  };
 
   return (
-    <div className="fixed bottom-24 right-6 z-50">
+    <div className="fixed bottom-24 left-6 z-[9998] flex flex-col items-center group">
+       {/* Close Button (X) */}
+       <button 
+        onClick={handleDismiss}
+        className="absolute -top-2 -right-2 bg-gray-100 text-gray-400 rounded-full p-1 hover:bg-red-500 hover:text-white transition-all shadow-sm z-20 opacity-0 group-hover:opacity-100"
+        title="הסתר"
+      >
+        <X size={10} />
+      </button>
+
+      {/* Floating Bell Button */}
       <button
-        onClick={subscription ? unsubscribe : subscribe}
+        onClick={subscribe}
         disabled={loading}
-        className={`p-3 rounded-full shadow-lg transition-all duration-300 flex items-center justify-center ${
-          subscription 
-            ? 'bg-white text-gray-800 hover:bg-gray-50 border border-gray-100' 
-            : 'bg-black text-white hover:bg-gray-900'
-        }`}
-        title={subscription ? 'בטל התראות' : 'הפעל התראות'}
+        className={`p-4 rounded-full shadow-2xl transition-all duration-500 hover:scale-110 active:scale-95 bg-white text-gray-800 border border-gray-100 flex items-center justify-center`}
+        title="הפעל התראות"
       >
         {loading ? (
-          <Loader2 className="w-5 h-5 animate-spin" />
-        ) : subscription ? (
-          <Bell className="w-5 h-5 text-indigo-500 fill-indigo-500" />
+          <Loader2 className="w-6 h-6 animate-spin text-indigo-500" />
         ) : (
-          <Bell className="w-5 h-5" />
+          <Bell className="w-6 h-6 text-indigo-500 animate-ring" />
         )}
       </button>
       
       {/* Toast-like hint for new visitors */}
-      {!subscription && !loading && !error && (
-        <div className="absolute right-full mr-4 top-1/2 -translate-y-1/2 bg-white px-4 py-2 rounded-xl shadow-xl border border-gray-100 whitespace-nowrap hidden md:block animate-in fade-in slide-in-from-right-2">
-          <p className="text-xs font-bold text-gray-800">הפעל התראות על מוצרים חדשים 🔔</p>
+      {!loading && !error && (
+        <div className="absolute left-full ml-4 top-1/2 -translate-y-1/2 bg-black text-white px-4 py-2 rounded-xl shadow-2xl border border-gray-800 whitespace-nowrap hidden md:block animate-in fade-in slide-in-from-left-2 transition-all">
+          <div className="relative">
+            הפעל התראות על מוצרים חדשים 🔔
+            <div className="absolute top-1/2 -left-2 -translate-y-1/2 w-2 h-2 bg-black transform rotate-45"></div>
+          </div>
         </div>
       )}
+
+      <style jsx>{`
+        @keyframes ring {
+          0% { transform: rotate(0); }
+          10% { transform: rotate(15deg); }
+          20% { transform: rotate(-15deg); }
+          30% { transform: rotate(10deg); }
+          40% { transform: rotate(-10deg); }
+          50% { transform: rotate(0); }
+          100% { transform: rotate(0); }
+        }
+        .animate-ring {
+          animation: ring 2s infinite;
+        }
+      `}</style>
     </div>
   );
 }
