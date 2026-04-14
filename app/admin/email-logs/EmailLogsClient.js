@@ -132,12 +132,9 @@ export default function EmailLogsClient({ initialLogs, currentPage, totalPages, 
                                         ) : log.order_id ? (
                                             <div className="flex flex-col items-center">
                                                 <span className="text-[9px] font-black text-gray-400 uppercase tracking-tighter">הזמנה</span>
-                                                <Link 
-                                                    href={`/admin/orders/${log.order_id}`}
-                                                    className="text-black font-black text-sm hover:underline hover:text-blue-600 transition-colors"
-                                                >
+                                                <span className="text-black font-black text-sm">
                                                     #{log.order_id}
-                                                </Link>
+                                                </span>
                                             </div>
                                         ) : (
                                             <span className="text-gray-300">—</span>
@@ -178,9 +175,9 @@ export default function EmailLogsClient({ initialLogs, currentPage, totalPages, 
                                                 </span>
                                             )}
                                             {log.order_id && (
-                                                <Link href={`/admin/orders/${log.order_id}`} className="text-[10px] font-black text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full border border-blue-100">
+                                                <span className="text-[10px] font-black text-blue-600 bg-blue-50 px-2 py-0.5 rounded-full border border-blue-100">
                                                     הזמנה #{log.order_id}
-                                                </Link>
+                                                </span>
                                             )}
                                         </div>
                                     </div>
