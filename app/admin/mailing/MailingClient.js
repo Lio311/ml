@@ -561,23 +561,19 @@ export default function MailingClient() {
                     )}
 
                     {view === 'campaigns' && (
-                        <div className="bg-white rounded-[2.5rem] shadow-sm border border-gray-100 overflow-x-auto">
-                            <table className="w-full min-w-[700px]">
-                                <thead className="bg-gray-50/50 text-gray-400 font-black text-[10px] uppercase tracking-widest border-b border-gray-100">
-                                    <tr>
-                                        <th className="p-4 md:p-6 text-right">קמפיין</th>
-                                        <th className="p-4 md:p-6 text-right">טמפלייט</th>
-                                        <th className="p-4 md:p-6 text-center">זמן שליחה</th>
-                                        <th className="p-4 md:p-6 text-center">נמענים</th>
-                                        <th className="p-4 md:p-6 text-center">סטטוס</th>
-                                        <th className="p-4 md:p-6 text-center">פעולות</th>
-                                    </tr>
-                                </thead>
-                                <tbody className="divide-y divide-gray-50">
+                        <div className="bg-white rounded-[2.5rem] shadow-sm border border-gray-100 overflow-hidden">
+                            <div className="w-full">
+                                <div className="hidden md:grid md:grid-cols-6 bg-gray-50/50 text-gray-400 font-black text-[10px] uppercase tracking-widest border-b border-gray-100">
+                                    <div className="p-6 text-right">קמפיין</div>
+                                    <div className="p-6 text-right">טמפלייט</div>
+                                    <div className="p-6 text-center">זמן שליחה</div>
+                                    <div className="p-6 text-center">נמענים</div>
+                                    <div className="p-6 text-center">סטטוס</div>
+                                    <div className="p-6 text-center">פעולות</div>
+                                </div>
+                                <div className="divide-y divide-gray-50 flex flex-col">
                                     {campaigns.length === 0 ? (
-                                        <tr>
-                                            <td colSpan="6" className="p-20 text-center text-gray-300 font-bold">אין דיוורים ברשימה</td>
-                                        </tr>
+                                        <div className="p-20 text-center text-gray-300 font-bold">אין דיוורים ברשימה</div>
                                     ) : (
                                         campaigns.map(c => (
                                             <CampaignRow 
@@ -588,8 +584,8 @@ export default function MailingClient() {
                                             />
                                         ))
                                     )}
-                                </tbody>
-                            </table>
+                                </div>
+                            </div>
                         </div>
                     )}
 
@@ -1008,19 +1004,22 @@ function CampaignRow({ campaign, onDelete, onSend }) {
     const isFailed = campaign.status === 'failed';
 
     return (
-        <tr className="hover:bg-gray-50/50 transition-colors group">
-            <td className="p-6 text-right">
+        <div className="flex flex-col md:grid md:grid-cols-6 hover:bg-gray-50/50 transition-colors group p-5 md:p-0 gap-4 md:gap-0 relative">
+            <div className="md:p-6 text-right flex flex-col justify-center">
+                <span className="md:hidden text-gray-400 text-[10px] font-black uppercase mb-1">קמפיין</span>
                 <div className="flex flex-col">
-                    <span className="font-black text-gray-900">{campaign.title}</span>
+                    <span className="font-black text-gray-900 leading-tight">{campaign.title}</span>
                     <span className="text-[11px] text-gray-400 font-bold line-clamp-1">{campaign.subject}</span>
                 </div>
-            </td>
-            <td className="p-6 text-right">
-                <span className="text-[10px] font-black text-gray-500 bg-gray-100 px-3 py-1 rounded-full uppercase tracking-tighter">{campaign.template_name || 'מותאם ידנית'}</span>
-            </td>
-            <td className="p-6 text-center">
-                <div className="flex flex-col items-center gap-0.5 min-w-[120px]">
-                    <span className="font-mono text-xs font-bold text-gray-800">
+            </div>
+            <div className="md:p-6 flex items-center md:justify-start justify-between">
+                <span className="md:hidden text-gray-400 text-[10px] font-black uppercase mb-1">טמפלייט</span>
+                <span className="text-[10px] font-black text-gray-500 bg-gray-100 px-3 py-1.5 rounded-full uppercase tracking-tighter">{campaign.template_name || 'מותאם ידנית'}</span>
+            </div>
+            <div className="md:p-6 text-center flex items-center md:flex-col justify-between md:justify-center">
+                <span className="md:hidden text-gray-400 text-[10px] font-black uppercase mb-1">זמן שליחה</span>
+                <div className="flex flex-col items-end md:items-center gap-0.5 md:min-w-[120px]">
+                    <span className="font-mono text-xs font-bold text-gray-800 bg-gray-50 md:bg-transparent px-2 py-1 md:p-0 rounded-lg">
                         {campaign.scheduled_at ? format(new Date(campaign.scheduled_at), 'dd/MM/yy HH:mm') : 'מיידי'}
                     </span>
                     {isSent && campaign.sent_at && (
@@ -1034,63 +1033,65 @@ function CampaignRow({ campaign, onDelete, onSend }) {
                         </span>
                     )}
                 </div>
-            </td>
-            <td className="p-6 text-center">
-                <div className="flex flex-col items-center">
-                    <span className="text-xs font-black text-gray-700">{campaign.recipient_type === 'all' ? 'כל הרשימה' : (campaign.recipients?.length || 0)}</span>
+            </div>
+            <div className="md:p-6 text-center flex items-center md:flex-col justify-between md:justify-center border-t border-dashed border-gray-100 md:border-none pt-4 md:pt-0">
+                <span className="md:hidden text-gray-400 text-[10px] font-black uppercase mb-1">נמענים</span>
+                <div className="flex flex-col items-end md:items-center">
+                    <span className="text-sm md:text-xs font-black text-gray-700">{campaign.recipient_type === 'all' ? 'כל הרשימה' : (campaign.recipients?.length || 0)}</span>
                     <span className="text-[9px] text-gray-400 font-bold uppercase tracking-widest">{campaign.recipient_type === 'all' ? 'All Users' : 'Targeted'}</span>
                 </div>
-            </td>
-            <td className="p-6 text-center">
+            </div>
+            <div className="md:p-6 text-center flex items-center md:flex-col justify-between md:justify-center">
+                <span className="md:hidden text-gray-400 text-[10px] font-black uppercase mb-1">סטטוס</span>
                 <div className="flex justify-center">
                     {isSent ? (
-                        <span className="bg-green-50 text-green-600 px-3 py-1 rounded-full text-[10px] font-black uppercase border border-green-100 flex items-center gap-1.5 shadow-sm">
+                        <span className="bg-green-50 text-green-600 px-3 py-1.5 rounded-full text-[10px] font-black uppercase border border-green-100 flex items-center gap-1.5 shadow-sm">
                             <CheckCircle2 size={12} /> נשלח
                         </span>
                     ) : isSending ? (
-                        <span className="bg-blue-50 text-blue-600 px-3 py-1 rounded-full text-[10px] font-black uppercase border border-blue-100 flex items-center gap-1.5 animate-pulse">
+                        <span className="bg-blue-50 text-blue-600 px-3 py-1.5 rounded-full text-[10px] font-black uppercase border border-blue-100 flex items-center gap-1.5 animate-pulse">
                             <RefreshCcw size={12} className="animate-spin" /> שולח
                         </span>
                     ) : isFailed ? (
-                        <span className="bg-red-50 text-red-600 px-3 py-1 rounded-full text-[10px] font-black uppercase border border-red-100 flex items-center gap-1.5" title={campaign.error_log}>
+                        <span className="bg-red-50 text-red-600 px-3 py-1.5 rounded-full text-[10px] font-black uppercase border border-red-100 flex items-center gap-1.5" title={campaign.error_log}>
                             <AlertCircle size={12} /> נכשל
                         </span>
                     ) : (
-                        <span className="bg-blue-50 text-blue-600 px-3 py-1 rounded-full text-[10px] font-black uppercase border border-blue-100 flex items-center gap-1.5">
+                        <span className="bg-blue-50 text-blue-600 px-3 py-1.5 rounded-full text-[10px] font-black uppercase border border-blue-100 flex items-center gap-1.5">
                             <Clock size={12} /> מתוזמן
                         </span>
                     )}
                 </div>
-            </td>
-            <td className="p-6">
-                <div className="flex justify-center gap-1.5">
+            </div>
+            <div className="md:p-6 absolute top-5 left-5 md:relative md:top-0 md:left-0">
+                <div className="flex justify-center md:justify-center gap-2">
                     {!isSent && !isSending && (
                         <button 
                             onClick={onSend}
-                            className="p-1.5 bg-black text-white rounded-lg hover:bg-gray-800 transition-all hover:scale-105 active:scale-95"
+                            className="p-2.5 md:p-1.5 bg-black text-white rounded-xl md:rounded-lg hover:bg-gray-800 transition-all hover:scale-105 active:scale-95 shadow-md shadow-black/10"
                             title="שלח עכשיו"
                         >
-                            <Play size={14} fill="currentColor" />
+                            <Play size={16} fill="currentColor" />
                         </button>
                     )}
                     
                     {isSent && (
-                        <Link href="/admin/email-logs" className="p-1.5 text-gray-400 hover:text-black hover:bg-gray-50 rounded-lg transition-all" title="צפה בדו''ח">
-                            <ExternalLink size={16} />
+                        <Link href="/admin/email-logs" className="p-2.5 md:p-1.5 bg-gray-50 md:bg-transparent text-gray-600 md:text-gray-400 hover:text-black hover:bg-gray-100 rounded-xl md:rounded-lg transition-all" title="צפה בדו''ח">
+                            <ExternalLink size={18} />
                         </Link>
                     )}
 
                     {!isSending && (
                         <button 
                             onClick={onDelete}
-                            className="p-1.5 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
+                            className="p-2.5 md:p-1.5 bg-gray-50 md:bg-transparent text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-xl md:rounded-lg transition-all"
                             title="מחק דיווח"
                         >
-                            <Trash2 size={16} />
+                            <Trash2 size={18} />
                         </button>
                     )}
                 </div>
-            </td>
-        </tr>
+            </div>
+        </div>
     );
 }
