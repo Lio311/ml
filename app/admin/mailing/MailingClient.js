@@ -173,6 +173,7 @@ export default function MailingClient() {
             lastName: user?.lastName || 'בדיקה',
             phoneNumber: '0501234567',
             orderId: 'T-100',
+            orderDate: new Intl.DateTimeFormat('he-IL', { dateStyle: 'short', timeStyle: 'short', timeZone: 'Asia/Jerusalem' }).format(new Date()),
             total: '150',
             shippingCost: 'חינם',
             deliveryMethod: 'איסוף עצמי',

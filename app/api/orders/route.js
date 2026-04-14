@@ -344,20 +344,23 @@ export async function POST(req) {
             }
 
             // Send Admin and Catalog Owner Alerts
+            const orderDateStr = new Intl.DateTimeFormat('he-IL', { dateStyle: 'short', timeStyle: 'short', timeZone: 'Asia/Jerusalem' }).format(new Date());
+            const customerFullName = `${user.firstName} ${user.lastName || ''}`.trim();
             const adminTmpl = await getTemplate('admin_order_alert', 
                 { 
                     orderId, 
-                    customerName: `${user.firstName} ${user.lastName}`,
-                    name: `${user.firstName} ${user.lastName}`, 
+                    customerName: customerFullName,
+                    name: customerFullName, 
                     total, 
                     deliveryMethod: deliveryText, 
                     shippingCost: `${shippingCost} ₪`, 
                     phone: phoneNumber,
                     phoneNumber: phoneNumber,
                     itemsHtml: itemsHtmlAdmin,
-                    itemsHtmlAdmin: itemsHtmlAdmin
+                    itemsHtmlAdmin: itemsHtmlAdmin,
+                    orderDate: orderDateStr
                 },
-                () => getAdminNewOrderTemplate(orderId, `${user.firstName} ${user.lastName}`, total, items, deliveryMethod || 'mail', shippingCost, phoneNumber)
+                () => getAdminNewOrderTemplate(orderId, customerFullName, total, items, deliveryMethod || 'mail', shippingCost, phoneNumber, orderDateStr)
             );
             
             if (catalogOwnerEmail) {

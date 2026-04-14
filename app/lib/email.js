@@ -255,7 +255,7 @@ export const getUserWelcomeTemplate = (name) => {
     `;
 };
 
-export const getAdminNewOrderTemplate = (orderId, customerName, total, items, deliveryMethod, shippingCost, phoneNumber) => {
+export const getAdminNewOrderTemplate = (orderId, customerName, total, items, deliveryMethod, shippingCost, phoneNumber, orderDate) => {
     const itemsContent = Array.isArray(items) ? items.map(item => `
         <li style="margin-bottom: 12px; border-bottom: 1px solid #f0f0f0; padding-bottom: 12px; display: table; width: 100%;">
             ${item.image_url ? `<div style="display: table-cell; vertical-align: middle; width: 50px;"><img src="${item.image_url}" width="40" style="border-radius: 6px; border: 1px solid #f0f0f0; height: auto; max-height: 40px; object-fit: contain;" alt="product" /></div>` : ''}
@@ -274,6 +274,7 @@ export const getAdminNewOrderTemplate = (orderId, customerName, total, items, de
                 <p style="margin: 0 0 25px; color: #666; text-align: center;">התקבלה הזמנה חדשה #<strong>${orderId}</strong></p>
                 
                 <div style="background-color: #f8f8f8; padding: 20px; border-radius: 16px; margin-bottom: 25px;">
+                    <div style="margin-bottom: 8px; font-size: 14px;"><span style="color: #888;">תאריך שעה:</span> <strong style="color: #000;">${orderDate || ''}</strong></div>
                     <div style="margin-bottom: 8px; font-size: 14px;"><span style="color: #888;">לקוח:</span> <strong style="color: #000;">${customerName}</strong></div>
                     <div style="margin-bottom: 8px; font-size: 14px;"><span style="color: #888;">טלפון:</span> <strong style="color: #000;">${phoneNumber || 'לא הוזן'}</strong></div>
                     <div style="margin-bottom: 8px; font-size: 14px;"><span style="color: #888;">שיטת משלוח:</span> <strong style="color: #000;">${deliveryMethod}</strong></div>
@@ -365,7 +366,7 @@ export function getSystemDefaults() {
         },
         'admin_order_alert': {
             subject: 'הזמנה חדשה התקבלה! #{{orderId}} 🔥',
-            content_html: getAdminNewOrderTemplate('{{orderId}}', '{{customerName}}', '{{total}}', '{{itemsHtmlAdmin}}', '{{deliveryMethod}}', '{{shippingCost}}', '{{phoneNumber}}')
+            content_html: getAdminNewOrderTemplate('{{orderId}}', '{{customerName}}', '{{total}}', '{{itemsHtmlAdmin}}', '{{deliveryMethod}}', '{{shippingCost}}', '{{phoneNumber}}', '{{orderDate}}')
         },
         'admin_user_alert': {
             subject: 'משתמש חדש נרשם למערכת! ✨',
