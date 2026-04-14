@@ -381,9 +381,13 @@ export function getSystemDefaults() {
             subject: 'אישור הזמנה #{{orderId}} - ml_tlv',
             content_html: getOrderConfirmationTemplate('{{orderId}}', '{{itemsHtml}}', '{{total}}', '{{freeSamples}}', '{{notesHtml}}', '{{deliveryMethod}}', '{{shippingCost}}')
         },
-        'admin_alert': {
+        'admin_order_alert': {
             subject: 'הזמנה חדשה התקבלה! #{{orderId}} 🔥',
             content_html: getAdminNewOrderTemplate('{{orderId}}', '{{customerName}}', '{{total}}', '{{itemsHtmlAdmin}}', '{{deliveryMethod}}', '{{shippingCost}}', '{{phoneNumber}}')
+        },
+        'admin_user_alert': {
+            subject: 'משתמש חדש נרשם למערכת! ✨',
+            content_html: getAdminNewUserTemplate({ first_name: '{{firstName}}', last_name: '{{lastName}}', email: '{{email}}' })
         },
         'status_update': {
             subject: 'עדכון לגבי הזמנה #{{orderId}} - ml_tlv',

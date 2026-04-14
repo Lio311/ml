@@ -169,6 +169,9 @@ export default function MailingClient() {
         const mockData = {
             name: adminName,
             customerName: adminName,
+            firstName: user?.firstName || 'ליאור',
+            lastName: user?.lastName || 'בדיקה',
+            phoneNumber: '0501234567',
             orderId: 'T-100',
             total: '150',
             shippingCost: 'חינם',
