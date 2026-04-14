@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState } from 'react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, BarChart, Bar, ComposedChart, Cell } from 'recharts';
-import { Search, Globe, MousePointer2, Eye, TrendingUp, Layers, MapPin, ExternalLink, ArrowUpRight, ArrowDownRight, ChevronLeft, ChevronRight, Filter } from 'lucide-react';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, BarChart, Bar, ComposedChart, Cell, AreaChart, Area } from 'recharts';
+import { Search, Globe, MousePointer2, Eye, TrendingUp, Layers, MapPin, ExternalLink, ArrowUpRight, ArrowDownRight, ChevronLeft, ChevronRight, Filter, Activity, ArrowLeft, ArrowRight, Clock, Target, CheckCircle2 } from 'lucide-react';
 
 export default function AnalyticsDashboard() {
   const [gaData, setGaData] = useState({ daily: [], sources: [], pages: [] });
@@ -134,10 +134,10 @@ export default function AnalyticsDashboard() {
 
   // Funnel helpers
   const funnelSteps = funnelData ? [
-    { key: 'page_visit', label: 'כניסות לאתר', value: funnelData.funnel.page_visit },
-    { key: 'add_to_cart', label: 'הוספה לסל', value: funnelData.funnel.add_to_cart },
-    { key: 'checkout_started', label: 'התחלת צ׳קאאוט', value: funnelData.funnel.checkout_started },
-    { key: 'order_completed', label: 'הזמנה הושלמה', value: funnelData.funnel.order_completed },
+    { key: 'page_visit', label: 'כניסות לאתר', value: funnelData.funnel.page_visit, color: '#6366f1', icon: Globe },
+    { key: 'add_to_cart', label: 'הוספה לסל', value: funnelData.funnel.add_to_cart, color: '#a855f7', icon: MousePointer2 },
+    { key: 'checkout_started', label: 'התחלת צ׳קאאוט', value: funnelData.funnel.checkout_started, color: '#3b82f6', icon: Activity },
+    { key: 'order_completed', label: 'הזמנה הושלמה', value: funnelData.funnel.order_completed, color: '#10b981', icon: CheckCircle2 },
   ] : [];
 
   const getConversionRate = (from, to) => {
@@ -178,92 +178,153 @@ export default function AnalyticsDashboard() {
         ))}
       </div>
 
-      {/* Conversion Funnel Section - Minimal */}
+      {/* Conversion Funnel Section - Premium Redesign */}
       {funnelData && (
-        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
-          <div className="px-6 py-5 border-b border-gray-50 flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
-            <h3 className="text-sm font-bold text-gray-700 flex items-center gap-2">
-              <Filter className="w-4 h-4 text-gray-400" />
-              משפך המרה
-            </h3>
-            <div className="flex gap-1.5">
+        <div className="bg-white rounded-[2.5rem] border border-gray-100 shadow-xl shadow-gray-200/50 overflow-hidden">
+          <div className="px-8 py-6 border-b border-gray-50 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-gray-50/30">
+            <div>
+              <h3 className="text-xl font-black text-gray-900 flex items-center gap-3">
+                <Target className="w-6 h-6 text-indigo-500" />
+                משפך המרה מלא
+              </h3>
+              <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest mt-0.5">Conversion Funnel Analysis</p>
+            </div>
+            <div className="flex gap-1.5 bg-white p-1 rounded-xl shadow-sm border border-gray-100">
               {[7, 14, 30, 90].map(d => (
                 <button 
                   key={d}
                   onClick={() => { setFunnelDays(d); refetchFunnel(d); }}
-                  className={`px-2.5 py-1 rounded-md text-[10px] font-bold transition-all ${funnelDays === d ? 'bg-gray-900 text-white' : 'text-gray-400 hover:text-gray-600'}`}
+                  className={`px-4 py-1.5 rounded-lg text-xs font-black transition-all ${funnelDays === d ? 'bg-black text-white shadow-lg' : 'text-gray-400 hover:text-gray-600 hover:bg-gray-50'}`}
                 >
-                  {d}d
+                  {d === 7 ? 'שבוע' : d === 14 ? 'שבועיים' : d === 30 ? 'חודש' : '3 חודשים'}
                 </button>
               ))}
             </div>
           </div>
 
-          <div className="p-6 space-y-5">
-            {funnelSteps.map((step, i) => {
-              const maxVal = funnelSteps[0].value || 1;
-              const widthPercent = Math.max(2, (step.value / maxVal) * 100);
-              const prevStep = i > 0 ? funnelSteps[i - 1] : null;
-              const convRate = prevStep ? getConversionRate(prevStep.value, step.value) : null;
+          <div className="p-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
+              {funnelSteps.map((step, i) => {
+                const prevStep = i > 0 ? funnelSteps[i - 1] : null;
+                const convRate = prevStep ? getConversionRate(prevStep.value, step.value) : null;
 
-              return (
-                <div key={step.key}>
-                  <div className="flex items-center justify-between mb-1.5">
-                    <div className="flex items-center gap-3">
-                      <span className="text-sm font-bold text-gray-800">{step.label}</span>
-                      {convRate !== null && (
-                        <span className="text-[10px] font-bold text-gray-400">
-                          {convRate}%
-                        </span>
-                      )}
+                return (
+                  <div key={step.key} className="relative group">
+                    <div className="bg-gray-50/50 p-6 rounded-[2rem] border border-gray-100 hover:border-gray-200 hover:bg-white hover:shadow-xl transition-all duration-500 h-full flex flex-col justify-between">
+                      <div className="space-y-4">
+                        <div className="flex justify-between items-start">
+                          <div className={`p-3 rounded-2xl bg-white shadow-sm border border-gray-50 text-gray-900 group-hover:scale-110 transition-transform duration-500`}>
+                            <step.icon className="w-5 h-5" style={{ color: step.color }} />
+                          </div>
+                          {convRate !== null && (
+                            <div className="flex flex-col items-end">
+                              <span className="text-[10px] font-black text-gray-400 uppercase tracking-tighter">המרה</span>
+                              <span className="text-sm font-black text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-lg">{convRate}%</span>
+                            </div>
+                          )}
+                        </div>
+                        <div>
+                          <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">{step.label}</p>
+                          <div className="text-3xl font-black text-gray-900">{step.value.toLocaleString()}</div>
+                        </div>
+                      </div>
+                      
+                      {/* Step visual indicator */}
+                      <div className="mt-6 h-1 w-full bg-gray-100 rounded-full overflow-hidden">
+                        <div 
+                          className="h-full rounded-full transition-all duration-1000 delay-300"
+                          style={{ 
+                            width: `${Math.max(5, (step.value / funnelSteps[0].value) * 100)}%`,
+                            backgroundColor: step.color 
+                          }}
+                        />
+                      </div>
                     </div>
-                    <span className="text-lg font-black text-gray-900">{step.value.toLocaleString()}</span>
+
+                    {/* Arrow between steps desktop */}
+                    {i < funnelSteps.length - 1 && (
+                      <div className="hidden lg:flex absolute top-1/2 -left-2 -translate-y-1/2 z-10 w-4 h-4 items-center justify-center bg-white border border-gray-100 rounded-full shadow-sm text-gray-300 rotate-180">
+                         <ArrowRight size={10} />
+                      </div>
+                    )}
                   </div>
-                  <div className="w-full h-1.5 bg-gray-100 rounded-full overflow-hidden">
-                    <div 
-                      className="h-full bg-gray-900 rounded-full transition-all duration-700"
-                      style={{ width: `${widthPercent}%` }}
+                );
+              })}
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 items-center border-t border-gray-100 pt-10">
+              {/* Overall rate - Gauge Visual */}
+              <div className="flex flex-col items-center justify-center space-y-4 bg-gray-50/50 p-8 rounded-[2.5rem] border border-gray-100">
+                <div className="relative w-32 h-32 flex items-center justify-center">
+                  <svg className="w-full h-full -rotate-90">
+                    <circle cx="64" cy="64" r="58" fill="transparent" stroke="#e2e8f0" strokeWidth="8" />
+                    <circle 
+                      cx="64" cy="64" r="58" fill="transparent" 
+                      stroke="url(#gaugeGradient)" strokeWidth="10" strokeDasharray={2 * Math.PI * 58} 
+                      strokeDashoffset={2 * Math.PI * 58 * (1 - Math.min(1, getConversionRate(funnelSteps[0].value, funnelSteps[3].value) / 100))} 
+                      strokeLinecap="round"
                     />
+                    <defs>
+                      <linearGradient id="gaugeGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                        <stop offset="0%" stopColor="#6366f1" />
+                        <stop offset="100%" stopColor="#10b981" />
+                      </linearGradient>
+                    </defs>
+                  </svg>
+                  <div className="absolute inset-0 flex flex-col items-center justify-center">
+                    <span className="text-3xl font-black text-gray-900">{getConversionRate(funnelSteps[0].value, funnelSteps[3].value)}%</span>
                   </div>
                 </div>
-              );
-            })}
-
-            {/* Overall rate - inline */}
-            {funnelSteps.length > 0 && funnelSteps[0].value > 0 && (
-              <div className="flex items-center justify-between pt-4 border-t border-gray-100">
-                <span className="text-xs text-gray-400 font-medium">שיעור המרה כולל</span>
-                <span className="text-lg font-black text-gray-900">
-                  {getConversionRate(funnelSteps[0].value, funnelSteps[3].value)}%
-                </span>
+                <div className="text-center">
+                   <h4 className="text-xs font-black text-gray-800 uppercase tracking-widest">שיעור המרה כולל</h4>
+                   <p className="text-[10px] text-gray-400 font-bold">Total Funnel Efficiency</p>
+                </div>
               </div>
-            )}
 
-            {/* Daily Trend Chart */}
-            {funnelData.daily && funnelData.daily.length > 0 && (
-              <div className="pt-4 border-t border-gray-100">
-                <div className="h-[180px]" dir="ltr">
+              {/* Daily Trend Chart - Enhanced */}
+              <div className="lg:col-span-2">
+                <div className="flex justify-between items-center mb-6">
+                  <h4 className="text-sm font-bold text-gray-700 flex items-center gap-2">
+                    <Activity className="w-4 h-4 text-gray-400" />
+                    מגמת המרה לאורך זמן
+                  </h4>
+                  <div className="flex gap-4 text-[9px] font-black uppercase tracking-tighter">
+                    <span className="flex items-center gap-1.5"><span className="w-2 h-2 bg-indigo-500 rounded-full"></span>הוספה לסל</span>
+                    <span className="flex items-center gap-1.5"><span className="w-2 h-2 bg-emerald-500 rounded-full"></span>הזמנות</span>
+                  </div>
+                </div>
+                <div className="h-[200px]" dir="ltr">
                   <ResponsiveContainer width="100%" height="100%">
-                    <LineChart data={funnelData.daily}>
-                      <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f5f5f5" />
+                    <AreaChart data={funnelData.daily}>
+                      <defs>
+                        <linearGradient id="colorAddToCart" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#6366f1" stopOpacity={0.1}/>
+                          <stop offset="95%" stopColor="#6366f1" stopOpacity={0}/>
+                        </linearGradient>
+                        <linearGradient id="colorOrders" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#10b981" stopOpacity={0.1}/>
+                          <stop offset="95%" stopColor="#10b981" stopOpacity={0}/>
+                        </linearGradient>
+                      </defs>
+                      <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
                       <XAxis dataKey="date" tickLine={false} axisLine={false} tick={{fontSize: 9, fill: '#94a3b8'}} tickFormatter={(d) => d.split('-')[2]} />
                       <YAxis hide />
                       <Tooltip 
                         labelStyle={{ color: '#111827', fontWeight: 'bold', marginBottom: '4px', fontSize: '11px' }}
-                        contentStyle={{ borderRadius: '8px', border: '1px solid #f1f5f9', boxShadow: '0 4px 12px rgb(0 0 0 / 0.06)', fontSize: '11px' }} 
+                        contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)', fontSize: '11px' }} 
                         formatter={(value, name) => [value.toLocaleString(), name]}
                       />
-                      <Line name="הוספה לסל" type="monotone" dataKey="add_to_cart" stroke="#9ca3af" strokeWidth={1.5} dot={false} />
-                      <Line name="התחלת צ׳קאאוט" type="monotone" dataKey="checkout_started" stroke="#6b7280" strokeWidth={1.5} dot={false} />
-                      <Line name="הזמנות" type="monotone" dataKey="order_completed" stroke="#111827" strokeWidth={2} dot={{r: 2, fill: '#111827', strokeWidth: 0}} />
-                    </LineChart>
+                      <Area name="הוספה לסל" type="monotone" dataKey="add_to_cart" stroke="#6366f1" strokeWidth={2.5} fillOpacity={1} fill="url(#colorAddToCart)" dot={false} />
+                      <Area name="הזמנות" type="monotone" dataKey="order_completed" stroke="#10b981" strokeWidth={3} fillOpacity={1} fill="url(#colorOrders)" dot={{r: 3, fill: '#10b981', strokeWidth: 0}} />
+                    </AreaChart>
                   </ResponsiveContainer>
                 </div>
               </div>
-            )}
+            </div>
           </div>
         </div>
       )}
+
 
       {/* Charts Section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
