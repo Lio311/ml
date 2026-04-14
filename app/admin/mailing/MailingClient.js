@@ -471,17 +471,17 @@ export default function MailingClient() {
 
     return (
         <div className="container mx-auto py-8 px-4 text-right" dir="rtl">
-            <header className="flex justify-between items-center mb-8">
+            <header className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 md:gap-0 mb-8">
                 <div>
-                    <h1 className="text-4xl font-black text-gray-900 tracking-tight flex items-center gap-3">
+                    <h1 className="text-3xl md:text-4xl font-black text-gray-900 tracking-tight flex items-center gap-3">
                          דיוור ושיווק
                     </h1>
                     <p className="text-gray-500 font-bold mt-1 uppercase text-[10px] tracking-widest">Email Templates & Campaigns</p>
                 </div>
-                <div className="flex gap-3">
+                <div className="flex gap-3 w-full md:w-auto">
                     <button 
                         onClick={() => setShowStarterPicker(true)}
-                        className="bg-black text-white px-6 py-3 rounded-2xl font-black text-sm shadow-xl shadow-black/10 hover:shadow-black/20 hover:scale-[1.02] active:scale-95 transition-all flex items-center gap-2"
+                        className="w-full md:w-auto justify-center bg-black text-white px-6 py-3 rounded-2xl font-black text-sm shadow-xl shadow-black/10 hover:shadow-black/20 hover:scale-[1.02] active:scale-95 transition-all flex items-center gap-2"
                     >
                         <Plus size={18} /> טמפלייט חדש
                     </button>
@@ -490,22 +490,22 @@ export default function MailingClient() {
 
             {/* Navigation Tabs */}
             {(view === 'templates' || view === 'campaigns' || view === 'admin-alerts') && (
-                <div className="flex gap-2 mb-8 bg-gray-100 p-1.5 rounded-[2rem] w-fit mx-auto md:mx-0">
+                <div className="flex flex-wrap sm:flex-nowrap gap-2 mb-8 bg-gray-100 p-1.5 rounded-3xl w-full sm:w-fit mx-auto md:mx-0 justify-center">
                     <button 
                         onClick={() => { setView('templates'); setLastTab('templates'); }}
-                        className={`px-8 py-3 rounded-3xl font-black text-sm transition-all ${view === 'templates' ? 'bg-white text-black shadow-lg shadow-white/20' : 'text-gray-400 hover:text-gray-600'}`}
+                        className={`flex-1 sm:flex-none px-4 sm:px-8 py-2.5 sm:py-3 rounded-[1.5rem] font-black text-[11px] sm:text-sm transition-all ${view === 'templates' ? 'bg-white text-black shadow-lg shadow-white/20' : 'text-gray-400 hover:text-gray-600'}`}
                     >
                         מייל ללקוחות
                     </button>
                     <button 
                         onClick={() => { setView('admin-alerts'); setLastTab('admin-alerts'); }}
-                        className={`px-8 py-3 rounded-3xl font-black text-sm transition-all ${view === 'admin-alerts' ? 'bg-white text-black shadow-lg shadow-white/20' : 'text-gray-400 hover:text-gray-600'}`}
+                        className={`flex-1 sm:flex-none px-4 sm:px-8 py-2.5 sm:py-3 rounded-[1.5rem] font-black text-[11px] sm:text-sm transition-all ${view === 'admin-alerts' ? 'bg-white text-black shadow-lg shadow-white/20' : 'text-gray-400 hover:text-gray-600'}`}
                     >
                         התראות מנהל
                     </button>
                     <button 
                         onClick={() => { setView('campaigns'); setLastTab('campaigns'); }}
-                        className={`px-8 py-3 rounded-3xl font-black text-sm transition-all ${view === 'campaigns' ? 'bg-white text-black shadow-lg shadow-white/20' : 'text-gray-400 hover:text-gray-600'}`}
+                        className={`flex-1 sm:flex-none px-4 sm:px-8 py-2.5 sm:py-3 rounded-[1.5rem] font-black text-[11px] sm:text-sm transition-all ${view === 'campaigns' ? 'bg-white text-black shadow-lg shadow-white/20' : 'text-gray-400 hover:text-gray-600'}`}
                     >
                         דיוורים מתוזמנים
                     </button>
@@ -561,16 +561,16 @@ export default function MailingClient() {
                     )}
 
                     {view === 'campaigns' && (
-                        <div className="bg-white rounded-[2.5rem] shadow-sm border border-gray-100 overflow-hidden">
-                            <table className="w-full">
+                        <div className="bg-white rounded-[2.5rem] shadow-sm border border-gray-100 overflow-x-auto">
+                            <table className="w-full min-w-[700px]">
                                 <thead className="bg-gray-50/50 text-gray-400 font-black text-[10px] uppercase tracking-widest border-b border-gray-100">
                                     <tr>
-                                        <th className="p-6 text-right">קמפיין</th>
-                                        <th className="p-6 text-right">טמפלייט</th>
-                                        <th className="p-6 text-center">זמן שליחה</th>
-                                        <th className="p-6 text-center">נמענים</th>
-                                        <th className="p-6 text-center">סטטוס</th>
-                                        <th className="p-6 text-center">פעולות</th>
+                                        <th className="p-4 md:p-6 text-right">קמפיין</th>
+                                        <th className="p-4 md:p-6 text-right">טמפלייט</th>
+                                        <th className="p-4 md:p-6 text-center">זמן שליחה</th>
+                                        <th className="p-4 md:p-6 text-center">נמענים</th>
+                                        <th className="p-4 md:p-6 text-center">סטטוס</th>
+                                        <th className="p-4 md:p-6 text-center">פעולות</th>
                                     </tr>
                                 </thead>
                                 <tbody className="divide-y divide-gray-50">
@@ -595,16 +595,16 @@ export default function MailingClient() {
 
                     {view === 'edit-template' && (
                         <div className="max-w-4xl mx-auto space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                             <div className="bg-white p-8 rounded-[3rem] shadow-xl border border-gray-50 space-y-6">
+                             <div className="bg-white p-4 md:p-8 rounded-3xl md:rounded-[3rem] shadow-xl border border-gray-50 space-y-6">
                                 <div className="flex justify-between items-center mb-2">
                                     <button 
                                         onClick={() => setView(lastTab)}
-                                        className="px-4 py-2 hover:bg-gray-50 rounded-2xl flex items-center gap-2 text-gray-500 font-bold transition-all"
+                                        className="px-4 py-2 hover:bg-gray-50 rounded-2xl flex items-center gap-2 text-gray-500 font-bold transition-all text-sm md:text-base"
                                     >
                                         <ChevronRight size={18} /> חזרה
                                     </button>
                                 </div>
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div className="flex flex-col md:grid md:grid-cols-2 gap-4 md:gap-6">
                                     <div className="space-y-2">
                                         <label className="block text-xs font-black text-gray-400 uppercase tracking-widest px-2">שם הטמפלייט (לשימוש פנימי)</label>
                                         <input 
@@ -642,11 +642,11 @@ export default function MailingClient() {
                                     />
                                 </div>
 
-                                <div className="flex gap-3 justify-end pt-4">
+                                <div className="flex flex-col-reverse sm:flex-row gap-3 justify-end pt-4">
                                     {activeTemplate.slug && (
                                         <button 
                                             onClick={() => handleResetToDefault(activeTemplate.slug)}
-                                            className="px-6 py-3 rounded-2xl font-bold bg-gray-100 text-gray-600 hover:bg-gray-200 transition-all flex items-center gap-2"
+                                            className="w-full sm:w-auto justify-center px-6 py-3 rounded-2xl font-bold bg-gray-100 text-gray-600 hover:bg-gray-200 transition-all flex items-center gap-2"
                                             title="שחזר לעיצוב המקורי של המערכת (600px)"
                                         >
                                             <RefreshCcw size={18} /> שחזר עיצוב
@@ -654,14 +654,14 @@ export default function MailingClient() {
                                     )}
                                     <button 
                                         onClick={() => handleSendTest(activeTemplate.subject, activeTemplate.content_html)}
-                                        className="px-6 py-3 rounded-2xl font-bold bg-blue-50 text-blue-600 hover:bg-blue-100 transition-all flex items-center gap-2"
+                                        className="w-full sm:w-auto justify-center px-6 py-3 rounded-2xl font-bold bg-blue-50 text-blue-600 hover:bg-blue-100 transition-all flex items-center gap-2"
                                     >
                                         <Mail size={18} /> שלח בדיקה
                                     </button>
                                     <button 
                                         disabled={isSaving}
                                         onClick={() => handleSaveTemplate(activeTemplate)}
-                                        className="px-10 py-3 rounded-2xl font-black bg-black text-white hover:bg-gray-800 shadow-xl shadow-black/10 active:scale-95 transition-all"
+                                        className="w-full sm:w-auto justify-center px-10 py-3 rounded-2xl font-black bg-black text-white hover:bg-gray-800 shadow-xl shadow-black/10 active:scale-95 transition-all"
                                     >
                                         {isSaving ? 'שומר...' : 'שמור טמפלייט'}
                                     </button>
@@ -672,26 +672,26 @@ export default function MailingClient() {
 
                     {view === 'create-campaign' && (
                         <div className="max-w-4xl mx-auto space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">
-                             <div className="bg-white p-8 rounded-[3rem] shadow-xl border border-gray-50 space-y-8">
+                             <div className="bg-white p-4 md:p-8 rounded-3xl md:rounded-[3rem] shadow-xl border border-gray-50 space-y-6 md:space-y-8">
                                 <div className="flex justify-between items-center mb-2">
                                     <button 
                                         onClick={() => setView(lastTab)}
-                                        className="px-4 py-2 hover:bg-gray-50 rounded-2xl flex items-center gap-2 text-gray-500 font-bold transition-all"
+                                        className="px-4 py-2 hover:bg-gray-50 rounded-2xl flex items-center gap-2 text-gray-500 font-bold transition-all text-sm md:text-base"
                                     >
                                         <ChevronRight size={18} /> חזרה
                                     </button>
                                 </div>
-                                <div className="flex items-center gap-4 border-b border-gray-50 pb-6 mb-2">
-                                    <div className="w-16 h-16 bg-blue-50 rounded-[1.5rem] flex items-center justify-center text-blue-500">
-                                        <Send size={32} />
+                                <div className="flex items-center gap-3 md:gap-4 border-b border-gray-50 pb-4 md:pb-6 mb-2">
+                                    <div className="w-12 h-12 md:w-16 md:h-16 bg-blue-50 rounded-2xl md:rounded-[1.5rem] flex items-center justify-center text-blue-500 shrink-0">
+                                        <Send className="w-6 h-6 md:w-8 md:h-8" />
                                     </div>
                                     <div>
-                                        <h2 className="text-2xl font-black text-gray-900">הגדרת דיוור חדש</h2>
-                                        <p className="text-gray-400 font-bold text-xs">קמפיין שליחה מתוזמן</p>
+                                        <h2 className="text-xl md:text-2xl font-black text-gray-900">הגדרת דיוור חדש</h2>
+                                        <p className="text-gray-400 font-bold text-[10px] md:text-xs">קמפיין שליחה מתוזמן</p>
                                     </div>
                                 </div>
 
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                <div className="flex flex-col md:grid md:grid-cols-2 gap-6 md:gap-8">
                                     <div className="space-y-6">
                                         <div className="space-y-2">
                                             <label className="block text-xs font-black text-gray-400 uppercase tracking-widest px-2">כותרת הקמפיין (לשימוש פנימי)</label>
@@ -767,17 +767,17 @@ export default function MailingClient() {
                                     </div>
                                 </div>
 
-                                <div className="flex gap-3 justify-end pt-8 border-t border-gray-50">
+                                <div className="flex flex-col-reverse sm:flex-row gap-3 justify-end pt-6 md:pt-8 border-t border-gray-50">
                                     <button 
                                         onClick={() => handleSendTest(activeCampaign.subject, activeCampaign.content_html)}
-                                        className="px-6 py-3 rounded-2xl font-bold bg-blue-50 text-blue-600 hover:bg-blue-100 transition-all flex items-center gap-2"
+                                        className="w-full sm:w-auto justify-center px-6 py-3 rounded-2xl font-bold bg-blue-50 text-blue-600 hover:bg-blue-100 transition-all flex items-center gap-2"
                                     >
                                         <Mail size={18} /> שלח בדיקה
                                     </button>
                                     <button 
                                         disabled={isSaving}
                                         onClick={() => handleCreateCampaign(activeCampaign)}
-                                        className="px-10 py-4 bg-black text-white rounded-[1.5rem] font-black hover:bg-gray-800 shadow-2xl shadow-black/20 active:scale-95 transition-all text-lg min-w-[200px]"
+                                        className="w-full sm:w-auto justify-center px-8 md:px-10 py-3 md:py-4 bg-black text-white rounded-[1.5rem] font-black hover:bg-gray-800 shadow-2xl shadow-black/20 active:scale-95 transition-all text-base md:text-lg min-w-[200px]"
                                     >
                                         {isSaving ? 'מעבד...' : (activeCampaign.scheduled_at ? 'תזמן דיוור' : 'שלח עכשיו')}
                                     </button>
@@ -832,20 +832,20 @@ export default function MailingClient() {
             {isCatalogModalOpen && (
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
                     <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setIsCatalogModalOpen(false)} />
-                    <div className="relative bg-white w-full max-w-2xl rounded-[3rem] shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-300 flex flex-col max-h-[90vh]">
-                        <div className="p-8 border-b border-gray-100 flex justify-between items-center">
+                    <div className="relative bg-white w-full max-w-2xl rounded-3xl md:rounded-[3rem] shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-300 flex flex-col max-h-[90vh]">
+                        <div className="p-4 md:p-8 border-b border-gray-100 flex justify-between items-center">
                             <div>
-                                <h3 className="text-2xl font-black text-gray-900 flex items-center gap-3">
+                                <h3 className="text-xl md:text-2xl font-black text-gray-900 flex items-center gap-2 md:gap-3">
                                     <ShoppingBag className="text-indigo-600" /> בחירת מוצרים לקטלוג
                                 </h3>
                                 <p className="text-gray-400 font-bold text-xs uppercase tracking-widest">Select products to generate a catalog grid</p>
                             </div>
-                            <button onClick={() => setIsCatalogModalOpen(false)} className="p-3 hover:bg-gray-100 rounded-2xl transition-all">
+                            <button onClick={() => setIsCatalogModalOpen(false)} className="p-2 md:p-3 hover:bg-gray-100 rounded-2xl transition-all">
                                 <X size={20} />
                             </button>
                         </div>
 
-                        <div className="p-8 flex-1 overflow-y-auto space-y-6 custom-scrollbar">
+                        <div className="p-4 md:p-8 flex-1 overflow-y-auto space-y-6 custom-scrollbar">
                             <div className="space-y-2">
                                 <label className="block text-[10px] font-black text-gray-400 uppercase tracking-widest px-2">חיפוש והוספה</label>
                                 <ObjectTagInput 
@@ -922,17 +922,17 @@ export default function MailingClient() {
                             </div>
                         </div>
 
-                        <div className="p-8 bg-gray-50 border-t border-gray-100 flex gap-4">
+                        <div className="p-4 md:p-8 bg-gray-50 border-t border-gray-100 flex gap-4">
                             <button 
                                 onClick={() => setIsCatalogModalOpen(false)}
-                                className="flex-1 py-4 font-black text-gray-400 hover:text-gray-900 transition-all uppercase text-xs"
+                                className="flex-1 py-3 md:py-4 font-black text-gray-400 hover:text-gray-900 transition-all uppercase text-xs"
                             >
                                 ביטול
                             </button>
                             <button 
                                 onClick={handleInjectCatalog}
                                 disabled={selectedProducts.length === 0}
-                                className="flex-[2] py-4 bg-black text-white rounded-2xl font-black text-sm shadow-xl shadow-black/10 hover:shadow-black/20 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50 disabled:scale-100"
+                                className="flex-[2] py-3 md:py-4 bg-black text-white rounded-2xl font-black text-xs md:text-sm shadow-xl shadow-black/10 hover:shadow-black/20 hover:scale-[1.02] active:scale-95 transition-all disabled:opacity-50 disabled:scale-100"
                             >
                                 ייצר והזרק לעורך
                             </button>
