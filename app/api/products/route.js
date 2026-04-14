@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import pool from '../../lib/db';
 import { clerkClient } from '@clerk/nextjs/server';
-import { sendEmail, getNewProductTemplate } from '../../lib/email';
+import { sendEmail, getNewProductTemplate, getTemplate } from '../../lib/email';
 import { checkAdmin } from '../../lib/admin';
 import { revalidatePath } from 'next/cache';
 import { translateList, translateText } from '../../lib/translate';
@@ -214,9 +214,22 @@ export async function POST(req) {
 
                 if (emails.length > 0) {
                     const productForEmail = { ...body, id: newProductId };
-                    const html = getNewProductTemplate(productForEmail);
+                    
+                    const { html, subject } = await getTemplate('new_product', {
+                        brand: brand || '',
+                        model: model || '',
+                        description: description || '',
+                        price_2ml: price_2ml || '',
+                        price_5ml: price_5ml || '',
+                        price_10ml: price_10ml || '',
+                        imageUrl: image_url || 'https://www.ml-tlv.com/logo-black.png',
+                        productId: newProductId
+                    }, () => getNewProductTemplate(productForEmail));
+                    
+                    const finalSubject = subject || `חדש באתר: ${brand} ${model} ✨ - ml_tlv`;
+
                     // Send as BCC to protect privacy and respect bulk limits
-                    await sendEmail(emails, `חדש באתר: ${brand} ${model} ✨ - ml_tlv`, html);
+                    await sendEmail(emails, finalSubject, html, 'new_product');
                     console.log(`Newsletter sent to ${emails.length} recipients.`);
                 }
             } catch (emailErr) {

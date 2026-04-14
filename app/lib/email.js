@@ -85,45 +85,40 @@ export async function getTemplate(slug, data = {}, fallbackFn = null) {
 
 export const getNewProductTemplate = (product) => {
     return `
-        <div dir="rtl" style="font-family: 'Open Sans', 'Open Sans Hebrew', Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto;">
-            <!-- Fonts -->
-            <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap" rel="stylesheet">
-            <style>
-                @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap');
-            </style>
+        <div dir="rtl" style="font-family: 'Open Sans', 'Open Sans Hebrew', Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto; line-height: 1.6;">
 
+            <div style="background-color: #fff; padding: 30px; border-radius: 24px; border: 1px solid #f0f0f0; box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
+                <h1 style="margin: 0 0 10px; font-size: 24px; font-weight: 900; color: #000; text-align: center;">הגיע חדש! ✨</h1>
+                <p style="margin: 0 0 25px; color: #666; text-align: center;">אנחנו מתרגשים להציג את התוספת החדשה לקולקציה שלנו:</p>
 
-            <h1 style="color: #000; text-align: center;">הגיע חדש! ✨</h1>
-            <p style="text-align: center; font-size: 18px;">אנחנו מתרגשים להציג את התוספת החדשה לקולקציה שלנו:</p>
-
-            <div style="text-align: center; margin: 30px 0;">
-                <img src="${product.image_url}" alt="${product.brand} ${product.model}" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);" />
-            </div>
-
-            <div style="text-align: center;">
-                <h2 style="margin: 0;">${product.brand}</h2>
-                <h3 style="margin: 5px 0 20px; color: #666;">${product.model}</h3>
-
-                <p style="line-height: 1.6; margin-bottom: 30px;">
-                    ${product.description}
-                </p>
-
-                <div style="background-color: #f8f8f8; padding: 20px; border-radius: 8px; margin-bottom: 30px;">
-                    <h4 style="margin: 0 0 15px;">מחירים:</h4>
-                    <ul style="list-style: none; padding: 0; margin: 0;">
-                        <li style="margin-bottom: 8px;">2 מ"ל - <strong>${product.price_2ml} ₪</strong></li>
-                        <li style="margin-bottom: 8px;">5 מ"ל - <strong>${product.price_5ml} ₪</strong></li>
-                        <li>10 מ"ל - <strong>${product.price_10ml} ₪</strong></li>
-                    </ul>
+                <div style="text-align: center; margin: 30px 0;">
+                    <img src="${product.image_url}" alt="${product.brand} ${product.model}" style="max-width: 260px; height: auto; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08);" />
                 </div>
 
-                <a href="${'https://www.ml-tlv.com'}/product/${product.id}" style="background-color: #000; color: #fff; padding: 15px 30px; text-decoration: none; border-radius: 30px; font-weight: bold; display: inline-block;">
-                    לרכישה ופרטים נוספים
-                </a>
-            </div>
+                <div style="text-align: center; background-color: #fcfcfc; padding: 25px; border-radius: 20px; border: 1px solid #f5f5f5;">
+                    <h2 style="margin: 0; font-size: 22px; font-weight: 900; color: #000;">${product.brand}</h2>
+                    <h3 style="margin: 5px 0 20px; color: #666; font-size: 18px;">${product.model}</h3>
 
-            <hr style="margin: 40px 0; border: 0; border-top: 1px solid #eee;">
-            <p style="font-size: 12px; color: #999; text-align: center;">ml - יוקרה בחתיכות קטנות</p>
+                    <p style="line-height: 1.6; margin-bottom: 25px; font-size: 14px;">
+                        ${product.description}
+                    </p>
+
+                    <div style="background-color: #fff; padding: 15px; border-radius: 12px; margin-bottom: 25px; text-align: center; border: 1px dashed #e5e5e5;">
+                        <div style="font-size: 12px; font-weight: 900; text-transform: uppercase; color: #999; margin-bottom: 10px;">מחירים</div>
+                        <div style="margin-bottom: 8px; font-size: 14px;">2 מ"ל - <strong>${product.price_2ml} ₪</strong></div>
+                        <div style="margin-bottom: 8px; font-size: 14px;">5 מ"ל - <strong>${product.price_5ml} ₪</strong></div>
+                        <div style="font-size: 14px;">10 מ"ל - <strong>${product.price_10ml} ₪</strong></div>
+                    </div>
+
+                    <a href="${'https://www.ml-tlv.com'}/product/${product.id}" style="display: inline-block; background-color: #000; color: #fff; padding: 16px 36px; text-decoration: none; border-radius: 18px; font-weight: 900; font-size: 14px; box-shadow: 0 10px 20px rgba(0,0,0,0.15);">
+                        לרכישה ופרטים נוספים
+                    </a>
+                </div>
+            </div>
+            
+            <div style="text-align: center; padding: 30px 0; color: #ccc; font-size: 11px;">
+                ml - יוקרה בחתיכות קטנות
+            </div>
         </div>
     `;
 };
@@ -387,6 +382,19 @@ export function getSystemDefaults() {
                 brand: '{{brand}}', 
                 model: '{{model}}', 
                 imageUrl: 'https://www.ml-tlv.com/favicon.png' 
+            })
+        },
+        'new_product': {
+            subject: 'חדש באתר: {{brand}} {{model}} ✨ - ml_tlv',
+            content_html: getNewProductTemplate({
+                brand: '{{brand}}',
+                model: '{{model}}',
+                description: '{{description}}',
+                price_2ml: '{{price_2ml}}',
+                price_5ml: '{{price_5ml}}',
+                price_10ml: '{{price_10ml}}',
+                image_url: '{{imageUrl}}',
+                id: '{{productId}}'
             })
         },
         'review_request': {

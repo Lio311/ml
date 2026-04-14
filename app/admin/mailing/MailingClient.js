@@ -88,7 +88,7 @@ export default function MailingClient() {
         if (['welcome', 'review_request'].includes(slug)) return 'marketing';
         if (['cart_recovery', 'nurture_10_days', 'nurture_25_days', 'recommendations'].includes(slug)) return 'retention';
         if (['educational'].includes(slug)) return 'educational';
-        if (['back_in_stock'].includes(slug)) return 'inventory';
+        if (['back_in_stock', 'new_product'].includes(slug)) return 'inventory';
         return 'general';
     };
 
