@@ -788,18 +788,18 @@ export default function MailingClient() {
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
                     <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setShowStarterPicker(false)} />
                     <div className="relative bg-white w-full max-w-3xl rounded-[3rem] shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-300 flex flex-col max-h-[90vh]">
-                        <div className="p-8 border-b border-gray-100 flex justify-between items-center">
+                        <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center">
                             <div>
-                                <h3 className="text-2xl font-black text-gray-900 flex items-center gap-3">
+                                <h3 className="text-xl font-black text-gray-900 flex items-center gap-2">
                                     ✨ בחר עיצוב בסיס
                                 </h3>
-                                <p className="text-gray-400 font-bold text-xs uppercase tracking-widest">Choose a starter template</p>
+                                <p className="text-gray-400 font-bold text-[10px] uppercase tracking-widest">Choose a starter template</p>
                             </div>
                             <button onClick={() => setShowStarterPicker(false)} className="p-3 hover:bg-gray-100 rounded-2xl transition-all">
                                 <X size={20} />
                             </button>
                         </div>
-                        <div className="p-8 grid grid-cols-1 sm:grid-cols-2 gap-5 overflow-y-auto">
+                        <div className="p-5 grid grid-cols-2 gap-3">
                             {starterTemplates.map(starter => (
                                 <button
                                     key={starter.id}
@@ -809,13 +809,13 @@ export default function MailingClient() {
                                         setShowStarterPicker(false);
                                         setView('edit-template');
                                     }}
-                                    className="group text-right p-6 rounded-[2rem] border-2 border-gray-100 hover:border-black/20 hover:shadow-xl transition-all duration-300 hover:scale-[1.02] active:scale-95"
+                                    className="group text-right p-4 rounded-2xl border-2 border-gray-100 hover:border-black/20 hover:shadow-xl transition-all duration-300 hover:scale-[1.02] active:scale-95"
                                 >
-                                    <div className={`w-full h-28 rounded-2xl mb-4 flex items-center justify-center ${starter.preview} transition-all`}>
-                                        <div className="text-4xl group-hover:scale-125 transition-transform duration-300">{starter.name.split(' ')[0]}</div>
+                                    <div className={`w-full h-16 rounded-xl mb-3 flex items-center justify-center ${starter.preview} transition-all`}>
+                                        <div className="text-3xl group-hover:scale-125 transition-transform duration-300">{starter.name.split(' ')[0]}</div>
                                     </div>
-                                    <h4 className="font-black text-gray-900 text-lg mb-1">{starter.name}</h4>
-                                    <p className="text-gray-400 text-sm font-bold">{starter.desc}</p>
+                                    <h4 className="font-black text-gray-900 text-sm mb-0.5">{starter.name}</h4>
+                                    <p className="text-gray-400 text-xs font-bold">{starter.desc}</p>
                                 </button>
                             ))}
                         </div>
