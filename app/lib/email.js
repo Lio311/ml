@@ -135,7 +135,7 @@ export const getOrderConfirmationTemplate = (orderId, items, total, freeSamples,
         const rowsHtml = items.map(item => `
         <tr style="border-bottom: 1px solid #f5f5f5;">
             <td style="padding: 12px 10px; text-align: right; font-size: 14px; color: #333;">
-                ${item.image_url ? `<img src="${item.image_url}" width="40" height="40" style="vertical-align: middle; margin-left: 10px; border-radius: 6px; display: inline-block; border: 1px solid #f0f0f0;" alt="${item.name || 'product'}" />` : ''}
+                ${item.image_url ? `<img src="${item.image_url}" width="40" style="vertical-align: middle; margin-left: 10px; border-radius: 6px; display: inline-block; border: 1px solid #f0f0f0; height: auto; max-height: 40px; object-fit: contain;" alt="${item.name || 'product'}" />` : ''}
                 <span style="vertical-align: middle;">${item.name || (item.brand + ' ' + item.model)} (${item.size} מ"ל)</span>
             </td>
             <td style="padding: 12px 10px; text-align: center; font-size: 14px; color: #333;">${item.quantity}</td>
@@ -267,7 +267,7 @@ export const getUserWelcomeTemplate = (name) => {
 export const getAdminNewOrderTemplate = (orderId, customerName, total, items, deliveryMethod, shippingCost, phoneNumber) => {
     const itemsContent = Array.isArray(items) ? items.map(item => `
         <li style="margin-bottom: 12px; border-bottom: 1px solid #f0f0f0; padding-bottom: 12px; display: table; width: 100%;">
-            ${item.image_url ? `<div style="display: table-cell; vertical-align: middle; width: 50px;"><img src="${item.image_url}" width="40" height="40" style="border-radius: 6px; border: 1px solid #f0f0f0;" alt="product" /></div>` : ''}
+            ${item.image_url ? `<div style="display: table-cell; vertical-align: middle; width: 50px;"><img src="${item.image_url}" width="40" style="border-radius: 6px; border: 1px solid #f0f0f0; height: auto; max-height: 40px; object-fit: contain;" alt="product" /></div>` : ''}
             <div style="display: table-cell; vertical-align: middle;">
                 <span style="font-weight: 900; color: #000;">${item.name || (item.brand + ' ' + item.model)}</span>
                 <div style="font-size: 12px; color: #666;">${item.size || ''}ml x${item.quantity || 1}</div>
