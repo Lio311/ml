@@ -151,7 +151,7 @@ export default function PushManager() {
       
       {/* Toast-like hint for new visitors */}
       {!loading && !error && (
-        <div className="absolute left-full ml-4 top-1/2 -translate-y-1/2 bg-black text-white px-4 py-2 rounded-2xl shadow-2xl border border-gray-800 whitespace-nowrap hidden md:block animate-in fade-in slide-in-from-left-2 transition-all">
+        <div className="absolute left-full ml-4 top-1/2 -translate-y-1/2 bg-black text-white px-4 py-2 rounded-2xl shadow-2xl border border-gray-800 whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-300 translate-x-[-10px] group-hover:translate-x-0">
           <div className="relative font-bold text-sm">
             הפעל התראות לקבלת עדכונים
             <div className="absolute top-1/2 -left-2 -translate-y-1/2 w-2 h-2 bg-black transform rotate-45"></div>
