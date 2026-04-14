@@ -1,11 +1,12 @@
 "use client";
 import { useEffect, useState } from 'react';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend, BarChart, Bar, ComposedChart, Cell } from 'recharts';
-import { Search, Globe, MousePointer2, Eye, TrendingUp, Layers, MapPin, ExternalLink, ArrowUpRight, ArrowDownRight, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Search, Globe, MousePointer2, Eye, TrendingUp, Layers, MapPin, ExternalLink, ArrowUpRight, ArrowDownRight, ChevronLeft, ChevronRight, Filter } from 'lucide-react';
 
 export default function AnalyticsDashboard() {
   const [gaData, setGaData] = useState({ daily: [], sources: [], pages: [] });
   const [gscData, setGscData] = useState({ daily: [], queries: [], pages: [] });
+  const [funnelData, setFunnelData] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   
@@ -16,17 +17,22 @@ export default function AnalyticsDashboard() {
   const [sourcePage, setSourcePage] = useState(1);
   const itemsPerPage = 6;
 
+  // Funnel period selector
+  const [funnelDays, setFunnelDays] = useState(30);
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const [gaRes, gscRes] = await Promise.all([
+        const [gaRes, gscRes, funnelRes] = await Promise.all([
           fetch('/api/admin/analytics/ga'),
-          fetch('/api/admin/analytics/gsc')
+          fetch('/api/admin/analytics/gsc'),
+          fetch(`/api/analytics/funnel?days=${funnelDays}`)
         ]);
         
         const gaJson = await gaRes.json();
         const gscJson = await gscRes.json();
+        const funnelJson = funnelRes.ok ? await funnelRes.json() : null;
         
         if (gaJson.error) throw new Error("GA Error: " + gaJson.error);
         if (gscJson.error) throw new Error("GSC Error: " + gscJson.error);
@@ -85,6 +91,7 @@ export default function AnalyticsDashboard() {
         setTotals({ users: tUsers, views: tViews, clicks: tClicks, impressions: tImpressions });
         setGaData({ daily: parsedGaDaily, sources: parsedSources, pages: parsedGaPages });
         setGscData({ daily: parsedGscDaily, queries: sortedQueries, pages: gscJson.pages || [] });
+        setFunnelData(funnelJson);
         
       } catch (err) {
         setError(err.message);
@@ -95,6 +102,17 @@ export default function AnalyticsDashboard() {
     
     fetchData();
   }, []);
+
+  // Refetch funnel only when days change
+  const refetchFunnel = async (days) => {
+    try {
+      const res = await fetch(`/api/analytics/funnel?days=${days}`);
+      if (res.ok) {
+        const data = await res.json();
+        setFunnelData(data);
+      }
+    } catch (e) {}
+  };
 
   if (loading) {
     return (
@@ -113,6 +131,24 @@ export default function AnalyticsDashboard() {
       </div>
     );
   }
+
+  // Funnel helpers
+  const funnelSteps = funnelData ? [
+    { key: 'page_visit', label: 'כניסות לאתר', icon: '👁️', value: funnelData.funnel.page_visit, color: 'bg-blue-500' },
+    { key: 'add_to_cart', label: 'הוספה לסל', icon: '🛒', value: funnelData.funnel.add_to_cart, color: 'bg-purple-500' },
+    { key: 'checkout_started', label: 'התחלת צ׳קאאוט', icon: '💳', value: funnelData.funnel.checkout_started, color: 'bg-orange-500' },
+    { key: 'order_completed', label: 'הזמנה הושלמה', icon: '✅', value: funnelData.funnel.order_completed, color: 'bg-green-500' },
+  ] : [];
+
+  const getConversionRate = (from, to) => {
+    if (!from || from === 0) return 0;
+    return ((to / from) * 100).toFixed(1);
+  };
+
+  const getDropoffRate = (from, to) => {
+    if (!from || from === 0) return 0;
+    return (((from - to) / from) * 100).toFixed(1);
+  };
 
   return (
     <div className="p-4 md:p-8 max-w-screen-2xl mx-auto space-y-8" dir="rtl">
@@ -146,6 +182,113 @@ export default function AnalyticsDashboard() {
           </div>
         ))}
       </div>
+
+      {/* Conversion Funnel Section */}
+      {funnelData && (
+        <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+          <div className="p-6 border-b border-gray-50 bg-gray-50/30 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+            <div>
+              <h3 className="text-lg font-bold flex items-center gap-2 text-gray-700">
+                <Filter className="w-5 h-5 text-indigo-600" />
+                משפך המרה (Conversion Funnel)
+              </h3>
+              <p className="text-xs text-gray-400 mt-1">מעקב אחר מסע הלקוח מהכניסה לאתר ועד השלמת ההזמנה</p>
+            </div>
+            <div className="flex gap-2">
+              {[7, 14, 30, 90].map(d => (
+                <button 
+                  key={d}
+                  onClick={() => { setFunnelDays(d); refetchFunnel(d); }}
+                  className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${funnelDays === d ? 'bg-black text-white shadow-md' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'}`}
+                >
+                  {d} ימים
+                </button>
+              ))}
+            </div>
+          </div>
+
+          <div className="p-6">
+            {/* Visual Funnel */}
+            <div className="flex flex-col items-center gap-0 mb-8">
+              {funnelSteps.map((step, i) => {
+                const maxVal = funnelSteps[0].value || 1;
+                const widthPercent = Math.max(20, (step.value / maxVal) * 100);
+                const prevStep = i > 0 ? funnelSteps[i - 1] : null;
+                const convRate = prevStep ? getConversionRate(prevStep.value, step.value) : 100;
+                const dropRate = prevStep ? getDropoffRate(prevStep.value, step.value) : 0;
+
+                return (
+                  <div key={step.key} className="w-full flex flex-col items-center">
+                    {/* Connector Arrow + Conversion Rate */}
+                    {i > 0 && (
+                      <div className="flex items-center gap-3 my-2">
+                        <div className="text-gray-300 text-lg">▼</div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-xs font-black text-green-600 bg-green-50 px-2 py-0.5 rounded-full border border-green-100">
+                            {convRate}% המרה
+                          </span>
+                          <span className="text-xs font-bold text-red-400 bg-red-50 px-2 py-0.5 rounded-full border border-red-50">
+                            {dropRate}% נטישה
+                          </span>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Funnel Bar */}
+                    <div
+                      className={`${step.color} rounded-2xl flex items-center justify-between px-6 py-4 text-white transition-all duration-500 shadow-sm hover:shadow-md`}
+                      style={{ width: `${widthPercent}%`, minWidth: '200px' }}
+                    >
+                      <div className="flex items-center gap-3">
+                        <span className="text-xl">{step.icon}</span>
+                        <span className="font-bold text-sm">{step.label}</span>
+                      </div>
+                      <span className="text-2xl font-black">{step.value.toLocaleString()}</span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+
+            {/* Overall Conversion Rate */}
+            {funnelSteps.length > 0 && funnelSteps[0].value > 0 && (
+              <div className="text-center bg-gradient-to-r from-indigo-50 to-purple-50 rounded-2xl p-6 border border-indigo-100">
+                <div className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">שיעור המרה כולל (כניסה → הזמנה)</div>
+                <div className="text-5xl font-black text-indigo-700">
+                  {getConversionRate(funnelSteps[0].value, funnelSteps[3].value)}%
+                </div>
+                <div className="text-sm text-gray-500 mt-2">
+                  מתוך {funnelSteps[0].value.toLocaleString()} כניסות, {funnelSteps[3].value.toLocaleString()} הזמינו
+                </div>
+              </div>
+            )}
+
+            {/* Daily Trend Chart */}
+            {funnelData.daily && funnelData.daily.length > 0 && (
+              <div className="mt-8">
+                <h4 className="text-sm font-bold text-gray-600 mb-4">מגמות יומיות - אירועי המרה</h4>
+                <div className="h-[250px]" dir="ltr">
+                  <ResponsiveContainer width="100%" height="100%">
+                    <LineChart data={funnelData.daily}>
+                      <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
+                      <XAxis dataKey="date" tickLine={false} axisLine={false} tick={{fontSize: 10, fill: '#64748b'}} tickFormatter={(d) => d.split('-')[2]} />
+                      <YAxis hide />
+                      <Tooltip 
+                        labelStyle={{ color: '#111827', fontWeight: 'bold', marginBottom: '4px' }}
+                        contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)' }} 
+                        formatter={(value, name) => [value.toLocaleString(), name]}
+                      />
+                      <Line name="הוספה לסל" type="monotone" dataKey="add_to_cart" stroke="#8b5cf6" strokeWidth={3} dot={false} />
+                      <Line name="התחלת צ׳קאאוט" type="monotone" dataKey="checkout_started" stroke="#f97316" strokeWidth={3} dot={false} />
+                      <Line name="הזמנות" type="monotone" dataKey="order_completed" stroke="#22c55e" strokeWidth={3} dot={{r: 3, strokeWidth: 0}} />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* Charts Section */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -250,23 +393,23 @@ export default function AnalyticsDashboard() {
           {gscData.queries.length > itemsPerPage && (
             <div className="px-4 py-2 border-t border-gray-50 flex items-center justify-between bg-white">
                <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
-                  עמוד {queryPage} מתוך {Math.ceil(gscData.queries.length / itemsPerPage)}
+                 עמוד {queryPage} מתוך {Math.ceil(gscData.queries.length / itemsPerPage)}
                </div>
                <div className="flex gap-2">
-                  <button 
-                    onClick={() => setQueryPage(p => Math.max(1, p - 1))}
-                    disabled={queryPage === 1}
-                    className="p-1.5 rounded-lg border border-gray-100 disabled:opacity-30 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"
-                  >
-                    <ChevronRight className="w-4 h-4 text-gray-600" />
-                  </button>
-                  <button 
-                    onClick={() => setQueryPage(p => Math.min(Math.ceil(gscData.queries.length / itemsPerPage), p + 1))}
-                    disabled={queryPage >= Math.ceil(gscData.queries.length / itemsPerPage)}
-                    className="p-1.5 rounded-lg border border-gray-100 disabled:opacity-30 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"
-                  >
-                    <ChevronLeft className="w-4 h-4 text-gray-600" />
-                  </button>
+                 <button 
+                   onClick={() => setQueryPage(p => Math.max(1, p - 1))}
+                   disabled={queryPage === 1}
+                   className="p-1.5 rounded-lg border border-gray-100 disabled:opacity-30 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"
+                 >
+                   <ChevronRight className="w-4 h-4 text-gray-600" />
+                 </button>
+                 <button 
+                   onClick={() => setQueryPage(p => Math.min(Math.ceil(gscData.queries.length / itemsPerPage), p + 1))}
+                   disabled={queryPage >= Math.ceil(gscData.queries.length / itemsPerPage)}
+                   className="p-1.5 rounded-lg border border-gray-100 disabled:opacity-30 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"
+                 >
+                   <ChevronLeft className="w-4 h-4 text-gray-600" />
+                 </button>
                </div>
             </div>
           )}
@@ -307,23 +450,23 @@ export default function AnalyticsDashboard() {
           {gaData.sources.length > itemsPerPage && (
             <div className="px-4 py-2 border-t border-gray-50 flex items-center justify-between bg-white">
                <div className="text-[10px] font-bold text-gray-400 uppercase tracking-widest">
-                  עמוד {sourcePage} מתוך {Math.ceil(gaData.sources.length / itemsPerPage)}
+                 עמוד {sourcePage} מתוך {Math.ceil(gaData.sources.length / itemsPerPage)}
                </div>
                <div className="flex gap-2">
-                  <button 
-                    onClick={() => setSourcePage(p => Math.max(1, p - 1))}
-                    disabled={sourcePage === 1}
-                    className="p-1.5 rounded-lg border border-gray-100 disabled:opacity-30 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"
-                  >
-                    <ChevronRight className="w-4 h-4 text-gray-600" />
-                  </button>
-                  <button 
-                    onClick={() => setSourcePage(p => Math.min(Math.ceil(gaData.sources.length / itemsPerPage), p + 1))}
-                    disabled={sourcePage >= Math.ceil(gaData.sources.length / itemsPerPage)}
-                    className="p-1.5 rounded-lg border border-gray-100 disabled:opacity-30 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"
-                  >
-                    <ChevronLeft className="w-4 h-4 text-gray-600" />
-                  </button>
+                 <button 
+                   onClick={() => setSourcePage(p => Math.max(1, p - 1))}
+                   disabled={sourcePage === 1}
+                   className="p-1.5 rounded-lg border border-gray-100 disabled:opacity-30 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"
+                 >
+                   <ChevronRight className="w-4 h-4 text-gray-600" />
+                 </button>
+                 <button 
+                   onClick={() => setSourcePage(p => Math.min(Math.ceil(gaData.sources.length / itemsPerPage), p + 1))}
+                   disabled={sourcePage >= Math.ceil(gaData.sources.length / itemsPerPage)}
+                   className="p-1.5 rounded-lg border border-gray-100 disabled:opacity-30 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"
+                 >
+                   <ChevronLeft className="w-4 h-4 text-gray-600" />
+                 </button>
                </div>
             </div>
           )}

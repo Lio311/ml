@@ -302,6 +302,18 @@ export function CartProvider({ children }) {
             }
             return [...prev, { ...product, size, price, originalPrice, quantity: 1, vendorId, vendorName }];
         });
+
+        // Track funnel event: add_to_cart
+        try {
+            const sid = sessionStorage.getItem('funnel_session_id');
+            if (sid) {
+                fetch('/api/analytics/funnel', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ sessionId: sid, eventType: 'add_to_cart', metadata: { productId: product.id, size, vendorId } })
+                }).catch(() => {});
+            }
+        } catch(e) {}
     };
 
     const addMultipleToCart = (itemsToAdd, options = {}) => {

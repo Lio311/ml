@@ -183,6 +183,19 @@ export default function CartClient() {
         }
 
         setIsSubmitting(true);
+
+        // Track funnel event: checkout_started
+        try {
+            const sid = sessionStorage.getItem('funnel_session_id');
+            if (sid) {
+                fetch('/api/analytics/funnel', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ sessionId: sid, eventType: 'checkout_started', metadata: { itemCount: activeItems.length, total } })
+                }).catch(() => {});
+            }
+        } catch(e) {}
+
         try {
             const body = {
                 items: activeItems,
@@ -203,6 +216,18 @@ export default function CartClient() {
             });
 
             if (res.ok) {
+                // Track funnel event: order_completed
+                try {
+                    const sid = sessionStorage.getItem('funnel_session_id');
+                    if (sid) {
+                        fetch('/api/analytics/funnel', {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ sessionId: sid, eventType: 'order_completed', metadata: { total } })
+                        }).catch(() => {});
+                    }
+                } catch(e) {}
+
                 clearActiveVendorCart();
                 router.push('/checkout/success');
             } else {

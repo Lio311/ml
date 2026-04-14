@@ -2,6 +2,16 @@
 import { useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 
+// Generate or retrieve a stable session ID for funnel tracking
+function getFunnelSessionId() {
+    let sid = sessionStorage.getItem('funnel_session_id');
+    if (!sid) {
+        sid = `s_${Date.now()}_${Math.random().toString(36).substring(2, 9)}`;
+        sessionStorage.setItem('funnel_session_id', sid);
+    }
+    return sid;
+}
+
 export default function AnalyticsTracker() {
     const pathname = usePathname();
 
@@ -20,6 +30,14 @@ export default function AnalyticsTracker() {
                 body: JSON.stringify({ path: pathname })
             }).catch(err => console.error('Analytics tracker failed', err));
 
+            // Also record funnel page_visit event
+            const sessionId = getFunnelSessionId();
+            fetch('/api/analytics/funnel', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ sessionId, eventType: 'page_visit' })
+            }).catch(err => console.error('Funnel tracker failed', err));
+
             // Mark session as visited
             sessionStorage.setItem('visited_session_v1', 'true');
         }
@@ -32,3 +50,7 @@ export default function AnalyticsTracker() {
 
     return null; // Render nothing
 }
+
+// Export the helper so CartContext and CartClient can use it
+export { getFunnelSessionId };
+
