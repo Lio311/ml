@@ -27,6 +27,7 @@ export default function MailingClient() {
     const [loading, setLoading] = useState(true);
     const [view, setView] = useState('templates'); // 'templates' | 'campaigns' | 'admin-alerts' | 'edit-template' | 'create-campaign'
     const [lastTab, setLastTab] = useState('templates'); 
+    const [selectedCategory, setSelectedCategory] = useState('all');
     
     // Editor / Form States
     const [activeTemplate, setActiveTemplate] = useState(null);
@@ -79,6 +80,13 @@ export default function MailingClient() {
                 setAllProducts(data.products || []);
             }
         } catch (err) {}
+    };
+
+    const getTemplateCategory = (slug) => {
+        if (!slug) return 'general';
+        if (['order_confirmation', 'status_update', 'abandoned_cart'].includes(slug)) return 'orders';
+        if (['welcome', 'review_request', 'back_in_stock', 'recommendations', 'nurture_10_days', 'nurture_25_days', 'educational'].includes(slug)) return 'marketing';
+        return 'general';
     };
 
     useEffect(() => {
@@ -520,8 +528,40 @@ export default function MailingClient() {
             ) : (
                 <>
                     {view === 'templates' && (
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {templates.filter(t => !t.slug?.includes('admin_') && !t.slug?.includes('contact_form')).map(t => (
+                        <div className="space-y-6">
+                            <div className="flex items-center gap-2 overflow-x-auto pb-2 no-scrollbar">
+                                <button 
+                                    onClick={() => setSelectedCategory('all')}
+                                    className={`px-4 py-1.5 rounded-full text-xs font-black transition-all whitespace-nowrap ${selectedCategory === 'all' ? 'bg-black text-white shadow-md' : 'bg-white text-gray-400 border border-gray-100 hover:bg-gray-50'}`}
+                                >
+                                    הכל
+                                </button>
+                                <button 
+                                    onClick={() => setSelectedCategory('orders')}
+                                    className={`px-4 py-1.5 rounded-full text-xs font-black transition-all whitespace-nowrap ${selectedCategory === 'orders' ? 'bg-black text-white shadow-md' : 'bg-white text-gray-400 border border-gray-100 hover:bg-gray-50'}`}
+                                >
+                                    הזמנות
+                                </button>
+                                <button 
+                                    onClick={() => setSelectedCategory('marketing')}
+                                    className={`px-4 py-1.5 rounded-full text-xs font-black transition-all whitespace-nowrap ${selectedCategory === 'marketing' ? 'bg-black text-white shadow-md' : 'bg-white text-gray-400 border border-gray-100 hover:bg-gray-50'}`}
+                                >
+                                    שיווק ולקוחות
+                                </button>
+                                <button 
+                                    onClick={() => setSelectedCategory('general')}
+                                    className={`px-4 py-1.5 rounded-full text-xs font-black transition-all whitespace-nowrap ${selectedCategory === 'general' ? 'bg-black text-white shadow-md' : 'bg-white text-gray-400 border border-gray-100 hover:bg-gray-50'}`}
+                                >
+                                    כללי
+                                </button>
+                            </div>
+                            
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                {templates.filter(t => {
+                                    if (t.slug?.includes('admin_') || t.slug?.includes('contact_form') || t.slug === 'admin_alert') return false;
+                                    if (selectedCategory === 'all') return true;
+                                    return getTemplateCategory(t.slug) === selectedCategory;
+                                }).map(t => (
                                 <TemplateCard 
                                     key={t.id} 
                                     template={t} 
@@ -542,6 +582,7 @@ export default function MailingClient() {
                                     }}
                                 />
                             ))}
+                            </div>
                         </div>
                     )}
 

@@ -485,6 +485,46 @@ export function getSystemDefaults() {
             </div>
             <div style="text-align: center; padding: 30px 0; color: #ccc; font-size: 11px;">ml - יוקרה בחתיכות קטנות</div>
         </div>`
+        },
+        'nurture_10_days': {
+            subject: 'לא מצאת את הבושם שחיפשת? 🔍',
+            content_html: `
+        <div dir="rtl" style="font-family: 'Open Sans', 'Open Sans Hebrew', Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto; line-height: 1.6;">
+            <div style="background-color: #fff; padding: 30px; border-radius: 24px; border: 1px solid #f0f0f0; box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
+                <h2 style="margin: 0 0 15px; font-size: 22px; font-weight: 900; color: #000; text-align: center;">אנחנו מביאים את הבושם בשבילך! 📦</h2>
+                <p style="margin-bottom: 20px;">היי {{name}},</p>
+                <p>שמנו לב שאת/ה כבר מספר ימים איתנו ב-ml_tlv! רצינו להזכיר לך שאם חיפשת בושם מסוים ולא מצאת אותו בקטלוג שלנו, זה לא הסוף.</p>
+                <p style="margin-bottom: 25px;">בנינו עבורך במיוחד את עמוד <strong>בקשת בשמים</strong> - המקום בו תוכלי לבקש כל בושם שתרצי (גם את הנישתיים והנדירים שבהם) ואנחנו נדאג להביא אותו עבורך במידות קטנות!</p>
+                
+                <div style="text-align: center; margin: 35px 0;">
+                    <a href="https://www.ml-tlv.com/requests" style="display: inline-block; background-color: #000; color: #fff; padding: 16px 32px; text-decoration: none; border-radius: 16px; font-weight: 900; font-size: 15px; letter-spacing: 0.5px;">לבקשת בושם מיוחד</a>
+                </div>
+                
+                <p style="color: #666; font-size: 14px;">נשמח להמשיך להפתיע אותך עם ניחוחות חדשים,</p>
+                <p style="font-weight: bold; margin-top: 5px;">צוות ml_tlv</p>
+            </div>
+            <div style="text-align: center; padding: 30px 0; color: #ccc; font-size: 11px;">ml - יוקרה בחתיכות קטנות</div>
+        </div>`
+        },
+        'nurture_25_days': {
+            subject: 'בוא/י למצוא את חתימת הריח הבאה שלך ✨',
+            content_html: `
+        <div dir="rtl" style="font-family: 'Open Sans', 'Open Sans Hebrew', Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto; line-height: 1.6;">
+            <div style="background-color: #fff; padding: 30px; border-radius: 24px; border: 1px solid #f0f0f0; box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
+                <h2 style="margin: 0 0 15px; font-size: 22px; font-weight: 900; color: #000; text-align: center;">התאמה אישית של בשמים 🎯</h2>
+                <p style="margin-bottom: 20px;">היי {{name}},</p>
+                <p>למצוא את הבושם המושלם יכול להיות מאתגר, במיוחד כשיש כל כך הרבה אפשרויות מדהימות. בגלל זה יצרנו את הקסם הבא ב-ml_tlv.</p>
+                <p style="margin-bottom: 25px;">היכנס/י לעמוד <strong>התאמת הבשמים</strong> שלנו. המערכת החכמה שלנו לומדת את הטעם שלך (הבשמים אליהם את/ה מתחבר/ת, התווים האהובים עליך) ומרכיבה לך רשימה מדויקת של בשמים שכנראה פשוט תתאהב/י בהם!</p>
+                
+                <div style="text-align: center; margin: 35px 0;">
+                    <a href="https://www.ml-tlv.com/admin/recommendations" style="display: inline-block; background-color: #000; color: #fff; padding: 16px 32px; text-decoration: none; border-radius: 16px; font-weight: 900; font-size: 15px; letter-spacing: 0.5px;">למציאת ההתאמה המושלמת</a>
+                </div>
+                
+                <p style="color: #666; font-size: 14px;">נשמח להמשיך להפתיע אותך עם ניחוחות חדשים,</p>
+                <p style="font-weight: bold; margin-top: 5px;">צוות ml_tlv</p>
+            </div>
+            <div style="text-align: center; padding: 30px 0; color: #ccc; font-size: 11px;">ml - יוקרה בחתיכות קטנות</div>
+        </div>`
         }
     };
 }
