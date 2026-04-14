@@ -98,8 +98,14 @@ export async function POST(req, { params }) {
             // Send Emails
             const adminEmail = process.env.ADMIN_EMAIL;
             
+            const notesHtml = notes && notes.trim() !== '' ? `
+                <div style="margin-top: 20px; background-color: #fffde7; padding: 15px 20px; border-radius: 16px; border: 1px dashed #fde047;">
+                    <div style="font-size: 12px; font-weight: 900; color: #ca8a04; margin-bottom: 5px; text-transform: uppercase;">הערות להזמנה:</div>
+                    <div style="font-size: 14px; color: #854d0e;">${notes}</div>
+                </div>` : '';
+
             // 1. Email to Customer
-            const customerHtml = getOrderConfirmationTemplate(orderId, items, total, freeSamples, notes, deliveryMethod || 'mail', 0); // Shipping cost included in total for catalogs
+            const customerHtml = getOrderConfirmationTemplate(orderId, items, total, freeSamples, notesHtml, deliveryMethod || 'mail', 0); // Shipping cost included in total for catalogs
             await sendEmail(clerkEmail, `אישור הזמנה מ-${catalogName} #${orderId}`, customerHtml, 'order_confirmation', orderId);
 
             // 2. Email to Catalog Owner

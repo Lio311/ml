@@ -269,15 +269,22 @@ export async function POST(req) {
 
             // Prepare dynamic item lists for templates
             const itemsHtmlCustomer = items.map(item => `
-                <tr>
-                    <td style="padding: 8px; border-bottom: 1px solid #ddd;">${item.name || (item.brand + ' ' + item.model)} (${item.size} מ"ל)</td>
-                    <td style="padding: 8px; border-bottom: 1px solid #ddd;">${item.quantity}</td>
-                    <td style="padding: 8px; border-bottom: 1px solid #ddd;">${item.price} ₪</td>
-                </tr>
+        <tr style="border-bottom: 1px solid #f5f5f5;">
+            <td style="padding: 12px 10px; text-align: right; font-size: 14px; color: #333;">${item.name || (item.brand + ' ' + item.model)} (${item.size} מ"ל)</td>
+            <td style="padding: 12px 10px; text-align: center; font-size: 14px; color: #333;">${item.quantity}</td>
+            <td style="padding: 12px 10px; text-align: left; font-size: 14px; font-weight: bold; color: #000;">${item.price} ₪</td>
+        </tr>
+
             `).join('');
 
             const itemsHtmlAdmin = items.map(item => `<li>${item.name || (item.brand + ' ' + item.model)} (${item.size}ml) x${item.quantity}</li>`).join('');
             const deliveryText = deliveryMethod === 'self_pickup' ? 'איסוף עצמי (תל אביב)' : 'משלוח בדואר';
+            
+            const notesHtml = notes && notes.trim() !== '' ? `
+                <div style="margin-top: 20px; background-color: #fffde7; padding: 15px 20px; border-radius: 16px; border: 1px dashed #fde047;">
+                    <div style="font-size: 12px; font-weight: 900; color: #ca8a04; margin-bottom: 5px; text-transform: uppercase;">הערות להזמנה:</div>
+                    <div style="font-size: 14px; color: #854d0e;">${notes}</div>
+                </div>` : '';
 
             // Send Confirmation Email (Async, don't block response)
             const userEmail = user?.emailAddresses[0]?.emailAddress;
@@ -288,7 +295,7 @@ export async function POST(req) {
                     orderId, 
                     total, 
                     freeSamples, 
-                    notes, 
+                    notesHtml, 
                     customerName: user.firstName,
                     itemsHtml: itemsHtmlCustomer,
                     deliveryMethod: deliveryText,
@@ -301,7 +308,7 @@ export async function POST(req) {
                     orderId, 
                     total, 
                     freeSamples, 
-                    notes, 
+                    notesHtml, 
                     customerName: user.firstName, 
                     catalogName,
                     itemsHtml: itemsHtmlCustomer,

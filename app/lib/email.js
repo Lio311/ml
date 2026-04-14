@@ -128,12 +128,12 @@ export const getNewProductTemplate = (product) => {
     `;
 };
 
-export const getOrderConfirmationTemplate = (orderId, items, total, freeSamples, notes, deliveryMethod, shippingCost) => {
+export const getOrderConfirmationTemplate = (orderId, items, total, freeSamples, notesHtml, deliveryMethod, shippingCost) => {
     const itemsContent = Array.isArray(items) ? items.map(item => `
-        <tr style="border-bottom: 1px solid #eee;">
-            <td style="padding: 12px 8px; text-align: right; font-size: 14px; color: #333;">${item.name || (item.brand + ' ' + item.model)} (${item.size} מ"ל)</td>
-            <td style="padding: 12px 8px; text-align: center; font-size: 14px; color: #333;">${item.quantity}</td>
-            <td style="padding: 12px 8px; text-align: left; font-size: 14px; font-weight: bold; color: #000;">${item.price} ₪</td>
+        <tr style="border-bottom: 1px solid #f5f5f5;">
+            <td style="padding: 12px 10px; text-align: right; font-size: 14px; color: #333;">${item.name || (item.brand + ' ' + item.model)} (${item.size} מ"ל)</td>
+            <td style="padding: 12px 10px; text-align: center; font-size: 14px; color: #333;">${item.quantity}</td>
+            <td style="padding: 12px 10px; text-align: left; font-size: 14px; font-weight: bold; color: #000;">${item.price} ₪</td>
         </tr>
     `).join('') : items;
 
@@ -150,9 +150,9 @@ export const getOrderConfirmationTemplate = (orderId, items, total, freeSamples,
                 <table style="width: 100%; border-collapse: collapse; margin-bottom: 25px;">
                     <thead>
                         <tr style="background-color: #f8f8f8; color: #999;">
-                            <th style="padding: 10px 8px; text-align: right; font-size: 10px; font-weight: 900; text-transform: uppercase;">מוצר</th>
-                            <th style="padding: 10px 8px; text-align: center; font-size: 10px; font-weight: 900; text-transform: uppercase;">כמות</th>
-                            <th style="padding: 10px 8px; text-align: left; font-size: 10px; font-weight: 900; text-transform: uppercase;">מחיר</th>
+                            <th style="padding: 12px 10px; text-align: right; font-size: 10px; font-weight: 900; text-transform: uppercase;">מוצר</th>
+                            <th style="padding: 12px 10px; text-align: center; font-size: 10px; font-weight: 900; text-transform: uppercase;">כמות</th>
+                            <th style="padding: 12px 10px; text-align: left; font-size: 10px; font-weight: 900; text-transform: uppercase;">מחיר</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -161,35 +161,28 @@ export const getOrderConfirmationTemplate = (orderId, items, total, freeSamples,
                 </table>
 
                 <div style="background-color: #fcfcfc; padding: 20px; border-radius: 16px; border: 1px solid #f5f5f5;">
-                    ${deliveryMethod ? `
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px; color: #666;">
-                            <span>שיטת מסירה:</span>
-                            <strong>${deliveryMethod}</strong>
-                        </div>
-                    ` : ''}
-                    ${shippingCost > 0 ? `
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px; color: #666;">
-                            <span>עלות משלוח:</span>
-                            <strong>${shippingCost} ₪</strong>
-                        </div>
-                    ` : deliveryMethod ? `
-                        <div style="display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 14px; color: #16a34a;">
-                            <span>דמי משלוח:</span>
-                            <strong>חינם</strong>
-                        </div>
-                    ` : ''}
-                    <div style="margin-top: 12px; padding-top: 12px; border-top: 1px dashed #ddd; font-size: 18px; font-weight: 900; color: #000; display: flex; justify-content: space-between;">
-                        <span>סה"כ:</span>
-                        <span>${total} ₪</span>
-                    </div>
+                    <table style="width: 100%; border-collapse: collapse; font-size: 14px; color: #666;">
+                        <tr>
+                            <td style="padding: 6px 0; text-align: right;">שיטת מסירה:</td>
+                            <td style="padding: 6px 0; text-align: left;"><strong style="color: #000;">${deliveryMethod}</strong></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 6px 0 12px 0; text-align: right;">דמי משלוח:</td>
+                            <td style="padding: 6px 0 12px 0; text-align: left;">
+                                <strong style="color: #16a34a;">${shippingCost}</strong>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" style="border-top: 1px dashed #ddd; padding-top: 15px;"></td>
+                        </tr>
+                        <tr>
+                            <td style="font-size: 18px; font-weight: 900; color: #000; text-align: right;">סה"כ לתשלום:</td>
+                            <td style="font-size: 18px; font-weight: 900; color: #000; text-align: left;">${total} ₪</td>
+                        </tr>
+                    </table>
                 </div>
 
-                ${notes && notes !== '{{notes}}' && notes.trim() !== '' ? `
-                <div style="margin-top: 20px; background-color: #fffde7; padding: 15px 20px; border-radius: 16px; border: 1px dashed #fde047;">
-                    <div style="font-size: 12px; font-weight: 900; color: #ca8a04; margin-bottom: 5px; text-transform: uppercase;">הערות להזמנה:</div>
-                    <div style="font-size: 14px; color: #854d0e;">${notes}</div>
-                </div>
-                ` : '{{#if notes}}<div style="margin-top: 20px; background-color: #fffde7; padding: 15px 20px; border-radius: 16px; border: 1px dashed #fde047;"><div style="font-size: 12px; font-weight: 900; color: #ca8a04; margin-bottom: 5px; text-transform: uppercase;">הערות להזמנה:</div><div style="font-size: 14px; color: #854d0e;">{{notes}}</div></div>{{/if}}'}
+                ${notesHtml}
 
                 <div style="margin-top: 30px; text-align: center;">
                     <a href="https://www.ml-tlv.com/orders" style="display: inline-block; background-color: #000; color: #fff; padding: 16px 32px; text-decoration: none; border-radius: 16px; font-weight: 900; font-size: 14px;">לצפייה בפרטי ההזמנה באתר</a>
@@ -374,7 +367,7 @@ export function getSystemDefaults() {
     return {
         'order_confirmation': {
             subject: 'אישור הזמנה #{{orderId}} - ml_tlv',
-            content_html: getOrderConfirmationTemplate('{{orderId}}', '{{itemsHtml}}', '{{total}}', '{{freeSamples}}', '{{notes}}', '{{deliveryMethod}}', '{{shippingCost}}')
+            content_html: getOrderConfirmationTemplate('{{orderId}}', '{{itemsHtml}}', '{{total}}', '{{freeSamples}}', '{{notesHtml}}', '{{deliveryMethod}}', '{{shippingCost}}')
         },
         'status_update': {
             subject: 'עדכון לגבי הזמנה #{{orderId}} - ml_tlv',
