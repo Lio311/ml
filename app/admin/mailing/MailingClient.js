@@ -1028,12 +1028,6 @@ function TemplateCard({ template, onEdit, onDelete, onSend, onSendTest }) {
                             System
                         </span>
                     )}
-                    {template.type === 'system' && template.slug && (
-                        <div className="flex items-center gap-1 text-[10px] text-gray-500 font-bold bg-gray-50 px-2 py-1 rounded-full border border-gray-100">
-                            <Clock size={10} className="text-gray-400" />
-                            {getTemplateTiming(template.slug)}
-                        </div>
-                    )}
                 </div>
             </div>
 
@@ -1041,14 +1035,19 @@ function TemplateCard({ template, onEdit, onDelete, onSend, onSendTest }) {
             <p className="text-xs text-gray-400 font-bold line-clamp-2 mb-6 flex-grow relative z-10 bg-gray-50 p-3 rounded-xl border border-gray-50/50">{template.subject || '(ללא נושא)'}</p>
 
             <div className="flex items-center gap-2 pt-4 border-t border-gray-50">
-                {template.type !== 'system' && onSend && (
+                {template.type !== 'system' && onSend ? (
                     <button 
                         onClick={onSend}
                         className="flex-1 bg-black text-white py-3 rounded-2xl font-black text-[11px] uppercase tracking-wider flex items-center justify-center gap-2 hover:bg-gray-800 transition-all active:scale-95"
                     >
                         <Send size={14} /> שליחה
                     </button>
-                )}
+                ) : template.type === 'system' && template.slug ? (
+                    <div className="flex-1 flex items-center gap-1.5 text-[10px] text-gray-400 font-bold">
+                        <Clock size={12} className="text-gray-300" />
+                        {getTemplateTiming(template.slug)}
+                    </div>
+                ) : <div className="flex-1"></div>}
                 
                 <div className="flex gap-1 flex-1 justify-end">
                     <button 
