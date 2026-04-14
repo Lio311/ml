@@ -4,7 +4,8 @@ import Link from 'next/link';
 import { 
     Mail, Plus, Calendar, Clock, Send, Trash2, Edit, ChevronRight, 
     User, Users, CheckCircle2, AlertCircle, RefreshCcw, 
-    Settings, Play, ExternalLink, ShoppingBag, Search, X, MailCheck, Bell
+    Settings, Play, ExternalLink, ShoppingBag, Search, X, MailCheck, Bell,
+    History, Monitor
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { format } from 'date-fns';
@@ -32,6 +33,8 @@ export default function MailingClient() {
     // Push State
     const [pushForm, setPushForm] = useState({ title: '', message: '', url: '/', image: '' });
     const [isSendingPush, setIsSendingPush] = useState(false);
+    const [pushHistory, setPushHistory] = useState([]);
+    const [isLoadingHistory, setIsLoadingHistory] = useState(false);
     
     // Editor / Form States
     const [activeTemplate, setActiveTemplate] = useState(null);
@@ -76,6 +79,21 @@ export default function MailingClient() {
         } catch (err) {}
     };
 
+    const fetchPushHistory = async () => {
+        setIsLoadingHistory(true);
+        try {
+            const res = await fetch('/api/admin/push/history');
+            if (res.ok) {
+                const data = await res.json();
+                setPushHistory(data || []);
+            }
+        } catch (err) {
+            console.error('Error fetching push history:', err);
+        } finally {
+            setIsLoadingHistory(false);
+        }
+    };
+
     const fetchAllProducts = async () => {
         try {
             const res = await fetch('/api/products?limit=1000');
@@ -101,6 +119,12 @@ export default function MailingClient() {
             fetchAllProducts();
         }
     }, [isCatalogModalOpen]);
+
+    useEffect(() => {
+        if (view === 'push-notification') {
+            fetchPushHistory();
+        }
+    }, [view]);
 
     const handleSaveTemplate = async (template) => {
         setIsSaving(true);
@@ -302,7 +326,7 @@ export default function MailingClient() {
                 const result = await res.json();
                 toast.success(`ההתראה נשלחה ל-${result.sent} מכשירים!`, { id: tid });
                 setPushForm({ title: '', message: '', url: '/', image: '' });
-                setView('campaigns');
+                fetchPushHistory();
             } else {
                 const err = await res.json();
                 toast.error(err.error || 'שגיאה בשליחת ההתראה', { id: tid });
@@ -536,7 +560,7 @@ export default function MailingClient() {
             </header>
 
             {/* Navigation Tabs */}
-            {(view === 'templates' || view === 'campaigns' || view === 'admin-alerts') && (
+            {(view === 'templates' || view === 'campaigns' || view === 'admin-alerts' || view === 'push-notification') && (
                 <div className="flex flex-wrap sm:flex-nowrap gap-2 mb-8 bg-gray-100 p-1.5 rounded-3xl w-full sm:w-fit mx-auto md:mx-0 justify-center">
                     <button 
                         onClick={() => { setView('templates'); setLastTab('templates'); }}
@@ -688,82 +712,200 @@ export default function MailingClient() {
                     )}
 
                     {view === 'push-notification' && (
-                        <div className="max-w-2xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500">
-                            <div className="bg-white p-6 md:p-10 rounded-[2.5rem] shadow-xl border border-gray-50 space-y-8">
-                                <div className="flex items-center gap-4 border-b border-gray-50 pb-6">
-                                    <div className="w-16 h-16 bg-indigo-50 rounded-2xl flex items-center justify-center text-indigo-500 shadow-inner">
-                                        <Bell className="w-8 h-8" />
+                        <div className="max-w-4xl mx-auto space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-500 pb-20">
+                            {/* Push Form */}
+                            <div className="bg-white p-6 md:p-10 rounded-[2.5rem] shadow-xl border border-gray-50 flex flex-col md:flex-row gap-8 md:gap-12">
+                                <div className="flex-1 space-y-8">
+                                    <div className="flex items-center gap-4 border-b border-gray-50 pb-6">
+                                        <div className="w-16 h-16 bg-indigo-50 rounded-2xl flex items-center justify-center text-indigo-500 shadow-inner">
+                                            <Bell className="w-8 h-8" />
+                                        </div>
+                                        <div>
+                                            <h2 className="text-2xl font-black text-gray-900">שליחת התראת Push</h2>
+                                            <p className="text-gray-400 font-bold text-xs uppercase tracking-widest">Broadcast to browser subscribers</p>
+                                        </div>
                                     </div>
+
+                                    <div className="space-y-5">
+                                        <div className="space-y-2">
+                                            <label className="block text-xs font-black text-gray-400 uppercase tracking-widest px-2">כותרת ההתראה</label>
+                                            <input 
+                                                className="w-full px-5 py-4 bg-gray-50 rounded-2xl outline-none focus:ring-2 focus:ring-indigo-100 transition-all font-bold"
+                                                value={pushForm.title}
+                                                onChange={e => setPushForm({...pushForm, title: e.target.value})}
+                                                placeholder="מה הכותרת שתוצג בטלפון/מחשב?"
+                                            />
+                                        </div>
+
+                                        <div className="space-y-2">
+                                            <label className="block text-xs font-black text-gray-400 uppercase tracking-widest px-2">תוכן ההודעה</label>
+                                            <textarea 
+                                                className="w-full px-5 py-4 bg-gray-50 rounded-2xl outline-none focus:ring-2 focus:ring-indigo-100 transition-all font-bold min-h-[100px]"
+                                                value={pushForm.message}
+                                                onChange={e => setPushForm({...pushForm, message: e.target.value})}
+                                                placeholder="כתוב כאן את המסר הקצר שלך..."
+                                            />
+                                        </div>
+
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                            <div className="space-y-2">
+                                                <label className="block text-xs font-black text-gray-400 uppercase tracking-widest px-2">לינק ליעד (URL)</label>
+                                                <input 
+                                                    className="w-full px-5 py-4 bg-gray-50 rounded-2xl outline-none focus:ring-2 focus:ring-indigo-100 transition-all font-bold text-sm"
+                                                    value={pushForm.url}
+                                                    onChange={e => setPushForm({...pushForm, url: e.target.value})}
+                                                    placeholder="/catalog or https://..."
+                                                />
+                                            </div>
+                                            <div className="space-y-2">
+                                                <label className="block text-xs font-black text-gray-400 uppercase tracking-widest px-2">לינק לתמונה (אופציונלי)</label>
+                                                <input 
+                                                    className="w-full px-5 py-4 bg-gray-50 rounded-2xl outline-none focus:ring-2 focus:ring-indigo-100 transition-all font-bold text-sm"
+                                                    value={pushForm.image}
+                                                    onChange={e => setPushForm({...pushForm, image: e.target.value})}
+                                                    placeholder="https://... (תמונה גדולה)"
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="pt-6 border-t border-gray-50">
+                                        <button 
+                                            disabled={isSendingPush || !pushForm.title || !pushForm.message}
+                                            onClick={handleSendPush}
+                                            className="w-full py-4 bg-black text-white rounded-2xl font-black hover:bg-gray-800 shadow-2xl shadow-black/20 active:scale-95 transition-all text-lg disabled:opacity-50 disabled:scale-100 flex items-center justify-center"
+                                        >
+                                            {isSendingPush ? (
+                                                <div className="flex items-center gap-3">
+                                                    <RefreshCcw className="animate-spin" size={20} />
+                                                    שולח כעת...
+                                                </div>
+                                            ) : (
+                                                "שלח לכל המנויים"
+                                            )}
+                                        </button>
+                                        <p className="text-center text-[10px] text-gray-400 font-bold mt-4 uppercase tracking-widest">
+                                            ההתראה תישלח לכל הדפדפנים והמכשירים שאישרו קבלת התראות
+                                        </p>
+                                    </div>
+                                </div>
+                                
+                                {/* Preview / Info Column (Optional, but makes it look professional) */}
+                                <div className="hidden lg:flex w-72 flex-col gap-6">
+                                    <div className="bg-gray-50 p-6 rounded-[2rem] border border-gray-100 space-y-4">
+                                        <div className="flex items-center gap-2 mb-2">
+                                            <Monitor size={18} className="text-gray-400" />
+                                            <span className="font-black text-gray-400 text-[10px] uppercase tracking-widest">תצוגה מקדימה</span>
+                                        </div>
+                                        <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                                            <div className="p-3 bg-gray-100/50 flex items-center gap-2 border-b border-gray-100">
+                                                <div className="w-4 h-4 rounded bg-black/10" />
+                                                <div className="w-16 h-1 bg-black/5 rounded-full" />
+                                            </div>
+                                            <div className="p-4 space-y-2">
+                                                <div className="font-black text-xs text-black truncate">{pushForm.title || 'כותרת ההתראה'}</div>
+                                                <div className="text-[10px] text-gray-500 leading-snug line-clamp-2">{pushForm.message || 'תוכן ההודעה שתוצג למשתמש...'}</div>
+                                                {pushForm.image && (
+                                                    <div className="mt-2 aspect-video bg-gray-50 rounded-lg overflow-hidden border border-gray-100">
+                                                        <img src={pushForm.image} className="w-full h-full object-cover opacity-50" />
+                                                    </div>
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className="px-4 text-[10px] text-gray-400 font-bold leading-relaxed">
+                                        * שים לב: התראות Push פועלות רק במכשירים שתומכים בשירות (Chrome, Edge, Safari, Android). ב-iOS נדרשת גרסה 16.4 ומעלה.
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* Push History Section */}
+                            <div className="bg-white p-6 md:p-8 rounded-[2.5rem] shadow-xl border border-gray-50 space-y-6">
+                                <div className="flex justify-between items-center">
                                     <div>
-                                        <h2 className="text-2xl font-black text-gray-900">שליחת התראת Push</h2>
-                                        <p className="text-gray-400 font-bold text-xs uppercase tracking-widest">Broadcast to browser subscribers</p>
+                                        <h3 className="text-xl font-black text-gray-900 flex items-center gap-2">
+                                            <History className="text-indigo-600" /> היסטוריית התראות
+                                        </h3>
+                                        <p className="text-gray-400 font-bold text-[10px] uppercase tracking-widest">Review past broadcast performance</p>
                                     </div>
-                                </div>
-
-                                <div className="space-y-5">
-                                    <div className="space-y-2">
-                                        <label className="block text-xs font-black text-gray-400 uppercase tracking-widest px-2">כותרת ההתראה</label>
-                                        <input 
-                                            className="w-full px-5 py-4 bg-gray-50 rounded-2xl outline-none focus:ring-2 focus:ring-indigo-100 transition-all font-bold"
-                                            value={pushForm.title}
-                                            onChange={e => setPushForm({...pushForm, title: e.target.value})}
-                                            placeholder="מה הכותרת שתוצג בטלפון/מחשב?"
-                                        />
-                                    </div>
-
-                                    <div className="space-y-2">
-                                        <label className="block text-xs font-black text-gray-400 uppercase tracking-widest px-2">תוכן ההודעה</label>
-                                        <textarea 
-                                            className="w-full px-5 py-4 bg-gray-50 rounded-2xl outline-none focus:ring-2 focus:ring-indigo-100 transition-all font-bold min-h-[100px]"
-                                            value={pushForm.message}
-                                            onChange={e => setPushForm({...pushForm, message: e.target.value})}
-                                            placeholder="כתוב כאן את המסר הקצר שלך..."
-                                        />
-                                    </div>
-
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        <div className="space-y-2">
-                                            <label className="block text-xs font-black text-gray-400 uppercase tracking-widest px-2">לינק ליעד (URL)</label>
-                                            <input 
-                                                className="w-full px-5 py-4 bg-gray-50 rounded-2xl outline-none focus:ring-2 focus:ring-indigo-100 transition-all font-bold text-sm"
-                                                value={pushForm.url}
-                                                onChange={e => setPushForm({...pushForm, url: e.target.value})}
-                                                placeholder="/catalog or https://..."
-                                            />
-                                        </div>
-                                        <div className="space-y-2">
-                                            <label className="block text-xs font-black text-gray-400 uppercase tracking-widest px-2">לינק לתמונה (אופציונלי)</label>
-                                            <input 
-                                                className="w-full px-5 py-4 bg-gray-50 rounded-2xl outline-none focus:ring-2 focus:ring-indigo-100 transition-all font-bold text-sm"
-                                                value={pushForm.image}
-                                                onChange={e => setPushForm({...pushForm, image: e.target.value})}
-                                                placeholder="https://... (תמונה גדולה בתוך ההתראה)"
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="pt-6 border-t border-gray-50">
                                     <button 
-                                        disabled={isSendingPush || !pushForm.title || !pushForm.message}
-                                        onClick={handleSendPush}
-                                        className="w-full py-4 bg-black text-white rounded-[1.5rem] font-black hover:bg-gray-800 shadow-2xl shadow-black/20 active:scale-95 transition-all text-lg disabled:opacity-50 disabled:scale-100 flex items-center justify-center gap-3"
+                                        onClick={fetchPushHistory}
+                                        className="p-2 hover:bg-gray-100 rounded-xl transition-all text-gray-400"
+                                        title="רענן היסטוריה"
                                     >
-                                        {isSendingPush ? (
-                                            <>
-                                                <RefreshCcw className="animate-spin" size={20} />
-                                                שולח כעת...
-                                            </>
-                                        ) : (
-                                            <>
-                                                <Send size={20} />
-                                                שלח לכל המנויים
-                                            </>
-                                        )}
+                                        <RefreshCcw size={18} className={isLoadingHistory ? 'animate-spin' : ''} />
                                     </button>
-                                    <p className="text-center text-[10px] text-gray-400 font-bold mt-4 uppercase tracking-widest">
-                                        ההתראה תישלח לכל הדפדפנים והמכשירים שאישרו קבלת התראות
-                                    </p>
+                                </div>
+
+                                <div className="space-y-3">
+                                    {isLoadingHistory && pushHistory.length === 0 ? (
+                                        <div className="py-10 text-center animate-pulse">
+                                            <div className="w-12 h-1 bg-gray-100 rounded-full mx-auto mb-4" />
+                                            <div className="text-gray-300 font-black text-xs uppercase tracking-widest">טוען היסטוריה...</div>
+                                        </div>
+                                    ) : pushHistory.length === 0 ? (
+                                        <div className="py-12 text-center text-gray-300 font-bold border-2 border-dashed border-gray-50 rounded-[2rem]">
+                                            טרם נשלחו התראות Push מהמערכת
+                                        </div>
+                                    ) : (
+                                        <div className="overflow-x-auto -mx-6 px-6 no-scrollbar">
+                                            <table className="w-full text-right border-separate border-spacing-y-2">
+                                                <thead>
+                                                    <tr className="text-gray-400 text-[10px] font-black uppercase tracking-widest px-4">
+                                                        <th className="pb-2 pr-4 font-black">התראה</th>
+                                                        <th className="pb-2 text-center font-black">זמן</th>
+                                                        <th className="pb-2 text-center font-black">תוצאות</th>
+                                                        <th className="pb-2 text-center font-black">שולח</th>
+                                                        <th className="pb-2"></th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {pushHistory.map((item) => (
+                                                        <tr key={item.id} className="group hover:bg-gray-50 transition-all rounded-2xl overflow-hidden">
+                                                            <td className="py-4 pr-4 bg-gray-50/50 group-hover:bg-white rounded-r-2xl border-y border-r border-transparent">
+                                                                <div className="flex flex-col">
+                                                                    <span className="font-black text-gray-900 text-sm">{item.title}</span>
+                                                                    <span className="text-[10px] text-gray-400 font-bold line-clamp-1 max-w-[200px]">{item.message}</span>
+                                                                </div>
+                                                            </td>
+                                                            <td className="py-4 text-center bg-gray-50/50 group-hover:bg-white border-y border-transparent">
+                                                                <div className="flex flex-col items-center">
+                                                                    <span className="text-[11px] font-bold text-gray-800">{format(new Date(item.sent_at), 'dd/MM/yy')}</span>
+                                                                    <span className="text-[10px] text-gray-400 font-bold">{format(new Date(item.sent_at), 'HH:mm')}</span>
+                                                                </div>
+                                                            </td>
+                                                            <td className="py-4 text-center bg-gray-50/50 group-hover:bg-white border-y border-transparent">
+                                                                <div className="flex items-center justify-center gap-3">
+                                                                    <div className="flex flex-col items-center">
+                                                                        <span className="text-xs font-black text-green-600">{item.sent_count}</span>
+                                                                        <span className="text-[8px] font-bold text-gray-400 uppercase">נמסרו</span>
+                                                                    </div>
+                                                                    {item.fail_count > 0 && (
+                                                                        <div className="flex flex-col items-center">
+                                                                            <span className="text-xs font-black text-red-400">{item.fail_count}</span>
+                                                                            <span className="text-[8px] font-bold text-gray-400 uppercase">נכשלו</span>
+                                                                        </div>
+                                                                    )}
+                                                                </div>
+                                                            </td>
+                                                            <td className="py-4 text-center bg-gray-50/50 group-hover:bg-white border-y border-transparent">
+                                                                <span className="text-[10px] font-black text-gray-500 bg-white px-2.5 py-1 rounded-full border border-gray-100 group-hover:border-gray-200">{item.admin_name || 'Admin'}</span>
+                                                            </td>
+                                                            <td className="py-4 pl-4 bg-gray-50/50 group-hover:bg-white rounded-l-2xl border-y border-l border-transparent text-left">
+                                                                <button 
+                                                                    onClick={() => setPushForm({ title: item.title, message: item.message, url: item.url, image: item.image })}
+                                                                    className="p-2 hover:bg-black hover:text-white rounded-xl transition-all"
+                                                                    title="שכפל לקמפיין חדש"
+                                                                >
+                                                                    <RefreshCcw size={14} />
+                                                                </button>
+                                                            </td>
+                                                        </tr>
+                                                    ))}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    )}
                                 </div>
                             </div>
                         </div>

@@ -59,6 +59,17 @@ export async function POST(req) {
         const successCount = results.filter(r => r.status === 'fulfilled').length;
         const failCount = results.filter(r => r.status === 'rejected').length;
 
+        // Record history
+        try {
+            await pool.query(
+                `INSERT INTO push_history (title, message, url, image, sent_count, fail_count, admin_name) 
+                 VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+                [title, message, url || '/', image || null, successCount, failCount, user?.firstName || 'Admin']
+            );
+        } catch (dbErr) {
+            console.error('Error recording push history:', dbErr);
+        }
+
         return NextResponse.json({ 
             success: true, 
             total: subscriptions.length,
