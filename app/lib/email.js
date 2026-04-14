@@ -91,7 +91,7 @@ export const getNewProductTemplate = (product) => {
             <style>
                 @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;700&display=swap');
             </style>
-            <div style="text-align: center; font-size: 24px; font-weight: bold; margin-bottom: 20px;">ml_tlv</div>
+
 
             <h1 style="color: #000; text-align: center;">הגיע חדש! ✨</h1>
             <p style="text-align: center; font-size: 18px;">אנחנו מתרגשים להציג את התוספת החדשה לקולקציה שלנו:</p>
@@ -159,9 +159,6 @@ export const getOrderConfirmationTemplate = (orderId, items, total, freeSamples,
 
     return `
         <div dir="rtl" style="font-family: 'Open Sans', 'Open Sans Hebrew', Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto; line-height: 1.6;">
-            <div style="text-align: center; padding: 20px 0;">
-                <div style="font-size: 28px; font-weight: 900; letter-spacing: -1px; color: #000;">ml_tlv</div>
-            </div>
 
             <div style="background-color: #fff; padding: 30px; border-radius: 24px; border: 1px solid #f0f0f0; box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
                 <h1 style="margin: 0 0 10px; font-size: 24px; font-weight: 900; color: #000; text-align: center;">תודה על ההזמנה!</h1>
@@ -208,9 +205,6 @@ export const getOrderConfirmationTemplate = (orderId, items, total, freeSamples,
 export const getStatusUpdateTemplate = (orderId, name, status, messageBody) => {
     return `
         <div dir="rtl" style="font-family: 'Open Sans', 'Open Sans Hebrew', Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto; line-height: 1.6;">
-            <div style="text-align: center; padding: 20px 0;">
-                <div style="font-size: 28px; font-weight: 900; letter-spacing: -1px; color: #000;">ml_tlv</div>
-            </div>
             <div style="background-color: #fff; padding: 30px; border-radius: 24px; border: 1px solid #f0f0f0; box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
                 <h2 style="margin: 0 0 15px; font-size: 22px; font-weight: 900; color: #000;">עדכון לגבי הזמנה #${orderId}</h2>
                 <p style="margin-bottom: 20px;">היי ${name},</p>
@@ -234,9 +228,6 @@ export const getStatusUpdateTemplate = (orderId, name, status, messageBody) => {
 export const getUserWelcomeTemplate = (name) => {
     return `
         <div dir="rtl" style="font-family: 'Open Sans', 'Open Sans Hebrew', Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto; line-height: 1.6;">
-            <div style="text-align: center; padding: 20px 0;">
-                <div style="font-size: 28px; font-weight: 900; letter-spacing: -1px; color: #000;">ml_tlv</div>
-            </div>
 
             <div style="background-color: #fff; padding: 30px; border-radius: 24px; border: 1px solid #f0f0f0; box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
                 <h1 style="margin: 0 0 10px; font-size: 24px; font-weight: 900; color: #000;">ברוכים הבאים ל-ml_tlv! ✨</h1>
@@ -277,9 +268,6 @@ export const getAdminNewOrderTemplate = (orderId, customerName, total, items, de
 
     return `
         <div dir="rtl" style="font-family: 'Open Sans', 'Open Sans Hebrew', Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto; line-height: 1.6;">
-            <div style="text-align: center; padding: 20px 0;">
-                <div style="font-size: 18px; font-weight: 900; letter-spacing: -1px; color: #000;">ml_tlv ADMIN</div>
-            </div>
 
             <div style="background-color: #fff; padding: 30px; border-radius: 24px; border: 1px solid #f0f0f0; box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
                 <h1 style="margin: 0 0 10px; font-size: 24px; font-weight: 900; color: #000; text-align: center;">הזמנה חדשה! 🔥</h1>
@@ -310,9 +298,6 @@ export const getAdminNewOrderTemplate = (orderId, customerName, total, items, de
 export const getAdminNewUserTemplate = (user) => {
     return `
         <div dir="rtl" style="font-family: 'Open Sans', 'Open Sans Hebrew', Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto; line-height: 1.6;">
-            <div style="text-align: center; padding: 20px 0;">
-                <div style="font-size: 16px; font-weight: 900; color: #000;">ml_tlv ADMIN</div>
-            </div>
 
             <div style="background-color: #fff; padding: 30px; border-radius: 24px; border: 1px solid #f0f0f0; box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
                 <h1 style="margin: 0 0 10px; font-size: 22px; font-weight: 900; color: #000; text-align: center;">משתמש חדש נרשם! ✨</h1>
@@ -334,9 +319,6 @@ export const getBackInStockTemplate = (product) => {
     
     return `
         <div dir="rtl" style="font-family: 'Open Sans', 'Open Sans Hebrew', Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto; line-height: 1.6;">
-            <div style="text-align: center; padding: 20px 0;">
-                <div style="font-size: 28px; font-weight: 900; letter-spacing: -1px; color: #000;">ml_tlv</div>
-            </div>
 
             <div style="background-color: #fff; padding: 30px; border-radius: 24px; border: 1px solid #f0f0f0; box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
                 <h1 style="margin: 0 0 10px; font-size: 24px; font-weight: 900; color: #000; text-align: center;">הוא חזר! 🎉</h1>
@@ -410,9 +392,6 @@ export function getSystemDefaults() {
             subject: 'נשמח לשמוע מה דעתך! ⭐',
             content_html: `
         <div dir="rtl" style="font-family: 'Open Sans', 'Open Sans Hebrew', Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto; line-height: 1.6;">
-            <div style="text-align: center; padding: 20px 0;">
-                <div style="font-size: 28px; font-weight: 900; letter-spacing: -1px; color: #000;">ml_tlv</div>
-            </div>
             <div style="background-color: #fff; padding: 30px; border-radius: 24px; border: 1px solid #f0f0f0; box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
                 <h2 style="margin: 0 0 15px; font-size: 22px; font-weight: 900; color: #000; text-align: center;">איך הבשמים החדשים שלך? ⭐</h2>
                 <p style="margin-bottom: 20px;">שלום {{name}},</p>
@@ -435,9 +414,6 @@ export function getSystemDefaults() {
             subject: 'שכחת משהו אצלנו... קח מתנה! 👀',
             content_html: `
         <div dir="rtl" style="font-family: 'Open Sans', 'Open Sans Hebrew', Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto; line-height: 1.6;">
-            <div style="text-align: center; padding: 20px 0;">
-                <div style="font-size: 28px; font-weight: 900; letter-spacing: -1px; color: #000;">ml_tlv</div>
-            </div>
             <div style="background-color: #fff; padding: 30px; border-radius: 24px; border: 1px solid #f0f0f0; box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
                 <h2 style="margin: 0 0 15px; font-size: 22px; font-weight: 900; color: #000; text-align: center;">ראינו שהשארת פריטים בסל... 👀</h2>
                 <p style="text-align: center; color: #666;">אנחנו שומרים לך עליהם, אבל המלאי מוגבל!</p>
@@ -459,9 +435,6 @@ export function getSystemDefaults() {
             subject: 'פנייה חדשה מהאתר: {{name}}',
             content_html: `
         <div dir="rtl" style="font-family: 'Open Sans', 'Open Sans Hebrew', Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto; line-height: 1.6;">
-            <div style="text-align: center; padding: 20px 0;">
-                <div style="font-size: 18px; font-weight: 900; color: #000;">ml_tlv ADMIN</div>
-            </div>
             <div style="background-color: #fff; padding: 30px; border-radius: 24px; border: 1px solid #f0f0f0; box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
                 <h1 style="margin: 0 0 15px; font-size: 22px; font-weight: 900; color: #000; text-align: center;">פנייה חדשה מהאתר</h1>
                 <div style="background-color: #f8f8f8; padding: 20px; border-radius: 16px; margin-bottom: 25px;">
@@ -479,9 +452,6 @@ export function getSystemDefaults() {
             subject: 'היי {{name}}, טיפים לשימוש נכון בבשמים שקיבלת! ✨',
             content_html: `
         <div dir="rtl" style="font-family: 'Open Sans', 'Open Sans Hebrew', Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto; line-height: 1.6;">
-            <div style="text-align: center; padding: 20px 0;">
-                <div style="font-size: 28px; font-weight: 900; letter-spacing: -1px; color: #000;">ml_tlv</div>
-            </div>
             <div style="background-color: #fff; padding: 30px; border-radius: 24px; border: 1px solid #f0f0f0; box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
                 <h1 style="margin: 0 0 10px; font-size: 22px; font-weight: 900; color: #000; text-align: center;">טיפים לשימוש נכון בבושם 💡</h1>
                 <p style="text-align: center; color: #666; margin-bottom: 25px;">היי {{name}}, אנחנו מקווים שאתה נהנה מהניחוחות החדשים שלך!</p>
@@ -501,9 +471,6 @@ export function getSystemDefaults() {
             subject: 'המלצות אישיות (מערכת)',
             content_html: `
         <div dir="rtl" style="font-family: 'Open Sans', 'Open Sans Hebrew', Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto; line-height: 1.6;">
-            <div style="text-align: center; padding: 20px 0;">
-                <div style="font-size: 28px; font-weight: 900; letter-spacing: -1px; color: #000;">ml_tlv</div>
-            </div>
             <div style="background-color: #fff; padding: 30px; border-radius: 24px; border: 1px solid #f0f0f0; box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
                 <h1 style="margin: 0 0 10px; font-size: 22px; font-weight: 900; color: #000; text-align: center;">במיוחד בשבילך... המלצות ניחוחות שמחכות לך ✨</h1>
                 <p style="text-align: center; color: #666; margin-bottom: 25px;">שלום {{name}}!<br>עבדנו קצת על הטעם האישי שלך והכנו לך המלצות מיוחדות:</p>

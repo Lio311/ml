@@ -383,9 +383,6 @@ export default function MailingClient() {
             desc: 'עדכון כללי, חדשות, או הודעה ללקוחות',
             preview: 'bg-gradient-to-br from-blue-50 to-indigo-50',
             html: `<div dir="rtl" style="font-family: 'Open Sans', 'Open Sans Hebrew', Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto; line-height: 1.6;">
-    <div style="text-align: center; padding: 20px 0;">
-        <div style="font-size: 28px; font-weight: 900; letter-spacing: -1px; color: #000;">ml_tlv</div>
-    </div>
     <div style="background-color: #fff; padding: 30px; border-radius: 24px; border: 1px solid #f0f0f0; box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
         <h1 style="margin: 0 0 10px; font-size: 24px; font-weight: 900; color: #000; text-align: center;">כותרת ההודעה שלך ✨</h1>
         <p style="margin: 0 0 25px; color: #666; text-align: center;">היי {{name}},</p>
@@ -407,9 +404,6 @@ export default function MailingClient() {
             desc: 'קודי קופון, מבצעים, או הנחות מיוחדות',
             preview: 'bg-gradient-to-br from-orange-50 to-red-50',
             html: `<div dir="rtl" style="font-family: 'Open Sans', 'Open Sans Hebrew', Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto; line-height: 1.6;">
-    <div style="text-align: center; padding: 20px 0;">
-        <div style="font-size: 28px; font-weight: 900; letter-spacing: -1px; color: #000;">ml_tlv</div>
-    </div>
     <div style="background-color: #fff; padding: 30px; border-radius: 24px; border: 1px solid #f0f0f0; box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
         <h1 style="margin: 0 0 10px; font-size: 24px; font-weight: 900; color: #000; text-align: center;">🔥 מבצע מיוחד רק בשבילך!</h1>
         <p style="margin: 0 0 25px; color: #666; text-align: center;">היי {{name}}, יש לנו הפתעה קטנה...</p>
@@ -433,9 +427,6 @@ export default function MailingClient() {
             desc: 'תוכן חינוכי, טיפים, או מדריכים',
             preview: 'bg-gradient-to-br from-emerald-50 to-teal-50',
             html: `<div dir="rtl" style="font-family: 'Open Sans', 'Open Sans Hebrew', Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto; line-height: 1.6;">
-    <div style="text-align: center; padding: 20px 0;">
-        <div style="font-size: 28px; font-weight: 900; letter-spacing: -1px; color: #000;">ml_tlv</div>
-    </div>
     <div style="background-color: #fff; padding: 30px; border-radius: 24px; border: 1px solid #f0f0f0; box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
         <h1 style="margin: 0 0 10px; font-size: 24px; font-weight: 900; color: #000; text-align: center;">ידעת ש...? 💡</h1>
         <p style="margin: 0 0 25px; color: #666; text-align: center;">היי {{name}}, הכנו בשבילך כמה טיפים שימושיים</p>
@@ -464,9 +455,6 @@ export default function MailingClient() {
             desc: 'מסגרת בסיסית ריקה עם לוגו ופוטר',
             preview: 'bg-gradient-to-br from-gray-50 to-gray-100',
             html: `<div dir="rtl" style="font-family: 'Open Sans', 'Open Sans Hebrew', Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto; line-height: 1.6;">
-    <div style="text-align: center; padding: 20px 0;">
-        <div style="font-size: 28px; font-weight: 900; letter-spacing: -1px; color: #000;">ml_tlv</div>
-    </div>
     <div style="background-color: #fff; padding: 30px; border-radius: 24px; border: 1px solid #f0f0f0; box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
         <p>היי {{name}},</p>
         <p>כאן תוכן המייל שלך...</p>
