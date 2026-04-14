@@ -379,7 +379,8 @@ export default function MailingClient() {
     const starterTemplates = [
         {
             id: 'announcement',
-            name: '📢 הודעה / עדכון',
+            name: 'הודעה / עדכון',
+            emoji: '📢',
             desc: 'עדכון כללי, חדשות, או הודעה ללקוחות',
             preview: 'bg-gradient-to-br from-blue-50 to-indigo-50',
             html: `<div dir="rtl" style="font-family: 'Open Sans', 'Open Sans Hebrew', Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto; line-height: 1.6;">
@@ -400,7 +401,8 @@ export default function MailingClient() {
         },
         {
             id: 'promotion',
-            name: '🔥 מבצע / הנחה',
+            name: 'מבצע / הנחה',
+            emoji: '🔥',
             desc: 'קודי קופון, מבצעים, או הנחות מיוחדות',
             preview: 'bg-gradient-to-br from-orange-50 to-red-50',
             html: `<div dir="rtl" style="font-family: 'Open Sans', 'Open Sans Hebrew', Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto; line-height: 1.6;">
@@ -423,7 +425,8 @@ export default function MailingClient() {
         },
         {
             id: 'info',
-            name: '📋 מידע / טיפים',
+            name: 'מידע / טיפים',
+            emoji: '📋',
             desc: 'תוכן חינוכי, טיפים, או מדריכים',
             preview: 'bg-gradient-to-br from-emerald-50 to-teal-50',
             html: `<div dir="rtl" style="font-family: 'Open Sans', 'Open Sans Hebrew', Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto; line-height: 1.6;">
@@ -451,7 +454,8 @@ export default function MailingClient() {
         },
         {
             id: 'blank',
-            name: '📄 ריק',
+            name: 'ריק',
+            emoji: '📄',
             desc: 'מסגרת בסיסית ריקה עם לוגו ופוטר',
             preview: 'bg-gradient-to-br from-gray-50 to-gray-100',
             html: `<div dir="rtl" style="font-family: 'Open Sans', 'Open Sans Hebrew', Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto; line-height: 1.6;">
@@ -791,7 +795,7 @@ export default function MailingClient() {
                         <div className="px-6 py-4 border-b border-gray-100 flex justify-between items-center">
                             <div>
                                 <h3 className="text-xl font-black text-gray-900 flex items-center gap-2">
-                                    ✨ בחר עיצוב בסיס
+                                    בחר עיצוב בסיס
                                 </h3>
                                 <p className="text-gray-400 font-bold text-[10px] uppercase tracking-widest">Choose a starter template</p>
                             </div>
@@ -812,7 +816,7 @@ export default function MailingClient() {
                                     className="group text-right p-4 rounded-2xl border-2 border-gray-100 hover:border-black/20 hover:shadow-xl transition-all duration-300 hover:scale-[1.02] active:scale-95"
                                 >
                                     <div className={`w-full h-16 rounded-xl mb-3 flex items-center justify-center ${starter.preview} transition-all`}>
-                                        <div className="text-3xl group-hover:scale-125 transition-transform duration-300">{starter.name.split(' ')[0]}</div>
+                                        <div className="text-3xl group-hover:scale-125 transition-transform duration-300">{starter.emoji}</div>
                                     </div>
                                     <h4 className="font-black text-gray-900 text-sm mb-0.5">{starter.name}</h4>
                                     <p className="text-gray-400 text-xs font-bold">{starter.desc}</p>
