@@ -27,6 +27,7 @@ export default function MailingClient() {
     const [loading, setLoading] = useState(true);
     const [view, setView] = useState('templates'); // 'templates' | 'campaigns' | 'admin-alerts' | 'edit-template' | 'create-campaign' | 'push-notification'
     const [lastTab, setLastTab] = useState('templates'); 
+    const [selectedCategory, setSelectedCategory] = useState('all');
     
     // Push State
     const [pushForm, setPushForm] = useState({ title: '', message: '', url: '/', image: '' });
