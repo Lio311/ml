@@ -195,6 +195,15 @@ export default function MailingClient() {
                     </tbody>
                 </table>
             `,
+            itemsHtmlAdmin: `
+                <li style="margin-bottom: 12px; border-bottom: 1px solid #f0f0f0; padding-bottom: 12px; display: table; width: 100%;">
+                    <div style="display: table-cell; vertical-align: middle; width: 50px;"><img src="https://ml-tlv.com/logo.png" width="40" height="40" style="border-radius: 6px; border: 1px solid #f0f0f0;" alt="product test" /></div>
+                    <div style="display: table-cell; vertical-align: middle;">
+                        <span style="font-weight: 900; color: #000;">בושם לדוגמה טסט ml_tlv</span>
+                        <div style="font-size: 12px; color: #666;">10ml x1</div>
+                    </div>
+                </li>
+            `,
             message: 'זוהי הודעת בדיקה שנשלחה מעמוד צור קשר באתר.',
             email: adminEmail
         };

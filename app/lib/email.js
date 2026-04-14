@@ -266,9 +266,12 @@ export const getUserWelcomeTemplate = (name) => {
 
 export const getAdminNewOrderTemplate = (orderId, customerName, total, items, deliveryMethod, shippingCost, phoneNumber) => {
     const itemsContent = Array.isArray(items) ? items.map(item => `
-        <li style="margin-bottom: 8px; border-bottom: 1px solid #f0f0f0; padding-bottom: 8px;">
-            <span style="font-weight: 900; color: #000;">${item.brand || ''} ${item.model || ''}</span>
-            <div style="font-size: 12px; color: #666;">${item.size || ''}ml x${item.quantity || 1}</div>
+        <li style="margin-bottom: 12px; border-bottom: 1px solid #f0f0f0; padding-bottom: 12px; display: table; width: 100%;">
+            ${item.image_url ? `<div style="display: table-cell; vertical-align: middle; width: 50px;"><img src="${item.image_url}" width="40" height="40" style="border-radius: 6px; border: 1px solid #f0f0f0;" alt="product" /></div>` : ''}
+            <div style="display: table-cell; vertical-align: middle;">
+                <span style="font-weight: 900; color: #000;">${item.name || (item.brand + ' ' + item.model)}</span>
+                <div style="font-size: 12px; color: #666;">${item.size || ''}ml x${item.quantity || 1}</div>
+            </div>
         </li>
     `).join('') : items;
 
@@ -377,6 +380,10 @@ export function getSystemDefaults() {
         'order_confirmation': {
             subject: 'אישור הזמנה #{{orderId}} - ml_tlv',
             content_html: getOrderConfirmationTemplate('{{orderId}}', '{{itemsHtml}}', '{{total}}', '{{freeSamples}}', '{{notesHtml}}', '{{deliveryMethod}}', '{{shippingCost}}')
+        },
+        'admin_alert': {
+            subject: 'הזמנה חדשה התקבלה! #{{orderId}} 🔥',
+            content_html: getAdminNewOrderTemplate('{{orderId}}', '{{customerName}}', '{{total}}', '{{itemsHtmlAdmin}}', '{{deliveryMethod}}', '{{shippingCost}}', '{{phoneNumber}}')
         },
         'status_update': {
             subject: 'עדכון לגבי הזמנה #{{orderId}} - ml_tlv',

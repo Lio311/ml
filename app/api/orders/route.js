@@ -293,7 +293,15 @@ export async function POST(req) {
                     </tbody>
                 </table>`;
 
-            const itemsHtmlAdmin = items.map(item => `<li>${item.name || (item.brand + ' ' + item.model)} (${item.size}ml) x${item.quantity}</li>`).join('');
+            const itemsHtmlAdmin = items.map(item => `
+        <li style="margin-bottom: 12px; border-bottom: 1px solid #f0f0f0; padding-bottom: 12px; display: table; width: 100%;">
+            ${item.image_url ? `<div style="display: table-cell; vertical-align: middle; width: 50px;"><img src="${item.image_url}" width="40" height="40" style="border-radius: 6px; border: 1px solid #f0f0f0;" alt="product" /></div>` : ''}
+            <div style="display: table-cell; vertical-align: middle;">
+                <span style="font-weight: 900; color: #000;">${item.name || (item.brand + ' ' + item.model)}</span>
+                <div style="font-size: 12px; color: #666;">${item.size || ''}ml x${item.quantity || 1}</div>
+            </div>
+        </li>
+            `).join('');
             const deliveryText = deliveryMethod === 'self_pickup' ? 'איסוף עצמי (תל אביב)' : 'משלוח בדואר';
             
             const notesHtml = notes && notes.trim() !== '' ? `
