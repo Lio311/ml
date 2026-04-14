@@ -90,6 +90,8 @@ export default function MailingClient() {
         if (['educational'].includes(slug)) return 'educational';
         if (['back_in_stock'].includes(slug)) return 'inventory';
         return 'general';
+    };
+
     useEffect(() => {
         if (isCatalogModalOpen && allProducts.length === 0) {
             fetchAllProducts();
