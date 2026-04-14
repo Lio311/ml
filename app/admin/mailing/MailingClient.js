@@ -86,12 +86,10 @@ export default function MailingClient() {
         if (!slug) return 'general';
         if (['order_confirmation', 'status_update'].includes(slug)) return 'orders';
         if (['welcome', 'review_request'].includes(slug)) return 'marketing';
-        if (['abandoned_cart', 'nurture_10_days', 'nurture_25_days', 'recommendations'].includes(slug)) return 'retention';
+        if (['cart_recovery', 'nurture_10_days', 'nurture_25_days', 'recommendations'].includes(slug)) return 'retention';
         if (['educational'].includes(slug)) return 'educational';
         if (['back_in_stock'].includes(slug)) return 'inventory';
         return 'general';
-    };
-
     useEffect(() => {
         if (isCatalogModalOpen && allProducts.length === 0) {
             fetchAllProducts();
@@ -996,22 +994,49 @@ export default function MailingClient() {
     );
 }
 
+const getTemplateTiming = (slug) => {
+    switch(slug) {
+        case 'order_confirmation': return 'מיד לאחר אישור ההזמנה';
+        case 'status_update': return 'בעת שינוי סטטוס הזמנה';
+        case 'welcome': return 'מיד לאחר הרשמת משתמש';
+        case 'review_request': return '7 ימים לאחר ההזמנה';
+        case 'cart_recovery': return 'אחרי נטישת הסל (שחזור)';
+        case 'educational': return '3-4 ימים לאחר ההזמנה';
+        case 'recommendations': return '30 ימים לאחר ההזמנה';
+        case 'nurture_10_days': return '10 ימים לאחר הרשמה';
+        case 'nurture_25_days': return '25 ימים לאחר הרשמה';
+        case 'back_in_stock': return 'כאשר מוצר שוב במלאי';
+        case 'admin_order_alert': return 'מיידי (מנהלים)';
+        case 'admin_user_alert': return 'מיידי (מנהלים)';
+        case 'contact_form_alert': return 'מיידי (צור קשר)';
+        default: return 'ידני / דיוור מתוזמן';
+    }
+};
+
 function TemplateCard({ template, onEdit, onDelete, onSend, onSendTest }) {
     return (
-        <div className="bg-white p-6 rounded-[2.5rem] shadow-sm border border-gray-100 hover:shadow-xl hover:shadow-black/5 hover:-translate-y-1 transition-all duration-300 group flex flex-col h-full">
-            <div className="flex justify-between items-start mb-4">
+        <div className="bg-white p-6 rounded-[2.5rem] shadow-sm border border-gray-100 hover:shadow-xl hover:shadow-black/5 hover:-translate-y-1 transition-all duration-300 group flex flex-col h-full relative overflow-hidden">
+            <div className="flex justify-between items-start mb-4 relative z-10">
                 <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${template.type === 'system' ? 'bg-blue-50 text-blue-500' : 'bg-green-50 text-green-500'}`}>
                     <Mail size={24} />
                 </div>
-                {template.type === 'system' && (
-                    <span className="bg-blue-50 text-blue-500 text-[9px] font-black uppercase px-2.5 py-1 rounded-full border border-blue-100 tracking-widest">
-                        System
-                    </span>
-                )}
+                <div className="flex flex-col items-end gap-1.5">
+                    {template.type === 'system' && (
+                        <span className="bg-blue-50 text-blue-500 text-[9px] font-black uppercase px-2.5 py-1 rounded-full border border-blue-100 tracking-widest">
+                            System
+                        </span>
+                    )}
+                    {template.type === 'system' && template.slug && (
+                        <div className="flex items-center gap-1 text-[10px] text-gray-500 font-bold bg-gray-50 px-2 py-1 rounded-full border border-gray-100">
+                            <Clock size={10} className="text-gray-400" />
+                            {getTemplateTiming(template.slug)}
+                        </div>
+                    )}
+                </div>
             </div>
 
-            <h3 className="text-xl font-black text-gray-900 mb-2 leading-tight">{template.name}</h3>
-            <p className="text-xs text-gray-500 font-bold line-clamp-2 mb-6 flex-grow">{template.subject || '(ללא נושא)'}</p>
+            <h3 className="text-xl font-black text-gray-900 mb-2 leading-tight relative z-10">{template.name}</h3>
+            <p className="text-xs text-gray-400 font-bold line-clamp-2 mb-6 flex-grow relative z-10 bg-gray-50 p-3 rounded-xl border border-gray-50/50">{template.subject || '(ללא נושא)'}</p>
 
             <div className="flex items-center gap-2 pt-4 border-t border-gray-50">
                 {template.type !== 'system' && onSend && (
