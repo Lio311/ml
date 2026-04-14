@@ -85,7 +85,10 @@ export default function MailingClient() {
     const getTemplateCategory = (slug) => {
         if (!slug) return 'general';
         if (['order_confirmation', 'status_update', 'abandoned_cart'].includes(slug)) return 'orders';
-        if (['welcome', 'review_request', 'back_in_stock', 'recommendations', 'nurture_10_days', 'nurture_25_days', 'educational'].includes(slug)) return 'marketing';
+        if (['welcome', 'review_request'].includes(slug)) return 'marketing';
+        if (['nurture_10_days', 'nurture_25_days', 'recommendations'].includes(slug)) return 'retention';
+        if (['educational'].includes(slug)) return 'educational';
+        if (['back_in_stock'].includes(slug)) return 'inventory';
         return 'general';
     };
 
@@ -546,13 +549,25 @@ export default function MailingClient() {
                                     onClick={() => setSelectedCategory('marketing')}
                                     className={`px-4 py-1.5 rounded-full text-xs font-black transition-all whitespace-nowrap ${selectedCategory === 'marketing' ? 'bg-black text-white shadow-md' : 'bg-white text-gray-400 border border-gray-100 hover:bg-gray-50'}`}
                                 >
-                                    שיווק ולקוחות
+                                    שיווק
                                 </button>
                                 <button 
-                                    onClick={() => setSelectedCategory('general')}
-                                    className={`px-4 py-1.5 rounded-full text-xs font-black transition-all whitespace-nowrap ${selectedCategory === 'general' ? 'bg-black text-white shadow-md' : 'bg-white text-gray-400 border border-gray-100 hover:bg-gray-50'}`}
+                                    onClick={() => setSelectedCategory('retention')}
+                                    className={`px-4 py-1.5 rounded-full text-xs font-black transition-all whitespace-nowrap ${selectedCategory === 'retention' ? 'bg-black text-white shadow-md' : 'bg-white text-gray-400 border border-gray-100 hover:bg-gray-50'}`}
                                 >
-                                    כללי
+                                    שימור לקוחות
+                                </button>
+                                <button 
+                                    onClick={() => setSelectedCategory('educational')}
+                                    className={`px-4 py-1.5 rounded-full text-xs font-black transition-all whitespace-nowrap ${selectedCategory === 'educational' ? 'bg-black text-white shadow-md' : 'bg-white text-gray-400 border border-gray-100 hover:bg-gray-50'}`}
+                                >
+                                    הסברים
+                                </button>
+                                <button 
+                                    onClick={() => setSelectedCategory('inventory')}
+                                    className={`px-4 py-1.5 rounded-full text-xs font-black transition-all whitespace-nowrap ${selectedCategory === 'inventory' ? 'bg-black text-white shadow-md' : 'bg-white text-gray-400 border border-gray-100 hover:bg-gray-50'}`}
+                                >
+                                    מלאי
                                 </button>
                             </div>
                             
