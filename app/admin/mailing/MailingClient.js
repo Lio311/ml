@@ -542,7 +542,7 @@ export default function MailingClient() {
 
                     {view === 'admin-alerts' && (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {templates.filter(t => t.slug?.includes('admin_') || t.slug?.includes('contact_form')).map(t => (
+                            {templates.filter(t => (t.slug?.includes('admin_') || t.slug?.includes('contact_form')) && t.slug !== 'admin_alert').map(t => (
                                 <TemplateCard 
                                     key={t.id} 
                                     template={t} 
