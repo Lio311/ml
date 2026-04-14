@@ -139,21 +139,21 @@ export default function PushManager() {
       <button
         onClick={subscribe}
         disabled={loading}
-        className={`p-4 rounded-full shadow-2xl transition-all duration-500 hover:scale-110 active:scale-95 bg-white text-gray-800 border border-gray-100 flex items-center justify-center`}
+        className={`p-4 rounded-full shadow-2xl transition-all duration-500 hover:scale-110 active:scale-95 bg-black text-white flex items-center justify-center`}
         title="הפעל התראות"
       >
         {loading ? (
-          <Loader2 className="w-6 h-6 animate-spin text-indigo-500" />
+          <Loader2 className="w-6 h-6 animate-spin text-white" />
         ) : (
-          <Bell className="w-6 h-6 text-indigo-500 animate-ring" />
+          <Bell className="w-6 h-6 text-white animate-ring" />
         )}
       </button>
       
       {/* Toast-like hint for new visitors */}
       {!loading && !error && (
-        <div className="absolute left-full ml-4 top-1/2 -translate-y-1/2 bg-black text-white px-4 py-2 rounded-xl shadow-2xl border border-gray-800 whitespace-nowrap hidden md:block animate-in fade-in slide-in-from-left-2 transition-all">
-          <div className="relative">
-            הפעל התראות על מוצרים חדשים 🔔
+        <div className="absolute left-full ml-4 top-1/2 -translate-y-1/2 bg-black text-white px-4 py-2 rounded-2xl shadow-2xl border border-gray-800 whitespace-nowrap hidden md:block animate-in fade-in slide-in-from-left-2 transition-all">
+          <div className="relative font-bold text-sm">
+            הפעל התראות לקבלת עדכונים
             <div className="absolute top-1/2 -left-2 -translate-y-1/2 w-2 h-2 bg-black transform rotate-45"></div>
           </div>
         </div>
