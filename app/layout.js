@@ -15,6 +15,7 @@ import pool, { getBrands, getMenuItems } from "./lib/db";
 import { sanitizeProductArray } from "./lib/productUtils";
 import { Toaster } from 'react-hot-toast';
 import ClerkBrandingTranslator from "./components/ClerkBrandingTranslator";
+import ServiceWorkerRegistration from "./components/ServiceWorkerRegistration";
 
 // Validate env vars on server start/request
 validateEnv();
@@ -48,6 +49,24 @@ export const metadata = {
     capable: true,
     statusBarStyle: 'black-translucent',
     title: 'ml_tlv',
+    startupImage: [
+      {
+        url: '/icon-512.png',
+        media: '(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3)',
+      },
+      {
+        url: '/icon-512.png',
+        media: '(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3)',
+      },
+      {
+        url: '/icon-512.png',
+        media: '(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3)',
+      },
+      {
+        url: '/icon-512.png',
+        media: '(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)',
+      },
+    ],
   },
   openGraph: {
     title: "ml_tlv | דוגמיות בשמים",
@@ -128,6 +147,7 @@ export default async function RootLayout({ children }) {
 
               <GoogleAnalytics />
               <MicrosoftClarity />
+              <ServiceWorkerRegistration />
 
               {/* SEO: Organization Schema */}
               <script
