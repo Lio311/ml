@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { 
     Mail, Plus, Calendar, Clock, Send, Trash2, Edit, ChevronRight, 
     User, Users, CheckCircle2, AlertCircle, RefreshCcw, 
-    Settings, Play, ExternalLink, ShoppingBag, Search, X, MailCheck
+    Settings, Play, ExternalLink, ShoppingBag, Search, X, MailCheck, Bell
 } from 'lucide-react';
 import toast from 'react-hot-toast';
 import { format } from 'date-fns';
@@ -25,9 +25,12 @@ export default function MailingClient() {
     const [users, setUsers] = useState([]);
     const [allProducts, setAllProducts] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [view, setView] = useState('templates'); // 'templates' | 'campaigns' | 'admin-alerts' | 'edit-template' | 'create-campaign'
+    const [view, setView] = useState('templates'); // 'templates' | 'campaigns' | 'admin-alerts' | 'edit-template' | 'create-campaign' | 'push-notification'
     const [lastTab, setLastTab] = useState('templates'); 
-    const [selectedCategory, setSelectedCategory] = useState('all');
+    
+    // Push State
+    const [pushForm, setPushForm] = useState({ title: '', message: '', url: '/', image: '' });
+    const [isSendingPush, setIsSendingPush] = useState(false);
     
     // Editor / Form States
     const [activeTemplate, setActiveTemplate] = useState(null);
@@ -279,6 +282,38 @@ export default function MailingClient() {
         }
     };
 
+    const handleSendPush = async () => {
+        if (!pushForm.title || !pushForm.message) {
+            toast.error('נא להזין כותרת והודעה');
+            return;
+        }
+
+        setIsSendingPush(true);
+        const tid = toast.loading('שולח התראות Push...');
+        try {
+            const res = await fetch('/api/admin/push/send', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(pushForm)
+            });
+
+            if (res.ok) {
+                const result = await res.json();
+                toast.success(`ההתראה נשלחה ל-${result.sent} מכשירים!`, { id: tid });
+                setPushForm({ title: '', message: '', url: '/', image: '' });
+                setView('campaigns');
+            } else {
+                const err = await res.json();
+                toast.error(err.error || 'שגיאה בשליחת ההתראה', { id: tid });
+            }
+        } catch (err) {
+            toast.error('שגיאה בתקשורת עם השרת', { id: tid });
+        } finally {
+            setIsSendingPush(false);
+        }
+    };
+
+
     const handleCreateCampaign = async (campaignData) => {
         setIsSaving(true);
         try {
@@ -520,6 +555,12 @@ export default function MailingClient() {
                     >
                         דיוורים מתוזמנים
                     </button>
+                    <button 
+                        onClick={() => { setView('push-notification'); setLastTab('push-notification'); }}
+                        className={`flex-1 sm:flex-none px-4 sm:px-8 py-2.5 sm:py-3 rounded-[1.5rem] font-black text-[11px] sm:text-sm transition-all ${view === 'push-notification' ? 'bg-white text-black shadow-lg shadow-white/20' : 'text-gray-400 hover:text-gray-600'}`}
+                    >
+                        התראות Push
+                    </button>
                 </div>
             )}
 
@@ -644,6 +685,89 @@ export default function MailingClient() {
                             </div>
                         </div>
                     )}
+
+                    {view === 'push-notification' && (
+                        <div className="max-w-2xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-500">
+                            <div className="bg-white p-6 md:p-10 rounded-[2.5rem] shadow-xl border border-gray-50 space-y-8">
+                                <div className="flex items-center gap-4 border-b border-gray-50 pb-6">
+                                    <div className="w-16 h-16 bg-indigo-50 rounded-2xl flex items-center justify-center text-indigo-500 shadow-inner">
+                                        <Bell className="w-8 h-8" />
+                                    </div>
+                                    <div>
+                                        <h2 className="text-2xl font-black text-gray-900">שליחת התראת Push</h2>
+                                        <p className="text-gray-400 font-bold text-xs uppercase tracking-widest">Broadcast to browser subscribers</p>
+                                    </div>
+                                </div>
+
+                                <div className="space-y-5">
+                                    <div className="space-y-2">
+                                        <label className="block text-xs font-black text-gray-400 uppercase tracking-widest px-2">כותרת ההתראה</label>
+                                        <input 
+                                            className="w-full px-5 py-4 bg-gray-50 rounded-2xl outline-none focus:ring-2 focus:ring-indigo-100 transition-all font-bold"
+                                            value={pushForm.title}
+                                            onChange={e => setPushForm({...pushForm, title: e.target.value})}
+                                            placeholder="מה הכותרת שתוצג בטלפון/מחשב?"
+                                        />
+                                    </div>
+
+                                    <div className="space-y-2">
+                                        <label className="block text-xs font-black text-gray-400 uppercase tracking-widest px-2">תוכן ההודעה</label>
+                                        <textarea 
+                                            className="w-full px-5 py-4 bg-gray-50 rounded-2xl outline-none focus:ring-2 focus:ring-indigo-100 transition-all font-bold min-h-[100px]"
+                                            value={pushForm.message}
+                                            onChange={e => setPushForm({...pushForm, message: e.target.value})}
+                                            placeholder="כתוב כאן את המסר הקצר שלך..."
+                                        />
+                                    </div>
+
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                        <div className="space-y-2">
+                                            <label className="block text-xs font-black text-gray-400 uppercase tracking-widest px-2">לינק ליעד (URL)</label>
+                                            <input 
+                                                className="w-full px-5 py-4 bg-gray-50 rounded-2xl outline-none focus:ring-2 focus:ring-indigo-100 transition-all font-bold text-sm"
+                                                value={pushForm.url}
+                                                onChange={e => setPushForm({...pushForm, url: e.target.value})}
+                                                placeholder="/catalog or https://..."
+                                            />
+                                        </div>
+                                        <div className="space-y-2">
+                                            <label className="block text-xs font-black text-gray-400 uppercase tracking-widest px-2">לינק לתמונה (אופציונלי)</label>
+                                            <input 
+                                                className="w-full px-5 py-4 bg-gray-50 rounded-2xl outline-none focus:ring-2 focus:ring-indigo-100 transition-all font-bold text-sm"
+                                                value={pushForm.image}
+                                                onChange={e => setPushForm({...pushForm, image: e.target.value})}
+                                                placeholder="https://... (תמונה גדולה בתוך ההתראה)"
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="pt-6 border-t border-gray-50">
+                                    <button 
+                                        disabled={isSendingPush || !pushForm.title || !pushForm.message}
+                                        onClick={handleSendPush}
+                                        className="w-full py-4 bg-black text-white rounded-[1.5rem] font-black hover:bg-gray-800 shadow-2xl shadow-black/20 active:scale-95 transition-all text-lg disabled:opacity-50 disabled:scale-100 flex items-center justify-center gap-3"
+                                    >
+                                        {isSendingPush ? (
+                                            <>
+                                                <RefreshCcw className="animate-spin" size={20} />
+                                                שולח כעת...
+                                            </>
+                                        ) : (
+                                            <>
+                                                <Send size={20} />
+                                                שלח לכל המנויים
+                                            </>
+                                        )}
+                                    </button>
+                                    <p className="text-center text-[10px] text-gray-400 font-bold mt-4 uppercase tracking-widest">
+                                        ההתראה תישלח לכל הדפדפנים והמכשירים שאישרו קבלת התראות
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    ) || null}
+
 
                     {view === 'edit-template' && (
                         <div className="max-w-4xl mx-auto space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-500">

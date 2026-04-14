@@ -16,6 +16,7 @@ import { sanitizeProductArray } from "./lib/productUtils";
 import { Toaster } from 'react-hot-toast';
 import ClerkBrandingTranslator from "./components/ClerkBrandingTranslator";
 import ServiceWorkerRegistration from "./components/ServiceWorkerRegistration";
+import PushManager from "./components/PushManager";
 
 // Validate env vars on server start/request
 validateEnv();
@@ -148,6 +149,7 @@ export default async function RootLayout({ children }) {
               <GoogleAnalytics />
               <MicrosoftClarity />
               <ServiceWorkerRegistration />
+              <PushManager />
 
               {/* SEO: Organization Schema */}
               <script
