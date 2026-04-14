@@ -268,14 +268,27 @@ export async function POST(req) {
             await client.query('COMMIT');
 
             // Prepare dynamic item lists for templates
-            const itemsHtmlCustomer = items.map(item => `
+            const rowsHtmlCustomer = items.map(item => `
         <tr style="border-bottom: 1px solid #f5f5f5;">
             <td style="padding: 12px 10px; text-align: right; font-size: 14px; color: #333;">${item.name || (item.brand + ' ' + item.model)} (${item.size} מ"ל)</td>
             <td style="padding: 12px 10px; text-align: center; font-size: 14px; color: #333;">${item.quantity}</td>
             <td style="padding: 12px 10px; text-align: left; font-size: 14px; font-weight: bold; color: #000;">${item.price} ₪</td>
         </tr>
-
             `).join('');
+
+            const itemsHtmlCustomer = `
+                <table style="width: 100%; border-collapse: collapse; margin-bottom: 25px;">
+                    <thead>
+                        <tr style="background-color: #f8f8f8; color: #999;">
+                            <th style="padding: 12px 10px; text-align: right; font-size: 10px; font-weight: 900; text-transform: uppercase;">מוצר</th>
+                            <th style="padding: 12px 10px; text-align: center; font-size: 10px; font-weight: 900; text-transform: uppercase;">כמות</th>
+                            <th style="padding: 12px 10px; text-align: left; font-size: 10px; font-weight: 900; text-transform: uppercase;">מחיר</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${rowsHtmlCustomer}
+                    </tbody>
+                </table>`;
 
             const itemsHtmlAdmin = items.map(item => `<li>${item.name || (item.brand + ' ' + item.model)} (${item.size}ml) x${item.quantity}</li>`).join('');
             const deliveryText = deliveryMethod === 'self_pickup' ? 'איסוף עצמי (תל אביב)' : 'משלוח בדואר';

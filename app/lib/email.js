@@ -129,13 +129,30 @@ export const getNewProductTemplate = (product) => {
 };
 
 export const getOrderConfirmationTemplate = (orderId, items, total, freeSamples, notesHtml, deliveryMethod, shippingCost) => {
-    const itemsContent = Array.isArray(items) ? items.map(item => `
+    let finalItemsTable = items;
+    
+    if (Array.isArray(items)) {
+        const rowsHtml = items.map(item => `
         <tr style="border-bottom: 1px solid #f5f5f5;">
             <td style="padding: 12px 10px; text-align: right; font-size: 14px; color: #333;">${item.name || (item.brand + ' ' + item.model)} (${item.size} מ"ל)</td>
             <td style="padding: 12px 10px; text-align: center; font-size: 14px; color: #333;">${item.quantity}</td>
             <td style="padding: 12px 10px; text-align: left; font-size: 14px; font-weight: bold; color: #000;">${item.price} ₪</td>
-        </tr>
-    `).join('') : items;
+        </tr>`).join('');
+        
+        finalItemsTable = `
+                <table style="width: 100%; border-collapse: collapse; margin-bottom: 25px;">
+                    <thead>
+                        <tr style="background-color: #f8f8f8; color: #999;">
+                            <th style="padding: 12px 10px; text-align: right; font-size: 10px; font-weight: 900; text-transform: uppercase;">מוצר</th>
+                            <th style="padding: 12px 10px; text-align: center; font-size: 10px; font-weight: 900; text-transform: uppercase;">כמות</th>
+                            <th style="padding: 12px 10px; text-align: left; font-size: 10px; font-weight: 900; text-transform: uppercase;">מחיר</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${rowsHtml}
+                    </tbody>
+                </table>`;
+    }
 
     return `
         <div dir="rtl" style="font-family: 'Open Sans', 'Open Sans Hebrew', Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto; line-height: 1.6;">
@@ -147,18 +164,7 @@ export const getOrderConfirmationTemplate = (orderId, items, total, freeSamples,
                 <h1 style="margin: 0 0 10px; font-size: 24px; font-weight: 900; color: #000; text-align: center;">תודה על ההזמנה!</h1>
                 <p style="margin: 0 0 25px; color: #666; text-align: center;">הזמנה מספר <strong>#${orderId}</strong> התקבלה בהצלחה.</p>
                 
-                <table style="width: 100%; border-collapse: collapse; margin-bottom: 25px;">
-                    <thead>
-                        <tr style="background-color: #f8f8f8; color: #999;">
-                            <th style="padding: 12px 10px; text-align: right; font-size: 10px; font-weight: 900; text-transform: uppercase;">מוצר</th>
-                            <th style="padding: 12px 10px; text-align: center; font-size: 10px; font-weight: 900; text-transform: uppercase;">כמות</th>
-                            <th style="padding: 12px 10px; text-align: left; font-size: 10px; font-weight: 900; text-transform: uppercase;">מחיר</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${itemsContent}
-                    </tbody>
-                </table>
+                ${finalItemsTable}
 
                 <div style="background-color: #fcfcfc; padding: 20px; border-radius: 16px; border: 1px solid #f5f5f5;">
                     <table style="width: 100%; border-collapse: collapse; font-size: 14px; color: #666;">
