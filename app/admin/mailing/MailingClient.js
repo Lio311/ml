@@ -9,12 +9,17 @@ import {
 import toast from 'react-hot-toast';
 import { format } from 'date-fns';
 import { he } from 'date-fns/locale';
+import { useUser } from '@clerk/nextjs';
 import VisualEditor from '@/app/components/VisualEditor';
 import ModernDateTimePicker from '@/app/components/ui/ModernDateTimePicker';
 import ObjectTagInput from '@/app/components/ObjectTagInput';
 import { generateCatalogHTML } from '@/app/lib/catalogEmailGenerator';
 
 export default function MailingClient() {
+    const { user } = useUser();
+    const adminEmail = user?.primaryEmailAddress?.emailAddress || 'lior31197@gmail.com';
+    const adminName = user?.firstName || 'מנהל';
+
     const [templates, setTemplates] = useState([]);
     const [campaigns, setCampaigns] = useState([]);
     const [users, setUsers] = useState([]);
@@ -157,15 +162,41 @@ export default function MailingClient() {
     };
 
     const handleSendTest = async (subject, html) => {
+        let processedHtml = html || '';
+        let processedSubject = subject || '';
+        
+        const mockData = {
+            name: adminName,
+            customerName: adminName,
+            orderId: 'T-100',
+            total: '150',
+            shippingCost: 'חינם',
+            deliveryMethod: 'איסוף עצמי',
+            notesHtml: `<div style="margin-top: 20px; background-color: #fffde7; padding: 15px 20px; border-radius: 16px; border: 1px dashed #fde047;"><div style="font-size: 12px; font-weight: 900; color: #ca8a04; margin-bottom: 5px; text-transform: uppercase;">הערות להזמנה:</div><div style="font-size: 14px; color: #854d0e;">זוהי הערת בדיקה במסגרת טסט של המערכת.</div></div>`,
+            productsHtml: `<div style="background: white; border: 1px solid #eee; padding: 15px; border-radius: 8px; margin-bottom: 15px; text-align: center;"><br><strong>בושם לדוגמה</strong> - ml_tlv<br><span style="color: #666; font-size: 14px;">תווים דומים: בדיקה</span></div>`,
+            message: 'זוהי הודעת בדיקה שנשלחה מעמוד צור קשר באתר.',
+            email: adminEmail
+        };
+
+        Object.keys(mockData).forEach(key => {
+            const regex = new RegExp(`{{${key}}}`, 'g');
+            processedHtml = processedHtml.replace(regex, mockData[key]);
+            processedSubject = processedSubject.replace(regex, mockData[key]);
+        });
+
+        // Clear out any remaining unmapped placeholders
+        processedHtml = processedHtml.replace(/\{\{(.*?)\}\}/g, '');
+        processedSubject = processedSubject.replace(/\{\{(.*?)\}\}/g, '');
+
         toast.promise(
             fetch('/api/admin/mailing/send', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     recipient_type: 'specific',
-                    recipients: ['lior31197@gmail.com'],
-                    subject,
-                    content_html: html,
+                    recipients: [adminEmail],
+                    subject: processedSubject,
+                    content_html: processedHtml,
                     title: 'בדיקת מערכת'
                 })
             }).then(async res => {
@@ -174,7 +205,7 @@ export default function MailingClient() {
             }),
             {
                 loading: 'שולח מייל בדיקה...',
-                success: 'מייל בדיקה נשלח ל-lior31197@gmail.com',
+                success: `מייל בדיקה נשלח ל-${adminEmail}`,
                 error: 'שגיאה בשליחת בדיקה'
             }
         );
