@@ -27,8 +27,8 @@ export async function POST(req) {
     }
 
     // Get the body
-    const payload = await req.json();
-    const body = JSON.stringify(payload);
+    const body = await req.text();
+    const payload = JSON.parse(body);
 
     // Create a new Svix instance with your secret.
     const wh = new Webhook(WEBHOOK_SECRET);
@@ -85,18 +85,18 @@ export async function POST(req) {
                 // Send Admin Email Alert
                 const adminEmail = process.env.ADMIN_EMAIL || process.env.GMAIL_USER;
                 const adminTmpl = await getTemplate('admin_user_alert', 
-                    { firstName: first_name, lastName: last_name, email: email },
+                    { firstName: first_name, lastName: last_name, email: email, name: first_name },
                     () => getAdminNewUserTemplate({ first_name, last_name, email })
                 );
-                await sendEmail(adminEmail, adminTmpl.subject, adminTmpl.html, 'admin_alert');
+                await sendEmail(adminEmail, adminTmpl.subject || 'משתמש חדש נרשם למערכת! ✨', adminTmpl.html, 'admin_alert');
 
                 // Send Customer Welcome Email
                 if (email) {
                     const welcomeTmpl = await getTemplate('welcome', 
-                        { firstName: first_name },
+                        { firstName: first_name, name: first_name },
                         () => getUserWelcomeTemplate(first_name)
                     );
-                    await sendEmail(email, welcomeTmpl.subject, welcomeTmpl.html, 'welcome');
+                    await sendEmail(email, welcomeTmpl.subject || 'ברוכים הבאים ל-ml_tlv! ✨', welcomeTmpl.html, 'welcome');
                 }
                 console.log(`[Clerk Webhook] Successfully processed new user: ${email}`);
             } else {

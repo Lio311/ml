@@ -71,7 +71,7 @@ export async function getTemplate(slug, data = {}, fallbackFn = null) {
             const template = res.rows[0];
             return {
                 html: replacePlaceholders(template.content_html, data),
-                subject: replacePlaceholders(template.subject, data)
+                subject: replacePlaceholders(template.subject, data) || null
             };
         }
     } catch (err) {
@@ -80,7 +80,19 @@ export async function getTemplate(slug, data = {}, fallbackFn = null) {
     
     // Fallback to static template
     const html = fallbackFn ? fallbackFn(data) : '';
-    return { html, subject: null }; // Subject will be handled by the caller if null
+    
+    // Get default subject from system defaults if possible
+    let subject = null;
+    try {
+        const defaults = getSystemDefaults();
+        if (defaults[slug]) {
+            subject = replacePlaceholders(defaults[slug].subject, data);
+        }
+    } catch (e) {
+        // Ignore errors in getting defaults
+    }
+
+    return { html, subject }; 
 }
 
 export const getNewProductTemplate = (product) => {
@@ -220,13 +232,13 @@ export const getStatusUpdateTemplate = (orderId, name, status, messageBody) => {
     `;
 };
 
-export const getUserWelcomeTemplate = (name) => {
+export const getUserWelcomeTemplate = (firstName) => {
     return `
         <div dir="rtl" style="font-family: 'Open Sans', 'Open Sans Hebrew', Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto; line-height: 1.6;">
 
             <div style="background-color: #fff; padding: 30px; border-radius: 24px; border: 1px solid #f0f0f0; box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
                 <h1 style="margin: 0 0 10px; font-size: 24px; font-weight: 900; color: #000;">ברוכים הבאים ל-ml_tlv! ✨</h1>
-                <p style="margin: 0 0 25px; color: #666;">היי ${name || 'יקיר/ה'},</p>
+                <p style="margin: 0 0 25px; color: #666;">היי ${firstName || 'יקיר/ה'},</p>
                 <p style="margin-bottom: 20px;">אנחנו שמחים שהצטרפת אלינו! מהיום יש לך גישה לעולם של ניחוחות יוקרתיים בחתיכות קטנות.</p>
                 
                 <div style="background-color: #f8f8f8; padding: 25px; border-radius: 16px; margin: 30px 0;">
