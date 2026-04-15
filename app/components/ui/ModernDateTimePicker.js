@@ -288,6 +288,7 @@ export default function ModernDateTimePicker({
                 className={`
                     w-full flex items-center justify-between gap-3 px-4 py-3 rounded-2xl border-2 transition-all group
                     ${isOpen ? 'border-green-600 bg-white shadow-lg' : 'border-gray-100 bg-white hover:border-gray-200'}
+                    ${className.includes('h-') ? className : ''}
                 `}
             >
                 <div className="flex items-center gap-3">

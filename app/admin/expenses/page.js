@@ -157,7 +157,7 @@ export default function AdminExpensesPage() {
                                 <input
                                     required
                                     type="text"
-                                    className="w-full border-gray-200 border-2 rounded-xl p-3 focus:border-black focus:ring-0 outline-none transition-colors text-sm md:text-base font-medium"
+                                    className="w-full border-gray-200 border-2 rounded-2xl px-4 h-[60px] focus:border-black focus:ring-0 outline-none transition-all text-right text-sm font-bold bg-white"
                                     value={formData.description}
                                     onChange={e => setFormData({ ...formData, description: e.target.value })}
                                     placeholder="לדוגמה: שרתים, ארנונה..."
@@ -169,7 +169,7 @@ export default function AdminExpensesPage() {
                                     required
                                     type="number"
                                     min="0"
-                                    className="w-full border-gray-200 border-2 rounded-xl p-3 focus:border-black focus:ring-0 outline-none transition-colors text-center text-lg font-black"
+                                    className="w-full border-gray-200 border-2 rounded-2xl px-4 h-[60px] focus:border-black focus:ring-0 outline-none transition-all text-center text-lg font-black bg-white"
                                     value={formData.amount}
                                     onChange={e => setFormData({ ...formData, amount: e.target.value })}
                                     onWheel={(e) => e.target.blur()}
@@ -185,6 +185,7 @@ export default function AdminExpensesPage() {
                                     value={formData.type}
                                     onChange={(v) => setFormData({ ...formData, type: v })}
                                     fullWidth
+                                    className="h-[60px] !rounded-2xl"
                                 />
                             </div>
                             <div className="md:col-span-4 lg:col-span-2 space-y-1.5">
@@ -193,13 +194,14 @@ export default function AdminExpensesPage() {
                                     value={formData.date}
                                     onChange={(v) => setFormData({ ...formData, date: v })}
                                     placeholder="בחר תאריך"
+                                    className="h-[60px]"
                                 />
                             </div>
                             <div className="md:col-span-12 lg:col-span-1">
                                 <button
                                     type="submit"
                                     disabled={isSubmitting}
-                                    className={`w-full py-3.5 rounded-xl font-bold text-white shadow-lg transition-all active:scale-95 disabled:opacity-50 ${editingId ? 'bg-blue-600 hover:bg-blue-700 shadow-blue-100' : 'bg-black hover:bg-gray-800 shadow-gray-100'}`}
+                                    className={`w-full h-[60px] rounded-2xl font-bold text-white shadow-lg transition-all active:scale-95 disabled:opacity-50 ${editingId ? 'bg-blue-600 hover:bg-blue-700 shadow-blue-100' : 'bg-black hover:bg-gray-800 shadow-gray-100'}`}
                                 >
                                     {isSubmitting ? '...' : (editingId ? 'עדכן' : 'הוסף')}
                                 </button>
