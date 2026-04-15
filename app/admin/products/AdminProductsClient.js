@@ -543,7 +543,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                         type="number"
                                         value={editForm.discount_percentage}
                                         onChange={e => setEditForm({ ...editForm, discount_percentage: Number(e.target.value) })}
-                                        className="border-2 border-green-200 rounded-xl p-2 w-full bg-white focus:border-green-500 outline-none transition-colors font-bold text-sm"
+                                        className="border-2 border-green-200 rounded-2xl px-4 h-[60px] w-full bg-white focus:border-green-500 outline-none transition-all font-bold text-sm"
                                         placeholder="0"
                                     />
                                 </div>
@@ -553,6 +553,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                         value={editForm.discount_end_date}
                                         onChange={val => setEditForm({ ...editForm, discount_end_date: val })}
                                         placeholder="בחר תאריך סיום..."
+                                        className="h-[60px]"
                                     />
                                 </div>
                                 <div>
@@ -836,7 +837,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                                     value={editForm.discount_percentage}
                                                     onChange={e => setEditForm({ ...editForm, discount_percentage: Number(e.target.value) })}
                                                     onWheel={(e) => e.target.blur()}
-                                                    className="border-2 border-green-100 rounded-xl p-2 w-full bg-white focus:border-green-600 outline-none transition-all font-black text-sm text-green-600"
+                                                    className="border-2 border-green-100 rounded-2xl px-4 h-[60px] w-full bg-white focus:border-green-600 outline-none transition-all font-black text-sm text-green-600"
                                                     placeholder="0"
                                                 />
                                             </div>
@@ -846,6 +847,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                                     value={editForm.discount_end_date}
                                                     onChange={val => setEditForm({ ...editForm, discount_end_date: val })}
                                                     placeholder="בחר תאריך סיום..."
+                                                    className="h-[60px]"
                                                 />
                                                 <p className="text-[8px] text-green-500 mt-1">השאר ריק למבצע ללא הגבלת זמן</p>
                                             </div>
