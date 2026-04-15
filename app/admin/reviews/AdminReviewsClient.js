@@ -130,11 +130,10 @@ export default function AdminReviewsClient({ initialReviews = [] }) {
                                 <div className="flex items-center gap-4 min-w-[200px]">
                                     <div className="w-12 h-12 rounded-2xl bg-gray-100 overflow-hidden border border-gray-200 shadow-inner relative">
                                         {review.user_image ? (
-                                            <Image 
+                                            <img 
                                                 src={review.user_image} 
                                                 alt="" 
-                                                fill 
-                                                className="object-cover" 
+                                                className="w-full h-full object-cover" 
                                             />
                                         ) : (
                                             <div className="w-full h-full flex items-center justify-center bg-black text-white font-bold text-sm">
@@ -157,11 +156,10 @@ export default function AdminReviewsClient({ initialReviews = [] }) {
                                 <div className="flex-1">
                                     {review.image_url && (
                                         <div className="relative w-24 h-24 rounded-2xl overflow-hidden mb-3 border border-gray-100 shadow-sm">
-                                            <Image 
+                                            <img 
                                                 src={review.image_url} 
                                                 alt="Review" 
-                                                fill 
-                                                className="object-cover" 
+                                                className="w-full h-full object-cover" 
                                             />
                                         </div>
                                     )}

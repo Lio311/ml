@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useUser } from "@clerk/nextjs";
 import toast from 'react-hot-toast';
 import CustomDropdown from '../../components/ui/CustomDropdown';
+import ModernDateTimePicker from '../../components/ui/ModernDateTimePicker';
 
 export default function AdminExpensesPage() {
     const [expenses, setExpenses] = useState([]);
@@ -19,7 +20,7 @@ export default function AdminExpensesPage() {
     useEffect(() => {
         fetchExpenses();
         // Set default date to today
-        const today = new Date().toISOString().split('T')[0];
+        const today = new Date().toISOString();
         setFormData(prev => ({ ...prev, date: today }));
     }, []);
 
@@ -106,14 +107,14 @@ export default function AdminExpensesPage() {
             description: expense.description,
             amount: expense.amount,
             type: expense.type,
-            date: new Date(expense.date).toISOString().split('T')[0]
+            date: expense.date
         });
         window.scrollTo({ top: 0, behavior: 'smooth' });
     };
 
     const resetForm = () => {
         setEditingId(null);
-        setFormData({ description: "", amount: "", type: "monthly", date: new Date().toISOString().split('T')[0] });
+        setFormData({ description: "", amount: "", type: "monthly", date: new Date().toISOString() });
     };
 
     const ITEMS_PER_PAGE = 5;
@@ -162,7 +163,7 @@ export default function AdminExpensesPage() {
                                     placeholder="לדוגמה: שרתים, ארנונה..."
                                 />
                             </div>
-                            <div className="md:col-span-4 lg:col-span-2 space-y-1.5 font-mono">
+                            <div className="md:col-span-4 lg:col-span-2 space-y-1.5">
                                 <label className="block text-[10px] md:text-xs font-bold text-gray-400 uppercase tracking-wider">סכום (₪)</label>
                                 <input
                                     required
@@ -188,12 +189,10 @@ export default function AdminExpensesPage() {
                             </div>
                             <div className="md:col-span-4 lg:col-span-2 space-y-1.5">
                                 <label className="block text-[10px] md:text-xs font-bold text-gray-400 uppercase tracking-wider">תאריך</label>
-                                <input
-                                    required
-                                    type="date"
-                                    className="w-full border-gray-200 border-2 rounded-xl p-3 focus:border-black focus:ring-0 outline-none transition-colors text-center text-sm"
+                                <ModernDateTimePicker
                                     value={formData.date}
-                                    onChange={e => setFormData({ ...formData, date: e.target.value })}
+                                    onChange={(v) => setFormData({ ...formData, date: v })}
+                                    placeholder="בחר תאריך"
                                 />
                             </div>
                             <div className="md:col-span-12 lg:col-span-1">
@@ -246,7 +245,7 @@ export default function AdminExpensesPage() {
                                                     {expense.type === 'yearly' ? 'שנתי' : 'חודשי'}
                                                 </span>
                                             </td>
-                                            <td className="p-4 text-left font-black text-gray-900"><span dir="ltr">₪ {parseFloat(expense.amount).toLocaleString()}</span></td>
+                                            <td className="p-4 text-center font-black text-gray-900"><span dir="ltr">₪ {parseFloat(expense.amount).toLocaleString()}</span></td>
                                             <td className="p-4">
                                                 {canEdit && (
                                                     <div className="flex justify-center gap-2">
