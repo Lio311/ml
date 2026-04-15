@@ -11,8 +11,6 @@ export async function POST() {
         const clerk = await clerkClient();
         
         // Fetch all users from Clerk
-        // Note: Clerk pagination might be needed for very large user bases ( > 100 ), 
-        // but for now, we'll fetch the first 100.
         const clerkUsers = await clerk.users.getUserList({
             limit: 100,
         });
@@ -21,26 +19,28 @@ export async function POST() {
 
         for (const user of clerkUsers.data) {
             const id = user.id;
-            const email = user.emailAddresses?.[0]?.emailAddress || '';
+            const email = user.emailAddresses?.[0]?.email_address || '';
             const firstName = user.firstName || '';
             const lastName = user.lastName || '';
             const role = user.publicMetadata?.role || 'customer';
+            const imageUrl = user.imageUrl || '';
             const createdDate = new Date(user.createdAt);
 
             await client.query(`
-                INSERT INTO users (id, email, first_name, last_name, role, phone, created_at, updated_at)
-                VALUES ($1, $2, $3, $4, $5, $6, $7, NOW())
+                INSERT INTO users (id, email, first_name, last_name, role, image_url, phone, created_at, updated_at)
+                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW())
                 ON CONFLICT (email) DO UPDATE SET
                     id = EXCLUDED.id,
                     first_name = EXCLUDED.first_name,
                     last_name = EXCLUDED.last_name,
                     role = EXCLUDED.role,
+                    image_url = EXCLUDED.image_url,
                     phone = CASE 
                         WHEN users.phone IS NOT NULL AND users.phone != '' THEN users.phone 
                         ELSE EXCLUDED.phone 
                     END,
                     updated_at = NOW()
-            `, [id, email, firstName, lastName, role, '', createdDate]);
+            `, [id, email, firstName, lastName, role, imageUrl, '', createdDate]);
             
             syncedCount++;
         }

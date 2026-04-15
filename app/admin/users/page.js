@@ -20,7 +20,7 @@ export default async function AdminUsersPage(props) {
     const page = Number(searchParams?.page) || 1;
     const q = searchParams?.q || '';
     const roleFilter = searchParams?.role || '';
-    const LIMIT = 50; // Increased limit
+    const LIMIT = 50; 
     const offset = (page - 1) * LIMIT;
 
     const user = await currentUser();
@@ -53,11 +53,10 @@ export default async function AdminUsersPage(props) {
             whereClause = 'WHERE ' + conditions.join(' AND ');
         }
 
-        // Fetch Users with specific Role Priority sorting and Pagination + Order Stats
         const [usersRes, countRes] = await Promise.all([
             client.query(`
                 SELECT 
-                    id, first_name, last_name, email, phone, role, created_at, updated_at,
+                    id, first_name, last_name, email, phone, role, image_url, created_at, updated_at,
                     (SELECT COUNT(*) FROM orders WHERE customer_details->>'clerk_id' = users.id AND status != 'cancelled' AND catalog_id IS NULL) as site_orders,
                     (SELECT COALESCE(SUM(total_amount), 0) FROM orders WHERE customer_details->>'clerk_id' = users.id AND status != 'cancelled' AND catalog_id IS NULL) as site_spent,
                     (SELECT COUNT(*) FROM orders WHERE customer_details->>'clerk_id' = users.id AND status != 'cancelled' AND catalog_id IS NOT NULL) as catalog_orders,
@@ -78,14 +77,12 @@ export default async function AdminUsersPage(props) {
         ]);
         const sanitizedUsersRows = sanitizeProductArray(usersRes.rows);
 
-        // Fetch last login from Clerk if possible
         const userIds = sanitizedUsersRows.map(u => u.id);
         const clerkClient = createClerkClient({ secretKey: process.env.CLERK_SECRET_KEY });
         let clerkUsersMap = {};
         
         if (userIds.length > 0) {
             try {
-                // Fetch user data from clerk by their IDs for lastSignInAt
                 const clerkResponse = await clerkClient.users.getUserList({ userId: userIds });
                 clerkResponse.data.forEach(cu => {
                     clerkUsersMap[cu.id] = {
@@ -107,8 +104,8 @@ export default async function AdminUsersPage(props) {
             role: u.role || 'customer',
             createdAt: u.created_at,
             updatedAt: u.updated_at,
-            lastLogin: clerkUsersMap[u.id]?.lastSignInAt || u.updated_at, // Fallback to updated_at if clerk fails
-            imageUrl: clerkUsersMap[u.id]?.imageUrl || null,
+            lastLogin: clerkUsersMap[u.id]?.lastSignInAt || u.updated_at,
+            imageUrl: u.image_url || clerkUsersMap[u.id]?.imageUrl || null,
             siteOrders: parseInt(u.site_orders) || 0,
             siteSpent: parseFloat(u.site_spent) || 0,
             catalogOrders: parseInt(u.catalog_orders) || 0,
@@ -134,7 +131,6 @@ export default async function AdminUsersPage(props) {
             <AdminUsersFilter initialQuery={q} initialRole={roleFilter} />
 
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                {/* Desktop View Table */}
                 <div className="hidden md:block overflow-x-auto">
                     <table className="w-full text-center" dir="rtl">
                         <thead className="bg-gray-50 text-gray-500 text-[11px] uppercase tracking-widest font-black">
@@ -206,7 +202,6 @@ export default async function AdminUsersPage(props) {
                                         </td>
                                         <td className="p-4 text-sm bg-gray-50/30">
                                             <div className="flex flex-col items-center justify-center gap-1.5 min-w-[120px]">
-                                                {/* Site Orders - Blue */}
                                                 <div className="w-full flex items-center justify-between gap-3 bg-white/50 px-3 py-1.5 rounded-xl border border-blue-100/50 shadow-sm">
                                                     <div className="flex flex-col items-start leading-tight">
                                                         <span className="text-[8px] font-black text-blue-400 uppercase tracking-tighter">אתר</span>
@@ -215,7 +210,6 @@ export default async function AdminUsersPage(props) {
                                                     <div className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2 py-0.5 rounded leading-none">{u.siteOrders}</div>
                                                 </div>
                     
-                                                {/* Catalog Orders - Yellow */}
                                                 <div className="w-full flex items-center justify-between gap-3 bg-white/50 px-3 py-1.5 rounded-xl border border-amber-100/50 shadow-sm">
                                                     <div className="flex flex-col items-start leading-tight">
                                                         <span className="text-[8px] font-black text-amber-500/80 uppercase tracking-tighter">קטלוג</span>
@@ -254,7 +248,6 @@ export default async function AdminUsersPage(props) {
                     </table>
                 </div>
 
-                {/* Mobile View Card Layout */}
                 <div className="md:hidden divide-y divide-gray-100">
                     {users.map(u => {
                         const calculateScore = (u) => {
@@ -303,7 +296,6 @@ export default async function AdminUsersPage(props) {
                                 </div>
                                 
                                 <div className="grid grid-cols-2 gap-3 my-2 text-right">
-                                    {/* Site Orders - Blue */}
                                     <div className="flex justify-between items-center bg-blue-50/20 p-3 rounded-2xl border border-blue-100/50">
                                         <div className="flex items-center gap-2">
                                             <div className="w-7 h-7 bg-blue-100/50 rounded-lg flex items-center justify-center text-[10px]">🌐</div>
@@ -315,7 +307,6 @@ export default async function AdminUsersPage(props) {
                                         <div className="text-[10px] font-black text-blue-700 bg-white px-2 py-0.5 rounded-lg border border-blue-50 leading-none shadow-sm">{u.siteOrders}</div>
                                     </div>
     
-                                    {/* Catalog Orders - Yellow/Amber */}
                                     <div className="flex justify-between items-center bg-amber-50/20 p-3 rounded-2xl border border-amber-100/50">
                                         <div className="flex items-center gap-2">
                                             <div className="w-7 h-7 bg-amber-100/50 rounded-lg flex items-center justify-center text-[10px]">📖</div>
@@ -363,9 +354,7 @@ export default async function AdminUsersPage(props) {
                 </div>
             </div>
 
-            {/* Pagination & Count */}
             <div className="flex flex-col items-center gap-4 mt-8 relative">
-                {/* Brand Style Pagination - Centered */}
                 {totalPages > 1 && (
                     <div className="flex justify-center items-center gap-4">
                         <Link
@@ -390,7 +379,6 @@ export default async function AdminUsersPage(props) {
                     </div>
                 )}
 
-                {/* Total Count - Absolute positioned to bottom right or kept separate if mobile */}
                 <div className="text-sm text-gray-500 font-medium md:absolute md:right-0 md:bottom-2">
                     סה״כ {totalUsers} משתמשים
                 </div>

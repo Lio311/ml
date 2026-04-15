@@ -40,8 +40,4 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# Allow local env
-!.env.local
-
-
-
+# !.env.local
