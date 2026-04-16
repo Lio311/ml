@@ -658,7 +658,7 @@ export default async function AdminDashboard({ searchParams }) {
                             return (
                                 <div key={item.size} className={`flex flex-col items-center p-2 rounded-xl border ${theme}`}>
                                     <span className="text-[9px] font-bold mb-1">{sizeLabel}</span>
-                                    <span className="font-black text-base leading-none">
+                                    <span className="font-black text-base leading-none" dir="ltr">
                                         {qty}
                                     </span>
                                 </div>
@@ -688,19 +688,19 @@ export default async function AdminDashboard({ searchParams }) {
                     <div className="grid grid-cols-2 gap-2">
                         <div className="flex flex-col items-center bg-purple-50/50 p-2 rounded-xl border border-purple-100">
                             <span className="text-[10px] text-purple-600 font-bold mb-1">2 מ"ל</span>
-                            <span className="font-black text-base text-purple-800 leading-none">{kpis.samplesBreakdown['2']}</span>
+                            <span className="font-black text-base text-purple-800 leading-none" dir="ltr">{kpis.samplesBreakdown['2']}</span>
                         </div>
                         <div className="flex flex-col items-center bg-pink-50/50 p-2 rounded-xl border border-pink-100">
                             <span className="text-[10px] text-pink-600 font-bold mb-1">5 מ"ל</span>
-                            <span className="font-black text-base text-pink-800 leading-none">{kpis.samplesBreakdown['5']}</span>
+                            <span className="font-black text-base text-pink-800 leading-none" dir="ltr">{kpis.samplesBreakdown['5']}</span>
                         </div>
                         <div className="flex flex-col items-center bg-blue-50/50 p-2 rounded-xl border border-blue-100">
                             <span className="text-[10px] text-blue-600 font-bold mb-1">10 מ"ל</span>
-                            <span className="font-black text-base text-blue-800 leading-none">{kpis.samplesBreakdown['10']}</span>
+                            <span className="font-black text-base text-blue-800 leading-none" dir="ltr">{kpis.samplesBreakdown['10']}</span>
                         </div>
                         <div className="flex flex-col items-center bg-amber-50/50 p-2 rounded-xl border border-amber-100">
                             <span className="text-[10px] text-amber-600 font-bold mb-1">10 מ"ל יוקרתי</span>
-                            <span className="font-black text-base text-amber-800 leading-none">{kpis.samplesBreakdown['11']}</span>
+                            <span className="font-black text-base text-amber-800 leading-none" dir="ltr">{kpis.samplesBreakdown['11']}</span>
                         </div>
                     </div>
                 </div>

@@ -687,7 +687,7 @@ export default async function AdminDashboard({ searchParams }) {
                     </div>
 
                     <div className="flex items-baseline gap-2 mb-4">
-                        <span className="text-4xl font-bold text-gray-900">
+                        <span className="text-4xl font-bold text-gray-900" dir="ltr">
                             {kpis.bottleInventory.reduce((acc, item) => acc + parseInt(item.quantity || 0), 0)}
                         </span>
                         <span className="text-xs text-gray-400 font-bold uppercase">בקבוקים</span>
@@ -711,7 +711,7 @@ export default async function AdminDashboard({ searchParams }) {
                             return (
                                 <div key={item.size} className={`flex flex-col items-center p-2 rounded-xl border ${theme} w-full`}>
                                     <span className="text-[9px] font-bold mb-1">{sizeLabel}</span>
-                                    <span className="font-black text-base leading-none">
+                                    <span className="font-black text-base leading-none" dir="ltr">
                                         {qty}
                                     </span>
                                 </div>
@@ -731,22 +731,22 @@ export default async function AdminDashboard({ searchParams }) {
                     </div>
 
                     <div className="flex items-baseline gap-2 mb-4">
-                        <span className="text-4xl font-bold text-gray-900">{kpis.totalSamples}</span>
+                        <span className="text-4xl font-bold text-gray-900" dir="ltr">{kpis.totalSamples}</span>
                         <span className="text-xs text-gray-400 font-bold uppercase">דוגמיות סה"כ</span>
                     </div>
 
                     <div className="flex flex-col gap-2">
                         <div className="flex flex-col items-center bg-emerald-50/50 p-2 rounded-xl border border-emerald-100 w-full">
                             <span className="text-[10px] text-emerald-600 font-bold mb-1">2 מ"ל</span>
-                            <span className="font-black text-base text-emerald-800 leading-none">{kpis.samplesBreakdown['2']}</span>
+                            <span className="font-black text-base text-emerald-800 leading-none" dir="ltr">{kpis.samplesBreakdown['2']}</span>
                         </div>
                         <div className="flex flex-col items-center bg-amber-50/50 p-2 rounded-xl border border-amber-100 w-full">
                             <span className="text-[10px] text-amber-600 font-bold mb-1">5 מ"ל</span>
-                            <span className="font-black text-base text-amber-800 leading-none">{kpis.samplesBreakdown['5']}</span>
+                            <span className="font-black text-base text-amber-800 leading-none" dir="ltr">{kpis.samplesBreakdown['5']}</span>
                         </div>
                         <div className="flex flex-col items-center bg-blue-50/50 p-2 rounded-xl border border-blue-100 w-full">
                             <span className="text-[10px] text-blue-600 font-bold mb-1">10 מ"ל</span>
-                            <span className="font-black text-base text-blue-800 leading-none">{kpis.samplesBreakdown['10']}</span>
+                            <span className="font-black text-base text-blue-800 leading-none" dir="ltr">{kpis.samplesBreakdown['10']}</span>
                         </div>
                     </div>
                 </div>
@@ -761,7 +761,7 @@ export default async function AdminDashboard({ searchParams }) {
                         <Eye className="w-3.5 h-3.5 text-sky-500" />
                         כניסות לאתר
                     </div>
-                    <div className="text-2xl font-bold mb-2 text-gray-900">
+                    <div className="text-2xl font-bold mb-2 text-gray-900" dir="ltr">
                         {kpis.monthlyVisits}
                     </div>
                     <div className="text-[9px] text-gray-400 font-medium italic">נספר לפי ביקורים ייחודיים</div>
@@ -774,7 +774,7 @@ export default async function AdminDashboard({ searchParams }) {
                         <ShoppingCart className="w-3.5 h-3.5 text-blue-500" />
                         סה"כ הזמנות
                     </div>
-                    <div className="text-2xl font-bold mb-2">{kpis.totalOrders}</div>
+                    <div className="text-2xl font-bold mb-2" dir="ltr">{kpis.totalOrders}</div>
                     <div className="border-t border-gray-50 pt-2 mt-2">
                         <Link href="/admin/orders" className="text-[10px] text-blue-500 hover:underline font-bold transition-all">לניהול הזמנות ←</Link>
                     </div>
@@ -787,7 +787,7 @@ export default async function AdminDashboard({ searchParams }) {
                         <Users className="w-3.5 h-3.5 text-indigo-500" />
                         משתמשים רשומים
                     </div>
-                    <div className="text-2xl font-bold mb-2 text-gray-900">{kpis.totalUsers}</div>
+                    <div className="text-2xl font-bold mb-2 text-gray-900" dir="ltr">{kpis.totalUsers}</div>
                     <div className="border-t border-gray-50 pt-2 mt-2">
                         <Link href="/admin/users" className="text-[10px] text-blue-500 hover:underline font-bold transition-all">לניהול משתמשים ←</Link>
                     </div>

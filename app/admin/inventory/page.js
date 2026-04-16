@@ -177,7 +177,7 @@ export default function AdminInventoryPage() {
                                 <Icon className="w-4 h-4 md:w-5 md:h-5" />
                             </div>
                             <div>
-                                <div className="text-2xl md:text-4xl font-black">
+                                <div className="text-2xl md:text-4xl font-black" dir="ltr">
                                     {count}
                                 </div>
                                 <div className="mt-1 text-[10px] md:text-xs font-bold uppercase tracking-wider opacity-60">
