@@ -761,7 +761,7 @@ export default async function AdminDashboard({ searchParams }) {
                         <Eye className="w-3.5 h-3.5 text-sky-500" />
                         כניסות לאתר
                     </div>
-                    <div className="text-2xl font-bold mb-2 text-gray-900" dir="ltr">
+                    <div className="text-2xl font-bold mb-2 text-gray-900 text-right" dir="ltr">
                         {kpis.monthlyVisits}
                     </div>
                     <div className="text-[9px] text-gray-400 font-medium italic">נספר לפי ביקורים ייחודיים</div>
@@ -774,7 +774,7 @@ export default async function AdminDashboard({ searchParams }) {
                         <ShoppingCart className="w-3.5 h-3.5 text-blue-500" />
                         סה"כ הזמנות
                     </div>
-                    <div className="text-2xl font-bold mb-2" dir="ltr">{kpis.totalOrders}</div>
+                    <div className="text-2xl font-bold mb-2 text-right" dir="ltr">{kpis.totalOrders}</div>
                     <div className="border-t border-gray-50 pt-2 mt-2">
                         <Link href="/admin/orders" className="text-[10px] text-blue-500 hover:underline font-bold transition-all">לניהול הזמנות ←</Link>
                     </div>
@@ -787,7 +787,7 @@ export default async function AdminDashboard({ searchParams }) {
                         <Users className="w-3.5 h-3.5 text-indigo-500" />
                         משתמשים רשומים
                     </div>
-                    <div className="text-2xl font-bold mb-2 text-gray-900" dir="ltr">{kpis.totalUsers}</div>
+                    <div className="text-2xl font-bold mb-2 text-gray-900 text-right" dir="ltr">{kpis.totalUsers}</div>
                     <div className="border-t border-gray-50 pt-2 mt-2">
                         <Link href="/admin/users" className="text-[10px] text-blue-500 hover:underline font-bold transition-all">לניהול משתמשים ←</Link>
                     </div>
