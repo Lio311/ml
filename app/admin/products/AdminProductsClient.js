@@ -169,24 +169,35 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
     };
 
     const handleLetterClick = (letter) => {
+        const queryParams = new URLSearchParams();
+        if (currentView && currentView !== 'all') queryParams.set('view', currentView);
+        if (currentSort && currentSort !== 'default') queryParams.set('sort', currentSort);
+        
         if (!letter) {
-            router.push('/admin/products');
+            router.push(`/admin/products?${queryParams.toString()}`);
             return;
         }
-        router.push(`/admin/products?letter=${letter}`);
+        queryParams.set('letter', letter);
+        router.push(`/admin/products?${queryParams.toString()}`);
     };
 
     const handlePageChange = (newPage) => {
         const queryParams = new URLSearchParams();
         if (searchTerm) queryParams.set('q', searchTerm);
         if (currentLetter) queryParams.set('letter', currentLetter);
+        if (currentView && currentView !== 'all') queryParams.set('view', currentView);
+        if (currentSort && currentSort !== 'default') queryParams.set('sort', currentSort);
         queryParams.set('page', newPage);
         router.push(`/admin/products?${queryParams.toString()}`);
     };
 
     const handleSearch = (e) => {
         e.preventDefault();
-        router.push(`/admin/products?q=${searchTerm}`);
+        const queryParams = new URLSearchParams();
+        if (searchTerm) queryParams.set('q', searchTerm);
+        if (currentView && currentView !== 'all') queryParams.set('view', currentView);
+        if (currentSort && currentSort !== 'default') queryParams.set('sort', currentSort);
+        router.push(`/admin/products?${queryParams.toString()}`);
     };
 
     const allCategories = Array.from(new Set(
