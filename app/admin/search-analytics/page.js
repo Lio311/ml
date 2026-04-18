@@ -83,7 +83,6 @@ export default function SearchAnalyticsPage() {
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
         <div>
             <div className="flex items-center gap-2 mb-2">
-                <div className="h-8 w-1 bg-black rounded-full"></div>
                 <h1 className="text-3xl font-black text-gray-900 tracking-tight">אנליטיקת חיפושים</h1>
             </div>
             <p className="text-gray-500 font-medium">ניתוח חכם של מה שהלקוחות שלך מחפשים באתר</p>
