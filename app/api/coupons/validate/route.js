@@ -33,7 +33,7 @@ export async function POST(req) {
             const limitations = coupon.limitations || {};
 
             // 1. Ownership Check (Email)
-            if (coupon.email && userEmail && coupon.email.toLowerCase() !== userEmail.toLowerCase()) {
+            if (coupon.email && (!userEmail || coupon.email.toLowerCase() !== userEmail.toLowerCase())) {
                 return NextResponse.json({ error: 'הקופון הזה אינו זמין עבור משתמש זה' }, { status: 403 });
             }
 
