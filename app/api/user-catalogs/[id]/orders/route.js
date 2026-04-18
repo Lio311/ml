@@ -105,11 +105,12 @@ export async function POST(req, { params }) {
                 </div>` : '';
 
             // 1. Email to Customer
-            const customerHtml = getOrderConfirmationTemplate(orderId, items, total, freeSamples, notesHtml, deliveryMethod || 'mail', 0); // Shipping cost included in total for catalogs
+            const deliveryText = deliveryMethod === 'self_pickup' ? 'איסוף עצמי (תל אביב)' : 'משלוח בדואר';
+            const customerHtml = getOrderConfirmationTemplate(orderId, items, total, freeSamples, notesHtml, deliveryText, "חינם"); // Shipping cost included in total for catalogs
             await sendEmail(clerkEmail, `אישור הזמנה מ-${catalogName} #${orderId}`, customerHtml, 'order_confirmation', orderId);
 
             // 2. Email to Catalog Owner
-            const ownerHtml = getAdminNewOrderTemplate(orderId, `${user.firstName} ${user.lastName}`, total, items, deliveryMethod || 'mail', 0, phoneNumber);
+            const ownerHtml = getAdminNewOrderTemplate(orderId, `${user.firstName} ${user.lastName}`, total, items, deliveryText, "חינם", phoneNumber);
             await sendEmail(catalogOwnerEmail, `הזמנה חדשה התקבלה בקטלוג שלך #${orderId} 🔥`, ownerHtml, 'admin_alert', orderId);
 
             // 3. Email to Site Admin

@@ -125,11 +125,14 @@ export async function POST(req) {
             // 5. Send Emails
             try {
                 const customerName = `${customer.first_name} ${customer.last_name}`;
-                const confirmationHtml = getOrderConfirmationTemplate(orderId, items, total, 0, notes, deliveryMethod, shippingCost);
+                const deliveryText = deliveryMethod === 'self_pickup' ? 'איסוף עצמי (תל אביב)' : 'משלוח בדואר';
+                const shippingText = shippingCost === 0 ? 'חינם' : `${shippingCost} ₪`;
+
+                const confirmationHtml = getOrderConfirmationTemplate(orderId, items, total, 0, notes, deliveryText, shippingText);
                 await sendEmail(customer.email, `אישור הזמנה טלפונית #${orderId} - ml_tlv`, confirmationHtml, 'order_confirmation', orderId);
 
                 const adminEmail = process.env.ADMIN_EMAIL;
-                const adminAlertHtml = getAdminNewOrderTemplate(orderId, customerName, total, items, deliveryMethod, shippingCost, customer.phone);
+                const adminAlertHtml = getAdminNewOrderTemplate(orderId, customerName, total, items, deliveryText, shippingText, customer.phone);
                 await sendEmail(adminEmail, `הזמנה טלפונית חדשה! #${orderId} 🔥`, adminAlertHtml, 'admin_alert', orderId);
             } catch (emailError) {
                 console.error('Email sending failed for phone order:', emailError);
