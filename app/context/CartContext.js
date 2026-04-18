@@ -575,14 +575,48 @@ export function CartProvider({ children }) {
         }
 
         if (coupon) {
+            const limitations = coupon.limitations || {};
+            
+            // Calculate subtotal of eligible items only
+            const eligibleSubtotal = activeItems.reduce((sum, item) => {
+                // 1. Prepare IDs and normalized values
+                let cleanId = item.id;
+                if (typeof cleanId === 'string' && cleanId.includes('-')) cleanId = cleanId.split('-')[0];
+                if (typeof cleanId === 'string' && cleanId.includes('_')) cleanId = cleanId.split('_')[0];
+                
+                const productMatch = !limitations.allowed_products || limitations.allowed_products.length === 0 || 
+                    limitations.allowed_products.includes(Number(cleanId)) || 
+                    limitations.allowed_products.includes(String(cleanId));
+
+                const sizeMatch = !limitations.allowed_sizes || limitations.allowed_sizes.length === 0 || 
+                    limitations.allowed_sizes.includes(Number(item.size));
+
+                const brandMatch = !limitations.allowed_brands || limitations.allowed_brands.length === 0 || 
+                    limitations.allowed_brands.includes(item.brand);
+
+                const categoryMatch = !limitations.allowed_categories || limitations.allowed_categories.length === 0 || 
+                    limitations.allowed_categories.includes(item.category);
+
+                if (productMatch && sizeMatch && brandMatch && categoryMatch) {
+                    return sum + (Number(item.price) * item.quantity);
+                }
+                return sum;
+            }, 0);
+
+            // Important: If there was a previous global discount (lottery/lucky), 
+            // the 'value' of these eligible items is also reduced proportionally.
+            const ratio = subtotal > 0 ? (priceAfterDiscounts / subtotal) : 1;
+            const adjustedEligibleSubtotal = eligibleSubtotal * ratio;
+
             const dv = coupon.discount_value || coupon.discountPercent || 0;
             const dt = coupon.discount_type || 'percent';
             
             let couponDiscount = 0;
             if (dt === 'percent') {
-                couponDiscount = Math.round(priceAfterDiscounts * (dv / 100));
+                couponDiscount = Math.round(adjustedEligibleSubtotal * (dv / 100));
             } else {
-                couponDiscount = Math.min(priceAfterDiscounts, dv);
+                // For fixed discount, we still limit it by the eligible subtotal
+                couponDiscount = Math.min(adjustedEligibleSubtotal, dv);
             }
             
             discountAmount += couponDiscount;
