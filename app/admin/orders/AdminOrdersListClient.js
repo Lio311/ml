@@ -171,9 +171,9 @@ export default function AdminOrdersListClient({
                                                     </div>
                                                 )}
                                                 {order.coupon_code && (
-                                                    <div className={order.notes ? "mt-1 pt-1 border-t border-amber-200/50" : ""}>
-                                                        <span className="font-bold">קוד קופון: </span>
-                                                        <span className="bg-amber-200/50 px-1 rounded uppercase">{order.coupon_code}</span>
+                                                    <div className={order.notes ? "mt-3 pt-2 border-t border-amber-200/50" : ""}>
+                                                        <span className="font-bold text-gray-900">קוד קופון: </span>
+                                                        <span className="bg-black text-white px-1.5 py-0.5 rounded font-black uppercase text-[9px] tracking-wider inline-block">{order.coupon_code}</span>
                                                     </div>
                                                 )}
                                             </div>
@@ -340,9 +340,9 @@ export default function AdminOrdersListClient({
                                             </div>
                                         )}
                                         {order.coupon_code && (
-                                            <div className={order.notes ? "pt-2 border-t border-amber-200" : ""}>
-                                                <span className="text-[9px] font-black uppercase tracking-widest block mb-1 underline decoration-amber-200 decoration-2 underline-offset-2">קוד קופון:</span>
-                                                <span className="font-bold bg-amber-200 px-2 py-0.5 rounded-lg uppercase">{order.coupon_code}</span>
+                                            <div className={order.notes ? "mt-3 pt-3 border-t border-amber-200" : ""}>
+                                                <span className="text-[9px] font-black uppercase tracking-widest block mb-1.5 text-gray-900 underline decoration-gray-200 decoration-2 underline-offset-2">קוד קופון:</span>
+                                                <span className="font-black bg-black text-white px-2.5 py-1 rounded-lg uppercase text-[10px] tracking-widest inline-block shadow-sm">{order.coupon_code}</span>
                                             </div>
                                         )}
                                     </div>
