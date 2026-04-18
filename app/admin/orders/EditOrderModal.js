@@ -12,7 +12,8 @@ import {
     Loader2,
     X,
     AlertCircle,
-    Save
+    Save,
+    Tag
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'react-hot-toast';
@@ -30,6 +31,7 @@ export default function EditOrderModal({ order, onClose, onSuccess }) {
     const [productResults, setProductResults] = useState([]);
     const [isProductLoading, setIsProductLoading] = useState(false);
     const [showProductModal, setShowProductModal] = useState(null);
+    const [coupon, setCoupon] = useState(null);
 
     // -- Refs --
     const productRef = useRef(null);
@@ -52,6 +54,17 @@ export default function EditOrderModal({ order, onClose, onSuccess }) {
             setCart(initialCart);
             setDeliveryMethod(order.delivery_method || 'mail');
             setNotes(order.notes || '');
+
+            // If order has a coupon, fetch its details to support recalculation
+            if (order.coupon_code) {
+                fetch('/api/admin/coupons')
+                    .then(res => res.json())
+                    .then(allCoupons => {
+                        const found = allCoupons.find(c => c.code === order.coupon_code);
+                        if (found) setCoupon(found);
+                    })
+                    .catch(err => console.error("Error fetching coupon details:", err));
+            }
         }
     }, [order]);
 
@@ -78,8 +91,36 @@ export default function EditOrderModal({ order, onClose, onSuccess }) {
 
     // -- Calculations --
     const subtotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+    
+    let couponDiscount = 0;
+    if (coupon) {
+        const limits = coupon.limitations || {};
+        const eligibleSubtotal = cart.reduce((sum, item) => {
+            let cleanId = item.id;
+            if (typeof cleanId === 'string' && cleanId.includes('-')) cleanId = cleanId.split('-')[0];
+            
+            const productMatch = !limits.allowed_products || limits.allowed_products.length === 0 || 
+                limits.allowed_products.map(String).includes(String(cleanId));
+            const sizeMatch = !limits.allowed_sizes || limits.allowed_sizes.length === 0 || 
+                limits.allowed_sizes.map(Number).includes(Number(item.size));
+            const brandMatch = !limits.allowed_brands || limits.allowed_brands.length === 0 || 
+                limits.allowed_brands.includes(item.brand);
+            
+            if (productMatch && sizeMatch && brandMatch) {
+                return sum + (item.price * item.quantity);
+            }
+            return sum;
+        }, 0);
+
+        if (coupon.discount_percent) {
+            couponDiscount = Math.round(eligibleSubtotal * (Number(coupon.discount_percent) / 100));
+        } else if (coupon.discount_value) {
+            couponDiscount = Math.min(eligibleSubtotal, Number(coupon.discount_value));
+        }
+    }
+
     const shippingPrice = deliveryMethod === 'mail' ? 30 : 0;
-    const total = subtotal + shippingPrice;
+    const total = subtotal - couponDiscount + shippingPrice;
 
     // -- Helpers --
     const getDiscountedPrice = (product, size) => {
@@ -366,6 +407,15 @@ export default function EditOrderModal({ order, onClose, onSuccess }) {
                                     <span>סכום ביניים</span>
                                     <span><span dir="ltr">₪ {subtotal.toLocaleString()}</span></span>
                                 </div>
+                                {coupon && (
+                                    <div className="flex justify-between text-green-400 font-bold bg-green-400/10 p-2 rounded-xl border border-green-400/20">
+                                        <div className="flex items-center gap-2">
+                                            <Tag size={14} />
+                                            <span>קופון ({coupon.code})</span>
+                                        </div>
+                                        <span><span dir="ltr">- ₪ {couponDiscount.toLocaleString()}</span></span>
+                                    </div>
+                                )}
                                 <div className="flex justify-between text-gray-400 font-medium">
                                     <span>משלוח</span>
                                     <span>{shippingPrice === 0 ? 'חינם' : <span dir="ltr">₪ {shippingPrice}</span>}</span>

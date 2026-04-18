@@ -94,15 +94,27 @@ export async function POST(req) {
                 // 1. Ownership Check
                 const user = userId ? await currentUser() : null;
                 const userEmail = user?.emailAddresses?.[0]?.emailAddress;
-                if (coupon.email && (!userEmail || coupon.email.toLowerCase() !== userEmail.toLowerCase())) {
-                    throw new Error('הקופון הזה אינו זמין עבור משתמש זה');
+                const isPersonal = coupon.email || (limitations.allowed_users && limitations.allowed_users.length > 0);
+                
+                if (isPersonal) {
+                    if (!userEmail) throw new Error('הקופון הזה אינו זמין עבור משתמש זה');
+                    const lowerEmail = userEmail.toLowerCase();
+                    const matchesTopLevel = coupon.email && coupon.email.toLowerCase() === lowerEmail;
+                    const matchesLimitations = Array.isArray(limitations.allowed_users) && limitations.allowed_users.some(u => {
+                        const emailValue = typeof u === 'string' ? u : (u.id || u.email || u.value);
+                        return emailValue && String(emailValue).toLowerCase() === lowerEmail;
+                    });
+                    
+                    if (!matchesTopLevel && !matchesLimitations) {
+                        throw new Error('הקופון הזה אינו זמין עבור משתמש זה');
+                    }
                 }
 
                 // 2. Usage Check (Differentiate Public vs Personal)
                 let usageQuery = "";
                 let usageParams = [];
 
-                if (coupon.email) {
+                if (isPersonal) {
                     // Personal coupon (assigned to an email): One use total ever
                     usageQuery = "SELECT id FROM orders WHERE coupon_code = $1 AND status != 'cancelled' LIMIT 1";
                     usageParams = [coupon.code];

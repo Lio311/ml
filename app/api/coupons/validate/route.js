@@ -33,15 +33,28 @@ export async function POST(req) {
             const limitations = coupon.limitations || {};
 
             // 1. Ownership Check (Email)
-            if (coupon.email && (!userEmail || coupon.email.toLowerCase() !== userEmail.toLowerCase())) {
-                return NextResponse.json({ error: 'הקופון הזה אינו זמין עבור משתמש זה' }, { status: 403 });
+            const isPersonal = coupon.email || (limitations.allowed_users && limitations.allowed_users.length > 0);
+            if (isPersonal) {
+                if (!userEmail) {
+                    return NextResponse.json({ error: 'הקופון הזה אינו זמין עבור משתמש זה' }, { status: 403 });
+                }
+                const lowerEmail = userEmail.toLowerCase();
+                const matchesTopLevel = coupon.email && coupon.email.toLowerCase() === lowerEmail;
+                const matchesLimitations = Array.isArray(limitations.allowed_users) && limitations.allowed_users.some(u => {
+                    const emailValue = typeof u === 'string' ? u : (u.id || u.email || u.value);
+                    return emailValue && String(emailValue).toLowerCase() === lowerEmail;
+                });
+                
+                if (!matchesTopLevel && !matchesLimitations) {
+                    return NextResponse.json({ error: 'הקופון הזה אינו זמין עבור משתמש זה' }, { status: 403 });
+                }
             }
 
             // 2. Usage Check (Differentiate Public vs Personal)
             let usageQuery = "";
             let usageParams = [];
 
-            if (coupon.email) {
+            if (isPersonal) {
                 // Personal coupon: One use total across the system
                 usageQuery = "SELECT id FROM orders WHERE coupon_code = $1 AND status != 'cancelled' LIMIT 1";
                 usageParams = [coupon.code];
