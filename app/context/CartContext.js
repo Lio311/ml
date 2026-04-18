@@ -92,10 +92,13 @@ export function CartProvider({ children }) {
         return () => clearTimeout(timeout);
     }, [coupon]);
 
-    // Re-validate coupon security when user state changes
+    // Re-validate coupon security when user state or cart changes
     useEffect(() => {
         if (!coupon || !coupon.code) return;
         
+        const currentActiveItems = cartItems.filter(item => (item.vendorId || 'main') === activeVendorId);
+        const currentSubtotal = currentActiveItems.reduce((sum, i) => sum + (Number(i.price) * i.quantity), 0);
+
         const revalidate = async () => {
             try {
                 const res = await fetch("/api/coupons/validate", {
@@ -103,16 +106,18 @@ export function CartProvider({ children }) {
                     headers: { "Content-Type": "application/json" },
                     body: JSON.stringify({ 
                         code: coupon.code,
-                        subtotal: activeItems.reduce((sum, i) => sum + (Number(i.price) * i.quantity), 0),
-                        items: activeItems,
+                        subtotal: currentSubtotal,
+                        items: currentActiveItems,
                         userEmail: user?.primaryEmailAddress?.emailAddress
                     }),
                 });
                 if (!res.ok) {
                     const data = await res.json();
-                    if (data.error === 'הקופון הזה אינו זמין עבור משתמש זה' || res.status === 403) {
-                        setCoupon(null);
-                        localStorage.removeItem("coupon");
+                    // Clear coupon on any validation error (400, 403, etc.)
+                    setCoupon(null);
+                    localStorage.removeItem("coupon");
+                    if (data.error) {
+                        toast.error(data.error);
                     }
                 }
             } catch (e) {
@@ -120,8 +125,9 @@ export function CartProvider({ children }) {
             }
         };
         
-        revalidate();
-    }, [user?.id]);
+        const timer = setTimeout(revalidate, 600); // Debounce during quantity changes
+        return () => clearTimeout(timer);
+    }, [user?.id, cartItems, activeVendorId]);
 
     // Derived State
     const isCartLocked = lotteryMode.active;

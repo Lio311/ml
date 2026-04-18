@@ -1,6 +1,7 @@
 import pool from '../../../lib/db';
 import { auth, currentUser } from '@clerk/nextjs/server';
 import { mapHebrewQuery } from '../../../lib/hebrewMapping';
+import { NextResponse } from 'next/server';
 
 export async function GET(req) {
     try {
