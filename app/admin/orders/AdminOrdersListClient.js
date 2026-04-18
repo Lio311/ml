@@ -162,10 +162,20 @@ export default function AdminOrdersListClient({
                                                 </li>
                                             ))}
                                         </ul>
-                                        {order.notes && (
+                                        {(order.notes || order.coupon_code) && (
                                             <div className="mt-2 text-[10px] bg-amber-50 p-2 rounded-lg border border-amber-100 text-amber-900 max-w-[240px] break-words ml-auto mr-0">
-                                                <span className="font-bold block mb-0.5 text-right">הערות:</span>
-                                                {order.notes}
+                                                {order.notes && (
+                                                    <div className="mb-1">
+                                                        <span className="font-bold block mb-0.5 text-right">הערות:</span>
+                                                        {order.notes}
+                                                    </div>
+                                                )}
+                                                {order.coupon_code && (
+                                                    <div className={order.notes ? "mt-1 pt-1 border-t border-amber-200/50" : ""}>
+                                                        <span className="font-bold">קוד קופון: </span>
+                                                        <span className="bg-amber-200/50 px-1 rounded uppercase">{order.coupon_code}</span>
+                                                    </div>
+                                                )}
                                             </div>
                                         )}
                                     </td>
@@ -321,12 +331,22 @@ export default function AdminOrdersListClient({
                                         </li>
                                     ))}
                                 </ul>
-                                {order.notes && (
+                                {order.notes || order.coupon_code ? (
                                     <div className="mt-4 text-[11px] font-medium text-amber-800 bg-amber-50/50 p-3 rounded-2xl border border-amber-100/50 leading-relaxed shadow-sm">
-                                        <span className="text-[9px] font-black uppercase tracking-widest block mb-1 underline decoration-amber-200 decoration-2 underline-offset-2">הערה מיוחדת:</span>
-                                        {order.notes}
+                                        {order.notes && (
+                                            <div className="mb-2">
+                                                <span className="text-[9px] font-black uppercase tracking-widest block mb-1 underline decoration-amber-200 decoration-2 underline-offset-2">הערה מיוחדת:</span>
+                                                {order.notes}
+                                            </div>
+                                        )}
+                                        {order.coupon_code && (
+                                            <div className={order.notes ? "pt-2 border-t border-amber-200" : ""}>
+                                                <span className="text-[9px] font-black uppercase tracking-widest block mb-1 underline decoration-amber-200 decoration-2 underline-offset-2">קוד קופון:</span>
+                                                <span className="font-bold bg-amber-200 px-2 py-0.5 rounded-lg uppercase">{order.coupon_code}</span>
+                                            </div>
+                                        )}
                                     </div>
-                                )}
+                                ) : null}
                             </div>
 
                             <div className="flex flex-wrap items-center gap-2 mb-4">
