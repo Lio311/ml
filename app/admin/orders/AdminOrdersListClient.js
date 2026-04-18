@@ -8,6 +8,8 @@ import DownloadOrderPDF from "./DownloadOrderPDF";
 import toast from "react-hot-toast";
 import DownloadBatchOrderPDF from "./DownloadBatchOrderPDF";
 import CustomDropdown from "../../components/ui/CustomDropdown";
+import EditOrderModal from "./EditOrderModal";
+import { Edit2 } from "lucide-react";
 
 const STATUS_OPTIONS = [
     { value: 'no_change', label: 'ללא שינוי סטטוס', icon: <div className="w-2 h-2 rounded-full border border-gray-300 bg-transparent" /> },
@@ -36,6 +38,7 @@ export default function AdminOrdersListClient({
     const [batchStatus, setBatchStatus] = useState('no_change');
     const [batchDeliveryMethod, setBatchDeliveryMethod] = useState('no_change');
     const [isApplyingBatch, setIsApplyingBatch] = useState(false);
+    const [editingOrder, setEditingOrder] = useState(null);
 
     const handleSelectAll = (e) => {
         if (e.target.checked) {
@@ -226,6 +229,14 @@ export default function AdminOrdersListClient({
                                         <div className="flex flex-col items-center gap-2">
                                             {canEdit ? (
                                                 <>
+                                                    <button 
+                                                        onClick={() => setEditingOrder(order)}
+                                                        className="flex items-center gap-2 px-3 py-1.5 bg-amber-50 text-amber-600 rounded-lg border border-amber-100 font-bold text-[10px] hover:bg-amber-100 transition-colors w-full justify-center"
+                                                        title="ערוך הזמנה"
+                                                    >
+                                                        <Edit2 size={12} />
+                                                        <span>ערוך הזמנה</span>
+                                                    </button>
                                                     <AdminOrderStatusSelect orderId={order.id} initialStatus={order.status} />
                                                     <DownloadOrderPDF order={order} />
                                                     <DeleteOrderButton orderId={order.id} deleteAction={deleteOrder} />
@@ -329,6 +340,13 @@ export default function AdminOrdersListClient({
                             {canEdit && (
                                 <div className="mt-5 flex flex-col gap-3 pt-4 border-t border-gray-100/50">
                                     <div className="flex gap-3 w-full">
+                                        <button 
+                                            onClick={() => setEditingOrder(order)}
+                                            className="flex-1 flex items-center gap-2 px-4 py-3 bg-amber-50 text-amber-600 rounded-xl border border-amber-100 font-black text-xs hover:bg-amber-100 transition-colors justify-center"
+                                        >
+                                            <Edit2 size={14} />
+                                            <span>ערוך הזמנה</span>
+                                        </button>
                                         <div className="flex-1">
                                             <AdminOrderStatusSelect orderId={order.id} initialStatus={order.status} />
                                         </div>
@@ -433,6 +451,20 @@ export default function AdminOrdersListClient({
 
             {/* Orders Section */}
             {renderOrdersTable()}
+
+            {/* Edit Order Modal */}
+            <AnimatePresence>
+                {editingOrder && (
+                    <EditOrderModal 
+                        order={editingOrder} 
+                        onClose={() => setEditingOrder(null)} 
+                        onSuccess={() => {
+                            setEditingOrder(null);
+                            window.location.reload();
+                        }}
+                    />
+                )}
+            </AnimatePresence>
         </div>
     );
 }
