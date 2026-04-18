@@ -334,9 +334,9 @@ export default function AdminOrdersListClient({
                                     </div>
                                 )}
                                 {order.coupon_code && (
-                                    <div className="mt-3 text-left">
-                                        <span className="text-[9px] font-black uppercase tracking-widest block mb-1 text-gray-900">קוד קופון:</span>
-                                        <span className="font-black bg-black/50 text-white px-2.5 py-1 rounded-lg uppercase text-[10px] tracking-widest inline-block shadow-sm">{order.coupon_code}</span>
+                                    <div className="mt-4 flex items-center gap-2 py-2 px-3 bg-gray-50/50 rounded-xl border border-gray-100/50 shadow-sm w-fit transition-all hover:bg-gray-50">
+                                        <span className="text-[9px] font-black uppercase tracking-widest text-gray-400">קוד קופון:</span>
+                                        <span className="font-black text-gray-900 tracking-widest uppercase text-[11px]">{order.coupon_code}</span>
                                     </div>
                                 )}
                             </div>

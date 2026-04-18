@@ -98,10 +98,25 @@ export async function POST(req) {
                     throw new Error('הקופון הזה אינו זמין עבור משתמש זה');
                 }
 
-                // 2. Single-Use Check
-                const usageRes = await client.query('SELECT id FROM orders WHERE coupon_code = $1 LIMIT 1', [coupon.code]);
-                if (usageRes.rows.length > 0) {
-                    throw new Error('קוד קופון זה כבר נוצל');
+                // 2. Usage Check (Differentiate Public vs Personal)
+                let usageQuery = "";
+                let usageParams = [];
+
+                if (coupon.email) {
+                    // Personal coupon (assigned to an email): One use total ever
+                    usageQuery = "SELECT id FROM orders WHERE coupon_code = $1 AND status != 'cancelled' LIMIT 1";
+                    usageParams = [coupon.code];
+                } else if (userEmail) {
+                    // Public coupon: One use per customer (email based)
+                    usageQuery = "SELECT id FROM orders WHERE coupon_code = $1 AND customer_details->>'email' = $2 AND status != 'cancelled' LIMIT 1";
+                    usageParams = [coupon.code, userEmail];
+                }
+
+                if (usageQuery) {
+                    const usageRes = await client.query(usageQuery, usageParams);
+                    if (usageRes.rows.length > 0) {
+                        throw new Error('קוד קופון זה כבר נוצל');
+                    }
                 }
 
                 // 3. Min Total Check (subtotal of EVERYTHING in cart)
@@ -171,7 +186,7 @@ export async function POST(req) {
                 }
 
                 if (!hasEligibleItem) {
-                    throw new Error('קופון זה אינו חל על הפריטים בעגלה שלך (מותג / דגם / גודל לא תואמים)');
+                    throw new Error('קופון זה אינו חל על הפריטים בעגלה שלך');
                 }
 
                 discountAmount = Math.round(eligibleSubtotal * (coupon.discount_percent / 100));

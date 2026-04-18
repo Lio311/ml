@@ -37,23 +37,37 @@ export async function POST(req) {
                 return NextResponse.json({ error: 'הקופון הזה אינו זמין עבור משתמש זה' }, { status: 403 });
             }
 
-            // 2. Single-Use Check (Orders)
-            const usageRes = await client.query('SELECT id FROM orders WHERE coupon_code = $1 LIMIT 1', [coupon.code]);
-            if (usageRes.rows.length > 0) {
-                return NextResponse.json({ error: 'קוד קופון זה כבר נוצל' }, { status: 400 });
+            // 2. Usage Check (Differentiate Public vs Personal)
+            let usageQuery = "";
+            let usageParams = [];
+
+            if (coupon.email) {
+                // Personal coupon: One use total across the system
+                usageQuery = "SELECT id FROM orders WHERE coupon_code = $1 AND status != 'cancelled' LIMIT 1";
+                usageParams = [coupon.code];
+            } else if (userEmail) {
+                // Public coupon: One use per customer (based on email)
+                usageQuery = "SELECT id FROM orders WHERE coupon_code = $1 AND customer_details->>'email' = $2 AND status != 'cancelled' LIMIT 1";
+                usageParams = [coupon.code, userEmail];
             }
 
-            // 3. Minimum Total
-            if (limitations.min_total && subtotal < limitations.min_total) {
+            if (usageQuery) {
+                const usageRes = await client.query(usageQuery, usageParams);
+                if (usageRes.rows.length > 0) {
+                    return NextResponse.json({ error: 'קוד קופון זה כבר נוצל' }, { status: 400 });
+                }
+            }
+
+            // 3. Minimum Total Check
+            if (limitations.min_cart_total && subtotal < limitations.min_cart_total) {
                 return NextResponse.json({ 
-                    error: `סכום מינימלי לשימוש בקופון זה הוא ${limitations.min_total} ₪`,
-                    min_total: limitations.min_total
+                    error: `סכום מינימלי לשימוש בקופון זה הוא ${limitations.min_cart_total} ₪`,
+                    min_total: limitations.min_cart_total
                 }, { status: 400 });
             }
 
-            // 4. Product/Brand Restrictions
-            if (items && items.length > 0 && (limitations.eligible_brands || limitations.eligible_products || limitations.excluded_products)) {
-                // Fetch brands/ids for items to be sure
+            // 4. Product/Brand/Category/Size Restrictions
+            if (items && items.length > 0) {
                 const itemDict = items.reduce((acc, item) => {
                     let cleanId = item.id;
                     if (typeof cleanId === 'string' && cleanId.includes('-')) cleanId = cleanId.split('-')[0];
@@ -62,24 +76,56 @@ export async function POST(req) {
                 }, {});
 
                 const productIds = Object.keys(itemDict).filter(id => !isNaN(id)).map(id => parseInt(id));
-                const productsRes = await client.query('SELECT id, brand FROM products WHERE id = ANY($1)', [productIds]);
-                const productsData = productsRes.rows;
+                const productsRes = await client.query('SELECT id, brand, category FROM products WHERE id = ANY($1)', [productIds]);
+                const productDataMap = productsRes.rows.reduce((acc, p) => {
+                    acc[p.id] = p;
+                    return acc;
+                }, {});
 
-                let isEligible = false;
-                
-                // If there's a whitelist, at least one item must match it
-                // Or maybe ALL items must be eligible? Usually for a "specific product coupon" it's at least one.
-                // But for "not eligible for items in cart" it might mean NONE of the items match.
-                
-                const matchesWhitelist = (p) => {
-                    const brandMatch = !limitations.eligible_brands || limitations.eligible_brands.includes(p.brand);
-                    const productMatch = !limitations.eligible_products || limitations.eligible_products.includes(p.id);
-                    const notExcluded = !limitations.excluded_products || !limitations.excluded_products.includes(p.id);
-                    return brandMatch && productMatch && notExcluded;
-                };
+                let hasEligibleItem = false;
 
-                const eligibleItemsCount = productsData.filter(matchesWhitelist).length;
-                if (eligibleItemsCount === 0) {
+                for (const item of items) {
+                    let cleanId = item.id;
+                    if (typeof cleanId === 'string' && cleanId.includes('-')) cleanId = cleanId.split('-')[0];
+                    const p = productDataMap[cleanId];
+
+                    let itemIsEligible = true;
+
+                    // Size Check
+                    if (limitations.allowed_sizes && limitations.allowed_sizes.length > 0) {
+                        if (!limitations.allowed_sizes.includes(Number(item.size))) {
+                            itemIsEligible = false;
+                        }
+                    }
+
+                    // Product Check
+                    if (itemIsEligible && limitations.allowed_products && limitations.allowed_products.length > 0) {
+                        if (!limitations.allowed_products.includes(Number(cleanId))) {
+                            itemIsEligible = false;
+                        }
+                    }
+
+                    // Brand Check
+                    if (itemIsEligible && limitations.allowed_brands && limitations.allowed_brands.length > 0) {
+                        if (!p || !limitations.allowed_brands.includes(p.brand)) {
+                            itemIsEligible = false;
+                        }
+                    }
+
+                    // Category Check
+                    if (itemIsEligible && limitations.allowed_categories && limitations.allowed_categories.length > 0) {
+                        if (!p || !limitations.allowed_categories.includes(p.category)) {
+                            itemIsEligible = false;
+                        }
+                    }
+
+                    if (itemIsEligible) {
+                        hasEligibleItem = true;
+                        break;
+                    }
+                }
+
+                if (!hasEligibleItem) {
                     return NextResponse.json({ error: 'קופון זה אינו חל על הפריטים בעגלה שלך' }, { status: 400 });
                 }
             }

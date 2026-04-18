@@ -894,6 +894,7 @@
         "coupon_min_total": "Coupon requires a minimum total of ₪{total}",
         "coupon_not_eligible": "This coupon does not apply to items in your cart",
         "coupon_invalid": "Invalid coupon code",
+        "coupon_already_used": "This coupon has already been used by you",
         "coupon_error": "Error validating coupon",
         "coupon_applied": "Coupon {code}",
         "discount": "{percent}% Discount",

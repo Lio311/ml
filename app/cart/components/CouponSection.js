@@ -44,14 +44,15 @@ export default function CouponSection({
                 const errorMap = {
                     "הקופון הזה אינו זמין עבור משתמש זה": "cart.coupon_not_available",
                     "קוד קופון לא תקין או פג תוקף": "cart.coupon_invalid",
-                    "קוד קופון זה כבר נוצל": "cart.coupon_already_used"
+                    "קוד קופון זה כבר נוצל": "cart.coupon_already_used",
+                    "קופון זה אינו חל על הפריטים בעגלה שלך": "cart.coupon_not_eligible"
                 };
                 
                 let errorKey = errorMap[data.error] || "cart.coupon_invalid";
                 
-                if (data.error?.includes("סכום")) {
+                if (data.error?.includes("סכום") || data.error?.includes("מינימלי")) {
                     setCouponError(t('cart.coupon_min_total', { total: data.min_total }));
-                } else if (data.error?.includes("פריטים")) {
+                } else if (data.error?.includes("פריטים") || data.error?.includes("חל על")) {
                     setCouponError(t('cart.coupon_not_eligible'));
                 } else {
                     setCouponError(t(errorKey));
