@@ -562,6 +562,7 @@ export function CartProvider({ children }) {
 
     let priceAfterDiscounts = subtotal;
     let discountAmount = 0;
+    let priceAfterGlobalDiscounts = subtotal;
 
     if (isMainVendor) {
         if (lotteryMode.active) {
@@ -574,7 +575,7 @@ export function CartProvider({ children }) {
             priceAfterDiscounts -= d;
         }
 
-        const priceAfterGlobalDiscounts = priceAfterDiscounts;
+        priceAfterGlobalDiscounts = priceAfterDiscounts;
 
         if (coupon) {
             const limitations = coupon.limitations || {};
