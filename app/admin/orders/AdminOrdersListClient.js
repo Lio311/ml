@@ -372,7 +372,7 @@ export default function AdminOrdersListClient({
                                         <div className="flex gap-2 shrink-0">
                                             <button 
                                                 onClick={() => setEditingOrder(order)}
-                                                className="p-3 bg-blue-50 text-blue-500 rounded-xl border border-blue-100 hover:bg-blue-100 transition-colors flex items-center justify-center"
+                                                className="p-2 text-blue-500 hover:bg-blue-50 rounded-lg transition-all flex items-center justify-center"
                                                 title="ערוך"
                                             >
                                                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5">
