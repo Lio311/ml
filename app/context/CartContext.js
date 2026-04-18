@@ -574,6 +574,8 @@ export function CartProvider({ children }) {
             priceAfterDiscounts -= d;
         }
 
+        const priceAfterGlobalDiscounts = priceAfterDiscounts;
+
         if (coupon) {
             const limitations = coupon.limitations || {};
             
@@ -653,6 +655,57 @@ export function CartProvider({ children }) {
             if (nextT) nextTier = Number(nextT.minAmount) - subtotal;
         }
     }
+    const getItemFinalPrice = (item) => {
+        if (!isMainVendor || !item) return Number(item?.price || 0);
+        
+        const basePrice = Number(item.price);
+        // Important: use the local priceAfterGlobalDiscounts calculated above
+        const ratio = subtotal > 0 ? (priceAfterGlobalDiscounts / subtotal) : 1;
+        let discountedPrice = basePrice * ratio;
+
+        if (coupon) {
+            const limitations = coupon.limitations || {};
+            let cleanId = item.id;
+            if (typeof cleanId === 'string' && cleanId.includes('-')) cleanId = cleanId.split('-')[0];
+            if (typeof cleanId === 'string' && cleanId.includes('_')) cleanId = cleanId.split('_')[0];
+            
+            const productMatch = !limitations.allowed_products || limitations.allowed_products.length === 0 || 
+                limitations.allowed_products.includes(Number(cleanId)) || 
+                limitations.allowed_products.includes(String(cleanId));
+            const sizeMatch = !limitations.allowed_sizes || limitations.allowed_sizes.length === 0 || 
+                limitations.allowed_sizes.includes(Number(item.size));
+            const brandMatch = !limitations.allowed_brands || limitations.allowed_brands.length === 0 || 
+                limitations.allowed_brands.includes(item.brand);
+            const categoryMatch = !limitations.allowed_categories || limitations.allowed_categories.length === 0 || 
+                limitations.allowed_categories.includes(item.category);
+
+            if (productMatch && sizeMatch && brandMatch && categoryMatch) {
+                const dv = coupon.discount_value || coupon.discountPercent || 0;
+                const dt = coupon.discount_type || 'percent';
+                if (dt === 'percent') {
+                    discountedPrice *= (1 - dv / 100);
+                } else {
+                    const eligibleSubtotal = activeItems.reduce((sum, i) => {
+                        let cId = i.id;
+                        if (typeof cId === 'string' && cId.includes('-')) cId = cId.split('-')[0];
+                        if (typeof cId === 'string' && cId.includes('_')) cId = cId.split('_')[0];
+                        const pM = !limitations.allowed_products || limitations.allowed_products.includes(Number(cId)) || limitations.allowed_products.includes(String(cId));
+                        const sM = !limitations.allowed_sizes || limitations.allowed_sizes.includes(Number(i.size));
+                        const bM = !limitations.allowed_brands || limitations.allowed_brands.includes(i.brand);
+                        const catM = !limitations.allowed_categories || limitations.allowed_categories.includes(i.category);
+                        return (pM && sM && bM && catM) ? sum + (Number(i.price) * i.quantity) : sum;
+                    }, 0);
+                    
+                    if (eligibleSubtotal > 0) {
+                        const couponFixRatio = Math.max(0, (eligibleSubtotal * ratio - dv) / (eligibleSubtotal * ratio));
+                        discountedPrice *= couponFixRatio;
+                    }
+                }
+            }
+        }
+
+        return Math.round(discountedPrice);
+    };
 
     return (
         <CartContext.Provider value={{
@@ -661,7 +714,7 @@ export function CartProvider({ children }) {
             subtotal, totalItemsCount, globalItemsCount, uniqueVendorsCount, freeSamplesCount, nextTier, shippingCost, total,
             luckyPrize, setLuckyPrize, discountAmount, coupon, setCoupon,
             startLottery, cancelLottery, isCartLocked, lotteryTimeLeft, lotteryMode, 
-            isMainVendor, vendorConfig, isSelfPickup, setIsSelfPickup
+            isMainVendor, vendorConfig, isSelfPickup, setIsSelfPickup, getItemFinalPrice
         }}>
             {children}
         </CartContext.Provider>

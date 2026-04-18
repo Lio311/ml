@@ -170,8 +170,8 @@ export default function AdminOrdersListClient({
                                         )}
                                         {order.coupon_code && (
                                             <div className="mt-2 text-right">
-                                                <span className="font-bold text-gray-900 text-[10px]">קוד קופון: </span>
-                                                <span className="bg-black/50 text-white px-1.5 py-0.5 rounded font-black uppercase text-[9px] tracking-wider inline-block">{order.coupon_code}</span>
+                                                <span className="font-bold text-gray-900 text-[9px]">קוד קופון: </span>
+                                                <span className="bg-black/70 text-white px-1.5 py-[1px] rounded font-black uppercase text-[9px] tracking-wider inline-block leading-normal">{order.coupon_code}</span>
                                             </div>
                                         )}
                                     </td>
@@ -334,9 +334,9 @@ export default function AdminOrdersListClient({
                                     </div>
                                 )}
                                 {order.coupon_code && (
-                                    <div className="mt-4 flex items-center gap-2 py-2 px-3 bg-gray-50/50 rounded-xl border border-gray-100/50 shadow-sm w-fit transition-all hover:bg-gray-50">
-                                        <span className="text-[9px] font-black uppercase tracking-widest text-gray-400">קוד קופון:</span>
-                                        <span className="font-black text-gray-900 tracking-widest uppercase text-[11px]">{order.coupon_code}</span>
+                                    <div className="mt-4 flex items-center gap-2 py-1 px-2.5 bg-black/70 text-white rounded-lg border border-white/10 shadow-sm w-fit transition-all hover:bg-black/80">
+                                        <span className="text-[8px] font-black uppercase tracking-widest text-white/60">קוד קופון:</span>
+                                        <span className="font-black tracking-widest uppercase text-[10px]">{order.coupon_code}</span>
                                     </div>
                                 )}
                             </div>

@@ -3,10 +3,16 @@
 import Image from "@/app/components/CImage";
 import Link from "next/link";
 import { useLanguage } from "../../context/LanguageContext";
+import { useCart } from "../../context/CartContext";
 
 export default function CartItem({ item, updateQuantity, removeFromCart, activeVendorId }) {
     const { t, localize, locale } = useLanguage();
+    const { getItemFinalPrice } = useCart();
     const productUrl = `/product/${item.slug || item.id}`;
+    
+    const finalPrice = getItemFinalPrice(item);
+    const hasDiscount = (item.originalPrice && item.originalPrice !== item.price) || (finalPrice < item.price);
+    const originalPriceToDisplay = item.originalPrice || item.price;
     
     return (
         <div key={`${item.id}-${item.size}`} className={`flex items-center gap-4 border p-4 rounded-lg bg-white shadow-sm relative`}>
@@ -29,10 +35,10 @@ export default function CartItem({ item, updateQuantity, removeFromCart, activeV
                 </Link>
                 <div className="text-sm text-gray-500">{t('cart.size')}: {item.size === 'set' ? t('cart.set') : `${String(item.size).replace(/ml$/i, '')} ${t('common.ml_unit')}`}</div>
                 <div className={`text-sm font-bold mt-1`}>
-                    {item.originalPrice && item.originalPrice !== item.price && !item.isPrize ? (
+                    {hasDiscount && !item.isPrize ? (
                         <span className="flex items-center gap-2">
-                            <span className="line-through text-gray-400 font-normal">{item.originalPrice} ₪</span>
-                            <span className="text-green-600">{item.price} ₪</span>
+                            <span className="line-through text-gray-400 font-normal">{originalPriceToDisplay} ₪</span>
+                            <span className="text-green-600">{finalPrice} ₪</span>
                         </span>
                     ) : (
                         <span className={item.isPrize ? 'text-green-600' : 'text-primary'}>{item.price} ₪</span>
