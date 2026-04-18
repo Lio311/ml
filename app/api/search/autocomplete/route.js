@@ -1,5 +1,5 @@
-import { NextResponse } from 'next/server';
 import pool from '../../../lib/db';
+import { auth, currentUser } from '@clerk/nextjs/server';
 import { mapHebrewQuery } from '../../../lib/hebrewMapping';
 
 export async function GET(req) {
@@ -60,6 +60,33 @@ export async function GET(req) {
                 ),
                 stock: product.stock
             }));
+
+            // --- Log Search Query (Background) ---
+            (async () => {
+                try {
+                    const authData = await auth();
+                    const user = await currentUser();
+                    const userId = authData?.userId;
+                    const userEmail = user?.emailAddresses?.[0]?.emailAddress;
+                    
+                    const ip = req.headers.get('x-forwarded-for') || req.headers.get('x-real-ip') || 'unknown';
+                    const ua = req.headers.get('user-agent') || 'unknown';
+                    const platform = req.headers.get('sec-ch-ua-platform') || 'unknown';
+
+                    const logClient = await pool.connect();
+                    try {
+                        await logClient.query(`
+                            INSERT INTO search_logs (query, results_count, user_id, user_email, ip_address, user_agent, platform)
+                            VALUES ($1, $2, $3, $4, $5, $6, $7)
+                        `, [query, results.length, userId || null, userEmail || null, ip, ua, platform]);
+                    } finally {
+                        logClient.release();
+                    }
+                } catch (logError) {
+                    console.error('Failed to log search query:', logError);
+                }
+            })();
+            // -------------------------------------
 
             return NextResponse.json({ results });
         } finally {
