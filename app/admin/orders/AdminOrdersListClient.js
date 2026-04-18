@@ -230,17 +230,22 @@ export default function AdminOrdersListClient({
                                         <div className="flex flex-col items-center gap-2">
                                             {canEdit ? (
                                                 <>
-                                                    <button 
-                                                        onClick={() => setEditingOrder(order)}
-                                                        className="flex items-center gap-2 px-3 py-1.5 bg-amber-50 text-amber-600 rounded-lg border border-amber-100 font-bold text-[10px] hover:bg-amber-100 transition-colors w-full justify-center"
-                                                        title="ערוך הזמנה"
-                                                    >
-                                                        <Edit2 size={12} />
-                                                        <span>ערוך הזמנה</span>
-                                                    </button>
-                                                    <AdminOrderStatusSelect orderId={order.id} initialStatus={order.status} />
-                                                    <DownloadOrderPDF order={order} />
-                                                    <DeleteOrderButton orderId={order.id} deleteAction={deleteOrder} />
+                                                    <div className="flex items-center justify-center gap-1">
+                                                        <button 
+                                                            onClick={() => setEditingOrder(order)}
+                                                            className="p-2 text-blue-500 hover:bg-blue-50 rounded-lg transition-all"
+                                                            title="ערוך הזמנה"
+                                                        >
+                                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
+                                                                <path strokeLinecap="round" strokeLinejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+                                                            </svg>
+                                                        </button>
+                                                        <DeleteOrderButton orderId={order.id} deleteAction={deleteOrder} />
+                                                    </div>
+                                                    <div className="flex flex-col gap-2 mt-1">
+                                                        <AdminOrderStatusSelect orderId={order.id} initialStatus={order.status} />
+                                                        <DownloadOrderPDF order={order} />
+                                                    </div>
                                                 </>
                                             ) : (
                                                 <span className="text-gray-400 text-xs font-bold uppercase">צפייה בלבד</span>
@@ -340,18 +345,22 @@ export default function AdminOrdersListClient({
 
                             {canEdit && (
                                 <div className="mt-5 flex flex-col gap-3 pt-4 border-t border-gray-100/50">
-                                    <div className="flex gap-3 w-full">
-                                        <button 
-                                            onClick={() => setEditingOrder(order)}
-                                            className="flex-1 flex items-center gap-2 px-4 py-3 bg-amber-50 text-amber-600 rounded-xl border border-amber-100 font-black text-xs hover:bg-amber-100 transition-colors justify-center"
-                                        >
-                                            <Edit2 size={14} />
-                                            <span>ערוך הזמנה</span>
-                                        </button>
+                                    <div className="flex gap-3 w-full items-center">
                                         <div className="flex-1">
                                             <AdminOrderStatusSelect orderId={order.id} initialStatus={order.status} />
                                         </div>
-                                        <DeleteOrderButton orderId={order.id} deleteAction={deleteOrder} />
+                                        <div className="flex gap-2 shrink-0">
+                                            <button 
+                                                onClick={() => setEditingOrder(order)}
+                                                className="p-3 bg-blue-50 text-blue-500 rounded-xl border border-blue-100 hover:bg-blue-100 transition-colors flex items-center justify-center"
+                                                title="ערוך"
+                                            >
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
+                                                </svg>
+                                            </button>
+                                            <DeleteOrderButton orderId={order.id} deleteAction={deleteOrder} />
+                                        </div>
                                     </div>
                                     <DownloadOrderPDF order={order} />
                                 </div>
