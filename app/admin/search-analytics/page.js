@@ -106,7 +106,9 @@ export default function SearchAnalyticsPage() {
           { label: 'שיעור "החמצה"', val: `${zeroResultRate}%`, icon: AlertTriangle, color: 'red' },
         ].map((item, i) => (
           <div key={i} className="bg-white p-6 rounded-[2rem] border border-gray-100 shadow-sm relative overflow-hidden group hover:shadow-md transition-shadow">
-            <div className={`absolute top-0 right-0 w-1.5 h-full bg-${item.color}-500/20`}></div>
+            {item.label !== 'סך חיפושים' && (
+              <div className={`absolute top-0 right-0 w-1.5 h-full bg-${item.color}-500/20`}></div>
+            )}
             <div className="flex justify-between items-start">
               <div>
                 <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">{item.label}</p>
