@@ -202,7 +202,7 @@ export default function EditOrderModal({ order, onClose, onSuccess }) {
                 className="bg-white md:rounded-[2.5rem] w-full max-w-5xl md:max-h-[90vh] overflow-hidden flex flex-col relative shadow-2xl"
             >
                 {/* Header */}
-                <div className="bg-gray-50/50 p-6 border-b border-gray-100 flex items-center justify-between shrink-0">
+                <div className="bg-gray-50/50 p-4 border-b border-gray-100 flex items-center justify-between shrink-0">
                     <div className="flex items-center gap-4">
                         <div className="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-blue-200">
                             <Save className="w-6 h-6" />
@@ -220,7 +220,7 @@ export default function EditOrderModal({ order, onClose, onSuccess }) {
                     </button>
                 </div>
 
-                <div className="flex-1 overflow-y-auto p-6 flex flex-col lg:flex-row gap-8">
+                <div className="flex-1 overflow-y-auto p-4 flex flex-col lg:flex-row gap-6">
                     {/* Left: Content */}
                     <div className="flex-1 space-y-6">
                         {/* Products Section */}
@@ -235,7 +235,7 @@ export default function EditOrderModal({ order, onClose, onSuccess }) {
                                 <input 
                                     type="text"
                                     placeholder="הוסף בושם להזמנה..."
-                                    className="w-full bg-gray-50 ps-12 pe-4 py-4 rounded-2xl border-2 border-transparent focus:border-blue-500 focus:bg-white outline-none transition-all font-medium"
+                                    className="w-full bg-gray-50 ps-12 pe-4 py-2.5 rounded-2xl border-2 border-transparent focus:border-blue-500 focus:bg-white outline-none transition-all font-medium text-sm"
                                     value={productQuery}
                                     onChange={(e) => setProductQuery(e.target.value)}
                                 />
@@ -321,32 +321,32 @@ export default function EditOrderModal({ order, onClose, onSuccess }) {
                                 <Truck className="w-5 h-5 text-blue-600" />
                                 שיטת שילוח והערות
                             </h3>
-                            <div className="grid grid-cols-2 gap-4">
+                            <div className="grid grid-cols-2 gap-3">
                                 <button 
                                     onClick={() => setDeliveryMethod('mail')}
-                                    className={`p-4 rounded-2xl border-2 transition-all flex flex-col items-center gap-2 ${
+                                    className={`p-3 rounded-2xl border-2 transition-all flex flex-col items-center gap-1 ${
                                         deliveryMethod === 'mail' 
                                         ? 'border-blue-600 bg-blue-50 text-blue-900' 
                                         : 'border-gray-100 hover:border-gray-200 grayscale opacity-60'
                                     }`}
                                 >
-                                    <Truck className={deliveryMethod === 'mail' ? 'text-blue-600' : ''} />
-                                    <span className="font-black text-sm">משלוח (30 ₪)</span>
+                                    <Truck className={deliveryMethod === 'mail' ? 'w-5 h-5 text-blue-600' : 'w-5 h-5'} />
+                                    <span className="font-black text-[12px]">משלוח (30 ₪)</span>
                                 </button>
                                 <button 
                                     onClick={() => setDeliveryMethod('self_pickup')}
-                                    className={`p-4 rounded-2xl border-2 transition-all flex flex-col items-center gap-2 ${
+                                    className={`p-3 rounded-2xl border-2 transition-all flex flex-col items-center gap-1 ${
                                         deliveryMethod === 'self_pickup' 
                                         ? 'border-blue-600 bg-blue-50 text-blue-900' 
                                         : 'border-gray-100 hover:border-gray-200 grayscale opacity-60'
                                     }`}
                                 >
-                                    <Store className={deliveryMethod === 'self_pickup' ? 'text-blue-600' : ''} />
-                                    <span className="font-black text-sm">איסוף עצמי (0 ₪)</span>
+                                    <Store className={deliveryMethod === 'self_pickup' ? 'w-5 h-5 text-blue-600' : 'w-5 h-5'} />
+                                    <span className="font-black text-[12px]">איסוף עצמי (0 ₪)</span>
                                 </button>
                             </div>
                             <textarea 
-                                className="w-full bg-gray-50 p-4 rounded-2xl border-2 border-transparent focus:border-blue-500 focus:bg-white outline-none transition-all min-h-[100px] text-sm"
+                                className="w-full bg-gray-50 p-3 rounded-2xl border-2 border-transparent focus:border-blue-500 focus:bg-white outline-none transition-all h-[50px] text-sm resize-none"
                                 placeholder="הערות להזמנה..."
                                 value={notes}
                                 onChange={(e) => setNotes(e.target.value)}
