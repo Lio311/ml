@@ -98,7 +98,32 @@ export function CartProvider({ children }) {
         
         const currentActiveItems = cartItems.filter(item => (item.vendorId || 'main') === activeVendorId);
         const currentSubtotal = currentActiveItems.reduce((sum, i) => sum + (Number(i.price) * i.quantity), 0);
+        const limits = coupon.limitations || {};
 
+        // 1. Instant Local Validation (UX)
+        if (limits.min_cart_total && currentSubtotal < Number(limits.min_cart_total)) {
+            setCoupon(null);
+            localStorage.removeItem("coupon");
+            toast.error(`הקופון הוסר: סכום הסל (₪${currentSubtotal}) נמוך מהמינימום הנדרש (₪${limits.min_cart_total})`);
+            return;
+        }
+
+        // 2. Instant Item Eligibility Check
+        const hasEligible = !limits.allowed_products || limits.allowed_products.length === 0 || 
+            currentActiveItems.some(item => {
+                let cleanId = item.id;
+                if (typeof cleanId === 'string' && cleanId.includes('-')) cleanId = cleanId.split('-')[0];
+                return limits.allowed_products.map(String).includes(String(cleanId));
+            });
+        
+        if (!hasEligible) {
+            setCoupon(null);
+            localStorage.removeItem("coupon");
+            toast.error("הקופון הוסר כיוון שהסל לא מכיל פריטים התואמים למבצע");
+            return;
+        }
+
+        // 3. Debounced Server-side Security Recheck
         const revalidate = async () => {
             try {
                 const res = await fetch("/api/coupons/validate", {
@@ -113,19 +138,16 @@ export function CartProvider({ children }) {
                 });
                 if (!res.ok) {
                     const data = await res.json();
-                    // Clear coupon on any validation error (400, 403, etc.)
                     setCoupon(null);
                     localStorage.removeItem("coupon");
-                    if (data.error) {
-                        toast.error(data.error);
-                    }
+                    if (data.error) toast.error(data.error);
                 }
             } catch (e) {
                 console.error("Coupon re-validation failed", e);
             }
         };
         
-        const timer = setTimeout(revalidate, 600); // Debounce during quantity changes
+        const timer = setTimeout(revalidate, 1000); 
         return () => clearTimeout(timer);
     }, [user?.id, cartItems, activeVendorId]);
 
