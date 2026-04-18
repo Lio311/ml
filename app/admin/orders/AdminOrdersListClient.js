@@ -162,20 +162,16 @@ export default function AdminOrdersListClient({
                                                 </li>
                                             ))}
                                         </ul>
-                                        {(order.notes || order.coupon_code) && (
+                                        {order.notes && (
                                             <div className="mt-2 text-[10px] bg-amber-50 p-2 rounded-lg border border-amber-100 text-amber-900 max-w-[240px] break-words ml-auto mr-0">
-                                                {order.notes && (
-                                                    <div className="mb-1">
-                                                        <span className="font-bold block mb-0.5 text-right">הערות:</span>
-                                                        {order.notes}
-                                                    </div>
-                                                )}
-                                                {order.coupon_code && (
-                                                    <div className={order.notes ? "mt-3 pt-2 border-t border-amber-200/50" : ""}>
-                                                        <span className="font-bold text-gray-900">קוד קופון: </span>
-                                                        <span className="bg-black text-white px-1.5 py-0.5 rounded font-black uppercase text-[9px] tracking-wider inline-block">{order.coupon_code}</span>
-                                                    </div>
-                                                )}
+                                                <span className="font-bold block mb-0.5 text-right">הערות:</span>
+                                                {order.notes}
+                                            </div>
+                                        )}
+                                        {order.coupon_code && (
+                                            <div className="mt-2 text-right">
+                                                <span className="font-bold text-gray-900 text-[10px]">קוד קופון: </span>
+                                                <span className="bg-black/50 text-white px-1.5 py-0.5 rounded font-black uppercase text-[9px] tracking-wider inline-block">{order.coupon_code}</span>
                                             </div>
                                         )}
                                     </td>
@@ -331,22 +327,18 @@ export default function AdminOrdersListClient({
                                         </li>
                                     ))}
                                 </ul>
-                                {order.notes || order.coupon_code ? (
+                                {order.notes && (
                                     <div className="mt-4 text-[11px] font-medium text-amber-800 bg-amber-50/50 p-3 rounded-2xl border border-amber-100/50 leading-relaxed shadow-sm">
-                                        {order.notes && (
-                                            <div className="mb-2">
-                                                <span className="text-[9px] font-black uppercase tracking-widest block mb-1 underline decoration-amber-200 decoration-2 underline-offset-2">הערה מיוחדת:</span>
-                                                {order.notes}
-                                            </div>
-                                        )}
-                                        {order.coupon_code && (
-                                            <div className={order.notes ? "mt-3 pt-3 border-t border-amber-200" : ""}>
-                                                <span className="text-[9px] font-black uppercase tracking-widest block mb-1.5 text-gray-900 underline decoration-gray-200 decoration-2 underline-offset-2">קוד קופון:</span>
-                                                <span className="font-black bg-black text-white px-2.5 py-1 rounded-lg uppercase text-[10px] tracking-widest inline-block shadow-sm">{order.coupon_code}</span>
-                                            </div>
-                                        )}
+                                        <span className="text-[9px] font-black uppercase tracking-widest block mb-1 underline decoration-amber-200 decoration-2 underline-offset-2">הערה מיוחדת:</span>
+                                        {order.notes}
                                     </div>
-                                ) : null}
+                                )}
+                                {order.coupon_code && (
+                                    <div className="mt-3 text-left">
+                                        <span className="text-[9px] font-black uppercase tracking-widest block mb-1 text-gray-900">קוד קופון:</span>
+                                        <span className="font-black bg-black/50 text-white px-2.5 py-1 rounded-lg uppercase text-[10px] tracking-widest inline-block shadow-sm">{order.coupon_code}</span>
+                                    </div>
+                                )}
                             </div>
 
                             <div className="flex flex-wrap items-center gap-2 mb-4">
@@ -375,7 +367,7 @@ export default function AdminOrdersListClient({
                                                 className="p-2 text-blue-500 hover:bg-blue-50 rounded-lg transition-all flex items-center justify-center"
                                                 title="ערוך"
                                             >
-                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-5 h-5">
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
                                                     <path strokeLinecap="round" strokeLinejoin="round" d="m16.862 4.487 1.687-1.688a1.875 1.875 0 1 1 2.652 2.652L10.582 16.07a4.5 4.5 0 0 1-1.897 1.13L6 18l.8-2.685a4.5 4.5 0 0 1 1.13-1.897l8.932-8.931Zm0 0L19.5 7.125M18 14v4.75A2.25 2.25 0 0 1 15.75 21H5.25A2.25 2.25 0 0 1 3 18.75V8.25A2.25 2.25 0 0 1 5.25 6H10" />
                                                 </svg>
                                             </button>
