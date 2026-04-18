@@ -18,7 +18,10 @@ export const metadata = {
 export default async function AdminOrdersPage(props) {
     const searchParams = await props.searchParams;
     const page = Number(searchParams?.page) || 1;
-    const LIMIT = 3; // Limited to 3 orders per page as requested
+    
+    // Support dynamic limits: 10, 50, 100, All (5000)
+    let LIMIT = Number(searchParams?.limit) || 10;
+    if (searchParams?.limit === 'all') LIMIT = 5000;
     
     const offset = (page - 1) * LIMIT;
 
@@ -126,7 +129,8 @@ export default async function AdminOrdersPage(props) {
             currentPage={page}
             totalOrders={totalOrders}
             canEdit={canEdit} 
-            deleteOrder={deleteOrder} 
+            deleteOrder={deleteOrder}
+            currentLimit={LIMIT}
         />
     );
 }

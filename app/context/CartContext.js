@@ -92,6 +92,37 @@ export function CartProvider({ children }) {
         return () => clearTimeout(timeout);
     }, [coupon]);
 
+    // Re-validate coupon security when user state changes
+    useEffect(() => {
+        if (!coupon || !coupon.code) return;
+        
+        const revalidate = async () => {
+            try {
+                const res = await fetch("/api/coupons/validate", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ 
+                        code: coupon.code,
+                        subtotal: activeItems.reduce((sum, i) => sum + (Number(i.price) * i.quantity), 0),
+                        items: activeItems,
+                        userEmail: user?.primaryEmailAddress?.emailAddress
+                    }),
+                });
+                if (!res.ok) {
+                    const data = await res.json();
+                    if (data.error === 'הקופון הזה אינו זמין עבור משתמש זה' || res.status === 403) {
+                        setCoupon(null);
+                        localStorage.removeItem("coupon");
+                    }
+                }
+            } catch (e) {
+                console.error("Coupon re-validation failed", e);
+            }
+        };
+        
+        revalidate();
+    }, [user?.id]);
+
     // Derived State
     const isCartLocked = lotteryMode.active;
     const isMainVendor = activeVendorId === 'main';

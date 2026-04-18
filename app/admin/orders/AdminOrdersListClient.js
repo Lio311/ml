@@ -11,6 +11,7 @@ import CustomDropdown from "../../components/ui/CustomDropdown";
 import EditOrderModal from "./EditOrderModal";
 import { Edit2 } from "lucide-react";
 import { AnimatePresence } from "framer-motion";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
 
 const STATUS_OPTIONS = [
     { value: 'no_change', label: 'ללא שינוי סטטוס', icon: <div className="w-2 h-2 rounded-full border border-gray-300 bg-transparent" /> },
@@ -33,8 +34,13 @@ export default function AdminOrdersListClient({
     currentPage, 
     totalOrders,
     canEdit, 
-    deleteOrder 
+    deleteOrder,
+    currentLimit
 }) {
+    const router = useRouter();
+    const pathname = usePathname();
+    const searchParams = useSearchParams();
+
     const [selectedOrderIds, setSelectedOrderIds] = useState([]);
     const [batchStatus, setBatchStatus] = useState('no_change');
     const [batchDeliveryMethod, setBatchDeliveryMethod] = useState('no_change');
@@ -419,6 +425,31 @@ export default function AdminOrdersListClient({
 
     return (
         <div className="pb-8 relative">
+            {/* Results per page selector - placed under the bell area */}
+            <div className="absolute left-0 top-0 md:top-0 flex items-center gap-2 z-10 translate-y-12 md:translate-y-14">
+                <span className="text-[10px] font-black uppercase text-gray-400 tracking-widest">הצג:</span>
+                <div className="flex bg-white/80 backdrop-blur-sm border border-gray-200 rounded-lg p-0.5 shadow-sm">
+                    {[10, 50, 100, 'all'].map((limit) => (
+                        <button
+                            key={limit}
+                            onClick={() => {
+                                const params = new URLSearchParams(searchParams);
+                                params.set('limit', limit === 'all' ? 'all' : limit.toString());
+                                params.set('page', '1');
+                                router.push(`${pathname}?${params.toString()}`);
+                            }}
+                            className={`px-2 py-1 text-[10px] font-bold rounded-md transition-all ${
+                                (limit === 'all' ? currentLimit === 5000 : currentLimit === limit)
+                                    ? 'bg-black text-white shadow-md'
+                                    : 'text-gray-400 hover:bg-gray-100 hover:text-black'
+                            }`}
+                        >
+                            {limit === 'all' ? 'הכל' : limit}
+                        </button>
+                    ))}
+                </div>
+            </div>
+
             {/* Header and Batch Action Bar */}
             <div className="flex flex-col xl:flex-row items-start xl:items-center justify-center gap-4 mb-4 lg:mb-6 relative min-h-[44px] xl:min-h-[64px]">
                 <div className="flex flex-col xl:absolute xl:right-0 xl:top-1/2 xl:-translate-y-1/2">

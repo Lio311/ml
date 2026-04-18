@@ -94,7 +94,7 @@ export async function POST(req) {
                 // 1. Ownership Check
                 const user = userId ? await currentUser() : null;
                 const userEmail = user?.emailAddresses?.[0]?.emailAddress;
-                if (coupon.email && userEmail && coupon.email.toLowerCase() !== userEmail.toLowerCase()) {
+                if (coupon.email && (!userEmail || coupon.email.toLowerCase() !== userEmail.toLowerCase())) {
                     throw new Error('הקופון הזה אינו זמין עבור משתמש זה');
                 }
 
