@@ -125,9 +125,22 @@ export default function PhoneOrderClient() {
     };
 
     // -- Actions --
+    const getConsumedStock = (productId) => {
+        return cart
+            .filter(item => item.id === productId)
+            .reduce((sum, item) => sum + (item.quantity * item.size), 0);
+    };
+
     const handleAddProduct = (product, size) => {
         const discountedPrice = getDiscountedPrice(product, size);
         
+        // Stock Check
+        const currentConsumed = getConsumedStock(product.id);
+        if (currentConsumed + size > product.stock) {
+            toast.error(`אין מספיק מלאי! נותרו ${product.stock - currentConsumed} מ"ל`);
+            return;
+        }
+
         const cartItem = {
             id: product.id,
             name: product.name,
@@ -137,7 +150,8 @@ export default function PhoneOrderClient() {
             price: discountedPrice,
             originalPrice: Number(product[`price_${size}ml`]),
             quantity: 1,
-            itemKey: `${product.id}-${size}`
+            itemKey: `${product.id}-${size}`,
+            stock: product.stock // Keep track of product stock
         };
 
         setCart(prev => {
@@ -157,7 +171,15 @@ export default function PhoneOrderClient() {
     const updateQuantity = (itemKey, delta) => {
         setCart(prev => prev.map(i => {
             if (i.itemKey === itemKey) {
-                return { ...i, quantity: Math.max(1, i.quantity + delta) };
+                const newQuantity = Math.max(1, i.quantity + delta);
+                if (delta > 0) {
+                    const currentConsumed = getConsumedStock(i.id);
+                    if (currentConsumed + i.size > i.stock) {
+                        toast.error(`הגעת למקסימום המלאי הזמין (${i.stock} מ"ל)`);
+                        return i;
+                    }
+                }
+                return { ...i, quantity: newQuantity };
             }
             return i;
         }));
@@ -450,7 +472,8 @@ export default function PhoneOrderClient() {
                                                 <span className="w-8 text-center font-bold">{item.quantity}</span>
                                                 <button 
                                                     onClick={() => updateQuantity(item.itemKey, 1)}
-                                                    className="p-1 hover:bg-white hover:shadow-sm rounded-lg transition-all"
+                                                    className={`p-1 hover:bg-white hover:shadow-sm rounded-lg transition-all ${getConsumedStock(item.id) + item.size > item.stock ? 'opacity-20 cursor-not-allowed' : ''}`}
+                                                    disabled={getConsumedStock(item.id) + item.size > item.stock}
                                                 >
                                                     <Plus size={16} />
                                                 </button>
@@ -632,6 +655,11 @@ export default function PhoneOrderClient() {
                                         <h3 className="text-2xl font-black text-gray-900 leading-tight">
                                             {cleanProductName(showProductModal.name, showProductModal.brand)}
                                         </h3>
+                                        <div className="mt-1 flex items-center gap-2">
+                                            <span className={`text-xs font-bold px-2 py-0.5 rounded-lg ${showProductModal.stock < 50 ? 'bg-red-50 text-red-600' : 'bg-green-50 text-green-600'}`}>
+                                                מלאי זמין: {showProductModal.stock - getConsumedStock(showProductModal.id)} מ"ל
+                                            </span>
+                                        </div>
                                     </div>
                                 </div>
 
@@ -663,6 +691,11 @@ export default function PhoneOrderClient() {
                                                         <div className="text-xs text-gray-500 uppercase font-black tracking-widest">דוגמית</div>
                                                     </div>
                                                 </div>
+                                                {size > (showProductModal.stock - getConsumedStock(showProductModal.id)) && (
+                                                    <div className="absolute inset-0 bg-white/60 backdrop-blur-[1px] flex items-center justify-center z-20">
+                                                        <span className="bg-red-600 text-white text-[10px] font-black px-3 py-1 rounded-full shadow-lg">אזל מהמלאי</span>
+                                                    </div>
+                                                )}
                                                 <div className="flex flex-col items-end">
                                                     {isDiscounted ? (
                                                         <>

@@ -231,9 +231,10 @@ export async function POST(req) {
 
                         if (currentStock < threshold) {
                             const pName = stockRes.rows[0].name_he || stockRes.rows[0].name || 'מוצר לא ידוע';
+                            // RTL Fix: wrap number in LRM \u200E
                             await client.query(
                                 `INSERT INTO notifications (type, message, is_read) VALUES ($1, $2, $3)`,
-                                ['warning', `מלאי נמוך למוצר: ${pName} (נותרו ${currentStock} מ"ל)`, false]
+                                ['warning', `מלאי נמוך למוצר: ${pName} (נותרו \u200E${currentStock} מ"ל)`, false]
                             );
                         }
                     }
@@ -248,9 +249,10 @@ export async function POST(req) {
                         // Check Low Stock for Bottles
                         if (bottleRes.rows[0] && bottleRes.rows[0].quantity < 20) {
                             const sizeLabel = `${bottleSize}ml`;
+                            // RTL Fix: wrap number in LRM \u200E
                             await client.query(
                                 `INSERT INTO notifications (type, message, is_read) VALUES ($1, $2, $3)`,
-                                ['warning', `מלאי בקבוקים נמוך: ${sizeLabel} (נותרו ${bottleRes.rows[0].quantity})`, false]
+                                ['warning', `מלאי בקבוקים נמוך: ${sizeLabel} (נותרו \u200E${bottleRes.rows[0].quantity})`, false]
                             );
                         }
                     }
