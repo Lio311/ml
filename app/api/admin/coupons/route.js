@@ -8,8 +8,10 @@ export async function GET() {
         const client = await pool.connect();
         try {
             const res = await client.query(`
-                SELECT id, code, discount_percent, expires_at, status, email, created_at, limitations FROM coupons 
-                ORDER BY created_at DESC 
+                SELECT c.id, c.code, c.discount_percent, c.expires_at, c.status, c.email, c.created_at, c.limitations,
+                (SELECT COUNT(*) FROM orders o WHERE o.coupon_code = c.code AND o.status != 'cancelled') as usage_count
+                FROM coupons c
+                ORDER BY c.created_at DESC 
                 LIMIT 50
             `);
             return NextResponse.json(res.rows);

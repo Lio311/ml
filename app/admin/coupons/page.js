@@ -283,6 +283,7 @@ export default function AdminCouponsPage() {
                                 <th className="p-4 text-center">תוקף (שעון עצר)</th>
                                 <th className="p-4 text-center">הגבלות</th>
                                 <th className="p-4 text-center">שייכות</th>
+                                <th className="p-4 text-center">שימושים</th>
                                 <th className="p-4 text-center">סטטוס</th>
                                 <th className="p-4 text-center">פעולות</th>
                             </tr>
@@ -445,14 +446,14 @@ export default function AdminCouponsPage() {
                                     <div>
                                         <label className="block text-sm font-bold mb-2">תקף לגדלים:</label>
                                         <div className="flex gap-3 flex-wrap">
-                                            {[2, 5, 10, 11].map(s => (
+                                            {[2, 5, 10].map(s => (
                                                 <label key={s} className="flex items-center gap-2 bg-white px-3 py-1 rounded-lg cursor-pointer border hover:border-black transition">
                                                     <input
                                                         type="checkbox"
                                                         checked={formData.allowed_sizes.includes(s)}
                                                         onChange={() => toggleSelection('allowed_sizes', s)}
                                                     />
-                                                    <span className="text-sm">{s === 11 ? '10 מ"ל יוקרתי' : s + ' מ"ל'}</span>
+                                                    <span className="text-sm">{s + ' מ"ל'}</span>
                                                 </label>
                                             ))}
                                         </div>
@@ -598,6 +599,11 @@ function CouponRow({ coupon, onDelete, onEdit, canEdit }) {
                 )}
             </td>
             <td className="p-4 text-center">
+                <span className="font-bold text-gray-900 bg-gray-100 px-2 py-1 rounded-lg border border-gray-200 text-xs inline-block min-w-[30px]">
+                    {coupon.usage_count || 0}
+                </span>
+            </td>
+            <td className="p-4 text-center">
                 <span className={`px-2 py-1 rounded-full text-xs font-bold inline-block min-w-[60px] ${isActive ? 'bg-green-100 text-green-800 border border-green-200' : 'bg-red-100 text-red-800 border border-red-200'
                     }`}>
                     {isActive ? 'פעיל' : (isRedeemed ? 'מומש' : 'לא פעיל')}
@@ -704,6 +710,12 @@ function CouponCard({ coupon, onDelete, onEdit, canEdit }) {
                             {timeLeft || 'פג תוקף'}
                         </div>
                     )}
+                </div>
+                <div>
+                    <div className="text-[10px] uppercase font-bold text-gray-400 mb-1">שימושים:</div>
+                    <div className="text-sm font-bold text-gray-900">
+                        {coupon.usage_count || 0}
+                    </div>
                 </div>
                 <div>
                     <div className="text-[10px] uppercase font-bold text-gray-400 mb-1">הגבלות:</div>

@@ -104,40 +104,78 @@ export async function POST(req) {
                     throw new Error('קוד קופון זה כבר נוצל');
                 }
 
-                // 3. Min Total Check (Already calculated subtotal from loop)
-                const subtotalBeforeShipping = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-                if (limitations.min_total && subtotalBeforeShipping < limitations.min_total) {
-                    throw new Error(`סכום מינימלי לשימוש בקופון זה הוא ${limitations.min_total} ₪`);
+                // 3. Min Total Check (subtotal of EVERYTHING in cart)
+                const subtotalBeforeDiscount = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                if (limitations.min_cart_total && subtotalBeforeDiscount < limitations.min_cart_total) {
+                    throw new Error(`סכום מינימלי לשימוש בקופון זה הוא ${limitations.min_cart_total} ₪`);
                 }
 
-                // 4. Product/Brand Restrictions
-                if (limitations.eligible_brands || limitations.eligible_products || limitations.excluded_products) {
-                    const itemDict = items.reduce((acc, item) => {
-                        let cleanId = item.id;
-                        if (typeof cleanId === 'string' && cleanId.includes('-')) cleanId = cleanId.split('-')[0];
-                        acc[cleanId] = item;
-                        return acc;
-                    }, {});
+                // 4. Detailed Eligibility Check
+                // Fetch product details for all items to check brand/category
+                const itemDict = items.reduce((acc, item) => {
+                    let cleanId = item.id;
+                    if (typeof cleanId === 'string' && cleanId.includes('-')) cleanId = cleanId.split('-')[0];
+                    acc[cleanId] = item;
+                    return acc;
+                }, {});
 
-                    const productIds = Object.keys(itemDict).filter(id => !isNaN(id)).map(id => parseInt(id));
-                    const productsRes = await client.query('SELECT id, brand FROM products WHERE id = ANY($1)', [productIds]);
-                    const productsData = productsRes.rows;
+                const productIds = Object.keys(itemDict).filter(id => !isNaN(id)).map(id => parseInt(id));
+                const productsRes = await client.query('SELECT id, brand, category FROM products WHERE id = ANY($1)', [productIds]);
+                const productDataMap = productsRes.rows.reduce((acc, p) => {
+                    acc[p.id] = p;
+                    return acc;
+                }, {});
 
-                    const matchesWhitelist = (p) => {
-                        const brandMatch = !limitations.eligible_brands || limitations.eligible_brands.includes(p.brand);
-                        const productMatch = !limitations.eligible_products || limitations.eligible_products.includes(p.id);
-                        const notExcluded = !limitations.excluded_products || !limitations.excluded_products.includes(p.id);
-                        return brandMatch && productMatch && notExcluded;
-                    };
+                let eligibleSubtotal = 0;
+                let hasEligibleItem = false;
 
-                    const eligibleItemsCount = productsData.filter(matchesWhitelist).length;
-                    if (eligibleItemsCount === 0) {
-                        throw new Error('קופון זה אינו חל על הפריטים בעגלה שלך');
+                for (const item of items) {
+                    let cleanId = item.id;
+                    if (typeof cleanId === 'string' && cleanId.includes('-')) cleanId = cleanId.split('-')[0];
+                    const p = productDataMap[cleanId];
+
+                    let isEligible = true;
+
+                    // Size Check
+                    if (limitations.allowed_sizes && limitations.allowed_sizes.length > 0) {
+                        if (!limitations.allowed_sizes.includes(Number(item.size))) {
+                            isEligible = false;
+                        }
+                    }
+
+                    // Product Check
+                    if (isEligible && limitations.allowed_products && limitations.allowed_products.length > 0) {
+                        if (!limitations.allowed_products.includes(Number(cleanId))) {
+                            isEligible = false;
+                        }
+                    }
+
+                    // Brand Check
+                    if (isEligible && limitations.allowed_brands && limitations.allowed_brands.length > 0) {
+                        if (!p || !limitations.allowed_brands.includes(p.brand)) {
+                            isEligible = false;
+                        }
+                    }
+
+                    // Category Check
+                    if (isEligible && limitations.allowed_categories && limitations.allowed_categories.length > 0) {
+                        if (!p || !limitations.allowed_categories.includes(p.category)) {
+                            isEligible = false;
+                        }
+                    }
+
+                    if (isEligible) {
+                        eligibleSubtotal += item.price * item.quantity;
+                        hasEligibleItem = true;
                     }
                 }
 
-                discountAmount = Math.round(subtotalBeforeShipping * (coupon.discount_percent / 100));
-                calculatedTotal = subtotalBeforeShipping - discountAmount;
+                if (!hasEligibleItem) {
+                    throw new Error('קופון זה אינו חל על הפריטים בעגלה שלך (מותג / דגם / גודל לא תואמים)');
+                }
+
+                discountAmount = Math.round(eligibleSubtotal * (coupon.discount_percent / 100));
+                calculatedTotal = subtotalBeforeDiscount - discountAmount;
             }
 
             // Add shipping cost (0 for self_pickup, 30 for mail)
