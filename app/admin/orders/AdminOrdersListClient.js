@@ -10,6 +10,7 @@ import DownloadBatchOrderPDF from "./DownloadBatchOrderPDF";
 import CustomDropdown from "../../components/ui/CustomDropdown";
 import EditOrderModal from "./EditOrderModal";
 import { Edit2 } from "lucide-react";
+import { AnimatePresence } from "framer-motion";
 
 const STATUS_OPTIONS = [
     { value: 'no_change', label: 'ללא שינוי סטטוס', icon: <div className="w-2 h-2 rounded-full border border-gray-300 bg-transparent" /> },
