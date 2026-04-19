@@ -11,16 +11,24 @@ function cn(...inputs) {
     return twMerge(clsx(inputs));
 }
 
-export default function OrderStatusTimeline({ status }) {
+export default function OrderStatusTimeline({ status, deliveryMethod }) {
     const { t, locale } = useLanguage();
 
-    const statusSteps = [
+    const baseSteps = [
         { id: 'pending', label: t('orders.status.pending'), icon: Package, description: t('orders.status.pending_desc') },
         { id: 'processing', label: t('orders.status.processing'), icon: Phone, description: t('orders.status.processing_desc') },
-        { id: 'shipped', label: t('orders.status.shipped'), icon: Truck, description: t('orders.status.shipped_desc') },
-        { id: 'ready_for_pickup', label: t('orders.status.ready_for_pickup'), icon: MapPin, description: t('orders.status.ready_for_pickup_desc') },
+    ];
+
+    const conditionalStep = deliveryMethod === 'self_pickup' 
+        ? { id: 'ready_for_pickup', label: t('orders.status.ready_for_pickup'), icon: MapPin, description: t('orders.status.ready_for_pickup_desc') }
+        : { id: 'shipped', label: t('orders.status.shipped'), icon: Truck, description: t('orders.status.shipped_desc') };
+
+    const statusSteps = [
+        ...baseSteps,
+        conditionalStep,
         { id: 'completed', label: t('orders.status.completed'), icon: CheckCircle, description: t('orders.status.completed_desc') },
     ];
+
     if (status === 'cancelled') {
         return (
             <div className="bg-red-50 border border-red-100 rounded-xl p-4 flex items-center gap-3 text-red-700 mb-6">
@@ -33,10 +41,14 @@ export default function OrderStatusTimeline({ status }) {
     const activeIndex = statusSteps.findIndex(step => step.id === status);
     const progressPercentage = activeIndex === -1 ? 0 : (activeIndex / (statusSteps.length - 1)) * 100;
 
+    // Grid columns: number of steps + (number of steps - 1) spacers
+    // For 4 steps, it's 4 + 3 = 7 columns.
+    const gridCols = `grid-cols-[auto,1fr,auto,1fr,auto,1fr,auto]`; // auto, spacer, auto, spacer...
+
     return (
         <div className="w-full py-2 mb-0 px-4 md:px-6 relative overflow-visible">
             {/* The Unified Grid (Handles centering and spacing in 1 go) */}
-            <div className="grid grid-cols-[auto,1fr,auto,1fr,auto,1fr,auto] w-full items-center h-8 md:h-12 relative z-10">
+            <div className={cn("grid w-full items-center h-8 md:h-12 relative z-10", gridCols)}>
                 {statusSteps.map((step, index) => {
                     const isCompleted = index < activeIndex;
                     const isActive = index === activeIndex;
@@ -91,7 +103,7 @@ export default function OrderStatusTimeline({ status }) {
             </div>
 
             {/* Labels Grid (Matches circle positioning) */}
-            <div className="grid grid-cols-[auto,1fr,auto,1fr,auto,1fr,auto] w-full mt-3 relative z-10">
+            <div className={cn("grid w-full mt-3 relative z-10", gridCols)}>
                 {statusSteps.map((step, index) => {
                     const isActive = index === activeIndex;
                     const isLast = index === statusSteps.length - 1;

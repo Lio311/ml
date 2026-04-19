@@ -167,7 +167,7 @@ export default function OrdersClient() {
                                 </div>
                             </div>
 
-                            <OrderStatusTimeline status={order.status} />
+                            <OrderStatusTimeline status={order.status} deliveryMethod={order.delivery_method} />
 
                             {(order.status === 'completed' || order.status === 'הושלם') && openReviewId === order.id && (
                                 <div className="animate-fadeIn">

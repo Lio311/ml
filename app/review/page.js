@@ -80,7 +80,7 @@ export default async function PublicReviewPage(props) {
                                         <div className="font-bold text-2xl">{order.total_amount} ₪</div>
                                     </div>
                                 </div>
-                                <OrderStatusTimeline status={order.status} />
+                                <OrderStatusTimeline status={order.status} deliveryMethod={order.delivery_method} />
                                 
                                 {order.has_review ? (
                                     <div className="bg-green-50 text-green-700 p-4 rounded-xl text-center font-bold border border-green-200">
