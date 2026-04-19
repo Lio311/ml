@@ -422,16 +422,12 @@ export default function AdminCouponsPage() {
                                     </div>
                                     <div>
                                         <label className="block text-sm font-bold mb-1">שיוך למשפיען (אופציונלי)</label>
-                                        <select
-                                            className="input border p-2 rounded-xl w-full outline-none focus:ring-2 focus:ring-blue-100 bg-white"
-                                            value={formData.influencer_id}
-                                            onChange={e => setFormData({ ...formData, influencer_id: e.target.value })}
-                                        >
-                                            <option value="">ללא משפיען</option>
-                                            {influencers.map(inf => (
-                                                <option key={inf.id} value={inf.id}>{inf.name}</option>
-                                            ))}
-                                        </select>
+                                        <ObjectTagInput
+                                            options={influencers.map(inf => ({ id: inf.id, label: inf.name }))}
+                                            value={formData.influencer_id ? [formData.influencer_id] : []}
+                                            onChange={(newVal) => setFormData(prev => ({ ...prev, influencer_id: newVal.length > 0 ? newVal[newVal.length - 1] : '' }))}
+                                            placeholder="חפש משתמש..."
+                                        />
                                     </div>
                                 </div>
 
