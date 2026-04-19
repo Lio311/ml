@@ -482,6 +482,7 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
                                             <div className={`w-2 h-2 rounded-full ${
                                                 ['delivered', 'completed'].includes(orderData[activeConversation.order_id].status) ? 'bg-green-500' :
                                                 ['shipped'].includes(orderData[activeConversation.order_id].status) ? 'bg-blue-500' :
+                                                ['ready_for_pickup'].includes(orderData[activeConversation.order_id].status) ? 'bg-indigo-500' :
                                                 ['cancelled'].includes(orderData[activeConversation.order_id].status) ? 'bg-red-500' : 'bg-teal-500'
                                             }`} />
                                             <span className="font-bold text-xs text-teal-800">
@@ -489,6 +490,7 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
                                                  orderData[activeConversation.order_id].status === 'pending' ? t('inbox.order_status.pending') :
                                                  orderData[activeConversation.order_id].status === 'processing' ? t('inbox.order_status.processing') :
                                                  orderData[activeConversation.order_id].status === 'shipped' ? t('inbox.order_status.shipped') :
+                                                 orderData[activeConversation.order_id].status === 'ready_for_pickup' ? t('inbox.order_status.ready_for_pickup') :
                                                  orderData[activeConversation.order_id].status === 'delivered' ? t('inbox.order_status.delivered') :
                                                  orderData[activeConversation.order_id].status === 'completed' ? t('inbox.order_status.completed') :
                                                  orderData[activeConversation.order_id].status === 'cancelled' ? t('inbox.order_status.cancelled') : t('inbox.order_status.new')

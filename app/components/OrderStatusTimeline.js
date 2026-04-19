@@ -14,22 +14,25 @@ function cn(...inputs) {
 export default function OrderStatusTimeline({ status, deliveryMethod }) {
     const { t, locale } = useLanguage();
 
-    const baseSteps = [
+    const statusSteps = [
         { id: 'pending', label: t('orders.status.pending'), icon: Package, description: t('orders.status.pending_desc') },
         { id: 'processing', label: t('orders.status.processing'), icon: Phone, description: t('orders.status.processing_desc') },
-    ];
-
-    const conditionalStep = deliveryMethod === 'self_pickup' 
-        ? { id: 'ready_for_pickup', label: t('orders.status.ready_for_pickup'), icon: MapPin, description: t('orders.status.ready_for_pickup_desc') }
-        : { id: 'shipped', label: t('orders.status.shipped'), icon: Truck, description: t('orders.status.shipped_desc') };
-
-    const statusSteps = [
-        ...baseSteps,
-        conditionalStep,
+        { 
+            ids: ['shipped', 'ready_for_pickup'], 
+            label: (status === 'ready_for_pickup' || (deliveryMethod === 'self_pickup' && status !== 'shipped')) 
+                    ? t('orders.status.ready_for_pickup') 
+                    : t('orders.status.shipped'),
+            icon: (status === 'ready_for_pickup' || (deliveryMethod === 'self_pickup' && status !== 'shipped')) 
+                    ? MapPin 
+                    : Truck,
+            description: (status === 'ready_for_pickup' || (deliveryMethod === 'self_pickup' && status !== 'shipped'))
+                    ? t('orders.status.ready_for_pickup_desc')
+                    : t('orders.status.shipped_desc')
+        },
         { id: 'completed', label: t('orders.status.completed'), icon: CheckCircle, description: t('orders.status.completed_desc') },
     ];
 
-    if (status === 'cancelled') {
+    if (status === 'cancelled' || status === 'בוטל') {
         return (
             <div className="bg-red-50 border border-red-100 rounded-xl p-4 flex items-center gap-3 text-red-700 mb-6">
                 <XCircle className="w-6 h-6" />
@@ -38,12 +41,27 @@ export default function OrderStatusTimeline({ status, deliveryMethod }) {
         );
     }
 
-    const activeIndex = statusSteps.findIndex(step => step.id === status);
-    const progressPercentage = activeIndex === -1 ? 0 : (activeIndex / (statusSteps.length - 1)) * 100;
+    // Robust search for activeIndex
+    const activeIndex = statusSteps.findIndex(step => {
+        // Match by ID
+        if (step.id === status) return true;
+        // Match by IDs array (the flexible slot)
+        if (step.ids && step.ids.includes(status)) return true;
+        // Fallback: match by translated label (in case status in DB is Hebrew)
+        if (step.label === status) return true;
+        
+        // Final fallback for common manual entry issues
+        if (status === 'ready_for_pickup' && step.ids?.includes('ready_for_pickup')) return true;
+        if ((status === 'completed' || status === 'הושלם') && step.id === 'completed') return true;
+        if ((status === 'shipped' || status === 'נשלח') && step.ids?.includes('shipped')) return true;
+        if ((status === 'processing' || status === 'בטיפול') && step.id === 'processing') return true;
+        if ((status === 'pending' || status === 'ממתין') && step.id === 'pending') return true;
+
+        return false;
+    });
 
     // Grid columns: number of steps + (number of steps - 1) spacers
-    // For 4 steps, it's 4 + 3 = 7 columns.
-    const gridCols = `grid-cols-[auto,1fr,auto,1fr,auto,1fr,auto]`; // auto, spacer, auto, spacer...
+    const gridCols = `grid-cols-[auto,1fr,auto,1fr,auto,1fr,auto]`;
 
     return (
         <div className="w-full py-2 mb-0 px-4 md:px-6 relative overflow-visible">
