@@ -102,17 +102,18 @@ export default function InfluencerClient() {
 
     return (
         <div className="space-y-6">
-            <div className="flex justify-between items-center mb-8 px-4">
-                <h1 className="text-3xl font-black tracking-tight text-gray-900">ניהול משפיענים</h1>
+            <div className="flex flex-col md:flex-row justify-between items-center gap-4 mb-8 px-4">
+                <h1 className="text-2xl md:text-3xl font-black tracking-tight text-gray-900">ניהול משפיענים</h1>
                 <button 
                     onClick={() => { resetForm(); setShowModal(true); }}
-                    className="bg-black text-white px-6 py-2.5 rounded-2xl font-black shadow-xl hover:bg-gray-800 transition flex items-center gap-2 text-sm uppercase tracking-widest"
+                    className="bg-black text-white px-5 md:px-6 py-2 md:py-2.5 rounded-2xl font-black shadow-xl hover:bg-gray-800 transition flex items-center gap-2 text-[10px] md:text-sm uppercase tracking-widest w-full md:w-auto justify-center"
                 >
                     <Plus className="w-4 h-4" /> משפיען חדש
                 </button>
             </div>
 
-            <div className="bg-white rounded-[2rem] shadow-sm border border-gray-100 overflow-hidden">
+            {/* Desktop Table View */}
+            <div className="hidden md:block bg-white rounded-[2rem] shadow-sm border border-gray-100 overflow-hidden">
                 <div className="overflow-x-auto">
                     <table className="w-full text-right" dir="rtl">
                         <thead className="bg-gray-50/50 text-gray-400 text-[10px] font-black uppercase tracking-widest border-b border-gray-100">
@@ -205,6 +206,79 @@ export default function InfluencerClient() {
                         </tbody>
                     </table>
                 </div>
+            </div>
+
+            {/* Mobile List View */}
+            <div className="md:hidden space-y-4 px-2 pb-10">
+                {loading ? (
+                    <div className="p-10 text-center text-gray-400 font-bold">טוען...</div>
+                ) : influencers.length === 0 ? (
+                    <div className="p-10 text-center text-gray-400 italic font-bold">אין משפיענים רשומים</div>
+                ) : influencers.map((inf) => (
+                    <div key={inf.id} className="bg-white rounded-3xl p-5 shadow-sm border border-gray-100 relative">
+                        {/* Header: Name & Actions */}
+                        <div className="flex justify-between items-start mb-4">
+                            <div>
+                                <h3 className="text-xl font-black text-gray-900">{inf.name}</h3>
+                                {inf.coupon_code && (
+                                    <span className="bg-blue-50 text-blue-700 px-2 py-1 rounded-lg text-[10px] font-black border border-blue-100 mt-1 inline-block">
+                                        קופון: {inf.coupon_code}
+                                    </span>
+                                )}
+                            </div>
+                            <div className="flex gap-1">
+                                <button onClick={() => openEdit(inf)} className="p-2 text-blue-500 bg-blue-50 rounded-xl transition-all">
+                                    <Edit2 className="w-4 h-4" />
+                                </button>
+                                <button onClick={() => handleDelete(inf.id)} className="p-2 text-red-500 bg-red-50 rounded-xl transition-all">
+                                    <Trash2 className="w-4 h-4" />
+                                </button>
+                            </div>
+                        </div>
+
+                        {/* Main Stats Grid */}
+                        <div className="grid grid-cols-2 gap-4 mb-4">
+                            <div className="bg-gray-50 rounded-2xl p-3">
+                                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">שכר בסיס</p>
+                                <p className="font-bold text-gray-700" dir="ltr">₪ {parseFloat(inf.base_salary).toLocaleString()}</p>
+                            </div>
+                            <div className="bg-gray-50 rounded-2xl p-3">
+                                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">עמלה (%)</p>
+                                <p className="font-bold text-blue-600">{inf.commission_percent}%</p>
+                            </div>
+                            <div className="bg-gray-50 rounded-2xl p-3">
+                                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">שימושים</p>
+                                <p className="font-bold text-gray-700">{inf.usage_count || 0}</p>
+                            </div>
+                            <div className="bg-gray-50 rounded-2xl p-3">
+                                <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">מכירות נטו</p>
+                                <p className="font-bold text-gray-900" dir="ltr">₪ {parseFloat(inf.total_sales || 0).toLocaleString()}</p>
+                            </div>
+                        </div>
+
+                        {/* Summary: Total Pay & Profitability */}
+                        <div className="flex items-center justify-between bg-indigo-50/50 rounded-2xl p-4 border border-indigo-100">
+                            <div>
+                                <p className="text-[10px] font-black text-indigo-400 uppercase tracking-widest mb-1">סה"כ שכר משולב</p>
+                                <p className="font-black text-indigo-700 text-lg" dir="ltr">₪ {calculatePay(inf).toLocaleString(undefined, { maximumFractionDigits: 0 })}</p>
+                            </div>
+                            {inf.usage_count > 0 && (
+                                <div className="flex items-center gap-2">
+                                    <span className="text-[10px] font-black text-gray-500 uppercase">רווחיות:</span>
+                                    {isProfitable(inf) ? (
+                                        <div className="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center text-white shadow-lg shadow-green-200">
+                                            <Check className="w-4 h-4" strokeWidth={4} />
+                                        </div>
+                                    ) : (
+                                        <div className="w-8 h-8 rounded-full bg-red-500 flex items-center justify-center text-white shadow-lg shadow-red-200">
+                                            <X className="w-4 h-4" strokeWidth={4} />
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                ))}
             </div>
 
             {/* Modal */}
