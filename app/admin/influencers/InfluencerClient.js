@@ -117,13 +117,13 @@ export default function InfluencerClient() {
                     <table className="w-full text-right" dir="rtl">
                         <thead className="bg-gray-50/50 text-gray-400 text-[10px] font-black uppercase tracking-widest border-b border-gray-100">
                             <tr>
-                                <th className="p-5">שם</th>
-                                <th className="p-5">שכר בסיס</th>
-                                <th className="p-5">עמלה (%)</th>
-                                <th className="p-5">קופון משויך</th>
-                                <th className="p-5">שימושים</th>
-                                <th className="p-5">סה"כ מכירות (נטו)</th>
-                                <th className="p-5">שכר משפיען</th>
+                                <th className="p-5 text-center">שם</th>
+                                <th className="p-5 text-center">שכר בסיס</th>
+                                <th className="p-5 text-center">עמלה (%)</th>
+                                <th className="p-5 text-center">קופון משויך</th>
+                                <th className="p-5 text-center">שימושים</th>
+                                <th className="p-5 text-center">סה"כ מכירות (נטו)</th>
+                                <th className="p-5 text-center">שכר משפיען</th>
                                 <th className="p-5 text-center">משתלם</th>
                                 <th className="p-5 text-center">פעולות</th>
                             </tr>
@@ -134,10 +134,10 @@ export default function InfluencerClient() {
                             ) : influencers.length === 0 ? (
                                 <tr><td colSpan="9" className="p-10 text-center text-gray-400 italic">אין משפיענים רשומים</td></tr>
                             ) : influencers.map((inf) => (
-                                <tr key={inf.id} className="hover:bg-gray-50/50 transition-colors group text-center">
-                                    <td className="p-5 text-gray-900">{inf.name}</td>
-                                    <td className="p-5 text-gray-600">{parseFloat(inf.base_salary).toLocaleString()} ₪</td>
-                                    <td className="p-5 text-blue-600">{inf.commission_percent}%</td>
+                                <tr key={inf.id} className="hover:bg-gray-50/50 transition-colors group">
+                                    <td className="p-5 text-center text-gray-900">{inf.name}</td>
+                                    <td className="p-5 text-center text-gray-600">₪ {parseFloat(inf.base_salary).toLocaleString()}</td>
+                                    <td className="p-5 text-center text-blue-600">{inf.commission_percent}%</td>
                                     <td className="p-5 flex justify-center py-5">
                                         {inf.coupon_code ? (
                                             <span className="bg-blue-50 text-blue-700 px-2 py-1 rounded-lg text-xs font-black border border-blue-100">
@@ -147,10 +147,10 @@ export default function InfluencerClient() {
                                             <span className="text-gray-300 font-light">—</span>
                                         )}
                                     </td>
-                                    <td className="p-5 text-gray-600">{inf.usage_count || 0}</td>
-                                    <td className="p-5 text-gray-900">{parseFloat(inf.total_sales || 0).toLocaleString()} ₪</td>
-                                    <td className="p-5 text-indigo-600">{calculatePay(inf).toLocaleString(undefined, { maximumFractionDigits: 0 })} ₪</td>
-                                    <td className="p-5">
+                                    <td className="p-5 text-center text-gray-600">{inf.usage_count || 0}</td>
+                                    <td className="p-5 text-center text-gray-900">₪ {parseFloat(inf.total_sales || 0).toLocaleString()}</td>
+                                    <td className="p-5 text-center text-indigo-600">₪ {calculatePay(inf).toLocaleString(undefined, { maximumFractionDigits: 0 })}</td>
+                                    <td className="p-5 text-center">
                                         <div className="flex justify-center">
                                             {inf.usage_count > 0 ? (
                                                 isProfitable(inf) ? (
@@ -167,7 +167,7 @@ export default function InfluencerClient() {
                                             )}
                                         </div>
                                     </td>
-                                    <td className="p-5">
+                                    <td className="p-5 text-center">
                                         <div className="flex justify-center gap-2 transition-opacity">
                                             <button onClick={() => openEdit(inf)} className="p-2 text-blue-500 hover:bg-blue-50 rounded-xl transition-all">
                                                 <Edit2 className="w-4 h-4" />
