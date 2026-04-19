@@ -134,11 +134,11 @@ export default function InfluencerClient() {
                             ) : influencers.length === 0 ? (
                                 <tr><td colSpan="9" className="p-10 text-center text-gray-400 italic">אין משפיענים רשומים</td></tr>
                             ) : influencers.map((inf) => (
-                                <tr key={inf.id} className="hover:bg-gray-50/50 transition-colors group">
+                                <tr key={inf.id} className="hover:bg-gray-50/50 transition-colors group text-center">
                                     <td className="p-5 text-gray-900">{inf.name}</td>
                                     <td className="p-5 text-gray-600">₪ {parseFloat(inf.base_salary).toLocaleString()}</td>
                                     <td className="p-5 text-blue-600">{inf.commission_percent}%</td>
-                                    <td className="p-5">
+                                    <td className="p-5 flex justify-center py-5">
                                         {inf.coupon_code ? (
                                             <span className="bg-blue-50 text-blue-700 px-2 py-1 rounded-lg text-xs font-black border border-blue-100">
                                                 {inf.coupon_code}
@@ -168,7 +168,7 @@ export default function InfluencerClient() {
                                         </div>
                                     </td>
                                     <td className="p-5">
-                                        <div className="flex justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <div className="flex justify-center gap-2 transition-opacity">
                                             <button onClick={() => openEdit(inf)} className="p-2 text-blue-500 hover:bg-blue-50 rounded-xl transition-all">
                                                 <Edit2 className="w-4 h-4" />
                                             </button>
