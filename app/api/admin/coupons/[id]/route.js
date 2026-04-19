@@ -64,6 +64,10 @@ export async function PUT(req, { params }) {
                 query += `, limitations = $${idx++}`;
                 values.push(JSON.stringify(body.limitations));
             }
+            if (body.influencer_id !== undefined) {
+                query += `, influencer_id = $${idx++}`;
+                values.push(body.influencer_id);
+            }
 
             query += ` WHERE id = $${idx}`;
             values.push(id);

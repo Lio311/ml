@@ -8,7 +8,7 @@ export async function GET() {
         const client = await pool.connect();
         try {
             const res = await client.query(`
-                SELECT c.id, c.code, c.discount_percent, c.expires_at, c.status, c.email, c.created_at, c.limitations,
+                SELECT c.id, c.code, c.discount_percent, c.expires_at, c.status, c.email, c.created_at, c.limitations, c.influencer_id,
                 (SELECT COUNT(*) FROM orders o WHERE o.coupon_code = c.code AND o.status != 'cancelled') as usage_count
                 FROM coupons c
                 ORDER BY c.created_at DESC 
@@ -27,7 +27,7 @@ export async function GET() {
 export async function POST(req) {
     try {
         const body = await req.json();
-        const { code, discount_percent, expires_in_hours, email, limitations } = body;
+        const { code, discount_percent, expires_in_hours, email, limitations, influencer_id } = body;
 
         if (!code || !discount_percent) {
             return NextResponse.json({ error: 'Missing Required Fields' }, { status: 400 });
@@ -46,9 +46,9 @@ export async function POST(req) {
         const client = await pool.connect();
         try {
             await client.query(`
-                INSERT INTO coupons (code, discount_percent, expires_at, status, email, limitations)
-                VALUES ($1, $2, $3, 'active', $4, $5)
-            `, [code, discountValue, expires_at, email || null, limitations ? JSON.stringify(limitations) : null]);
+                INSERT INTO coupons (code, discount_percent, expires_at, status, email, limitations, influencer_id)
+                VALUES ($1, $2, $3, 'active', $4, $5, $6)
+            `, [code, discountValue, expires_at, email || null, limitations ? JSON.stringify(limitations) : null, influencer_id || null]);
 
             const authData = await clerkAuth();
             await recordAuditLog({

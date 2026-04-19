@@ -22,6 +22,7 @@ export default function AdminCouponsPage() {
     const [products, setProducts] = useState([]);
     const [brands, setBrands] = useState([]);
     const [usersList, setUsersList] = useState([]); // Users for Shayichut
+    const [influencers, setInfluencers] = useState([]); // New Influencer list
 
     // Edit State
     const [editingId, setEditingId] = useState(null);
@@ -38,6 +39,7 @@ export default function AdminCouponsPage() {
         allowed_brands: [],
         allowed_products: [],
         allowed_users: [], // New User Affiliation
+        influencer_id: '',
         min_cart_total: 0
     });
 
@@ -65,10 +67,11 @@ export default function AdminCouponsPage() {
 
     const fetchAuxData = async () => {
         try {
-            const [prodRes, brandRes, userRes] = await Promise.all([
+            const [prodRes, brandRes, userRes, influencerRes] = await Promise.all([
                 fetch('/api/products?limit=1000'),
                 fetch('/api/brands'),
-                fetch('/api/admin/users') // Reuse existing users endpoint (GET)
+                fetch('/api/admin/users'), // Reuse existing users endpoint (GET)
+                fetch('/api/admin/influencers')
             ]);
 
             if (prodRes.ok) {
@@ -77,6 +80,7 @@ export default function AdminCouponsPage() {
             }
             if (brandRes.ok) setBrands(await brandRes.json());
             if (userRes.ok) setUsersList(await userRes.json());
+            if (influencerRes && influencerRes.ok) setInfluencers(await influencerRes.json());
 
         } catch (e) {
             console.error("Failed to load aux data", e);
@@ -158,6 +162,7 @@ export default function AdminCouponsPage() {
             allowed_brands: limits.allowed_brands || [],
             allowed_products: limits.allowed_products || [],
             allowed_users: limits.allowed_users || [],
+            influencer_id: coupon.influencer_id || '',
             min_cart_total: limits.min_cart_total || 0
         });
         setShowModal(true);
@@ -181,7 +186,8 @@ export default function AdminCouponsPage() {
                     allowed_products: formData.allowed_products.length > 0 ? formData.allowed_products : null,
                     allowed_users: formData.allowed_users.length > 0 ? formData.allowed_users : null,
                     min_cart_total: Number(formData.min_cart_total) || 0
-                }
+                },
+                influencer_id: formData.influencer_id ? Number(formData.influencer_id) : null
             };
 
             if (formData.expires_in_hours) {
@@ -213,7 +219,8 @@ export default function AdminCouponsPage() {
         setEditingId(null);
         setFormData({
             code: '', discount_percent: 5, expires_in_hours: '', email: '',
-            allowed_sizes: [], allowed_categories: [], allowed_brands: [], allowed_products: [], allowed_users: [], min_cart_total: 0
+            allowed_sizes: [], allowed_categories: [], allowed_brands: [], allowed_products: [], allowed_users: [], 
+            influencer_id: '', min_cart_total: 0
         });
     };
 
@@ -412,6 +419,19 @@ export default function AdminCouponsPage() {
                                             onChange={e => setFormData({ ...formData, min_cart_total: e.target.value })}
                                             onWheel={(e) => e.target.blur()}
                                         />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-bold mb-1">שיוך למשפיען (אופציונלי)</label>
+                                        <select
+                                            className="input border p-2 rounded-xl w-full outline-none focus:ring-2 focus:ring-blue-100 bg-white"
+                                            value={formData.influencer_id}
+                                            onChange={e => setFormData({ ...formData, influencer_id: e.target.value })}
+                                        >
+                                            <option value="">ללא משפיען</option>
+                                            {influencers.map(inf => (
+                                                <option key={inf.id} value={inf.id}>{inf.name}</option>
+                                            ))}
+                                        </select>
                                     </div>
                                 </div>
 
