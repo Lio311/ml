@@ -612,6 +612,8 @@
                 "processing_desc": "Contacting and coordinating",
                 "shipped": "Shipped",
                 "shipped_desc": "Your order is on the way",
+                "ready_for_pickup": "Ready for Pickup",
+                "ready_for_pickup_desc": "Your order is ready for pickup! You are welcome to come",
                 "completed": "Completed",
                 "completed_desc": "Order delivered",
                 "cancelled": "Order Cancelled"
@@ -710,6 +712,8 @@
             "processing_desc": "Order is being processed and prepared",
             "shipped": "Shipped",
             "shipped_desc": "Order has been shipped",
+            "ready_for_pickup": "Ready for Pickup",
+            "ready_for_pickup_desc": "Your order is ready for pickup! You are welcome to come",
             "completed": "Completed",
             "completed_desc": "Order delivered successfully",
             "cancelled": "Cancelled"
@@ -950,6 +954,7 @@
             "pending": "Pending",
             "processing": "Processing",
             "shipped": "Shipped",
+            "ready_for_pickup": "Ready for Pickup",
             "delivered": "Delivered",
             "completed": "Completed",
             "cancelled": "Cancelled",

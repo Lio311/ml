@@ -18,6 +18,7 @@ const STATUS_OPTIONS = [
     { value: 'pending', label: 'ממתין', icon: <div className="w-2 h-2 rounded-full bg-orange-500" /> },
     { value: 'processing', label: 'בטיפול', icon: <div className="w-2 h-2 rounded-full bg-blue-500" /> },
     { value: 'shipped', label: 'נשלח', icon: <div className="w-2 h-2 rounded-full bg-purple-500" /> },
+    { value: 'ready_for_pickup', label: 'מוכן לאיסוף', icon: <div className="w-2 h-2 rounded-full bg-indigo-500" /> },
     { value: 'completed', label: 'הושלם', icon: <div className="w-2 h-2 rounded-full bg-green-500" /> },
     { value: 'cancelled', label: 'בוטל', icon: <div className="w-2 h-2 rounded-full bg-gray-400" /> },
 ];
@@ -224,16 +225,18 @@ export default function AdminOrdersListClient({
                                             <span className={`text-[10px] px-2 py-1 rounded-full font-bold uppercase tracking-wider ${order.status === 'pending' ? 'bg-orange-100 text-orange-800' :
                                                 order.status === 'processing' ? 'bg-blue-100 text-blue-800' :
                                                     order.status === 'shipped' ? 'bg-purple-100 text-purple-800' :
-                                                        order.status === 'completed' ? 'bg-green-100 text-green-800' :
-                                                            'bg-gray-100 text-gray-800'
+                                                        order.status === 'ready_for_pickup' ? 'bg-indigo-100 text-indigo-800' :
+                                                            order.status === 'completed' ? 'bg-green-100 text-green-800' :
+                                                                'bg-gray-100 text-gray-800'
                                                 }`}>
                                                 {
                                                     order.status === 'pending' ? 'ממתין' :
                                                         order.status === 'processing' ? 'בטיפול' :
                                                             order.status === 'shipped' ? 'נשלח' :
-                                                                order.status === 'completed' ? 'הושלם' :
-                                                                    order.status === 'cancelled' ? 'בוטל' :
-                                                                        order.status
+                                                                order.status === 'ready_for_pickup' ? 'מוכן לאיסוף' :
+                                                                    order.status === 'completed' ? 'הושלם' :
+                                                                        order.status === 'cancelled' ? 'בוטל' :
+                                                                            order.status
                                                 }
                                             </span>
                                         </div>
@@ -289,16 +292,18 @@ export default function AdminOrdersListClient({
                                         <div className={`text-[9px] px-2 py-0.5 rounded-full font-black uppercase tracking-widest ${order.status === 'pending' ? 'bg-orange-50 text-orange-700 border border-orange-100' :
                                             order.status === 'processing' ? 'bg-blue-50 text-blue-700 border border-blue-100' :
                                                 order.status === 'shipped' ? 'bg-purple-50 text-purple-700 border border-purple-100' :
-                                                    order.status === 'completed' ? 'bg-green-50 text-green-700 border border-green-100' :
-                                                        'bg-gray-50 text-gray-700 border border-gray-100'
+                                                    order.status === 'ready_for_pickup' ? 'bg-indigo-50 text-indigo-700 border border-indigo-100' :
+                                                        order.status === 'completed' ? 'bg-green-50 text-green-700 border border-green-100' :
+                                                            'bg-gray-50 text-gray-700 border border-gray-100'
                                             }`}>
                                             {
                                                 order.status === 'pending' ? 'ממתין' :
                                                     order.status === 'processing' ? 'בטיפול' :
                                                         order.status === 'shipped' ? 'נשלח' :
-                                                            order.status === 'completed' ? 'הושלם' :
-                                                                order.status === 'cancelled' ? 'בוטל' :
-                                                                    order.status
+                                                            order.status === 'ready_for_pickup' ? 'מוכן לאיסוף' :
+                                                                order.status === 'completed' ? 'הושלם' :
+                                                                    order.status === 'cancelled' ? 'בוטל' :
+                                                                        order.status
                                             }
                                         </div>
                                     </div>

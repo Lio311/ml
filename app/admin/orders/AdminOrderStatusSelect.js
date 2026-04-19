@@ -9,6 +9,7 @@ const STATUS_OPTIONS = [
     { value: 'pending', label: 'ממתין', icon: <Dot color="bg-orange-500" /> },
     { value: 'processing', label: 'בטיפול', icon: <Dot color="bg-blue-500" /> },
     { value: 'shipped', label: 'נשלח', icon: <Dot color="bg-purple-500" /> },
+    { value: 'ready_for_pickup', label: 'מוכן לאיסוף', icon: <Dot color="bg-indigo-500" /> },
     { value: 'completed', label: 'הושלם', icon: <Dot color="bg-green-500" /> },
     { value: 'cancelled', label: 'בוטל', icon: <Dot color="bg-gray-400" /> },
 ];

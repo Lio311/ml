@@ -3,7 +3,7 @@
 import React from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import { motion } from "framer-motion";
-import { Package, Phone, Truck, CheckCircle, XCircle } from "lucide-react";
+import { Package, Phone, Truck, MapPin, CheckCircle, XCircle } from "lucide-react";
 import { clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -18,6 +18,7 @@ export default function OrderStatusTimeline({ status }) {
         { id: 'pending', label: t('orders.status.pending'), icon: Package, description: t('orders.status.pending_desc') },
         { id: 'processing', label: t('orders.status.processing'), icon: Phone, description: t('orders.status.processing_desc') },
         { id: 'shipped', label: t('orders.status.shipped'), icon: Truck, description: t('orders.status.shipped_desc') },
+        { id: 'ready_for_pickup', label: t('orders.status.ready_for_pickup'), icon: MapPin, description: t('orders.status.ready_for_pickup_desc') },
         { id: 'completed', label: t('orders.status.completed'), icon: CheckCircle, description: t('orders.status.completed_desc') },
     ];
     if (status === 'cancelled') {

@@ -285,6 +285,8 @@
                 "processing_desc": "יצירת קשר ותיאום",
                 "shipped": "נשלח",
                 "shipped_desc": "המשלוח בדרך אליך",
+                "ready_for_pickup": "מוכן לאיסוף",
+                "ready_for_pickup_desc": "ההזמנה שלך מוכנה לאיסוף! מוזמנים להגיע",
                 "completed": "הושלם",
                 "completed_desc": "ההזמנה נמסרה",
                 "cancelled": "ההזמנה בוטלה"
@@ -383,6 +385,8 @@
             "processing_desc": "ההזמנה בטיפול ונרקחת",
             "shipped": "נשלח",
             "shipped_desc": "ההזמנה יצאה למשלוח",
+            "ready_for_pickup": "מוכן לאיסוף",
+            "ready_for_pickup_desc": "ההזמנה שלך מוכנה לאיסוף! מוזמנים להגיע",
             "completed": "הושלם",
             "completed_desc": "ההזמנה נמסרה בהצלחה",
             "cancelled": "בוטל"
@@ -576,6 +580,7 @@
             "pending": "ממתין",
             "processing": "בטיפול",
             "shipped": "נשלח",
+            "ready_for_pickup": "מוכן לאיסוף",
             "delivered": "נמסר",
             "completed": "הושלם",
             "cancelled": "בוטל",
