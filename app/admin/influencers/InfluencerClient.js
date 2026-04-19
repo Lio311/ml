@@ -136,7 +136,7 @@ export default function InfluencerClient() {
                             ) : influencers.map((inf) => (
                                 <tr key={inf.id} className="hover:bg-gray-50/50 transition-colors group text-center">
                                     <td className="p-5 text-gray-900">{inf.name}</td>
-                                    <td className="p-5 text-gray-600">₪ {parseFloat(inf.base_salary).toLocaleString()}</td>
+                                    <td className="p-5 text-gray-600">{parseFloat(inf.base_salary).toLocaleString()} ₪</td>
                                     <td className="p-5 text-blue-600">{inf.commission_percent}%</td>
                                     <td className="p-5 flex justify-center py-5">
                                         {inf.coupon_code ? (
@@ -148,8 +148,8 @@ export default function InfluencerClient() {
                                         )}
                                     </td>
                                     <td className="p-5 text-gray-600">{inf.usage_count || 0}</td>
-                                    <td className="p-5 text-gray-900">₪ {parseFloat(inf.total_sales || 0).toLocaleString()}</td>
-                                    <td className="p-5 text-indigo-600">₪ {calculatePay(inf).toLocaleString(undefined, { maximumFractionDigits: 0 })}</td>
+                                    <td className="p-5 text-gray-900">{parseFloat(inf.total_sales || 0).toLocaleString()} ₪</td>
+                                    <td className="p-5 text-indigo-600">{calculatePay(inf).toLocaleString(undefined, { maximumFractionDigits: 0 })} ₪</td>
                                     <td className="p-5">
                                         <div className="flex justify-center">
                                             {inf.usage_count > 0 ? (
