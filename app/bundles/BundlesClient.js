@@ -205,21 +205,21 @@ export default function BundlesClient() {
                                     </button>
                                 ))}
                             </div>
-                            <div className="flex justify-between items-center bg-zinc-900 text-white p-8 rounded-[2rem] shadow-xl">
-                                <div className="flex items-start gap-4">
+                            <div className="flex flex-col md:flex-row justify-between items-center gap-8 md:gap-0 bg-zinc-900 text-white p-6 md:p-8 rounded-[2rem] shadow-xl mt-8">
+                                <div className="flex items-center gap-4 w-full md:w-auto">
                                     <div className="w-10 h-10 bg-white/10 rounded-full flex items-center justify-center shrink-0">
                                         <Info size={20} className="text-white/60" />
                                     </div>
-                                    <div>
-                                        <div className="font-bold text-white/50 text-[10px] uppercase tracking-widest mb-1">{t('bundles.step_2_size')}</div>
-                                        <div className="text-lg font-black">{t(`bundles.${selectedType}_bundle`)} - {selectedSize} {t('common.ml_unit')}</div>
+                                    <div className="text-start">
+                                        <div className="font-bold text-white/50 text-[10px] uppercase tracking-widest mb-0.5">{t('bundles.step_2_size')}</div>
+                                        <div className="text-base md:text-lg font-black">{t(`bundles.${selectedType}_bundle`)} - {selectedSize} {t('common.ml_unit')}</div>
                                     </div>
                                 </div>
-                                <div className="flex gap-4">
-                                    <button onClick={() => setStep(1)} className="px-6 py-3 rounded-full border border-white/20 text-xs font-black uppercase tracking-widest hover:bg-white/10 transition-all">
+                                <div className="flex gap-4 w-full md:w-auto">
+                                    <button onClick={() => setStep(1)} className="flex-1 md:flex-none px-6 py-3 rounded-full border border-white/20 text-xs font-black uppercase tracking-widest hover:bg-white/10 transition-all text-center">
                                         {t('common.previous')}
                                     </button>
-                                    <button onClick={() => setStep(3)} className="px-10 py-3 rounded-full bg-white text-zinc-900 text-xs font-black uppercase tracking-widest hover:scale-105 transition-all">
+                                    <button onClick={() => setStep(3)} className="flex-1 md:flex-none px-10 py-3 rounded-full bg-white text-zinc-900 text-xs font-black uppercase tracking-widest hover:scale-105 transition-all text-center">
                                         {t('common.next')}
                                     </button>
                                 </div>
@@ -236,41 +236,41 @@ export default function BundlesClient() {
                             className="space-y-8"
                         >
                             {/* Toolbar */}
-                            <div className="sticky top-24 z-20 flex flex-col md:flex-row gap-4 bg-white/70 backdrop-blur-xl p-4 md:p-6 rounded-3xl border border-zinc-200 shadow-xl items-center justify-between">
-                                <div className="flex items-center gap-4">
-                                    <div className="px-6 py-3 bg-zinc-900 text-white rounded-2xl flex flex-col items-center min-w-[100px]">
+                            <div className="sticky top-24 z-20 flex flex-col md:flex-row gap-6 bg-white/80 backdrop-blur-xl p-5 md:p-6 rounded-[2rem] border border-zinc-200 shadow-xl items-center justify-between">
+                                <div className="flex items-center gap-4 w-full md:w-auto">
+                                    <div className="px-5 py-3 bg-zinc-900 text-white rounded-2xl flex flex-col items-center min-w-[90px] md:min-w-[100px]">
                                         <span className="text-[10px] uppercase font-black tracking-widest opacity-50">{t('common.quantity')}</span>
-                                        <span className="text-xl font-black">{selectedProducts.length} / {requiredCount}</span>
+                                        <span className="text-lg md:text-xl font-black">{selectedProducts.length} / {requiredCount}</span>
                                     </div>
-                                    <div>
-                                        <h3 className="font-black text-zinc-900">{t(`bundles.${selectedType}_bundle`)}</h3>
-                                        <p className="text-xs text-zinc-500 italic">{selectedSize} {t('common.ml_unit')} • {t('bundles.discount_label')}</p>
+                                    <div className="text-start">
+                                        <h3 className="font-black text-zinc-900 text-sm md:text-base">{t(`bundles.${selectedType}_bundle`)}</h3>
+                                        <p className="text-[10px] md:text-xs text-zinc-500 italic">{selectedSize} {t('common.ml_unit')} • {t('bundles.discount_label')}</p>
                                     </div>
                                 </div>
-                                <div className="flex-1 max-w-md w-full relative">
+                                <div className="flex-1 w-full md:max-w-md relative">
                                     <input 
                                         type="text" 
                                         placeholder={t('common.search_perfume_placeholder')}
                                         value={searchQuery}
                                         onChange={(e) => setSearchQuery(e.target.value)}
-                                        className="w-full bg-zinc-50 border border-zinc-200 rounded-2xl px-6 py-3 text-sm focus:outline-none focus:ring-1 focus:ring-zinc-900/30 transition-all"
+                                        className="w-full bg-zinc-50 border border-zinc-200 rounded-2xl px-6 py-4 text-sm focus:outline-none focus:ring-1 focus:ring-zinc-900/30 transition-all"
                                     />
                                 </div>
-                                <div className="flex gap-3">
-                                    <button onClick={() => setStep(2)} className="px-4 py-3 rounded-2xl border border-zinc-200 text-zinc-500 hover:text-zinc-900 hover:bg-zinc-50 transition-all">
+                                <div className="flex gap-3 w-full md:w-auto">
+                                    <button onClick={() => setStep(2)} className="flex-1 md:flex-none px-5 py-4 rounded-2xl border border-zinc-200 text-zinc-500 hover:text-zinc-900 hover:bg-zinc-50 transition-all flex justify-center items-center">
                                         <ChevronRight size={20} />
                                     </button>
                                     <button 
                                         onClick={handleAddToCart}
                                         disabled={selectedProducts.length !== requiredCount}
-                                        className={`px-8 py-3 rounded-2xl flex items-center gap-3 text-sm font-black uppercase tracking-widest transition-all ${
+                                        className={`flex-[3] md:flex-none px-8 py-4 rounded-2xl flex items-center justify-center gap-3 text-sm font-black uppercase tracking-widest transition-all ${
                                             selectedProducts.length === requiredCount 
                                             ? 'bg-zinc-900 text-white shadow-lg hover:scale-105 active:scale-95' 
                                             : 'bg-zinc-100 text-zinc-300 cursor-not-allowed'
                                         }`}
                                     >
                                         <ShoppingCart size={18} />
-                                        {t('bundles.complete_bundle')}
+                                        <span className="whitespace-nowrap">{t('bundles.complete_bundle')}</span>
                                     </button>
                                 </div>
                             </div>
