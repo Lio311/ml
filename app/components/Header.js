@@ -57,7 +57,7 @@ export default function Header({ brands = [] }) {
     }, []);
 
     const navLinks = !menuLoading && menuItems.length > 0 
-        ? menuItems.map(item => ({
+        ? [...menuItems].sort((a, b) => (a.order || 99) - (b.order || 99)).map(item => ({
             label: t(`common.${item.id}`) !== `common.${item.id}` ? t(`common.${item.id}`) : item.label,
             href: item.path,
             type: item.id === 'brands' ? 'brands' : (item.id === 'catalog' ? 'catalog' : null),

@@ -10,10 +10,10 @@ import { useRouter } from 'next/navigation';
 import { ChevronRight, ChevronLeft, Check, ShoppingCart, Info } from 'lucide-react';
 
 const BUNDLE_TYPES = [
-    { id: 'summer', icon: '☀️', color: 'bg-orange-50 text-orange-600', borderColor: 'border-orange-200' },
-    { id: 'winter', icon: '❄️', color: 'bg-blue-50 text-blue-600', borderColor: 'border-blue-200' },
-    { id: 'dates', icon: '🍷', color: 'bg-rose-50 text-rose-600', borderColor: 'border-rose-200' },
-    { id: 'collectors', icon: '💎', color: 'bg-amber-50 text-amber-600', borderColor: 'border-amber-200' }
+    { id: 'summer', bgImage: '/images/vibe/summer.png' },
+    { id: 'winter', bgImage: '/images/vibe/winter.png' },
+    { id: 'dates', bgImage: '/images/vibe/dates.png' },
+    { id: 'collectors', bgImage: '/images/vibe/collectors.png' }
 ];
 
 const SIZES = [
@@ -159,19 +159,29 @@ export default function BundlesClient() {
                                         setSelectedType(type.id);
                                         setStep(2);
                                     }}
-                                    className={`group relative p-8 rounded-[2.5rem] border-2 bg-white transition-all hover:shadow-2xl hover:-translate-y-2 ${
+                                    className={`group relative p-10 md:p-14 rounded-[3rem] border-2 bg-white transition-all hover:shadow-2xl hover:-translate-y-2 overflow-hidden flex flex-col items-center text-center ${
                                         selectedType === type.id ? 'border-zinc-900 shadow-xl' : 'border-zinc-100'
                                     }`}
                                 >
-                                    <div className={`w-16 h-16 rounded-3xl ${type.color} flex items-center justify-center text-3xl mb-6 group-hover:scale-110 transition-transform`}>
-                                        {type.icon}
+                                    {/* Background Image */}
+                                    <div className="absolute inset-0 z-0 opacity-20 group-hover:opacity-30 transition-opacity">
+                                        <Image 
+                                            src={type.bgImage} 
+                                            alt="" 
+                                            fill 
+                                            className="object-cover scale-110 group-hover:scale-100 transition-transform duration-1000"
+                                        />
+                                        <div className="absolute inset-0 bg-gradient-to-b from-white/80 via-transparent to-white/80" />
                                     </div>
-                                    <h3 className="text-2xl font-black text-zinc-900 mb-2">{t(`bundles.${type.id}_bundle`)}</h3>
-                                    <p className="text-zinc-500 text-sm leading-relaxed mb-6 italic opacity-80">
-                                        {t(`bundles.${type.id}_desc`)}
-                                    </p>
-                                    <div className="flex items-center gap-2 text-zinc-900 font-bold text-sm uppercase tracking-widest group-hover:gap-4 transition-all">
-                                        {t('common.next')} <ChevronLeft size={16} />
+
+                                    <div className="relative z-10 w-full flex flex-col items-center">
+                                        <h3 className="text-3xl font-black text-zinc-900 mb-4 tracking-tight">{t(`bundles.${type.id}_bundle`)}</h3>
+                                        <p className="text-zinc-600 text-sm md:text-base leading-relaxed mb-8 italic font-medium max-w-[240px]">
+                                            {t(`bundles.${type.id}_desc`)}
+                                        </p>
+                                        <div className="flex items-center gap-2 text-zinc-900 font-black text-xs uppercase tracking-[0.2em] group-hover:gap-4 transition-all bg-white/60 backdrop-blur-sm px-6 py-3 rounded-full border border-black/5">
+                                            {t('common.next')} <ChevronLeft size={16} />
+                                        </div>
                                     </div>
                                 </button>
                             ))}
@@ -269,8 +279,8 @@ export default function BundlesClient() {
                                             : 'bg-zinc-100 text-zinc-300 cursor-not-allowed'
                                         }`}
                                     >
-                                        <ShoppingCart size={18} />
                                         <span className="whitespace-nowrap">{t('bundles.complete_bundle')}</span>
+                                        <ShoppingCart size={18} />
                                     </button>
                                 </div>
                             </div>

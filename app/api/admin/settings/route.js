@@ -42,10 +42,16 @@ export async function GET() {
             
             let updated = filteredMenu.length !== currentMenu.length;
             
-            // 2. Ensure all default items exist
-            const currentIds = new Set(filteredMenu.map(item => item.id));
+            // 2. Ensure all default items exist and have correct order/labels
             for (const defItem of DEFAULT_MENU) {
-                if (!currentIds.has(defItem.id)) {
+                const existing = filteredMenu.find(item => item.id === defItem.id);
+                if (existing) {
+                    if (existing.order !== defItem.order || existing.label !== defItem.label) {
+                        existing.order = defItem.order;
+                        existing.label = defItem.label;
+                        updated = true;
+                    }
+                } else {
                     filteredMenu.push(defItem);
                     updated = true;
                 }
@@ -53,7 +59,6 @@ export async function GET() {
 
             // Sync back to DB if needed
             if (res.rows.length === 0 || updated) {
-                // Ensure order is maintained
                 filteredMenu.sort((a, b) => (a.order || 99) - (b.order || 99));
                 
                 await client.query(`
