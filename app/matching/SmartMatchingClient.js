@@ -154,7 +154,7 @@ export default function SmartMatchingClient({ initialNotes }) {
     };
 
     return (
-        <div className="min-h-screen bg-[#fafafa] text-zinc-900 relative flex flex-col items-center justify-start pt-4 md:pt-6 pb-12 px-4 overflow-hidden" dir={dir}>
+        <div className="min-h-screen bg-[#fafafa] text-zinc-900 relative flex flex-col items-center justify-start pt-2 md:pt-4 pb-8 px-4 overflow-hidden" dir={dir}>
             {/* Ambient Background Gradient (Subtle for Light Theme) */}
             <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_center,_rgba(0,0,0,0.03)_0%,_transparent_70%)] pointer-events-none" />
             
@@ -162,17 +162,17 @@ export default function SmartMatchingClient({ initialNotes }) {
             <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-zinc-200/50 rounded-full blur-[120px] pointer-events-none" />
             <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-zinc-200/50 rounded-full blur-[120px] pointer-events-none" />
 
-            <div className="w-full max-w-[630px] mx-auto relative z-10 px-4">
-                <div className="mb-6 text-center overflow-visible">
-                    <h1 className="text-4xl md:text-5xl font-bold mb-3 text-zinc-900 tracking-tight animate-fadeIn">
+            <div className="w-full max-w-[820px] mx-auto relative z-10 px-4">
+                <div className="mb-4 text-center overflow-visible">
+                    <h1 className="text-4xl md:text-5xl font-bold mb-2 text-zinc-900 tracking-tight animate-fadeIn">
                         {t('matching.title') || 'התאמה אישית'}
                     </h1>
                     <div className="flex flex-col items-center gap-1 overflow-visible">
-                        <p className="text-zinc-500 text-[10px] md:text-xs animate-fadeIn delay-100 italic tracking-wide whitespace-normal opacity-70 px-2 leading-relaxed">
+                        <p className="text-zinc-500 text-[10px] md:text-sm animate-fadeIn delay-100 italic tracking-wide whitespace-normal opacity-70 px-2 leading-relaxed">
                             {t('matching.description')}
                         </p>
                         {/* Algorithm Info Block */}
-                        <div className="mt-1 p-4 md:p-5 bg-white/70 backdrop-blur-xl rounded-2xl border border-zinc-200 animate-fadeIn delay-200 shadow-sm w-full">
+                        <div className="mt-1 p-3 md:p-4 bg-white/70 backdrop-blur-xl rounded-2xl border border-zinc-200 animate-fadeIn delay-200 shadow-sm w-full">
                             <p className="text-[9px] md:text-[10px] text-zinc-500 leading-relaxed text-center italic opacity-90">
                                 {t('matching.how_it_works')}
                             </p>
@@ -180,8 +180,8 @@ export default function SmartMatchingClient({ initialNotes }) {
                     </div>
                 </div>
                 {/* Progress Tracking */}
-                <div className="mb-8 overflow-hidden">
-                    <div className="flex justify-between items-end mb-2 px-1">
+                <div className="mb-6 overflow-hidden">
+                    <div className="flex justify-between items-end mb-1.5 px-1">
                         <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-500">
                             {step === 1 ? t('matching.preferences_title') : step === 2 ? t('matching.analyzing') : t('matching.results_title')}
                         </span>
@@ -197,13 +197,13 @@ export default function SmartMatchingClient({ initialNotes }) {
                     </div>
                 </div>
 
-                <div className="bg-white/70 backdrop-blur-3xl p-6 md:p-12 rounded-[2.5rem] border border-zinc-200 shadow-[0_50px_100px_-20px_rgba(0,0,0,0.12),0_30px_60px_-15px_rgba(0,0,0,0.08)] relative overflow-hidden group min-h-[500px] flex flex-col">
+                <div className="bg-white/70 backdrop-blur-3xl p-6 md:p-10 rounded-[2.5rem] border border-zinc-200 shadow-[0_50px_100px_-20px_rgba(0,0,0,0.12),0_30px_60px_-15px_rgba(0,0,0,0.08)] relative overflow-hidden group min-h-[500px] flex flex-col">
                     {/* Subtle Internal Glow */}
                     <div className="absolute top-0 right-0 w-64 h-64 bg-zinc-50/50 rounded-full -translate-y-32 translate-x-32 blur-[100px] pointer-events-none" />
 
                     {/* STEP 1: PREFERENCES */}
                     {step === 1 && (
-                        <div className="space-y-10 animate-fadeIn flex-1">
+                        <div className="space-y-8 animate-fadeIn flex-1">
                             {/* 1. Bundle Size & Sample Size */}
                             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
                                 <div className="space-y-4">
@@ -350,7 +350,7 @@ export default function SmartMatchingClient({ initialNotes }) {
                                 <p className="text-zinc-500 text-sm italic opacity-90">{t('matching.ready_desc').replace('{count}', results.products.length)}</p>
                             </div>
 
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6 overflow-visible">
                                 {results.products.map((p, idx) => (
                                     <div 
                                         key={p.id} 
@@ -371,9 +371,9 @@ export default function SmartMatchingClient({ initialNotes }) {
                                             <div className="font-serif font-black text-zinc-900 text-sm line-clamp-1 mb-0.5">{localize(p, 'name')}</div>
                                             <div className="text-zinc-500 text-[10px] uppercase font-bold tracking-widest mb-2 opacity-70">{p.brand}</div>
                                             <div className="flex items-center gap-3">
-                                                <div className="text-lg font-black text-zinc-900">{p.price} ₪</div>
+                                                <div className="text-lg font-black text-zinc-900 whitespace-nowrap">{p.price} ₪</div>
                                                 {isAddedToCart && (
-                                                    <span className="text-xs font-bold text-emerald-500 animate-fadeIn flex items-center gap-1">
+                                                    <span className="text-xs font-bold text-emerald-500 animate-fadeIn flex items-center gap-1 whitespace-nowrap">
                                                         <span className="text-sm">✓</span>
                                                         {t('common.added_to_cart_btn')}
                                                     </span>
@@ -389,7 +389,7 @@ export default function SmartMatchingClient({ initialNotes }) {
                                 <div className={`${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
                                     <div className="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-400 mb-1">{t('matching.final_price')}</div>
                                     <div className="text-4xl font-black text-zinc-900 drop-shadow-sm">{results.totalPrice} ₪</div>
-                                    <div className="text-xs font-bold text-zinc-500 mt-2 italic">{results.message}</div>
+                                    <div className="text-xs font-bold text-zinc-500 mt-2 italic whitespace-nowrap overflow-visible">{results.message}</div>
                                 </div>
 
                                 <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
