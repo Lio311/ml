@@ -32,7 +32,8 @@ export async function POST(request) {
 
         const query = `
             SELECT id, name, brand, active, stock, image_url, top_notes, middle_notes, base_notes, category, 
-                   ${priceCol} as price 
+                   ${priceCol} as price,
+                   discount_percentage, discount_sizes, discount_end_date
             FROM products 
             WHERE active = true 
             AND stock >= $1
@@ -51,8 +52,20 @@ export async function POST(request) {
             }, { status: 200 }); // Return 200 to handle gracefully in UI
         }
 
-        // 2. Score Candidates
+        // 2. Map and Score Candidates
         candidates = candidates.map(p => {
+            // Calculate Discounted Price
+            let finalPrice = parseInt(p.price);
+            const hasDiscount = p.discount_percentage > 0;
+            const sizeString = `${requestedSize}ml`;
+            const sizeEligible = !p.discount_sizes || p.discount_sizes.length === 0 || p.discount_sizes.includes(sizeString);
+            const dateEligible = !p.discount_end_date || new Date(p.discount_end_date) >= new Date();
+
+            if (hasDiscount && sizeEligible && dateEligible) {
+                // Same logic as ProductCard.js: Rounding to nearest 5
+                finalPrice = Math.round((finalPrice * (1 - p.discount_percentage / 100)) / 5) * 5;
+            }
+
             const pNotes = new Set([
                 ...(p.top_notes || '').split(',').map(n => n.trim()).filter(Boolean),
                 ...(p.middle_notes || '').split(',').map(n => n.trim()).filter(Boolean),
@@ -65,14 +78,11 @@ export async function POST(request) {
                 if (userNotes.has(note)) intersection++;
             });
 
-            // Jaccard (optional, but intersection is often better for "hits" on preferences)
-            // Let's use intersection count as primary score.
-            // Tie-break with random to vary results?
-
             return {
                 ...p,
                 score: intersection,
-                price: parseInt(p.price)
+                original_price: parseInt(p.price),
+                price: finalPrice
             };
         });
 
@@ -206,6 +216,7 @@ export async function POST(request) {
                 brand: p.brand,
                 image_url: p.image_url,
                 price: p.price,
+                original_price: p.original_price,
                 stock: p.stock
             })),
             totalPrice: currentTotal,

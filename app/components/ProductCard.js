@@ -9,6 +9,7 @@ import { useLanguage } from "../context/LanguageContext";
 import WishlistHeart from "./WishlistHeart";
 import QuickViewModal from "./QuickViewModal";
 import toast from 'react-hot-toast';
+import { isDiscountActive, getDiscountedPrice } from '../lib/productUtils';
 
 export default function ProductCard({ product }) {
     const { addToCart, cartItems } = useCart();
@@ -39,20 +40,8 @@ export default function ProductCard({ product }) {
         return () => clearTimeout(timer);
     }, [addedSize]);
 
-    const isDiscountActive = (size) => {
-        if (!product.discount_percentage || product.discount_percentage <= 0) return false;
-        if (size && !(product.discount_sizes || []).includes(`${size}ml`)) return false;
-        if (product.discount_end_date && new Date(product.discount_end_date) < new Date()) return false;
-        return true;
-    };
-
-    const getDiscountedPrice = (size, originalPrice) => {
-        if (!isDiscountActive(size)) return originalPrice;
-        return Math.round((originalPrice * (1 - product.discount_percentage / 100)) / 5) * 5;
-    };
-
     const handleAdd = (size, price) => {
-        const discountedPrice = getDiscountedPrice(size, price);
+        const discountedPrice = getDiscountedPrice(product, size, price);
         const stock = product.stock || 0;
         const currentInCart = (cartItems || []).reduce((total, item) => {
             if (item.id === product.id) {
@@ -129,7 +118,7 @@ export default function ProductCard({ product }) {
                     </div>
                 )}
 
-            {isDiscountActive() && (
+            {isDiscountActive(product) && (
                 <div className="absolute top-2 start-2 z-20 text-[10px] leading-3 font-black bg-green-600 text-white px-2 py-1 rounded shadow-sm text-center animate-pulse cursor-default">
                     {locale === 'he' ? `${product.discount_percentage}% הנחה` : `${product.discount_percentage}% OFF`}
                 </div>
@@ -211,10 +200,10 @@ export default function ProductCard({ product }) {
                         <div className="flex items-center justify-between text-xs text-gray-600">
                             <span>2 {t('common.ml_unit')}</span>
                             <div className="flex items-center gap-2">
-                                {getDiscountedPrice(2, product.price_2ml) !== product.price_2ml ? (
+                                {getDiscountedPrice(product, 2, product.price_2ml) !== product.price_2ml ? (
                                     <div className="flex flex-col items-end">
                                         <span className="text-[10px] text-gray-400 line-through leading-none">{product.price_2ml} ₪</span>
-                                        <span className="font-black text-green-600">{getDiscountedPrice(2, product.price_2ml)} ₪</span>
+                                        <span className="font-black text-green-600">{getDiscountedPrice(product, 2, product.price_2ml)} ₪</span>
                                     </div>
                                 ) : (
                                     <span className="font-bold">{product.price_2ml} ₪</span>
@@ -238,10 +227,10 @@ export default function ProductCard({ product }) {
                         <div className="flex items-center justify-between text-xs text-gray-600">
                             <span>5 {t('common.ml_unit')}</span>
                             <div className="flex items-center gap-2">
-                                {getDiscountedPrice(5, product.price_5ml) !== product.price_5ml ? (
+                                {getDiscountedPrice(product, 5, product.price_5ml) !== product.price_5ml ? (
                                     <div className="flex flex-col items-end">
                                         <span className="text-[10px] text-gray-400 line-through leading-none">{product.price_5ml} ₪</span>
-                                        <span className="font-black text-green-600">{getDiscountedPrice(5, product.price_5ml)} ₪</span>
+                                        <span className="font-black text-green-600">{getDiscountedPrice(product, 5, product.price_5ml)} ₪</span>
                                     </div>
                                 ) : (
                                     <span className="font-bold">{product.price_5ml} ₪</span>
@@ -265,10 +254,10 @@ export default function ProductCard({ product }) {
                         <div className="flex items-center justify-between text-xs text-gray-600">
                             <span>10 {t('common.ml_unit')}</span>
                             <div className="flex items-center gap-2">
-                                {getDiscountedPrice(10, product.price_10ml) !== product.price_10ml ? (
+                                {getDiscountedPrice(product, 10, product.price_10ml) !== product.price_10ml ? (
                                     <div className="flex flex-col items-end">
                                         <span className="text-[10px] text-gray-400 line-through leading-none">{product.price_10ml} ₪</span>
-                                        <span className="font-black text-green-600">{getDiscountedPrice(10, product.price_10ml)} ₪</span>
+                                        <span className="font-black text-green-600">{getDiscountedPrice(product, 10, product.price_10ml)} ₪</span>
                                     </div>
                                 ) : (
                                     <span className="font-bold">{product.price_10ml} ₪</span>

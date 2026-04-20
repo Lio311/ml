@@ -371,7 +371,12 @@ export default function SmartMatchingClient({ initialNotes }) {
                                             <div className="font-serif font-black text-zinc-900 text-sm line-clamp-1 mb-0.5">{localize(p, 'name')}</div>
                                             <div className="text-zinc-500 text-[10px] uppercase font-bold tracking-widest mb-2 opacity-70">{p.brand}</div>
                                             <div className="flex items-center gap-3">
-                                                <div className="text-lg font-black text-zinc-900 whitespace-nowrap">{p.price} ₪</div>
+                                                <div className="flex items-center gap-1.5">
+                                                    <div className="text-lg font-black text-zinc-900 whitespace-nowrap">{p.price} ₪</div>
+                                                    {p.original_price && p.original_price > p.price && (
+                                                        <span className="text-[10px] text-zinc-400 line-through opacity-70">{p.original_price} ₪</span>
+                                                    )}
+                                                </div>
                                                 {isAddedToCart && (
                                                     <span className="text-xs font-bold text-emerald-500 animate-fadeIn flex items-center gap-1 whitespace-nowrap">
                                                         <span className="text-sm">✓</span>

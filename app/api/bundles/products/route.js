@@ -14,7 +14,8 @@ export async function GET(req) {
         try {
             let query = `
                 SELECT id, name, brand, model, price_2ml, price_5ml, price_10ml, image_url, 
-                       category, description, stock, seasons, brand_he, model_he, name_he
+                       category, description, stock, seasons, brand_he, model_he, name_he,
+                       discount_percentage, discount_sizes, discount_end_date
                 FROM products 
                 WHERE active = true
             `;

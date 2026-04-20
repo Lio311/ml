@@ -4,6 +4,7 @@ import { createContext, useContext, useState, useEffect, useRef } from "react";
 import { useUser } from "@clerk/nextjs";
 import toast from 'react-hot-toast';
 import { useLanguage } from "./LanguageContext";
+import { getDiscountedPrice, isDiscountActive } from "../lib/productUtils";
 
 const CartContext = createContext();
 
@@ -482,10 +483,13 @@ export function CartProvider({ children }) {
         const sizeKey = `price_${bundle.size}ml`;
         
         bundle.items.forEach(item => {
-            bundlePrice += Number(item[sizeKey] || 0);
+            const originalPrice = Number(item[sizeKey] || 0);
+            // Apply individual item discount if active
+            const itemFinalPrice = getDiscountedPrice(item, bundle.size, originalPrice);
+            bundlePrice += itemFinalPrice;
         });
 
-        // Apply 10% discount
+        // Apply 10% bundle discount on top of (potentially discounted) items
         const discountedPrice = Math.round(bundlePrice * 0.9);
 
         const bundleToAdd = {

@@ -66,3 +66,34 @@ export function sanitizeProductArray(products) {
     if (!Array.isArray(products)) return [];
     return products.map(p => sanitizeProduct(p)).filter(Boolean);
 }
+
+/**
+ * Checks if a product has an active discount for a specific size.
+ * @param {Object} product The product object from base
+ * @param {string|number} size The size to check (e.g., 2, 5, 10 or '2ml')
+ * @returns {boolean}
+ */
+export function isDiscountActive(product, size) {
+    if (!product || !product.discount_percentage || product.discount_percentage <= 0) return false;
+    
+    if (size) {
+        const sizeStr = String(size).includes('ml') ? String(size) : `${size}ml`;
+        if (!(product.discount_sizes || []).includes(sizeStr)) return false;
+    }
+    
+    if (product.discount_end_date && new Date(product.discount_end_date) < new Date()) return false;
+    
+    return true;
+}
+
+/**
+ * Calculates the final price after discount, rounded to the nearest 5.
+ * @param {Object} product 
+ * @param {string|number} size 
+ * @param {number} originalPrice 
+ * @returns {number}
+ */
+export function getDiscountedPrice(product, size, originalPrice) {
+    if (!isDiscountActive(product, size)) return originalPrice;
+    return Math.round((originalPrice * (1 - product.discount_percentage / 100)) / 5) * 5;
+}
