@@ -162,18 +162,18 @@ export default function SmartMatchingClient({ initialNotes }) {
             <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-zinc-200/50 rounded-full blur-[120px] pointer-events-none" />
             <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-zinc-200/50 rounded-full blur-[120px] pointer-events-none" />
 
-            <div className="container max-w-md mx-auto relative z-10 px-4">
+            <div className="container max-w-sm mx-auto relative z-10 px-4">
                 <div className="mb-6 text-center overflow-visible">
                     <h1 className="text-4xl md:text-5xl font-bold mb-3 text-zinc-900 tracking-tight animate-fadeIn">
                         {t('matching.title') || 'התאמה אישית'}
                     </h1>
                     <div className="flex flex-col items-center gap-1 overflow-visible">
-                        <p className="text-zinc-500 text-xs md:text-sm animate-fadeIn delay-100 italic tracking-wide whitespace-normal opacity-70 px-6 leading-relaxed max-w-md">
+                        <p className="text-zinc-500 text-[10px] md:text-xs animate-fadeIn delay-100 italic tracking-wide whitespace-normal opacity-70 px-2 leading-relaxed">
                             {t('matching.description')}
                         </p>
                         {/* Algorithm Info Block */}
-                        <div className="mt-1 p-4 md:p-6 bg-white/70 backdrop-blur-xl rounded-2xl border border-zinc-200 max-w-md animate-fadeIn delay-200 shadow-sm">
-                            <p className="text-[10px] md:text-xs text-zinc-500 leading-relaxed text-center italic opacity-90">
+                        <div className="mt-1 p-4 md:p-5 bg-white/70 backdrop-blur-xl rounded-2xl border border-zinc-200 animate-fadeIn delay-200 shadow-sm w-full">
+                            <p className="text-[9px] md:text-[10px] text-zinc-500 leading-relaxed text-center italic opacity-90">
                                 {t('matching.how_it_works')}
                             </p>
                         </div>

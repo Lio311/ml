@@ -471,6 +471,46 @@ export function CartProvider({ children }) {
         return { addedCount, skippedCount };
     };
 
+    const addBundleToCart = (bundle) => {
+        if (isCartLocked) {
+            toast.error(t('cart.cart_locked_lottery'));
+            return;
+        }
+
+        // Calculate bundle price
+        let bundlePrice = 0;
+        const sizeKey = `price_${bundle.size}ml`;
+        
+        bundle.items.forEach(item => {
+            bundlePrice += Number(item[sizeKey] || 0);
+        });
+
+        // Apply 10% discount
+        const discountedPrice = Math.round(bundlePrice * 0.9);
+
+        const bundleToAdd = {
+            ...bundle,
+            price: discountedPrice,
+            originalPrice: bundlePrice,
+            vendorId: 'main',
+            vendorName: 'האתר הרשמי'
+        };
+
+        setCartItems(prev => [...prev, bundleToAdd]);
+        
+        // Track analytics
+        try {
+            const sid = sessionStorage.getItem('funnel_session_id');
+            if (sid) {
+                fetch('/api/analytics/funnel', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ sessionId: sid, eventType: 'add_to_cart', metadata: { type: 'bundle', bundleType: bundle.bundleType, size: bundle.size } })
+                }).catch(() => {});
+            }
+        } catch(e) {}
+    };
+
     const removeFromCart = (id, size, vendorId = 'main') => {
         if (isCartLocked && vendorId === 'main') {
             toast.error(t('cart.cart_locked_lottery'));
@@ -641,6 +681,9 @@ export function CartProvider({ children }) {
             
             // Calculate subtotal of eligible items only
             const eligibleSubtotal = activeItems.reduce((sum, item) => {
+                // IMPORTANT: Coupons do NOT apply to Bundles
+                if (item.type === 'bundle') return sum;
+
                 // 1. Prepare IDs and normalized values
                 let cleanId = item.id;
                 if (typeof cleanId === 'string' && cleanId.includes('-')) cleanId = cleanId.split('-')[0];
@@ -718,6 +761,10 @@ export function CartProvider({ children }) {
     const getItemFinalPrice = (item) => {
         if (!isMainVendor || !item) return Number(item?.price || 0);
         
+        // Bundles have their price already calculated and discounted in addBundleToCart
+        // and we don't apply further coupons to them.
+        if (item.type === 'bundle') return Number(item.price);
+
         const basePrice = Number(item.price);
         // Important: use the local priceAfterGlobalDiscounts calculated above
         const ratio = subtotal > 0 ? (priceAfterGlobalDiscounts / subtotal) : 1;
@@ -770,7 +817,7 @@ export function CartProvider({ children }) {
     return (
         <CartContext.Provider value={{
             cartItems, activeVendorId, setActiveVendorId, activeItems,
-             addToCart, addMultipleToCart, removeFromCart, updateQuantity, clearCart, clearActiveVendorCart,
+             addToCart, addMultipleToCart, addBundleToCart, removeFromCart, updateQuantity, clearCart, clearActiveVendorCart,
             subtotal, totalItemsCount, globalItemsCount, uniqueVendorsCount, freeSamplesCount, nextTier, shippingCost, total,
             luckyPrize, setLuckyPrize, discountAmount, coupon, setCoupon,
             startLottery, cancelLottery, isCartLocked, lotteryTimeLeft, lotteryMode, 

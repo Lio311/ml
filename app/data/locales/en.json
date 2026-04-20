@@ -14,6 +14,7 @@
         "contact": "Contact",
         "catalog": "Catalog",
         "sales": "Sales",
+        "bundles": "Bundles",
         "requests": "Requests",
         "cart": "Cart",
         "wishlist": "Wishlist",
@@ -1014,5 +1015,30 @@
         "boutique": "Boutique Perfumes",
         "all_brands": "All Brands",
         "evaporated": "evaporated"
+    },
+    "bundles": {
+        "title": "Perfume Bundles",
+        "subtitle": "Create your perfect custom bundle at a great price",
+        "step_1_type": "Choose Bundle Type",
+        "step_2_size": "Select Sample Size",
+        "step_3_perfumes": "Select Perfumes ({current}/{total})",
+        "summer_bundle": "Summer Bundle",
+        "summer_desc": "Fresh, light fragrances perfect for the warm sun",
+        "winter_bundle": "Winter Bundle",
+        "winter_desc": "Deep, warm, and cozy scents for the chilly days",
+        "dates_bundle": "Date Night Bundle",
+        "dates_desc": "Compliment-pulling, sexy, and unforgettable scents for the perfect evening",
+        "collectors_bundle": "Collectors Bundle",
+        "collectors_desc": "Limited editions, rare perfumes, and discontinued treasures",
+        "ml_2_desc": "10 Perfumes (2ml each)",
+        "ml_5_desc": "7 Perfumes (5ml each)",
+        "ml_10_desc": "5 Perfumes (10ml each)",
+        "add_to_bundle": "Add to Bundle",
+        "remove_from_bundle": "Remove",
+        "complete_bundle": "Add Bundle to Cart",
+        "bundle_added_toast": "Bundle added to cart successfully!",
+        "must_select_exact": "Please select exactly {count} perfumes",
+        "discount_label": "10% Bundle Discount",
+        "total_bundle_price": "Final Bundle Price"
     }
 }
