@@ -250,7 +250,7 @@ export default function BundlesClient() {
                                 <div className="flex items-center gap-4 w-full md:w-auto">
                                     <div className="px-5 py-3 bg-zinc-900 text-white rounded-2xl flex flex-col items-center min-w-[90px] md:min-w-[100px]">
                                         <span className="text-[10px] uppercase font-black tracking-widest opacity-50">{t('common.quantity')}</span>
-                                        <span className="text-lg md:text-xl font-black">{selectedProducts.length} / {requiredCount}</span>
+                                        <span className="text-lg md:text-xl font-black" dir="ltr">{selectedProducts.length} / {requiredCount}</span>
                                     </div>
                                     <div className="text-start">
                                         <h3 className="font-black text-zinc-900 text-sm md:text-base">{t(`bundles.${selectedType}_bundle`)}</h3>
