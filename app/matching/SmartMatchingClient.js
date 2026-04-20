@@ -162,7 +162,7 @@ export default function SmartMatchingClient({ initialNotes }) {
             <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-zinc-200/50 rounded-full blur-[120px] pointer-events-none" />
             <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-zinc-200/50 rounded-full blur-[120px] pointer-events-none" />
 
-            <div className="container max-w-4xl mx-auto relative z-10 px-4">
+            <div className="container max-w-2xl mx-auto relative z-10 px-4">
                 <div className="mb-6 text-center overflow-visible">
                     <h1 className="text-4xl md:text-5xl font-bold mb-3 text-zinc-900 tracking-tight animate-fadeIn">
                         {t('matching.title') || 'התאמה אישית'}
