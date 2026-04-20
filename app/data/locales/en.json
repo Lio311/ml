@@ -437,6 +437,7 @@
         "out_of_stock": "Out of Stock",
         "last_units": "Last units",
         "ml_unit": "ml",
+        "perfumes": "perfumes",
         "add_to_cart": "Add to cart",
         "added_to_cart_btn": "Added!",
         "more_details": "More Details",
@@ -1036,9 +1037,10 @@
         "add_to_bundle": "Add to Bundle",
         "remove_from_bundle": "Remove",
         "complete_bundle": "Add Bundle to Cart",
-        "bundle_added_toast": "Bundle added to cart successfully!",
+        "bundle_added_toast": "Bundle added to cart!",
         "must_select_exact": "Please select exactly {count} perfumes",
-        "discount_label": "10% Bundle Discount",
-        "total_bundle_price": "Final Bundle Price"
+        "discount_label": "10% bundle discount",
+        "badge_discount": "10% OFF",
+        "total_bundle_price": "Final bundle price"
     }
 }

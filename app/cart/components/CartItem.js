@@ -67,7 +67,7 @@ export default function CartItem({ item, updateQuantity, removeFromCart, activeV
                         <span className={item.isPrize ? 'text-green-600' : 'text-primary'}>{item.price} ₪</span>
                     )}
                     {item.isPrize && ` (${t('cart.prize')})`}
-                    {isBundle && <span className="text-[10px] bg-zinc-900 text-white px-2 py-0.5 rounded-full ms-2 font-black">10% OFF</span>}
+                    {isBundle && <span className="text-[10px] bg-zinc-900 text-white px-2 py-0.5 rounded-full ms-2 font-black tracking-tight">{t('bundles.badge_discount')}</span>}
                 </div>
             </div>
 

@@ -114,6 +114,7 @@
         "out_of_stock": "אזל במלאי",
         "last_units": "יחידות אחרונות במלאי",
         "ml_unit": "מ״ל",
+        "perfumes": "בשמים",
         "add_to_cart": "הוסף לסל",
         "added_to_cart_btn": "נוסף לסל!",
         "more_details": "פרטים נוספים",
@@ -665,6 +666,7 @@
         "bundle_added_toast": "החבילה נוספה לסל בהצלחה!",
         "must_select_exact": "יש לבחור בדיוק {count} בשמים",
         "discount_label": "10% הנחה על חבילה",
+        "badge_discount": "10% הנחה",
         "total_bundle_price": "מחיר חבילה סופי"
     }
 }
