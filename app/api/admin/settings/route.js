@@ -6,11 +6,12 @@ const DEFAULT_MENU = [
     { id: 'home', label: 'דף הבית', path: '/', visible: true, order: 1 },
     { id: 'brands', label: 'מותגים', path: '/brands', visible: true, order: 2 },
     { id: 'catalog', label: 'קטלוג', path: '/catalog', visible: true, order: 3 },
-    { id: 'sales', label: 'מבצעים', path: '/sales', visible: true, order: 4 },
-    { id: 'matching', label: 'התאמת מארזים', path: '/matching', visible: true, order: 5 },
-    { id: 'requests', label: 'בקשת בשמים', path: '/requests', visible: true, order: 6 },
-    { id: 'lottery', label: 'הגרלה', path: '/lottery', visible: true, order: 7, isRed: true },
-    { id: 'contact', label: 'צור קשר', path: '/contact', visible: true, order: 8 }
+    { id: 'bundles', label: 'חבילות', path: '/bundles', visible: true, order: 4 },
+    { id: 'sales', label: 'מבצעים', path: '/sales', visible: true, order: 5 },
+    { id: 'matching', label: 'התאמת מארזים', path: '/matching', visible: true, order: 6 },
+    { id: 'requests', label: 'בקשת בשמים', path: '/requests', visible: true, order: 7 },
+    { id: 'lottery', label: 'הגרלה', path: '/lottery', visible: true, order: 8, isRed: true },
+    { id: 'contact', label: 'צור קשר', path: '/contact', visible: true, order: 9 }
 ];
 
 async function ensureTable(client) {
