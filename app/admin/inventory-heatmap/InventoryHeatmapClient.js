@@ -2,13 +2,14 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Flame, AlertCircle, CheckCircle2, Clock, Skull, Droplet, TrendingUp } from 'lucide-react';
+import { Search, Flame, AlertCircle, CheckCircle2, Clock, Skull, Droplet, TrendingUp, Info } from 'lucide-react';
 
 export default function InventoryHeatmapClient() {
     const [data, setData] = useState([]);
     const [loading, setLoading] = useState(true);
     const [search, setSearch] = useState('');
     const [selectedCategory, setSelectedCategory] = useState('all');
+    const [hoveredId, setHoveredId] = useState(null);
 
     useEffect(() => {
         const fetchInsights = async () => {
@@ -28,243 +29,187 @@ export default function InventoryHeatmapClient() {
     }, []);
 
     const processItem = (item) => {
-        let category = 'slow'; // Default
-        let color = 'bg-gray-400';
-        let bgLight = 'bg-gray-50';
-        let barColor = 'bg-gray-500';
-        let icon = <Clock className="w-4 h-4" />;
-        let statusText = '';
+        let category = 'slow';
+        let overlayColor = 'bg-blue-500/40';
+        let borderColor = 'border-blue-200';
+        let icon = <Droplet className="w-4 h-4" />;
+        let statusText = 'עודף מלאי';
         
         if (item.velocity === 0 && item.stock > 0) {
             category = 'dead';
-            color = 'text-slate-500';
-            bgLight = 'bg-slate-50';
-            barColor = 'bg-slate-300';
+            overlayColor = 'bg-slate-600/60';
+            borderColor = 'border-slate-300';
             icon = <Skull className="w-4 h-4" />;
-            statusText = 'שוכב במדף (0 מכירות)';
+            statusText = 'מלאי מת';
         } else if (item.stock <= 0 && item.velocity > 0) {
             category = 'sold_out';
-            color = 'text-red-600';
-            bgLight = 'bg-red-50/50';
-            barColor = 'bg-red-600';
+            overlayColor = 'bg-red-600/70';
+            borderColor = 'border-red-400';
             icon = <AlertCircle className="w-4 h-4" />;
-            statusText = 'אזל המלאי!';
+            statusText = 'אזל המלאי';
         } else if (item.daysRemaining < 30) {
             category = 'hot';
-            color = 'text-orange-600';
-            bgLight = 'bg-orange-50';
-            barColor = 'bg-gradient-to-r from-orange-400 to-red-500';
+            overlayColor = 'bg-orange-600/70';
+            borderColor = 'border-orange-400';
             icon = <Flame className="w-4 h-4" />;
-            statusText = `תכף נגמר (${Math.round(item.daysRemaining)} ימים)`;
+            statusText = 'לוהט';
         } else if (item.daysRemaining < 90) {
             category = 'warm';
-            color = 'text-amber-600';
-            bgLight = 'bg-amber-50/50';
-            barColor = 'bg-amber-400';
+            overlayColor = 'bg-amber-500/60';
+            borderColor = 'border-amber-300';
             icon = <TrendingUp className="w-4 h-4" />;
-            statusText = `קצב גבוה (${Math.round(item.daysRemaining)} ימים)`;
+            statusText = 'מבוקש';
         } else if (item.daysRemaining < 180) {
             category = 'healthy';
-            color = 'text-emerald-600';
-            bgLight = 'bg-emerald-50/30';
-            barColor = 'bg-emerald-500';
+            overlayColor = 'bg-emerald-500/50';
+            borderColor = 'border-emerald-300';
             icon = <CheckCircle2 className="w-4 h-4" />;
-            statusText = `מלאי תקין (${Math.round(item.daysRemaining)} ימים)`;
-        } else {
-            category = 'slow';
-            color = 'text-blue-500';
-            bgLight = 'bg-blue-50/30';
-            barColor = 'bg-blue-400';
-            icon = <Droplet className="w-4 h-4" />;
-            statusText = `עודף מלאי (${Math.round(item.daysRemaining)} ימים)`;
+            statusText = 'תקין';
         }
 
-        // Velocity bar width determination
-        // Max velocity is generally around 10-30ml per day for a hit perfume
-        const normalizedVelocity = Math.min(100, ((item.velocity || 0) / 10) * 100);
-
-        return { ...item, category, color, bgLight, barColor, icon, statusText, normalizedVelocity };
+        return { ...item, category, overlayColor, borderColor, icon, statusText };
     };
 
     const processedData = useMemo(() => {
         return data.map(processItem).filter(item => {
-            if (item.velocity === 0 && item.stock <= 0) return false; // Ignore completely dead and zero inventory
-            
+            if (item.velocity === 0 && item.stock <= 0) return false;
             const searchMatch = (`${item.brand} ${item.model} ${item.brand_he} ${item.model_he}`).toLowerCase().includes(search.toLowerCase());
             const catMatch = selectedCategory === 'all' || item.category === selectedCategory;
-            
             return searchMatch && catMatch;
         }).sort((a, b) => {
-            // Sort by heat essentially (days remaining asc, handling nulls)
             const aDays = a.velocity > 0 ? a.daysRemaining : 9999;
             const bDays = b.velocity > 0 ? b.daysRemaining : 9999;
             return aDays - bDays;
         });
     }, [data, search, selectedCategory]);
 
-    const stats = useMemo(() => {
-        const p = data.map(processItem);
-        return {
-            hot: p.filter(i => i.category === 'hot').length,
-            sold_out: p.filter(i => i.category === 'sold_out').length,
-            healthy: p.filter(i => i.category === 'healthy' || i.category === 'warm').length,
-            dead: p.filter(i => i.category === 'dead').length,
-        };
-    }, [data]);
-
     if (loading) {
         return (
             <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4">
                 <div className="w-12 h-12 border-4 border-blue-600 border-t-transparent rounded-full animate-spin"></div>
-                <p className="text-gray-400 font-bold uppercase tracking-widest text-[10px]">טוען נתונים...</p>
+                <p className="text-gray-400 font-bold uppercase tracking-widest text-[10px]">בונה את הכוורת...</p>
             </div>
         );
     }
 
     return (
         <div className="space-y-6" dir="rtl">
-            {/* Top Cards */}
-            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                <div onClick={() => setSelectedCategory(selectedCategory === 'hot' ? 'all' : 'hot')} className={`bg-white rounded-2xl p-5 border cursor-pointer hover:shadow-lg transition-all ${selectedCategory === 'hot' ? 'border-orange-500 shadow-md ring-2 ring-orange-200' : 'border-gray-100'}`}>
-                    <div className="flex items-center gap-3 mb-2">
-                        <div className="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center text-orange-600">
-                            <Flame className="w-4 h-4" />
-                        </div>
-                        <h3 className="text-gray-500 text-xs font-bold uppercase tracking-widest">תכף נגמר</h3>
-                    </div>
-                    <div className="text-3xl font-black text-gray-900">{stats.hot}</div>
+            {/* Legend & Stats Overview */}
+            <div className="flex flex-wrap gap-4 items-center justify-between bg-white p-4 rounded-2xl border border-gray-100 shadow-sm">
+                <div className="flex flex-wrap gap-3">
+                    <LegendItem color="bg-orange-500" label="לוהט (<30 יום)" onClick={() => setSelectedCategory('hot')} active={selectedCategory === 'hot'} />
+                    <LegendItem color="bg-red-600" label="אזל (0 מ״ל)" onClick={() => setSelectedCategory('sold_out')} active={selectedCategory === 'sold_out'} />
+                    <LegendItem color="bg-emerald-500" label="תקין" onClick={() => setSelectedCategory('healthy')} active={selectedCategory === 'healthy'} />
+                    <LegendItem color="bg-slate-600" label="מלאי מת" onClick={() => setSelectedCategory('dead')} active={selectedCategory === 'dead'} />
                 </div>
                 
-                <div onClick={() => setSelectedCategory(selectedCategory === 'sold_out' ? 'all' : 'sold_out')} className={`bg-white rounded-2xl p-5 border cursor-pointer hover:shadow-lg transition-all ${selectedCategory === 'sold_out' ? 'border-red-500 shadow-md ring-2 ring-red-200' : 'border-gray-100'}`}>
-                    <div className="flex items-center gap-3 mb-2">
-                        <div className="w-8 h-8 rounded-full bg-red-100 flex items-center justify-center text-red-600">
-                            <AlertCircle className="w-4 h-4" />
-                        </div>
-                        <h3 className="text-gray-500 text-xs font-bold uppercase tracking-widest">אזל לחלוטין </h3>
-                    </div>
-                    <div className="text-3xl font-black text-gray-900">{stats.sold_out}</div>
-                </div>
-
-                <div onClick={() => setSelectedCategory(selectedCategory === 'healthy' ? 'all' : 'healthy')} className={`bg-white rounded-2xl p-5 border cursor-pointer hover:shadow-lg transition-all ${selectedCategory === 'healthy' ? 'border-emerald-500 shadow-md ring-2 ring-emerald-200' : 'border-gray-100'}`}>
-                    <div className="flex items-center gap-3 mb-2">
-                        <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-600">
-                            <CheckCircle2 className="w-4 h-4" />
-                        </div>
-                        <h3 className="text-gray-500 text-xs font-bold uppercase tracking-widest">מלאי תקין</h3>
-                    </div>
-                    <div className="text-3xl font-black text-gray-900">{stats.healthy}</div>
-                </div>
-
-                <div onClick={() => setSelectedCategory(selectedCategory === 'dead' ? 'all' : 'dead')} className={`bg-white rounded-2xl p-5 border cursor-pointer hover:shadow-lg transition-all ${selectedCategory === 'dead' ? 'border-slate-500 shadow-md ring-2 ring-slate-200' : 'border-gray-100'}`}>
-                    <div className="flex items-center gap-3 mb-2">
-                        <div className="w-8 h-8 rounded-full bg-slate-100 flex items-center justify-center text-slate-600">
-                            <Skull className="w-4 h-4" />
-                        </div>
-                        <h3 className="text-gray-500 text-xs font-bold uppercase tracking-widest">מלאי מת (אפס מכר)</h3>
-                    </div>
-                    <div className="text-3xl font-black text-gray-900">{stats.dead}</div>
-                </div>
-            </div>
-
-            {/* Controls */}
-            <div className="bg-white rounded-2xl p-2 border border-gray-100 shadow-sm flex flex-col md:flex-row gap-2">
-                <div className="relative flex-1">
-                    <Search className="w-5 h-5 absolute right-4 top-1/2 -translate-y-1/2 text-gray-400" />
+                <div className="relative w-full md:w-64">
+                    <Search className="w-4 h-4 absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" />
                     <input 
                         type="text" 
-                        placeholder="חיפוש מותג או דגם..."
+                        placeholder="חיפוש מהיר..."
                         value={search}
                         onChange={(e) => setSearch(e.target.value)}
-                        className="w-full bg-transparent border-none focus:ring-0 text-sm font-medium py-4 pr-12 pl-4 outline-none placeholder:text-gray-300"
+                        className="w-full bg-gray-50 border-none focus:ring-1 focus:ring-blue-500/20 text-xs font-bold py-2 pr-9 pl-3 rounded-xl outline-none placeholder:text-gray-300"
                     />
                 </div>
-                {selectedCategory !== 'all' && (
-                    <button 
-                        onClick={() => setSelectedCategory('all')}
-                        className="px-6 py-3 bg-gray-50 text-gray-600 text-xs font-bold uppercase tracking-widest rounded-xl hover:bg-gray-100 transition-colors"
-                    >
-                        נקה סינון
-                    </button>
-                )}
             </div>
 
-            {/* List */}
-            <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
-                <div className="divide-y divide-gray-50">
-                    <AnimatePresence>
-                        {processedData.length === 0 ? (
-                            <div className="p-12 text-center text-gray-400 font-bold">לא נמצאו תוצאות לסינון הנוכחי</div>
-                        ) : (
-                            processedData.map((item, index) => (
+            {/* The Heatmap Grid (Hive) */}
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+                <AnimatePresence>
+                    {processedData.map((item, index) => (
+                        <motion.div
+                            key={item.id}
+                            layout
+                            initial={{ opacity: 0, scale: 0.9 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.9 }}
+                            transition={{ duration: 0.2, delay: index * 0.01 }}
+                            className="relative group aspect-square rounded-2xl overflow-hidden border border-gray-100 shadow-sm cursor-pointer"
+                            onMouseEnter={() => setHoveredId(item.id)}
+                            onMouseLeave={() => setHoveredId(null)}
+                        >
+                            {/* Product Image Background */}
+                            <div className="absolute inset-0">
+                                {item.image_url ? (
+                                    <img src={item.image_url} alt="" className="w-full h-full object-cover grayscale-[0.3] group-hover:grayscale-0 transition-all duration-500" />
+                                ) : (
+                                    <div className="w-full h-full bg-gray-100 flex items-center justify-center text-[10px] font-black text-gray-300 uppercase tracking-tighter text-center px-1">
+                                        {item.brand}
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* Status Overlay */}
+                            <div className={`absolute inset-0 ${item.overlayColor} transition-opacity duration-300 group-hover:opacity-20`}></div>
+
+                            {/* Label Bottom */}
+                            <div className="absolute bottom-0 inset-x-0 p-2 bg-gradient-to-t from-black/80 to-transparent">
+                                <div className="text-[9px] font-black text-white uppercase tracking-tight truncate leading-none">{item.brand}</div>
+                                <div className="text-[8px] font-medium text-white/70 truncate">{item.model}</div>
+                            </div>
+
+                            {/* Top Badge Icon */}
+                            <div className="absolute top-2 right-2 w-6 h-6 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white shadow-lg border border-white/30">
+                                {item.icon}
+                            </div>
+
+                            {/* Data Reveal on Hover */}
+                            <motion.div 
+                                className="absolute inset-0 bg-black/85 backdrop-blur-sm p-3 flex flex-col justify-center items-center text-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity"
+                                initial={false}
+                            >
+                                <div className="text-[10px] font-black text-white uppercase tracking-widest border-b border-white/20 pb-1 w-full">{item.statusText}</div>
+                                
+                                <div className="space-y-1 w-full">
+                                    <DataRow label="מלאי" value={`${Math.floor(item.stock)} ml`} />
+                                    <DataRow label="קצב יומי" value={`${item.velocity?.toFixed(1)} ml`} />
+                                    <DataRow label="ימי מלאי" value={item.velocity > 0 ? Math.round(item.daysRemaining) : '∞'} color={item.daysRemaining < 30 ? 'text-red-400' : 'text-blue-400'} />
+                                </div>
+
                                 <motion.div 
-                                    key={item.id}
-                                    initial={{ opacity: 0, y: 10 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ duration: 0.3, delay: Math.min(index * 0.05, 0.5) }}
-                                    className={`flex flex-col md:flex-row items-center gap-4 md:gap-8 p-4 md:p-6 hover:bg-gray-50/50 transition-colors ${item.bgLight}`}
+                                    className="mt-1 w-full h-1 bg-white/10 rounded-full overflow-hidden"
                                 >
-                                    {/* Left: Product Info */}
-                                    <div className="flex items-center gap-4 w-full md:w-1/3 shrink-0">
-                                        <div className="w-12 h-12 rounded-2xl bg-white border border-gray-100 shadow-sm flex items-center justify-center overflow-hidden shrink-0">
-                                            {item.image_url ? (
-                                                <img src={item.image_url} alt={item.model} className="w-full h-full object-cover" />
-                                            ) : (
-                                                <div className="opacity-20 text-xs font-bold text-gray-400 uppercase">{item.brand?.substring(0,2)}</div>
-                                            )}
-                                        </div>
-                                        <div className="flex flex-col min-w-0">
-                                            <div className="font-black text-gray-900 text-sm leading-tight truncate">{item.brand}</div>
-                                            <div className="text-xs text-gray-500 truncate mt-0.5">{item.model}{item.model_he ? ` (${item.model_he})` : ''}</div>
-                                        </div>
-                                    </div>
-
-                                    {/* Middle: Heat Bar */}
-                                    <div className="flex-1 w-full flex flex-col gap-2">
-                                        <div className="flex justify-between items-end">
-                                            <div className={`flex items-center gap-1.5 ${item.color} font-black text-xs uppercase tracking-widest`}>
-                                                {item.icon}
-                                                <span>{item.statusText}</span>
-                                            </div>
-                                            <div className="flex items-center gap-4 text-xs font-bold text-gray-500 tabular-nums">
-                                                <div className="flex items-center gap-1">
-                                                    <span className="text-gray-400">קצב (יום):</span>
-                                                    <span className="text-gray-900" dir="ltr">{item.velocity?.toFixed(1)} ml</span>
-                                                </div>
-                                                <div className="flex items-center gap-1">
-                                                    <span className="text-gray-400">מלאי:</span>
-                                                    <span className="text-gray-900" dir="ltr">{Math.floor(item.stock)} ml</span>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        
-                                        <div className="w-full h-2.5 bg-gray-100/80 rounded-full overflow-hidden relative shadow-inner">
-                                            {item.velocity > 0 && (
-                                                <motion.div 
-                                                    initial={{ width: 0 }}
-                                                    animate={{ width: `${Math.max(2, item.normalizedVelocity)}%` }}
-                                                    transition={{ duration: 1, ease: "easeOut" }}
-                                                    className={`absolute left-0 top-0 bottom-0 rounded-full ${item.barColor} shadow-[0_0_10px_rgba(0,0,0,0.1)]`}
-                                                />
-                                            )}
-                                        </div>
-                                    </div>
-                                    
-                                    {/* Right: Quick actions / badges */}
-                                    <div className="hidden md:flex items-center gap-2 shrink-0 w-24 justify-end">
-                                        {item.category === 'dead' ? (
-                                            <div className="px-2 py-1 bg-slate-100 text-slate-500 rounded text-[9px] font-black uppercase tracking-widest">לא נמכר</div>
-                                        ) : item.category === 'sold_out' ? (
-                                            <div className="px-2 py-1 bg-red-100 text-red-600 rounded text-[9px] font-black uppercase tracking-widest animate-pulse">אזל</div>
-                                        ) : item.category === 'hot' ? (
-                                            <div className="px-2 py-1 bg-orange-100 text-orange-600 rounded text-[9px] font-black uppercase tracking-widest">לוהט</div>
-                                        ) : null}
-                                    </div>
+                                    <motion.div 
+                                        className={`h-full ${item.category === 'hot' ? 'bg-orange-500' : 'bg-blue-400'}`}
+                                        initial={{ width: 0 }}
+                                        whileInView={{ width: `${Math.min(100, (item.velocity/10)*100)}%` }}
+                                    />
                                 </motion.div>
-                            ))
-                        )}
-                    </AnimatePresence>
-                </div>
+                            </motion.div>
+                        </motion.div>
+                    ))}
+                </AnimatePresence>
             </div>
+            
+            {processedData.length === 0 && (
+                <div className="text-center py-20 bg-white rounded-3xl border border-dashed border-gray-200">
+                    <Search className="w-10 h-10 text-gray-200 mx-auto mb-3" />
+                    <p className="text-gray-400 font-bold uppercase tracking-widest text-xs">לא נמצאו מוצרים תואמים לחיפוש</p>
+                </div>
+            )}
+        </div>
+    );
+}
+
+function LegendItem({ color, label, onClick, active }) {
+    return (
+        <button 
+            onClick={onClick}
+            className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border transition-all ${active ? 'bg-white shadow-md scale-105 border-gray-200' : 'bg-transparent border-transparent grayscale opacity-60 hover:grayscale-0 hover:opacity-100'}`}
+        >
+            <div className={`w-3 h-3 rounded-full ${color}`}></div>
+            <span className="text-[10px] font-black text-gray-700 uppercase tracking-tight">{label}</span>
+        </button>
+    );
+}
+
+function DataRow({ label, value, color = "text-white" }) {
+    return (
+        <div className="flex justify-between items-center w-full">
+            <span className="text-[8px] font-bold text-gray-400 uppercase tracking-tighter">{label}</span>
+            <span className={`text-[10px] font-black ${color} tabular-nums`} dir="ltr">{value}</span>
         </div>
     );
 }
