@@ -10,6 +10,7 @@ export default function AdminSidebar({ role = 'customer' }) {
     const [pendingOrdersCount, setPendingOrdersCount] = useState(0);
 
     useEffect(() => {
+        const fetchCounts = async () => {
             try {
                 const res = await fetch('/api/admin/counts');
                 if (res.ok) {
@@ -21,6 +22,7 @@ export default function AdminSidebar({ role = 'customer' }) {
             } catch (err) {
                 console.error("Sidebar fetch error:", err);
             }
+        };
         fetchCounts();
         const interval = setInterval(fetchCounts, 30000);
         return () => clearInterval(interval);

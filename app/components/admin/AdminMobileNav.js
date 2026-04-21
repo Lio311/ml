@@ -14,6 +14,7 @@ export default function AdminMobileNav({ role = 'customer' }) {
     const pathname = usePathname();
 
     useEffect(() => {
+        const fetchCounts = async () => {
             try {
                 const res = await fetch('/api/admin/counts');
                 if (res.ok) {
@@ -25,6 +26,7 @@ export default function AdminMobileNav({ role = 'customer' }) {
             } catch (err) {
                 console.error("Mobile Nav fetch error:", err);
             }
+        };
         fetchCounts();
         const interval = setInterval(fetchCounts, 30000);
         return () => clearInterval(interval);
