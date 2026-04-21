@@ -176,8 +176,8 @@ export default function Customer360Modal({ email, onClose }) {
                                                                 {order.items?.filter(item => item.name || item.brand || item.model).map((item, idx) => {
                                                                     const displayName = item.name || `${item.brand || ''} ${item.model || ''}`.trim() || 'פריט לא ידוע';
                                                                     return (
-                                                                        <span key={idx} className="bg-gray-50 px-2 py-0.5 rounded-md border border-gray-100 text-[10px] whitespace-nowrap">
-                                                                            {displayName}
+                                                                        <span key={idx} className="bg-gray-50 px-2 py-0.5 rounded-md border border-gray-100 text-[10px] whitespace-nowrap" dir="rtl">
+                                                                            {displayName} {item.size && <span className="opacity-70">({item.size} מ"ל)</span>}
                                                                         </span>
                                                                     );
                                                                 })}
