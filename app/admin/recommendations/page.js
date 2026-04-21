@@ -196,15 +196,23 @@ export default function RecommendationsAdminPage() {
                         <ul className="space-y-3">
                             {originalItems.map((oi, idx) => (
                                 <li key={idx} className="flex items-center justify-between text-sm py-1 border-b border-gray-50 last:border-0">
-                                    <div className="flex flex-col">
-                                        <span className="font-bold text-gray-900">{oi.brand_he || oi.brand}</span>
-                                        <span className="text-xs text-gray-500" dir="rtl">
-                                            {oi.model_he || oi.model} | <span className="whitespace-nowrap">{oi.size} מ"ל</span>
-                                        </span>
+                                    <div className="flex flex-col flex-1 min-w-0">
+                                        <span className="font-bold text-gray-900 truncate">{oi.brand_he || oi.brand}</span>
+                                        <div className="flex items-center gap-1.5 text-xs text-gray-400" dir="rtl">
+                                            <span className="truncate">{oi.model_he || oi.model}</span>
+                                            <span className="opacity-30">|</span>
+                                            <span className="whitespace-nowrap font-bold text-gray-500">{oi.size} מ"ל</span>
+                                        </div>
                                     </div>
-                                    <div className="flex items-center gap-2">
-                                        <span className="text-gray-400 text-xs">{oi.quantity} x</span>
-                                        <span className="font-bold text-indigo-600"><span dir="ltr">₪ {oi.price?.toLocaleString()}</span></span>
+                                    <div className="flex items-center gap-4 shrink-0">
+                                        <div className="flex flex-col items-end">
+                                            <span className="text-[10px] text-gray-400 font-bold uppercase tracking-tighter">כמות</span>
+                                            <span className="text-sm font-black text-gray-600">{oi.quantity}</span>
+                                        </div>
+                                        <div className="flex flex-col items-end min-w-[70px]">
+                                            <span className="text-[10px] text-gray-400 font-bold uppercase tracking-tighter">מחיר</span>
+                                            <span className="text-sm font-black text-indigo-600" dir="ltr">₪{oi.price?.toLocaleString()}</span>
+                                        </div>
                                     </div>
                                 </li>
                             ))}
