@@ -197,9 +197,9 @@ function LegendItem({ color, label, onClick, active }) {
     return (
         <button 
             onClick={onClick}
-            className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border transition-all ${active ? 'bg-white shadow-md scale-105 border-gray-200' : 'bg-transparent border-transparent grayscale opacity-60 hover:grayscale-0 hover:opacity-100'}`}
+            className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border transition-all ${active ? 'bg-white shadow-md scale-105 border-gray-200 ring-2 ring-blue-500/10' : 'bg-transparent border-transparent hover:bg-white/50'}`}
         >
-            <div className={`w-3 h-3 rounded-full ${color}`}></div>
+            <div className={`w-3 h-3 rounded-full ${color} shadow-sm`}></div>
             <span className="text-[10px] font-black text-gray-700 uppercase tracking-tight">{label}</span>
         </button>
     );
