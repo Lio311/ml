@@ -154,20 +154,31 @@ export default function Customer360Modal({ email, onClose }) {
                                                             {new Date(order.created_at).toLocaleDateString('he-IL', { day: '2-digit', month: '2-digit', year: '2-digit' })}
                                                         </td>
                                                         <td className="p-4">
-                                                            <span className={`text-[9px] px-2 py-0.5 rounded-full font-black uppercase tracking-widest ${
-                                                                order.status === 'pending' ? 'bg-orange-100 text-orange-700' :
-                                                                order.status === 'completed' ? 'bg-green-100 text-green-700' :
-                                                                order.status === 'cancelled' ? 'bg-red-100 text-red-700' :
-                                                                'bg-blue-100 text-blue-700'
-                                                            }`}>
-                                                                {order.status === 'pending' ? 'ממתין' : 
-                                                                 order.status === 'completed' ? 'הושלם' : 
-                                                                 order.status === 'cancelled' ? 'בוטל' : 
-                                                                 order.status}
-                                                            </span>
+                                                            {(() => {
+                                                                const statusMap = {
+                                                                    'pending': { label: 'ממתין', color: 'bg-orange-100 text-orange-700' },
+                                                                    'processing': { label: 'בטיפול', color: 'bg-blue-100 text-blue-700' },
+                                                                    'shipped': { label: 'נשלח', color: 'bg-indigo-100 text-indigo-700' },
+                                                                    'ready_for_pickup': { label: 'מוכן לאיסוף', color: 'bg-emerald-100 text-emerald-700' },
+                                                                    'completed': { label: 'הושלם', color: 'bg-green-100 text-green-700' },
+                                                                    'cancelled': { label: 'בוטל', color: 'bg-red-100 text-red-700' }
+                                                                };
+                                                                const s = statusMap[order.status] || { label: order.status, color: 'bg-gray-100 text-gray-700' };
+                                                                return (
+                                                                    <span className={`text-[9px] px-2 py-0.5 rounded-full font-black uppercase tracking-widest ${s.color}`}>
+                                                                        {s.label}
+                                                                    </span>
+                                                                );
+                                                            })()}
                                                         </td>
-                                                        <td className="p-4 text-xs font-medium text-gray-500 max-w-[200px] truncate">
-                                                            {order.items?.map(i => i.name).join(', ')}
+                                                        <td className="p-4 text-xs font-medium text-gray-500 max-w-[240px]">
+                                                            <div className="flex flex-wrap gap-1">
+                                                                {order.items?.map((item, idx) => (
+                                                                    <span key={idx} className="bg-gray-50 px-2 py-0.5 rounded-md border border-gray-100 text-[10px] whitespace-nowrap">
+                                                                        {item.name}
+                                                                    </span>
+                                                                ))}
+                                                            </div>
                                                         </td>
                                                         <td className="p-4 text-left font-black text-gray-900" dir="ltr">
                                                             ₪ {parseFloat(order.total_amount).toLocaleString()}
@@ -188,10 +199,7 @@ export default function Customer360Modal({ email, onClose }) {
                 </div>
 
                 {/* Footer */}
-                <div className="p-6 bg-gray-50/50 border-t border-gray-100 flex justify-between items-center">
-                    <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">
-                        מערכת ניהול ml_tlv v2.0
-                    </p>
+                <div className="p-6 bg-gray-50/50 border-t border-gray-100 flex justify-end items-center">
                     <button 
                         onClick={onClose}
                         className="bg-black text-white px-8 py-3 rounded-2xl text-sm font-black transition-all hover:bg-gray-800 shadow-lg active:scale-95"
