@@ -154,7 +154,7 @@ export default function AdminOrdersListClient({
                                     <td className="p-4 text-center">
                                         <button 
                                             onClick={() => setViewingCustomerEmail(order.customer_details?.email)}
-                                            className="font-bold text-gray-900 leading-tight mb-1 uppercase tracking-tight hover:text-blue-600 transition-colors cursor-pointer text-right w-full"
+                                            className="font-bold text-gray-900 leading-tight mb-1 uppercase tracking-tight hover:text-blue-600 transition-colors cursor-pointer text-center w-full"
                                         >
                                             {(order.customer_details?.name || '').replace(/\bnull\b/gi, '').trim()}
                                         </button>

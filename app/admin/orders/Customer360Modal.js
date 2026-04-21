@@ -173,11 +173,14 @@ export default function Customer360Modal({ email, onClose }) {
                                                         </td>
                                                         <td className="p-4 text-xs font-medium text-gray-500 max-w-[240px]">
                                                             <div className="flex flex-wrap gap-1">
-                                                                {order.items?.map((item, idx) => (
-                                                                    <span key={idx} className="bg-gray-50 px-2 py-0.5 rounded-md border border-gray-100 text-[10px] whitespace-nowrap">
-                                                                        {item.name}
-                                                                    </span>
-                                                                ))}
+                                                                {order.items?.filter(item => item.name || item.brand || item.model).map((item, idx) => {
+                                                                    const displayName = item.name || `${item.brand || ''} ${item.model || ''}`.trim() || 'פריט לא ידוע';
+                                                                    return (
+                                                                        <span key={idx} className="bg-gray-50 px-2 py-0.5 rounded-md border border-gray-100 text-[10px] whitespace-nowrap">
+                                                                            {displayName}
+                                                                        </span>
+                                                                    );
+                                                                })}
                                                             </div>
                                                         </td>
                                                         <td className="p-4 text-left font-black text-gray-900" dir="ltr">
