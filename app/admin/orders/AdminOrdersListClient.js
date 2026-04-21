@@ -12,6 +12,7 @@ import EditOrderModal from "./EditOrderModal";
 import { Edit2 } from "lucide-react";
 import { AnimatePresence } from "framer-motion";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
+import Customer360Modal from "./Customer360Modal";
 
 const STATUS_OPTIONS = [
     { value: 'no_change', label: 'ללא שינוי סטטוס', icon: <div className="w-2 h-2 rounded-full border border-gray-300 bg-transparent" /> },
@@ -49,6 +50,7 @@ export default function AdminOrdersListClient({
     const [batchDeliveryMethod, setBatchDeliveryMethod] = useState('no_change');
     const [isApplyingBatch, setIsApplyingBatch] = useState(false);
     const [editingOrder, setEditingOrder] = useState(null);
+    const [viewingCustomerEmail, setViewingCustomerEmail] = useState(null);
 
     const handleSelectAll = (e) => {
         if (e.target.checked) {
@@ -150,8 +152,13 @@ export default function AdminOrdersListClient({
                                     </td>
                                     <td className="p-4 font-bold text-gray-900">{order.id}</td>
                                     <td className="p-4 text-center">
-                                        <div className="font-bold text-gray-900 leading-tight mb-1 uppercase tracking-tight">{(order.customer_details?.name || '').replace(/\bnull\b/gi, '').trim()}</div>
-                                        <div className="text-[9px] text-gray-400 font-medium mb-1.5 break-all max-w-[240px] mx-auto">{order.customer_details?.email}</div>
+                                        <button 
+                                            onClick={() => setViewingCustomerEmail(order.customer_details?.email)}
+                                            className="font-bold text-gray-900 leading-tight mb-1 uppercase tracking-tight hover:text-blue-600 transition-colors cursor-pointer text-right w-full"
+                                        >
+                                            {(order.customer_details?.name || '').replace(/\bnull\b/gi, '').trim()}
+                                        </button>
+                                        <div className="text-[9px] text-gray-400 font-medium mb-1.5 break-all max-w-[240px] mx-auto selection:bg-blue-100">{order.customer_details?.email}</div>
                                         {order.customer_details?.phone && (
                                             <div className="text-[11px] font-black text-blue-600/90 flex items-center justify-center gap-1.5 bg-blue-50/50 py-1 px-2 rounded-lg border border-blue-100/50 w-fit mx-auto cursor-pointer hover:bg-blue-100/50 transition-colors">
                                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-3.5 h-3.5 opacity-70">
@@ -309,7 +316,12 @@ export default function AdminOrdersListClient({
                                             }
                                         </div>
                                     </div>
-                                    <h3 className="font-black text-gray-900 text-base">{(order.customer_details?.name || '').replace(/\bnull\b/gi, '').trim()}</h3>
+                                    <button 
+                                        onClick={() => setViewingCustomerEmail(order.customer_details?.email)}
+                                        className="font-black text-gray-900 text-base text-right hover:text-blue-600 transition-colors"
+                                    >
+                                        {(order.customer_details?.name || '').replace(/\bnull\b/gi, '').trim()}
+                                    </button>
                                     <div className="text-[9px] font-medium text-gray-500">{order.customer_details?.email}</div>
                                 </div>
                                 <div className="flex flex-col items-end shrink-0">
@@ -572,6 +584,15 @@ export default function AdminOrdersListClient({
                             setEditingOrder(null);
                             window.location.reload();
                         }}
+                    />
+                )}
+            </AnimatePresence>
+            {/* Customer 360 Modal */}
+            <AnimatePresence>
+                {viewingCustomerEmail && (
+                    <Customer360Modal 
+                        email={viewingCustomerEmail} 
+                        onClose={() => setViewingCustomerEmail(null)} 
                     />
                 )}
             </AnimatePresence>

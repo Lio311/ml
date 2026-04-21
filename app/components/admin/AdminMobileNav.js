@@ -10,26 +10,21 @@ export default function AdminMobileNav({ role = 'customer' }) {
     const [isOpen, setIsOpen] = useState(false);
     const [unreadCount, setUnreadCount] = useState(0);
     const [pendingRecsCount, setPendingRecsCount] = useState(0);
+    const [pendingOrdersCount, setPendingOrdersCount] = useState(0);
     const pathname = usePathname();
 
     useEffect(() => {
-        const fetchCounts = async () => {
             try {
-                const res = await fetch('/api/inbox/unread-count');
+                const res = await fetch('/api/admin/counts');
                 if (res.ok) {
                     const data = await res.json();
-                    setUnreadCount(data.count);
+                    setUnreadCount(data.unreadInbox || 0);
+                    setPendingRecsCount(data.pendingRecommendations || 0);
+                    setPendingOrdersCount(data.pendingOrders || 0);
                 }
-            } catch (err) {}
-
-            try {
-                const resRecs = await fetch('/api/admin/recommendations/pending-count');
-                if (resRecs.ok) {
-                    const data = await resRecs.json();
-                    setPendingRecsCount(data.count);
-                }
-            } catch (err) {}
-        };
+            } catch (err) {
+                console.error("Mobile Nav fetch error:", err);
+            }
         fetchCounts();
         const interval = setInterval(fetchCounts, 30000);
         return () => clearInterval(interval);
@@ -151,6 +146,11 @@ export default function AdminMobileNav({ role = 'customer' }) {
                                                 >
                                                     <Icon className={`w-5 h-5 ${isActive(item.href) ? 'text-white' : 'text-gray-400'}`} />
                                                     <span className="text-sm">{item.label}</span>
+                                                    {item.href === '/admin/orders' && pendingOrdersCount > 0 && (
+                                                        <span className="bg-blue-600 text-white text-[10px] w-5 h-5 flex items-center justify-center rounded-full font-bold mr-auto">
+                                                            {pendingOrdersCount}
+                                                        </span>
+                                                    )}
                                                     {item.href.includes('inbox') && unreadCount > 0 && (
                                                         <span className="bg-red-600 text-white text-[10px] w-5 h-5 flex items-center justify-center rounded-full font-bold mr-auto">
                                                             {unreadCount}

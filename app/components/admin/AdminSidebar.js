@@ -7,25 +7,20 @@ export default function AdminSidebar({ role = 'customer' }) {
     const pathname = usePathname();
     const [unreadCount, setUnreadCount] = useState(0);
     const [pendingRecsCount, setPendingRecsCount] = useState(0);
+    const [pendingOrdersCount, setPendingOrdersCount] = useState(0);
 
     useEffect(() => {
-        const fetchCounts = async () => {
             try {
-                const resUnread = await fetch('/api/inbox/unread-count');
-                if (resUnread.ok) {
-                    const data = await resUnread.json();
-                    setUnreadCount(data.count);
+                const res = await fetch('/api/admin/counts');
+                if (res.ok) {
+                    const data = await res.json();
+                    setUnreadCount(data.unreadInbox || 0);
+                    setPendingRecsCount(data.pendingRecommendations || 0);
+                    setPendingOrdersCount(data.pendingOrders || 0);
                 }
-            } catch (err) {}
-
-            try {
-                const resRecs = await fetch('/api/admin/recommendations/pending-count');
-                if (resRecs.ok) {
-                    const data = await resRecs.json();
-                    setPendingRecsCount(data.count);
-                }
-            } catch (err) {}
-        };
+            } catch (err) {
+                console.error("Sidebar fetch error:", err);
+            }
         fetchCounts();
         const interval = setInterval(fetchCounts, 30000);
         return () => clearInterval(interval);
@@ -132,6 +127,11 @@ export default function AdminSidebar({ role = 'customer' }) {
                                                 </span>
                                                 <span className="text-[13.5px] tracking-tight">{item.label}</span>
                                             </div>
+                                            {item.href === '/admin/orders' && pendingOrdersCount > 0 && (
+                                                <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${isActive(item.href) ? 'bg-black text-white' : 'bg-blue-600 text-white shadow-md'}`}>
+                                                    {pendingOrdersCount}
+                                                </span>
+                                            )}
                                             {item.href.includes('inbox') && unreadCount > 0 && (
                                                 <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${isActive(item.href) ? 'bg-black text-white' : 'bg-red-600 text-white shadow-md'}`}>
                                                     {unreadCount}
