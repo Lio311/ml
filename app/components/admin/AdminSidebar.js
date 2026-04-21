@@ -51,6 +51,7 @@ export default function AdminSidebar({ role = 'customer' }) {
                 { href: "/admin/back-in-stock", label: "חזרה למלאי", icon: "🔔", roles: ['admin', 'deputy'] },
                 { href: "/admin/inventory", label: "בקבוקונים", icon: "🧪", roles: ['admin', 'deputy'] },
                 { href: "/admin/inventory/pricing", label: "תמחור חכם", icon: "💰", roles: ['admin', 'deputy'] },
+                { href: "/admin/inventory-heatmap", label: "מפת חום", icon: "🌡️", roles: ['admin', 'deputy'] },
                 { href: "/admin/brands", label: "מותגים", icon: "🏷️", roles: ['admin', 'deputy'] },
                 { href: "/admin/requests", label: "בקשות", icon: "🗳️", roles: ['admin', 'deputy'] },
                 { href: "/admin/expenses", label: "הוצאות", icon: "💸", roles: ['admin', 'deputy'] },
