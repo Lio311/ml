@@ -36,7 +36,9 @@ export default function AdminOrdersListClient({
     totalOrders,
     canEdit, 
     deleteOrder,
-    currentLimit
+    currentLimit,
+    currentStatus,
+    statusCounts
 }) {
     const router = useRouter();
     const pathname = usePathname();
@@ -140,11 +142,11 @@ export default function AdminOrdersListClient({
                                 <tr key={order.id} className={`hover:bg-${themeColor}-50/30 transition-colors ${selectedOrderIds.includes(order.id) ? `bg-${themeColor}-50/50` : ''}`}>
                                     <td className="p-4 text-center">
                                        <input 
-                                            type="checkbox" 
-                                            className={`w-4 h-4 rounded border-gray-300 text-${themeColor}-600 focus:ring-${themeColor}-500 cursor-pointer`}
-                                            checked={selectedOrderIds.includes(order.id)}
-                                            onChange={() => handleSelectOrder(order.id)}
-                                        />
+                                             type="checkbox" 
+                                             className={`w-4 h-4 rounded border-gray-300 text-${themeColor}-600 focus:ring-${themeColor}-500 cursor-pointer`}
+                                             checked={selectedOrderIds.includes(order.id)}
+                                             onChange={() => handleSelectOrder(order.id)}
+                                         />
                                     </td>
                                     <td className="p-4 font-bold text-gray-900">{order.id}</td>
                                     <td className="p-4 text-center">
@@ -396,7 +398,7 @@ export default function AdminOrdersListClient({
                 {totalPages > 1 && (
                     <div className={`flex justify-center items-center gap-4 py-6 bg-gray-50/50 border-t border-${themeColor}-50`}>
                         <Link
-                            href={`/admin/orders?page=${Math.max(1, currentPage - 1)}`}
+                            href={`/admin/orders?page=${Math.max(1, currentPage - 1)}&limit=${currentLimit === 5000 ? 'all' : currentLimit}&status=${currentStatus}`}
                             className={`w-10 h-10 flex items-center justify-center border rounded-xl hover:bg-gray-100 transition-all ${currentPage === 1 ? 'opacity-30 pointer-events-none' : 'shadow-sm'}`}
                             aria-disabled={currentPage === 1}
                         >
@@ -407,7 +409,7 @@ export default function AdminOrdersListClient({
                             {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
                                 <Link
                                     key={p}
-                                    href={`/admin/orders?page=${p}`}
+                                    href={`/admin/orders?page=${p}&limit=${currentLimit === 5000 ? 'all' : currentLimit}&status=${currentStatus}`}
                                     className={`w-8 h-8 flex items-center justify-center rounded-lg text-xs font-bold transition-all ${currentPage === p ? `bg-${themeColor}-600 text-white shadow-md scale-110` : 'text-gray-400 hover:bg-gray-100'}`}
                                 >
                                     {p}
@@ -416,7 +418,7 @@ export default function AdminOrdersListClient({
                         </div>
 
                         <Link
-                            href={`/admin/orders?page=${Math.min(totalPages, currentPage + 1)}`}
+                            href={`/admin/orders?page=${Math.min(totalPages, currentPage + 1)}&limit=${currentLimit === 5000 ? 'all' : currentLimit}&status=${currentStatus}`}
                             className={`w-10 h-10 flex items-center justify-center border rounded-xl hover:bg-gray-100 transition-all ${currentPage === totalPages ? 'opacity-30 pointer-events-none' : 'shadow-sm'}`}
                             aria-disabled={currentPage === totalPages}
                         >
@@ -427,6 +429,16 @@ export default function AdminOrdersListClient({
             </div>
         );
     };
+
+    const filterOptions = [
+        { value: 'all', label: 'הכל', color: 'gray' },
+        { value: 'pending', label: 'ממתין', color: 'orange' },
+        { value: 'processing', label: 'בטיפול', color: 'blue' },
+        { value: 'shipped', label: 'נשלח', color: 'purple' },
+        { value: 'ready_for_pickup', label: 'מוכן לאיסוף', color: 'indigo' },
+        { value: 'completed', label: 'הושלם', color: 'green' },
+        { value: 'cancelled', label: 'בוטל', color: 'gray' },
+    ];
 
     return (
         <div className="pb-8 relative">
@@ -459,9 +471,49 @@ export default function AdminOrdersListClient({
             <div className="flex flex-col xl:flex-row items-start xl:items-center justify-center gap-4 mb-4 lg:mb-6 relative min-h-[44px] xl:min-h-[64px]">
                 <div className="flex flex-col xl:absolute xl:right-0 xl:top-1/2 xl:-translate-y-1/2">
                     <h1 className="text-2xl md:text-3xl font-bold text-gray-900 shrink-0 font-black tracking-tighter">ניהול הזמנות</h1>
-                    <p className="text-xs md:text-sm font-bold text-blue-600 mt-1">סה"כ הזמנות שבוצעו באתר: {totalOrders}</p>
+                    <div className="flex items-center gap-3 mt-1">
+                        <p className="text-xs md:text-sm font-bold text-blue-600">סה"כ הזמנות שבוצעו באתר: {statusCounts['all'] || totalOrders}</p>
+                    </div>
                 </div>
                 
+                {/* Status Filter Buttons */}
+                <div className="flex flex-wrap items-center justify-center gap-2 mt-4 xl:mt-0 xl:mx-auto">
+                    {filterOptions.map((opt) => (
+                        <button
+                            key={opt.value}
+                            onClick={() => {
+                                const params = new URLSearchParams(searchParams);
+                                params.set('status', opt.value);
+                                params.set('page', '1');
+                                router.push(`${pathname}?${params.toString()}`);
+                            }}
+                            className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all border shadow-sm ${
+                                currentStatus === opt.value
+                                    ? `bg-black text-white border-black scale-105 shadow-md`
+                                    : `bg-white text-gray-400 border-gray-100 hover:border-gray-300 hover:text-gray-600`
+                            }`}
+                        >
+                            <span className={`w-2 h-2 rounded-full ${
+                                opt.value === 'all' ? 'bg-gray-300' :
+                                opt.value === 'pending' ? 'bg-orange-500' :
+                                opt.value === 'processing' ? 'bg-blue-500' :
+                                opt.value === 'shipped' ? 'bg-purple-500' :
+                                opt.value === 'ready_for_pickup' ? 'bg-indigo-500' :
+                                opt.value === 'completed' ? 'bg-green-500' :
+                                'bg-gray-400'
+                            }`} />
+                            {opt.label}
+                            {statusCounts[opt.value] > 0 && (
+                                <span className={`ms-1 px-1.5 py-0.5 rounded-lg text-[9px] ${
+                                    currentStatus === opt.value ? 'bg-white/20 text-white' : 'bg-gray-100 text-gray-400'
+                                }`}>
+                                    {statusCounts[opt.value]}
+                                </span>
+                            )}
+                        </button>
+                    ))}
+                </div>
+
                 {selectedOrderIds.length > 0 && canEdit && (
                     <div className="bg-white border-2 border-black text-gray-800 p-2.5 md:p-3 rounded-2xl shadow-xl z-40 flex flex-col md:flex-row items-center gap-4 animate-in fade-in zoom-in-95 w-full xl:w-auto relative xl:absolute xl:left-1/2 xl:-translate-x-1/2 xl:top-1/2 xl:-translate-y-1/2">
                         <div className="font-bold flex items-center justify-center gap-2.5 w-full md:w-auto text-sm md:text-base border-b md:border-b-0 border-gray-100 pb-3 md:pb-0 md:pl-2 whitespace-nowrap">
