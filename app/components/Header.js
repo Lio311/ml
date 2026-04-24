@@ -38,6 +38,20 @@ export default function Header({ brands = [] }) {
 
     const [menuItems, setMenuItems] = useState([]);
     const [menuLoading, setMenuLoading] = useState(true);
+    const [logoSrc, setLogoSrc] = useState('/logo_v5.png');
+
+    useEffect(() => {
+        const fetchLogo = async () => {
+            try {
+                const res = await fetch('/api/admin/logo');
+                if (res.ok) {
+                    const data = await res.json();
+                    if (data.logoUrl) setLogoSrc(data.logoUrl);
+                }
+            } catch (e) { /* keep default */ }
+        };
+        fetchLogo();
+    }, []);
 
     useEffect(() => {
         const fetchMenu = async () => {
@@ -152,11 +166,10 @@ export default function Header({ brands = [] }) {
                             </nav>
                         </div>
 
-                        {/* Center: Logo */}
                         <div className="flex-shrink-0 flex justify-center px-4">
                             <Link href="/" className="block transform hover:scale-105 transition-transform duration-700">
                                 <Image 
-                                    src="/logo_v5.png" 
+                                    src={logoSrc} 
                                     alt="ml." 
                                     width={180} 
                                     height={70} 
@@ -205,11 +218,10 @@ export default function Header({ brands = [] }) {
                             </button>
                         </div>
 
-                        {/* Center: Logo - Naturally centered between the two side groups */}
                         <div className="flex items-center">
                             <Link href="/">
                                 <Image 
-                                    src="/logo_v5.png" 
+                                    src={logoSrc} 
                                     alt="ml." 
                                     width={90} 
                                     height={30} 

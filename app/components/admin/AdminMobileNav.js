@@ -102,6 +102,7 @@ export default function AdminMobileNav({ role = 'customer' }) {
                 { href: "/admin/dictionary", label: "מילון", icon: Library, roles: ['admin', 'deputy'] },
                 { href: "/admin/menu", label: "תפריט", icon: Map, roles: ['admin', 'deputy'] },
                 { href: "/admin/banner", label: "באנר ראשי", icon: Image, roles: ['admin', 'deputy'] },
+                { href: "/admin/logo", label: "לוגו", icon: Image, roles: ['admin', 'deputy'] },
             ]
         }
     ];
