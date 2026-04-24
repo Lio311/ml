@@ -191,6 +191,7 @@ export default function Header({ brands = [] }) {
                                 <button
                                     onClick={() => router.back()}
                                     className="p-1 text-black hover:opacity-100 opacity-70 transition-opacity"
+                                    aria-label={t('common.back') || "Back"}
                                 >
                                     {dir === 'rtl' ? <ChevronRight className="w-6 h-6" /> : <ChevronLeft className="w-6 h-6" />}
                                 </button>
@@ -198,6 +199,7 @@ export default function Header({ brands = [] }) {
                             <button 
                                 onClick={() => setIsMobileMenuOpen(true)}
                                 className="p-1 text-black hover:opacity-100 opacity-70 transition-opacity"
+                                aria-label={t('common.menu') || "Menu"}
                             >
                                 <Menu size={26} />
                             </button>
@@ -222,6 +224,7 @@ export default function Header({ brands = [] }) {
                             <button 
                                 onClick={() => setIsMobileSearchOpen(!isMobileSearchOpen)}
                                 className="p-1 text-black hover:text-blue-600 transition"
+                                aria-label={t('common.search') || "Search"}
                             >
                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
                             </button>

@@ -82,6 +82,7 @@ export default function AdminSidebar({ role = 'customer' }) {
             items: [
                 { href: "/admin/dictionary", label: "מילון", icon: "📖", roles: ['admin', 'deputy'] },
                 { href: "/admin/menu", label: "תפריט", icon: "🗺️", roles: ['admin', 'deputy'] },
+                { href: "/admin/banner", label: "באנר ראשי", icon: "🖼️", roles: ['admin', 'deputy'] },
             ]
         }
     ];

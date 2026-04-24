@@ -57,6 +57,7 @@ export default async function Home() {
   let newArrivals = [];
   let topCatalogs = [];
   let stats = { brands: 0, products: 0, samples: 500 };
+  let banner = { type: 'video', url: '/hero-video.mp4', objectPosition: 'center' };
 
   try {
     await withClient(async (client) => {
@@ -105,6 +106,16 @@ export default async function Home() {
       } catch (e) {
         console.error("Top catalogs error", e);
       }
+
+      // Fetch Banner
+      try {
+        const bannerRes = await client.query("SELECT value FROM site_settings WHERE key = 'home_banner'");
+        if (bannerRes.rows.length > 0) {
+          banner = bannerRes.rows[0].value;
+        }
+      } catch (e) {
+        console.error("Banner fetch error", e);
+      }
     });
   } catch (err) {
     console.error("Error fetching homepage data:", err);
@@ -112,42 +123,65 @@ export default async function Home() {
 
   return (
     <div className="flex flex-col min-h-screen overflow-x-hidden">
-      {/* WebSite Schema — enables Sitelinks Search Box + AI engine understanding */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
-          __html: JSON.stringify({
-            "@context": "https://schema.org",
-            "@type": "WebSite",
-            "name": "ml-tlv",
-            "alternateName": "ml_tlv",
-            "url": "https://www.ml-tlv.com",
-            "description": locale === 'he'
-              ? "ml-tlv - דוגמיות בושם מקוריות מבתי בושם יוקרתיים ונישה. דיקאנטים ב-2, 5 ו-10 מ\"ל באריזת זכוכית עם מתז."
-              : "ml-tlv - Authentic luxury niche perfume samples and decants in 2ml, 5ml, and 10ml glass atomizers.",
-            "inLanguage": ["he-IL", "en-US"],
-            "potentialAction": {
-              "@type": "SearchAction",
-              "target": "https://www.ml-tlv.com/catalog?q={search_term_string}",
-              "query-input": "required name=search_term_string"
+          __html: JSON.stringify([
+            {
+              "@context": "https://schema.org",
+              "@type": "WebSite",
+              "name": "ml-tlv",
+              "alternateName": "ml_tlv",
+              "url": "https://www.ml-tlv.com",
+              "description": locale === 'he'
+                ? "ml-tlv - דוגמיות בושם מקוריות מבתי בושם יוקרתיים ונישה. דיקאנטים ב-2, 5 ו-10 מ\"ל באריזת זכוכית עם מתז."
+                : "ml-tlv - Authentic luxury niche perfume samples and decants in 2ml, 5ml, and 10ml glass atomizers.",
+              "inLanguage": ["he-IL", "en-US"],
+              "potentialAction": {
+                "@type": "SearchAction",
+                "target": "https://www.ml-tlv.com/catalog?q={search_term_string}",
+                "query-input": "required name=search_term_string"
+              }
+            },
+            {
+              "@context": "https://schema.org",
+              "@type": "Organization",
+              "name": "ml-tlv",
+              "url": "https://www.ml-tlv.com",
+              "logo": "https://www.ml-tlv.com/logo_v5.png",
+              "contactPoint": {
+                "@type": "ContactPoint",
+                "telephone": "+972-50-000-0000",
+                "contactType": "customer service"
+              }
             }
-          })
+          ])
         }}
       />
       {/* Hero Section - Tall and pulled to top on mobile */}
       <section className="relative h-[68vh] md:h-[78vh] w-full m-0 p-0 overflow-hidden bg-white block !-mt-20 md:mt-0">
         <div className="absolute inset-0 w-full h-full overflow-hidden">
-          <video
-            autoPlay
-            loop
-            muted
-            playsInline
-            preload="auto"
-            fetchpriority="high"
-            className="absolute inset-0 w-full h-full object-cover scale-[1.05]"
-          >
-            <source src="/hero-video.mp4" type="video/mp4" />
-          </video>
+          {banner.type === 'video' ? (
+            <video
+              autoPlay
+              loop
+              muted
+              playsInline
+              preload="auto"
+              fetchpriority="high"
+              className="absolute inset-0 w-full h-full object-cover scale-[1.05]"
+              style={{ objectPosition: banner.objectPosition || 'center' }}
+            >
+              <source src={banner.url || "/hero-video.mp4"} type="video/mp4" />
+            </video>
+          ) : (
+            <img
+              src={banner.url || "/hero-video.mp4"}
+              alt="ml-tlv Home Banner"
+              className="absolute inset-0 w-full h-full object-cover scale-[1.05]"
+              style={{ objectPosition: banner.objectPosition || 'center' }}
+            />
+          )}
         </div>
 
         <div className="absolute inset-0 z-10 container mx-auto flex items-center md:items-start justify-center pt-36 pb-16 md:pt-52 md:pb-0 px-6 md:px-12">

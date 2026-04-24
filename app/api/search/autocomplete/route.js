@@ -20,27 +20,29 @@ export async function GET(req) {
             // Search for products by name, brand, or model
             // Case insensitive (ILIKE)
             // Limit to 5 results for dropdown
+            // Fuzzy search using pg_trgm similarity
+            // Using a similarity threshold (e.g., > 0.2) or just order by similarity
+            // It will handle typos like 'שנל' instead of 'שאנל'.
             const res = await client.query(`
                 SELECT id, name, brand, model, image_url, price_2ml, price_5ml, price_10ml, stock, slug,
-                discount_percentage, discount_sizes, discount_end_date
+                discount_percentage, discount_sizes, discount_end_date,
+                GREATEST(similarity(name, $1), similarity(brand, $1), similarity(model, $1), similarity(name_he, $1)) as sim_score
                 FROM products 
                 WHERE active = true 
                 AND (
-                    name ILIKE $1 
-                    OR brand ILIKE $1 
-                    OR model ILIKE $1
-                    OR description ILIKE $1
-                    OR name_he ILIKE $1
+                    name ILIKE $2 
+                    OR brand ILIKE $2 
+                    OR model ILIKE $2
+                    OR name_he ILIKE $2
+                    OR similarity(name, $1) > 0.2
+                    OR similarity(brand, $1) > 0.2
+                    OR similarity(name_he, $1) > 0.2
                 )
                 ORDER BY 
-                    CASE 
-                        WHEN name ILIKE $1 OR name_he ILIKE $1 THEN 1 
-                        WHEN brand ILIKE $1 THEN 2 
-                        ELSE 3 
-                    END,
+                    sim_score DESC,
                     id DESC
                 LIMIT 5
-            `, [`%${query}%`]);
+            `, [query, \`%\${query}%\`]);
 
             const results = res.rows.map(product => ({
                 id: product.id,

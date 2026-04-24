@@ -3,6 +3,7 @@
 import Link from 'next/link';
 import { SignedIn } from '@clerk/nextjs';
 import { useLanguage } from '../../context/LanguageContext';
+import { motion } from 'framer-motion';
 
 export default function DesktopIcons({ cartCount, wishlistCount, onSearchToggle, hideSearch = false }) {
     const { t } = useLanguage();
@@ -14,6 +15,7 @@ export default function DesktopIcons({ cartCount, wishlistCount, onSearchToggle,
                     onClick={onSearchToggle}
                     className="relative group text-black md:hidden p-1"
                     title={t('common.search')}
+                    aria-label={t('common.search') || "Search"}
                 >
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6 hover:text-blue-600 transition"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
                 </button>
@@ -44,15 +46,22 @@ export default function DesktopIcons({ cartCount, wishlistCount, onSearchToggle,
             </Link>
 
             {/* Cart */}
-            <Link id="cart-icon-main" href="/cart" className="relative group text-black" title={t('cart.cart_title')}>
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 group-hover:text-green-600 transition">
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
-                </svg>
-                {cartCount > 0 && (
-                    <span className="absolute -top-1.5 -end-1.5 flex h-[18px] w-[18px] items-center justify-center rounded-full bg-black text-[10px] text-white font-bold shadow-sm">
-                        {cartCount}
-                    </span>
-                )}
+            <Link id="cart-icon-main" href="/cart" className="relative group text-black" title={t('cart.cart_title')} aria-label={t('cart.cart_title') || "Cart"}>
+                <motion.div
+                    key={cartCount}
+                    initial={{ scale: 1 }}
+                    animate={{ scale: [1, 1.25, 1] }}
+                    transition={{ duration: 0.3, type: "spring", stiffness: 300 }}
+                >
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 group-hover:text-green-600 transition">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+                    </svg>
+                    {cartCount > 0 && (
+                        <span className="absolute -top-1.5 -end-1.5 flex h-[18px] w-[18px] items-center justify-center rounded-full bg-black text-[10px] text-white font-bold shadow-sm">
+                            {cartCount}
+                        </span>
+                    )}
+                </motion.div>
             </Link>
 
             <style jsx>{`

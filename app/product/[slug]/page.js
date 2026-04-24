@@ -18,6 +18,7 @@ import { sanitizeProduct, sanitizeProductArray } from "../../lib/productUtils";
 
 import AdditionalDetails from "../../components/AdditionalDetails";
 import ProductActionsClient from "./ProductActionsClient";
+import RichTextWithLinks from "../../components/RichTextWithLinks";
 import * as Sentry from "@sentry/nextjs";
 
 const localize = (obj, field, locale) => {
@@ -526,7 +527,7 @@ export default async function ProductPage(props) {
                         </div>
 
                         <div className={`text-lg text-gray-600 leading-relaxed ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
-                            {localizedDesc_val || t('common.product_desc_fallback').replace('{category}', localizedCategory)}
+                            <RichTextWithLinks text={localizedDesc_val || t('common.product_desc_fallback').replace('{category}', localizedCategory)} />
                         </div>
 
                         {/* Fragrance Pyramid Visualization removed from here */}

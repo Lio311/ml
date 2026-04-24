@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X, Home, Users, Package, CreditCard, Inbox, ShoppingBag, Tag, Ticket, Dice5, Library, Map, Store, ClipboardList, LogOut, MessageSquare, Star, History, Bot, Mail, Bell, Phone, DollarSign, TrendingUp, Search, Activity } from "lucide-react";
+import { Menu, X, Home, Users, Package, CreditCard, Inbox, ShoppingBag, Tag, Ticket, Dice5, Library, Map, Image, Store, ClipboardList, LogOut, MessageSquare, Star, History, Bot, Mail, Bell, Phone, DollarSign, TrendingUp, Search, Activity } from "lucide-react";
 import { SignOutButton } from "@clerk/nextjs";
 
 export default function AdminMobileNav({ role = 'customer' }) {
@@ -85,6 +85,7 @@ export default function AdminMobileNav({ role = 'customer' }) {
             items: [
                 { href: "/admin/dictionary", label: "מילון", icon: Library, roles: ['admin', 'deputy'] },
                 { href: "/admin/menu", label: "תפריט", icon: Map, roles: ['admin', 'deputy'] },
+                { href: "/admin/banner", label: "באנר ראשי", icon: Image, roles: ['admin', 'deputy'] },
             ]
         }
     ];
