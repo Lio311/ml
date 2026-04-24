@@ -3,10 +3,20 @@
 import Link from 'next/link';
 import { SignedIn } from '@clerk/nextjs';
 import { useLanguage } from '../../context/LanguageContext';
-import { motion } from 'framer-motion';
+import { useState, useEffect } from 'react';
 
 export default function DesktopIcons({ cartCount, wishlistCount, onSearchToggle, hideSearch = false }) {
     const { t } = useLanguage();
+    const [isAnimating, setIsAnimating] = useState(false);
+
+    useEffect(() => {
+        if (cartCount > 0) {
+            setIsAnimating(true);
+            const timer = setTimeout(() => setIsAnimating(false), 300);
+            return () => clearTimeout(timer);
+        }
+    }, [cartCount]);
+
     return (
         <div className="flex items-center justify-end gap-2 md:gap-5 pe-1 md:pe-2">
             {/* Mobile Search Toggle */}
@@ -47,12 +57,7 @@ export default function DesktopIcons({ cartCount, wishlistCount, onSearchToggle,
 
             {/* Cart */}
             <Link id="cart-icon-main" href="/cart" className="relative group text-black" title={t('cart.cart_title')} aria-label={t('cart.cart_title') || "Cart"}>
-                <motion.div
-                    key={cartCount}
-                    initial={{ scale: 1 }}
-                    animate={{ scale: [1, 1.25, 1] }}
-                    transition={{ duration: 0.3, type: "spring", stiffness: 300 }}
-                >
+                <div className={isAnimating ? 'animate-cart-pop' : ''}>
                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6 group-hover:text-green-600 transition">
                         <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
                     </svg>
@@ -61,17 +66,17 @@ export default function DesktopIcons({ cartCount, wishlistCount, onSearchToggle,
                             {cartCount}
                         </span>
                     )}
-                </motion.div>
+                </div>
             </Link>
 
             <style jsx>{`
                 @keyframes cart-pop {
                     0% { transform: scale(1); }
-                    50% { transform: scale(1.1); }
+                    50% { transform: scale(1.35); }
                     100% { transform: scale(1); }
                 }
                 :global(.animate-cart-pop) {
-                    animation: cart-pop 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+                    animation: cart-pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
                 }
             `}</style>
         </div>
