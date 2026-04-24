@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { SignOutButton } from "@clerk/nextjs";
+import { ChevronDown, ChevronLeft, LogOut, ArrowRight } from "lucide-react";
+
 export default function AdminSidebar({ role = 'customer' }) {
     const pathname = usePathname();
     const [unreadCount, setUnreadCount] = useState(0);
@@ -29,6 +31,23 @@ export default function AdminSidebar({ role = 'customer' }) {
     }, []);
 
     const isActive = (path) => pathname === path;
+
+    const [openGroups, setOpenGroups] = useState({});
+
+    // Automatically open the group that contains the active link
+    useEffect(() => {
+        const initialOpen = {};
+        navGroups.forEach((group, idx) => {
+            if (group.items.some(item => pathname === item.href)) {
+                initialOpen[idx] = true;
+            }
+        });
+        setOpenGroups(prev => ({ ...prev, ...initialOpen }));
+    }, [pathname]);
+
+    const toggleGroup = (idx) => {
+        setOpenGroups(prev => ({ ...prev, [idx]: !prev[idx] }));
+    };
 
     const navGroups = [
         {
@@ -112,16 +131,24 @@ export default function AdminSidebar({ role = 'customer' }) {
 
                         return (
                             <div key={idx} className="space-y-1">
-                                <h3 className="px-3 text-[10px] font-bold text-gray-500 uppercase tracking-widest mb-1">
-                                    {group.title}
-                                </h3>
-                                <div className="space-y-0.5">
+                                <button 
+                                    onClick={() => toggleGroup(idx)}
+                                    className="w-full flex items-center justify-between px-3 py-2 text-[11px] font-bold text-gray-400 uppercase tracking-widest hover:text-white hover:bg-gray-800/30 rounded-lg transition-all"
+                                >
+                                    <span>{group.title}</span>
+                                    <ChevronDown 
+                                        size={14} 
+                                        className={`transition-transform duration-300 ${openGroups[idx] ? '' : 'rotate-90'}`} 
+                                    />
+                                </button>
+                                
+                                <div className={`space-y-0.5 overflow-hidden transition-all duration-300 ease-in-out px-1 ${openGroups[idx] ? 'max-h-[500px] opacity-100 mt-1' : 'max-h-0 opacity-0'}`}>
                                     {visibleItems.map((item) => (
                                         <Link
                                             key={item.href}
                                             href={item.href}
                                             className={`flex justify-between items-center px-3 py-2 rounded-lg transition-all group ${isActive(item.href)
-                                                ? "bg-white text-black font-bold shadow-lg scale-100"
+                                                ? "bg-gradient-to-r from-gray-800 to-gray-900 text-white font-bold shadow-md border-l-2 border-blue-500"
                                                 : "hover:bg-gray-800/40 text-gray-400 hover:text-white"
                                                 }`}
                                         >
@@ -129,7 +156,7 @@ export default function AdminSidebar({ role = 'customer' }) {
                                                 <span className={`text-sm opacity-80 group-hover:scale-110 transition-transform ${isActive(item.href) ? 'opacity-100' : ''}`}>
                                                     {item.icon}
                                                 </span>
-                                                <span className="text-[13.5px] tracking-tight">{item.label}</span>
+                                                <span className="text-[13px] tracking-tight">{item.label}</span>
                                             </div>
                                             {item.href === '/admin/orders' && pendingOrdersCount > 0 && (
                                                 <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${isActive(item.href) ? 'bg-black text-white' : 'bg-blue-600 text-white shadow-md'}`}>
@@ -157,7 +184,8 @@ export default function AdminSidebar({ role = 'customer' }) {
 
             <div className="pt-4 border-t border-gray-800">
                 <SignOutButton>
-                    <button className="text-red-400 text-sm hover:underline w-full text-right flex items-center gap-2">
+                    <button className="text-gray-400 hover:text-red-400 text-sm w-full text-right flex items-center gap-2 px-3 py-2 rounded-lg hover:bg-gray-800/30 transition-all font-bold">
+                        <LogOut size={16} />
                         <span>התנתק</span>
                     </button>
                 </SignOutButton>

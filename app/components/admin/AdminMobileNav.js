@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X, Home, Users, Package, CreditCard, Inbox, ShoppingBag, Tag, Ticket, Dice5, Library, Map, Image, Store, ClipboardList, LogOut, MessageSquare, Star, History, Bot, Mail, Bell, Phone, DollarSign, TrendingUp, Search, Activity } from "lucide-react";
+import { Menu, X, Home, Users, Package, CreditCard, Inbox, ShoppingBag, Tag, Ticket, Dice5, Library, Map, Image, Store, ClipboardList, LogOut, MessageSquare, Star, History, Bot, Mail, Bell, Phone, DollarSign, TrendingUp, Search, Activity, ChevronDown } from "lucide-react";
 import { SignOutButton } from "@clerk/nextjs";
 
 export default function AdminMobileNav({ role = 'customer' }) {
@@ -12,6 +12,22 @@ export default function AdminMobileNav({ role = 'customer' }) {
     const [pendingRecsCount, setPendingRecsCount] = useState(0);
     const [pendingOrdersCount, setPendingOrdersCount] = useState(0);
     const pathname = usePathname();
+    const [openGroups, setOpenGroups] = useState({});
+
+    // Automatically open the group that contains the active link
+    useEffect(() => {
+        const initialOpen = {};
+        navGroups.forEach((group, idx) => {
+            if (group.items.some(item => pathname === item.href)) {
+                initialOpen[idx] = true;
+            }
+        });
+        setOpenGroups(prev => ({ ...prev, ...initialOpen }));
+    }, [pathname]);
+
+    const toggleGroup = (idx) => {
+        setOpenGroups(prev => ({ ...prev, [idx]: !prev[idx] }));
+    };
 
     useEffect(() => {
         const fetchCounts = async () => {
@@ -132,10 +148,17 @@ export default function AdminMobileNav({ role = 'customer' }) {
 
                             return (
                                 <div key={idx} className="space-y-1">
-                                    <h3 className="px-3 text-[9px] font-black text-gray-400 uppercase tracking-widest mb-1">
-                                        {group.title}
-                                    </h3>
-                                    <div className="space-y-1">
+                                    <button 
+                                        onClick={() => toggleGroup(idx)}
+                                        className="w-full flex items-center justify-between px-3 py-2 text-[11px] font-black text-gray-500 uppercase tracking-widest hover:text-black hover:bg-gray-200/50 rounded-xl transition-all"
+                                    >
+                                        <span>{group.title}</span>
+                                        <ChevronDown 
+                                            size={16} 
+                                            className={`transition-transform duration-300 ${openGroups[idx] ? '' : 'rotate-90'}`} 
+                                        />
+                                    </button>
+                                    <div className={`space-y-1 overflow-hidden transition-all duration-300 ease-in-out px-1 ${openGroups[idx] ? 'max-h-[600px] opacity-100 mt-1' : 'max-h-0 opacity-0'}`}>
                                         {visibleItems.map((item) => {
                                             const Icon = item.icon;
                                             return (
@@ -144,24 +167,24 @@ export default function AdminMobileNav({ role = 'customer' }) {
                                                     href={item.href}
                                                     onClick={() => setIsOpen(false)}
                                                     className={`flex items-center gap-3 p-3 rounded-xl transition-all ${isActive(item.href)
-                                                        ? "bg-black text-white shadow-md font-bold"
+                                                        ? "bg-gradient-to-r from-gray-800 to-gray-900 text-white shadow-md font-bold border-l-4 border-blue-500"
                                                         : "hover:bg-gray-200 text-gray-700 hover:text-black"
                                                         }`}
                                                 >
                                                     <Icon className={`w-5 h-5 ${isActive(item.href) ? 'text-white' : 'text-gray-400'}`} />
                                                     <span className="text-sm">{item.label}</span>
                                                     {item.href === '/admin/orders' && pendingOrdersCount > 0 && (
-                                                        <span className="bg-blue-600 text-white text-[10px] w-5 h-5 flex items-center justify-center rounded-full font-bold mr-auto">
+                                                        <span className={`text-[10px] w-5 h-5 flex items-center justify-center rounded-full font-bold mr-auto ${isActive(item.href) ? 'bg-white text-black' : 'bg-blue-600 text-white'}`}>
                                                             {pendingOrdersCount}
                                                         </span>
                                                     )}
                                                     {item.href.includes('inbox') && unreadCount > 0 && (
-                                                        <span className="bg-red-600 text-white text-[10px] w-5 h-5 flex items-center justify-center rounded-full font-bold mr-auto">
+                                                        <span className={`text-[10px] w-5 h-5 flex items-center justify-center rounded-full font-bold mr-auto ${isActive(item.href) ? 'bg-white text-black' : 'bg-red-600 text-white'}`}>
                                                             {unreadCount}
                                                         </span>
                                                     )}
                                                     {item.href === '/admin/recommendations' && pendingRecsCount > 0 && (
-                                                        <span className="bg-indigo-600 text-white text-[10px] w-5 h-5 flex items-center justify-center rounded-full font-bold mr-auto">
+                                                        <span className={`text-[10px] w-5 h-5 flex items-center justify-center rounded-full font-bold mr-auto ${isActive(item.href) ? 'bg-white text-black' : 'bg-indigo-600 text-white'}`}>
                                                             {pendingRecsCount}
                                                         </span>
                                                     )}

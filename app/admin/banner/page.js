@@ -100,7 +100,8 @@ export default function BannerManager() {
                         value={banner.url}
                         onChange={(e) => setBanner({ ...banner, url: e.target.value })}
                         placeholder="https://example.com/image.jpg או /hero-video.mp4"
-                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-left dir-ltr"
+                        dir="ltr"
+                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-left"
                     />
                     <p className="text-xs text-gray-500 mt-2">
                         ניתן להשתמש בקישור חיצוני (https://...) או בקובץ מקומי מתיקיית ה-public (למשל: /hero-video.mp4).
@@ -109,7 +110,7 @@ export default function BannerManager() {
 
                 {/* Object Position */}
                 <div>
-                    <label className="block text-sm font-semibold text-gray-700 mb-3">מיקוד / חיתוך التמונה (Object Position)</label>
+                    <label className="block text-sm font-semibold text-gray-700 mb-3">מיקוד / חיתוך התמונה (Object Position)</label>
                     <div className="flex flex-wrap gap-3">
                         {positions.map(pos => (
                             <button
@@ -164,8 +165,8 @@ export default function BannerManager() {
                     disabled={saving}
                     className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-xl font-bold transition-colors disabled:opacity-50"
                 >
-                    <Save size={20} />
                     {saving ? 'שומר...' : 'שמור שינויים'}
+                    <Save size={20} />
                 </button>
             </div>
         </div>
