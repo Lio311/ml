@@ -153,8 +153,8 @@ export default function LogoAdminPage() {
                             disabled={isSaving || isDeleting}
                             className="w-full flex items-center justify-center gap-2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl transition-all disabled:opacity-50 shadow-md"
                         >
-                            {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
-                            שמור לוגו
+                                שמור לוגו
+                        {isSaving ? <Loader2 className="w-4 h-4 animate-spin" /> : <Save className="w-4 h-4" />}
                         </button>
 
                         {!isDefault && (
