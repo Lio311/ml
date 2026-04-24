@@ -104,7 +104,7 @@ export default function BannerManager() {
                         className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-left"
                     />
                     <p className="text-xs text-gray-500 mt-2">
-                        ניתן להשתמש בקישור חיצוני (https://...) או בקובץ מקומי מתיקיית ה-public (למשל: /hero-video.mp4).
+                        ניתן להשתמש בקישור חיצוני (<span dir="ltr">https://...</span>) או בקובץ מקומי מתיקיית ה-<span dir="ltr">public</span> (למשל: <span dir="ltr">/hero-video.mp4</span>).
                     </p>
                 </div>
 
