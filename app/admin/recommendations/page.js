@@ -127,8 +127,8 @@ export default function RecommendationsAdminPage() {
 
         return (
             <div key={item.id} className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden transition-all hover:shadow-md">
-                <div className="p-6 border-b border-gray-100 bg-gray-50/50 flex justify-between items-center">
-                    <div className="flex flex-col">
+                <div className="p-4 md:p-6 border-b border-gray-100 bg-gray-50/50 flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+                    <div className="flex flex-col w-full md:w-auto">
                         <div className="flex items-center gap-2 mb-1">
                             <span className="font-bold text-lg text-gray-900">{firstName}</span>
                             <span className="bg-gray-200 text-gray-700 text-xs px-2 py-1 rounded-full font-medium tracking-wide">
@@ -145,7 +145,7 @@ export default function RecommendationsAdminPage() {
                             </div>
                         )}
                     </div>
-                    <div className="flex gap-3">
+                    <div className="flex gap-3 w-full md:w-auto mt-2 md:mt-0">
                         {isPendingActionable ? (
                             <>
                                 <button
@@ -159,7 +159,7 @@ export default function RecommendationsAdminPage() {
                                 <button
                                     onClick={() => handleApprove(item.id)}
                                     disabled={processingId === item.id || !email}
-                                    className="px-6 py-2 bg-gradient-to-l from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 text-white rounded-lg flex items-center gap-2 shadow-md transition-all disabled:opacity-50 text-sm font-bold"
+                                    className="px-6 py-2 bg-gradient-to-l from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 text-white rounded-lg flex-1 md:flex-none flex items-center justify-center gap-2 shadow-md transition-all disabled:opacity-50 text-sm font-bold"
                                 >
                                     {processingId === item.id ? (
                                         <Loader2 className="w-4 h-4 animate-spin" />
@@ -170,7 +170,7 @@ export default function RecommendationsAdminPage() {
                                 </button>
                             </>
                         ) : (
-                            <div className="px-5 py-2 bg-emerald-50 text-emerald-600 rounded-lg flex items-center gap-2 font-bold text-sm">
+                            <div className="px-5 py-2 bg-emerald-50 text-emerald-600 rounded-lg flex-1 md:flex-none flex items-center justify-center gap-2 font-bold text-sm">
                                 <CheckCircle2 className="w-4 h-4" />
                                 אושר להמתנה
                                 <button
@@ -186,7 +186,7 @@ export default function RecommendationsAdminPage() {
                     </div>
                 </div>
                 
-                <div className="p-6 grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div className="p-4 md:p-6 grid grid-cols-1 lg:grid-cols-2 gap-8">
                     {/* Original Order side */}
                     <div className="bg-gray-50 rounded-xl p-5 border border-gray-100">
                         <h3 className="font-bold text-gray-700 flex items-center gap-2 mb-4 border-b border-gray-200 pb-2">

@@ -42,7 +42,7 @@ export async function GET(req) {
                     sim_score DESC,
                     id DESC
                 LIMIT 5
-            `, [query, \`%\${query}%\`]);
+            `, [query, `%${query}%`]);
 
             const results = res.rows.map(product => ({
                 id: product.id,
