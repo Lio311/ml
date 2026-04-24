@@ -17,6 +17,7 @@ import { Toaster } from 'react-hot-toast';
 import ClerkBrandingTranslator from "./components/ClerkBrandingTranslator";
 import ServiceWorkerRegistration from "./components/ServiceWorkerRegistration";
 import PushManager from "./components/PushManager";
+import { getBrand } from "./lib/brand";
 
 // Validate env vars on server start/request
 validateEnv();
@@ -41,50 +42,38 @@ export const viewport = {
   userScalable: false,
 };
 
-export const metadata = {
-  title: "יוקרה בחתיכות קטנות",
-  description: "חנות דוגמיות בשמים בקונספט קצת שונה. מגוון בשמי בוטיק, נישה ודיזיינר במחירים הוגנים",
-  metadataBase: new URL('https://www.ml-tlv.com'),
-  manifest: '/manifest.json',
-  appleWebApp: {
-    capable: true,
-    statusBarStyle: 'black-translucent',
-    title: 'ml_tlv',
-    startupImage: [
-      {
-        url: '/icon-512.png',
-        media: '(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3)',
-      },
-      {
-        url: '/icon-512.png',
-        media: '(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3)',
-      },
-      {
-        url: '/icon-512.png',
-        media: '(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3)',
-      },
-      {
-        url: '/icon-512.png',
-        media: '(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)',
-      },
-    ],
-  },
-  openGraph: {
-    title: "ml_tlv | דוגמיות בשמים",
-    description: "חנות דוגמיות בשמים הגדולה בישראל",
-    url: 'https://www.ml-tlv.com',
-    siteName: 'ml_tlv',
-    images: [
-      {
-        url: '/logo_v5.png',
-        width: 800,
-        height: 600,
-      },
-    ],
-    locale: 'he_IL',
-    type: 'website',
-  },
-};
+export async function generateMetadata() {
+  const brand = await getBrand();
+  return {
+    title: {
+      template: `%s | ${brand.name}`,
+      default: brand.fullTitle,
+    },
+    description: "חנות דוגמיות בשמים בקונספט קצת שונה. מגוון בשמי בוטיק, נישא ודיזיינר במחירים הוגנים",
+    metadataBase: new URL('https://www.ml-tlv.com'),
+    manifest: '/manifest.json',
+    appleWebApp: {
+      capable: true,
+      statusBarStyle: 'black-translucent',
+      title: brand.name,
+      startupImage: [
+        { url: '/icon-512.png', media: '(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3)' },
+        { url: '/icon-512.png', media: '(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3)' },
+        { url: '/icon-512.png', media: '(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3)' },
+        { url: '/icon-512.png', media: '(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)' },
+      ],
+    },
+    openGraph: {
+      title: brand.fullTitle,
+      description: "חנות דוגמיות בשמים הגדולה בישראל",
+      url: 'https://www.ml-tlv.com',
+      siteName: brand.name,
+      images: [{ url: '/logo_v5.png', width: 800, height: 600 }],
+      locale: 'he_IL',
+      type: 'website',
+    },
+  };
+}
 
 export default async function RootLayout({ children }) {
   const brandsRaw = await getBrands();

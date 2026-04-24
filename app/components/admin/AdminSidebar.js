@@ -4,9 +4,11 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { SignOutButton } from "@clerk/nextjs";
 import { ChevronDown, ChevronLeft, LogOut, ArrowRight } from "lucide-react";
+import { useBrand } from "../../context/BrandContext";
 
 export default function AdminSidebar({ role = 'customer' }) {
     const pathname = usePathname();
+    const brand = useBrand();
     const [unreadCount, setUnreadCount] = useState(0);
     const [pendingRecsCount, setPendingRecsCount] = useState(0);
     const [pendingOrdersCount, setPendingOrdersCount] = useState(0);
@@ -103,6 +105,7 @@ export default function AdminSidebar({ role = 'customer' }) {
                 { href: "/admin/menu", label: "תפריט", icon: "🗺️", roles: ['admin', 'deputy'] },
                 { href: "/admin/banner", label: "באנר ראשי", icon: "🖼️", roles: ['admin', 'deputy'] },
                 { href: "/admin/logo", label: "לוגו", icon: "🔖", roles: ['admin', 'deputy'] },
+                { href: "/admin/brand", label: "שם מסחרי", icon: "✏️", roles: ['admin'] },
             ]
         }
     ];
@@ -113,7 +116,7 @@ export default function AdminSidebar({ role = 'customer' }) {
         <aside className="w-60 bg-[#0a0a0a] text-white p-4 flex flex-col hidden md:flex h-screen sticky top-0 border-l border-gray-800/50 shadow-2xl">
             <div className="mb-4 px-2">
                 <div className="flex items-center gap-2 mb-1">
-                    <h2 className="text-xl font-bold tracking-tight">ml_tlv <span className="text-blue-500 font-medium text-lg">Admin</span></h2>
+                    <h2 className="text-xl font-bold tracking-tight">{brand.name} <span className="text-blue-500 font-medium text-lg">Admin</span></h2>
                 </div>
                 <Link href="/" className="text-[10px] text-gray-500 hover:text-white font-bold uppercase tracking-widest transition-colors flex items-center gap-1">
                     חזרה לאתר <span>←</span>

@@ -6,9 +6,11 @@ import { X, ChevronLeft, ChevronRight, Settings } from 'lucide-react';
 import { SignedIn, SignedOut, SignInButton, UserButton } from '@clerk/nextjs';
 import { useLanguage } from '../../context/LanguageContext';
 import LanguageSwitcher from './LanguageSwitcher';
+import { useBrand } from '../../context/BrandContext';
 
 export default function MobileNav({ isOpen, onClose, navLinks = [], isAdmin }) {
     const { t, dir } = useLanguage();
+    const brand = useBrand();
 
     const sidebarVariants = {
         closed: { x: dir === 'rtl' ? '100%' : '-100%', transition: { type: 'spring', stiffness: 300, damping: 30 } },
@@ -116,7 +118,7 @@ export default function MobileNav({ isOpen, onClose, navLinks = [], isAdmin }) {
                             </div>
 
                             <p className="text-[10px] text-white/20 text-center font-light">
-                                ml-tlv. <span className="uppercase text-[9px] tracking-[0.2em]">luxury sample boutique</span>
+                                {brand.dot} <span className="uppercase text-[9px] tracking-[0.2em]">luxury sample boutique</span>
                             </p>
                         </div>
                     </motion.div>

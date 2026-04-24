@@ -1,6 +1,7 @@
 import nodemailer from 'nodemailer';
 import { logEmail } from './emailLogger';
 import pool from './db';
+import { getBrandName } from './brand';
 
 const transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -17,8 +18,9 @@ export const sendEmail = async (to, subject, html, type = 'system', orderId = nu
     }
 
     try {
+        const brandName = await getBrandName();
         const mailOptions = {
-            from: `"ml_tlv" <${process.env.EMAIL_USER}>`,
+            from: `"${brandName}" <${process.env.EMAIL_USER}>`,
             subject,
             html,
         };

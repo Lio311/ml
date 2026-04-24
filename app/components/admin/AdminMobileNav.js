@@ -3,11 +3,13 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, X, Home, Users, Package, CreditCard, Inbox, ShoppingBag, Tag, Ticket, Dice5, Library, Map, Image, Store, ClipboardList, LogOut, MessageSquare, Star, History, Bot, Mail, Bell, Phone, DollarSign, TrendingUp, Search, Activity, ChevronDown } from "lucide-react";
+import { Menu, X, Home, Users, Package, CreditCard, Inbox, ShoppingBag, Tag, Ticket, Dice5, Library, Map, Image, Store, ClipboardList, LogOut, MessageSquare, Star, History, Bot, Mail, Bell, Phone, DollarSign, TrendingUp, Search, Activity, ChevronDown, Pen } from "lucide-react";
 import { SignOutButton } from "@clerk/nextjs";
+import { useBrand } from "../../context/BrandContext";
 
 export default function AdminMobileNav({ role = 'customer' }) {
     const [isOpen, setIsOpen] = useState(false);
+    const brand = useBrand();
     const [unreadCount, setUnreadCount] = useState(0);
     const [pendingRecsCount, setPendingRecsCount] = useState(0);
     const [pendingOrdersCount, setPendingOrdersCount] = useState(0);
@@ -103,6 +105,7 @@ export default function AdminMobileNav({ role = 'customer' }) {
                 { href: "/admin/menu", label: "תפריט", icon: Map, roles: ['admin', 'deputy'] },
                 { href: "/admin/banner", label: "באנר ראשי", icon: Image, roles: ['admin', 'deputy'] },
                 { href: "/admin/logo", label: "לוגו", icon: Image, roles: ['admin', 'deputy'] },
+                { href: "/admin/brand", label: "שם מסחרי", icon: Pen, roles: ['admin'] },
             ]
         }
     ];
@@ -118,7 +121,7 @@ export default function AdminMobileNav({ role = 'customer' }) {
                 >
                     {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
                 </button>
-                <span className="font-bold text-lg tracking-tight">ml_tlv <span className="text-blue-500 font-medium">Admin</span></span>
+                <span className="font-bold text-lg tracking-tight">{brand.name} <span className="text-blue-500 font-medium">Admin</span></span>
             </div>
 
             {/* Menu Overlay */}

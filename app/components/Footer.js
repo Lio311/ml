@@ -1,14 +1,17 @@
+'use client';
 import Link from 'next/link';
 import { useLanguage } from '../context/LanguageContext';
+import { useBrand } from '../context/BrandContext';
 
 export default function Footer() {
     const { t, dir } = useLanguage();
+    const brand = useBrand();
     return (
         <footer className="border-t bg-black text-white py-2 overflow-hidden mt-auto">
             <div className={`container grid grid-cols-2 md:grid-cols-5 gap-4 text-center py-4 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
 
                 <div>
-                    <h3 className="text-lg font-bold mb-4 tracking-widest">ml_tlv</h3>
+                    <h3 className="text-lg font-bold mb-4 tracking-widest">{brand.name}</h3>
                     <p className="text-sm text-gray-400">
                         {t('common.footer_tagline')}
                     </p>
@@ -62,7 +65,7 @@ export default function Footer() {
                 <div className="flex flex-col items-center col-span-2 md:col-span-1">
                     <h3 className="text-lg font-bold mb-4">{t('common.follow_us')}</h3>
                     <a
-                        href="https://instagram.com/ml_tlv"
+                        href={`https://instagram.com/${brand.instagram}`}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="inline-flex items-center gap-2 text-gray-400 hover:text-white transition mb-6"
@@ -82,7 +85,7 @@ export default function Footer() {
                             <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
                             <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
                         </svg>
-                        <span dir="ltr">@ml_tlv</span>
+                        <span dir="ltr">@{brand.instagram}</span>
                     </a>
 
                     <div className="space-y-3 pt-6 border-t border-gray-800 w-full">
@@ -97,7 +100,7 @@ export default function Footer() {
 
             </div>
             <div className="container mt-2 pt-2 border-t border-gray-800 text-center text-xs text-gray-500">
-                © 2022 ml_tlv. {t('common.all_rights_reserved')}
+                © 2022 {brand.name}. {t('common.all_rights_reserved')}
             </div>
         </footer>
     );
