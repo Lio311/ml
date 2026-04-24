@@ -64,6 +64,7 @@ export async function generateRecommendationForOrder(client, orderId, clerkId, e
         SELECT id, name, brand, image_url, top_notes, middle_notes, base_notes, price_5ml, price_10ml
         FROM products 
         WHERE active = true 
+        AND stock >= 10
         AND NOT (id = ANY($1))
     `, [excludeIds]);
 
