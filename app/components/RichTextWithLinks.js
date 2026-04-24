@@ -68,7 +68,7 @@ export default function RichTextWithLinks({ text, className = "" }) {
         <Link 
           key={`link-${index}`} 
           href={`/catalog?q=${encodeURIComponent(keyword)}`}
-          className="text-blue-600 hover:text-blue-800 underline decoration-1 underline-offset-4 transition-colors font-semibold"
+          className="text-black hover:text-gray-600 underline decoration-1 underline-offset-4 transition-colors font-semibold"
           title={`חפש עוד בשמים בסגנון ${keyword}`}
         >
           {keyword}
