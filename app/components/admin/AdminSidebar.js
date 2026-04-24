@@ -159,17 +159,17 @@ export default function AdminSidebar({ role = 'customer' }) {
                                                 <span className="text-[13px] tracking-tight">{item.label}</span>
                                             </div>
                                             {item.href === '/admin/orders' && pendingOrdersCount > 0 && (
-                                                <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${isActive(item.href) ? 'bg-black text-white' : 'bg-blue-600 text-white shadow-md'}`}>
+                                                <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold text-white shadow-md ${isActive(item.href) ? 'bg-blue-500' : 'bg-blue-600'}`}>
                                                     {pendingOrdersCount}
                                                 </span>
                                             )}
                                             {item.href.includes('inbox') && unreadCount > 0 && (
-                                                <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${isActive(item.href) ? 'bg-black text-white' : 'bg-red-600 text-white shadow-md'}`}>
+                                                <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold text-white shadow-md ${isActive(item.href) ? 'bg-red-500' : 'bg-red-600'}`}>
                                                     {unreadCount}
                                                 </span>
                                             )}
                                             {item.href === '/admin/recommendations' && pendingRecsCount > 0 && (
-                                                <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold ${isActive(item.href) ? 'bg-black text-white' : 'bg-indigo-600 text-white shadow-md'}`}>
+                                                <span className={`text-[10px] px-2 py-0.5 rounded-full font-bold text-white shadow-md ${isActive(item.href) ? 'bg-blue-500' : 'bg-indigo-600'}`}>
                                                     {pendingRecsCount}
                                                 </span>
                                             )}

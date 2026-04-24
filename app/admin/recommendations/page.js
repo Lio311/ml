@@ -9,7 +9,8 @@ import Image from 'next/image';
 export default function RecommendationsAdminPage() {
     const [items, setItems] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [processingId, setProcessingId] = useState(null);
+    const [approvingId, setApprovingId] = useState(null);
+    const [rejectingId, setRejectingId] = useState(null);
 
     useEffect(() => {
         fetchRecommendations();
@@ -32,7 +33,7 @@ export default function RecommendationsAdminPage() {
     };
 
     const handleApprove = async (id) => {
-        setProcessingId(id);
+        setApprovingId(id);
         const loadingToast = toast.loading('מעדכן המלצה...');
         try {
             const res = await fetch('/api/admin/recommendations', {
@@ -50,7 +51,7 @@ export default function RecommendationsAdminPage() {
         } catch (error) {
             toast.error('שגיאת רשת', { id: loadingToast });
         } finally {
-            setProcessingId(null);
+            setApprovingId(null);
         }
     };
 
@@ -81,7 +82,7 @@ export default function RecommendationsAdminPage() {
     };
 
     const executeReject = async (id) => {
-        setProcessingId(id);
+        setRejectingId(id);
         const loadingToast = toast.loading('מעדכן המלצות...');
         try {
             const res = await fetch(`/api/admin/recommendations?id=${id}`, {
@@ -98,7 +99,7 @@ export default function RecommendationsAdminPage() {
         } catch (error) {
             toast.error('שגיאת רשת', { id: loadingToast });
         } finally {
-            setProcessingId(null);
+            setRejectingId(null);
         }
     };
 
@@ -150,18 +151,22 @@ export default function RecommendationsAdminPage() {
                             <>
                                 <button
                                     onClick={() => handleReject(item.id)}
-                                    disabled={processingId === item.id}
-                                    className="px-4 py-2 text-red-600 bg-red-50 hover:bg-red-100 rounded-lg flex items-center gap-2 transition-colors disabled:opacity-50 text-sm font-bold shadow-sm"
+                                    disabled={rejectingId === item.id || approvingId === item.id}
+                                    className="px-4 py-2 text-red-600 bg-red-50 hover:bg-red-100 rounded-lg flex items-center justify-center gap-2 transition-colors disabled:opacity-50 text-sm font-bold shadow-sm"
                                 >
-                                    <XCircle className="w-4 h-4" />
+                                    {rejectingId === item.id ? (
+                                        <Loader2 className="w-4 h-4 animate-spin" />
+                                    ) : (
+                                        <XCircle className="w-4 h-4" />
+                                    )}
                                     דחה
                                 </button>
                                 <button
                                     onClick={() => handleApprove(item.id)}
-                                    disabled={processingId === item.id || !email}
+                                    disabled={approvingId === item.id || rejectingId === item.id || !email}
                                     className="px-6 py-2 bg-gradient-to-l from-indigo-600 to-indigo-700 hover:from-indigo-700 hover:to-indigo-800 text-white rounded-lg flex-1 md:flex-none flex items-center justify-center gap-2 shadow-md transition-all disabled:opacity-50 text-sm font-bold"
                                 >
-                                    {processingId === item.id ? (
+                                    {approvingId === item.id ? (
                                         <Loader2 className="w-4 h-4 animate-spin" />
                                     ) : (
                                         <CheckCircle2 className="w-4 h-4" />
@@ -175,11 +180,15 @@ export default function RecommendationsAdminPage() {
                                 אושר להמתנה
                                 <button
                                     onClick={() => handleReject(item.id)}
-                                    disabled={processingId === item.id}
+                                    disabled={rejectingId === item.id}
                                     className="mr-3 p-1.5 text-red-400 hover:bg-red-100 hover:text-red-600 rounded mr-2 transition-colors"
                                     title="בטל אישור (ימחק)"
                                 >
-                                    <XCircle className="w-4 h-4" />
+                                    {rejectingId === item.id ? (
+                                        <Loader2 className="w-4 h-4 animate-spin" />
+                                    ) : (
+                                        <XCircle className="w-4 h-4" />
+                                    )}
                                 </button>
                             </div>
                         )}

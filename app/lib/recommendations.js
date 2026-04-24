@@ -16,8 +16,17 @@ export async function generateRecommendationForOrder(client, orderId, clerkId, e
     const orderRes = await client.query('SELECT items FROM orders WHERE id = $1', [orderId]);
     if (orderRes.rows.length === 0) return null;
     const items = orderRes.rows[0].items || [];
-    const boughtProductIds = items.map(item => item.id);
-    if (boughtProductIds.length === 0) return null;
+    const currentOrderProductIds = items.map(item => item.id);
+    if (currentOrderProductIds.length === 0) return null;
+
+    // 1.5 Fetch ALL PAST orders for this user to avoid recommending anything they already bought
+    const allOrdersRes = await client.query('SELECT items FROM orders WHERE user_id = $1', [clerkId]);
+    const allBoughtProductIds = new Set(currentOrderProductIds);
+    allOrdersRes.rows.forEach(row => {
+        (row.items || []).forEach(item => {
+            if (item && item.id) allBoughtProductIds.add(item.id);
+        });
+    });
 
     // 2. Fetch all previously suggested products for this order to avoid repeating them
     const previousRes = await client.query(`
@@ -46,7 +55,7 @@ export async function generateRecommendationForOrder(client, orderId, clerkId, e
         SELECT top_notes, middle_notes, base_notes
         FROM products 
         WHERE id = ANY($1)
-    `, [boughtProductIds]);
+    `, [currentOrderProductIds]);
 
     const userNotes = new Set();
     boughtProducts.rows.forEach(p => {
@@ -59,7 +68,7 @@ export async function generateRecommendationForOrder(client, orderId, clerkId, e
     });
 
     // 5. Fetch candidate products (excluding bought and already suggested)
-    const excludeIds = [...new Set([...boughtProductIds, ...allPreviouslySuggestedIds])];
+    const excludeIds = [...new Set([...allBoughtProductIds, ...allPreviouslySuggestedIds])];
     const allOtherProducts = await client.query(`
         SELECT id, name, brand, image_url, top_notes, middle_notes, base_notes, price_5ml, price_10ml
         FROM products 
