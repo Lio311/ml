@@ -212,25 +212,6 @@ export default function WorkflowEditor({ workflowId, initialData }) {
             </div>
           </div>
 
-          {/* n8n Inspired Ideas (Future) */}
-          <div className="space-y-4 pt-6 border-t border-white/5 opacity-40 grayscale group-hover:grayscale-0 transition-all">
-            <label className="text-[9px] font-bold text-gray-600 uppercase tracking-widest block mb-4">רעיונות עתידיים (n8n)</label>
-            <div className="grid grid-cols-1 gap-2">
-              <div className="flex items-center gap-3 p-3 bg-white/5 rounded-xl border border-white/5 text-white">
-                <Filter size={16} />
-                <span className="text-[11px] font-bold">מסנן (Filter)</span>
-              </div>
-              <div className="flex items-center gap-3 p-3 bg-white/5 rounded-xl border border-white/5 text-white">
-                <Wrench size={16} />
-                <span className="text-[11px] font-bold">פורמט (Formatter)</span>
-              </div>
-              <div className="flex items-center gap-3 p-3 bg-white/5 rounded-xl border border-white/5 text-white">
-                <Globe size={16} />
-                <span className="text-[11px] font-bold">בקשת HTTP</span>
-              </div>
-            </div>
-          </div>
-
           <div className="mt-auto border-t border-white/10 pt-6">
              <div className="bg-white/5 border border-white/10 rounded-2xl p-4 text-[11px] text-gray-400 font-medium text-right">
                 <p>גרור רכיבים למשטח העבודה כדי להתחיל לבנות את האוטומציה שלך.</p>
