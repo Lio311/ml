@@ -19,10 +19,7 @@ const triggerOptions = [
 const TriggerNode = memo(({ data, isConnectable }) => {
   return (
     <div className="bg-white border-2 border-yellow-500/30 p-4 rounded-3xl min-w-[220px] shadow-sm hover:shadow-md transition-all group" dir="rtl">
-      <div className="flex items-center gap-4 flex-row-reverse">
-        <div className="bg-yellow-500/10 p-2.5 rounded-2xl text-yellow-500 group-hover:scale-110 transition-transform">
-          <Zap size={22} fill="currentColor" />
-        </div>
+      <div className="flex items-center gap-4">
         <div className="flex flex-col flex-1 text-right">
           <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest leading-none mb-1">גורם (Trigger)</span>
           <AutomationDropdown 
@@ -39,6 +36,9 @@ const TriggerNode = memo(({ data, isConnectable }) => {
               onChange={(e) => data.onChangeCustom?.(e.target.value)}
             />
           )}
+        </div>
+        <div className="bg-yellow-500/10 p-2.5 rounded-2xl text-yellow-500 group-hover:scale-110 transition-transform">
+          <Zap size={22} fill="currentColor" />
         </div>
       </div>
 

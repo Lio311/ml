@@ -39,10 +39,7 @@ const ActionNode = memo(({ data, isConnectable }) => {
         className="!bg-blue-500 hover:scale-125 transition-transform -left-2"
       />
 
-      <div className="flex items-center gap-4 flex-row-reverse">
-        <div className="bg-blue-500/10 p-2.5 rounded-2xl text-blue-500 group-hover:scale-110 transition-transform">
-          <Icon size={22} />
-        </div>
+      <div className="flex items-center gap-4">
         <div className="flex flex-col flex-1 text-right">
           <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest leading-none mb-1">פעולה (Action)</span>
           <AutomationDropdown 
@@ -59,6 +56,9 @@ const ActionNode = memo(({ data, isConnectable }) => {
               onChange={(e) => data.onChangeCustom?.(e.target.value)}
             />
           )}
+        </div>
+        <div className="bg-blue-500/10 p-2.5 rounded-2xl text-blue-500 group-hover:scale-110 transition-transform">
+          <Icon size={22} />
         </div>
       </div>
 

@@ -43,13 +43,13 @@ const LogicNode = memo(({ data, isConnectable }) => {
       />
 
       <div className="flex flex-col gap-4 text-right">
-        <div className="flex items-center gap-3 border-b border-gray-100 pb-3 flex-row-reverse">
-          <div className="bg-purple-500 text-white p-2 rounded-xl shadow-lg shadow-purple-100 group-hover:scale-110 transition-transform">
-            <GitBranch size={20} />
-          </div>
+        <div className="flex items-center gap-3 border-b border-gray-100 pb-3">
           <div className="flex-1">
             <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest leading-none block">תנאי (Condition)</span>
             <h4 className="text-sm font-bold text-gray-900 leading-none mt-1">לוגיקת התניה</h4>
+          </div>
+          <div className="bg-purple-500 text-white p-2 rounded-xl shadow-lg shadow-purple-100 group-hover:scale-110 transition-transform">
+            <GitBranch size={20} />
           </div>
         </div>
         

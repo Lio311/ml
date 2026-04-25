@@ -169,41 +169,22 @@ export default function WorkflowEditor({ workflowId, initialData }) {
         </div>
 
         <div className="flex items-center gap-3">
-          <button className="flex flex-row-reverse items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 rounded-xl font-bold text-sm transition-all text-white border border-white/10">
-            בדיקה
+          <button className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 rounded-xl font-bold text-sm transition-all text-white border border-white/10">
             <Play size={16} className="text-green-500 fill-green-500" />
+            בדיקה
           </button>
           <button 
             onClick={saveWorkflow}
-            className="flex flex-row-reverse items-center gap-2 px-5 py-2 bg-gray-900 hover:bg-gray-800 text-white rounded-xl font-bold text-sm shadow-lg transition-all active:scale-95"
+            className="flex items-center gap-2 px-5 py-2 bg-gray-900 hover:bg-gray-800 text-white rounded-xl font-bold text-sm shadow-lg transition-all active:scale-95"
           >
-            שמור שינויים
             <Save size={16} />
+            שמור שינויים
           </button>
         </div>
       </div>
 
-      <div className="flex flex-1 overflow-hidden relative flex-row-reverse">
-        {/* Nodes Sidebar (Right side in RTL) */}
-        <aside className="w-72 border-r border-white/10 bg-black p-6 flex flex-col gap-6 z-10 overflow-y-auto">
-          <div className="space-y-4 text-right">
-              <h3 className="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em]">ספרית רכיבים</h3>
-              
-              <div className="space-y-3">
-                <NodeTemplate type="trigger" label="טריגר" icon={Zap} color="text-yellow-500" />
-                <NodeTemplate type="action" label="פעולה" icon={Box} color="text-blue-500" />
-                <NodeTemplate type="logic" label="לוגיקה" icon={GitBranch} color="text-purple-500" />
-              </div>
-          </div>
-
-          <div className="mt-auto border-t border-white/10 pt-6">
-             <div className="bg-white/5 border border-white/10 rounded-2xl p-4 text-[11px] text-gray-400 font-medium text-right">
-                <p>גרור רכיבים למשטח העבודה כדי להתחיל לבנות את האוטומציה שלך.</p>
-             </div>
-          </div>
-        </aside>
-
-        {/* Canvas Area (Left side in RTL) */}
+      <div className="flex flex-1 overflow-hidden relative flex-row">
+        {/* Canvas Area (Left side) */}
         <div className="flex-1 relative h-full bg-[#f1f5f9]" ref={reactFlowWrapper}>
           <ReactFlow
             nodes={nodes}
@@ -229,6 +210,25 @@ export default function WorkflowEditor({ workflowId, initialData }) {
             />
           </ReactFlow>
         </div>
+
+        {/* Nodes Sidebar (Right side) */}
+        <aside className="w-72 border-l border-white/10 bg-black p-6 flex flex-col gap-6 z-10 overflow-y-auto">
+          <div className="space-y-4 text-right">
+              <h3 className="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em]">ספרית רכיבים</h3>
+              
+              <div className="space-y-3">
+                <NodeTemplate type="trigger" label="טריגר" icon={Zap} color="text-yellow-500" />
+                <NodeTemplate type="action" label="פעולה" icon={Box} color="text-blue-500" />
+                <NodeTemplate type="logic" label="לוגיקה" icon={GitBranch} color="text-purple-500" />
+              </div>
+          </div>
+
+          <div className="mt-auto border-t border-white/10 pt-6">
+             <div className="bg-white/5 border border-white/10 rounded-2xl p-4 text-[11px] text-gray-400 font-medium text-right">
+                <p>גרור רכיבים למשטח העבודה כדי להתחיל לבנות את האוטומציה שלך.</p>
+             </div>
+          </div>
+        </aside>
       </div>
     </div>
   );
@@ -242,15 +242,15 @@ function NodeTemplate({ type, label, icon: Icon, color }) {
 
   return (
     <div
-      className={`group flex items-center flex-row-reverse gap-3 p-4 bg-white/5 border border-white/10 rounded-2xl cursor-grab active:cursor-grabbing hover:bg-white/10 hover:shadow-sm transition-all ${color}`}
+      className={`group flex items-center gap-3 p-4 bg-white/[0.03] border border-white/10 rounded-2xl cursor-grab active:cursor-grabbing hover:bg-white/10 hover:border-white/20 hover:shadow-xl transition-all ${color}`}
       onDragStart={(event) => onDragStart(event, type)}
       draggable
     >
+      <Plus size={14} className="text-gray-500 opacity-0 group-hover:opacity-100 transition-opacity" />
+      <span className="text-sm font-bold text-white flex-1 text-right">{label}</span>
       <div className="bg-white/10 p-2 rounded-xl group-hover:scale-110 transition-transform">
         <Icon size={18} />
       </div>
-      <span className="text-sm font-bold text-white">{label}</span>
-      <Plus size={14} className="mr-auto text-gray-500 opacity-0 group-hover:opacity-100 transition-opacity" />
     </div>
   );
 }
