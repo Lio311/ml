@@ -156,10 +156,10 @@ export default function AdminSidebar({ role = 'customer' }) {
                 <div className="flex items-center justify-between mb-4">
                     <div className="flex flex-col">
                         <h2 className="text-xl font-black tracking-tighter uppercase italic flex items-center gap-1">
-                            <span className="text-white">{brand.name?.split(' ')[0]}</span>
-                            <span className="text-blue-500 text-sm not-italic font-bold tracking-widest bg-blue-500/10 px-1.5 py-0.5 rounded border border-blue-500/20">PRO</span>
+                            <span className="text-white lowercase">{brand.name?.split(' ')[0]}</span>
+                            <span className="text-blue-500 text-sm not-italic font-bold tracking-widest bg-blue-500/10 px-1.5 py-0.5 rounded border border-blue-500/20">Admin</span>
                         </h2>
-                        <span className="text-[10px] text-gray-500 font-mono tracking-widest uppercase">System Control v4.0</span>
+                        <span className="text-[10px] text-gray-500 font-bold tracking-wider">ממשק ניהול מתקדם</span>
                     </div>
                 </div>
                 
