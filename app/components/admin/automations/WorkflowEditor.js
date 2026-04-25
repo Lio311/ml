@@ -154,24 +154,24 @@ export default function WorkflowEditor({ workflowId, initialData }) {
   return (
     <div className="flex flex-col h-screen bg-gray-50 text-gray-900 overflow-hidden">
       {/* Editor Header */}
-      <div className="h-16 border-b border-gray-200 flex items-center justify-between px-6 bg-white z-10">
+      <div className="h-16 border-b border-white/10 flex items-center justify-between px-6 bg-black z-10 shadow-2xl">
         <div className="flex items-center gap-4">
           <button 
             onClick={() => window.location.href = '/admin/automations'}
-            className="p-2 hover:bg-gray-100 rounded-xl transition-all"
+            className="p-2 hover:bg-white/10 rounded-xl transition-all"
           >
-            <ChevronRight size={20} className="text-gray-600" />
+            <ChevronRight size={20} className="text-gray-400" />
           </button>
-          <div>
-            <h1 className="font-black tracking-tight text-lg text-gray-900">{initialData?.name || "אוטומציה חדשה"}</h1>
-            <p className="text-[10px] text-gray-400 uppercase font-bold tracking-widest leading-none">Workflow Editor</p>
+          <div className="text-right">
+            <h1 className="font-black tracking-tight text-lg text-white">{initialData?.name || "אוטומציה חדשה"}</h1>
+            <p className="text-[9px] text-gray-500 uppercase font-black tracking-[0.2em] leading-none mt-1">Workflow Editor</p>
           </div>
         </div>
 
         <div className="flex items-center gap-3">
-          <button className="flex flex-row-reverse items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-xl font-bold text-sm transition-all text-gray-700">
+          <button className="flex flex-row-reverse items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 rounded-xl font-bold text-sm transition-all text-white border border-white/10">
             בדיקה
-            <Play size={16} className="text-green-600 fill-green-600" />
+            <Play size={16} className="text-green-500 fill-green-500" />
           </button>
           <button 
             onClick={saveWorkflow}

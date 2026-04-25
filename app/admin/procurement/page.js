@@ -3,6 +3,11 @@ import pool from "../../lib/db";
 import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 
+export const metadata = {
+    title: "ניהול רכש ותובנות",
+    robots: "noindex, nofollow",
+};
+
 export const dynamic = 'force-dynamic';
 
 export default async function ProcurementPage() {

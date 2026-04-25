@@ -4,6 +4,11 @@ import { currentUser } from "@clerk/nextjs/server";
 import Link from "next/link";
 import RequestRow from "./RequestRow";
 
+export const metadata = {
+    title: "בקשות בשמים",
+    robots: "noindex, nofollow",
+};
+
 export default async function AdminRequestsPage(props) {
     const searchParams = await props.searchParams;
     const page = Number(searchParams?.page) || 1;

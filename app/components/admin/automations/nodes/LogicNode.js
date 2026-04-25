@@ -4,9 +4,36 @@ import React, { memo } from 'react';
 import { Handle, Position } from 'reactflow';
 import { GitBranch, HelpCircle } from 'lucide-react';
 
+import AutomationDropdown from '../AutomationDropdown';
+
+const fieldOptions = [
+  { value: "total_amount", label: "סכום הזמנה" },
+  { value: "items_count", label: "כמות פריטים" },
+  { value: "customer_city", label: "עיר לקוח" },
+  { value: "coupon_code", label: "קוד קופון" },
+  { value: "customer_orders", label: "מספר הזמנות קודמות" },
+  { value: "shipping_method", label: "שיטת משלוח" },
+  { value: "product_category", label: "קטגוריית מוצר" },
+  { value: "order_weight", label: "משקל חבילה" },
+  { value: "custom", label: "אחר (טקסט חופשי)" },
+];
+
+const operatorOptions = [
+  { value: "gt", label: "גדול מ- ( > )" },
+  { value: "lt", label: "קטן מ- ( < )" },
+  { value: "gte", label: "גדול או שווה ( >= )" },
+  { value: "lte", label: "קטן או שווה ( <= )" },
+  { value: "eq", label: "שווה בדיוק ל- ( = )" },
+  { value: "neq", label: "לא שווה ל- ( != )" },
+  { value: "contains", label: "מכיל את הטקסט" },
+  { value: "not_contains", label: "לא מכיל את הטקסט" },
+  { value: "starts_with", label: "מתחיל ב-" },
+  { value: "ends_with", label: "מסתיים ב-" },
+];
+
 const LogicNode = memo(({ data, isConnectable }) => {
   return (
-    <div className="bg-white border-2 border-purple-500 p-5 rounded-[2rem] min-w-[240px] shadow-xl hover:shadow-2xl transition-all relative">
+    <div className="bg-white border-2 border-purple-500/30 p-5 rounded-[2rem] min-w-[260px] shadow-xl hover:shadow-2xl transition-all relative group" dir="rtl">
       {/* Input Handle */}
       <Handle
         type="target"
@@ -15,57 +42,36 @@ const LogicNode = memo(({ data, isConnectable }) => {
         className="!w-4 !h-4 !bg-purple-500 !border-4 !border-white shadow-md -left-2"
       />
 
-      <div className="flex flex-col gap-4">
-        <div className="flex items-center gap-3 border-b border-gray-100 pb-3">
-          <div className="bg-purple-500 text-white p-2 rounded-xl shadow-lg shadow-purple-100">
+      <div className="flex flex-col gap-4 text-right">
+        <div className="flex items-center gap-3 border-b border-gray-100 pb-3 flex-row-reverse">
+          <div className="bg-purple-500 text-white p-2 rounded-xl shadow-lg shadow-purple-100 group-hover:scale-110 transition-transform">
             <GitBranch size={20} />
           </div>
-          <div>
-            <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none">Condition</span>
-            <h4 className="text-sm font-bold text-gray-900 leading-none mt-0.5">לוגיקת התניה</h4>
+          <div className="flex-1">
+            <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest leading-none block">תנאי (Condition)</span>
+            <h4 className="text-sm font-bold text-gray-900 leading-none mt-1">לוגיקת התניה</h4>
           </div>
         </div>
         
-        <div className="space-y-3">
+        <div className="space-y-4">
           {/* Field Select */}
           <div className="space-y-1">
-            <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest mr-1">שדה לבדיקה</label>
-            <select 
-              className="w-full text-[11px] font-bold text-gray-900 bg-gray-50 border border-gray-200 rounded-xl p-2 outline-none focus:ring-2 focus:ring-purple-500/20 transition-all cursor-pointer"
+            <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest block mb-1">שדה לבדיקה</label>
+            <AutomationDropdown 
               value={data.logicField || 'total_amount'}
-              onChange={(e) => data.onChangeLogic?.('logicField', e.target.value)}
-            >
-              <option value="total_amount">סכום הזמנה</option>
-              <option value="items_count">כמות פריטים</option>
-              <option value="customer_city">עיר לקוח</option>
-              <option value="coupon_code">קוד קופון</option>
-              <option value="customer_orders">מספר הזמנות קודמות</option>
-              <option value="shipping_method">שיטת משלוח</option>
-              <option value="product_category">קטגוריית מוצר</option>
-              <option value="order_weight">משקל חבילה</option>
-              <option value="custom">אחר (טקסט חופשי)</option>
-            </select>
+              onChange={(val) => data.onChangeLogic?.('logicField', val)}
+              options={fieldOptions}
+            />
           </div>
 
           {/* Operator Select */}
           <div className="space-y-1">
-            <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest mr-1">תנאי</label>
-            <select 
-              className="w-full text-[11px] font-bold text-purple-600 bg-purple-50 border border-purple-100 rounded-xl p-2 outline-none focus:ring-2 focus:ring-purple-500/20 transition-all cursor-pointer"
+            <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest block mb-1">פעולת תנאי</label>
+            <AutomationDropdown 
               value={data.logicOperator || 'gt'}
-              onChange={(e) => data.onChangeLogic?.('logicOperator', e.target.value)}
-            >
-              <option value="gt">גדול מ- ( &gt; )</option>
-              <option value="lt">קטן מ- ( &lt; )</option>
-              <option value="gte">גדול או שווה ( &gt;= )</option>
-              <option value="lte">קטן או שווה ( &lt;= )</option>
-              <option value="eq">שווה בדיוק ל- ( = )</option>
-              <option value="neq">לא שווה ל- ( != )</option>
-              <option value="contains">מכיל את הטקסט</option>
-              <option value="not_contains">לא מכיל את הטקסט</option>
-              <option value="starts_with">מתחיל ב-</option>
-              <option value="ends_with">מסתיים ב-</option>
-            </select>
+              onChange={(val) => data.onChangeLogic?.('logicOperator', val)}
+              options={operatorOptions}
+            />
           </div>
 
           {/* Value Input */}

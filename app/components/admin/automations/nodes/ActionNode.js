@@ -4,6 +4,19 @@ import React, { memo } from 'react';
 import { Handle, Position } from 'reactflow';
 import { Box, Send, Mail, MessageSquare, Ticket, Tag, FlaskConical } from 'lucide-react';
 
+import AutomationDropdown from '../AutomationDropdown';
+
+const actionOptions = [
+  { value: "email", label: "שליחת מייל ללקוח" },
+  { value: "sms", label: "שליחת SMS ללקוח" },
+  { value: "admin_notify", label: "התראה למנהל (מייל/פוץ')" },
+  { value: "coupon", label: "יצירת קופון אישי" },
+  { value: "tag", label: "הוספת תגית ללקוח" },
+  { value: "webhook", label: "שליחת Webhook (חיבור ל-Make/Zapier)" },
+  { value: "order_note", label: "הוספת הערה פנימית להזמנה" },
+  { value: "custom", label: "אחר / מותאם אישית..." },
+];
+
 const icons = {
     email: Mail,
     sms: MessageSquare,
@@ -17,7 +30,7 @@ const ActionNode = memo(({ data, isConnectable }) => {
   const Icon = icons[data.actionType] || icons.default;
 
   return (
-    <div className="bg-white border-2 border-blue-500/30 p-4 rounded-3xl min-w-[200px] shadow-sm hover:shadow-md transition-all">
+    <div className="bg-white border-2 border-blue-500/30 p-4 rounded-3xl min-w-[220px] shadow-sm hover:shadow-md transition-all group" dir="rtl">
       <Handle
         type="target"
         position={Position.Left}
@@ -26,26 +39,17 @@ const ActionNode = memo(({ data, isConnectable }) => {
         className="!bg-blue-500 hover:scale-125 transition-transform -left-2"
       />
 
-      <div className="flex items-center gap-3">
-        <div className="bg-blue-500/10 p-2 rounded-2xl text-blue-500">
-          <Icon size={24} />
+      <div className="flex items-center gap-4 flex-row-reverse">
+        <div className="bg-blue-500/10 p-2.5 rounded-2xl text-blue-500 group-hover:scale-110 transition-transform">
+          <Icon size={22} />
         </div>
-        <div className="flex flex-col flex-1">
-          <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none mb-1">Action</span>
-          <select 
-            className="text-sm font-bold text-gray-900 bg-transparent border-none p-0 focus:ring-0 cursor-pointer outline-none w-full"
+        <div className="flex flex-col flex-1 text-right">
+          <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest leading-none mb-1">פעולה (Action)</span>
+          <AutomationDropdown 
             value={data.actionType || 'email'}
-            onChange={(e) => data.onChange?.(e.target.value)}
-          >
-            <option value="email">שליחת מייל ללקוח</option>
-            <option value="sms">שליחת SMS ללקוח</option>
-            <option value="admin_notify">התראה למנהל (מייל/פוץ')</option>
-            <option value="coupon">יצירת קופון אישי</option>
-            <option value="tag">הוספת תגית ללקוח</option>
-            <option value="webhook">שליחת Webhook (חיבור ל-Make/Zapier)</option>
-            <option value="order_note">הוספת הערה פנימית להזמנה</option>
-            <option value="custom">אחר / מותאם אישית...</option>
-          </select>
+            onChange={(val) => data.onChange?.(val)}
+            options={actionOptions}
+          />
           {(data.actionType === 'custom' || data.actionType === 'tag' || data.actionType === 'order_note') && (
             <input 
               type="text"
