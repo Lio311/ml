@@ -142,8 +142,8 @@ export default function PopupManager() {
                                 className="w-full py-4 px-6 rounded-2xl font-bold text-lg shadow-xl hover:shadow-2xl hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3 group"
                                 style={{ background: grad, color: textColor }}
                             >
-                                <IconComp className="w-6 h-6 group-hover:animate-pulse" />
                                 <span>{popup.content.buttonText}</span>
+                                <IconComp className="w-6 h-6 group-hover:animate-pulse" />
                             </button>
                         )}
 

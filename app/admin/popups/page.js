@@ -259,7 +259,7 @@ function PopupModal({ popup, onSave, onClose }) {
                     <button onClick={onClose} className="px-6 py-2.5 rounded-xl border border-gray-300 text-gray-600 hover:bg-gray-50 font-semibold">ביטול</button>
                     <button onClick={() => { if(!form.name){ toast.error('חובה להזין שם'); return; } onSave(form); }}
                         className="px-6 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold flex items-center gap-2 shadow-md transition-all">
-                        <Save size={18} /> {isNew ? 'צור פופאפ' : 'שמור שינויים'}
+                        {isNew ? 'צור פופאפ' : 'שמור שינויים'} <Save size={18} />
                     </button>
                 </div>
             </div>
