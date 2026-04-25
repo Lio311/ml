@@ -2,6 +2,7 @@
 
 import React, { memo } from 'react';
 import { Handle, Position } from 'reactflow';
+import { Zap } from 'lucide-react';
 import AutomationDropdown from '../AutomationDropdown';
 
 const triggerOptions = [
