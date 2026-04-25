@@ -8,7 +8,7 @@ import Link from 'next/link';
 import { auth as clerkAuth } from '@clerk/nextjs/server';
 
 export const metadata = {
-    title: 'דירוג הזמנה - ml_tlv',
+    title: 'דירוג הזמנה',
     description: 'דירוג הזמנה מהיר',
 };
 
@@ -99,13 +99,13 @@ export default async function PublicReviewPage(props) {
                                         <div key={idx} className="flex items-center gap-4 py-4">
                                             <div className="w-16 h-16 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0 border relative">
                                                 {item.image_url ? (
-                                                    <Image src={item.image_url} alt={(item.name || (item.brand + ' ' + item.model)) || "Product"} fill sizes="64px" className="object-contain" />
+                                                    <Image src={item.image_url} alt={item.name || "Product"} fill sizes="64px" className="object-contain" />
                                                 ) : (
                                                     <div className="w-full h-full flex items-center justify-center text-xl">🧴</div>
                                                 )}
                                             </div>
                                             <div className="flex-1">
-                                                <div className="font-bold text-gray-900 leading-tight">{item.name || (item.brand + ' ' + item.model)}</div>
+                                                <div className="font-bold text-gray-900 leading-tight">{item.name}</div>
                                                 <div className="text-sm text-gray-500 flex items-center gap-3 mt-1.5">
                                                     <span className="bg-gray-100 px-2 py-0.5 rounded font-medium text-xs text-gray-700" dir="ltr">
                                                         {item.size.toString().includes('ml') ? item.size : `${item.size} ml`}

@@ -29,9 +29,29 @@ export default memo(({ data, isConnectable }) => {
         <div className="bg-blue-500/10 p-2 rounded-2xl text-blue-500">
           <Icon size={24} />
         </div>
-        <div className="flex flex-col">
+        <div className="flex flex-col flex-1">
           <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none mb-1">Action</span>
-          <span className="text-sm font-bold text-gray-900 leading-none">שליחת מייל</span>
+          <select 
+            className="text-sm font-bold text-gray-900 bg-transparent border-none p-0 focus:ring-0 cursor-pointer outline-none w-full"
+            value={data.actionType || 'email'}
+            onChange={(e) => data.onChange?.(e.target.value)}
+          >
+            <option value="email">שליחת מייל</option>
+            <option value="sms">שליחת SMS</option>
+            <option value="coupon">יצירת קופון</option>
+            <option value="tag">הוספת תגית</option>
+            <option value="product">המלצת מוצר</option>
+            <option value="custom">אחר / מותאם אישית...</option>
+          </select>
+          {data.actionType === 'custom' && (
+            <input 
+              type="text"
+              placeholder="הכנס פעולה..."
+              className="mt-2 text-xs border-b border-gray-200 focus:border-blue-500 outline-none w-full py-1"
+              value={data.customAction || ''}
+              onChange={(e) => data.onChangeCustom?.(e.target.value)}
+            />
+          )}
         </div>
       </div>
 

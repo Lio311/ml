@@ -12,9 +12,8 @@ import React from 'react';
 import { getBrandName } from "../../lib/brand";
 
 export async function generateMetadata() {
-    const brandName = await getBrandName();
     return {
-        title: `ניהול זהויות | ${brandName}`,
+        title: "ניהול זהויות Admin",
         robots: "noindex, nofollow",
     };
 }

@@ -44,7 +44,7 @@ export async function generateMetadata({ params }) {
     const localizedExcerpt = localize(article, 'excerpt', locale);
 
     return {
-        title: `${localizedTitle} | ml_tlv`,
+        title: localizedTitle,
         description: localizedExcerpt,
         alternates: {
             canonical: `https://www.ml-tlv.com/blog/${slug}`,

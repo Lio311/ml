@@ -11,10 +11,8 @@ export const dynamic = 'force-dynamic';
 export async function generateMetadata() {
     const cookieStore = await cookies();
     const locale = cookieStore.get('NEXT_LOCALE')?.value || 'he';
-    const brandName = await getBrandName();
-    
     return {
-        title: locale === 'he' ? `יומן פעולות | ${brandName}` : `Audit Logs | ${brandName}`,
+        title: locale === 'he' ? "יומן פעולות Admin" : "Audit Logs Admin",
         robots: "noindex, nofollow",
     };
 }

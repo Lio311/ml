@@ -2,7 +2,7 @@ import { Suspense } from "react";
 import CatalogCartClient from "./CatalogCartClient";
 
 export const metadata = {
-    title: "סל קניות קטלוג אישי | ml_tlv",
+    title: "סל קניות קטלוג אישי",
     description: "סל הקניות של הרכישה מהקטלוג האישי שלך.",
 };
 

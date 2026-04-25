@@ -19,7 +19,7 @@ export async function generateMetadata() {
     const locale = cookieStore.get('NEXT_LOCALE')?.value || 'he';
     
     return {
-        title: locale === 'he' ? "לוח בקרה | ml_tlv" : "Admin Dashboard | ml_tlv",
+        title: locale === 'he' ? "לוח בקרה" : "Admin Dashboard",
         robots: "noindex, nofollow",
     };
 }

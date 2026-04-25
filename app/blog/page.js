@@ -43,15 +43,16 @@ export async function generateMetadata(props) {
     }
 
     return {
-        title: `${t('common.magazine_title')} | ml_tlv`,
+        title: t('common.magazine_title'),
         description: t('common.magazine_desc'),
         alternates: {
             canonical: canonical,
         },
         openGraph: {
-            title: `${t('common.magazine_title')} | ml_tlv`,
+            title: t('common.magazine_title'),
             description: t('common.magazine_desc'),
             url: canonical,
+            images: ['/logo_v5.png'],
             type: 'website'
         }
     };

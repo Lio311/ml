@@ -24,7 +24,7 @@ export async function generateMetadata() {
     const t = getT(locale);
 
     return {
-        title: `${t('common.our_brands')} | ml_tlv`,
+        title: t('common.our_brands'),
         description: t('common.brands_meta_desc'),
     };
 }

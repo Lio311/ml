@@ -1,7 +1,7 @@
 import InboxClient from '../components/Chat/InboxClient';
 
 export const metadata = {
-    title: "תיבת הודעות | ml_tlv",
+    title: "תיבת הודעות",
 };
 
 export default async function InboxPage({ searchParams }) {

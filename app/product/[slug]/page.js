@@ -83,7 +83,7 @@ export async function generateMetadata(props) {
         const rawProduct = res.rows[0];
         if (!rawProduct) {
             return {
-                title: `${t('common.product_not_found')} | ml-tlv`,
+                title: t('common.product_not_found'),
                 description: t('common.not_found_desc'),
             };
         }
