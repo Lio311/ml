@@ -2,7 +2,7 @@
 
 import React, { memo } from 'react';
 import { Handle, Position } from 'reactflow';
-import { Box, Send, Mail, MessageSquare, Ticket, Tag, FlaskConical } from 'lucide-react';
+import { Box, Send, Mail, MessageSquare, Ticket, RefreshCw } from 'lucide-react';
 
 import AutomationDropdown from '../AutomationDropdown';
 
@@ -10,6 +10,7 @@ const actionOptions = [
   { value: "email", label: "שליחת מייל ללקוח" },
   { value: "admin_notify", label: "התראה למנהל (מייל/פוץ')" },
   { value: "coupon", label: "יצירת קופון אישי" },
+  { value: "change_status", label: "שנה סטטוס הזמנה" },
   { value: "order_note", label: "הוספת הערה פנימית להזמנה" },
 ];
 
@@ -17,9 +18,22 @@ const icons = {
     email: Mail,
     admin_notify: Send,
     coupon: Ticket,
+    change_status: RefreshCw,
     order_note: MessageSquare,
     default: Box
 };
+
+const statusOptions = [
+    { value: "pending", label: "ממתין לתשלום" },
+    { value: "processing", label: "בטיפול" },
+    { value: "on-hold", label: "בהמתנה" },
+    { value: "completed", label: "הושלם" },
+    { value: "cancelled", label: "בוטל" },
+    { value: "refunded", label: "זוכה" },
+    { value: "failed", label: "נכשל" },
+    { value: "ready-for-pickup", label: "מוכן לאיסוף" },
+    { value: "shipped", label: "נשלח" },
+];
 
 const ActionNode = memo(({ data, isConnectable }) => {
   const Icon = icons[data.actionType] || icons.default;
@@ -45,6 +59,17 @@ const ActionNode = memo(({ data, isConnectable }) => {
             onChange={(val) => data.onChange?.(val)}
             options={actionOptions}
           />
+          {data.actionType === 'change_status' && (
+            <div className="mt-3">
+               <label className="text-[8px] font-bold text-gray-400 uppercase block mb-1">בחר סטטוס יעד:</label>
+               <AutomationDropdown 
+                 value={data.targetStatus || 'processing'}
+                 onChange={(val) => data.onChangeParams?.('targetStatus', val)}
+                 options={statusOptions}
+               />
+            </div>
+          )}
+
           {data.actionType === 'order_note' && (
             <input 
               type="text"
