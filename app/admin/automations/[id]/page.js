@@ -7,7 +7,7 @@ export default async function EditWorkflowPage({ params }) {
     const { userId } = await auth();
     if (!userId) redirect("/sign-in");
 
-    const { id } = params;
+    const { id } = await params;
 
     const res = await query(`
         SELECT * FROM workflows WHERE id = $1
