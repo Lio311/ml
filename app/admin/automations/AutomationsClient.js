@@ -75,6 +75,21 @@ export default function AutomationsClient() {
         }
     };
 
+    const deleteWorkflow = async (id) => {
+        if (!confirm("האם אתה בטוח שברצונך למחוק אוטומציה זו?")) return;
+        try {
+            const res = await fetch(`/api/admin/automations/${id}`, {
+                method: 'DELETE'
+            });
+            if (res.ok) {
+                toast.success("אוטומציה נמחקה");
+                fetchWorkflows();
+            }
+        } catch (err) {
+            toast.error("שגיאה במחיקת האוטומציה");
+        }
+    };
+
     if (!mounted) return null;
 
     return (
@@ -132,8 +147,8 @@ export default function AutomationsClient() {
                         >
                             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 relative z-10">
                                 <div className="flex items-center gap-5">
-                                    <div className={`p-4 rounded-2xl ${workflow.is_active ? 'bg-blue-600/10 text-blue-600' : 'bg-gray-100 text-gray-400'}`}>
-                                        <Zap size={24} />
+                                    <div className={`${workflow.is_active ? 'text-blue-600' : 'text-gray-300'}`}>
+                                        <Zap size={24} fill={workflow.is_active ? "currentColor" : "none"} />
                                     </div>
                                     <div>
                                         <h3 className="text-lg font-black text-gray-900 tracking-tight">{workflow.name}</h3>
@@ -155,27 +170,30 @@ export default function AutomationsClient() {
                                     </div>
                                 </div>
 
-                                <div className="flex items-center gap-3">
+                                <div className="flex items-center gap-4">
                                     <button 
                                         onClick={() => toggleWorkflow(workflow.id, workflow.is_active)}
-                                        className={`flex items-center gap-2 px-4 py-2 rounded-xl border transition-all ${
+                                        className={`flex items-center gap-2 px-3 py-1.5 rounded-xl border transition-all ${
                                             workflow.is_active 
                                             ? 'bg-blue-600 text-white border-blue-600 shadow-md shadow-blue-600/10' 
-                                            : 'bg-gray-100 border-gray-200 text-gray-500'
+                                            : 'bg-gray-50 border-gray-100 text-gray-400'
                                         }`}
                                     >
                                         {workflow.is_active ? <ToggleRight size={24} /> : <ToggleLeft size={24} />}
-                                        <span className="text-xs font-black uppercase tracking-widest">{workflow.is_active ? 'פעיל' : 'כבוי'}</span>
+                                        <span className="text-[10px] font-black uppercase tracking-widest">{workflow.is_active ? 'פעיל' : 'כבוי'}</span>
                                     </button>
 
                                     <Link 
                                         href={`/admin/automations/${workflow.id}`}
-                                        className="p-2.5 rounded-xl bg-gray-50 hover:bg-gray-100 text-gray-400 hover:text-gray-900 border border-gray-200 transition-all"
+                                        className="text-gray-400 hover:text-gray-900 transition-all p-1"
                                     >
                                         <Settings size={20} />
                                     </Link>
                                     
-                                    <button className="p-2.5 rounded-xl bg-red-50 hover:bg-red-100 text-gray-400 hover:text-red-600 border border-gray-200 hover:border-red-200 transition-all">
+                                    <button 
+                                        onClick={() => deleteWorkflow(workflow.id)}
+                                        className="text-gray-400 hover:text-red-600 transition-all p-1"
+                                    >
                                         <Trash2 size={20} />
                                     </button>
                                 </div>
