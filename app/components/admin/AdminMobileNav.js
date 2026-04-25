@@ -42,7 +42,8 @@ import {
     Megaphone, 
     Type,
     ArrowUpRight,
-    ChevronDown
+    ChevronDown,
+    Zap
 } from "lucide-react";
 import { SignOutButton } from "@clerk/nextjs";
 import { useBrand } from "../../context/BrandContext";

@@ -18,7 +18,6 @@ import {
     Bell, 
     TestTube, 
     DollarSign, 
-    Thermometer, 
     Tag, 
     Inbox, 
     Wallet, 
@@ -40,7 +39,8 @@ import {
     MessageCircle, 
     Megaphone, 
     Type,
-    ArrowUpRight
+    ArrowUpRight,
+    Zap
 } from "lucide-react";
 import { useBrand } from "../../context/BrandContext";
 
