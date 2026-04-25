@@ -242,15 +242,17 @@ function NodeTemplate({ type, label, icon: Icon, color }) {
 
   return (
     <div
-      className={`group flex flex-col items-center gap-3 p-5 bg-[#1a1a1a] border border-[#333] rounded-[1.5rem] cursor-grab active:cursor-grabbing hover:bg-[#222] hover:border-[#444] hover:shadow-2xl transition-none ${color}`}
+      className="bg-transparent border-none p-0 cursor-grab active:cursor-grabbing"
       onDragStart={(event) => onDragStart(event, type)}
       draggable
     >
-      <div className="bg-[#2a2a2a] p-3 rounded-2xl">
-        <Icon size={22} />
-      </div>
-      <div className="text-center">
-        <span className="text-sm font-bold text-white block">{label}</span>
+      <div className={`flex flex-col items-center gap-3 p-5 bg-[#1a1a1a] border border-[#333] rounded-[1.5rem] hover:bg-[#222] hover:border-[#444] hover:shadow-2xl transition-none opacity-[0.99] ${color}`}>
+        <div className="bg-[#2a2a2a] p-3 rounded-2xl">
+          <Icon size={22} />
+        </div>
+        <div className="text-center">
+          <span className="text-sm font-bold text-white block">{label}</span>
+        </div>
       </div>
     </div>
   );

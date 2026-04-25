@@ -13,7 +13,6 @@ const triggerOptions = [
   { value: "product_restock", label: "מוצר חזר למלאי" },
   { value: "product_out_of_stock", label: "מוצר אזל מהמלאי" },
   { value: "coupon_used", label: "שימוש בקופון" },
-  { value: "custom", label: "אחר / מותאם אישית..." },
 ];
 
 const TriggerNode = memo(({ data, isConnectable }) => {

@@ -10,16 +10,13 @@ const actionOptions = [
   { value: "email", label: "שליחת מייל ללקוח" },
   { value: "admin_notify", label: "התראה למנהל (מייל/פוץ')" },
   { value: "coupon", label: "יצירת קופון אישי" },
-  { value: "tag", label: "הוספת תגית ללקוח" },
   { value: "order_note", label: "הוספת הערה פנימית להזמנה" },
-  { value: "custom", label: "אחר / מותאם אישית..." },
 ];
 
 const icons = {
     email: Mail,
     admin_notify: Send,
     coupon: Ticket,
-    tag: Tag,
     order_note: MessageSquare,
     default: Box
 };
@@ -48,7 +45,7 @@ const ActionNode = memo(({ data, isConnectable }) => {
             onChange={(val) => data.onChange?.(val)}
             options={actionOptions}
           />
-          {(data.actionType === 'custom' || data.actionType === 'tag' || data.actionType === 'order_note') && (
+          {data.actionType === 'order_note' && (
             <input 
               type="text"
               placeholder="הכנס פרטים..."
