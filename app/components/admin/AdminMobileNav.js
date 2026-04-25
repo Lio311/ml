@@ -96,6 +96,7 @@ export default function AdminMobileNav({ role = 'customer' }) {
             title: "פעילות",
             items: [
                 { href: "/admin", label: "דשבורד", icon: LayoutDashboard, roles: ['admin', 'deputy'] },
+                { href: "/admin/automations", label: "אוטומציות", icon: Zap, roles: ['admin'] },
                 { href: "/admin/inbox", label: "תיבת דואר", icon: MessageSquare, roles: ['admin', 'deputy'] },
                 { href: "/admin/orders", label: "הזמנות", icon: Package, roles: ['admin', 'deputy', 'warehouse'] },
                 { href: "/admin/phone-order", label: "הזמנה טלפונית", icon: Phone, roles: ['admin', 'deputy'] },
