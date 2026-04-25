@@ -14,14 +14,14 @@ export async function generateMetadata() {
     
     if (locale === 'he') {
         return {
-            title: 'ביקורות לקוחות | ml_tlv',
-            description: 'מה הלקוחות שלנו חושבים על חוויית הקנייה והבשמים ב-ml_tlv.',
+            title: 'ביקורות לקוחות',
+            description: 'מה הלקוחות שלנו חושבים על חוויית הקנייה והבשמים שלנו.',
         };
     }
     
     return {
-        title: 'Customer Reviews | ml_tlv',
-        description: 'What our customers think about their shopping experience and the perfumes at ml_tlv.',
+        title: 'Customer Reviews',
+        description: 'What our customers think about their shopping experience and our perfumes.',
     };
 }
 

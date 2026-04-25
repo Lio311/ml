@@ -1,8 +1,12 @@
 import MailingClient from './MailingClient';
 
-export const metadata = {
-    title: 'ניהול דיוור | ml_tlv Admin',
-};
+import { getBrandName } from "../../lib/brand";
+
+export async function generateMetadata() {
+    return {
+        title: 'ניהול דיוור Admin',
+    };
+}
 
 export default function MailingPage() {
     return <MailingClient />;

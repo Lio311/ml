@@ -1,6 +1,6 @@
 export const metadata = {
-    title: "הצהרת נגישות | ml_tlv",
-    description: "הצהרת הנגישות של אתר ml_tlv - מחויבים לחווית גלישה שוויונית ונגישה לכולם.",
+    title: "הצהרת נגישות",
+    description: "הצהרת הנגישות שלנו - מחויבים לחווית גלישה שוויונית ונגישה לכולם.",
 };
 
 export default function AccessibilityPage() {

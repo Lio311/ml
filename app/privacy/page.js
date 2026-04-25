@@ -23,7 +23,7 @@ export async function generateMetadata() {
     const t = getT(locale);
 
     return {
-        title: `${t('common.privacy_policy')} | ml_tlv`,
+        title: t('common.privacy_policy'),
         description: locale === 'en' 
             ? "Information on data collection, security and user privacy protection."
             : "מידע על איסוף נתונים, אבטחה ושמירה על פרטיות המשתמשים.",

@@ -11,7 +11,7 @@ import { recordAuditLog } from "../../lib/audit";
 import { headers } from "next/headers";
 
 export const metadata = {
-    title: "ניהול הזמנות | ml_tlv",
+    title: "ניהול הזמנות Admin",
     robots: "noindex, nofollow",
 };
 

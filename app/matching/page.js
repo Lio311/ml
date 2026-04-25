@@ -12,7 +12,7 @@ export async function generateMetadata() {
     const t = getT(locale);
 
     return {
-        title: `${t('common.matching')} | ml_tlv`,
+        title: t('common.matching'),
         description: t('matching.description'),
     };
 }

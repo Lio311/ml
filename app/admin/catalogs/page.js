@@ -1,7 +1,7 @@
 import AdminCatalogsClient from "./AdminCatalogsClient";
 
 export const metadata = {
-    title: "ניהול קטלוגים | Admin | ml_tlv",
+    title: "ניהול קטלוגים Admin",
     description: "ניהול קטלוגים של ספקים חיצוניים/משתמשים",
 };
 

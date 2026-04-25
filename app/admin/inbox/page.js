@@ -1,7 +1,7 @@
 import InboxClient from "../../components/Chat/InboxClient";
 
 export const metadata = {
-    title: "תיבת דואר - ניהול | ml_tlv",
+    title: "תיבת דואר Admin",
 };
 
 export default function AdminInboxPage() {

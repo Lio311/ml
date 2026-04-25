@@ -21,7 +21,7 @@ export async function generateMetadata() {
     const t = getT(locale);
 
     return {
-        title: `${t('common.about')} | ml_tlv`,
+        title: t('common.about'),
         description: locale === 'en' 
             ? "Our story - how we turned our love for perfumes into a business of experiences."
             : "הסיפור שלנו - איך הפכנו אהבה לבשמים לעסק של חוויות.",

@@ -7,13 +7,13 @@ export async function generateMetadata() {
     
     if (locale === 'he') {
         return {
-            title: "ההזמנות שלי | ml_tlv",
+            title: "ההזמנות שלי",
             description: "מעקב אחר הזמנות והיסטוריית רכישות.",
         };
     }
     
     return {
-        title: "My Orders | ml_tlv",
+        title: "My Orders",
         description: "Track your orders and purchase history.",
     };
 }

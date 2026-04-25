@@ -23,7 +23,7 @@ export async function generateMetadata() {
     const t = getT(locale);
 
     return {
-        title: `${t('common.faq')} | ml_tlv`,
+        title: t('common.faq'),
         description: t('common.faq_desc'),
         alternates: {
             canonical: 'https://www.ml-tlv.com/faq',

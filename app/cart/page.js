@@ -8,7 +8,7 @@ export async function generateMetadata() {
     const t = await getT(locale);
     
     return {
-        title: t('cart.meta_title', { defaultValue: `${t('cart.title')} | ml_tlv` }),
+        title: t('cart.meta_title', { defaultValue: t('cart.title') }),
         description: t('cart.meta_desc', { defaultValue: t('cart.title') }),
     };
 }

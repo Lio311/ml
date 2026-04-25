@@ -1,7 +1,7 @@
 import CatalogOrdersClient from "./CatalogOrdersClient";
 
 export const metadata = {
-    title: "הזמנות קטלוגים | Admin | ml_tlv",
+    title: "הזמנות קטלוגים Admin",
     description: "ניהול הזמנות שנכנסו דרך קטלוגים של ספקים ומשתמשים",
 };
 

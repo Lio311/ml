@@ -1,7 +1,7 @@
 import RequestsClient from "./RequestsClient";
 
 export const metadata = {
-    title: "בקשת בשמים | ml_tlv",
+    title: "בקשת בשמים",
     robots: "noindex, nofollow",
 };
 

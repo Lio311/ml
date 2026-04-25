@@ -23,7 +23,7 @@ export async function generateMetadata() {
     const t = getT(locale);
 
     return {
-        title: `${t('common.shipping_returns')} | ml_tlv`,
+        title: t('common.shipping_returns'),
         description: locale === 'en' 
             ? "Information on shipping options, delivery times and return policy."
             : "מידע על אפשרויות משלוח, זמני אספקה ומדיניות החזרות.",

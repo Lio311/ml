@@ -1,7 +1,7 @@
 import InfluencerClient from './InfluencerClient';
 
 export const metadata = {
-    title: "ניהול משפיענים | ml_tlv",
+    title: "ניהול משפיענים Admin",
 };
 
 export default function InfluencerPage() {
