@@ -1,7 +1,7 @@
-import { query } from "../../../../lib/db";
+import { query } from "../../../lib/db";
 import { auth } from "@clerk/nextjs/server";
 import { notFound, redirect } from "next/navigation";
-import WorkflowEditor from "../../../../components/admin/automations/WorkflowEditor";
+import WorkflowEditor from "../../../components/admin/automations/WorkflowEditor";
 
 export default async function EditWorkflowPage({ params }) {
     const { userId } = await auth();
