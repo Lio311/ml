@@ -122,7 +122,7 @@ export default function FunnelPage() {
                 {/* Gauge */}
                 <div className="bg-white rounded-[2rem] border border-gray-100 shadow-sm p-8 flex flex-col items-center justify-center">
                     <div className="relative w-36 h-36 flex items-center justify-center mb-4">
-                        <svg className="w-full h-full -rotate-90" style={{ transform: 'rotate(-90deg) scaleX(-1)' }}>
+                        <svg className="w-full h-full" style={{ transform: 'rotate(-90deg) scaleX(-1)', transformOrigin: 'center' }}>
                             <circle cx="72" cy="72" r="62" fill="transparent" stroke="#e2e8f0" strokeWidth="10" />
                             <circle cx="72" cy="72" r="62" fill="transparent"
                                 stroke="url(#funnelGauge)" strokeWidth="12"
@@ -140,8 +140,10 @@ export default function FunnelPage() {
                             <span className="text-4xl font-black text-gray-900">{fmtRate(totalConv)}</span>
                         </div>
                     </div>
-                    <h4 className="text-xs font-black text-gray-800 uppercase tracking-widest">שיעור המרה כולל</h4>
-                    <p className="text-[10px] text-gray-400 font-bold mt-0.5">כניסה → הזמנה</p>
+                    <div className="text-center">
+                        <h4 className="text-xs font-black text-gray-800 uppercase tracking-widest">שיעור המרה כולל</h4>
+                        <p className="text-[10px] text-gray-400 font-bold mt-0.5">כניסה ← הזמנה</p>
+                    </div>
                 </div>
 
                 {/* Biggest Dropoff Insight */}
