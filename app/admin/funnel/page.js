@@ -178,19 +178,19 @@ export default function FunnelPage() {
                     <h4 className="text-xs font-black text-gray-400 uppercase tracking-widest mb-4">סיכום מהיר</h4>
                     <div className="space-y-4">
                         <div className="flex justify-between items-center">
-                            <span className="text-sm text-gray-600 font-semibold">סל → צ׳קאאוט</span>
+                            <span className="text-sm text-gray-600 font-semibold">סל ← צ׳קאאוט</span>
                             <span className="text-sm font-black text-blue-600 bg-blue-50 px-2 py-0.5 rounded-lg">
                                 {fmtRate(rate(funnel.add_to_cart, funnel.checkout_started))}
                             </span>
                         </div>
                         <div className="flex justify-between items-center">
-                            <span className="text-sm text-gray-600 font-semibold">צ׳קאאוט → הזמנה</span>
+                            <span className="text-sm text-gray-600 font-semibold">צ׳קאאוט ← הזמנה</span>
                             <span className="text-sm font-black text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-lg">
                                 {fmtRate(rate(funnel.checkout_started, funnel.order_completed))}
                             </span>
                         </div>
                         <div className="flex justify-between items-center">
-                            <span className="text-sm text-gray-600 font-semibold">כניסה → סל</span>
+                            <span className="text-sm text-gray-600 font-semibold">כניסה ← סל</span>
                             <span className="text-sm font-black text-purple-600 bg-purple-50 px-2 py-0.5 rounded-lg">
                                 {fmtRate(rate(funnel.page_visit, funnel.add_to_cart))}
                             </span>
