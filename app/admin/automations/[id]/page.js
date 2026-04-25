@@ -3,6 +3,11 @@ import { auth } from "@clerk/nextjs/server";
 import { notFound, redirect } from "next/navigation";
 import WorkflowEditor from "../../../components/admin/automations/WorkflowEditor";
 
+export const metadata = {
+    title: "עריכת אוטומציה Admin",
+    robots: "noindex, nofollow",
+};
+
 export default async function EditWorkflowPage({ params }) {
     const { userId } = await auth();
     if (!userId) redirect("/sign-in");

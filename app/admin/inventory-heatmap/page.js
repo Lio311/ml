@@ -3,7 +3,8 @@ import { redirect } from "next/navigation";
 import InventoryHeatmapClient from "./InventoryHeatmapClient";
 
 export const metadata = {
-    title: "מפת חום - מלאי | Admin",
+    title: "מפת חום מלאי Admin",
+    robots: "noindex, nofollow",
 };
 
 export default async function InventoryHeatmapPage() {

@@ -853,7 +853,7 @@
         "title": "My Wishlist ❤️",
         "empty": "Your wishlist is empty.",
         "go_to_catalog": "Go to Catalog",
-        "meta_title": "My Wishlist ❤️ | ml_tlv",
+        "meta_title": "My Wishlist ❤️",
         "meta_desc": "Your wishlist."
     },
     "cart": {
@@ -918,7 +918,7 @@
         "benefit_waiting": "Benefit waiting for you!",
         "eligible_for_samples": "You are eligible for {count} free samples in this order!",
         "received_samples": "You received {count} free samples!",
-        "meta_title": "My Cart | ml_tlv",
+        "meta_title": "My Cart",
         "meta_desc": "View your cart items and complete your order at ml_tlv.",
         "cart_restored": "We've restored your cart from your previous visit!",
         "cart_locked_lottery": "Cart is locked while perfume lottery is active!",
@@ -987,7 +987,7 @@
         "manage_btn": "Manage Catalog",
         "no_description": "No description",
         "created_at": "Created on: ",
-        "meta_title": "My Catalogs | ml_tlv",
+        "meta_title": "My Catalogs",
         "meta_desc": "Manage your personal catalogs",
         "loading": "Loading catalogs...",
         "load_error": "Error loading catalogs",

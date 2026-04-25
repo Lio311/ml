@@ -22,7 +22,8 @@ export default memo(({ data, isConnectable }) => {
         type="target"
         position={Position.Left}
         isConnectable={isConnectable}
-        className="w-3 h-3 !bg-blue-500 !border-2 !border-white shadow-sm"
+        style={{ width: '14px', height: '14px', border: '3px solid white', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}
+        className="!bg-blue-500 hover:scale-125 transition-transform -left-2"
       />
 
       <div className="flex items-center gap-3">
@@ -61,7 +62,8 @@ export default memo(({ data, isConnectable }) => {
         type="source"
         position={Position.Right}
         isConnectable={isConnectable}
-        className="w-3 h-3 !bg-blue-500 !border-2 !border-white shadow-sm hover:scale-125 transition-transform"
+        style={{ width: '16px', height: '16px', border: '4px solid white', boxShadow: '0 0 0 1px #3b82f6' }}
+        className="!bg-blue-500 hover:scale-125 transition-transform cursor-crosshair -right-2"
       />
     </div>
   );

@@ -44,7 +44,8 @@ export default memo(({ data, isConnectable }) => {
         type="source"
         position={Position.Right}
         isConnectable={isConnectable}
-        className="w-3 h-3 !bg-yellow-500 !border-2 !border-white shadow-sm hover:scale-125 transition-transform"
+        style={{ width: '14px', height: '14px', border: '3px solid white', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}
+        className="!bg-yellow-500 hover:scale-125 transition-transform cursor-crosshair -right-2"
       />
     </div>
   );

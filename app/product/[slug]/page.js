@@ -101,7 +101,7 @@ export async function generateMetadata(props) {
         const localizedDesc = localize(product, 'description', locale);
         
         const sampleLabel = locale === 'he' ? 'דוגמית בושם מקורית' : 'Original Perfume Sample';
-        const title = `${localizedName} - ${sampleLabel} | ml-tlv`;
+        const title = `${localizedName} - ${sampleLabel}`;
         const description = localizedDesc ? localizedDesc.substring(0, 160) : t('common.buy_sample_at').replace('{name}', localizedName);
         const rawImageUrl = product.image_url || `${baseUrl}/logo_v3.png`;
         
@@ -141,7 +141,7 @@ export async function generateMetadata(props) {
     } catch (metaErr) {
         console.error('[ProductPage] generateMetadata crashed:', metaErr);
         Sentry.captureException(metaErr);
-        return { title: 'ml-tlv | Product' };
+        return { title: 'Product' };
     }
 }
 

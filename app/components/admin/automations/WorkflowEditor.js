@@ -158,7 +158,7 @@ export default function WorkflowEditor({ workflowId, initialData }) {
             onClick={() => window.location.href = '/admin/automations'}
             className="p-2 hover:bg-gray-100 rounded-xl transition-all"
           >
-            <ChevronRight size={20} className="text-gray-600" />
+            <ChevronLeft size={20} className="text-gray-600" />
           </button>
           <div>
             <h1 className="font-black tracking-tight text-lg text-gray-900">{initialData?.name || "אוטומציה חדשה"}</h1>
@@ -167,13 +167,13 @@ export default function WorkflowEditor({ workflowId, initialData }) {
         </div>
 
         <div className="flex items-center gap-3">
-          <button className="flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-xl font-bold text-sm transition-all text-gray-700">
+          <button className="flex flex-row-reverse items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-xl font-bold text-sm transition-all text-gray-700">
             בדיקה
             <Play size={16} className="text-green-600 fill-green-600" />
           </button>
           <button 
             onClick={saveWorkflow}
-            className="flex items-center gap-2 px-5 py-2 bg-gray-900 hover:bg-gray-800 text-white rounded-xl font-bold text-sm shadow-lg transition-all active:scale-95"
+            className="flex flex-row-reverse items-center gap-2 px-5 py-2 bg-gray-900 hover:bg-gray-800 text-white rounded-xl font-bold text-sm shadow-lg transition-all active:scale-95"
           >
             שמור שינויים
             <Save size={16} />
@@ -181,9 +181,9 @@ export default function WorkflowEditor({ workflowId, initialData }) {
         </div>
       </div>
 
-      <div className="flex flex-1 overflow-hidden relative">
+      <div className="flex flex-1 overflow-hidden relative flex-row-reverse">
         {/* Nodes Sidebar (Right side in RTL) */}
-        <aside className="w-72 border-l border-white/10 bg-black p-6 flex flex-col gap-6 z-10 overflow-y-auto">
+        <aside className="w-72 border-r border-white/10 bg-black p-6 flex flex-col gap-6 z-10 overflow-y-auto">
           <div className="space-y-4 text-right">
               <h3 className="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em]">ספרית רכיבים</h3>
               
@@ -202,7 +202,7 @@ export default function WorkflowEditor({ workflowId, initialData }) {
         </aside>
 
         {/* Canvas Area (Left side in RTL) */}
-        <div className="flex-1 relative h-full bg-[#f8fafc]" ref={reactFlowWrapper}>
+        <div className="flex-1 relative h-full bg-[#f1f5f9]" ref={reactFlowWrapper}>
           <ReactFlow
             nodes={nodes}
             edges={edges}

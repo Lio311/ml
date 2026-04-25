@@ -3,6 +3,11 @@ import AdminProductsClient from "./AdminProductsClient";
 import { currentUser } from "@clerk/nextjs/server";
 import { sanitizeProductArray } from "../../lib/productUtils";
 
+export const metadata = {
+    title: "ניהול מוצרים Admin",
+    robots: "noindex, nofollow",
+};
+
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;

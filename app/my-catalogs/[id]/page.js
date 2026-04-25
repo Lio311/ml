@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import CatalogManagerClient from "./CatalogManagerClient";
 
 export const metadata = {
-    title: "ניהול קטלוג | ml_tlv",
+    title: "ניהול קטלוג",
     description: "ניהול קטלוג אישי כולל הוספת מוצרים",
 };
 

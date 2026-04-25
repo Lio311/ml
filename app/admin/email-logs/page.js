@@ -3,6 +3,11 @@ import pool from '@/app/lib/db';
 import { redirect } from 'next/navigation';
 import EmailLogsClient from './EmailLogsClient';
 
+export const metadata = {
+    title: "יומן מיילים Admin",
+    robots: "noindex, nofollow",
+};
+
 export default async function EmailLogsPage({ searchParams }) {
     const { userId } = await auth();
     if (!userId) redirect('/sign-in');

@@ -1,5 +1,10 @@
 import AdminCatalogItemsClient from "./AdminCatalogItemsClient";
 
+export const metadata = {
+    title: "עריכת קטלוג Admin",
+    robots: "noindex, nofollow",
+};
+
 export default async function AdminCatalogPage({ params }) {
     const { id } = await params;
     

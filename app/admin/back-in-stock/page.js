@@ -1,5 +1,10 @@
 import BackInStockClient from "./BackInStockClient";
 
+export const metadata = {
+    title: "חזר למלאי Admin",
+    robots: "noindex, nofollow",
+};
+
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
 
