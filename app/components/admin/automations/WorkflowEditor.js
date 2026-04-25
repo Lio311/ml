@@ -12,16 +12,22 @@ import ReactFlow, {
   Panel
 } from 'reactflow';
 import 'reactflow/dist/style.css';
-import { Save, Play, ChevronRight, Plus, Zap, Box, GitBranch } from 'lucide-react';
+import { Save, Play, ChevronRight, Plus, Zap, Box, GitBranch, Clock, GitMerge, RefreshCw, Filter, Wrench, Globe } from 'lucide-react';
 import { toast } from 'react-hot-toast';
 import TriggerNode from './nodes/TriggerNode';
 import ActionNode from './nodes/ActionNode';
 import LogicNode from './nodes/LogicNode';
+import WaitNode from './nodes/WaitNode';
+import SplitNode from './nodes/SplitNode';
+import LoopNode from './nodes/LoopNode';
 
 const nodeTypes = {
   trigger: TriggerNode,
   action: ActionNode,
   logic: LogicNode,
+  wait: WaitNode,
+  split: SplitNode,
+  loop: LoopNode,
 };
 
 const initialNodes = [];
@@ -192,8 +198,37 @@ export default function WorkflowEditor({ workflowId, initialData }) {
               <div className="space-y-3">
                 <NodeTemplate type="trigger" label="טריגר" icon={Zap} color="text-yellow-500" />
                 <NodeTemplate type="action" label="פעולה" icon={Box} color="text-blue-500" />
-                <NodeTemplate type="logic" label="לוגיקה" icon={GitBranch} color="text-purple-500" />
               </div>
+          </div>
+
+          {/* Logic & Advanced Section */}
+          <div className="space-y-4 pt-4 border-t border-white/5">
+            <label className="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] block mb-4">לוגיקה ופונקציות</label>
+            <div className="grid grid-cols-1 gap-3">
+              <NodeTemplate type="logic" label="לוגיקה" icon={GitBranch} color="text-purple-500" />
+              <NodeTemplate type="wait" label="השהיה" icon={Clock} color="text-orange-500" />
+              <NodeTemplate type="split" label="פיצול" icon={GitMerge} color="text-cyan-500" />
+              <NodeTemplate type="loop" label="לולאה" icon={RefreshCw} color="text-indigo-500" />
+            </div>
+          </div>
+
+          {/* n8n Inspired Ideas (Future) */}
+          <div className="space-y-4 pt-6 border-t border-white/5 opacity-40 grayscale group-hover:grayscale-0 transition-all">
+            <label className="text-[9px] font-bold text-gray-600 uppercase tracking-widest block mb-4">רעיונות עתידיים (n8n)</label>
+            <div className="grid grid-cols-1 gap-2">
+              <div className="flex items-center gap-3 p-3 bg-white/5 rounded-xl border border-white/5 text-white">
+                <Filter size={16} />
+                <span className="text-[11px] font-bold">מסנן (Filter)</span>
+              </div>
+              <div className="flex items-center gap-3 p-3 bg-white/5 rounded-xl border border-white/5 text-white">
+                <Wrench size={16} />
+                <span className="text-[11px] font-bold">פורמט (Formatter)</span>
+              </div>
+              <div className="flex items-center gap-3 p-3 bg-white/5 rounded-xl border border-white/5 text-white">
+                <Globe size={16} />
+                <span className="text-[11px] font-bold">בקשת HTTP</span>
+              </div>
+            </div>
           </div>
 
           <div className="mt-auto border-t border-white/10 pt-6">
