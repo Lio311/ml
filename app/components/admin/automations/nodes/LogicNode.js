@@ -42,21 +42,21 @@ const LogicNode = memo(({ data, isConnectable }) => {
         className="!w-4 !h-4 !bg-purple-500 !border-4 !border-white shadow-md -left-2"
       />
 
-      <div className="flex flex-col gap-4 text-right">
-        <div className="flex items-center gap-3 border-b border-gray-100 pb-3">
-          <div className="flex-1">
-            <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest leading-none block">תנאי (Condition)</span>
-            <h4 className="text-sm font-bold text-gray-900 leading-none mt-1">לוגיקת התניה</h4>
+      <div className="flex flex-col gap-5 text-center">
+        <div className="flex flex-col items-center gap-3 border-b border-gray-100 pb-4">
+          <div className="bg-purple-500 text-white p-3 rounded-2xl shadow-lg shadow-purple-100 group-hover:scale-110 transition-transform">
+            <GitBranch size={24} />
           </div>
-          <div className="bg-purple-500 text-white p-2 rounded-xl shadow-lg shadow-purple-100 group-hover:scale-110 transition-transform">
-            <GitBranch size={20} />
+          <div>
+            <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest leading-none block mb-1">תנאי (Condition)</span>
+            <h4 className="text-sm font-bold text-gray-900 leading-none mt-1">לוגיקת התניה</h4>
           </div>
         </div>
         
         <div className="space-y-4">
           {/* Field Select */}
           <div className="space-y-1">
-            <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest block mb-1">שדה לבדיקה</label>
+            <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest block mb-2">שדה לבדיקה</label>
             <AutomationDropdown 
               value={data.logicField || 'total_amount'}
               onChange={(val) => data.onChangeLogic?.('logicField', val)}
@@ -66,7 +66,7 @@ const LogicNode = memo(({ data, isConnectable }) => {
 
           {/* Operator Select */}
           <div className="space-y-1">
-            <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest block mb-1">פעולת תנאי</label>
+            <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest block mb-2">פעולת תנאי</label>
             <AutomationDropdown 
               value={data.logicOperator || 'gt'}
               onChange={(val) => data.onChangeLogic?.('logicOperator', val)}
@@ -76,11 +76,11 @@ const LogicNode = memo(({ data, isConnectable }) => {
 
           {/* Value Input */}
           <div className="space-y-1">
-            <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest mr-1">ערך להשוואה</label>
+            <label className="text-[9px] font-black text-gray-400 uppercase tracking-widest block mb-2">ערך להשוואה</label>
             <input 
               type="text"
               placeholder="הכנס ערך לבדיקה..."
-              className="w-full text-[11px] font-medium border border-gray-200 rounded-xl p-2 outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 transition-all"
+              className="w-full text-[11px] font-medium border border-gray-200 rounded-xl p-2.5 outline-none focus:ring-2 focus:ring-purple-500/20 focus:border-purple-500 transition-all text-center"
               value={data.logicValue || ''}
               onChange={(e) => data.onChangeLogic?.('logicValue', e.target.value)}
             />

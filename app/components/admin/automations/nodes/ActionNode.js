@@ -8,21 +8,19 @@ import AutomationDropdown from '../AutomationDropdown';
 
 const actionOptions = [
   { value: "email", label: "שליחת מייל ללקוח" },
-  { value: "sms", label: "שליחת SMS ללקוח" },
   { value: "admin_notify", label: "התראה למנהל (מייל/פוץ')" },
   { value: "coupon", label: "יצירת קופון אישי" },
   { value: "tag", label: "הוספת תגית ללקוח" },
-  { value: "webhook", label: "שליחת Webhook (חיבור ל-Make/Zapier)" },
   { value: "order_note", label: "הוספת הערה פנימית להזמנה" },
   { value: "custom", label: "אחר / מותאם אישית..." },
 ];
 
 const icons = {
     email: Mail,
-    sms: MessageSquare,
+    admin_notify: Send,
     coupon: Ticket,
     tag: Tag,
-    product: FlaskConical,
+    order_note: MessageSquare,
     default: Box
 };
 
@@ -30,7 +28,7 @@ const ActionNode = memo(({ data, isConnectable }) => {
   const Icon = icons[data.actionType] || icons.default;
 
   return (
-    <div className="bg-white border-2 border-blue-500/30 p-4 rounded-3xl min-w-[220px] shadow-sm hover:shadow-md transition-all group" dir="rtl">
+    <div className="bg-white border-2 border-blue-500/30 p-5 rounded-[2rem] min-w-[220px] shadow-sm hover:shadow-md transition-all group" dir="rtl">
       <Handle
         type="target"
         position={Position.Left}
@@ -39,9 +37,12 @@ const ActionNode = memo(({ data, isConnectable }) => {
         className="!bg-blue-500 hover:scale-125 transition-transform -left-2"
       />
 
-      <div className="flex items-center gap-4">
-        <div className="flex flex-col flex-1 text-right">
-          <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest leading-none mb-1">פעולה (Action)</span>
+      <div className="flex flex-col items-center gap-4 text-center">
+        <div className="bg-blue-500/10 p-3 rounded-2xl text-blue-500 group-hover:scale-110 transition-transform">
+          <Icon size={24} />
+        </div>
+        <div className="flex flex-col flex-1 w-full">
+          <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest leading-none mb-2">פעולה (Action)</span>
           <AutomationDropdown 
             value={data.actionType || 'email'}
             onChange={(val) => data.onChange?.(val)}
@@ -51,14 +52,11 @@ const ActionNode = memo(({ data, isConnectable }) => {
             <input 
               type="text"
               placeholder="הכנס פרטים..."
-              className="mt-2 text-[11px] border-b border-gray-200 focus:border-blue-500 outline-none w-full py-1"
+              className="mt-3 text-[11px] border-b border-gray-200 focus:border-blue-500 outline-none w-full py-1 text-center"
               value={data.customAction || ''}
               onChange={(e) => data.onChangeCustom?.(e.target.value)}
             />
           )}
-        </div>
-        <div className="bg-blue-500/10 p-2.5 rounded-2xl text-blue-500 group-hover:scale-110 transition-transform">
-          <Icon size={22} />
         </div>
       </div>
 

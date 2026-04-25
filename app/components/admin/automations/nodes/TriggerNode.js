@@ -18,10 +18,13 @@ const triggerOptions = [
 
 const TriggerNode = memo(({ data, isConnectable }) => {
   return (
-    <div className="bg-white border-2 border-yellow-500/30 p-4 rounded-3xl min-w-[220px] shadow-sm hover:shadow-md transition-all group" dir="rtl">
-      <div className="flex items-center gap-4">
-        <div className="flex flex-col flex-1 text-right">
-          <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest leading-none mb-1">גורם (Trigger)</span>
+    <div className="bg-white border-2 border-yellow-500/30 p-5 rounded-[2rem] min-w-[220px] shadow-sm hover:shadow-md transition-all group" dir="rtl">
+      <div className="flex flex-col items-center gap-4 text-center">
+        <div className="bg-yellow-500/10 p-3 rounded-2xl text-yellow-500 group-hover:scale-110 transition-transform">
+          <Zap size={24} fill="currentColor" />
+        </div>
+        <div className="flex flex-col flex-1 w-full">
+          <span className="text-[9px] font-black text-gray-400 uppercase tracking-widest leading-none mb-2">גורם (Trigger)</span>
           <AutomationDropdown 
             value={data.triggerType || 'new_order'}
             onChange={(val) => data.onChange?.(val)}
@@ -31,14 +34,11 @@ const TriggerNode = memo(({ data, isConnectable }) => {
             <input 
               type="text"
               placeholder={data.triggerType === 'order_status_changed' ? "הכנס סטטוס..." : "הכנס טריגר..."}
-              className="mt-2 text-[11px] border-b border-gray-200 focus:border-yellow-500 outline-none w-full py-1"
+              className="mt-3 text-[11px] border-b border-gray-200 focus:border-yellow-500 outline-none w-full py-1 text-center"
               value={data.customTrigger || ''}
               onChange={(e) => data.onChangeCustom?.(e.target.value)}
             />
           )}
-        </div>
-        <div className="bg-yellow-500/10 p-2.5 rounded-2xl text-yellow-500 group-hover:scale-110 transition-transform">
-          <Zap size={22} fill="currentColor" />
         </div>
       </div>
 
