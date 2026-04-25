@@ -1,7 +1,7 @@
 import LotteryClient from "./LotteryClient";
 
 export const metadata = {
-    title: "ניהול הגרלות",
+    title: "ניהול הגרלות | Admin",
     robots: "noindex, nofollow",
 };
 

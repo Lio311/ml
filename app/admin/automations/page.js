@@ -3,7 +3,7 @@ import { getBrandName } from "../../lib/brand";
 
 export async function generateMetadata() {
     return {
-        title: `אוטומציות Admin`,
+        title: `אוטומציות | Admin`,
     };
 }
 
