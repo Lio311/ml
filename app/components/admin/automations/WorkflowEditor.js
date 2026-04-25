@@ -191,20 +191,20 @@ export default function WorkflowEditor({ workflowId, initialData }) {
 
       <div className="flex flex-1 overflow-hidden relative flex-row">
         {/* Nodes Sidebar (Right side in RTL because it's first child) */}
-        <aside className="w-72 border-l border-white/10 bg-black p-6 flex flex-col gap-6 z-10 overflow-y-auto">
-          <div className="space-y-4 text-right">
-              <h3 className="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em]">ספרית רכיבים</h3>
-              
-              <div className="space-y-3">
+        <div className="flex-1 overflow-y-auto px-6 py-4 space-y-6 scrollbar-hide">
+          {/* Components Section */}
+          <div className="space-y-3">
+            <label className="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] block mb-2">ספריית רכיבים</label>
+            <div className="space-y-2">
                 <NodeTemplate type="trigger" label="טריגר" icon={Zap} color="text-yellow-500" />
                 <NodeTemplate type="action" label="פעולה" icon={Box} color="text-blue-500" />
               </div>
           </div>
 
           {/* Logic & Advanced Section */}
-          <div className="space-y-4 pt-4 border-t border-white/5">
-            <label className="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] block mb-4">לוגיקה ופונקציות</label>
-            <div className="grid grid-cols-1 gap-3">
+          <div className="space-y-3 pt-3 border-t border-white/5">
+            <label className="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] block mb-2">לוגיקה ופונקציות</label>
+            <div className="grid grid-cols-2 gap-2">
               <NodeTemplate type="logic" label="לוגיקה" icon={GitBranch} color="text-purple-500" />
               <NodeTemplate type="wait" label="השהיה" icon={Clock} color="text-orange-500" />
               <NodeTemplate type="split" label="פיצול" icon={GitMerge} color="text-cyan-500" />
@@ -262,12 +262,12 @@ function NodeTemplate({ type, label, icon: Icon, color }) {
       onDragStart={(event) => onDragStart(event, type)}
       draggable
     >
-      <div className={`flex flex-col items-center gap-3 p-5 bg-[#1a1a1a] border border-[#333] rounded-[1.5rem] hover:bg-[#222] hover:border-[#444] hover:shadow-2xl transition-none opacity-[0.99] ${color}`}>
-        <div className="bg-[#2a2a2a] p-3 rounded-2xl">
-          <Icon size={22} />
+      <div className={`flex flex-col items-center gap-2 p-3 bg-[#1a1a1a] border border-[#333] rounded-2xl hover:bg-[#222] hover:border-[#444] transition-none opacity-[0.99] ${color}`}>
+        <div className="bg-[#2a2a2a] p-2 rounded-xl text-white">
+          <Icon size={18} />
         </div>
         <div className="text-center">
-          <span className="text-sm font-bold text-white block">{label}</span>
+          <span className="text-xs font-bold text-white block leading-none">{label}</span>
         </div>
       </div>
     </div>
