@@ -13,7 +13,7 @@ const icons = {
     default: Box
 };
 
-export default memo(({ data, isConnectable }) => {
+const ActionNode = memo(({ data, isConnectable }) => {
   const Icon = icons[data.actionType] || icons.default;
 
   return (
@@ -68,3 +68,5 @@ export default memo(({ data, isConnectable }) => {
     </div>
   );
 });
+
+export default ActionNode;

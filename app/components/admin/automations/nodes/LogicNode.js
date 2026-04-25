@@ -4,7 +4,7 @@ import React, { memo } from 'react';
 import { Handle, Position } from 'reactflow';
 import { GitBranch, HelpCircle } from 'lucide-react';
 
-export default memo(({ data, isConnectable }) => {
+const LogicNode = memo(({ data, isConnectable }) => {
   return (
     <div className="bg-white border-2 border-purple-500 p-5 rounded-[2rem] min-w-[240px] shadow-xl hover:shadow-2xl transition-all relative">
       {/* Input Handle */}
@@ -110,3 +110,5 @@ export default memo(({ data, isConnectable }) => {
     </div>
   );
 });
+
+export default LogicNode;

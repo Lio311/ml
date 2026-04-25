@@ -36,6 +36,19 @@ export default function WorkflowEditor({ workflowId, initialData }) {
   const [edges, setEdges] = useState(initialData?.edges || initialEdges);
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
 
+  const updateNodeData = useCallback((nodeId, newData) => {
+    setNodes((nds) =>
+      nds.map((node) => {
+        if (node.id === nodeId) {
+          // Sync label with type for better UX
+          const label = newData.triggerType || newData.actionType || newData.logicType || node.data.label;
+          return { ...node, data: { ...node.data, ...newData, label } };
+        }
+        return node;
+      })
+    );
+  }, []);
+
   // Initialize nodes with handlers
   useEffect(() => {
     if (initialData?.nodes) {
@@ -78,18 +91,7 @@ export default function WorkflowEditor({ workflowId, initialData }) {
     event.dataTransfer.dropEffect = 'move';
   }, []);
 
-  const updateNodeData = useCallback((nodeId, newData) => {
-    setNodes((nds) =>
-      nds.map((node) => {
-        if (node.id === nodeId) {
-          // Sync label with type for better UX
-          const label = newData.triggerType || newData.actionType || newData.logicType || node.data.label;
-          return { ...node, data: { ...node.data, ...newData, label } };
-        }
-        return node;
-      })
-    );
-  }, []);
+
 
   const onDrop = useCallback(
     (event) => {
@@ -158,7 +160,7 @@ export default function WorkflowEditor({ workflowId, initialData }) {
             onClick={() => window.location.href = '/admin/automations'}
             className="p-2 hover:bg-gray-100 rounded-xl transition-all"
           >
-            <ChevronLeft size={20} className="text-gray-600" />
+            <ChevronRight size={20} className="text-gray-600" />
           </button>
           <div>
             <h1 className="font-black tracking-tight text-lg text-gray-900">{initialData?.name || "אוטומציה חדשה"}</h1>

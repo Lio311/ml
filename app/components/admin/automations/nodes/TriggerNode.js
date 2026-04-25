@@ -4,7 +4,7 @@ import React, { memo } from 'react';
 import { Handle, Position } from 'reactflow';
 import { Zap } from 'lucide-react';
 
-export default memo(({ data, isConnectable }) => {
+const TriggerNode = memo(({ data, isConnectable }) => {
   return (
     <div className="bg-white border-2 border-yellow-500/30 p-4 rounded-3xl min-w-[200px] shadow-sm hover:shadow-md transition-all">
       <div className="flex items-center gap-3">
@@ -50,3 +50,5 @@ export default memo(({ data, isConnectable }) => {
     </div>
   );
 });
+
+export default TriggerNode;
