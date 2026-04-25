@@ -7,7 +7,7 @@ export async function PATCH(req, { params }) {
         const { userId } = await auth();
         if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-        const { id } = params;
+        const { id } = await params;
         const { nodes, edges } = await req.json();
 
         const res = await query(`
@@ -33,7 +33,7 @@ export async function DELETE(req, { params }) {
         const { userId } = await auth();
         if (!userId) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-        const { id } = params;
+        const { id } = await params;
 
         await query(`DELETE FROM workflows WHERE id = $1`, [id]);
 
