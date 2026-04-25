@@ -36,6 +36,16 @@
   --ring: #000000;
 
   --radius: 0.5rem;
+
+  /* DJI Tech Theme Variables */
+  --dji-deep-black: #050505;
+  --dji-sidebar-bg: #0a0a0a;
+  --dji-blue: #007AFF;
+  --dji-blue-glow: rgba(0, 122, 255, 0.4);
+  --dji-glass: rgba(255, 255, 255, 0.03);
+  --dji-glass-hover: rgba(255, 255, 255, 0.08);
+  --dji-border: rgba(255, 255, 255, 0.06);
+  --transition-premium: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 [data-theme='dark'] {
@@ -51,6 +61,22 @@
   --border: #404040;
 
   --accent: #d4af37;
+}
+
+/* DJI Utility Classes */
+.dji-glass {
+  background: var(--dji-glass);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  border: 1px solid var(--dji-border);
+}
+
+.dji-blue-glow {
+  box-shadow: 0 0 15px var(--dji-blue-glow);
+}
+
+.transition-premium {
+  transition-timing-function: var(--transition-premium);
 }
 
 * {
