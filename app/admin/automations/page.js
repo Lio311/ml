@@ -17,11 +17,13 @@ import {
     Loader2
 } from "lucide-react";
 import { toast } from "react-hot-toast";
+import CreateWorkflowModal from "../../../components/admin/automations/CreateWorkflowModal";
 
 export default function AutomationsPage() {
     const [workflows, setWorkflows] = useState([]);
     const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState("");
+    const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
     useEffect(() => {
         fetchWorkflows();
@@ -57,10 +59,7 @@ export default function AutomationsPage() {
         }
     };
 
-    const createWorkflow = async () => {
-        const name = prompt("הכנס שם לאוטומציה החדשה:");
-        if (!name) return;
-
+    const createWorkflow = async (name) => {
         try {
             const res = await fetch('/api/admin/automations', {
                 method: 'POST',
@@ -93,7 +92,7 @@ export default function AutomationsPage() {
                     <p className="text-gray-500 mt-2 font-medium">נהל תהליכים אוטומטיים חכמים לחיסכון בזמן</p>
                 </div>
                 <button 
-                    onClick={createWorkflow}
+                    onClick={() => setIsCreateModalOpen(true)}
                     className="bg-blue-600 hover:bg-blue-500 text-white px-6 py-3 rounded-2xl font-bold flex items-center gap-2 shadow-[0_0_20px_rgba(37,99,235,0.3)] transition-all hover:scale-105 active:scale-95"
                 >
                     <Plus size={20} strokeWidth={3} />
@@ -105,8 +104,8 @@ export default function AutomationsPage() {
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {[
                     { label: "אוטומציות פעילות", value: workflows.filter(w => w.is_active).length, icon: Zap, color: "text-blue-500" },
-                    { label: "הרצות ב-24 שעות", value: "1,248", icon: History, color: "text-purple-500" },
-                    { label: "זמן שנחסך (חודשי)", value: "42h", icon: Clock, color: "text-green-500" },
+                    { label: "הרצות ב-24 שעות", value: "0", icon: History, color: "text-purple-500" },
+                    { label: "זמן שנחסך (חודשי)", value: "0h", icon: Clock, color: "text-green-500" },
                 ].map((stat, i) => (
                     <div key={i} className="bg-white/5 border border-white/10 p-6 rounded-3xl dji-glass">
                         <div className="flex items-center gap-4">
@@ -204,13 +203,19 @@ export default function AutomationsPage() {
                     <h3 className="text-xl font-bold text-white mb-2">אין אוטומציות עדיין</h3>
                     <p className="text-gray-500 max-w-xs mb-8">התחל לבנות את התהליך האוטומטי הראשון שלך וחסוך זמן יקר!</p>
                     <button 
-                        onClick={createWorkflow}
+                        onClick={() => setIsCreateModalOpen(true)}
                         className="bg-white/10 hover:bg-white/20 text-white px-8 py-3 rounded-2xl font-bold transition-all"
                     >
                         צור עכשיו
                     </button>
                 </div>
             )}
+
+            <CreateWorkflowModal 
+                isOpen={isCreateModalOpen} 
+                onClose={() => setIsCreateModalOpen(false)} 
+                onCreate={createWorkflow}
+            />
         </div>
     );
 }
