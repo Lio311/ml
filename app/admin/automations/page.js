@@ -217,12 +217,5 @@ export default function AutomationsPage() {
                 onCreate={createWorkflow}
             />
         </div>
-
-            <CreateWorkflowModal 
-                isOpen={isCreateModalOpen} 
-                onClose={() => setIsCreateModalOpen(false)} 
-                onCreate={createWorkflow}
-            />
-        </div>
     );
 }
