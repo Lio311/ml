@@ -5,7 +5,7 @@ import Header from "./Header";
 import Footer from "./Footer";
 import ChatWidget from "./Chatbot/ChatWidget";
 import AccessibilityWidget from "./AccessibilityWidget";
-import InstagramPopup from "./InstagramPopup";
+import PopupManager from "./PopupManager";
 import SwipeNavigator from "./SwipeNavigator";
 import { BrandProvider } from "../context/BrandContext";
 
@@ -39,7 +39,7 @@ export default function ClientLayout({ children, brands, menu }) {
 
             <ChatWidget />
             <AccessibilityWidget />
-            <InstagramPopup />
+            <PopupManager />
             <SwipeNavigator />
         </BrandProvider>
     );
