@@ -24,8 +24,10 @@ export default function AutomationsPage() {
     const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState("");
     const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+    const [mounted, setMounted] = useState(false);
 
     useEffect(() => {
+        setMounted(true);
         fetchWorkflows();
     }, []);
 
@@ -80,6 +82,8 @@ export default function AutomationsPage() {
         w.name.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
+    if (!mounted) return null;
+
     return (
         <div className="p-8 max-w-7xl mx-auto space-y-8 animate-in fade-in duration-700">
             {/* Header Area */}
@@ -118,18 +122,6 @@ export default function AutomationsPage() {
                         </div>
                     </div>
                 ))}
-            </div>
-
-            {/* Search & Filter */}
-            <div className="relative max-w-md">
-                <Search className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
-                <input 
-                    type="text"
-                    placeholder="חפש אוטומציה..."
-                    className="w-full bg-white border border-gray-200 rounded-2xl py-3 pr-12 pl-4 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/50 transition-all shadow-sm"
-                    value={searchQuery}
-                    onChange={(e) => setSearchQuery(e.target.value)}
-                />
             </div>
 
             {/* Workflow List */}
