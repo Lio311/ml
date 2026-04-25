@@ -97,8 +97,7 @@ export default function FunnelPage() {
             {/* Header */}
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                 <div>
-                    <h1 className="text-3xl font-black text-gray-900 tracking-tight flex items-center gap-3">
-                        <Target className="w-8 h-8 text-indigo-500" />
+                    <h1 className="text-3xl font-black text-gray-900 tracking-tight">
                         משפך המרה
                     </h1>
                     <p className="text-gray-500 mt-1 text-sm">מעקב אחרי מסע הלקוח — מכניסה ועד רכישה</p>
@@ -123,7 +122,7 @@ export default function FunnelPage() {
                 {/* Gauge */}
                 <div className="bg-white rounded-[2rem] border border-gray-100 shadow-sm p-8 flex flex-col items-center justify-center">
                     <div className="relative w-36 h-36 flex items-center justify-center mb-4">
-                        <svg className="w-full h-full -rotate-90">
+                        <svg className="w-full h-full -rotate-90" style={{ transform: 'rotate(-90deg) scaleX(-1)' }}>
                             <circle cx="72" cy="72" r="62" fill="transparent" stroke="#e2e8f0" strokeWidth="10" />
                             <circle cx="72" cy="72" r="62" fill="transparent"
                                 stroke="url(#funnelGauge)" strokeWidth="12"
