@@ -16,6 +16,7 @@ import { SignInButton, SignedIn, SignedOut, UserButton, useUser } from '@clerk/n
 import SearchAutocomplete from './SearchAutocomplete';
 import DesktopIcons from './header/DesktopIcons';
 import LanguageSwitcher from './header/LanguageSwitcher';
+import AnnouncementBar from './AnnouncementBar';
 import './header/header_v2.css';
 
 export default function Header({ brands = [] }) {
@@ -103,6 +104,7 @@ export default function Header({ brands = [] }) {
             onMouseLeave={() => setActiveMenu(null)}
             dir={dir}
         >
+            <AnnouncementBar />
             <div className={`frosted-nav !w-screen h-20 md:h-28 relative z-40 flex items-center transition-all duration-500 ${
                 !isScrolled && isHome ? '!bg-white !backdrop-blur-none !shadow-none' : ''
             }`}>
