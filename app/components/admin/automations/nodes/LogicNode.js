@@ -9,12 +9,10 @@ import AutomationDropdown from '../AutomationDropdown';
 const fieldOptions = [
   { value: "total_amount", label: "סכום הזמנה" },
   { value: "items_count", label: "כמות פריטים" },
-  { value: "customer_city", label: "עיר לקוח" },
   { value: "coupon_code", label: "קוד קופון" },
   { value: "customer_orders", label: "מספר הזמנות קודמות" },
   { value: "shipping_method", label: "שיטת משלוח" },
   { value: "product_category", label: "קטגוריית מוצר" },
-  { value: "order_weight", label: "משקל חבילה" },
   { value: "custom", label: "אחר (טקסט חופשי)" },
 ];
 
@@ -33,7 +31,7 @@ const operatorOptions = [
 
 const LogicNode = memo(({ data, isConnectable }) => {
   return (
-    <div className="bg-white border-2 border-purple-500/30 p-5 rounded-[2rem] min-w-[260px] shadow-xl hover:shadow-2xl transition-all relative group" dir="rtl">
+    <div className="bg-white border-2 border-purple-500/30 p-6 rounded-[2.5rem] min-w-[260px] shadow-xl hover:shadow-2xl transition-all relative group" dir="rtl">
       {/* Input Handle */}
       <Handle
         type="target"
@@ -89,8 +87,7 @@ const LogicNode = memo(({ data, isConnectable }) => {
       </div>
 
       {/* True Branch Handle */}
-      <div className="absolute -right-2 top-[30%] flex items-center">
-        <span className="text-[9px] font-black text-green-600 ml-2 bg-green-50 px-2 py-0.5 rounded-full border border-green-100">TRUE</span>
+      <div className="absolute -right-2 top-[30%] flex items-center translate-x-full pr-2">
         <Handle
           type="source"
           position={Position.Right}
@@ -99,11 +96,11 @@ const LogicNode = memo(({ data, isConnectable }) => {
           style={{ backgroundColor: '#22c55e', width: '14px', height: '14px', border: '3px solid white', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}
           className="hover:scale-125 transition-transform cursor-crosshair"
         />
+        <span className="text-[9px] font-black text-green-600 bg-green-50 px-2 py-0.5 rounded-full border border-green-100 ml-2">TRUE</span>
       </div>
 
       {/* False Branch Handle */}
-      <div className="absolute -right-2 top-[70%] flex items-center">
-        <span className="text-[9px] font-black text-red-600 ml-2 bg-red-50 px-2 py-0.5 rounded-full border border-red-100">FALSE</span>
+      <div className="absolute -right-2 top-[70%] flex items-center translate-x-full pr-2">
         <Handle
           type="source"
           position={Position.Right}
@@ -112,7 +109,7 @@ const LogicNode = memo(({ data, isConnectable }) => {
           style={{ backgroundColor: '#ef4444', width: '14px', height: '14px', border: '3px solid white', boxShadow: '0 2px 4px rgba(0,0,0,0.1)' }}
           className="hover:scale-125 transition-transform cursor-crosshair"
         />
-      </div>
+        <span className="text-[9px] font-black text-red-600 bg-red-50 px-2 py-0.5 rounded-full border border-red-100 ml-2">FALSE</span>
     </div>
   );
 });
