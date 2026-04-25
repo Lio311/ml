@@ -96,6 +96,7 @@ export default function AdminMobileNav({ role = 'customer' }) {
                 { href: "/admin/recommendations", label: "המלצות", icon: Bot, roles: ['admin', 'deputy'] },
                 { href: "/admin/analytics", label: "אנליטיקה", icon: TrendingUp, roles: ['admin'] },
                 { href: "/admin/search-analytics", label: "חיפושים", icon: Search, roles: ['admin'] },
+                { href: "/admin/funnel", label: "משפך המרה", icon: Activity, roles: ['admin'] },
             ]
         },
         {
