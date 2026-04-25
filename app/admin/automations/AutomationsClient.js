@@ -76,18 +76,38 @@ export default function AutomationsClient() {
     };
 
     const deleteWorkflow = async (id) => {
-        if (!confirm("האם אתה בטוח שברצונך למחוק אוטומציה זו?")) return;
-        try {
-            const res = await fetch(`/api/admin/automations/${id}`, {
-                method: 'DELETE'
-            });
-            if (res.ok) {
-                toast.success("אוטומציה נמחקה");
-                fetchWorkflows();
-            }
-        } catch (err) {
-            toast.error("שגיאה במחיקת האוטומציה");
-        }
+        toast((t) => (
+            <div className="flex flex-col gap-4 p-2 text-right" dir="rtl">
+                <p className="font-bold text-gray-900">האם אתה בטוח שברצונך למחוק אוטומציה זו?</p>
+                <div className="flex gap-2 justify-end">
+                    <button 
+                        onClick={async () => {
+                            toast.dismiss(t.id);
+                            try {
+                                const res = await fetch(`/api/admin/automations/${id}`, {
+                                    method: 'DELETE'
+                                });
+                                if (res.ok) {
+                                    toast.success("אוטומציה נמחקה");
+                                    fetchWorkflows();
+                                }
+                            } catch (err) {
+                                toast.error("שגיאה במחיקת האוטומציה");
+                            }
+                        }}
+                        className="bg-red-600 text-white px-4 py-2 rounded-xl text-xs font-black shadow-lg shadow-red-600/20"
+                    >
+                        מחק עכשיו
+                    </button>
+                    <button 
+                        onClick={() => toast.dismiss(t.id)}
+                        className="bg-gray-100 text-gray-500 px-4 py-2 rounded-xl text-xs font-bold"
+                    >
+                        ביטול
+                    </button>
+                </div>
+            </div>
+        ), { duration: 5000, position: 'top-center' });
     };
 
     if (!mounted) return null;

@@ -1,7 +1,7 @@
 import DictionaryClient from "./DictionaryClient";
 
 export const metadata = {
-    title: "ניהול מילון מונחים",
+    title: "מילון מערכת | Admin",
     robots: "noindex, nofollow",
 };
 

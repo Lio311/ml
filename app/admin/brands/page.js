@@ -1,7 +1,7 @@
 import BrandsClient from './BrandsClient';
 
 export const metadata = {
-    title: "ניהול מותגים",
+    title: "ניהול מותגים | Admin",
     robots: "noindex, nofollow",
 };
 

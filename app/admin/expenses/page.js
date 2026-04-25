@@ -1,7 +1,7 @@
 import ExpensesClient from "./ExpensesClient";
 
 export const metadata = {
-    title: "ניהול הוצאות",
+    title: "ניהול הוצאות | Admin",
     robots: "noindex, nofollow",
 };
 

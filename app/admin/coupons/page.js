@@ -1,7 +1,7 @@
 import CouponsClient from './CouponsClient';
 
 export const metadata = {
-    title: "ניהול קופונים",
+    title: "ניהול קופונים | Admin",
     robots: "noindex, nofollow",
 };
 

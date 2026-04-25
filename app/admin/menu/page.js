@@ -1,7 +1,7 @@
 import MenuClient from './MenuClient';
 
 export const metadata = {
-    title: "ניהול תפריט",
+    title: "ניהול תפריט | Admin",
     robots: "noindex, nofollow",
 };
 
