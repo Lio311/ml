@@ -18,6 +18,14 @@ import {
 } from "lucide-react";
 import { toast } from "react-hot-toast";
 import CreateWorkflowModal from "../../components/admin/automations/CreateWorkflowModal";
+import { getBrandName } from "../../lib/brand";
+
+export async function generateMetadata() {
+    const brandName = await getBrandName();
+    return {
+        title: `אוטומציות | ${brandName} Admin`,
+    };
+}
 
 export default function AutomationsPage() {
     const [workflows, setWorkflows] = useState([]);
@@ -149,9 +157,13 @@ export default function AutomationsPage() {
                                                 <History size={12} />
                                                 נוצר ב-{new Date(workflow.created_at).toLocaleDateString('he-IL')}
                                             </span>
-                                            {workflow.last_run && (
+                                            {workflow.last_run ? (
                                                 <span className="text-xs text-green-600 font-bold flex items-center gap-1">
-                                                    • הרצה אחרונה לפני 5 דקות
+                                                    • הרצה אחרונה: {new Date(workflow.last_run).toLocaleString('he-IL', { hour: '2-digit', minute: '2-digit' })}
+                                                </span>
+                                            ) : (
+                                                <span className="text-xs text-gray-400 font-bold flex items-center gap-1">
+                                                    • טרם הורץ
                                                 </span>
                                             )}
                                         </div>

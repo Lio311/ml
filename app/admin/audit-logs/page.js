@@ -4,14 +4,17 @@ import { redirect } from 'next/navigation';
 import AuditLogsClient from './AuditLogsClient';
 import { cookies } from 'next/headers';
 
+import { getBrandName } from '../../lib/brand';
+
 export const dynamic = 'force-dynamic';
 
 export async function generateMetadata() {
     const cookieStore = await cookies();
     const locale = cookieStore.get('NEXT_LOCALE')?.value || 'he';
+    const brandName = await getBrandName();
     
     return {
-        title: locale === 'he' ? "יומן פעולות | ml_tlv" : "Audit Logs | ml_tlv",
+        title: locale === 'he' ? `יומן פעולות | ${brandName}` : `Audit Logs | ${brandName}`,
         robots: "noindex, nofollow",
     };
 }

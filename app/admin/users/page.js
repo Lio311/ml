@@ -9,10 +9,15 @@ import AdminUsersFilter from "./AdminUsersFilter";
 import UsersTableClient from "./UsersTableClient";
 import React from 'react';
 
-export const metadata = {
-    title: "ניהול זהויות | ml_tlv",
-    robots: "noindex, nofollow",
-};
+import { getBrandName } from "../../lib/brand";
+
+export async function generateMetadata() {
+    const brandName = await getBrandName();
+    return {
+        title: `ניהול זהויות | ${brandName}`,
+        robots: "noindex, nofollow",
+    };
+}
 
 export default async function AdminUsersPage(props) {
     const searchParams = await props.searchParams;

@@ -3,9 +3,14 @@ import { clerkClient } from '@clerk/nextjs/server';
 import AdminReviewsClient from './AdminReviewsClient';
 import { sanitizeProductArray } from '../../lib/productUtils';
 
-export const metadata = {
-    title: 'ניהול ביקורות | ml_tlv Admin',
-};
+import { getBrandName } from '../../lib/brand';
+
+export async function generateMetadata() {
+    const brandName = await getBrandName();
+    return {
+        title: `ניהול ביקורות | ${brandName} Admin`,
+    };
+}
 
 export default async function AdminReviewsPage() {
     // Fetch all reviews
