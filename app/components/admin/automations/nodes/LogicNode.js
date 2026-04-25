@@ -19,28 +19,46 @@ export default memo(({ data, isConnectable }) => {
         <div className="bg-purple-500/10 p-2 rounded-2xl text-purple-500">
           <GitBranch size={24} />
         </div>
-        <div className="flex flex-col flex-1">
-          <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none mb-1">Logic</span>
-          <select 
-            className="text-sm font-bold text-gray-900 bg-transparent border-none p-0 focus:ring-0 cursor-pointer outline-none w-full"
-            value={data.logicType || 'amount_gt_500'}
-            onChange={(e) => data.onChange?.(e.target.value)}
-          >
-            <option value="amount_gt_500">האם סכום {'>'} 500?</option>
-            <option value="is_new_customer">האם לקוח חדש?</option>
-            <option value="has_coupon">האם השתמש בקופון?</option>
-            <option value="location_tlv">האם מאזור ת"א?</option>
-            <option value="custom">אחר / מותאם אישית...</option>
-          </select>
-          {data.logicType === 'custom' && (
+        <div className="flex flex-col flex-1 gap-2">
+          <span className="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none">Logic Builder</span>
+          
+          <div className="flex flex-col gap-1">
+            {/* Field Select */}
+            <select 
+              className="text-[11px] font-bold text-gray-900 bg-gray-50 border border-gray-200 rounded p-1 outline-none"
+              value={data.logicField || 'total_amount'}
+              onChange={(e) => data.onChangeLogic?.('logicField', e.target.value)}
+            >
+              <option value="total_amount">סכום הזמנה</option>
+              <option value="items_count">כמות פריטים</option>
+              <option value="customer_city">עיר לקוח</option>
+              <option value="coupon_code">קוד קופון</option>
+              <option value="customer_orders">מספר הזמנות קודמות</option>
+              <option value="shipping_method">שיטת משלוח</option>
+            </select>
+
+            {/* Operator Select */}
+            <select 
+              className="text-[11px] font-bold text-blue-600 bg-blue-50 border border-blue-100 rounded p-1 outline-none"
+              value={data.logicOperator || 'gt'}
+              onChange={(e) => data.onChangeLogic?.('logicOperator', e.target.value)}
+            >
+              <option value="gt">גדול מ- ( {'>'} )</option>
+              <option value="lt">קטן מ- ( {'<'} )</option>
+              <option value="eq">שווה ל- ( = )</option>
+              <option value="contains">מכיל את הטקסט</option>
+              <option value="not_contains">לא מכיל את הטקסט</option>
+            </select>
+
+            {/* Value Input */}
             <input 
               type="text"
-              placeholder="הכנס לוגיקה..."
-              className="mt-2 text-xs border-b border-gray-200 focus:border-purple-500 outline-none w-full py-1"
-              value={data.customLogic || ''}
-              onChange={(e) => data.onChangeCustom?.(e.target.value)}
+              placeholder="ערך..."
+              className="text-[11px] border border-gray-200 rounded p-1 outline-none focus:border-purple-500"
+              value={data.logicValue || ''}
+              onChange={(e) => data.onChangeLogic?.('logicValue', e.target.value)}
             />
-          )}
+          </div>
         </div>
       </div>
 

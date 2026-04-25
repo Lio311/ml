@@ -36,18 +36,20 @@ export default memo(({ data, isConnectable }) => {
             value={data.actionType || 'email'}
             onChange={(e) => data.onChange?.(e.target.value)}
           >
-            <option value="email">שליחת מייל</option>
-            <option value="sms">שליחת SMS</option>
-            <option value="coupon">יצירת קופון</option>
-            <option value="tag">הוספת תגית</option>
-            <option value="product">המלצת מוצר</option>
+            <option value="email">שליחת מייל ללקוח</option>
+            <option value="sms">שליחת SMS ללקוח</option>
+            <option value="admin_notify">התראה למנהל (מייל/פוץ')</option>
+            <option value="coupon">יצירת קופון אישי</option>
+            <option value="tag">הוספת תגית ללקוח</option>
+            <option value="webhook">שליחת Webhook (חיבור ל-Make/Zapier)</option>
+            <option value="order_note">הוספת הערה פנימית להזמנה</option>
             <option value="custom">אחר / מותאם אישית...</option>
           </select>
-          {data.actionType === 'custom' && (
+          {(data.actionType === 'custom' || data.actionType === 'tag' || data.actionType === 'order_note') && (
             <input 
               type="text"
-              placeholder="הכנס פעולה..."
-              className="mt-2 text-xs border-b border-gray-200 focus:border-blue-500 outline-none w-full py-1"
+              placeholder="הכנס פרטים..."
+              className="mt-2 text-[11px] border-b border-gray-200 focus:border-blue-500 outline-none w-full py-1"
               value={data.customAction || ''}
               onChange={(e) => data.onChangeCustom?.(e.target.value)}
             />

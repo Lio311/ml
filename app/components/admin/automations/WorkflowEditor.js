@@ -50,6 +50,9 @@ export default function WorkflowEditor({ workflowId, initialData }) {
           onChangeCustom: (val) => {
             const key = node.type === 'trigger' ? 'customTrigger' : node.type === 'action' ? 'customAction' : 'customLogic';
             updateNodeData(node.id, { [key]: val });
+          },
+          onChangeLogic: (key, val) => {
+            updateNodeData(node.id, { [key]: val });
           }
         }
       }));
@@ -118,6 +121,9 @@ export default function WorkflowEditor({ workflowId, initialData }) {
           },
           onChangeCustom: (val) => {
             const key = type === 'trigger' ? 'customTrigger' : type === 'action' ? 'customAction' : 'customLogic';
+            updateNodeData(nodeId, { [key]: val });
+          },
+          onChangeLogic: (key, val) => {
             updateNodeData(nodeId, { [key]: val });
           }
         },

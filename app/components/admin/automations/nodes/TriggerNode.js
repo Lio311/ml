@@ -19,16 +19,19 @@ export default memo(({ data, isConnectable }) => {
             onChange={(e) => data.onChange?.(e.target.value)}
           >
             <option value="new_order">הזמנה חדשה</option>
-            <option value="new_user">לקוח חדש</option>
-            <option value="abandoned_cart">עגלה נטושה</option>
-            <option value="review_added">ביקורת חדשה</option>
+            <option value="order_status_changed">סטטוס הזמנה השתנה</option>
+            <option value="new_user">לקוח חדש נרשם</option>
+            <option value="abandoned_cart">עגלה נטושה (24 שעות)</option>
+            <option value="product_restock">מוצר חזר למלאי</option>
+            <option value="product_out_of_stock">מוצר אזל מהמלאי</option>
+            <option value="coupon_used">שימוש בקופון</option>
             <option value="custom">אחר / מותאם אישית...</option>
           </select>
-          {data.triggerType === 'custom' && (
+          {(data.triggerType === 'custom' || data.triggerType === 'order_status_changed') && (
             <input 
               type="text"
-              placeholder="הכנס טריגר..."
-              className="mt-2 text-xs border-b border-gray-200 focus:border-yellow-500 outline-none w-full py-1"
+              placeholder={data.triggerType === 'order_status_changed' ? "הכנס סטטוס..." : "הכנס טריגר..."}
+              className="mt-2 text-[11px] border-b border-gray-200 focus:border-yellow-500 outline-none w-full py-1"
               value={data.customTrigger || ''}
               onChange={(e) => data.onChangeCustom?.(e.target.value)}
             />
