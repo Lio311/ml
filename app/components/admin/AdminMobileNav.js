@@ -162,7 +162,7 @@ export default function AdminMobileNav({ role = 'customer' }) {
                 >
                     {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
                 </button>
-                <span className="font-black text-lg tracking-tighter italic uppercase flex items-center gap-1">
+                <span className="font-black text-lg tracking-tighter uppercase flex items-center gap-1">
                     <span className="lowercase">{brand.name?.split(' ')[0]}</span> <span className="text-blue-500 not-italic text-xs bg-blue-500/10 px-1 rounded border border-blue-500/20">Admin</span>
                 </span>
             </div>
@@ -178,7 +178,7 @@ export default function AdminMobileNav({ role = 'customer' }) {
                 <div className="p-6 flex flex-col h-full">
                     <div className="flex justify-between items-center mb-8">
                         <div>
-                            <h2 className="text-xl font-black italic uppercase tracking-tighter text-white lowercase">{brand.name}</h2>
+                            <h2 className="text-xl font-black uppercase tracking-tighter text-white lowercase">{brand.name}</h2>
                             <p className="text-[10px] text-gray-500 font-bold tracking-wider">ממשק ניהול מתקדם</p>
                         </div>
                         <button onClick={() => setIsOpen(false)} className="p-2 hover:bg-white/5 rounded-full transition-colors">
