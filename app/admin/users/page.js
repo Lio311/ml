@@ -55,7 +55,7 @@ export default async function AdminUsersPage(props) {
         const [usersRes, countRes] = await Promise.all([
             client.query(`
                 SELECT 
-                    id, first_name, last_name, email, phone, role, image_url, created_at, updated_at,
+                    id, first_name, last_name, email, phone, role, image_url, created_at, updated_at, last_active_at,
                     (SELECT COUNT(*) FROM orders WHERE customer_details->>'clerk_id' = users.id AND status != 'cancelled' AND catalog_id IS NULL) as site_orders,
                     (SELECT COALESCE(SUM(total_amount), 0) FROM orders WHERE customer_details->>'clerk_id' = users.id AND status != 'cancelled' AND catalog_id IS NULL) as site_spent,
                     (SELECT COUNT(*) FROM orders WHERE customer_details->>'clerk_id' = users.id AND status != 'cancelled' AND catalog_id IS NOT NULL) as catalog_orders,
@@ -69,7 +69,7 @@ export default async function AdminUsersPage(props) {
                         WHEN 'warehouse' THEN 3 
                         ELSE 4 
                     END ASC, 
-                    created_at DESC
+                    COALESCE(last_active_at, created_at) DESC
                 LIMIT $1 OFFSET $2
             `, queryParams),
             client.query(`SELECT COUNT(*) FROM users ${whereClause.replace(/\$(\d+)/g, (match, num) => `$${parseInt(num) - 2}`)}`, queryParams.slice(2))
@@ -103,7 +103,7 @@ export default async function AdminUsersPage(props) {
             role: u.role || 'customer',
             createdAt: u.created_at,
             updatedAt: u.updated_at,
-            lastLogin: clerkUsersMap[u.id]?.lastSignInAt || u.updated_at,
+            lastLogin: u.last_active_at || clerkUsersMap[u.id]?.lastSignInAt || u.updated_at,
             imageUrl: u.image_url || clerkUsersMap[u.id]?.imageUrl || null,
             siteOrders: parseInt(u.site_orders) || 0,
             siteSpent: parseFloat(u.site_spent) || 0,
