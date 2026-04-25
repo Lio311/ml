@@ -110,6 +110,7 @@ const LogicNode = memo(({ data, isConnectable }) => {
           className="hover:scale-125 transition-transform cursor-crosshair"
         />
         <span className="text-[9px] font-black text-red-600 bg-red-50 px-2 py-0.5 rounded-full border border-red-100 ml-2">FALSE</span>
+      </div>
     </div>
   );
 });
