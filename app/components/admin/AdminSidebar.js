@@ -18,6 +18,7 @@ import {
     Bell, 
     TestTube, 
     DollarSign, 
+    Thermometer, 
     Tag, 
     Inbox, 
     Wallet, 
