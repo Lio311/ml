@@ -253,17 +253,29 @@ export default function WorkflowEditor({ workflowId, initialData }) {
 
 function NodeTemplate({ type, label, icon: Icon, color }) {
   const onDragStart = (event, nodeType) => {
-    // Set a background that matches the canvas to hide the black box corners
+    // Create a ghost clone for the drag image to avoid capturing the black sidebar background
     const target = event.currentTarget;
-    target.style.backgroundColor = '#f1f5f9';
-    target.style.borderRadius = '1rem';
+    const ghost = target.cloneNode(true);
+    
+    // Style the ghost to match the canvas background and ensure it's off-screen
+    ghost.style.position = 'absolute';
+    ghost.style.top = '-1000px';
+    ghost.style.left = '-1000px';
+    ghost.style.backgroundColor = '#f1f5f9'; // Match canvas color
+    ghost.style.borderRadius = '1rem';
+    ghost.style.width = target.offsetWidth + 'px';
+    ghost.style.zIndex = '-1000';
+    document.body.appendChild(ghost);
+    
+    // Set the ghost as the drag image (centered)
+    event.dataTransfer.setDragImage(ghost, target.offsetWidth / 2, target.offsetHeight / 2);
     
     event.dataTransfer.setData('application/reactflow', nodeType);
     event.dataTransfer.effectAllowed = 'move';
 
-    // Reset after the drag image is captured
+    // Remove the ghost clone immediately after the browser captures it
     setTimeout(() => {
-      target.style.backgroundColor = 'transparent';
+      document.body.removeChild(ghost);
     }, 0);
   };
 
