@@ -212,13 +212,13 @@ export default async function Home() {
           )}
         </div>
 
-        <div className="absolute inset-0 z-10 container mx-auto flex items-center md:items-start justify-center pt-44 pb-20 md:pt-64 md:pb-0 px-6 md:px-12">
+        <div className="absolute inset-0 z-10 container mx-auto flex items-center md:items-start justify-center pt-52 pb-10 md:pt-64 md:pb-0 px-6 md:px-12">
           {/* Hero Content Box */}
-          <div className="w-[95%] md:w-fit max-w-lg md:max-w-fit text-black text-center bg-white/85 p-6 md:px-10 md:py-8 rounded-2xl backdrop-blur-md shadow-2xl transform scale-90 md:scale-100 origin-center border border-white/20 md:mt-0 mx-auto">
+          <div className="w-[95%] md:w-fit max-w-lg md:max-w-fit text-black text-center bg-white/85 p-4 md:px-8 md:py-5 rounded-2xl backdrop-blur-md shadow-2xl transform scale-90 md:scale-100 origin-center border border-white/20 md:mt-0 mx-auto">
             <h2 className="text-xs md:text-sm font-assistant tracking-[0.2em] uppercase mb-1 opacity-90 animate-fadeIn font-bold">
               {t('homepage.discover_sig')}
             </h2>
-            <h1 className="font-handwriting text-3xl md:text-6xl mb-2 md:mb-4 text-black leading-tight tracking-wide">
+            <h1 className="font-handwriting text-3xl md:text-5xl mb-2 md:mb-3 text-black leading-tight tracking-wide">
               <span className="block">{t('homepage.hero_title_p1')}</span>
               <span className="block">{t('homepage.hero_title_p2')}</span>
             </h1>
@@ -226,14 +226,14 @@ export default async function Home() {
               {t('common.hero_subtitle')} {t('common.hero_tagline_p1')} <br className="hidden md:block" />
               {t('common.hero_tagline_p2')} {t('common.hero_cta')}
             </p>
-            <Link href="/catalog" className="inline-block border text-black border-black px-8 py-3 text-xs md:text-sm font-bold tracking-widest hover:bg-black hover:text-white transition duration-500 uppercase rounded-full">
+            <Link href="/catalog" className="inline-block border text-black border-black px-6 py-2.5 text-xs md:text-sm font-bold tracking-widest hover:bg-black hover:text-white transition duration-500 uppercase rounded-full">
               {t('homepage.shop_now')}
             </Link>
           </div>
         </div>
       </section>
 
-      <div className="relative z-30 bg-white -mt-16 md:mt-0 w-full flex flex-col">
+      <div className="relative z-30 bg-white w-full flex flex-col">
         <div className="pb-6 md:pb-0">
           <LiveStats stats={stats} />
         </div>
