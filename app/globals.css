@@ -286,6 +286,6 @@ input[autocomplete="one-time-code"] {
 }
 
 .font-handwriting {
-  font-family: 'Dancing Script', 'Gveret Levin', cursive;
+  font-family: 'Gveret Levin', 'Dancing Script', cursive;
   font-weight: 400;
 }
