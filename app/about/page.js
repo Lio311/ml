@@ -67,69 +67,105 @@ const AboutHE = () => (
 
         <div className="my-12 p-8 bg-black text-white rounded-[2.5rem] text-center relative overflow-hidden shadow-2xl">
             <div className="absolute top-0 left-0 w-24 h-24 bg-white/5 rounded-full -translate-x-12 -translate-y-12"></div>
-            <h3 className="text-2xl font-serif mb-6 relative z-10 text-white">למה הלקוחות שלנו חוזרים שוב ושוב?</h3>
-            <div className="grid md:grid-cols-3 gap-8 relative z-10">
-                <div className="space-y-2">
-                    <div className="text-4xl mb-4">🏆</div>
-                    <h4 className="font-bold text-white">אמינות ללא פשרות</h4>
-                    <p className="text-gray-400 text-sm">התחייבות למקוריות ב-100% בכל הזמנה.</p>
+            <h3 className="text-2xl font-serif mb-10 relative z-10 text-white">למה הלקוחות שלנו חוזרים שוב ושוב?</h3>
+            <div className="grid md:grid-cols-3 gap-12 relative z-10">
+                <div className="space-y-4 flex flex-col items-center">
+                    <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center mb-2 shadow-inner border border-white/10 group-hover:bg-white/20 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="drop-shadow-lg"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+                    </div>
+                    <h4 className="font-bold text-white text-lg">אמינות ללא פשרות</h4>
+                    <p className="text-gray-400 text-sm max-w-[200px]">התחייבות למקוריות ב-100% בכל הזמנה.</p>
                 </div>
-                <div className="space-y-2">
-                    <div className="text-4xl mb-4">✨</div>
-                    <h4 className="font-bold text-white">ייעוץ אישי</h4>
-                    <p className="text-gray-400 text-sm">אנחנו זמינים באינסטגרם לעזור לכם לבחור.</p>
+                <div className="space-y-4 flex flex-col items-center">
+                    <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center mb-2 shadow-inner border border-white/10">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="drop-shadow-lg"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M3 5h4"/><path d="M21 17v4"/><path d="M19 19h4"/></svg>
+                    </div>
+                    <h4 className="font-bold text-white text-lg">ייעוץ אישי</h4>
+                    <p className="text-gray-400 text-sm max-w-[200px]">אנחנו זמינים באינסטגרם לעזור לכם לבחור.</p>
                 </div>
-                <div className="space-y-2">
-                    <div className="text-4xl mb-4">🚚</div>
-                    <h4 className="font-bold text-white">משלוח אקספרס</h4>
-                    <p className="text-gray-400 text-sm">מגיעים לכל נקודה בארץ במהירות שיא.</p>
+                <div className="space-y-4 flex flex-col items-center">
+                    <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center mb-2 shadow-inner border border-white/10">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#4ade80" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="drop-shadow-lg"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-2.235-2.794a1 1 0 0 0-.78-.382H15V18Z"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg>
+                    </div>
+                    <h4 className="font-bold text-white text-lg">משלוח אקספרס</h4>
+                    <p className="text-gray-400 text-sm max-w-[200px]">מגיעים לכל נקודה בארץ במהירות שיא.</p>
                 </div>
             </div>
         </div>
 
         <section className="text-center pb-10">
             <p className="italic text-gray-500 mb-6">"בושם הוא לא רק ריח, הוא הזיכרון שנשאר בחדר אחרי שהלכתם."</p>
-            <p className="font-bold text-gray-900">— צוות ml-tlv</p>
+            <p className="font-bold text-gray-900">צוות ml-tlv</p>
         </section>
     </div>
 );
 
 const AboutEN = () => (
-    <div className="space-y-6 text-lg leading-relaxed text-gray-700 text-left" dir="ltr">
-        <p>
-            Welcome to <strong>ml_tlv</strong>, your premier destination for luxury niche and boutique perfumes in Israel.
-        </p>
-        <p>
-            We believe that finding "your scent" is a journey, not just a transaction. That's why we established this platform—to allow you to experience the world's finest niche and boutique perfumes through <strong>luxury samples</strong> and high-quality decants, all at accessible prices and in practical quantities.
-        </p>
-        <p>
-            Our curated collection features prestigious brands such as Xerjoff, Roja, Creed, Amouage, and many others. Every decant is meticulously drawn directly from original bottles in a sterile, professional environment, ensuring you receive the most authentic and precise fragrance representation.
-        </p>
+    <div className="space-y-8 text-lg leading-relaxed text-gray-700 text-left font-light" dir="ltr">
+        <section>
+            <h2 className="text-3xl font-serif font-black text-gray-900 mb-6">The Story Behind ml-tlv</h2>
+            <p>
+                It all started with a simple passion — or perhaps more accurately, an obsession — for fragrances. As a dedicated perfume enthusiast, our founder, <strong>Lior ml</strong>, found himself repeatedly standing before store shelves, hesitating to spend thousands on a 100ml bottle that he might grow tired of within a week.
+            </p>
+            <p className="mt-4">
+                The need for a smarter solution gave birth to <strong>ml-tlv</strong>. We realized that the true way to experience a perfume isn't through a "quick spray" on a paper strip in a store, but in real life: at the office in the morning, at the gym, and on a date in the evening. A fragrance needs to live with you for you to know if it's truly "yours."
+            </p>
+        </section>
 
-        <div className="my-10 p-8 bg-gray-50 border-y border-black/10 text-center">
-            <h3 className="text-2xl font-serif mb-4">Why Choose Us?</h3>
-            <div className="grid md:grid-cols-3 gap-8">
-                <div>
-                    <div className="text-3xl mb-2">💎</div>
-                    <h4 className="font-bold mb-2">100% Original</h4>
-                    <p className="text-sm">Full guarantee on the authenticity of every perfume.</p>
+        <section className="bg-stone-50 p-8 rounded-[2rem] border border-stone-100 shadow-sm">
+            <h3 className="text-2xl font-serif font-bold text-gray-900 mb-4">Our Professional Standards</h3>
+            <p>
+                At ml-tlv, we never compromise on quality. Every <strong>decant</strong> (perfume sample) leaving our Tel Aviv studio undergoes a rigorous process:
+            </p>
+            <ul className="list-disc list-inside mt-4 space-y-2 ml-4">
+                <li><strong>100% Originality:</strong> Every drop is drawn directly from original bottles only. We guarantee full authenticity.</li>
+                <li><strong>Sterile Process:</strong> The use of disposable syringes and a clean environment ensures the fragrance maintains its exact composition.</li>
+                <li><strong>Premium Packaging:</strong> We use high-quality glass bottles with an atomizer providing perfect distribution, just like the original bottle.</li>
+            </ul>
+        </section>
+
+        <section>
+            <h3 className="text-2xl font-serif font-bold text-gray-900 mb-4">More Than a Store — A Niche Community</h3>
+            <p>
+                Since our founding in 2023 in Tel Aviv, we've become a home for thousands of perfume lovers in Israel. We are proud to offer over 300 types of perfumes from the world's most coveted luxury brands — Xerjoff, Roja, Amouage, Creed, and Maison Francis Kurkdjian. 
+            </p>
+            <p className="mt-4">
+                Our goal is to make the world of <strong>Haute Parfumerie</strong> accessible to everyone. Whether you're looking for the perfect wedding scent or just want to smell like a million dollars every day without breaking the bank, we're here to advise and guide you.
+            </p>
+        </section>
+
+        <div className="my-12 p-8 bg-black text-white rounded-[2.5rem] text-center relative overflow-hidden shadow-2xl">
+            <div className="absolute top-0 right-0 w-24 h-24 bg-white/5 rounded-full translate-x-12 -translate-y-12"></div>
+            <h3 className="text-2xl font-serif mb-10 relative z-10 text-white">Why Do Our Customers Return?</h3>
+            <div className="grid md:grid-cols-3 gap-12 relative z-10">
+                <div className="space-y-4 flex flex-col items-center">
+                    <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center mb-2 shadow-inner border border-white/10 group-hover:bg-white/20 transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#fbbf24" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="drop-shadow-lg"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+                    </div>
+                    <h4 className="font-bold text-white text-lg">Uncompromising Authenticity</h4>
+                    <p className="text-gray-400 text-sm max-w-[200px]">100% originality guarantee in every order.</p>
                 </div>
-                <div>
-                    <div className="text-3xl mb-2">🎁</div>
-                    <h4 className="font-bold mb-2">Gifts in Every Order</h4>
-                    <p className="text-sm">Complimentary samples based on your order value.</p>
+                <div className="space-y-4 flex flex-col items-center">
+                    <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center mb-2 shadow-inner border border-white/10">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#60a5fa" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="drop-shadow-lg"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/><path d="M5 3v4"/><path d="M3 5h4"/><path d="M21 17v4"/><path d="M19 19h4"/></svg>
+                    </div>
+                    <h4 className="font-bold text-white text-lg">Personal Consultation</h4>
+                    <p className="text-gray-400 text-sm max-w-[200px]">We're available on Instagram to help you choose.</p>
                 </div>
-                <div>
-                    <div className="text-3xl mb-2">🚀</div>
-                    <h4 className="font-bold mb-2">Fast Shipping</h4>
-                    <p className="text-sm">Reliable and swift delivery across the country.</p>
+                <div className="space-y-4 flex flex-col items-center">
+                    <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center mb-2 shadow-inner border border-white/10">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#4ade80" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="drop-shadow-lg"><path d="M14 18V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2v11a1 1 0 0 0 1 1h2"/><path d="M15 18H9"/><path d="M19 18h2a1 1 0 0 0 1-1v-3.65a1 1 0 0 0-.22-.624l-2.235-2.794a1 1 0 0 0-.78-.382H15V18Z"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg>
+                    </div>
+                    <h4 className="font-bold text-white text-lg">Express Shipping</h4>
+                    <p className="text-gray-400 text-sm max-w-[200px]">Fast delivery to every point in the country.</p>
                 </div>
             </div>
         </div>
 
-        <p>
-            We are dedicated to helping you discover your unique personal signature. Need assistance or a personalized recommendation? We are available on Instagram for any questions you might have.
-        </p>
+        <section className="text-center pb-10">
+            <p className="italic text-gray-500 mb-6">"Perfume is not just a scent, it's the memory that stays in the room after you've left."</p>
+            <p className="font-bold text-gray-900">ml-tlv Team</p>
+        </section>
     </div>
 );
 
