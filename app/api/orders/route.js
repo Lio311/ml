@@ -281,7 +281,7 @@ export async function POST(req) {
                 }
 
                 // Skip prizes (synthetic IDs) or non-numeric sizes (sets) if stock tracking is ML only
-                if (!item.isPrize && !isNaN(item.size)) {
+                if (!item.isPrize && !isNaN(item.size) && !isNaN(dbId)) {
                     const deduction = Number(item.size) * item.quantity;
                     const stockRes = await client.query(
                         `UPDATE products SET stock = stock - $1 WHERE id = $2 RETURNING stock, name_he, name, original_size`,
