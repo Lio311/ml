@@ -126,7 +126,7 @@ const systemAutomations = [
         description: "כשלקוח משאיר חוות דעת — נוצר לו קופון SAVE10 ייחודי ונשלח מייל תודה עם הקופון.",
         nodes: [
             { id: "1", type: "trigger", position: { x: 50, y: 250 }, data: { label: "לקוח פרסם ביקורת", triggerType: "custom", customTrigger: "review_submitted", category: "חוות דעת" } },
-            { id: "2", type: "action", position: { x: 420, y: 50 }, data: { label: "יצירת קופון 10%", actionType: "coupon", target: "customer", description: "קופון SAVE10-XXXXX, 10% הנחה, תקף 7 ימים. חד-פעמי לכל לקוח." } },
+            { id: "2", type: "action", position: { x: 420, y: 50 }, data: { label: "יצירת קופון 10%", actionType: "coupon", target: "customer", description: "קופון SAVE10-XXXXX, 10% הנחה, תקף 7 ימים. חד-פעמי לכל לקוח.", discount_percent: 10, coupon_validity_hours: 168, cooldown_days: 0 } },
             { id: "3", type: "action", position: { x: 420, y: 450 }, data: { label: "מייל: תודה + קופון", actionType: "email", target: "customer", description: "מייל תודה על הדירוג עם קוד הקופון.", templateSlug: "review_reward" } }
         ],
         edges: [
