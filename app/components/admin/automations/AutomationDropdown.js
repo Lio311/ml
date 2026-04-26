@@ -20,10 +20,18 @@ export default function AutomationDropdown({ value, onChange, options, placehold
     }, []);
 
     return (
-        <div className="relative w-full text-center nodrag" dir="rtl" ref={dropdownRef}>
+        <div 
+            className="relative w-full text-center nodrag nowheel nopan" 
+            dir="rtl" 
+            ref={dropdownRef}
+            onMouseDown={(e) => e.stopPropagation()}
+        >
             <button
                 type="button"
-                onClick={() => setIsOpen(!isOpen)}
+                onMouseDown={(e) => {
+                    e.stopPropagation();
+                    setIsOpen(!isOpen);
+                }}
                 className="flex items-center justify-center gap-2 w-full px-1 py-1 text-sm font-bold text-gray-900 bg-transparent rounded-lg hover:bg-gray-50/50 transition-all outline-none"
             >
                 <span className="truncate">{selectedOption ? selectedOption.label : placeholder}</span>
@@ -37,7 +45,8 @@ export default function AutomationDropdown({ value, onChange, options, placehold
                             <button
                                 key={option.value}
                                 type="button"
-                                onClick={() => {
+                                onMouseDown={(e) => {
+                                    e.stopPropagation();
                                     onChange(option.value);
                                     setIsOpen(false);
                                 }}
