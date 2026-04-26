@@ -20,12 +20,14 @@ import LogicNode from './nodes/LogicNode';
 import WaitNode from './nodes/WaitNode';
 import SplitNode from './nodes/SplitNode';
 import LoopNode from './nodes/LoopNode';
+import WaitUntilNode from './nodes/WaitUntilNode';
 
 const nodeTypes = {
   trigger: TriggerNode,
   action: ActionNode,
   logic: LogicNode,
   wait: WaitNode,
+  wait_until: WaitUntilNode,
   split: SplitNode,
   loop: LoopNode,
 };
@@ -280,6 +282,7 @@ export default function WorkflowEditor({ workflowId, initialData }) {
             <div className="grid grid-cols-2 gap-2">
               <NodeTemplate type="logic" label="לוגיקה" icon={GitBranch} color="text-purple-500" onAdd={() => addNode('logic')} />
               <NodeTemplate type="wait" label="השהיה" icon={Clock} color="text-orange-500" onAdd={() => addNode('wait')} />
+              <NodeTemplate type="wait_until" label="המתנה עד ל..." icon={Clock} color="text-red-500" onAdd={() => addNode('wait_until')} />
               <NodeTemplate type="split" label="פיצול" icon={GitMerge} color="text-cyan-500" onAdd={() => addNode('split')} />
               <NodeTemplate type="loop" label="לולאה" icon={RefreshCw} color="text-indigo-500" onAdd={() => addNode('loop')} />
             </div>
