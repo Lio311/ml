@@ -3,7 +3,6 @@ import Image from "@/app/components/CImage";
 import pool from "./lib/db";
 import ProductCard from "./components/ProductCard";
 import LiveStats from "./components/LiveStats";
-import { Dancing_Script } from "next/font/google";
 import BonusesSection from "./components/BonusesSection";
 import BrandCarousel from "./components/BrandCarousel";
 import HomeSEOContent from "./components/HomeSEOContent";
@@ -29,10 +28,6 @@ const getT = (locale) => {
   };
 };
 
-const dancingScript = Dancing_Script({
-  subsets: ["latin"],
-  weight: "500", 
-});
 
 export const dynamic = 'force-dynamic';
 
@@ -192,7 +187,7 @@ export default async function Home() {
         }}
       />
       {/* Hero Section - Tall and pulled to top on mobile */}
-      <section className="relative h-[68vh] md:h-[78vh] w-full m-0 p-0 overflow-hidden bg-white block !-mt-20 md:mt-0">
+      <section className="relative h-[72vh] md:h-[82vh] w-full m-0 p-0 overflow-hidden bg-white block !-mt-20 md:mt-0">
         <div className="absolute inset-0 w-full h-full overflow-hidden">
           {banner.type === 'video' ? (
             <video
@@ -217,9 +212,9 @@ export default async function Home() {
           )}
         </div>
 
-        <div className="absolute inset-0 z-10 container mx-auto flex items-center md:items-start justify-center pt-44 pb-16 md:pt-64 md:pb-0 px-6 md:px-12">
+        <div className="absolute inset-0 z-10 container mx-auto flex items-center md:items-start justify-center pt-44 pb-20 md:pt-64 md:pb-0 px-6 md:px-12">
           {/* Hero Content Box */}
-          <div className="w-[95%] md:w-fit max-w-lg md:max-w-fit text-black text-center bg-white/85 p-5 md:px-8 md:py-6 rounded-2xl backdrop-blur-md shadow-2xl transform scale-90 md:scale-100 origin-center border border-white/20 md:mt-0 mx-auto">
+          <div className="w-[95%] md:w-fit max-w-lg md:max-w-fit text-black text-center bg-white/85 p-6 md:px-10 md:py-8 rounded-2xl backdrop-blur-md shadow-2xl transform scale-90 md:scale-100 origin-center border border-white/20 md:mt-0 mx-auto">
             <h2 className="text-xs md:text-sm font-assistant tracking-[0.2em] uppercase mb-1 opacity-90 animate-fadeIn font-bold">
               {t('homepage.discover_sig')}
             </h2>
