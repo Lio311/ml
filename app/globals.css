@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Gveret+Levin&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Gveret+Levin&family=Amatic+SC:wght@400;700&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -258,7 +258,6 @@ input[autocomplete="one-time-code"] {
     -webkit-tap-highlight-color: transparent !important;
     -webkit-touch-callout: none !important;
     -webkit-user-select: none !important;
-    user-select: none !important;
   }
 
   /* Re-enable selection for inputs and textareas */
@@ -285,5 +284,6 @@ input[autocomplete="one-time-code"] {
 }
 
 h1 {
-  font-family: 'Gveret Levin', var(--font-family) !important;
+  font-family: 'Gveret Levin', 'Amatic SC', cursive !important;
+  font-weight: 700;
 }

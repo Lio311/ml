@@ -173,7 +173,7 @@ export default async function Home() {
               "name": "ml-tlv",
               "url": "https://www.ml-tlv.com",
               "image": "https://www.ml-tlv.com/logo_v5.png",
-              "telephone": "+972-50-633-3111",
+              "telephone": "+972-50-000-0000",
               "priceRange": "₪29-₪199",
               "address": {
                 "@type": "PostalAddress",
