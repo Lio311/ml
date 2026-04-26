@@ -282,3 +282,7 @@ input[autocomplete="one-time-code"] {
   }
 }
 
+
+h1 {
+  font-family: var(--font-gveret-levin), var(--font-family) !important;
+}

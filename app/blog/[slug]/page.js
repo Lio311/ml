@@ -201,7 +201,7 @@ export default async function BlogPost({ params }) {
                         "datePublished": article.created_at,
                         "author": {
                             "@type": "Person",
-                            "name": "Lior ml",
+                            "name": "Lio",
                             "jobTitle": "Founder",
                             "sameAs": ["https://instagram.com/ml_tlv"]
                         },
