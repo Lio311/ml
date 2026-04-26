@@ -189,6 +189,12 @@ export async function POST(req) {
                 } catch (e) {
                     console.error("Failed to send review reward email:", e);
                 }
+                // Update visual workflow last_run
+                await pool.query(`
+                    UPDATE workflows 
+                    SET last_run = NOW() 
+                    WHERE name = 'תגמול על חוות דעת (10% הנחה)'
+                `);
             }
         }
 

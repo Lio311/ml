@@ -94,6 +94,12 @@ export async function POST(req) {
                     );
                     await sendEmail(email, welcomeTmpl.subject || 'ברוכים הבאים ל-ml_tlv! ✨', welcomeTmpl.html, 'welcome');
                 }
+                // Update visual workflows last_run
+                await client.query(`
+                    UPDATE workflows 
+                    SET last_run = NOW() 
+                    WHERE name IN ('התראת נרשם חדש (למנהל)', 'מייל ברוכים הבאים (למשתמש חדש)')
+                `);
                 console.log(`[Clerk Webhook] Successfully processed new user: ${email}`);
             } else {
                 console.log(`[Clerk Webhook] Successfully updated user: ${email}`);

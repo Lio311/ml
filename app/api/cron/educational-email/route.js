@@ -99,6 +99,13 @@ export async function GET(req) {
                 }
             }
 
+            // Update workflow last_run for visual sync
+            await client.query(`
+                UPDATE workflows 
+                SET last_run = NOW() 
+                WHERE name = 'מייל חינוכי (טיפים לשימוש בבושם)'
+            `);
+
             return NextResponse.json({ success: true, processed });
 
         } finally {

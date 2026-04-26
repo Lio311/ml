@@ -105,6 +105,13 @@ export async function GET(req) {
                 }
             }
 
+            // Update workflow last_run for visual sync
+            await client.query(`
+                UPDATE workflows 
+                SET last_run = NOW() 
+                WHERE name = 'שחזור עגלה נטושה (+5% הנחה)'
+            `);
+
             return NextResponse.json({ success: true, processed });
 
         } finally {

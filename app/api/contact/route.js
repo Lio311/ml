@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { sendEmail, getTemplate } from '@/app/lib/email';
 import { isAutomationActive } from '@/app/lib/automationConfig';
+import pool from '@/app/lib/db';
 
 export async function POST(req) {
     try {
@@ -30,6 +31,13 @@ export async function POST(req) {
 
         // Send to admin email (GMAIL_USER)
         await sendEmail(process.env.GMAIL_USER || process.env.EMAIL_USER, subject, html, 'contact_form_alert');
+
+        // Update visual workflow last_run
+        await pool.query(`
+            UPDATE workflows 
+            SET last_run = NOW() 
+            WHERE name = 'התראת פנייה - טופס צור קשר'
+        `);
 
         return NextResponse.json({ success: true });
 
