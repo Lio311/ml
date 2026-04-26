@@ -21,7 +21,7 @@ export default function TrustSection() {
         {
             icon: <Sparkles className="w-6 h-6" />,
             title: isRTL ? "אוצרות של מומחים" : "Expert Curation",
-            desc: isRTL ? "כל בושם נבחר ע\"י Lio כדי להבטיח איכות וניחוח בלתי נשכח." : "Every perfume is hand-picked by Lio to ensure quality and memory."
+            desc: isRTL ? "כל בושם נבחר ע\"י צוות האתר כדי להבטיח איכות וניחוח בלתי נשכח." : "Every perfume is hand-picked by our team to ensure quality and memory."
         },
         {
             icon: <MessageCircle className="w-6 h-6" />,
