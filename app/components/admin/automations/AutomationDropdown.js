@@ -20,7 +20,7 @@ export default function AutomationDropdown({ value, onChange, options, placehold
     }, []);
 
     return (
-        <div className="relative w-full text-center" dir="rtl" ref={dropdownRef}>
+        <div className="relative w-full text-center nodrag" dir="rtl" ref={dropdownRef}>
             <button
                 type="button"
                 onClick={() => setIsOpen(!isOpen)}
@@ -31,7 +31,7 @@ export default function AutomationDropdown({ value, onChange, options, placehold
             </button>
 
             {isOpen && (
-                <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 bg-white border border-gray-100 rounded-2xl shadow-2xl z-[100] overflow-hidden min-w-[200px] animate-in fade-in zoom-in duration-150">
+                <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 bg-white border border-gray-100 rounded-2xl shadow-2xl z-[100] overflow-hidden min-w-[200px] animate-in fade-in zoom-in duration-150 nodrag">
                     <div className="p-1.5 space-y-1">
                         {options.map((option) => (
                             <button
