@@ -41,9 +41,9 @@ const ActionNode = memo(({ data, isConnectable }) => {
   const [loadingTemplates, setLoadingTemplates] = useState(false);
   const [showPreview, setShowPreview] = useState(false);
 
-  // Fetch email templates when action type is email/admin_notify/coupon
+  // Fetch email templates when action type is email/admin_notify
   useEffect(() => {
-    const shouldFetch = ['email', 'admin_notify', 'coupon'].includes(data.actionType);
+    const shouldFetch = ['email', 'admin_notify'].includes(data.actionType);
     if (shouldFetch && templates.length === 0) {
       setLoadingTemplates(true);
       fetch('/api/admin/mailing/templates')
@@ -65,7 +65,7 @@ const ActionNode = memo(({ data, isConnectable }) => {
     (t.slug === data.templateSlug) || (`id_${t.id}` === data.templateSlug)
   );
 
-  const showTemplateSelector = ['email', 'admin_notify', 'coupon'].includes(data.actionType);
+  const showTemplateSelector = ['email', 'admin_notify'].includes(data.actionType);
 
   return (
     <div className="bg-white border-2 border-blue-500/30 p-5 rounded-[2rem] min-w-[240px] max-w-[280px] shadow-sm hover:shadow-md transition-all group" dir="rtl">
