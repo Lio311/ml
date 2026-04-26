@@ -1,4 +1,4 @@
-import { Assistant, Dancing_Script, Gveret_Levin } from "next/font/google";
+import { Assistant, Dancing_Script } from "next/font/google";
 import { ClerkProvider } from '@clerk/nextjs';
 import { heIL, enUS } from "@clerk/localizations";
 import "./globals.css";
@@ -32,12 +32,6 @@ const dancingScript = Dancing_Script({
   subsets: ["latin"],
   weight: "400",
   variable: "--font-dancing-script",
-});
-
-const gveretLevin = Gveret_Levin({
-  subsets: ["hebrew"],
-  weight: "400",
-  variable: "--font-gveret-levin",
 });
 
 export const viewport = {
@@ -121,7 +115,7 @@ export default async function RootLayout({ children }) {
       }}
     >
       <html lang={locale} dir={dir} style={{ colorScheme: 'light' }}>
-        <body className={`${assistant.variable} ${dancingScript.variable} ${gveretLevin.variable} antialiased`}>
+        <body className={`${assistant.variable} ${dancingScript.variable} antialiased`}>
           <LanguageProvider initialLocale={locale}>
             <CartProvider>
               <WishlistProvider>
