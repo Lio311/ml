@@ -41,6 +41,20 @@ export default function WorkflowEditor({ workflowId, initialData }) {
   const [nodes, setNodes] = useState([]);
   const [edges, setEdges] = useState(initialData?.edges || initialEdges);
   const [reactFlowInstance, setReactFlowInstance] = useState(null);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      const mobile = window.innerWidth < 768;
+      setIsMobile(mobile);
+      if (mobile) setIsSidebarOpen(false);
+      else setIsSidebarOpen(true);
+    };
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const updateNodeData = useCallback((nodeId, newData) => {
     setNodes((nds) =>
@@ -98,6 +112,38 @@ export default function WorkflowEditor({ workflowId, initialData }) {
   }, []);
 
 
+
+  const addNode = useCallback((type) => {
+    const nodeId = getId();
+    // Center of screen relative to flow
+    const position = reactFlowInstance?.project({
+      x: window.innerWidth / 2 - 100,
+      y: window.innerHeight / 2 - 50,
+    }) || { x: 250, y: 250 };
+
+    const newNode = {
+      id: nodeId,
+      type,
+      position,
+      data: { 
+        label: `${type} node`, 
+        config: {},
+        onChange: (val) => {
+          const key = type === 'trigger' ? 'triggerType' : type === 'action' ? 'actionType' : 'logicType';
+          updateNodeData(nodeId, { [key]: val });
+        },
+        onChangeCustom: (val) => {
+          const key = type === 'trigger' ? 'customTrigger' : type === 'action' ? 'customAction' : 'customLogic';
+          updateNodeData(nodeId, { [key]: val });
+        },
+        onChangeLogic: (key, val) => {
+          updateNodeData(nodeId, { [key]: val });
+        }
+      },
+    };
+    setNodes((nds) => nds.concat(newNode));
+    if (isMobile) setIsSidebarOpen(false);
+  }, [reactFlowInstance, updateNodeData, isMobile]);
 
   const onDrop = useCallback(
     (event) => {
@@ -160,30 +206,38 @@ export default function WorkflowEditor({ workflowId, initialData }) {
   return (
     <div className="flex flex-col h-screen bg-gray-50 text-gray-900 overflow-hidden">
       {/* Editor Header */}
-      <div className="h-16 border-b border-white/10 flex items-center justify-between px-6 bg-black z-10 shadow-2xl">
-        <div className="flex items-center gap-4">
+      <div className="h-16 md:h-20 border-b border-white/10 flex items-center justify-between px-4 md:px-8 bg-black z-20 shadow-2xl shrink-0">
+        <div className="flex items-center gap-2 md:gap-4 order-2 md:order-1">
           <button 
             onClick={() => window.location.href = '/admin/automations'}
-            className="p-2 hover:bg-white/10 rounded-xl transition-all"
+            className="p-1 md:p-2 hover:bg-white/10 rounded-xl transition-all"
           >
             <ChevronRight size={20} className="text-gray-400" />
           </button>
           <div className="text-right">
-            <h1 className="font-black tracking-tight text-lg text-white">{initialData?.name || "אוטומציה חדשה"}</h1>
-            <p className="text-[9px] text-gray-500 uppercase font-black tracking-[0.2em] leading-none mt-1">Workflow Editor</p>
+            <h1 className="font-black tracking-tight text-sm md:text-lg text-white truncate max-w-[150px] md:max-w-none">{initialData?.name || "אוטומציה חדשה"}</h1>
+            <p className="text-[8px] md:text-[9px] text-gray-500 uppercase font-black tracking-[0.2em] leading-none mt-1">Workflow Editor</p>
           </div>
         </div>
 
-        <div className="flex items-center gap-3">
-          <button className="flex items-center gap-2 px-4 py-2 bg-white/10 hover:bg-white/20 rounded-xl font-bold text-sm transition-all text-white border border-white/10">
-            בדיקה
-            <Play size={16} className="text-green-500 fill-green-500" />
+        <div className="flex items-center gap-2 md:gap-3 order-1 md:order-2">
+          <button 
+            onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+            className="md:hidden flex items-center justify-center w-9 h-9 bg-white/5 border border-white/10 rounded-xl text-white active:scale-90 transition-all"
+          >
+            <Plus size={20} className={`transition-transform duration-300 ${isSidebarOpen ? 'rotate-45' : ''}`} />
+          </button>
+          
+          <button className="flex items-center gap-2 px-3 md:px-5 py-2 bg-white/5 hover:bg-white/10 text-white rounded-xl font-bold text-[10px] md:text-xs transition-all border border-white/5 active:scale-95">
+            <span className="hidden md:inline">בדיקה</span>
+            <Play size={14} className="text-green-500 fill-green-500" />
           </button>
           <button 
             onClick={saveWorkflow}
-            className="flex items-center gap-2 px-5 py-2 bg-gray-900 hover:bg-gray-800 text-white rounded-xl font-bold text-sm shadow-lg transition-all active:scale-95"
+            className="flex items-center gap-2 px-3 md:px-6 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold text-[10px] md:text-sm shadow-lg shadow-blue-600/20 transition-all active:scale-95"
           >
-            שמור שינויים
+            <span className="hidden md:inline">שמור שינויים</span>
+            <span className="md:hidden">שמור</span>
             <Save size={16} />
           </button>
         </div>
@@ -191,13 +245,24 @@ export default function WorkflowEditor({ workflowId, initialData }) {
 
       <div className="flex flex-1 overflow-hidden relative flex-row">
         {/* Nodes Sidebar (Right side in RTL because it's first child) */}
-        <div className="w-72 border-l border-white/10 bg-black overflow-y-auto px-6 py-4 space-y-6 scrollbar-hide z-10">
+        <div className={`
+          ${isMobile ? 'fixed inset-y-0 right-0 w-full sm:w-80 translate-x-full' : 'w-72 border-l border-white/10'} 
+          ${isMobile && isSidebarOpen ? 'translate-x-0' : ''}
+          bg-black overflow-y-auto px-6 py-4 space-y-6 scrollbar-hide z-30 transition-transform duration-300 ease-in-out
+        `}>
+          <div className="flex items-center justify-between mb-4 md:hidden">
+            <h3 className="text-white font-bold">הוספת רכיב</h3>
+            <button onClick={() => setIsSidebarOpen(false)} className="text-gray-400 p-2">
+              <Plus size={24} className="rotate-45" />
+            </button>
+          </div>
+          
           {/* Components Section */}
           <div className="space-y-3">
             <label className="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] block mb-2">ספריית רכיבים</label>
             <div className="space-y-2">
-                <NodeTemplate type="trigger" label="טריגר" icon={Zap} color="text-yellow-500" />
-                <NodeTemplate type="action" label="פעולה" icon={Box} color="text-blue-500" />
+                <NodeTemplate type="trigger" label="טריגר" icon={Zap} color="text-yellow-500" onAdd={() => addNode('trigger')} />
+                <NodeTemplate type="action" label="פעולה" icon={Box} color="text-blue-500" onAdd={() => addNode('action')} />
               </div>
           </div>
 
@@ -205,10 +270,10 @@ export default function WorkflowEditor({ workflowId, initialData }) {
           <div className="space-y-3 pt-3 border-t border-white/5">
             <label className="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] block mb-2">לוגיקה ופונקציות</label>
             <div className="grid grid-cols-2 gap-2">
-              <NodeTemplate type="logic" label="לוגיקה" icon={GitBranch} color="text-purple-500" />
-              <NodeTemplate type="wait" label="השהיה" icon={Clock} color="text-orange-500" />
-              <NodeTemplate type="split" label="פיצול" icon={GitMerge} color="text-cyan-500" />
-              <NodeTemplate type="loop" label="לולאה" icon={RefreshCw} color="text-indigo-500" />
+              <NodeTemplate type="logic" label="לוגיקה" icon={GitBranch} color="text-purple-500" onAdd={() => addNode('logic')} />
+              <NodeTemplate type="wait" label="השהיה" icon={Clock} color="text-orange-500" onAdd={() => addNode('wait')} />
+              <NodeTemplate type="split" label="פיצול" icon={GitMerge} color="text-cyan-500" onAdd={() => addNode('split')} />
+              <NodeTemplate type="loop" label="לולאה" icon={RefreshCw} color="text-indigo-500" onAdd={() => addNode('loop')} />
             </div>
           </div>
 
@@ -251,7 +316,7 @@ export default function WorkflowEditor({ workflowId, initialData }) {
   );
 }
 
-function NodeTemplate({ type, label, icon: Icon, color }) {
+function NodeTemplate({ type, label, icon: Icon, color, onAdd }) {
   const onDragStart = (event, nodeType) => {
     // Create a ghost clone for the drag image to avoid capturing the black sidebar background
     const target = event.currentTarget;
@@ -283,6 +348,7 @@ function NodeTemplate({ type, label, icon: Icon, color }) {
     <div
       className="bg-transparent border-none p-0 cursor-grab active:cursor-grabbing transition-colors duration-0"
       onDragStart={(event) => onDragStart(event, type)}
+      onClick={() => onAdd?.()}
       draggable
     >
       <div className={`flex flex-col items-center gap-2 p-3 bg-[#1a1a1a] border border-[#333] rounded-2xl hover:bg-[#222] hover:border-[#444] transition-none opacity-[0.99] ${color}`}>
