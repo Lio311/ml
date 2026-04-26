@@ -113,9 +113,9 @@ export async function GET(req) {
             // Update workflow last_run for visual sync
             await client.query(`
                 UPDATE workflows 
-                SET last_run = NOW() 
+                SET last_run = NOW(), total_runs = total_runs + $1 
                 WHERE name = 'המלצות בשמים מותאמות אישית'
-            `);
+            `, [sent]);
 
             return NextResponse.json({ success: true, processed: processedCount, sent: sentCount });
 

@@ -134,9 +134,27 @@ export default function AutomationsClient() {
             {/* Stats Overview */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                 {[
-                    { label: "אוטומציות פעילות", value: workflows.filter(w => w.is_active).length, icon: Zap, color: "text-blue-600", bgColor: "bg-blue-50" },
-                    { label: "הרצות ב-24 שעות", value: "0", icon: History, color: "text-purple-600", bgColor: "bg-purple-50" },
-                    { label: "זמן שנחסך (חודשי)", value: "0h", icon: Clock, color: "text-green-600", bgColor: "bg-green-50" },
+                    { 
+                        label: "אוטומציות פעילות", 
+                        value: workflows.filter(w => w.is_active).length, 
+                        icon: Zap, 
+                        color: "text-blue-600", 
+                        bgColor: "bg-blue-50" 
+                    },
+                    { 
+                        label: "הרצות ב-24 שעות", 
+                        value: workflows.filter(w => w.last_run && new Date(w.last_run) > new Date(Date.now() - 24 * 60 * 60 * 1000)).length, 
+                        icon: History, 
+                        color: "text-purple-600", 
+                        bgColor: "bg-purple-50" 
+                    },
+                    { 
+                        label: "זמן שנחסך (חודשי)", 
+                        value: `${Math.round(workflows.reduce((acc, w) => acc + (w.total_runs || 0) * 2.5, 0) / 60)}h`, 
+                        icon: Clock, 
+                        color: "text-green-600", 
+                        bgColor: "bg-green-50" 
+                    },
                 ].map((stat, i) => (
                     <div key={i} className="bg-white border border-gray-200 p-6 rounded-3xl shadow-sm">
                         <div className="flex items-center gap-4">

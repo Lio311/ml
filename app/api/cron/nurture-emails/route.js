@@ -88,9 +88,9 @@ export async function GET(req) {
             // Update workflow last_run for visual sync
             await client.query(`
                 UPDATE workflows 
-                SET last_run = NOW() 
+                SET last_run = NOW(), total_runs = total_runs + $1 
                 WHERE name IN ('טיפוח לקוחות: 10 ימים (בקשת בושם)', 'טיפוח לקוחות: 25 ימים (התאמה אישית)')
-            `);
+            `, [processed10 + processed25]);
 
             return NextResponse.json({ 
                 success: true, 

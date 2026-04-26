@@ -35,7 +35,7 @@ export async function POST(req) {
         // Update visual workflow last_run
         await pool.query(`
             UPDATE workflows 
-            SET last_run = NOW() 
+            SET last_run = NOW(), total_runs = total_runs + 1
             WHERE name = 'התראת פנייה - טופס צור קשר'
         `);
 

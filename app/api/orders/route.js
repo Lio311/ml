@@ -452,7 +452,7 @@ export async function POST(req) {
             try {
                 await client.query(`
                     UPDATE workflows 
-                    SET last_run = NOW() 
+                    SET last_run = NOW(), total_runs = total_runs + 1
                     WHERE name IN ('התראת הזמנה חדשה (למנהל)', 'אישור קבלת הזמנה')
                 `);
             } catch (e) {

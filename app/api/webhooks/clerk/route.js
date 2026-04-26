@@ -97,7 +97,7 @@ export async function POST(req) {
                 // Update visual workflows last_run
                 await client.query(`
                     UPDATE workflows 
-                    SET last_run = NOW() 
+                    SET last_run = NOW(), total_runs = total_runs + 1
                     WHERE name IN ('התראת נרשם חדש (למנהל)', 'מייל ברוכים הבאים (למשתמש חדש)')
                 `);
                 console.log(`[Clerk Webhook] Successfully processed new user: ${email}`);
