@@ -283,7 +283,7 @@ input[autocomplete="one-time-code"] {
   }
 }
 
-h1 {
+h1, .font-handwriting {
   font-family: 'Gveret Levin', 'Amatic SC', cursive !important;
   font-weight: 700;
 }
