@@ -21,6 +21,7 @@ export default function HomeSEOContent() {
                     </div>
 
                     {/* Content Blocks - Two Columns on Desktop */}
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 text-gray-700 leading-relaxed text-justify font-light text-lg">
                         <div className="space-y-6">
                             <p className="direct-answer-paragraph" dangerouslySetInnerHTML={{ __html: t('common.seo_p1') }} />
                             <p dangerouslySetInnerHTML={{ __html: t('common.seo_p2') }} />

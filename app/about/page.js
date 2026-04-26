@@ -32,45 +32,65 @@ export async function generateMetadata() {
 }
 
 const AboutHE = () => (
-    <div className="space-y-6 text-lg leading-relaxed text-gray-700 text-right" dir="rtl">
-        <p>
-            ברוכים הבאים ל-<strong>ml_tlv</strong>, הבית שלכם לבשמי נישה ובוטיק יוקרתיים בישראל.
-        </p>
-        <p>
-            אנחנו מאמינים שלמצוא את "הריח שלך" זה מסע, לא סתם רכישה. לכן הקמנו את הפלטפורמה הזו -
-            כדי לאפשר לכם להתנסות בבשמי נישה ובוטיק, <strong>דוגמיות יוקרה</strong> ודיקאנטים האיכותיים ביותר בעולם, במחירים נגישים ובכמויות קטנות.
-        </p>
-        <p>
-            הקולקציה שלנו כוללת מותגים כמו Xerjoff, Roja, Creed, Amouage ועוד רבים וטובים.
-            כל הדוגמיות (Decants) נשאבות ישירות מהבקבוקים המקוריים בתהליך סטרילי ומקצועי,
-            כדי להבטיח שתקבלו את הריח האותנטי והמדויק ביותר.
-        </p>
+    <div className="space-y-8 text-lg leading-relaxed text-gray-700 text-right font-light" dir="rtl">
+        <section>
+            <h2 className="text-3xl font-serif font-black text-gray-900 mb-6">הסיפור מאחורי ml-tlv</h2>
+            <p>
+                הכל התחיל מאהבה פשוטה — או אולי נכון יותר לומר, מהתמכרות — לניחוחות. בתור חובב בשמים מושבע, המייסד שלנו, <strong>Lior ml</strong>, מצא את עצמו שוב ושוב עומד מול המדף בחנות, מתלבט אם להוציא אלפי שקלים על בקבוק של 100 מ"ל שייתכן שיימאס עליו אחרי שבוע.
+            </p>
+            <p className="mt-4">
+                הצורך בפתרון חכם יותר הוליד את <strong>ml-tlv</strong>. הבנו שהדרך האמיתית להכיר בושם היא לא ב-"התזה מהירה" על הנייר בחנות, אלא בחיים עצמם: בבוקר במשרד, בחדר הכושר, ובדייט בערב. הבושם צריך לחיות איתכם כדי שתדעו אם הוא באמת "שלכם".
+            </p>
+        </section>
 
-        <div className="my-10 p-8 bg-gray-50 border-y border-black/10 text-center">
-            <h3 className="text-2xl font-serif mb-4">למה לבחור בנו?</h3>
-            <div className="grid md:grid-cols-3 gap-8">
-                <div>
-                    <div className="text-3xl mb-2">💎</div>
-                    <h4 className="font-bold mb-2">100% מקורי</h4>
-                    <p className="text-sm">כל הבשמים מקוריים בהתחייבות מלאה.</p>
+        <section className="bg-stone-50 p-8 rounded-[2rem] border border-stone-100 shadow-sm">
+            <h3 className="text-2xl font-serif font-bold text-gray-900 mb-4">הסטנדרט המקצועי שלנו</h3>
+            <p>
+                אנחנו ב-ml-tlv לא מתפשרים על איכות. כל <strong>דקאנט</strong> (דוגמית בושם) שיוצא מהסטודיו שלנו בתל אביב עובר תהליך קפדני:
+            </p>
+            <ul className="list-disc list-inside mt-4 space-y-2 mr-4">
+                <li><strong>100% מקוריות:</strong> כל טיפה נשאבת ישירות מהבקבוקים המקוריים בלבד. אנחנו מתחייבים לאמינות מלאה.</li>
+                <li><strong>תהליך סטרילי:</strong> השימוש במזרקים חד-פעמיים ובסביבה נקייה מבטיח שהבושם שומר על הרכבו המדויק.</li>
+                <li><strong>אריזת פרימיום:</strong> אנחנו משתמשים בבקבוקי זכוכית איכותיים עם מרסס (Atomizer) שמספק פיזור מושלם, ממש כמו הבקבוק המקורי.</li>
+            </ul>
+        </section>
+
+        <section>
+            <h3 className="text-2xl font-serif font-bold text-gray-900 mb-4">יותר מחנות — קהילה של חובבי נישה</h3>
+            <p>
+                מאז הקמתנו ב-2023 בתל אביב, הפכנו לבית עבור אלפי חובבי בשמים בישראל. אנחנו גאים להציע מעל 300 סוגי בשמים ממותגי העל הנחשקים בעולם — Xerjoff, Roja, Amouage, Creed, ו-Maison Francis Kurkdjian. 
+            </p>
+            <p className="mt-4">
+                המטרה שלנו היא להנגיש את עולם ה-<strong>Haute Parfumerie</strong> לכולם. בין אם אתם מחפשים את הבושם המושלם לחתונה, או סתם רוצים להריח כמו מיליון דולר ביום יום מבלי לשבור תוכנית חיסכון, אנחנו כאן כדי לייעץ וללוות אתכם.
+            </p>
+        </section>
+
+        <div className="my-12 p-8 bg-black text-white rounded-[2.5rem] text-center relative overflow-hidden shadow-2xl">
+            <div className="absolute top-0 left-0 w-24 h-24 bg-white/5 rounded-full -translate-x-12 -translate-y-12"></div>
+            <h3 className="text-2xl font-serif mb-6 relative z-10 text-white">למה הלקוחות שלנו חוזרים שוב ושוב?</h3>
+            <div className="grid md:grid-cols-3 gap-8 relative z-10">
+                <div className="space-y-2">
+                    <div className="text-4xl mb-4">🏆</div>
+                    <h4 className="font-bold text-white">אמינות ללא פשרות</h4>
+                    <p className="text-gray-400 text-sm">התחייבות למקוריות ב-100% בכל הזמנה.</p>
                 </div>
-                <div>
-                    <div className="text-3xl mb-2">🎁</div>
-                    <h4 className="font-bold mb-2">פינוקים בכל הזמנה</h4>
-                    <p className="text-sm">דוגמיות מתנה על פי גובה ההזמנה.</p>
+                <div className="space-y-2">
+                    <div className="text-4xl mb-4">✨</div>
+                    <h4 className="font-bold text-white">ייעוץ אישי</h4>
+                    <p className="text-gray-400 text-sm">אנחנו זמינים באינסטגרם לעזור לכם לבחור.</p>
                 </div>
-                <div>
-                    <div className="text-3xl mb-2">🚀</div>
-                    <h4 className="font-bold mb-2">משלוח מהיר</h4>
-                    <p className="text-sm">שירות מהיר ואמין לכל הארץ.</p>
+                <div className="space-y-2">
+                    <div className="text-4xl mb-4">🚚</div>
+                    <h4 className="font-bold text-white">משלוח אקספרס</h4>
+                    <p className="text-gray-400 text-sm">מגיעים לכל נקודה בארץ במהירות שיא.</p>
                 </div>
             </div>
         </div>
 
-        <p>
-            אנחנו כאן כדי לעזור לכם למצוא את החתימה האישית שלכם.
-            נתקעתם? צריכים המלצה? אנחנו זמינים באינסטגרם לכל שאלה.
-        </p>
+        <section className="text-center pb-10">
+            <p className="italic text-gray-500 mb-6">"בושם הוא לא רק ריח, הוא הזיכרון שנשאר בחדר אחרי שהלכתם."</p>
+            <p className="font-bold text-gray-900">— צוות ml-tlv</p>
+        </section>
     </div>
 );
 
