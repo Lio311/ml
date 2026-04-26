@@ -191,7 +191,7 @@ export default function WorkflowEditor({ workflowId, initialData }) {
 
       <div className="flex flex-1 overflow-hidden relative flex-row">
         {/* Nodes Sidebar (Right side in RTL because it's first child) */}
-        <div className="flex-1 overflow-y-auto px-6 py-4 space-y-6 scrollbar-hide">
+        <div className="w-72 border-l border-white/10 bg-black overflow-y-auto px-6 py-4 space-y-6 scrollbar-hide z-10">
           {/* Components Section */}
           <div className="space-y-3">
             <label className="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] block mb-2">ספריית רכיבים</label>
@@ -217,7 +217,7 @@ export default function WorkflowEditor({ workflowId, initialData }) {
                 <p>גרור רכיבים למשטח העבודה כדי להתחיל לבנות את האוטומציה שלך.</p>
              </div>
           </div>
-        </aside>
+        </div>
 
         {/* Canvas Area (Left side in RTL because it's second child) */}
         <div className="flex-1 relative h-full bg-[#f1f5f9]" ref={reactFlowWrapper}>
