@@ -13,7 +13,8 @@ const triggerOptions = [
   { value: "product_restock", label: "מוצר חזר למלאי" },
   { value: "product_out_of_stock", label: "מוצר אזל מהמלאי" },
   { value: "coupon_used", label: "שימוש בקופון" },
-  { value: "custom", label: "פעולה מותאמת אישית" },
+  { value: "contact_form", label: "טופס צור קשר נשלח" },
+  { value: "review_submitted", label: "לקוח פרסם ביקורת" },
 ];
 
 const statusOptions = [
@@ -26,11 +27,6 @@ const statusOptions = [
   { value: "failed", label: "נכשל" },
   { value: "ready-for-pickup", label: "מוכן לאיסוף" },
   { value: "shipped", label: "נשלח" },
-];
-
-const customOptions = [
-  { value: "contact_form", label: "טופס צור קשר נשלח" },
-  { value: "review_submitted", label: "לקוח פרסם ביקורת" },
 ];
 
 const TriggerNode = memo(({ data, isConnectable }) => {
@@ -54,16 +50,6 @@ const TriggerNode = memo(({ data, isConnectable }) => {
                 onChange={(val) => data.onChangeCustom?.(val)}
                 options={statusOptions}
                 placeholder="בחר סטטוס..."
-              />
-            </div>
-          )}
-          {data.triggerType === 'custom' && (
-            <div className="mt-3 w-full">
-              <AutomationDropdown 
-                value={data.customTrigger || 'contact_form'}
-                onChange={(val) => data.onChangeCustom?.(val)}
-                options={customOptions}
-                placeholder="בחר פעולה..."
               />
             </div>
           )}

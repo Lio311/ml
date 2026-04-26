@@ -125,7 +125,7 @@ const systemAutomations = [
         name: "תגמול על חוות דעת (10% הנחה)",
         description: "כשלקוח משאיר חוות דעת — נוצר לו קופון SAVE10 ייחודי ונשלח מייל תודה עם הקופון.",
         nodes: [
-            { id: "1", type: "trigger", position: { x: 50, y: 250 }, data: { label: "לקוח פרסם ביקורת", triggerType: "custom", customTrigger: "review_submitted", category: "חוות דעת" } },
+            { id: "1", type: "trigger", position: { x: 50, y: 250 }, data: { label: "לקוח פרסם ביקורת", triggerType: "review_submitted", category: "חוות דעת" } },
             { id: "2", type: "action", position: { x: 420, y: 50 }, data: { label: "יצירת קופון 10%", actionType: "coupon", target: "customer", description: "קופון SAVE10-XXXXX, 10% הנחה, תקף 7 ימים. חד-פעמי לכל לקוח.", discount_percent: 10, coupon_validity_hours: 168, cooldown_days: 0 } },
             { id: "3", type: "action", position: { x: 420, y: 450 }, data: { label: "מייל: תודה + קופון", actionType: "email", target: "customer", description: "מייל תודה על הדירוג עם קוד הקופון.", templateSlug: "review_reward" } }
         ],
@@ -155,7 +155,7 @@ const systemAutomations = [
         name: "התראת פנייה - טופס צור קשר",
         description: "מייל שקופץ אליך ברגע שלקוח שולח הודעה דרך טופס צור קשר — כולל שם, מייל ותוכן ההודעה.",
         nodes: [
-            { id: "1", type: "trigger", position: { x: 150, y: 150 }, data: { label: "מילוי טופס צור קשר", triggerType: "custom", customTrigger: "contact_form", category: "כללי" } },
+            { id: "1", type: "trigger", position: { x: 150, y: 150 }, data: { label: "מילוי טופס צור קשר", triggerType: "contact_form", category: "כללי" } },
             { id: "2", type: "action", position: { x: 500, y: 150 }, data: { label: "העברת הפנייה למנהל", actionType: "admin_notify", target: "admin", description: "כולל: שם, כתובת מייל ותוכן ההודעה.", templateSlug: "contact_form_alert" } }
         ],
         edges: [ { id: "e1-2", source: "1", target: "2", animated: true, style: { stroke: "#475569", strokeWidth: 2 } } ]
