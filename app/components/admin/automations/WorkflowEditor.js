@@ -86,6 +86,9 @@ export default function WorkflowEditor({ workflowId, initialData }) {
           },
           onChangeLogic: (key, val) => {
             updateNodeData(node.id, { [key]: val });
+          },
+          onChangeParams: (key, val) => {
+            updateNodeData(node.id, { [key]: val });
           }
         }
       }));
@@ -138,6 +141,9 @@ export default function WorkflowEditor({ workflowId, initialData }) {
         },
         onChangeLogic: (key, val) => {
           updateNodeData(nodeId, { [key]: val });
+        },
+        onChangeParams: (key, val) => {
+          updateNodeData(nodeId, { [key]: val });
         }
       },
     };
@@ -178,6 +184,9 @@ export default function WorkflowEditor({ workflowId, initialData }) {
             updateNodeData(nodeId, { [key]: val });
           },
           onChangeLogic: (key, val) => {
+            updateNodeData(nodeId, { [key]: val });
+          },
+          onChangeParams: (key, val) => {
             updateNodeData(nodeId, { [key]: val });
           }
         },
