@@ -234,6 +234,7 @@ export default function WorkflowEditor({ workflowId, initialData }) {
             fitView
             snapToGrid
             snapGrid={[15, 15]}
+            proOptions={{ hideAttribution: true }}
           >
             <Background color="#cbd5e1" gap={20} variant="dots" />
             <Controls className="bg-white border-gray-200 shadow-sm" />
