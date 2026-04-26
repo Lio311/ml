@@ -207,7 +207,7 @@ export default function WorkflowEditor({ workflowId, initialData }) {
     <div className="flex flex-col h-screen bg-gray-50 text-gray-900 overflow-hidden">
       {/* Editor Header */}
       <div className="h-16 md:h-20 border-b border-white/10 flex items-center justify-between px-4 md:px-8 bg-black z-20 shadow-2xl shrink-0">
-        <div className="flex items-center gap-2 md:gap-4 order-2 md:order-1">
+        <div className="flex items-center gap-2 md:gap-4">
           <button 
             onClick={() => window.location.href = '/admin/automations'}
             className="p-1 md:p-2 hover:bg-white/10 rounded-xl transition-all"
@@ -220,7 +220,7 @@ export default function WorkflowEditor({ workflowId, initialData }) {
           </div>
         </div>
 
-        <div className="flex items-center gap-2 md:gap-3 order-1 md:order-2">
+        <div className="flex items-center gap-2 md:gap-3">
           <button 
             onClick={() => setIsSidebarOpen(!isSidebarOpen)}
             className="md:hidden flex items-center justify-center w-9 h-9 bg-white/5 border border-white/10 rounded-xl text-white active:scale-90 transition-all"
@@ -246,8 +246,7 @@ export default function WorkflowEditor({ workflowId, initialData }) {
       <div className="flex flex-1 overflow-hidden relative flex-row">
         {/* Nodes Sidebar (Right side in RTL because it's first child) */}
         <div className={`
-          ${isMobile ? 'fixed inset-y-0 right-0 w-full sm:w-80 translate-x-full' : 'w-72 border-l border-white/10'} 
-          ${isMobile && isSidebarOpen ? 'translate-x-0' : ''}
+          ${isMobile ? `fixed inset-y-0 right-0 w-full sm:w-80 ${isSidebarOpen ? 'translate-x-0' : 'translate-x-full'}` : 'w-72 border-l border-white/10'} 
           bg-black overflow-y-auto px-6 py-4 space-y-6 scrollbar-hide z-30 transition-transform duration-300 ease-in-out
         `}>
           <div className="flex items-center justify-between mb-4 md:hidden">
