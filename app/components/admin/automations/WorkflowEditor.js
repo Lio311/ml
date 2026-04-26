@@ -252,13 +252,23 @@ export default function WorkflowEditor({ workflowId, initialData }) {
 
 function NodeTemplate({ type, label, icon: Icon, color }) {
   const onDragStart = (event, nodeType) => {
+    // Set a background that matches the canvas to hide the black box corners
+    const target = event.currentTarget;
+    target.style.backgroundColor = '#f1f5f9';
+    target.style.borderRadius = '1rem';
+    
     event.dataTransfer.setData('application/reactflow', nodeType);
     event.dataTransfer.effectAllowed = 'move';
+
+    // Reset after the drag image is captured
+    setTimeout(() => {
+      target.style.backgroundColor = 'transparent';
+    }, 0);
   };
 
   return (
     <div
-      className="bg-transparent border-none p-0 cursor-grab active:cursor-grabbing"
+      className="bg-transparent border-none p-0 cursor-grab active:cursor-grabbing transition-colors duration-0"
       onDragStart={(event) => onDragStart(event, type)}
       draggable
     >
