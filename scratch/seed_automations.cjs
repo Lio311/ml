@@ -52,10 +52,10 @@ const systemAutomations = [
         name: "שחזור עגלה נטושה (+5% הנחה)",
         description: "נשלח ללקוחות שהוסיפו מוצרים לעגלה ולא השלימו את הרכישה. כולל יצירת קופון ייחודי ושליחת מייל שחזור.",
         nodes: [
-            { id: "1", type: "trigger", position: { x: 50, y: 150 }, data: { label: "עגלה נטושה במערכת", triggerType: "abandoned_cart", category: "שיווק" } },
-            { id: "2", type: "wait", position: { x: 280, y: 150 }, data: { label: "המתנה", waitValue: "3", waitUnit: "hours" } },
-            { id: "3", type: "action", position: { x: 510, y: 80 }, data: { label: "יצירת קופון אישי", actionType: "coupon", target: "customer", description: "קופון SAVE5-XXXXX, 5% הנחה, תקף 24 שעות. צינון: 7 ימים.", discount_percent: 5, coupon_validity_hours: 24, cooldown_days: 7 } },
-            { id: "4", type: "action", position: { x: 510, y: 240 }, data: { label: "שליחת מייל שחזור", actionType: "email", target: "customer", description: "מייל 'שכחת משהו?' עם קוד הקופון וקישור לעגלה.", templateSlug: "cart_recovery" } }
+            { id: "1", type: "trigger", position: { x: 50, y: 250 }, data: { label: "עגלה נטושה במערכת", triggerType: "abandoned_cart", category: "שיווק" } },
+            { id: "2", type: "wait", position: { x: 320, y: 250 }, data: { label: "המתנה", waitValue: "3", waitUnit: "hours" } },
+            { id: "3", type: "action", position: { x: 600, y: 50 }, data: { label: "יצירת קופון אישי", actionType: "coupon", target: "customer", description: "קופון SAVE5-XXXXX, 5% הנחה, תקף 24 שעות. צינון: 7 ימים.", discount_percent: 5, coupon_validity_hours: 24, cooldown_days: 7 } },
+            { id: "4", type: "action", position: { x: 600, y: 450 }, data: { label: "שליחת מייל שחזור", actionType: "email", target: "customer", description: "מייל 'שכחת משהו?' עם קוד הקופון וקישור לעגלה.", templateSlug: "cart_recovery" } }
         ],
         edges: [
             { id: "e1-2", source: "1", target: "2", animated: true, style: { stroke: "#16a34a", strokeWidth: 2 } },
@@ -125,9 +125,9 @@ const systemAutomations = [
         name: "תגמול על חוות דעת (10% הנחה)",
         description: "כשלקוח משאיר חוות דעת — נוצר לו קופון SAVE10 ייחודי ונשלח מייל תודה עם הקופון.",
         nodes: [
-            { id: "1", type: "trigger", position: { x: 50, y: 150 }, data: { label: "לקוח פרסם ביקורת", triggerType: "custom", customTrigger: "review_submitted", category: "חוות דעת" } },
-            { id: "2", type: "action", position: { x: 330, y: 80 }, data: { label: "יצירת קופון 10%", actionType: "coupon", target: "customer", description: "קופון SAVE10-XXXXX, 10% הנחה, תקף 7 ימים. חד-פעמי לכל לקוח." } },
-            { id: "3", type: "action", position: { x: 330, y: 240 }, data: { label: "מייל: תודה + קופון", actionType: "email", target: "customer", description: "מייל תודה על הדירוג עם קוד הקופון.", templateSlug: "review_reward" } }
+            { id: "1", type: "trigger", position: { x: 50, y: 250 }, data: { label: "לקוח פרסם ביקורת", triggerType: "custom", customTrigger: "review_submitted", category: "חוות דעת" } },
+            { id: "2", type: "action", position: { x: 420, y: 50 }, data: { label: "יצירת קופון 10%", actionType: "coupon", target: "customer", description: "קופון SAVE10-XXXXX, 10% הנחה, תקף 7 ימים. חד-פעמי לכל לקוח." } },
+            { id: "3", type: "action", position: { x: 420, y: 450 }, data: { label: "מייל: תודה + קופון", actionType: "email", target: "customer", description: "מייל תודה על הדירוג עם קוד הקופון.", templateSlug: "review_reward" } }
         ],
         edges: [
             { id: "e1-2", source: "1", target: "2", animated: true, style: { stroke: "#16a34a", strokeWidth: 2 } },
