@@ -283,11 +283,11 @@ export default function WorkflowEditor({ workflowId, initialData }) {
             <label className="text-[10px] font-black text-gray-500 uppercase tracking-[0.2em] block mb-2">לוגיקה ופונקציות</label>
             <div className="grid grid-cols-2 gap-2">
               <NodeTemplate type="logic" label="לוגיקה" icon={GitBranch} color="text-purple-500" onAdd={() => addNode('logic')} />
+              <NodeTemplate type="loop" label="לולאה" icon={RefreshCw} color="text-indigo-500" onAdd={() => addNode('loop')} />
               <NodeTemplate type="wait" label="השהיה" icon={Clock} color="text-orange-500" onAdd={() => addNode('wait')} />
               <NodeTemplate type="wait_until" label="המתנה עד ל..." icon={Clock} color="text-red-500" onAdd={() => addNode('wait_until')} />
               <NodeTemplate type="split" label="פיצול" icon={GitMerge} color="text-cyan-500" onAdd={() => addNode('split')} />
               <NodeTemplate type="merge" label="איחוד" icon={GitPullRequest} color="text-teal-500" onAdd={() => addNode('merge')} />
-              <NodeTemplate type="loop" label="לולאה" icon={RefreshCw} color="text-indigo-500" onAdd={() => addNode('loop')} />
             </div>
           </div>
 
