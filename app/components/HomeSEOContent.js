@@ -35,6 +35,9 @@ export default function HomeSEOContent() {
                             <p dangerouslySetInnerHTML={{ __html: t('common.seo_p3') }} />
                             <h3 className="text-2xl font-serif font-bold text-gray-900 pt-4">{t('common.seo_niche_title')}</h3>
                             <p dangerouslySetInnerHTML={{ __html: t('common.seo_p4') }} />
+                            <p className="text-sm font-medium text-gray-500 uppercase tracking-wider">
+                                Xerjoff • Roja Parfums • Amouage • Creed • Louis Vuitton • Bvlgari • Tom Ford • Maison Francis Kurkdjian • Byredo • Le Labo • Diptyque • Penhaligon's
+                            </p>
                             <p dangerouslySetInnerHTML={{ __html: t('common.seo_p5') }} />
                         </div>
                     </div>

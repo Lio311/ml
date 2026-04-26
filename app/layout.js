@@ -92,7 +92,7 @@ export default async function RootLayout({ children }) {
       localization={clerkLocale}
       appearance={{
         layout: {
-          logoImageUrl: '/logo_v3.png',
+          logoImageUrl: '/logo_v5.png',
           socialButtonsVariant: 'iconButton'
         },
         variables: {
@@ -166,8 +166,8 @@ export default async function RootLayout({ children }) {
                         "priceRange": "₪29-₪199",
                         "aggregateRating": {
                           "@type": "AggregateRating",
-                          "ratingValue": "4.8",
-                          "reviewCount": "100",
+                          "ratingValue": "4.9",
+                          "reviewCount": "542",
                           "bestRating": "5"
                         },
                         "openingHoursSpecification": {

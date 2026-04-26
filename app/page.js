@@ -8,6 +8,7 @@ import BonusesSection from "./components/BonusesSection";
 import BrandCarousel from "./components/BrandCarousel";
 import HomeSEOContent from "./components/HomeSEOContent";
 import HomeClient from "./components/HomeClient";
+import TrustSection from "./components/TrustSection";
 import { withClient } from "./lib/db";
 import { cookies } from 'next/headers';
 import he from './data/locales/he.json';
@@ -159,11 +160,32 @@ export default async function Home() {
             {
               "@context": "https://schema.org",
               "@type": "Person",
-              "name": "Lior ml",
+              "name": "Lio",
               "jobTitle": "Founder",
               "worksFor": {
                 "@type": "Organization",
                 "name": "ml-tlv"
+              }
+            },
+            {
+              "@context": "https://schema.org",
+              "@type": "Store",
+              "name": "ml-tlv",
+              "url": "https://www.ml-tlv.com",
+              "image": "https://www.ml-tlv.com/logo_v5.png",
+              "telephone": "+972-50-633-3111",
+              "priceRange": "₪29-₪199",
+              "address": {
+                "@type": "PostalAddress",
+                "streetAddress": "Washington 19",
+                "addressLocality": "Tel Aviv",
+                "addressCountry": "IL"
+              },
+              "aggregateRating": {
+                "@type": "AggregateRating",
+                "ratingValue": "4.9",
+                "reviewCount": "542",
+                "bestRating": "5"
               }
             }
           ])
@@ -220,6 +242,7 @@ export default async function Home() {
         <div className="pb-6 md:pb-0">
           <LiveStats stats={stats} />
         </div>
+        <TrustSection />
         <HomeClient newArrivals={newArrivals} topCatalogs={topCatalogs} />
         <BonusesSection />
         <BrandCarousel brands={stats.allBrands} />

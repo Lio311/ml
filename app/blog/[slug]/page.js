@@ -207,10 +207,10 @@ export default async function BlogPost({ params }) {
                         },
                         "publisher": {
                             "@type": "Organization",
-                            "name": "ml_tlv",
+                            "name": "ml-tlv",
                             "logo": {
                                 "@type": "ImageObject",
-                                "url": "https://www.ml-tlv.com/logo_v3.png"
+                                "url": "https://www.ml-tlv.com/logo_v5.png"
                             }
                         },
                         "mainEntityOfPage": {
