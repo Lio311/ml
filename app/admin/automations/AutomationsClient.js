@@ -175,7 +175,7 @@ export default function AutomationsClient() {
                                         <div className="flex items-center gap-3 mt-1">
                                             <span className="text-xs text-gray-400 font-bold flex items-center gap-1 uppercase tracking-wider">
                                                 <History size={12} />
-                                                נוצר ב-{new Date(workflow.created_at).toLocaleDateString('he-IL')}
+                                                נוצר ב-{new Date(workflow.created_at || new Date()).toLocaleDateString('he-IL')}
                                             </span>
                                             {workflow.last_run ? (
                                                 <span className="text-xs text-green-600 font-bold flex items-center gap-1">

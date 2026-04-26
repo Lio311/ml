@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { sendEmail, getTemplate } from '@/app/lib/email';
+import { isAutomationActive } from '@/app/lib/automationConfig';
 
 export async function POST(req) {
     try {
@@ -20,6 +21,12 @@ export async function POST(req) {
                 </div>`;
             }
         );
+
+        // Check if this automation is enabled
+        const active = await isAutomationActive('התראת פנייה - טופס צור קשר');
+        if (!active) {
+            return NextResponse.json({ success: true });
+        }
 
         // Send to admin email (GMAIL_USER)
         await sendEmail(process.env.GMAIL_USER || process.env.EMAIL_USER, subject, html, 'contact_form_alert');

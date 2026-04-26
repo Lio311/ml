@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import pool from '@/app/lib/db';
 import { sendEmail, getTemplate } from '@/app/lib/email';
+import { getAutomationConfig } from '@/app/lib/automationConfig';
 
 export async function GET(req) {
     const authHeader = req.headers.get('authorization');
@@ -11,15 +12,18 @@ export async function GET(req) {
     try {
         const client = await pool.connect();
         try {
-            // Find completed orders created between 3 and 4 days ago
+            const config = await getAutomationConfig('educational_email');
+            const delayDays = config.delay_days || 3;
+
+            // Find completed orders created between delayDays and delayDays+1 days ago
             // Ensure we haven't already sent an educational email to this user in a previous order
             const res = await client.query(`
                 SELECT id, customer_details 
                 FROM orders o1
                 WHERE status = 'completed' 
                 AND educational_email_sent = false
-                AND created_at >= NOW() - INTERVAL '4 days'
-                AND created_at < NOW() - INTERVAL '3 days'
+                AND created_at >= NOW() - INTERVAL '${delayDays + 1} days'
+                AND created_at < NOW() - INTERVAL '${delayDays} days'
                 AND NOT EXISTS (
                     SELECT 1 
                     FROM orders o2 

@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import pool from '@/app/lib/db';
 import { sendEmail } from '@/app/lib/email';
 import { generateReviewToken } from '@/app/lib/reviewToken';
+import { getAutomationConfig, isAutomationActive } from '@/app/lib/automationConfig';
 
 export async function GET(req) {
     const authHeader = req.headers.get('authorization');
@@ -10,16 +11,25 @@ export async function GET(req) {
     }
 
     try {
+        // Check if this automation is enabled
+        const active = await isAutomationActive('בקשת כתיבת חוות דעת מלקוח');
+        if (!active) {
+            return NextResponse.json({ success: true, skipped: 'automation_disabled' });
+        }
+
+        const config = await getAutomationConfig('review_request');
+        const delayDays = config.delay_days || 7;
+
         const client = await pool.connect();
         try {
-            // Find completed orders created between 7 and 8 days ago
+            // Find completed orders created between delayDays and delayDays+1 days ago
             const res = await client.query(`
                 SELECT id, customer_details, items
                 FROM orders 
                 WHERE status = 'completed' 
                 AND review_email_sent = false
-                AND created_at >= NOW() - INTERVAL '8 days'
-                AND created_at < NOW() - INTERVAL '7 days'
+                AND created_at >= NOW() - INTERVAL '${delayDays + 1} days'
+                AND created_at < NOW() - INTERVAL '${delayDays} days'
             `);
 
             const orders = res.rows;

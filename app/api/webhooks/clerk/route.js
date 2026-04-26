@@ -4,6 +4,7 @@ import { headers } from 'next/headers';
 import { NextResponse } from 'next/server';
 import pool from '../../../lib/db';
 import { sendEmail, getTemplate, getAdminNewUserTemplate, getUserWelcomeTemplate } from '../../../lib/email';
+import { isAutomationActive } from '../../../lib/automationConfig';
 
 export async function POST(req) {
     const WEBHOOK_SECRET = process.env.CLERK_WEBHOOK_SECRET;
@@ -75,14 +76,18 @@ export async function POST(req) {
                     ['user', `משתמש חדש נרשם: ${first_name || ''} ${last_name || ''}`, false]
                 );
 
-                const adminEmail = process.env.ADMIN_EMAIL || process.env.GMAIL_USER;
-                const adminTmpl = await getTemplate('admin_user_alert', 
-                    { firstName: first_name, lastName: last_name, email: email, name: first_name },
-                    () => getAdminNewUserTemplate({ first_name, last_name, email })
-                );
-                await sendEmail(adminEmail, adminTmpl.subject || 'משתמש חדש נרשם למערכת! ✨', adminTmpl.html, 'admin_alert');
+                const adminActive = await isAutomationActive('התראת נרשם חדש (למנהל)');
+                if (adminActive) {
+                    const adminEmail = process.env.ADMIN_EMAIL || process.env.GMAIL_USER;
+                    const adminTmpl = await getTemplate('admin_user_alert', 
+                        { firstName: first_name, lastName: last_name, email: email, name: first_name },
+                        () => getAdminNewUserTemplate({ first_name, last_name, email })
+                    );
+                    await sendEmail(adminEmail, adminTmpl.subject || 'משתמש חדש נרשם למערכת! ✨', adminTmpl.html, 'admin_alert');
+                }
 
-                if (email) {
+                const welcomeActive = await isAutomationActive('מייל ברוכים הבאים (למשתמש חדש)');
+                if (email && welcomeActive) {
                     const welcomeTmpl = await getTemplate('welcome', 
                         { firstName: first_name, name: first_name },
                         () => getUserWelcomeTemplate(first_name)

@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import pool from '@/app/lib/db';
 import { sendEmail } from '@/app/lib/email';
+import { getAutomationConfig, isAutomationActive } from '@/app/lib/automationConfig';
 
 export async function GET(req) {
     const authHeader = req.headers.get('authorization');
@@ -9,17 +10,26 @@ export async function GET(req) {
     }
 
     try {
+        // Check if this automation is enabled
+        const active = await isAutomationActive('שחזור עגלה נטושה (+5% הנחה)');
+        if (!active) {
+            return NextResponse.json({ success: true, skipped: 'automation_disabled' });
+        }
+
+        const config = await getAutomationConfig('cart_recovery');
+        const delayMs = (config.delay_hours || 3) * 60 * 60 * 1000;
+
         const client = await pool.connect();
         try {
-            // 1. Find Abandoned Carts (> 3 hours ago, pending)
-            const threeHoursAgo = new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString();
+            // 1. Find Abandoned Carts (> delay_hours ago, pending)
+            const cutoff = new Date(Date.now() - delayMs).toISOString();
 
             const res = await client.query(`
                 SELECT email, items, updated_at, recovery_status FROM abandoned_carts 
                 WHERE updated_at < $1 
                 AND recovery_status = 'pending'
                 AND email IS NOT NULL
-            `, [threeHoursAgo]);
+            `, [cutoff]);
 
             const carts = res.rows;
             console.log(`[Recovery Cron] Found ${carts.length} abandoned carts.`);
@@ -32,11 +42,12 @@ export async function GET(req) {
 
             for (const cart of carts) {
                 // 3. COOLDOWN CHECK: Check if user received a recovery coupon in the last 7 days
+                const cooldownDays = config.cooldown_days || 7;
                 const existingCoupons = await client.query(`
                     SELECT id FROM coupons 
                     WHERE email = $1 
                     AND code LIKE 'SAVE5-%' 
-                    AND created_at > NOW() - INTERVAL '7 days'
+                    AND created_at > NOW() - INTERVAL '${cooldownDays} days'
                 `, [cart.email]);
 
                 if (existingCoupons.rows.length > 0) {
@@ -50,10 +61,12 @@ export async function GET(req) {
                 const couponCode = `SAVE5-${randomPart}`;
 
                 // Insert Coupon
+                const discountPercent = config.discount_percent || 5;
+                const validityHours = config.coupon_validity_hours || 24;
                 await client.query(`
                     INSERT INTO coupons (code, discount_percent, expires_at, status, email)
-                    VALUES ($1, 5, NOW() + INTERVAL '24 hours', 'active', $2)
-                `, [couponCode, cart.email]);
+                    VALUES ($1, $2, NOW() + INTERVAL '${validityHours} hours', 'active', $3)
+                `, [couponCode, discountPercent, cart.email]);
 
                 const { html, subject } = await getTemplate('cart_recovery', 
                     { couponCode },

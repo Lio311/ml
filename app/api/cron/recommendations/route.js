@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import pool from '@/app/lib/db';
 import { sendEmail, getTemplate } from '@/app/lib/email';
 import { generateRecommendationForOrder } from '@/app/lib/recommendations';
+import { getAutomationConfig } from '@/app/lib/automationConfig';
 
 export async function GET(req) {
     const authHeader = req.headers.get('authorization');
@@ -39,14 +40,17 @@ export async function GET(req) {
             }
 
             // ==========================================
-            // PHASE 2: SEND (Approved & 30 days old)
+            // PHASE 2: SEND (Approved & delay_days old)
             // ==========================================
+            const sendConfig = await getAutomationConfig('recommendations_send');
+            const sendDelay = sendConfig.delay_days || 30;
+
             const sendRes = await client.query(`
                 SELECT p.id, p.suggested_products, o.customer_details, o.id as order_id
                 FROM pending_recommendation_emails p
                 JOIN orders o ON p.order_id = o.id
                 WHERE p.status = 'approved'
-                AND o.created_at <= NOW() - INTERVAL '30 days'
+                AND o.created_at <= NOW() - INTERVAL '${sendDelay} days'
             `);
 
             const readyToSend = sendRes.rows;

@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import pool from '@/app/lib/db';
 import { sendEmail, getTemplate } from '@/app/lib/email';
+import { getAutomationConfig, isAutomationActive } from '@/app/lib/automationConfig';
 
 export async function GET(req) {
     const authHeader = req.headers.get('authorization');
@@ -15,32 +16,45 @@ export async function GET(req) {
             // to check if a nurture email was already sent to avoid resending.
             // In Postgres we can check NOT EXISTS
 
-            const res10Days = await client.query(`
-                SELECT id, first_name, email, created_at 
-                FROM users 
-                WHERE created_at >= NOW() - INTERVAL '11 days'
-                AND created_at < NOW() - INTERVAL '10 days'
-                AND NOT EXISTS (
-                    SELECT 1 FROM email_logs 
-                    WHERE recipient_email = users.email 
-                    AND type = 'nurture_10_days'
-                )
-            `);
+            const config10 = await getAutomationConfig('nurture_10_days');
+            const delay10 = config10.delay_days || 10;
+            const active10 = await isAutomationActive('טיפוח לקוחות: 10 ימים (בקשת בושם)');
 
-            const res25Days = await client.query(`
-                SELECT id, first_name, email, created_at 
-                FROM users 
-                WHERE created_at >= NOW() - INTERVAL '26 days'
-                AND created_at < NOW() - INTERVAL '25 days'
-                AND NOT EXISTS (
-                    SELECT 1 FROM email_logs 
-                    WHERE recipient_email = users.email 
-                    AND type = 'nurture_25_days'
-                )
-            `);
+            let users10 = [];
+            if (active10) {
+                const res10Days = await client.query(`
+                    SELECT id, first_name, email, created_at 
+                    FROM users 
+                    WHERE created_at >= NOW() - INTERVAL '${delay10 + 1} days'
+                    AND created_at < NOW() - INTERVAL '${delay10} days'
+                    AND NOT EXISTS (
+                        SELECT 1 FROM email_logs 
+                        WHERE recipient_email = users.email 
+                        AND type = 'nurture_10_days'
+                    )
+                `);
+                users10 = res10Days.rows;
+            }
 
-            const users10 = res10Days.rows;
-            const users25 = res25Days.rows;
+            const config25 = await getAutomationConfig('nurture_25_days');
+            const delay25 = config25.delay_days || 25;
+            const active25 = await isAutomationActive('טיפוח לקוחות: 25 ימים (התאמה אישית)');
+
+            let users25 = [];
+            if (active25) {
+                const res25Days = await client.query(`
+                    SELECT id, first_name, email, created_at 
+                    FROM users 
+                    WHERE created_at >= NOW() - INTERVAL '${delay25 + 1} days'
+                    AND created_at < NOW() - INTERVAL '${delay25} days'
+                    AND NOT EXISTS (
+                        SELECT 1 FROM email_logs 
+                        WHERE recipient_email = users.email 
+                        AND type = 'nurture_25_days'
+                    )
+                `);
+                users25 = res25Days.rows;
+            }
             
             console.log(`[Nurture Cron] Found ${users10.length} users for 10-days, ${users25.length} users for 25-days.`);
 
