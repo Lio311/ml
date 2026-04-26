@@ -1,8 +1,8 @@
 "use client";
 
-import React, { memo } from 'react';
+import React, { memo, useState, useEffect } from 'react';
 import { Handle, Position } from 'reactflow';
-import { Box, Send, Mail, MessageSquare, Ticket, RefreshCw } from 'lucide-react';
+import { Box, Send, Mail, MessageSquare, Ticket, RefreshCw, FileText, ExternalLink } from 'lucide-react';
 
 import AutomationDropdown from '../AutomationDropdown';
 
@@ -37,9 +37,38 @@ const statusOptions = [
 
 const ActionNode = memo(({ data, isConnectable }) => {
   const Icon = icons[data.actionType] || icons.default;
+  const [templates, setTemplates] = useState([]);
+  const [loadingTemplates, setLoadingTemplates] = useState(false);
+  const [showPreview, setShowPreview] = useState(false);
+
+  // Fetch email templates when action type is email/admin_notify/coupon
+  useEffect(() => {
+    const shouldFetch = ['email', 'admin_notify', 'coupon'].includes(data.actionType);
+    if (shouldFetch && templates.length === 0) {
+      setLoadingTemplates(true);
+      fetch('/api/admin/mailing/templates')
+        .then(res => res.ok ? res.json() : [])
+        .then(data => {
+          setTemplates(data || []);
+          setLoadingTemplates(false);
+        })
+        .catch(() => setLoadingTemplates(false));
+    }
+  }, [data.actionType]);
+
+  const templateOptions = templates.map(t => ({
+    value: t.slug || `id_${t.id}`,
+    label: t.name || t.slug || `טמפלייט #${t.id}`
+  }));
+
+  const selectedTemplate = templates.find(t => 
+    (t.slug === data.templateSlug) || (`id_${t.id}` === data.templateSlug)
+  );
+
+  const showTemplateSelector = ['email', 'admin_notify', 'coupon'].includes(data.actionType);
 
   return (
-    <div className="bg-white border-2 border-blue-500/30 p-5 rounded-[2rem] min-w-[220px] shadow-sm hover:shadow-md transition-all group" dir="rtl">
+    <div className="bg-white border-2 border-blue-500/30 p-5 rounded-[2rem] min-w-[240px] max-w-[280px] shadow-sm hover:shadow-md transition-all group" dir="rtl">
       <Handle
         type="target"
         position={Position.Left}
@@ -59,6 +88,73 @@ const ActionNode = memo(({ data, isConnectable }) => {
             onChange={(val) => data.onChange?.(val)}
             options={actionOptions}
           />
+
+          {/* Template Selector */}
+          {showTemplateSelector && (
+            <div className="mt-3 w-full">
+              <div className="flex items-center justify-center gap-1 mb-1.5">
+                <FileText size={10} className="text-purple-500" />
+                <label className="text-[8px] font-black text-purple-500 uppercase tracking-wider">טמפלייט דיוור</label>
+              </div>
+              {loadingTemplates ? (
+                <div className="text-[10px] text-gray-400 py-1">טוען טמפלייטים...</div>
+              ) : templateOptions.length > 0 ? (
+                <AutomationDropdown 
+                  value={data.templateSlug || ''}
+                  onChange={(val) => data.onChangeParams?.('templateSlug', val)}
+                  options={templateOptions}
+                  placeholder="בחר טמפלייט..."
+                />
+              ) : (
+                <div className="text-[10px] text-gray-400 py-1">אין טמפלייטים זמינים</div>
+              )}
+
+              {/* Template Preview Badge */}
+              {selectedTemplate && (
+                <div className="mt-2 bg-purple-50 border border-purple-100 rounded-xl p-2.5 text-right">
+                  <div className="flex items-center justify-between gap-1 mb-1">
+                    <span className="text-[9px] font-bold text-purple-600 truncate flex-1">{selectedTemplate.name || selectedTemplate.slug}</span>
+                    <a 
+                      href="/admin/mailing" 
+                      target="_blank"
+                      className="text-purple-400 hover:text-purple-600 transition-colors nodrag"
+                      title="ערוך טמפלייט בדיוור"
+                      onMouseDown={(e) => e.stopPropagation()}
+                    >
+                      <ExternalLink size={10} />
+                    </a>
+                  </div>
+                  {selectedTemplate.subject && (
+                    <div className="text-[9px] text-gray-500 truncate" title={selectedTemplate.subject}>
+                      נושא: {selectedTemplate.subject}
+                    </div>
+                  )}
+                  <button
+                    type="button"
+                    className="mt-1.5 text-[8px] font-bold text-purple-500 hover:text-purple-700 underline underline-offset-2 nodrag"
+                    onMouseDown={(e) => {
+                      e.stopPropagation();
+                      setShowPreview(!showPreview);
+                    }}
+                  >
+                    {showPreview ? 'הסתר תצוגה מקדימה' : 'תצוגה מקדימה'}
+                  </button>
+                  
+                  {showPreview && selectedTemplate.content_html && (
+                    <div className="mt-2 bg-white border border-gray-100 rounded-lg p-2 max-h-[200px] overflow-y-auto text-[10px] nodrag nowheel"
+                      onMouseDown={(e) => e.stopPropagation()}
+                    >
+                      <div 
+                        dangerouslySetInnerHTML={{ __html: selectedTemplate.content_html }} 
+                        className="text-right [&_*]:!text-[10px] [&_*]:!leading-tight [&_img]:!max-w-full [&_img]:!h-auto"
+                      />
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          )}
+
           {data.actionType === 'change_status' && (
             <div className="mt-3">
                <label className="text-[8px] font-bold text-gray-400 uppercase block mb-1">בחר סטטוס יעד:</label>
@@ -78,6 +174,45 @@ const ActionNode = memo(({ data, isConnectable }) => {
               value={data.customAction || ''}
               onChange={(e) => data.onChangeCustom?.(e.target.value)}
             />
+          )}
+
+          {/* Coupon params for coupon action */}
+          {data.actionType === 'coupon' && (
+            <div className="mt-3 space-y-2 w-full">
+              <div className="flex items-center gap-2 justify-center">
+                <label className="text-[8px] font-bold text-gray-400 whitespace-nowrap">% הנחה:</label>
+                <input 
+                  type="number"
+                  className="w-14 text-[11px] font-bold border-b border-gray-100 focus:border-blue-500 outline-none py-0.5 text-center nodrag"
+                  value={data.discount_percent || ''}
+                  placeholder="5"
+                  onChange={(e) => data.onChangeParams?.('discount_percent', e.target.value)}
+                  onMouseDown={(e) => e.stopPropagation()}
+                />
+              </div>
+              <div className="flex items-center gap-2 justify-center">
+                <label className="text-[8px] font-bold text-gray-400 whitespace-nowrap">תוקף (שעות):</label>
+                <input 
+                  type="number"
+                  className="w-14 text-[11px] font-bold border-b border-gray-100 focus:border-blue-500 outline-none py-0.5 text-center nodrag"
+                  value={data.coupon_validity_hours || ''}
+                  placeholder="24"
+                  onChange={(e) => data.onChangeParams?.('coupon_validity_hours', e.target.value)}
+                  onMouseDown={(e) => e.stopPropagation()}
+                />
+              </div>
+              <div className="flex items-center gap-2 justify-center">
+                <label className="text-[8px] font-bold text-gray-400 whitespace-nowrap">צינון (ימים):</label>
+                <input 
+                  type="number"
+                  className="w-14 text-[11px] font-bold border-b border-gray-100 focus:border-blue-500 outline-none py-0.5 text-center nodrag"
+                  value={data.cooldown_days || ''}
+                  placeholder="7"
+                  onChange={(e) => data.onChangeParams?.('cooldown_days', e.target.value)}
+                  onMouseDown={(e) => e.stopPropagation()}
+                />
+              </div>
+            </div>
           )}
         </div>
       </div>

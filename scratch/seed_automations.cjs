@@ -12,7 +12,7 @@ const systemAutomations = [
         description: "נשלח אוטומטית ללקוח מיד לאחר ביצוע הזמנה בהצלחה באתר.",
         nodes: [
             { id: "1", type: "trigger", position: { x: 250, y: 150 }, data: { label: "לקוח השלים הזמנה", triggerType: "new_order", category: "הזמנות" } },
-            { id: "2", type: "action", position: { x: 650, y: 150 }, data: { label: "שליחת מייל: אישור הזמנה", actionType: "email", target: "customer", description: "מייל עם פרטי ההזמנה וקבלה." } }
+            { id: "2", type: "action", position: { x: 650, y: 150 }, data: { label: "שליחת מייל: אישור הזמנה", actionType: "email", target: "customer", description: "מייל עם פרטי ההזמנה וקבלה.", templateSlug: "order_confirmation" } }
         ],
         edges: [ { id: "e1-2", source: "1", target: "2", animated: true, style: { stroke: "#16a34a", strokeWidth: 2 } } ]
     },
@@ -21,7 +21,7 @@ const systemAutomations = [
         description: "התראה שמגיעה ישירות אליך כשלקוח מבצע הזמנה.",
         nodes: [
             { id: "1", type: "trigger", position: { x: 250, y: 150 }, data: { label: "לקוח השלים הזמנה", triggerType: "new_order", category: "הזמנות" } },
-            { id: "2", type: "action", position: { x: 650, y: 150 }, data: { label: "התראה במייל למנהל", actionType: "admin_notify", target: "admin", description: "מכיל את פרטי הלקוח, פריטים וסכום." } }
+            { id: "2", type: "action", position: { x: 650, y: 150 }, data: { label: "התראה במייל למנהל", actionType: "admin_notify", target: "admin", description: "מכיל את פרטי הלקוח, פריטים וסכום.", templateSlug: "admin_order_alert" } }
         ],
         edges: [ { id: "e1-2", source: "1", target: "2", animated: true, style: { stroke: "#000", strokeWidth: 2 } } ]
     },
@@ -30,7 +30,7 @@ const systemAutomations = [
         description: "מייל קבלת פנים חם לכל לקוח שנרשם לאתר בפעם הראשונה.",
         nodes: [
             { id: "1", type: "trigger", position: { x: 250, y: 150 }, data: { label: "משתמש נרשם לאתר", triggerType: "new_user", category: "משתמשים" } },
-            { id: "2", type: "action", position: { x: 650, y: 150 }, data: { label: "שליחת מייל: ברוכים הבאים", actionType: "email", target: "customer", description: "הכרות קצרה עם ml_tlv וקטלוג הבשמים." } }
+            { id: "2", type: "action", position: { x: 650, y: 150 }, data: { label: "שליחת מייל: ברוכים הבאים", actionType: "email", target: "customer", description: "הכרות קצרה עם ml_tlv וקטלוג הבשמים.", templateSlug: "welcome" } }
         ],
         edges: [ { id: "e1-2", source: "1", target: "2", animated: true, style: { stroke: "#16a34a", strokeWidth: 2 } } ]
     },
@@ -39,7 +39,7 @@ const systemAutomations = [
         description: "מייל שמיידע אותך על לקוח חדש שנרשם באתר.",
         nodes: [
             { id: "1", type: "trigger", position: { x: 250, y: 150 }, data: { label: "משתמש נרשם לאתר", triggerType: "new_user", category: "משתמשים" } },
-            { id: "2", type: "action", position: { x: 650, y: 150 }, data: { label: "התראה במייל למנהל", actionType: "admin_notify", target: "admin", description: "כולל שם וכתובת אימייל של הנרשם." } }
+            { id: "2", type: "action", position: { x: 650, y: 150 }, data: { label: "התראה במייל למנהל", actionType: "admin_notify", target: "admin", description: "כולל שם וכתובת אימייל של הנרשם.", templateSlug: "admin_user_alert" } }
         ],
         edges: [ { id: "e1-2", source: "1", target: "2", animated: true, style: { stroke: "#000", strokeWidth: 2 } } ]
     },
@@ -49,7 +49,7 @@ const systemAutomations = [
         nodes: [
             { id: "1", type: "trigger", position: { x: 150, y: 150 }, data: { label: "עגלה נטושה במערכת", triggerType: "abandoned_cart", category: "שיווק" } },
             { id: "2", type: "wait", position: { x: 400, y: 150 }, data: { label: "המתנה", waitValue: "3", waitUnit: "hours" } },
-            { id: "3", type: "action", position: { x: 700, y: 150 }, data: { label: "שליחת מייל + קופון", actionType: "coupon", target: "customer", description: "מייל שחזור עם קופון 5% הנחה.", discount_percent: 5, coupon_validity_hours: 24, cooldown_days: 7 } }
+            { id: "3", type: "action", position: { x: 700, y: 150 }, data: { label: "שליחת מייל + קופון", actionType: "coupon", target: "customer", description: "מייל שחזור עם קופון 5% הנחה.", discount_percent: 5, coupon_validity_hours: 24, cooldown_days: 7, templateSlug: "cart_recovery" } }
         ],
         edges: [
             { id: "e1-2", source: "1", target: "2", animated: true, style: { stroke: "#16a34a", strokeWidth: 2 } },
@@ -62,7 +62,7 @@ const systemAutomations = [
         nodes: [
             { id: "1", type: "trigger", position: { x: 150, y: 150 }, data: { label: "משתמש נרשם לאתר", triggerType: "new_user", category: "שימור לקוחות" } },
             { id: "2", type: "wait", position: { x: 400, y: 150 }, data: { label: "המתנה", waitValue: "10", waitUnit: "days" } },
-            { id: "3", type: "action", position: { x: 700, y: 150 }, data: { label: "מייל: שירות בקשת בושם", actionType: "email", target: "customer", description: "הזמנה להזמין בושם שאינו בקטלוג." } }
+            { id: "3", type: "action", position: { x: 700, y: 150 }, data: { label: "מייל: שירות בקשת בושם", actionType: "email", target: "customer", description: "הזמנה להזמין בושם שאינו בקטלוג.", templateSlug: "nurture_10_days" } }
         ],
         edges: [
             { id: "e1-2", source: "1", target: "2", animated: true, style: { stroke: "#16a34a", strokeWidth: 2 } },
@@ -75,7 +75,7 @@ const systemAutomations = [
         nodes: [
             { id: "1", type: "trigger", position: { x: 150, y: 150 }, data: { label: "משתמש נרשם לאתר", triggerType: "new_user", category: "שימור לקוחות" } },
             { id: "2", type: "wait", position: { x: 400, y: 150 }, data: { label: "המתנה", waitValue: "25", waitUnit: "days" } },
-            { id: "3", type: "action", position: { x: 700, y: 150 }, data: { label: "מייל: שאלון התאמת בשמים", actionType: "email", target: "customer", description: "עידוד הלקוח למצוא את חתימת הריח הבאה שלו." } }
+            { id: "3", type: "action", position: { x: 700, y: 150 }, data: { label: "מייל: שאלון התאמת בשמים", actionType: "email", target: "customer", description: "עידוד הלקוח למצוא את חתימת הריח הבאה שלו.", templateSlug: "nurture_25_days" } }
         ],
         edges: [
             { id: "e1-2", source: "1", target: "2", animated: true, style: { stroke: "#16a34a", strokeWidth: 2 } },
@@ -88,7 +88,7 @@ const systemAutomations = [
         nodes: [
             { id: "1", type: "trigger", position: { x: 150, y: 150 }, data: { label: "סטטוס הזמנה הושלם", triggerType: "order_status_changed", customTrigger: "completed", category: "חוות דעת" } },
             { id: "2", type: "wait", position: { x: 400, y: 150 }, data: { label: "המתנה", waitValue: "7", waitUnit: "days" } },
-            { id: "3", type: "action", position: { x: 700, y: 150 }, data: { label: "מייל: נשמח לשמוע מה דעתך", actionType: "email", target: "customer", description: "קישור לעמוד הדירוג עם הבטחה למתנה." } }
+            { id: "3", type: "action", position: { x: 700, y: 150 }, data: { label: "מייל: נשמח לשמוע מה דעתך", actionType: "email", target: "customer", description: "קישור לעמוד הדירוג עם הבטחה למתנה.", templateSlug: "review_request" } }
         ],
         edges: [
             { id: "e1-2", source: "1", target: "2", animated: true, style: { stroke: "#16a34a", strokeWidth: 2 } },
@@ -109,7 +109,7 @@ const systemAutomations = [
         description: "מייל שקופץ אליך ברגע שלקוח משאיר פרטים או שואל שאלה בטופס.",
         nodes: [
             { id: "1", type: "trigger", position: { x: 250, y: 150 }, data: { label: "מילוי טופס צור קשר", triggerType: "custom", customTrigger: "contact_form", category: "כללי" } },
-            { id: "2", type: "action", position: { x: 650, y: 150 }, data: { label: "העברת הפנייה למנהל", actionType: "admin_notify", target: "admin", description: "כולל שם, טלפון/מייל ותוכן ההודעה." } }
+            { id: "2", type: "action", position: { x: 650, y: 150 }, data: { label: "העברת הפנייה למנהל", actionType: "admin_notify", target: "admin", description: "כולל שם, טלפון/מייל ותוכן ההודעה.", templateSlug: "contact_form_alert" } }
         ],
         edges: [ { id: "e1-2", source: "1", target: "2", animated: true, style: { stroke: "#000", strokeWidth: 2 } } ]
     }
