@@ -207,7 +207,7 @@ export default async function AboutPage() {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50 py-10">
+        <div className="min-h-screen bg-gray-50 pt-24 pb-12">
             <div className="container max-w-4xl mx-auto px-4">
                 {locale === 'en' ? <AboutEN brand={brand} /> : <AboutHE brand={brand} />}
             </div>
