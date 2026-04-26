@@ -242,10 +242,10 @@ export default async function Home() {
         <div className="pb-6 md:pb-0">
           <LiveStats stats={stats} />
         </div>
-        <TrustSection />
         <HomeClient newArrivals={newArrivals} topCatalogs={topCatalogs} />
         <BonusesSection />
         <BrandCarousel brands={stats.allBrands} />
+        <TrustSection />
       </div>
 
       <section className="py-12 bg-white border-t">
