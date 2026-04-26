@@ -12,6 +12,7 @@ import {
     Zap, 
     Clock, 
     History,
+    Activity,
     Loader2
 } from "lucide-react";
 import { toast } from "react-hot-toast";
@@ -149,9 +150,9 @@ export default function AutomationsClient() {
                         bgColor: "bg-purple-50" 
                     },
                     { 
-                        label: "זמן שנחסך (חודשי)", 
-                        value: `${Math.round(workflows.reduce((acc, w) => acc + (w.total_runs || 0) * 2.5, 0) / 60)}h`, 
-                        icon: Clock, 
+                        label: "סה\"כ פעולות שבוצעו", 
+                        value: workflows.reduce((acc, w) => acc + (w.total_runs || 0), 0), 
+                        icon: Activity, 
                         color: "text-green-600", 
                         bgColor: "bg-green-50" 
                     },
