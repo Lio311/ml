@@ -68,7 +68,7 @@ const AboutHE = ({ brand }) => {
                 </p>
             </section>
 
-            <div className="my-12 p-8 bg-black text-white rounded-[2.5rem] text-center relative overflow-hidden shadow-2xl">
+            <div className="my-6 p-8 bg-black text-white rounded-[2.5rem] text-center relative overflow-hidden shadow-2xl">
                 <div className="absolute top-0 right-0 w-24 h-24 bg-white/5 rounded-full translate-x-12 -translate-y-12"></div>
                 <h3 className="text-2xl font-serif mb-10 relative z-10 text-white">למה הלקוחות שלנו חוזרים שוב ושוב?</h3>
                 <div className="grid md:grid-cols-3 gap-12 relative z-10">
@@ -96,7 +96,7 @@ const AboutHE = ({ brand }) => {
                 </div>
             </div>
 
-            <section className="text-center pb-10">
+            <section className="text-center pb-0">
                 <p className="italic text-gray-500 mb-6">"בושם הוא לא רק ריח, הוא הזיכרון שנשאר בחדר אחרי שעזבת."</p>
                 <p className="font-bold text-gray-900">צוות {brandLower}</p>
             </section>
@@ -140,7 +140,7 @@ const AboutEN = ({ brand }) => {
                 </p>
             </section>
 
-            <div className="my-12 p-8 bg-black text-white rounded-[2.5rem] text-center relative overflow-hidden shadow-2xl">
+            <div className="my-6 p-8 bg-black text-white rounded-[2.5rem] text-center relative overflow-hidden shadow-2xl">
                 <div className="absolute top-0 right-0 w-24 h-24 bg-white/5 rounded-full translate-x-12 -translate-y-12"></div>
                 <h3 className="text-2xl font-serif mb-10 relative z-10 text-white">Why Do Our Customers Return?</h3>
                 <div className="grid md:grid-cols-3 gap-12 relative z-10">
@@ -168,7 +168,7 @@ const AboutEN = ({ brand }) => {
                 </div>
             </div>
 
-            <section className="text-center pb-10">
+            <section className="text-center pb-0">
                 <p className="italic text-gray-500 mb-6">"Perfume is not just a scent, it's the memory that stays in the room after you've left."</p>
                 <p className="font-bold text-gray-900">{brandLower} Team</p>
             </section>
@@ -207,7 +207,7 @@ export default async function AboutPage() {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50 py-20">
+        <div className="min-h-screen bg-gray-50 py-10">
             <div className="container max-w-4xl mx-auto px-4">
                 {locale === 'en' ? <AboutEN brand={brand} /> : <AboutHE brand={brand} />}
             </div>
