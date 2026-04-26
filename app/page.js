@@ -145,14 +145,25 @@ export default async function Home() {
             },
             {
               "@context": "https://schema.org",
-              "@type": "Organization",
-              "name": "ml-tlv",
-              "url": "https://www.ml-tlv.com",
-              "logo": "https://www.ml-tlv.com/logo_v5.png",
-              "contactPoint": {
-                "@type": "ContactPoint",
-                "telephone": "+972-50-000-0000",
-                "contactType": "customer service"
+              "@type": "WebPage",
+              "name": locale === 'he' ? "ml-tlv — דוגמיות בשמים יוקרתיות ודיקאנטים" : "ml-tlv — Luxury Perfume Samples & Decants",
+              "speakable": {
+                "@type": "SpeakableSpecification",
+                "cssSelector": [
+                  ".direct-answer-paragraph",
+                  ".seo-content h2",
+                  ".seo-content h3"
+                ]
+              }
+            },
+            {
+              "@context": "https://schema.org",
+              "@type": "Person",
+              "name": "Lior ml",
+              "jobTitle": "Founder",
+              "worksFor": {
+                "@type": "Organization",
+                "name": "ml-tlv"
               }
             }
           ])

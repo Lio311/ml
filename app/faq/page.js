@@ -57,7 +57,18 @@ export default async function FAQPage() {
             {/* GEO: FAQPage Structured Data — enables rich snippets and AI citation */}
             <script
                 type="application/ld+json"
-                dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+                dangerouslySetInnerHTML={{ __html: JSON.stringify([
+                    faqSchema,
+                    {
+                        "@context": "https://schema.org",
+                        "@type": "WebPage",
+                        "name": t('common.faq'),
+                        "speakable": {
+                            "@type": "SpeakableSpecification",
+                            "cssSelector": [".faq-answer"]
+                        }
+                    }
+                ]) }}
             />
 
             {/* Header section with background pattern */}

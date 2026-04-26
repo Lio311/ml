@@ -59,6 +59,25 @@ export default async function BrandsPage() {
 
                 <BrandsClient brands={brands} />
             </div>
+
+            {/* GEO: ItemList Schema for Brands — helps AI engines list available brands */}
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{
+                    __html: JSON.stringify({
+                        "@context": "https://schema.org",
+                        "@type": "ItemList",
+                        "name": t('common.our_brands'),
+                        "numberOfItems": brands.length,
+                        "itemListElement": brands.map((brand, index) => ({
+                            "@type": "ListItem",
+                            "position": index + 1,
+                            "name": brand.name,
+                            "url": `https://www.ml-tlv.com/brands/${encodeURIComponent(brand.name)}`
+                        }))
+                    })
+                }}
+            />
         </div>
     );
 }

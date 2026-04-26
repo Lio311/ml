@@ -6,6 +6,7 @@ import { cookies } from 'next/headers';
 import { sanitizeProduct, sanitizeProductArray } from '../../lib/productUtils';
 import he from '../../data/locales/he.json';
 import en from '../../data/locales/en.json';
+import AuthorBox from '../../components/AuthorBox';
 
 const getT = (locale) => {
     const dict = locale === 'en' ? en : he;
@@ -199,8 +200,10 @@ export default async function BlogPost({ params }) {
                         "description": localizedExcerpt,
                         "datePublished": article.created_at,
                         "author": {
-                            "@type": "Organization",
-                            "name": "ml_tlv"
+                            "@type": "Person",
+                            "name": "Lior ml",
+                            "jobTitle": "Founder",
+                            "sameAs": ["https://instagram.com/ml_tlv"]
                         },
                         "publisher": {
                             "@type": "Organization",
@@ -287,6 +290,8 @@ export default async function BlogPost({ params }) {
                     dangerouslySetInnerHTML={{ __html: contentHtml }}
                     dir={dir}
                 ></div>
+
+                <AuthorBox />
 
                 {/* Shared Product CTA within content */}
                 {mentionedProducts.length > 0 && (

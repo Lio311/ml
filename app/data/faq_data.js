@@ -38,6 +38,10 @@ export const faq_he = [
             { 
                 q: "האם הבקבוקונים ניתנים למילוי חוזר?", 
                 a: "הבקבוקונים שלנו איכותיים מאוד וניתנים להברגה חוזרת, כך שתוכלו להשתמש בהם שוב לנסיעות או למילוי עצמי של בשמים אחרים לאחר שטיפה יסודית." 
+            },
+            {
+                q: "מתי לא כדאי לקנות דוגמית בושם במקום בקבוק מלא?",
+                a: "דוגמית בושם לא תמיד הפתרון הכלכלי ביותר. אם אתם כבר מכירים את הניחוח ובטוחים בבחירה, רכישת בקבוק מלא עשויה להיות משתלמת יותר מבחינת עלות לכל מ\"ל. כמו כן, בשמים מסוימים משנים את אופיים לאחר 6+ חודשים בבקבוק — חוויה שדוגמית של 2 מ\"ל לא יכולה לשקף."
             }
         ]
     },
@@ -143,6 +147,10 @@ export const faq_en = [
             { 
                 q: "Are the vials refillable?", 
                 a: "Our vials are of very high quality and can be unscrewed and reused, so you can use them again for travel or self-filling of other perfumes after thorough washing." 
+            },
+            {
+                q: "When is it not recommended to buy a sample instead of a full bottle?",
+                a: "A perfume sample is not always the most economical solution. If you are already familiar with the scent and confident in your choice, purchasing a full bottle may be more cost-effective in terms of price per ml. Also, some perfumes change their character after 6+ months in a bottle — an experience that a 2ml sample cannot fully reflect."
             }
         ]
     },
