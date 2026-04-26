@@ -448,6 +448,17 @@ export async function POST(req) {
                 req
             });
 
+            // Sync visual workflow last_run state
+            try {
+                await client.query(`
+                    UPDATE workflows 
+                    SET last_run = NOW() 
+                    WHERE name IN ('התראת הזמנה חדשה (למנהל)', 'אישור קבלת הזמנה')
+                `);
+            } catch (e) {
+                console.error("Failed to sync workflow last_run:", e);
+            }
+
             return NextResponse.json({ success: true, orderId });
 
         } catch (dbError) {
