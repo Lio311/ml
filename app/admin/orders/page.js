@@ -10,6 +10,8 @@ import { sanitizeProductArray } from "../../lib/productUtils";
 import { recordAuditLog } from "../../lib/audit";
 import { headers } from "next/headers";
 
+import { deleteOrder } from "./actions";
+
 export const metadata = {
     title: "ניהול הזמנות Admin",
     robots: "noindex, nofollow",
@@ -71,83 +73,11 @@ export default async function AdminOrdersPage(props) {
     const totalPages = Math.ceil(totalOrders / LIMIT);
 
     const user = await currentUser();
-    const email = user?.emailAddresses[0]?.emailAddress;
+    const email = user?.emailAddresses?.[0]?.emailAddress;
     const role = user?.publicMetadata?.role;
     const isSuperAdmin = email === process.env.ADMIN_EMAIL;
     const canEdit = isSuperAdmin || role === 'admin';
 
-    async function deleteOrder(formData) {
-        "use server";
-        const user = await currentUser();
-        const role = user?.publicMetadata?.role;
-        const email = user?.emailAddresses[0]?.emailAddress;
-        if (email !== process.env.ADMIN_EMAIL && role !== 'admin') {
-            throw new Error("Unauthorized");
-        }
-
-        const orderId = formData.get("orderId");
-
-        const client = await pool.connect();
-        try {
-            // 1. Get items to restore stock
-            const res = await client.query('SELECT items, free_samples_count FROM orders WHERE id = $1', [orderId]);
-            if (res.rows.length > 0) {
-                const items = res.rows[0].items;
-                for (const item of items) {
-                    const itemSize = parseFloat(String(item.size));
-                    if (!item.isPrize && !isNaN(itemSize)) {
-                        const amountToRestore = itemSize * item.quantity;
-
-                        // Fix for composite IDs (e.g. "74-2")
-                        let dbId = item.id;
-                        if (typeof dbId === 'string' && dbId.includes('-')) {
-                            dbId = parseInt(dbId.split('-')[0]);
-                        }
-
-                        await client.query(
-                            'UPDATE products SET stock = stock + $1 WHERE id = $2',
-                            [amountToRestore, dbId]
-                        );
-
-                        // --- RESTORE BOTTLE INVENTORY ---
-                        const bottleSize = itemSize;
-
-                        if ([2, 5, 10].includes(bottleSize)) {
-                            await client.query(
-                                'UPDATE bottle_inventory SET quantity = quantity + $1 WHERE size = $2',
-                                [item.quantity, bottleSize]
-                            );
-                        }
-                    }
-                }
-
-                // --- RESTORE FREE SAMPLES (2ml) ---
-                if (res.rows[0].free_samples_count > 0) {
-                    await client.query(
-                        'UPDATE bottle_inventory SET quantity = quantity + $1 WHERE size = 2',
-                        [res.rows[0].free_samples_count]
-                    );
-                }
-            }
-
-            // 2. Delete
-            await client.query('DELETE FROM orders WHERE id = $1', [orderId]);
-
-            // --- AUDIT LOG ---
-            const heads = await headers();
-            await recordAuditLog({
-                userId: user?.id,
-                action: 'delete_order',
-                entityType: 'order',
-                entityId: String(orderId),
-                details: { orderId, deletedBy: email },
-                req: { headers: heads } // Mocking request object for metadata extraction
-            });
-        } finally {
-            client.release();
-        }
-        revalidatePath("/admin/orders");
-    }
 
     return (
         <AdminOrdersListClient 
