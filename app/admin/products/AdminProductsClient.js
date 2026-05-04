@@ -18,8 +18,8 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
     const [isGeneratingDesc, setIsGeneratingDesc] = useState(false);
     
     const handleGenerateDesc = async () => {
-        if (!editForm.brand || !editForm.name_he) {
-            toast.error("יש למלא קודם את שם המותג ושם ה-SEO (עברית) כדי לאפשר כתיבה אוטומטית.");
+        if (!editForm.brand || !editForm.model) {
+            toast.error("יש למלא קודם את שם המותג (Brand) ושם הדגם (Model) כדי לאפשר כתיבה אוטומטית.");
             return;
         }
         setIsGeneratingDesc(true);
@@ -27,7 +27,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
             const res = await fetch('/api/admin/generate-product-desc', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ brand: editForm.brand, name: editForm.name_he })
+                body: JSON.stringify({ brand: editForm.brand, name: editForm.model })
             });
             const data = await res.json();
             if (res.ok) {
