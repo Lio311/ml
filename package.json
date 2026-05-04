@@ -10,6 +10,7 @@
   "dependencies": {
     "@clerk/localizations": "^3.30.1",
     "@clerk/nextjs": "^6.36.2",
+    "@google/generative-ai": "^0.24.1",
     "@sentry/nextjs": "^10.32.0",
     "@supabase/supabase-js": "^2.101.1",
     "canvas-confetti": "^1.9.4",

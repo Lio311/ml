@@ -9,18 +9,6 @@ export default function robots() {
                 disallow: [
                     '/admin', 
                     '/api',
-                    '/*?sort=*',
-                    '/*?min=*',
-                    '/*?max=*',
-                    '/*?category=*',
-                    '/*?brand=*',
-                    '/*?scent=*',
-                    '/*&sort=*',
-                    '/*&min=*',
-                    '/*&max=*',
-                    '/*&category=*',
-                    '/*&brand=*',
-                    '/*&scent=*',
                 ],
             },
             // Explicitly allow AI crawlers
