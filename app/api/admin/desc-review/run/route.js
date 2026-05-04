@@ -5,7 +5,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import crypto from "crypto";
 
 export const dynamic = 'force-dynamic';
-export const maxDuration = 300; // 5 minutes for batch processing
+export const maxDuration = 300; // 5 minutes
 
 function hashDescription(desc) {
     return crypto.createHash('md5').update(desc || '').digest('hex');
@@ -28,49 +28,36 @@ export async function POST() {
         }
 
         const client = await pool.connect();
-        let products;
-        try {
-            // Get all active products with descriptions
-            const result = await client.query(`
-                SELECT id, brand, model, description 
-                FROM products 
-                WHERE active = true 
-                AND description IS NOT NULL 
-                AND description != ''
-                ORDER BY id
-            `);
-            products = result.rows;
-        } finally {
-            client.release();
-        }
-
-        if (!products || products.length === 0) {
-            return NextResponse.json({ success: true, message: 'No products with descriptions found', reviewed: 0 });
-        }
-
-        // Filter out products that already have a review for the current description
-        const dbClient = await pool.connect();
         let toReview = [];
         try {
-            for (const product of products) {
-                const hash = hashDescription(product.description);
-                const existing = await dbClient.query(
-                    'SELECT id FROM product_desc_reviews WHERE product_id = $1 AND description_hash = $2',
-                    [product.id, hash]
-                );
-                if (existing.rows.length === 0) {
-                    toReview.push({ ...product, hash });
-                }
-            }
+            // Find products that don't have a review for their current description
+            // We'll limit to 50 per run to ensure we stay within timeouts and rate limits
+            const result = await client.query(`
+                SELECT p.id, p.brand, p.model, p.description 
+                FROM products p
+                WHERE p.active = true 
+                AND p.description IS NOT NULL 
+                AND p.description != ''
+                AND NOT EXISTS (
+                    SELECT 1 FROM product_desc_reviews r 
+                    WHERE r.product_id = p.id 
+                    AND r.description_hash = md5(p.description)
+                )
+                LIMIT 50
+            `);
+            
+            toReview = result.rows.map(p => ({
+                ...p,
+                hash: crypto.createHash('md5').update(p.description).digest('hex')
+            }));
         } finally {
-            dbClient.release();
+            client.release();
         }
 
         if (toReview.length === 0) {
             return NextResponse.json({ success: true, message: 'All descriptions already reviewed', reviewed: 0 });
         }
 
-        // Process in batches of 5 to avoid rate limits
         const genAI = new GoogleGenerativeAI(apiKey);
         const model = genAI.getGenerativeModel({ 
             model: "gemini-2.5-flash",
@@ -147,10 +134,8 @@ Return a JSON array with exactly ${batch.length} objects:
                 }
             } catch (batchError) {
                 console.error(`Batch error at index ${i}:`, batchError);
-                // Continue with next batch even if one fails
             }
 
-            // Small delay between batches to avoid rate limits
             if (i + BATCH_SIZE < toReview.length) {
                 await new Promise(resolve => setTimeout(resolve, 1500));
             }
@@ -158,7 +143,7 @@ Return a JSON array with exactly ${batch.length} objects:
 
         return NextResponse.json({ 
             success: true, 
-            message: `Reviewed ${totalReviewed} out of ${toReview.length} descriptions`,
+            message: `Reviewed ${totalReviewed} descriptions`,
             reviewed: totalReviewed,
             total: toReview.length
         });
