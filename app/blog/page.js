@@ -65,22 +65,22 @@ async function getArticles(page = 1, tag = null) {
 
     const client = await pool.connect();
     try {
-        let query = 'SELECT title, slug, excerpt, image_url, created_at, tags, title_en, excerpt_en FROM blog_posts';
+        let query = "SELECT title, slug, excerpt, image_url, created_at, tags, title_en, excerpt_en FROM blog_posts WHERE (status = 'published' OR status IS NULL)";
         let params = [limit, offset];
         
         if (tag) {
-            query += ' WHERE $3 = ANY(tags)';
+            query += " AND $3 = ANY(tags)";
             params.push(tag);
         }
         
-        query += ' ORDER BY created_at DESC LIMIT $1 OFFSET $2';
+        query += " ORDER BY created_at DESC LIMIT $1 OFFSET $2";
         
         const res = await client.query(query, params);
         
-        let countQuery = 'SELECT COUNT(*) FROM blog_posts';
+        let countQuery = "SELECT COUNT(*) FROM blog_posts WHERE (status = 'published' OR status IS NULL)";
         let countParams = [];
         if (tag) {
-            countQuery += ' WHERE $1 = ANY(tags)';
+            countQuery += " AND $1 = ANY(tags)";
             countParams.push(tag);
         }
         const countRes = await client.query(countQuery, countParams);
@@ -89,7 +89,7 @@ async function getArticles(page = 1, tag = null) {
         let totalPages = Math.ceil(totalCount / GRID_SIZE);
 
         // Fetch all unique tags for the filter bar
-        const tagsRes = await client.query('SELECT DISTINCT unnest(tags) as tag FROM blog_posts LIMIT 20');
+        const tagsRes = await client.query("SELECT DISTINCT unnest(tags) as tag FROM blog_posts WHERE status = 'published' OR status IS NULL LIMIT 20");
 
         return {
             articles: sanitizeProductArray(res.rows),

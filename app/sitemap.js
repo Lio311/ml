@@ -51,7 +51,7 @@ export default async function sitemap() {
             }));
 
         // Blog Posts
-        const blogRes = await client.query('SELECT id, slug, created_at FROM blog_posts');
+        const blogRes = await client.query("SELECT id, slug, created_at FROM blog_posts WHERE status = 'published' OR status IS NULL");
         const blogs = blogRes.rows.map((post) => ({
             url: `${baseUrl}/blog/${post.slug || post.id}`,
             lastModified: post.created_at || new Date(),

@@ -1,33 +1,37 @@
 import { NextResponse } from "next/server";
 import pool from "@/app/lib/db";
-import { currentUser } from "@clerk/nextjs/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
 export const dynamic = 'force-dynamic';
 export const maxDuration = 60; // Allow more time for LLM generation
 
-export async function POST(req) {
+export async function GET(req) {
+    // 1. Verify Vercel Cron Secret
+    const authHeader = req.headers.get('authorization');
+    if (process.env.CRON_SECRET && authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+        // Only return 401 if a secret is configured but doesn't match
+        console.warn("Unauthorized cron attempt.");
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     try {
-        const user = await currentUser();
-        const role = user?.publicMetadata?.role;
-        const email = user?.emailAddresses?.[0]?.emailAddress;
-        const isSuperAdmin = email === process.env.ADMIN_EMAIL;
-
-        if (!isSuperAdmin && role !== 'admin') {
-            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-        }
-
-        const { topic, keywords } = await req.json();
-
-        if (!topic) {
-            return NextResponse.json({ error: 'Topic is required' }, { status: 400 });
-        }
-
         const apiKey = process.env.GEMINI_API_KEY;
         if (!apiKey) {
-            return NextResponse.json({ error: 'GEMINI_API_KEY is missing from environment variables' }, { status: 500 });
+            console.error("Missing GEMINI_API_KEY");
+            return NextResponse.json({ error: 'GEMINI_API_KEY is missing' }, { status: 500 });
         }
 
+        const client = await pool.connect();
+        let existingTitles = [];
+        try {
+            // Fetch recent articles to avoid duplication
+            const res = await client.query('SELECT title, title_en FROM blog_posts ORDER BY created_at DESC LIMIT 50');
+            existingTitles = res.rows.map(r => `"${r.title}" / "${r.title_en}"`);
+        } finally {
+            client.release();
+        }
+
+        // 2. Call Gemini
         const genAI = new GoogleGenerativeAI(apiKey);
         const model = genAI.getGenerativeModel({ 
             model: "gemini-2.5-flash",
@@ -35,11 +39,14 @@ export async function POST(req) {
         });
 
         const prompt = `
-        You are an expert SEO content writer for an Israeli luxury niche perfume website called "ml-tlv". 
-        The website sells perfume samples and decants (2ml, 5ml, 10ml) of highly sought-after niche brands.
+        You are an expert SEO content writer and researcher for an Israeli luxury niche perfume website called "ml-tlv". 
+        The website sells perfume samples and decants (2ml, 5ml, 10ml) of highly sought-after niche brands (e.g., Tom Ford, Creed, Xerjoff, Parfums de Marly).
         
-        Write an engaging, SEO-optimized blog post about the following topic: "${topic}".
-        ${keywords ? `Please try to naturally include these keywords: ${keywords}` : ""}
+        Your task today is to autonomously find a NEW, trending, highly searched topic in the niche perfume world for 2026.
+        It must be an interesting topic, such as "Top 5 Vanilla Perfumes for Winter 2026", "Is Baccarat Rouge still worth it?", or a spotlight on a specific trending brand.
+        
+        IMPORTANT: Do NOT write about any of these existing articles:
+        ${existingTitles.join('\n')}
 
         Output EXACTLY a valid JSON object matching this schema:
         {
@@ -68,35 +75,32 @@ export async function POST(req) {
 
         const { title, title_en, slug, excerpt, excerpt_en, content, content_en, tags, tags_en } = generatedData;
 
-        // Ensure tags are formatted for Postgres arrays if necessary, or let node-pg handle it via parameter
-        // The DB schema expects string[] for tags and tags_en.
-        // E.g., ['tag1', 'tag2']
         const formattedTags = Array.isArray(tags) ? tags : [];
         const formattedTagsEn = Array.isArray(tags_en) ? tags_en : [];
 
-        // Save to Database
-        const client = await pool.connect();
+        // 3. Save to Database as Draft
+        const dbClient = await pool.connect();
         try {
             // Check if slug already exists to prevent unique constraint error
-            const slugCheck = await client.query('SELECT id FROM blog_posts WHERE slug = $1', [slug]);
+            const slugCheck = await dbClient.query('SELECT id FROM blog_posts WHERE slug = $1', [slug]);
             let finalSlug = slug;
             if (slugCheck.rows.length > 0) {
                 finalSlug = `${slug}-${Date.now()}`;
             }
 
-            await client.query(
+            await dbClient.query(
                 `INSERT INTO blog_posts (title, title_en, slug, excerpt, excerpt_en, content, content_en, tags, tags_en, status, created_at)
                  VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, 'draft', NOW())`,
                 [title, title_en, finalSlug, excerpt, excerpt_en, content, content_en, formattedTags, formattedTagsEn]
             );
 
-            return NextResponse.json({ success: true, title, title_en, slug: finalSlug });
+            return NextResponse.json({ success: true, message: "Draft created successfully", title, slug: finalSlug });
         } finally {
-            client.release();
+            dbClient.release();
         }
 
     } catch (error) {
-        console.error("SEO Generation Error:", error);
+        console.error("Cron SEO Bot Error:", error);
         return NextResponse.json({ error: error.message || "Internal Server Error" }, { status: 500 });
     }
 }

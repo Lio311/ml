@@ -68,7 +68,7 @@ export async function generateMetadata({ params }) {
 async function getArticle(slug) {
     const client = await pool.connect();
     try {
-        const res = await client.query('SELECT id, title, title_en, content, content_en, excerpt, excerpt_en, slug, image_url, created_at, tags FROM blog_posts WHERE slug = $1', [slug]);
+        const res = await client.query("SELECT id, title, title_en, content, content_en, excerpt, excerpt_en, slug, image_url, created_at, tags FROM blog_posts WHERE slug = $1 AND (status = 'published' OR status IS NULL)", [slug]);
         return sanitizeProduct(res.rows[0]);
     } finally {
         client.release();
@@ -119,7 +119,7 @@ export default async function BlogPost({ params }) {
         const relatedRes = await client.query(`
             SELECT title, title_en, excerpt, excerpt_en, slug, image_url, created_at, tags 
             FROM blog_posts 
-            WHERE slug != $1 
+            WHERE slug != $1 AND (status = 'published' OR status IS NULL)
             ORDER BY created_at DESC 
             LIMIT 3
         `, [slug]);
