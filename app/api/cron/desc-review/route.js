@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import { currentUser } from "@clerk/nextjs/server";
 import pool from "@/app/lib/db";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import crypto from "crypto";
@@ -11,26 +10,20 @@ function hashDescription(desc) {
     return crypto.createHash('md5').update(desc || '').digest('hex');
 }
 
-export async function POST() {
+export async function GET(req) {
+    // Check for Vercel Cron header
+    const authHeader = req.headers.get('authorization');
+    if (authHeader !== `Bearer ${process.env.CRON_SECRET}` && process.env.NODE_ENV === 'production') {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     try {
-        const user = await currentUser();
-        const role = user?.publicMetadata?.role;
-        const email = user?.emailAddresses?.[0]?.emailAddress;
-        const isSuperAdmin = email === process.env.ADMIN_EMAIL;
-
-        if (!isSuperAdmin && role !== 'admin') {
-            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-        }
-
         const apiKey = process.env.GEMINI_API_KEY;
-        if (!apiKey) {
-            return NextResponse.json({ error: 'GEMINI_API_KEY is missing' }, { status: 500 });
-        }
+        if (!apiKey) return NextResponse.json({ error: 'Missing API Key' }, { status: 500 });
 
         const client = await pool.connect();
         let toReview = [];
         try {
-            // Get all products and their hashes
             const result = await client.query(`
                 SELECT id, brand, model, description 
                 FROM products 
@@ -39,7 +32,6 @@ export async function POST() {
                 AND description != ''
             `);
             
-            // Get existing review hashes to avoid duplicates
             const existingReviews = await client.query(`SELECT product_id, description_hash FROM product_desc_reviews`);
             const reviewMap = new Set(existingReviews.rows.map(r => `${r.product_id}-${r.description_hash}`));
 
@@ -48,14 +40,14 @@ export async function POST() {
                 if (!reviewMap.has(`${p.id}-${hash}`)) {
                     toReview.push({ ...p, hash });
                 }
-                if (toReview.length >= 50) break; // Limit to 50 per run
+                if (toReview.length >= 80) break; // 80 per cron run to be safe with 300s timeout
             }
         } finally {
             client.release();
         }
 
         if (toReview.length === 0) {
-            return NextResponse.json({ success: true, message: 'All descriptions already reviewed', reviewed: 0 });
+            return NextResponse.json({ success: true, message: 'Nothing to review' });
         }
 
         const genAI = new GoogleGenerativeAI(apiKey);
@@ -72,20 +64,7 @@ export async function POST() {
             
             const batchPrompt = `
 You are a senior copywriter reviewing product descriptions for a luxury Israeli niche perfume decant shop called "ml-tlv".
-
-Review each of the following product descriptions. For each one, provide:
-1. A rating from 1-10 (10 = perfect, engaging, poetic; 1 = terrible, generic, boring)
-2. Brief strengths (what works well) - in Hebrew, max 1-2 sentences
-3. Brief suggestions for improvement - in Hebrew, max 2-3 bullet points
-4. A suggested_rewrite: The full improved description text in Hebrew, based on your suggestions.
-
-Rating guide:
-- 9-10: Exceptional. Poetic, evocative, matches brand voice perfectly. Uses sensory language.
-- 7-8: Good. Clear and engaging, but could be more poetic or specific.
-- 5-6: Average. Gets the job done but feels generic. Could use more personality.
-- 3-4: Below average. Too short, too vague, or doesn't match the luxury brand voice.
-- 1-2: Poor. Missing, placeholder, or completely off-brand.
-
+Review each of the following product descriptions. Provide rating (1-10), strengths, suggestions, and a suggested_rewrite.
 Products to review:
 ${batch.map((p, idx) => `
 [Product ${idx + 1}]
@@ -99,9 +78,9 @@ Return a JSON array with exactly ${batch.length} objects:
   {
     "index": 0,
     "rating": 8,
-    "strengths": "Hebrew text",
-    "suggestions": "Hebrew text",
-    "suggested_rewrite": "Full improved description in Hebrew"
+    "strengths": "...",
+    "suggestions": "...",
+    "suggested_rewrite": "..."
   }
 ]
 `;
@@ -110,7 +89,6 @@ Return a JSON array with exactly ${batch.length} objects:
                 const result = await model.generateContent(batchPrompt);
                 let responseText = result.response.text().trim();
                 responseText = responseText.replace(/```json\s*/gi, '').replace(/```\s*/gi, '').trim();
-
                 const reviews = JSON.parse(responseText);
 
                 const saveClient = await pool.connect();
@@ -118,7 +96,6 @@ Return a JSON array with exactly ${batch.length} objects:
                     for (const review of reviews) {
                         const product = batch[review.index];
                         if (!product) continue;
-
                         await saveClient.query(`
                             INSERT INTO product_desc_reviews (product_id, brand, model, description, description_hash, rating, strengths, suggestions, suggested_rewrite, reviewed_at)
                             VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, NOW())
@@ -129,30 +106,20 @@ Return a JSON array with exactly ${batch.length} objects:
                                 suggested_rewrite = EXCLUDED.suggested_rewrite,
                                 reviewed_at = NOW()
                         `, [product.id, product.brand, product.model, product.description, product.hash, review.rating, review.strengths || '', review.suggestions || '', review.suggested_rewrite || '']);
-                        
                         totalReviewed++;
                     }
                 } finally {
                     saveClient.release();
                 }
-            } catch (batchError) {
-                console.error(`Batch error at index ${i}:`, batchError);
+            } catch (e) {
+                console.error("Cron batch error:", e);
             }
-
-            if (i + BATCH_SIZE < toReview.length) {
-                await new Promise(resolve => setTimeout(resolve, 1500));
-            }
+            if (i + BATCH_SIZE < toReview.length) await new Promise(r => setTimeout(r, 1500));
         }
 
-        return NextResponse.json({ 
-            success: true, 
-            message: `Reviewed ${totalReviewed} descriptions`,
-            reviewed: totalReviewed,
-            remaining: toReview.length - totalReviewed
-        });
-
+        return NextResponse.json({ success: true, reviewed: totalReviewed });
     } catch (error) {
-        console.error("Desc review run error:", error);
-        return NextResponse.json({ error: error.message || "Internal Server Error" }, { status: 500 });
+        console.error("Cron desc review error:", error);
+        return NextResponse.json({ error: error.message }, { status: 500 });
     }
 }

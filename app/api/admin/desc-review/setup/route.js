@@ -24,11 +24,16 @@ export async function POST() {
                     description_hash TEXT NOT NULL,
                     rating INTEGER NOT NULL DEFAULT 0,
                     suggestions TEXT,
+                    suggested_rewrite TEXT,
                     strengths TEXT,
                     reviewed_at TIMESTAMP DEFAULT NOW(),
                     UNIQUE(product_id, description_hash)
                 )
             `);
+            // Also attempt to add it if table already exists
+            try {
+                await client.query(`ALTER TABLE product_desc_reviews ADD COLUMN IF NOT EXISTS suggested_rewrite TEXT`);
+            } catch (e) {}
             return NextResponse.json({ success: true, message: 'Table created successfully' });
         } finally {
             client.release();

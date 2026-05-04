@@ -56,22 +56,57 @@ export default function DescReviewPage() {
         }
     };
 
-    const handleRun = async () => {
+    const handleRun = async (recursive = false) => {
         setIsRunning(true);
-        toast.loading("הבוט סוקר תיאורי מוצרים... זה עשוי לקחת כמה דקות", { id: 'review-bot' });
+        if (!recursive) {
+            toast.loading("הבוט מתחיל סריקה של כל המוצרים... זה עשוי לקחת זמן", { id: 'review-bot' });
+        }
+        
         try {
             const res = await fetch('/api/admin/desc-review/run', { method: 'POST' });
             const data = await res.json();
+            
             if (res.ok) {
-                toast.success(`סקירה הושלמה! ${data.reviewed} תיאורים נסקרו`, { id: 'review-bot' });
-                fetchReviews();
+                if (data.reviewed > 0) {
+                    // Refresh data
+                    fetchReviews();
+                    // Recursive call to get the next 50
+                    toast.loading(`נסרקו ${data.reviewed} מוצרים נוספים... ממשיך לסריקה הבאה`, { id: 'review-bot' });
+                    setTimeout(() => handleRun(true), 1000);
+                } else {
+                    toast.success("כל המוצרים נסרקו בהצלחה!", { id: 'review-bot' });
+                    setIsRunning(false);
+                    fetchReviews();
+                }
             } else {
                 toast.error(data.error || "שגיאה בהרצת הבוט", { id: 'review-bot' });
+                setIsRunning(false);
             }
         } catch (e) {
             toast.error("שגיאה בתקשורת", { id: 'review-bot' });
-        } finally {
             setIsRunning(false);
+        }
+    };
+
+    const handleApply = async (productId, rewrite) => {
+        if (!confirm("האם להחליף את התיאור הנוכחי בתיאור המשופר?")) return;
+        
+        toast.loading("מעדכן תיאור...", { id: 'apply-rewrite' });
+        try {
+            const res = await fetch('/api/admin/desc-review/apply', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ productId, rewrite })
+            });
+            if (res.ok) {
+                toast.success("התיאור עודכן בהצלחה!", { id: 'apply-rewrite' });
+                fetchReviews();
+            } else {
+                const data = await res.json();
+                toast.error(data.error || "שגיאה בעדכון", { id: 'apply-rewrite' });
+            }
+        } catch (e) {
+            toast.error("שגיאה בתקשורת", { id: 'apply-rewrite' });
         }
     };
 
@@ -87,6 +122,13 @@ export default function DescReviewPage() {
         if (rating >= 6) return { label: 'טוב', icon: TrendingUp, color: 'bg-yellow-100 text-yellow-700' };
         if (rating >= 4) return { label: 'בינוני', icon: AlertTriangle, color: 'bg-orange-100 text-orange-700' };
         return { label: 'דורש שיפור', icon: AlertTriangle, color: 'bg-red-100 text-red-700' };
+    };
+
+    const formatSuggestions = (text) => {
+        if (!text) return "";
+        // Remove curly braces and quotes if AI returned it as a JSON-like string
+        let clean = text.replace(/^[{\s"]+/, '').replace(/[}\s"]+$/, '');
+        return clean;
     };
 
     const filteredReviews = reviews.filter(r => {
@@ -232,27 +274,49 @@ export default function DescReviewPage() {
 
                                 {/* Expanded Details */}
                                 {isExpanded && (
-                                    <div className="px-4 pb-4 border-t border-gray-100 pt-3 space-y-3">
+                                    <div className="px-4 pb-4 border-t border-gray-100 pt-3 space-y-4">
                                         <div className="bg-gray-50 rounded-xl p-3">
                                             <p className="text-[10px] font-black text-gray-400 uppercase tracking-widest mb-1">תיאור נוכחי</p>
                                             <p className="text-sm text-gray-700 leading-relaxed">{review.description}</p>
                                         </div>
                                         
-                                        {review.strengths && (
-                                            <div className="bg-green-50 rounded-xl p-3">
-                                                <p className="text-[10px] font-black text-green-600 uppercase tracking-widest mb-1 flex items-center gap-1">
-                                                    <CheckCircle2 className="w-3 h-3" /> חוזקות
-                                                </p>
-                                                <p className="text-sm text-green-800 leading-relaxed">{review.strengths}</p>
-                                            </div>
-                                        )}
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                            {review.strengths && (
+                                                <div className="bg-green-50 rounded-xl p-3">
+                                                    <p className="text-[10px] font-black text-green-600 uppercase tracking-widest mb-1 flex items-center gap-1">
+                                                        <CheckCircle2 className="w-3 h-3" /> חוזקות
+                                                    </p>
+                                                    <p className="text-sm text-green-800 leading-relaxed">{review.strengths}</p>
+                                                </div>
+                                            )}
 
-                                        {review.suggestions && (
-                                            <div className="bg-amber-50 rounded-xl p-3">
-                                                <p className="text-[10px] font-black text-amber-600 uppercase tracking-widest mb-1 flex items-center gap-1">
-                                                    <TrendingUp className="w-3 h-3" /> הצעות לשיפור
-                                                </p>
-                                                <p className="text-sm text-amber-900 leading-relaxed whitespace-pre-line">{review.suggestions}</p>
+                                            {review.suggestions && (
+                                                <div className="bg-amber-50 rounded-xl p-3">
+                                                    <p className="text-[10px] font-black text-amber-600 uppercase tracking-widest mb-1 flex items-center gap-1">
+                                                        <TrendingUp className="w-3 h-3" /> הצעות לשיפור
+                                                    </p>
+                                                    <p className="text-sm text-amber-900 leading-relaxed whitespace-pre-line">{formatSuggestions(review.suggestions)}</p>
+                                                </div>
+                                            )}
+                                        </div>
+
+                                        {review.suggested_rewrite && (
+                                            <div className="bg-blue-50 border border-blue-100 rounded-xl p-4">
+                                                <div className="flex items-center justify-between mb-2">
+                                                    <p className="text-[10px] font-black text-blue-600 uppercase tracking-widest flex items-center gap-1">
+                                                        <Star className="w-3 h-3" /> הצעה לתיאור משופר (AI)
+                                                    </p>
+                                                    <button 
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            handleApply(review.product_id, review.suggested_rewrite);
+                                                        }}
+                                                        className="bg-blue-600 hover:bg-blue-700 text-white text-[10px] font-black px-3 py-1.5 rounded-lg transition-all active:scale-95 shadow-sm"
+                                                    >
+                                                        יישם שיפור עכשיו
+                                                    </button>
+                                                </div>
+                                                <p className="text-sm text-blue-900 leading-relaxed italic">"{review.suggested_rewrite}"</p>
                                             </div>
                                         )}
 
