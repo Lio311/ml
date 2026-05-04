@@ -42,13 +42,16 @@ self.addEventListener('fetch', (event) => {
   // Skip non-GET requests
   if (request.method !== 'GET') return;
 
-  // Skip API routes, Clerk, and analytics
+  // Skip API routes, Clerk, analytics, and external font CDNs
   const url = new URL(request.url);
   if (
     url.pathname.startsWith('/api/') ||
     url.hostname.includes('clerk') ||
     url.hostname.includes('google') ||
-    url.hostname.includes('clarity')
+    url.hostname.includes('clarity') ||
+    url.hostname.includes('fonts.gstatic.com') ||
+    url.hostname.includes('fonts.googleapis.com') ||
+    url.hostname.includes('sentry')
   ) {
     return;
   }
