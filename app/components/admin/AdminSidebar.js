@@ -103,8 +103,6 @@ export default function AdminSidebar({ role = 'customer' }) {
                 { href: "/admin/orders", label: "הזמנות", icon: Package, roles: ['admin', 'deputy', 'warehouse'] },
                 { href: "/admin/phone-order", label: "הזמנה טלפונית", icon: Phone, roles: ['admin', 'deputy'] },
                 { href: "/admin/users", label: "משתמשים", icon: Users, roles: ['admin', 'deputy'] },
-                { href: "/admin/audit-logs", label: "יומן פעולות", icon: History, roles: ['admin'] },
-                { href: "/admin/email-logs", label: "יומן מיילים", icon: Mail, roles: ['admin'] },
             ]
         },
         {
@@ -154,6 +152,8 @@ export default function AdminSidebar({ role = 'customer' }) {
                 { href: "/admin/popups", label: "פופאפ", icon: MessageCircle, roles: ['admin', 'deputy'] },
                 { href: "/admin/announcement-bar", label: "פס עליון", icon: Megaphone, roles: ['admin', 'deputy'] },
                 { href: "/admin/brand", label: "שם מסחרי", icon: Type, roles: ['admin'] },
+                { href: "/admin/audit-logs", label: "יומן פעולות", icon: History, roles: ['admin'] },
+                { href: "/admin/email-logs", label: "יומן מיילים", icon: Mail, roles: ['admin'] },
                 { href: "/admin/system-status", label: "סטטוס מערכת", icon: Activity, roles: ['admin'] },
                 { href: "/admin/error-logs", label: "ניטור שגיאות", icon: AlertOctagon, roles: ['admin'] },
             ]
