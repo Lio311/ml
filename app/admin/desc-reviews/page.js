@@ -12,16 +12,19 @@ export default function DescReviewPage() {
     const [expandedId, setExpandedId] = useState(null);
     const [filter, setFilter] = useState('all'); // all, low, medium, high
     const [isSettingUp, setIsSettingUp] = useState(false);
+    const [tableExists, setTableExists] = useState(true);
 
     const fetchReviews = async () => {
         try {
             const res = await fetch('/api/admin/desc-review/list');
             if (res.ok) {
                 const data = await res.json();
+                setTableExists(true);
                 setReviews(data.reviews || []);
                 setStats(data.stats || { total_with_desc: 0, total_reviewed: 0 });
             } else {
                 // Table might not exist yet
+                setTableExists(false);
                 setReviews([]);
             }
         } catch (err) {
@@ -41,6 +44,8 @@ export default function DescReviewPage() {
             const res = await fetch('/api/admin/desc-review/setup', { method: 'POST' });
             if (res.ok) {
                 toast.success("טבלה נוצרה בהצלחה!");
+                setTableExists(true);
+                fetchReviews();
             } else {
                 const data = await res.json();
                 toast.error(data.error || "שגיאה ביצירת הטבלה");
@@ -108,13 +113,15 @@ export default function DescReviewPage() {
                     <p className="text-sm text-gray-500 mt-1">בוט AI שמדרג את תיאורי המוצרים ומציע שיפורים</p>
                 </div>
                 <div className="flex gap-2">
-                    <button
-                        onClick={handleSetup}
-                        disabled={isSettingUp}
-                        className="text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold px-3 py-2 rounded-xl transition disabled:opacity-50"
-                    >
-                        {isSettingUp ? 'מגדיר...' : 'הגדר טבלה'}
-                    </button>
+                    {!tableExists && (
+                        <button
+                            onClick={handleSetup}
+                            disabled={isSettingUp}
+                            className="text-xs bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold px-3 py-2 rounded-xl transition disabled:opacity-50"
+                        >
+                            {isSettingUp ? 'מגדיר...' : 'הגדר טבלה'}
+                        </button>
+                    )}
                     <button
                         onClick={handleRun}
                         disabled={isRunning}
