@@ -7,7 +7,7 @@ import TagInput from "../../components/TagInput";
 import ModernDateTimePicker from "../../components/ui/ModernDateTimePicker";
 import toast from 'react-hot-toast';
 import AdminFilterBar from "../../components/admin/AdminFilterBar";
-import { Sparkles, Wand2 } from "lucide-react";
+import { Wand2 } from "lucide-react";
 
 export default function AdminProductsClient({ products, initialSearch, totalProducts, filteredCount, counts, currentPage, totalPages, currentLetter, currentView, currentSort, canEdit }) {
 
@@ -16,7 +16,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
     const [editForm, setEditForm] = useState({});
     const [searchTerm, setSearchTerm] = useState(initialSearch);
     const [availableNotes, setAvailableNotes] = useState([]);
-    const [isGeneratingDesc, setIsGeneratingDesc] = useState(false);
+    const [isGeneratingDesc, setIsGeneratingDesc] = useState(false); // kept for backwards compat
     const [isFillingAI, setIsFillingAI] = useState(false);
 
     const handleFillWithAI = async () => {
@@ -50,38 +50,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
             setIsFillingAI(false);
         }
     };
-    
-    const handleGenerateDesc = async () => {
-        if (!editForm.brand || !editForm.model) {
-            toast.error("יש למלא קודם את שם המותג (Brand) ושם הדגם (Model) כדי לאפשר כתיבה אוטומטית.");
-            return;
-        }
-        setIsGeneratingDesc(true);
-        try {
-            const res = await fetch('/api/admin/generate-product-desc', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ 
-                    brand: editForm.brand, 
-                    name: editForm.model,
-                    top_notes: editForm.top_notes || '',
-                    middle_notes: editForm.middle_notes || '',
-                    base_notes: editForm.base_notes || ''
-                })
-            });
-            const data = await res.json();
-            if (res.ok) {
-                setEditForm({ ...editForm, description: data.description });
-                toast.success("תיאור נוצר בהצלחה!");
-            } else {
-                toast.error(data.error || "שגיאה ביצירת התיאור");
-            }
-        } catch (e) {
-            toast.error("שגיאה בתקשורת");
-        } finally {
-            setIsGeneratingDesc(false);
-        }
-    };
+
 
     useEffect(() => {
         const fetchNotes = async () => {
@@ -554,15 +523,6 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                     <div className="mb-4">
                         <div className="flex justify-between items-center mb-1">
                             <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block">תיאור מוצר</label>
-                            <button 
-                                type="button" 
-                                onClick={handleGenerateDesc}
-                                disabled={isGeneratingDesc}
-                                className="text-xs bg-blue-100 hover:bg-blue-200 text-blue-700 font-bold px-3 py-1 rounded-full transition disabled:opacity-50 flex items-center gap-1.5"
-                            >
-                                <span>{isGeneratingDesc ? 'מייצר...' : 'צור תיאור באמצעות AI'}</span>
-                                <Sparkles className={`w-3.5 h-3.5 ${isGeneratingDesc ? 'animate-pulse' : ''}`} />
-                            </button>
                         </div>
                         <textarea
                             value={editForm.description || ''}
@@ -837,15 +797,6 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                     <div>
                                         <div className="flex justify-between items-center mb-1">
                                             <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block">תיאור</label>
-                                            <button 
-                                                type="button" 
-                                                onClick={handleGenerateDesc}
-                                                disabled={isGeneratingDesc}
-                                                className="text-xs bg-blue-100 hover:bg-blue-200 text-blue-700 font-bold px-3 py-1 rounded-full transition disabled:opacity-50 flex items-center gap-1.5"
-                                            >
-                                                <span>{isGeneratingDesc ? 'מייצר...' : 'צור תיאור באמצעות AI'}</span>
-                                                <Sparkles className={`w-3.5 h-3.5 ${isGeneratingDesc ? 'animate-pulse' : ''}`} />
-                                            </button>
                                         </div>
                                         <textarea
                                             value={editForm.description || ''}

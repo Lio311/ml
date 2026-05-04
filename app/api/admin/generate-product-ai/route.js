@@ -28,39 +28,42 @@ export async function POST(req) {
         }
 
         const genAI = new GoogleGenerativeAI(apiKey);
+        
+        // Use Google Search grounding so Gemini actually looks up the perfume on Fragrantica
         const model = genAI.getGenerativeModel({ 
             model: "gemini-2.5-flash",
-            generationConfig: { responseMimeType: "application/json" }
+            tools: [{ googleSearch: {} }],
         });
 
-        const prompt = `
-You are a niche perfume expert with deep knowledge of Fragrantica's perfume database.
+        const searchPrompt = `Search Fragrantica for the perfume "${brand} ${name}" and find its EXACT fragrance note pyramid (top notes, middle/heart notes, base notes). 
+Use only notes that actually appear on the Fragrantica page for this specific perfume. Do NOT guess or make up notes.
 
-For the perfume "${brand} ${name}", provide:
-1. The fragrance note pyramid (top notes, middle/heart notes, base notes) — use English note names as they appear on Fragrantica.
-2. A short, poetic product description in Hebrew for a luxury Israeli perfume decant shop called "ml-tlv".
+After finding the real notes, write a short poetic product description in Hebrew for a luxury Israeli perfume decant shop called "ml-tlv".
 
-IMPORTANT RULES:
-- Use your knowledge of actual perfume compositions. If you truly don't know the exact notes of this perfume, provide your best educated guess based on the brand's style and the perfume name, but still fill in the notes.
-- Notes should be in English, comma-separated.
-- The description must be in Hebrew, 3-5 sentences max.
-- Description style: Start with a short punchy atmosphere line (e.g. "קוקטייל בשקיעה.", "ממתק יוקרתי."). Weave in the key notes poetically. Describe who it's for or what feeling it projects. Use rich but accessible language.
+Description rules:
+- 3-5 sentences max, Hebrew only
+- Start with a short punchy atmosphere line (e.g. "קוקטייל בשקיעה.", "ממתק יוקרתי.")
+- Weave the real notes poetically, don't just list them
+- Describe who it's for or what feeling it projects
+- Use rich but accessible language ("עסיסי", "אופולנטי", "יוקרתי בטירוף")
 
-Example descriptions for reference:
+Example descriptions:
 - "קוקטייל בשקיעה. מנגו ופסיפלורה עסיסיים בשיא הבשלות. בושם שפשוט מקרין שמחת חיים, צבעוניות וטרופיות מתפרצת."
-- "כשעולם האופנה המינימליסטי פוגש את הבישום העילי. כמו ללבוש חולצה לבנה מכופתרת וחדשה לגמרי... יצירה שמשדרת סטייל, ניקיון ויוקרה מרוחקת."
+- "לא הקולון של סבא שלך. זהו קולון שעבר דרך האש... מתאים לחובבי בישום שמחפשים את הטוויסט המורכב והמעושן."
 
-Return EXACTLY this JSON structure:
+Return your answer as a valid JSON object with this EXACT structure (no markdown, no backticks, just raw JSON):
 {
   "top_notes": "Note1, Note2, Note3",
   "middle_notes": "Note1, Note2, Note3",
   "base_notes": "Note1, Note2, Note3",
   "description": "Hebrew description here"
-}
-`;
+}`;
 
-        const result = await model.generateContent(prompt);
+        const result = await model.generateContent(searchPrompt);
         let responseText = result.response.text().trim();
+
+        // Strip markdown code fences if present
+        responseText = responseText.replace(/```json\s*/gi, '').replace(/```\s*/gi, '').trim();
 
         let data;
         try {
