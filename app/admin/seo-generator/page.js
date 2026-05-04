@@ -155,13 +155,13 @@ export default function SEOGeneratorPage() {
                             >
                                 {isLoading ? (
                                     <>
-                                        <Wand2 className="w-5 h-5 animate-pulse" />
                                         <span>מייצר טיוטה...</span>
+                                        <Wand2 className="w-5 h-5 animate-pulse" />
                                     </>
                                 ) : (
                                     <>
-                                        <Wand2 className="w-5 h-5" />
                                         <span>צור מאמר</span>
+                                        <Wand2 className="w-5 h-5" />
                                     </>
                                 )}
                             </button>

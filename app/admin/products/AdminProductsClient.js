@@ -15,6 +15,33 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
     const [editForm, setEditForm] = useState({});
     const [searchTerm, setSearchTerm] = useState(initialSearch);
     const [availableNotes, setAvailableNotes] = useState([]);
+    const [isGeneratingDesc, setIsGeneratingDesc] = useState(false);
+    
+    const handleGenerateDesc = async () => {
+        if (!editForm.brand || !editForm.name_he) {
+            toast.error("יש למלא קודם את שם המותג ושם ה-SEO (עברית) כדי לאפשר כתיבה אוטומטית.");
+            return;
+        }
+        setIsGeneratingDesc(true);
+        try {
+            const res = await fetch('/api/admin/generate-product-desc', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ brand: editForm.brand, name: editForm.name_he })
+            });
+            const data = await res.json();
+            if (res.ok) {
+                setEditForm({ ...editForm, description: data.description });
+                toast.success("תיאור נוצר בהצלחה!");
+            } else {
+                toast.error(data.error || "שגיאה ביצירת התיאור");
+            }
+        } catch (e) {
+            toast.error("שגיאה בתקשורת");
+        } finally {
+            setIsGeneratingDesc(false);
+        }
+    };
 
     useEffect(() => {
         const fetchNotes = async () => {
@@ -474,7 +501,17 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                     </div>
 
                     <div className="mb-4">
-                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">תיאור מוצר</label>
+                        <div className="flex justify-between items-center mb-1">
+                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block">תיאור מוצר</label>
+                            <button 
+                                type="button" 
+                                onClick={handleGenerateDesc}
+                                disabled={isGeneratingDesc}
+                                className="text-xs bg-purple-100 hover:bg-purple-200 text-purple-700 font-bold px-3 py-1 rounded-full transition disabled:opacity-50 flex items-center gap-1"
+                            >
+                                {isGeneratingDesc ? 'מייצר...' : 'צור תיאור באמצעות AI ✨'}
+                            </button>
+                        </div>
                         <textarea
                             value={editForm.description || ''}
                             onChange={e => setEditForm({ ...editForm, description: e.target.value })}
@@ -735,7 +772,17 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                         />
                                     </div>
                                     <div>
-                                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">תיאור</label>
+                                        <div className="flex justify-between items-center mb-1">
+                                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block">תיאור</label>
+                                            <button 
+                                                type="button" 
+                                                onClick={handleGenerateDesc}
+                                                disabled={isGeneratingDesc}
+                                                className="text-xs bg-purple-100 hover:bg-purple-200 text-purple-700 font-bold px-3 py-1 rounded-full transition disabled:opacity-50 flex items-center gap-1"
+                                            >
+                                                {isGeneratingDesc ? 'מייצר...' : 'צור תיאור באמצעות AI ✨'}
+                                            </button>
+                                        </div>
                                         <textarea
                                             value={editForm.description || ''}
                                             onChange={e => setEditForm({ ...editForm, description: e.target.value })}
