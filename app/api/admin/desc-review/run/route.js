@@ -27,6 +27,16 @@ export async function POST() {
             return NextResponse.json({ error: 'GEMINI_API_KEY is missing' }, { status: 500 });
         }
 
+        // Auto-migrate: ensure suggested_rewrite column exists
+        const migrationClient = await pool.connect();
+        try {
+            await migrationClient.query(`ALTER TABLE product_desc_reviews ADD COLUMN IF NOT EXISTS suggested_rewrite TEXT`);
+        } catch (e) {
+            // Table might not exist at all - that's ok, setup will handle it
+        } finally {
+            migrationClient.release();
+        }
+
         const client = await pool.connect();
         let toReview = [];
         try {
