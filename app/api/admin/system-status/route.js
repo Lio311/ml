@@ -6,13 +6,13 @@ export const dynamic = 'force-dynamic';
 
 // Cron configuration — single source of truth
 const CRON_CONFIG = [
-    { name: 'recovery', path: '/api/cron/recovery', schedule: '0 10 * * *', label: 'שחזור עגלות', description: 'שולח אימיילים ללקוחות שנטשו עגלה' },
-    { name: 'educational-email', path: '/api/cron/educational-email', schedule: '0 11 * * *', label: 'אימייל חינוכי', description: 'שולח תוכן חינוכי על בשמים' },
-    { name: 'review-request', path: '/api/cron/review-request', schedule: '0 12 * * *', label: 'בקשת ביקורת', description: 'מבקש ביקורות מלקוחות אחרי רכישה' },
-    { name: 'recommendations', path: '/api/cron/recommendations', schedule: '0 13 * * *', label: 'המלצות', description: 'שולח המלצות מותאמות אישית' },
-    { name: 'nurture-emails', path: '/api/cron/nurture-emails', schedule: '0 14 * * *', label: 'אימיילי נרטור', description: 'סדרת אימיילים לליווי לקוח חדש' },
-    { name: 'seo-bot', path: '/api/cron/seo-bot', schedule: '0 8 * * *', label: 'בוט SEO', description: 'מייצר תוכן SEO למוצרים' },
-    { name: 'desc-review', path: '/api/cron/desc-review', schedule: '0 19 * * *', label: 'סקירת תיאורים', description: 'סוקר ומדרג תיאורי מוצרים עם AI' },
+    { name: 'recovery', path: '/api/cron/recovery', schedule: '0 10 * * *', label: 'שחזור עגלות', description: 'שולח אימייל ללקוחות שנטשו עגלה (רק אם יש עגלות נטושות)' },
+    { name: 'educational-email', path: '/api/cron/educational-email', schedule: '0 11 * * *', label: 'אימייל חינוכי', description: 'שולח תוכן חינוכי על בשמים ללקוחות שביצעו הזמנה' },
+    { name: 'review-request', path: '/api/cron/review-request', schedule: '0 12 * * *', label: 'בקשת ביקורת', description: 'מבקש ביקורות מלקוחות שקיבלו הזמנה (מותנה בהזמנה שהושלמה)' },
+    { name: 'recommendations', path: '/api/cron/recommendations', schedule: '0 13 * * *', label: 'המלצות', description: 'שולח המלצות מותאמות אישית (מותנה בהיסטוריית רכישות)' },
+    { name: 'nurture-emails', path: '/api/cron/nurture-emails', schedule: '0 14 * * *', label: 'אימיילי נרטור', description: 'סדרת ליווי ללקוח חדש אחרי הרשמה (מותנה ברישום חדש)' },
+    { name: 'seo-bot', path: '/api/cron/seo-bot', schedule: '0 8 * * *', label: 'בוט SEO', description: 'מייצר תוכן SEO למוצרים שחסר להם (מותנה במוצרים חדשים)' },
+    { name: 'desc-review', path: '/api/cron/desc-review', schedule: '0 19 * * *', label: 'סקירת תיאורים', description: 'סוקר ומדרג תיאורי מוצרים עם AI (מותנה בתיאורים שטרם נסקרו)' },
 ];
 
 function scheduleToHebrew(schedule) {
@@ -20,7 +20,7 @@ function scheduleToHebrew(schedule) {
     const hour = parseInt(parts[1]);
     // Convert UTC to Israel time (UTC+3)
     const israelHour = (hour + 3) % 24;
-    return `כל יום ב-${String(israelHour).padStart(2, '0')}:00`;
+    return `מתוזמן ${String(israelHour).padStart(2, '0')}:00`;
 }
 
 export async function GET() {
