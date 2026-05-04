@@ -1,4 +1,4 @@
-const CACHE_NAME = 'ml-tlv-v1';
+const CACHE_NAME = 'ml-tlv-v2';
 const OFFLINE_URL = '/offline.html';
 
 // Assets to pre-cache on install
