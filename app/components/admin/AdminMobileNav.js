@@ -43,7 +43,9 @@ import {
     Type,
     ArrowUpRight,
     ChevronDown,
-    Zap
+    Zap,
+    Edit3,
+    FileSearch
 } from "lucide-react";
 import { SignOutButton } from "@clerk/nextjs";
 import { useBrand } from "../../context/BrandContext";
@@ -138,6 +140,8 @@ export default function AdminMobileNav({ role = 'customer' }) {
                 { href: "/admin/analytics", label: "אנליטיקה", icon: BarChart3, roles: ['admin'] },
                 { href: "/admin/search-analytics", label: "חיפושים", icon: Search, roles: ['admin'] },
                 { href: "/admin/funnel", label: "משפך המרה", icon: Target, roles: ['admin'] },
+                { href: "/admin/seo-generator", label: "בוט תוכן (SEO)", icon: Edit3, roles: ['admin'] },
+                { href: "/admin/desc-reviews", label: "סקירת תיאורים", icon: FileSearch, roles: ['admin'] },
             ]
         },
         {

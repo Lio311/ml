@@ -104,8 +104,7 @@ export default function SEOGeneratorPage() {
     return (
         <div className="max-w-6xl mx-auto py-8 px-4" dir="rtl">
             <div className="mb-10">
-                <h1 className="text-3xl font-black text-gray-900 flex items-center gap-3">
-                    <Edit3 className="w-8 h-8 text-blue-600" />
+                <h1 className="text-3xl font-black text-gray-900">
                     בוט תוכן (SEO)
                 </h1>
                 <p className="text-gray-500 mt-2">
