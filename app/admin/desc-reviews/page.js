@@ -19,11 +19,10 @@ export default function DescReviewPage() {
             const res = await fetch('/api/admin/desc-review/list');
             if (res.ok) {
                 const data = await res.json();
-                setTableExists(true);
+                setTableExists(data.tableExists !== false);
                 setReviews(data.reviews || []);
                 setStats(data.stats || { total_with_desc: 0, total_reviewed: 0 });
             } else {
-                // Table might not exist yet
                 setTableExists(false);
                 setReviews([]);
             }

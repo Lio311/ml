@@ -18,25 +18,38 @@ export async function GET() {
         const client = await pool.connect();
         try {
             // Get all reviews ordered by rating (worst first)
-            const result = await client.query(`
-                SELECT r.*, p.image_url, p.active
-                FROM product_desc_reviews r
-                LEFT JOIN products p ON p.id = r.product_id
-                ORDER BY r.rating ASC, r.reviewed_at DESC
-            `);
+            let reviews = [];
+            try {
+                const result = await client.query(`
+                    SELECT r.*, p.image_url, p.active
+                    FROM product_desc_reviews r
+                    LEFT JOIN products p ON p.id = r.product_id
+                    ORDER BY r.rating ASC, r.reviewed_at DESC
+                `);
+                reviews = result.rows;
+            } catch (queryError) {
+                // If table doesn't exist, we'll just return an empty list
+                if (queryError.code === '42P01') {
+                    return NextResponse.json({ reviews: [], stats: { total_with_desc: 0, total_reviewed: 0 }, tableExists: false });
+                }
+                throw queryError;
+            }
 
             // Get total products with descriptions and how many are reviewed
             const statsResult = await client.query(`
                 SELECT 
-                    COUNT(*) FILTER (WHERE description IS NOT NULL AND description != '') as total_with_desc,
-                    (SELECT COUNT(*) FROM product_desc_reviews) as total_reviewed
+                    COUNT(*) FILTER (WHERE description IS NOT NULL AND description != '') as total_with_desc
                 FROM products
                 WHERE active = true
             `);
 
             return NextResponse.json({ 
-                reviews: result.rows,
-                stats: statsResult.rows[0]
+                reviews,
+                stats: {
+                    ...statsResult.rows[0],
+                    total_reviewed: reviews.length
+                },
+                tableExists: true
             });
         } finally {
             client.release();
