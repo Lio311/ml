@@ -11,6 +11,24 @@ function hashDescription(desc) {
     return crypto.createHash('md5').update(desc || '').digest('hex');
 }
 
+async function callWithRetry(model, prompt, maxRetries = 3) {
+    for (let attempt = 0; attempt < maxRetries; attempt++) {
+        try {
+            const result = await model.generateContent(prompt);
+            return result;
+        } catch (error) {
+            if (error.status === 429 && attempt < maxRetries - 1) {
+                // Parse retry delay from error if available, or use exponential backoff
+                const waitSeconds = Math.min(30 * (attempt + 1), 60);
+                console.log(`Rate limited. Waiting ${waitSeconds}s before retry ${attempt + 2}/${maxRetries}...`);
+                await new Promise(resolve => setTimeout(resolve, waitSeconds * 1000));
+            } else {
+                throw error;
+            }
+        }
+    }
+}
+
 export async function POST() {
     try {
         const user = await currentUser();
@@ -32,7 +50,7 @@ export async function POST() {
         try {
             await migrationClient.query(`ALTER TABLE product_desc_reviews ADD COLUMN IF NOT EXISTS suggested_rewrite TEXT`);
         } catch (e) {
-            // Table might not exist at all - that's ok, setup will handle it
+            // Table might not exist at all
         } finally {
             migrationClient.release();
         }
@@ -40,7 +58,6 @@ export async function POST() {
         const client = await pool.connect();
         let toReview = [];
         try {
-            // Get all products and their hashes
             const result = await client.query(`
                 SELECT id, brand, model, description 
                 FROM products 
@@ -49,7 +66,6 @@ export async function POST() {
                 AND description != ''
             `);
             
-            // Get existing review hashes to avoid duplicates
             const existingReviews = await client.query(`SELECT product_id, description_hash FROM product_desc_reviews`);
             const reviewMap = new Set(existingReviews.rows.map(r => `${r.product_id}-${r.description_hash}`));
 
@@ -58,7 +74,7 @@ export async function POST() {
                 if (!reviewMap.has(`${p.id}-${hash}`)) {
                     toReview.push({ ...p, hash });
                 }
-                if (toReview.length >= 50) break; // Limit to 50 per run
+                if (toReview.length >= 50) break;
             }
         } finally {
             client.release();
@@ -74,7 +90,8 @@ export async function POST() {
             generationConfig: { responseMimeType: "application/json" }
         });
 
-        const BATCH_SIZE = 5;
+        // Batch size of 10 — uses fewer API calls (5 calls per 50 products instead of 10)
+        const BATCH_SIZE = 10;
         let totalReviewed = 0;
 
         for (let i = 0; i < toReview.length; i += BATCH_SIZE) {
@@ -117,7 +134,7 @@ Return a JSON array with exactly ${batch.length} objects:
 `;
 
             try {
-                const result = await model.generateContent(batchPrompt);
+                const result = await callWithRetry(model, batchPrompt);
                 let responseText = result.response.text().trim();
                 responseText = responseText.replace(/```json\s*/gi, '').replace(/```\s*/gi, '').trim();
 
@@ -146,11 +163,21 @@ Return a JSON array with exactly ${batch.length} objects:
                     saveClient.release();
                 }
             } catch (batchError) {
-                console.error(`Batch error at index ${i}:`, batchError);
+                console.error(`Batch error at index ${i}:`, batchError.message || batchError);
+                // If we hit a quota limit that retry couldn't solve, stop and return what we have
+                if (batchError.status === 429) {
+                    return NextResponse.json({ 
+                        success: true, 
+                        message: `Reviewed ${totalReviewed} descriptions. Quota limit reached — try again later.`,
+                        reviewed: totalReviewed,
+                        quotaLimited: true
+                    });
+                }
             }
 
+            // 3 second delay between batches to stay under rate limits
             if (i + BATCH_SIZE < toReview.length) {
-                await new Promise(resolve => setTimeout(resolve, 1500));
+                await new Promise(resolve => setTimeout(resolve, 3000));
             }
         }
 

@@ -67,12 +67,15 @@ export default function DescReviewPage() {
             const data = await res.json();
             
             if (res.ok) {
-                if (data.reviewed > 0) {
-                    // Refresh data
+                if (data.quotaLimited) {
+                    // Hit API quota — stop and inform user
+                    toast.error(`נסרקו ${data.reviewed} מוצרים. הגעת למגבלת ה-API היומית — נסה שוב מאוחר יותר`, { id: 'review-bot', duration: 6000 });
+                    setIsRunning(false);
                     fetchReviews();
-                    // Recursive call to get the next 50
+                } else if (data.reviewed > 0) {
+                    fetchReviews();
                     toast.loading(`נסרקו ${data.reviewed} מוצרים נוספים... ממשיך לסריקה הבאה`, { id: 'review-bot' });
-                    setTimeout(() => handleRun(true), 1000);
+                    setTimeout(() => handleRun(true), 2000);
                 } else {
                     toast.success("כל המוצרים נסרקו בהצלחה!", { id: 'review-bot' });
                     setIsRunning(false);
