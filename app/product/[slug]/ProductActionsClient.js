@@ -113,12 +113,12 @@ export default function ProductActionsClient({ product }) {
                             disabled={isSubscribing}
                             className="w-full bg-black text-white py-3.5 rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-gray-800 transition-all active:scale-95 disabled:opacity-50"
                         >
+                            <span>{dir === 'rtl' ? 'עדכנו אותי כשהמוצר חוזר' : 'Notify me when back in stock'}</span>
                             {isSubscribing ? (
                                 <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                             ) : (
                                 <Bell size={18} />
                             )}
-                            <span>{dir === 'rtl' ? 'עדכנו אותי כשהמוצר חוזר' : 'Notify me when back in stock'}</span>
                         </button>
                     )}
                     
