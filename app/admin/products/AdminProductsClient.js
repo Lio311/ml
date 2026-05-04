@@ -7,7 +7,7 @@ import TagInput from "../../components/TagInput";
 import ModernDateTimePicker from "../../components/ui/ModernDateTimePicker";
 import toast from 'react-hot-toast';
 import AdminFilterBar from "../../components/admin/AdminFilterBar";
-import { Sparkles } from "lucide-react";
+import { Sparkles, Wand2 } from "lucide-react";
 
 export default function AdminProductsClient({ products, initialSearch, totalProducts, filteredCount, counts, currentPage, totalPages, currentLetter, currentView, currentSort, canEdit }) {
 
@@ -17,6 +17,39 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
     const [searchTerm, setSearchTerm] = useState(initialSearch);
     const [availableNotes, setAvailableNotes] = useState([]);
     const [isGeneratingDesc, setIsGeneratingDesc] = useState(false);
+    const [isFillingAI, setIsFillingAI] = useState(false);
+
+    const handleFillWithAI = async () => {
+        if (!editForm.brand || !editForm.model) {
+            toast.error("יש למלא קודם את שם המותג ואת שם הדגם.");
+            return;
+        }
+        setIsFillingAI(true);
+        try {
+            const res = await fetch('/api/admin/generate-product-ai', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ brand: editForm.brand, name: editForm.model })
+            });
+            const data = await res.json();
+            if (res.ok) {
+                setEditForm(prev => ({
+                    ...prev,
+                    top_notes: data.top_notes || prev.top_notes,
+                    middle_notes: data.middle_notes || prev.middle_notes,
+                    base_notes: data.base_notes || prev.base_notes,
+                    description: data.description || prev.description
+                }));
+                toast.success("תווי ריח + תיאור נוצרו בהצלחה!");
+            } else {
+                toast.error(data.error || "שגיאה ביצירת התוכן");
+            }
+        } catch (e) {
+            toast.error("שגיאה בתקשורת");
+        } finally {
+            setIsFillingAI(false);
+        }
+    };
     
     const handleGenerateDesc = async () => {
         if (!editForm.brand || !editForm.model) {
@@ -342,7 +375,18 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
 
             {isCreating && (
                 <div className="bg-white p-6 rounded-lg shadow-md border border-blue-200 mb-8">
-                    <h3 className="text-xl font-bold mb-4">יצירת מוצר חדש</h3>
+                    <div className="flex items-center justify-between mb-4">
+                        <h3 className="text-xl font-bold">יצירת מוצר חדש</h3>
+                        <button
+                            type="button"
+                            onClick={handleFillWithAI}
+                            disabled={isFillingAI}
+                            className="flex items-center gap-2 bg-gradient-to-l from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white text-sm font-bold px-4 py-2 rounded-xl transition-all shadow-md hover:shadow-lg disabled:opacity-50 active:scale-95"
+                        >
+                            <span>{isFillingAI ? 'שולף נתונים...' : 'מלא תווים + תיאור עם AI'}</span>
+                            <Wand2 className={`w-4 h-4 ${isFillingAI ? 'animate-spin' : ''}`} />
+                        </button>
+                    </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                         <div>
                             <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">מותג</label>
@@ -651,6 +695,17 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
 
                         {editingId === product.id ? (
                             <div className="flex-1 w-full flex flex-col gap-4">
+                                <div className="flex justify-end mb-1">
+                                    <button
+                                        type="button"
+                                        onClick={handleFillWithAI}
+                                        disabled={isFillingAI}
+                                        className="flex items-center gap-2 bg-gradient-to-l from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white text-sm font-bold px-4 py-2 rounded-xl transition-all shadow-md hover:shadow-lg disabled:opacity-50 active:scale-95"
+                                    >
+                                        <span>{isFillingAI ? 'שולף נתונים...' : 'מלא תווים + תיאור עם AI'}</span>
+                                        <Wand2 className={`w-4 h-4 ${isFillingAI ? 'animate-spin' : ''}`} />
+                                    </button>
+                                </div>
                                 <div className="grid grid-cols-1 md:grid-cols-7 gap-3 bg-gray-50/50 p-4 rounded-2xl border border-gray-100 mb-2">
                                     <div className="md:col-span-1">
                                         <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">מותג</label>
