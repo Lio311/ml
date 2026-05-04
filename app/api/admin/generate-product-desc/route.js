@@ -16,7 +16,7 @@ export async function POST(req) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
-        const { brand, name } = await req.json();
+        const { brand, name, top_notes, middle_notes, base_notes } = await req.json();
 
         if (!brand || !name) {
             return NextResponse.json({ error: 'Brand and Name are required' }, { status: 400 });
@@ -30,10 +30,26 @@ export async function POST(req) {
         const genAI = new GoogleGenerativeAI(apiKey);
         const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
+        // Build notes section for the prompt
+        const hasNotes = top_notes || middle_notes || base_notes;
+        let notesSection = '';
+        if (hasNotes) {
+            notesSection = `
+להלן תווי הריח האמיתיים של הבושם הזה (חובה להתבסס עליהם!):
+${top_notes ? `- תווים עליונים (Top Notes): ${top_notes}` : ''}
+${middle_notes ? `- תווי לב (Middle Notes): ${middle_notes}` : ''}
+${base_notes ? `- תווי בסיס (Base Notes): ${base_notes}` : ''}
+
+חשוב מאוד: התבסס **אך ורק** על התווים שסופקו לעיל. אל תמציא תווים שלא מופיעים ברשימה!`;
+        } else {
+            notesSection = `
+אין לך מידע על תווי הריח של הבושם הזה. כתוב תיאור כללי ומושך שמתמקד באווירה ובסגנון של המותג "${brand}" מבלי לציין תווי ריח ספציפיים. אל תמציא תווים!`;
+        }
+
         const prompt = `
 אתה קופירייטר מומחה לבשמי נישה עבור אתר ישראלי יוקרתי בשם ml-tlv.
 המטרה שלך היא לכתוב תיאור קצר, פואטי ומושך לבושם: "${brand} ${name}".
-אם אין לך מידע ספציפי על הבושם הזה, חפש במאגר המידע שלך (או השתמש בידע הפנימי שלך) כדי להבין מהם התווים העיקריים שלו והאווירה שלו.
+${notesSection}
 
 סגנון הכתיבה הנדרש:
 1. התחל במשפט קצר וקולע שמתאר את האווירה או ה"וייב" (לדוגמה: "קוקטייל בשקיעה.", "ממתק יוקרתי.", "טיול ביער עבות וקסום.").

@@ -28,7 +28,13 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
             const res = await fetch('/api/admin/generate-product-desc', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ brand: editForm.brand, name: editForm.model })
+                body: JSON.stringify({ 
+                    brand: editForm.brand, 
+                    name: editForm.model,
+                    top_notes: editForm.top_notes || '',
+                    middle_notes: editForm.middle_notes || '',
+                    base_notes: editForm.base_notes || ''
+                })
             });
             const data = await res.json();
             if (res.ok) {
