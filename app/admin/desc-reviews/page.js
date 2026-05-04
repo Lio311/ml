@@ -104,7 +104,7 @@ export default function DescReviewPage() {
         <div className="max-w-5xl mx-auto p-4 md:p-8">
             <div className="flex items-center justify-between mb-6">
                 <div>
-                    <h1 className="text-2xl font-black text-gray-900">🔍 סקירת תיאורי מוצרים</h1>
+                    <h1 className="text-2xl font-black text-gray-900">סקירת תיאורי מוצרים</h1>
                     <p className="text-sm text-gray-500 mt-1">בוט AI שמדרג את תיאורי המוצרים ומציע שיפורים</p>
                 </div>
                 <div className="flex gap-2">
