@@ -7,6 +7,7 @@ import TagInput from "../../components/TagInput";
 import ModernDateTimePicker from "../../components/ui/ModernDateTimePicker";
 import toast from 'react-hot-toast';
 import AdminFilterBar from "../../components/admin/AdminFilterBar";
+import { Sparkles } from "lucide-react";
 
 export default function AdminProductsClient({ products, initialSearch, totalProducts, filteredCount, counts, currentPage, totalPages, currentLetter, currentView, currentSort, canEdit }) {
 
@@ -507,9 +508,10 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                 type="button" 
                                 onClick={handleGenerateDesc}
                                 disabled={isGeneratingDesc}
-                                className="text-xs bg-purple-100 hover:bg-purple-200 text-purple-700 font-bold px-3 py-1 rounded-full transition disabled:opacity-50 flex items-center gap-1"
+                                className="text-xs bg-blue-100 hover:bg-blue-200 text-blue-700 font-bold px-3 py-1 rounded-full transition disabled:opacity-50 flex items-center gap-1.5"
                             >
-                                {isGeneratingDesc ? 'מייצר...' : 'צור תיאור באמצעות AI ✨'}
+                                <span>{isGeneratingDesc ? 'מייצר...' : 'צור תיאור באמצעות AI'}</span>
+                                <Sparkles className={`w-3.5 h-3.5 ${isGeneratingDesc ? 'animate-pulse' : ''}`} />
                             </button>
                         </div>
                         <textarea
@@ -778,9 +780,10 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                                 type="button" 
                                                 onClick={handleGenerateDesc}
                                                 disabled={isGeneratingDesc}
-                                                className="text-xs bg-purple-100 hover:bg-purple-200 text-purple-700 font-bold px-3 py-1 rounded-full transition disabled:opacity-50 flex items-center gap-1"
+                                                className="text-xs bg-blue-100 hover:bg-blue-200 text-blue-700 font-bold px-3 py-1 rounded-full transition disabled:opacity-50 flex items-center gap-1.5"
                                             >
-                                                {isGeneratingDesc ? 'מייצר...' : 'צור תיאור באמצעות AI ✨'}
+                                                <span>{isGeneratingDesc ? 'מייצר...' : 'צור תיאור באמצעות AI'}</span>
+                                                <Sparkles className={`w-3.5 h-3.5 ${isGeneratingDesc ? 'animate-pulse' : ''}`} />
                                             </button>
                                         </div>
                                         <textarea
