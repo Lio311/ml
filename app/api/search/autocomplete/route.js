@@ -44,25 +44,50 @@ export async function GET(req) {
                 LIMIT 5
             `, [query, `%${query}%`]);
 
-            const results = res.rows.map(product => ({
-                id: product.id,
-                slug: product.slug,
-                name: product.name,
-                brand: product.brand,
-                image: product.image_url,
-                price_2ml: product.price_2ml,
-                price_5ml: product.price_5ml,
-                price_10ml: product.price_10ml,
-                discount_percentage: product.discount_percentage,
-                discount_sizes: product.discount_sizes,
-                discount_end_date: product.discount_end_date,
-                price: Math.min(
-                    Number(product.price_2ml) || Infinity,
-                    Number(product.price_5ml) || Infinity,
-                    Number(product.price_10ml) || Infinity
-                ),
-                stock: product.stock
-            }));
+            const results = res.rows.map(product => {
+                const isDiscountActive = (size) => {
+                    if (!product.discount_percentage || product.discount_percentage <= 0) return false;
+                    if (size) {
+                        const sizeStr = `${size}ml`;
+                        if (!(product.discount_sizes || []).includes(sizeStr)) return false;
+                    }
+                    if (product.discount_end_date && new Date(product.discount_end_date) < new Date()) return false;
+                    return true;
+                };
+
+                const getDiscountedPrice = (size, originalPrice) => {
+                    if (!originalPrice || isNaN(originalPrice)) return Infinity;
+                    if (!isDiscountActive(size)) return Number(originalPrice);
+                    return Math.round((Number(originalPrice) * (1 - product.discount_percentage / 100)) / 5) * 5;
+                };
+
+                const minPrice = Math.min(
+                    getDiscountedPrice(2, product.price_2ml),
+                    getDiscountedPrice(5, product.price_5ml),
+                    getDiscountedPrice(10, product.price_10ml)
+                );
+
+                return {
+                    id: product.id,
+                    slug: product.slug,
+                    name: product.name,
+                    brand: product.brand,
+                    image: product.image_url,
+                    price_2ml: product.price_2ml,
+                    price_5ml: product.price_5ml,
+                    price_10ml: product.price_10ml,
+                    discount_percentage: product.discount_percentage,
+                    discount_sizes: product.discount_sizes,
+                    discount_end_date: product.discount_end_date,
+                    price: minPrice === Infinity ? 0 : minPrice,
+                    original_min_price: Math.min(
+                        Number(product.price_2ml) || Infinity,
+                        Number(product.price_5ml) || Infinity,
+                        Number(product.price_10ml) || Infinity
+                    ),
+                    stock: product.stock
+                };
+            });
 
             // --- Log Search Query (Background) ---
             (async () => {

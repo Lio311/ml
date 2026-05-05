@@ -140,8 +140,15 @@ export default function SearchAutocomplete({ fullWidth = false, onSelect }) {
                                     </div>
                                     <div className="text-xs text-gray-500 truncate">{product.brand}</div>
                                 </div>
-                                <div className="text-sm font-bold text-black whitespace-nowrap">
-                                    ₪{product.price}
+                                <div className="text-sm font-bold whitespace-nowrap flex flex-col items-end">
+                                    {product.price < product.original_min_price ? (
+                                        <>
+                                            <span className="text-[10px] text-gray-400 line-through leading-none">₪{product.original_min_price}</span>
+                                            <span className="text-green-600 font-black">₪{product.price}</span>
+                                        </>
+                                    ) : (
+                                        <span className="text-black">₪{product.price}</span>
+                                    )}
                                 </div>
                             </Link>
                         ))}
