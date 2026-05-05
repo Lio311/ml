@@ -233,7 +233,7 @@ export default async function Home() {
         </div>
       </section>
 
-      <div className="relative z-30 bg-white w-full flex flex-col -mt-8 md:mt-0">
+      <div className="relative z-30 bg-white w-full flex flex-col -mt-14 md:mt-0">
         <div>
           <LiveStats stats={stats} />
         </div>
