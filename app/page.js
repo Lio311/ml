@@ -187,7 +187,7 @@ export default async function Home() {
         }}
       />
       {/* Hero Section - Tall and pulled to top on mobile */}
-      <section className="relative h-[72vh] md:h-[82vh] w-full m-0 p-0 overflow-hidden bg-white block !-mt-20 md:mt-0">
+      <section className="relative h-[65vh] md:h-[82vh] w-full m-0 p-0 overflow-hidden bg-white block !-mt-20 md:mt-0">
         <div className="absolute inset-0 w-full h-full overflow-hidden">
           {banner.type === 'video' ? (
             <video
@@ -234,7 +234,7 @@ export default async function Home() {
       </section>
 
       <div className="relative z-30 bg-white w-full flex flex-col">
-        <div className="pb-6 md:pb-0">
+        <div>
           <LiveStats stats={stats} />
         </div>
         <HomeClient newArrivals={newArrivals} topCatalogs={topCatalogs} />
