@@ -74,7 +74,8 @@ export async function POST() {
                 if (!reviewMap.has(`${p.id}-${hash}`)) {
                     toReview.push({ ...p, hash });
                 }
-                if (toReview.length >= 50) break;
+                // Free tier limit is 20 RPM/RPD. Batch size 10 means 200 items per run fits exactly in the free tier daily limit
+                if (toReview.length >= 200) break;
             }
         } finally {
             client.release();
