@@ -180,7 +180,7 @@ export default function DescReviewPage() {
                     <button
                         onClick={handleRun}
                         disabled={isRunning}
-                        className="flex items-center gap-2 bg-gradient-to-l from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white text-sm font-bold px-5 py-2.5 rounded-xl transition-all shadow-md hover:shadow-lg disabled:opacity-50 active:scale-95"
+                        className="flex items-center gap-2 whitespace-nowrap bg-gradient-to-l from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white text-sm font-bold px-5 py-2.5 rounded-xl transition-all shadow-md hover:shadow-lg disabled:opacity-50 active:scale-95"
                     >
                         <span>{isRunning ? 'סוקר...' : 'הרץ סקירה'}</span>
                         <Wand2 className={`w-4 h-4 ${isRunning ? 'animate-spin' : ''}`} />
