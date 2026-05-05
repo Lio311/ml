@@ -187,13 +187,24 @@ export default function AdminSidebar({ role = 'customer' }) {
                         const visibleItems = group.items.filter(item => item.roles.includes(role));
                         if (visibleItems.length === 0) return null;
 
+                        const groupNotifications = visibleItems.reduce((acc, item) => {
+                            if (item.href === '/admin/orders') return acc + pendingOrdersCount;
+                            if (item.href.includes('inbox')) return acc + unreadCount;
+                            return acc;
+                        }, 0);
+
                         return (
                             <div key={idx} className="space-y-2">
                                 <button 
                                     onClick={() => toggleGroup(idx)}
                                     className="w-full flex items-center justify-between px-3 text-[10px] font-black text-gray-600 uppercase tracking-[0.25em] hover:text-gray-400 transition-colors"
                                 >
-                                    <span>{group.title}</span>
+                                    <div className="flex items-center gap-1.5">
+                                        <span>{group.title}</span>
+                                        {groupNotifications > 0 && (
+                                            <span className="text-blue-500 font-bold">{groupNotifications}</span>
+                                        )}
+                                    </div>
                                     <ChevronDown 
                                         size={12} 
                                         className={`transition-transform duration-500 ease-in-out ${openGroups[idx] ? '' : '-rotate-90'}`} 
