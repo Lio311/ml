@@ -69,13 +69,24 @@ export default function DescReviewPage() {
             if (res.ok) {
                 if (data.quotaLimited) {
                     // Hit API quota — stop and inform user
-                    toast.error(`נסרקו ${data.reviewed} מוצרים. הגעת למגבלת ה-API היומית — נסה שוב מאוחר יותר`, { id: 'review-bot', duration: 6000 });
+                    toast.error(`נסרקו ${data.reviewed} מוצרים. הגעת למגבלת ה-API היומית (נותרו ${data.remaining || '?'} מוצרים) — נסה שוב מאוחר יותר`, { id: 'review-bot', duration: 6000 });
                     setIsRunning(false);
                     fetchReviews();
-                } else if (data.reviewed > 0) {
+                } else if (data.reviewed > 0 && data.remaining > 0) {
+                    // More to review — continue recursively
                     fetchReviews();
-                    toast.loading(`נסרקו ${data.reviewed} מוצרים נוספים... ממשיך לסריקה הבאה`, { id: 'review-bot' });
+                    toast.loading(`נסרקו ${data.reviewed} מוצרים נוספים, נותרו ${data.remaining}... ממשיך`, { id: 'review-bot' });
                     setTimeout(() => handleRun(true), 2000);
+                } else if (data.reviewed > 0) {
+                    // All done
+                    toast.success(`סריקה הושלמה! נסרקו ${data.reviewed} מוצרים`, { id: 'review-bot' });
+                    setIsRunning(false);
+                    fetchReviews();
+                } else if (data.remaining > 0) {
+                    // 0 reviewed but items remain — error occurred on all batches
+                    const errDetail = data.errors?.length ? `\nשגיאות: ${data.errors[0]}` : '';
+                    toast.error(`לא הצלחתי לסרוק. נותרו ${data.remaining} מוצרים.${errDetail}`, { id: 'review-bot', duration: 8000 });
+                    setIsRunning(false);
                 } else {
                     toast.success("כל המוצרים נסרקו בהצלחה!", { id: 'review-bot' });
                     setIsRunning(false);

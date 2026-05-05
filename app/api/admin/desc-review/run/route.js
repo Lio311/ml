@@ -11,16 +11,24 @@ function hashDescription(desc) {
     return crypto.createHash('md5').update(desc || '').digest('hex');
 }
 
-async function callWithRetry(model, prompt, maxRetries = 3) {
+async function callWithRetry(model, prompt, maxRetries = 5) {
     for (let attempt = 0; attempt < maxRetries; attempt++) {
         try {
             const result = await model.generateContent(prompt);
             return result;
         } catch (error) {
-            if (error.status === 429 && attempt < maxRetries - 1) {
-                // Parse retry delay from error if available, or use exponential backoff
-                const waitSeconds = Math.min(30 * (attempt + 1), 60);
-                console.log(`Rate limited. Waiting ${waitSeconds}s before retry ${attempt + 2}/${maxRetries}...`);
+            const isRateLimit = error.status === 429 || 
+                (error.message && error.message.includes('429'));
+            
+            if (isRateLimit && attempt < maxRetries - 1) {
+                // Parse retry delay from error message if possible
+                let waitSeconds = 30 * (attempt + 1);
+                const match = error.message?.match(/retry in (\d+\.?\d*)/i);
+                if (match) {
+                    waitSeconds = Math.ceil(parseFloat(match[1])) + 2; // Add 2s buffer
+                }
+                waitSeconds = Math.min(waitSeconds, 90);
+                console.log(`Rate limited (attempt ${attempt + 1}/${maxRetries}). Waiting ${waitSeconds}s...`);
                 await new Promise(resolve => setTimeout(resolve, waitSeconds * 1000));
             } else {
                 throw error;
@@ -50,13 +58,14 @@ export async function POST() {
         try {
             await migrationClient.query(`ALTER TABLE product_desc_reviews ADD COLUMN IF NOT EXISTS suggested_rewrite TEXT`);
         } catch (e) {
-            // Table might not exist at all
+            // Table might not exist at all — setup endpoint handles creation
         } finally {
             migrationClient.release();
         }
 
         const client = await pool.connect();
         let toReview = [];
+        let totalProducts = 0;
         try {
             const result = await client.query(`
                 SELECT id, brand, model, description 
@@ -65,6 +74,7 @@ export async function POST() {
                 AND description IS NOT NULL 
                 AND description != ''
             `);
+            totalProducts = result.rows.length;
             
             const existingReviews = await client.query(`SELECT product_id, description_hash FROM product_desc_reviews`);
             const reviewMap = new Set(existingReviews.rows.map(r => `${r.product_id}-${r.description_hash}`));
@@ -74,15 +84,15 @@ export async function POST() {
                 if (!reviewMap.has(`${p.id}-${hash}`)) {
                     toReview.push({ ...p, hash });
                 }
-                // Free tier limit is 20 RPM/RPD. Batch size 10 means 200 items per run fits exactly in the free tier daily limit
-                if (toReview.length >= 200) break;
             }
         } finally {
             client.release();
         }
 
+        console.log(`Desc review: ${toReview.length} products to review out of ${totalProducts} total`);
+
         if (toReview.length === 0) {
-            return NextResponse.json({ success: true, message: 'All descriptions already reviewed', reviewed: 0 });
+            return NextResponse.json({ success: true, message: 'All descriptions already reviewed', reviewed: 0, remaining: 0 });
         }
 
         const genAI = new GoogleGenerativeAI(apiKey);
@@ -91,9 +101,11 @@ export async function POST() {
             generationConfig: { responseMimeType: "application/json" }
         });
 
-        // Batch size of 10 — uses fewer API calls (5 calls per 50 products instead of 10)
-        const BATCH_SIZE = 10;
+        // Process in batches of 5 products (smaller batches = fewer tokens = less likely to hit rate limits)
+        const BATCH_SIZE = 5;
         let totalReviewed = 0;
+        let errors = [];
+        let quotaExhausted = false;
 
         for (let i = 0; i < toReview.length; i += BATCH_SIZE) {
             const batch = toReview.slice(i, i + BATCH_SIZE);
@@ -163,30 +175,46 @@ Return a JSON array with exactly ${batch.length} objects:
                 } finally {
                     saveClient.release();
                 }
+                
+                console.log(`Batch ${Math.floor(i/BATCH_SIZE) + 1}: reviewed ${reviews.length} products. Total: ${totalReviewed}`);
             } catch (batchError) {
-                console.error(`Batch error at index ${i}:`, batchError.message || batchError);
-                // If we hit a quota limit that retry couldn't solve, stop and return what we have
-                if (batchError.status === 429) {
-                    return NextResponse.json({ 
-                        success: true, 
-                        message: `Reviewed ${totalReviewed} descriptions. Quota limit reached — try again later.`,
-                        reviewed: totalReviewed,
-                        quotaLimited: true
-                    });
+                const errMsg = batchError.message || String(batchError);
+                console.error(`Batch error at index ${i}:`, errMsg);
+                errors.push(`Batch ${Math.floor(i/BATCH_SIZE) + 1}: ${errMsg.substring(0, 200)}`);
+                
+                // If quota exhausted, stop immediately and return what we have
+                if (batchError.status === 429 || errMsg.includes('429') || errMsg.includes('quota')) {
+                    quotaExhausted = true;
+                    break;
                 }
+                // For other errors, continue to next batch
             }
 
-            // 3 second delay between batches to stay under rate limits
-            if (i + BATCH_SIZE < toReview.length) {
-                await new Promise(resolve => setTimeout(resolve, 3000));
+            // Wait between batches to stay under rate limits (5 seconds for free tier)
+            if (i + BATCH_SIZE < toReview.length && !quotaExhausted) {
+                await new Promise(resolve => setTimeout(resolve, 5000));
             }
+        }
+
+        const remaining = toReview.length - totalReviewed;
+
+        if (quotaExhausted) {
+            return NextResponse.json({ 
+                success: true, 
+                message: `Reviewed ${totalReviewed} descriptions. Quota limit reached — try again later.`,
+                reviewed: totalReviewed,
+                remaining,
+                quotaLimited: true,
+                errors
+            });
         }
 
         return NextResponse.json({ 
             success: true, 
             message: `Reviewed ${totalReviewed} descriptions`,
             reviewed: totalReviewed,
-            remaining: toReview.length - totalReviewed
+            remaining,
+            errors: errors.length > 0 ? errors : undefined
         });
 
     } catch (error) {
