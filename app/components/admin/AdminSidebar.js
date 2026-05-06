@@ -86,11 +86,11 @@ export default function AdminSidebar({ role = 'customer' }) {
                 initialOpen[idx] = true;
             }
         });
-        setOpenGroups(prev => ({ ...prev, ...initialOpen }));
+        setOpenGroups(initialOpen);
     }, [pathname]);
 
     const toggleGroup = (idx) => {
-        setOpenGroups(prev => ({ ...prev, [idx]: !prev[idx] }));
+        setOpenGroups(prev => ({ [idx]: !prev[idx] }));
     };
 
     const navGroups = [
