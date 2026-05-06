@@ -74,7 +74,7 @@ export default function EditOrderModal({ order, onClose, onSuccess }) {
             if (productQuery.length >= 2) {
                 setIsProductLoading(true);
                 try {
-                    const res = await fetch(`/api/search/autocomplete?q=${encodeURIComponent(productQuery)}`);
+                    const res = await fetch(`/api/search/autocomplete?q=${encodeURIComponent(productQuery)}&source=admin`);
                     const data = await res.json();
                     setProductResults(data.results || []);
                 } catch (err) {

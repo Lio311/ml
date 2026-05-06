@@ -90,9 +90,11 @@ export async function GET(req) {
             });
 
             // --- Log Search Query (Background) ---
-            (async () => {
-                try {
-                    const authData = await auth();
+            const source = searchParams.get('source');
+            if (source !== 'admin') {
+                (async () => {
+                    try {
+                        const authData = await auth();
                     const user = await currentUser();
                     const userId = authData?.userId;
                     const userEmail = user?.emailAddresses?.[0]?.emailAddress;
@@ -114,6 +116,7 @@ export async function GET(req) {
                     console.error('Failed to log search query:', logError);
                 }
             })();
+            }
             // -------------------------------------
 
             return NextResponse.json({ results });
