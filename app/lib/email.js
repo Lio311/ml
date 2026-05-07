@@ -3,6 +3,13 @@ import { logEmail } from './emailLogger';
 import pool from './db';
 import { getBrandName } from './brand';
 
+const getAbsoluteImageUrl = (url) => {
+    if (!url) return '';
+    if (url.startsWith('http')) return url;
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://www.ml-tlv.com';
+    return `${baseUrl}${url.startsWith('/') ? '' : '/'}${url}`;
+};
+
 const transporter = nodemailer.createTransport({
     service: 'gmail',
     auth: {
@@ -106,7 +113,7 @@ export const getNewProductTemplate = (product) => {
                 <p style="margin: 0 0 25px; color: #666; text-align: center;">אנחנו מתרגשים להציג את התוספת החדשה לקולקציה שלנו:</p>
 
                 <div style="text-align: center; margin: 30px 0;">
-                    <img src="${product.image_url}" alt="${product.brand} ${product.model}" style="max-width: 260px; height: auto; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08);" />
+                    <img src="${getAbsoluteImageUrl(product.image_url)}" alt="${product.brand} ${product.model}" style="max-width: 260px; height: auto; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08);" />
                 </div>
 
                 <div style="text-align: center; background-color: #fcfcfc; padding: 25px; border-radius: 20px; border: 1px solid #f5f5f5;">
@@ -144,7 +151,7 @@ export const getOrderConfirmationTemplate = (orderId, items, total, freeSamples,
         const rowsHtml = items.map(item => `
         <tr style="border-bottom: 1px solid #f5f5f5;">
             <td style="padding: 12px 10px; text-align: right; font-size: 14px; color: #333;">
-                ${item.image_url ? `<img src="${item.image_url}" width="40" style="vertical-align: middle; margin-left: 10px; border-radius: 6px; display: inline-block; border: 1px solid #f0f0f0; height: auto; max-height: 40px; object-fit: contain;" alt="${item.name || 'product'}" />` : ''}
+                ${item.image_url ? `<img src="${getAbsoluteImageUrl(item.image_url)}" width="40" style="vertical-align: middle; margin-left: 10px; border-radius: 6px; display: inline-block; border: 1px solid #f0f0f0; height: auto; max-height: 40px; object-fit: contain;" alt="${item.name || 'product'}" />` : ''}
                 <span style="vertical-align: middle;">${item.name || (item.brand + ' ' + item.model)} (${item.size} מ"ל)</span>
             </td>
             <td style="padding: 12px 10px; text-align: center; font-size: 14px; color: #333;">${item.quantity}</td>
@@ -217,7 +224,7 @@ export const getOrderUpdatedTemplate = (orderId, name, items, total, deliveryMet
         const rowsHtml = items.map(item => `
         <tr style="border-bottom: 1px solid #f5f5f5;">
             <td style="padding: 12px 10px; text-align: right; font-size: 14px; color: #333;">
-                ${item.image ? `<img src="${item.image}" width="40" style="vertical-align: middle; margin-left: 10px; border-radius: 6px; display: inline-block; border: 1px solid #f0f0f0; height: auto; max-height: 40px; object-fit: contain;" alt="${item.name || 'product'}" />` : ''}
+                ${item.image ? `<img src="${getAbsoluteImageUrl(item.image)}" width="40" style="vertical-align: middle; margin-left: 10px; border-radius: 6px; display: inline-block; border: 1px solid #f0f0f0; height: auto; max-height: 40px; object-fit: contain;" alt="${item.name || 'product'}" />` : ''}
                 <span style="vertical-align: middle;">${item.name || (item.brand + ' ' + item.model)} (${item.size} מ"ל)</span>
             </td>
             <td style="padding: 12px 10px; text-align: center; font-size: 14px; color: #333;">${item.quantity}</td>
@@ -339,7 +346,7 @@ export const getUserWelcomeTemplate = (firstName) => {
 export const getAdminNewOrderTemplate = (orderId, customerName, total, items, deliveryMethod, shippingCost, phoneNumber, orderDate) => {
     const itemsContent = Array.isArray(items) ? items.map(item => `
         <li style="margin-bottom: 12px; border-bottom: 1px solid #f0f0f0; padding-bottom: 12px; display: table; width: 100%;">
-            ${item.image_url ? `<div style="display: table-cell; vertical-align: middle; width: 50px;"><img src="${item.image_url}" width="40" style="border-radius: 6px; border: 1px solid #f0f0f0; height: auto; max-height: 40px; object-fit: contain;" alt="product" /></div>` : ''}
+            ${item.image_url ? `<div style="display: table-cell; vertical-align: middle; width: 50px;"><img src="${getAbsoluteImageUrl(item.image_url)}" width="40" style="border-radius: 6px; border: 1px solid #f0f0f0; height: auto; max-height: 40px; object-fit: contain;" alt="product" /></div>` : ''}
             <div style="display: table-cell; vertical-align: middle;">
                 <span style="font-weight: 900; color: #000;">${item.name || (item.brand + ' ' + item.model)}</span>
                 <div style="font-size: 12px; color: #666;">${item.size || ''}ml x${item.quantity || 1}</div>
@@ -411,7 +418,7 @@ export const getBackInStockTemplate = (product) => {
                 </p>
 
                 <div style="text-align: center; margin: 30px 0;">
-                    <img src="${product.imageUrl || product.image_url || 'https://www.ml-tlv.com/logo-black.png'}" alt="${product.brand} ${product.model}" style="max-width: 220px; height: auto; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08);" />
+                    <img src="${getAbsoluteImageUrl(product.imageUrl || product.image_url) || 'https://www.ml-tlv.com/logo-black.png'}" alt="${product.brand} ${product.model}" style="max-width: 220px; height: auto; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08);" />
                 </div>
                 
                 <div style="text-align: center; background-color: #f8f8f8; padding: 25px; border-radius: 20px; margin: 30px 0;">

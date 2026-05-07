@@ -72,14 +72,16 @@ export async function GET(req) {
                     try { suggestions = JSON.parse(suggestions); } catch(e) { suggestions = []; }
                 }
 
-                const mappedProductsHtml = suggestions.map(p => `
+                const mappedProductsHtml = suggestions.map(p => {
+                    const imageUrl = p.image_url ? (p.image_url.startsWith('http') ? p.image_url : `${process.env.NEXT_PUBLIC_APP_URL || 'https://www.ml-tlv.com'}${p.image_url.startsWith('/') ? '' : '/'}${p.image_url}`) : '';
+                    return `
                     <div style="background: white; border: 1px solid #eee; padding: 15px; border-radius: 8px; margin-bottom: 15px; text-align: center;">
-                        ${p.image_url ? `<img src="${p.image_url}" alt="${p.name}" style="max-height: 150px; width: auto; margin-bottom: 10px;">` : ''}
+                        ${imageUrl ? `<img src="${imageUrl}" alt="${p.name}" style="max-height: 150px; width: auto; margin-bottom: 10px;">` : ''}
                         <br>
                         <strong>${p.name}</strong> - ${p.brand}<br>
                         <span style="color: #666; font-size: 14px;">תווים דומים: ${p.notes}</span>
                     </div>
-                `).join('');
+                `}).join('');
 
                 const { html, subject } = await getTemplate('recommendations', 
                     { name: firstName, productsHtml: mappedProductsHtml },
