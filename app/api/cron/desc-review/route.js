@@ -4,6 +4,8 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import crypto from "crypto";
 import { logCronStart, logCronEnd } from "@/app/lib/errorLogger";
 
+import { checkCronOrAdmin } from "@/app/lib/admin";
+
 export const dynamic = 'force-dynamic';
 export const maxDuration = 300; // 5 minutes
 
@@ -15,11 +17,11 @@ export async function GET(req) {
     const startTime = Date.now();
     const logId = await logCronStart('desc-review');
 
-    // Check for Vercel Cron header
-    const authHeader = req.headers.get('authorization');
-    if (authHeader !== `Bearer ${process.env.CRON_SECRET}` && process.env.NODE_ENV === 'production') {
+    // Check for Vercel Cron header or Admin Session
+    const isAuthorized = await checkCronOrAdmin(req);
+    if (!isAuthorized) {
         if (logId) {
-            await logCronEnd(logId, 'error', 'Unauthorized - invalid cron secret', Date.now() - startTime);
+            await logCronEnd(logId, 'error', 'Unauthorized - invalid cron secret or not an admin', Date.now() - startTime);
         }
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }

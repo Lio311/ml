@@ -2,14 +2,15 @@ import { NextResponse } from 'next/server';
 import pool from '@/app/lib/db';
 import { sendEmail } from '@/app/lib/email';
 
+import { checkCronOrAdmin } from "@/app/lib/admin";
+
 export const dynamic = 'force-dynamic';
 
 export async function GET(req) {
-    // Basic security check (Cron key or Auth header)
-    const authHeader = req.headers.get('authorization');
-    if (process.env.CRON_SECRET && authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
-        // Only block if secret is defined
-        // return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    // 1. Verify Vercel Cron Secret or Admin Session
+    const isAuthorized = await checkCronOrAdmin(req);
+    if (!isAuthorized) {
+        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     try {

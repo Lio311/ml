@@ -17,3 +17,22 @@ export async function checkAdmin() {
 
     return false;
 }
+
+export async function checkCronOrAdmin(req) {
+    // In development, allow bypass for easy local testing
+    if (process.env.NODE_ENV !== 'production') return true;
+
+    const authHeader = req.headers?.get?.('authorization');
+    const isCronSecretValid = process.env.CRON_SECRET && authHeader === `Bearer ${process.env.CRON_SECRET}`;
+    if (isCronSecretValid) return true;
+
+    // Check if the user is a logged-in admin
+    try {
+        const isAdmin = await checkAdmin();
+        if (isAdmin) return true;
+    } catch (e) {
+        console.error("checkCronOrAdmin admin check error:", e);
+    }
+
+    return false;
+}

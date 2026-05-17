@@ -4,9 +4,11 @@ import { sendEmail, getTemplate } from '@/app/lib/email';
 import { generateReviewToken } from '@/app/lib/reviewToken';
 import { getAutomationConfig, isAutomationActive } from '@/app/lib/automationConfig';
 
+import { checkCronOrAdmin } from "@/app/lib/admin";
+
 export async function GET(req) {
-    const authHeader = req.headers.get('authorization');
-    if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+    const isAuthorized = await checkCronOrAdmin(req);
+    if (!isAuthorized) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
