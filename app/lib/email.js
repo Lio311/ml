@@ -18,7 +18,7 @@ const transporter = nodemailer.createTransport({
     },
 });
 
-export const sendEmail = async (to, subject, html, type = 'system', orderId = null, campaignId = null) => {
+export const sendEmail = async (to, subject, html, type = 'system', orderId = null, campaignId = null, attachments = []) => {
     if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
         console.warn("Skipping email send: Missing EMAIL_USER or EMAIL_PASS environment variables.");
         return;
@@ -30,6 +30,7 @@ export const sendEmail = async (to, subject, html, type = 'system', orderId = nu
             from: `"${brandName}" <${process.env.EMAIL_USER}>`,
             subject,
             html,
+            attachments
         };
 
         if (Array.isArray(to)) {
@@ -448,6 +449,26 @@ export const getBackInStockTemplate = (product) => {
  */
 export function getSystemDefaults() {
     return {
+        'order_pdf_form': {
+            subject: 'טופס הזמנה - ml_tlv #{{orderId}}',
+            content_html: `
+        <div dir="rtl" style="font-family: 'Open Sans', 'Open Sans Hebrew', Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto; line-height: 1.6;">
+            <div style="background-color: #fff; padding: 30px; border-radius: 24px; border: 1px solid #f0f0f0; box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
+                <h1 style="margin: 0 0 10px; font-size: 24px; font-weight: 900; color: #000; text-align: center;">הזמנתך מאושרת ומצורפת כ-PDF 📄</h1>
+                <p style="margin: 0 0 25px; color: #666; text-align: center;">היי {{name}}, הזמנה מספר <strong>#{{orderId}}</strong> מצורפת למייל זה כקובץ PDF.</p>
+                <div style="background-color: #fcfcfc; padding: 20px; border-radius: 16px; border: 1px solid #f5f5f5; text-align: center;">
+                    <p style="margin: 0; color: #333; font-size: 14px;">תוכל למצוא בקובץ המצורף את כל פרטי ההזמנה שלך כולל פירוט מוצרים, מחירי המוצרים, ושיטת השילוח שבחרת.</p>
+                </div>
+                <div style="margin-top: 30px; text-align: center;">
+                    <a href="https://www.ml-tlv.com/orders" style="display: inline-block; background-color: #000; color: #fff; padding: 16px 32px; text-decoration: none; border-radius: 16px; font-weight: 900; font-size: 14px;">לצפייה בפרטי ההזמנה באתר</a>
+                </div>
+            </div>
+            <div style="text-align: center; padding: 30px 0; color: #ccc; font-size: 11px;">
+                ml - יוקרה בחתיכות קטנות
+            </div>
+        </div>
+            `
+        },
         'order_confirmation': {
             subject: 'אישור הזמנה #{{orderId}} - ml_tlv',
             content_html: getOrderConfirmationTemplate('{{orderId}}', '{{itemsHtml}}', '{{total}}', '{{freeSamples}}', '{{notesHtml}}', '{{deliveryMethod}}', '{{shippingCost}}')

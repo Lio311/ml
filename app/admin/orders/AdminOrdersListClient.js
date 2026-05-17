@@ -5,6 +5,8 @@ import Link from "next/link";
 import DeleteOrderButton from "./DeleteOrderButton";
 import AdminOrderStatusSelect from "./AdminOrderStatusSelect";
 import DownloadOrderPDF from "./DownloadOrderPDF";
+import DownloadFullOrderPDF from "./DownloadFullOrderPDF";
+import SendOrderEmailButton from "./SendOrderEmailButton";
 import toast from "react-hot-toast";
 import DownloadBatchOrderPDF from "./DownloadBatchOrderPDF";
 import CustomDropdown from "../../components/ui/CustomDropdown";
@@ -269,6 +271,8 @@ export default function AdminOrdersListClient({
                                                     <div className="flex flex-col gap-2 mt-1">
                                                         <AdminOrderStatusSelect orderId={order.id} initialStatus={order.status} />
                                                         <DownloadOrderPDF order={order} />
+                                                        <DownloadFullOrderPDF order={order} />
+                                                        <SendOrderEmailButton order={order} />
                                                     </div>
                                                 </>
                                             ) : (
@@ -400,6 +404,8 @@ export default function AdminOrdersListClient({
                                         </div>
                                     </div>
                                     <DownloadOrderPDF order={order} />
+                                    <DownloadFullOrderPDF order={order} />
+                                    <SendOrderEmailButton order={order} />
                                 </div>
                             )}
                         </div>
