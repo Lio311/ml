@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { sendEmail, getTemplate } from '../../../lib/email';
+import { sendEmail, getTemplate } from '../../../../lib/email';
 import { currentUser } from '@clerk/nextjs/server';
 
 export async function POST(request) {
