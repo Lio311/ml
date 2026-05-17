@@ -130,17 +130,17 @@ export const generateFullOrderPDFDoc = async (order) => {
         const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
         // If content is taller than one page, we may need to split
-        const imgData = canvas.toDataURL('image/png');
+        const imgData = canvas.toDataURL('image/jpeg', 0.92);
         
         if (imgHeight <= pageHeight) {
-            doc.addImage(imgData, 'PNG', 0, 0, imgWidth, imgHeight);
+            doc.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight);
         } else {
             // Multi-page: slice the canvas
             const totalPages = Math.ceil(imgHeight / pageHeight);
             for (let page = 0; page < totalPages; page++) {
                 if (page > 0) doc.addPage();
                 const yOffset = -(page * pageHeight);
-                doc.addImage(imgData, 'PNG', 0, yOffset, imgWidth, imgHeight);
+                doc.addImage(imgData, 'JPEG', 0, yOffset, imgWidth, imgHeight);
             }
         }
 

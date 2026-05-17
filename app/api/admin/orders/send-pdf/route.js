@@ -4,6 +4,7 @@ import { currentUser } from '@clerk/nextjs/server';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
+export const maxDuration = 30;
 export async function POST(request) {
     try {
         const user = await currentUser();
