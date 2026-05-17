@@ -35,21 +35,36 @@ export async function GET() {
         }
 
         let cronLogs = [];
+        let workflowLogs = [];
         let tablesExist = true;
         
         const client = await pool.connect();
         try {
-            // Get the latest log for each cron
-            const result = await client.query(`
-                SELECT DISTINCT ON (cron_name) 
-                    cron_name, status, message, duration_ms, started_at, finished_at
-                FROM cron_logs 
-                ORDER BY cron_name, started_at DESC
-            `);
-            cronLogs = result.rows;
-        } catch (e) {
-            if (e?.code === '42P01') {
-                tablesExist = false;
+            // Try to get logs from cron_logs table
+            try {
+                const result = await client.query(`
+                    SELECT DISTINCT ON (cron_name) 
+                        cron_name, status, message, duration_ms, started_at, finished_at
+                    FROM cron_logs 
+                    ORDER BY cron_name, started_at DESC
+                `);
+                cronLogs = result.rows;
+            } catch (e) {
+                if (e?.code === '42P01') {
+                    // cron_logs table doesn't exist, that's ok
+                }
+            }
+
+            // Also read from workflows table (where crons actually log their runs)
+            try {
+                const wfResult = await client.query(`
+                    SELECT name, last_run, total_runs 
+                    FROM workflows 
+                    WHERE last_run IS NOT NULL
+                `);
+                workflowLogs = wfResult.rows;
+            } catch (e) {
+                // workflows table might not exist
             }
         } finally {
             client.release();
@@ -59,10 +74,31 @@ export async function GET() {
         const cronLogMap = {};
         cronLogs.forEach(log => { cronLogMap[log.cron_name] = log; });
 
+        // Map workflow names (Hebrew) to cron config names
+        const workflowNameMap = {
+            'שחזור עגלה נטושה (+5% הנחה)': 'recovery',
+            'מייל חינוכי (טיפים לשימוש בבושם)': 'educational-email',
+            'בקשת כתיבת חוות דעת מלקוח': 'review-request',
+            'המלצות בשמים מותאמות אישית': 'recommendations',
+        };
+
+        // Build workflow fallback map
+        const workflowMap = {};
+        workflowLogs.forEach(wf => {
+            const cronName = workflowNameMap[wf.name];
+            if (cronName && wf.last_run) {
+                workflowMap[cronName] = {
+                    status: 'success',
+                    started_at: wf.last_run,
+                    message: `${wf.total_runs || 0} הרצות סה"כ`,
+                };
+            }
+        });
+
         const crons = CRON_CONFIG.map(cron => ({
             ...cron,
             scheduleLabel: scheduleToHebrew(cron.schedule),
-            lastRun: cronLogMap[cron.name] || null
+            lastRun: cronLogMap[cron.name] || workflowMap[cron.name] || null
         }));
 
         return NextResponse.json({ crons, tablesExist });

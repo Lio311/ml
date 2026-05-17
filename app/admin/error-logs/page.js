@@ -153,7 +153,7 @@ export default function ErrorLogsPage() {
                 </div>
             ) : errors.length === 0 ? (
                 <div className="text-center py-16 bg-green-50 rounded-2xl border border-green-100">
-                    <p className="text-green-600 text-lg font-bold mb-1">🎉 אין שגיאות!</p>
+                    <p className="text-green-600 text-lg font-bold mb-1">אין שגיאות!</p>
                     <p className="text-sm text-green-500">המערכת פועלת בצורה תקינה</p>
                 </div>
             ) : (
