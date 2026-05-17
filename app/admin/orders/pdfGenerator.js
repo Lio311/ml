@@ -17,7 +17,7 @@ const fixBidi = (str) => {
     let reversed = str.split('').reverse().join('');
     // Enhanced regex: matches English letters, numbers, and common symbols including parentheses, commas, and all types of spaces.
     const ltrRegex = /[A-Za-z0-9@.\-_#+/,()]+(?:[\s\u00A0]+[A-Za-z0-9@.\-_#+/,()]+)*/g;
-    return reversed.replace(ltrRegex, match => match.split('').reverse().join(''));
+    return reversed.replace(ltrRegex, match => "\u200E" + match.split('').reverse().join('') + "\u200E");
 };
 
 export const generateFullOrderPDFDoc = async (order) => {
