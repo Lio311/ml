@@ -21,7 +21,14 @@ export default function DownloadBatchOrderPDF({ selectedOrders, onComplete }) {
     // Helper to fix BiDi (Right-to-Left) text for simple jsPDF without bidi plugins
     const fixBidi = (str) => {
         if (!str) return '';
-        return str.split('').reverse().join('');
+        const reversed = str.split('').reverse().join('');
+        const ltrRegex = /[A-Za-z0-9@.\-_#+/,()]+(?:[\s\u00A0]+[A-Za-z0-9@.\-_#+/,()]+)*/g;
+        return reversed.replace(ltrRegex, match => {
+            if (/[A-Za-z]/.test(match)) {
+                return match.split('').reverse().join('');
+            }
+            return match;
+        });
     };
 
     const handleDownloadBatch = async () => {
