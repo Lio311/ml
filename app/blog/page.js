@@ -117,7 +117,7 @@ export default async function BlogIndex(props) {
     const gridArticles = articles;
 
     return (
-        <div className="min-h-screen bg-[#fafafa] py-12 md:py-20" dir={dir}>
+        <div className="min-h-screen bg-[#fafafa] pt-12 md:pt-20 pb-6 md:pb-10" dir={dir}>
             <div className="container px-4">
                 <header className="mb-16">
                     <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
@@ -137,7 +137,7 @@ export default async function BlogIndex(props) {
 
                 </header>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16 mb-20">
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-16 mb-10">
                     {gridArticles.map((article) => {
                         const readingTime = Math.ceil((article.excerpt?.length || 0) / 100) + 1;
                         return (
@@ -199,7 +199,7 @@ export default async function BlogIndex(props) {
 
                 {/* Pagination */}
                 {totalPages > 1 && (
-                    <div className="flex justify-center items-center gap-3 mt-12 pt-12 pb-24 border-t border-gray-100">
+                    <div className="flex justify-center items-center gap-3 mt-8 pt-8 pb-10 border-t border-gray-100">
                         {page > 1 && (
                             <Link
                                 href={`/blog?page=${page - 1}${activeTag ? `&tag=${activeTag}` : ''}`}
