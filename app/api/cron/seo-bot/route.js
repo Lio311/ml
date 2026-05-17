@@ -2,8 +2,8 @@ import { NextResponse } from "next/server";
 import pool from "@/app/lib/db";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import { logCronStart, logCronEnd } from "@/app/lib/errorLogger";
-
 import { checkCronOrAdmin } from "@/app/lib/admin";
+import { getPremiumBlogImage } from "@/app/lib/blogImageMatcher";
 
 export const dynamic = 'force-dynamic';
 export const maxDuration = 60; // Allow more time for LLM generation
@@ -58,7 +58,7 @@ export async function GET(req) {
         
         IMPORTANT: Do NOT write about any of these existing articles:
         ${existingTitles.join('\n')}
-
+ 
         Output EXACTLY a valid JSON object matching this schema:
         {
             "title": "Hebrew Title",
@@ -92,6 +92,9 @@ export async function GET(req) {
         const formattedTags = Array.isArray(tags) ? tags : [];
         const formattedTagsEn = Array.isArray(tags_en) ? tags_en : [];
 
+        // Determine a gorgeous premium matching cover image
+        const imageUrl = getPremiumBlogImage(title, content, formattedTags);
+
         // 3. Save to Database as Draft
         const dbClient = await pool.connect();
         try {
@@ -103,15 +106,15 @@ export async function GET(req) {
             }
 
             await dbClient.query(
-                `INSERT INTO blog_posts (title, title_en, slug, excerpt, excerpt_en, content, content_en, tags, tags_en, status, created_at)
-                 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, 'draft', NOW())`,
-                [title, title_en, finalSlug, excerpt, excerpt_en, content, content_en, formattedTags, formattedTagsEn]
+                `INSERT INTO blog_posts (title, title_en, slug, excerpt, excerpt_en, content, content_en, tags, tags_en, image_url, status, created_at)
+                 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, 'draft', NOW())`,
+                [title, title_en, finalSlug, excerpt, excerpt_en, content, content_en, formattedTags, formattedTagsEn, imageUrl]
             );
 
             if (logId) {
-                await logCronEnd(logId, 'success', `נוצרה טיוטה חדשה בהצלחה: "${title}"`, Date.now() - startTime);
+                await logCronEnd(logId, 'success', `נוצרה טיוטה חדשה בהצלחה עם תמונה מתאימה: "${title}"`, Date.now() - startTime);
             }
-            return NextResponse.json({ success: true, message: "Draft created successfully", title, slug: finalSlug });
+            return NextResponse.json({ success: true, message: "Draft created successfully", title, slug: finalSlug, imageUrl });
         } finally {
             dbClient.release();
         }

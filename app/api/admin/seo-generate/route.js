@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import pool from "@/app/lib/db";
 import { currentUser } from "@clerk/nextjs/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { getPremiumBlogImage } from "@/app/lib/blogImageMatcher";
 
 export const dynamic = 'force-dynamic';
 export const maxDuration = 60; // Allow more time for LLM generation
@@ -74,6 +75,9 @@ export async function POST(req) {
         const formattedTags = Array.isArray(tags) ? tags : [];
         const formattedTagsEn = Array.isArray(tags_en) ? tags_en : [];
 
+        // Determine a gorgeous premium matching cover image
+        const imageUrl = getPremiumBlogImage(title, content, formattedTags);
+
         // Save to Database
         const client = await pool.connect();
         try {
@@ -85,9 +89,9 @@ export async function POST(req) {
             }
 
             await client.query(
-                `INSERT INTO blog_posts (title, title_en, slug, excerpt, excerpt_en, content, content_en, tags, tags_en, status, created_at)
-                 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, 'draft', NOW())`,
-                [title, title_en, finalSlug, excerpt, excerpt_en, content, content_en, formattedTags, formattedTagsEn]
+                `INSERT INTO blog_posts (title, title_en, slug, excerpt, excerpt_en, content, content_en, tags, tags_en, image_url, status, created_at)
+                 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, 'draft', NOW())`,
+                [title, title_en, finalSlug, excerpt, excerpt_en, content, content_en, formattedTags, formattedTagsEn, imageUrl]
             );
 
             return NextResponse.json({ success: true, title, title_en, slug: finalSlug });
