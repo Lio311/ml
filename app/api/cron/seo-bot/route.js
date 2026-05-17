@@ -81,6 +81,9 @@ export async function GET(req) {
             generatedData = JSON.parse(responseText);
         } catch (parseError) {
             console.error("Failed to parse Gemini response:", responseText);
+            if (logId) {
+                await logCronEnd(logId, 'error', 'Failed to parse Gemini response: ' + parseError.message, Date.now() - startTime);
+            }
             return NextResponse.json({ error: 'Failed to generate valid JSON content' }, { status: 500 });
         }
 

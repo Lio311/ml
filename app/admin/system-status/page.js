@@ -204,13 +204,13 @@ export default function SystemStatusPage() {
                                             disabled={isRunning}
                                             className="flex items-center gap-1.5 bg-black hover:bg-gray-800 text-white text-[10px] font-black px-3 py-2 rounded-lg transition-all active:scale-95 disabled:opacity-50 whitespace-nowrap"
                                         >
+                                            <span className="hidden sm:inline">{isRunning ? 'מריץ...' : 'הרץ עכשיו'}</span>
+                                            <span className="sm:hidden">{isRunning ? '...' : 'הרץ'}</span>
                                             {isRunning ? (
                                                 <RefreshCw className="w-3 h-3 animate-spin" />
                                             ) : (
                                                 <Play className="w-3 h-3" />
                                             )}
-                                            <span className="hidden sm:inline">{isRunning ? 'מריץ...' : 'הרץ עכשיו'}</span>
-                                            <span className="sm:hidden">{isRunning ? '...' : 'הרץ'}</span>
                                         </button>
                                     </div>
                                 </div>

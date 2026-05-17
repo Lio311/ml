@@ -61,6 +61,9 @@ export async function GET(req) {
         }
 
         if (toReview.length === 0) {
+            if (logId) {
+                await logCronEnd(logId, 'success', 'לא נמצאו תיאורים חדשים לסקירה', Date.now() - startTime);
+            }
             return NextResponse.json({ success: true, message: 'Nothing to review' });
         }
 
