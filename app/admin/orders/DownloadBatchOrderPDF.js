@@ -21,17 +21,9 @@ export default function DownloadBatchOrderPDF({ selectedOrders, onComplete }) {
     // Helper to fix BiDi (Right-to-Left) text for simple jsPDF without bidi plugins
     const fixBidi = (str) => {
         if (!str) return '';
-        const hasHebrew = /[\u0590-\u05FF]/;
-        if (!hasHebrew.test(str)) return str;
-
-        const words = str.split(' ').reverse();
-        const fixedWords = words.map(word => {
-            if (hasHebrew.test(word)) {
-                return word.split('').reverse().join('');
-            }
-            return word; // Keep English words as is
-        });
-        return fixedWords.join(' ');
+        let reversed = str.split('').reverse().join('');
+        const ltrRegex = /[A-Za-z0-9@.\-_#+/]+(?:\s+[A-Za-z0-9@.\-_#+/]+)*/g;
+        return reversed.replace(ltrRegex, match => match.split('').reverse().join(''));
     };
 
     const handleDownloadBatch = async () => {

@@ -58,7 +58,7 @@ export default function SendOrderEmailButton({ order }) {
         <button 
             onClick={handleSendEmail}
             disabled={isSending}
-            className="w-full md:w-auto bg-gray-900 text-white rounded-lg px-3 py-1.5 text-xs font-bold hover:bg-black transition flex items-center justify-center gap-1.5 flex-row-reverse whitespace-nowrap"
+            className="w-full md:w-auto bg-emerald-600 text-white rounded-lg px-3 py-1.5 text-xs font-bold hover:bg-emerald-700 transition flex items-center justify-center gap-1.5 flex-row-reverse whitespace-nowrap"
             title="שלח טופס הזמנה במייל ללקוח"
         >
             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-4 h-4">
