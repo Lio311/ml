@@ -17,6 +17,9 @@ export const metadata = {
     robots: "noindex, nofollow",
 };
 
+export const dynamic = 'force-dynamic';
+export const revalidate = 0;
+
 export default async function AdminOrdersPage(props) {
     const searchParams = await props.searchParams;
     const page = Number(searchParams?.page) || 1;

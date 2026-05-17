@@ -15,7 +15,8 @@ const arrayBufferToBase64 = (buffer) => {
 const fixBidi = (str) => {
     if (!str) return '';
     let reversed = str.split('').reverse().join('');
-    const ltrRegex = /[A-Za-z0-9@.\-_#+/]+(?:\s+[A-Za-z0-9@.\-_#+/]+)*/g;
+    // Enhanced regex: matches English letters, numbers, and common symbols including parentheses, commas, and all types of spaces.
+    const ltrRegex = /[A-Za-z0-9@.\-_#+/,()]+(?:[\s\u00A0]+[A-Za-z0-9@.\-_#+/,()]+)*/g;
     return reversed.replace(ltrRegex, match => match.split('').reverse().join(''));
 };
 

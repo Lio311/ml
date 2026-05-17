@@ -22,7 +22,7 @@ export default function DownloadOrderPDF({ order }) {
     const fixBidi = (str) => {
         if (!str) return '';
         let reversed = str.split('').reverse().join('');
-        const ltrRegex = /[A-Za-z0-9@.\-_#+/]+(?:\s+[A-Za-z0-9@.\-_#+/]+)*/g;
+        const ltrRegex = /[A-Za-z0-9@.\-_#+/,()]+(?:[\s\u00A0]+[A-Za-z0-9@.\-_#+/,()]+)*/g;
         return reversed.replace(ltrRegex, match => match.split('').reverse().join(''));
     };
 
