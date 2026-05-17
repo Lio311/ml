@@ -28,7 +28,7 @@ export const generateFullOrderPDFDoc = async (order) => {
             <tr>
                 <td style="padding:4px 8px; border-bottom:1px solid #eee; text-align:right;">${index + 1}</td>
                 <td style="padding:4px 8px; border-bottom:1px solid #eee; text-align:right;" dir="auto">${name}</td>
-                <td style="padding:4px 8px; border-bottom:1px solid #eee; text-align:center;">${size}</td>
+                <td style="padding:4px 8px; border-bottom:1px solid #eee; text-align:center;"><span dir="ltr">${size}</span></td>
                 <td style="padding:4px 8px; border-bottom:1px solid #eee; text-align:center;">${qty}</td>
                 <td style="padding:4px 8px; border-bottom:1px solid #eee; text-align:left;">${price}</td>
             </tr>
@@ -40,7 +40,7 @@ export const generateFullOrderPDFDoc = async (order) => {
         <div id="pdf-content" style="
             width: 595px;
             padding: 40px;
-            font-family: Arial, 'Narkiss Block', sans-serif;
+            font-family: 'Open Sans', Arial, sans-serif;
             direction: rtl;
             text-align: right;
             color: #222;
@@ -93,10 +93,18 @@ export const generateFullOrderPDFDoc = async (order) => {
     container.style.position = 'fixed';
     container.style.left = '-9999px';
     container.style.top = '0';
-    container.innerHTML = html;
+    container.innerHTML = `
+        <style>
+            @import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap');
+        </style>
+        ${html}
+    `;
     document.body.appendChild(container);
 
     try {
+        // Wait for Open Sans font to be loaded
+        await document.fonts.ready;
+        
         const element = container.querySelector('#pdf-content');
         
         // Capture the HTML as a high-resolution canvas
