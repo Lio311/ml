@@ -145,8 +145,8 @@ Exactly as long as in the original bottle. The glass atomizer is airtight and pr
 ---
 
 *Ready to explore? [Browse our full catalog](/catalog) with over 100 authentic niche perfumes, or use our [Perfume Matcher tool](/matching) to find your perfect scent.*`,
-        tags: ['{"מדריכים","דיקאנט","דוגמיות"}'],
-        tags_en: ['{"guides","decant","samples"}'],
+        tags: ['מדריכים', 'דיקאנט', 'דוגמיות'],
+        tags_en: ['guides', 'decant', 'samples'],
         image_url: null
     },
 
@@ -263,8 +263,8 @@ Despite being considered an "all-season" fragrance, the green apple and bergamot
 ---
 
 *All fragrances in this ranking are available as samples at ml-tlv. [Explore the full catalog →](/catalog)*`,
-        tags: ['{"מדריכים","קיץ","דירוג"}'],
-        tags_en: ['{"guides","summer","ranking"}'],
+        tags: ['מדריכים', 'קיץ', 'דירוג'],
+        tags_en: ['guides', 'summer', 'ranking'],
         image_url: null
     },
 
@@ -380,8 +380,8 @@ Concentration = **the percentage of fragrance oils** in the total blend.
 ---
 
 *At ml-tlv, all samples come from original bottles. [Explore our catalog](/catalog) and try fragrances at different concentrations.*`,
-        tags: ['{"מדריכים","ריכוז","EDT","EDP"}'],
-        tags_en: ['{"guides","concentration","EDT","EDP"}'],
+        tags: ['מדריכים', 'ריכוז', 'EDT', 'EDP'],
+        tags_en: ['guides', 'concentration', 'EDT', 'EDP'],
         image_url: null
     },
 
@@ -481,8 +481,8 @@ The best-selling brands aren't the most "luxurious" — they're the ones offerin
 ---
 
 *Want to join thousands of fragrance enthusiasts? [Browse our catalog](/catalog) or use our [Perfume Matcher](/matching) tool.*`,
-        tags: ['{"נתונים","טרנדים","ניתוח"}'],
-        tags_en: ['{"data","trends","analysis"}'],
+        tags: ['נתונים', 'טרנדים', 'ניתוח'],
+        tags_en: ['data', 'trends', 'analysis'],
         image_url: null
     }
 ];
