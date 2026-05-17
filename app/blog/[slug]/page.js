@@ -68,7 +68,7 @@ export async function generateMetadata({ params }) {
 async function getArticle(slug) {
     const client = await pool.connect();
     try {
-        const res = await client.query("SELECT id, title, title_en, content, content_en, excerpt, excerpt_en, slug, image_url, created_at, tags FROM blog_posts WHERE slug = $1 AND (status = 'published' OR status IS NULL)", [slug]);
+        const res = await client.query("SELECT id, title, title_en, content, content_en, excerpt, excerpt_en, slug, image_url, created_at, tags, tags_en FROM blog_posts WHERE slug = $1 AND (status = 'published' OR status IS NULL)", [slug]);
         return sanitizeProduct(res.rows[0]);
     } finally {
         client.release();
@@ -96,6 +96,7 @@ export default async function BlogPost({ params }) {
     const localizedTitle = localize(article, 'title', locale);
     const localizedExcerpt = localize(article, 'excerpt', locale);
     const localizedContent = localize(article, 'content', locale);
+    const localizedTags = locale === 'en' ? (article.tags_en || article.tags || []) : (article.tags || []);
 
     // Fetch mentioned products for Schema consistency
     let mentionedProducts = [];
@@ -239,7 +240,7 @@ export default async function BlogPost({ params }) {
                 
                 <header className="mb-12 border-b border-gray-50 pb-12">
                     <div className="flex gap-2 mb-6">
-                        {article.tags && article.tags.map(tag => (
+                        {localizedTags && localizedTags.map(tag => (
                             <span key={tag} className="bg-blue-50 text-blue-700 px-4 py-1.5 rounded-full text-xs font-bold uppercase tracking-wider">
                                 {tag}
                             </span>

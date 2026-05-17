@@ -60,18 +60,19 @@ export async function generateMetadata(props) {
     };
 }
 
-async function getArticles(page = 1, tag = null) {
+async function getArticles(locale = 'he', page = 1, tag = null) {
     const GRID_SIZE = 9;
     let offset = (page - 1) * GRID_SIZE;
     let limit = GRID_SIZE;
+    const tagColumn = locale === 'en' ? 'tags_en' : 'tags';
 
     const client = await pool.connect();
     try {
-        let query = "SELECT title, slug, excerpt, image_url, created_at, tags, title_en, excerpt_en FROM blog_posts WHERE (status = 'published' OR status IS NULL)";
+        let query = `SELECT title, slug, excerpt, image_url, created_at, tags, tags_en, title_en, excerpt_en FROM blog_posts WHERE (status = 'published' OR status IS NULL)`;
         let params = [limit, offset];
         
         if (tag) {
-            query += " AND $3 = ANY(tags)";
+            query += ` AND $3 = ANY(${tagColumn})`;
             params.push(tag);
         }
         
@@ -82,7 +83,7 @@ async function getArticles(page = 1, tag = null) {
         let countQuery = "SELECT COUNT(*) FROM blog_posts WHERE (status = 'published' OR status IS NULL)";
         let countParams = [];
         if (tag) {
-            countQuery += " AND $1 = ANY(tags)";
+            countQuery += ` AND $1 = ANY(${tagColumn})`;
             countParams.push(tag);
         }
         const countRes = await client.query(countQuery, countParams);
@@ -91,13 +92,13 @@ async function getArticles(page = 1, tag = null) {
         let totalPages = Math.ceil(totalCount / GRID_SIZE);
 
         // Fetch all unique tags for the filter bar
-        const tagsRes = await client.query("SELECT DISTINCT unnest(tags) as tag FROM blog_posts WHERE status = 'published' OR status IS NULL LIMIT 20");
+        const tagsRes = await client.query(`SELECT DISTINCT unnest(${tagColumn}) as tag FROM blog_posts WHERE status = 'published' OR status IS NULL LIMIT 20`);
 
         return {
             articles: sanitizeProductArray(res.rows),
             total: totalCount,
             totalPages: totalPages,
-            allTags: sanitizeProductArray(tagsRes.rows).map(r => r.tag)
+            allTags: sanitizeProductArray(tagsRes.rows).map(r => r.tag).filter(Boolean)
         };
     } finally {
         client.release();
@@ -113,7 +114,7 @@ export default async function BlogIndex(props) {
     const searchParams = await props.searchParams;
     const page = parseInt(searchParams?.page || '1');
     const activeTag = searchParams?.tag || null;
-    const { articles, totalPages, allTags } = await getArticles(page, activeTag);
+    const { articles, totalPages, allTags } = await getArticles(locale, page, activeTag);
     const gridArticles = articles;
 
     return (
@@ -161,7 +162,7 @@ export default async function BlogIndex(props) {
                                         </div>
                                     )}
                                     <div className={`absolute top-6 ${dir === 'rtl' ? 'right-6' : 'left-6'} flex gap-1.5 flex-wrap z-10`}>
-                                        {article.tags && article.tags.slice(0, 2).map(tag => (
+                                        {(locale === 'en' ? (article.tags_en || article.tags || []) : (article.tags || [])).slice(0, 2).map(tag => (
                                             <span key={tag} className="bg-white/80 text-black text-[9px] font-black uppercase tracking-widest px-3 py-1.5 rounded-xl backdrop-blur-xl border border-white/40 shadow-sm">
                                                 {tag}
                                             </span>
