@@ -36,6 +36,7 @@ export async function GET() {
 
         let cronLogs = [];
         let workflowLogs = [];
+        let emailLogs = [];
         let tablesExist = true;
         
         const client = await pool.connect();
@@ -66,6 +67,18 @@ export async function GET() {
             } catch (e) {
                 // workflows table might not exist
             }
+
+            // Also read from email_logs to track actual mail actions
+            try {
+                const emailLogsRes = await client.query(`
+                    SELECT type, MAX(sent_at) as last_sent, COUNT(*) as total_sent 
+                    FROM email_logs 
+                    GROUP BY type
+                `);
+                emailLogs = emailLogsRes.rows;
+            } catch (e) {
+                // email_logs table might not exist
+            }
         } finally {
             client.release();
         }
@@ -80,6 +93,8 @@ export async function GET() {
             'מייל חינוכי (טיפים לשימוש בבושם)': 'educational-email',
             'בקשת כתיבת חוות דעת מלקוח': 'review-request',
             'המלצות בשמים מותאמות אישית': 'recommendations',
+            'טיפוח לקוחות: 10 ימים (בקשת בושם)': 'nurture-emails',
+            'טיפוח לקוחות: 25 ימים (התאמה אישית)': 'nurture-emails',
         };
 
         // Build workflow fallback map
@@ -95,10 +110,36 @@ export async function GET() {
             }
         });
 
+        // Build email logs fallback map
+        const emailLogsMap = {};
+        emailLogs.forEach(log => {
+            let cronName = null;
+            if (log.type === 'cart_recovery') cronName = 'recovery';
+            else if (log.type === 'educational') cronName = 'educational-email';
+            else if (log.type === 'review_request' || log.type === 'manual_review_request') cronName = 'review-request';
+            else if (log.type === 'recommendations') cronName = 'recommendations';
+            else if (log.type === 'nurture_10_days' || log.type === 'nurture_25_days') cronName = 'nurture-emails';
+            
+            if (cronName) {
+                const existing = emailLogsMap[cronName];
+                const lastSentDate = new Date(log.last_sent);
+                if (!existing || lastSentDate > new Date(existing.started_at)) {
+                    emailLogsMap[cronName] = {
+                        status: 'success',
+                        started_at: log.last_sent,
+                        message: `נשלחו ${log.total_sent} מיילים`,
+                    };
+                } else if (existing) {
+                    const currentSentCount = parseInt(existing.message.match(/\d+/)?.[0] || 0);
+                    existing.message = `נשלחו ${currentSentCount + parseInt(log.total_sent)} מיילים`;
+                }
+            }
+        });
+
         const crons = CRON_CONFIG.map(cron => ({
             ...cron,
             scheduleLabel: scheduleToHebrew(cron.schedule),
-            lastRun: cronLogMap[cron.name] || workflowMap[cron.name] || null
+            lastRun: cronLogMap[cron.name] || workflowMap[cron.name] || emailLogsMap[cron.name] || null
         }));
 
         return NextResponse.json({ crons, tablesExist });

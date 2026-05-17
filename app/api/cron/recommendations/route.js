@@ -117,7 +117,7 @@ export async function GET(req) {
                 UPDATE workflows 
                 SET last_run = NOW(), total_runs = total_runs + $1 
                 WHERE name = 'המלצות בשמים מותאמות אישית'
-            `, [sent]);
+            `, [sentCount]);
 
             return NextResponse.json({ success: true, processed: processedCount, sent: sentCount });
 
