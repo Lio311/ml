@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Wand2, Star, AlertTriangle, CheckCircle2, TrendingUp, ChevronDown, ChevronUp, RefreshCw } from "lucide-react";
+import { Wand2, Star, AlertTriangle, CheckCircle2, TrendingUp, ChevronDown, ChevronUp, RefreshCw, Search } from "lucide-react";
 import toast from "react-hot-toast";
 
 export default function DescReviewPage() {
@@ -11,6 +11,7 @@ export default function DescReviewPage() {
     const [isRunning, setIsRunning] = useState(false);
     const [expandedId, setExpandedId] = useState(null);
     const [filter, setFilter] = useState('all'); // all, low, medium, high
+    const [searchQuery, setSearchQuery] = useState("");
     const [isSettingUp, setIsSettingUp] = useState(false);
     const [tableExists, setTableExists] = useState(true);
 
@@ -146,9 +147,20 @@ export default function DescReviewPage() {
     };
 
     const filteredReviews = reviews.filter(r => {
-        if (filter === 'low') return r.rating <= 4;
-        if (filter === 'medium') return r.rating >= 5 && r.rating <= 7;
-        if (filter === 'high') return r.rating >= 8;
+        // Filter by rating status
+        if (filter === 'low' && r.rating > 4) return false;
+        if (filter === 'medium' && (r.rating < 5 || r.rating > 7)) return false;
+        if (filter === 'high' && r.rating < 8) return false;
+
+        // Filter by search query
+        if (searchQuery.trim() !== '') {
+            const query = searchQuery.toLowerCase();
+            const brand = (r.brand || '').toLowerCase();
+            const model = (r.model || '').toLowerCase();
+            const description = (r.description || '').toLowerCase();
+            return brand.includes(query) || model.includes(query) || description.includes(query);
+        }
+
         return true;
     });
 
@@ -208,26 +220,38 @@ export default function DescReviewPage() {
                 </div>
             </div>
 
-            {/* Filter Bar */}
-            <div className="flex gap-2 mb-4">
-                {[
-                    { key: 'all', label: `הכל (${reviews.length})` },
-                    { key: 'low', label: `דורש שיפור (${lowCount})`, color: 'text-red-600' },
-                    { key: 'medium', label: `טוב (${mediumCount})`, color: 'text-yellow-600' },
-                    { key: 'high', label: `מעולה (${highCount})`, color: 'text-green-600' },
-                ].map(f => (
-                    <button
-                        key={f.key}
-                        onClick={() => setFilter(f.key)}
-                        className={`text-xs font-bold px-3 py-1.5 rounded-full border transition ${
-                            filter === f.key 
-                                ? 'bg-black text-white border-black' 
-                                : 'bg-white text-gray-600 border-gray-200 hover:border-gray-400'
-                        }`}
-                    >
-                        {f.label}
-                    </button>
-                ))}
+            {/* Filter & Search Bar */}
+            <div className="flex flex-col md:flex-row gap-3 justify-between items-stretch md:items-center mb-4">
+                <div className="flex gap-2 flex-wrap">
+                    {[
+                        { key: 'all', label: `הכל (${reviews.length})` },
+                        { key: 'low', label: `דורש שיפור (${lowCount})`, color: 'text-red-600' },
+                        { key: 'medium', label: `טוב (${mediumCount})`, color: 'text-yellow-600' },
+                        { key: 'high', label: `מעולה (${highCount})`, color: 'text-green-600' },
+                    ].map(f => (
+                        <button
+                            key={f.key}
+                            onClick={() => setFilter(f.key)}
+                            className={`text-xs font-bold px-3 py-1.5 rounded-full border transition ${
+                                filter === f.key 
+                                    ? 'bg-black text-white border-black' 
+                                    : 'bg-white text-gray-600 border-gray-200 hover:border-gray-400'
+                            }`}
+                        >
+                            {f.label}
+                        </button>
+                    ))}
+                </div>
+                <div className="relative flex-1 md:max-w-xs">
+                    <input
+                        type="text"
+                        placeholder="חפש בושם, מותג או תיאור..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="w-full text-xs font-bold pl-3 pr-9 py-2 rounded-xl border border-gray-200 hover:border-gray-300 focus:border-black focus:outline-none transition bg-white text-gray-900 shadow-sm"
+                    />
+                    <Search className="w-4 h-4 text-gray-400 absolute right-3 top-2.5" />
+                </div>
             </div>
 
             {/* Results List */}
@@ -239,11 +263,19 @@ export default function DescReviewPage() {
             ) : filteredReviews.length === 0 ? (
                 <div className="text-center py-16 bg-gray-50 rounded-2xl border border-gray-100">
                     <p className="text-gray-400 text-lg font-bold mb-2">
-                        {reviews.length === 0 ? 'אין סקירות עדיין' : 'אין תוצאות לפילטר הנבחר'}
+                        {reviews.length === 0 
+                            ? 'אין סקירות עדיין' 
+                            : searchQuery.trim() !== '' 
+                                ? 'לא נמצאו סקירות התואמות לחיפוש' 
+                                : 'אין תוצאות לפילטר הנבחר'}
                     </p>
-                    {reviews.length === 0 && (
-                        <p className="text-sm text-gray-400">לחץ על "הגדר טבלה" ואז "הרץ סקירה" כדי להתחיל</p>
-                    )}
+                    <p className="text-sm text-gray-400">
+                        {reviews.length === 0 
+                            ? 'לחץ על "הגדר טבלה" ואז "הרץ סקירה" כדי להתחיל' 
+                            : searchQuery.trim() !== '' 
+                                ? 'נסה לחפש שם של בושם אחר, מותג או מילה אחרת' 
+                                : 'נסה לבחור פילטר אחר'}
+                    </p>
                 </div>
             ) : (
                 <div className="space-y-3">
