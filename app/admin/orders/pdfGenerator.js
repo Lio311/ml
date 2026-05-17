@@ -12,21 +12,16 @@ const arrayBufferToBase64 = (buffer) => {
 };
 
 // Helper to fix BiDi (Right-to-Left) text for jsPDF 4.x
-// jsPDF 4.x has an internal UBA that auto-handles pure digit runs,
-// but does NOT un-reverse Latin letter runs. Strategy:
-// 1. Reverse the entire string (Hebrew renders correctly R-to-L)
-// 2. Un-reverse only runs that contain at least one Latin letter
-// 3. Leave pure digit runs alone (jsPDF handles those)
+// Strategy:
+// 1. Reverse entire string (Hebrew glyphs render correctly R-to-L)
+// 2. Un-reverse ALL LTR runs (Latin letters, digits, symbols)
+// 3. Prepend LRM (\u200E) to force jsPDF to treat as LTR paragraph,
+//    preventing its internal UBA from re-reversing our Latin corrections
 const fixBidi = (str) => {
     if (!str) return '';
     const reversed = str.split('').reverse().join('');
     const ltrRegex = /[A-Za-z0-9@.\-_#+/,()]+(?:[\s\u00A0]+[A-Za-z0-9@.\-_#+/,()]+)*/g;
-    return reversed.replace(ltrRegex, match => {
-        if (/[A-Za-z]/.test(match)) {
-            return match.split('').reverse().join('');
-        }
-        return match;
-    });
+    return '\u200E' + reversed.replace(ltrRegex, match => match.split('').reverse().join(''));
 };
 
 export const generateFullOrderPDFDoc = async (order) => {

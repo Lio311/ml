@@ -23,12 +23,7 @@ export default function DownloadBatchOrderPDF({ selectedOrders, onComplete }) {
         if (!str) return '';
         const reversed = str.split('').reverse().join('');
         const ltrRegex = /[A-Za-z0-9@.\-_#+/,()]+(?:[\s\u00A0]+[A-Za-z0-9@.\-_#+/,()]+)*/g;
-        return reversed.replace(ltrRegex, match => {
-            if (/[A-Za-z]/.test(match)) {
-                return match.split('').reverse().join('');
-            }
-            return match;
-        });
+        return '\u200E' + reversed.replace(ltrRegex, match => match.split('').reverse().join(''));
     };
 
     const handleDownloadBatch = async () => {
