@@ -29,7 +29,7 @@ export async function GET(req) {
                     AND created_at < NOW() - INTERVAL '${delay10} days'
                     AND NOT EXISTS (
                         SELECT 1 FROM email_logs 
-                        WHERE recipient_email = users.email 
+                        WHERE recipient = users.email 
                         AND type = 'nurture_10_days'
                     )
                 `);
@@ -49,7 +49,7 @@ export async function GET(req) {
                     AND created_at < NOW() - INTERVAL '${delay25} days'
                     AND NOT EXISTS (
                         SELECT 1 FROM email_logs 
-                        WHERE recipient_email = users.email 
+                        WHERE recipient = users.email 
                         AND type = 'nurture_25_days'
                     )
                 `);

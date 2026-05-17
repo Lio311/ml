@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import pool from '@/app/lib/db';
-import { sendEmail } from '@/app/lib/email';
+import { sendEmail, getTemplate } from '@/app/lib/email';
 import { getAutomationConfig, isAutomationActive } from '@/app/lib/automationConfig';
 
 export async function GET(req) {

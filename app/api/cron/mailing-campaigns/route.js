@@ -35,7 +35,7 @@ export async function GET(req) {
                 }
 
                 if (recipientEmails.length === 0) {
-                    await pool.query('UPDATE email_campaigns SET status = "sent", sent_at = NOW(), error_log = "No recipients found" WHERE id = $1', [campaign.id]);
+                    await pool.query("UPDATE email_campaigns SET status = 'sent', sent_at = NOW(), error_log = 'No recipients found' WHERE id = $1", [campaign.id]);
                     continue;
                 }
 

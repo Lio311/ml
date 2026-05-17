@@ -11,7 +11,7 @@ const CRON_CONFIG = [
     { name: 'review-request', path: '/api/cron/review-request', schedule: '0 12 * * *', label: 'בקשת ביקורת', description: 'מבקש ביקורות מלקוחות שקיבלו הזמנה (מותנה בהזמנה שהושלמה)' },
     { name: 'recommendations', path: '/api/cron/recommendations', schedule: '0 13 * * *', label: 'המלצות', description: 'שולח המלצות מותאמות אישית (מותנה בהיסטוריית רכישות)' },
     { name: 'nurture-emails', path: '/api/cron/nurture-emails', schedule: '0 14 * * *', label: 'אימיילי נרטור', description: 'סדרת ליווי ללקוח חדש אחרי הרשמה (מותנה ברישום חדש)' },
-    { name: 'seo-bot', path: '/api/cron/seo-bot', schedule: '0 8 * * *', label: 'בוט SEO', description: 'מייצר תוכן SEO למוצרים שחסר להם (מותנה במוצרים חדשים)' },
+    { name: 'seo-bot', path: '/api/cron/seo-bot', schedule: '0 8 * * *', label: 'בוט SEO', description: 'מייצר כתבות ופוסטים לבלוג המותאמים לקידום אורגני (SEO)' },
     { name: 'desc-review', path: '/api/cron/desc-review', schedule: '0 19 * * *', label: 'סקירת תיאורים', description: 'סוקר ומדרג תיאורי מוצרים עם AI (מותנה בתיאורים שטרם נסקרו)' },
 ];
 

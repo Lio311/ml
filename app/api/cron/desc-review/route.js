@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import pool from "@/app/lib/db";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import crypto from "crypto";
+import { logCronStart, logCronEnd } from "@/app/lib/errorLogger";
 
 export const dynamic = 'force-dynamic';
 export const maxDuration = 300; // 5 minutes
@@ -11,15 +12,26 @@ function hashDescription(desc) {
 }
 
 export async function GET(req) {
+    const startTime = Date.now();
+    const logId = await logCronStart('desc-review');
+
     // Check for Vercel Cron header
     const authHeader = req.headers.get('authorization');
     if (authHeader !== `Bearer ${process.env.CRON_SECRET}` && process.env.NODE_ENV === 'production') {
+        if (logId) {
+            await logCronEnd(logId, 'error', 'Unauthorized - invalid cron secret', Date.now() - startTime);
+        }
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
     try {
         const apiKey = process.env.GEMINI_API_KEY;
-        if (!apiKey) return NextResponse.json({ error: 'Missing API Key' }, { status: 500 });
+        if (!apiKey) {
+            if (logId) {
+                await logCronEnd(logId, 'error', 'Missing API Key', Date.now() - startTime);
+            }
+            return NextResponse.json({ error: 'Missing API Key' }, { status: 500 });
+        }
 
         const client = await pool.connect();
         let toReview = [];
@@ -117,9 +129,15 @@ Return a JSON array with exactly ${batch.length} objects:
             if (i + BATCH_SIZE < toReview.length) await new Promise(r => setTimeout(r, 1500));
         }
 
+        if (logId) {
+            await logCronEnd(logId, 'success', totalReviewed > 0 ? `נסקרו בהצלחה ${totalReviewed} תיאורי מוצרים` : 'לא נמצאו תיאורים חדשים לסקירה', Date.now() - startTime);
+        }
         return NextResponse.json({ success: true, reviewed: totalReviewed });
     } catch (error) {
         console.error("Cron desc review error:", error);
+        if (logId) {
+            await logCronEnd(logId, 'error', error.message, Date.now() - startTime);
+        }
         return NextResponse.json({ error: error.message }, { status: 500 });
     }
 }

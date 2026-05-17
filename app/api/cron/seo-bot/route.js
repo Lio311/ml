@@ -1,16 +1,23 @@
 import { NextResponse } from "next/server";
 import pool from "@/app/lib/db";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { logCronStart, logCronEnd } from "@/app/lib/errorLogger";
 
 export const dynamic = 'force-dynamic';
 export const maxDuration = 60; // Allow more time for LLM generation
 
 export async function GET(req) {
+    const startTime = Date.now();
+    const logId = await logCronStart('seo-bot');
+
     // 1. Verify Vercel Cron Secret
     const authHeader = req.headers.get('authorization');
     if (process.env.CRON_SECRET && authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
         // Only return 401 if a secret is configured but doesn't match
         console.warn("Unauthorized cron attempt.");
+        if (logId) {
+            await logCronEnd(logId, 'error', 'Unauthorized - invalid cron secret', Date.now() - startTime);
+        }
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     }
 
@@ -18,6 +25,9 @@ export async function GET(req) {
         const apiKey = process.env.GEMINI_API_KEY;
         if (!apiKey) {
             console.error("Missing GEMINI_API_KEY");
+            if (logId) {
+                await logCronEnd(logId, 'error', 'GEMINI_API_KEY is missing', Date.now() - startTime);
+            }
             return NextResponse.json({ error: 'GEMINI_API_KEY is missing' }, { status: 500 });
         }
 
@@ -94,6 +104,9 @@ export async function GET(req) {
                 [title, title_en, finalSlug, excerpt, excerpt_en, content, content_en, formattedTags, formattedTagsEn]
             );
 
+            if (logId) {
+                await logCronEnd(logId, 'success', `נוצרה טיוטה חדשה בהצלחה: "${title}"`, Date.now() - startTime);
+            }
             return NextResponse.json({ success: true, message: "Draft created successfully", title, slug: finalSlug });
         } finally {
             dbClient.release();
@@ -101,6 +114,9 @@ export async function GET(req) {
 
     } catch (error) {
         console.error("Cron SEO Bot Error:", error);
+        if (logId) {
+            await logCronEnd(logId, 'error', error.message || "Internal Server Error", Date.now() - startTime);
+        }
         return NextResponse.json({ error: error.message || "Internal Server Error" }, { status: 500 });
     }
 }
