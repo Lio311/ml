@@ -5,6 +5,8 @@ import { cookies } from 'next/headers';
 import he from '../data/locales/he.json';
 import en from '../data/locales/en.json';
 import { sanitizeProductArray } from '../lib/productUtils';
+import TagFilterBar from '../components/TagFilterBar';
+
 
 const getT = (locale) => {
     const dict = locale === 'en' ? en : he;
@@ -130,23 +132,7 @@ export default async function BlogIndex(props) {
                         </div>
                         
                         {/* Tag Filter Bar */}
-                        <div className="flex gap-2 overflow-x-auto pb-2 no-scrollbar scroll-smooth">
-                            <Link 
-                                href="/blog" 
-                                className={`px-5 py-2.5 rounded-full text-xs font-bold uppercase tracking-widest transition-all whitespace-nowrap border ${!activeTag ? 'bg-black text-white border-black shadow-lg shadow-black/10' : 'bg-white text-gray-500 border-gray-200 hover:border-black hover:text-black'}`}
-                            >
-                                {locale === 'he' ? 'הכל' : 'All Articles'}
-                            </Link>
-                            {allTags.map(tag => (
-                                <Link 
-                                    key={tag}
-                                    href={`/blog?tag=${tag}`} 
-                                    className={`px-5 py-2.5 rounded-full text-xs font-bold uppercase tracking-widest transition-all whitespace-nowrap border ${activeTag === tag ? 'bg-black text-white border-black shadow-lg shadow-black/10' : 'bg-white text-gray-500 border-gray-200 hover:border-black hover:text-black'}`}
-                                >
-                                    {tag}
-                                </Link>
-                            ))}
-                        </div>
+                        <TagFilterBar allTags={allTags} activeTag={activeTag} locale={locale} dir={dir} />
                     </div>
 
                 </header>
