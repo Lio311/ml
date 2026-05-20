@@ -36,7 +36,7 @@ export async function POST(req) {
             const isPersonal = coupon.email || (limitations.allowed_users && limitations.allowed_users.length > 0);
             if (isPersonal) {
                 if (!userEmail) {
-                    return NextResponse.json({ error: 'הקופון הזה אינו זמין עבור משתמש זה' }, { status: 403 });
+                    return NextResponse.json({ error: 'personal_coupon_requires_email' }, { status: 403 });
                 }
                 const lowerEmail = userEmail.toLowerCase();
                 const matchesTopLevel = coupon.email && coupon.email.toLowerCase() === lowerEmail;

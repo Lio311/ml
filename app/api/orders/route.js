@@ -93,7 +93,7 @@ export async function POST(req) {
 
                 // 1. Ownership Check
                 const user = userId ? await currentUser() : null;
-                const userEmail = user?.emailAddresses?.[0]?.emailAddress;
+                const userEmail = user?.emailAddresses?.[0]?.emailAddress || body.customerDetails?.email;
                 const isPersonal = coupon.email || (limitations.allowed_users && limitations.allowed_users.length > 0);
                 
                 if (isPersonal) {

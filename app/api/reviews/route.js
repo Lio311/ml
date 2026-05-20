@@ -147,13 +147,12 @@ export async function POST(req) {
                 const customerEmail = orderData.customer_details.email;
                 const clerkId = orderData.customer_details.clerk_id || userId;
 
-                // GLOBAL check: Has this user EVER been rewarded?
+                // GLOBAL check: Has this user EVER been rewarded? Check coupons table directly.
                 const globalRewardCheck = await pool.query(`
-                    SELECT 1 FROM orders 
-                    WHERE (customer_details->>'email' = $1 OR customer_details->>'clerk_id' = $2) 
-                    AND coupon_rewarded = true 
+                    SELECT 1 FROM coupons 
+                    WHERE email = $1 AND code LIKE 'SAVE10-%'
                     LIMIT 1
-                `, [customerEmail, clerkId]);
+                `, [customerEmail]);
 
                 if (globalRewardCheck.rows.length === 0) {
                     const randomPart = Math.random().toString(36).substring(2, 7).toUpperCase();

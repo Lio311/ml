@@ -68,6 +68,10 @@ export async function PUT(req, { params }) {
                 query += `, influencer_id = $${idx++}`;
                 values.push(body.influencer_id);
             }
+            if (body.status !== undefined) {
+                query += `, status = $${idx++}`;
+                values.push(body.status);
+            }
 
             query += ` WHERE id = $${idx}`;
             values.push(id);

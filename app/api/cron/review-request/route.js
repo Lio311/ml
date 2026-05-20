@@ -50,13 +50,12 @@ export async function GET(req) {
                     const firstProductName = items.length > 0 ? items[0].name : "הבשמים שלנו";
                     const token = generateReviewToken(order.id);
 
-                    // Check if user already received a coupon for any other order
+                    // Check if user already received a coupon for any other order (global check in coupons table)
                     const rewardedCheck = await client.query(`
-                        SELECT 1 FROM orders 
-                        WHERE (customer_details->>'email' = $1 OR customer_details->>'clerk_id' = $2) 
-                        AND coupon_rewarded = true 
+                        SELECT 1 FROM coupons 
+                        WHERE email = $1 AND code LIKE 'SAVE10-%'
                         LIMIT 1
-                    `, [email, customer.clerk_id]);
+                    `, [email]);
                     const alreadyRewarded = rewardedCheck.rows.length > 0;
 
                     const { html, subject } = await getTemplate('review_request', 

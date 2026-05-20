@@ -145,6 +145,30 @@ export default function AdminCouponsPage() {
         }
     };
 
+    const handleToggleStatus = async (coupon) => {
+        if (loading) return;
+        const newStatus = coupon.status === 'active' ? 'cancelled' : 'active';
+        setLoading(true);
+        try {
+            const res = await fetch(`/api/admin/coupons/${coupon.id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ status: newStatus })
+            });
+            if (res.ok) {
+                toast.success(newStatus === 'active' ? 'הקופון הופעל מחדש' : 'הקופון בוטל בהצלחה');
+                fetchCoupons();
+            } else {
+                toast.error('שגיאה בעדכון הסטטוס');
+            }
+        } catch (error) {
+            console.error(error);
+            toast.error('שגיאה בתקשורת');
+        } finally {
+            setLoading(false);
+        }
+    };
+
     // Prepare Edit
     const handleEdit = (coupon) => {
         setEditingId(coupon.id);
@@ -304,7 +328,7 @@ export default function AdminCouponsPage() {
                                 coupons
                                     .slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE)
                                     .map(coupon => (
-                                        <CouponRow key={coupon.id} coupon={coupon} onDelete={handleDelete} onEdit={handleEdit} canEdit={canEdit} />
+                                        <CouponRow key={coupon.id} coupon={coupon} onDelete={handleDelete} onEdit={handleEdit} onToggleStatus={handleToggleStatus} canEdit={canEdit} />
                                     ))
                             )}
                         </tbody>
@@ -321,7 +345,7 @@ export default function AdminCouponsPage() {
                         coupons
                             .slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE)
                             .map(coupon => (
-                                <CouponCard key={coupon.id} coupon={coupon} onDelete={handleDelete} onEdit={handleEdit} canEdit={canEdit} />
+                                <CouponCard key={coupon.id} coupon={coupon} onDelete={handleDelete} onEdit={handleEdit} onToggleStatus={handleToggleStatus} canEdit={canEdit} />
                             ))
                     )}
                 </div>
@@ -531,7 +555,7 @@ export default function AdminCouponsPage() {
     );
 }
 
-function CouponRow({ coupon, onDelete, onEdit, canEdit }) {
+function CouponRow({ coupon, onDelete, onEdit, onToggleStatus, canEdit }) {
 
     const [timeLeft, setTimeLeft] = useState('...');
     const [isExpired, setIsExpired] = useState(false);
@@ -628,6 +652,15 @@ function CouponRow({ coupon, onDelete, onEdit, canEdit }) {
             <td className="p-4 flex gap-2 justify-center">
                 {canEdit ? (
                     <>
+                        {coupon.status !== 'redeemed' && (
+                            <button
+                                onClick={() => onToggleStatus(coupon)}
+                                className={`${coupon.status === 'active' ? 'text-orange-500 hover:bg-orange-50' : 'text-green-500 hover:bg-green-50'} p-2 rounded transition`}
+                                title={coupon.status === 'active' ? 'בטל קופון' : 'הפעל קופון'}
+                            >
+                                {coupon.status === 'active' ? <XCircleIcon /> : <CheckCircleIcon />}
+                            </button>
+                        )}
                         <button
                             onClick={() => onEdit(coupon)}
                             className="text-blue-500 hover:bg-blue-50 p-2 rounded transition"
@@ -652,7 +685,7 @@ function CouponRow({ coupon, onDelete, onEdit, canEdit }) {
     );
 }
 
-function CouponCard({ coupon, onDelete, onEdit, canEdit }) {
+function CouponCard({ coupon, onDelete, onEdit, onToggleStatus, canEdit }) {
     const [timeLeft, setTimeLeft] = useState('...');
     const [isExpired, setIsExpired] = useState(false);
     const [isMounted, setIsMounted] = useState(false);
@@ -758,6 +791,15 @@ function CouponCard({ coupon, onDelete, onEdit, canEdit }) {
 
             {canEdit && (
                 <div className="flex gap-2 pt-2 border-t border-gray-50 mt-4">
+                    {coupon.status !== 'redeemed' && (
+                        <button
+                            onClick={() => onToggleStatus(coupon)}
+                            className={`${coupon.status === 'active' ? 'bg-orange-50 text-orange-600 border-orange-100' : 'bg-green-50 text-green-600 border-green-100'} px-4 py-2.5 rounded-xl text-sm font-bold active:scale-95 transition border flex items-center justify-center`}
+                            title={coupon.status === 'active' ? 'בטל קופון' : 'הפעל קופון'}
+                        >
+                            {coupon.status === 'active' ? <XCircleIcon /> : <CheckCircleIcon />}
+                        </button>
+                    )}
                     <button
                         onClick={() => onEdit(coupon)}
                         className="bg-blue-50 text-blue-600 flex-1 py-2.5 rounded-xl text-sm font-bold active:scale-95 transition border border-blue-100 flex items-center justify-center gap-2"
@@ -774,6 +816,22 @@ function CouponCard({ coupon, onDelete, onEdit, canEdit }) {
             )}
         </div>
     );
+}
+
+function XCircleIcon() {
+    return (
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+            <path strokeLinecap="round" strokeLinejoin="round" d="m9.75 9.75 4.5 4.5m0-4.5-4.5 4.5M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+        </svg>
+    )
+}
+
+function CheckCircleIcon() {
+    return (
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-5 h-5">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
+        </svg>
+    )
 }
 
 function Edit2Icon() {

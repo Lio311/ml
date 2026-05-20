@@ -43,6 +43,7 @@ export default function CouponSection({
                 // Map error messages to translation keys
                 const errorMap = {
                     "הקופון הזה אינו זמין עבור משתמש זה": "cart.coupon_not_available",
+                    "personal_coupon_requires_email": "cart.personal_coupon_requires_email",
                     "קוד קופון לא תקין או פג תוקף": "cart.coupon_invalid",
                     "קוד קופון זה כבר נוצל": "cart.coupon_already_used",
                     "קופון זה אינו חל על הפריטים בעגלה שלך": "cart.coupon_not_eligible"
@@ -50,7 +51,9 @@ export default function CouponSection({
                 
                 let errorKey = errorMap[data.error] || "cart.coupon_invalid";
                 
-                if (data.error?.includes("סכום") || data.error?.includes("מינימלי")) {
+                if (data.error === "personal_coupon_requires_email") {
+                    setCouponError(t('cart.personal_coupon_requires_email', { defaultValue: 'זהו קופון אישי - אנא התחבר או הזן אותו בשלב התשלום' }));
+                } else if (data.error?.includes("סכום") || data.error?.includes("מינימלי")) {
                     setCouponError(t('cart.coupon_min_total', { total: data.min_total }));
                 } else if (data.error?.includes("פריטים") || data.error?.includes("חל על")) {
                     setCouponError(t('cart.coupon_not_eligible'));
