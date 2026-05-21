@@ -401,7 +401,7 @@ export default async function ProductPage(props) {
                         </span>
                     )}
 
-                    <div className="absolute bottom-4 start-4 z-20">
+                    <div className="absolute top-4 end-16 z-20">
                         <SpotifyPlayer trackUrl={product.spotify_track_url} />
                     </div>
                 </div>

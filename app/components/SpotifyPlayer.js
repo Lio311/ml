@@ -30,7 +30,7 @@ export default function SpotifyPlayer({ trackUrl }) {
                     <Music size={20} className="animate-pulse" />
                 </button>
             ) : (
-                <div className="bg-black/90 p-2 rounded-xl shadow-2xl relative w-64 md:w-80 animate-in fade-in zoom-in duration-200">
+                <div className="absolute top-0 end-0 bg-black/90 p-2 rounded-xl shadow-2xl w-64 md:w-80 animate-in fade-in zoom-in duration-200 z-50">
                     <button
                         onClick={(e) => {
                             e.preventDefault();
