@@ -4,6 +4,11 @@ import { useState, useEffect } from 'react';
 
 export default function HeroCarousel({ banners = [] }) {
     const [currentIndex, setCurrentIndex] = useState(0);
+    const [touchStart, setTouchStart] = useState(null);
+    const [touchEnd, setTouchEnd] = useState(null);
+
+    // Minimum swipe distance
+    const minSwipeDistance = 50;
 
     // Auto-advance
     useEffect(() => {
@@ -16,10 +21,39 @@ export default function HeroCarousel({ banners = [] }) {
         return () => clearInterval(timer);
     }, [banners]);
 
+    const onTouchStart = (e) => {
+        setTouchEnd(null);
+        setTouchStart(e.targetTouches[0].clientX);
+    };
+
+    const onTouchMove = (e) => setTouchEnd(e.targetTouches[0].clientX);
+
+    const onTouchEnd = () => {
+        if (!touchStart || !touchEnd) return;
+        const distance = touchStart - touchEnd;
+        const isLeftSwipe = distance > minSwipeDistance;
+        const isRightSwipe = distance < -minSwipeDistance;
+        
+        if (isLeftSwipe || isRightSwipe) {
+            if (isLeftSwipe) {
+                // Swipe left (next)
+                setCurrentIndex((prev) => (prev === banners.length - 1 ? 0 : prev + 1));
+            } else {
+                // Swipe right (previous)
+                setCurrentIndex((prev) => (prev === 0 ? banners.length - 1 : prev - 1));
+            }
+        }
+    };
+
     if (!banners || banners.length === 0) return null;
 
     return (
-        <div className="relative w-full h-full overflow-hidden">
+        <div 
+            className="relative w-full h-full overflow-hidden"
+            onTouchStart={onTouchStart}
+            onTouchMove={onTouchMove}
+            onTouchEnd={onTouchEnd}
+        >
             {banners.map((banner, index) => (
                 <div 
                     key={index} 
@@ -54,7 +88,7 @@ export default function HeroCarousel({ banners = [] }) {
 
             {/* Dots navigation */}
             {banners.length > 1 && (
-                <div className="absolute bottom-3 left-0 right-0 z-20 flex justify-center gap-3">
+                <div className="absolute bottom-5 md:bottom-3 left-0 right-0 z-20 flex justify-center gap-3">
                     {banners.map((_, index) => (
                         <button
                             key={index}
