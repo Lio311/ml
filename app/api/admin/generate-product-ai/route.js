@@ -44,14 +44,21 @@ Description rules:
 - 3-5 sentences max, Hebrew only
 - Start with a short punchy atmosphere line (e.g. "קוקטייל בשקיעה.", "ממתק יוקרתי.")
 - Weave the real notes poetically, don't just list them
-- Describe who it's for or what feeling it projects
-- Use rich but accessible language ("עסיסי", "אופולנטי", "יוקרתי בטירוף")
-
 - Example descriptions:
 - "קוקטייל בשקיעה. מנגו ופסיפלורה עסיסיים בשיא הבשלות. בושם שפשוט מקרין שמחת חיים, צבעוניות וטרופיות מתפרצת."
 - "לא הקולון של סבא שלך. זהו קולון שעבר דרך האש... מתאים לחובבי בישום שמחפשים את הטוויסט המורכב והמעושן."
 
-Finally, find ONE specific real Spotify track that perfectly matches the vibe, mood, and notes of this perfume. Return the raw Spotify track URL (e.g. https://open.spotify.com/track/4cOdK2wGLETKBW3PvgPWqT).
+Finally, pick the best matching Spotify track URL from this EXACT list (do NOT invent URLs):
+1. Tropical/Mango/Fruity: https://open.spotify.com/track/6UelLqGlWMcVH1E5c4H7lY (Watermelon Sugar)
+2. Fresh/Citrus/Summer: https://open.spotify.com/track/1BxfuPKylH5zH226gZ5yJj (Cruel Summer)
+3. Seductive/Night: https://open.spotify.com/track/25S6vE8VPZpP3bWlUaYlqP (Earned It)
+4. Clean/Aquatic: https://open.spotify.com/track/6S3JlQUWk1Ifb3O12Y8s61 (Ocean Eyes)
+5. Chill/Relaxing: https://open.spotify.com/track/0hN1YJv0sS3a6Xp68q8x8G (Sunset Lover)
+6. Energetic/Party: https://open.spotify.com/track/0VjIj9nkp3N9v2b5WvF9qV (Blinding Lights)
+7. Sweet/Vanilla/Gourmand: https://open.spotify.com/track/4iJyoBOLtHqaGxP12qzhQI (Peaches)
+8. Woody/Smoky/Leather: https://open.spotify.com/track/5FVd6KXrgO9B3JPWvzMopS (Do I Wanna Know)
+9. Winter/Spicy/Cozy: https://open.spotify.com/track/2QjOHNKaiLHeH60jR2vR8e (Sweater Weather)
+10. Pop/Floral/Sweet: https://open.spotify.com/track/39n1bC4c14J1dYw40r2Lp8 (Levitating)
 
 Return your answer as a valid JSON object with this EXACT structure (no markdown, no backticks, just raw JSON):
 {
@@ -59,7 +66,7 @@ Return your answer as a valid JSON object with this EXACT structure (no markdown
   "middle_notes": "Note1, Note2, Note3",
   "base_notes": "Note1, Note2, Note3",
   "description": "Hebrew description here",
-  "spotify_track_url": "https://open.spotify.com/track/..."
+  "spotify_track_url": "URL chosen from the list above"
 }`;
 
         const result = await model.generateContent(searchPrompt);
