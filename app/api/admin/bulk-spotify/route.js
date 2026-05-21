@@ -20,13 +20,13 @@ export async function GET(req) {
     try {
         const client = await pool.connect();
         try {
-            // Find 5 products without spotify_track_url
+            // Find 1 product without spotify_track_url to avoid Vercel 10s timeout
             const res = await client.query(`
                 SELECT id, name, description_en, top_notes_en, middle_notes_en, base_notes_en 
                 FROM products 
                 WHERE spotify_track_url IS NULL 
                 ORDER BY id DESC 
-                LIMIT 5
+                LIMIT 1
             `);
             
             const products = res.rows;
