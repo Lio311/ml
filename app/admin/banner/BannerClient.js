@@ -297,7 +297,7 @@ export default function BannerClient() {
                             </div>
 
                             {/* Advanced Cropper Preview */}
-                            <div className={`border border-gray-200 rounded-2xl overflow-hidden relative bg-black flex items-center justify-center transition-all duration-300 ${banner.isHidden ? 'opacity-40' : 'opacity-100'} ${(!banner.activeTab || banner.activeTab === 'desktop') ? 'min-h-[300px] h-[300px] w-full' : 'min-h-[500px] h-[500px] max-w-[280px] mx-auto rounded-3xl'}`}>
+                            <div className={`border border-gray-200 rounded-2xl overflow-hidden relative bg-black flex items-center justify-center transition-all duration-300 ${banner.isHidden ? 'opacity-40' : 'opacity-100'} ${(!banner.activeTab || banner.activeTab === 'desktop') ? 'min-h-[300px] h-[300px] w-full' : 'min-h-[500px] h-[500px] w-full max-w-[280px] mx-auto rounded-3xl'}`}>
                                 <div className="absolute top-2 right-2 z-30 bg-red-600 text-white px-2 py-1 rounded-md text-[10px] font-bold shadow-md">
                                     אזור גלוי ({(!banner.activeTab || banner.activeTab === 'desktop') ? 'מחשב' : 'מובייל'})
                                 </div>
