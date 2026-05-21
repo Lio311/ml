@@ -31,11 +31,20 @@ export async function POST(req) {
 
         const genAI = new GoogleGenerativeAI(apiKey);
         
-        // Use Google Search grounding so Gemini actually looks up the perfume on Fragrantica
         const model = genAI.getGenerativeModel({ 
             model: "gemini-2.5-flash",
             tools: [{ googleSearch: {} }],
         });
+
+        // Pick 150 random tracks to provide as candidates
+        let candidatesList = '';
+        try {
+            const tracksPath = path.join(process.cwd(), 'app', 'lib', 'spotify_tracks.json');
+            const tracks = JSON.parse(fs.readFileSync(tracksPath, 'utf8'));
+            tracks.sort(() => 0.5 - Math.random());
+            const candidateTracks = tracks.slice(0, 150);
+            candidatesList = candidateTracks.map(t => `- ID: ${t.id} | Artist: ${t.artist} | Title: ${t.name} | Genre: ${t.genre}`).join('\n');
+        } catch(e) {}
 
         const searchPrompt = `Search Fragrantica for the perfume "${brand} ${name}" and find its EXACT fragrance note pyramid (top notes, middle/heart notes, base notes). 
 Use only notes that actually appear on the Fragrantica page for this specific perfume. Do NOT guess or make up notes.
@@ -48,14 +57,17 @@ Description rules:
 - Weave the real notes poetically, don't just list them
 - Example descriptions:
 - "קוקטייל בשקיעה. מנגו ופסיפלורה עסיסיים בשיא הבשלות. בושם שפשוט מקרין שמחת חיים, צבעוניות וטרופיות מתפרצת."
-- "לא הקולון של סבא שלך. זהו קולון שעבר דרך האש... מתאים לחובבי בישום שמחפשים את הטוויסט המורכב והמעושן."
+
+Finally, pick the single track that BEST matches the vibe, mood, and style of this perfume from the following list of 150 available Spotify tracks:
+${candidatesList}
 
 Return your answer as a valid JSON object with this EXACT structure (no markdown, no backticks, just raw JSON):
 {
   "top_notes": "Note1, Note2, Note3",
   "middle_notes": "Note1, Note2, Note3",
   "base_notes": "Note1, Note2, Note3",
-  "description": "Hebrew description here"
+  "description": "Hebrew description here",
+  "spotify_track_id": "The EXACT Track ID you chose from the list"
 }`;
 
         const result = await model.generateContent(searchPrompt);
@@ -78,57 +90,8 @@ Return your answer as a valid JSON object with this EXACT structure (no markdown
         }
 
         let spotify_track_url = '';
-        try {
-            const tracksPath = path.join(process.cwd(), 'app', 'lib', 'spotify_tracks.json');
-            const tracks = JSON.parse(fs.readFileSync(tracksPath, 'utf8'));
-            
-            const text = [data.top_notes, data.middle_notes, data.base_notes, data.description].join(' ').toLowerCase();
-            
-            let targetGenre = null;
-            let minEnergy = 0, maxEnergy = 1;
-            let minValence = 0, maxValence = 1;
-
-            if (text.includes('אוד') || text.includes('עוד') || text.includes('oud') || text.includes('עור') || text.includes('מעושן') || text.includes('טבק')) {
-                targetGenre = ['rock', 'r&b'];
-                maxValence = 0.5;
-            } else if (text.includes('קיץ') || text.includes('הדרים') || text.includes('רענן') || text.includes('לימון') || text.includes('fresh')) {
-                targetGenre = ['pop', 'latin', 'edm'];
-                minValence = 0.6;
-                minEnergy = 0.6;
-            } else if (text.includes('חושני') || text.includes('דייט') || text.includes('סקסי') || text.includes('לילה')) {
-                targetGenre = ['r&b'];
-                maxValence = 0.6;
-            } else if (text.includes('מתוק') || text.includes('וניל') || text.includes('קרמל') || text.includes('שוקולד')) {
-                targetGenre = ['pop'];
-                minValence = 0.5;
-            } else if (text.includes('נקי') || text.includes('סבוני') || text.includes('אקווטי') || text.includes('ים')) {
-                targetGenre = ['pop'];
-                maxEnergy = 0.6;
-            } else if (text.includes('אנרגטי') || text.includes('מסיבה') || text.includes('צעיר')) {
-                targetGenre = ['edm', 'pop'];
-                minEnergy = 0.8;
-            }
-
-            // Shuffle
-            tracks.sort(() => 0.5 - Math.random());
-
-            let matchedTrack = null;
-            for (const t of tracks) {
-                let genreMatch = targetGenre ? targetGenre.includes(t.genre) : true;
-                let energyMatch = t.energy >= minEnergy && t.energy <= maxEnergy;
-                let valenceMatch = t.valence >= minValence && t.valence <= maxValence;
-
-                if (genreMatch && energyMatch && valenceMatch) {
-                    matchedTrack = t;
-                    break;
-                }
-            }
-
-            if (!matchedTrack) matchedTrack = tracks[0];
-
-            spotify_track_url = `https://open.spotify.com/track/${matchedTrack.id}`;
-        } catch(e) {
-            console.error("Failed to load spotify tracks", e);
+        if (data.spotify_track_id) {
+             spotify_track_url = `https://open.spotify.com/track/${data.spotify_track_id}`;
         }
 
         return NextResponse.json({ 

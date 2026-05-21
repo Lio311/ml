@@ -27,6 +27,8 @@ https.get('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/
                     usedIds.add(id);
                     tracks.push({
                         id: id,
+                        name: row[1],
+                        artist: row[2],
                         genre: row[9],
                         danceability: parseFloat(row[11]),
                         energy: parseFloat(row[12]),
