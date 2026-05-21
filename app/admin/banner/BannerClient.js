@@ -319,6 +319,10 @@ export default function BannerClient() {
                                         const bottomCutoff = totalCutoff - topCutoff;
                                         
                                         const contentY = isDesktop ? (banner.contentPositionDesktop ?? 50) : (banner.contentPositionMobile ?? 80);
+                                        const contentX = isDesktop ? (banner.contentPositionXDesktop ?? 50) : 50;
+                                        const basePreviewScale = isDesktop ? 0.6 : 0.65;
+                                        const userScale = isDesktop ? (banner.contentScaleDesktop ?? 100) / 100 : (banner.contentScaleMobile ?? 100) / 100;
+                                        const finalScale = basePreviewScale * userScale;
 
                                         return (
                                             <div className="relative w-full h-full">
@@ -370,12 +374,13 @@ export default function BannerClient() {
                                                     
                                                     {/* Content Box Simulation */}
                                                     <div 
-                                                        className="absolute left-1/2 -translate-x-1/2 bg-white/85 backdrop-blur-md rounded-2xl p-4 md:px-8 md:py-5 border border-white/20 shadow-2xl text-center transition-all duration-75 flex flex-col items-center pointer-events-none"
+                                                        className="absolute bg-white/60 backdrop-blur-md rounded-2xl p-4 md:px-8 md:py-5 border border-white/20 shadow-2xl text-center transition-all duration-75 flex flex-col items-center pointer-events-none"
                                                         style={{
-                                                            width: isDesktop ? 'fit-content' : '360px',
+                                                            width: 'max-content',
                                                             maxWidth: 'none',
                                                             top: `${contentY}%`,
-                                                            transform: `translate(-50%, -${contentY}%) scale(${isDesktop ? 0.6 : 0.65})`,
+                                                            left: `${contentX}%`,
+                                                            transform: `translate(-${contentX}%, -${contentY}%) scale(${finalScale})`,
                                                             transformOrigin: 'top center'
                                                         }}
                                                     >

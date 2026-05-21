@@ -57,7 +57,10 @@ export default function HeroCarousel({ banners = [], contentOverlay }) {
     const bgYDesktop = activeBanner.objectPositionDesktop ?? getFallbackPosition(activeBanner);
     const bgYMobile = activeBanner.objectPositionMobile ?? getFallbackPosition(activeBanner);
     const contentYDesktop = activeBanner.contentPositionDesktop ?? 50;
-    const contentYMobile = activeBanner.contentPositionMobile ?? 50; // Changed default mobile to 50 as well to match previous centered design if unset, but 80 is nice. Let's use 50 to avoid jumps if not set. Wait, in admin default was 80, but it's fine.
+    const contentYMobile = activeBanner.contentPositionMobile ?? 80;
+    const contentXDesktop = activeBanner.contentPositionXDesktop ?? 50;
+    const contentScaleDesktop = activeBanner.contentScaleDesktop ?? 100;
+    const contentScaleMobile = activeBanner.contentScaleMobile ?? 100;
 
     return (
         <div 
@@ -69,7 +72,10 @@ export default function HeroCarousel({ banners = [], contentOverlay }) {
                 '--active-bg-y-desktop': `${bgYDesktop}%`,
                 '--active-bg-y-mobile': `${bgYMobile}%`,
                 '--active-content-y-desktop': `${contentYDesktop}%`,
-                '--active-content-y-mobile': `${activeBanner.contentPositionMobile ?? 80}%`, // Actually 80 is better for mobile
+                '--active-content-y-mobile': `${contentYMobile}%`,
+                '--active-content-x-desktop': `${contentXDesktop}%`,
+                '--active-content-scale-desktop': contentScaleDesktop / 100,
+                '--active-content-scale-mobile': contentScaleMobile / 100,
             }}
         >
             <style dangerouslySetInnerHTML={{__html: `
@@ -77,16 +83,20 @@ export default function HeroCarousel({ banners = [], contentOverlay }) {
                     object-position: 50% var(--active-bg-y-mobile);
                 }
                 .hero-carousel-wrapper .banner-content {
+                    width: 100%;
                     top: var(--active-content-y-mobile);
-                    transform: translateY(calc(var(--active-content-y-mobile) * -1));
+                    left: 50%;
+                    transform: translate(-50%, calc(var(--active-content-y-mobile) * -1)) scale(var(--active-content-scale-mobile));
                 }
                 @media (min-width: 768px) {
                     .hero-carousel-wrapper .banner-media {
                         object-position: 50% var(--active-bg-y-desktop);
                     }
                     .hero-carousel-wrapper .banner-content {
+                        width: fit-content;
                         top: var(--active-content-y-desktop);
-                        transform: translateY(calc(var(--active-content-y-desktop) * -1));
+                        left: var(--active-content-x-desktop);
+                        transform: translate(calc(var(--active-content-x-desktop) * -1), calc(var(--active-content-y-desktop) * -1)) scale(var(--active-content-scale-desktop));
                     }
                 }
             `}} />
