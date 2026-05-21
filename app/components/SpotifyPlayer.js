@@ -95,7 +95,7 @@ export default function SpotifyPlayer({ trackUrl }) {
                                 <div className="text-xs text-gray-400 truncate" dir="ltr" style={{textAlign: 'left'}}>{trackData.artist}</div>
                                 <div className="flex items-center justify-start gap-1 mt-1.5 text-[10px] text-green-400 font-bold" dir="ltr">
                                     <Volume2 size={12} className="animate-pulse" />
-                                    <span>מנגן עכשיו...</span>
+                                    <span dir="rtl">מנגן עכשיו...</span>
                                 </div>
                             </div>
                             <audio 

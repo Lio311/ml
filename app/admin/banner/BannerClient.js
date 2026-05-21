@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
-import { Save, Image as ImageIcon, Video, AlignCenter, ArrowUp, ArrowDown, ArrowLeft, ArrowRight, Plus, Trash2 } from 'lucide-react';
+import { Save, Image as ImageIcon, Video, AlignCenter, ArrowUp, ArrowDown, ArrowLeft, ArrowRight, Plus, Trash2, Eye, EyeOff } from 'lucide-react';
 
 export default function BannerClient() {
     const [banners, setBanners] = useState([
@@ -132,13 +132,20 @@ export default function BannerClient() {
                             >
                                 <Trash2 size={18} />
                             </button>
+                            <button
+                                onClick={() => updateBanner(index, 'isHidden', !banner.isHidden)}
+                                className={`p-2 rounded-lg transition-colors ${banner.isHidden ? 'bg-orange-50 text-orange-600 hover:bg-orange-100' : 'bg-gray-100 hover:bg-gray-200'}`}
+                                title={banner.isHidden ? "הצג באנר (כרגע מוסתר)" : "הסתר באנר"}
+                            >
+                                {banner.isHidden ? <EyeOff size={18} /> : <Eye size={18} />}
+                            </button>
                         </div>
 
                         <div className="flex items-center gap-3 mb-6 border-b pb-4">
-                            <div className="w-8 h-8 rounded-full bg-blue-100 text-blue-700 flex items-center justify-center font-bold">
+                            <div className={`w-8 h-8 rounded-full flex items-center justify-center font-bold ${banner.isHidden ? 'bg-orange-100 text-orange-700' : 'bg-blue-100 text-blue-700'}`}>
                                 {index + 1}
                             </div>
-                            <h2 className="text-xl font-bold">באנר מספר {index + 1}</h2>
+                            <h2 className="text-xl font-bold">באנר מספר {index + 1} {banner.isHidden && <span className="text-sm font-normal text-orange-600 mr-2">(מוסתר)</span>}</h2>
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -205,7 +212,7 @@ export default function BannerClient() {
                             </div>
 
                             {/* Preview */}
-                            <div className="border border-gray-200 rounded-2xl overflow-hidden relative bg-gray-50 flex items-center justify-center min-h-[200px]" style={{ height: '300px' }}>
+                            <div className={`border border-gray-200 rounded-2xl overflow-hidden relative bg-gray-50 flex items-center justify-center min-h-[200px] transition-opacity ${banner.isHidden ? 'opacity-40' : 'opacity-100'}`} style={{ height: '300px' }}>
                                 <div className="absolute top-2 right-2 z-10 bg-black/70 text-white px-2 py-1 rounded-md text-[10px] font-bold">
                                     תצוגה מקדימה
                                 </div>

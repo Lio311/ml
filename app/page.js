@@ -110,9 +110,10 @@ export default async function Home() {
         if (bannerRes.rows.length > 0) {
           const bannerData = bannerRes.rows[0].value;
           if (Array.isArray(bannerData)) {
-            banners = bannerData.length > 0 ? bannerData : banners;
+            const activeBanners = bannerData.filter(b => !b.isHidden);
+            banners = activeBanners.length > 0 ? activeBanners : banners;
           } else {
-            banners = [bannerData];
+            banners = bannerData.isHidden ? banners : [bannerData];
           }
         }
       } catch (e) {
