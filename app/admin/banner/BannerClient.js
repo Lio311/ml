@@ -92,14 +92,6 @@ export default function BannerClient() {
 
     if (loading) return <div className="p-10 text-center">טוען...</div>;
 
-    const positions = [
-        { id: 'top', label: 'עליון', icon: <ArrowUp size={16} /> },
-        { id: 'center', label: 'מרכז', icon: <AlignCenter size={16} /> },
-        { id: 'bottom', label: 'תחתון', icon: <ArrowDown size={16} /> },
-        { id: 'left', label: 'שמאל', icon: <ArrowLeft size={16} /> },
-        { id: 'right', label: 'ימין', icon: <ArrowRight size={16} /> },
-    ];
-
     return (
         <div className="max-w-4xl mx-auto p-6" dir="rtl">
             <div className="flex justify-between items-center mb-8">
@@ -188,20 +180,26 @@ export default function BannerClient() {
                                 </div>
 
                                 <div>
-                                    <label className="block text-sm font-semibold text-gray-700 mb-3">מיקוד / חיתוך (Object Position)</label>
-                                    <div className="flex flex-wrap gap-2">
-                                        {positions.map(pos => (
-                                            <button
-                                                key={pos.id}
-                                                onClick={() => updateBanner(index, 'objectPosition', pos.id)}
-                                                className={`flex items-center gap-1 px-3 py-1.5 rounded-lg border text-sm transition-all ${
-                                                    banner.objectPosition === pos.id ? 'border-black bg-black text-white' : 'border-gray-200 hover:bg-gray-50'
-                                                }`}
-                                            >
-                                                {pos.icon}
-                                                <span>{pos.label}</span>
-                                            </button>
-                                        ))}
+                                    <label className="block text-sm font-semibold text-gray-700 mb-3">מיקוד אנכי של הסרטון/תמונה (למעלה ולמטה)</label>
+                                    <div className="px-2" dir="ltr">
+                                        <input 
+                                            type="range" 
+                                            min="0" 
+                                            max="100" 
+                                            value={
+                                                banner.objectPosition === 'top' ? 0 :
+                                                banner.objectPosition === 'bottom' ? 100 :
+                                                banner.objectPosition === 'center' || banner.objectPosition === 'left' || banner.objectPosition === 'right' ? 50 :
+                                                (banner.objectPosition && banner.objectPosition.includes('%')) ? parseInt(banner.objectPosition.split(' ')[1] || '50') : 50
+                                            }
+                                            onChange={(e) => updateBanner(index, 'objectPosition', `50% ${e.target.value}%`)}
+                                            className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
+                                        />
+                                        <div className="flex justify-between text-xs text-gray-500 mt-2 font-bold">
+                                            <span>מציג את הלמעלה (0%)</span>
+                                            <span>מרכז</span>
+                                            <span>מציג את הלמטה (100%)</span>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
