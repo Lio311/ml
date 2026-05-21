@@ -64,7 +64,7 @@ export async function PUT(req) {
             category, description, stock, top_notes, middle_notes, base_notes,
             in_lottery, show_on_home, name_he, brand_he, model_he, cost_price, original_size,
             seasons, perfumers, country, active,
-            discount_percentage, discount_sizes, discount_end_date
+            discount_percentage, discount_sizes, discount_end_date, spotify_track_url
         } = body;
 
         const client = await pool.connect();
