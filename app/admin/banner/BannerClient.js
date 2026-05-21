@@ -557,30 +557,30 @@ export default function BannerClient() {
                                                     {/* Content Box Simulation */}
                                                     {!banner.hideContentBox && (
                                                         <div 
-                                                            className={`absolute backdrop-blur-md rounded-2xl p-4 md:px-8 md:py-5 border border-white/20 shadow-2xl text-center transition-all duration-75 flex flex-col items-center cursor-move ${dragState.isDragging && dragState.type === 'box' ? 'ring-2 ring-blue-500 shadow-blue-500/50' : ''}`}
+                                                            className={`absolute backdrop-blur-md rounded-2xl ${isDesktop ? 'p-8 py-5' : 'p-4'} border border-white/20 shadow-2xl text-center transition-all duration-75 flex flex-col items-center cursor-move ${dragState.isDragging && dragState.type === 'box' ? 'ring-2 ring-blue-500 shadow-blue-500/50' : ''}`}
                                                             style={{
                                                                 width: isDesktop ? 'max-content' : '320px',
                                                                 maxWidth: 'none',
                                                                 top: `${contentY}%`,
                                                                 left: `${contentX}%`,
-                                                                transform: `translate(-${contentX}%, -${contentY}%) scale(${finalScale})`,
+                                                                transform: `translate(-${contentX}%, -${contentY}%) scale(${finalScale * (isDesktop ? 0.35 : 1)})`,
                                                                 transformOrigin: `${contentX}% ${contentY}%`,
                                                                 backgroundColor: `rgba(255, 255, 255, ${contentOpacity / 100})`,
                                                                 pointerEvents: 'auto'
                                                             }}
                                                             onMouseDown={(e) => handleDragStart(e, index, 'box', contentX, contentY)}
                                                         >
-                                                            <div className="text-xs md:text-sm font-assistant tracking-[0.2em] text-gray-800 font-bold mb-1 opacity-90 uppercase pointer-events-none">גלה את בושם החתימה שלך</div>
-                                                            <div className="font-handwriting text-[1.45rem] md:text-5xl font-bold text-black mb-2 md:mb-3 leading-tight tracking-wide pointer-events-none">
+                                                            <div className={`font-assistant tracking-[0.2em] text-gray-800 font-bold mb-1 opacity-90 uppercase pointer-events-none ${isDesktop ? 'text-sm' : 'text-xs'}`}>גלה את בושם החתימה שלך</div>
+                                                            <div className={`font-handwriting font-bold text-black ${isDesktop ? 'text-5xl mb-3' : 'text-[1.45rem] mb-2'} leading-tight tracking-wide pointer-events-none`}>
                                                                 <span className="block whitespace-nowrap">ml-tlv: דוגמיות בשמי נישה</span>
                                                                 <span className="block whitespace-nowrap">ודיקאנטים מקוריים</span>
                                                             </div>
-                                                            <div className="text-xs md:text-base font-assistant text-gray-800 mb-3 md:mb-4 opacity-80 max-w-[280px] md:max-w-[450px] leading-relaxed pointer-events-none whitespace-normal">
+                                                            <div className={`font-assistant text-gray-800 opacity-80 leading-relaxed pointer-events-none whitespace-normal ${isDesktop ? 'text-base mb-4 max-w-[450px]' : 'text-xs mb-3 max-w-[280px]'}`}>
                                                                 הדרך החכמה לגלות בשמי נישה יוקרתיים. מגוון דוגמיות יוקרה ודיקאנטים (דיקנטים) של הבשמים הנחשקים בעולם.
-                                                                <br className="hidden md:block" />
+                                                                <br className={isDesktop ? 'block' : 'hidden'} />
                                                                 הזמינו דוגמיות לפני רכישת בקבוק מלא.
                                                             </div>
-                                                            <div className="inline-block border border-black text-black px-6 py-2.5 text-xs md:text-sm font-bold tracking-widest uppercase rounded-full pointer-events-none">קנה עכשיו</div>
+                                                            <div className={`inline-block border border-black text-black px-6 py-2.5 font-bold tracking-widest uppercase rounded-full pointer-events-none ${isDesktop ? 'text-sm' : 'text-xs'}`}>קנה עכשיו</div>
                                                         </div>
                                                     )}
 
