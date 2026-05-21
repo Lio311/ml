@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { currentUser } from "@clerk/nextjs/server";
 import pool from "@/app/lib/db";
+import { revalidatePath } from "next/cache";
 
 export const dynamic = 'force-dynamic';
 
@@ -28,6 +29,16 @@ export async function POST(req) {
                 'UPDATE products SET description = $1 WHERE id = $2',
                 [rewrite, productId]
             );
+            
+            // Delete the obsolete review
+            await client.query(
+                'DELETE FROM product_desc_reviews WHERE product_id = $1',
+                [productId]
+            );
+            
+            revalidatePath('/');
+            revalidatePath('/catalog');
+            revalidatePath('/product/[slug]', 'page');
             
             return NextResponse.json({ success: true, message: 'Description updated successfully' });
         } finally {
