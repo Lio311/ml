@@ -103,9 +103,50 @@ export default function DescReviewPage() {
         }
     };
 
-    const handleApply = async (productId, rewrite) => {
-        if (!confirm("האם להחליף את התיאור הנוכחי בתיאור המשופר?")) return;
-        
+    const handleApply = (productId, rewrite) => {
+        toast((t) => (
+            <div className="flex flex-col gap-3 w-full" dir="rtl">
+                <div className="flex items-start gap-3">
+                    <div className="w-8 h-8 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center shrink-0">
+                        <Star className="w-4 h-4" />
+                    </div>
+                    <div>
+                        <h3 className="text-sm font-black text-gray-900 mt-1">החלפת תיאור</h3>
+                        <p className="text-xs text-gray-500 mt-1 leading-relaxed">
+                            האם להחליף את התיאור הנוכחי בתיאור המשופר?
+                        </p>
+                    </div>
+                </div>
+                <div className="flex items-center justify-end gap-2 mt-2">
+                    <button 
+                        onClick={() => toast.dismiss(t.id)}
+                        className="text-xs font-bold px-4 py-2 rounded-xl border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors"
+                    >
+                        ביטול
+                    </button>
+                    <button 
+                        onClick={() => {
+                            toast.dismiss(t.id);
+                            confirmApply(productId, rewrite);
+                        }}
+                        className="text-xs font-bold px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white transition-colors"
+                    >
+                        החלף תיאור
+                    </button>
+                </div>
+            </div>
+        ), {
+            duration: Infinity,
+            position: 'top-center',
+            style: {
+                minWidth: '320px',
+                padding: '16px',
+                borderRadius: '24px',
+            }
+        });
+    };
+
+    const confirmApply = async (productId, rewrite) => {
         toast.loading("מעדכן תיאור...", { id: 'apply-rewrite' });
         try {
             const res = await fetch('/api/admin/desc-review/apply', {
