@@ -8,8 +8,23 @@ export default function SpotifyTrackSelector({ value, onChange }) {
     const [results, setResults] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [isOpen, setIsOpen] = useState(false);
+    const [currentTrack, setCurrentTrack] = useState(null);
     const dropdownRef = useRef(null);
     const debounceRef = useRef(null);
+
+    // Fetch current track details if value exists
+    useEffect(() => {
+        if (value && value.includes('track/')) {
+            const trackId = value.split('track/')[1].split('?')[0];
+            fetch(`/api/admin/spotify-tracks?id=${trackId}`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.track) setCurrentTrack(data.track);
+                }).catch(e => console.error(e));
+        } else {
+            setCurrentTrack(null);
+        }
+    }, [value]);
 
     // Click outside to close
     useEffect(() => {
@@ -62,15 +77,7 @@ export default function SpotifyTrackSelector({ value, onChange }) {
 
     return (
         <div className="relative" ref={dropdownRef}>
-            <div className="flex flex-col gap-2">
-                <input
-                    value={value || ''}
-                    onChange={(e) => onChange(e.target.value)}
-                    className="border p-2 rounded w-full bg-white text-left font-mono text-sm"
-                    dir="ltr"
-                    placeholder="https://open.spotify.com/track/..."
-                />
-                
+            <div className="flex flex-col gap-3">
                 <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                         {isLoading ? <Loader2 className="w-4 h-4 text-gray-400 animate-spin" /> : <Search className="w-4 h-4 text-gray-400" />}
@@ -84,6 +91,19 @@ export default function SpotifyTrackSelector({ value, onChange }) {
                         placeholder="Search Spotify by track or artist name..."
                     />
                 </div>
+
+                {currentTrack && !isOpen && (
+                    <div className="flex items-center gap-3 p-3 bg-green-50 border border-green-200 rounded-lg" dir="ltr">
+                        <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center shrink-0">
+                            <Music className="w-4 h-4 text-green-600" />
+                        </div>
+                        <div className="flex-1 min-w-0">
+                            <div className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-0.5">Currently Selected</div>
+                            <div className="text-sm font-bold text-gray-900 truncate">{currentTrack.name}</div>
+                            <div className="text-xs text-gray-600 truncate">{currentTrack.artist}</div>
+                        </div>
+                    </div>
+                )}
             </div>
 
             {isOpen && results.length > 0 && (
