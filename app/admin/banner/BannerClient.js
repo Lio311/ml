@@ -191,8 +191,8 @@ export default function BannerClient() {
                                     <div className="px-2" dir="ltr">
                                         <input 
                                             type="range" 
-                                            min="0" 
-                                            max="100" 
+                                            min="-20" 
+                                            max="120" 
                                             value={
                                                 banner.objectPosition === 'top' ? 0 :
                                                 banner.objectPosition === 'bottom' ? 100 :
@@ -203,9 +203,9 @@ export default function BannerClient() {
                                             className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
                                         />
                                         <div className="flex justify-between text-xs text-gray-500 mt-2 font-bold">
-                                            <span>מציג את הלמעלה (0%)</span>
-                                            <span>מרכז</span>
-                                            <span>מציג את הלמטה (100%)</span>
+                                            <span>דחיפה למטה (-20%)</span>
+                                            <span>אמצע (50%)</span>
+                                            <span>דחיפה למעלה (120%)</span>
                                         </div>
                                     </div>
                                 </div>
@@ -266,12 +266,16 @@ export default function BannerClient() {
 
                                                 {/* Red frame overlay tracking the visible area */}
                                                 <div 
-                                                    className="absolute left-0 right-0 border-2 border-red-500 z-20 pointer-events-none shadow-[0_0_15px_rgba(239,68,68,0.5)] transition-all duration-75"
+                                                    className="absolute left-0 right-0 border-2 border-red-500 z-20 pointer-events-none shadow-[0_0_15px_rgba(239,68,68,0.5)] transition-all duration-75 flex flex-col"
                                                     style={{
                                                         top: `${topCutoff}%`,
                                                         bottom: `${bottomCutoff}%`
                                                     }}
                                                 >
+                                                    {/* Mobile Top Menu Overlay Simulation */}
+                                                    <div className="w-full h-[25%] bg-white/70 backdrop-blur-md border-b border-black/10 flex items-center justify-center relative z-10 shadow-sm">
+                                                        <span className="text-black/80 text-[10px] md:text-xs font-bold drop-shadow-md">שטח שמוסתר ע"י התפריט (בעיקר בנייד)</span>
+                                                    </div>
                                                     <div className="absolute inset-0 bg-red-500/10"></div>
                                                 </div>
                                             </div>
