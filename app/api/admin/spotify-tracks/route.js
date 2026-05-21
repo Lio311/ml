@@ -56,7 +56,12 @@ export async function GET(request) {
             return NextResponse.json({ tracks: [] });
         }
 
-        const res = await fetch(`https://api.spotify.com/v1/search?q=${encodeURIComponent(q)}&type=track&limit=20`, {
+        const searchUrl = new URL('https://api.spotify.com/v1/search');
+        searchUrl.searchParams.set('q', q);
+        searchUrl.searchParams.set('type', 'track');
+        searchUrl.searchParams.set('limit', '20');
+
+        const res = await fetch(searchUrl.toString(), {
             cache: "no-store",
             headers: { "Authorization": `Bearer ${token}` }
         });
