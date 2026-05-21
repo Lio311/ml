@@ -105,22 +105,17 @@ export default function DescReviewPage() {
 
     const handleApply = (productId, rewrite) => {
         toast((t) => (
-            <div className="flex flex-col gap-3 w-full" dir="rtl">
-                <div className="flex items-start gap-3">
-                    <div className="w-8 h-8 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center shrink-0">
-                        <Star className="w-4 h-4" />
-                    </div>
-                    <div>
-                        <h3 className="text-sm font-black text-gray-900 mt-1">החלפת תיאור</h3>
-                        <p className="text-xs text-gray-500 mt-1 leading-relaxed">
-                            האם להחליף את התיאור הנוכחי בתיאור המשופר?
-                        </p>
-                    </div>
+            <div className="flex flex-col gap-4 w-full" dir="rtl">
+                <div className="text-center w-full">
+                    <h3 className="text-base font-black text-gray-900">החלפת תיאור</h3>
+                    <p className="text-sm text-gray-500 mt-1.5 leading-relaxed">
+                        האם להחליף את התיאור הנוכחי בתיאור המשופר?
+                    </p>
                 </div>
-                <div className="flex items-center justify-end gap-2 mt-2">
+                <div className="flex items-center gap-3 w-full mt-1">
                     <button 
                         onClick={() => toast.dismiss(t.id)}
-                        className="text-xs font-bold px-4 py-2 rounded-xl border border-gray-200 text-gray-600 hover:bg-gray-50 transition-colors"
+                        className="flex-1 text-sm font-bold px-4 py-2.5 rounded-xl border-2 border-gray-100 text-gray-600 hover:bg-gray-50 hover:border-gray-200 transition-colors"
                     >
                         ביטול
                     </button>
@@ -129,7 +124,7 @@ export default function DescReviewPage() {
                             toast.dismiss(t.id);
                             confirmApply(productId, rewrite);
                         }}
-                        className="text-xs font-bold px-4 py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white transition-colors"
+                        className="flex-1 text-sm font-bold px-4 py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white transition-colors shadow-sm"
                     >
                         החלף תיאור
                     </button>
@@ -140,7 +135,7 @@ export default function DescReviewPage() {
             position: 'top-center',
             style: {
                 minWidth: '320px',
-                padding: '16px',
+                padding: '20px',
                 borderRadius: '24px',
             }
         });
