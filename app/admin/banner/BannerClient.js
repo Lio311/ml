@@ -370,26 +370,26 @@ export default function BannerClient() {
                                                     
                                                     {/* Content Box Simulation */}
                                                     <div 
-                                                        className="absolute left-1/2 -translate-x-1/2 bg-white/85 backdrop-blur-md rounded-2xl p-4 border border-white/20 shadow-2xl text-center transition-all duration-75 flex flex-col items-center pointer-events-none"
+                                                        className="absolute left-1/2 -translate-x-1/2 bg-white/85 backdrop-blur-md rounded-2xl p-4 md:px-8 md:py-5 border border-white/20 shadow-2xl text-center transition-all duration-75 flex flex-col items-center pointer-events-none"
                                                         style={{
-                                                            width: isDesktop ? 'fit-content' : '85%',
-                                                            minWidth: isDesktop ? '280px' : 'auto',
-                                                            maxWidth: isDesktop ? '400px' : '220px',
+                                                            width: isDesktop ? 'fit-content' : '360px',
+                                                            maxWidth: 'none',
                                                             top: `${contentY}%`,
-                                                            transform: `translate(-50%, -${contentY}%) scale(${isDesktop ? 0.7 : 0.8})`
+                                                            transform: `translate(-50%, -${contentY}%) scale(${isDesktop ? 0.6 : 0.65})`,
+                                                            transformOrigin: 'top center'
                                                         }}
                                                     >
-                                                        <div className="text-[9px] md:text-[10px] font-assistant tracking-[0.2em] text-gray-800 font-bold mb-1 opacity-90 uppercase">גלה את בושם החתימה שלך</div>
-                                                        <div className="font-handwriting text-[1.4rem] md:text-[1.8rem] font-bold text-black mb-1 leading-tight tracking-wide">
+                                                        <div className="text-xs md:text-sm font-assistant tracking-[0.2em] text-gray-800 font-bold mb-1 opacity-90 uppercase">גלה את בושם החתימה שלך</div>
+                                                        <div className="font-handwriting text-[1.45rem] md:text-5xl font-bold text-black mb-2 md:mb-3 leading-tight tracking-wide">
                                                             <span className="block whitespace-nowrap">ml-tlv: דוגמיות בשמי נישה</span>
                                                             <span className="block whitespace-nowrap">ודיקאנטים מקוריים</span>
                                                         </div>
-                                                        <div className="text-[8px] md:text-[10px] font-assistant text-gray-800 mb-3 opacity-80 max-w-[180px] md:max-w-[260px] leading-relaxed">
+                                                        <div className="text-xs md:text-base font-assistant text-gray-800 mb-3 md:mb-4 opacity-80 max-w-[280px] md:max-w-none leading-relaxed">
                                                             הדרך החכמה לגלות בשמי נישה יוקרתיים. מגוון דוגמיות יוקרה ודיקאנטים (דיקנטים) של הבשמים הנחשקים בעולם.
-                                                            <br/>
+                                                            <br className="hidden md:block" />
                                                             הזמינו דוגמיות לפני רכישת בקבוק מלא.
                                                         </div>
-                                                        <div className="inline-block border border-black text-black px-5 py-1.5 text-[8px] md:text-[10px] font-bold tracking-widest uppercase rounded-full">קנה עכשיו</div>
+                                                        <div className="inline-block border border-black text-black px-6 py-2.5 text-xs md:text-sm font-bold tracking-widest uppercase rounded-full">קנה עכשיו</div>
                                                     </div>
 
                                                     <div className="absolute inset-0 bg-red-500/5"></div>
