@@ -6,15 +6,37 @@ https.get('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/
     res.on('data', chunk => data += chunk);
     res.on('end', () => {
         const lines = data.split('\n');
-        const trackIds = [];
+        const tracks = [];
+        const usedIds = new Set();
+
         for (let i = 1; i < lines.length; i++) {
             if (!lines[i]) continue;
-            const columns = lines[i].split(',');
-            const trackId = columns[0].replace(/"/g, '');
-            if (trackId && trackId.length > 10) trackIds.push(trackId);
+            let row = [];
+            let inQuotes = false;
+            let current = '';
+            for(let c of lines[i]){
+                if(c === '"') inQuotes = !inQuotes;
+                else if(c === ',' && !inQuotes){ row.push(current); current = ''; }
+                else current += c;
+            }
+            row.push(current);
+
+            if (row.length > 20) {
+                const id = row[0];
+                if (!usedIds.has(id)) {
+                    usedIds.add(id);
+                    tracks.push({
+                        id: id,
+                        genre: row[9],
+                        danceability: parseFloat(row[11]),
+                        energy: parseFloat(row[12]),
+                        valence: parseFloat(row[20])
+                    });
+                }
+            }
         }
-        const uniqueTracks = [...new Set(trackIds)];
-        fs.writeFileSync('./app/lib/spotify_tracks.json', JSON.stringify(uniqueTracks));
-        console.log("Wrote", uniqueTracks.length, "tracks to JSON.");
+        
+        fs.writeFileSync('./app/lib/spotify_tracks.json', JSON.stringify(tracks));
+        console.log("Wrote", tracks.length, "tracks to JSON with metadata.");
     });
 });
