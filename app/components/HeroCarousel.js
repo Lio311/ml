@@ -63,10 +63,11 @@ export default function HeroCarousel({ banners = [], contentOverlay }) {
     const contentScaleMobile = activeBanner.contentScaleMobile ?? 100;
     const contentOpacityDesktop = activeBanner.contentOpacityDesktop ?? 60;
     const contentOpacityMobile = activeBanner.contentOpacityMobile ?? 60;
+    const hideContentBox = activeBanner.hideContentBox || false;
 
     return (
         <div 
-            className="relative w-full h-full overflow-hidden hero-carousel-wrapper"
+            className="hero-carousel-wrapper relative w-full h-full overflow-hidden"
             onTouchStart={onTouchStart}
             onTouchMove={onTouchMove}
             onTouchEnd={onTouchEnd}
@@ -80,6 +81,7 @@ export default function HeroCarousel({ banners = [], contentOverlay }) {
                 '--active-content-scale-mobile': contentScaleMobile / 100,
                 '--active-content-opacity-desktop': contentOpacityDesktop / 100,
                 '--active-content-opacity-mobile': contentOpacityMobile / 100,
+                '--active-content-display': hideContentBox ? 'none' : 'block',
             }}
         >
             <style dangerouslySetInnerHTML={{__html: `
@@ -87,6 +89,7 @@ export default function HeroCarousel({ banners = [], contentOverlay }) {
                     object-position: 50% var(--active-bg-y-mobile);
                 }
                 .hero-carousel-wrapper .banner-content {
+                    display: var(--active-content-display);
                     top: var(--active-content-y-mobile);
                     left: 50%;
                     transform: translate(-50%, calc(var(--active-content-y-mobile) * -1)) scale(var(--active-content-scale-mobile));
@@ -100,6 +103,7 @@ export default function HeroCarousel({ banners = [], contentOverlay }) {
                         object-position: 50% var(--active-bg-y-desktop);
                     }
                     .hero-carousel-wrapper .banner-content {
+                        display: var(--active-content-display);
                         top: var(--active-content-y-desktop);
                         left: var(--active-content-x-desktop);
                         transform: translate(calc(var(--active-content-x-desktop) * -1), calc(var(--active-content-y-desktop) * -1)) scale(var(--active-content-scale-desktop));

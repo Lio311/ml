@@ -240,6 +240,15 @@ export default function BannerClient() {
                                             <span>תמונה</span>
                                         </button>
                                     </div>
+                                    <label className="flex items-center gap-2 mt-4 cursor-pointer w-fit">
+                                        <input
+                                            type="checkbox"
+                                            checked={banner.hideContentBox || false}
+                                            onChange={(e) => updateBanner(index, 'hideContentBox', e.target.checked)}
+                                            className="w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                                        />
+                                        <span className="text-sm font-semibold text-gray-700">הסתר קובייה לבנה (טקסט) מהבאנר הזה</span>
+                                    </label>
                                 </div>
 
                                 <div>
@@ -546,32 +555,34 @@ export default function BannerClient() {
                                                     </div>
                                                     
                                                     {/* Content Box Simulation */}
-                                                    <div 
-                                                        className={`absolute backdrop-blur-md rounded-2xl p-4 md:px-8 md:py-5 border border-white/20 shadow-2xl text-center transition-all duration-75 flex flex-col items-center cursor-move ${dragState.isDragging && dragState.type === 'box' ? 'ring-2 ring-blue-500 shadow-blue-500/50' : ''}`}
-                                                        style={{
-                                                            width: isDesktop ? 'max-content' : '320px',
-                                                            maxWidth: 'none',
-                                                            top: `${contentY}%`,
-                                                            left: `${contentX}%`,
-                                                            transform: `translate(-${contentX}%, -${contentY}%) scale(${finalScale})`,
-                                                            transformOrigin: `${contentX}% ${contentY}%`,
-                                                            backgroundColor: `rgba(255, 255, 255, ${contentOpacity / 100})`,
-                                                            pointerEvents: 'auto'
-                                                        }}
-                                                        onMouseDown={(e) => handleDragStart(e, index, 'box', contentX, contentY)}
-                                                    >
-                                                        <div className="text-xs md:text-sm font-assistant tracking-[0.2em] text-gray-800 font-bold mb-1 opacity-90 uppercase pointer-events-none">גלה את בושם החתימה שלך</div>
-                                                        <div className="font-handwriting text-[1.45rem] md:text-5xl font-bold text-black mb-2 md:mb-3 leading-tight tracking-wide pointer-events-none">
-                                                            <span className="block whitespace-nowrap">ml-tlv: דוגמיות בשמי נישה</span>
-                                                            <span className="block whitespace-nowrap">ודיקאנטים מקוריים</span>
+                                                    {!banner.hideContentBox && (
+                                                        <div 
+                                                            className={`absolute backdrop-blur-md rounded-2xl p-4 md:px-8 md:py-5 border border-white/20 shadow-2xl text-center transition-all duration-75 flex flex-col items-center cursor-move ${dragState.isDragging && dragState.type === 'box' ? 'ring-2 ring-blue-500 shadow-blue-500/50' : ''}`}
+                                                            style={{
+                                                                width: isDesktop ? 'max-content' : '320px',
+                                                                maxWidth: 'none',
+                                                                top: `${contentY}%`,
+                                                                left: `${contentX}%`,
+                                                                transform: `translate(-${contentX}%, -${contentY}%) scale(${finalScale})`,
+                                                                transformOrigin: `${contentX}% ${contentY}%`,
+                                                                backgroundColor: `rgba(255, 255, 255, ${contentOpacity / 100})`,
+                                                                pointerEvents: 'auto'
+                                                            }}
+                                                            onMouseDown={(e) => handleDragStart(e, index, 'box', contentX, contentY)}
+                                                        >
+                                                            <div className="text-xs md:text-sm font-assistant tracking-[0.2em] text-gray-800 font-bold mb-1 opacity-90 uppercase pointer-events-none">גלה את בושם החתימה שלך</div>
+                                                            <div className="font-handwriting text-[1.45rem] md:text-5xl font-bold text-black mb-2 md:mb-3 leading-tight tracking-wide pointer-events-none">
+                                                                <span className="block whitespace-nowrap">ml-tlv: דוגמיות בשמי נישה</span>
+                                                                <span className="block whitespace-nowrap">ודיקאנטים מקוריים</span>
+                                                            </div>
+                                                            <div className="text-xs md:text-base font-assistant text-gray-800 mb-3 md:mb-4 opacity-80 max-w-[280px] md:max-w-[450px] leading-relaxed pointer-events-none whitespace-normal">
+                                                                הדרך החכמה לגלות בשמי נישה יוקרתיים. מגוון דוגמיות יוקרה ודיקאנטים (דיקנטים) של הבשמים הנחשקים בעולם.
+                                                                <br className="hidden md:block" />
+                                                                הזמינו דוגמיות לפני רכישת בקבוק מלא.
+                                                            </div>
+                                                            <div className="inline-block border border-black text-black px-6 py-2.5 text-xs md:text-sm font-bold tracking-widest uppercase rounded-full pointer-events-none">קנה עכשיו</div>
                                                         </div>
-                                                        <div className="text-xs md:text-base font-assistant text-gray-800 mb-3 md:mb-4 opacity-80 max-w-[280px] md:max-w-[450px] leading-relaxed pointer-events-none whitespace-normal">
-                                                            הדרך החכמה לגלות בשמי נישה יוקרתיים. מגוון דוגמיות יוקרה ודיקאנטים (דיקנטים) של הבשמים הנחשקים בעולם.
-                                                            <br className="hidden md:block" />
-                                                            הזמינו דוגמיות לפני רכישת בקבוק מלא.
-                                                        </div>
-                                                        <div className="inline-block border border-black text-black px-6 py-2.5 text-xs md:text-sm font-bold tracking-widest uppercase rounded-full pointer-events-none">קנה עכשיו</div>
-                                                    </div>
+                                                    )}
 
                                                     <div className="absolute inset-0 bg-red-500/5 pointer-events-none"></div>
                                                 </div>
