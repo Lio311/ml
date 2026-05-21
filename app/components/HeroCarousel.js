@@ -61,6 +61,8 @@ export default function HeroCarousel({ banners = [], contentOverlay }) {
     const contentXDesktop = activeBanner.contentPositionXDesktop ?? 50;
     const contentScaleDesktop = activeBanner.contentScaleDesktop ?? 100;
     const contentScaleMobile = activeBanner.contentScaleMobile ?? 100;
+    const contentOpacityDesktop = activeBanner.contentOpacityDesktop ?? 60;
+    const contentOpacityMobile = activeBanner.contentOpacityMobile ?? 60;
 
     return (
         <div 
@@ -76,6 +78,8 @@ export default function HeroCarousel({ banners = [], contentOverlay }) {
                 '--active-content-x-desktop': `${contentXDesktop}%`,
                 '--active-content-scale-desktop': contentScaleDesktop / 100,
                 '--active-content-scale-mobile': contentScaleMobile / 100,
+                '--active-content-opacity-desktop': contentOpacityDesktop / 100,
+                '--active-content-opacity-mobile': contentOpacityMobile / 100,
             }}
         >
             <style dangerouslySetInnerHTML={{__html: `
@@ -87,6 +91,10 @@ export default function HeroCarousel({ banners = [], contentOverlay }) {
                     top: var(--active-content-y-mobile);
                     left: 50%;
                     transform: translate(-50%, calc(var(--active-content-y-mobile) * -1)) scale(var(--active-content-scale-mobile));
+                    transform-origin: 50% var(--active-content-y-mobile);
+                }
+                .hero-carousel-wrapper .content-box-bg {
+                    background-color: rgba(255, 255, 255, var(--active-content-opacity-mobile));
                 }
                 @media (min-width: 768px) {
                     .hero-carousel-wrapper .banner-media {
@@ -97,6 +105,10 @@ export default function HeroCarousel({ banners = [], contentOverlay }) {
                         top: var(--active-content-y-desktop);
                         left: var(--active-content-x-desktop);
                         transform: translate(calc(var(--active-content-x-desktop) * -1), calc(var(--active-content-y-desktop) * -1)) scale(var(--active-content-scale-desktop));
+                        transform-origin: var(--active-content-x-desktop) var(--active-content-y-desktop);
+                    }
+                    .hero-carousel-wrapper .content-box-bg {
+                        background-color: rgba(255, 255, 255, var(--active-content-opacity-desktop));
                     }
                 }
             `}} />

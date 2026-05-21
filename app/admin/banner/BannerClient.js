@@ -14,6 +14,71 @@ export default function BannerClient() {
     ]);
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
+    const [dragState, setDragState] = useState({ isDragging: false, index: null, type: null, startX: 0, startY: 0, initialValX: 0, initialValY: 0 });
+
+    useEffect(() => {
+        const handleMouseMove = (e) => {
+            if (!dragState.isDragging) return;
+            const { index, type, startX, startY, initialValX, initialValY } = dragState;
+            const banner = banners[index];
+            const isDesktop = (!banner.activeTab || banner.activeTab === 'desktop');
+            
+            const height = isDesktop ? 300 : 500;
+            const width = isDesktop ? 600 : 280; 
+
+            const deltaY = ((e.clientY - startY) / height) * 100;
+            const deltaX = ((e.clientX - startX) / width) * 100;
+            
+            if (type === 'box') {
+                if (isDesktop) {
+                    let newY = Math.min(100, Math.max(0, initialValY + deltaY));
+                    let newX = Math.min(100, Math.max(0, initialValX + deltaX));
+                    updateBanner(index, 'contentPositionDesktop', Math.round(newY));
+                    updateBanner(index, 'contentPositionXDesktop', Math.round(newX));
+                } else {
+                    let newY = Math.min(100, Math.max(0, initialValY + deltaY));
+                    updateBanner(index, 'contentPositionMobile', Math.round(newY));
+                }
+            } else if (type === 'bg') {
+                const bgDelta = -deltaY;
+                let newPos = Math.min(120, Math.max(-20, initialValY + bgDelta));
+                if (isDesktop) {
+                    updateBanner(index, 'objectPositionDesktop', Math.round(newPos));
+                } else {
+                    updateBanner(index, 'objectPositionMobile', Math.round(newPos));
+                }
+            }
+        };
+
+        const handleMouseUp = () => {
+            if (dragState.isDragging) {
+                setDragState(prev => ({ ...prev, isDragging: false }));
+            }
+        };
+
+        if (dragState.isDragging) {
+            window.addEventListener('mousemove', handleMouseMove);
+            window.addEventListener('mouseup', handleMouseUp);
+        }
+
+        return () => {
+            window.removeEventListener('mousemove', handleMouseMove);
+            window.removeEventListener('mouseup', handleMouseUp);
+        };
+    }, [dragState, banners]);
+
+    const handleDragStart = (e, index, type, initialValX, initialValY) => {
+        e.preventDefault();
+        setDragState({
+            isDragging: true,
+            index,
+            type,
+            startX: e.clientX,
+            startY: e.clientY,
+            initialValX,
+            initialValY
+        });
+    };
 
     useEffect(() => {
         fetch('/api/admin/settings/home_banner')
@@ -286,6 +351,23 @@ export default function BannerClient() {
                                                 </div>
                                             </div>
                                         </div>
+                                        <div>
+                                            <label className="block text-sm font-semibold text-gray-700 mb-2">שקיפות הקובייה (מחשב)</label>
+                                            <div className="px-2" dir="ltr">
+                                                <input 
+                                                    type="range" 
+                                                    min="0" 
+                                                    max="100" 
+                                                    value={banner.contentOpacityDesktop ?? 60}
+                                                    onChange={(e) => updateBanner(index, 'contentOpacityDesktop', parseInt(e.target.value))}
+                                                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-teal-600"
+                                                />
+                                                <div className="flex justify-between text-xs text-gray-500 mt-1 font-bold">
+                                                    <span>שקוף (0%)</span>
+                                                    <span>אטום (100%)</span>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </>
                                 ) : (
                                     <>
@@ -346,6 +428,23 @@ export default function BannerClient() {
                                                 </div>
                                             </div>
                                         </div>
+                                        <div>
+                                            <label className="block text-sm font-semibold text-gray-700 mb-2">שקיפות הקובייה (מובייל)</label>
+                                            <div className="px-2" dir="ltr">
+                                                <input 
+                                                    type="range" 
+                                                    min="0" 
+                                                    max="100" 
+                                                    value={banner.contentOpacityMobile ?? 60}
+                                                    onChange={(e) => updateBanner(index, 'contentOpacityMobile', parseInt(e.target.value))}
+                                                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-teal-600"
+                                                />
+                                                <div className="flex justify-between text-xs text-gray-500 mt-1 font-bold">
+                                                    <span>שקוף (0%)</span>
+                                                    <span>אטום (100%)</span>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </>
                                 )}
                             </div>
@@ -378,40 +477,51 @@ export default function BannerClient() {
                                         const userScale = isDesktop ? (banner.contentScaleDesktop ?? 100) / 100 : (banner.contentScaleMobile ?? 100) / 100;
                                         const finalScale = basePreviewScale * userScale;
 
+                                        const contentOpacity = isDesktop ? (banner.contentOpacityDesktop ?? 60) : (banner.contentOpacityMobile ?? 60);
+
                                         return (
                                             <div className="relative w-full h-full">
                                                 {/* Background layer (dimmed out) */}
-                                                {banner.type === 'video' ? (
-                                                    <video
-                                                        src={banner.url}
-                                                        autoPlay loop muted playsInline
-                                                        className="absolute inset-0 w-full h-full object-cover opacity-30 grayscale"
-                                                    />
-                                                ) : (
-                                                    <img
-                                                        src={banner.url}
-                                                        alt="Preview Background"
-                                                        className="absolute inset-0 w-full h-full object-cover opacity-30 grayscale"
-                                                        onError={(e) => { e.target.src = 'https://via.placeholder.com/1200x400?text=Image+Not+Found' }}
-                                                    />
-                                                )}
+                                                <div 
+                                                    className={`absolute inset-0 w-full h-full cursor-ns-resize ${dragState.isDragging && dragState.type === 'bg' ? 'opacity-80' : ''}`}
+                                                    onMouseDown={(e) => handleDragStart(e, index, 'bg', 0, yPercent)}
+                                                >
+                                                    {banner.type === 'video' ? (
+                                                        <video
+                                                            src={banner.url}
+                                                            autoPlay loop muted playsInline
+                                                            className="w-full h-full object-cover opacity-30 grayscale pointer-events-none"
+                                                        />
+                                                    ) : (
+                                                        <img
+                                                            src={banner.url}
+                                                            alt="Preview Background"
+                                                            className="w-full h-full object-cover opacity-30 grayscale pointer-events-none"
+                                                            onError={(e) => { e.target.src = 'https://via.placeholder.com/1200x400?text=Image+Not+Found' }}
+                                                        />
+                                                    )}
+                                                </div>
 
                                                 {/* Foreground layer (bright, exactly clipped to visible area) */}
-                                                {banner.type === 'video' ? (
-                                                    <video
-                                                        src={banner.url}
-                                                        autoPlay loop muted playsInline
-                                                        className="absolute inset-0 w-full h-full object-cover"
-                                                        style={{ clipPath: `inset(${topCutoff}% 0 ${bottomCutoff}% 0)` }}
-                                                    />
-                                                ) : (
-                                                    <img
-                                                        src={banner.url}
-                                                        alt="Preview Foreground"
-                                                        className="absolute inset-0 w-full h-full object-cover"
-                                                        style={{ clipPath: `inset(${topCutoff}% 0 ${bottomCutoff}% 0)` }}
-                                                    />
-                                                )}
+                                                <div 
+                                                    className="absolute inset-0 w-full h-full cursor-ns-resize"
+                                                    style={{ clipPath: `inset(${topCutoff}% 0 ${bottomCutoff}% 0)` }}
+                                                    onMouseDown={(e) => handleDragStart(e, index, 'bg', 0, yPercent)}
+                                                >
+                                                    {banner.type === 'video' ? (
+                                                        <video
+                                                            src={banner.url}
+                                                            autoPlay loop muted playsInline
+                                                            className="w-full h-full object-cover pointer-events-none"
+                                                        />
+                                                    ) : (
+                                                        <img
+                                                            src={banner.url}
+                                                            alt="Preview Foreground"
+                                                            className="w-full h-full object-cover pointer-events-none"
+                                                        />
+                                                    )}
+                                                </div>
 
                                                 {/* Red frame overlay tracking the visible area */}
                                                 <div 
@@ -428,30 +538,33 @@ export default function BannerClient() {
                                                     
                                                     {/* Content Box Simulation */}
                                                     <div 
-                                                        className="absolute bg-white/60 backdrop-blur-md rounded-2xl p-4 md:px-8 md:py-5 border border-white/20 shadow-2xl text-center transition-all duration-75 flex flex-col items-center pointer-events-none"
+                                                        className={`absolute backdrop-blur-md rounded-2xl p-4 md:px-8 md:py-5 border border-white/20 shadow-2xl text-center transition-all duration-75 flex flex-col items-center cursor-move ${dragState.isDragging && dragState.type === 'box' ? 'ring-2 ring-blue-500 shadow-blue-500/50' : ''}`}
                                                         style={{
-                                                            width: isDesktop ? 'fit-content' : '320px',
+                                                            width: isDesktop ? 'max-content' : '320px',
                                                             maxWidth: 'none',
                                                             top: `${contentY}%`,
                                                             left: `${contentX}%`,
                                                             transform: `translate(-${contentX}%, -${contentY}%) scale(${finalScale})`,
-                                                            transformOrigin: 'top center'
+                                                            transformOrigin: `${contentX}% ${contentY}%`,
+                                                            backgroundColor: `rgba(255, 255, 255, ${contentOpacity / 100})`,
+                                                            pointerEvents: 'auto'
                                                         }}
+                                                        onMouseDown={(e) => handleDragStart(e, index, 'box', contentX, contentY)}
                                                     >
-                                                        <div className="text-xs md:text-sm font-assistant tracking-[0.2em] text-gray-800 font-bold mb-1 opacity-90 uppercase">גלה את בושם החתימה שלך</div>
-                                                        <div className="font-handwriting text-[1.45rem] md:text-5xl font-bold text-black mb-2 md:mb-3 leading-tight tracking-wide">
-                                                            <span className="block">ml-tlv: דוגמיות בשמי נישה</span>
-                                                            <span className="block">ודיקאנטים מקוריים</span>
+                                                        <div className="text-xs md:text-sm font-assistant tracking-[0.2em] text-gray-800 font-bold mb-1 opacity-90 uppercase pointer-events-none">גלה את בושם החתימה שלך</div>
+                                                        <div className="font-handwriting text-[1.45rem] md:text-5xl font-bold text-black mb-2 md:mb-3 leading-tight tracking-wide pointer-events-none">
+                                                            <span className="block whitespace-nowrap">ml-tlv: דוגמיות בשמי נישה</span>
+                                                            <span className="block whitespace-nowrap">ודיקאנטים מקוריים</span>
                                                         </div>
-                                                        <div className="text-xs md:text-base font-assistant text-gray-800 mb-3 md:mb-4 opacity-80 max-w-[280px] md:max-w-none leading-relaxed">
+                                                        <div className="text-xs md:text-base font-assistant text-gray-800 mb-3 md:mb-4 opacity-80 max-w-[280px] md:max-w-[450px] leading-relaxed pointer-events-none whitespace-normal">
                                                             הדרך החכמה לגלות בשמי נישה יוקרתיים. מגוון דוגמיות יוקרה ודיקאנטים (דיקנטים) של הבשמים הנחשקים בעולם.
                                                             <br className="hidden md:block" />
                                                             הזמינו דוגמיות לפני רכישת בקבוק מלא.
                                                         </div>
-                                                        <div className="inline-block border border-black text-black px-6 py-2.5 text-xs md:text-sm font-bold tracking-widest uppercase rounded-full">קנה עכשיו</div>
+                                                        <div className="inline-block border border-black text-black px-6 py-2.5 text-xs md:text-sm font-bold tracking-widest uppercase rounded-full pointer-events-none">קנה עכשיו</div>
                                                     </div>
 
-                                                    <div className="absolute inset-0 bg-red-500/5"></div>
+                                                    <div className="absolute inset-0 bg-red-500/5 pointer-events-none"></div>
                                                 </div>
                                             </div>
                                         );
