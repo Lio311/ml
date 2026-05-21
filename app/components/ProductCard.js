@@ -120,7 +120,7 @@ export default function ProductCard({ product }) {
 
             {isDiscountActive(product) && (
                 <div className="absolute top-2 start-2 z-20 text-[10px] leading-3 font-black bg-green-600 text-white px-2 py-1 rounded shadow-sm text-center animate-pulse cursor-default">
-                    {locale === 'he' ? `${product.discount_percentage}% הנחה` : `${product.discount_percentage}% OFF`}
+                    {locale === 'he' ? `${Math.round(product.discount_percentage)}% הנחה` : `${Math.round(product.discount_percentage)}% OFF`}
                 </div>
             )}
 

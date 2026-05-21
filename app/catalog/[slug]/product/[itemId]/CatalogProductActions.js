@@ -138,7 +138,7 @@ export default function CatalogProductActions({ item, slug }) {
                 <div className="bg-red-50 border-s-4 border-red-600 p-3 rounded-r-lg flex items-center justify-between">
                     <div>
                         <span className="block text-[10px] font-black uppercase text-red-600 leading-none mb-1">{t('common.special_offer') || 'מבצע מיוחד'}</span>
-                        <span className="text-sm font-bold text-gray-900">{item.discount_percentage}% {t('common.discount') || 'הנחה'}</span>
+                        <span className="text-sm font-bold text-gray-900">{Math.round(item.discount_percentage)}% {t('common.discount') || 'הנחה'}</span>
                     </div>
                     <span className="text-2xl">🔥</span>
                 </div>
