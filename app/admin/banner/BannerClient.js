@@ -211,33 +211,74 @@ export default function BannerClient() {
                                 </div>
                             </div>
 
-                            {/* Preview */}
-                            <div className={`border border-gray-200 rounded-2xl overflow-hidden relative bg-gray-50 flex items-center justify-center min-h-[200px] transition-opacity ${banner.isHidden ? 'opacity-40' : 'opacity-100'}`} style={{ height: '300px' }}>
-                                <div className="absolute top-2 right-2 z-10 bg-black/70 text-white px-2 py-1 rounded-md text-[10px] font-bold">
-                                    תצוגה מקדימה
+                            {/* Advanced Cropper Preview */}
+                            <div className={`border border-gray-200 rounded-2xl overflow-hidden relative bg-black flex items-center justify-center min-h-[300px] transition-opacity ${banner.isHidden ? 'opacity-40' : 'opacity-100'}`} style={{ height: '300px' }}>
+                                <div className="absolute top-2 right-2 z-30 bg-red-600 text-white px-2 py-1 rounded-md text-[10px] font-bold shadow-md">
+                                    אזור גלוי באתר (מסגרת אדומה)
                                 </div>
+                                
                                 {banner.url ? (
-                                    banner.type === 'video' ? (
-                                        <video
-                                            src={banner.url}
-                                            autoPlay
-                                            loop
-                                            muted
-                                            playsInline
-                                            className="w-full h-full object-cover"
-                                            style={{ objectPosition: banner.objectPosition }}
-                                        />
-                                    ) : (
-                                        <img 
-                                            src={banner.url}
-                                            alt="Preview"
-                                            className="w-full h-full object-cover"
-                                            style={{ objectPosition: banner.objectPosition }}
-                                            onError={(e) => { e.target.src = 'https://via.placeholder.com/1200x400?text=Image+Not+Found' }}
-                                        />
-                                    )
+                                    (() => {
+                                        const yPercent = banner.objectPosition === 'top' ? 0 :
+                                                         banner.objectPosition === 'bottom' ? 100 :
+                                                         banner.objectPosition === 'center' || banner.objectPosition === 'left' || banner.objectPosition === 'right' ? 50 :
+                                                         (banner.objectPosition && banner.objectPosition.includes('%')) ? parseInt(banner.objectPosition.split(' ')[1] || '50') : 50;
+                                        
+                                        // The cutoff amount (e.g. 30% of height is cut off in total based on container aspect ratio vs desktop aspect ratio)
+                                        const totalCutoff = 30;
+                                        const topCutoff = (yPercent / 100) * totalCutoff;
+                                        const bottomCutoff = totalCutoff - topCutoff;
+
+                                        return (
+                                            <div className="relative w-full h-full">
+                                                {/* Background layer (dimmed out) */}
+                                                {banner.type === 'video' ? (
+                                                    <video
+                                                        src={banner.url}
+                                                        autoPlay loop muted playsInline
+                                                        className="absolute inset-0 w-full h-full object-cover opacity-30 grayscale"
+                                                    />
+                                                ) : (
+                                                    <img
+                                                        src={banner.url}
+                                                        alt="Preview Background"
+                                                        className="absolute inset-0 w-full h-full object-cover opacity-30 grayscale"
+                                                        onError={(e) => { e.target.src = 'https://via.placeholder.com/1200x400?text=Image+Not+Found' }}
+                                                    />
+                                                )}
+
+                                                {/* Foreground layer (bright, exactly clipped to visible area) */}
+                                                {banner.type === 'video' ? (
+                                                    <video
+                                                        src={banner.url}
+                                                        autoPlay loop muted playsInline
+                                                        className="absolute inset-0 w-full h-full object-cover"
+                                                        style={{ clipPath: `inset(${topCutoff}% 0 ${bottomCutoff}% 0)` }}
+                                                    />
+                                                ) : (
+                                                    <img
+                                                        src={banner.url}
+                                                        alt="Preview Foreground"
+                                                        className="absolute inset-0 w-full h-full object-cover"
+                                                        style={{ clipPath: `inset(${topCutoff}% 0 ${bottomCutoff}% 0)` }}
+                                                    />
+                                                )}
+
+                                                {/* Red frame overlay tracking the visible area */}
+                                                <div 
+                                                    className="absolute left-0 right-0 border-2 border-red-500 z-20 pointer-events-none shadow-[0_0_15px_rgba(239,68,68,0.5)] transition-all duration-75"
+                                                    style={{
+                                                        top: `${topCutoff}%`,
+                                                        bottom: `${bottomCutoff}%`
+                                                    }}
+                                                >
+                                                    <div className="absolute inset-0 bg-red-500/10"></div>
+                                                </div>
+                                            </div>
+                                        );
+                                    })()
                                 ) : (
-                                    <div className="text-gray-400">לא הוזן קישור להצגה</div>
+                                    <div className="text-gray-400 z-10">לא הוזן קישור להצגה</div>
                                 )}
                             </div>
                         </div>
