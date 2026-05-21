@@ -86,7 +86,7 @@ Return ONLY the EXACT Track ID from the list. Do not write anything else.`;
             }
         }
 
-        return NextResponse.json({ success: true, updatedCount, nextStart: start + parseInt(limit), total: products.length });
+        return NextResponse.json({ success: true, updatedCount, nextStart: start + parseInt(limit), total: products.length, debugInfo });
 
     } catch(e) {
         console.error("FATAL ERROR IN FIX:", e);
