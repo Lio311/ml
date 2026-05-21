@@ -24,13 +24,13 @@ export default function SpotifyPlayer({ trackUrl }) {
                         e.stopPropagation();
                         setIsExpanded(true);
                     }}
-                    className="flex items-center justify-center bg-black/80 hover:bg-black text-white p-3 rounded-full shadow-lg transition-all transform hover:scale-110"
+                    className="w-10 h-10 flex items-center justify-center bg-black/80 hover:bg-black text-white rounded-full shadow-lg transition-all transform hover:scale-110"
                     title="שמע את האווירה"
                 >
                     <Music size={20} className="animate-pulse" />
                 </button>
             ) : (
-                <div className="absolute top-0 end-0 bg-black/90 p-2 rounded-xl shadow-2xl w-64 md:w-80 animate-in fade-in zoom-in duration-200 z-50">
+                <div className="absolute top-0 end-0 bg-black/90 p-2 rounded-xl shadow-2xl w-[320px] md:w-[360px] animate-in fade-in zoom-in duration-200 z-50">
                     <button
                         onClick={(e) => {
                             e.preventDefault();
