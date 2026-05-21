@@ -8,6 +8,7 @@ import BrandCarousel from "./components/BrandCarousel";
 import HomeSEOContent from "./components/HomeSEOContent";
 import HomeClient from "./components/HomeClient";
 import TrustSection from "./components/TrustSection";
+import HeroCarousel from "./components/HeroCarousel";
 import { withClient } from "./lib/db";
 import { cookies } from 'next/headers';
 import he from './data/locales/he.json';
@@ -53,7 +54,7 @@ export default async function Home() {
   let newArrivals = [];
   let topCatalogs = [];
   let stats = { brands: 0, products: 0, samples: 500 };
-  let banner = { type: 'video', url: '/hero-video.mp4', objectPosition: 'center' };
+  let banners = [{ type: 'video', url: '/hero-video.mp4', objectPosition: 'center' }];
 
   try {
     await withClient(async (client) => {
@@ -107,7 +108,12 @@ export default async function Home() {
       try {
         const bannerRes = await client.query("SELECT value FROM site_settings WHERE key = 'home_banner'");
         if (bannerRes.rows.length > 0) {
-          banner = bannerRes.rows[0].value;
+          const bannerData = bannerRes.rows[0].value;
+          if (Array.isArray(bannerData)) {
+            banners = bannerData.length > 0 ? bannerData : banners;
+          } else {
+            banners = [bannerData];
+          }
         }
       } catch (e) {
         console.error("Banner fetch error", e);
@@ -189,27 +195,7 @@ export default async function Home() {
       {/* Hero Section - Tall and pulled to top on mobile */}
       <section className="relative h-[65vh] md:h-[82vh] w-full m-0 p-0 overflow-hidden bg-white block !-mt-20 md:mt-0">
         <div className="absolute inset-0 w-full h-full overflow-hidden">
-          {banner.type === 'video' ? (
-            <video
-              autoPlay
-              loop
-              muted
-              playsInline
-              preload="auto"
-              fetchpriority="high"
-              className="absolute inset-0 w-full h-full object-cover scale-[1.05]"
-              style={{ objectPosition: banner.objectPosition || 'center' }}
-            >
-              <source src={banner.url || "/hero-video.mp4"} type="video/mp4" />
-            </video>
-          ) : (
-            <img
-              src={banner.url || "/hero-video.mp4"}
-              alt="ml-tlv Home Banner"
-              className="absolute inset-0 w-full h-full object-cover scale-[1.05]"
-              style={{ objectPosition: banner.objectPosition || 'center' }}
-            />
-          )}
+          <HeroCarousel banners={banners} />
         </div>
 
         <div className="absolute inset-0 z-10 container mx-auto flex items-center md:items-start justify-center pt-52 pb-10 md:pt-64 md:pb-0 px-6 md:px-12">
