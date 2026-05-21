@@ -208,7 +208,7 @@ export default function BannerClient() {
                                 {(!banner.activeTab || banner.activeTab === 'desktop') ? (
                                     <>
                                         <div>
-                                            <label className="block text-sm font-semibold text-gray-700 mb-3">מיקוד אנכי של הסרטון/תמונה (מחשב)</label>
+                                            <label className="block text-sm font-semibold text-gray-700 mb-2">מיקוד אנכי של הסרטון/תמונה (מחשב)</label>
                                             <div className="px-2" dir="ltr">
                                                 <input 
                                                     type="range" 
@@ -225,7 +225,7 @@ export default function BannerClient() {
                                                     }}
                                                     className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
                                                 />
-                                                <div className="flex justify-between text-xs text-gray-500 mt-2 font-bold">
+                                                <div className="flex justify-between text-xs text-gray-500 mt-1 font-bold">
                                                     <span>למטה (-20)</span>
                                                     <span>אמצע (50)</span>
                                                     <span>למעלה (120)</span>
@@ -233,7 +233,25 @@ export default function BannerClient() {
                                             </div>
                                         </div>
                                         <div>
-                                            <label className="block text-sm font-semibold text-gray-700 mb-3">מיקום הקובייה הלבנה (מחשב)</label>
+                                            <label className="block text-sm font-semibold text-gray-700 mb-2">מיקום אופקי של הקובייה (מחשב)</label>
+                                            <div className="px-2" dir="ltr">
+                                                <input 
+                                                    type="range" 
+                                                    min="0" 
+                                                    max="100" 
+                                                    value={banner.contentPositionXDesktop ?? 50}
+                                                    onChange={(e) => updateBanner(index, 'contentPositionXDesktop', parseInt(e.target.value))}
+                                                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-orange-600"
+                                                />
+                                                <div className="flex justify-between text-xs text-gray-500 mt-1 font-bold">
+                                                    <span>שמאל (0%)</span>
+                                                    <span>אמצע (50%)</span>
+                                                    <span>ימין (100%)</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-semibold text-gray-700 mb-2">מיקום אנכי של הקובייה (מחשב)</label>
                                             <div className="px-2" dir="ltr">
                                                 <input 
                                                     type="range" 
@@ -243,10 +261,28 @@ export default function BannerClient() {
                                                     onChange={(e) => updateBanner(index, 'contentPositionDesktop', parseInt(e.target.value))}
                                                     className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-purple-600"
                                                 />
-                                                <div className="flex justify-between text-xs text-gray-500 mt-2 font-bold">
+                                                <div className="flex justify-between text-xs text-gray-500 mt-1 font-bold">
                                                     <span>למעלה (0%)</span>
                                                     <span>אמצע (50%)</span>
                                                     <span>למטה (100%)</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-semibold text-gray-700 mb-2">גודל הקובייה (מחשב)</label>
+                                            <div className="px-2" dir="ltr">
+                                                <input 
+                                                    type="range" 
+                                                    min="50" 
+                                                    max="150" 
+                                                    value={banner.contentScaleDesktop ?? 100}
+                                                    onChange={(e) => updateBanner(index, 'contentScaleDesktop', parseInt(e.target.value))}
+                                                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-green-600"
+                                                />
+                                                <div className="flex justify-between text-xs text-gray-500 mt-1 font-bold">
+                                                    <span>קטן (50%)</span>
+                                                    <span>רגיל (100%)</span>
+                                                    <span>ענק (150%)</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -254,7 +290,7 @@ export default function BannerClient() {
                                 ) : (
                                     <>
                                         <div>
-                                            <label className="block text-sm font-semibold text-gray-700 mb-3">מיקוד אנכי של הסרטון/תמונה (מובייל)</label>
+                                            <label className="block text-sm font-semibold text-gray-700 mb-2">מיקוד אנכי של הסרטון/תמונה (מובייל)</label>
                                             <div className="px-2" dir="ltr">
                                                 <input 
                                                     type="range" 
@@ -267,7 +303,7 @@ export default function BannerClient() {
                                                     onChange={(e) => updateBanner(index, 'objectPositionMobile', parseInt(e.target.value))}
                                                     className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
                                                 />
-                                                <div className="flex justify-between text-xs text-gray-500 mt-2 font-bold">
+                                                <div className="flex justify-between text-xs text-gray-500 mt-1 font-bold">
                                                     <span>למטה (-20)</span>
                                                     <span>אמצע (50)</span>
                                                     <span>למעלה (120)</span>
@@ -275,7 +311,7 @@ export default function BannerClient() {
                                             </div>
                                         </div>
                                         <div>
-                                            <label className="block text-sm font-semibold text-gray-700 mb-3">מיקום הקובייה הלבנה (מובייל)</label>
+                                            <label className="block text-sm font-semibold text-gray-700 mb-2">מיקום אנכי של הקובייה (מובייל)</label>
                                             <div className="px-2" dir="ltr">
                                                 <input 
                                                     type="range" 
@@ -285,10 +321,28 @@ export default function BannerClient() {
                                                     onChange={(e) => updateBanner(index, 'contentPositionMobile', parseInt(e.target.value))}
                                                     className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-purple-600"
                                                 />
-                                                <div className="flex justify-between text-xs text-gray-500 mt-2 font-bold">
+                                                <div className="flex justify-between text-xs text-gray-500 mt-1 font-bold">
                                                     <span>למעלה (0%)</span>
                                                     <span>אמצע (50%)</span>
                                                     <span>למטה (100%)</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-semibold text-gray-700 mb-2">גודל הקובייה (מובייל)</label>
+                                            <div className="px-2" dir="ltr">
+                                                <input 
+                                                    type="range" 
+                                                    min="50" 
+                                                    max="150" 
+                                                    value={banner.contentScaleMobile ?? 100}
+                                                    onChange={(e) => updateBanner(index, 'contentScaleMobile', parseInt(e.target.value))}
+                                                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-green-600"
+                                                />
+                                                <div className="flex justify-between text-xs text-gray-500 mt-1 font-bold">
+                                                    <span>קטן (50%)</span>
+                                                    <span>רגיל (100%)</span>
+                                                    <span>ענק (150%)</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -376,7 +430,7 @@ export default function BannerClient() {
                                                     <div 
                                                         className="absolute bg-white/60 backdrop-blur-md rounded-2xl p-4 md:px-8 md:py-5 border border-white/20 shadow-2xl text-center transition-all duration-75 flex flex-col items-center pointer-events-none"
                                                         style={{
-                                                            width: 'max-content',
+                                                            width: isDesktop ? 'fit-content' : '320px',
                                                             maxWidth: 'none',
                                                             top: `${contentY}%`,
                                                             left: `${contentX}%`,
@@ -386,8 +440,8 @@ export default function BannerClient() {
                                                     >
                                                         <div className="text-xs md:text-sm font-assistant tracking-[0.2em] text-gray-800 font-bold mb-1 opacity-90 uppercase">גלה את בושם החתימה שלך</div>
                                                         <div className="font-handwriting text-[1.45rem] md:text-5xl font-bold text-black mb-2 md:mb-3 leading-tight tracking-wide">
-                                                            <span className="block whitespace-nowrap">ml-tlv: דוגמיות בשמי נישה</span>
-                                                            <span className="block whitespace-nowrap">ודיקאנטים מקוריים</span>
+                                                            <span className="block">ml-tlv: דוגמיות בשמי נישה</span>
+                                                            <span className="block">ודיקאנטים מקוריים</span>
                                                         </div>
                                                         <div className="text-xs md:text-base font-assistant text-gray-800 mb-3 md:mb-4 opacity-80 max-w-[280px] md:max-w-none leading-relaxed">
                                                             הדרך החכמה לגלות בשמי נישה יוקרתיים. מגוון דוגמיות יוקרה ודיקאנטים (דיקנטים) של הבשמים הנחשקים בעולם.
