@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { currentUser } from "@clerk/nextjs/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import fs from "fs";
+import path from "path";
 
 export const dynamic = 'force-dynamic';
 export const maxDuration = 60;
@@ -94,7 +96,7 @@ Return your answer as a valid JSON object with this EXACT structure (no markdown
             middle_notes: data.middle_notes || '',
             base_notes: data.base_notes || '',
             description: data.description || '',
-            spotify_track_url: data.spotify_track_url || ''
+            spotify_track_url: (() => { try { const t = JSON.parse(fs.readFileSync(path.join(process.cwd(), "app/lib/spotify_tracks.json"))); return "https://open.spotify.com/track/" + t[Math.floor(Math.random()*t.length)]; } catch(e) { return ""; } })()
         });
 
     } catch (error) {
