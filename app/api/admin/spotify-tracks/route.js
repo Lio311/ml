@@ -56,18 +56,17 @@ export async function GET(request) {
             return NextResponse.json({ tracks: [] });
         }
 
-        const searchUrl = new URL('https://api.spotify.com/v1/search');
-        searchUrl.searchParams.set('q', q);
-        searchUrl.searchParams.set('type', 'track');
-        searchUrl.searchParams.set('limit', '20');
+        const apiUrl = "https://api.spotify.com/v1/search?q=" + encodeURIComponent(q) + "&type=track&limit=10";
+        console.log("Spotify search URL:", apiUrl);
 
-        const res = await fetch(searchUrl.toString(), {
+        const res = await fetch(apiUrl, {
             cache: "no-store",
-            headers: { "Authorization": `Bearer ${token}` }
+            headers: { "Authorization": "Bearer " + token }
         });
         
         if (!res.ok) {
-            console.error("Spotify API error", await res.text());
+            const errText = await res.text();
+            console.error("Spotify API error", errText);
             return NextResponse.json({ tracks: [] });
         }
         
