@@ -10,16 +10,16 @@ export default function HeroCarousel({ banners = [] }) {
     // Minimum swipe distance
     const minSwipeDistance = 50;
 
-    // Auto-advance
-    useEffect(() => {
-        if (!banners || banners.length <= 1) return;
-        
-        const timer = setInterval(() => {
-            setCurrentIndex((prevIndex) => (prevIndex + 1) % banners.length);
-        }, 6000); // 6 seconds per slide
-
-        return () => clearInterval(timer);
-    }, [banners]);
+    // Auto-advance disabled per user request
+    // useEffect(() => {
+    //     if (!banners || banners.length <= 1) return;
+    //     
+    //     const timer = setInterval(() => {
+    //         setCurrentIndex((prevIndex) => (prevIndex + 1) % banners.length);
+    //     }, 6000); // 6 seconds per slide
+    //
+    //     return () => clearInterval(timer);
+    // }, [banners]);
 
     const onTouchStart = (e) => {
         setTouchEnd(null);
