@@ -69,7 +69,7 @@ export default function HeroCarousel({ banners = [] }) {
                             playsInline
                             preload="auto"
                             fetchPriority={index === 0 ? "high" : "auto"}
-                            className="w-full h-full object-cover scale-[1.05]"
+                            className="w-full h-full object-cover"
                             style={{ objectPosition: banner.objectPosition || 'center' }}
                         >
                             <source src={banner.url || "/hero-video.mp4"} type="video/mp4" />
@@ -78,7 +78,7 @@ export default function HeroCarousel({ banners = [] }) {
                         <img
                             src={banner.url || "/hero-video.mp4"}
                             alt={`Banner ${index + 1}`}
-                            className="w-full h-full object-cover scale-[1.05]"
+                            className="w-full h-full object-cover"
                             style={{ objectPosition: banner.objectPosition || 'center' }}
                             fetchPriority={index === 0 ? "high" : "auto"}
                         />
