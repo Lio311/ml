@@ -54,7 +54,7 @@ export default function HeroCarousel({ banners = [] }) {
 
             {/* Dots navigation */}
             {banners.length > 1 && (
-                <div className="absolute bottom-8 left-0 right-0 z-20 flex justify-center gap-3">
+                <div className="absolute bottom-3 left-0 right-0 z-20 flex justify-center gap-3">
                     {banners.map((_, index) => (
                         <button
                             key={index}
