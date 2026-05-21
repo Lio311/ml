@@ -112,8 +112,8 @@ export default function Header({ brands = [] }) {
                     
                     {/* Desktop Layout (XL and up) */}
                     <div className="hidden xl:flex w-full items-center justify-between h-full">
-                        {/* Right Side: Navigation & User */}
-                        <div className="flex-1 flex items-center gap-4 xl:gap-8 pe-2 xl:pe-4">
+                        {/* Right Side: User & Logo */}
+                        <div className="flex-1 flex items-center justify-start gap-6 xl:gap-10 pe-2 xl:pe-4">
                             <div className="flex items-center gap-2">
                                 <SignedIn>
                                     <div className="flex items-center">
@@ -138,7 +138,22 @@ export default function Header({ brands = [] }) {
                                     </SignInButton>
                                 </SignedOut>
                             </div>
-                            
+
+                            {/* LOGO */}
+                            <Link href="/" className="block transform hover:scale-105 transition-transform duration-700">
+                                <Image 
+                                    src={logoSrc} 
+                                    alt="ml." 
+                                    width={160} 
+                                    height={60} 
+                                    className="h-10 md:h-14 w-auto object-contain inverted-logo-v2" 
+                                    priority 
+                                />
+                            </Link>
+                        </div>
+
+                        {/* Center: Navigation Menu */}
+                        <div className="flex-shrink-0 flex justify-center px-4">
                             <nav className="flex items-center gap-3 xl:gap-6 text-black">
                                 {navLinks.map((link) => (
                                     <div 
@@ -168,20 +183,7 @@ export default function Header({ brands = [] }) {
                             </nav>
                         </div>
 
-                        <div className="flex-shrink-0 flex justify-center px-4">
-                            <Link href="/" className="block transform hover:scale-105 transition-transform duration-700">
-                                <Image 
-                                    src={logoSrc} 
-                                    alt="ml." 
-                                    width={180} 
-                                    height={70} 
-                                    className="h-12 md:h-16 w-auto object-contain inverted-logo-v2" 
-                                    priority 
-                                />
-                            </Link>
-                        </div>
-
-                        {/* Left Side: Actions (Icons Above, Language Below) */}
+                        {/* Left Side: Actions (Search, Icons, Language) */}
                         <div className="flex-1 flex flex-col items-end gap-3 text-black">
                             <div className="flex items-start gap-12">
                                 <div className="max-w-[180px] v2-user-actions pt-1.5">
