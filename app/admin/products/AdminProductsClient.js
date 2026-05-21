@@ -10,7 +10,7 @@ import AdminFilterBar from "../../components/admin/AdminFilterBar";
 import { Wand2 } from "lucide-react";
 import SpotifyTrackSelector from "../../components/admin/SpotifyTrackSelector";
 
-export default function AdminProductsClient({ products, initialSearch, totalProducts, filteredCount, counts, currentPage, totalPages, currentLetter, currentView, currentSort, canEdit }) {
+export default function AdminProductsClient({ products, initialSearch, totalProducts, filteredCount, counts, currentPage, totalPages, currentLetter, currentView, currentSort, canEdit, allCountries = [] }) {
 
     const router = useRouter();
     const [editingId, setEditingId] = useState(null);
@@ -169,6 +169,14 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
         setEditingId(null);
         setIsCreating(false);
     };
+
+    const countryDatalist = (
+        <datalist id="country-list">
+            {allCountries.map((c, i) => (
+                <option key={i} value={c} />
+            ))}
+        </datalist>
+    );
 
     const handleDelete = (id) => {
         toast((t) => (
@@ -573,11 +581,13 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                         <div>
                             <label className="text-sm font-bold block mb-2">מדינת מוצא</label>
                             <input
+                                list="country-list"
                                 value={editForm.country || ''}
                                 onChange={e => setEditForm({ ...editForm, country: e.target.value })}
                                 className="border p-2 rounded w-full bg-white shadow-sm focus:ring-2 focus:ring-blue-100 transition-all outline-none"
-                                placeholder="למשל: צרפת, איטליה, אומן..."
+                                placeholder="למשל: צרפת, איטליה, עומאן..."
                             />
+                            {countryDatalist}
                         </div>
                         <div className="md:col-span-2">
                             <label className="text-sm font-bold block mb-2">פרפיומר (Perfumer) - לחץ Enter להוספה</label>
@@ -920,6 +930,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                         <div>
                                             <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">מדינת מוצא</label>
                                             <input
+                                                list="country-list"
                                                 value={editForm.country || ''}
                                                 onChange={e => setEditForm({ ...editForm, country: e.target.value })}
                                                 className="border-2 border-gray-100 rounded-xl p-2 w-full bg-white focus:border-black outline-none transition-colors font-bold text-sm"

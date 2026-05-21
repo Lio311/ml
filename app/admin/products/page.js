@@ -27,6 +27,7 @@ export default async function AdminProductsPage(props) {
     let totalProducts = 0;
     let filteredCount = 0;
     let counts = { all: 0, out_of_stock: 0, drafts: 0, on_sale: 0 };
+    let allCountries = [];
 
     const client = await pool.connect();
     try {
@@ -92,6 +93,9 @@ export default async function AdminProductsPage(props) {
         const res = await client.query(query, params);
         products = sanitizeProductArray(res.rows);
 
+        const countriesRes = await client.query("SELECT DISTINCT country FROM products WHERE country IS NOT NULL AND country != '' ORDER BY country ASC");
+        allCountries = countriesRes.rows.map(r => r.country);
+
     } finally {
         client.release();
     }
@@ -113,6 +117,7 @@ export default async function AdminProductsPage(props) {
             currentView={view}
             currentSort={sort}
             canEdit={canEdit}
+            allCountries={allCountries}
         />
 
     );

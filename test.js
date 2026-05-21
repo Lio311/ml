@@ -1,5 +1,5 @@
 const https = require('https');
-https.get('https://www.ml-tlv.com/api/admin/fix-all-songs?limit=1&start=0', (res) => {
+https.get(`https://www.ml-tlv.com/api/admin/fix-all-songs?limit=1&start=0&t=${Date.now()}`, (res) => {
     let data = '';
     res.on('data', chunk => data += chunk);
     res.on('end', () => console.log(res.statusCode, data));

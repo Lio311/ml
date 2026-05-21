@@ -8,6 +8,9 @@ const pool = new Pool({
   connectionString: process.env.POSTGRES_URL || process.env.DATABASE_URL
 });
 
+export const dynamic = 'force-dynamic';
+export const fetchCache = 'force-no-store';
+
 // WARNING: This route is unprotected for a one-time use, but ideally we'd pass a secret key.
 export const maxDuration = 300; // Allow long execution on Vercel Pro (if applicable), though hobby is 10s or 60s. Wait, Vercel hobby is 10s max.
 
@@ -83,6 +86,7 @@ Return ONLY the EXACT Track ID from the list. Do not write anything else.`;
                 }
             } catch(e) {
                 console.error("Gemini err:", e);
+                debugInfo.push({ error: e.message });
             }
         }
 
