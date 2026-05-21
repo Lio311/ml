@@ -79,7 +79,7 @@ export async function PUT(req) {
             await client.query(
                 `UPDATE products 
                  SET brand = $1, model = $2, price_2ml = $3, price_5ml = $4, price_10ml = $5, 
-                     image_url = $6, category = $7, description = $8, stock = $9, 
+                     image_url = $6, category = $7, description = $8, description_he = $8, stock = $9, 
                      top_notes = $10, middle_notes = $11, base_notes = $12, 
                      name = $13, in_lottery = $14, name_he = $15, brand_he = $16, model_he = $17,
                      cost_price = $18, original_size = $19,

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { currentUser } from "@clerk/nextjs/server";
 import pool from "@/app/lib/db";
 import { revalidatePath } from "next/cache";
+import { translateText } from "../../../../lib/translate";
 
 export const dynamic = 'force-dynamic';
 
@@ -22,12 +23,14 @@ export async function POST(req) {
             return NextResponse.json({ error: 'Missing data' }, { status: 400 });
         }
 
+        const rewrite_en = await translateText(rewrite);
+
         const client = await pool.connect();
         try {
-            // Update the product description
+            // Update the product description (and its aliases)
             await client.query(
-                'UPDATE products SET description = $1 WHERE id = $2',
-                [rewrite, productId]
+                'UPDATE products SET description = $1, description_he = $1, description_en = $3 WHERE id = $2',
+                [rewrite, productId, rewrite_en]
             );
             
             // Delete the obsolete review
