@@ -47,16 +47,19 @@ Description rules:
 - Describe who it's for or what feeling it projects
 - Use rich but accessible language ("עסיסי", "אופולנטי", "יוקרתי בטירוף")
 
-Example descriptions:
+- Example descriptions:
 - "קוקטייל בשקיעה. מנגו ופסיפלורה עסיסיים בשיא הבשלות. בושם שפשוט מקרין שמחת חיים, צבעוניות וטרופיות מתפרצת."
 - "לא הקולון של סבא שלך. זהו קולון שעבר דרך האש... מתאים לחובבי בישום שמחפשים את הטוויסט המורכב והמעושן."
+
+Finally, find ONE specific real Spotify track that perfectly matches the vibe, mood, and notes of this perfume. Return the raw Spotify track URL (e.g. https://open.spotify.com/track/4cOdK2wGLETKBW3PvgPWqT).
 
 Return your answer as a valid JSON object with this EXACT structure (no markdown, no backticks, just raw JSON):
 {
   "top_notes": "Note1, Note2, Note3",
   "middle_notes": "Note1, Note2, Note3",
   "base_notes": "Note1, Note2, Note3",
-  "description": "Hebrew description here"
+  "description": "Hebrew description here",
+  "spotify_track_url": "https://open.spotify.com/track/..."
 }`;
 
         const result = await model.generateContent(searchPrompt);
@@ -83,7 +86,8 @@ Return your answer as a valid JSON object with this EXACT structure (no markdown
             top_notes: data.top_notes || '',
             middle_notes: data.middle_notes || '',
             base_notes: data.base_notes || '',
-            description: data.description || ''
+            description: data.description || '',
+            spotify_track_url: data.spotify_track_url || ''
         });
 
     } catch (error) {

@@ -38,7 +38,8 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                     top_notes: data.top_notes || prev.top_notes,
                     middle_notes: data.middle_notes || prev.middle_notes,
                     base_notes: data.base_notes || prev.base_notes,
-                    description: data.description || prev.description
+                    description: data.description || prev.description,
+                    spotify_track_url: data.spotify_track_url || prev.spotify_track_url
                 }));
                 toast.success("תווי ריח + תיאור נוצרו בהצלחה!");
             } else {
@@ -102,7 +103,8 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
             active: product.active ?? true,
             discount_percentage: product.discount_percentage || 0,
             discount_sizes: product.discount_sizes || [],
-            discount_end_date: product.discount_end_date || ''
+            discount_end_date: product.discount_end_date || '',
+            spotify_track_url: product.spotify_track_url || ''
         });
     };
 
@@ -135,7 +137,8 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
             active: true,
             discount_percentage: 0,
             discount_sizes: [],
-            discount_end_date: ''
+            discount_end_date: '',
+            spotify_track_url: ''
         });
     };
 
@@ -482,15 +485,27 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                         </div>
                     </div>
 
-                    <div className="mb-4">
-                        <label className="text-sm font-bold">קישור לתמונה (Image URL)</label>
-                        <input
-                            value={editForm.image_url || ''}
-                            onChange={e => setEditForm({ ...editForm, image_url: e.target.value })}
-                            className="border p-2 rounded w-full bg-white text-left"
-                            dir="ltr"
-                            placeholder="/products/image.png or https://..."
-                        />
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                        <div className="mb-4">
+                            <label className="text-sm font-bold">קישור לתמונה (Image URL)</label>
+                            <input
+                                value={editForm.image_url || ''}
+                                onChange={e => setEditForm({ ...editForm, image_url: e.target.value })}
+                                className="border p-2 rounded w-full bg-white text-left"
+                                dir="ltr"
+                                placeholder="/products/image.png or https://..."
+                            />
+                        </div>
+                        <div className="mb-4">
+                            <label className="text-sm font-bold">קישור לשיר בספוטיפיי (Spotify URL)</label>
+                            <input
+                                value={editForm.spotify_track_url || ''}
+                                onChange={e => setEditForm({ ...editForm, spotify_track_url: e.target.value })}
+                                className="border p-2 rounded w-full bg-white text-left"
+                                dir="ltr"
+                                placeholder="https://open.spotify.com/track/..."
+                            />
+                        </div>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
                         <div>
