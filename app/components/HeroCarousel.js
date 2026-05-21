@@ -87,7 +87,6 @@ export default function HeroCarousel({ banners = [], contentOverlay }) {
                     object-position: 50% var(--active-bg-y-mobile);
                 }
                 .hero-carousel-wrapper .banner-content {
-                    width: 100%;
                     top: var(--active-content-y-mobile);
                     left: 50%;
                     transform: translate(-50%, calc(var(--active-content-y-mobile) * -1)) scale(var(--active-content-scale-mobile));
@@ -101,7 +100,6 @@ export default function HeroCarousel({ banners = [], contentOverlay }) {
                         object-position: 50% var(--active-bg-y-desktop);
                     }
                     .hero-carousel-wrapper .banner-content {
-                        width: fit-content;
                         top: var(--active-content-y-desktop);
                         left: var(--active-content-x-desktop);
                         transform: translate(calc(var(--active-content-x-desktop) * -1), calc(var(--active-content-y-desktop) * -1)) scale(var(--active-content-scale-desktop));
@@ -146,7 +144,7 @@ export default function HeroCarousel({ banners = [], contentOverlay }) {
             {/* Dynamic Content Overlay */}
             {contentOverlay && (
                 <div className="absolute inset-0 z-20 pointer-events-none">
-                    <div className="absolute left-0 right-0 banner-content transition-all duration-700 ease-in-out pointer-events-auto flex justify-center">
+                    <div className="absolute banner-content transition-all duration-700 ease-in-out pointer-events-auto">
                         {contentOverlay}
                     </div>
                 </div>

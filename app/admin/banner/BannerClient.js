@@ -276,6 +276,7 @@ export default function BannerClient() {
                                             <label className="block text-sm font-semibold text-gray-700 mb-2">מיקוד אנכי של הסרטון/תמונה (מחשב)</label>
                                             <div className="px-2" dir="ltr">
                                                 <input 
+                                                    dir="ltr"
                                                     type="range" 
                                                     min="-20" 
                                                     max="120" 
@@ -301,6 +302,7 @@ export default function BannerClient() {
                                             <label className="block text-sm font-semibold text-gray-700 mb-2">מיקום אופקי של הקובייה (מחשב)</label>
                                             <div className="px-2" dir="ltr">
                                                 <input 
+                                                    dir="ltr"
                                                     type="range" 
                                                     min="0" 
                                                     max="100" 
@@ -319,6 +321,7 @@ export default function BannerClient() {
                                             <label className="block text-sm font-semibold text-gray-700 mb-2">מיקום אנכי של הקובייה (מחשב)</label>
                                             <div className="px-2" dir="ltr">
                                                 <input 
+                                                    dir="ltr"
                                                     type="range" 
                                                     min="0" 
                                                     max="100" 
@@ -337,6 +340,7 @@ export default function BannerClient() {
                                             <label className="block text-sm font-semibold text-gray-700 mb-2">גודל הקובייה (מחשב)</label>
                                             <div className="px-2" dir="ltr">
                                                 <input 
+                                                    dir="ltr"
                                                     type="range" 
                                                     min="50" 
                                                     max="150" 
@@ -355,6 +359,7 @@ export default function BannerClient() {
                                             <label className="block text-sm font-semibold text-gray-700 mb-2">שקיפות הקובייה (מחשב)</label>
                                             <div className="px-2" dir="ltr">
                                                 <input 
+                                                    dir="ltr"
                                                     type="range" 
                                                     min="0" 
                                                     max="100" 
@@ -375,6 +380,7 @@ export default function BannerClient() {
                                             <label className="block text-sm font-semibold text-gray-700 mb-2">מיקוד אנכי של הסרטון/תמונה (מובייל)</label>
                                             <div className="px-2" dir="ltr">
                                                 <input 
+                                                    dir="ltr"
                                                     type="range" 
                                                     min="-20" 
                                                     max="120" 
@@ -396,6 +402,7 @@ export default function BannerClient() {
                                             <label className="block text-sm font-semibold text-gray-700 mb-2">מיקום אנכי של הקובייה (מובייל)</label>
                                             <div className="px-2" dir="ltr">
                                                 <input 
+                                                    dir="ltr"
                                                     type="range" 
                                                     min="0" 
                                                     max="100" 
@@ -414,6 +421,7 @@ export default function BannerClient() {
                                             <label className="block text-sm font-semibold text-gray-700 mb-2">גודל הקובייה (מובייל)</label>
                                             <div className="px-2" dir="ltr">
                                                 <input 
+                                                    dir="ltr"
                                                     type="range" 
                                                     min="50" 
                                                     max="150" 
@@ -432,6 +440,7 @@ export default function BannerClient() {
                                             <label className="block text-sm font-semibold text-gray-700 mb-2">שקיפות הקובייה (מובייל)</label>
                                             <div className="px-2" dir="ltr">
                                                 <input 
+                                                    dir="ltr"
                                                     type="range" 
                                                     min="0" 
                                                     max="100" 

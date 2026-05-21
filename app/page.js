@@ -199,7 +199,7 @@ export default async function Home() {
           <HeroCarousel 
             banners={banners} 
             contentOverlay={
-              <div className="w-[95%] md:w-fit max-w-lg md:max-w-fit text-black text-center content-box-bg p-4 md:px-8 md:py-5 rounded-2xl backdrop-blur-md shadow-2xl border border-white/20 mx-auto">
+              <div className="w-[90vw] md:w-max max-w-lg md:max-w-max text-black text-center content-box-bg p-4 md:px-8 md:py-5 rounded-2xl backdrop-blur-md shadow-2xl border border-white/20">
                 <h2 className="text-xs md:text-sm font-assistant tracking-[0.2em] uppercase mb-1 opacity-90 animate-fadeIn font-bold">
                   {t('homepage.discover_sig')}
                 </h2>
