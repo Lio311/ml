@@ -19,6 +19,7 @@ async function getSpotifyToken() {
     try {
         const res = await fetch("https://accounts.spotify.com/api/token", {
             method: "POST",
+            cache: "no-store",
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded",
                 "Authorization": "Basic " + Buffer.from(clientId + ":" + clientSecret).toString("base64")
@@ -56,6 +57,7 @@ export async function GET(request) {
         }
 
         const res = await fetch(`https://api.spotify.com/v1/search?q=${encodeURIComponent(q)}&type=track&limit=20`, {
+            cache: "no-store",
             headers: { "Authorization": `Bearer ${token}` }
         });
         
