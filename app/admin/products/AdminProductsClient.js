@@ -499,7 +499,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                             />
                         </div>
                         <div className="mb-4">
-                            <label className="text-sm font-bold block mb-2">קישור לשיר בספוטיפיי (Spotify URL)</label>
+                            <label className="text-sm font-bold block mb-2">בחירת שיר מספוטיפיי (חיפוש)</label>
                             <SpotifyTrackSelector 
                                 value={editForm.spotify_track_url} 
                                 onChange={(val) => setEditForm({ ...editForm, spotify_track_url: val })}
@@ -819,7 +819,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                         />
                                     </div>
                                     <div>
-                                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">קישור לשיר בספוטיפיי (Spotify URL)</label>
+                                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">בחירת שיר מספוטיפיי</label>
                                         <SpotifyTrackSelector 
                                             value={editForm.spotify_track_url} 
                                             onChange={(val) => setEditForm({ ...editForm, spotify_track_url: val })}
