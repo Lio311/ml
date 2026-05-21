@@ -15,7 +15,8 @@ export async function GET() {
     }
 
     try {
-        const res = await fetch("https://accounts.spotify.com/api/token", {
+        // Step 1: Get token
+        const tokenRes = await fetch("https://accounts.spotify.com/api/token", {
             method: "POST",
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded",
@@ -24,15 +25,25 @@ export async function GET() {
             body: "grant_type=client_credentials"
         });
 
-        const text = await res.text();
+        if (!tokenRes.ok) {
+            return NextResponse.json({ error: 'Token failed', status: tokenRes.status });
+        }
+
+        const tokenData = await tokenRes.json();
+        const token = tokenData.access_token;
+
+        // Step 2: Search
+        const searchRes = await fetch(`https://api.spotify.com/v1/search?q=samba&type=track&limit=5`, {
+            headers: { "Authorization": `Bearer ${token}` }
+        });
+
+        const searchText = await searchRes.text();
+
         return NextResponse.json({ 
-            status: res.status,
-            ok: res.ok,
-            response: text.substring(0, 200),
-            hasClientId: true,
-            hasClientSecret: true,
-            clientIdLength: clientId.length,
-            clientSecretLength: clientSecret.length
+            tokenOk: true,
+            searchStatus: searchRes.status,
+            searchOk: searchRes.ok,
+            searchResponse: searchText.substring(0, 500)
         });
     } catch (err) {
         return NextResponse.json({ error: err.message });
