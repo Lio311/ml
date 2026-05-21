@@ -8,6 +8,7 @@ import ModernDateTimePicker from "../../components/ui/ModernDateTimePicker";
 import toast from 'react-hot-toast';
 import AdminFilterBar from "../../components/admin/AdminFilterBar";
 import { Wand2 } from "lucide-react";
+import SpotifyTrackSelector from "../../components/admin/SpotifyTrackSelector";
 
 export default function AdminProductsClient({ products, initialSearch, totalProducts, filteredCount, counts, currentPage, totalPages, currentLetter, currentView, currentSort, canEdit }) {
 
@@ -497,13 +498,10 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                             />
                         </div>
                         <div className="mb-4">
-                            <label className="text-sm font-bold">קישור לשיר בספוטיפיי (Spotify URL)</label>
-                            <input
-                                value={editForm.spotify_track_url || ''}
-                                onChange={e => setEditForm({ ...editForm, spotify_track_url: e.target.value })}
-                                className="border p-2 rounded w-full bg-white text-left"
-                                dir="ltr"
-                                placeholder="https://open.spotify.com/track/..."
+                            <label className="text-sm font-bold block mb-2">קישור לשיר בספוטיפיי (Spotify URL)</label>
+                            <SpotifyTrackSelector 
+                                value={editForm.spotify_track_url} 
+                                onChange={(val) => setEditForm({ ...editForm, spotify_track_url: val })}
                             />
                         </div>
                     </div>
@@ -818,6 +816,13 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                             onChange={e => setEditForm({ ...editForm, image_url: e.target.value })}
                                             className="border-2 border-gray-100 rounded-xl p-2 w-full bg-white focus:border-black outline-none transition-colors text-xs text-left"
                                             dir="ltr"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">קישור לשיר בספוטיפיי (Spotify URL)</label>
+                                        <SpotifyTrackSelector 
+                                            value={editForm.spotify_track_url} 
+                                            onChange={(val) => setEditForm({ ...editForm, spotify_track_url: val })}
                                         />
                                     </div>
                                     <div>
