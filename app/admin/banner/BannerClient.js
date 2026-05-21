@@ -113,7 +113,7 @@ export default function BannerClient() {
                 </button>
             </div>
 
-            <div className="space-y-8 mb-24">
+            <div className="space-y-8 mb-4">
                 {banners.map((banner, index) => (
                     <div key={index} className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 relative">
                         <div className="absolute top-4 left-4 flex gap-2">
@@ -240,7 +240,7 @@ export default function BannerClient() {
                 ))}
             </div>
 
-            <div className="mt-8 flex justify-end border-t border-gray-200 pt-6">
+            <div className="mt-4 flex justify-end border-t border-gray-200 pt-4">
                 <button
                     onClick={handleSave}
                     disabled={saving}
