@@ -79,15 +79,15 @@ export default function EmailLogsClient({ initialLogs, currentPage, totalPages, 
             <div className="bg-white rounded-3xl shadow-sm border border-gray-100 overflow-hidden">
                 {/* Desktop Table View */}
                 <div className="hidden md:block overflow-x-auto">
-                    <table className="w-full text-right">
+                    <table className="w-full text-right table-fixed">
                         <thead>
                             <tr className="bg-gray-50/50 border-b border-gray-100">
-                                <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">נמען</th>
-                                <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">סוג מייל</th>
-                                <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest">נושא</th>
-                                <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">סטטוס</th>
-                                <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">שיוך</th>
-                                <th className="px-6 py-4 text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">תאריך ושעה</th>
+                                <th className="px-6 py-4 w-1/3 text-[10px] font-black text-gray-400 uppercase tracking-widest">נמען</th>
+                                <th className="px-6 py-4 w-28 text-[10px] font-black text-gray-400 uppercase tracking-widest">סוג מייל</th>
+                                <th className="px-6 py-4 w-1/4 text-[10px] font-black text-gray-400 uppercase tracking-widest">נושא</th>
+                                <th className="px-6 py-4 w-24 text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">סטטוס</th>
+                                <th className="px-6 py-4 w-24 text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">שיוך</th>
+                                <th className="px-6 py-4 w-32 text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">תאריך ושעה</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-50">
@@ -98,8 +98,8 @@ export default function EmailLogsClient({ initialLogs, currentPage, totalPages, 
                                             <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-400 font-bold text-xs shrink-0">
                                                 {log.recipient[0].toUpperCase()}
                                             </div>
-                                            <div className="min-w-0">
-                                                <div className="text-sm font-bold text-gray-900 leading-tight truncate">{log.recipient}</div>
+                                            <div className="min-w-0 flex-1">
+                                                <div className="text-sm font-bold text-gray-900 leading-tight break-all line-clamp-2" title={log.recipient}>{log.recipient}</div>
                                             </div>
                                         </div>
                                     </td>
@@ -168,8 +168,8 @@ export default function EmailLogsClient({ initialLogs, currentPage, totalPages, 
                                     <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-400 font-extrabold text-sm shrink-0 border border-gray-200">
                                         {log.recipient[0].toUpperCase()}
                                     </div>
-                                    <div className="min-w-0">
-                                        <div className="text-sm font-black text-gray-900 truncate">{log.recipient}</div>
+                                    <div className="min-w-0 flex-1">
+                                        <div className="text-sm font-black text-gray-900 break-all line-clamp-2" title={log.recipient}>{log.recipient}</div>
                                         <div className="flex items-center gap-2 mt-0.5">
                                             <span className={`text-[9px] font-black px-2 py-0.5 rounded-full border border-opacity-50 ${getTypeColor(log.type)}`}>
                                                 {getTypeLabel(log.type)}
