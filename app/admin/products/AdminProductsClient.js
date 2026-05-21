@@ -93,6 +93,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
             middle_notes: product.middle_notes || '',
             base_notes: product.base_notes || '',
             in_lottery: product.in_lottery ?? true,
+            show_on_home: product.show_on_home ?? true,
             cost_price: product.cost_price || 0,
             original_size: product.original_size || 100,
             seasons: product.seasons || '',
@@ -125,6 +126,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
             middle_notes: '',
             base_notes: '',
             in_lottery: true,
+            show_on_home: true,
             cost_price: 0,
             original_size: 100,
             seasons: '',
@@ -587,6 +589,15 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                         <div className="flex items-center gap-2">
                             <input
                                 type="checkbox"
+                                checked={editForm.show_on_home ?? true}
+                                onChange={e => setEditForm({ ...editForm, show_on_home: e.target.checked })}
+                                className="w-5 h-5 accent-black cursor-pointer rounded"
+                            />
+                            <label className="text-sm font-bold select-none">להציג בדף הבית (חדש באתר)</label>
+                        </div>
+                        <div className="flex items-center gap-2">
+                            <input
+                                type="checkbox"
                                 checked={editForm.active === false}
                                 onChange={e => setEditForm({ ...editForm, active: !e.target.checked })}
                                 className="w-5 h-5 accent-gray-500 cursor-pointer rounded"
@@ -834,14 +845,23 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                         </div>
                                     </div>
                                     <div className="flex flex-wrap gap-3">
-                                        <div className="flex items-center gap-3 bg-gray-50/50 p-3 rounded-xl border border-gray-100 w-fit">
+                                        <div className="flex items-center gap-2">
                                             <input
                                                 type="checkbox"
                                                 checked={editForm.in_lottery ?? true}
                                                 onChange={e => setEditForm({ ...editForm, in_lottery: e.target.checked })}
                                                 className="w-5 h-5 accent-black cursor-pointer rounded-lg"
                                             />
-                                            <label className="text-xs font-black uppercase tracking-widest select-none text-gray-700">כלול בהגרלות רנדומליות</label>
+                                            <label className="text-xs font-black uppercase tracking-widest select-none text-gray-700">כלול בהגרלות</label>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <input
+                                                type="checkbox"
+                                                checked={editForm.show_on_home ?? true}
+                                                onChange={e => setEditForm({ ...editForm, show_on_home: e.target.checked })}
+                                                className="w-5 h-5 accent-black cursor-pointer rounded-lg"
+                                            />
+                                            <label className="text-xs font-black uppercase tracking-widest select-none text-gray-700">להציג בחדש באתר</label>
                                         </div>
                                         <div className="flex items-center gap-3 bg-gray-50/50 p-3 rounded-xl border border-gray-100 w-fit">
                                             <input

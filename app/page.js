@@ -58,7 +58,7 @@ export default async function Home() {
   try {
     await withClient(async (client) => {
       // Fetch New Arrivals (Only in stock)
-      const res = await client.query('SELECT id, brand, model, price_2ml, price_5ml, price_10ml, image_url, category, in_lottery, slug, description, stock, brand_he, model_he, original_size, created_at, discount_percentage, discount_sizes, discount_end_date FROM products WHERE active = true AND stock > 0 ORDER BY created_at DESC LIMIT 6');
+      const res = await client.query('SELECT id, brand, model, price_2ml, price_5ml, price_10ml, image_url, category, in_lottery, slug, description, stock, brand_he, model_he, original_size, created_at, discount_percentage, discount_sizes, discount_end_date FROM products WHERE active = true AND stock > 0 AND show_on_home = true ORDER BY created_at DESC LIMIT 6');
       newArrivals = sanitizeProductArray(res.rows);
 
       // Fetch Stats
