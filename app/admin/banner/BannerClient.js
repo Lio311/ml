@@ -240,11 +240,11 @@ export default function BannerClient() {
                 ))}
             </div>
 
-            <div className="fixed bottom-0 left-0 w-full flex justify-center bg-white/95 backdrop-blur-md p-4 shadow-[0_-4px_20px_-10px_rgba(0,0,0,0.1)] border-t border-gray-200 z-50">
+            <div className="mt-8 flex justify-end border-t border-gray-200 pt-6">
                 <button
                     onClick={handleSave}
                     disabled={saving}
-                    className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-10 py-3 rounded-xl font-bold transition-colors disabled:opacity-50"
+                    className="flex items-center gap-2 bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-xl font-bold transition-colors disabled:opacity-50 shadow-md"
                 >
                     {saving ? 'שומר...' : 'שמור את כל הבאנרים'}
                     <Save size={20} />
