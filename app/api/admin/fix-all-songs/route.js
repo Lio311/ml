@@ -51,6 +51,7 @@ export async function GET(request) {
         const toFix = products.slice(start, start + parseInt(limit));
 
         let updatedCount = 0;
+        let debugInfo = [];
 
         for (const p of toFix) {
             unusedTracks.sort(() => 0.5 - Math.random());
@@ -70,12 +71,15 @@ Return ONLY the EXACT Track ID from the list. Do not write anything else.`;
 
             try {
                 const result = await model.generateContent(prompt);
-                const trackId = result.response.text().trim();
+                const rawText = result.response.text();
+                const trackId = rawText.trim().replace(/[^a-zA-Z0-9]/g, ''); // Extract just alphanumeric just in case
                 
                 if (trackId && candidateTracks.find(t => t.id === trackId)) {
                     await pool.query('UPDATE products SET spotify_track_url = $1 WHERE id = $2', [`https://open.spotify.com/track/${trackId}`, p.id]);
                     unusedTracks = unusedTracks.filter(t => t.id !== trackId);
                     updatedCount++;
+                } else {
+                    debugInfo.push({ prod: p.name, rawText, trackId, candidates: candidateTracks.map(t=>t.id) });
                 }
             } catch(e) {
                 console.error("Gemini err:", e);
@@ -85,7 +89,7 @@ Return ONLY the EXACT Track ID from the list. Do not write anything else.`;
         return NextResponse.json({ success: true, updatedCount, nextStart: start + parseInt(limit), total: products.length });
 
     } catch(e) {
-        console.error(e);
-        return NextResponse.json({ error: e.message }, { status: 500 });
+        console.error("FATAL ERROR IN FIX:", e);
+        return NextResponse.json({ error: e.message, stack: e.stack }, { status: 500 });
     }
 }
