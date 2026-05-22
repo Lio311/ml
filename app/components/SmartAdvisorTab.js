@@ -86,9 +86,7 @@ export default function SmartAdvisorTab() {
                             setTimeout(() => {
                                 setMessages(prev => [...prev, {
                                     role: 'assistant',
-                                    content: isHebrew ? 
-                                        `הוספתי ${quantity || 1} יחידות של ${size} מהבושם **${product.brand} ${product.model}** לעגלה שלך!` :
-                                        `Added ${quantity || 1} units of ${size} of **${product.brand} ${product.model}** to your cart!`
+                                    content: isHebrew ? `נוסף לסל` : `Added to cart`
                                 }]);
                             }, 500);
                         }

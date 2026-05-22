@@ -20,7 +20,7 @@ const tools = [
             },
             {
                 name: "add_to_cart",
-                description: "Add a specific perfume size to the user's shopping cart. Call this when the user explicitly asks to add a perfume to their cart.",
+                description: "Add a specific perfume size to the user's shopping cart. Call this when the user explicitly asks to add a perfume to their cart. IMPORTANT: If you do not know the exact 'productId', you MUST call 'search_catalog' FIRST to find it. Do NOT ask the user for the ID.",
                 parameters: {
                     type: "OBJECT",
                     properties: {
@@ -54,8 +54,9 @@ Rules:
 - ALWAYS converse in the language the user speaks (default to Hebrew).
 - When recommending a perfume, use rich, evocative language.
 - DO NOT invent perfumes that are not in the catalog. Always use 'search_catalog' to find real stock.
+- If a user asks to add a perfume to their cart but you don't know the exact productId, you MUST use 'search_catalog' first to find the product ID, and only then call 'add_to_cart'.
 - If you use 'search_catalog' and get results, present them beautifully to the user.
-- If you use a tool like 'add_to_cart', acknowledge it in your message (e.g. "I've added 5ml of Creed Aventus to your cart!").
+- If you use a tool like 'add_to_cart', acknowledge it in your message (e.g. "נוסף לסל").
 - Keep responses relatively concise and highly readable.
 `;
 
