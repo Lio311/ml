@@ -541,6 +541,45 @@ export default function BannerClient() {
                                                     />
                                                 </div>
                                             </div>
+                                            <div className="grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded-xl border border-gray-100 mt-4 mb-4">
+                                                <div>
+                                                    <label className="block text-xs font-semibold text-gray-600 mb-1">רווח בין השורות</label>
+                                                    <div className="px-2" dir="ltr">
+                                                        <input 
+                                                            dir="ltr"
+                                                            type="range" 
+                                                            min="10" 
+                                                            max="30" 
+                                                            value={banner.lineHeight ? parseInt(parseFloat(banner.lineHeight) * 10) : 15}
+                                                            onChange={(e) => updateBanner(index, 'lineHeight', (parseInt(e.target.value) / 10).toString())}
+                                                            className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
+                                                        />
+                                                        <div className="flex justify-between text-xs text-gray-500 mt-1 font-bold">
+                                                            <span>צפוף (1.0)</span>
+                                                            <span>רגיל (1.5)</span>
+                                                            <span>מרווח (3.0)</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <label className="block text-xs font-semibold text-gray-600 mb-1">מרחק כפתור מהטקסט</label>
+                                                    <div className="px-2" dir="ltr">
+                                                        <input 
+                                                            dir="ltr"
+                                                            type="range" 
+                                                            min="0" 
+                                                            max="100" 
+                                                            value={banner.buttonMarginTop ?? (isDesktop ? 16 : 12)}
+                                                            onChange={(e) => updateBanner(index, 'buttonMarginTop', parseInt(e.target.value))}
+                                                            className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-orange-600"
+                                                        />
+                                                        <div className="flex justify-between text-xs text-gray-500 mt-1 font-bold">
+                                                            <span>צמוד (0px)</span>
+                                                            <span>רחוק (100px)</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
                                             
                                             {/* Button Colors */}
                                             <div className="grid grid-cols-2 gap-4">
@@ -575,7 +614,7 @@ export default function BannerClient() {
                             </div>
 
                             {/* Advanced Cropper Preview */}
-                            <div className={`border border-gray-200 rounded-2xl overflow-hidden relative bg-black flex items-center justify-center transition-all duration-300 ${banner.isHidden ? 'opacity-40' : 'opacity-100'} ${(!banner.activeTab || banner.activeTab === 'desktop') ? 'min-h-[300px] h-[300px] w-full' : 'min-h-[500px] h-[500px] w-full max-w-[280px] mx-auto rounded-3xl'}`}>
+                            <div className={`border border-gray-200 rounded-2xl overflow-hidden relative bg-black flex items-center justify-center transition-all duration-300 ${banner.isHidden ? 'opacity-40' : 'opacity-100'} ${(!banner.activeTab || banner.activeTab === 'desktop') ? 'min-h-[300px] h-[300px] w-full' : 'aspect-[9/16] w-full max-w-[320px] mx-auto rounded-3xl'}`}>
                                 <div className="absolute top-2 right-2 z-30 bg-red-600 text-white px-2 py-1 rounded-md text-[10px] font-bold shadow-md">
                                     אזור גלוי ({(!banner.activeTab || banner.activeTab === 'desktop') ? 'מחשב' : 'מובייל'})
                                 </div>
@@ -591,16 +630,8 @@ export default function BannerClient() {
                                             yPercent = banner.objectPositionMobile ?? (banner.objectPosition && banner.objectPosition.includes('%') ? parseInt(banner.objectPosition.split(' ')[1] || '50') : 50);
                                         }
                                         
-                                        // Mobile crop is much smaller vertically because container is tall
-                                        const totalCutoff = isDesktop ? 30 : 15; 
-                                        const topCutoff = (yPercent / 100) * totalCutoff;
-                                        const bottomCutoff = totalCutoff - topCutoff;
-                                        
                                         const contentY = isDesktop ? (banner.contentPositionDesktop ?? 50) : (banner.contentPositionMobile ?? 80);
                                         const contentX = isDesktop ? (banner.contentPositionXDesktop ?? 50) : 50;
-                                        // Virtual banner dimensions (matching real site)
-                                        // Desktop: ~82vh of a 900px screen = ~738px tall
-                                        // Preview container: 300px → scale = 300/738 ≈ 0.406
                                         const basePreviewScale = isDesktop ? 0.406 : 0.88;
                                         const userScale = isDesktop ? (banner.contentScaleDesktop ?? 100) / 100 : (banner.contentScaleMobile ?? 100) / 100;
                                         const finalScale = basePreviewScale * userScale;
@@ -608,66 +639,36 @@ export default function BannerClient() {
                                         const contentOpacity = isDesktop ? (banner.contentOpacityDesktop ?? 60) : (banner.contentOpacityMobile ?? 60);
 
                                         return (
-                                            <div className="relative w-full h-full">
-                                                {/* Background layer (dimmed out) */}
-                                                <div 
-                                                    className={`absolute inset-0 w-full h-full cursor-ns-resize ${dragState.isDragging && dragState.type === 'bg' ? 'opacity-80' : ''}`}
-                                                    onMouseDown={(e) => handleDragStart(e, index, 'bg', 0, yPercent)}
-                                                >
-                                                    {banner.type === 'video' ? (
-                                                        <video
-                                                            src={banner.url}
-                                                            autoPlay loop muted playsInline
-                                                            className="w-full h-full object-cover opacity-30 grayscale pointer-events-none"
-                                                        />
-                                                    ) : (
-                                                        <img
-                                                            src={banner.url}
-                                                            alt="Preview Background"
-                                                            className="w-full h-full object-cover opacity-30 grayscale pointer-events-none"
-                                                            onError={(e) => { e.target.src = 'https://via.placeholder.com/1200x400?text=Image+Not+Found' }}
-                                                        />
-                                                    )}
-                                                </div>
+                                            <div 
+                                                className="relative w-full h-full cursor-ns-resize"
+                                                onMouseDown={(e) => handleDragStart(e, index, 'bg', 0, yPercent)}
+                                            >
+                                                {banner.type === 'video' ? (
+                                                    <video
+                                                        src={banner.url}
+                                                        autoPlay loop muted playsInline
+                                                        className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+                                                        style={{ objectPosition: `50% ${yPercent}%` }}
+                                                    />
+                                                ) : (
+                                                    <img
+                                                        src={banner.url}
+                                                        alt="Preview"
+                                                        className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+                                                        style={{ objectPosition: `50% ${yPercent}%` }}
+                                                        onError={(e) => { e.target.src = 'https://via.placeholder.com/1200x400?text=Image+Not+Found' }}
+                                                    />
+                                                )}
 
-                                                {/* Foreground layer (bright, exactly clipped to visible area) */}
-                                                <div 
-                                                    className="absolute inset-0 w-full h-full cursor-ns-resize"
-                                                    style={{ clipPath: `inset(${topCutoff}% 0 ${bottomCutoff}% 0)` }}
-                                                    onMouseDown={(e) => handleDragStart(e, index, 'bg', 0, yPercent)}
-                                                >
-                                                    {banner.type === 'video' ? (
-                                                        <video
-                                                            src={banner.url}
-                                                            autoPlay loop muted playsInline
-                                                            className="w-full h-full object-cover pointer-events-none"
-                                                        />
-                                                    ) : (
-                                                        <img
-                                                            src={banner.url}
-                                                            alt="Preview Foreground"
-                                                            className="w-full h-full object-cover pointer-events-none"
-                                                        />
-                                                    )}
+                                                {/* Top Menu Overlay Simulation */}
+                                                <div className={`absolute top-0 left-0 right-0 ${isDesktop ? 'h-[15%]' : 'h-[12%]'} bg-white/70 backdrop-blur-md border-b border-black/10 flex items-center justify-center z-10 shadow-sm pointer-events-none`}>
+                                                    <span className="text-black/80 text-[9px] md:text-[10px] font-bold drop-shadow-md">מוסתר ע"י תפריט עליון</span>
                                                 </div>
-
-                                                {/* Red frame overlay tracking the visible area */}
-                                                <div 
-                                                    className="absolute left-0 right-0 border-2 border-red-500 z-20 pointer-events-none shadow-[0_0_15px_rgba(239,68,68,0.5)] transition-all duration-75 flex flex-col"
-                                                    style={{
-                                                        top: `${topCutoff}%`,
-                                                        bottom: `${bottomCutoff}%`
-                                                    }}
-                                                >
-                                                    {/* Top Menu Overlay Simulation */}
-                                                    <div className={`w-full ${isDesktop ? 'h-[12%]' : 'h-[15%]'} bg-white/70 backdrop-blur-md border-b border-black/10 flex items-center justify-center relative z-10 shadow-sm`}>
-                                                        <span className="text-black/80 text-[9px] md:text-[10px] font-bold drop-shadow-md">מוסתר ע"י תפריט עליון</span>
-                                                    </div>
-                                                    
-                                                    {/* Content Box Simulation */}
-                                                    {!banner.hideContentBox && (
-                                                        <div 
-                                                            className={`absolute backdrop-blur-md rounded-2xl ${isDesktop ? 'px-5 py-3' : 'px-3 py-2'} border border-white/20 shadow-2xl text-center transition-all duration-75 flex flex-col items-center cursor-move ${dragState.isDragging && dragState.type === 'box' ? 'ring-2 ring-blue-500 shadow-blue-500/50' : ''}`}
+                                                
+                                                {/* Content Box Simulation */}
+                                                {!banner.hideContentBox && (
+                                                    <div 
+                                                        className={`absolute backdrop-blur-md rounded-2xl ${isDesktop ? 'px-5 py-3' : 'px-3 py-2'} border border-white/20 shadow-2xl text-center transition-all duration-75 flex flex-col items-center cursor-move ${dragState.isDragging && dragState.type === 'box' ? 'ring-2 ring-blue-500 shadow-blue-500/50' : ''} z-20`}
                                                             style={{
                                                                 width: isDesktop ? 'max-content' : 'max-content',
                                                                 maxWidth: isDesktop ? 'none' : '95%',
@@ -681,9 +682,17 @@ export default function BannerClient() {
                                                             onMouseDown={(e) => handleDragStart(e, index, 'box', contentX, contentY)}
                                                         >
                                                             {banner.contentLang === 'en' && banner.contentEn ? (
-                                                                <div className={`pointer-events-none whitespace-normal px-0 [&_p]:my-1.5 ${isDesktop ? 'max-w-none' : 'max-w-none mx-auto text-sm'}`} dangerouslySetInnerHTML={{ __html: banner.contentEn }} />
+                                                                <div 
+                                                                    className={`pointer-events-none whitespace-normal px-0 [&_p]:my-1.5 ${isDesktop ? 'max-w-none' : 'max-w-none mx-auto text-sm'}`} 
+                                                                    style={{ lineHeight: banner.lineHeight || '1.5' }}
+                                                                    dangerouslySetInnerHTML={{ __html: banner.contentEn }} 
+                                                                />
                                                             ) : (banner.contentLang !== 'en' && (banner.contentHe || banner.content)) ? (
-                                                                <div className={`pointer-events-none whitespace-normal px-0 [&_p]:my-1.5 ${isDesktop ? 'max-w-none' : 'max-w-none mx-auto text-sm'}`} dangerouslySetInnerHTML={{ __html: banner.contentHe || banner.content }} />
+                                                                <div 
+                                                                    className={`pointer-events-none whitespace-normal px-0 [&_p]:my-1.5 ${isDesktop ? 'max-w-none' : 'max-w-none mx-auto text-sm'}`} 
+                                                                    style={{ lineHeight: banner.lineHeight || '1.5' }}
+                                                                    dangerouslySetInnerHTML={{ __html: banner.contentHe || banner.content }} 
+                                                                />
                                                             ) : (
                                                                 <>
                                                                     {/* Placeholder fallback for backward compatibility */}
@@ -699,8 +708,12 @@ export default function BannerClient() {
                                                                     </div>
                                                                 </>
                                                             )}
-                                                            <div className={`mt-1 ${isDesktop ? 'md:mt-1.5' : ''} inline-block border px-6 py-2.5 font-bold tracking-widest uppercase rounded-full pointer-events-none transition duration-500 border-[var(--btn-border)] text-[var(--btn-text)] ${isDesktop ? 'text-sm' : 'text-xs'}`}
-                                                                style={{ '--btn-text': banner.btnTextColor || '#000000', '--btn-border': banner.btnBorderColor || '#000000' }}
+                                                            <div className={`inline-block border px-6 py-2.5 font-bold tracking-widest uppercase rounded-full pointer-events-none transition duration-500 border-[var(--btn-border)] text-[var(--btn-text)] ${isDesktop ? 'text-sm' : 'text-xs'}`}
+                                                                style={{ 
+                                                                    '--btn-text': banner.btnTextColor || '#000000', 
+                                                                    '--btn-border': banner.btnBorderColor || '#000000',
+                                                                    marginTop: `${banner.buttonMarginTop ?? (isDesktop ? 16 : 12)}px`
+                                                                }}
                                                             >
                                                                 {banner.contentLang === 'en' ? (banner.btnTextEn || 'SHOP NOW') : (banner.btnTextHe || 'קנה עכשיו')}
                                                             </div>
@@ -715,8 +728,8 @@ export default function BannerClient() {
                                         <div className="text-gray-400 z-10">לא הוזן קישור להצגה</div>
                                     )}
                                 </div>
-                            )}
-                        </div>
+                            </div>
+                        )}
                     </div>
                 ))}
             </div>
