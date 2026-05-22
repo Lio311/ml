@@ -93,7 +93,7 @@ export default function QuickViewModal({ product, isOpen, onClose }) {
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.95, y: 20 }}
                         transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-                        className={`relative w-full max-w-4xl bg-white/85 backdrop-blur-2xl rounded-2xl md:rounded-3xl shadow-2xl overflow-hidden flex flex-col md:flex-row max-h-[95vh] md:max-h-[90vh] border border-white/20 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}
+                        className={`relative w-full max-w-4xl bg-white/50 backdrop-blur-3xl rounded-2xl md:rounded-3xl shadow-2xl overflow-hidden flex flex-col md:flex-row max-h-[95vh] md:max-h-[90vh] border border-white/20 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}
                     >
                         {/* Close Button */}
                         <button

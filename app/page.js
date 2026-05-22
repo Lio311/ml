@@ -291,9 +291,7 @@ export default async function Home() {
         </div>
       </section>
       </FadeIn>
-      <FadeIn>
-        <HomeSEOContent />
-      </FadeIn>
+      <HomeSEOContent />
     </div>
   );
 }
