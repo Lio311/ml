@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
-import { Save, Image as ImageIcon, Video, AlignCenter, ArrowUp, ArrowDown, ArrowLeft, ArrowRight, Plus, Trash2, Eye, EyeOff } from 'lucide-react';
+import { Save, Image as ImageIcon, Video, AlignCenter, ArrowUp, ArrowDown, ArrowLeft, ArrowRight, Plus, Trash2, Eye, EyeOff, ChevronUp, ChevronDown } from 'lucide-react';
 import RichTextEditor from '../components/RichTextEditor';
 
 // Default content shown in editor when no content has been saved yet.
@@ -178,10 +178,18 @@ export default function BannerClient() {
                     <div key={index} className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 relative">
                         <div className="flex flex-col-reverse sm:flex-row sm:items-center justify-between gap-4 mb-6 border-b pb-4">
                             <div className="flex items-center gap-3">
+                                <button 
+                                    onClick={() => updateBanner(index, 'isCollapsed', banner.isCollapsed !== undefined ? !banner.isCollapsed : !banner.isHidden)}
+                                    className="p-1 hover:bg-gray-100 rounded-full transition-colors"
+                                >
+                                    {(banner.isCollapsed !== undefined ? banner.isCollapsed : banner.isHidden) ? <ChevronDown size={24} className="text-gray-500" /> : <ChevronUp size={24} className="text-gray-500" />}
+                                </button>
                                 <div className={`w-8 h-8 min-w-[32px] min-h-[32px] rounded-full flex items-center justify-center font-bold ${banner.isHidden ? 'bg-orange-100 text-orange-700' : 'bg-blue-100 text-blue-700'}`}>
                                     {index + 1}
                                 </div>
-                                <h2 className="text-lg sm:text-xl font-bold">באנר מספר {index + 1} {banner.isHidden && <span className="text-sm font-normal text-orange-600 mr-2">(מוסתר)</span>}</h2>
+                                <h2 className="text-lg sm:text-xl font-bold cursor-pointer" onClick={() => updateBanner(index, 'isCollapsed', banner.isCollapsed !== undefined ? !banner.isCollapsed : !banner.isHidden)}>
+                                    באנר מספר {index + 1} {banner.isHidden && <span className="text-sm font-normal text-orange-600 mr-2">(מוסתר)</span>}
+                                </h2>
                             </div>
 
                             <div className="flex gap-1 bg-gray-50 p-1 rounded-xl border border-gray-100 w-fit">
@@ -219,7 +227,8 @@ export default function BannerClient() {
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        {!(banner.isCollapsed !== undefined ? banner.isCollapsed : banner.isHidden) && (
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                             <div className="space-y-6">
                                 <div>
                                     <label className="block text-sm font-semibold text-gray-700 mb-3">סוג הבאנר</label>
@@ -700,13 +709,13 @@ export default function BannerClient() {
 
                                                     <div className="absolute inset-0 bg-red-500/5 pointer-events-none"></div>
                                                 </div>
-                                            </div>
-                                        );
-                                    })()
-                                ) : (
-                                    <div className="text-gray-400 z-10">לא הוזן קישור להצגה</div>
-                                )}
-                            </div>
+                                            );
+                                        })()
+                                    ) : (
+                                        <div className="text-gray-400 z-10">לא הוזן קישור להצגה</div>
+                                    )}
+                                </div>
+                            )}
                         </div>
                     </div>
                 ))}
