@@ -302,3 +302,22 @@ input[autocomplete="one-time-code"] {
 .ql-editor s { text-decoration: line-through; }
 .ql-editor ol { list-style-type: decimal; padding-inline-start: 1.5em; }
 .ql-editor ul { list-style-type: disc; padding-inline-start: 1.5em; }
+
+/* Banner Text Content Fixes - Prevents massive gaps on large text/cursive fonts */
+.banner-text-content p {
+    margin-top: 4px;
+    margin-bottom: 4px;
+}
+
+.banner-text-content p:has(span[style*="1.35em"]),
+.banner-text-content p:has(span[style*="1.75em"]),
+.banner-text-content p:has(span[style*="2.5em"]),
+.banner-text-content p:has(span[style*="cursive"]) {
+    line-height: 1.15 !important;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.banner-text-content span[style*="cursive"] {
+    line-height: 1.15 !important;
+}
