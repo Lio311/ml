@@ -690,8 +690,8 @@ export default function BannerClient() {
                                                                     </div>
                                                                 </>
                                                             )}
-                                                            <div className={`mt-3 ${isDesktop ? 'md:mt-4' : ''} inline-block border px-6 py-2.5 font-bold tracking-widest uppercase rounded-full pointer-events-none ${isDesktop ? 'text-sm' : 'text-xs'}`}
-                                                                style={{ color: banner.btnTextColor || '#000000', borderColor: banner.btnBorderColor || '#000000' }}
+                                                            <div className={`mt-2 ${isDesktop ? 'md:mt-3' : ''} inline-block border px-6 py-2.5 font-bold tracking-widest uppercase rounded-full pointer-events-none transition duration-500 border-[var(--btn-border)] text-[var(--btn-text)] ${isDesktop ? 'text-sm' : 'text-xs'}`}
+                                                                style={{ '--btn-text': banner.btnTextColor || '#000000', '--btn-border': banner.btnBorderColor || '#000000' }}
                                                             >
                                                                 {banner.contentLang === 'en' ? (banner.btnTextEn || 'SHOP NOW') : (banner.btnTextHe || 'קנה עכשיו')}
                                                             </div>
