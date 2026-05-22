@@ -305,8 +305,7 @@ input[autocomplete="one-time-code"] {
 
 /* Banner Text Content Fixes - Prevents massive gaps on large text/cursive fonts */
 .banner-text-content p {
-    margin-top: 2px;
-    margin-bottom: 2px;
+    margin-bottom: 0.5em;
 }
 
 .banner-text-content h1,
@@ -318,5 +317,5 @@ input[autocomplete="one-time-code"] {
 .banner-text-content [style*="Dancing Script"],
 .banner-text-content [style*="Gveret Levin"],
 .banner-text-content [style*="cursive"] {
-    line-height: 1.05 !important;
+    line-height: 0.85 !important;
 }
