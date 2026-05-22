@@ -26,7 +26,7 @@ export default function FadeIn({ children, delay = 0, direction = "up", classNam
             variants={variants}
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, margin: "-10%" }} // Triggers when element is 10% inside the viewport
+            viewport={{ once: true, margin: "150px" }} // Triggers just before the element enters the viewport
             className={className}
         >
             {children}
