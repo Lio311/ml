@@ -125,12 +125,12 @@ export default function ProductCard({ product }) {
             )}
 
             {((product.stock || 0) <= 20) && (
-                <div className={`absolute top-10 start-2 z-10 text-[10px] leading-3 font-bold px-2 py-1 rounded shadow-sm text-center text-white ${(product.stock || 0) <= 0 ? 'bg-gray-400' : 'bg-red-600'
+                <div className={`absolute top-10 start-2 z-10 text-[9px] leading-3 font-bold px-1.5 py-1 rounded shadow-sm text-center text-white whitespace-nowrap ${(product.stock || 0) <= 0 ? 'bg-gray-400' : 'bg-red-600'
                     }`}>
                     {(product.stock || 0) <= 0 ? (
-                        <span className="whitespace-pre-line">{t('common.out_of_stock').replace(' ', '\n')}</span>
+                        <span>{t('common.out_of_stock')}</span>
                     ) : (
-                        <span className="whitespace-pre-line">{t('common.last_units').replace(' ', '\n')}</span>
+                        <span>{t('common.last_units')}</span>
                     )}
                 </div>
             )}
