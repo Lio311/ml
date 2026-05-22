@@ -253,8 +253,9 @@ export default async function Home() {
         </FadeIn>
       </div>
 
-      <section className="py-12 bg-white border-t">
-        <div className="container mx-auto px-4">
+      <FadeIn>
+        <section className="py-12 bg-white border-t">
+          <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             <Link href="/catalog?category=נדיר" className="group relative h-[400px] overflow-hidden rounded-lg">
               <Image src="/collection-exclusive.png" alt={t('homepage.exclusive_title').replace('\n', ' ')} fill className="object-cover transition-transform duration-700 group-hover:scale-110" />
@@ -289,7 +290,10 @@ export default async function Home() {
           </div>
         </div>
       </section>
-      <HomeSEOContent />
+      </FadeIn>
+      <FadeIn>
+        <HomeSEOContent />
+      </FadeIn>
     </div>
   );
 }

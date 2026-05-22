@@ -135,11 +135,11 @@ export default function SmartAdvisorTab() {
                         animate={{ x: 0, opacity: 1 }}
                         exit={{ x: isHebrew ? '-100%' : '100%', opacity: 0 }}
                         transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-                        className={`fixed top-0 ${isHebrew ? 'left-0 border-r' : 'right-0 border-l'} h-[100dvh] w-[400px] bg-slate-900/80 backdrop-blur-2xl text-white z-[60] shadow-2xl flex flex-col border-white/10 hidden md:flex`}
+                        className={`fixed top-0 ${isHebrew ? 'left-0 border-r' : 'right-0 border-l'} h-[100dvh] w-[400px] bg-gradient-to-b from-gray-900 to-black text-white z-[60] shadow-2xl flex flex-col border-white/10 hidden md:flex`}
                         dir={isHebrew ? "rtl" : "ltr"}
                     >
                         {/* Header */}
-                        <div className="flex items-center justify-between p-4 border-b border-white/10 bg-black/30 backdrop-blur-md">
+                        <div className="flex items-center justify-between p-4 border-b border-white/10 bg-black/50">
                             <div className="flex items-center gap-3">
                                 <div>
                                     <h3 className="font-bold text-lg tracking-wide">
@@ -193,7 +193,7 @@ export default function SmartAdvisorTab() {
                         </div>
 
                         {/* Input Area */}
-                        <div className="p-4 border-t border-white/10 bg-black/30 backdrop-blur-md">
+                        <div className="p-4 border-t border-white/10 bg-black/50">
                             <form onSubmit={handleSubmit} className="relative">
                                 <input
                                     type="text"
