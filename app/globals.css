@@ -348,6 +348,11 @@ input[autocomplete="one-time-code"] {
     display: none !important;
 }
 
+/* Add a slight bottom margin to cursive paragraphs in the editor so there is a bit of breathing room before the next non-cursive paragraph */
+.dir-ltr .banner-editor-content p:has([style*="cursive" i]) {
+    margin-bottom: 0.5em !important;
+}
+
 /* Remove paragraph gap ONLY between consecutive cursive lines on the live site */
 .dir-ltr .banner-editor-content p:has([style*="cursive" i]):has(+ p:has([style*="cursive" i])),
 .banner-text-content.lang-en p:has([style*="cursive" i]):has(+ p:has([style*="cursive" i])) {
