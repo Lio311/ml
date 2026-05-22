@@ -232,48 +232,66 @@ export function CartProvider({ children }) {
         if (hasSyncedRef.current || isCartLocked) return;
         
         const email = user.primaryEmailAddress.emailAddress;
-        hasSyncedRef.current = true;
 
         fetch(`/api/cart/sync?email=${encodeURIComponent(email)}`)
             .then(res => res.json())
             .then(data => {
-                if (data && data.items && Array.isArray(data.items) && data.items.length > 0) {
-                    setCartItems(prev => {
-                        let newCart = [...prev];
-                        let changed = false;
+                const isUnsynced = localStorage.getItem("cartUnsynced") === "true";
+                
+                if (data && data.items && Array.isArray(data.items)) {
+                    if (isUnsynced) {
+                        // Merge local and server carts
+                        setCartItems(prev => {
+                            let newCart = [...prev];
+                            let changed = false;
 
-                        data.items.forEach(serverItem => {
-                            const existing = newCart.find(localItem => 
-                                localItem.id === serverItem.id && String(localItem.size) === String(serverItem.size) && (localItem.vendorId || 'main') === (serverItem.vendorId || 'main')
-                            );
-                            if (!existing) {
-                                newCart.push(serverItem);
-                                changed = true;
-                            } else if (serverItem.quantity > existing.quantity) {
-                                const index = newCart.findIndex(localItem => 
+                            data.items.forEach(serverItem => {
+                                const existing = newCart.find(localItem => 
                                     localItem.id === serverItem.id && String(localItem.size) === String(serverItem.size) && (localItem.vendorId || 'main') === (serverItem.vendorId || 'main')
                                 );
-                                if (index >= 0) newCart[index].quantity = serverItem.quantity;
-                                changed = true;
-                            }
-                        });
+                                if (!existing) {
+                                    newCart.push(serverItem);
+                                    changed = true;
+                                } else if (serverItem.quantity > existing.quantity) {
+                                    const index = newCart.findIndex(localItem => 
+                                        localItem.id === serverItem.id && String(localItem.size) === String(serverItem.size) && (localItem.vendorId || 'main') === (serverItem.vendorId || 'main')
+                                    );
+                                    if (index >= 0) newCart[index].quantity = serverItem.quantity;
+                                    changed = true;
+                                }
+                            });
 
-                        if (changed) {
+                            if (changed) {
+                                setTimeout(() => {
+                                    toast.success(t('cart.cart_restored'));
+                                }, 500);
+                                return newCart;
+                            }
+                            return prev;
+                        });
+                    } else {
+                        // Not unsynced (stale local cart) -> Overwrite with server truth
+                        setCartItems(data.items);
+                        if (data.items.length > 0) {
                             setTimeout(() => {
                                 toast.success(t('cart.cart_restored'));
                             }, 500);
-                            return newCart;
                         }
-                        return prev;
-                    });
+                    }
                 }
+                hasSyncedRef.current = true;
             })
-            .catch(err => console.error("Failed to fetch cart:", err));
+            .catch(err => {
+                console.error("Failed to fetch cart:", err);
+                hasSyncedRef.current = true;
+            });
     }, [user, isCartLocked]);
 
     // Sync to Site Server (Abandoned Cart) - Only for 'main' items
     useEffect(() => {
         if (!user?.primaryEmailAddress?.emailAddress) return;
+        if (!hasSyncedRef.current) return; // Prevent uploading zombie cart before GET finishes
+        
         const syncCart = setTimeout(() => {
             const mainItems = cartItems.filter(i => !i.vendorId || i.vendorId === 'main');
             fetch('/api/cart/sync', {
@@ -283,12 +301,19 @@ export function CartProvider({ children }) {
                     email: user.primaryEmailAddress.emailAddress,
                     items: mainItems
                 })
+            }).then(() => {
+                localStorage.removeItem("cartUnsynced");
             }).catch(err => console.error(err));
         }, 2000);
         return () => clearTimeout(syncCart);
     }, [cartItems, user]);
 
+    const markCartUnsynced = () => {
+        localStorage.setItem("cartUnsynced", "true");
+    };
+
     const addToCart = (product, size, price, vendorId = 'main', vendorName = 'האתר הרשמי', originalPrice = null) => {
+        markCartUnsynced();
         if (isCartLocked && vendorId === 'main') {
             toast.error(t('cart.cart_locked_lottery'));
             return;
@@ -377,6 +402,7 @@ export function CartProvider({ children }) {
     };
 
     const addMultipleToCart = (itemsToAdd, options = {}) => {
+        markCartUnsynced();
         if (isCartLocked) {
             toast.error(t('cart.cart_locked_lottery'));
             return;
@@ -473,6 +499,7 @@ export function CartProvider({ children }) {
     };
 
     const addBundleToCart = (bundle) => {
+        markCartUnsynced();
         if (isCartLocked) {
             toast.error(t('cart.cart_locked_lottery'));
             return;
@@ -516,6 +543,7 @@ export function CartProvider({ children }) {
     };
 
     const removeFromCart = (id, size, vendorId = 'main') => {
+        markCartUnsynced();
         if (isCartLocked && vendorId === 'main') {
             toast.error(t('cart.cart_locked_lottery'));
             return;
@@ -524,6 +552,7 @@ export function CartProvider({ children }) {
     };
 
     const updateQuantity = (id, size, quantity, vendorId = 'main') => {
+        markCartUnsynced();
         if (isCartLocked && vendorId === 'main') {
             toast.error(t('cart.cart_locked_lottery'));
             return;
@@ -589,6 +618,7 @@ export function CartProvider({ children }) {
     };
 
     const clearActiveVendorCart = () => {
+        markCartUnsynced();
         const remaining = cartItems.filter(item => (item.vendorId || 'main') !== activeVendorId);
         setCartItems(remaining);
         if (activeVendorId === 'main') {
@@ -603,6 +633,7 @@ export function CartProvider({ children }) {
     };
 
     const clearCart = () => {
+        markCartUnsynced();
         setCartItems([]);
         setLotteryMode({ active: false, expiresAt: null });
         setLotteryTimeLeft(null);
