@@ -59,6 +59,13 @@ export default function RichTextEditorClient({ value, onChange, dir = 'rtl' }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
+    // Set paragraph separator so Chrome uses <p> on Enter
+    useEffect(() => {
+        try { document.execCommand('defaultParagraphSeparator', false, 'p'); } catch {}
+    }, []);
+
+    const [darkEditor, setDarkEditor] = useState(false);
+
     // When value changes from outside (tab switch), update the editor
     useEffect(() => {
         if (!editorRef.current) return;
@@ -82,6 +89,30 @@ export default function RichTextEditorClient({ value, onChange, dir = 'rtl' }) {
         document.execCommand(cmd, false, val);
         triggerChange();
     }, [triggerChange]);
+
+    const handleKeyDown = useCallback((e) => {
+        if (e.key === 'Enter') {
+            if (e.shiftKey) {
+                // Shift+Enter → soft line break (<br>)
+                e.preventDefault();
+                const sel = window.getSelection();
+                if (sel && sel.rangeCount > 0) {
+                    const range = sel.getRangeAt(0);
+                    range.deleteContents();
+                    const br = document.createElement('br');
+                    range.insertNode(br);
+                    // Move cursor after <br>
+                    range.setStartAfter(br);
+                    range.setEndAfter(br);
+                    sel.removeAllRanges();
+                    sel.addRange(range);
+                }
+                triggerChange();
+            }
+            // Regular Enter → browser creates <p> (via defaultParagraphSeparator)
+        }
+    }, [triggerChange]);
+
 
     const applyFont = useCallback((fontFamily) => {
         editorRef.current?.focus();
@@ -192,6 +223,9 @@ export default function RichTextEditorClient({ value, onChange, dir = 'rtl' }) {
                 <ToolbarBtn title="נקה עיצוב" onClick={() => execCmd('removeFormat')}>
                     <span className="text-xs font-normal">✕</span>
                 </ToolbarBtn>
+                <ToolbarBtn title="רקע כהה/בהיר לעריכה" onClick={() => setDarkEditor(d => !d)}>
+                    <span style={{ fontSize: 14 }}>{darkEditor ? '☀️' : '🌙'}</span>
+                </ToolbarBtn>
             </div>
 
             {/* Editable area */}
@@ -201,7 +235,8 @@ export default function RichTextEditorClient({ value, onChange, dir = 'rtl' }) {
                 suppressContentEditableWarning
                 dir={dir}
                 onInput={triggerChange}
-                className="min-h-[120px] p-3 text-sm focus:outline-none bg-white leading-relaxed"
+                onKeyDown={handleKeyDown}
+                className={`min-h-[120px] p-3 text-sm focus:outline-none leading-relaxed banner-editor-content transition-colors duration-200 ${darkEditor ? 'bg-gray-900' : 'bg-white'}`}
                 style={{ textAlign: dir === 'rtl' ? 'right' : 'left' }}
                 data-placeholder="הקלד כאן את הטקסט..."
             />
@@ -211,6 +246,19 @@ export default function RichTextEditorClient({ value, onChange, dir = 'rtl' }) {
                     color: #9ca3af;
                     pointer-events: none;
                     display: block;
+                }
+                .banner-editor-content p {
+                    margin: 0;
+                    min-height: 1.2em;
+                    padding: 0.15em 0;
+                }
+                .banner-editor-content div {
+                    margin: 0;
+                    min-height: 1.2em;
+                }
+                .banner-editor-content br {
+                    display: block;
+                    content: '';
                 }
             `}</style>
         </div>

@@ -42,7 +42,7 @@ export default function BannerClient() {
                 }
             } else if (type === 'bg') {
                 const bgDelta = -deltaY;
-                let newPos = Math.min(120, Math.max(-20, initialValY + bgDelta));
+                let newPos = Math.min(120, Math.max(-40, initialValY + bgDelta));
                 if (isDesktop) {
                     updateBanner(index, 'objectPositionDesktop', Math.round(newPos));
                 } else {
@@ -290,7 +290,7 @@ export default function BannerClient() {
                                                 <input 
                                                     dir="ltr"
                                                     type="range" 
-                                                    min="-20" 
+                                                    min="-40" 
                                                     max="120" 
                                                     value={
                                                         banner.objectPositionDesktop ?? 
@@ -303,10 +303,10 @@ export default function BannerClient() {
                                                     }}
                                                     className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
                                                 />
-                                                <div className="flex justify-between text-xs text-gray-500 mt-1 font-bold">
-                                                    <span>למטה (-20)</span>
-                                                    <span>אמצע (50)</span>
-                                                    <span>למעלה (120)</span>
+                                                <div className="flex justify-between text-xs text-gray-500 mt-1 font-bold" dir="ltr">
+                                                    <span>-40 למטה</span>
+                                                    <span>50 אמצע</span>
+                                                    <span>120 למעלה</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -394,7 +394,7 @@ export default function BannerClient() {
                                                 <input 
                                                     dir="ltr"
                                                     type="range" 
-                                                    min="-20" 
+                                                    min="-40" 
                                                     max="120" 
                                                     value={
                                                         banner.objectPositionMobile ?? 
@@ -403,10 +403,10 @@ export default function BannerClient() {
                                                     onChange={(e) => updateBanner(index, 'objectPositionMobile', parseInt(e.target.value))}
                                                     className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
                                                 />
-                                                <div className="flex justify-between text-xs text-gray-500 mt-1 font-bold">
-                                                    <span>למטה (-20)</span>
-                                                    <span>אמצע (50)</span>
-                                                    <span>למעלה (120)</span>
+                                                <div className="flex justify-between text-xs text-gray-500 mt-1 font-bold" dir="ltr">
+                                                    <span>-40 למטה</span>
+                                                    <span>50 אמצע</span>
+                                                    <span>120 למעלה</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -463,6 +463,33 @@ export default function BannerClient() {
                                                 <div className="flex justify-between text-xs text-gray-500 mt-1 font-bold">
                                                     <span>שקוף (0%)</span>
                                                     <span>אטום (100%)</span>
+                                                </div>
+                                            </div>
+                                            {/* Button Colors */}
+                                            <div className="grid grid-cols-2 gap-4 mt-3">
+                                                <div>
+                                                    <label className="block text-sm font-semibold text-gray-700 mb-2">צבע טקסט כפתור</label>
+                                                    <div className="flex items-center gap-2">
+                                                        <input
+                                                            type="color"
+                                                            value={banner.btnTextColor || '#000000'}
+                                                            onChange={(e) => updateBanner(index, 'btnTextColor', e.target.value)}
+                                                            className="h-10 w-12 cursor-pointer rounded border border-gray-300 p-0.5"
+                                                        />
+                                                        <span className="text-xs text-gray-500 font-mono">{banner.btnTextColor || '#000000'}</span>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <label className="block text-sm font-semibold text-gray-700 mb-2">צבע מסגרת כפתור</label>
+                                                    <div className="flex items-center gap-2">
+                                                        <input
+                                                            type="color"
+                                                            value={banner.btnBorderColor || '#000000'}
+                                                            onChange={(e) => updateBanner(index, 'btnBorderColor', e.target.value)}
+                                                            className="h-10 w-12 cursor-pointer rounded border border-gray-300 p-0.5"
+                                                        />
+                                                        <span className="text-xs text-gray-500 font-mono">{banner.btnBorderColor || '#000000'}</span>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -660,7 +687,9 @@ export default function BannerClient() {
                                                                     </div>
                                                                 </>
                                                             )}
-                                                            <div className={`inline-block border border-black text-black px-6 py-2.5 font-bold tracking-widest uppercase rounded-full pointer-events-none ${isDesktop ? 'text-sm' : 'text-xs'}`}>
+                                                            <div className={`inline-block border px-6 py-2.5 font-bold tracking-widest uppercase rounded-full pointer-events-none ${isDesktop ? 'text-sm' : 'text-xs'}`}
+                                                                style={{ color: banner.btnTextColor || '#000000', borderColor: banner.btnBorderColor || '#000000' }}
+                                                            >
                                                                 {banner.contentLang === 'en' ? (banner.btnTextEn || 'SHOP NOW') : (banner.btnTextHe || 'קנה עכשיו')}
                                                             </div>
                                                         </div>
