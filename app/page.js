@@ -201,7 +201,7 @@ export default async function Home() {
             contentOverlays={banners.map((banner, i) => (
               !banner.hideContentBox ? (
                 <div key={i} 
-                     className="w-max md:w-[var(--desktop-width)] max-w-[95vw] text-black text-center content-box-bg px-3 py-2 md:px-5 md:py-3 rounded-2xl backdrop-blur-md shadow-2xl border border-white/20"
+                     className="w-max md:w-[var(--desktop-width)] max-w-[130vw] text-black text-center content-box-bg px-3 py-2 md:px-5 md:py-3 rounded-2xl backdrop-blur-md shadow-2xl border border-white/20"
                      style={{ '--desktop-width': banner.boxWidthDesktop > 0 ? `${banner.boxWidthDesktop}px` : undefined }}
                 >
                   {locale === 'en' && banner.contentEn ? (
