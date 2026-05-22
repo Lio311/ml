@@ -496,8 +496,9 @@ export default function BannerClient() {
                                                 </label>
                                                 <div className={banner.contentLang === 'en' ? 'dir-ltr' : 'dir-rtl'}>
                                                     <RichTextEditor 
-                                                        value={banner.contentLang === 'en' ? (banner.contentEn || '') : (banner.contentHe || '')}
+                                                        value={banner.contentLang === 'en' ? (banner.contentEn || '') : (banner.contentHe || banner.content || '')}
                                                         onChange={(val) => updateBanner(index, banner.contentLang === 'en' ? 'contentEn' : 'contentHe', val)}
+                                                        dir={banner.contentLang === 'en' ? 'ltr' : 'rtl'}
                                                     />
                                                 </div>
                                             </div>
@@ -556,7 +557,10 @@ export default function BannerClient() {
                                         
                                         const contentY = isDesktop ? (banner.contentPositionDesktop ?? 50) : (banner.contentPositionMobile ?? 80);
                                         const contentX = isDesktop ? (banner.contentPositionXDesktop ?? 50) : 50;
-                                        const basePreviewScale = isDesktop ? 0.6 : 0.65;
+                                        // Virtual banner dimensions (matching real site)
+                                        // Desktop: ~82vh of a 900px screen = ~738px tall
+                                        // Preview container: 300px → scale = 300/738 ≈ 0.406
+                                        const basePreviewScale = isDesktop ? 0.406 : 0.88;
                                         const userScale = isDesktop ? (banner.contentScaleDesktop ?? 100) / 100 : (banner.contentScaleMobile ?? 100) / 100;
                                         const finalScale = basePreviewScale * userScale;
 
@@ -628,7 +632,7 @@ export default function BannerClient() {
                                                                 maxWidth: isDesktop ? 'none' : '400px',
                                                                 top: `${contentY}%`,
                                                                 left: `${contentX}%`,
-                                                                transform: `translate(-${contentX}%, -${contentY}%) scale(${finalScale * (isDesktop ? 0.35 : 1)})`,
+                                                                transform: `translate(-${contentX}%, -${contentY}%) scale(${finalScale})`,  
                                                                 transformOrigin: `${contentX}% ${contentY}%`,
                                                                 backgroundColor: `rgba(255, 255, 255, ${contentOpacity / 100})`,
                                                                 pointerEvents: 'auto'
@@ -636,9 +640,9 @@ export default function BannerClient() {
                                                             onMouseDown={(e) => handleDragStart(e, index, 'box', contentX, contentY)}
                                                         >
                                                             {banner.contentLang === 'en' && banner.contentEn ? (
-                                                                <div className={`pointer-events-none whitespace-normal ql-editor px-0 pb-3 ${isDesktop ? 'max-w-none' : 'max-w-[280px] mx-auto text-sm'}`} dangerouslySetInnerHTML={{ __html: banner.contentEn }} />
-                                                            ) : (banner.contentLang !== 'en' && banner.contentHe) ? (
-                                                                <div className={`pointer-events-none whitespace-normal ql-editor px-0 pb-3 ${isDesktop ? 'max-w-none' : 'max-w-[280px] mx-auto text-sm'}`} dangerouslySetInnerHTML={{ __html: banner.contentHe }} />
+                                                                <div className={`pointer-events-none whitespace-normal px-0 pb-3 ${isDesktop ? 'max-w-none' : 'max-w-[280px] mx-auto text-sm'}`} dangerouslySetInnerHTML={{ __html: banner.contentEn }} />
+                                                            ) : (banner.contentLang !== 'en' && (banner.contentHe || banner.content)) ? (
+                                                                <div className={`pointer-events-none whitespace-normal px-0 pb-3 ${isDesktop ? 'max-w-none' : 'max-w-[280px] mx-auto text-sm'}`} dangerouslySetInnerHTML={{ __html: banner.contentHe || banner.content }} />
                                                             ) : (
                                                                 <>
                                                                     {/* Placeholder fallback for backward compatibility */}
