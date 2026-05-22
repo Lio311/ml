@@ -35,7 +35,7 @@ function Counter({ end, duration = 2000, prefix = "" }) {
 export default function LiveStats({ stats }) {
     const { t } = useLanguage();
     return (
-        <section className="bg-black text-white pt-3 pb-1 md:py-1.5 border-t border-gray-800 relative z-20">
+        <section className="w-[100vw] relative left-1/2 -translate-x-1/2 bg-black text-white pt-3 pb-1 md:py-1.5 border-t border-gray-800 z-20">
             <div className="container mx-auto px-4">
                 <div className="grid grid-cols-3 gap-1 text-center divide-x divide-gray-800 rtl:divide-x-reverse">
                     <div className="flex flex-col items-center justify-center gap-0.5">
