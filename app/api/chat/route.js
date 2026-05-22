@@ -158,9 +158,12 @@ export async function POST(req) {
                     let paramCounter = 1;
 
                     if (args.query) {
-                        queryStr += ` AND (brand ILIKE $${paramCounter} OR model ILIKE $${paramCounter} OR category ILIKE $${paramCounter})`;
-                        queryParams.push(`%${args.query}%`);
-                        paramCounter++;
+                        const words = args.query.trim().split(/\s+/);
+                        for (const word of words) {
+                            queryStr += ` AND (brand ILIKE $${paramCounter} OR model ILIKE $${paramCounter} OR category ILIKE $${paramCounter})`;
+                            queryParams.push(`%${word}%`);
+                            paramCounter++;
+                        }
                     }
                     if (args.season) {
                         queryStr += ` AND seasons_en ILIKE $${paramCounter}`;
