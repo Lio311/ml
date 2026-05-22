@@ -651,7 +651,7 @@ export default function BannerClient() {
                                         
                                         const contentY = isDesktop ? (banner.contentPositionDesktop ?? 50) : (banner.contentPositionMobile ?? 80);
                                         const contentX = isDesktop ? (banner.contentPositionXDesktop ?? 50) : 50;
-                                        const basePreviewScale = isDesktop ? 0.406 : 0.88;
+                                        const basePreviewScale = isDesktop ? 0.406 : 0.72;
                                         const userScale = isDesktop ? (banner.contentScaleDesktop ?? 100) / 100 : (banner.contentScaleMobile ?? 100) / 100;
                                         const finalScale = basePreviewScale * userScale;
 
@@ -687,10 +687,10 @@ export default function BannerClient() {
                                                 {/* Content Box Simulation */}
                                                 {!banner.hideContentBox && (
                                                     <div 
-                                                        className={`absolute backdrop-blur-md rounded-2xl ${isDesktop ? 'px-5 py-3' : 'px-3 py-2'} border border-white/20 shadow-2xl text-center transition-all duration-75 flex flex-col items-center cursor-move ${dragState.isDragging && dragState.type === 'box' ? 'ring-2 ring-blue-500 shadow-blue-500/50' : ''} z-20`}
+                                                        className={`absolute backdrop-blur-md rounded-2xl ${isDesktop ? 'px-5 py-3' : 'px-3 py-2'} border border-white/20 shadow-2xl text-center transition-all duration-75 cursor-move ${dragState.isDragging && dragState.type === 'box' ? 'ring-2 ring-blue-500 shadow-blue-500/50' : ''} z-20`}
                                                             style={{
                                                                 width: isDesktop ? (banner.boxWidthDesktop > 0 ? `${banner.boxWidthDesktop}px` : 'max-content') : 'max-content',
-                                                                maxWidth: isDesktop ? 'none' : '95%',
+                                                                maxWidth: isDesktop ? 'none' : '370px',
                                                                 top: `${contentY}%`,
                                                                 left: `${contentX}%`,
                                                                 transform: `translate(-${contentX}%, -${contentY}%) scale(${finalScale})`,  
