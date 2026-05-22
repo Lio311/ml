@@ -240,15 +240,16 @@ export default function BannerClient() {
                                             <span>תמונה</span>
                                         </button>
                                     </div>
-                                    <label className="flex items-center gap-2 mt-4 cursor-pointer w-fit">
-                                        <input
-                                            type="checkbox"
-                                            checked={banner.hideContentBox || false}
-                                            onChange={(e) => updateBanner(index, 'hideContentBox', e.target.checked)}
-                                            className="w-5 h-5 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                                        />
-                                        <span className="text-sm font-semibold text-gray-700">הסתר קובייה לבנה (טקסט) מהבאנר הזה</span>
-                                    </label>
+                                    <div className="mt-4 flex items-center gap-3">
+                                        <button
+                                            onClick={() => updateBanner(index, 'hideContentBox', !banner.hideContentBox)}
+                                            className={`flex items-center gap-2 px-4 py-2 rounded-lg transition-colors border ${banner.hideContentBox ? 'bg-orange-50 border-orange-200 text-orange-700 hover:bg-orange-100' : 'bg-white border-gray-200 text-gray-700 hover:bg-gray-50'}`}
+                                            title={banner.hideContentBox ? "הצג קובייה לבנה" : "הסתר קובייה לבנה"}
+                                        >
+                                            {banner.hideContentBox ? <EyeOff size={18} /> : <Eye size={18} />}
+                                            <span className="text-sm font-semibold">{banner.hideContentBox ? 'הקובייה הלבנה מוסתרת' : 'הקובייה הלבנה מוצגת'}</span>
+                                        </button>
+                                    </div>
                                 </div>
 
                                 <div>
