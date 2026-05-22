@@ -236,7 +236,7 @@ input[autocomplete="one-time-code"] {
   text-align: center !important;
 }
 
-/* Global Modern Scrollbar */
+/* Global Modern Scrollbar - transparent track, gray thumb */
 ::-webkit-scrollbar {
   width: 8px;
   height: 8px;
@@ -247,7 +247,7 @@ input[autocomplete="one-time-code"] {
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #d1d5db;
+  background: #c4c4c4;
   border-radius: 10px;
 }
 
@@ -255,13 +255,10 @@ input[autocomplete="one-time-code"] {
   background: #9ca3af;
 }
 
-@media (prefers-color-scheme: dark) {
-  ::-webkit-scrollbar-thumb {
-    background: #6b7280;
-  }
-  ::-webkit-scrollbar-thumb:hover {
-    background: #9ca3af;
-  }
+/* Standard (Firefox) scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #c4c4c4 transparent;
 }
 
 /* Custom Scrollbar for Admin Sidebar */

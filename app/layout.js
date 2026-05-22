@@ -115,8 +115,8 @@ export default async function RootLayout({ children }) {
         }
       }}
     >
-      <html lang={locale} dir="ltr" style={{ colorScheme: 'light' }}>
-        <body className={`${assistant.variable} ${dancingScript.variable} antialiased`} dir={dir}>
+      <html lang={locale} dir={dir} style={{ colorScheme: 'light' }}>
+        <body className={`${assistant.variable} ${dancingScript.variable} antialiased`}>
           <LanguageProvider initialLocale={locale}>
             <CartProvider>
               <WishlistProvider>
