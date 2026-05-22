@@ -200,11 +200,11 @@ export default async function Home() {
             banners={banners} 
             contentOverlays={banners.map((banner, i) => (
               !banner.hideContentBox ? (
-                <div key={i} className="w-[90vw] md:w-max max-w-lg md:max-w-max text-black text-center content-box-bg p-4 md:px-8 md:py-5 rounded-2xl backdrop-blur-md shadow-2xl border border-white/20">
+                <div key={i} className="w-[90vw] md:w-max max-w-lg md:max-w-max text-black text-center content-box-bg px-3 py-2 md:px-5 md:py-3 rounded-2xl backdrop-blur-md shadow-2xl border border-white/20">
                   {locale === 'en' && banner.contentEn ? (
-                      <div className={`whitespace-normal ql-editor px-0 pb-3 md:max-w-none max-w-[280px] mx-auto text-sm`} dangerouslySetInnerHTML={{ __html: banner.contentEn }} />
+                      <div className="whitespace-normal px-0 md:max-w-none max-w-[280px] mx-auto text-sm [&_p]:my-0.5" dangerouslySetInnerHTML={{ __html: banner.contentEn }} />
                   ) : (locale !== 'en' && banner.contentHe) ? (
-                      <div className={`whitespace-normal ql-editor px-0 pb-3 md:max-w-none max-w-[280px] mx-auto text-sm`} dangerouslySetInnerHTML={{ __html: banner.contentHe }} />
+                      <div className="whitespace-normal px-0 md:max-w-none max-w-[280px] mx-auto text-sm [&_p]:my-0.5" dangerouslySetInnerHTML={{ __html: banner.contentHe }} />
                   ) : (
                       <>
                         <h2 className="text-xs md:text-sm font-assistant tracking-[0.2em] uppercase mb-1 opacity-90 animate-fadeIn font-bold">

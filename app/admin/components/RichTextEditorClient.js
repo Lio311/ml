@@ -44,17 +44,40 @@ function ToolbarBtn({ title, onClick, children }) {
     );
 }
 
+// Detect whether an HTML string contains light-colored text (luminance > 180)
+function hasLightColor(html) {
+    if (!html) return false;
+    const hexColors = html.match(/color:\s*#([0-9a-fA-F]{6})/gi) || [];
+    for (const m of hexColors) {
+        const hex = m.match(/#([0-9a-fA-F]{6})/i)[1];
+        const r = parseInt(hex.slice(0,2), 16);
+        const g = parseInt(hex.slice(2,4), 16);
+        const b = parseInt(hex.slice(4,6), 16);
+        if ((r * 299 + g * 587 + b * 114) / 1000 > 180) return true;
+    }
+    const rgbColors = html.match(/color:\s*rgb\((\d+),\s*(\d+),\s*(\d+)\)/gi) || [];
+    for (const m of rgbColors) {
+        const parts = m.match(/(\d+),\s*(\d+),\s*(\d+)/);
+        const r = parseInt(parts[1]), g = parseInt(parts[2]), b = parseInt(parts[3]);
+        if ((r * 299 + g * 587 + b * 114) / 1000 > 180) return true;
+    }
+    return false;
+}
+
 export default function RichTextEditorClient({ value, onChange, dir = 'rtl' }) {
     const editorRef = useRef(null);
     const suppressRef = useRef(false);
     // Use a key to force re-mount when language tab switches (value changes dramatically)
     const prevValueRef = useRef(value);
+    const [darkEditor, setDarkEditor] = useState(false);
 
-    // On mount: set initial HTML
+    // On mount: set initial HTML and auto dark mode if content has light text
     useEffect(() => {
         if (editorRef.current) {
-            editorRef.current.innerHTML = normalizeHtml(value || '');
+            const html = normalizeHtml(value || '');
+            editorRef.current.innerHTML = html;
             prevValueRef.current = value;
+            if (hasLightColor(html)) setDarkEditor(true);
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
@@ -64,16 +87,18 @@ export default function RichTextEditorClient({ value, onChange, dir = 'rtl' }) {
         try { document.execCommand('defaultParagraphSeparator', false, 'p'); } catch {}
     }, []);
 
-    const [darkEditor, setDarkEditor] = useState(false);
-
-    // When value changes from outside (tab switch), update the editor
+    // When value changes from outside (tab switch), update editor and re-check dark mode
     useEffect(() => {
         if (!editorRef.current) return;
         if (value === prevValueRef.current) return;
         prevValueRef.current = value;
         suppressRef.current = true;
-        editorRef.current.innerHTML = normalizeHtml(value || '');
+        const html = normalizeHtml(value || '');
+        editorRef.current.innerHTML = html;
         suppressRef.current = false;
+        // Auto dark/light based on new content
+        if (hasLightColor(html)) setDarkEditor(true);
+        else setDarkEditor(false);
     }, [value]);
 
     const triggerChange = useCallback(() => {
