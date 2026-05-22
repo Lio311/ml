@@ -3,6 +3,7 @@
 import { createContext, useContext, useState, useEffect, useRef } from "react";
 import { useUser } from "@clerk/nextjs";
 import toast from 'react-hot-toast';
+import { usePathname } from 'next/navigation';
 import { useLanguage } from "./LanguageContext";
 import { getDiscountedPrice, isDiscountActive } from "../lib/productUtils";
 import { useLotteryState } from "../hooks/useLotteryState";
@@ -18,6 +19,7 @@ export function CartProvider({ children }) {
     const [isSelfPickup, setIsSelfPickup] = useState(false);
 
     const { user } = useUser();
+    const pathname = usePathname();
 
     const { 
         lotteryMode, setLotteryMode, 
@@ -132,9 +134,11 @@ export function CartProvider({ children }) {
                             });
 
                             if (changed) {
-                                setTimeout(() => {
-                                    toast.success(t('cart.cart_restored'));
-                                }, 500);
+                                if (!pathname?.startsWith('/admin')) {
+                                    setTimeout(() => {
+                                        toast.success(t('cart.cart_restored'));
+                                    }, 500);
+                                }
                                 return newCart;
                             }
                             return prev;
@@ -142,7 +146,7 @@ export function CartProvider({ children }) {
                     } else {
                         // Not unsynced (stale local cart) -> Overwrite with server truth
                         setCartItems(data.items);
-                        if (data.items.length > 0) {
+                        if (data.items.length > 0 && !pathname?.startsWith('/admin')) {
                             setTimeout(() => {
                                 toast.success(t('cart.cart_restored'));
                             }, 500);
