@@ -348,15 +348,8 @@ input[autocomplete="one-time-code"] {
     display: none !important;
 }
 
-/* In the editor, contenteditable expands the bounding box to fit the large font, 
-   ignoring line-height: 0.55 for the purpose of the next sibling's position. 
-   Apply a negative margin to counter this and visually match the live site. */
-.dir-ltr .banner-editor-content p:has([style*="cursive" i]) {
-    margin-bottom: -1.4em !important;
-    padding-bottom: 0 !important;
-}
-
 /* Remove paragraph gap ONLY between consecutive cursive lines on the live site */
+.dir-ltr .banner-editor-content p:has([style*="cursive" i]):has(+ p:has([style*="cursive" i])),
 .banner-text-content.lang-en p:has([style*="cursive" i]):has(+ p:has([style*="cursive" i])) {
     margin-bottom: 0 !important;
     padding-bottom: 0 !important;
