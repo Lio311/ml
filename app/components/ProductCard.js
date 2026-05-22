@@ -125,7 +125,7 @@ export default function ProductCard({ product }) {
             )}
 
             {((product.stock || 0) <= 20) && (
-                <div className={`absolute top-10 start-2 z-10 text-[9px] leading-3 font-bold px-1.5 py-1 rounded shadow-sm text-center text-white whitespace-nowrap ${(product.stock || 0) <= 0 ? 'bg-gray-400' : 'bg-red-600'
+                <div className={`absolute ${isDiscountActive(product) ? 'top-10' : 'top-2'} start-2 z-10 text-[9px] leading-3 font-bold px-1.5 py-1 rounded shadow-sm text-center text-white whitespace-nowrap ${(product.stock || 0) <= 0 ? 'bg-gray-400' : 'bg-red-600'
                     }`}>
                     {(product.stock || 0) <= 0 ? (
                         <span>{t('common.out_of_stock')}</span>
