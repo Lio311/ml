@@ -236,29 +236,35 @@ input[autocomplete="one-time-code"] {
   text-align: center !important;
 }
 
-/* Global Modern Scrollbar - transparent track, gray thumb */
+/* Global Modern Scrollbar */
+:root {
+  scrollbar-color: #c4c4c4 transparent;
+  scrollbar-width: thin;
+}
+
+/* Chrome/Edge/Safari - remove track background */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
 }
 
 ::-webkit-scrollbar-track {
   background: transparent;
+  box-shadow: none;
+  border: none;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #c4c4c4;
-  border-radius: 10px;
+  background: rgba(150, 150, 150, 0.5);
+  border-radius: 6px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #9ca3af;
+  background: rgba(120, 120, 120, 0.7);
 }
 
-/* Standard (Firefox) scrollbar */
-* {
-  scrollbar-width: thin;
-  scrollbar-color: #c4c4c4 transparent;
+/* Windows Chrome fix: force track transparent via color-scheme */
+::-webkit-scrollbar-corner {
+  background: transparent;
 }
 
 /* Custom Scrollbar for Admin Sidebar */
