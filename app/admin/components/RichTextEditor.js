@@ -1,10 +1,8 @@
-'use client';
-
 import dynamic from 'next/dynamic';
 
 const RichTextEditorClient = dynamic(() => import('./RichTextEditorClient'), {
     ssr: false,
-    loading: () => <div className="min-h-[150px] flex items-center justify-center bg-gray-50 border border-gray-200 rounded text-gray-400">טוען עורך טקסט...</div>
+    loading: () => <div className="w-full h-32 border border-gray-300 rounded-lg bg-gray-50 animate-pulse" />,
 });
 
 export default function RichTextEditor(props) {
