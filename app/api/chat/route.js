@@ -2,8 +2,6 @@ import { NextResponse } from 'next/server';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import pool from '../../lib/db';
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '');
-
 const tools = [
     {
         functionDeclarations: [
@@ -69,12 +67,14 @@ export async function POST(req) {
             return NextResponse.json({ error: 'Invalid messages array' }, { status: 400 });
         }
 
-        if (!process.env.GEMINI_API_KEY) {
+        const apiKey = process.env.GEMINI_API_KEY;
+        if (!apiKey) {
              return NextResponse.json({ error: 'Gemini API key is not configured' }, { status: 500 });
         }
 
+        const genAI = new GoogleGenerativeAI(apiKey);
         const model = genAI.getGenerativeModel({ 
-            model: "gemini-1.5-flash",
+            model: "gemini-2.5-flash",
             systemInstruction: systemInstruction,
             tools: tools
         });
@@ -243,6 +243,6 @@ export async function POST(req) {
 
     } catch (error) {
         console.error("Chat API Error:", error);
-        return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+        return NextResponse.json({ error: error.message || 'Internal Server Error', stack: error.stack }, { status: 500 });
     }
 }

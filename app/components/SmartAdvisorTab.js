@@ -55,15 +55,19 @@ export default function SmartAdvisorTab() {
         try {
             const historyToSent = newMessages.slice(-10);
             
-            const res = await fetch('/api/chat', {
+            const response = await fetch('/api/chat', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ messages: historyToSent })
             });
 
-            if (!res.ok) throw new Error('Failed to fetch from chat API');
+            if (!response.ok) {
+                const errText = await response.text();
+                console.error("API Error Response:", errText);
+                throw new Error('API Error: ' + errText);
+            }
 
-            const data = await res.json();
+            const data = await response.json();
             
             setMessages(prev => [...prev, {
                 role: 'assistant',
