@@ -15,6 +15,7 @@ import he from './data/locales/he.json';
 import en from './data/locales/en.json';
 import { sanitizeProductArray } from "./lib/productUtils";
 import FadeIn from "./components/FadeIn";
+import { getHomeData } from "./lib/data/homeData";
 
 
 const getT = (locale) => {
