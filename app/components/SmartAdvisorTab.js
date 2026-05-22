@@ -2,15 +2,21 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Bot, Sparkles, Send, X, ShoppingCart, Loader2 } from 'lucide-react';
+import { SendHorizontal, X, ShoppingCart, Loader2 } from 'lucide-react';
 import { useCart } from '../context/CartContext';
+import { useLanguage } from '../context/LanguageContext';
 import { useRouter } from 'next/navigation';
 import { marked } from 'marked';
 
 export default function SmartAdvisorTab() {
+    const { language } = useLanguage();
+    const isHebrew = language === 'he';
     const [isOpen, setIsOpen] = useState(false);
     const [messages, setMessages] = useState([
-        { role: 'assistant', content: 'שלום! אני היועץ החכם של ml-tlv. 🤖\n\nאשמח לעזור לך למצוא את הבושם המושלם עבורך. אפשר לבקש ממני בשמים לפי שם, עונה, אירוע או תווים ספציפיים (כמו וניל, עץ, הדרים). \n\n**איך אוכל לעזור לך היום?**' }
+        { role: 'assistant', content: isHebrew ? 
+            'שלום! אני היועץ החכם של ml-tlv.\n\nאשמח לעזור לך למצוא את הבושם המושלם עבורך. אפשר לבקש ממני בשמים לפי שם, עונה, אירוע או תווים ספציפיים (כמו וניל, עץ, הדרים).\n\n**איך אוכל לעזור לך היום?**' :
+            'Hello! I am the Smart Advisor of ml-tlv.\n\nI would love to help you find your perfect perfume. You can ask me for perfumes by name, season, occasion, or specific notes (like vanilla, woody, citrus).\n\n**How can I help you today?**' 
+        }
     ]);
     const [input, setInput] = useState('');
     const [isLoading, setIsLoading] = useState(false);
@@ -26,6 +32,16 @@ export default function SmartAdvisorTab() {
         scrollToBottom();
     }, [messages]);
 
+    // Hide accessibility widget when chat is open
+    useEffect(() => {
+        if (isOpen) {
+            document.body.classList.add('smart-advisor-open');
+        } else {
+            document.body.classList.remove('smart-advisor-open');
+        }
+        return () => document.body.classList.remove('smart-advisor-open');
+    }, [isOpen]);
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!input.trim() || isLoading) return;
@@ -37,7 +53,6 @@ export default function SmartAdvisorTab() {
         setIsLoading(true);
 
         try {
-            // Send only the last 10 messages to save tokens
             const historyToSent = newMessages.slice(-10);
             
             const res = await fetch('/api/chat', {
@@ -50,30 +65,26 @@ export default function SmartAdvisorTab() {
 
             const data = await res.json();
             
-            // Add assistant response to state
             setMessages(prev => [...prev, {
                 role: 'assistant',
                 content: data.content,
                 tool_calls: data.tool_calls
             }]);
 
-            // Execute client-side tool calls if any
             if (data.tool_calls && data.tool_calls.length > 0) {
                 for (const tc of data.tool_calls) {
                     if (tc.name === 'add_to_cart') {
                         const { product, size, price, quantity } = tc.args;
                         if (product && price !== undefined) {
-                            // Execute the cart action
                             for (let i = 0; i < (quantity || 1); i++) {
                                 addToCart(product, size, price);
                             }
-                            
-                            // Let the model know it succeeded by adding a system/tool message silently
-                            // Actually, just for visual feedback, we append a fake assistant message
                             setTimeout(() => {
                                 setMessages(prev => [...prev, {
                                     role: 'assistant',
-                                    content: `הוספתי ${quantity || 1} יחידות של ${size} מהבושם **${product.brand} ${product.model}** לעגלה שלך! 🛒`
+                                    content: isHebrew ? 
+                                        `הוספתי ${quantity || 1} יחידות של ${size} מהבושם **${product.brand} ${product.model}** לעגלה שלך!` :
+                                        `Added ${quantity || 1} units of ${size} of **${product.brand} ${product.model}** to your cart!`
                                 }]);
                             }, 500);
                         }
@@ -81,7 +92,7 @@ export default function SmartAdvisorTab() {
                         setTimeout(() => {
                             setMessages(prev => [...prev, {
                                 role: 'assistant',
-                                content: `מעביר אותך לעמוד התשלום... 💳`
+                                content: isHebrew ? `מעביר אותך לעמוד התשלום...` : `Redirecting to checkout...`
                             }]);
                             router.push('/checkout');
                             setIsOpen(false);
@@ -92,7 +103,7 @@ export default function SmartAdvisorTab() {
 
         } catch (error) {
             console.error("Chat error:", error);
-            setMessages(prev => [...prev, { role: 'assistant', content: 'אופס, משהו השתבש בחיבור לשרת. נסה שוב מאוחר יותר.' }]);
+            setMessages(prev => [...prev, { role: 'assistant', content: isHebrew ? 'אופס, משהו השתבש בחיבור לשרת. נסה שוב מאוחר יותר.' : 'Oops, something went wrong. Please try again later.' }]);
         } finally {
             setIsLoading(false);
         }
@@ -100,46 +111,39 @@ export default function SmartAdvisorTab() {
 
     return (
         <>
-            {/* The Tab on the left - Hidden on mobile */}
-            <div className="fixed top-1/2 left-0 -translate-y-1/2 z-50 hidden md:block">
+            <div className={`fixed top-1/2 ${isHebrew ? 'left-0' : 'right-0'} -translate-y-1/2 z-50 hidden md:block`}>
                 <button 
                     onClick={() => setIsOpen(true)} 
-                    className="bg-black/90 backdrop-blur-md text-white px-2 py-4 rounded-r-xl shadow-[5px_0_15px_rgba(0,0,0,0.3)] border border-l-0 border-white/10 flex flex-col items-center gap-3 hover:bg-gray-900 transition-all group overflow-hidden relative"
+                    className={`bg-black/90 backdrop-blur-md text-white px-2 py-4 shadow-[5px_0_15px_rgba(0,0,0,0.3)] border border-white/10 flex flex-col items-center gap-3 hover:bg-gray-900 transition-all group overflow-hidden relative ${isHebrew ? 'rounded-r-xl border-l-0' : 'rounded-l-xl border-r-0'}`}
                 >
                     <div className="absolute inset-0 bg-gradient-to-b from-blue-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                    <Bot size={22} className="text-blue-400 group-hover:scale-110 group-hover:text-blue-300 transition-transform relative z-10" />
                     <span 
-                        style={{ writingMode: 'vertical-rl', textOrientation: 'mixed', transform: 'rotate(180deg)' }} 
+                        style={{ writingMode: 'vertical-rl', textOrientation: 'mixed', transform: isHebrew ? 'rotate(180deg)' : 'none' }} 
                         className="font-bold tracking-widest text-sm relative z-10"
                     >
-                        היועץ החכם
+                        {isHebrew ? 'היועץ החכם' : 'Smart Advisor'}
                     </span>
-                    <Sparkles size={14} className="text-yellow-400 animate-pulse relative z-10" />
                 </button>
             </div>
 
-            {/* The Drawer */}
             <AnimatePresence>
                 {isOpen && (
                     <motion.div 
-                        initial={{ x: '-100%', opacity: 0 }}
+                        initial={{ x: isHebrew ? '-100%' : '100%', opacity: 0 }}
                         animate={{ x: 0, opacity: 1 }}
-                        exit={{ x: '-100%', opacity: 0 }}
+                        exit={{ x: isHebrew ? '-100%' : '100%', opacity: 0 }}
                         transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-                        className="fixed top-0 left-0 h-[100dvh] w-[400px] bg-gradient-to-b from-gray-900 to-black text-white z-[60] shadow-2xl flex flex-col border-r border-white/10 hidden md:flex"
-                        dir="rtl"
+                        className={`fixed top-0 ${isHebrew ? 'left-0 border-r' : 'right-0 border-l'} h-[100dvh] w-[400px] bg-gradient-to-b from-gray-900 to-black text-white z-[60] shadow-2xl flex flex-col border-white/10 hidden md:flex`}
+                        dir={isHebrew ? "rtl" : "ltr"}
                     >
                         {/* Header */}
                         <div className="flex items-center justify-between p-4 border-b border-white/10 bg-black/50">
                             <div className="flex items-center gap-3">
-                                <div className="bg-blue-500/20 p-2 rounded-full border border-blue-500/30">
-                                    <Bot size={24} className="text-blue-400" />
-                                </div>
                                 <div>
-                                    <h3 className="font-bold text-lg tracking-wide flex items-center gap-2">
-                                        היועץ החכם <Sparkles size={16} className="text-blue-400" />
+                                    <h3 className="font-bold text-lg tracking-wide">
+                                        {isHebrew ? 'היועץ החכם' : 'Smart Advisor'}
                                     </h3>
-                                    <p className="text-xs text-gray-400">מומחה נישה AI של ml-tlv</p>
+                                    <p className="text-xs text-gray-400">{isHebrew ? 'מומחה נישה AI של ml-tlv' : 'ml-tlv AI Niche Expert'}</p>
                                 </div>
                             </div>
                             <button onClick={() => setIsOpen(false)} className="text-gray-400 hover:text-white transition-colors bg-white/5 p-2 rounded-full hover:bg-white/10">
@@ -153,23 +157,22 @@ export default function SmartAdvisorTab() {
                                 <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-start' : 'justify-end'}`}>
                                     <div className={`max-w-[85%] rounded-2xl p-3 ${
                                         msg.role === 'user' 
-                                            ? 'bg-blue-600 text-white rounded-br-sm' 
-                                            : 'bg-white/10 text-gray-100 rounded-bl-sm border border-white/5'
+                                            ? `bg-blue-600 text-white ${isHebrew ? 'rounded-br-sm' : 'rounded-bl-sm'}` 
+                                            : `bg-white/10 text-gray-100 border border-white/5 ${isHebrew ? 'rounded-bl-sm' : 'rounded-br-sm'}`
                                     }`}>
                                         <div 
                                             className="text-sm leading-relaxed chat-markdown"
                                             dangerouslySetInnerHTML={{ __html: marked.parse(msg.content || '') }}
                                         />
                                         
-                                        {/* Display tool calls if they exist */}
                                         {msg.tool_calls && msg.tool_calls.map((tc, tIdx) => (
                                             <div key={tIdx} className="mt-2 text-xs bg-black/30 p-2 rounded border border-white/5 flex items-center gap-2">
                                                 {tc.name === 'add_to_cart' ? (
-                                                    <><ShoppingCart size={14} className="text-green-400"/> מפעיל פעולה: הוספה לעגלה</>
+                                                    <><ShoppingCart size={14} className="text-green-400"/> {isHebrew ? 'מפעיל פעולה: הוספה לעגלה' : 'Action: Adding to cart'}</>
                                                 ) : tc.name === 'go_to_checkout' ? (
-                                                    <><ShoppingCart size={14} className="text-blue-400"/> מעביר לקופה</>
+                                                    <><ShoppingCart size={14} className="text-blue-400"/> {isHebrew ? 'מעביר לקופה' : 'Going to checkout'}</>
                                                 ) : (
-                                                    <><Bot size={14} className="text-gray-400"/> מבצע פעולה ברקע...</>
+                                                    <><Loader2 size={14} className="text-gray-400 animate-spin"/> {isHebrew ? 'מבצע פעולה ברקע...' : 'Executing action...'}</>
                                                 )}
                                             </div>
                                         ))}
@@ -178,9 +181,9 @@ export default function SmartAdvisorTab() {
                             ))}
                             {isLoading && (
                                 <div className="flex justify-end">
-                                    <div className="bg-white/10 text-gray-100 rounded-2xl rounded-bl-sm p-3 border border-white/5 flex items-center gap-2">
+                                    <div className={`bg-white/10 text-gray-100 rounded-2xl p-3 border border-white/5 flex items-center gap-2 ${isHebrew ? 'rounded-bl-sm' : 'rounded-br-sm'}`}>
                                         <Loader2 size={16} className="animate-spin text-blue-400" />
-                                        <span className="text-xs text-gray-400">היועץ מקליד...</span>
+                                        <span className="text-xs text-gray-400">{isHebrew ? 'היועץ מקליד...' : 'Advisor is typing...'}</span>
                                     </div>
                                 </div>
                             )}
@@ -194,20 +197,21 @@ export default function SmartAdvisorTab() {
                                     type="text"
                                     value={input}
                                     onChange={(e) => setInput(e.target.value)}
-                                    placeholder="בקש המלצה, תווים, או עונה..."
-                                    className="w-full bg-white/5 border border-white/10 rounded-full py-3 px-5 pr-12 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 transition-all"
+                                    placeholder={isHebrew ? "בקש המלצה, תווים, או עונה..." : "Ask for recommendations, notes..."}
+                                    className={`w-full bg-white/5 border border-white/10 rounded-full py-3 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-blue-500/50 focus:ring-1 focus:ring-blue-500/50 transition-all ${isHebrew ? 'pl-12 pr-5' : 'pr-12 pl-5'}`}
                                     disabled={isLoading}
+                                    dir={isHebrew ? "rtl" : "ltr"}
                                 />
                                 <button 
                                     type="submit" 
                                     disabled={!input.trim() || isLoading}
-                                    className="absolute right-2 top-1/2 -translate-y-1/2 bg-blue-600 text-white p-2 rounded-full hover:bg-blue-500 disabled:opacity-50 disabled:hover:bg-blue-600 transition-colors"
+                                    className={`absolute top-1/2 -translate-y-1/2 bg-blue-600 text-white p-2 rounded-full hover:bg-blue-500 disabled:opacity-50 disabled:hover:bg-blue-600 transition-colors ${isHebrew ? 'left-2' : 'right-2'}`}
                                 >
-                                    <Send size={16} className="rotate-180" /> {/* Rotate for RTL */}
+                                    <SendHorizontal size={16} className={isHebrew ? 'rotate-180' : ''} />
                                 </button>
                             </form>
                             <p className="text-center text-[10px] text-gray-500 mt-3">
-                                היועץ מופעל ע"י בינה מלאכותית ויכול לטעות.
+                                {isHebrew ? 'היועץ מופעל ע"י בינה מלאכותית ויכול לטעות.' : 'Advisor is powered by AI and can make mistakes.'}
                             </p>
                         </div>
                     </motion.div>
@@ -215,6 +219,10 @@ export default function SmartAdvisorTab() {
             </AnimatePresence>
 
             <style dangerouslySetInnerHTML={{__html: `
+                body.smart-advisor-open .acc-widget-root {
+                    display: none !important;
+                }
+
                 .custom-scrollbar::-webkit-scrollbar {
                     width: 6px;
                 }
@@ -237,12 +245,12 @@ export default function SmartAdvisorTab() {
                     margin-bottom: 0;
                 }
                 .chat-markdown strong {
-                    color: #93c5fd; /* blue-300 */
+                    color: #93c5fd;
                     font-weight: 700;
                 }
                 .chat-markdown ul {
                     list-style-type: disc;
-                    padding-right: 1.5em;
+                    padding-inline-start: 1.5em;
                     margin-bottom: 0.5em;
                 }
                 .chat-markdown li {
