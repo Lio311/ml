@@ -207,7 +207,7 @@ export default async function Home() {
                   <span className="block whitespace-nowrap">{t('homepage.hero_title_p1')}</span>
                   <span className="block whitespace-nowrap">{t('homepage.hero_title_p2')}</span>
                 </h1>
-                <p className="text-xs md:text-base text-gray-800 mb-3 md:mb-4 font-assistant leading-relaxed max-w-[280px] md:max-w-[450px] mx-auto opacity-80">
+                <p className="text-xs md:text-base text-gray-800 mb-3 md:mb-4 font-assistant leading-relaxed max-w-[280px] md:max-w-none mx-auto opacity-80">
                   {t('common.hero_subtitle')} {t('common.hero_tagline_p1')} <br className="hidden md:block" />
                   {t('common.hero_tagline_p2')} {t('common.hero_cta')}
                 </p>

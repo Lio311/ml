@@ -576,7 +576,7 @@ export default function BannerClient() {
                                                                 <span className="block whitespace-nowrap">ml-tlv: דוגמיות בשמי נישה</span>
                                                                 <span className="block whitespace-nowrap">ודיקאנטים מקוריים</span>
                                                             </div>
-                                                            <div className={`font-assistant text-gray-800 opacity-80 leading-relaxed pointer-events-none whitespace-normal ${isDesktop ? 'text-base mb-4 max-w-[450px]' : 'text-xs mb-3 max-w-[280px] mx-auto'}`}>
+                                                            <div className={`font-assistant text-gray-800 opacity-80 leading-relaxed pointer-events-none whitespace-normal ${isDesktop ? 'text-base mb-4 max-w-none' : 'text-xs mb-3 max-w-[280px] mx-auto'}`}>
                                                                 הדרך החכמה לגלות בשמי נישה יוקרתיים. מגוון דוגמיות יוקרה ודיקאנטים (דיקנטים) של הבשמים הנחשקים בעולם.
                                                                 <br className={isDesktop ? 'block' : 'hidden'} />
                                                                 הזמינו דוגמיות לפני רכישת בקבוק מלא.
