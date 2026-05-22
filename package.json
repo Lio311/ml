@@ -21,7 +21,7 @@
     "googleapis": "^171.4.0",
     "jspdf": "^4.2.1",
     "lucide-react": "^0.561.0",
-    "marked": "^17.0.4",
+    "marked": "^17.0.6",
     "next": "16.0.9",
     "nodemailer": "^6.10.1",
     "pg": "^8.16.3",
