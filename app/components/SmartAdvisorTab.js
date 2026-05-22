@@ -5,10 +5,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { SendHorizontal, X, ShoppingCart, Loader2 } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useLanguage } from '../context/LanguageContext';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { marked } from 'marked';
 
 export default function SmartAdvisorTab() {
+    const pathname = usePathname();
     const { locale } = useLanguage();
     const isHebrew = locale === 'he';
     const [isOpen, setIsOpen] = useState(false);
@@ -41,6 +42,10 @@ export default function SmartAdvisorTab() {
         }
         return () => document.body.classList.remove('smart-advisor-open');
     }, [isOpen]);
+
+    if (pathname?.startsWith('/admin')) {
+        return null;
+    }
 
     const handleSubmit = async (e) => {
         e.preventDefault();

@@ -46,8 +46,11 @@ function buildGradientCSS(colors) {
     return colors?.primary || '#8b5cf6';
 }
 
+import { usePathname } from 'next/navigation';
+
 export default function PopupManager() {
     const { localize } = useLanguage();
+    const pathname = usePathname();
     const [popups, setPopups] = useState([]);
     const [currentPopup, setCurrentPopup] = useState(null);
 
@@ -68,6 +71,9 @@ export default function PopupManager() {
         };
         fetchAndShow();
     }, []);
+
+    // Hide in admin
+    if (pathname?.startsWith('/admin')) return null;
 
     const handleClose = () => {
         if (currentPopup) markSeen(currentPopup);
