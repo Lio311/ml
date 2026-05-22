@@ -559,8 +559,8 @@ export default function BannerClient() {
                                                         <div 
                                                             className={`absolute backdrop-blur-md rounded-2xl ${isDesktop ? 'p-8 py-5' : 'p-4'} border border-white/20 shadow-2xl text-center transition-all duration-75 flex flex-col items-center cursor-move ${dragState.isDragging && dragState.type === 'box' ? 'ring-2 ring-blue-500 shadow-blue-500/50' : ''}`}
                                                             style={{
-                                                                width: isDesktop ? 'max-content' : '320px',
-                                                                maxWidth: 'none',
+                                                                width: isDesktop ? 'max-content' : '90%',
+                                                                maxWidth: isDesktop ? 'none' : '400px',
                                                                 top: `${contentY}%`,
                                                                 left: `${contentX}%`,
                                                                 transform: `translate(-${contentX}%, -${contentY}%) scale(${finalScale * (isDesktop ? 0.35 : 1)})`,
@@ -571,11 +571,11 @@ export default function BannerClient() {
                                                             onMouseDown={(e) => handleDragStart(e, index, 'box', contentX, contentY)}
                                                         >
                                                             <div className={`font-assistant tracking-[0.2em] text-gray-800 font-bold mb-1 opacity-90 uppercase pointer-events-none ${isDesktop ? 'text-sm' : 'text-xs'}`}>גלה את בושם החתימה שלך</div>
-                                                            <div className={`font-handwriting font-bold text-black ${isDesktop ? 'text-5xl mb-3' : 'text-[1.45rem] mb-2'} leading-tight tracking-wide pointer-events-none`}>
+                                                            <div className={`font-handwriting font-bold text-black ${isDesktop ? 'text-5xl mb-3' : 'text-[1.35rem] mb-2'} leading-tight tracking-wide pointer-events-none`}>
                                                                 <span className="block whitespace-nowrap">ml-tlv: דוגמיות בשמי נישה</span>
                                                                 <span className="block whitespace-nowrap">ודיקאנטים מקוריים</span>
                                                             </div>
-                                                            <div className={`font-assistant text-gray-800 opacity-80 leading-relaxed pointer-events-none whitespace-normal ${isDesktop ? 'text-base mb-4 max-w-[450px]' : 'text-xs mb-3 max-w-[280px]'}`}>
+                                                            <div className={`font-assistant text-gray-800 opacity-80 leading-relaxed pointer-events-none whitespace-normal ${isDesktop ? 'text-base mb-4 max-w-[450px]' : 'text-xs mb-3 max-w-[280px] mx-auto'}`}>
                                                                 הדרך החכמה לגלות בשמי נישה יוקרתיים. מגוון דוגמיות יוקרה ודיקאנטים (דיקנטים) של הבשמים הנחשקים בעולם.
                                                                 <br className={isDesktop ? 'block' : 'hidden'} />
                                                                 הזמינו דוגמיות לפני רכישת בקבוק מלא.
