@@ -14,6 +14,7 @@ import { cookies } from 'next/headers';
 import he from './data/locales/he.json';
 import en from './data/locales/en.json';
 import { sanitizeProductArray } from "./lib/productUtils";
+import FadeIn from "./components/FadeIn";
 
 
 const getT = (locale) => {
@@ -235,13 +236,21 @@ export default async function Home() {
       </section>
 
       <div className="relative z-30 bg-white w-full flex flex-col -mt-14 md:mt-0">
-        <div>
+        <FadeIn delay={0.1}>
           <LiveStats stats={stats} />
-        </div>
-        <HomeClient newArrivals={newArrivals} topCatalogs={topCatalogs} />
-        <BonusesSection />
-        <BrandCarousel brands={stats.allBrands} />
-        <TrustSection />
+        </FadeIn>
+        <FadeIn delay={0.2}>
+          <HomeClient newArrivals={newArrivals} topCatalogs={topCatalogs} />
+        </FadeIn>
+        <FadeIn delay={0.1}>
+          <BonusesSection />
+        </FadeIn>
+        <FadeIn delay={0.1}>
+          <BrandCarousel brands={stats.allBrands} />
+        </FadeIn>
+        <FadeIn delay={0.1}>
+          <TrustSection />
+        </FadeIn>
       </div>
 
       <section className="py-12 bg-white border-t">

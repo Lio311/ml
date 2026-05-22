@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "@/app/components/CImage";
 import { useRouter } from "next/navigation";
 import { useCart } from "../context/CartContext";
+import { motion } from 'framer-motion';
 import { useState, useEffect, useRef } from "react";
 import { useLanguage } from "../context/LanguageContext";
 import WishlistHeart from "./WishlistHeart";
@@ -212,7 +213,9 @@ export default function ProductCard({ product }) {
                                 ) : (
                                     <span className="font-bold">{product.price_2ml} ₪</span>
                                 )}
-                                <button
+                                <motion.button
+                                    whileHover={{ scale: 1.15 }}
+                                    whileTap={{ scale: 0.85 }}
                                     onClick={() => handleAdd(2, product.price_2ml)}
                                     className={`w-6 h-6 rounded flex items-center justify-center transition shadow-sm ${addedSize === 2 ? 'bg-green-500 text-white' : 'bg-gray-100 hover:bg-black hover:text-white'}`}
                                     title={t('common.add_to_cart')}
@@ -222,7 +225,7 @@ export default function ProductCard({ product }) {
                                             <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
                                         </svg>
                                     ) : '+'}
-                                </button>
+                                </motion.button>
                             </div>
                         </div>
                     )}
@@ -239,7 +242,9 @@ export default function ProductCard({ product }) {
                                 ) : (
                                     <span className="font-bold">{product.price_5ml} ₪</span>
                                 )}
-                                <button
+                                <motion.button
+                                    whileHover={{ scale: 1.15 }}
+                                    whileTap={{ scale: 0.85 }}
                                     onClick={() => handleAdd(5, product.price_5ml)}
                                     className={`w-6 h-6 rounded flex items-center justify-center transition shadow-sm ${addedSize === 5 ? 'bg-green-500 text-white' : 'bg-gray-100 hover:bg-black hover:text-white'}`}
                                     title={t('common.add_to_cart')}
@@ -249,7 +254,7 @@ export default function ProductCard({ product }) {
                                             <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
                                         </svg>
                                     ) : '+'}
-                                </button>
+                                </motion.button>
                             </div>
                         </div>
                     )}
@@ -266,7 +271,9 @@ export default function ProductCard({ product }) {
                                 ) : (
                                     <span className="font-bold">{product.price_10ml} ₪</span>
                                 )}
-                                <button
+                                <motion.button
+                                    whileHover={{ scale: 1.15 }}
+                                    whileTap={{ scale: 0.85 }}
                                     onClick={() => handleAdd(10, product.price_10ml)}
                                     className={`w-6 h-6 rounded flex items-center justify-center transition shadow-sm ${addedSize === 10 ? 'bg-green-500 text-white' : 'bg-gray-100 hover:bg-black hover:text-white'}`}
                                     title={t('common.add_to_cart')}
@@ -276,7 +283,7 @@ export default function ProductCard({ product }) {
                                             <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
                                         </svg>
                                     ) : '+'}
-                                </button>
+                                </motion.button>
                             </div>
                         </div>
                     )}
