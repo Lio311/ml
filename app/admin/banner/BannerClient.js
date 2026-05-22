@@ -672,9 +672,9 @@ export default function BannerClient() {
                                                             onMouseDown={(e) => handleDragStart(e, index, 'box', contentX, contentY)}
                                                         >
                                                             {banner.contentLang === 'en' && banner.contentEn ? (
-                                                                <div className={`pointer-events-none whitespace-normal px-0 [&_p]:my-0.5 ${isDesktop ? 'max-w-none' : 'max-w-none mx-auto text-sm'}`} dangerouslySetInnerHTML={{ __html: banner.contentEn }} />
+                                                                <div className={`pointer-events-none whitespace-normal px-0 [&_p]:my-1.5 ${isDesktop ? 'max-w-none' : 'max-w-none mx-auto text-sm'}`} dangerouslySetInnerHTML={{ __html: banner.contentEn }} />
                                                             ) : (banner.contentLang !== 'en' && (banner.contentHe || banner.content)) ? (
-                                                                <div className={`pointer-events-none whitespace-normal px-0 [&_p]:my-0.5 ${isDesktop ? 'max-w-none' : 'max-w-none mx-auto text-sm'}`} dangerouslySetInnerHTML={{ __html: banner.contentHe || banner.content }} />
+                                                                <div className={`pointer-events-none whitespace-normal px-0 [&_p]:my-1.5 ${isDesktop ? 'max-w-none' : 'max-w-none mx-auto text-sm'}`} dangerouslySetInnerHTML={{ __html: banner.contentHe || banner.content }} />
                                                             ) : (
                                                                 <>
                                                                     {/* Placeholder fallback for backward compatibility */}
@@ -690,7 +690,7 @@ export default function BannerClient() {
                                                                     </div>
                                                                 </>
                                                             )}
-                                                            <div className={`mt-2 ${isDesktop ? 'md:mt-3' : ''} inline-block border px-6 py-2.5 font-bold tracking-widest uppercase rounded-full pointer-events-none transition duration-500 border-[var(--btn-border)] text-[var(--btn-text)] ${isDesktop ? 'text-sm' : 'text-xs'}`}
+                                                            <div className={`mt-1 ${isDesktop ? 'md:mt-1.5' : ''} inline-block border px-6 py-2.5 font-bold tracking-widest uppercase rounded-full pointer-events-none transition duration-500 border-[var(--btn-border)] text-[var(--btn-text)] ${isDesktop ? 'text-sm' : 'text-xs'}`}
                                                                 style={{ '--btn-text': banner.btnTextColor || '#000000', '--btn-border': banner.btnBorderColor || '#000000' }}
                                                             >
                                                                 {banner.contentLang === 'en' ? (banner.btnTextEn || 'SHOP NOW') : (banner.btnTextHe || 'קנה עכשיו')}

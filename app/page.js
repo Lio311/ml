@@ -202,9 +202,9 @@ export default async function Home() {
               !banner.hideContentBox ? (
                 <div key={i} className="w-max max-w-[95vw] md:max-w-max text-black text-center content-box-bg px-3 py-2 md:px-5 md:py-3 rounded-2xl backdrop-blur-md shadow-2xl border border-white/20">
                   {locale === 'en' && banner.contentEn ? (
-                      <div className="whitespace-normal px-0 max-w-none mx-auto text-sm [&_p]:my-0.5" dangerouslySetInnerHTML={{ __html: banner.contentEn }} />
+                      <div className="whitespace-normal px-0 max-w-none mx-auto text-sm [&_p]:my-1.5" dangerouslySetInnerHTML={{ __html: banner.contentEn }} />
                   ) : (locale !== 'en' && banner.contentHe) ? (
-                      <div className="whitespace-normal px-0 max-w-none mx-auto text-sm [&_p]:my-0.5" dangerouslySetInnerHTML={{ __html: banner.contentHe }} />
+                      <div className="whitespace-normal px-0 max-w-none mx-auto text-sm [&_p]:my-1.5" dangerouslySetInnerHTML={{ __html: banner.contentHe }} />
                   ) : (
                       <>
                         <h2 className="text-xs md:text-sm font-assistant tracking-[0.2em] uppercase mb-1 opacity-90 animate-fadeIn font-bold">
@@ -220,7 +220,7 @@ export default async function Home() {
                         </p>
                       </>
                   )}
-                  <Link href={banner.btnLink || "/catalog"} className="mt-2 md:mt-3 inline-block border px-6 py-2.5 text-xs md:text-sm font-bold tracking-widest transition duration-500 uppercase rounded-full border-[var(--btn-border)] text-[var(--btn-text)] hover:bg-white hover:!text-transparent"
+                  <Link href={banner.btnLink || "/catalog"} className="mt-1 md:mt-1.5 inline-block border px-6 py-2.5 text-xs md:text-sm font-bold tracking-widest transition duration-500 uppercase rounded-full border-[var(--btn-border)] text-[var(--btn-text)] hover:bg-white hover:text-black hover:border-white"
                     style={{ '--btn-text': banner.btnTextColor || '#000', '--btn-border': banner.btnBorderColor || '#000' }}>
                     {locale === 'en' ? (banner.btnTextEn || t('homepage.shop_now')) : (banner.btnTextHe || t('homepage.shop_now'))}
                   </Link>
