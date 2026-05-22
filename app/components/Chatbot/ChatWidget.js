@@ -5,6 +5,7 @@ import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import Image from '../CImage';
+import { useLanguage } from '../../context/LanguageContext';
 
 import { chatbotKnowledge } from '../../data/chatbot_knowledge';
 
@@ -162,11 +163,14 @@ export default function ChatWidget() {
     // Render nothing if user closed the widget completely (state could be persisted in localStorage)
     if (!isVisible) return null;
 
+    const { language } = useLanguage();
+    const isHebrew = language === 'he';
+
     return (
-        <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end" style={{ direction: 'rtl' }}>
+        <div className={`fixed bottom-6 ${isHebrew ? 'right-6 items-end' : 'left-6 items-start'} z-50 flex flex-col`} style={{ direction: 'rtl' }}>
             {/* Chat Window */}
             {isOpen && (
-                <div className="mb-4 w-80 md:w-96 bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden flex flex-col max-h-[500px] transition-all duration-300 transform origin-bottom-right">
+                <div className={`mb-4 w-80 md:w-96 bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden flex flex-col max-h-[500px] transition-all duration-300 transform ${isHebrew ? 'origin-bottom-right' : 'origin-bottom-left'}`}>
                     {/* Header with Rep Info */}
                     <div className="bg-black text-white p-4 flex justify-between items-center">
                         <div className="flex items-center gap-3">

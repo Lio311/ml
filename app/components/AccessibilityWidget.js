@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
+import { useLanguage } from '../context/LanguageContext';
 
 // --- Icons (Inline SVGs for performance & no deps) ---
 const Icons = {
@@ -35,6 +36,8 @@ const DEFAULT_SETTINGS = {
 };
 
 export default function AccessibilityWidget() {
+    const { language } = useLanguage();
+    const isHebrew = language === 'he';
     const [isOpen, setIsOpen] = useState(false);
     const [settings, setSettings] = useState(DEFAULT_SETTINGS);
     const [readingGuideY, setReadingGuideY] = useState(0);
@@ -200,7 +203,7 @@ export default function AccessibilityWidget() {
             )}
 
             {/* Trigger Button - Reduced Size, Custom Image Icon */}
-            <div className="fixed bottom-6 left-6 z-[9999] font-sans rtl group acc-widget-ignore">
+            <div className={`fixed bottom-6 ${isHebrew ? 'left-6' : 'right-6'} z-[9999] font-sans rtl group acc-widget-ignore`}>
                 <button
                     onClick={() => setIsOpen(!isOpen)}
                     className="w-12 h-12 rounded-full shadow-2xl flex items-center justify-center transition-transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white"
