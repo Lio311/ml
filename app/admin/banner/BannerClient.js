@@ -465,33 +465,7 @@ export default function BannerClient() {
                                                     <span>אטום (100%)</span>
                                                 </div>
                                             </div>
-                                            {/* Button Colors */}
-                                            <div className="grid grid-cols-2 gap-4 mt-3">
-                                                <div>
-                                                    <label className="block text-sm font-semibold text-gray-700 mb-2">צבע טקסט כפתור</label>
-                                                    <div className="flex items-center gap-2">
-                                                        <input
-                                                            type="color"
-                                                            value={banner.btnTextColor || '#000000'}
-                                                            onChange={(e) => updateBanner(index, 'btnTextColor', e.target.value)}
-                                                            className="h-10 w-12 cursor-pointer rounded border border-gray-300 p-0.5"
-                                                        />
-                                                        <span className="text-xs text-gray-500 font-mono">{banner.btnTextColor || '#000000'}</span>
-                                                    </div>
-                                                </div>
-                                                <div>
-                                                    <label className="block text-sm font-semibold text-gray-700 mb-2">צבע מסגרת כפתור</label>
-                                                    <div className="flex items-center gap-2">
-                                                        <input
-                                                            type="color"
-                                                            value={banner.btnBorderColor || '#000000'}
-                                                            onChange={(e) => updateBanner(index, 'btnBorderColor', e.target.value)}
-                                                            className="h-10 w-12 cursor-pointer rounded border border-gray-300 p-0.5"
-                                                        />
-                                                        <span className="text-xs text-gray-500 font-mono">{banner.btnBorderColor || '#000000'}</span>
-                                                    </div>
-                                                </div>
-                                            </div>
+
                                         </div>
                                     </div>
                                 )}
@@ -555,6 +529,34 @@ export default function BannerClient() {
                                                         onChange={(e) => updateBanner(index, 'btnLink', e.target.value)}
                                                         className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-left"
                                                     />
+                                                </div>
+                                            </div>
+                                            
+                                            {/* Button Colors */}
+                                            <div className="grid grid-cols-2 gap-4">
+                                                <div>
+                                                    <label className="block text-sm font-semibold text-gray-700 mb-2">צבע טקסט כפתור</label>
+                                                    <div className="flex items-center gap-2">
+                                                        <input
+                                                            type="color"
+                                                            value={banner.btnTextColor || '#000000'}
+                                                            onChange={(e) => updateBanner(index, 'btnTextColor', e.target.value)}
+                                                            className="h-10 w-12 cursor-pointer rounded border border-gray-300 p-0.5"
+                                                        />
+                                                        <span className="text-xs text-gray-500 font-mono" dir="ltr">{banner.btnTextColor || '#000000'}</span>
+                                                    </div>
+                                                </div>
+                                                <div>
+                                                    <label className="block text-sm font-semibold text-gray-700 mb-2">צבע מסגרת כפתור</label>
+                                                    <div className="flex items-center gap-2">
+                                                        <input
+                                                            type="color"
+                                                            value={banner.btnBorderColor || '#000000'}
+                                                            onChange={(e) => updateBanner(index, 'btnBorderColor', e.target.value)}
+                                                            className="h-10 w-12 cursor-pointer rounded border border-gray-300 p-0.5"
+                                                        />
+                                                        <span className="text-xs text-gray-500 font-mono" dir="ltr">{banner.btnBorderColor || '#000000'}</span>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
