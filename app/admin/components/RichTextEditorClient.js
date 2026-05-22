@@ -215,7 +215,19 @@ export default function RichTextEditorClient({ value, onChange, dir = 'rtl' }) {
                         type="color"
                         defaultValue="#000000"
                         className="absolute inset-0 opacity-0 w-full h-full cursor-pointer"
-                        onInput={e => execCmd('foreColor', e.target.value)}
+                        onInput={e => {
+                            const hex = e.target.value;
+                            execCmd('foreColor', hex);
+                            // Auto dark/light editor based on color luminance
+                            const r = parseInt(hex.slice(1,3), 16);
+                            const g = parseInt(hex.slice(3,5), 16);
+                            const b = parseInt(hex.slice(5,7), 16);
+                            const lum = (r * 299 + g * 587 + b * 114) / 1000;
+                            if (lum > 180) setDarkEditor(true);
+                            else if (lum < 80) setDarkEditor(false);
+                            // Update underline bar color
+                            e.target.parentElement.querySelector('div').style.background = hex;
+                        }}
                     />
                     <div className="absolute bottom-0.5 left-1 right-1 h-1 rounded-sm" style={{background:'#000'}} />
                 </label>
