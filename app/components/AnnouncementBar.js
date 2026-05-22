@@ -22,7 +22,7 @@ export default function AnnouncementBar() {
 
     return (
         <div
-            className="w-full text-center py-2 px-4 text-xs sm:text-sm font-semibold tracking-wide"
+            className="w-screen text-center py-2 px-4 text-xs sm:text-sm font-semibold tracking-wide"
             style={{ backgroundColor: bar.bgColor || '#000', color: bar.textColor || '#fff' }}
         >
             {bar.text}

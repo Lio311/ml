@@ -54,7 +54,7 @@ export default function HeroCarousel({ banners = [], contentOverlays = [] }) {
 
     return (
         <div 
-            className="hero-carousel-wrapper relative w-full h-full overflow-hidden"
+            className="hero-carousel-wrapper relative w-screen h-full overflow-hidden"
             onTouchStart={onTouchStart}
             onTouchMove={onTouchMove}
             onTouchEnd={onTouchEnd}

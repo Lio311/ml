@@ -238,19 +238,21 @@ input[autocomplete="one-time-code"] {
 }
 
 /* Global Modern Scrollbar - trackless technique for Windows Chrome */
+/* מוחק את הרקע הלבן מהמיכל הראשי של פס הגלילה */
 html::-webkit-scrollbar,
 body::-webkit-scrollbar,
 ::-webkit-scrollbar {
   width: 8px;
+  background-color: transparent !important; /* <--- זו השורה הקריטית שחסרה לך */
 }
 
 html::-webkit-scrollbar-track,
 body::-webkit-scrollbar-track,
 ::-webkit-scrollbar-track {
-  background: transparent;
+  background-color: transparent !important;
 }
 
-/* The trick: transparent border + background-clip makes track invisible on Windows */
+/* הסמן האפור (ה-Thumb) נשאר כמו שהגדרת */
 html::-webkit-scrollbar-thumb,
 body::-webkit-scrollbar-thumb,
 ::-webkit-scrollbar-thumb {
