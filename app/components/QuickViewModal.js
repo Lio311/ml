@@ -93,7 +93,7 @@ export default function QuickViewModal({ product, isOpen, onClose }) {
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.95, y: 20 }}
                         transition={{ duration: 0.3, ease: [0.16, 1, 0.3, 1] }}
-                        className={`relative w-full max-w-4xl bg-white rounded-2xl md:rounded-3xl shadow-2xl overflow-hidden flex flex-col md:flex-row max-h-[95vh] md:max-h-[90vh] ${dir === 'rtl' ? 'text-right' : 'text-left'}`}
+                        className={`relative w-full max-w-4xl bg-white/85 backdrop-blur-2xl rounded-2xl md:rounded-3xl shadow-2xl overflow-hidden flex flex-col md:flex-row max-h-[95vh] md:max-h-[90vh] border border-white/20 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}
                     >
                         {/* Close Button */}
                         <button
@@ -108,7 +108,7 @@ export default function QuickViewModal({ product, isOpen, onClose }) {
                         </div>
 
                         {/* Image Section */}
-                        <div className="w-full md:w-1/2 bg-gray-50 flex-shrink-0 relative">
+                        <div className="w-full md:w-1/2 bg-transparent flex-shrink-0 relative">
                             <div className="aspect-[4/3] md:aspect-auto md:h-full relative overflow-hidden py-6 md:py-10">
                                 {product.image_url ? (
                                     <Image
