@@ -305,19 +305,16 @@ input[autocomplete="one-time-code"] {
 
 /* Banner Text Content Fixes - Prevents massive gaps on large text/cursive fonts */
 .banner-text-content p {
-    margin-top: 4px;
-    margin-bottom: 4px;
+    margin-top: 2px;
+    margin-bottom: 2px;
 }
 
-.banner-text-content p:has(span[style*="1.35em"]),
-.banner-text-content p:has(span[style*="1.75em"]),
-.banner-text-content p:has(span[style*="2.5em"]),
-.banner-text-content p:has(span[style*="cursive"]) {
-    line-height: 1.15 !important;
-    margin-top: 0;
-    margin-bottom: 0;
-}
-
-.banner-text-content span[style*="cursive"] {
+.banner-text-content h1,
+.banner-text-content h2,
+.banner-text-content h3,
+.banner-text-content h4,
+.banner-text-content h5,
+.banner-text-content h6,
+.banner-text-content span {
     line-height: 1.15 !important;
 }
