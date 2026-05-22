@@ -105,7 +105,7 @@ export default function SmartAdvisorTab() {
 
         } catch (error) {
             console.error("Chat error:", error);
-            setMessages(prev => [...prev, { role: 'assistant', content: isHebrew ? 'היועץ שלנו מטפל כרגע בפניות קודמות ⏳ נשמח לעזור בעוד מספר דקות.' : 'Our advisor is currently assisting other customers ⏳ please try again in a few minutes.' }]);
+            setMessages(prev => [...prev, { role: 'assistant', content: isHebrew ? 'היועץ שלנו מטפל כרגע בפניות קודמות, נשמח לעזור בעוד מספר דקות.' : 'Our advisor is currently assisting other customers, please try again in a few minutes.' }]);
         } finally {
             setIsLoading(false);
         }
