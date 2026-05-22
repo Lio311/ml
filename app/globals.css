@@ -259,10 +259,12 @@ input[autocomplete="one-time-code"] {
   background-clip: content-box;
 }
 
-/* Firefox */
-* {
-  scrollbar-width: thin;
-  scrollbar-color: rgba(130,130,130,0.6) transparent;
+/* Firefox standard scrollbar */
+@supports (-moz-appearance:none) {
+  html {
+    scrollbar-width: thin;
+    scrollbar-color: #888888 transparent;
+  }
 }
 
 /* Custom Scrollbar for Admin Sidebar */
