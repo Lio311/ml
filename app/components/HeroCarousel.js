@@ -47,6 +47,11 @@ export default function HeroCarousel({ banners = [], contentOverlays = [] }) {
 
     if (!banners || banners.length === 0) return null;
 
+    // Fallback for object position if the new dual variables don't exist yet
+    const getFallbackPosition = (banner) => {
+        return banner.objectPosition && banner.objectPosition.includes('%') ? parseInt(banner.objectPosition.split(' ')[1]) : 50;
+    };
+
     return (
         <div 
             className="hero-carousel-wrapper relative w-full h-full overflow-hidden"
