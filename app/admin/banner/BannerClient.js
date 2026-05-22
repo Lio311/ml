@@ -395,6 +395,25 @@ export default function BannerClient() {
                                                 </div>
                                             </div>
                                         </div>
+                                        <div>
+                                            <label className="block text-xs font-semibold text-gray-600 mb-1">רוחב קובייה (מחשב)</label>
+                                            <div className="px-2" dir="ltr">
+                                                <input 
+                                                    dir="ltr"
+                                                    type="range" 
+                                                    min="0" 
+                                                    max="1200" 
+                                                    step="10"
+                                                    value={banner.boxWidthDesktop ?? 0}
+                                                    onChange={(e) => updateBanner(index, 'boxWidthDesktop', parseInt(e.target.value))}
+                                                    className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-indigo-600"
+                                                />
+                                                <div className="flex justify-between text-xs text-gray-500 mt-1 font-bold">
+                                                    <span>אוטומטי (0)</span>
+                                                    <span>רחב (1200px)</span>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 ) : (
                                     <div className="grid grid-cols-2 gap-x-6 gap-y-3">
@@ -569,7 +588,7 @@ export default function BannerClient() {
                                                             type="range" 
                                                             min="0" 
                                                             max="100" 
-                                                            value={banner.buttonMarginTop ?? (isDesktop ? 16 : 12)}
+                                                            value={banner.buttonMarginTop ?? 16}
                                                             onChange={(e) => updateBanner(index, 'buttonMarginTop', parseInt(e.target.value))}
                                                             className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-orange-600"
                                                         />
@@ -670,7 +689,7 @@ export default function BannerClient() {
                                                     <div 
                                                         className={`absolute backdrop-blur-md rounded-2xl ${isDesktop ? 'px-5 py-3' : 'px-3 py-2'} border border-white/20 shadow-2xl text-center transition-all duration-75 flex flex-col items-center cursor-move ${dragState.isDragging && dragState.type === 'box' ? 'ring-2 ring-blue-500 shadow-blue-500/50' : ''} z-20`}
                                                             style={{
-                                                                width: isDesktop ? 'max-content' : 'max-content',
+                                                                width: isDesktop ? (banner.boxWidthDesktop > 0 ? `${banner.boxWidthDesktop}px` : 'max-content') : 'max-content',
                                                                 maxWidth: isDesktop ? 'none' : '95%',
                                                                 top: `${contentY}%`,
                                                                 left: `${contentX}%`,
