@@ -18,8 +18,11 @@ const DEFAULT_POPUPS = [
         },
         content: {
             title: 'בואו נדבר באינסטגרם!',
+            title_en: "Let's talk on Instagram!",
             description: 'זקוקים לייעוץ או מענה מהיר? אנחנו זמינים עבורכם ב-ml_tlv לכל שאלה, בכל ימות השבוע.',
+            description_en: 'Need advice or a quick answer? We are available for you at ml_tlv for any question, all week long.',
             buttonText: 'למעבר לייעוץ אישי',
+            buttonText_en: 'Go to personal advice',
             buttonUrl: 'https://instagram.com/ml_tlv',
             icon: 'instagram',
             imageUrl: ''

@@ -315,6 +315,8 @@ input[autocomplete="one-time-code"] {
 .banner-text-content h4,
 .banner-text-content h5,
 .banner-text-content h6,
-.banner-text-content span {
-    line-height: 1.15 !important;
+.banner-text-content [style*="Dancing Script"],
+.banner-text-content [style*="Gveret Levin"],
+.banner-text-content [style*="cursive"] {
+    line-height: 1.05 !important;
 }
