@@ -691,7 +691,7 @@ export default function BannerClient() {
                                                         className={`absolute backdrop-blur-md rounded-2xl ${isDesktop ? 'px-3 py-2 md:px-5 md:py-3' : 'px-3 py-2'} border border-white/20 shadow-2xl text-center transition-all duration-75 cursor-move ${dragState.isDragging && dragState.type === 'box' ? 'ring-2 ring-blue-500 shadow-blue-500/50' : ''} z-20`}
                                                             style={{
                                                                 width: isDesktop ? (banner.boxWidthDesktop > 0 ? `${banner.boxWidthDesktop}px` : 'max-content') : 'max-content',
-                                                                maxWidth: isDesktop ? 'none' : '500px',
+                                                                maxWidth: isDesktop ? 'none' : '600px',
                                                                 top: `${contentY}%`,
                                                                 left: `${banner.contentLang === 'en' ? 100 - contentX : contentX}%`,
                                                                 transform: `translate(-${banner.contentLang === 'en' ? 100 - contentX : contentX}%, -${contentY}%) scale(${finalScale})`,  
