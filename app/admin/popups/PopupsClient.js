@@ -37,13 +37,17 @@ function buildGradientCSS(colors) {
     return colors?.primary || '#8b5cf6';
 }
 
-function PopupPreview({ popup, small = false }) {
+function PopupPreview({ popup, small = false, activeTab = 'he' }) {
     const IconComp = getIconComponent(popup.content?.icon || 'message');
     const grad = buildGradientCSS(popup.colors);
     const sz = small ? 'scale-75 origin-top-right' : '';
 
+    const title = activeTab === 'en' ? (popup.content?.title_en || popup.content?.title) : popup.content?.title;
+    const description = activeTab === 'en' ? (popup.content?.description_en || popup.content?.description) : popup.content?.description;
+    const buttonText = activeTab === 'en' ? (popup.content?.buttonText_en || popup.content?.buttonText) : popup.content?.buttonText;
+
     return (
-        <div className={`bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden max-w-xs w-full ${sz}`} dir="rtl">
+        <div className={`bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden max-w-xs w-full ${sz}`} dir={activeTab === 'en' ? 'ltr' : 'rtl'}>
             <div className="h-20 opacity-10" style={{ background: grad }} />
             <div className="relative -mt-14 p-5 flex flex-col items-center text-center">
                 <div className="w-14 h-14 rounded-full p-0.5 mb-3 shadow-lg" style={{ background: grad }}>
@@ -55,10 +59,10 @@ function PopupPreview({ popup, small = false }) {
                         )}
                     </div>
                 </div>
-                <h3 className="text-base font-bold mb-1" style={{ color: popup.colors?.primary }}>{popup.content?.title || 'כותרת'}</h3>
-                <p className="text-gray-500 text-xs mb-3 line-clamp-2">{popup.content?.description || 'תיאור...'}</p>
+                <h3 className="text-base font-bold mb-1" style={{ color: popup.colors?.primary }}>{title || 'כותרת'}</h3>
+                <p className="text-gray-500 text-xs mb-3 line-clamp-2">{description || 'תיאור...'}</p>
                 <div className="w-full py-2 rounded-xl text-white text-xs font-bold text-center" style={{ background: grad }}>
-                    {popup.content?.buttonText || 'לחץ כאן'}
+                    {buttonText || 'לחץ כאן'}
                 </div>
             </div>
         </div>
@@ -82,6 +86,8 @@ function PopupModal({ popup, onSave, onClose }) {
             createdAt: new Date().toISOString()
         };
     });
+
+    const [activeTab, setActiveTab] = useState('he');
 
     const set = (path, val) => {
         setForm(prev => {
@@ -150,19 +156,37 @@ function PopupModal({ popup, onSave, onClose }) {
                             <input type="text" value={form.name} onChange={e => set('name', e.target.value)} placeholder="לדוגמה: פופאפ אינסטגרם" className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" />
                         </div>
 
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                            <div>
-                                <label className="block text-sm font-semibold text-gray-700 mb-1">כותרת</label>
-                                <input type="text" value={form.content.title} onChange={e => set('content.title', e.target.value)} className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" />
+                        <div className="border border-gray-200 rounded-xl overflow-hidden mb-6">
+                            <div className="flex border-b border-gray-200 bg-gray-50">
+                                <button
+                                    onClick={() => setActiveTab('he')}
+                                    className={`flex-1 py-3 text-sm font-bold transition-all border-b-2 ${activeTab === 'he' ? 'border-blue-600 text-blue-700 bg-white' : 'border-transparent text-gray-500 hover:bg-gray-100'}`}
+                                >
+                                    עברית
+                                </button>
+                                <button
+                                    onClick={() => setActiveTab('en')}
+                                    className={`flex-1 py-3 text-sm font-bold transition-all border-b-2 ${activeTab === 'en' ? 'border-blue-600 text-blue-700 bg-white' : 'border-transparent text-gray-500 hover:bg-gray-100'}`}
+                                >
+                                    English
+                                </button>
                             </div>
-                            <div>
-                                <label className="block text-sm font-semibold text-gray-700 mb-1">טקסט כפתור</label>
-                                <input type="text" value={form.content.buttonText} onChange={e => set('content.buttonText', e.target.value)} className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500" />
+                            <div className="p-4 space-y-4">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    <div>
+                                        <label className="block text-sm font-semibold text-gray-700 mb-1">כותרת ({activeTab === 'en' ? 'EN' : 'HE'})</label>
+                                        <input type="text" value={activeTab === 'en' ? form.content.title_en || '' : form.content.title} onChange={e => set(activeTab === 'en' ? 'content.title_en' : 'content.title', e.target.value)} className={`w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 ${activeTab === 'en' ? 'text-left' : 'text-right'}`} dir={activeTab === 'en' ? 'ltr' : 'rtl'} />
+                                    </div>
+                                    <div>
+                                        <label className="block text-sm font-semibold text-gray-700 mb-1">טקסט כפתור ({activeTab === 'en' ? 'EN' : 'HE'})</label>
+                                        <input type="text" value={activeTab === 'en' ? form.content.buttonText_en || '' : form.content.buttonText} onChange={e => set(activeTab === 'en' ? 'content.buttonText_en' : 'content.buttonText', e.target.value)} className={`w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 ${activeTab === 'en' ? 'text-left' : 'text-right'}`} dir={activeTab === 'en' ? 'ltr' : 'rtl'} />
+                                    </div>
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-semibold text-gray-700 mb-1">תיאור ({activeTab === 'en' ? 'EN' : 'HE'})</label>
+                                    <textarea rows={2} value={activeTab === 'en' ? form.content.description_en || '' : form.content.description} onChange={e => set(activeTab === 'en' ? 'content.description_en' : 'content.description', e.target.value)} className={`w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 resize-none ${activeTab === 'en' ? 'text-left' : 'text-right'}`} dir={activeTab === 'en' ? 'ltr' : 'rtl'} />
+                                </div>
                             </div>
-                        </div>
-                        <div>
-                            <label className="block text-sm font-semibold text-gray-700 mb-1">תיאור</label>
-                            <textarea rows={2} value={form.content.description} onChange={e => set('content.description', e.target.value)} className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 resize-none" />
                         </div>
 
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -237,7 +261,7 @@ function PopupModal({ popup, onSave, onClose }) {
                         <div className="sticky top-24">
                             <h3 className="text-sm font-bold text-gray-500 uppercase tracking-widest mb-3">תצוגה מקדימה</h3>
                             <div className="bg-gray-50 rounded-2xl p-4 flex items-center justify-center min-h-[300px] border border-gray-100">
-                                <PopupPreview popup={form} />
+                                <PopupPreview popup={form} activeTab={activeTab} />
                             </div>
                         </div>
                     </div>

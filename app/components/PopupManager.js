@@ -47,7 +47,7 @@ function buildGradientCSS(colors) {
 }
 
 export default function PopupManager() {
-    const { t } = useLanguage();
+    const { localize } = useLanguage();
     const [popups, setPopups] = useState([]);
     const [currentPopup, setCurrentPopup] = useState(null);
 
@@ -89,6 +89,10 @@ export default function PopupManager() {
     const primaryColor = popup.colors?.primary || '#8b5cf6';
     const textColor = popup.colors?.text || '#ffffff';
 
+    const title = localize(popup.content, 'title') || popup.content?.title;
+    const description = localize(popup.content, 'description') || popup.content?.description;
+    const buttonText = localize(popup.content, 'buttonText') || popup.content?.buttonText;
+
     return (
         <AnimatePresence>
             <div className="fixed inset-0 z-[9999] flex items-center justify-center p-4 sm:p-6 overflow-hidden">
@@ -129,20 +133,20 @@ export default function PopupManager() {
                         </div>
 
                         <h2 className="text-2xl font-bold mb-3 bg-clip-text text-transparent" style={{ backgroundImage: grad, WebkitBackgroundClip: 'text' }}>
-                            {popup.content?.title}
+                            {title}
                         </h2>
 
                         <p className="text-gray-600 dark:text-zinc-400 mb-8 text-lg leading-relaxed">
-                            {popup.content?.description}
+                            {description}
                         </p>
 
-                        {popup.content?.buttonText && (
+                        {buttonText && (
                             <button
                                 onClick={handleCTA}
                                 className="w-full py-4 px-6 rounded-2xl font-bold text-lg shadow-xl hover:shadow-2xl hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center justify-center gap-3 group"
                                 style={{ background: grad, color: textColor }}
                             >
-                                <span>{popup.content.buttonText}</span>
+                                <span>{buttonText}</span>
                                 <IconComp className="w-6 h-6 group-hover:animate-pulse" />
                             </button>
                         )}
