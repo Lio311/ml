@@ -74,7 +74,7 @@ export async function POST(req) {
 
         const genAI = new GoogleGenerativeAI(apiKey);
         const model = genAI.getGenerativeModel({ 
-            model: "gemini-1.5-flash",
+            model: "gemini-2.5-flash",
             systemInstruction: systemInstruction,
             tools: tools
         });
@@ -116,9 +116,22 @@ export async function POST(req) {
         }
 
         // We use generateContent instead of startChat because we maintain history on the client
-        const response = await model.generateContent({
-            contents: geminiHistory
-        });
+        // Added retry logic for 503 Service Unavailable (high demand)
+        let response;
+        let retries = 3;
+        while (retries > 0) {
+            try {
+                response = await model.generateContent({ contents: geminiHistory });
+                break;
+            } catch (err) {
+                if (err.message && err.message.includes('503') && retries > 1) {
+                    retries--;
+                    await new Promise(res => setTimeout(res, 1500)); // wait 1.5s before retry
+                } else {
+                    throw err;
+                }
+            }
+        }
 
         const result = response.response;
         const functionCalls = result.functionCalls();
@@ -184,7 +197,22 @@ export async function POST(req) {
                     }]
                 });
 
-                const followUpResponse = await model.generateContent({ contents: nextHistory });
+                let followUpResponse;
+                let followUpRetries = 3;
+                while (followUpRetries > 0) {
+                    try {
+                        followUpResponse = await model.generateContent({ contents: nextHistory });
+                        break;
+                    } catch (err) {
+                        if (err.message && err.message.includes('503') && followUpRetries > 1) {
+                            followUpRetries--;
+                            await new Promise(res => setTimeout(res, 1500));
+                        } else {
+                            throw err;
+                        }
+                    }
+                }
+
                 const followUpResult = followUpResponse.response;
                 
                 // Check if it wants to call ANOTHER tool
