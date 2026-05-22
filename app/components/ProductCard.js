@@ -104,36 +104,40 @@ export default function ProductCard({ product }) {
                 <WishlistHeart productId={product.id} />
             </div>
 
-            {/* New Badge (Last 7 days) */}
-            {(function () {
-                if (!product.created_at) return false;
-                const created = new Date(product.created_at);
-                const now = new Date();
-                const diffTime = Math.abs(now - created);
-                const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-                return diffDays <= 7;
-            })() && (
-                    <div className="absolute top-10 end-2 z-10 text-[10px] leading-3 font-bold bg-sky-500 text-white px-2 py-1 rounded shadow-sm text-center">
+            {/* Top Right Badges Container */}
+            <div className="absolute top-2 start-2 z-20 flex flex-col gap-1.5 items-start pointer-events-none">
+                {/* New Badge (Last 7 days) */}
+                {(function () {
+                    if (!product.created_at) return false;
+                    const created = new Date(product.created_at);
+                    const now = new Date();
+                    const diffTime = Math.abs(now - created);
+                    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                    return diffDays <= 7;
+                })() && (
+                    <div className="text-[10px] leading-3 font-bold bg-sky-500 text-white px-2 py-1 rounded shadow-sm text-center pointer-events-auto cursor-default">
                         {t('common.new')}
                     </div>
                 )}
 
-            {isDiscountActive(product) && (
-                <div className="absolute top-2 start-2 z-20 text-[10px] leading-3 font-black bg-green-600 text-white px-2 py-1 rounded shadow-sm text-center animate-pulse cursor-default">
-                    {locale === 'he' ? `${Math.round(product.discount_percentage)}% הנחה` : `${Math.round(product.discount_percentage)}% OFF`}
-                </div>
-            )}
+                {/* Discount Badge */}
+                {isDiscountActive(product) && (
+                    <div className="text-[10px] leading-3 font-black bg-green-600 text-white px-2 py-1 rounded shadow-sm text-center animate-pulse pointer-events-auto cursor-default">
+                        {locale === 'he' ? `${Math.round(product.discount_percentage)}% הנחה` : `${Math.round(product.discount_percentage)}% OFF`}
+                    </div>
+                )}
 
-            {((product.stock || 0) <= 20) && (
-                <div className={`absolute ${isDiscountActive(product) ? 'top-10' : 'top-2'} start-2 z-10 text-[9px] leading-3 font-bold px-1.5 py-1 rounded shadow-sm text-center text-white whitespace-nowrap ${(product.stock || 0) <= 0 ? 'bg-gray-400' : 'bg-red-600'
-                    }`}>
-                    {(product.stock || 0) <= 0 ? (
-                        <span>{t('common.out_of_stock')}</span>
-                    ) : (
-                        <span>{t('common.last_units')}</span>
-                    )}
-                </div>
-            )}
+                {/* Low Stock / Out of Stock Badge */}
+                {((product.stock || 0) <= 20) && (
+                    <div className={`text-[9px] leading-3 font-bold px-1.5 py-1 rounded shadow-sm text-center text-white whitespace-nowrap pointer-events-auto cursor-default ${(product.stock || 0) <= 0 ? 'bg-gray-400' : 'bg-red-600'}`}>
+                        {(product.stock || 0) <= 0 ? (
+                            <span>{t('common.out_of_stock')}</span>
+                        ) : (
+                            <span>{t('common.last_units')}</span>
+                        )}
+                    </div>
+                )}
+            </div>
 
             <Link 
                 href={product.slug || product.id ? `/product/${product.slug || product.id}` : '#'} 
