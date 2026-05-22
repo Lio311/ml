@@ -15,6 +15,7 @@ import he from './data/locales/he.json';
 import en from './data/locales/en.json';
 import { sanitizeProductArray } from "./lib/productUtils";
 import FadeIn from "./components/FadeIn";
+import TypewriterText from "./components/TypewriterText";
 
 
 const getT = (locale) => {
@@ -219,8 +220,11 @@ export default async function Home() {
                           <span className="block whitespace-nowrap">{t('homepage.hero_title_p2')}</span>
                         </h1>
                         <p className="text-xs md:text-base text-gray-800 mb-3 md:mb-4 font-assistant leading-relaxed max-w-none mx-auto opacity-80">
-                          {t('common.hero_subtitle')} {t('common.hero_tagline_p1')} <br className="hidden md:block" />
-                          {t('common.hero_tagline_p2')} {t('common.hero_cta')}
+                          <TypewriterText
+                            text={`${t('common.hero_subtitle')} ${t('common.hero_tagline_p1')} ${t('common.hero_tagline_p2')} ${t('common.hero_cta')}`}
+                            speed={35}
+                            delay={0.8}
+                          />
                         </p>
                       </>
                   )}
