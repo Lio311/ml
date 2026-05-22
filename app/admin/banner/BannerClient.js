@@ -42,7 +42,8 @@ export default function BannerClient() {
                 }
             } else if (type === 'bg') {
                 const bgDelta = -deltaY;
-                let newPos = Math.min(120, Math.max(-40, initialValY + bgDelta));
+                const minLimit = isDesktop ? -40 : -80;
+                let newPos = Math.min(120, Math.max(minLimit, initialValY + bgDelta));
                 if (isDesktop) {
                     updateBanner(index, 'objectPositionDesktop', Math.round(newPos));
                 } else {
@@ -394,7 +395,7 @@ export default function BannerClient() {
                                                 <input 
                                                     dir="ltr"
                                                     type="range" 
-                                                    min="-40" 
+                                                    min="-80" 
                                                     max="120" 
                                                     value={
                                                         banner.objectPositionMobile ?? 
@@ -404,7 +405,7 @@ export default function BannerClient() {
                                                     className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-blue-600"
                                                 />
                                                 <div className="flex justify-between text-xs text-gray-500 mt-1 font-bold" dir="ltr">
-                                                    <span>-40 למטה</span>
+                                                    <span>-80 למטה</span>
                                                     <span>50 אמצע</span>
                                                     <span>120 למעלה</span>
                                                 </div>
@@ -659,8 +660,8 @@ export default function BannerClient() {
                                                         <div 
                                                             className={`absolute backdrop-blur-md rounded-2xl ${isDesktop ? 'px-5 py-3' : 'px-3 py-2'} border border-white/20 shadow-2xl text-center transition-all duration-75 flex flex-col items-center cursor-move ${dragState.isDragging && dragState.type === 'box' ? 'ring-2 ring-blue-500 shadow-blue-500/50' : ''}`}
                                                             style={{
-                                                                width: isDesktop ? 'max-content' : '90%',
-                                                                maxWidth: isDesktop ? 'none' : '400px',
+                                                                width: isDesktop ? 'max-content' : 'max-content',
+                                                                maxWidth: isDesktop ? 'none' : '95%',
                                                                 top: `${contentY}%`,
                                                                 left: `${contentX}%`,
                                                                 transform: `translate(-${contentX}%, -${contentY}%) scale(${finalScale})`,  
@@ -671,9 +672,9 @@ export default function BannerClient() {
                                                             onMouseDown={(e) => handleDragStart(e, index, 'box', contentX, contentY)}
                                                         >
                                                             {banner.contentLang === 'en' && banner.contentEn ? (
-                                                                <div className={`pointer-events-none whitespace-normal px-0 [&_p]:my-0.5 ${isDesktop ? 'max-w-none' : 'max-w-[280px] mx-auto text-sm'}`} dangerouslySetInnerHTML={{ __html: banner.contentEn }} />
+                                                                <div className={`pointer-events-none whitespace-normal px-0 [&_p]:my-0.5 ${isDesktop ? 'max-w-none' : 'max-w-none mx-auto text-sm'}`} dangerouslySetInnerHTML={{ __html: banner.contentEn }} />
                                                             ) : (banner.contentLang !== 'en' && (banner.contentHe || banner.content)) ? (
-                                                                <div className={`pointer-events-none whitespace-normal px-0 [&_p]:my-0.5 ${isDesktop ? 'max-w-none' : 'max-w-[280px] mx-auto text-sm'}`} dangerouslySetInnerHTML={{ __html: banner.contentHe || banner.content }} />
+                                                                <div className={`pointer-events-none whitespace-normal px-0 [&_p]:my-0.5 ${isDesktop ? 'max-w-none' : 'max-w-none mx-auto text-sm'}`} dangerouslySetInnerHTML={{ __html: banner.contentHe || banner.content }} />
                                                             ) : (
                                                                 <>
                                                                     {/* Placeholder fallback for backward compatibility */}
@@ -682,7 +683,7 @@ export default function BannerClient() {
                                                                         <span className="block whitespace-nowrap">ml-tlv: דוגמיות בשמי נישה</span>
                                                                         <span className="block whitespace-nowrap">ודיקאנטים מקוריים</span>
                                                                     </div>
-                                                                    <div className={`font-assistant text-gray-800 opacity-80 leading-relaxed pointer-events-none whitespace-normal ${isDesktop ? 'text-base mb-4 max-w-none' : 'text-xs mb-3 max-w-[280px] mx-auto'}`}>
+                                                                    <div className={`font-assistant text-gray-800 opacity-80 leading-relaxed pointer-events-none whitespace-normal ${isDesktop ? 'text-base mb-4 max-w-none' : 'text-xs mb-3 max-w-none mx-auto'}`}>
                                                                         הדרך החכמה לגלות בשמי נישה יוקרתיים. מגוון דוגמיות יוקרה ודיקאנטים (דיקנטים) של הבשמים הנחשקים בעולם.
                                                                         <br className={isDesktop ? 'block' : 'hidden'} />
                                                                         הזמינו דוגמיות לפני רכישת בקבוק מלא.

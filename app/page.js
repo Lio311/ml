@@ -200,11 +200,11 @@ export default async function Home() {
             banners={banners} 
             contentOverlays={banners.map((banner, i) => (
               !banner.hideContentBox ? (
-                <div key={i} className="w-[90vw] md:w-max max-w-lg md:max-w-max text-black text-center content-box-bg px-3 py-2 md:px-5 md:py-3 rounded-2xl backdrop-blur-md shadow-2xl border border-white/20">
+                <div key={i} className="w-max max-w-[95vw] md:max-w-max text-black text-center content-box-bg px-3 py-2 md:px-5 md:py-3 rounded-2xl backdrop-blur-md shadow-2xl border border-white/20">
                   {locale === 'en' && banner.contentEn ? (
-                      <div className="whitespace-normal px-0 md:max-w-none max-w-[280px] mx-auto text-sm [&_p]:my-0.5" dangerouslySetInnerHTML={{ __html: banner.contentEn }} />
+                      <div className="whitespace-normal px-0 max-w-none mx-auto text-sm [&_p]:my-0.5" dangerouslySetInnerHTML={{ __html: banner.contentEn }} />
                   ) : (locale !== 'en' && banner.contentHe) ? (
-                      <div className="whitespace-normal px-0 md:max-w-none max-w-[280px] mx-auto text-sm [&_p]:my-0.5" dangerouslySetInnerHTML={{ __html: banner.contentHe }} />
+                      <div className="whitespace-normal px-0 max-w-none mx-auto text-sm [&_p]:my-0.5" dangerouslySetInnerHTML={{ __html: banner.contentHe }} />
                   ) : (
                       <>
                         <h2 className="text-xs md:text-sm font-assistant tracking-[0.2em] uppercase mb-1 opacity-90 animate-fadeIn font-bold">
@@ -214,7 +214,7 @@ export default async function Home() {
                           <span className="block whitespace-nowrap">{t('homepage.hero_title_p1')}</span>
                           <span className="block whitespace-nowrap">{t('homepage.hero_title_p2')}</span>
                         </h1>
-                        <p className="text-xs md:text-base text-gray-800 mb-3 md:mb-4 font-assistant leading-relaxed max-w-[280px] md:max-w-none mx-auto opacity-80">
+                        <p className="text-xs md:text-base text-gray-800 mb-3 md:mb-4 font-assistant leading-relaxed max-w-none mx-auto opacity-80">
                           {t('common.hero_subtitle')} {t('common.hero_tagline_p1')} <br className="hidden md:block" />
                           {t('common.hero_tagline_p2')} {t('common.hero_cta')}
                         </p>
