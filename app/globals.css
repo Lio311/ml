@@ -323,29 +323,29 @@ input[autocomplete="one-time-code"] {
 .banner-text-content.lang-en [style*="2.5em" i],
 .banner-text-content.lang-en [style*="2em" i],
 .banner-text-content.lang-en [style*="font-family" i],
-.dir-ltr .ql-editor h1,
-.dir-ltr .ql-editor h2,
-.dir-ltr .ql-editor h3,
-.dir-ltr .ql-editor h4,
-.dir-ltr .ql-editor h5,
-.dir-ltr .ql-editor h6,
-.dir-ltr .ql-editor *:has(> [style*="Dancing Script" i]),
-.dir-ltr .ql-editor *:has(> [style*="Gveret Levin" i]),
-.dir-ltr .ql-editor *:has(> [style*="cursive" i]),
-.dir-ltr .ql-editor [style*="Dancing Script" i],
-.dir-ltr .ql-editor [style*="Gveret Levin" i],
-.dir-ltr .ql-editor [style*="cursive" i],
-.dir-ltr .ql-editor [style*="2.5em" i],
-.dir-ltr .ql-editor [style*="2em" i],
-.dir-ltr .ql-editor [style*="font-family" i],
+.dir-ltr .banner-editor-content h1,
+.dir-ltr .banner-editor-content h2,
+.dir-ltr .banner-editor-content h3,
+.dir-ltr .banner-editor-content h4,
+.dir-ltr .banner-editor-content h5,
+.dir-ltr .banner-editor-content h6,
+.dir-ltr .banner-editor-content *:has(> [style*="Dancing Script" i]),
+.dir-ltr .banner-editor-content *:has(> [style*="Gveret Levin" i]),
+.dir-ltr .banner-editor-content *:has(> [style*="cursive" i]),
+.dir-ltr .banner-editor-content [style*="Dancing Script" i],
+.dir-ltr .banner-editor-content [style*="Gveret Levin" i],
+.dir-ltr .banner-editor-content [style*="cursive" i],
+.dir-ltr .banner-editor-content [style*="2.5em" i],
+.dir-ltr .banner-editor-content [style*="2em" i],
+.dir-ltr .banner-editor-content [style*="font-family" i],
 .banner-text-content.lang-en p:has([style*="cursive" i]),
-.dir-ltr .ql-editor p:has([style*="cursive" i]) {
+.dir-ltr .banner-editor-content p:has([style*="cursive" i]) {
     line-height: 0.55 !important;
 }
 
 /* Remove paragraph gap ONLY between consecutive cursive lines */
 .banner-text-content.lang-en p:has([style*="cursive" i]):has(+ p:has([style*="cursive" i])),
-.dir-ltr .ql-editor p:has([style*="cursive" i]):has(+ p:has([style*="cursive" i])) {
+.dir-ltr .banner-editor-content p:has([style*="cursive" i]):has(+ p:has([style*="cursive" i])) {
     margin-bottom: 0 !important;
     padding-bottom: 0 !important;
 }
@@ -362,17 +362,17 @@ input[autocomplete="one-time-code"] {
 .banner-text-content.lang-he [style*="2.5em" i],
 .banner-text-content.lang-he [style*="2em" i],
 .banner-text-content.lang-he [style*="font-family" i],
-.dir-rtl .ql-editor h1,
-.dir-rtl .ql-editor h2,
-.dir-rtl .ql-editor h3,
-.dir-rtl .ql-editor h4,
-.dir-rtl .ql-editor h5,
-.dir-rtl .ql-editor h6,
-.dir-rtl .ql-editor [style*="Dancing Script" i],
-.dir-rtl .ql-editor [style*="Gveret Levin" i],
-.dir-rtl .ql-editor [style*="cursive" i],
-.dir-rtl .ql-editor [style*="2.5em" i],
-.dir-rtl .ql-editor [style*="2em" i],
-.dir-rtl .ql-editor [style*="font-family" i] {
+.dir-rtl .banner-editor-content h1,
+.dir-rtl .banner-editor-content h2,
+.dir-rtl .banner-editor-content h3,
+.dir-rtl .banner-editor-content h4,
+.dir-rtl .banner-editor-content h5,
+.dir-rtl .banner-editor-content h6,
+.dir-rtl .banner-editor-content [style*="Dancing Script" i],
+.dir-rtl .banner-editor-content [style*="Gveret Levin" i],
+.dir-rtl .banner-editor-content [style*="cursive" i],
+.dir-rtl .banner-editor-content [style*="2.5em" i],
+.dir-rtl .banner-editor-content [style*="2em" i],
+.dir-rtl .banner-editor-content [style*="font-family" i] {
     line-height: 1.15 !important;
 }
