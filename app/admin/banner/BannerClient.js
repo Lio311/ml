@@ -278,9 +278,9 @@ export default function BannerClient() {
                                 </div>
 
                                 {(!banner.activeTab || banner.activeTab === 'desktop') ? (
-                                    <>
+                                    <div className="grid grid-cols-2 gap-x-6 gap-y-3">
                                         <div>
-                                            <label className="block text-sm font-semibold text-gray-700 mb-2">מיקוד אנכי של הסרטון/תמונה (מחשב)</label>
+                                            <label className="block text-xs font-semibold text-gray-600 mb-1">מיקוד אנכי — סרטון/תמונה</label>
                                             <div className="px-2" dir="ltr">
                                                 <input 
                                                     dir="ltr"
@@ -306,7 +306,7 @@ export default function BannerClient() {
                                             </div>
                                         </div>
                                         <div>
-                                            <label className="block text-sm font-semibold text-gray-700 mb-2">מיקום אופקי של הקובייה (מחשב)</label>
+                                            <label className="block text-xs font-semibold text-gray-600 mb-1">מיקום אופקי — קובייה</label>
                                             <div className="px-2" dir="ltr">
                                                 <input 
                                                     dir="ltr"
@@ -325,7 +325,7 @@ export default function BannerClient() {
                                             </div>
                                         </div>
                                         <div>
-                                            <label className="block text-sm font-semibold text-gray-700 mb-2">מיקום אנכי של הקובייה (מחשב)</label>
+                                            <label className="block text-xs font-semibold text-gray-600 mb-1">מיקום אנכי — קובייה</label>
                                             <div className="px-2" dir="ltr">
                                                 <input 
                                                     dir="ltr"
@@ -344,7 +344,7 @@ export default function BannerClient() {
                                             </div>
                                         </div>
                                         <div>
-                                            <label className="block text-sm font-semibold text-gray-700 mb-2">גודל הקובייה (מחשב)</label>
+                                            <label className="block text-xs font-semibold text-gray-600 mb-1">גודל קובייה</label>
                                             <div className="px-2" dir="ltr">
                                                 <input 
                                                     dir="ltr"
@@ -363,7 +363,7 @@ export default function BannerClient() {
                                             </div>
                                         </div>
                                         <div>
-                                            <label className="block text-sm font-semibold text-gray-700 mb-2">שקיפות הקובייה (מחשב)</label>
+                                            <label className="block text-xs font-semibold text-gray-600 mb-1">שקיפות קובייה</label>
                                             <div className="px-2" dir="ltr">
                                                 <input 
                                                     dir="ltr"
@@ -380,11 +380,11 @@ export default function BannerClient() {
                                                 </div>
                                             </div>
                                         </div>
-                                    </>
+                                    </div>
                                 ) : (
-                                    <>
+                                    <div className="grid grid-cols-2 gap-x-6 gap-y-3">
                                         <div>
-                                            <label className="block text-sm font-semibold text-gray-700 mb-2">מיקוד אנכי של הסרטון/תמונה (מובייל)</label>
+                                            <label className="block text-xs font-semibold text-gray-600 mb-1">מיקוד אנכי — סרטון/תמונה</label>
                                             <div className="px-2" dir="ltr">
                                                 <input 
                                                     dir="ltr"
@@ -406,7 +406,7 @@ export default function BannerClient() {
                                             </div>
                                         </div>
                                         <div>
-                                            <label className="block text-sm font-semibold text-gray-700 mb-2">מיקום אנכי של הקובייה (מובייל)</label>
+                                            <label className="block text-xs font-semibold text-gray-600 mb-1">מיקום אנכי — קובייה</label>
                                             <div className="px-2" dir="ltr">
                                                 <input 
                                                     dir="ltr"
@@ -425,7 +425,7 @@ export default function BannerClient() {
                                             </div>
                                         </div>
                                         <div>
-                                            <label className="block text-sm font-semibold text-gray-700 mb-2">גודל הקובייה (מובייל)</label>
+                                            <label className="block text-xs font-semibold text-gray-600 mb-1">גודל קובייה</label>
                                             <div className="px-2" dir="ltr">
                                                 <input 
                                                     dir="ltr"
@@ -444,7 +444,7 @@ export default function BannerClient() {
                                             </div>
                                         </div>
                                         <div>
-                                            <label className="block text-sm font-semibold text-gray-700 mb-2">שקיפות הקובייה (מובייל)</label>
+                                            <label className="block text-xs font-semibold text-gray-600 mb-1">שקיפות קובייה</label>
                                             <div className="px-2" dir="ltr">
                                                 <input 
                                                     dir="ltr"
@@ -461,7 +461,7 @@ export default function BannerClient() {
                                                 </div>
                                             </div>
                                         </div>
-                                    </>
+                                    </div>
                                 )}
 
                                 {/* Content Box Editor */}
