@@ -198,24 +198,34 @@ export default async function Home() {
         <div className="absolute inset-0 w-full h-full overflow-hidden">
           <HeroCarousel 
             banners={banners} 
-            contentOverlay={
-              <div className="w-[90vw] md:w-max max-w-lg md:max-w-max text-black text-center content-box-bg p-4 md:px-8 md:py-5 rounded-2xl backdrop-blur-md shadow-2xl border border-white/20">
-                <h2 className="text-xs md:text-sm font-assistant tracking-[0.2em] uppercase mb-1 opacity-90 animate-fadeIn font-bold">
-                  {t('homepage.discover_sig')}
-                </h2>
-                <h1 className="font-handwriting text-[1.35rem] md:text-5xl mb-2 md:mb-3 text-black leading-tight tracking-wide">
-                  <span className="block whitespace-nowrap">{t('homepage.hero_title_p1')}</span>
-                  <span className="block whitespace-nowrap">{t('homepage.hero_title_p2')}</span>
-                </h1>
-                <p className="text-xs md:text-base text-gray-800 mb-3 md:mb-4 font-assistant leading-relaxed max-w-[280px] md:max-w-none mx-auto opacity-80">
-                  {t('common.hero_subtitle')} {t('common.hero_tagline_p1')} <br className="hidden md:block" />
-                  {t('common.hero_tagline_p2')} {t('common.hero_cta')}
-                </p>
-                <Link href="/catalog" className="inline-block border text-black border-black px-6 py-2.5 text-xs md:text-sm font-bold tracking-widest hover:bg-black hover:text-white transition duration-500 uppercase rounded-full">
-                  {t('homepage.shop_now')}
-                </Link>
-              </div>
-            }
+            contentOverlays={banners.map((banner, i) => (
+              !banner.hideContentBox ? (
+                <div key={i} className="w-[90vw] md:w-max max-w-lg md:max-w-max text-black text-center content-box-bg p-4 md:px-8 md:py-5 rounded-2xl backdrop-blur-md shadow-2xl border border-white/20">
+                  {locale === 'en' && banner.contentEn ? (
+                      <div className={`whitespace-normal ql-editor px-0 pb-3 md:max-w-none max-w-[280px] mx-auto text-sm`} dangerouslySetInnerHTML={{ __html: banner.contentEn }} />
+                  ) : (locale !== 'en' && banner.contentHe) ? (
+                      <div className={`whitespace-normal ql-editor px-0 pb-3 md:max-w-none max-w-[280px] mx-auto text-sm`} dangerouslySetInnerHTML={{ __html: banner.contentHe }} />
+                  ) : (
+                      <>
+                        <h2 className="text-xs md:text-sm font-assistant tracking-[0.2em] uppercase mb-1 opacity-90 animate-fadeIn font-bold">
+                          {t('homepage.discover_sig')}
+                        </h2>
+                        <h1 className="font-handwriting text-[1.35rem] md:text-5xl mb-2 md:mb-3 text-black leading-tight tracking-wide">
+                          <span className="block whitespace-nowrap">{t('homepage.hero_title_p1')}</span>
+                          <span className="block whitespace-nowrap">{t('homepage.hero_title_p2')}</span>
+                        </h1>
+                        <p className="text-xs md:text-base text-gray-800 mb-3 md:mb-4 font-assistant leading-relaxed max-w-[280px] md:max-w-none mx-auto opacity-80">
+                          {t('common.hero_subtitle')} {t('common.hero_tagline_p1')} <br className="hidden md:block" />
+                          {t('common.hero_tagline_p2')} {t('common.hero_cta')}
+                        </p>
+                      </>
+                  )}
+                  <Link href={banner.btnLink || "/catalog"} className="inline-block border text-black border-black px-6 py-2.5 text-xs md:text-sm font-bold tracking-widest hover:bg-black hover:text-white transition duration-500 uppercase rounded-full">
+                    {locale === 'en' ? (banner.btnTextEn || t('homepage.shop_now')) : (banner.btnTextHe || t('homepage.shop_now'))}
+                  </Link>
+                </div>
+              ) : null
+            ))}
           />
         </div>
       </section>

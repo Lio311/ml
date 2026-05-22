@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 
-export default function HeroCarousel({ banners = [], contentOverlay }) {
+export default function HeroCarousel({ banners = [], contentOverlays = [] }) {
     const [currentIndex, setCurrentIndex] = useState(0);
     const [touchStart, setTouchStart] = useState(null);
     const [touchEnd, setTouchEnd] = useState(null);
@@ -47,112 +47,112 @@ export default function HeroCarousel({ banners = [], contentOverlay }) {
 
     if (!banners || banners.length === 0) return null;
 
-    const activeBanner = banners[currentIndex] || {};
-    
-    // Fallback for object position if the new dual variables don't exist yet
-    const getFallbackPosition = (banner) => {
-        return banner.objectPosition && banner.objectPosition.includes('%') ? parseInt(banner.objectPosition.split(' ')[1]) : 50;
-    };
-    
-    const bgYDesktop = activeBanner.objectPositionDesktop ?? getFallbackPosition(activeBanner);
-    const bgYMobile = activeBanner.objectPositionMobile ?? getFallbackPosition(activeBanner);
-    const contentYDesktop = activeBanner.contentPositionDesktop ?? 50;
-    const contentYMobile = activeBanner.contentPositionMobile ?? 80;
-    const contentXDesktop = activeBanner.contentPositionXDesktop ?? 50;
-    const contentScaleDesktop = activeBanner.contentScaleDesktop ?? 100;
-    const contentScaleMobile = activeBanner.contentScaleMobile ?? 100;
-    const contentOpacityDesktop = activeBanner.contentOpacityDesktop ?? 60;
-    const contentOpacityMobile = activeBanner.contentOpacityMobile ?? 60;
-    const hideContentBox = activeBanner.hideContentBox || false;
-
     return (
         <div 
             className="hero-carousel-wrapper relative w-full h-full overflow-hidden"
             onTouchStart={onTouchStart}
             onTouchMove={onTouchMove}
             onTouchEnd={onTouchEnd}
-            style={{
-                '--active-bg-y-desktop': `${bgYDesktop}%`,
-                '--active-bg-y-mobile': `${bgYMobile}%`,
-                '--active-content-y-desktop': `${contentYDesktop}%`,
-                '--active-content-y-mobile': `${contentYMobile}%`,
-                '--active-content-x-desktop': `${contentXDesktop}%`,
-                '--active-content-scale-desktop': contentScaleDesktop / 100,
-                '--active-content-scale-mobile': contentScaleMobile / 100,
-                '--active-content-opacity-desktop': contentOpacityDesktop / 100,
-                '--active-content-opacity-mobile': contentOpacityMobile / 100,
-                '--active-content-display': hideContentBox ? 'none' : 'block',
-            }}
         >
             <style dangerouslySetInnerHTML={{__html: `
-                .hero-carousel-wrapper .banner-media {
+                .banner-slide .banner-media {
                     object-position: 50% var(--active-bg-y-mobile);
                 }
-                .hero-carousel-wrapper .banner-content {
+                .banner-slide .banner-content {
                     display: var(--active-content-display);
                     top: var(--active-content-y-mobile);
                     left: 50%;
                     transform: translate(-50%, calc(var(--active-content-y-mobile) * -1)) scale(var(--active-content-scale-mobile));
                     transform-origin: 50% var(--active-content-y-mobile);
                 }
-                .hero-carousel-wrapper .content-box-bg {
+                .banner-slide .content-box-bg {
                     background-color: rgba(255, 255, 255, var(--active-content-opacity-mobile));
                 }
                 @media (min-width: 768px) {
-                    .hero-carousel-wrapper .banner-media {
+                    .banner-slide .banner-media {
                         object-position: 50% var(--active-bg-y-desktop);
                     }
-                    .hero-carousel-wrapper .banner-content {
+                    .banner-slide .banner-content {
                         display: var(--active-content-display);
                         top: var(--active-content-y-desktop);
                         left: var(--active-content-x-desktop);
                         transform: translate(calc(var(--active-content-x-desktop) * -1), calc(var(--active-content-y-desktop) * -1)) scale(var(--active-content-scale-desktop));
                         transform-origin: var(--active-content-x-desktop) var(--active-content-y-desktop);
                     }
-                    .hero-carousel-wrapper .content-box-bg {
+                    [dir="ltr"] .banner-slide .banner-content {
+                        left: auto;
+                        right: var(--active-content-x-desktop);
+                        transform: translate(calc(var(--active-content-x-desktop) * 1), calc(var(--active-content-y-desktop) * -1)) scale(var(--active-content-scale-desktop));
+                        transform-origin: calc(100% - var(--active-content-x-desktop)) var(--active-content-y-desktop);
+                    }
+                    .banner-slide .content-box-bg {
                         background-color: rgba(255, 255, 255, var(--active-content-opacity-desktop));
                     }
                 }
             `}} />
 
-            {banners.map((banner, index) => (
-                <div 
-                    key={index} 
-                    className={`absolute inset-0 w-full h-full transition-opacity duration-1000 ease-in-out ${
-                        index === currentIndex ? 'opacity-100 z-10' : 'opacity-0 z-0'
-                    }`}
-                >
-                    {banner.type === 'video' ? (
-                        <video
-                            autoPlay
-                            loop
-                            muted
-                            playsInline
-                            preload="auto"
-                            fetchPriority={index === 0 ? "high" : "auto"}
-                            className="w-full h-full object-cover banner-media transition-all duration-700"
-                        >
-                            <source src={banner.url || "/hero-video.mp4"} type="video/mp4" />
-                        </video>
-                    ) : (
-                        <img
-                            src={banner.url || "/hero-video.mp4"}
-                            alt={`Banner ${index + 1}`}
-                            className="w-full h-full object-cover banner-media transition-all duration-700"
-                            fetchPriority={index === 0 ? "high" : "auto"}
-                        />
-                    )}
-                </div>
-            ))}
+            {banners.map((banner, index) => {
+                const bgYDesktop = banner.objectPositionDesktop ?? getFallbackPosition(banner);
+                const bgYMobile = banner.objectPositionMobile ?? getFallbackPosition(banner);
+                const contentYDesktop = banner.contentPositionDesktop ?? 50;
+                const contentYMobile = banner.contentPositionMobile ?? 80;
+                const contentXDesktop = banner.contentPositionXDesktop ?? 50;
+                const contentScaleDesktop = banner.contentScaleDesktop ?? 100;
+                const contentScaleMobile = banner.contentScaleMobile ?? 100;
+                const contentOpacityDesktop = banner.contentOpacityDesktop ?? 60;
+                const contentOpacityMobile = banner.contentOpacityMobile ?? 60;
+                const hideContentBox = banner.hideContentBox || false;
 
-            {/* Dynamic Content Overlay */}
-            {contentOverlay && (
-                <div className="absolute inset-0 z-20 pointer-events-none">
-                    <div className="absolute banner-content transition-all duration-700 ease-in-out pointer-events-auto">
-                        {contentOverlay}
+                return (
+                    <div 
+                        key={index} 
+                        className={`banner-slide absolute inset-0 w-full h-full transition-opacity duration-1000 ease-in-out ${
+                            index === currentIndex ? 'opacity-100 z-10' : 'opacity-0 z-0'
+                        }`}
+                        style={{
+                            '--active-bg-y-desktop': `${bgYDesktop}%`,
+                            '--active-bg-y-mobile': `${bgYMobile}%`,
+                            '--active-content-y-desktop': `${contentYDesktop}%`,
+                            '--active-content-y-mobile': `${contentYMobile}%`,
+                            '--active-content-x-desktop': `${contentXDesktop}%`,
+                            '--active-content-scale-desktop': contentScaleDesktop / 100,
+                            '--active-content-scale-mobile': contentScaleMobile / 100,
+                            '--active-content-opacity-desktop': contentOpacityDesktop / 100,
+                            '--active-content-opacity-mobile': contentOpacityMobile / 100,
+                            '--active-content-display': hideContentBox ? 'none' : 'block',
+                        }}
+                    >
+                        {banner.type === 'video' ? (
+                            <video
+                                autoPlay
+                                loop
+                                muted
+                                playsInline
+                                preload="auto"
+                                fetchPriority={index === 0 ? "high" : "auto"}
+                                className="w-full h-full object-cover banner-media transition-all duration-700"
+                            >
+                                <source src={banner.url || "/hero-video.mp4"} type="video/mp4" />
+                            </video>
+                        ) : (
+                            <img
+                                src={banner.url || "/hero-video.mp4"}
+                                alt={`Banner ${index + 1}`}
+                                className="w-full h-full object-cover banner-media transition-all duration-700"
+                                fetchPriority={index === 0 ? "high" : "auto"}
+                            />
+                        )}
+
+                        {contentOverlays[index] && (
+                            <div className="absolute inset-0 z-20 pointer-events-none">
+                                <div className="absolute banner-content transition-all duration-700 ease-in-out pointer-events-auto">
+                                    {contentOverlays[index]}
+                                </div>
+                            </div>
+                        )}
                     </div>
-                </div>
-            )}
+                );
+            })}
 
             {/* Dots navigation */}
             {banners.length > 1 && (

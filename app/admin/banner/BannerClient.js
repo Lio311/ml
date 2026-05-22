@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
 import { Save, Image as ImageIcon, Video, AlignCenter, ArrowUp, ArrowDown, ArrowLeft, ArrowRight, Plus, Trash2, Eye, EyeOff } from 'lucide-react';
+import RichTextEditor from '../components/RichTextEditor';
 
 export default function BannerClient() {
     const [banners, setBanners] = useState([
@@ -466,6 +467,69 @@ export default function BannerClient() {
                                         </div>
                                     </>
                                 )}
+
+                                {/* Content Box Editor */}
+                                {!banner.hideContentBox && (
+                                    <div className="mt-8 pt-6 border-t border-gray-200">
+                                        <div className="flex items-center justify-between mb-4">
+                                            <h3 className="text-lg font-bold text-gray-800">עריכת טקסט וכפתור</h3>
+                                            <div className="flex bg-gray-100 p-1 rounded-lg w-fit">
+                                                <button
+                                                    onClick={() => updateBanner(index, 'contentLang', 'he')}
+                                                    className={`px-4 py-1.5 text-sm font-bold rounded-md transition-all ${(!banner.contentLang || banner.contentLang === 'he') ? 'bg-white shadow-sm text-blue-600' : 'text-gray-500 hover:text-gray-700'}`}
+                                                >
+                                                    עברית
+                                                </button>
+                                                <button
+                                                    onClick={() => updateBanner(index, 'contentLang', 'en')}
+                                                    className={`px-4 py-1.5 text-sm font-bold rounded-md transition-all ${(banner.contentLang === 'en') ? 'bg-white shadow-sm text-blue-600' : 'text-gray-500 hover:text-gray-700'}`}
+                                                >
+                                                    English
+                                                </button>
+                                            </div>
+                                        </div>
+                                        
+                                        <div className="space-y-4">
+                                            <div>
+                                                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                                                    טקסט ({(!banner.contentLang || banner.contentLang === 'he') ? 'עברית' : 'אנגלית'})
+                                                </label>
+                                                <div className={banner.contentLang === 'en' ? 'dir-ltr' : 'dir-rtl'}>
+                                                    <RichTextEditor 
+                                                        value={banner.contentLang === 'en' ? (banner.contentEn || '') : (banner.contentHe || '')}
+                                                        onChange={(val) => updateBanner(index, banner.contentLang === 'en' ? 'contentEn' : 'contentHe', val)}
+                                                    />
+                                                </div>
+                                            </div>
+                                            <div className="grid grid-cols-2 gap-4">
+                                                <div>
+                                                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                                                        טקסט כפתור ({(!banner.contentLang || banner.contentLang === 'he') ? 'עברית' : 'אנגלית'})
+                                                    </label>
+                                                    <input
+                                                        type="text"
+                                                        value={banner.contentLang === 'en' ? (banner.btnTextEn || '') : (banner.btnTextHe || '')}
+                                                        onChange={(e) => updateBanner(index, banner.contentLang === 'en' ? 'btnTextEn' : 'btnTextHe', e.target.value)}
+                                                        placeholder={banner.contentLang === 'en' ? "Shop Now" : "קנה עכשיו"}
+                                                        className={`w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 ${banner.contentLang === 'en' ? 'text-left dir-ltr' : ''}`}
+                                                    />
+                                                </div>
+                                                <div>
+                                                    <label className="block text-sm font-semibold text-gray-700 mb-2">
+                                                        קישור כפתור (משותף)
+                                                    </label>
+                                                    <input
+                                                        type="text"
+                                                        dir="ltr"
+                                                        value={banner.btnLink || '/catalog'}
+                                                        onChange={(e) => updateBanner(index, 'btnLink', e.target.value)}
+                                                        className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 text-left"
+                                                    />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
                             </div>
 
                             {/* Advanced Cropper Preview */}
@@ -571,17 +635,28 @@ export default function BannerClient() {
                                                             }}
                                                             onMouseDown={(e) => handleDragStart(e, index, 'box', contentX, contentY)}
                                                         >
-                                                            <div className={`font-assistant tracking-[0.2em] text-gray-800 font-bold mb-1 opacity-90 uppercase pointer-events-none ${isDesktop ? 'text-sm' : 'text-xs'}`}>גלה את בושם החתימה שלך</div>
-                                                            <div className={`font-handwriting font-bold text-black ${isDesktop ? 'text-5xl mb-3' : 'text-[1.35rem] mb-2'} leading-tight tracking-wide pointer-events-none`}>
-                                                                <span className="block whitespace-nowrap">ml-tlv: דוגמיות בשמי נישה</span>
-                                                                <span className="block whitespace-nowrap">ודיקאנטים מקוריים</span>
+                                                            {banner.contentLang === 'en' && banner.contentEn ? (
+                                                                <div className={`pointer-events-none whitespace-normal ql-editor px-0 pb-3 ${isDesktop ? 'max-w-none' : 'max-w-[280px] mx-auto text-sm'}`} dangerouslySetInnerHTML={{ __html: banner.contentEn }} />
+                                                            ) : (banner.contentLang !== 'en' && banner.contentHe) ? (
+                                                                <div className={`pointer-events-none whitespace-normal ql-editor px-0 pb-3 ${isDesktop ? 'max-w-none' : 'max-w-[280px] mx-auto text-sm'}`} dangerouslySetInnerHTML={{ __html: banner.contentHe }} />
+                                                            ) : (
+                                                                <>
+                                                                    {/* Placeholder fallback for backward compatibility */}
+                                                                    <div className={`font-assistant tracking-[0.2em] text-gray-800 font-bold mb-1 opacity-90 uppercase pointer-events-none ${isDesktop ? 'text-sm' : 'text-xs'}`}>גלה את בושם החתימה שלך</div>
+                                                                    <div className={`font-handwriting font-bold text-black ${isDesktop ? 'text-5xl mb-3' : 'text-[1.35rem] mb-2'} leading-tight tracking-wide pointer-events-none`}>
+                                                                        <span className="block whitespace-nowrap">ml-tlv: דוגמיות בשמי נישה</span>
+                                                                        <span className="block whitespace-nowrap">ודיקאנטים מקוריים</span>
+                                                                    </div>
+                                                                    <div className={`font-assistant text-gray-800 opacity-80 leading-relaxed pointer-events-none whitespace-normal ${isDesktop ? 'text-base mb-4 max-w-none' : 'text-xs mb-3 max-w-[280px] mx-auto'}`}>
+                                                                        הדרך החכמה לגלות בשמי נישה יוקרתיים. מגוון דוגמיות יוקרה ודיקאנטים (דיקנטים) של הבשמים הנחשקים בעולם.
+                                                                        <br className={isDesktop ? 'block' : 'hidden'} />
+                                                                        הזמינו דוגמיות לפני רכישת בקבוק מלא.
+                                                                    </div>
+                                                                </>
+                                                            )}
+                                                            <div className={`inline-block border border-black text-black px-6 py-2.5 font-bold tracking-widest uppercase rounded-full pointer-events-none ${isDesktop ? 'text-sm' : 'text-xs'}`}>
+                                                                {banner.contentLang === 'en' ? (banner.btnTextEn || 'SHOP NOW') : (banner.btnTextHe || 'קנה עכשיו')}
                                                             </div>
-                                                            <div className={`font-assistant text-gray-800 opacity-80 leading-relaxed pointer-events-none whitespace-normal ${isDesktop ? 'text-base mb-4 max-w-none' : 'text-xs mb-3 max-w-[280px] mx-auto'}`}>
-                                                                הדרך החכמה לגלות בשמי נישה יוקרתיים. מגוון דוגמיות יוקרה ודיקאנטים (דיקנטים) של הבשמים הנחשקים בעולם.
-                                                                <br className={isDesktop ? 'block' : 'hidden'} />
-                                                                הזמינו דוגמיות לפני רכישת בקבוק מלא.
-                                                            </div>
-                                                            <div className={`inline-block border border-black text-black px-6 py-2.5 font-bold tracking-widest uppercase rounded-full pointer-events-none ${isDesktop ? 'text-sm' : 'text-xs'}`}>קנה עכשיו</div>
                                                         </div>
                                                     )}
 
