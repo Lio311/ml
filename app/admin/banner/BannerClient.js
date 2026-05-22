@@ -687,7 +687,7 @@ export default function BannerClient() {
                                                 {/* Content Box Simulation */}
                                                 {!banner.hideContentBox && (
                                                     <div 
-                                                        className={`absolute backdrop-blur-md rounded-2xl ${isDesktop ? 'px-5 py-3' : 'px-3 py-2'} border border-white/20 shadow-2xl text-center transition-all duration-75 cursor-move ${dragState.isDragging && dragState.type === 'box' ? 'ring-2 ring-blue-500 shadow-blue-500/50' : ''} z-20`}
+                                                        className={`absolute backdrop-blur-md rounded-2xl ${isDesktop ? 'px-3 py-2 md:px-5 md:py-3' : 'px-3 py-2'} border border-white/20 shadow-2xl text-center transition-all duration-75 cursor-move ${dragState.isDragging && dragState.type === 'box' ? 'ring-2 ring-blue-500 shadow-blue-500/50' : ''} z-20`}
                                                             style={{
                                                                 width: isDesktop ? (banner.boxWidthDesktop > 0 ? `${banner.boxWidthDesktop}px` : 'max-content') : 'max-content',
                                                                 maxWidth: isDesktop ? 'none' : '370px',
@@ -702,13 +702,13 @@ export default function BannerClient() {
                                                         >
                                                             {banner.contentLang === 'en' && banner.contentEn ? (
                                                                 <div 
-                                                                    className={`pointer-events-none whitespace-normal px-0 banner-text-content lang-en ${isDesktop ? 'max-w-none' : 'max-w-none mx-auto text-sm'}`} 
+                                                                    className={`pointer-events-none whitespace-normal px-0 banner-text-content lang-en max-w-none mx-auto text-sm`} 
                                                                     style={{ lineHeight: banner.lineHeight || '1.5' }}
                                                                     dangerouslySetInnerHTML={{ __html: banner.contentEn }} 
                                                                 />
                                                             ) : (banner.contentLang !== 'en' && (banner.contentHe || banner.content)) ? (
                                                                 <div 
-                                                                    className={`pointer-events-none whitespace-normal px-0 banner-text-content lang-he ${isDesktop ? 'max-w-none' : 'max-w-none mx-auto text-sm'}`} 
+                                                                    className={`pointer-events-none whitespace-normal px-0 banner-text-content lang-he max-w-none mx-auto text-sm`} 
                                                                     style={{ lineHeight: banner.lineHeight || '1.5' }}
                                                                     dangerouslySetInnerHTML={{ __html: banner.contentHe || banner.content }} 
                                                                 />
