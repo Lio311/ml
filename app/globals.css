@@ -291,8 +291,8 @@ input[autocomplete="one-time-code"] {
 }
 /* Quill Frontend Content Styles */
 .ql-editor .ql-font-assistant { font-family: var(--font-assistant), sans-serif; }
-.ql-editor .ql-font-handwriting { font-family: var(--font-handwriting), cursive; font-size: 1.5em; line-height: 1.25; }
-.ql-editor p { margin-bottom: 0.5em; line-height: 1.6; }
+.ql-editor .ql-font-handwriting { font-family: var(--font-handwriting), cursive; font-size: 1.5em; line-height: 0.6; }
+.ql-editor p { margin-bottom: 1em; line-height: 1.6; }
 .ql-editor h1 { font-size: 2.5em; font-weight: bold; line-height: 1.2; }
 .ql-editor h2 { font-size: 2em; font-weight: bold; line-height: 1.2; }
 .ql-editor h3 { font-size: 1.75em; font-weight: bold; line-height: 1.2; }
@@ -319,6 +319,18 @@ input[autocomplete="one-time-code"] {
 .banner-text-content [style*="cursive"],
 .banner-text-content [style*="2.5em"],
 .banner-text-content [style*="2em"],
-.banner-text-content [style*="font-family"] {
+.banner-text-content [style*="font-family"],
+.ql-editor h1,
+.ql-editor h2,
+.ql-editor h3,
+.ql-editor h4,
+.ql-editor h5,
+.ql-editor h6,
+.ql-editor [style*="Dancing Script"],
+.ql-editor [style*="Gveret Levin"],
+.ql-editor [style*="cursive"],
+.ql-editor [style*="2.5em"],
+.ql-editor [style*="2em"],
+.ql-editor [style*="font-family"] {
     line-height: 0.55 !important;
 }
