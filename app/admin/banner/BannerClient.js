@@ -702,13 +702,13 @@ export default function BannerClient() {
                                                         >
                                                             {banner.contentLang === 'en' && banner.contentEn ? (
                                                                 <div 
-                                                                    className={`pointer-events-none whitespace-normal px-0 banner-text-content ${isDesktop ? 'max-w-none' : 'max-w-none mx-auto text-sm'}`} 
+                                                                    className={`pointer-events-none whitespace-normal px-0 banner-text-content lang-en ${isDesktop ? 'max-w-none' : 'max-w-none mx-auto text-sm'}`} 
                                                                     style={{ lineHeight: banner.lineHeight || '1.5' }}
                                                                     dangerouslySetInnerHTML={{ __html: banner.contentEn }} 
                                                                 />
                                                             ) : (banner.contentLang !== 'en' && (banner.contentHe || banner.content)) ? (
                                                                 <div 
-                                                                    className={`pointer-events-none whitespace-normal px-0 banner-text-content ${isDesktop ? 'max-w-none' : 'max-w-none mx-auto text-sm'}`} 
+                                                                    className={`pointer-events-none whitespace-normal px-0 banner-text-content lang-he ${isDesktop ? 'max-w-none' : 'max-w-none mx-auto text-sm'}`} 
                                                                     style={{ lineHeight: banner.lineHeight || '1.5' }}
                                                                     dangerouslySetInnerHTML={{ __html: banner.contentHe || banner.content }} 
                                                                 />
