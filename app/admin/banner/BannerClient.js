@@ -34,8 +34,9 @@ export default function BannerClient() {
                 if (isDesktop) {
                     let newY = Math.min(100, Math.max(0, initialValY + deltaY));
                     let newX = Math.min(100, Math.max(0, initialValX + deltaX));
+                    const finalX = banner.contentLang === 'en' ? 100 - newX : newX;
                     updateBanner(index, 'contentPositionDesktop', Math.round(newY));
-                    updateBanner(index, 'contentPositionXDesktop', Math.round(newX));
+                    updateBanner(index, 'contentPositionXDesktop', Math.round(finalX));
                 } else {
                     let newY = Math.min(100, Math.max(0, initialValY + deltaY));
                     updateBanner(index, 'contentPositionMobile', Math.round(newY));
@@ -692,13 +693,13 @@ export default function BannerClient() {
                                                                 width: isDesktop ? (banner.boxWidthDesktop > 0 ? `${banner.boxWidthDesktop}px` : 'max-content') : 'max-content',
                                                                 maxWidth: isDesktop ? 'none' : '370px',
                                                                 top: `${contentY}%`,
-                                                                left: `${contentX}%`,
-                                                                transform: `translate(-${contentX}%, -${contentY}%) scale(${finalScale})`,  
-                                                                transformOrigin: `${contentX}% ${contentY}%`,
+                                                                left: `${banner.contentLang === 'en' ? 100 - contentX : contentX}%`,
+                                                                transform: `translate(-${banner.contentLang === 'en' ? 100 - contentX : contentX}%, -${contentY}%) scale(${finalScale})`,  
+                                                                transformOrigin: `${banner.contentLang === 'en' ? 100 - contentX : contentX}% ${contentY}%`,
                                                                 backgroundColor: `rgba(255, 255, 255, ${contentOpacity / 100})`,
                                                                 pointerEvents: 'auto'
                                                             }}
-                                                            onMouseDown={(e) => handleDragStart(e, index, 'box', contentX, contentY)}
+                                                            onMouseDown={(e) => handleDragStart(e, index, 'box', banner.contentLang === 'en' ? 100 - contentX : contentX, contentY)}
                                                         >
                                                             {banner.contentLang === 'en' && banner.contentEn ? (
                                                                 <div 
