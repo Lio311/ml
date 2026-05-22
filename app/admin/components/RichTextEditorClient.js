@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useCallback } from 'react';
+import { useEffect, useRef, useCallback, useState } from 'react';
 
 const FONTS = [
     { label: 'ברירת מחדל', value: '' },
@@ -16,14 +16,28 @@ const SIZES = [
     { label: 'XXL', value: '2.5em' },
 ];
 
-function ToolbarBtn({ title, onClick, children, active }) {
+// Normalize legacy Quill HTML to clean HTML with inline styles
+function normalizeHtml(html) {
+    if (!html) return '';
+    return html
+        .replace(/class="ql-font-assistant"/g, 'style="font-family: Assistant, sans-serif;"')
+        .replace(/class="ql-font-handwriting"/g, "style=\"font-family: 'Gveret Levin', 'Dancing Script', cursive;\"")
+        .replace(/class="ql-size-large"/g, 'style="font-size: 1.35em;"')
+        .replace(/class="ql-size-huge"/g, 'style="font-size: 2.5em;"')
+        .replace(/class="ql-size-small"/g, 'style="font-size: 0.75em;"')
+        .replace(/class="ql-align-center"/g, 'style="text-align: center;"')
+        .replace(/class="ql-align-left"/g, 'style="text-align: left;"')
+        .replace(/class="ql-align-right"/g, 'style="text-align: right;"')
+        .replace(/ class=""/g, '');
+}
+
+function ToolbarBtn({ title, onClick, children }) {
     return (
         <button
             type="button"
             title={title}
             onMouseDown={e => { e.preventDefault(); onClick(); }}
-            className={`w-8 h-8 flex items-center justify-center rounded text-sm font-bold transition-all select-none
-                ${active ? 'bg-gray-800 text-white' : 'hover:bg-gray-200 text-gray-700'}`}
+            className="w-8 h-8 flex items-center justify-center rounded text-sm font-bold transition-all select-none hover:bg-gray-200 text-gray-700"
         >
             {children}
         </button>
@@ -32,50 +46,71 @@ function ToolbarBtn({ title, onClick, children, active }) {
 
 export default function RichTextEditorClient({ value, onChange, dir = 'rtl' }) {
     const editorRef = useRef(null);
-    const isExternalUpdateRef = useRef(false);
+    const suppressRef = useRef(false);
+    // Use a key to force re-mount when language tab switches (value changes dramatically)
+    const prevValueRef = useRef(value);
 
-    // Initialize with value
+    // On mount: set initial HTML
     useEffect(() => {
-        if (editorRef.current && editorRef.current.innerHTML !== (value || '')) {
-            isExternalUpdateRef.current = true;
-            editorRef.current.innerHTML = value || '';
-            isExternalUpdateRef.current = false;
+        if (editorRef.current) {
+            editorRef.current.innerHTML = normalizeHtml(value || '');
+            prevValueRef.current = value;
         }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    // When value changes from outside (tab switch), update the editor
+    useEffect(() => {
+        if (!editorRef.current) return;
+        if (value === prevValueRef.current) return;
+        prevValueRef.current = value;
+        suppressRef.current = true;
+        editorRef.current.innerHTML = normalizeHtml(value || '');
+        suppressRef.current = false;
     }, [value]);
+
+    const triggerChange = useCallback(() => {
+        if (!editorRef.current || suppressRef.current) return;
+        const html = editorRef.current.innerHTML;
+        const clean = html === '<br>' || html === '' ? '' : html;
+        prevValueRef.current = clean;
+        onChange(clean);
+    }, [onChange]);
 
     const execCmd = useCallback((cmd, val = null) => {
         editorRef.current?.focus();
         document.execCommand(cmd, false, val);
         triggerChange();
-    }, []);
+    }, [triggerChange]);
 
-    const triggerChange = useCallback(() => {
-        if (!editorRef.current || isExternalUpdateRef.current) return;
-        const html = editorRef.current.innerHTML;
-        onChange(html === '<br>' || html === '' ? '' : html);
-    }, [onChange]);
-
-    const applyFont = (fontFamily) => {
+    const applyFont = useCallback((fontFamily) => {
         editorRef.current?.focus();
-        if (!fontFamily) {
-            document.execCommand('removeFormat', false, null);
+        const sel = window.getSelection();
+        if (sel && sel.rangeCount > 0 && !sel.getRangeAt(0).collapsed) {
+            const span = document.createElement('span');
+            span.style.fontFamily = fontFamily;
+            const range = sel.getRangeAt(0);
+            try {
+                range.surroundContents(span);
+            } catch {
+                span.appendChild(range.extractContents());
+                range.insertNode(span);
+            }
         } else {
-            document.execCommand('fontName', false, fontFamily);
-            // Wrap selection in a span with the font if execCommand didn't work well
+            // Apply to whole editor if nothing selected
+            editorRef.current.style.fontFamily = fontFamily;
         }
         triggerChange();
-    };
+    }, [triggerChange]);
 
-    const applySize = (size) => {
+    const applySize = useCallback((size) => {
         editorRef.current?.focus();
-        // Use fontSize execCommand (only supports 1-7)
-        // Instead, wrap in span with style
         const sel = window.getSelection();
         if (sel && sel.rangeCount > 0) {
             const range = sel.getRangeAt(0);
+            const span = document.createElement('span');
+            span.style.fontSize = size;
             if (!range.collapsed) {
-                const span = document.createElement('span');
-                span.style.fontSize = size;
                 try {
                     range.surroundContents(span);
                 } catch {
@@ -86,10 +121,10 @@ export default function RichTextEditorClient({ value, onChange, dir = 'rtl' }) {
                 const newRange = document.createRange();
                 newRange.selectNodeContents(span);
                 sel.addRange(newRange);
-                triggerChange();
             }
         }
-    };
+        triggerChange();
+    }, [triggerChange]);
 
     return (
         <div className="border border-gray-300 rounded-xl overflow-hidden shadow-sm">
@@ -109,7 +144,7 @@ export default function RichTextEditorClient({ value, onChange, dir = 'rtl' }) {
                 </select>
 
                 {/* Font size */}
-                <div className="flex gap-0.5 border border-gray-300 rounded overflow-hidden">
+                <div className="flex border border-gray-300 rounded overflow-hidden">
                     {SIZES.map(s => (
                         <button
                             key={s.value}
@@ -125,14 +160,12 @@ export default function RichTextEditorClient({ value, onChange, dir = 'rtl' }) {
 
                 <div className="w-px h-6 bg-gray-300 mx-1" />
 
-                {/* Bold / Italic / Underline */}
                 <ToolbarBtn title="מודגש" onClick={() => execCmd('bold')}><b>B</b></ToolbarBtn>
                 <ToolbarBtn title="נטוי" onClick={() => execCmd('italic')}><i>I</i></ToolbarBtn>
                 <ToolbarBtn title="קו תחתון" onClick={() => execCmd('underline')}><u>U</u></ToolbarBtn>
 
                 <div className="w-px h-6 bg-gray-300 mx-1" />
 
-                {/* Alignment */}
                 <ToolbarBtn title="יישור שמאל" onClick={() => execCmd('justifyLeft')}>
                     <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor"><rect x="0" y="1" width="14" height="2"/><rect x="0" y="5" width="10" height="2"/><rect x="0" y="9" width="14" height="2"/><rect x="0" y="13" width="8" height="2"/></svg>
                 </ToolbarBtn>
@@ -145,21 +178,19 @@ export default function RichTextEditorClient({ value, onChange, dir = 'rtl' }) {
 
                 <div className="w-px h-6 bg-gray-300 mx-1" />
 
-                {/* Text color */}
-                <label title="צבע טקסט" className="relative w-8 h-8 flex items-center justify-center rounded hover:bg-gray-200 cursor-pointer transition-all">
-                    <span className="text-sm font-bold">A</span>
+                <label title="צבע טקסט" className="relative w-8 h-8 flex items-center justify-center rounded hover:bg-gray-200 cursor-pointer transition-all group">
+                    <span className="text-sm font-bold leading-none">A</span>
                     <input
                         type="color"
                         defaultValue="#000000"
                         className="absolute inset-0 opacity-0 w-full h-full cursor-pointer"
                         onInput={e => execCmd('foreColor', e.target.value)}
                     />
-                    <div className="absolute bottom-0.5 left-1 right-1 h-1 rounded-sm bg-current pointer-events-none" />
+                    <div className="absolute bottom-0.5 left-1 right-1 h-1 rounded-sm" style={{background:'#000'}} />
                 </label>
 
-                {/* Clear formatting */}
                 <ToolbarBtn title="נקה עיצוב" onClick={() => execCmd('removeFormat')}>
-                    <span className="text-xs">✕</span>
+                    <span className="text-xs font-normal">✕</span>
                 </ToolbarBtn>
             </div>
 
@@ -175,10 +206,11 @@ export default function RichTextEditorClient({ value, onChange, dir = 'rtl' }) {
                 data-placeholder="הקלד כאן את הטקסט..."
             />
             <style>{`
-                [contenteditable]:empty:before {
+                [data-placeholder]:empty:before {
                     content: attr(data-placeholder);
                     color: #9ca3af;
                     pointer-events: none;
+                    display: block;
                 }
             `}</style>
         </div>
