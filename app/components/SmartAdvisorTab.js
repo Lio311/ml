@@ -9,8 +9,8 @@ import { useRouter } from 'next/navigation';
 import { marked } from 'marked';
 
 export default function SmartAdvisorTab() {
-    const { language } = useLanguage();
-    const isHebrew = language === 'he';
+    const { locale } = useLanguage();
+    const isHebrew = locale === 'he';
     const [isOpen, setIsOpen] = useState(false);
     const [messages, setMessages] = useState([
         { role: 'assistant', content: isHebrew ? 

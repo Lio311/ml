@@ -36,8 +36,8 @@ const DEFAULT_SETTINGS = {
 };
 
 export default function AccessibilityWidget() {
-    const { language } = useLanguage();
-    const isHebrew = language === 'he';
+    const { locale } = useLanguage();
+    const isHebrew = locale === 'he';
     const [isOpen, setIsOpen] = useState(false);
     const [settings, setSettings] = useState(DEFAULT_SETTINGS);
     const [readingGuideY, setReadingGuideY] = useState(0);
