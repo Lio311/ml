@@ -314,6 +314,9 @@ input[autocomplete="one-time-code"] {
 .banner-text-content.lang-en h4,
 .banner-text-content.lang-en h5,
 .banner-text-content.lang-en h6,
+.banner-text-content.lang-en *:has(> [style*="Dancing Script" i]),
+.banner-text-content.lang-en *:has(> [style*="Gveret Levin" i]),
+.banner-text-content.lang-en *:has(> [style*="cursive" i]),
 .banner-text-content.lang-en [style*="Dancing Script" i],
 .banner-text-content.lang-en [style*="Gveret Levin" i],
 .banner-text-content.lang-en [style*="cursive" i],
@@ -326,13 +329,25 @@ input[autocomplete="one-time-code"] {
 .dir-ltr .ql-editor h4,
 .dir-ltr .ql-editor h5,
 .dir-ltr .ql-editor h6,
+.dir-ltr .ql-editor *:has(> [style*="Dancing Script" i]),
+.dir-ltr .ql-editor *:has(> [style*="Gveret Levin" i]),
+.dir-ltr .ql-editor *:has(> [style*="cursive" i]),
 .dir-ltr .ql-editor [style*="Dancing Script" i],
 .dir-ltr .ql-editor [style*="Gveret Levin" i],
 .dir-ltr .ql-editor [style*="cursive" i],
 .dir-ltr .ql-editor [style*="2.5em" i],
 .dir-ltr .ql-editor [style*="2em" i],
-.dir-ltr .ql-editor [style*="font-family" i] {
+.dir-ltr .ql-editor [style*="font-family" i],
+.banner-text-content.lang-en p:has([style*="cursive" i]),
+.dir-ltr .ql-editor p:has([style*="cursive" i]) {
     line-height: 0.55 !important;
+}
+
+/* Remove paragraph gap ONLY between consecutive cursive lines */
+.banner-text-content.lang-en p:has([style*="cursive" i]):has(+ p:has([style*="cursive" i])),
+.dir-ltr .ql-editor p:has([style*="cursive" i]):has(+ p:has([style*="cursive" i])) {
+    margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
 }
 
 .banner-text-content.lang-he h1,
