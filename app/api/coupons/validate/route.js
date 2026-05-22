@@ -1,9 +1,15 @@
 import { NextResponse } from 'next/server';
 import pool from '@/app/lib/db';
 import * as Sentry from "@sentry/nextjs";
+import { checkRateLimit } from '@/app/lib/rateLimiter';
 
 export async function POST(req) {
     try {
+        const ip = req.headers.get('x-forwarded-for') || '127.0.0.1';
+        if (!checkRateLimit(ip, 30, 60000)) { // 30 requests per minute per IP
+            return NextResponse.json({ error: 'Too many requests, please try again later.' }, { status: 429 });
+        }
+
         const origin = req.headers.get('origin') || req.headers.get('referer');
         const host = req.headers.get('host');
         if (origin && !origin.includes(host)) {

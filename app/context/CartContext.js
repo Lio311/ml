@@ -5,6 +5,8 @@ import { useUser } from "@clerk/nextjs";
 import toast from 'react-hot-toast';
 import { useLanguage } from "./LanguageContext";
 import { getDiscountedPrice, isDiscountActive } from "../lib/productUtils";
+import { useLotteryState } from "../hooks/useLotteryState";
+import { useCoupons } from "../hooks/useCoupons";
 
 const CartContext = createContext();
 
@@ -12,14 +14,22 @@ export function CartProvider({ children }) {
     const { t } = useLanguage();
     const [cartItems, setCartItems] = useState([]);
     const [activeVendorId, setActiveVendorId] = useState('main');
-    const [lotteryMode, setLotteryMode] = useState({ active: false, expiresAt: null });
-    const [lotteryTimeLeft, setLotteryTimeLeft] = useState(null);
-    const [luckyPrize, setLuckyPrize] = useState(null);
-    const [coupon, setCoupon] = useState(null);
     const [vendorConfig, setVendorConfig] = useState(null);
     const [isSelfPickup, setIsSelfPickup] = useState(false);
 
     const { user } = useUser();
+
+    const { 
+        lotteryMode, setLotteryMode, 
+        lotteryTimeLeft, setLotteryTimeLeft, 
+        luckyPrize, setLuckyPrize, 
+        isCartLocked, 
+        startLottery: hookStartLottery, 
+        cancelLottery: hookCancelLottery, 
+        clearLottery 
+    } = useLotteryState(cartItems);
+
+    const { coupon, setCoupon, clearCoupon } = useCoupons(cartItems, activeVendorId, user);
 
     // 1. Initial Load from LocalStorage
     useEffect(() => {
@@ -28,22 +38,8 @@ export function CartProvider({ children }) {
             try { setCartItems(JSON.parse(savedCart)); } catch (e) { console.error(e); }
         }
 
-        const savedLottery = localStorage.getItem("lotteryMode");
-        if (savedLottery) {
-            try {
-                const parsed = JSON.parse(savedLottery);
-                if (parsed.active && parsed.expiresAt > Date.now()) setLotteryMode(parsed);
-                else localStorage.removeItem("lotteryMode");
-            } catch (e) { console.error(e); }
-        }
-
         const savedActiveVendor = localStorage.getItem("activeVendorId");
         if (savedActiveVendor) setActiveVendorId(savedActiveVendor);
-
-        const savedCoupon = localStorage.getItem("coupon");
-        if (savedCoupon) {
-            try { setCoupon(JSON.parse(savedCoupon)); } catch (e) { console.error(e); }
-        }
     }, []);
 
     // 2. Persistence
@@ -54,106 +50,6 @@ export function CartProvider({ children }) {
     useEffect(() => {
         localStorage.setItem("activeVendorId", activeVendorId);
     }, [activeVendorId]);
-
-    useEffect(() => {
-        if (lotteryMode.active) localStorage.setItem("lotteryMode", JSON.stringify(lotteryMode));
-        else localStorage.removeItem("lotteryMode");
-    }, [lotteryMode]);
-
-    useEffect(() => {
-        if (coupon) localStorage.setItem("coupon", JSON.stringify(coupon));
-        else localStorage.removeItem("coupon");
-    }, [coupon]);
-
-    // Coupon Expiration (20 minutes)
-    useEffect(() => {
-        if (!coupon) return;
-        
-        let addedAt = coupon.addedAt;
-        if (!addedAt) {
-            addedAt = Date.now();
-            setCoupon({ ...coupon, addedAt });
-            return;
-        }
-
-        const expiresAt = addedAt + (20 * 60 * 1000); // 20 minutes in ms
-        const timeRemaining = expiresAt - Date.now();
-
-        if (timeRemaining <= 0) {
-            setCoupon(null);
-            toast.error("תוקף הקופון בעגלה פג (20 דקות). באפשרותך להזין אותו מחדש.");
-            return;
-        }
-
-        const timeout = setTimeout(() => {
-            setCoupon(null);
-            toast.error("תוקף הקופון בעגלה פג (20 דקות). באפשרותך להזין אותו מחדש.");
-        }, timeRemaining);
-
-        return () => clearTimeout(timeout);
-    }, [coupon]);
-
-    // Re-validate coupon security when user state or cart changes
-    useEffect(() => {
-        if (!coupon || !coupon.code) return;
-        
-        const currentActiveItems = cartItems.filter(item => (item.vendorId || 'main') === activeVendorId);
-        const currentSubtotal = currentActiveItems.reduce((sum, i) => sum + (Number(i.price) * i.quantity), 0);
-        const limits = coupon.limitations || {};
-
-        // 1. Instant Local Validation (UX)
-        if (limits.min_cart_total && currentSubtotal < Number(limits.min_cart_total)) {
-            setCoupon(null);
-            localStorage.removeItem("coupon");
-            toast.error(`הקופון הוסר: סכום הסל (₪${currentSubtotal}) נמוך מהמינימום הנדרש (₪${limits.min_cart_total})`);
-            return;
-        }
-
-        // 2. Instant Item Eligibility Check
-        const hasEligible = !limits.allowed_products || limits.allowed_products.length === 0 || 
-            currentActiveItems.some(item => {
-                let cleanId = item.id;
-                if (typeof cleanId === 'string' && cleanId.includes('-')) cleanId = cleanId.split('-')[0];
-                return limits.allowed_products.map(String).includes(String(cleanId));
-            });
-        
-        if (!hasEligible) {
-            setCoupon(null);
-            localStorage.removeItem("coupon");
-            toast.error("הקופון הוסר כיוון שהסל לא מכיל פריטים התואמים למבצע");
-            return;
-        }
-
-        // 3. Debounced Server-side Security Recheck
-        const revalidate = async () => {
-            try {
-                const res = await fetch("/api/coupons/validate", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    body: JSON.stringify({ 
-                        code: coupon.code,
-                        subtotal: currentSubtotal,
-                        items: currentActiveItems,
-                        userEmail: user?.primaryEmailAddress?.emailAddress
-                    }),
-                });
-                if (!res.ok) {
-                    const data = await res.json();
-                    setCoupon(null);
-                    localStorage.removeItem("coupon");
-                    if (data.error) toast.error(data.error);
-                }
-            } catch (e) {
-                console.error("Coupon re-validation failed", e);
-            }
-        };
-        
-        const timer = setTimeout(revalidate, 1000); 
-        return () => clearTimeout(timer);
-    }, [user?.id, cartItems, activeVendorId]);
-
-    // Derived State
-    const isCartLocked = lotteryMode.active;
     const isMainVendor = activeVendorId === 'main';
 
     // Fetch Custom Vendor Config securely
@@ -192,33 +88,7 @@ export function CartProvider({ children }) {
         }
     }, [isMainVendor, vendorConfig]);
 
-    // Timer Interval for Lottery
-    useEffect(() => {
-        let interval;
-        if (lotteryMode.active && lotteryMode.expiresAt) {
-            interval = setInterval(() => {
-                const now = Date.now();
-                const diff = lotteryMode.expiresAt - now;
-                if (diff <= 0) {
-                    localStorage.removeItem("lotteryMode");
-                    setLotteryMode({ active: false, expiresAt: null });
-                    setLotteryTimeLeft(null);
-                } else {
-                    setLotteryTimeLeft(Math.floor(diff / 1000));
-                }
-            }, 1000);
-        }
-        return () => clearInterval(interval);
-    }, [lotteryMode]);
-
-    // Safety: Auto-unlock if cart is empty
-    useEffect(() => {
-        if (lotteryMode.active && cartItems.filter(i => i.vendorId === 'main').length === 0) {
-            setLotteryMode({ active: false, expiresAt: null });
-            setLotteryTimeLeft(null);
-            localStorage.removeItem("lotteryMode");
-        }
-    }, [cartItems, lotteryMode.active]);
+    // Lottery timers and safety moved to useLotteryState hook
 
     const hasSyncedRef = useRef(false);
 
@@ -622,11 +492,8 @@ export function CartProvider({ children }) {
         const remaining = cartItems.filter(item => (item.vendorId || 'main') !== activeVendorId);
         setCartItems(remaining);
         if (activeVendorId === 'main') {
-            setLotteryMode({ active: false, expiresAt: null });
-            setLotteryTimeLeft(null);
-            setCoupon(null);
-            setLuckyPrize(null);
-            localStorage.removeItem("lotteryMode");
+            clearLottery();
+            clearCoupon();
         }
         if (remaining.length > 0) setActiveVendorId(remaining[0].vendorId || 'main');
         else setActiveVendorId('main');
@@ -635,12 +502,9 @@ export function CartProvider({ children }) {
     const clearCart = () => {
         markCartUnsynced();
         setCartItems([]);
-        setLotteryMode({ active: false, expiresAt: null });
-        setLotteryTimeLeft(null);
-        localStorage.removeItem("lotteryMode");
+        clearLottery();
         setActiveVendorId('main');
-        setCoupon(null);
-        setLuckyPrize(null);
+        clearCoupon();
         
         // Immediate server sync if logged in
         if (user?.primaryEmailAddress?.emailAddress) {
@@ -655,19 +519,8 @@ export function CartProvider({ children }) {
         }
     };
 
-    const startLottery = (items) => {
-        const newCart = items.map(p => ({ ...p, quantity: 1, isLotteryItem: true, vendorId: 'main' }));
-        setCartItems(newCart);
-        const duration = 10 * 60 * 1000;
-        setLotteryMode({ active: true, expiresAt: Date.now() + duration });
-        setActiveVendorId('main');
-    };
-
-    const cancelLottery = () => {
-        setLotteryMode({ active: false, expiresAt: null });
-        setLotteryTimeLeft(null);
-        setCartItems([]);
-    };
+    const startLottery = (items) => hookStartLottery(items, setCartItems, setActiveVendorId);
+    const cancelLottery = () => hookCancelLottery(setCartItems);
     
     // 6. Lucky Wheel Prize Protection
     // Automatically removes prizes/discounts if main site subtotal falls below threshold after deletion
