@@ -205,9 +205,9 @@ export default async function Home() {
                      style={{ '--desktop-width': banner.boxWidthDesktop > 0 ? `${banner.boxWidthDesktop}px` : undefined }}
                 >
                   {locale === 'en' && banner.contentEn ? (
-                      <div className="whitespace-normal px-0 max-w-none mx-auto text-sm banner-text-content" style={{ lineHeight: banner.lineHeight || '1.5' }} dangerouslySetInnerHTML={{ __html: banner.contentEn }} />
+                      <div className="whitespace-normal px-0 max-w-none mx-auto text-sm banner-text-content lang-en" style={{ lineHeight: banner.lineHeight || '1.5' }} dangerouslySetInnerHTML={{ __html: banner.contentEn }} />
                   ) : (locale !== 'en' && banner.contentHe) ? (
-                      <div className="whitespace-normal px-0 max-w-none mx-auto text-sm banner-text-content" style={{ lineHeight: banner.lineHeight || '1.5' }} dangerouslySetInnerHTML={{ __html: banner.contentHe }} />
+                      <div className="whitespace-normal px-0 max-w-none mx-auto text-sm banner-text-content lang-he" style={{ lineHeight: banner.lineHeight || '1.5' }} dangerouslySetInnerHTML={{ __html: banner.contentHe }} />
                   ) : (
                       <>
                         <h2 className="text-xs md:text-sm font-assistant tracking-[0.2em] uppercase mb-1 opacity-90 animate-fadeIn font-bold">
