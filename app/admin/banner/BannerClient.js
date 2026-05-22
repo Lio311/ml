@@ -689,7 +689,7 @@ export default function BannerClient() {
                                                                     </div>
                                                                 </>
                                                             )}
-                                                            <div className={`inline-block border px-6 py-2.5 font-bold tracking-widest uppercase rounded-full pointer-events-none ${isDesktop ? 'text-sm' : 'text-xs'}`}
+                                                            <div className={`mt-3 ${isDesktop ? 'md:mt-4' : ''} inline-block border px-6 py-2.5 font-bold tracking-widest uppercase rounded-full pointer-events-none ${isDesktop ? 'text-sm' : 'text-xs'}`}
                                                                 style={{ color: banner.btnTextColor || '#000000', borderColor: banner.btnBorderColor || '#000000' }}
                                                             >
                                                                 {banner.contentLang === 'en' ? (banner.btnTextEn || 'SHOP NOW') : (banner.btnTextHe || 'קנה עכשיו')}

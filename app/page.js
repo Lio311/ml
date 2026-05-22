@@ -220,7 +220,7 @@ export default async function Home() {
                         </p>
                       </>
                   )}
-                  <Link href={banner.btnLink || "/catalog"} className="inline-block border px-6 py-2.5 text-xs md:text-sm font-bold tracking-widest transition duration-500 uppercase rounded-full hover:opacity-75"
+                  <Link href={banner.btnLink || "/catalog"} className="mt-3 md:mt-4 inline-block border px-6 py-2.5 text-xs md:text-sm font-bold tracking-widest transition duration-500 uppercase rounded-full hover:opacity-75"
                     style={{ color: banner.btnTextColor || '#000', borderColor: banner.btnBorderColor || '#000' }}>
                     {locale === 'en' ? (banner.btnTextEn || t('homepage.shop_now')) : (banner.btnTextHe || t('homepage.shop_now'))}
                   </Link>
