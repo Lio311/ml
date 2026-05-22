@@ -6,14 +6,9 @@ import { Save, Image as ImageIcon, Video, AlignCenter, ArrowUp, ArrowDown, Arrow
 import RichTextEditor from '../components/RichTextEditor';
 
 export default function BannerClient() {
-    const [banners, setBanners] = useState([
-        {
-            type: 'video',
-            url: '/hero-video.mp4',
-            objectPosition: 'center'
-        }
-    ]);
+    const [banners, setBanners] = useState([{ type: 'video', url: '/hero-video.mp4', objectPosition: 'center' }]);
     const [loading, setLoading] = useState(true);
+    const [dataLoaded, setDataLoaded] = useState(false);
     const [saving, setSaving] = useState(false);
     const [dragState, setDragState] = useState({ isDragging: false, index: null, type: null, startX: 0, startY: 0, initialValX: 0, initialValY: 0 });
 
@@ -93,6 +88,7 @@ export default function BannerClient() {
                         setBanners([data.banner]);
                     }
                 }
+                setDataLoaded(true);
             })
             .catch(err => toast.error('שגיאה בטעינת נתוני הבאנר'))
             .finally(() => setLoading(false));
@@ -496,6 +492,7 @@ export default function BannerClient() {
                                                 </label>
                                                 <div className={banner.contentLang === 'en' ? 'dir-ltr' : 'dir-rtl'}>
                                                     <RichTextEditor 
+                                                        key={`editor-${index}-${banner.contentLang || 'he'}-${dataLoaded ? 'loaded' : 'loading'}`}
                                                         value={banner.contentLang === 'en' ? (banner.contentEn || '') : (banner.contentHe || banner.content || '')}
                                                         onChange={(val) => updateBanner(index, banner.contentLang === 'en' ? 'contentEn' : 'contentHe', val)}
                                                         dir={banner.contentLang === 'en' ? 'ltr' : 'rtl'}
