@@ -118,7 +118,7 @@ const navGroups = [
 
 export default function AdminSidebar({ role = 'customer' }) {
     const pathname = usePathname();
-    const { brand } = useBrand();
+    const brand = useBrand();
     const [unreadCount, setUnreadCount] = useState(0);
     const [pendingOrdersCount, setPendingOrdersCount] = useState(0);
     const [openGroups, setOpenGroups] = useState({});
