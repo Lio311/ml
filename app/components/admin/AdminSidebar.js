@@ -154,7 +154,7 @@ export default function AdminSidebar({ role = 'customer' }) {
     }, [pathname]);
 
     const toggleGroup = (idx) => {
-        setOpenGroups(prev => ({ ...prev, [idx]: !prev[idx] }));
+        setOpenGroups(prev => prev[idx] ? {} : { [idx]: true });
     };
 
     return (
