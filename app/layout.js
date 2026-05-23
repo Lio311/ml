@@ -27,12 +27,14 @@ const assistant = Assistant({
   subsets: ["hebrew", "latin"],
   weight: ["300", "400", "600", "700"],
   variable: "--font-assistant",
+  display: "swap",
 });
 
 const dancingScript = Dancing_Script({
   subsets: ["latin"],
   weight: "400",
   variable: "--font-dancing-script",
+  display: "swap",
 });
 
 export const viewport = {

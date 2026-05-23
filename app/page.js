@@ -153,7 +153,7 @@ export default async function Home() {
                           <TypewriterText
                             text={`${t('common.hero_subtitle')} ${t('common.hero_tagline_p1')} ${t('common.hero_tagline_p2')} ${t('common.hero_cta')}`}
                             speed={35}
-                            delay={0.8}
+                            delay={0}
                           />
                         </p>
                       </>
