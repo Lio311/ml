@@ -119,6 +119,46 @@ const navGroups = [
 ];
 
 export default function AdminMobileNav({ role = 'customer' }) {
+    const [isOpen, setIsOpen] = useState(false);
+    const pathname = usePathname();
+    const { brand } = useBrand();
+    const [unreadCount, setUnreadCount] = useState(0);
+    const [pendingOrdersCount, setPendingOrdersCount] = useState(0);
+    const [openGroups, setOpenGroups] = useState({});
+
+    useEffect(() => {
+        const fetchCounts = async () => {
+            try {
+                const res = await fetch('/api/admin/counts');
+                if (res.ok) {
+                    const data = await res.json();
+                    setUnreadCount(data.unreadInbox || 0);
+                    setPendingOrdersCount(data.pendingOrders || 0);
+                }
+            } catch (err) {
+                console.error("Sidebar fetch error:", err);
+            }
+        };
+        fetchCounts();
+        const interval = setInterval(fetchCounts, 30000);
+        return () => clearInterval(interval);
+    }, []);
+
+    const isActive = (path) => pathname === path || pathname.startsWith(`${path}/`);
+
+    useEffect(() => {
+        const initialOpen = {};
+        navGroups.forEach((group, idx) => {
+            if (group.items.some(item => pathname === item.href || pathname.startsWith(`${item.href}/`))) {
+                initialOpen[idx] = true;
+            }
+        });
+        setOpenGroups(initialOpen);
+    }, [pathname]);
+
+    const toggleGroup = (idx) => {
+        setOpenGroups(prev => ({ ...prev, [idx]: !prev[idx] }));
+    };
 
     return (
         <div className="md:hidden">
