@@ -1,49 +1,31 @@
 "use client";
 
-import { useEffect, useRef, useState } from 'react';
+import { motion } from "framer-motion";
 
 export default function FadeIn({ children, delay = 0, direction = "up", className = "", distance = 40, duration = 0.8 }) {
-    const ref = useRef(null);
-    const [visible, setVisible] = useState(false);
-
-    useEffect(() => {
-        const el = ref.current;
-        if (!el) return;
-
-        // root: null = actual window viewport, ignores overflow-x-hidden parents
-        const observer = new IntersectionObserver(
-            ([entry]) => {
-                if (entry.isIntersecting) {
-                    setVisible(true);
-                    observer.disconnect();
-                }
-            },
-            { root: null, threshold: 0.01, rootMargin: "0px 0px -50px 0px" }
-        );
-
-        observer.observe(el);
-        return () => observer.disconnect();
-    }, []);
-
     const getInitialTransform = () => {
-        if (direction === "up") return `translateY(${distance}px)`;
-        if (direction === "down") return `translateY(-${distance}px)`;
-        if (direction === "left") return `translateX(${distance}px)`;
-        if (direction === "right") return `translateX(-${distance}px)`;
-        return "none";
+        if (direction === "up") return { y: distance, x: 0 };
+        if (direction === "down") return { y: -distance, x: 0 };
+        if (direction === "left") return { x: distance, y: 0 };
+        if (direction === "right") return { x: -distance, y: 0 };
+        return { x: 0, y: 0 };
     };
 
+    const initial = { opacity: 0, ...getInitialTransform() };
+
     return (
-        <div
-            ref={ref}
+        <motion.div
             className={className}
-            style={{
-                opacity: visible ? 1 : 0,
-                transform: visible ? "translate(0,0)" : getInitialTransform(),
-                transition: `opacity ${duration}s cubic-bezier(0.16,1,0.3,1) ${delay}s, transform ${duration}s cubic-bezier(0.16,1,0.3,1) ${delay}s`,
+            initial={initial}
+            whileInView={{ opacity: 1, x: 0, y: 0 }}
+            viewport={{ once: true, margin: "-50px" }}
+            transition={{ 
+                duration: duration, 
+                delay: delay,
+                ease: [0.16, 1, 0.3, 1] 
             }}
         >
             {children}
-        </div>
+        </motion.div>
     );
 }
