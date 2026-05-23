@@ -116,3 +116,5 @@ const LogicNode = memo(({ data, isConnectable }) => {
 });
 
 export default LogicNode;
+
+LogicNode.displayName = 'LogicNode';

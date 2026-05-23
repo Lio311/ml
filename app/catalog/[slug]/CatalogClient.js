@@ -234,6 +234,7 @@ export default function CatalogClient({ slug }) {
             }
         };
         if (slug) fetchCatalog();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [slug]);
 
     // Derived filter options

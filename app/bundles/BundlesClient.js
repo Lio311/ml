@@ -42,6 +42,7 @@ export default function BundlesClient() {
         if (selectedType) {
             fetchProducts();
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedType]);
 
     const fetchProducts = async () => {

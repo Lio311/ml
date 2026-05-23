@@ -62,6 +62,7 @@ export default function AdminCatalogItemsClient({ catalogId }) {
 
     useEffect(() => {
         fetchCatalogData();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [catalogId]);
 
     const handleStartEdit = (item) => {

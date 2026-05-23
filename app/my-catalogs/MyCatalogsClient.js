@@ -43,6 +43,7 @@ export default function MyCatalogsClient() {
 
     useEffect(() => {
         fetchCatalogs();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
     const handleCreate = async (e) => {

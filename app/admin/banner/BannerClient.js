@@ -68,6 +68,7 @@ export default function BannerClient() {
             window.removeEventListener('mousemove', handleMouseMove);
             window.removeEventListener('mouseup', handleMouseUp);
         };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [dragState, banners]);
 
     const handleDragStart = (e, index, type, initialValX, initialValY) => {

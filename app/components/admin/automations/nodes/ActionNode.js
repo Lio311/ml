@@ -54,6 +54,7 @@ const ActionNode = memo(({ data, isConnectable }) => {
         })
         .catch(() => setLoadingTemplates(false));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data.actionType]);
 
   const templateOptions = templates.map(t => ({
@@ -229,3 +230,5 @@ const ActionNode = memo(({ data, isConnectable }) => {
 });
 
 export default ActionNode;
+
+ActionNode.displayName = 'ActionNode';

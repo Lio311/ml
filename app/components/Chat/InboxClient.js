@@ -69,6 +69,7 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
         
         const interval = setInterval(() => fetchConversations(), 10000); // Poll inbox list every 10s
         return () => clearInterval(interval);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isLoaded, user]);
 
     useEffect(() => {
@@ -82,6 +83,7 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
                 markAsRead(activeConvId);
             }
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [activeConvId, messages.length]);
 
     useEffect(() => {
@@ -92,6 +94,7 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
         } else {
             setMessages([]); // Clear messages for placeholder chats
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [activeConvId]);
 
     const fetchConversations = async (isInitial = false) => {

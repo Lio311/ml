@@ -62,3 +62,5 @@ const SplitNode = memo(({ data, isConnectable }) => {
 });
 
 export default SplitNode;
+
+SplitNode.displayName = 'SplitNode';

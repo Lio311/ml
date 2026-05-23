@@ -62,3 +62,5 @@ const WaitNode = memo(({ data, isConnectable }) => {
 });
 
 export default WaitNode;
+
+WaitNode.displayName = 'WaitNode';

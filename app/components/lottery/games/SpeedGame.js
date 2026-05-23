@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useRef } from 'react';
+import { useState, useEffect, useRef, useMemo } from 'react';
 import Image from '../../CImage';
 
 export default function SpeedGame({ prize, onComplete, allImages = [] }) {
@@ -9,7 +9,7 @@ export default function SpeedGame({ prize, onComplete, allImages = [] }) {
     const intervalRef = useRef(null);
 
     // Prepare pool
-    const pool = allImages.length > 0 ? allImages : [prize.image_url];
+    const pool = useMemo(() => allImages.length > 0 ? allImages : [prize.image_url], [allImages, prize.image_url]);
     // Ensure prize is in pool? It likely is if allImages comes from bundle.
 
     useEffect(() => {
@@ -22,6 +22,7 @@ export default function SpeedGame({ prize, onComplete, allImages = [] }) {
             clearInterval(intervalRef.current);
         }
         return () => clearInterval(intervalRef.current);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [running, pool]);
 
     const handleStop = () => {

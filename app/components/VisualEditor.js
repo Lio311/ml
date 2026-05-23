@@ -19,6 +19,7 @@ export default function VisualEditor({ value, onChange, placeholder = "כאן כ
         if (isMounted && editorRef.current && value) {
             editorRef.current.innerHTML = value;
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isMounted]);
 
     useEffect(() => {
@@ -36,6 +37,7 @@ export default function VisualEditor({ value, onChange, placeholder = "כאן כ
         if (onInsertHTML && isMounted) {
             onInsertHTML.current = (html) => execCommand('insertHTML', html);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [onInsertHTML, isMounted]);
 
     const execCommand = (command, val = null) => {

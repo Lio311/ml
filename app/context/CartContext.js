@@ -159,7 +159,7 @@ export function CartProvider({ children }) {
                 console.error("Failed to fetch cart:", err);
                 hasSyncedRef.current = true;
             });
-    }, [user, isCartLocked]);
+    }, [user, isCartLocked, pathname, t]);
 
     // Sync to Site Server (Abandoned Cart) - Only for 'main' items
     useEffect(() => {
@@ -542,7 +542,7 @@ export function CartProvider({ children }) {
                 setCartItems(prev => prev.filter(i => !i.isPrize || (i.vendorId || 'main') !== 'main'));
             }
         }
-    }, [mainSiteSubtotal, luckyPrize, cartItems]);
+    }, [mainSiteSubtotal, luckyPrize, cartItems, setLuckyPrize]);
 
     // Calculations
     const activeItems = cartItems.filter(item => (item.vendorId || 'main') === activeVendorId);

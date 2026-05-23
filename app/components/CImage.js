@@ -18,6 +18,7 @@ export default function CImage({ unoptimized, onError, ...props }) {
 
     return (
         <Image
+            alt={props.alt || ""}
             {...props}
             unoptimized={unoptimized || fallback || globalUnoptimized}
             onError={(e) => {

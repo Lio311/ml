@@ -58,6 +58,7 @@ export default function AdminCouponsPage() {
             }));
             setShowModal(true);
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isNewFromDashboard, urlProductId, products.length]);
 
     useEffect(() => {
@@ -270,6 +271,7 @@ export default function AdminCouponsPage() {
                 }));
             }
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [formData.allowed_products]);
 
     // Helper for multi-select

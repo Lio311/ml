@@ -57,3 +57,5 @@ const LoopNode = memo(({ data, isConnectable }) => {
 });
 
 export default LoopNode;
+
+LoopNode.displayName = 'LoopNode';

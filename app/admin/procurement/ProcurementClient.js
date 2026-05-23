@@ -292,7 +292,7 @@ export default function ProcurementClient() {
                                 <Tooltip 
                                     contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 15px -3px rgba(0,0,0,0.1)', textAlign: 'right' }}
                                     formatter={(value, name) => [
-                                        <span dir="ltr">₪ {Math.round(value).toLocaleString()}</span>, 
+                                        <span dir="ltr" key="val">₪ {Math.round(value).toLocaleString()}</span>, 
                                         name === 'profit' ? 'רווח' : 'מחזור'
                                     ]}
                                 />

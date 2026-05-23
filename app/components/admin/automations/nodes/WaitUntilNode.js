@@ -97,3 +97,5 @@ const WaitUntilNode = memo(({ data, isConnectable }) => {
 });
 
 export default WaitUntilNode;
+
+WaitUntilNode.displayName = 'WaitUntilNode';

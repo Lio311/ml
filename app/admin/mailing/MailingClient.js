@@ -118,6 +118,7 @@ export default function MailingClient() {
         if (isCatalogModalOpen && allProducts.length === 0) {
             fetchAllProducts();
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [isCatalogModalOpen]);
 
     useEffect(() => {
@@ -807,7 +808,7 @@ export default function MailingClient() {
                                                 <div className="text-[10px] text-gray-500 leading-snug line-clamp-2">{pushForm.message || 'תוכן ההודעה שתוצג למשתמש...'}</div>
                                                 {pushForm.image && (
                                                     <div className="mt-2 aspect-video bg-gray-50 rounded-lg overflow-hidden border border-gray-100">
-                                                        <img src={pushForm.image} className="w-full h-full object-cover opacity-50" />
+                                                        <img src={pushForm.image} alt="Push image" className="w-full h-full object-cover opacity-50" />
                                                     </div>
                                                 )}
                                             </div>
@@ -1198,7 +1199,7 @@ export default function MailingClient() {
                                 <div className="grid grid-cols-2 gap-3">
                                     {selectedProducts.map(p => (
                                         <div key={p.id} className="flex items-center gap-3 p-3 bg-gray-50 rounded-2xl border border-gray-100 group">
-                                            <img src={p.image_url} className="w-10 h-10 object-contain bg-white rounded-lg p-1" />
+                                            <img src={p.image_url} alt={p.label || "Product image"} className="w-10 h-10 object-contain bg-white rounded-lg p-1" />
                                             <div className="flex-1 min-w-0">
                                                 <div className="text-[11px] font-bold text-gray-900 truncate">{p.label}</div>
                                                 <div className="text-[9px] text-gray-400 font-black">₪{p.price_10ml}</div>

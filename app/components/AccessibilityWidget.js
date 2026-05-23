@@ -53,6 +53,7 @@ export default function AccessibilityWidget() {
     useEffect(() => {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(settings));
         applySettings();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [settings]);
 
     // --- DOM Manipulation Side Effects ---

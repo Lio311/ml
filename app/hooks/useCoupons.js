@@ -103,7 +103,7 @@ export function useCoupons(cartItems, activeVendorId, user) {
         
         const timer = setTimeout(revalidate, 1000); 
         return () => clearTimeout(timer);
-    }, [user?.id, cartItems, activeVendorId]);
+    }, [user?.id, user?.primaryEmailAddress?.emailAddress, cartItems, activeVendorId, coupon]);
 
     const clearCoupon = () => {
         setCoupon(null);

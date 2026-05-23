@@ -9,6 +9,7 @@ import HomeSEOContent from "./components/HomeSEOContent";
 import HomeClient from "./components/HomeClient";
 import TrustSection from "./components/TrustSection";
 import HeroCarousel from "./components/HeroCarousel";
+import TypewriterText from "./components/TypewriterText";
 import { withClient } from "./lib/db";
 import { cookies } from 'next/headers';
 import he from './data/locales/he.json';

@@ -107,6 +107,7 @@ export default async function Image({ params }) {
                 <div style={{ display: 'flex', width: '480px', height: '480px', justifyContent: 'center', alignItems: 'center' }}>
                     <img
                         src={displayImage}
+                        alt="Product Image"
                         width={fallbackLogo ? "320" : "480"}
                         height={fallbackLogo ? "120" : "480"}
                         style={{ objectFit: 'contain' }}
@@ -118,6 +119,7 @@ export default async function Image({ params }) {
                     <div style={{ display: 'flex', marginBottom: '40px' }}>
                         <img 
                             src={`${baseUrl}/logo_v5.png`} 
+                            alt="Logo"
                             width="200" 
                             height="70" 
                             style={{ objectFit: 'contain' }} 

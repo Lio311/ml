@@ -32,6 +32,7 @@ function OrdersTab({ catalogId }) {
 
     useEffect(() => {
         fetchOrders();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [catalogId]);
 
     const handleStatusChange = async (orderId, newStatus) => {
@@ -401,6 +402,7 @@ export default function CatalogManagerClient({ catalogId }) {
         };
         document.addEventListener('wheel', handleWheel, { passive: false });
         return () => document.removeEventListener('wheel', handleWheel);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [catalogId]);
 
     const handleUpdateCatalog = async (e) => {

@@ -41,6 +41,7 @@ export default function AnalyticsTracker() {
             // Mark session as visited
             sessionStorage.setItem('visited_session_v1', 'true');
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []); // Run once on mount (per reload/navigation). 
     // Actually, Next.js Single Page App navigation doesn't reload.
     // If we want "Entries to the site", simple mount check is enough if this component is in Root Layout.

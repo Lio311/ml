@@ -63,3 +63,5 @@ const MergeNode = memo(({ data, isConnectable }) => {
 });
 
 export default MergeNode;
+
+MergeNode.displayName = 'MergeNode';

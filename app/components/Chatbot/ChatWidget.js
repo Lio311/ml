@@ -160,11 +160,11 @@ export default function ChatWidget() {
         };
     };
 
-    // Render nothing if user closed the widget completely (state could be persisted in localStorage)
-    if (!isVisible) return null;
-
     const { locale } = useLanguage();
     const isHebrew = locale === 'he';
+
+    // Render nothing if user closed the widget completely (state could be persisted in localStorage)
+    if (!isVisible) return null;
 
     return (
         <div className={`fixed bottom-6 ${isHebrew ? 'right-6 items-end' : 'left-6 items-start'} z-50 flex flex-col`} style={{ direction: 'rtl' }}>

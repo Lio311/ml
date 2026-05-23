@@ -58,6 +58,7 @@ export default function TagFilterBar({ allTags = [], activeTag = null, locale = 
             window.removeEventListener('resize', checkScrollLimits);
             clearTimeout(timer);
         };
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [allTags]);
 
     const scroll = (direction) => {

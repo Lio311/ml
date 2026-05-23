@@ -95,6 +95,7 @@ export default function AnalyticsClient() {
     };
     
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const refetchFunnel = async (days) => {
