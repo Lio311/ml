@@ -646,10 +646,13 @@ export default function BannerClient() {
                             </div>
 
                             {/* Advanced Cropper Preview */}
-                            {/* Desktop: aspect-video (16:9) mirrors the real site where the hero is ~82vh tall on a wide screen.
-                                The video is also 16:9, so on a wider-than-tall container the video has vertical overflow
-                                and object-position actually scrolls. On mobile: 9:16 portrait. */}
-                            <div className={`banner-preview-container border border-gray-200 rounded-2xl overflow-hidden relative bg-black flex items-center justify-center transition-all duration-300 ${banner.isHidden ? 'opacity-40' : 'opacity-100'} ${(!banner.activeTab || banner.activeTab === 'desktop') ? 'aspect-video w-full' : 'aspect-[9/16] w-full max-w-[280px] mx-auto rounded-3xl'}`}>
+                            {/* 
+                                Preview aspect ratio: on a typical 1080p desktop, the hero is h-[82vh] = 885px tall
+                                over the full 1920px viewport width. So the ratio is 1920:885 ≈ 64:29.
+                                The header (h-28 = 112px) is INCLUDED in that height (the hero starts at top of page
+                                and the header is fixed/overlaid). On mobile: aspect-[9/16] portrait.
+                            */}
+                            <div className={`banner-preview-container border border-gray-200 rounded-2xl overflow-hidden relative bg-black flex items-center justify-center transition-all duration-300 ${banner.isHidden ? 'opacity-40' : 'opacity-100'} ${(!banner.activeTab || banner.activeTab === 'desktop') ? 'aspect-[1920/885] w-full' : 'aspect-[9/16] w-full max-w-[280px] mx-auto rounded-3xl'}`}>
                                 <div className="absolute top-2 right-2 z-30 bg-red-600 text-white px-2 py-1 rounded-md text-[10px] font-bold shadow-md">
                                     אזור גלוי ({(!banner.activeTab || banner.activeTab === 'desktop') ? 'מחשב' : 'מובייל'})
                                 </div>
@@ -677,9 +680,10 @@ export default function BannerClient() {
                                         // Since the preview is 16:9 and the video is also 16:9, we scale the video up by 25%
                                         // to force vertical overflow, matching the typical real-world case.
                                         const userScale = isDesktop ? (banner.contentScaleDesktop ?? 100) / 100 : (banner.contentScaleMobile ?? 100) / 100;
-                                        // Scale down the content box text to fit the small preview (16:9 container is ~500px wide)
-                                        // Real site desktop banner is ~1920px wide → ratio ≈ 0.26
-                                        const basePreviewScale = isDesktop ? 0.26 : 0.52;
+                                        // Preview container is ~600px wide (typical admin panel).
+                                        // Real desktop site is ~1920px wide → scale down by ~0.32 for desktop.
+                                        // Mobile preview is ~280px wide, real mobile is ~390px → scale ~0.72.
+                                        const basePreviewScale = isDesktop ? 0.32 : 0.72;
                                         const finalScale = basePreviewScale * userScale;
 
                                         const contentOpacity = isDesktop ? (banner.contentOpacityDesktop ?? 60) : (banner.contentOpacityMobile ?? 60);
@@ -726,28 +730,28 @@ export default function BannerClient() {
                                                     <div className="w-4 h-4 rounded-full bg-gray-300"></div>
                                                 </div>
                                                 
-                                                {/* Content Box — mirrors HeroCarousel.js exactly:
-                                                     RTL (Hebrew):  left: contentX%,  transform: translate(-contentX%, -contentY%)
-                                                     LTR (English): right: contentX%, transform: translate(+contentX%, -contentY%)
-                                                     Scale is applied on top of the translate. */}
+                                                {/* Content Box:
+                                                     Positioning logic (mirrors HeroCarousel.js semantics):
+                                                     - contentX is the "distance" value (same unit the carousel uses)
+                                                     - RTL: left: contentX%, translate(-50%, ...) to center-anchor at that X point
+                                                     - LTR: right: contentX%, translate(50%, ...) to center-anchor at that X point
+                                                     transformOrigin stays at 50% 50% (element center) so scale never moves the box.
+                                                */}
                                                 {!banner.hideContentBox && (
                                                     <div 
                                                         className={`absolute backdrop-blur-md rounded-2xl ${isDesktop ? 'px-3 py-2' : 'px-2 py-1'} border border-white/20 shadow-2xl text-center transition-all duration-75 cursor-move text-black ${dragState.isDragging && dragState.type === 'box' ? 'ring-2 ring-blue-500 shadow-blue-500/50' : ''} z-20`}
                                                             style={{
                                                                 width: isDesktop ? (banner.boxWidthDesktop > 0 ? `${banner.boxWidthDesktop * finalScale}px` : 'max-content') : 'max-content',
-                                                                maxWidth: isDesktop ? 'none' : '300px',
+                                                                maxWidth: isDesktop ? '45%' : '80%',
                                                                 top: `${contentY}%`,
-                                                                // Mirror exactly: HeroCarousel RTL uses left:contentX%, LTR uses right:contentX%
+                                                                // RTL: anchor left edge at contentX%, shift left by 50% own width → center at contentX%
+                                                                // LTR: anchor right edge at contentX% from right, shift right by 50% own width → center at (100-contentX)% from left
                                                                 ...(banner.contentLang === 'en'
                                                                     ? { right: `${contentX}%`, left: 'auto' }
                                                                     : { left: `${contentX}%`, right: 'auto' }
                                                                 ),
-                                                                transform: banner.contentLang === 'en'
-                                                                    ? `translate(${contentX}%, -${contentY}%) scale(${finalScale})`
-                                                                    : `translate(-${contentX}%, -${contentY}%) scale(${finalScale})`,
-                                                                transformOrigin: banner.contentLang === 'en'
-                                                                    ? `calc(100% - ${contentX}%) ${contentY}%`
-                                                                    : `${contentX}% ${contentY}%`,
+                                                                transform: `translate(${banner.contentLang === 'en' ? '50%' : '-50%'}, -50%) scale(${finalScale})`,
+                                                                transformOrigin: '50% 50%',
                                                                 backgroundColor: `rgba(255, 255, 255, ${contentOpacity / 100})`,
                                                                 pointerEvents: 'auto'
                                                             }}
