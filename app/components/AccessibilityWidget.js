@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from 'react';
-import Image from 'next/image';
 import { useLanguage } from '../context/LanguageContext';
 
 // --- Icons (Inline SVGs for performance & no deps) ---
@@ -207,20 +206,19 @@ export default function AccessibilityWidget() {
             <div className={`fixed bottom-6 ${isHebrew ? 'left-6' : 'right-6'} z-[9999] font-sans rtl group acc-widget-ignore`}>
                 <button
                     onClick={() => setIsOpen(!isOpen)}
-                    className="w-12 h-12 rounded-full shadow-2xl flex items-center justify-center transition-transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-blue-400 bg-white"
+                    className="w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 focus:outline-none focus:ring-2 focus:ring-black/20 bg-white/60 backdrop-blur-md border border-white/30 shadow-lg"
                     aria-label="פתח תפריט נגישות"
                     style={{ filter: 'none' }} // Extra safety
                 >
-                    {/* Custom Accessibility Image Icon */}
-                    <div className="relative w-10 h-10 flex items-center justify-center rounded-full overflow-hidden">
-                        <Image
-                            src="/images/accessibility-icon.png"
-                            alt="Accessibility"
-                            fill
-                            className="object-contain"
-                            priority
-                        />
-                    </div>
+                    <svg 
+                        xmlns="http://www.w3.org/2000/svg" 
+                        viewBox="0 0 24 24" 
+                        fill="currentColor" 
+                        className="w-6 h-6 text-black transition-transform duration-300 group-hover:scale-110"
+                    >
+                        <circle cx="12" cy="4.5" r="2" />
+                        <path d="M12 7.5c-2.8 0-5.2 1.4-6.5 3.5-.3.5-.1 1.2.4 1.5.5.3 1.2.1 1.5-.4 1-1.6 2.7-2.6 4.6-2.6s3.6 1 4.6 2.6c.3.5 1 .7 1.5.4.5-.3.7-1 .4-1.5-1.3-2.1-3.7-3.5-6.5-3.5zM10.5 12v5.5l-2.5 4c-.3.5-.1 1.1.4 1.4.5.3 1.1.1 1.4-.4l2.2-3.5 2.2 3.5c.3.5.9.7 1.4.4.5-.3.7-1 .4-1.4l-2.5-4V12h-3z" />
+                    </svg>
                 </button>
 
                 {/* The Widget Panel - Reduced size and max-height */}
