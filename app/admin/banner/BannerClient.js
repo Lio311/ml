@@ -779,13 +779,15 @@ export default function BannerClient() {
                                                             <video
                                                                 src={banner.url}
                                                                 autoPlay loop muted playsInline
-                                                                className="banner-media w-full h-full object-cover pointer-events-none"
+                                                                className="w-full h-full object-cover pointer-events-none"
+                                                                style={{ objectPosition: `50% ${yPercent}%` }}
                                                             />
                                                         ) : (
                                                             <img
                                                                 src={banner.url}
                                                                 alt="Preview"
-                                                                className="banner-media w-full h-full object-cover pointer-events-none"
+                                                                className="w-full h-full object-cover pointer-events-none"
+                                                                style={{ objectPosition: `50% ${yPercent}%` }}
                                                                 onError={(e) => { e.target.src = 'https://via.placeholder.com/1920x885?text=Not+Found'; }}
                                                             />
                                                         )
@@ -833,8 +835,10 @@ export default function BannerClient() {
                                                             transformOrigin: banner.contentLang === 'en'
                                                                 ? `calc(100% - ${contentX}%) ${contentY}%`
                                                                 : `${contentX}% ${contentY}%`,
-                                                            width: banner.boxWidthDesktop > 0 ? `${banner.boxWidthDesktop}px` : 'max-content',
-                                                            maxWidth: isDesktop ? '35%' : '80%',
+                                                            width: banner.boxWidthDesktop > 0
+                                                                ? `${banner.boxWidthDesktop}px`
+                                                                : '30%',   // 30% of 1920px ≈ 576px, matches ~30% on real site
+                                                            maxWidth: isDesktop ? '40%' : '80%',
                                                             cursor: 'move',
                                                         }}
                                                         onMouseDown={(e) => handleDragStart(e, index, 'box', contentX, contentY)}
