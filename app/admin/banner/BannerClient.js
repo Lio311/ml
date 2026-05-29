@@ -680,11 +680,17 @@ export default function BannerClient() {
                                         // Since the preview is 16:9 and the video is also 16:9, we scale the video up by 25%
                                         // to force vertical overflow, matching the typical real-world case.
                                         const userScale = isDesktop ? (banner.contentScaleDesktop ?? 100) / 100 : (banner.contentScaleMobile ?? 100) / 100;
-                                        // Preview container is ~600px wide (typical admin panel).
-                                        // Real desktop site is ~1920px wide → scale down by ~0.32 for desktop.
-                                        // Mobile preview is ~280px wide, real mobile is ~390px → scale ~0.72.
+                                        // We no longer use CSS transform scale() for the content box — it was
+                                        // causing layout/clipping issues and making the box appear too narrow.
+                                        // Instead we set the box to a percentage of the preview container that
+                                        // matches the real site's proportions (~33% of banner width on desktop).
+                                        // The finalScale is kept only for the fallback placeholder text sizing.
                                         const basePreviewScale = isDesktop ? 0.32 : 0.72;
                                         const finalScale = basePreviewScale * userScale;
+                                        // Preview box width as a % of the preview container.
+                                        // Real site box is typically ~33% of the 1920px banner = ~640px.
+                                        // On mobile preview (portrait), 75% is appropriate.
+                                        const previewBoxWidthPct = isDesktop ? 33 : 75;
 
                                         const contentOpacity = isDesktop ? (banner.contentOpacityDesktop ?? 60) : (banner.contentOpacityMobile ?? 60);
 
@@ -739,17 +745,30 @@ export default function BannerClient() {
                                                     <div 
                                                         className={`absolute backdrop-blur-md rounded-2xl ${isDesktop ? 'px-3 py-2' : 'px-2 py-1'} border border-white/20 shadow-2xl text-center transition-all duration-75 cursor-move text-black ${dragState.isDragging && dragState.type === 'box' ? 'ring-2 ring-blue-500 shadow-blue-500/50' : ''} z-20`}
                                                             style={{
-                                                                width: isDesktop ? (banner.boxWidthDesktop > 0 ? `${banner.boxWidthDesktop * finalScale}px` : 'max-content') : 'max-content',
-                                                                maxWidth: isDesktop ? '45%' : '80%',
+                                                                // Width: proportional to preview container (matches ~33% of real site banner width).
+                                                                // If the user set an explicit boxWidthDesktop (in px from real 1920px site),
+                                                                // convert it proportionally: value/1920 * 100%.
+                                                                width: isDesktop
+                                                                    ? (banner.boxWidthDesktop > 0
+                                                                        ? `${(banner.boxWidthDesktop / 1920) * 100}%`
+                                                                        : `${previewBoxWidthPct * userScale}%`)
+                                                                    : `${previewBoxWidthPct * userScale}%`,
+                                                                maxWidth: isDesktop ? '48%' : '85%',
                                                                 top: `${contentY}%`,
                                                                 left: banner.contentLang === 'en'
                                                                     ? `calc(100% - ${contentX}%)`
                                                                     : `${contentX}%`,
                                                                 right: 'auto',
-                                                                transform: `translate(-50%, -50%) scale(${finalScale})`,
+                                                                // No scale transform — box renders at the correct proportional width directly.
+                                                                // translate(-50%, -50%) centers the box on its anchor point.
+                                                                transform: `translate(-50%, -50%)`,
                                                                 transformOrigin: '50% 50%',
+                                                                // Scale font sizes down proportionally using zoom.
+                                                                // zoom: 0.32 makes fonts match the real site's visual proportion.
+                                                                zoom: finalScale,
                                                                 backgroundColor: `rgba(255, 255, 255, ${contentOpacity / 100})`,
-                                                                pointerEvents: 'auto'
+                                                                pointerEvents: 'auto',
+                                                                overflow: 'hidden'
                                                             }}
                                                             onMouseDown={(e) => handleDragStart(e, index, 'box', contentX, contentY)}
                                                         >
