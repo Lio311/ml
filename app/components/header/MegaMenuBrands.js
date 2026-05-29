@@ -70,7 +70,7 @@ export default function MegaMenuBrands({ brands = [], isOpen, onClose }) {
                                 <Link 
                                     key={brand.id} 
                                     href={`/catalog?brand=${encodeURIComponent(brand.name)}`}
-                                    className="brand-card group flex flex-col items-center justify-center p-3 rounded-xl bg-white/5 border border-white/5 hover:bg-white hover:border-white transition-all duration-500 w-[140px] md:w-[170px] min-h-[100px]"
+                                    className="brand-card group flex flex-col items-center justify-center p-3 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 hover:border-white/20 transition-all duration-500 w-[140px] md:w-[170px] min-h-[100px]"
                                 >
                                     <div className="relative w-full h-8 mb-3 transition-transform duration-700 group-hover:scale-110">
                                         {brand.logo_url ? (
@@ -86,7 +86,7 @@ export default function MegaMenuBrands({ brands = [], isOpen, onClose }) {
                                             </div>
                                         )}
                                     </div>
-                                    <span className="text-[10px] font-bold text-white/80 group-hover:text-black transition-colors uppercase tracking-[0.15em] text-center p-1 break-words w-full">
+                                    <span className="text-[10px] font-bold text-white/80 group-hover:text-white transition-colors uppercase tracking-[0.15em] text-center p-1 break-words w-full">
                                         {brand.name}
                                     </span>
                                 </Link>
@@ -116,8 +116,9 @@ export default function MegaMenuBrands({ brands = [], isOpen, onClose }) {
                     transition: all 0.5s ease;
                 }
                 .brand-card:hover .inverted-logo {
-                    filter: none;
-                    mix-blend-mode: multiply;
+                    filter: grayscale(1) invert(1) contrast(200%);
+                    mix-blend-mode: screen;
+                    transform: scale(1.1);
                 }
                 .no-scrollbar::-webkit-scrollbar {
                     display: none;

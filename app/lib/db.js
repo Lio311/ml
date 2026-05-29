@@ -64,7 +64,7 @@ export async function updateUserActivity(userId) {
 export const getBrands = unstable_cache(
     async () => {
         try {
-            const res = await pool.query('SELECT name FROM brands ORDER BY LOWER(name) ASC');
+            const res = await pool.query('SELECT name, logo_url FROM brands ORDER BY LOWER(name) ASC');
             return res.rows;
         } catch (err) {
             Sentry.captureException(err);
@@ -72,8 +72,8 @@ export const getBrands = unstable_cache(
             return []; // Fallback to empty array to allow build to continue
         }
     },
-    ['global-brands-v3'],
-    { revalidate: 3600, tags: ['globals', 'brands', 'v3'] }
+    ['global-brands-v4'],
+    { revalidate: 3600, tags: ['globals', 'brands', 'v4'] }
 );
 
 export const getMenuItems = unstable_cache(
