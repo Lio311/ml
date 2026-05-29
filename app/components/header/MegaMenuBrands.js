@@ -32,7 +32,7 @@ export default function MegaMenuBrands({ brands = [], isOpen, onClose }) {
 
     return (
         <div 
-            className="absolute top-full left-0 w-full bg-white/85 backdrop-blur-2xl pt-5 pb-3 z-40 animate-fadeIn overflow-hidden flex flex-col border-t border-gray-200 shadow-2xl"
+            className="absolute top-full left-0 w-full bg-white/60 backdrop-blur-2xl pt-5 pb-3 z-40 animate-fadeIn overflow-hidden flex flex-col border-t border-gray-200 shadow-2xl"
             onMouseLeave={onClose}
         >
             <div className="container mx-auto px-6 flex flex-col items-center">
@@ -57,7 +57,7 @@ export default function MegaMenuBrands({ brands = [], isOpen, onClose }) {
                 </div>
 
                 {/* Brands Display Area */}
-                <div className="w-full min-h-[180px] transition-all duration-500 relative">
+                <div className="w-full transition-all duration-500 relative">
                     {!hoveredLetter ? (
                         <div className="flex flex-col items-center justify-center text-black space-y-3 py-4">
                             <span className="text-2xl md:text-3xl font-serif tracking-[0.2em] uppercase opacity-90 drop-shadow-sm">{t('common.choose_letter')}</span>
