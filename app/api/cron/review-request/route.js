@@ -59,7 +59,7 @@ export async function GET(req) {
                     const alreadyRewarded = rewardedCheck.rows.length > 0;
 
                     const { html, subject } = await getTemplate('review_request', 
-                        { name: firstName, orderId: order.id },
+                        { name: firstName, orderId: order.id, token: token },
                         () => {
                             // Fallback static template (matching what was there before)
                             return `

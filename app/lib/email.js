@@ -525,7 +525,7 @@ export function getSystemDefaults() {
                 <p>ראינו שקיבלת לא מזמן את ההזמנה שלך מאיתנו ואנחנו סקרנים לדעת איך הייתה חוויית השירות שלך!</p>
                 
                 <div style="text-align: center; margin: 30px 0;">
-                    <a href="https://www.ml-tlv.com/review?id={{orderId}}" style="display: inline-block; background-color: #000; color: #fff; padding: 16px 32px; text-decoration: none; border-radius: 16px; font-weight: 900; font-size: 14px;">לדירוג השירות בקליק >></a>
+                    <a href="https://www.ml-tlv.com/review?id={{orderId}}&token={{token}}" style="display: inline-block; background-color: #000; color: #fff; padding: 16px 32px; text-decoration: none; border-radius: 16px; font-weight: 900; font-size: 14px;">לדירוג השירות בקליק >></a>
                 </div>
 
                 <div style="background-color: #fffde7; padding: 20px; border-radius: 16px; border: 1px solid #fff9c4; text-align: center;">
