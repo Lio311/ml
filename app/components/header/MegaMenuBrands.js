@@ -110,12 +110,12 @@ export default function MegaMenuBrands({ brands = [], isOpen, onClose }) {
             </div>
 
             <style jsx>{`
-                .inverted-logo {
+                :global(.inverted-logo) {
                     filter: grayscale(1) invert(1) contrast(200%);
                     mix-blend-mode: screen;
                     transition: all 0.5s ease;
                 }
-                .brand-card:hover .inverted-logo {
+                .brand-card:hover :global(.inverted-logo) {
                     filter: grayscale(1) invert(1) contrast(200%);
                     mix-blend-mode: screen;
                     transform: scale(1.1);
