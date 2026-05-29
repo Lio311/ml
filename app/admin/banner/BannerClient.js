@@ -750,7 +750,13 @@ export default function BannerClient() {
                                                 banner.isHidden ? 'opacity-40' : 'opacity-100'
                                             }`}
                                             style={{
-                                                width: '100%',
+                                                // Desktop: full column width (always ≤ 1920px so scale ≤ 1).
+                                                // Mobile: cap at 320px max — the mobile canvas is 390px wide, so
+                                                // without a cap the container could be wider than canvas causing
+                                                // scale > 1 which makes fonts appear larger than on real site.
+                                                width: isDesktop ? '100%' : undefined,
+                                                maxWidth: isDesktop ? undefined : '320px',
+                                                margin: isDesktop ? undefined : '0 auto',
                                                 aspectRatio: `${REAL_W} / ${REAL_H}`,
                                                 position: 'relative',
                                             }}
@@ -835,10 +841,13 @@ export default function BannerClient() {
                                                             transformOrigin: banner.contentLang === 'en'
                                                                 ? `calc(100% - ${contentX}%) ${contentY}%`
                                                                 : `${contentX}% ${contentY}%`,
+                                                            // Width: max-content so it auto-fits to text, same as real site.
+                                                            // Capped by maxWidth to prevent overflow.
+                                                            // If admin set explicit boxWidthDesktop, use that (in 1920px px).
                                                             width: banner.boxWidthDesktop > 0
                                                                 ? `${banner.boxWidthDesktop}px`
-                                                                : '30%',   // 30% of 1920px ≈ 576px, matches ~30% on real site
-                                                            maxWidth: isDesktop ? '40%' : '80%',
+                                                                : 'max-content',
+                                                            maxWidth: isDesktop ? '38%' : '78%',
                                                             cursor: 'move',
                                                         }}
                                                         onMouseDown={(e) => handleDragStart(e, index, 'box', contentX, contentY)}
