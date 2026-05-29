@@ -17,7 +17,7 @@ export async function GET(req) {
                        category, description, stock, seasons, brand_he, model_he, name_he,
                        discount_percentage, discount_sizes, discount_end_date
                 FROM products 
-                WHERE active = true
+                WHERE active = true AND stock > 0
             `;
             const values = [];
 
