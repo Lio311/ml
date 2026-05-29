@@ -16,6 +16,7 @@ export default function BannerClient() {
     const [dataLoaded, setDataLoaded] = useState(false);
     const [saving, setSaving] = useState(false);
     const [dragState, setDragState] = useState({ isDragging: false, index: null, type: null, startX: 0, startY: 0, initialValX: 0, initialValY: 0 });
+    const previewRef = useState(null);
 
     useEffect(() => {
         const handleMouseMove = (e) => {
@@ -24,11 +25,14 @@ export default function BannerClient() {
             const banner = banners[index];
             const isDesktop = (!banner.activeTab || banner.activeTab === 'desktop');
             
-            const height = isDesktop ? 300 : 500;
-            const width = isDesktop ? 600 : 280; 
+            // Use the actual preview element dimensions for accurate delta calculation.
+            // Query the preview container (the aspect-video or aspect-[9/16] div).
+            const previewEl = document.querySelector('.banner-preview-container');
+            const previewW = previewEl ? previewEl.offsetWidth : (isDesktop ? 600 : 280);
+            const previewH = previewEl ? previewEl.offsetHeight : (isDesktop ? 338 : 500);
 
-            const deltaY = ((e.clientY - startY) / height) * 100;
-            const deltaX = ((e.clientX - startX) / width) * 100;
+            const deltaY = ((e.clientY - startY) / previewH) * 100;
+            const deltaX = ((e.clientX - startX) / previewW) * 100;
             
             if (type === 'box') {
                 if (isDesktop) {
@@ -642,7 +646,10 @@ export default function BannerClient() {
                             </div>
 
                             {/* Advanced Cropper Preview */}
-                            <div className={`border border-gray-200 rounded-2xl overflow-hidden relative bg-black flex items-center justify-center transition-all duration-300 ${banner.isHidden ? 'opacity-40' : 'opacity-100'} ${(!banner.activeTab || banner.activeTab === 'desktop') ? 'min-h-[300px] h-[300px] w-full' : 'aspect-[9/16] w-full max-w-[320px] mx-auto rounded-3xl'}`}>
+                            {/* Desktop: aspect-video (16:9) mirrors the real site where the hero is ~82vh tall on a wide screen.
+                                The video is also 16:9, so on a wider-than-tall container the video has vertical overflow
+                                and object-position actually scrolls. On mobile: 9:16 portrait. */}
+                            <div className={`banner-preview-container border border-gray-200 rounded-2xl overflow-hidden relative bg-black flex items-center justify-center transition-all duration-300 ${banner.isHidden ? 'opacity-40' : 'opacity-100'} ${(!banner.activeTab || banner.activeTab === 'desktop') ? 'aspect-video w-full' : 'aspect-[9/16] w-full max-w-[280px] mx-auto rounded-3xl'}`}>
                                 <div className="absolute top-2 right-2 z-30 bg-red-600 text-white px-2 py-1 rounded-md text-[10px] font-bold shadow-md">
                                     אזור גלוי ({(!banner.activeTab || banner.activeTab === 'desktop') ? 'מחשב' : 'מובייל'})
                                 </div>
@@ -660,8 +667,19 @@ export default function BannerClient() {
                                         
                                         const contentY = isDesktop ? (banner.contentPositionDesktop ?? 50) : (banner.contentPositionMobile ?? 80);
                                         const contentX = isDesktop ? (banner.contentPositionXDesktop ?? 50) : 50;
-                                        const basePreviewScale = isDesktop ? 0.406 : 0.72;
+                                        // The preview container is now aspect-video (16:9), which is the same as the real video.
+                                        // This means the video fills it exactly at 100% zoom — no vertical overflow at scale=1.
+                                        // But the real hero is ~82vh on desktop while browser is typically taller than it is wide:
+                                        // e.g. 1920×1080 → hero = 885px tall, video at object-cover → fills 1920px wide → still 1080px native → overflows vertically!
+                                        // In the preview (aspect-video container), to replicate that effect we need the video to be taller
+                                        // than the container. We achieve this by displaying the video at a fixed height larger than
+                                        // the container and letting overflow:hidden clip it (same as on live site).
+                                        // Since the preview is 16:9 and the video is also 16:9, we scale the video up by 25%
+                                        // to force vertical overflow, matching the typical real-world case.
                                         const userScale = isDesktop ? (banner.contentScaleDesktop ?? 100) / 100 : (banner.contentScaleMobile ?? 100) / 100;
+                                        // Scale down the content box text to fit the small preview (16:9 container is ~500px wide)
+                                        // Real site desktop banner is ~1920px wide → ratio ≈ 0.26
+                                        const basePreviewScale = isDesktop ? 0.26 : 0.52;
                                         const finalScale = basePreviewScale * userScale;
 
                                         const contentOpacity = isDesktop ? (banner.contentOpacityDesktop ?? 60) : (banner.contentOpacityMobile ?? 60);
@@ -672,11 +690,20 @@ export default function BannerClient() {
                                                 onMouseDown={(e) => handleDragStart(e, index, 'bg', 0, yPercent)}
                                             >
                                                 {banner.type === 'video' ? (
+                                                    // The video is 16:9 and the preview container is 16:9 too.
+                                                    // To simulate the real site (where the hero is 82vh tall on a
+                                                    // landscape viewport causing vertical overflow), we make the video
+                                                    // 130% height. This creates the vertical overflow that lets
+                                                    // objectPosition actually shift the frame vertically.
                                                     <video
                                                         src={banner.url}
                                                         autoPlay loop muted playsInline
-                                                        className="absolute inset-0 w-full h-full object-cover pointer-events-none"
-                                                        style={{ objectPosition: `50% ${yPercent}%` }}
+                                                        className="absolute inset-x-0 pointer-events-none w-full object-cover"
+                                                        style={{
+                                                            height: '130%',
+                                                            top: `${yPercent - 50}%`,
+                                                            objectFit: 'cover'
+                                                        }}
                                                     />
                                                 ) : (
                                                     <img
@@ -688,26 +715,39 @@ export default function BannerClient() {
                                                     />
                                                 )}
 
-                                                {/* Top Menu Overlay Simulation */}
-                                                <div className={`absolute top-0 left-0 right-0 ${isDesktop ? 'h-[112px]' : 'h-[80px]'} bg-white flex items-center justify-between px-4 z-10 shadow-sm pointer-events-none`}>
-                                                    <div className="flex gap-4 items-center">
-                                                        <div className="w-8 h-8 rounded-full bg-gray-200"></div>
-                                                        <div className="w-16 h-2 bg-gray-200 rounded"></div>
+                                                {/* Top Menu Overlay Simulation - matches live site: opaque white, h-20 mobile / h-28 desktop */}
+                                                <div className={`absolute top-0 left-0 right-0 z-10 shadow-sm pointer-events-none bg-white flex items-center justify-between px-3 ${isDesktop ? 'h-[15.3%]' : 'h-[11.7%]'}`}>
+                                                    <div className="flex gap-2 items-center">
+                                                        <div className="w-4 h-4 rounded-full bg-gray-300"></div>
+                                                        <div className="w-4 h-4 rounded-full bg-gray-300"></div>
+                                                        <div className="w-10 h-1.5 bg-gray-300 rounded ml-1"></div>
                                                     </div>
-                                                    <span className="text-black font-serif text-xl md:text-3xl font-bold tracking-wider">ml-tlv.</span>
+                                                    <span className="text-black font-bold tracking-widest text-xs">ml-tlv.</span>
+                                                    <div className="w-4 h-4 rounded-full bg-gray-300"></div>
                                                 </div>
                                                 
-                                                {/* Content Box Simulation */}
+                                                {/* Content Box — mirrors HeroCarousel.js exactly:
+                                                     RTL (Hebrew):  left: contentX%,  transform: translate(-contentX%, -contentY%)
+                                                     LTR (English): right: contentX%, transform: translate(+contentX%, -contentY%)
+                                                     Scale is applied on top of the translate. */}
                                                 {!banner.hideContentBox && (
                                                     <div 
-                                                        className={`absolute backdrop-blur-md rounded-2xl ${isDesktop ? 'px-3 py-2 md:px-5 md:py-3' : 'px-3 py-2'} border border-white/20 shadow-2xl text-center transition-all duration-75 cursor-move text-black ${dragState.isDragging && dragState.type === 'box' ? 'ring-2 ring-blue-500 shadow-blue-500/50' : ''} z-20`}
+                                                        className={`absolute backdrop-blur-md rounded-2xl ${isDesktop ? 'px-3 py-2' : 'px-2 py-1'} border border-white/20 shadow-2xl text-center transition-all duration-75 cursor-move text-black ${dragState.isDragging && dragState.type === 'box' ? 'ring-2 ring-blue-500 shadow-blue-500/50' : ''} z-20`}
                                                             style={{
-                                                                width: isDesktop ? (banner.boxWidthDesktop > 0 ? `${banner.boxWidthDesktop}px` : 'max-content') : 'max-content',
-                                                                maxWidth: isDesktop ? 'none' : '600px',
+                                                                width: isDesktop ? (banner.boxWidthDesktop > 0 ? `${banner.boxWidthDesktop * finalScale}px` : 'max-content') : 'max-content',
+                                                                maxWidth: isDesktop ? 'none' : '300px',
                                                                 top: `${contentY}%`,
-                                                                left: banner.contentLang === 'en' ? `${contentX}%` : 'auto',
-                                                                right: banner.contentLang !== 'en' ? `${contentX}%` : 'auto',
-                                                                transform: `translate(${banner.contentLang === 'en' ? '-50%' : '50%'}, -${contentY}%) scale(${finalScale})`,
+                                                                // Mirror exactly: HeroCarousel RTL uses left:contentX%, LTR uses right:contentX%
+                                                                ...(banner.contentLang === 'en'
+                                                                    ? { right: `${contentX}%`, left: 'auto' }
+                                                                    : { left: `${contentX}%`, right: 'auto' }
+                                                                ),
+                                                                transform: banner.contentLang === 'en'
+                                                                    ? `translate(${contentX}%, -${contentY}%) scale(${finalScale})`
+                                                                    : `translate(-${contentX}%, -${contentY}%) scale(${finalScale})`,
+                                                                transformOrigin: banner.contentLang === 'en'
+                                                                    ? `calc(100% - ${contentX}%) ${contentY}%`
+                                                                    : `${contentX}% ${contentY}%`,
                                                                 backgroundColor: `rgba(255, 255, 255, ${contentOpacity / 100})`,
                                                                 pointerEvents: 'auto'
                                                             }}
