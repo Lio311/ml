@@ -32,7 +32,7 @@ export default function MegaMenuBrands({ brands = [], isOpen, onClose }) {
 
     return (
         <div 
-            className="absolute top-full left-0 w-full bg-white/95 backdrop-blur-xl py-5 min-h-[400px] z-40 animate-fadeIn overflow-hidden flex flex-col border-t border-gray-200 shadow-2xl"
+            className="absolute top-full left-0 w-full bg-white/85 backdrop-blur-2xl pt-5 pb-3 z-40 animate-fadeIn overflow-hidden flex flex-col border-t border-gray-200 shadow-2xl"
             onMouseLeave={onClose}
         >
             <div className="container mx-auto px-6 flex flex-col items-center">
@@ -96,7 +96,7 @@ export default function MegaMenuBrands({ brands = [], isOpen, onClose }) {
                 </div>
 
                 {/* Footer Link */}
-                <div className="mt-4 pt-3 w-full text-center border-t border-black/5">
+                <div className="mt-2 pt-2 w-full text-center border-t border-black/5">
                     <Link 
                         href="/brands" 
                         className="text-black/50 hover:text-black transition-all inline-flex items-center gap-2 group text-[9px] uppercase tracking-[0.3em]"
