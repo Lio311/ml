@@ -38,8 +38,8 @@ export default function MegaMenuBrands({ brands = [], isOpen, onClose }) {
             <div className="container mx-auto px-6 flex flex-col items-center">
                 
                 {/* Alphabet Selection Grid - Single Row, LTR */}
-                <div className="w-full flex justify-center mb-3 border-b border-white/10 pb-3" dir="ltr">
-                    <div className="flex flex-nowrap items-center justify-center gap-1 max-w-full overflow-x-auto no-scrollbar px-2 px-md-4">
+                <div className="w-full flex justify-center mb-2 border-b border-white/10 pb-1" dir="ltr">
+                    <div className="flex flex-nowrap items-center justify-center gap-1 max-w-full overflow-x-auto no-scrollbar px-2 px-md-4 py-2">
                         {alphabet.map((letter) => (
                             <button
                                 key={letter}
