@@ -126,7 +126,7 @@ export default async function Home() {
         }}
       />
       {/* Hero Section - Tall and pulled to top on mobile */}
-      <section className="relative h-[85vh] md:h-[82vh] w-full m-0 p-0 overflow-hidden bg-white block">
+      <section className="relative h-[85vh] md:h-[82vh] w-full m-0 p-0 overflow-hidden bg-white block !-mt-20 md:mt-0">
         <div className="absolute inset-0 w-full h-full overflow-hidden">
           <HeroCarousel 
             banners={banners} 
