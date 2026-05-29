@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef, useCallback } from 'react';
 import toast from 'react-hot-toast';
 import { Save, Image as ImageIcon, Video, AlignCenter, ArrowUp, ArrowDown, ArrowLeft, ArrowRight, Plus, Trash2, Eye, EyeOff, ChevronUp, ChevronDown } from 'lucide-react';
 import RichTextEditor from '../components/RichTextEditor';
@@ -16,7 +16,9 @@ export default function BannerClient() {
     const [dataLoaded, setDataLoaded] = useState(false);
     const [saving, setSaving] = useState(false);
     const [dragState, setDragState] = useState({ isDragging: false, index: null, type: null, startX: 0, startY: 0, initialValX: 0, initialValY: 0 });
-    const previewRef = useState(null);
+    // Map of banner index → measured outer container width (used to compute preview scale).
+    const [previewWidths, setPreviewWidths] = useState({});
+    const previewOuterRefs = useRef({});
 
     useEffect(() => {
         const handleMouseMove = (e) => {
@@ -24,15 +26,24 @@ export default function BannerClient() {
             const { index, type, startX, startY, initialValX, initialValY } = dragState;
             const banner = banners[index];
             const isDesktop = (!banner.activeTab || banner.activeTab === 'desktop');
-            
-            // Use the actual preview element dimensions for accurate delta calculation.
-            // Query the preview container (the aspect-video or aspect-[9/16] div).
-            const previewEl = document.querySelector('.banner-preview-container');
-            const previewW = previewEl ? previewEl.offsetWidth : (isDesktop ? 600 : 280);
-            const previewH = previewEl ? previewEl.offsetHeight : (isDesktop ? 338 : 500);
 
-            const deltaY = ((e.clientY - startY) / previewH) * 100;
-            const deltaX = ((e.clientX - startX) / previewW) * 100;
+            // Real canvas dimensions rendered inside the scaled inner div
+            const REAL_W = isDesktop ? 1920 : 390;
+            const REAL_H = isDesktop ? 885 : 844;
+
+            // The outer container's measured width → derive the CSS scale applied to the inner canvas.
+            // Mouse deltas are in CSS pixel space (unscaled), so we divide by the scale to get
+            // the equivalent delta in the 1920px coordinate system.
+            const outerW = previewWidths[index] || (isDesktop ? 600 : 280);
+            const previewScale = outerW / REAL_W;
+
+            // Delta in real-canvas pixels
+            const deltaYReal = (e.clientY - startY) / previewScale;
+            const deltaXReal = (e.clientX - startX) / previewScale;
+
+            // Convert to percentages of the real canvas
+            const deltaY = (deltaYReal / REAL_H) * 100;
+            const deltaX = (deltaXReal / REAL_W) * 100;
             
             if (type === 'box') {
                 if (isDesktop) {
@@ -94,6 +105,26 @@ export default function BannerClient() {
             initialValY
         });
     };
+
+    // Callback ref: attach a ResizeObserver to each preview outer container so we always
+    // have its current width and can compute the CSS scale for the inner 1920px canvas.
+    const registerPreviewOuter = useCallback((el, idx) => {
+        if (!el) return;
+        // Disconnect any previous observer on this element
+        if (el._previewResizeObserver) {
+            el._previewResizeObserver.disconnect();
+        }
+        const observer = new ResizeObserver(([entry]) => {
+            setPreviewWidths(prev => ({
+                ...prev,
+                [idx]: entry.contentRect.width
+            }));
+        });
+        observer.observe(el);
+        el._previewResizeObserver = observer;
+        // Fire immediately with current width
+        setPreviewWidths(prev => ({ ...prev, [idx]: el.offsetWidth }));
+    }, []);
 
     useEffect(() => {
         fetch('/api/admin/settings/home_banner')
@@ -645,181 +676,216 @@ export default function BannerClient() {
                                 )}
                             </div>
 
-                            {/* Advanced Cropper Preview */}
-                            {/* 
-                                Preview aspect ratio: on a typical 1080p desktop, the hero is h-[82vh] = 885px tall
-                                over the full 1920px viewport width. So the ratio is 1920:885 ≈ 64:29.
-                                The header (h-28 = 112px) is INCLUDED in that height (the hero starts at top of page
-                                and the header is fixed/overlaid). On mobile: aspect-[9/16] portrait.
-                            */}
-                            <div className={`banner-preview-container border border-gray-200 rounded-2xl overflow-hidden relative bg-black flex items-center justify-center transition-all duration-300 ${banner.isHidden ? 'opacity-40' : 'opacity-100'} ${(!banner.activeTab || banner.activeTab === 'desktop') ? 'aspect-[1920/885] w-full' : 'aspect-[9/16] w-full max-w-[280px] mx-auto rounded-3xl'}`}>
-                                <div className="absolute top-2 right-2 z-30 bg-red-600 text-white px-2 py-1 rounded-md text-[10px] font-bold shadow-md">
-                                    אזור גלוי ({(!banner.activeTab || banner.activeTab === 'desktop') ? 'מחשב' : 'מובייל'})
-                                </div>
-                                
-                                {banner.url ? (
-                                    (() => {
-                                        const isDesktop = (!banner.activeTab || banner.activeTab === 'desktop');
-                                        
-                                        let yPercent = 50;
-                                        if (isDesktop) {
-                                            yPercent = banner.objectPositionDesktop ?? (banner.objectPosition && banner.objectPosition.includes('%') ? parseInt(banner.objectPosition.split(' ')[1] || '50') : 50);
-                                        } else {
-                                            yPercent = banner.objectPositionMobile ?? (banner.objectPosition && banner.objectPosition.includes('%') ? parseInt(banner.objectPosition.split(' ')[1] || '50') : 50);
-                                        }
-                                        
-                                        const contentY = isDesktop ? (banner.contentPositionDesktop ?? 50) : (banner.contentPositionMobile ?? 80);
-                                        const contentX = isDesktop ? (banner.contentPositionXDesktop ?? 50) : 50;
-                                        // The preview container is now aspect-video (16:9), which is the same as the real video.
-                                        // This means the video fills it exactly at 100% zoom — no vertical overflow at scale=1.
-                                        // But the real hero is ~82vh on desktop while browser is typically taller than it is wide:
-                                        // e.g. 1920×1080 → hero = 885px tall, video at object-cover → fills 1920px wide → still 1080px native → overflows vertically!
-                                        // In the preview (aspect-video container), to replicate that effect we need the video to be taller
-                                        // than the container. We achieve this by displaying the video at a fixed height larger than
-                                        // the container and letting overflow:hidden clip it (same as on live site).
-                                        // Since the preview is 16:9 and the video is also 16:9, we scale the video up by 25%
-                                        // to force vertical overflow, matching the typical real-world case.
-                                        const userScale = isDesktop ? (banner.contentScaleDesktop ?? 100) / 100 : (banner.contentScaleMobile ?? 100) / 100;
-                                        // We no longer use CSS transform scale() for the content box — it was
-                                        // causing layout/clipping issues and making the box appear too narrow.
-                                        // Instead we set the box to a percentage of the preview container that
-                                        // matches the real site's proportions (~33% of banner width on desktop).
-                                        // The finalScale is kept only for the fallback placeholder text sizing.
-                                        const basePreviewScale = isDesktop ? 0.32 : 0.72;
-                                        const finalScale = basePreviewScale * userScale;
-                                        // Preview box width as a % of the preview container.
-                                        // Real site box is typically ~33% of the 1920px banner = ~640px.
-                                        // On mobile preview (portrait), 75% is appropriate.
-                                        const previewBoxWidthPct = isDesktop ? 33 : 75;
+                            {/* =====================================================================
+                                PREVIEW — renders a full 1920×885px (desktop) or 390×844px (mobile)
+                                inner canvas, then scales it down to fit the available column width.
 
-                                        const contentOpacity = isDesktop ? (banner.contentOpacityDesktop ?? 60) : (banner.contentOpacityMobile ?? 60);
+                                Why this approach?
+                                  • The content box CSS is IDENTICAL to HeroCarousel.js
+                                    (same left/right, transform, transform-origin values).
+                                  • The video uses the same object-position as the live site.
+                                  • Everything is proportionally perfect — true 1:1 representation.
 
-                                        return (
-                                            <div 
-                                                className="relative w-full h-full cursor-ns-resize"
-                                                onMouseDown={(e) => handleDragStart(e, index, 'bg', 0, yPercent)}
+                                The outer div establishes the visual bounds (aspect-ratio + overflow:hidden).
+                                The inner div is 1920px wide and scaled via CSS transform: scale(S)
+                                where S = outerWidth / 1920.  A ResizeObserver keeps S up to date.
+                            ===================================================================== */}
+                            {(() => {
+                                const isDesktop = (!banner.activeTab || banner.activeTab === 'desktop');
+
+                                // Real canvas size (matches the live site's hero element)
+                                const REAL_W = isDesktop ? 1920 : 390;
+                                const REAL_H = isDesktop ? 885 : 844;
+
+                                // Scale derived from measured outer container width
+                                const outerW = previewWidths[index] || (isDesktop ? 600 : 280);
+                                const previewScale = outerW / REAL_W;
+
+                                // Values from saved banner data (same field names as HeroCarousel.js)
+                                const bgYDesktop = banner.objectPositionDesktop ??
+                                    (banner.objectPosition?.includes('%')
+                                        ? parseInt(banner.objectPosition.split(' ')[1] || '50')
+                                        : 50);
+                                const bgYMobile = banner.objectPositionMobile ??
+                                    (banner.objectPosition?.includes('%')
+                                        ? parseInt(banner.objectPosition.split(' ')[1] || '50')
+                                        : 50);
+                                const yPercent = isDesktop ? bgYDesktop : bgYMobile;
+
+                                const contentY = isDesktop ? (banner.contentPositionDesktop ?? 50) : (banner.contentPositionMobile ?? 80);
+                                const contentX = isDesktop ? (banner.contentPositionXDesktop ?? 50) : 50;
+                                const contentScale = isDesktop ? (banner.contentScaleDesktop ?? 100) : (banner.contentScaleMobile ?? 100);
+                                const contentOpacity = isDesktop ? (banner.contentOpacityDesktop ?? 60) : (banner.contentOpacityMobile ?? 60);
+
+                                // CSS variables — SAME as HeroCarousel.js
+                                const cssVars = {
+                                    '--active-bg-y-desktop': `${bgYDesktop}%`,
+                                    '--active-bg-y-mobile': `${bgYMobile}%`,
+                                    '--active-content-y-desktop': `${contentY}%`,
+                                    '--active-content-y-mobile': `${contentY}%`,
+                                    '--active-content-x-desktop': `${contentX}%`,
+                                    '--active-content-scale-desktop': contentScale / 100,
+                                    '--active-content-scale-mobile': contentScale / 100,
+                                    '--active-content-opacity-desktop': contentOpacity / 100,
+                                    '--active-content-opacity-mobile': contentOpacity / 100,
+                                    '--active-content-display': banner.hideContentBox ? 'none' : 'block',
+                                };
+
+                                return (
+                                    <>
+                                        {/* Outer container: defines visual bounds */}
+                                        <div
+                                            ref={(el) => registerPreviewOuter(el, index)}
+                                            className={`banner-preview-outer border border-gray-200 rounded-2xl overflow-hidden relative ${
+                                                banner.isHidden ? 'opacity-40' : 'opacity-100'
+                                            }`}
+                                            style={{
+                                                width: '100%',
+                                                aspectRatio: `${REAL_W} / ${REAL_H}`,
+                                                position: 'relative',
+                                            }}
+                                        >
+                                            {/* Inner 1:1 canvas */}
+                                            <div
+                                                className="banner-slide"
+                                                style={{
+                                                    position: 'absolute',
+                                                    top: 0,
+                                                    left: 0,
+                                                    width: `${REAL_W}px`,
+                                                    height: `${REAL_H}px`,
+                                                    transformOrigin: 'top left',
+                                                    transform: `scale(${previewScale})`,
+                                                    ...cssVars,
+                                                }}
                                             >
-                                                {banner.type === 'video' ? (
-                                                    // With aspect-[1920/885] container, a 16:9 video at object-cover
-                                                    // overflows vertically (container shorter than video), so
-                                                    // objectPosition actually works — same behavior as live site.
-                                                    <video
-                                                        src={banner.url}
-                                                        autoPlay loop muted playsInline
-                                                        className="absolute inset-0 w-full h-full object-cover pointer-events-none"
-                                                        style={{ objectPosition: `50% ${yPercent}%` }}
-                                                    />
-                                                ) : (
-                                                    <img
-                                                        src={banner.url}
-                                                        alt="Preview"
-                                                        className="absolute inset-0 w-full h-full object-cover pointer-events-none"
-                                                        style={{ objectPosition: `50% ${yPercent}%` }}
-                                                        onError={(e) => { e.target.src = 'https://via.placeholder.com/1200x400?text=Image+Not+Found' }}
-                                                    />
-                                                )}
-
-                                                {/* Top Menu Overlay Simulation - matches live site: opaque white, h-20 mobile / h-28 desktop */}
-                                                <div className={`absolute top-0 left-0 right-0 z-10 shadow-sm pointer-events-none bg-white flex items-center justify-between px-3 ${isDesktop ? 'h-[15.3%]' : 'h-[11.7%]'}`}>
-                                                    <div className="flex gap-2 items-center">
-                                                        <div className="w-4 h-4 rounded-full bg-gray-300"></div>
-                                                        <div className="w-4 h-4 rounded-full bg-gray-300"></div>
-                                                        <div className="w-10 h-1.5 bg-gray-300 rounded ml-1"></div>
-                                                    </div>
-                                                    <span className="text-black font-bold tracking-widest text-xs">ml-tlv.</span>
-                                                    <div className="w-4 h-4 rounded-full bg-gray-300"></div>
-                                                </div>
-                                                
-                                                {/* Content Box positioning:
-                                                     The live HeroCarousel (RTL) uses: left:contentX% + translate(-contentX%, -contentY%)
-                                                     In practice, for any normal box size, this puts the box CENTER close to contentX% from left.
-                                                     Preview simplification:
-                                                       RTL (Hebrew): center at contentX% from left
-                                                         → left: contentX%; transform: translate(-50%, -50%)
-                                                       LTR (English): live site uses right:contentX% + translate(+contentX%, ...)
-                                                         The box center ends up near (100 - contentX)% from left.
-                                                         → left: calc(100% - contentX%); transform: translate(-50%, -50%)
-                                                     Both use transformOrigin 50%/50% so scale never shifts position.
-                                                */}
-                                                {!banner.hideContentBox && (
-                                                    <div 
-                                                        className={`absolute backdrop-blur-md rounded-2xl ${isDesktop ? 'px-3 py-2' : 'px-2 py-1'} border border-white/20 shadow-2xl text-center transition-all duration-75 cursor-move text-black ${dragState.isDragging && dragState.type === 'box' ? 'ring-2 ring-blue-500 shadow-blue-500/50' : ''} z-20`}
-                                                            style={{
-                                                                // Width: proportional to preview container (matches ~33% of real site banner width).
-                                                                // If the user set an explicit boxWidthDesktop (in px from real 1920px site),
-                                                                // convert it proportionally: value/1920 * 100%.
-                                                                width: isDesktop
-                                                                    ? (banner.boxWidthDesktop > 0
-                                                                        ? `${(banner.boxWidthDesktop / 1920) * 100}%`
-                                                                        : `${previewBoxWidthPct * userScale}%`)
-                                                                    : `${previewBoxWidthPct * userScale}%`,
-                                                                maxWidth: isDesktop ? '48%' : '85%',
-                                                                top: `${contentY}%`,
-                                                                left: banner.contentLang === 'en'
-                                                                    ? `calc(100% - ${contentX}%)`
-                                                                    : `${contentX}%`,
-                                                                right: 'auto',
-                                                                // No scale transform — box renders at the correct proportional width directly.
-                                                                // translate(-50%, -50%) centers the box on its anchor point.
-                                                                transform: `translate(-50%, -50%)`,
-                                                                transformOrigin: '50% 50%',
-                                                                // Scale font sizes down proportionally using zoom.
-                                                                // zoom: 0.32 makes fonts match the real site's visual proportion.
-                                                                zoom: finalScale,
-                                                                backgroundColor: `rgba(255, 255, 255, ${contentOpacity / 100})`,
-                                                                pointerEvents: 'auto',
-                                                                overflow: 'hidden'
-                                                            }}
-                                                            onMouseDown={(e) => handleDragStart(e, index, 'box', contentX, contentY)}
-                                                        >
-                                                            {banner.contentLang === 'en' && banner.contentEn ? (
-                                                                <div 
-                                                                    className={`pointer-events-none whitespace-normal px-0 banner-text-content lang-en max-w-none mx-auto text-sm`} 
-                                                                    style={{ lineHeight: banner.lineHeight || '1.5' }}
-                                                                    dangerouslySetInnerHTML={{ __html: banner.contentEn }} 
-                                                                />
-                                                            ) : (banner.contentLang !== 'en' && (banner.contentHe || banner.content)) ? (
-                                                                <div 
-                                                                    className={`pointer-events-none whitespace-normal px-0 banner-text-content lang-he max-w-none mx-auto text-sm`} 
-                                                                    style={{ lineHeight: banner.lineHeight || '1.5' }}
-                                                                    dangerouslySetInnerHTML={{ __html: banner.contentHe || banner.content }} 
-                                                                />
-                                                            ) : (
-                                                                <>
-                                                                    {/* Placeholder fallback for backward compatibility */}
-                                                                    <div className={`font-assistant tracking-[0.2em] text-gray-800 font-bold mb-1 opacity-90 uppercase pointer-events-none ${isDesktop ? 'text-sm' : 'text-xs'}`}>גלה את בושם החתימה שלך</div>
-                                                                    <div className={`font-handwriting font-bold text-black ${isDesktop ? 'text-5xl mb-3' : 'text-[1.35rem] mb-2'} leading-tight tracking-wide pointer-events-none`}>
-                                                                        <span className="block whitespace-nowrap">ml-tlv: דוגמיות בשמי נישה</span>
-                                                                        <span className="block whitespace-nowrap">ודיקאנטים מקוריים</span>
-                                                                    </div>
-                                                                    <div className={`font-assistant text-gray-800 opacity-80 leading-relaxed pointer-events-none whitespace-normal ${isDesktop ? 'text-base mb-4 max-w-none' : 'text-xs mb-3 max-w-none mx-auto'}`}>
-                                                                        הדרך החכמה לגלות בשמי נישה יוקרתיים. מגוון דוגמיות יוקרה ודיקאנטים (דיקנטים) של הבשמים הנחשקים בעולם.
-                                                                        <br className={isDesktop ? 'block' : 'hidden'} />
-                                                                        הזמינו דוגמיות לפני רכישת בקבוק מלא.
-                                                                    </div>
-                                                                </>
-                                                            )}
-                                                            <div className={`inline-block border px-6 py-2.5 font-bold tracking-widest uppercase rounded-full pointer-events-none transition duration-500 border-[var(--btn-border)] text-[var(--btn-text)] ${isDesktop ? 'text-sm' : 'text-xs'}`}
-                                                                style={{ 
-                                                                    '--btn-text': banner.btnTextColor || '#000000', 
-                                                                    '--btn-border': banner.btnBorderColor || '#000000',
-                                                                    marginTop: `${banner.buttonMarginTop ?? (isDesktop ? 16 : 12)}px`
-                                                                }}
-                                                            >
-                                                                {banner.contentLang === 'en' ? (banner.btnTextEn || 'SHOP NOW') : (banner.btnTextHe || 'קנה עכשיו')}
-                                                            </div>
+                                                {/* ── Background media ── */}
+                                                <div
+                                                    className="absolute inset-0 cursor-ns-resize"
+                                                    onMouseDown={(e) => handleDragStart(e, index, 'bg', 0, yPercent)}
+                                                >
+                                                    {banner.url ? (
+                                                        banner.type === 'video' ? (
+                                                            <video
+                                                                src={banner.url}
+                                                                autoPlay loop muted playsInline
+                                                                className="banner-media w-full h-full object-cover pointer-events-none"
+                                                            />
+                                                        ) : (
+                                                            <img
+                                                                src={banner.url}
+                                                                alt="Preview"
+                                                                className="banner-media w-full h-full object-cover pointer-events-none"
+                                                                onError={(e) => { e.target.src = 'https://via.placeholder.com/1920x885?text=Not+Found'; }}
+                                                            />
+                                                        )
+                                                    ) : (
+                                                        <div className="w-full h-full bg-gray-800 flex items-center justify-center">
+                                                            <span className="text-gray-400 text-2xl">לא הוזן קישור</span>
                                                         </div>
                                                     )}
-
-                                                    <div className="absolute inset-0 bg-red-500/5 pointer-events-none"></div>
                                                 </div>
-                                            );
-                                        })()
-                                    ) : (
-                                        <div className="text-gray-400 z-10">לא הוזן קישור להצגה</div>
-                                    )}
-                                </div>
-                            </div>
+
+                                                {/* ── Simulated header (matches live site exactly) ──
+                                                    Desktop: h-28 = 112px.  Mobile: h-20 = 80px. */}
+                                                <div
+                                                    className="absolute top-0 left-0 right-0 z-10 bg-white shadow-sm pointer-events-none flex items-center justify-between px-8"
+                                                    style={{ height: isDesktop ? '112px' : '80px' }}
+                                                >
+                                                    <div className="flex gap-4 items-center">
+                                                        <div className="w-8 h-8 rounded-full bg-gray-200"></div>
+                                                        <div className="w-8 h-8 rounded-full bg-gray-200"></div>
+                                                        <div className="w-24 h-3 bg-gray-200 rounded"></div>
+                                                    </div>
+                                                    <span className="text-black font-bold tracking-widest text-2xl">ml-tlv.</span>
+                                                    <div className="w-8 h-8 rounded-full bg-gray-200"></div>
+                                                </div>
+
+                                                {/* ── Content box ──
+                                                    Uses IDENTICAL CSS to HeroCarousel.js.
+                                                    Because this canvas is 1920×885, all the %, px, em values
+                                                    match 1:1 with the live site.  The outer scale() takes care
+                                                    of shrinking everything to fit the admin column. */}
+                                                {!banner.hideContentBox && (
+                                                    <div
+                                                        className="absolute z-20"
+                                                        style={{
+                                                            display: banner.hideContentBox ? 'none' : 'block',
+                                                            top: `${contentY}%`,
+                                                            // RTL: left + translate(-X%, -Y%)  |  LTR: right + translate(+X%, -Y%)
+                                                            ...(banner.contentLang === 'en'
+                                                                ? { right: `${contentX}%`, left: 'auto' }
+                                                                : { left: `${contentX}%`, right: 'auto' }
+                                                            ),
+                                                            transform: banner.contentLang === 'en'
+                                                                ? `translate(${contentX}%, -${contentY}%) scale(${contentScale / 100})`
+                                                                : `translate(-${contentX}%, -${contentY}%) scale(${contentScale / 100})`,
+                                                            transformOrigin: banner.contentLang === 'en'
+                                                                ? `calc(100% - ${contentX}%) ${contentY}%`
+                                                                : `${contentX}% ${contentY}%`,
+                                                            width: banner.boxWidthDesktop > 0 ? `${banner.boxWidthDesktop}px` : 'max-content',
+                                                            maxWidth: isDesktop ? '35%' : '80%',
+                                                            cursor: 'move',
+                                                        }}
+                                                        onMouseDown={(e) => handleDragStart(e, index, 'box', contentX, contentY)}
+                                                    >
+                                                        {/* Glass background — same as live content-box-bg */}
+                                                        <div
+                                                            className="content-box-bg rounded-2xl px-10 py-8 border border-white/20 shadow-2xl text-center"
+                                                            style={{
+                                                                backgroundColor: `rgba(255,255,255,${contentOpacity / 100})`,
+                                                                backdropFilter: 'blur(12px)',
+                                                                WebkitBackdropFilter: 'blur(12px)',
+                                                                outline: dragState.isDragging && dragState.type === 'box' ? '3px solid #3b82f6' : 'none',
+                                                            }}
+                                                        >
+                                                            {/* Content */}
+                                                            {banner.contentLang === 'en' && banner.contentEn ? (
+                                                                <div
+                                                                    className="pointer-events-none whitespace-normal banner-text-content lang-en"
+                                                                    style={{ lineHeight: banner.lineHeight || '1.5' }}
+                                                                    dangerouslySetInnerHTML={{ __html: banner.contentEn }}
+                                                                />
+                                                            ) : (banner.contentLang !== 'en' && (banner.contentHe || banner.content)) ? (
+                                                                <div
+                                                                    className="pointer-events-none whitespace-normal banner-text-content lang-he"
+                                                                    style={{ lineHeight: banner.lineHeight || '1.5' }}
+                                                                    dangerouslySetInnerHTML={{ __html: banner.contentHe || banner.content }}
+                                                                />
+                                                            ) : (
+                                                                <div
+                                                                    className="pointer-events-none whitespace-normal banner-text-content lang-he"
+                                                                    dangerouslySetInnerHTML={{ __html: DEFAULT_CONTENT_HE }}
+                                                                />
+                                                            )}
+
+                                                            {/* Button */}
+                                                            <div
+                                                                className="inline-block border px-12 py-5 font-bold tracking-widest uppercase rounded-full pointer-events-none"
+                                                                style={{
+                                                                    borderColor: banner.btnBorderColor || '#000000',
+                                                                    color: banner.btnTextColor || '#000000',
+                                                                    marginTop: `${banner.buttonMarginTop ?? (isDesktop ? 24 : 16)}px`,
+                                                                    fontSize: '1rem',
+                                                                }}
+                                                            >
+                                                                {banner.contentLang === 'en'
+                                                                    ? (banner.btnTextEn || 'SHOP NOW')
+                                                                    : (banner.btnTextHe || 'קנה עכשיו')}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                )}
+
+                                                {/* Label */}
+                                                <div className="absolute top-4 right-4 z-30 bg-red-600 text-white px-4 py-1.5 rounded-lg text-xl font-bold shadow-md pointer-events-none">
+                                                    אזור גלוי ({isDesktop ? 'מחשב' : 'מובייל'})
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </>
+                                );
+                            })()}
                         )}
                     </div>
                 ))}
