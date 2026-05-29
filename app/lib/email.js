@@ -528,11 +528,8 @@ export function getSystemDefaults() {
                     <a href="https://www.ml-tlv.com/review?id={{orderId}}&token={{token}}" style="display: inline-block; background-color: #000; color: #fff; padding: 16px 32px; text-decoration: none; border-radius: 16px; font-weight: 900; font-size: 14px;">לדירוג השירות בקליק >></a>
                 </div>
 
-                <div style="background-color: #fffde7; padding: 20px; border-radius: 16px; border: 1px solid #fff9c4; text-align: center;">
-                    <p style="margin: 0; color: #d97706; font-weight: 900; font-size: 14px;">
-                        🎁 בונוס קטן: על כל דירוג שתשאיר/י באתר, נשלח אליך למייל קופון של 10% הנחה לקנייה הבאה!
-                    </p>
-                </div>
+{{bonusText}}
+
             </div>
             <div style="text-align: center; padding: 30px 0; color: #ccc; font-size: 11px;">ml - יוקרה בחתיכות קטנות</div>
         </div>`

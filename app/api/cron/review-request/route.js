@@ -58,8 +58,16 @@ export async function GET(req) {
                     `, [email]);
                     const alreadyRewarded = rewardedCheck.rows.length > 0;
 
+                    const bonusText = !alreadyRewarded ? `
+                        <div style="background-color: #fffde7; padding: 20px; border-radius: 16px; border: 1px solid #fff9c4; text-align: center; margin-top: 20px;">
+                            <p style="margin: 0; color: #d97706; font-weight: 900; font-size: 14px;">
+                                🎁 בונוס קטן: על כל דירוג שתשאיר/י באתר, נשלח אליך למייל קופון של 10% הנחה לקנייה הבאה!
+                            </p>
+                        </div>
+                    ` : '';
+
                     const { html, subject } = await getTemplate('review_request', 
-                        { name: firstName, orderId: order.id, token: token },
+                        { name: firstName, orderId: order.id, token: token, bonusText: bonusText },
                         () => {
                             // Fallback static template (matching what was there before)
                             return `
