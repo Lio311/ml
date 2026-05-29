@@ -32,13 +32,13 @@ export default function MegaMenuBrands({ brands = [], isOpen, onClose }) {
 
     return (
         <div 
-            className="absolute top-full left-0 w-full frosted-nav py-8 min-h-[450px] z-40 animate-fadeIn overflow-hidden flex flex-col border-t border-gray-200"
+            className="absolute top-full left-0 w-full bg-white/95 backdrop-blur-xl py-5 min-h-[400px] z-40 animate-fadeIn overflow-hidden flex flex-col border-t border-gray-200 shadow-2xl"
             onMouseLeave={onClose}
         >
             <div className="container mx-auto px-6 flex flex-col items-center">
                 
                 {/* Alphabet Selection Grid - Single Row, LTR */}
-                <div className="w-full flex justify-center mb-6 border-b border-gray-200 pb-4" dir="ltr">
+                <div className="w-full flex justify-center mb-3 border-b border-gray-200 pb-3" dir="ltr">
                     <div className="flex flex-nowrap items-center justify-center gap-1 max-w-full overflow-x-auto no-scrollbar px-2 px-md-4">
                         {alphabet.map((letter) => (
                             <button
@@ -59,13 +59,13 @@ export default function MegaMenuBrands({ brands = [], isOpen, onClose }) {
                 {/* Brands Display Area */}
                 <div className="w-full min-h-[180px] transition-all duration-500 relative">
                     {!hoveredLetter ? (
-                        <div className="flex flex-col items-center justify-center text-black space-y-3 py-8">
+                        <div className="flex flex-col items-center justify-center text-black space-y-3 py-4">
                             <span className="text-2xl md:text-3xl font-serif tracking-[0.2em] uppercase opacity-90 drop-shadow-sm">{t('common.choose_letter')}</span>
                             <div className="w-12 h-[1px] bg-black/20"></div>
                             <span className="text-[9px] uppercase tracking-[0.3em] opacity-60">EXPLORE OUR CURATED COLLECTIONS</span>
                         </div>
                     ) : (
-                        <div className="flex flex-wrap justify-center gap-4 animate-fadeInQuick w-full pb-6">
+                        <div className="flex flex-wrap justify-center gap-4 animate-fadeInQuick w-full pb-2">
                             {hoveredBrands.map((brand) => (
                                 <Link 
                                     key={brand.id} 
@@ -96,7 +96,7 @@ export default function MegaMenuBrands({ brands = [], isOpen, onClose }) {
                 </div>
 
                 {/* Footer Link */}
-                <div className="mt-8 pt-4 w-full text-center border-t border-black/5">
+                <div className="mt-4 pt-3 w-full text-center border-t border-black/5">
                     <Link 
                         href="/brands" 
                         className="text-black/50 hover:text-black transition-all inline-flex items-center gap-2 group text-[9px] uppercase tracking-[0.3em]"
