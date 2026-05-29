@@ -886,6 +886,7 @@ export default function BannerClient() {
                                     </>
                                 );
                             })()}
+                    </div>
                         )}
                     </div>
                 ))}
