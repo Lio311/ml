@@ -39,7 +39,7 @@ export default function MegaMenuBrands({ brands = [], isOpen, onClose }) {
                 
                 {/* Alphabet Selection Grid - Single Row, LTR */}
                 <div className="w-full flex justify-center mb-2 border-b border-white/10 pb-1" dir="ltr">
-                    <div className="flex flex-nowrap items-center justify-center gap-1 max-w-full overflow-x-auto no-scrollbar px-2 px-md-4 py-2">
+                    <div className="flex flex-nowrap items-center justify-center gap-1 max-w-full overflow-x-auto no-scrollbar px-2 px-md-4 py-4">
                         {alphabet.map((letter) => (
                             <button
                                 key={letter}

@@ -45,6 +45,10 @@ export default function BundlesClient() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [selectedType]);
 
+    useEffect(() => {
+        setSelectedProducts([]);
+    }, [selectedSize]);
+
     const fetchProducts = async () => {
         setLoading(true);
         try {
@@ -100,7 +104,16 @@ export default function BundlesClient() {
 
     const filteredProducts = products.filter(p => {
         const name = `${p.brand} ${p.model} ${p.brand_he} ${p.model_he}`.toLowerCase();
-        return name.includes(searchQuery.toLowerCase());
+        if (!name.includes(searchQuery.toLowerCase())) return false;
+        
+        const requiredStock = Number(selectedSize) || 2;
+        const stockVal = Number(p.stock) || 0;
+        
+        // Ensure the product is sold in the requested size (has a price for it)
+        const sizePriceKey = `price_${selectedSize}ml`;
+        const hasSize = p[sizePriceKey] !== null && Number(p[sizePriceKey]) > 0;
+
+        return stockVal >= requiredStock && hasSize;
     });
 
     return (

@@ -113,13 +113,13 @@ export default function Header({ brands = [] }) {
 
     return (
         <header 
-            className="fixed top-0 !left-0 !right-0 !w-screen z-50 transition-all duration-500"
+            className="fixed top-0 !left-0 !right-0 !w-screen z-50 transition-all duration-500 group"
             onMouseLeave={() => setActiveMenu(null)}
             dir={dir}
             style={{ '--header-height': `${headerHeight}px` }}
         >
             <AnnouncementBar />
-            <div className={`frosted-nav !w-screen h-20 md:h-28 relative z-40 flex items-center transition-all duration-500 ${
+            <div className={`frosted-nav group-hover:!bg-white group-hover:!backdrop-blur-none !w-screen h-20 md:h-28 relative z-40 flex items-center transition-all duration-500 ${
                 !isScrolled && isHome ? '!bg-white !backdrop-blur-none !shadow-none' : ''
             }`}>
                 <div className="w-full max-w-[1800px] mx-auto px-0 md:px-4 xl:px-6 h-full flex items-center justify-between">

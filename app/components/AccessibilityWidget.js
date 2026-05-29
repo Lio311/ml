@@ -206,27 +206,22 @@ export default function AccessibilityWidget() {
             <div className={`fixed bottom-6 ${isHebrew ? 'left-6' : 'right-6'} z-[9999] font-sans rtl group acc-widget-ignore`}>
                 <button
                     onClick={() => setIsOpen(!isOpen)}
-                    className="w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 focus:outline-none bg-white/60 backdrop-blur-md border border-white/30 shadow-lg"
+                    className="w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 focus:outline-none focus:ring-0 focus-visible:outline-none bg-black/40 backdrop-blur-md border border-white/10 shadow-[0_0_15px_rgba(0,0,0,0.5)]"
                     aria-label="פתח תפריט נגישות"
                     style={{ filter: 'none' }} // Extra safety
                 >
-                    <svg 
-                        xmlns="http://www.w3.org/2000/svg" 
-                        viewBox="0 0 24 24" 
-                        fill="currentColor" 
-                        className="w-6 h-6 text-[#007AFF] transition-transform duration-300 group-hover:scale-110"
-                    >
-                        {/* Traced Head */}
-                        <path d="M 11.672 0.000 L 11.203 0.094 L 11.062 0.188 L 10.969 0.188 L 10.688 0.328 L 10.172 0.703 L 9.844 1.078 L 9.750 1.219 L 9.562 1.594 L 9.562 1.688 L 9.469 1.828 L 9.375 2.297 L 9.375 2.906 L 9.469 3.375 L 9.562 3.516 L 9.562 3.609 L 9.750 3.984 L 10.078 4.406 L 10.406 4.688 L 10.688 4.875 L 10.969 5.016 L 11.391 5.156 L 12.281 5.203 L 12.562 5.156 L 12.984 5.016 L 13.359 4.828 L 13.781 4.500 L 14.109 4.125 L 14.391 3.609 L 14.531 3.188 L 14.578 2.906 L 14.578 2.297 L 14.484 1.828 L 14.391 1.688 L 14.391 1.594 L 14.203 1.219 L 13.875 0.797 L 13.500 0.469 L 13.359 0.375 L 12.984 0.188 L 12.891 0.188 L 12.750 0.094 L 12.281 0.000 Z" />
-                        {/* Traced Torso, Arms & Legs */}
-                        <path d="M 2.766 5.484 L 2.438 5.906 L 2.250 6.469 L 2.297 7.172 L 2.672 7.688 L 3.703 8.250 L 8.156 9.609 L 8.766 10.031 L 8.906 10.406 L 8.906 11.391 L 8.578 13.922 L 6.984 22.500 L 7.172 23.344 L 7.547 23.719 L 8.203 23.953 L 8.953 23.906 L 9.328 23.719 L 9.656 23.344 L 9.984 22.453 L 11.156 16.828 L 11.719 15.281 L 12.000 15.094 L 12.375 15.656 L 12.797 16.969 L 13.969 22.500 L 14.250 23.297 L 14.625 23.719 L 15.188 23.953 L 15.984 23.906 L 16.453 23.672 L 16.875 23.156 L 16.969 22.594 L 15.375 14.203 L 15.000 11.297 L 15.047 10.406 L 15.328 10.031 L 15.844 9.750 L 20.109 8.297 L 21.094 7.828 L 21.562 7.359 L 21.703 6.984 L 21.656 6.281 L 21.422 5.766 L 20.859 5.297 L 20.344 5.250 L 15.562 6.422 L 13.172 6.750 L 11.391 6.797 L 8.344 6.422 L 3.656 5.250 L 3.234 5.250 Z" />
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" className="w-7 h-7 text-[#007AFF] transition-transform duration-300 group-hover:scale-110">
+                        <circle cx="12" cy="4" r="2.5" />
+                        <path d="M6 5l6 4 6-4" />
+                        <path d="M12 9v7" />
+                        <path d="M9 22l3-6 3 6" />
                     </svg>
                 </button>
 
                 {/* The Widget Panel - Reduced size and max-height */}
                 {isOpen && (
                     <div
-                        className="absolute bottom-16 left-0 w-[300px] bg-white/95 backdrop-blur-xl border border-white/20 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.3)] overflow-hidden animate-fade-in-up origin-bottom-left acc-widget-ignore text-gray-800"
+                        className="absolute bottom-16 left-0 w-[300px] bg-white/95 backdrop-blur-xl border border-white/20 rounded-2xl shadow-[0_20px_60px_rgba(0,0,0,0.6)] overflow-hidden animate-fade-in-up origin-bottom-left acc-widget-ignore text-gray-800"
                         dir="rtl"
                         style={{ filter: 'none', color: '#1f2937' }} // Explicit colors to override high contrast
                     >
@@ -240,7 +235,7 @@ export default function AccessibilityWidget() {
                             </button>
                         </div>
 
-                        <div className="p-3 max-h-[260px] overflow-y-auto custom-scrollbar">
+                        <div className="p-3 max-h-[130px] overflow-y-auto custom-scrollbar">
 
                             {/* Text Size Slider Area */}
                             <div className="mb-4 bg-blue-50/50 p-3 rounded-xl border border-blue-100">
