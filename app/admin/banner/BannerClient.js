@@ -694,20 +694,14 @@ export default function BannerClient() {
                                                 onMouseDown={(e) => handleDragStart(e, index, 'bg', 0, yPercent)}
                                             >
                                                 {banner.type === 'video' ? (
-                                                    // The video is 16:9 and the preview container is 16:9 too.
-                                                    // To simulate the real site (where the hero is 82vh tall on a
-                                                    // landscape viewport causing vertical overflow), we make the video
-                                                    // 130% height. This creates the vertical overflow that lets
-                                                    // objectPosition actually shift the frame vertically.
+                                                    // With aspect-[1920/885] container, a 16:9 video at object-cover
+                                                    // overflows vertically (container shorter than video), so
+                                                    // objectPosition actually works — same behavior as live site.
                                                     <video
                                                         src={banner.url}
                                                         autoPlay loop muted playsInline
-                                                        className="absolute inset-x-0 pointer-events-none w-full object-cover"
-                                                        style={{
-                                                            height: '130%',
-                                                            top: `${yPercent - 50}%`,
-                                                            objectFit: 'cover'
-                                                        }}
+                                                        className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+                                                        style={{ objectPosition: `50% ${yPercent}%` }}
                                                     />
                                                 ) : (
                                                     <img
@@ -730,12 +724,16 @@ export default function BannerClient() {
                                                     <div className="w-4 h-4 rounded-full bg-gray-300"></div>
                                                 </div>
                                                 
-                                                {/* Content Box:
-                                                     Positioning logic (mirrors HeroCarousel.js semantics):
-                                                     - contentX is the "distance" value (same unit the carousel uses)
-                                                     - RTL: left: contentX%, translate(-50%, ...) to center-anchor at that X point
-                                                     - LTR: right: contentX%, translate(50%, ...) to center-anchor at that X point
-                                                     transformOrigin stays at 50% 50% (element center) so scale never moves the box.
+                                                {/* Content Box positioning:
+                                                     The live HeroCarousel (RTL) uses: left:contentX% + translate(-contentX%, -contentY%)
+                                                     In practice, for any normal box size, this puts the box CENTER close to contentX% from left.
+                                                     Preview simplification:
+                                                       RTL (Hebrew): center at contentX% from left
+                                                         → left: contentX%; transform: translate(-50%, -50%)
+                                                       LTR (English): live site uses right:contentX% + translate(+contentX%, ...)
+                                                         The box center ends up near (100 - contentX)% from left.
+                                                         → left: calc(100% - contentX%); transform: translate(-50%, -50%)
+                                                     Both use transformOrigin 50%/50% so scale never shifts position.
                                                 */}
                                                 {!banner.hideContentBox && (
                                                     <div 
@@ -744,13 +742,11 @@ export default function BannerClient() {
                                                                 width: isDesktop ? (banner.boxWidthDesktop > 0 ? `${banner.boxWidthDesktop * finalScale}px` : 'max-content') : 'max-content',
                                                                 maxWidth: isDesktop ? '45%' : '80%',
                                                                 top: `${contentY}%`,
-                                                                // RTL: anchor left edge at contentX%, shift left by 50% own width → center at contentX%
-                                                                // LTR: anchor right edge at contentX% from right, shift right by 50% own width → center at (100-contentX)% from left
-                                                                ...(banner.contentLang === 'en'
-                                                                    ? { right: `${contentX}%`, left: 'auto' }
-                                                                    : { left: `${contentX}%`, right: 'auto' }
-                                                                ),
-                                                                transform: `translate(${banner.contentLang === 'en' ? '50%' : '-50%'}, -50%) scale(${finalScale})`,
+                                                                left: banner.contentLang === 'en'
+                                                                    ? `calc(100% - ${contentX}%)`
+                                                                    : `${contentX}%`,
+                                                                right: 'auto',
+                                                                transform: `translate(-50%, -50%) scale(${finalScale})`,
                                                                 transformOrigin: '50% 50%',
                                                                 backgroundColor: `rgba(255, 255, 255, ${contentOpacity / 100})`,
                                                                 pointerEvents: 'auto'
