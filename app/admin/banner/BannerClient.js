@@ -33,10 +33,17 @@ export default function BannerClient() {
             if (type === 'box') {
                 if (isDesktop) {
                     let newY = Math.min(100, Math.max(0, initialValY + deltaY));
-                    let newX = Math.min(100, Math.max(0, initialValX + deltaX));
-                    const finalX = banner.contentLang === 'en' ? 100 - newX : newX;
+                    
+                    // In RTL (Hebrew), moving right (positive deltaX) gets closer to right edge -> contentX decreases
+                    // In LTR (English), moving right (positive deltaX) gets further from left edge -> contentX increases
+                    let newX = banner.contentLang === 'en' 
+                        ? initialValX + deltaX 
+                        : initialValX - deltaX;
+                    
+                    newX = Math.min(100, Math.max(0, newX));
+                    
                     updateBanner(index, 'contentPositionDesktop', Math.round(newY));
-                    updateBanner(index, 'contentPositionXDesktop', Math.round(finalX));
+                    updateBanner(index, 'contentPositionXDesktop', Math.round(newX));
                 } else {
                     let newY = Math.min(100, Math.max(0, initialValY + deltaY));
                     updateBanner(index, 'contentPositionMobile', Math.round(newY));
@@ -682,25 +689,29 @@ export default function BannerClient() {
                                                 )}
 
                                                 {/* Top Menu Overlay Simulation */}
-                                                <div className={`absolute top-0 left-0 right-0 ${isDesktop ? 'h-[15%]' : 'h-[12%]'} bg-white/70 backdrop-blur-md border-b border-black/10 flex items-center justify-center z-10 shadow-sm pointer-events-none`}>
-                                                    <span className="text-black/80 text-[9px] md:text-[10px] font-bold drop-shadow-md">מוסתר ע"י תפריט עליון</span>
+                                                <div className={`absolute top-0 left-0 right-0 ${isDesktop ? 'h-[112px]' : 'h-[80px]'} bg-white flex items-center justify-between px-4 z-10 shadow-sm pointer-events-none`}>
+                                                    <div className="flex gap-4 items-center">
+                                                        <div className="w-8 h-8 rounded-full bg-gray-200"></div>
+                                                        <div className="w-16 h-2 bg-gray-200 rounded"></div>
+                                                    </div>
+                                                    <span className="text-black font-serif text-xl md:text-3xl font-bold tracking-wider">ml-tlv.</span>
                                                 </div>
                                                 
                                                 {/* Content Box Simulation */}
                                                 {!banner.hideContentBox && (
                                                     <div 
-                                                        className={`absolute backdrop-blur-md rounded-2xl ${isDesktop ? 'px-3 py-2 md:px-5 md:py-3' : 'px-3 py-2'} border border-white/20 shadow-2xl text-center transition-all duration-75 cursor-move ${dragState.isDragging && dragState.type === 'box' ? 'ring-2 ring-blue-500 shadow-blue-500/50' : ''} z-20`}
+                                                        className={`absolute backdrop-blur-md rounded-2xl ${isDesktop ? 'px-3 py-2 md:px-5 md:py-3' : 'px-3 py-2'} border border-white/20 shadow-2xl text-center transition-all duration-75 cursor-move text-black ${dragState.isDragging && dragState.type === 'box' ? 'ring-2 ring-blue-500 shadow-blue-500/50' : ''} z-20`}
                                                             style={{
                                                                 width: isDesktop ? (banner.boxWidthDesktop > 0 ? `${banner.boxWidthDesktop}px` : 'max-content') : 'max-content',
                                                                 maxWidth: isDesktop ? 'none' : '600px',
                                                                 top: `${contentY}%`,
-                                                                left: `${banner.contentLang === 'en' ? 100 - contentX : contentX}%`,
-                                                                transform: `translate(-${banner.contentLang === 'en' ? 100 - contentX : contentX}%, -${contentY}%) scale(${finalScale})`,  
-                                                                transformOrigin: `${banner.contentLang === 'en' ? 100 - contentX : contentX}% ${contentY}%`,
+                                                                left: banner.contentLang === 'en' ? `${contentX}%` : 'auto',
+                                                                right: banner.contentLang !== 'en' ? `${contentX}%` : 'auto',
+                                                                transform: `translate(${banner.contentLang === 'en' ? '-50%' : '50%'}, -${contentY}%) scale(${finalScale})`,
                                                                 backgroundColor: `rgba(255, 255, 255, ${contentOpacity / 100})`,
                                                                 pointerEvents: 'auto'
                                                             }}
-                                                            onMouseDown={(e) => handleDragStart(e, index, 'box', banner.contentLang === 'en' ? 100 - contentX : contentX, contentY)}
+                                                            onMouseDown={(e) => handleDragStart(e, index, 'box', contentX, contentY)}
                                                         >
                                                             {banner.contentLang === 'en' && banner.contentEn ? (
                                                                 <div 
