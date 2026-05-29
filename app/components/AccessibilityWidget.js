@@ -226,7 +226,7 @@ export default function AccessibilityWidget() {
                 {/* The Widget Panel - Reduced size and max-height */}
                 {isOpen && (
                     <div
-                        className="absolute bottom-16 left-0 w-[300px] bg-white/95 backdrop-blur-xl border border-white/20 rounded-2xl shadow-2xl overflow-hidden animate-fade-in-up origin-bottom-left acc-widget-ignore text-gray-800"
+                        className="absolute bottom-16 left-0 w-[300px] bg-white/95 backdrop-blur-xl border border-white/20 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.3)] overflow-hidden animate-fade-in-up origin-bottom-left acc-widget-ignore text-gray-800"
                         dir="rtl"
                         style={{ filter: 'none', color: '#1f2937' }} // Explicit colors to override high contrast
                     >
@@ -240,7 +240,7 @@ export default function AccessibilityWidget() {
                             </button>
                         </div>
 
-                        <div className="p-3 max-h-[60vh] overflow-y-auto custom-scrollbar">
+                        <div className="p-3 max-h-[260px] overflow-y-auto custom-scrollbar">
 
                             {/* Text Size Slider Area */}
                             <div className="mb-4 bg-blue-50/50 p-3 rounded-xl border border-blue-100">

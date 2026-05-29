@@ -31,8 +31,8 @@ export async function GET(req) {
                 // Collectors filter: 'נדיר', 'לא מיוצר יותר', 'מהדורה מוגבלת'
                 query += ` AND (category ILIKE '%נדיר%' OR category ILIKE '%לא מיוצר יותר%' OR category ILIKE '%מהדורה מוגבלת%' OR category ILIKE '%Rare%' OR category ILIKE '%Limited%')`;
             } else if (type === 'dates') {
-                // Dates filter: 'דייט' in description or specific notes if available
-                query += ` AND (description ILIKE '%דייט%' OR description ILIKE '%דייטים%' OR description ILIKE '%Date%')`;
+                // Dates & Evening filter: 'דייט'/'Date' in description or 'ערב'/'Evening' in category
+                query += ` AND (description ILIKE '%דייט%' OR description ILIKE '%דייטים%' OR description ILIKE '%Date%' OR category ILIKE '%ערב%' OR category ILIKE '%Evening%')`;
             }
 
             query += ' ORDER BY brand ASC, model ASC';
