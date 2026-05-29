@@ -57,8 +57,12 @@ export default function MegaMenuCatalog({ isOpen, onClose }) {
 
     return (
         <div 
-            className="absolute top-full left-0 w-full glass-dark py-20 z-40 animate-fadeIn"
+            className="absolute top-full left-0 w-full glass-dark py-6 z-40 animate-fadeIn flex flex-col justify-center overflow-y-auto"
             onMouseLeave={onClose}
+            style={{ 
+                height: 'calc(82vh - var(--header-height, 112px))',
+                minHeight: '400px'
+            }}
         >
             <div className="container mx-auto max-w-5xl">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 px-6">

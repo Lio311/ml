@@ -22,6 +22,19 @@ import './header/header_v2.css';
 export default function Header({ brands = [] }) {
     const [isScrolled, setIsScrolled] = useState(false);
     const [activeMenu, setActiveMenu] = useState(null); 
+    const [headerHeight, setHeaderHeight] = useState(112);
+
+    useEffect(() => {
+        const headerEl = document.querySelector('header');
+        if (!headerEl) return;
+        const resizeObserver = new ResizeObserver((entries) => {
+            for (let entry of entries) {
+                setHeaderHeight(entry.target.offsetHeight);
+            }
+        });
+        resizeObserver.observe(headerEl);
+        return () => resizeObserver.disconnect();
+    }, []);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
     const { t, dir } = useLanguage();
@@ -103,6 +116,7 @@ export default function Header({ brands = [] }) {
             className="fixed top-0 !left-0 !right-0 !w-screen z-50 transition-all duration-500"
             onMouseLeave={() => setActiveMenu(null)}
             dir={dir}
+            style={{ '--header-height': `${headerHeight}px` }}
         >
             <AnnouncementBar />
             <div className={`frosted-nav !w-screen h-20 md:h-28 relative z-40 flex items-center transition-all duration-500 ${
