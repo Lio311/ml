@@ -69,7 +69,7 @@ export default function AnnouncementBarClient() {
                     />
                 </div>
 
-                <div className="grid grid-cols-2 gap-6">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                         <label className="block text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
                             <Palette className="w-4 h-4" /> צבע רקע
