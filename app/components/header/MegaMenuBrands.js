@@ -70,7 +70,7 @@ export default function MegaMenuBrands({ brands = [], isOpen, onClose }) {
                                 <Link 
                                     key={brand.id} 
                                     href={`/catalog?brand=${encodeURIComponent(brand.name)}`}
-                                    className="brand-card group flex flex-col items-center justify-center p-3 rounded-xl bg-white/5 border border-white/5 hover:bg-white/10 hover:border-white/20 transition-all duration-500 w-[140px] md:w-[170px] min-h-[100px]"
+                                    className="brand-card group flex flex-col items-center justify-center p-3 rounded-xl bg-white shadow-sm border border-white/50 hover:shadow-[0_8px_30px_-5px_rgba(255,255,255,0.4)] hover:-translate-y-1 transition-all duration-500 w-[140px] md:w-[170px] min-h-[100px]"
                                 >
                                     <div className="relative w-full h-8 mb-3 transition-transform duration-700 group-hover:scale-110">
                                         {brand.logo_url ? (
@@ -82,11 +82,11 @@ export default function MegaMenuBrands({ brands = [], isOpen, onClose }) {
                                             />
                                         ) : (
                                             <div className="w-full h-full flex items-center justify-center">
-                                                <span className="text-xl font-serif text-white/50">{brand.name.charAt(0)}</span>
+                                                <span className="text-xl font-serif text-black/30">{brand.name.charAt(0)}</span>
                                             </div>
                                         )}
                                     </div>
-                                    <span className="text-[10px] font-bold text-white/80 group-hover:text-white transition-colors uppercase tracking-[0.15em] text-center p-1 break-words w-full">
+                                    <span className="text-[10px] font-bold text-black/70 group-hover:text-black transition-colors uppercase tracking-[0.15em] text-center p-1 break-words w-full">
                                         {brand.name}
                                     </span>
                                 </Link>
