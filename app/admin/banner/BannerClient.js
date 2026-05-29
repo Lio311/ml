@@ -841,20 +841,22 @@ export default function BannerClient() {
                                                             transformOrigin: banner.contentLang === 'en'
                                                                 ? `calc(100% - ${contentX}%) ${contentY}%`
                                                                 : `${contentX}% ${contentY}%`,
-                                                            // Width: max-content so it auto-fits to text, same as real site.
-                                                            // Capped by maxWidth to prevent overflow.
-                                                            // If admin set explicit boxWidthDesktop, use that (in 1920px px).
+                                                            // Width: use max-content (w-max equivalent) just like live site.
+                                                            // On live site maxWidth is 130vw (so basically unbounded by container).
                                                             width: banner.boxWidthDesktop > 0
                                                                 ? `${banner.boxWidthDesktop}px`
                                                                 : 'max-content',
-                                                            maxWidth: isDesktop ? '38%' : '78%',
+                                                            maxWidth: '130%',
                                                             cursor: 'move',
                                                         }}
                                                         onMouseDown={(e) => handleDragStart(e, index, 'box', contentX, contentY)}
                                                     >
-                                                        {/* Glass background — same as live content-box-bg */}
+                                                        {/* Glass background — matches live page.js EXACTLY:
+                                                            px-3 py-2 for mobile, px-5 py-3 for desktop */}
                                                         <div
-                                                            className="content-box-bg rounded-2xl px-10 py-8 border border-white/20 shadow-2xl text-center"
+                                                            className={`content-box-bg rounded-2xl border border-white/20 shadow-2xl text-center ${
+                                                                isDesktop ? 'px-5 py-3' : 'px-3 py-2'
+                                                            }`}
                                                             style={{
                                                                 backgroundColor: `rgba(255,255,255,${contentOpacity / 100})`,
                                                                 backdropFilter: 'blur(12px)',
