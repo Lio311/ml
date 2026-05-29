@@ -31,7 +31,7 @@ export default function ClientLayout({ children, brands, menu }) {
         <BrandProvider>
             <div id="site-content">
                 <Header brands={brands} />
-                <main className={`min-h-screen ${!isHome ? 'pt-20 md:pt-28' : ''}`}>
+                <main className="min-h-screen pt-20 md:pt-28">
                     {children}
                 </main>
                 <Footer />
