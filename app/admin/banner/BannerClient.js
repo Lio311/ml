@@ -106,25 +106,35 @@ export default function BannerClient() {
         });
     };
 
-    // Callback ref: attach a ResizeObserver to each preview outer container so we always
-    // have its current width and can compute the CSS scale for the inner 1920px canvas.
+    // Callback ref: just stores the DOM element. ResizeObserver is set up in useEffect below.
     const registerPreviewOuter = useCallback((el, idx) => {
-        if (!el) return;
-        // Disconnect any previous observer on this element
-        if (el._previewResizeObserver) {
-            el._previewResizeObserver.disconnect();
-        }
-        const observer = new ResizeObserver(([entry]) => {
-            setPreviewWidths(prev => ({
-                ...prev,
-                [idx]: entry.contentRect.width
-            }));
-        });
-        observer.observe(el);
-        el._previewResizeObserver = observer;
-        // Fire immediately with current width
-        setPreviewWidths(prev => ({ ...prev, [idx]: el.offsetWidth }));
+        previewOuterRefs.current[idx] = el;
     }, []);
+
+    // Set up ResizeObservers for all preview outer containers after mount / when banner count changes.
+    useEffect(() => {
+        const observers = [];
+        Object.entries(previewOuterRefs.current).forEach(([idx, el]) => {
+            if (!el) return;
+            // Record current width immediately
+            setPreviewWidths(prev => {
+                const w = el.offsetWidth;
+                if (prev[idx] === w) return prev;
+                return { ...prev, [idx]: w };
+            });
+            const observer = new ResizeObserver(([entry]) => {
+                const w = Math.round(entry.contentRect.width);
+                setPreviewWidths(prev => {
+                    if (prev[idx] === w) return prev; // avoid re-render if same
+                    return { ...prev, [idx]: w };
+                });
+            });
+            observer.observe(el);
+            observers.push(observer);
+        });
+        return () => observers.forEach(o => o.disconnect());
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [banners.length]);
 
     useEffect(() => {
         fetch('/api/admin/settings/home_banner')
