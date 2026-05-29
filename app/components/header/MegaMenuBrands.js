@@ -78,7 +78,7 @@ export default function MegaMenuBrands({ brands = [], isOpen, onClose }) {
                                                 src={brand.logo_url} 
                                                 alt={brand.name} 
                                                 fill 
-                                                className="object-contain inverted-logo" 
+                                                className="object-contain" 
                                             />
                                         ) : (
                                             <div className="w-full h-full flex items-center justify-center">
@@ -110,16 +110,6 @@ export default function MegaMenuBrands({ brands = [], isOpen, onClose }) {
             </div>
 
             <style jsx>{`
-                :global(.inverted-logo) {
-                    filter: grayscale(1) invert(1) contrast(200%);
-                    mix-blend-mode: screen;
-                    transition: all 0.5s ease;
-                }
-                .brand-card:hover :global(.inverted-logo) {
-                    filter: grayscale(1) invert(1) contrast(200%);
-                    mix-blend-mode: screen;
-                    transform: scale(1.1);
-                }
                 .no-scrollbar::-webkit-scrollbar {
                     display: none;
                 }
