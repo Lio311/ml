@@ -166,11 +166,16 @@ export default function Header({ brands = [] }) {
                                     />
                                 </Link>
                             </div>
-                            
+                            {/* Spacer 1 */}
+                            <div className="flex-1 hidden lg:block"></div>
+
                             {/* Language Switcher (Centered between Logo and Nav Menu) */}
-                            <div className="hidden lg:block mx-auto opacity-90 hover:opacity-100 transition-opacity">
+                            <div className="hidden lg:block opacity-90 hover:opacity-100 transition-opacity">
                                 <LanguageSwitcher variant="header" />
                             </div>
+
+                            {/* Spacer 2 */}
+                            <div className="flex-1 hidden lg:block"></div>
                         </div>
 
                         {/* Center: Navigation Menu */}
