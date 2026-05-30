@@ -211,8 +211,8 @@ export default function Header({ brands = [] }) {
 
                         {/* Left Side: Actions (Search, Icons) */}
                         <div className="flex-1 flex justify-end items-center text-black">
-                            <div className="flex items-center gap-6 xl:gap-8">
-                                <div className="w-[140px] xl:w-[180px] v2-user-actions">
+                            <div className="flex items-center gap-2 xl:gap-3">
+                                <div className="v2-user-actions">
                                     <SearchAutocomplete />
                                 </div>
                                 <div className="flex items-center h-[34px] v2-desktop-icons">
