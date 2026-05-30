@@ -23,7 +23,7 @@ export default function HomeFAQSection() {
     ].filter(Boolean);
 
     return (
-        <section className="pt-8 md:pt-12 pb-8 md:pb-12 bg-white" dir={dir}>
+        <section className="pt-8 md:pt-12 pb-4 md:pb-6 bg-white" dir={dir}>
             <div className="container mx-auto px-4 max-w-6xl">
                 <div className="text-center mb-8 md:mb-10">
                     <h2 className="text-4xl md:text-5xl font-black mb-3 tracking-tight">

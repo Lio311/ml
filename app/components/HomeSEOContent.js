@@ -9,7 +9,7 @@ export default function HomeSEOContent() {
     const isRTL = dir === 'rtl';
 
     return (
-        <section className="pt-10 md:pt-14 pb-0 bg-stone-50/50 border-t border-gray-100 overflow-hidden" dir={dir}>
+        <section className="pt-4 pb-16 md:pt-8 md:pb-24 bg-stone-50/50 border-t border-gray-100 overflow-hidden" dir={dir}>
             <div className="container mx-auto px-6 md:px-12 max-w-6xl">
                 <div className={isRTL ? 'text-right' : 'text-left'}>
                     {/* Premium Header */}
