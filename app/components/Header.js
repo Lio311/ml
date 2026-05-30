@@ -178,9 +178,9 @@ export default function Header({ brands = [] }) {
                             <div className="flex-1 hidden lg:block"></div>
                         </div>
 
-                        {/* Center: Navigation Menu */}
-                        <div className="flex-shrink-0 flex justify-center px-4">
-                            <nav className="flex items-center gap-3 xl:gap-6 text-black">
+                        {/* Center: Navigation Menu - Absolutely positioned to never move */}
+                        <div className="absolute left-1/2 -translate-x-1/2 h-full flex items-center justify-center px-4 z-10 pointer-events-auto w-max max-w-full">
+                            <nav className="flex items-center gap-3 xl:gap-6 text-black bg-white/0">
                                 {navLinks.map((link) => (
                                     <div 
                                         key={link.label}
