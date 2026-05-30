@@ -10,6 +10,7 @@ import HomeClient from "./components/HomeClient";
 import TrustSection from "./components/TrustSection";
 import HeroCarousel from "./components/HeroCarousel";
 import TypewriterText from "./components/TypewriterText";
+import HomeFAQSection from "./components/HomeFAQSection";
 import { withClient } from "./lib/db";
 import { cookies } from 'next/headers';
 import he from './data/locales/he.json';
@@ -224,6 +225,9 @@ export default async function Home() {
           </div>
         </div>
       </section>
+      </FadeIn>
+      <FadeIn delay={0.1}>
+        <HomeFAQSection />
       </FadeIn>
       <HomeSEOContent />
     </div>
