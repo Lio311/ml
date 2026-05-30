@@ -23,7 +23,7 @@ export default function HomeFAQSection() {
     ].filter(Boolean);
 
     return (
-        <section className="py-16 md:py-24 bg-white" dir={dir}>
+        <section className="pt-16 md:pt-24 pb-8 md:pb-12 bg-white" dir={dir}>
             <div className="container mx-auto px-4 max-w-6xl">
                 <div className="text-center mb-12 md:mb-16">
                     <h2 className="text-4xl md:text-5xl font-black mb-4 tracking-tight">

@@ -67,7 +67,7 @@ export const faq_he = [
         items: [
             { 
                 q: "מהי עלות המשלוח?", 
-                a: "עלות המשלוח היא 30 ₪ לכל חלקי הארץ. המשלוח מתבצע באמצעות חברת שליחים עד הבית." 
+                a: "עלות המשלוח היא 30 ₪ לכל חלקי הארץ. המשלוח מתבצע באמצעות חברת UPS עד נקודת איסוף." 
             },
             { 
                 q: "תוך כמה זמן המשלוח יגיע אלי?", 
@@ -176,7 +176,7 @@ export const faq_en = [
         items: [
             { 
                 q: "What is the shipping cost?", 
-                a: "Shipping cost is 30 ₪ to all parts of the country. Shipping is done via a courier company to your home." 
+                a: "Shipping cost is 30 ₪ to all parts of the country. Shipping is done via UPS to a collection point." 
             },
             { 
                 q: "How long will the shipment take to reach me?", 
