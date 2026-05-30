@@ -127,43 +127,50 @@ export default function Header({ brands = [] }) {
                     {/* Desktop Layout (XL and up) */}
                     <div className="hidden xl:flex w-full items-center justify-between h-full">
                         {/* Right Side: User & Logo */}
-                        <div className="flex-1 flex items-center justify-start gap-6 xl:gap-10 pe-2 xl:pe-4">
-                            <div className="flex items-center gap-2">
-                                <SignedIn>
-                                    <div className="flex items-center">
-                                        <UserButton 
-                                            fallbackRedirectUrl="/" 
-                                            userProfileProps={{
-                                                appearance: {
-                                                    elements: {
-                                                        modalCloseButton: { display: 'none !important' },
+                        <div className="flex-1 flex items-center justify-between pe-2 xl:pe-4">
+                            <div className="flex items-center gap-6 xl:gap-10">
+                                <div className="flex items-center gap-2">
+                                    <SignedIn>
+                                        <div className="flex items-center">
+                                            <UserButton 
+                                                fallbackRedirectUrl="/" 
+                                                userProfileProps={{
+                                                    appearance: {
+                                                        elements: {
+                                                            modalCloseButton: { display: 'none !important' },
+                                                        },
                                                     },
-                                                },
-                                            }}
-                                        />
-                                    </div>
-                                </SignedIn>
-                                <SignedOut>
-                                    <SignInButton mode="modal">
-                                        <button className="flex items-center gap-2 text-[10px] font-bold tracking-widest uppercase py-2 px-4 border border-black/10 rounded-full hover:bg-black hover:text-white transition-all duration-300">
-                                            <User size={14} />
-                                            {t('common.login_register') || 'כניסה'}
-                                        </button>
-                                    </SignInButton>
-                                </SignedOut>
-                            </div>
+                                                }}
+                                            />
+                                        </div>
+                                    </SignedIn>
+                                    <SignedOut>
+                                        <SignInButton mode="modal">
+                                            <button className="flex items-center gap-2 text-[10px] font-bold tracking-widest uppercase py-2 px-4 border border-black/10 rounded-full hover:bg-black hover:text-white transition-all duration-300">
+                                                <User size={14} />
+                                                {t('common.login_register') || 'כניסה'}
+                                            </button>
+                                        </SignInButton>
+                                    </SignedOut>
+                                </div>
 
-                            {/* LOGO */}
-                            <Link href="/" className="block transform hover:scale-105 transition-transform duration-700">
-                                <Image 
-                                    src={logoSrc} 
-                                    alt="ml." 
-                                    width={160} 
-                                    height={60} 
-                                    className="h-10 md:h-14 w-auto object-contain inverted-logo-v2" 
-                                    priority 
-                                />
-                            </Link>
+                                {/* LOGO */}
+                                <Link href="/" className="block transform hover:scale-105 transition-transform duration-700">
+                                    <Image 
+                                        src={logoSrc} 
+                                        alt="ml." 
+                                        width={160} 
+                                        height={60} 
+                                        className="h-10 md:h-14 w-auto object-contain inverted-logo-v2" 
+                                        priority 
+                                    />
+                                </Link>
+                            </div>
+                            
+                            {/* Language Switcher (Between Logo and Nav Menu) */}
+                            <div className="hidden lg:block">
+                                <LanguageSwitcher variant="header" />
+                            </div>
                         </div>
 
                         {/* Center: Navigation Menu */}
@@ -197,16 +204,11 @@ export default function Header({ brands = [] }) {
                             </nav>
                         </div>
 
-                        {/* Left Side: Actions (Search, Icons, Language) */}
+                        {/* Left Side: Actions (Search, Icons) */}
                         <div className="flex-1 flex justify-end items-center text-black">
                             <div className="flex items-center gap-6 xl:gap-8">
-                                <div className="flex items-center gap-4">
-                                    <div className="pt-0.5">
-                                        <LanguageSwitcher variant="header" />
-                                    </div>
-                                    <div className="w-[140px] xl:w-[180px] v2-user-actions">
-                                        <SearchAutocomplete />
-                                    </div>
+                                <div className="w-[140px] xl:w-[180px] v2-user-actions">
+                                    <SearchAutocomplete />
                                 </div>
                                 <div className="flex items-center h-[34px] v2-desktop-icons">
                                     <DesktopIcons cartCount={cartCount} wishlistCount={wishlistCount} />
