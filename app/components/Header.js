@@ -125,9 +125,9 @@ export default function Header({ brands = [] }) {
                 <div className="w-full max-w-[1800px] mx-auto px-0 md:px-4 xl:px-6 h-full flex items-center justify-between">
                     
                     {/* Desktop Layout (XL and up) */}
-                    <div className="hidden xl:flex w-full items-center justify-between h-full">
+                    <div className="hidden xl:grid w-full items-center h-full" style={{ gridTemplateColumns: "1fr auto 1fr" }}>
                         {/* Right Side: User & Logo */}
-                        <div className="flex-1 flex items-center pe-2 xl:pe-4">
+                        <div className="flex items-center pe-2 xl:pe-4 h-full">
                             <div className="flex items-center gap-6 xl:gap-10">
                                 <div className="flex items-center gap-2">
                                     <SignedIn>
@@ -178,9 +178,9 @@ export default function Header({ brands = [] }) {
                             <div className="flex-1 hidden lg:block"></div>
                         </div>
 
-                        {/* Center: Navigation Menu - Absolutely positioned to never move */}
-                        <div className="absolute left-1/2 -translate-x-1/2 h-full flex items-center justify-center px-4 z-10 pointer-events-auto w-max max-w-full">
-                            <nav className="flex items-center gap-3 xl:gap-6 text-black bg-white/0">
+                        {/* Center: Navigation Menu */}
+                        <div className="flex items-center justify-center px-4 h-full z-10">
+                            <nav className="flex items-center gap-3 xl:gap-6 text-black">
                                 {navLinks.map((link) => (
                                     <div 
                                         key={link.label}
@@ -210,7 +210,7 @@ export default function Header({ brands = [] }) {
                         </div>
 
                         {/* Left Side: Actions (Search, Icons) */}
-                        <div className="flex-1 flex justify-end items-center text-black">
+                        <div className="flex justify-end items-center text-black h-full">
                             <div className="flex items-center gap-2 xl:gap-3">
                                 <div className="v2-user-actions">
                                     <SearchAutocomplete />
