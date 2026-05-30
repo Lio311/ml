@@ -23,13 +23,13 @@ export default function HomeFAQSection() {
     ].filter(Boolean);
 
     return (
-        <section className="pt-16 md:pt-24 pb-8 md:pb-12 bg-white" dir={dir}>
+        <section className="pt-8 md:pt-12 pb-8 md:pb-12 bg-white" dir={dir}>
             <div className="container mx-auto px-4 max-w-6xl">
-                <div className="text-center mb-12 md:mb-16">
-                    <h2 className="text-4xl md:text-5xl font-black mb-4 tracking-tight">
+                <div className="text-center mb-8 md:mb-10">
+                    <h2 className="text-4xl md:text-5xl font-black mb-3 tracking-tight">
                         {t('common.faq') || "שאלות ותשובות"}
                     </h2>
-                    <div className="w-24 h-1 bg-black mx-auto mt-6"></div>
+                    <div className="w-24 h-1 bg-black mx-auto mt-4"></div>
                 </div>
 
                 <div className="bg-[#f8fbfa] rounded-[2rem] md:rounded-[3rem] p-4 md:p-8 shadow-sm border border-gray-100 flex flex-col lg:flex-row gap-6 md:gap-10">
