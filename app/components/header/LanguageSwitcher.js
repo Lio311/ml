@@ -15,7 +15,7 @@ export default function LanguageSwitcher({ variant = "header", light = false }) 
         <div className="flex items-center gap-2" dir="ltr">
             <button
                 onClick={() => handleSwitch('en')}
-                className={`transition-all duration-300 cursor-pointer overflow-hidden rounded-sm hover:scale-110 hover:shadow-md ${locale === 'en' ? 'opacity-100 ring-1 ring-offset-2 ring-black scale-110' : 'opacity-50 grayscale-[50%]'}`}
+                className={`transition-all duration-300 cursor-pointer overflow-hidden rounded-sm hover:scale-110 hover:shadow-md ${locale === 'en' ? 'opacity-100 scale-110' : 'opacity-50 grayscale-[50%]'}`}
                 aria-label="English"
                 title="English"
             >
@@ -23,7 +23,7 @@ export default function LanguageSwitcher({ variant = "header", light = false }) 
             </button>
             <button
                 onClick={() => handleSwitch('he')}
-                className={`transition-all duration-300 cursor-pointer overflow-hidden rounded-sm hover:scale-110 hover:shadow-md ${locale === 'he' ? 'opacity-100 ring-1 ring-offset-2 ring-black scale-110' : 'opacity-50 grayscale-[50%]'}`}
+                className={`transition-all duration-300 cursor-pointer overflow-hidden rounded-sm hover:scale-110 hover:shadow-md ${locale === 'he' ? 'opacity-100 scale-110' : 'opacity-50 grayscale-[50%]'}`}
                 aria-label="עברית"
                 title="עברית"
             >

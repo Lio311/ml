@@ -127,7 +127,7 @@ export default function Header({ brands = [] }) {
                     {/* Desktop Layout (XL and up) */}
                     <div className="hidden xl:flex w-full items-center justify-between h-full">
                         {/* Right Side: User & Logo */}
-                        <div className="flex-1 flex items-center justify-between pe-2 xl:pe-4">
+                        <div className="flex-1 flex items-center pe-2 xl:pe-4">
                             <div className="flex items-center gap-6 xl:gap-10">
                                 <div className="flex items-center gap-2">
                                     <SignedIn>
@@ -167,8 +167,8 @@ export default function Header({ brands = [] }) {
                                 </Link>
                             </div>
                             
-                            {/* Language Switcher (Between Logo and Nav Menu) */}
-                            <div className="hidden lg:block">
+                            {/* Language Switcher (Centered between Logo and Nav Menu) */}
+                            <div className="hidden lg:flex flex-1 justify-center opacity-90 hover:opacity-100 transition-opacity">
                                 <LanguageSwitcher variant="header" />
                             </div>
                         </div>
