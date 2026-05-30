@@ -172,12 +172,12 @@ export default function Header({ brands = [] }) {
                                 {navLinks.map((link) => (
                                     <div 
                                         key={link.label}
-                                        className="relative py-2 group"
+                                        className="relative py-1 group"
                                         onMouseEnter={() => link.type ? setActiveMenu(link.type) : setActiveMenu(null)}
                                     >
                                         <Link 
                                             href={link.href}
-                                            className={`text-[12px] font-bold tracking-[0.1em] uppercase whitespace-nowrap transition-all duration-500 ${
+                                            className={`text-[14px] font-bold tracking-[0.1em] uppercase whitespace-nowrap transition-all duration-500 ${
                                                 link.isRed 
                                                     ? 'text-red-600 opacity-100 hover:text-red-700' 
                                                     : (link.active ? 'text-black opacity-100' : 'text-black opacity-40 hover:opacity-100')
@@ -187,10 +187,10 @@ export default function Header({ brands = [] }) {
                                         </Link>
                                         
                                         {link.active && !link.isRed && (
-                                            <div className="absolute -bottom-1 left-0 w-full h-[1.5px] bg-black/80 scale-x-100 transition-transform duration-500"></div>
+                                            <div className="absolute bottom-0 left-0 w-full h-[1.5px] bg-black/80 scale-x-100 transition-transform duration-500"></div>
                                         )}
                                         {!link.active && !link.isRed && (
-                                            <div className="absolute -bottom-1 left-0 w-full h-[1.5px] bg-black scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-center"></div>
+                                            <div className="absolute bottom-0 left-0 w-full h-[1.5px] bg-black scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-center"></div>
                                         )}
                                     </div>
                                 ))}
