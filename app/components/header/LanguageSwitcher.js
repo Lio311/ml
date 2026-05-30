@@ -11,25 +11,23 @@ export default function LanguageSwitcher({ variant = "header", light = false }) 
         }
     };
 
-    const textColor = light ? 'text-white' : 'text-black';
-    const inactiveColor = light ? 'text-white/40 hover:text-white/70' : 'text-black/30 hover:text-black/60';
-    const borderColor = light ? 'border-white' : 'border-black';
-    const dividerColor = light ? 'bg-white/20' : 'bg-black/10';
-
     return (
-        <div className="flex items-center gap-3 font-serif text-[11px] tracking-[0.15em] uppercase" dir="ltr">
+        <div className="flex items-center gap-2" dir="ltr">
             <button
                 onClick={() => handleSwitch('en')}
-                className={`transition-all duration-500 cursor-pointer ${locale === 'en' ? `${textColor} font-black border-b-[1.5px] ${borderColor} pb-0.5` : `${inactiveColor}`}`}
+                className={`transition-all duration-300 cursor-pointer overflow-hidden rounded-sm hover:scale-110 hover:shadow-md ${locale === 'en' ? 'opacity-100 ring-1 ring-offset-2 ring-black scale-110' : 'opacity-50 grayscale-[50%]'}`}
+                aria-label="English"
+                title="English"
             >
-                English
+                <img src="https://flagcdn.com/w40/us.png" width="22" alt="US Flag" className="block" />
             </button>
-            <div className={`w-[1px] h-3 ${dividerColor}`}></div>
             <button
                 onClick={() => handleSwitch('he')}
-                className={`transition-all duration-500 cursor-pointer ${locale === 'he' ? `${textColor} font-black border-b-[1.5px] ${borderColor} pb-0.5` : `${inactiveColor}`}`}
+                className={`transition-all duration-300 cursor-pointer overflow-hidden rounded-sm hover:scale-110 hover:shadow-md ${locale === 'he' ? 'opacity-100 ring-1 ring-offset-2 ring-black scale-110' : 'opacity-50 grayscale-[50%]'}`}
+                aria-label="עברית"
+                title="עברית"
             >
-                עברית
+                <img src="https://flagcdn.com/w40/il.png" width="22" alt="Israel Flag" className="block" />
             </button>
         </div>
     );
