@@ -7,7 +7,7 @@ import ContactModal from './ContactModal';
 
 export default function HomeFAQSection() {
     const { t, locale, dir } = useLanguage();
-    const [openIndex, setOpenIndex] = useState(0);
+    const [openIndex, setOpenIndex] = useState(-1);
     const [isContactModalOpen, setIsContactModalOpen] = useState(false);
 
     // Pick a subset of important questions from the FAQ data
