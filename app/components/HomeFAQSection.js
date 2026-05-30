@@ -71,7 +71,7 @@ export default function HomeFAQSection() {
                     </div>
 
                     {/* Right: Accordion */}
-                    <div className="w-full lg:w-1/2 flex flex-col justify-center space-y-4">
+                    <div className="w-full lg:w-1/2 flex flex-col justify-center space-y-3">
                         {topQuestions.map((item, idx) => {
                             const isOpen = openIndex === idx;
                             return (
@@ -83,7 +83,7 @@ export default function HomeFAQSection() {
                                 >
                                     <button 
                                         onClick={() => setOpenIndex(isOpen ? -1 : idx)}
-                                        className="w-full flex items-center justify-between p-6 md:p-8 text-left focus:outline-none"
+                                        className="w-full flex items-center justify-between p-4 md:p-5 text-left focus:outline-none"
                                         dir={dir}
                                     >
                                         <div className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center flex-shrink-0">
@@ -103,7 +103,7 @@ export default function HomeFAQSection() {
                                     </button>
                                     
                                     <div 
-                                        className={`transition-all duration-500 ease-in-out px-6 md:px-8 pb-6 md:pb-8 text-gray-600 leading-relaxed ${
+                                        className={`transition-all duration-500 ease-in-out px-4 md:px-5 pb-4 md:pb-5 text-gray-600 leading-relaxed ${
                                             isOpen ? 'max-h-[500px] opacity-100' : 'max-h-0 opacity-0 pb-0 overflow-hidden'
                                         }`}
                                     >
