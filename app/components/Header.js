@@ -168,7 +168,7 @@ export default function Header({ brands = [] }) {
                             </div>
                             
                             {/* Language Switcher (Centered between Logo and Nav Menu) */}
-                            <div className="hidden lg:flex flex-1 justify-center opacity-90 hover:opacity-100 transition-opacity">
+                            <div className="hidden lg:block mx-auto opacity-90 hover:opacity-100 transition-opacity">
                                 <LanguageSwitcher variant="header" />
                             </div>
                         </div>
