@@ -51,7 +51,7 @@ export default function HomeFAQSection() {
                             <h3 className="text-3xl md:text-4xl font-bold mb-4 drop-shadow-lg leading-tight">
                                 {locale === 'en' ? "Have more questions?" : "יש לכם שאלות נוספות?"}
                             </h3>
-                            <p className="text-sm md:text-base opacity-90 mb-8 max-w-sm mx-auto drop-shadow-md">
+                            <p className="text-sm md:text-base opacity-90 mb-8 max-w-md md:max-w-lg mx-auto drop-shadow-md">
                                 {locale === 'en' 
                                     ? "Send us a message and our team will be happy to assist you."
                                     : "שלחו לנו הודעה ונשמח לעמוד לשירותכם"}
