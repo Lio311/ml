@@ -68,7 +68,7 @@ export default function SearchAutocomplete({ fullWidth = false, onSelect }) {
     return (
 
         <div className={`relative group ${fullWidth ? 'flex-1' : 'w-20'}`} ref={wrapperRef}>
-            <form onSubmit={handleSubmit} className="relative flex items-center w-full h-[34px]">
+            <form onSubmit={handleSubmit} className="relative flex items-center w-full h-[28px]">
 
                 <input
                     type="text"
@@ -78,17 +78,17 @@ export default function SearchAutocomplete({ fullWidth = false, onSelect }) {
                     onFocus={() => {
                         if (query.length >= 2 && results.length > 0) setIsOpen(true);
                     }}
-                    className={`absolute top-0 h-full border-b border-gray-300 py-1 text-sm focus:outline-none focus:border-black transition-all bg-transparent focus:bg-white z-20 placeholder-gray-400 
-                        ${fullWidth ? 'w-full left-0' : `w-20 focus:w-48 ${isRTL ? 'left-0 text-right pe-8 ps-2' : 'right-0 text-left pr-8 pl-2'}`}`}
+                    className={`absolute top-0 h-full border-b border-gray-300 text-sm focus:outline-none focus:border-black transition-all bg-transparent focus:bg-white z-20 placeholder-gray-400 
+                        ${fullWidth ? 'w-full left-0' : `w-20 focus:w-48 ${isRTL ? 'left-0 text-right pe-8 ps-0' : 'right-0 text-left pr-8 pl-0'}`}`}
                     dir={direction}
                 />
 
                 {/* Search Icon (Always at the END - Right for English, Left for Hebrew) */}
                 <button
                     type="submit"
-                    className={`absolute top-1/2 -translate-y-1/2 text-gray-400 group-focus-within:text-black hover:text-black p-1 z-30 ${isRTL ? 'left-0' : 'right-0'}`}
+                    className={`absolute top-1/2 -translate-y-1/2 text-black hover:opacity-70 p-1 z-30 ${isRTL ? 'left-0' : 'right-0'}`}
                 >
-                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                     </svg>
                 </button>
