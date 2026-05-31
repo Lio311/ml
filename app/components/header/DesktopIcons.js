@@ -21,7 +21,7 @@ export default function DesktopIcons({ cartCount, wishlistCount, onSearchToggle,
     }, [cartCount]);
 
     return (
-        <div className="flex items-center justify-end gap-2 md:gap-5 pe-1 md:pe-2">
+        <div className="flex items-center justify-end gap-2 xl:gap-3 pe-1 md:pe-2">
             {/* Mobile Search Toggle */}
             {!hideSearch && (
                 <button 
