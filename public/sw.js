@@ -1,4 +1,4 @@
-const CACHE_NAME = 'ml-tlv-v3';
+const CACHE_NAME = 'ml-tlv-v4';
 const OFFLINE_URL = '/offline.html';
 
 // Assets to pre-cache on install
@@ -51,7 +51,8 @@ self.addEventListener('fetch', (event) => {
     url.hostname.includes('clarity') ||
     url.hostname.includes('fonts.gstatic.com') ||
     url.hostname.includes('fonts.googleapis.com') ||
-    url.hostname.includes('sentry')
+    url.hostname.includes('sentry') ||
+    url.hostname.includes('flagcdn')
   ) {
     return;
   }
