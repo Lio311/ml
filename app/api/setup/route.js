@@ -31,6 +31,13 @@ export async function GET() {
         );
     `);
 
+        await client.query(`
+        CREATE TABLE IF NOT EXISTS unsubscribed_emails (
+            email VARCHAR(255) PRIMARY KEY,
+            unsubscribed_at TIMESTAMP DEFAULT NOW()
+        );
+    `);
+
         client.release();
         return NextResponse.json({ success: true, message: "Tables created" });
     } catch (error) {

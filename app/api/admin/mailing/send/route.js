@@ -22,21 +22,30 @@ export async function POST(req) {
             targetEmails = recipients;
         }
 
-        if (targetEmails.length === 0) {
-            return NextResponse.json({ error: 'No recipients' }, { status: 400 });
+        let finalTargetEmails = targetEmails;
+        try {
+            const unsubRes = await pool.query('SELECT email FROM unsubscribed_emails');
+            const unsubEmails = unsubRes.rows.map(r => r.email.toLowerCase());
+            finalTargetEmails = targetEmails.filter(email => !unsubEmails.includes(email.toLowerCase()));
+        } catch (err) {
+            console.error("Error fetching unsubscribed emails in send route:", err);
+        }
+
+        if (finalTargetEmails.length === 0) {
+            return NextResponse.json({ error: 'No recipients after filtering unsubscribed' }, { status: 400 });
         }
 
         // Send immediately (Sync or background)
         // Note: For large numbers, we might want to offload to a job, 
         // but for now we follow the existing pattern in lib/email.js
         await sendEmail(
-            targetEmails,
+            finalTargetEmails,
             subject,
             content_html,
             'manual_campaign'
         );
 
-        return NextResponse.json({ success: true, count: targetEmails.length });
+        return NextResponse.json({ success: true, count: finalTargetEmails.length });
 
     } catch (err) {
         console.error('Error in send API:', err);

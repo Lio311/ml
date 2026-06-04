@@ -25,32 +25,71 @@ export const sendEmail = async (to, subject, html, type = 'system', orderId = nu
     }
 
     try {
+        let finalTo = to;
+        const isMarketing = ['manual_campaign', 'recommendations', 'new_product', 'review_request', 'cart_recovery', 'educational'].includes(type) || campaignId !== null;
+
+        if (isMarketing) {
+            try {
+                const unsubRes = await pool.query('SELECT email FROM unsubscribed_emails');
+                const unsubEmails = unsubRes.rows.map(r => r.email.toLowerCase());
+                
+                if (Array.isArray(to)) {
+                    finalTo = to.filter(email => !unsubEmails.includes(email.toLowerCase()));
+                    if (finalTo.length === 0) return null;
+                } else {
+                    if (unsubEmails.includes(to.toLowerCase())) return null;
+                }
+            } catch (err) {
+                console.error("Error checking unsubscribed emails:", err);
+            }
+        }
+
+        let finalHtml = html;
+        if (isMarketing) {
+            const unsubscribeLink = Array.isArray(finalTo) 
+                ? 'https://www.ml-tlv.com/unsubscribe' 
+                : `https://www.ml-tlv.com/unsubscribe?email=${encodeURIComponent(finalTo)}`;
+            const unsubscribeHtml = `
+                <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #f0f0f0; text-align: center; font-size: 11px; color: #999;">
+                    <p style="margin: 0;">קיבלת מייל זה כי נרשמת לעדכונים מ-ml_tlv.</p>
+                    <a href="${unsubscribeLink}" style="color: #666; text-decoration: underline;">להסרה מרשימת הדיוור (Unsubscribe)</a>
+                </div>
+            `;
+            // Append before closing body/div if possible, otherwise at the end
+            if (finalHtml.includes('</body>')) {
+                finalHtml = finalHtml.replace('</body>', unsubscribeHtml + '</body>');
+            } else if (finalHtml.includes('</div>\n        </div>\n    `;') || finalHtml.trim().endsWith('</div>')) {
+                // Heuristic for the custom templates
+                finalHtml = finalHtml + unsubscribeHtml;
+            } else {
+                finalHtml += unsubscribeHtml;
+            }
+        }
+
         const brandName = await getBrandName();
         const mailOptions = {
             from: `"${brandName}" <${process.env.EMAIL_USER}>`,
             subject,
-            html,
+            html: finalHtml,
             attachments
         };
 
-        if (Array.isArray(to)) {
-            mailOptions.bcc = to; // If array, use BCC
+        if (Array.isArray(finalTo)) {
+            mailOptions.bcc = finalTo;
         } else {
-            mailOptions.to = to; // Single recipient
+            mailOptions.to = finalTo;
         }
 
         const info = await transporter.sendMail(mailOptions);
         console.log("Message sent: %s", info.messageId);
 
-        // Log successful send
-        const recipient = Array.isArray(to) ? to.join(', ') : to;
+        const recipient = Array.isArray(finalTo) ? finalTo.join(', ') : finalTo;
         await logEmail({ recipient, subject, type, status: 'sent', orderId, campaignId });
 
         return info;
     } catch (error) {
         console.error("Error sending email:", error);
         
-        // Log failed send
         const recipient = Array.isArray(to) ? to.join(', ') : to;
         await logEmail({ recipient, subject, type, status: 'failed', error: error.message, orderId, campaignId });
 
