@@ -11,7 +11,7 @@ import { Wand2 } from "lucide-react";
 import SpotifyTrackSelector from "../../components/admin/SpotifyTrackSelector";
 import CountrySelector from "../../components/admin/CountrySelector";
 
-export default function AdminProductsClient({ products, initialSearch, totalProducts, filteredCount, counts, currentPage, totalPages, currentLetter, currentView, currentSort, canEdit, allCountries = [] }) {
+export default function AdminProductsClient({ products, initialSearch, totalProducts, filteredCount, counts, currentPage, totalPages, currentLetter, currentView, currentSort, canEdit, allCountries = [], allCategories = [], allPerfumers = [] }) {
 
     const router = useRouter();
     const [editingId, setEditingId] = useState(null);
@@ -243,11 +243,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
         router.push(`/admin/products?${queryParams.toString()}`);
     };
 
-    const allCategories = Array.from(new Set(
-        products.flatMap(p => p.category ? p.category.split(',') : [])
-            .map(c => c.trim())
-            .filter(Boolean)
-    )).sort();
+    // allCategories is passed via props from the server
 
     const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split('');
 
@@ -584,7 +580,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                             <TagInput
                                 tags={editForm.perfumers ? editForm.perfumers.split(',').filter(Boolean) : []}
                                 onChange={(newTags) => setEditForm({ ...editForm, perfumers: newTags.join(',') })}
-                                suggestions={[]}
+                                suggestions={allPerfumers}
                                 placeholder="לדוגמה: Olivier Polge, Jean-Claude Ellena..."
                             />
                         </div>
@@ -930,7 +926,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                             <TagInput
                                                 tags={editForm.perfumers ? editForm.perfumers.split(',').filter(Boolean) : []}
                                                 onChange={(newTags) => setEditForm({ ...editForm, perfumers: newTags.join(',') })}
-                                                suggestions={availableNotes}
+                                                suggestions={allPerfumers}
                                                 placeholder="..."
                                             />
                                         </div>

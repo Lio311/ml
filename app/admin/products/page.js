@@ -28,6 +28,8 @@ export default async function AdminProductsPage(props) {
     let filteredCount = 0;
     let counts = { all: 0, out_of_stock: 0, drafts: 0, on_sale: 0 };
     let allCountries = [];
+    let allCategories = [];
+    let allPerfumers = [];
 
     const client = await pool.connect();
     try {
@@ -96,6 +98,24 @@ export default async function AdminProductsPage(props) {
         const countriesRes = await client.query("SELECT DISTINCT country FROM products WHERE country IS NOT NULL AND country != '' ORDER BY country ASC");
         allCountries = countriesRes.rows.map(r => r.country);
 
+        const categoriesRes = await client.query("SELECT category FROM products WHERE category IS NOT NULL AND category != ''");
+        let allCategoriesSet = new Set();
+        categoriesRes.rows.forEach(r => {
+            r.category.split(',').forEach(c => {
+                if(c.trim()) allCategoriesSet.add(c.trim());
+            });
+        });
+        allCategories = Array.from(allCategoriesSet).sort();
+
+        const perfumersRes = await client.query("SELECT perfumers FROM products WHERE perfumers IS NOT NULL AND perfumers != ''");
+        let allPerfumersSet = new Set();
+        perfumersRes.rows.forEach(r => {
+            r.perfumers.split(',').forEach(c => {
+                if(c.trim()) allPerfumersSet.add(c.trim());
+            });
+        });
+        allPerfumers = Array.from(allPerfumersSet).sort();
+
     } finally {
         client.release();
     }
@@ -118,6 +138,8 @@ export default async function AdminProductsPage(props) {
             currentSort={sort}
             canEdit={canEdit}
             allCountries={allCountries}
+            allCategories={allCategories}
+            allPerfumers={allPerfumers}
         />
 
     );
