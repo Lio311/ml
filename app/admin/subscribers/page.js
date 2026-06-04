@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Mail, CheckCircle, XCircle, Search, MailX } from 'lucide-react';
-import toast, { Toaster } from 'react-hot-toast';
+import toast from 'react-hot-toast';
 
 export default function AdminSubscribersPage() {
     const [subscribers, setSubscribers] = useState([]);
@@ -68,7 +68,6 @@ export default function AdminSubscribersPage() {
 
     return (
         <div className="p-2 md:p-6" dir="rtl">
-            <Toaster position="top-center" reverseOrder={false} />
             <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
                 <div>
                     <h1 className="text-2xl font-black text-gray-900 tracking-tight flex items-center gap-2">
@@ -126,13 +125,13 @@ export default function AdminSubscribersPage() {
                 </div>
 
                 <div className="overflow-x-auto">
-                    <table className="w-full text-right text-sm">
+                    <table className="w-full min-w-[700px] text-right text-sm">
                         <thead className="bg-gray-50 text-gray-500 border-b border-gray-100">
                             <tr>
-                                <th className="px-6 py-4 font-bold">משתמש</th>
-                                <th className="px-6 py-4 font-bold">אימייל</th>
-                                <th className="px-6 py-4 font-bold">סטטוס דיוור</th>
-                                <th className="px-6 py-4 font-bold text-left">פעולות</th>
+                                <th className="px-6 py-4 font-bold whitespace-nowrap">משתמש</th>
+                                <th className="px-6 py-4 font-bold whitespace-nowrap">אימייל</th>
+                                <th className="px-6 py-4 font-bold whitespace-nowrap">סטטוס דיוור</th>
+                                <th className="px-6 py-4 font-bold text-left whitespace-nowrap">פעולות</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100">
@@ -157,12 +156,12 @@ export default function AdminSubscribersPage() {
                             ) : (
                                 filteredSubscribers.map((sub, idx) => (
                                     <tr key={idx} className="hover:bg-gray-50/50 transition-colors">
-                                        <td className="px-6 py-4">
+                                        <td className="px-6 py-4 whitespace-nowrap">
                                             <div className="font-bold text-gray-900">{sub.first_name} {sub.last_name}</div>
                                             {sub.created_at && <div className="text-xs text-gray-400 mt-0.5">נוצר: {new Date(sub.created_at).toLocaleDateString('he-IL')}</div>}
                                         </td>
-                                        <td className="px-6 py-4 text-gray-600" dir="ltr">{sub.email}</td>
-                                        <td className="px-6 py-4">
+                                        <td className="px-6 py-4 text-gray-600 whitespace-nowrap" dir="ltr">{sub.email}</td>
+                                        <td className="px-6 py-4 whitespace-nowrap">
                                             {sub.is_subscribed ? (
                                                 <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-green-50 text-green-600 text-xs font-bold border border-green-200/50">
                                                     <div className="w-1.5 h-1.5 rounded-full bg-green-500"></div>
@@ -175,7 +174,7 @@ export default function AdminSubscribersPage() {
                                                 </span>
                                             )}
                                         </td>
-                                        <td className="px-6 py-4 text-left">
+                                        <td className="px-6 py-4 text-left whitespace-nowrap">
                                             <button
                                                 onClick={() => toggleSubscription(sub.email, sub.is_subscribed)}
                                                 className={`px-4 py-1.5 rounded-lg text-xs font-bold transition-all ${
