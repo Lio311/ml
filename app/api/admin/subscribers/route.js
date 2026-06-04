@@ -10,6 +10,14 @@ export async function GET(req) {
     }
 
     try {
+        // Ensure table exists
+        await pool.query(`
+            CREATE TABLE IF NOT EXISTS unsubscribed_emails (
+                email VARCHAR(255) PRIMARY KEY,
+                unsubscribed_at TIMESTAMP DEFAULT NOW()
+            )
+        `);
+
         // Fetch all users that have an email
         const usersRes = await pool.query('SELECT email, first_name, last_name, created_at FROM users WHERE email IS NOT NULL ORDER BY created_at DESC');
         

@@ -13,6 +13,13 @@ export async function POST(req) {
         const normalizedEmail = email.toLowerCase().trim();
 
         await pool.query(`
+            CREATE TABLE IF NOT EXISTS unsubscribed_emails (
+                email VARCHAR(255) PRIMARY KEY,
+                unsubscribed_at TIMESTAMP DEFAULT NOW()
+            )
+        `);
+
+        await pool.query(`
             INSERT INTO unsubscribed_emails (email, unsubscribed_at)
             VALUES ($1, NOW())
             ON CONFLICT (email) DO NOTHING
