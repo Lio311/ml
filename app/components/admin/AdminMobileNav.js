@@ -89,7 +89,9 @@ const navGroups = [
         title: "שיווק",
         items: [
             { href: "/admin/coupons", label: "קופונים", icon: Ticket, roles: ['admin', 'deputy'] },
+            { href: "/admin/influencers", label: "משפיענים", icon: Camera, roles: ['admin', 'deputy'] },
             { href: "/admin/mailing", label: "דיוור", icon: Send, roles: ['admin', 'deputy'] },
+            { href: "/admin/subscribers", label: "מנויי דיוור", icon: Mail, roles: ['admin', 'deputy'] },
             { href: "/admin/lottery", label: "הגרלות", icon: Dices, roles: ['admin', 'deputy'] },
             { href: "/admin/reviews", label: "ביקורות", icon: Star, roles: ['admin', 'deputy'] },
             { href: "/admin/recommendations", label: "המלצות", icon: Cpu, roles: ['admin', 'deputy'] },
