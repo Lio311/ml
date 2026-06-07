@@ -16,7 +16,7 @@ export default function ProductGallery({ product, locale, localizedName }) {
     const activeImage = images[activeImageIndex] || null;
 
     return (
-        <div className="w-full md:w-1/2 flex flex-col gap-4">
+        <div className="w-full md:w-1/2 flex flex-col gap-2">
             {/* Main Image Container */}
             <div className="w-full aspect-square bg-white rounded-xl flex items-center justify-center relative shadow-sm p-8 md:p-12 group">
                 {activeImage ? (
@@ -25,7 +25,7 @@ export default function ProductGallery({ product, locale, localizedName }) {
                         alt={locale === 'he' ? `דוגמית בושם ${localizedName} בנפח 2-10 מ"ל, בקבוקון זכוכית עם מתז - ml-tlv` : `${localizedName} perfume sample decant 2-10ml glass atomizer - ml-tlv`}
                         fill
                         priority
-                        className="object-contain p-8 md:p-12 transition-all duration-300"
+                        className={`object-contain transition-all duration-300 ${product.is_discovery_set ? 'p-4 md:p-6' : 'p-8 md:p-12'}`}
                         sizes="(max-width: 768px) 100vw, 50vw"
                     />
                 ) : (
@@ -55,7 +55,7 @@ export default function ProductGallery({ product, locale, localizedName }) {
 
             {/* Thumbnails */}
             {images.length > 1 && (
-                <div className="flex gap-2 justify-center mt-2">
+                <div className="flex gap-2 justify-center mt-1">
                     {images.map((imgUrl, idx) => (
                         <button
                             key={idx}
