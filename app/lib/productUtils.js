@@ -25,7 +25,7 @@ export function cleanProductName(name, brand) {
         const escaped = b.replace(/[.*+?^${}()|[\]\\]/g, '\\$&').trim();
         const regex = new RegExp(`^${escaped}\\s*`, 'i');
         if (regex.test(cleaned)) {
-            cleaned = cleaned.replace(regex, '');
+            cleaned = cleaned.replace(regex, '').replace(/^[-–—\s]+/, '');
             break;
         }
     }

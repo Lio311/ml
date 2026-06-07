@@ -62,8 +62,9 @@ export default function SearchAutocomplete({ fullWidth = false, onSelect }) {
     // Detect Text Direction (Support dynamic switching + character detection)
     const isHebrew = /[\u0590-\u05FF]/.test(query);
     const isEnglish = /^[A-Za-z]/.test(query);
-    const direction = query.length > 0 ? (isEnglish && !isHebrew ? 'ltr' : 'rtl') : contextDir;
-    const isRTL = direction === 'rtl';
+    const textDir = query.length > 0 ? (isEnglish && !isHebrew ? 'ltr' : 'rtl') : contextDir;
+    const isTextRTL = textDir === 'rtl';
+    const isLayoutRTL = contextDir === 'rtl';
 
     return (
 
@@ -79,14 +80,14 @@ export default function SearchAutocomplete({ fullWidth = false, onSelect }) {
                         if (query.length >= 2 && results.length > 0) setIsOpen(true);
                     }}
                     className={`absolute top-0 h-full border-b border-gray-300 text-sm focus:outline-none focus:border-black transition-all bg-transparent focus:bg-white z-20 placeholder-gray-400 
-                        ${fullWidth ? 'w-full left-0' : `w-20 focus:w-48 ${isRTL ? 'left-0 text-right pe-8 ps-0' : 'right-0 text-left pr-8 pl-0'}`}`}
-                    dir={direction}
+                        ${fullWidth ? 'w-full left-0' : `w-20 focus:w-48 ${isLayoutRTL ? 'left-0' : 'right-0'} ${isTextRTL ? 'text-right pe-8 ps-0' : 'text-left pr-8 pl-0'}`}`}
+                    dir={textDir}
                 />
 
                 {/* Search Icon (Always at the END - Right for English, Left for Hebrew) */}
                 <button
                     type="submit"
-                    className={`absolute top-1/2 -translate-y-1/2 text-black hover:opacity-70 p-1 z-30 ${isRTL ? 'left-0' : 'right-0'}`}
+                    className={`absolute top-1/2 -translate-y-1/2 text-black hover:opacity-70 p-1 z-30 ${isTextRTL ? 'left-0' : 'right-0'}`}
                 >
                     <svg xmlns="http://www.w3.org/2000/svg" className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
@@ -95,7 +96,7 @@ export default function SearchAutocomplete({ fullWidth = false, onSelect }) {
 
 
                 {isLoading && (
-                    <div className={`absolute top-1/2 -translate-y-1/2 z-30 ${isRTL ? 'left-6' : 'right-6'}`}>
+                    <div className={`absolute top-1/2 -translate-y-1/2 z-30 ${isTextRTL ? 'left-6' : 'right-6'}`}>
                         <div className="animate-spin rounded-full h-3 w-3 border-b-1.5 border-black/50"></div>
                     </div>
                 )}

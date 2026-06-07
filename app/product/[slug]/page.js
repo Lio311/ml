@@ -506,7 +506,10 @@ export default async function ProductPage(props) {
                             <StarRating productId={product.id} />
                         </div>
 
-                        <div className={`text-lg text-gray-600 leading-relaxed ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
+                        <div 
+                            className={`text-lg text-gray-600 leading-relaxed ${(/[\u0590-\u05FF]/.test(localizedDesc_val) || dir === 'rtl') ? 'text-right' : 'text-left'}`} 
+                            dir={(/[\u0590-\u05FF]/.test(localizedDesc_val) || dir === 'rtl') ? 'rtl' : 'ltr'}
+                        >
                             <RichTextWithLinks text={localizedDesc_val || t('common.product_desc_fallback').replace('{category}', localizedCategory)} />
                         </div>
 
