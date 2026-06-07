@@ -435,7 +435,7 @@ export default function DiscoverySetsClient({ products: initialProducts, initial
                             </div>
                         </div>
 
-                        <div className="p-6 border-t border-gray-100 bg-gray-50 flex justify-end gap-3 shrink-0">
+                        <div className="p-6 border-t border-gray-100 bg-gray-50 flex justify-start gap-3 shrink-0">
                             <button
                                 onClick={() => setIsModalOpen(false)}
                                 className="px-5 py-2.5 text-gray-600 font-medium hover:bg-gray-200 rounded-xl transition-colors"
