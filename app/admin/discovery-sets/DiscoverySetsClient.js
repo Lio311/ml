@@ -378,7 +378,7 @@ export default function DiscoverySetsClient({ products: initialProducts, initial
                                             value={tempGen.numberOfSamples}
                                             onChange={e => setTempGen({ ...tempGen, numberOfSamples: e.target.value })}
                                             placeholder="לדוגמה: 5"
-                                            className="w-full px-3 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none text-sm"
+                                            className="w-full px-3 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none text-sm [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                                         />
                                     </div>
                                     <div>
@@ -388,7 +388,7 @@ export default function DiscoverySetsClient({ products: initialProducts, initial
                                             value={tempGen.sampleSize}
                                             onChange={e => setTempGen({ ...tempGen, sampleSize: e.target.value })}
                                             placeholder="לדוגמה: 2"
-                                            className="w-full px-3 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none text-sm"
+                                            className="w-full px-3 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none text-sm [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
                                         />
                                     </div>
                                 </div>
