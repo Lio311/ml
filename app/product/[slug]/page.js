@@ -379,7 +379,6 @@ export default async function ProductPage(props) {
                     product={product} 
                     locale={locale} 
                     localizedName={localizedName_val} 
-                    t={t} 
                 />
 
 

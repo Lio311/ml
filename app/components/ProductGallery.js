@@ -5,8 +5,10 @@ import Image from './CImage';
 import WishlistHeart from './WishlistHeart';
 import ShareButton from './ShareButton';
 import SpotifyPlayer from './SpotifyPlayer';
+import { useLanguage } from '../context/LanguageContext';
 
-export default function ProductGallery({ product, locale, localizedName, t }) {
+export default function ProductGallery({ product, locale, localizedName }) {
+    const { t } = useLanguage();
     // Collect all available images
     const images = [product.image_url, product.image_url_2, product.image_url_3].filter(Boolean);
     const [activeImageIndex, setActiveImageIndex] = useState(0);
