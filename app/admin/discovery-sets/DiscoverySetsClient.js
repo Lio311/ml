@@ -224,7 +224,7 @@ export default function DiscoverySetsClient({ products, initialSearch, canEdit }
                                         </td>
                                         {canEdit && (
                                             <td className="p-4 text-center">
-                                                <div className="flex justify-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                                                <div className="flex justify-center gap-2 transition-opacity">
                                                     <button onClick={() => openEditModal(product)} className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
                                                         <Edit2 size={16} />
                                                     </button>
