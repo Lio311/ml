@@ -497,6 +497,35 @@ export default function MailingClient() {
 </div>`
         },
         {
+            id: 'discovery-launch',
+            name: 'השקת דיסקברי סטס',
+            emoji: '✨',
+            desc: 'הודעה על קטגוריית הדיסקברי החדשה + מבצעי סוף שבוע',
+            preview: 'bg-gradient-to-br from-purple-50 to-pink-50',
+            html: `<div dir="rtl" style="font-family: 'Open Sans', 'Open Sans Hebrew', Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto; line-height: 1.6;">
+    <div style="background-color: #fff; padding: 30px; border-radius: 24px; border: 1px solid #f0f0f0; box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
+        <h1 style="margin: 0 0 10px; font-size: 24px; font-weight: 900; color: #000; text-align: center;">הגיע הזמן לגלות את הריח הבא שלך ✨</h1>
+        <p style="margin: 0 0 25px; color: #666; text-align: center;">היי {{name}}, השקנו קטגוריה חדשה שאתה פשוט חייב להכיר!</p>
+        <p style="margin-bottom: 20px; color: #333; text-align: center; font-size: 15px;">אנחנו נרגשים להציג את קטגוריית ה-<strong>Discovery Sets &amp; דוגמיות רשמיות</strong> שלנו.<br/>הדרך המושלמת לנסות, לחוות ולהתאהב בניחוחות יוקרתיים חדשים – לפני שמתחייבים לבקבוק מלא.</p>
+        <div style="background: linear-gradient(135deg, #000 0%, #222 100%); color: #fff; padding: 30px; border-radius: 20px; text-align: center; margin: 25px 0;">
+            <div style="font-size: 14px; font-weight: 900; color: #ca8a04; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 15px;">⏱️ מבצע סוף שבוע יוצא לדרך</div>
+            <p style="margin: 0 0 15px; font-size: 13px; opacity: 0.8;">בכל יום חמישי עד שישי ב-18:00:</p>
+            <div style="font-size: 20px; font-weight: 900; margin-bottom: 10px; line-height: 1.5;">🎁 קונים 3 ערכות דיסקברי – מקבלים <span style="color: #fde047;">1 במתנה!</span><br/>🎁 קונים 8 דוגמיות רשמיות – מקבלים <span style="color: #fde047;">2 במתנה!</span></div>
+            <div style="font-size: 13px; opacity: 0.8; margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px;">*ההנחה מתעדכנת אוטומטית בעגלת הקניות</div>
+        </div>
+        <div style="background-color: #f8f8f8; padding: 20px; border-radius: 16px; margin: 25px 0;">
+            <p style="margin: 0; font-weight: 900; color: #000;">💡 מה זה בעצם Discovery Set?</p>
+            <p style="margin: 5px 0 0; color: #666; font-size: 14px;">ערכת דוגמיות שמרכזת את הניחוחות המובילים של המותג בבקבוקונים קטנים, כך שתוכלו להתנסות בכל אחד מהם על העור לפני שבוחרים את המועדף.</p>
+        </div>
+        <p style="margin-bottom: 20px; color: #333; text-align: center;">מוכן לצאת למסע חושני?</p>
+        <div style="text-align: center; margin-top: 30px;">
+            <a href="https://www.ml-tlv.com/discovery-sets" style="display: inline-block; background-color: #000; color: #fff; padding: 16px 35px; text-decoration: none; border-radius: 16px; font-weight: 900; font-size: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">לקטגוריה החדשה &gt;&gt;</a>
+        </div>
+    </div>
+    <div style="text-align: center; padding: 30px 0; color: #ccc; font-size: 11px;">ml - יוקרה בחתיכות קטנות</div>
+</div>`
+        },
+        {
             id: 'info',
             name: 'מידע / טיפים',
             emoji: '📋',

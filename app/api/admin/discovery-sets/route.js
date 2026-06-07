@@ -38,7 +38,7 @@ export async function POST(req) {
         const data = await req.json();
         const client = await pool.connect();
         try {
-            const generatedSlug = data.slug || `${data.brand || 'brand'}-${data.model || 'model'}`.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+            const generatedSlug = data.slug || `${data.brand || 'brand'}-${data.model || 'model'}-${Date.now()}`.toLowerCase().replace(/[^a-z0-9]+/g, '-');
             const generatedName = data.name || `${data.brand || ''} - ${data.model || ''}`.trim();
             const query = `
                 INSERT INTO products (
