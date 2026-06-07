@@ -245,8 +245,8 @@ export default function DiscoverySetsClient({ products, initialSearch, canEdit }
             {/* Modal */}
             {isModalOpen && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm overflow-y-auto">
-                    <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl overflow-hidden my-auto">
-                        <div className="flex items-center justify-between p-6 border-b border-gray-100 bg-gray-50/50">
+                    <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl overflow-hidden my-auto flex flex-col max-h-[80vh]">
+                        <div className="flex items-center justify-between p-6 border-b border-gray-100 bg-gray-50/50 shrink-0">
                             <h2 className="text-xl font-bold text-gray-900">
                                 {editingProduct ? "עריכת פריט" : "הוספת פריט חדש"}
                             </h2>
@@ -255,7 +255,7 @@ export default function DiscoverySetsClient({ products, initialSearch, canEdit }
                             </button>
                         </div>
                         
-                        <div className="p-6 space-y-6 max-h-[70vh] overflow-y-auto">
+                        <div className="p-6 space-y-6 overflow-y-auto flex-1">
                             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                 <div>
                                     <label className="block text-sm font-semibold text-gray-700 mb-1.5">מותג</label>
@@ -297,16 +297,7 @@ export default function DiscoverySetsClient({ products, initialSearch, canEdit }
                                         <option value="official_sample">דוגמית רשמית</option>
                                     </select>
                                 </div>
-                                <div>
-                                    <label className="block text-sm font-semibold text-gray-700 mb-1.5">תיאור כמות/נוזל</label>
-                                    <input
-                                        type="text"
-                                        value={form.volume_label}
-                                        onChange={e => setForm({...form, volume_label: e.target.value})}
-                                        className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                                        placeholder="לדוגמה: 5 בקבוקונים של 2 מ״ל"
-                                    />
-                                </div>
+
                                 <div>
                                     <label className="block text-sm font-semibold text-gray-700 mb-1.5">מלאי זמין</label>
                                     <input
@@ -418,7 +409,7 @@ export default function DiscoverySetsClient({ products, initialSearch, canEdit }
                             </div>
                         </div>
 
-                        <div className="p-6 border-t border-gray-100 bg-gray-50 flex justify-end gap-3">
+                        <div className="p-6 border-t border-gray-100 bg-gray-50 flex justify-end gap-3 shrink-0">
                             <button
                                 onClick={() => setIsModalOpen(false)}
                                 className="px-5 py-2.5 text-gray-600 font-medium hover:bg-gray-200 rounded-xl transition-colors"
