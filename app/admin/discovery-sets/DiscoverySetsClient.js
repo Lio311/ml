@@ -412,12 +412,12 @@ export default function DiscoverySetsClient({ products: initialProducts, initial
                                     value={form.description}
                                     onChange={e => setForm({ ...form, description: e.target.value })}
                                     className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:ring-2 focus:ring-black focus:border-transparent outline-none transition-all h-32 resize-none"
-                                    dir="ltr"
+                                    dir="rtl"
                                 />
                             </div>
                             
-                            <div className="flex items-center gap-3">
-                                <label className="relative inline-flex items-center cursor-pointer">
+                            <div className="flex items-center gap-6">
+                                <label className="flex items-center gap-2 cursor-pointer">
                                     <input
                                         type="checkbox"
                                         checked={form.active}
