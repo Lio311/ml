@@ -116,7 +116,7 @@ export default function DiscoverySetsClient({ products: initialProducts, initial
         setIsLoading(true);
         try {
             const method = editingProduct ? "PUT" : "POST";
-            const body = { ...form };
+            const body = editingProduct ? { ...editingProduct, ...form } : { ...form };
             if (editingProduct) body.id = editingProduct.id;
 
             const res = await fetch("/api/admin/discovery-sets", {

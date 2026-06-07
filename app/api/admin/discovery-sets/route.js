@@ -93,6 +93,7 @@ export async function PUT(req) {
 
         const client = await pool.connect();
         try {
+            const generatedName = data.name || `${data.brand || ''} - ${data.model || ''}`.trim();
             const query = `
                 UPDATE products SET
                     brand = $1, brand_he = $2, model = $3, model_he = $4,
@@ -107,7 +108,7 @@ export async function PUT(req) {
             `;
             const values = [
                 data.brand || null, data.brand_he || null, data.model || null, data.model_he || null,
-                data.name || null, data.name_he || null, data.name_en || null, data.description || null,
+                generatedName || null, data.name_he || null, data.name_en || null, data.description || null,
                 data.description_he || null, data.description_en || null, data.image_url || null,
                 data.category || null, data.category_en || null, data.stock || 0, data.active ?? true,
                 data.discovery_type || 'discovery_set', data.single_price || null, data.volume_label || null,
