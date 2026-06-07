@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { Plus, Search, Edit2, Trash2, Check, X, Image as ImageIcon } from "lucide-react";
+import { Plus, Search, Edit2, Trash2, Check, X, Image as ImageIcon, Wand2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import Image from "next/image";
@@ -12,6 +12,7 @@ export default function DiscoverySetsClient({ products, initialSearch, canEdit }
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingProduct, setEditingProduct] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
+    const [tempGen, setTempGen] = useState({ numberOfSamples: "", sampleSize: "" });
 
     const defaultForm = {
         brand: "",
@@ -56,7 +57,37 @@ export default function DiscoverySetsClient({ products, initialSearch, canEdit }
             image_url_2: product.image_url_2 || "",
             image_url_3: product.image_url_3 || ""
         });
+        setTempGen({ numberOfSamples: "", sampleSize: "" });
         setIsModalOpen(true);
+    };
+
+    const generateDescription = () => {
+        if (!form.brand) {
+            toast.error("יש למלא מותג קודם");
+            return;
+        }
+        
+        let generatedDesc = "";
+        let generatedVolume = "";
+
+        if (form.discovery_type === "discovery_set") {
+            if (!tempGen.numberOfSamples || !tempGen.sampleSize) {
+                toast.error("יש למלא כמות דוגמיות וגודל");
+                return;
+            }
+            generatedVolume = `${tempGen.numberOfSamples} בקבוקונים של ${tempGen.sampleSize} מ״ל`;
+            generatedDesc = `גלו את עולמו הקסום של המותג ${form.brand} עם ערכת ההתנסות הרשמית והיוקרתית. הערכה כוללת ${tempGen.numberOfSamples} דוגמיות בנפח ${tempGen.sampleSize} מ״ל כל אחת, המאפשרות לכם לחוות את הניחוחות המובילים והאהובים ביותר של בית הבושם. הזדמנות מושלמת למצוא את חותם הריח הבא שלכם בנוחות של הבית, לפני התחייבות לבקבוק בגודל מלא.`;
+        } else {
+            if (!tempGen.sampleSize) {
+                toast.error("יש למלא גודל דוגמית");
+                return;
+            }
+            generatedVolume = `${tempGen.sampleSize} מ״ל`;
+            generatedDesc = `דוגמית רשמית ומקורית של המותג ${form.brand} בנפח ${tempGen.sampleSize} מ״ל. הדרך המושלמת והבטוחה להתנסות בניחוח היוקרתי על העור שלכם לאורך זמן, ולגלות איך הוא מתפתח במהלך היום לפני שמתחייבים לבקבוק המלא.`;
+        }
+
+        setForm({ ...form, description: generatedDesc, volume_label: generatedVolume });
+        toast.success("תיאור נוצר בהצלחה!");
     };
 
     const saveProduct = async () => {
@@ -317,13 +348,51 @@ export default function DiscoverySetsClient({ products, initialSearch, canEdit }
                                 </div>
                             </div>
 
+                            <div className="bg-blue-50 border border-blue-100 p-4 rounded-xl space-y-4">
+                                <h3 className="text-sm font-bold text-blue-900 flex items-center gap-2">
+                                    <Wand2 size={16} />
+                                    מחולל תיאור אוטומטי
+                                </h3>
+                                <div className="grid grid-cols-2 gap-4">
+                                    {form.discovery_type === 'discovery_set' && (
+                                        <div>
+                                            <label className="block text-xs font-semibold text-blue-800 mb-1">כמות דוגמיות בערכה</label>
+                                            <input
+                                                type="number"
+                                                value={tempGen.numberOfSamples}
+                                                onChange={e => setTempGen({...tempGen, numberOfSamples: e.target.value})}
+                                                className="w-full p-2 border border-blue-200 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white"
+                                                placeholder="לדוגמה: 5"
+                                            />
+                                        </div>
+                                    )}
+                                    <div>
+                                        <label className="block text-xs font-semibold text-blue-800 mb-1">גודל דוגמית (מ״ל)</label>
+                                        <input
+                                            type="number"
+                                            value={tempGen.sampleSize}
+                                            onChange={e => setTempGen({...tempGen, sampleSize: e.target.value})}
+                                            className="w-full p-2 border border-blue-200 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white"
+                                            placeholder="לדוגמה: 2"
+                                        />
+                                    </div>
+                                </div>
+                                <button
+                                    onClick={generateDescription}
+                                    type="button"
+                                    className="text-sm bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors"
+                                >
+                                    צור תיאור ותווית כמות אוטומטית
+                                </button>
+                            </div>
+
                             <div>
                                 <label className="block text-sm font-semibold text-gray-700 mb-1.5">תיאור</label>
                                 <textarea
                                     value={form.description}
                                     onChange={e => setForm({...form, description: e.target.value})}
                                     className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                                    rows="4"
+                                    rows="5"
                                 />
                             </div>
 

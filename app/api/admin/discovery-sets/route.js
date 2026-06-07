@@ -55,14 +55,14 @@ export async function POST(req) {
                 ) RETURNING *
             `;
             const values = [
-                data.slug || null, data.brand, data.brand_he, data.model, data.model_he,
-                data.name, data.name_he, data.name_en, data.description, data.description_he, data.description_en,
-                data.image_url, data.category, data.category_en, data.stock || 0, data.active ?? true, true, data.discovery_type || 'discovery_set',
+                data.slug || null, data.brand || null, data.brand_he || null, data.model || null, data.model_he || null,
+                data.name || null, data.name_he || null, data.name_en || null, data.description || null, data.description_he || null, data.description_en || null,
+                data.image_url || null, data.category || null, data.category_en || null, data.stock || 0, data.active ?? true, true, data.discovery_type || 'discovery_set',
                 data.single_price || null, data.volume_label || null, data.discount_percentage || null, 
                 data.discount_sizes || null, data.discount_end_date || null,
-                data.top_notes, data.top_notes_en, data.middle_notes, data.middle_notes_en,
-                data.base_notes, data.base_notes_en, data.seasons, data.seasons_en,
-                data.country, data.country_en, data.perfumers, data.perfumers_en,
+                data.top_notes || null, data.top_notes_en || null, data.middle_notes || null, data.middle_notes_en || null,
+                data.base_notes || null, data.base_notes_en || null, data.seasons || null, data.seasons_en || null,
+                data.country || null, data.country_en || null, data.perfumers || null, data.perfumers_en || null,
                 null, null, null, data.image_url_2 || null, data.image_url_3 || null
             ];
             const res = await client.query(query, values);

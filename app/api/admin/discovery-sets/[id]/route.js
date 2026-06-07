@@ -56,15 +56,15 @@ export async function PUT(req, { params }) {
                 RETURNING *
             `;
             const values = [
-                data.slug, data.brand, data.brand_he, data.model, data.model_he,
-                data.name, data.name_he, data.name_en, data.description, data.description_he, data.description_en,
-                data.image_url, data.category, data.category_en, data.stock, data.active,
-                data.single_price, data.volume_label, data.discount_percentage, data.discount_sizes, data.discount_end_date,
-                data.top_notes, data.top_notes_en, data.middle_notes, data.middle_notes_en,
-                data.base_notes, data.base_notes_en, data.seasons, data.seasons_en,
-                data.country, data.country_en, data.perfumers, data.perfumers_en,
-                data.discovery_type,
-                data.image_url_2 || null, data.image_url_3 || null,
+                data.slug ?? null, data.brand ?? null, data.brand_he ?? null, data.model ?? null, data.model_he ?? null,
+                data.name ?? null, data.name_he ?? null, data.name_en ?? null, data.description ?? null, data.description_he ?? null, data.description_en ?? null,
+                data.image_url ?? null, data.category ?? null, data.category_en ?? null, data.stock ?? null, data.active ?? null,
+                data.single_price ?? null, data.volume_label ?? null, data.discount_percentage ?? null, data.discount_sizes ?? null, data.discount_end_date ?? null,
+                data.top_notes ?? null, data.top_notes_en ?? null, data.middle_notes ?? null, data.middle_notes_en ?? null,
+                data.base_notes ?? null, data.base_notes_en ?? null, data.seasons ?? null, data.seasons_en ?? null,
+                data.country ?? null, data.country_en ?? null, data.perfumers ?? null, data.perfumers_en ?? null,
+                data.discovery_type ?? null,
+                data.image_url_2 ?? null, data.image_url_3 ?? null,
                 id
             ];
             
