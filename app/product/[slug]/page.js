@@ -159,7 +159,7 @@ export default async function ProductPage(props) {
     try {
         const res = await pool.query(`
             SELECT p.id, p.slug, p.brand, p.brand_he, p.model, p.model_he, p.name, p.name_he, p.name_en, 
-                   p.description, p.description_he, p.description_en, p.image_url, p.category, p.category_en, 
+                   p.description, p.description_he, p.description_en, p.image_url, p.image_url_2, p.image_url_3, p.category, p.category_en, 
                    p.stock, p.top_notes, p.top_notes_en, p.middle_notes, p.middle_notes_en, p.base_notes, p.base_notes_en, 
                    p.price_2ml, p.price_5ml, p.price_10ml, p.seasons, p.seasons_en, p.country, p.country_en, 
                    p.perfumers, p.perfumers_en, p.discount_percentage, p.discount_sizes, p.discount_end_date, p.spotify_track_url,
