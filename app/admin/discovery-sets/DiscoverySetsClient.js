@@ -244,8 +244,9 @@ export default function DiscoverySetsClient({ products, initialSearch, canEdit }
 
             {/* Modal */}
             {isModalOpen && (
-                <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm overflow-y-auto" dir="rtl">
-                    <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl overflow-hidden my-auto flex flex-col max-h-[80vh]">
+                <div className="fixed inset-0 z-[100] flex items-center justify-center p-4" dir="rtl">
+                    <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setIsModalOpen(false)}></div>
+                    <div className="bg-white rounded-[2.5rem] shadow-2xl w-full max-w-2xl overflow-hidden my-auto flex flex-col max-h-[90vh] relative">
                         <div className="flex items-center justify-between p-6 border-b border-gray-100 bg-gray-50/50 shrink-0">
                             <h2 className="text-xl font-bold text-gray-900">
                                 {editingProduct ? "עריכת פריט" : "הוספת פריט חדש"}

@@ -9,203 +9,11 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: 'images.unsplash.com',
+        hostname: '**',
       },
       {
-        protocol: 'https',
-        hostname: 'fimgs.net',
-      },
-      {
-        protocol: 'https',
-        hostname: 'pimgs.net',
-      },
-      {
-        protocol: 'https',
-        hostname: 'fragrantica.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'cp-parfums.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'www.cp-parfums.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'wp.logos-download.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'ipiccirilliperfumes.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'www.ipiccirilliperfumes.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'aromadilamore.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'www.aromadilamore.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'i.redd.it',
-      },
-      {
-        protocol: 'https',
-        hostname: 'www.francescadelloro.it',
-      },
-      {
-        protocol: 'https',
-        hostname: 'm.media-amazon.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'i0.wp.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'scentadvice.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'zacshop.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'media.parfumo.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'upload.wikimedia.org',
-      },
-      {
-        protocol: 'https',
-        hostname: 'seeklogo.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'images.seeklogo.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'sekega.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'www.sekega.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'lessenteurs.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'www.lessenteurs.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'cdn.shopify.com',
-      },
-      {
-        protocol: 'https',
-        hostname: '*.gstatic.com',
-      },
-      {
-        protocol: 'https',
-        hostname: '*.googleusercontent.com',
-      },
-      {
-        protocol: 'https',
-        hostname: '*.ebayimg.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'images.squarespace-cdn.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'logos-world.net',
-      },
-      {
-        protocol: 'https',
-        hostname: 'memoirsofaperfumecollector.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'akrofragrances.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'tauerperfumes.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'widianofficial.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'olfactivestudio.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'boadiceaperfume.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'www.boadiceaperfume.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'sospiroperfumes.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'www.sospiroperfumes.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'asmrfragrances.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'www.asmrfragrances.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'bohobocofragrances.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'www.bohobocofragrances.com',
-    },
-    {
-        protocol: 'https',
-        hostname: 'www.thameenfragrance.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'theharmonist.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'dulcie.world',
-      },
-      {
-        protocol: 'https',
-        hostname: 'www.dulcie.world',
-      },
-      {
-        protocol: 'https',
-        hostname: 'hebbkx1anhila5yf.public.blob.vercel-storage.com',
-      },
-      {
-        protocol: 'https',
-        hostname: 'img.clerk.com',
+        protocol: 'http',
+        hostname: '**',
       },
     ],
     unoptimized: process.env.NEXT_PUBLIC_DISABLE_IMAGE_OPTIMIZATION === 'true',
@@ -255,10 +63,10 @@ const nextConfig = {
               "default-src 'self';",
               "script-src 'self' 'unsafe-inline' blob: https://*.ml-tlv.com https://ml-tlv.com https://*.clerk.accounts.dev https://clerk.ml-tlv.com https://*.clerk.services https://www.googletagmanager.com https://www.google-analytics.com https://*.clarity.ms https://browser.sentry-cdn.com https://*.sentry.io;",
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://www.gstatic.com;",
-              "img-src 'self' data: blob: https://flagcdn.com https://*.ml-tlv.com https://ml-tlv.com https://*.clerk.com https://clerk.ml-tlv.com https://*.clerk.accounts.dev https://*.googleusercontent.com https://images.unsplash.com https://*.fimgs.net https://fimgs.net https://*.pimgs.net https://pimgs.net https://*.fragrantica.com https://fragrantica.com https://*.cp-parfums.com https://cp-parfums.com https://*.logos-download.com https://logos-download.com https://*.ipiccirilliperfumes.com https://ipiccirilliperfumes.com https://*.aromadilamore.com https://aromadilamore.com https://*.sekega.com https://sekega.com https://*.gstatic.com https://www.gstatic.com https://upload.wikimedia.org https://*.lessenteurs.com https://lessenteurs.com https://*.seeklogo.com https://seeklogo.com https://c.bing.com https://www.google-analytics.com https://www.googletagmanager.com https://*.clarity.ms https://*.sentry.io https://*.redd.it https://redd.it https://*.francescadelloro.it https://francescadelloro.it https://zacshop.com https://media.parfumo.com https://i0.wp.com https://scentadvice.com https://m.media-amazon.com https://i.ebayimg.com https://*.ebayimg.com https://images.squarespace-cdn.com https://logos-world.net https://*.logos-world.net https://memoirsofaperfumecollector.com https://akrofragrances.com https://tauerperfumes.com https://widianofficial.com https://olfactivestudio.com https://boadiceaperfume.com https://sospiroperfumes.com https://asmrfragrances.com https://bohobocofragrances.com https://www.thameenfragrance.com https://theharmonist.com https://*.dulcie.world https://dulcie.world https://i.scdn.co https://*.scdn.co;",
-              "media-src 'self' https://audio-ssl.itunes.apple.com https://*.scdn.co;",
-              "font-src 'self' data: https://fonts.gstatic.com;",
-              "connect-src 'self' https://flagcdn.com https://*.ml-tlv.com https://ml-tlv.com https://*.clerk.accounts.dev https://clerk.ml-tlv.com https://*.clerk.services https://www.google-analytics.com https://*.google-analytics.com https://*.clarity.ms https://c.bing.com https://*.sentry.io https://m.media-amazon.com https://media.parfumo.com https://*.aromadilamore.com https://aromadilamore.com https://i0.wp.com https://scentadvice.com https://zacshop.com https://*.sekega.com https://sekega.com https://*.ebayimg.com https://i.ebayimg.com https://images.squarespace-cdn.com https://*.fimgs.net https://fimgs.net https://*.pimgs.net https://pimgs.net https://*.fragrantica.com https://fragrantica.com https://*.cp-parfums.com https://cp-parfums.com https://*.logos-download.com https://logos-download.com https://*.ipiccirilliperfumes.com https://ipiccirilliperfumes.com https://*.lessenteurs.com https://lessenteurs.com https://*.seeklogo.com https://seeklogo.com https://logos-world.net https://*.logos-world.net https://memoirsofaperfumecollector.com https://akrofragrances.com https://tauerperfumes.com https://widianofficial.com https://olfactivestudio.com https://boadiceaperfume.com https://sospiroperfumes.com https://asmrfragrances.com https://bohobocofragrances.com https://www.thameenfragrance.com https://theharmonist.com https://*.dulcie.world https://dulcie.world https://hebbkx1anhila5yf.public.blob.vercel-storage.com https://img.clerk.com https://fonts.gstatic.com https://fonts.googleapis.com;",
+              "img-src 'self' data: blob: https: http:;",
+              "media-src 'self' https: http:;",
+              "font-src 'self' data: https: http:;",
+              "connect-src 'self' https: http:;",
               "frame-src 'self' https://*.ml-tlv.com https://ml-tlv.com https://*.clerk.accounts.dev https://clerk.ml-tlv.com https://*.clerk.services https://open.spotify.com;",
               "worker-src 'self' blob:;",
               "object-src 'none';",
