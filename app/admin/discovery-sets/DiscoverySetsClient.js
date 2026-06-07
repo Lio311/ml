@@ -1,18 +1,25 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { Plus, Search, Edit2, Trash2, Check, X, Image as ImageIcon, Wand2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import Image from "next/image";
 
-export default function DiscoverySetsClient({ products, initialSearch, canEdit }) {
+export default function DiscoverySetsClient({ products: initialProducts, initialSearch, canEdit }) {
     const router = useRouter();
+    const [mounted, setMounted] = useState(false);
+    const [products, setProducts] = useState(initialProducts || []);
     const [search, setSearch] = useState(initialSearch);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [editingProduct, setEditingProduct] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
     const [tempGen, setTempGen] = useState({ numberOfSamples: "", sampleSize: "" });
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
 
     const defaultForm = {
         brand: "",
@@ -243,7 +250,7 @@ export default function DiscoverySetsClient({ products, initialSearch, canEdit }
             </div>
 
             {/* Modal */}
-            {isModalOpen && (
+            {mounted && isModalOpen && createPortal(
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-4" dir="rtl">
                     <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setIsModalOpen(false)}></div>
                     <div className="bg-white rounded-[2.5rem] shadow-2xl w-full max-w-2xl overflow-hidden my-auto flex flex-col max-h-[90vh] relative">
@@ -263,9 +270,9 @@ export default function DiscoverySetsClient({ products, initialSearch, canEdit }
                                     <input
                                         type="text"
                                         value={form.brand}
-                                        onChange={e => setForm({...form, brand: e.target.value})}
-                                        className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                                        placeholder="לדוגמה: Creed"
+                                        onChange={e => setForm({ ...form, brand: e.target.value })}
+                                        className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:ring-2 focus:ring-black focus:border-transparent outline-none transition-all"
+                                        dir="ltr"
                                     />
                                 </div>
                                 <div>
@@ -273,9 +280,9 @@ export default function DiscoverySetsClient({ products, initialSearch, canEdit }
                                     <input
                                         type="text"
                                         value={form.model}
-                                        onChange={e => setForm({...form, model: e.target.value})}
-                                        className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                                        placeholder="לדוגמה: Discovery Set Men"
+                                        onChange={e => setForm({ ...form, model: e.target.value })}
+                                        className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:ring-2 focus:ring-black focus:border-transparent outline-none transition-all"
+                                        dir="ltr"
                                     />
                                 </div>
                                 <div>
@@ -283,113 +290,121 @@ export default function DiscoverySetsClient({ products, initialSearch, canEdit }
                                     <input
                                         type="number"
                                         value={form.single_price}
-                                        onChange={e => setForm({...form, single_price: e.target.value})}
-                                        className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                                        onChange={e => setForm({ ...form, single_price: e.target.value })}
+                                        className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:ring-2 focus:ring-black focus:border-transparent outline-none transition-all"
+                                        dir="ltr"
                                     />
                                 </div>
                                 <div>
                                     <label className="block text-sm font-semibold text-gray-700 mb-1.5">סוג המוצר</label>
                                     <select
                                         value={form.discovery_type}
-                                        onChange={e => setForm({...form, discovery_type: e.target.value})}
-                                        className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white"
+                                        onChange={e => setForm({ ...form, discovery_type: e.target.value })}
+                                        className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:ring-2 focus:ring-black focus:border-transparent outline-none transition-all bg-white"
                                     >
                                         <option value="discovery_set">דיסקברי סט</option>
-                                        <option value="official_sample">דוגמית רשמית</option>
+                                        <option value="official_sample">דוגמית רשמית של החברה</option>
                                     </select>
                                 </div>
-
                                 <div>
                                     <label className="block text-sm font-semibold text-gray-700 mb-1.5">מלאי זמין</label>
                                     <input
                                         type="number"
                                         value={form.stock}
-                                        onChange={e => setForm({...form, stock: parseInt(e.target.value) || 0})}
-                                        className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                                        onChange={e => setForm({ ...form, stock: e.target.value })}
+                                        className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:ring-2 focus:ring-black focus:border-transparent outline-none transition-all"
+                                        dir="ltr"
                                     />
                                 </div>
                                 <div>
                                     <label className="block text-sm font-semibold text-gray-700 mb-1.5">קישור לתמונה ראשית</label>
                                     <input
-                                        type="text"
+                                        type="url"
                                         value={form.image_url}
-                                        onChange={e => setForm({...form, image_url: e.target.value})}
-                                        className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                                        onChange={e => setForm({ ...form, image_url: e.target.value })}
+                                        className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:ring-2 focus:ring-black focus:border-transparent outline-none transition-all"
                                         dir="ltr"
                                     />
                                 </div>
                                 <div>
                                     <label className="block text-sm font-semibold text-gray-700 mb-1.5">תמונה 2 (אופציונלי)</label>
                                     <input
-                                        type="text"
+                                        type="url"
                                         value={form.image_url_2}
-                                        onChange={e => setForm({...form, image_url_2: e.target.value})}
-                                        className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                                        onChange={e => setForm({ ...form, image_url_2: e.target.value })}
+                                        className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:ring-2 focus:ring-black focus:border-transparent outline-none transition-all"
                                         dir="ltr"
                                     />
                                 </div>
                                 <div>
                                     <label className="block text-sm font-semibold text-gray-700 mb-1.5">תמונה 3 (אופציונלי)</label>
                                     <input
-                                        type="text"
+                                        type="url"
                                         value={form.image_url_3}
-                                        onChange={e => setForm({...form, image_url_3: e.target.value})}
-                                        className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                                        onChange={e => setForm({ ...form, image_url_3: e.target.value })}
+                                        className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:ring-2 focus:ring-black focus:border-transparent outline-none transition-all"
                                         dir="ltr"
                                     />
                                 </div>
                             </div>
-
-                            <div className="bg-blue-50 border border-blue-100 p-4 rounded-xl space-y-4">
-                                <h3 className="text-sm font-bold text-blue-900 flex items-center gap-2">
-                                    <Wand2 size={16} />
-                                    מחולל תיאור אוטומטי
-                                </h3>
+                            
+                            <div className="bg-blue-50/50 rounded-xl p-4 border border-blue-100">
+                                <label className="block text-sm font-bold text-blue-900 mb-3 flex items-center gap-2">
+                                    <Wand2 size={16} /> מחולל תיאור אוטומטי
+                                </label>
                                 <div className="grid grid-cols-2 gap-4">
-                                    {form.discovery_type === 'discovery_set' && (
-                                        <div>
-                                            <label className="block text-xs font-semibold text-blue-800 mb-1">כמות דוגמיות בערכה</label>
-                                            <input
-                                                type="number"
-                                                value={tempGen.numberOfSamples}
-                                                onChange={e => setTempGen({...tempGen, numberOfSamples: e.target.value})}
-                                                className="w-full p-2 border border-blue-200 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white"
-                                                placeholder="לדוגמה: 5"
-                                            />
-                                        </div>
-                                    )}
                                     <div>
-                                        <label className="block text-xs font-semibold text-blue-800 mb-1">גודל דוגמית (מ״ל)</label>
+                                        <label className="block text-xs font-semibold text-gray-600 mb-1">כמות דוגמיות בערכה</label>
+                                        <input
+                                            type="number"
+                                            value={tempGen.numberOfSamples}
+                                            onChange={e => setTempGen({ ...tempGen, numberOfSamples: e.target.value })}
+                                            placeholder="לדוגמה: 5"
+                                            className="w-full px-3 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none text-sm"
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="block text-xs font-semibold text-gray-600 mb-1">גודל דוגמית (מ"ל)</label>
                                         <input
                                             type="number"
                                             value={tempGen.sampleSize}
-                                            onChange={e => setTempGen({...tempGen, sampleSize: e.target.value})}
-                                            className="w-full p-2 border border-blue-200 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white"
+                                            onChange={e => setTempGen({ ...tempGen, sampleSize: e.target.value })}
                                             placeholder="לדוגמה: 2"
+                                            className="w-full px-3 py-2 rounded-lg border border-gray-200 focus:ring-2 focus:ring-blue-500 outline-none text-sm"
                                         />
                                     </div>
                                 </div>
-                                <button
+                                <button 
                                     onClick={generateDescription}
-                                    type="button"
-                                    className="text-sm bg-blue-600 text-white px-4 py-2 rounded-lg font-medium hover:bg-blue-700 transition-colors"
+                                    className="mt-3 w-full bg-blue-600 text-white font-medium py-2 rounded-lg text-sm hover:bg-blue-700 transition-colors"
                                 >
-                                    צור תיאור ותווית כמות אוטומטית
+                                    החל אוטומטית (ייצור טקסט)
                                 </button>
                             </div>
 
                             <div>
-                                <label className="block text-sm font-semibold text-gray-700 mb-1.5">תיאור</label>
-                                <textarea
-                                    value={form.description}
-                                    onChange={e => setForm({...form, description: e.target.value})}
-                                    className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                                    rows="5"
+                                <label className="block text-sm font-semibold text-gray-700 mb-1.5">טקסט כותרת מלאי זמין (מוצג ללקוח)</label>
+                                <input
+                                    type="text"
+                                    value={form.volume_label}
+                                    onChange={e => setForm({ ...form, volume_label: e.target.value })}
+                                    className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:ring-2 focus:ring-black focus:border-transparent outline-none transition-all"
+                                    placeholder="לדוגמה: 5 בקבוקונים של 2 מ״ל"
                                 />
                             </div>
 
-                            <div className="flex gap-4 p-4 bg-gray-50 border border-gray-200 rounded-xl">
-                                <label className="flex items-center gap-2 cursor-pointer">
+                            <div>
+                                <label className="block text-sm font-semibold text-gray-700 mb-1.5">תיאור (HTML)</label>
+                                <textarea
+                                    value={form.description}
+                                    onChange={e => setForm({ ...form, description: e.target.value })}
+                                    className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:ring-2 focus:ring-black focus:border-transparent outline-none transition-all h-32 resize-none"
+                                    dir="ltr"
+                                />
+                            </div>
+                            
+                            <div className="flex items-center gap-3">
+                                <label className="relative inline-flex items-center cursor-pointer">
                                     <input
                                         type="checkbox"
                                         checked={form.active}

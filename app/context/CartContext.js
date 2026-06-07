@@ -554,6 +554,7 @@ export function CartProvider({ children }) {
     let priceAfterDiscounts = subtotal;
     let discountAmount = 0;
     let promoDiscountAmount = 0;
+    let priceAfterGlobalDiscounts = subtotal;
 
     if (isMainVendor) {
         // Limited Time Promo Logic
@@ -593,7 +594,7 @@ export function CartProvider({ children }) {
         discountAmount += promoDiscountAmount;
         priceAfterDiscounts -= promoDiscountAmount;
 
-    let priceAfterGlobalDiscounts = priceAfterDiscounts;
+        priceAfterGlobalDiscounts = priceAfterDiscounts;
         if (lotteryMode.active) {
             const d = Math.round(priceAfterDiscounts * 0.15);
             discountAmount += d;

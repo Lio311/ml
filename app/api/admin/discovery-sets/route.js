@@ -77,3 +77,52 @@ export async function POST(req) {
         return NextResponse.json({ error: error.message || 'Internal Server Error' }, { status: 500 });
     }
 }
+
+// UPDATE discovery set
+export async function PUT(req) {
+    try {
+        const isAdmin = await checkAdmin();
+        if (!isAdmin) {
+            return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
+        }
+
+        const data = await req.json();
+        if (!data.id) {
+            return NextResponse.json({ error: 'ID is required' }, { status: 400 });
+        }
+
+        const client = await pool.connect();
+        try {
+            const query = `
+                UPDATE products SET
+                    brand = $1, brand_he = $2, model = $3, model_he = $4,
+                    name = $5, name_he = $6, name_en = $7, description = $8,
+                    description_he = $9, description_en = $10, image_url = $11,
+                    category = $12, category_en = $13, stock = $14, active = $15,
+                    discovery_type = $16, single_price = $17, volume_label = $18,
+                    discount_percentage = $19, discount_sizes = $20, discount_end_date = $21,
+                    image_url_2 = $22, image_url_3 = $23
+                WHERE id = $24 AND is_discovery_set = true
+                RETURNING *
+            `;
+            const values = [
+                data.brand || null, data.brand_he || null, data.model || null, data.model_he || null,
+                data.name || null, data.name_he || null, data.name_en || null, data.description || null,
+                data.description_he || null, data.description_en || null, data.image_url || null,
+                data.category || null, data.category_en || null, data.stock || 0, data.active ?? true,
+                data.discovery_type || 'discovery_set', data.single_price || null, data.volume_label || null,
+                data.discount_percentage || null, data.discount_sizes || null, data.discount_end_date || null,
+                data.image_url_2 || null, data.image_url_3 || null,
+                data.id
+            ];
+            const res = await client.query(query, values);
+            if (res.rows.length === 0) return NextResponse.json({ error: 'Not found' }, { status: 404 });
+            return NextResponse.json(res.rows[0]);
+        } finally {
+            client.release();
+        }
+    } catch (error) {
+        console.error('Update discovery set error:', error);
+        return NextResponse.json({ error: error.message || 'Internal Server Error' }, { status: 500 });
+    }
+}
