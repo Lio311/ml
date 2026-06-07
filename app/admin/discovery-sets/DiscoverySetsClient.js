@@ -6,6 +6,7 @@ import { Plus, Search, Edit2, Trash2, Check, X, Image as ImageIcon, Wand2 } from
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import Image from "next/image";
+import Link from "next/link";
 
 export default function DiscoverySetsClient({ products: initialProducts, initialSearch, canEdit }) {
     const router = useRouter();
@@ -217,15 +218,19 @@ export default function DiscoverySetsClient({ products: initialProducts, initial
                                 products.map(product => (
                                     <tr key={product.id} className="hover:bg-gray-50/50 transition-colors group">
                                         <td className="p-4">
-                                            <div className="w-12 h-12 rounded-xl bg-gray-50 border border-gray-100 overflow-hidden relative flex items-center justify-center mx-auto">
+                                            <Link href={`/product/${product.slug || product.id}`} target="_blank" className="block w-12 h-12 rounded-xl bg-gray-50 border border-gray-100 overflow-hidden relative flex items-center justify-center mx-auto hover:opacity-80 transition-opacity">
                                                 {product.image_url ? (
-                                                    <Image src={product.image_url} alt={product.name} fill className="object-cover" />
+                                                    <Image src={product.image_url} alt={product.name || product.model} fill className="object-cover" />
                                                 ) : (
                                                     <ImageIcon className="w-5 h-5 text-gray-300" />
                                                 )}
-                                            </div>
+                                            </Link>
                                         </td>
-                                        <td className="p-4 font-medium text-gray-900">{product.model}</td>
+                                        <td className="p-4 font-medium text-gray-900">
+                                            <Link href={`/product/${product.slug || product.id}`} target="_blank" className="hover:text-blue-600 hover:underline transition-colors">
+                                                {product.model}
+                                            </Link>
+                                        </td>
                                         <td className="p-4 text-gray-600">{product.discovery_type === 'official_sample' ? 'דוגמית רשמית' : 'דיסקברי סט'}</td>
                                         <td className="p-4 text-gray-600">{product.brand}</td>
                                         <td className="p-4 font-medium">₪{product.single_price || 0}</td>
