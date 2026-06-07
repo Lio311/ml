@@ -129,7 +129,7 @@ export default function ProductCard({ product }) {
                 )}
 
                 {/* Low Stock / Out of Stock Badge */}
-                {((product.stock || 0) <= 20) && (
+                {((product.stock || 0) <= 20) && !product.is_discovery_set && (
                     <div className={`text-[9px] leading-3 font-bold px-1.5 py-1 rounded shadow-sm text-center text-white whitespace-nowrap pointer-events-auto cursor-default ${(product.stock || 0) <= 0 ? 'bg-gray-400' : 'bg-red-600'}`}>
                         {(product.stock || 0) <= 0 ? (
                             <span>{t('common.out_of_stock')}</span>
@@ -202,31 +202,35 @@ export default function ProductCard({ product }) {
 
                 <div className="mt-auto space-y-2">
                     {product.is_discovery_set ? (
-                        <div className="flex items-center justify-between text-xs text-gray-600">
-                            <span className="truncate max-w-[120px]">{product.volume_label || (dir === 'rtl' ? 'יחידה' : 'Unit')}</span>
-                            <div className="flex items-center gap-2">
+                        <div className="flex flex-col gap-3 mt-2">
+                            <div className="flex items-center justify-between text-sm text-gray-600">
+                                <span className="font-medium text-gray-700">{product.volume_label || (dir === 'rtl' ? 'יחידה' : 'Unit')}</span>
                                 {getDiscountedPrice(product, '1', product.single_price) !== product.single_price ? (
-                                    <div className="flex flex-col items-end">
-                                        <span className="text-[10px] text-gray-400 line-through leading-none">{product.single_price} ₪</span>
-                                        <span className="font-black text-green-600">{getDiscountedPrice(product, '1', product.single_price)} ₪</span>
+                                    <div className="flex flex-col items-end leading-none">
+                                        <span className="text-[10px] text-gray-400 line-through">{product.single_price} ₪</span>
+                                        <span className="font-black text-green-600 text-base">{getDiscountedPrice(product, '1', product.single_price)} ₪</span>
                                     </div>
                                 ) : (
-                                    <span className="font-bold">{product.single_price} ₪</span>
+                                    <span className="font-bold text-base text-black">{product.single_price} ₪</span>
                                 )}
-                                <motion.button
-                                    whileHover={{ scale: 1.15 }}
-                                    whileTap={{ scale: 0.85 }}
-                                    onClick={() => handleAdd('1', product.single_price)}
-                                    className={`w-6 h-6 rounded flex items-center justify-center transition shadow-sm ${addedSize === '1' ? 'bg-green-500 text-white' : 'bg-gray-100 hover:bg-black hover:text-white'}`}
-                                    title={t('common.add_to_cart')}
-                                >
-                                    {addedSize === '1' ? (
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor" className="w-3.5 h-3.5">
+                            </div>
+                            <motion.button
+                                whileHover={{ scale: 1.02 }}
+                                whileTap={{ scale: 0.98 }}
+                                onClick={() => handleAdd('1', product.single_price)}
+                                className={`w-full py-2.5 rounded-lg flex items-center justify-center gap-2 font-bold transition-all shadow-sm ${addedSize === '1' ? 'bg-green-500 text-white shadow-green-200' : 'bg-[#050505] text-white hover:bg-gray-800 hover:shadow-md'}`}
+                            >
+                                {addedSize === '1' ? (
+                                    <>
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor" className="w-4 h-4">
                                             <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
                                         </svg>
-                                    ) : '+'}
-                                </motion.button>
-                            </div>
+                                        <span>נוסף לסל</span>
+                                    </>
+                                ) : (
+                                    <span>{t('common.add_to_cart')}</span>
+                                )}
+                            </motion.button>
                         </div>
                     ) : (
                         <>

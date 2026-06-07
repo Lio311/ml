@@ -61,7 +61,7 @@ export async function POST(req) {
                 generatedName, data.name_he || null, data.name_en || null, data.description || null, data.description_he || null, data.description_en || null,
                 data.image_url || null, data.category || null, data.category_en || null, data.stock || 0, data.active ?? true, true, data.discovery_type || 'discovery_set',
                 data.single_price || null, data.volume_label || null, data.discount_percentage || null, 
-                data.discount_sizes || null, data.discount_end_date || null,
+                data.discount_sizes || [], data.discount_end_date || null,
                 data.top_notes || null, data.top_notes_en || null, data.middle_notes || null, data.middle_notes_en || null,
                 data.base_notes || null, data.base_notes_en || null, data.seasons || null, data.seasons_en || null,
                 data.country || null, data.country_en || null, data.perfumers || null, data.perfumers_en || null,
@@ -111,7 +111,7 @@ export async function PUT(req) {
                 data.description_he || null, data.description_en || null, data.image_url || null,
                 data.category || null, data.category_en || null, data.stock || 0, data.active ?? true,
                 data.discovery_type || 'discovery_set', data.single_price || null, data.volume_label || null,
-                data.discount_percentage || null, data.discount_sizes || null, data.discount_end_date || null,
+                data.discount_percentage || null, data.discount_sizes || [], data.discount_end_date || null,
                 data.image_url_2 || null, data.image_url_3 || null, data.show_on_home ?? true,
                 data.id
             ];

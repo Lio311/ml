@@ -125,14 +125,17 @@ export default function DiscoverySetsClient({ products: initialProducts, initial
                 body: JSON.stringify(body)
             });
 
-            if (!res.ok) throw new Error("שגיאה בשמירת המוצר");
+            if (!res.ok) {
+                const errData = await res.json().catch(() => ({}));
+                throw new Error(errData.error || "שגיאה בשמירת המוצר");
+            }
 
             toast.success("המוצר נשמר בהצלחה!");
             setIsModalOpen(false);
             router.refresh();
         } catch (error) {
             console.error(error);
-            toast.error("שגיאה בשמירה");
+            toast.error(error.message || "שגיאה בשמירה");
         } finally {
             setIsLoading(false);
         }
