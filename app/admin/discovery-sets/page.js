@@ -1,4 +1,4 @@
-import pool from "../../../lib/db";
+import pool from "@/app/lib/db";
 import DiscoverySetsClient from "./DiscoverySetsClient";
 import { currentUser } from "@clerk/nextjs/server";
 
