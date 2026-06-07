@@ -39,6 +39,8 @@ export default function QuickViewModal({ product, isOpen, onClose }) {
 
     if (!product || !mounted) return null;
 
+    const isDiscoverySet = product.is_discovery_set || product.category?.includes('Discovery Set') || product.category_en?.includes('Discovery Set') || (product.single_price > 0 && !product.price_2ml);
+
     const translateCategory = (cat) => {
         if (!cat || locale === 'he') return cat;
         return cat.split(',').map(part => {
@@ -154,57 +156,97 @@ export default function QuickViewModal({ product, isOpen, onClose }) {
                             )}
 
                             <div className="mt-8 flex-1 space-y-4">
-                                <h3 className="font-bold text-sm uppercase tracking-wider opacity-80">{t('common.select_size') || 'בחר/י גודל'}</h3>
-                                
-                                <div className="space-y-3">
-                                    {[
-                                        { size: 2, price: product.price_2ml },
-                                        { size: 5, price: product.price_5ml },
-                                        { size: 10, price: product.price_10ml }
-                                    ].filter(opt => Number(opt.price) > 0).map(option => {
-                                        const discountedPrice = getDiscountedPrice(option.size, option.price);
-                                        const hasDiscount = discountedPrice !== option.price;
-
-                                        return (
-                                            <div key={option.size} className="flex items-center justify-between p-4 rounded-xl border border-gray-100 hover:border-black transition-colors group">
-                                                <div className="flex items-center gap-3">
-                                                    <div className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center font-bold text-lg">
-                                                        {option.size}
-                                                    </div>
-                                                    <span className="text-sm font-medium">{t('common.ml_unit')}</span>
-                                                </div>
-                                                <div className="flex items-center gap-4">
-                                                    <div className="flex flex-col items-end">
-                                                        {hasDiscount && (
-                                                            <span className="text-[10px] text-gray-400 line-through leading-none mb-1">{option.price} ₪</span>
-                                                        )}
-                                                        <span className={`font-bold text-lg leading-none ${hasDiscount ? 'text-green-600' : ''}`}>
-                                                            {discountedPrice} ₪
-                                                        </span>
-                                                    </div>
-                                                    <button
-                                                        onClick={() => handleAdd(option.size, option.price)}
-                                                        className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${
-                                                            addedSize === option.size 
-                                                            ? 'bg-green-500 text-white' 
-                                                            : 'bg-black text-white hover:bg-gray-800 hover:scale-105'
-                                                        }`}
-                                                    >
-                                                        {addedSize === option.size ? (
-                                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
-                                                              <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
-                                                            </svg>
-                                                        ) : (
-                                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
-                                                              <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                                                            </svg>
-                                                        )}
-                                                    </button>
-                                                </div>
+                                {isDiscoverySet ? (
+                                    <div className="space-y-3">
+                                        <div className="flex items-center justify-between p-4 rounded-xl border border-gray-100 hover:border-black transition-colors group cursor-pointer" onClick={() => handleAdd('1', product.single_price)}>
+                                            <div className="flex items-center gap-3">
+                                                <span className="font-bold">{(dir === 'ltr' && product.volume_label_en) ? product.volume_label_en : (product.volume_label || (dir === 'rtl' ? 'יחידה' : 'Unit'))}</span>
                                             </div>
-                                        );
-                                    })}
-                                </div>
+                                            <div className="flex items-center gap-4">
+                                                <div className="flex flex-col items-end">
+                                                    {getDiscountedPrice('1', product.single_price) !== product.single_price && (
+                                                        <span className="text-[10px] text-gray-400 line-through leading-none mb-1">{product.single_price} ₪</span>
+                                                    )}
+                                                    <span className={`font-bold text-lg leading-none ${getDiscountedPrice('1', product.single_price) !== product.single_price ? 'text-green-600' : ''}`}>
+                                                        {getDiscountedPrice('1', product.single_price)} ₪
+                                                    </span>
+                                                </div>
+                                                <button
+                                                    onClick={(e) => { e.stopPropagation(); handleAdd('1', product.single_price); }}
+                                                    className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${
+                                                        addedSize === '1' 
+                                                        ? 'bg-green-500 text-white' 
+                                                        : 'bg-black text-white hover:bg-gray-800 hover:scale-105'
+                                                    }`}
+                                                >
+                                                    {addedSize === '1' ? (
+                                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
+                                                          <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                                                        </svg>
+                                                    ) : (
+                                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
+                                                          <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                                                        </svg>
+                                                    )}
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ) : (
+                                    <>
+                                        <h3 className="font-bold text-sm uppercase tracking-wider opacity-80">{t('common.select_size') || 'בחר/י גודל'}</h3>
+                                        
+                                        <div className="space-y-3">
+                                            {[
+                                                { size: 2, price: product.price_2ml },
+                                                { size: 5, price: product.price_5ml },
+                                                { size: 10, price: product.price_10ml }
+                                            ].filter(opt => Number(opt.price) > 0).map(option => {
+                                                const discountedPrice = getDiscountedPrice(option.size, option.price);
+                                                const hasDiscount = discountedPrice !== option.price;
+
+                                                return (
+                                                    <div key={option.size} className="flex items-center justify-between p-4 rounded-xl border border-gray-100 hover:border-black transition-colors group cursor-pointer" onClick={() => handleAdd(option.size, option.price)}>
+                                                        <div className="flex items-center gap-3">
+                                                            <div className="w-10 h-10 rounded-full bg-gray-50 flex items-center justify-center font-bold text-lg group-hover:bg-gray-200 transition-colors">
+                                                                {option.size}
+                                                            </div>
+                                                            <span className="text-sm font-medium">{t('common.ml_unit')}</span>
+                                                        </div>
+                                                        <div className="flex items-center gap-4">
+                                                            <div className="flex flex-col items-end">
+                                                                {hasDiscount && (
+                                                                    <span className="text-[10px] text-gray-400 line-through leading-none mb-1">{option.price} ₪</span>
+                                                                )}
+                                                                <span className={`font-bold text-lg leading-none ${hasDiscount ? 'text-green-600' : ''}`}>
+                                                                    {discountedPrice} ₪
+                                                                </span>
+                                                            </div>
+                                                            <button
+                                                                onClick={(e) => { e.stopPropagation(); handleAdd(option.size, option.price); }}
+                                                                className={`w-10 h-10 rounded-full flex items-center justify-center transition-all ${
+                                                                    addedSize === option.size 
+                                                                    ? 'bg-green-500 text-white' 
+                                                                    : 'bg-black text-white hover:bg-gray-800 hover:scale-105'
+                                                                }`}
+                                                            >
+                                                                {addedSize === option.size ? (
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
+                                                                      <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                                                                    </svg>
+                                                                ) : (
+                                                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
+                                                                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                                                                    </svg>
+                                                                )}
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+                                    </>
+                                )}
                             </div>
 
                             <div className="mt-8 pt-6 border-t border-gray-100">

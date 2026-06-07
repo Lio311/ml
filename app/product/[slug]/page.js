@@ -517,7 +517,9 @@ export default async function ProductPage(props) {
                     </div >
 
                     <div className="space-y-6">
-                        <h3 className="font-bold mb-4">{t('common.select_size_add_to_cart')}</h3>
+                        {!(product.is_discovery_set || product.category?.includes('Discovery Set') || product.category_en?.includes('Discovery Set') || (product.single_price > 0 && !product.price_2ml)) && (
+                            <h3 className="font-bold mb-4">{t('common.select_size_add_to_cart')}</h3>
+                        )}
                         {/* Reusing ProductCard purely for logic is hacky, but consistent with requested "simple" flow. 
                             Ideally would be refactored, but for now we put a "Card" style adder or just the buttons.
                             To save creating a new component file right now, I will render a specialized client component inline if needed,
