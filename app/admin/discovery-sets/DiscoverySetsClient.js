@@ -20,6 +20,10 @@ export default function DiscoverySetsClient({ products: initialProducts, initial
     const [tempGen, setTempGen] = useState({ numberOfSamples: "", sampleSize: "" });
 
     useEffect(() => {
+        setProducts(initialProducts || []);
+    }, [initialProducts]);
+
+    useEffect(() => {
         const node = document.createElement("div");
         node.id = "discovery-sets-modal-root";
         document.body.appendChild(node);
