@@ -107,7 +107,7 @@ async function getProducts(search, brand, category, minPrice, maxPrice, sort, pa
     FROM products p
     ${joinType} product_sales ps ON p.id = ps.product_id
     ${joinType} brands b ON p.brand = b.name
-    WHERE p.active = true AND p.stock > 0
+    WHERE p.active = true AND p.stock > 0 AND p.is_discovery_set IS NOT TRUE
   `;
     const params = [];
 
