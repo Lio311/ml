@@ -4,6 +4,7 @@ import { cookies } from 'next/headers';
 import { sanitizeProductArray } from '../lib/productUtils';
 import he from '../data/locales/he.json';
 import en from '../data/locales/en.json';
+import DiscoveryTimer from './components/DiscoveryTimer';
 
 const getT = (locale) => {
     const dict = locale === 'en' ? en : he;
@@ -69,6 +70,8 @@ export default async function DiscoverySetsPage() {
                         {subtitle}
                     </p>
                 </div>
+
+                <DiscoveryTimer />
 
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 md:gap-8">
                     {products.map(product => (

@@ -22,7 +22,8 @@ export default function DiscoverySetsClient({ products, initialSearch, canEdit }
         description: "",
         stock: 0,
         active: true,
-        show_on_home: true
+        show_on_home: true,
+        discovery_type: "discovery_set"
     };
     const [form, setForm] = useState(defaultForm);
 
@@ -48,7 +49,8 @@ export default function DiscoverySetsClient({ products, initialSearch, canEdit }
             description: product.description || "",
             stock: product.stock || 0,
             active: product.active ?? true,
-            show_on_home: product.show_on_home ?? true
+            show_on_home: product.show_on_home ?? true,
+            discovery_type: product.discovery_type || "discovery_set"
         });
         setIsModalOpen(true);
     };
@@ -140,6 +142,7 @@ export default function DiscoverySetsClient({ products, initialSearch, canEdit }
                             <tr className="bg-gray-50/80 text-gray-500 text-sm border-b border-gray-100">
                                 <th className="p-4 font-semibold w-16 text-center">תמונה</th>
                                 <th className="p-4 font-semibold">שם הפריט</th>
+                                <th className="p-4 font-semibold">סוג</th>
                                 <th className="p-4 font-semibold">מותג</th>
                                 <th className="p-4 font-semibold">מחיר</th>
                                 <th className="p-4 font-semibold">תיאור כמות</th>
@@ -168,6 +171,7 @@ export default function DiscoverySetsClient({ products, initialSearch, canEdit }
                                             </div>
                                         </td>
                                         <td className="p-4 font-medium text-gray-900">{product.model}</td>
+                                        <td className="p-4 text-gray-600">{product.discovery_type === 'official_sample' ? 'דוגמית רשמית' : 'דיסקברי סט'}</td>
                                         <td className="p-4 text-gray-600">{product.brand}</td>
                                         <td className="p-4 font-medium">₪{product.single_price || 0}</td>
                                         <td className="p-4 text-gray-600">{product.volume_label || "-"}</td>
@@ -246,6 +250,17 @@ export default function DiscoverySetsClient({ products, initialSearch, canEdit }
                                         onChange={e => setForm({...form, single_price: e.target.value})}
                                         className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                                     />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-semibold text-gray-700 mb-1.5">סוג המוצר</label>
+                                    <select
+                                        value={form.discovery_type}
+                                        onChange={e => setForm({...form, discovery_type: e.target.value})}
+                                        className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 bg-white"
+                                    >
+                                        <option value="discovery_set">דיסקברי סט</option>
+                                        <option value="official_sample">דוגמית רשמית</option>
+                                    </select>
                                 </div>
                                 <div>
                                     <label className="block text-sm font-semibold text-gray-700 mb-1.5">תיאור כמות/נוזל</label>

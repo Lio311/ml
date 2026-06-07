@@ -23,7 +23,7 @@ export default function CartClient() {
         cartItems, activeVendorId, setActiveVendorId, activeItems,
         removeFromCart, updateQuantity, addToCart, addMultipleToCart, clearCart, clearActiveVendorCart,
         subtotal, total, freeSamplesCount, nextTier,
-        luckyPrize, setLuckyPrize, discountAmount,
+        luckyPrize, setLuckyPrize, discountAmount, promoDiscountAmount,
         lotteryMode, lotteryTimeLeft,
         coupon, setCoupon, isMainVendor, totalItemsCount, vendorConfig,
         isSelfPickup, setIsSelfPickup
@@ -488,16 +488,23 @@ export default function CartClient() {
                             <div className="flex justify-between text-lg items-center">
                                 <span>{t('cart.subtotal')}</span>
                                 <div className="flex items-center gap-2">
-                                    {coupon && (
+                                    {(coupon || promoDiscountAmount > 0) && (
                                         <span className="line-through text-gray-400 text-sm">
                                             {t('cart.price_format', { price: subtotal })}
                                         </span>
                                     )}
                                     <span className="font-bold">
-                                        {t('cart.price_format', { price: coupon ? subtotal - discountAmount : subtotal })}
+                                        {t('cart.price_format', { price: subtotal - discountAmount })}
                                     </span>
                                 </div>
                             </div>
+
+                            {promoDiscountAmount > 0 && (
+                                <div className="flex justify-between text-blue-600 font-bold bg-blue-50 p-3 rounded-lg border border-blue-100">
+                                    <span>{t('cart.promo_discount')}</span>
+                                    <span className="font-bold">-{promoDiscountAmount} ₪</span>
+                                </div>
+                            )}
 
                             {isMainVendor && luckyPrize?.type === 'discount' && !lotteryMode?.active && (
                                 <div className="flex justify-between text-green-600 font-bold">

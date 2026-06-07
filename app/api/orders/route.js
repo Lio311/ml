@@ -76,6 +76,41 @@ export async function POST(req) {
                 }
             }
 
+            // --- Apply Limited Time Promo (Discovery Sets & Samples) ---
+            const israelTime = new Date(new Date().toLocaleString("en-US", {timeZone: "Asia/Jerusalem"}));
+            const ilDayOfWeek = israelTime.getDay();
+            const ilCurrentHour = israelTime.getHours();
+            const isActivePromo = (ilDayOfWeek === 4) || (ilDayOfWeek === 5 && ilCurrentHour < 18);
+            
+            let promoDiscountAmount = 0;
+            if (isActivePromo) {
+                const discoverySets = [];
+                const officialSamples = [];
+                
+                for (const item of items) {
+                    if (item.is_discovery_set) {
+                        for(let i=0; i<item.quantity; i++) {
+                            if (item.discovery_type === 'official_sample') officialSamples.push(Number(item.price));
+                            else discoverySets.push(Number(item.price));
+                        }
+                    }
+                }
+                
+                discoverySets.sort((a,b) => a - b);
+                const freeDiscoveryCount = Math.floor(discoverySets.length / 4);
+                for(let i=0; i<freeDiscoveryCount; i++) {
+                    promoDiscountAmount += discoverySets[i];
+                }
+                
+                officialSamples.sort((a,b) => a - b);
+                const freeSampleCount = Math.floor(officialSamples.length / 10) * 2;
+                for(let i=0; i<freeSampleCount; i++) {
+                    promoDiscountAmount += officialSamples[i];
+                }
+            }
+
+            const priceAfterDiscounts = calculatedTotal - promoDiscountAmount;
+
             // --- Apply Coupon Discount ---
             let discountAmount = 0;
             if (couponCode) {
@@ -201,8 +236,13 @@ export async function POST(req) {
                     throw new Error('קופון זה אינו חל על הפריטים בעגלה שלך');
                 }
 
-                discountAmount = Math.round(eligibleSubtotal * (coupon.discount_percent / 100));
-                calculatedTotal = subtotalBeforeDiscount - discountAmount;
+                const ratio = subtotalBeforeDiscount > 0 ? (priceAfterDiscounts / subtotalBeforeDiscount) : 1;
+                const adjustedEligibleSubtotal = eligibleSubtotal * ratio;
+
+                discountAmount = Math.round(adjustedEligibleSubtotal * (coupon.discount_percent / 100));
+                calculatedTotal = priceAfterDiscounts - discountAmount;
+            } else {
+                calculatedTotal = priceAfterDiscounts;
             }
 
             // Add shipping cost (0 for self_pickup, 30 for mail)

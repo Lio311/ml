@@ -553,9 +553,47 @@ export function CartProvider({ children }) {
 
     let priceAfterDiscounts = subtotal;
     let discountAmount = 0;
-    let priceAfterGlobalDiscounts = subtotal;
+    let promoDiscountAmount = 0;
 
     if (isMainVendor) {
+        // Limited Time Promo Logic
+        const now = new Date();
+        const dayOfWeek = now.getDay();
+        const currentHour = now.getHours();
+        const isActivePromo = (dayOfWeek === 4) || (dayOfWeek === 5 && currentHour < 18);
+        
+        if (isActivePromo) {
+            const discoverySets = [];
+            const officialSamples = [];
+            
+            activeItems.forEach(item => {
+                if (item.is_discovery_set) {
+                    for(let i = 0; i < item.quantity; i++) {
+                        if (item.discovery_type === 'official_sample') officialSamples.push(Number(item.price));
+                        else discoverySets.push(Number(item.price));
+                    }
+                }
+            });
+            
+            // 3+1 logic for discovery sets: 1 free for every 4 items
+            discoverySets.sort((a,b) => a - b);
+            const freeDiscoveryCount = Math.floor(discoverySets.length / 4);
+            for(let i = 0; i < freeDiscoveryCount; i++) {
+                promoDiscountAmount += discoverySets[i];
+            }
+            
+            // 8+2 logic for official samples: 2 free for every 10 items
+            officialSamples.sort((a,b) => a - b);
+            const freeSampleCount = Math.floor(officialSamples.length / 10) * 2;
+            for(let i = 0; i < freeSampleCount; i++) {
+                promoDiscountAmount += officialSamples[i];
+            }
+        }
+
+        discountAmount += promoDiscountAmount;
+        priceAfterDiscounts -= promoDiscountAmount;
+
+    let priceAfterGlobalDiscounts = priceAfterDiscounts;
         if (lotteryMode.active) {
             const d = Math.round(priceAfterDiscounts * 0.15);
             discountAmount += d;
@@ -711,7 +749,7 @@ export function CartProvider({ children }) {
             cartItems, activeVendorId, setActiveVendorId, activeItems,
              addToCart, addMultipleToCart, addBundleToCart, removeFromCart, updateQuantity, clearCart, clearActiveVendorCart,
             subtotal, totalItemsCount, globalItemsCount, uniqueVendorsCount, freeSamplesCount, nextTier, shippingCost, total,
-            luckyPrize, setLuckyPrize, discountAmount, coupon, setCoupon,
+            luckyPrize, setLuckyPrize, discountAmount, promoDiscountAmount, coupon, setCoupon,
             startLottery, cancelLottery, isCartLocked, lotteryTimeLeft, lotteryMode, 
             isMainVendor, vendorConfig, isSelfPickup, setIsSelfPickup, getItemFinalPrice
         }}>
