@@ -48,12 +48,12 @@ export async function POST(req) {
                     single_price, volume_label, discount_percentage, discount_sizes, discount_end_date,
                     top_notes, top_notes_en, middle_notes, middle_notes_en, base_notes, base_notes_en,
                     seasons, seasons_en, country, country_en, perfumers, perfumers_en,
-                    price_2ml, price_5ml, price_10ml, image_url_2, image_url_3
+                    price_2ml, price_5ml, price_10ml, image_url_2, image_url_3, show_on_home
                 ) VALUES (
                     $1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, $18,
                     $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29,
                     $30, $31, $32, $33, $34, $35,
-                    $36, $37, $38, $39, $40
+                    $36, $37, $38, $39, $40, $41
                 ) RETURNING *
             `;
             const values = [
@@ -65,7 +65,7 @@ export async function POST(req) {
                 data.top_notes || null, data.top_notes_en || null, data.middle_notes || null, data.middle_notes_en || null,
                 data.base_notes || null, data.base_notes_en || null, data.seasons || null, data.seasons_en || null,
                 data.country || null, data.country_en || null, data.perfumers || null, data.perfumers_en || null,
-                null, null, null, data.image_url_2 || null, data.image_url_3 || null
+                null, null, null, data.image_url_2 || null, data.image_url_3 || null, data.show_on_home ?? true
             ];
             const res = await client.query(query, values);
             return NextResponse.json(res.rows[0]);
@@ -101,8 +101,8 @@ export async function PUT(req) {
                     category = $12, category_en = $13, stock = $14, active = $15,
                     discovery_type = $16, single_price = $17, volume_label = $18,
                     discount_percentage = $19, discount_sizes = $20, discount_end_date = $21,
-                    image_url_2 = $22, image_url_3 = $23
-                WHERE id = $24 AND is_discovery_set = true
+                    image_url_2 = $22, image_url_3 = $23, show_on_home = $24
+                WHERE id = $25 AND is_discovery_set = true
                 RETURNING *
             `;
             const values = [
@@ -112,7 +112,7 @@ export async function PUT(req) {
                 data.category || null, data.category_en || null, data.stock || 0, data.active ?? true,
                 data.discovery_type || 'discovery_set', data.single_price || null, data.volume_label || null,
                 data.discount_percentage || null, data.discount_sizes || null, data.discount_end_date || null,
-                data.image_url_2 || null, data.image_url_3 || null,
+                data.image_url_2 || null, data.image_url_3 || null, data.show_on_home ?? true,
                 data.id
             ];
             const res = await client.query(query, values);
