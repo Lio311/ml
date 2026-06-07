@@ -50,7 +50,7 @@ export const sendEmail = async (to, subject, html, type = 'system', orderId = nu
                 ? 'https://www.ml-tlv.com/unsubscribe' 
                 : `https://www.ml-tlv.com/unsubscribe?email=${encodeURIComponent(finalTo)}`;
             const unsubscribeHtml = `
-                <div dir="rtl" style="margin-top: 5px; padding: 25px 20px; background-color: #fafafa; border-radius: 12px; text-align: center; font-family: 'Open Sans', 'Open Sans Hebrew', Arial, sans-serif;">
+                <div dir="rtl" style="margin-top: 0px; padding: 10px 20px; background-color: #fafafa; border-radius: 12px; text-align: center; font-family: 'Open Sans', 'Open Sans Hebrew', Arial, sans-serif;">
                     <p style="margin: 0 0 8px; font-size: 12px; color: #888;">
                         קיבלת מייל זה כי נרשמת לעדכונים מ-<strong>ml_tlv</strong>.
                     </p>
@@ -181,7 +181,7 @@ export const getNewProductTemplate = (product) => {
                 </div>
             </div>
             
-            <div style="text-align: center; padding: 30px 0; color: #ccc; font-size: 11px;">
+            <div style="text-align: center; padding-top: 15px; padding-bottom: 0; color: #ccc; font-size: 11px;">
                 ml - יוקרה בחתיכות קטנות
             </div>
         </div>
@@ -255,7 +255,7 @@ export const getOrderConfirmationTemplate = (orderId, items, total, freeSamples,
                 </div>
             </div>
 
-            <div style="text-align: center; padding: 30px 0; color: #ccc; font-size: 11px;">
+            <div style="text-align: center; padding-top: 15px; padding-bottom: 0; color: #ccc; font-size: 11px;">
                 ml - יוקרה בחתיכות קטנות
             </div>
         </div>
@@ -343,7 +343,7 @@ export const getOrderUpdatedTemplate = (orderId, name, items, total, deliveryMet
                     </a>
                 </div>
             </div>
-            <div style="text-align: center; padding: 30px 0; color: #aaa; font-size: 11px;">
+            <div style="text-align: center; padding-top: 15px; padding-bottom: 0; color: #aaa; font-size: 11px;">
                 ml - יוקרה בחתיכות קטנות
             </div>
         </div>
@@ -393,7 +393,7 @@ export const getStatusUpdateTemplate = (orderId, name, status, messageBody) => {
                     </a>
                 </div>
             </div>
-            <div style="text-align: center; padding: 30px 0; color: #ccc; font-size: 11px;">
+            <div style="text-align: center; padding-top: 15px; padding-bottom: 0; color: #ccc; font-size: 11px;">
                 ml - יוקרה בחתיכות קטנות
             </div>
         </div>
@@ -423,7 +423,7 @@ export const getUserWelcomeTemplate = (firstName) => {
                 </div>
             </div>
             
-            <div style="text-align: center; padding: 30px 0; color: #ccc; font-size: 11px;">
+            <div style="text-align: center; padding-top: 15px; padding-bottom: 0; color: #ccc; font-size: 11px;">
                 ml - יוקרה בחתיכות קטנות
             </div>
         </div>
@@ -506,7 +506,7 @@ export const getBackInStockTemplate = (product) => {
                 </div>
             </div>
             
-            <div style="text-align: center; padding: 30px 0; color: #ccc; font-size: 11px;">
+            <div style="text-align: center; padding-top: 15px; padding-bottom: 0; color: #ccc; font-size: 11px;">
                 ml - יוקרה בחתיכות קטנות
             </div>
         </div>
@@ -533,7 +533,7 @@ export function getSystemDefaults() {
                     <a href="https://www.ml-tlv.com/orders" style="display: inline-block; background-color: #000; color: #fff; padding: 16px 32px; text-decoration: none; border-radius: 16px; font-weight: 900; font-size: 14px;">לצפייה בפרטי ההזמנה באתר</a>
                 </div>
             </div>
-            <div style="text-align: center; padding: 30px 0; color: #ccc; font-size: 11px;">
+            <div style="text-align: center; padding-top: 15px; padding-bottom: 0; color: #ccc; font-size: 11px;">
                 ml - יוקרה בחתיכות קטנות
             </div>
         </div>
@@ -601,7 +601,7 @@ export function getSystemDefaults() {
 {{bonusText}}
 
             </div>
-            <div style="text-align: center; padding: 30px 0; color: #ccc; font-size: 11px;">ml - יוקרה בחתיכות קטנות</div>
+            <div style="text-align: center; padding-top: 15px; padding-bottom: 0; color: #ccc; font-size: 11px;">ml - יוקרה בחתיכות קטנות</div>
         </div>`
         },
         'cart_recovery': {
@@ -622,7 +622,7 @@ export function getSystemDefaults() {
                     <a href="https://www.ml-tlv.com/cart" style="display: inline-block; background-color: #000; color: #fff; padding: 16px 32px; text-decoration: none; border-radius: 16px; font-weight: 900; font-size: 14px;">לחזרה לסל הקניות >></a>
                 </div>
             </div>
-            <div style="text-align: center; padding: 30px 0; color: #ccc; font-size: 11px;">ml - יוקרה בחתיכות קטנות</div>
+            <div style="text-align: center; padding-top: 15px; padding-bottom: 0; color: #ccc; font-size: 11px;">ml - יוקרה בחתיכות קטנות</div>
         </div>`
         },
         'contact_form_alert': {
@@ -656,7 +656,7 @@ export function getSystemDefaults() {
                     </ul>
                 </div>
             </div>
-            <div style="text-align: center; padding: 30px 0; color: #ccc; font-size: 11px;">ml - יוקרה בחתיכות קטנות</div>
+            <div style="text-align: center; padding-top: 15px; padding-bottom: 0; color: #ccc; font-size: 11px;">ml - יוקרה בחתיכות קטנות</div>
         </div>`
         },
         'recommendations': {
@@ -674,7 +674,7 @@ export function getSystemDefaults() {
                     <a href="https://www.ml-tlv.com" style="display: inline-block; background-color: #000; color: #fff; padding: 16px 32px; text-decoration: none; border-radius: 16px; font-weight: 900; font-size: 14px;">למעבר לאתר >></a>
                 </div>
             </div>
-            <div style="text-align: center; padding: 30px 0; color: #ccc; font-size: 11px;">ml - יוקרה בחתיכות קטנות</div>
+            <div style="text-align: center; padding-top: 15px; padding-bottom: 0; color: #ccc; font-size: 11px;">ml - יוקרה בחתיכות קטנות</div>
         </div>`
         },
         'nurture_10_days': {
@@ -694,7 +694,7 @@ export function getSystemDefaults() {
                 <p style="color: #666; font-size: 14px;">נשמח להמשיך להפתיע אותך עם ניחוחות חדשים,</p>
                 <p style="font-weight: bold; margin-top: 5px;">צוות ml_tlv</p>
             </div>
-            <div style="text-align: center; padding: 30px 0; color: #ccc; font-size: 11px;">ml - יוקרה בחתיכות קטנות</div>
+            <div style="text-align: center; padding-top: 15px; padding-bottom: 0; color: #ccc; font-size: 11px;">ml - יוקרה בחתיכות קטנות</div>
         </div>`
         },
         'nurture_25_days': {
@@ -714,7 +714,7 @@ export function getSystemDefaults() {
                 <p style="color: #666; font-size: 14px;">נשמח להמשיך להפתיע אותך עם ניחוחות חדשים,</p>
                 <p style="font-weight: bold; margin-top: 5px;">צוות ml_tlv</p>
             </div>
-            <div style="text-align: center; padding: 30px 0; color: #ccc; font-size: 11px;">ml - יוקרה בחתיכות קטנות</div>
+            <div style="text-align: center; padding-top: 15px; padding-bottom: 0; color: #ccc; font-size: 11px;">ml - יוקרה בחתיכות קטנות</div>
         </div>`
         }
     };
