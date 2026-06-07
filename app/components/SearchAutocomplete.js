@@ -104,7 +104,7 @@ export default function SearchAutocomplete({ fullWidth = false, onSelect }) {
 
             {/* Dropdown Results */}
             {isOpen && results.length > 0 && (
-                <div className={`absolute top-full w-[calc(100vw-2rem)] md:w-80 bg-white shadow-xl border border-gray-100 rounded-lg mt-2 overflow-hidden z-50 ${isRTL ? 'left-0 md:left-0' : 'right-0 md:right-0'}`}>
+                <div className={`absolute top-full w-[calc(100vw-2rem)] md:w-80 bg-white shadow-xl border border-gray-100 rounded-lg mt-2 overflow-hidden z-50 ${isLayoutRTL ? 'left-0 md:left-0' : 'right-0 md:right-0'}`}>
                     <div className="p-2 max-h-[70vh] overflow-y-auto divide-y divide-gray-50">
                         {results.map((product) => (
                                 <Link
@@ -119,7 +119,7 @@ export default function SearchAutocomplete({ fullWidth = false, onSelect }) {
                                         if (onSelect) onSelect();
                                     }}
                                     className={`flex items-center gap-4 p-3 hover:bg-gray-50 transition group/item ${(!product.slug && !product.id) ? 'pointer-events-none opacity-50' : ''}`}
-                                    dir={direction}
+                                    dir={contextDir}
                                 >
                                 <div className="relative w-12 h-12 flex-shrink-0 bg-gray-50 rounded-md overflow-hidden">
                                     {product.image ? (
