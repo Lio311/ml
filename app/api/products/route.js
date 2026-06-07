@@ -69,6 +69,9 @@ export async function PUT(req) {
 
         const client = await pool.connect();
         try {
+            const trimmedBrand = (brand || '').trim();
+            const trimmedModel = (model || '').trim();
+
             const category_en = await translateList(category);
             const top_notes_en = await translateList(top_notes);
             const middle_notes_en = await translateList(middle_notes);
@@ -91,9 +94,9 @@ export async function PUT(req) {
                      spotify_track_url = $35
                  WHERE id = $23`,
                 [
-                    brand, model, price_2ml, price_5ml, price_10ml, image_url,
+                    trimmedBrand, trimmedModel, price_2ml, price_5ml, price_10ml, image_url,
                     category, description, stock || 0, top_notes, middle_notes, base_notes,
-                    brand + ' ' + model, in_lottery ?? true, name_he, brand_he, model_he,
+                    trimmedBrand + ' ' + trimmedModel, in_lottery ?? true, name_he, brand_he, model_he,
                     cost_price, original_size, seasons, perfumers, country, id,
                     category_en, description_en, top_notes_en, middle_notes_en, base_notes_en, seasons_en,
                     active ?? true,
@@ -102,14 +105,12 @@ export async function PUT(req) {
                 ]
             );
 
-            // Ensure brand exists in brands table
-            if (brand) {
+            if (trimmedBrand) {
                 await client.query(`
                     INSERT INTO brands (name) VALUES ($1)
                     ON CONFLICT (name) DO NOTHING
-                `, [brand]);
+                `, [trimmedBrand]);
             }
-
             revalidatePath('/');
             revalidatePath('/catalog');
             revalidatePath('/brands/[brand]', 'page');
@@ -159,7 +160,10 @@ export async function POST(req) {
             const seasons_en = await translateList(seasons);
             const description_en = await translateText(description);
 
-            const newSlug = generateSlug(brand || '', model || '');
+            const trimmedBrand = (brand || '').trim();
+            const trimmedModel = (model || '').trim();
+
+            const newSlug = generateSlug(trimmedBrand, trimmedModel);
 
             const res = await client.query(
                 `INSERT INTO products 
@@ -172,7 +176,7 @@ export async function POST(req) {
                   VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $35, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30, $31, $32, $33, $34) 
                  RETURNING id`,
                 [
-                    brand + ' ' + model, category || 'General', brand, model, price_2ml, price_5ml, price_10ml, image_url,
+                    trimmedBrand + ' ' + trimmedModel, category || 'General', trimmedBrand, trimmedModel, price_2ml, price_5ml, price_10ml, image_url,
                     description, stock || 0, top_notes, middle_notes, base_notes, in_lottery ?? true, 
                     name_he, brand_he, model_he, cost_price, original_size,
                     seasons, perfumers, country,
@@ -182,11 +186,11 @@ export async function POST(req) {
             );
 
             // Ensure brand exists in brands table
-            if (brand) {
+            if (trimmedBrand) {
                 await client.query(`
                     INSERT INTO brands (name) VALUES ($1)
                     ON CONFLICT (name) DO NOTHING
-                `, [brand]);
+                `, [trimmedBrand]);
             }
 
             const newProduct = res.rows[0];
