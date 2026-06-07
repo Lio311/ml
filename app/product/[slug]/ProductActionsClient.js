@@ -136,7 +136,7 @@ export default function ProductActionsClient({ product }) {
         <div className={`space-y-4 ${dir === 'rtl' ? 'text-right' : 'text-left'}`} dir={dir}>
             {product.is_discovery_set ? (
                 <div className="flex items-center justify-between p-3 border rounded-lg bg-white hover:border-black transition cursor-pointer" onClick={() => handleAdd('1', product.single_price)}>
-                    <span className="font-bold">{product.volume_label || (dir === 'rtl' ? 'יחידה' : 'Unit')}</span>
+                    <span className="font-bold">{(dir === 'ltr' && product.volume_label_en) ? product.volume_label_en : (product.volume_label || (dir === 'rtl' ? 'יחידה' : 'Unit'))}</span>
                     <div className="flex items-center gap-4">
                         {getDiscountedPrice('1', product.single_price) !== product.single_price ? (
                             <div className="flex flex-col items-end">

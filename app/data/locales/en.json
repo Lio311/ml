@@ -18,6 +18,7 @@
         "catalog": "Catalog",
         "sales": "Sales",
         "bundles": "Bundles",
+        "discovery_sets": "Discovery Sets",
         "requests": "Requests",
         "cart": "Cart",
         "wishlist": "Wishlist",
