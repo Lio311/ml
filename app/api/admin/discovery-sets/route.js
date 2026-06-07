@@ -38,8 +38,10 @@ export async function POST(req) {
         const data = await req.json();
         const client = await pool.connect();
         try {
-            const generatedSlug = data.slug || `${data.brand || 'brand'}-${data.model || 'model'}-${Date.now()}`.toLowerCase().replace(/[^a-z0-9]+/g, '-');
-            const generatedName = data.name || `${data.brand || ''} - ${data.model || ''}`.trim();
+            const trimmedBrand = (data.brand || '').trim();
+            const trimmedModel = (data.model || '').trim();
+            const generatedSlug = data.slug || `${trimmedBrand || 'brand'}-${trimmedModel || 'model'}-${Date.now()}`.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+            const generatedName = data.name || `${trimmedBrand || ''} - ${trimmedModel || ''}`.trim();
             const query = `
                 INSERT INTO products (
                     slug, brand, brand_he, model, model_he, name, name_he, name_en,
@@ -57,7 +59,7 @@ export async function POST(req) {
                 ) RETURNING *
             `;
             const values = [
-                generatedSlug, data.brand || null, data.brand_he || null, data.model || null, data.model_he || null,
+                generatedSlug, trimmedBrand || null, data.brand_he || null, trimmedModel || null, data.model_he || null,
                 generatedName, data.name_he || null, data.name_en || null, data.description || null, data.description_he || null, data.description_en || null,
                 data.image_url || null, data.category || null, data.category_en || null, data.stock || 0, data.active ?? true, true, data.discovery_type || 'discovery_set',
                 data.single_price || null, data.volume_label || null, data.discount_percentage || null, 
@@ -68,6 +70,14 @@ export async function POST(req) {
                 null, null, null, data.image_url_2 || null, data.image_url_3 || null, data.show_on_home ?? true
             ];
             const res = await client.query(query, values);
+            
+            if (trimmedBrand) {
+                await client.query(`
+                    INSERT INTO brands (name) VALUES ($1)
+                    ON CONFLICT (name) DO NOTHING
+                `, [trimmedBrand]);
+            }
+
             return NextResponse.json(res.rows[0]);
         } finally {
             client.release();
@@ -93,7 +103,9 @@ export async function PUT(req) {
 
         const client = await pool.connect();
         try {
-            const generatedName = data.name || `${data.brand || ''} - ${data.model || ''}`.trim();
+            const trimmedBrand = (data.brand || '').trim();
+            const trimmedModel = (data.model || '').trim();
+            const generatedName = data.name || `${trimmedBrand} - ${trimmedModel}`.trim();
             const query = `
                 UPDATE products SET
                     brand = $1, brand_he = $2, model = $3, model_he = $4,
@@ -107,7 +119,7 @@ export async function PUT(req) {
                 RETURNING *
             `;
             const values = [
-                data.brand || null, data.brand_he || null, data.model || null, data.model_he || null,
+                trimmedBrand || null, data.brand_he || null, trimmedModel || null, data.model_he || null,
                 generatedName || null, data.name_he || null, data.name_en || null, data.description || null,
                 data.description_he || null, data.description_en || null, data.image_url || null,
                 data.category || null, data.category_en || null, data.stock || 0, data.active ?? true,
@@ -118,6 +130,14 @@ export async function PUT(req) {
             ];
             const res = await client.query(query, values);
             if (res.rows.length === 0) return NextResponse.json({ error: 'Not found' }, { status: 404 });
+            
+            if (trimmedBrand) {
+                await client.query(`
+                    INSERT INTO brands (name) VALUES ($1)
+                    ON CONFLICT (name) DO NOTHING
+                `, [trimmedBrand]);
+            }
+
             return NextResponse.json(res.rows[0]);
         } finally {
             client.release();
