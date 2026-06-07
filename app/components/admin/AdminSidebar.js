@@ -146,13 +146,15 @@ export default function AdminSidebar({ role = 'customer' }) {
     const isActive = (path) => pathname === path || pathname.startsWith(`${path}/`);
 
     useEffect(() => {
-        const initialOpen = {};
-        navGroups.forEach((group, idx) => {
-            if (group.items.some(item => pathname === item.href || pathname.startsWith(`${item.href}/`))) {
-                initialOpen[idx] = true;
+        let found = false;
+        for (let idx = 0; idx < navGroups.length; idx++) {
+            if (navGroups[idx].items.some(item => pathname === item.href || pathname.startsWith(`${item.href}/`))) {
+                setOpenGroups({ [idx]: true });
+                found = true;
+                break;
             }
-        });
-        setOpenGroups(initialOpen);
+        }
+        if (!found) setOpenGroups({});
     }, [pathname]);
 
     const toggleGroup = (idx) => {

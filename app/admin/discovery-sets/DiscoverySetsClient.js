@@ -1,11 +1,10 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Plus, Search, Edit2, Trash2, Check, X, Image as ImageIcon, Wand2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import Image from "next/image";
-import { createPortal } from "react-dom";
 
 export default function DiscoverySetsClient({ products, initialSearch, canEdit }) {
     const router = useRouter();
@@ -244,7 +243,7 @@ export default function DiscoverySetsClient({ products, initialSearch, canEdit }
             </div>
 
             {/* Modal */}
-            {typeof document !== "undefined" && isModalOpen && createPortal(
+            {isModalOpen && (
                 <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm overflow-y-auto" dir="rtl">
                     <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl overflow-hidden my-auto flex flex-col max-h-[80vh]">
                         <div className="flex items-center justify-between p-6 border-b border-gray-100 bg-gray-50/50 shrink-0">
