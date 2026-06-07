@@ -24,7 +24,7 @@ export async function GET(req) {
             // Using a similarity threshold (e.g., > 0.2) or just order by similarity
             // It will handle typos like 'שנל' instead of 'שאנל'.
             const res = await client.query(`
-                SELECT id, name, brand, model, image_url, price_2ml, price_5ml, price_10ml, stock, slug,
+                SELECT id, name, brand, model, image_url, price_2ml, price_5ml, price_10ml, single_price, stock, slug,
                 discount_percentage, discount_sizes, discount_end_date,
                 GREATEST(similarity(name, $1), similarity(brand, $1), similarity(model, $1), similarity(name_he, $1)) as sim_score
                 FROM products 
@@ -64,7 +64,8 @@ export async function GET(req) {
                 const minPrice = Math.min(
                     getDiscountedPrice(2, product.price_2ml),
                     getDiscountedPrice(5, product.price_5ml),
-                    getDiscountedPrice(10, product.price_10ml)
+                    getDiscountedPrice(10, product.price_10ml),
+                    getDiscountedPrice(1, product.single_price)
                 );
 
                 return {
@@ -83,7 +84,8 @@ export async function GET(req) {
                     original_min_price: Math.min(
                         Number(product.price_2ml) || Infinity,
                         Number(product.price_5ml) || Infinity,
-                        Number(product.price_10ml) || Infinity
+                        Number(product.price_10ml) || Infinity,
+                        Number(product.single_price) || Infinity
                     ),
                     stock: product.stock
                 };
