@@ -50,7 +50,7 @@ export const sendEmail = async (to, subject, html, type = 'system', orderId = nu
                 ? 'https://www.ml-tlv.com/unsubscribe' 
                 : `https://www.ml-tlv.com/unsubscribe?email=${encodeURIComponent(finalTo)}`;
             const unsubscribeHtml = `
-                <div dir="rtl" style="margin-top: 40px; padding: 25px 20px; background-color: #fafafa; border-radius: 12px; text-align: center; font-family: 'Open Sans', 'Open Sans Hebrew', Arial, sans-serif;">
+                <div dir="rtl" style="margin-top: 5px; padding: 25px 20px; background-color: #fafafa; border-radius: 12px; text-align: center; font-family: 'Open Sans', 'Open Sans Hebrew', Arial, sans-serif;">
                     <p style="margin: 0 0 8px; font-size: 12px; color: #888;">
                         קיבלת מייל זה כי נרשמת לעדכונים מ-<strong>ml_tlv</strong>.
                     </p>
