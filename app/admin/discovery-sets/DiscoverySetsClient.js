@@ -10,6 +10,7 @@ import Image from "next/image";
 export default function DiscoverySetsClient({ products: initialProducts, initialSearch, canEdit }) {
     const router = useRouter();
     const [mounted, setMounted] = useState(false);
+    const [portalNode, setPortalNode] = useState(null);
     const [products, setProducts] = useState(initialProducts || []);
     const [search, setSearch] = useState(initialSearch);
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -18,7 +19,16 @@ export default function DiscoverySetsClient({ products: initialProducts, initial
     const [tempGen, setTempGen] = useState({ numberOfSamples: "", sampleSize: "" });
 
     useEffect(() => {
+        const node = document.createElement("div");
+        node.id = "discovery-sets-modal-root";
+        document.body.appendChild(node);
+        setPortalNode(node);
         setMounted(true);
+        return () => {
+            if (node && document.body.contains(node)) {
+                document.body.removeChild(node);
+            }
+        };
     }, []);
 
     const defaultForm = {
@@ -250,7 +260,7 @@ export default function DiscoverySetsClient({ products: initialProducts, initial
             </div>
 
             {/* Modal */}
-            {mounted && isModalOpen && createPortal(
+            {mounted && portalNode && isModalOpen && createPortal(
                 <div className="fixed inset-0 z-[100] flex items-center justify-center p-4" dir="rtl">
                     <div className="absolute inset-0 bg-black/60 backdrop-blur-sm" onClick={() => setIsModalOpen(false)}></div>
                     <div className="bg-white rounded-[2.5rem] shadow-2xl w-full max-w-2xl overflow-hidden my-auto flex flex-col max-h-[90vh] relative">
@@ -447,7 +457,7 @@ export default function DiscoverySetsClient({ products: initialProducts, initial
                             </button>
                         </div>
                     </div>
-                </div>
+                </div>, portalNode
             )}
         </div>
     );

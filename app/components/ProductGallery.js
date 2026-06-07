@@ -42,7 +42,9 @@ export default function ProductGallery({ product, locale, localizedName }) {
 
                 {product.stock > 0 && product.stock <= 20 && (
                     <span className="absolute top-16 end-4 bg-red-600 text-white text-sm font-bold px-3 py-1 rounded-full animate-pulse z-10 shadow-sm border border-red-500">
-                        {t('common.limited_stock')}
+                        {product.is_discovery_set 
+                            ? (locale === 'he' ? `נשארו ${product.stock} יחידות` : `Only ${product.stock} left`)
+                            : t('common.limited_stock')}
                     </span>
                 )}
 
