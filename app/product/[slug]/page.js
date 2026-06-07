@@ -221,8 +221,8 @@ export default async function ProductPage(props) {
         const searchPatterns = notesArray.length > 0 ? notesArray.map(n => `%${n}%`) : ['%NONE%'];
 
         const relatedRes = await pool.query(`
-            SELECT id, slug, name, brand, brand_he, model, model_he, image_url, price_2ml, price_5ml, price_10ml, stock, category, created_at,
-                   discount_percentage, discount_sizes, discount_end_date
+            SELECT id, slug, name, name_en, brand, brand_he, model, model_he, image_url, price_2ml, price_5ml, price_10ml, stock, category, category_en, created_at,
+                   discount_percentage, discount_sizes, discount_end_date, is_discovery_set, single_price, volume_label, volume_label_en
             FROM products 
             WHERE active = true AND id != $1
             AND (
@@ -245,8 +245,8 @@ export default async function ProductPage(props) {
         if (related.length < 4) {
             const excludeIds = [product.id, ...related.map(r => r.id)];
             const fillRes = await pool.query(`
-            SELECT id, slug, name, brand, brand_he, model, model_he, image_url, price_2ml, price_5ml, price_10ml, stock, category, created_at,
-                   discount_percentage, discount_sizes, discount_end_date
+            SELECT id, slug, name, name_en, brand, brand_he, model, model_he, image_url, price_2ml, price_5ml, price_10ml, stock, category, category_en, created_at,
+                   discount_percentage, discount_sizes, discount_end_date, is_discovery_set, single_price, volume_label, volume_label_en
             FROM products 
             WHERE active = true AND id != ALL($1)
             ORDER BY RANDOM()
