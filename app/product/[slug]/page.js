@@ -14,6 +14,7 @@ import Breadcrumbs from "../../components/Breadcrumbs";
 import BrandInsight from "../../components/BrandInsight";
 import ProductFAQ from "../../components/ProductFAQ";
 import { sanitizeProduct, sanitizeProductArray } from "../../lib/productUtils";
+import ProductGallery from "../../components/ProductGallery";
 
 
 import AdditionalDetails from "../../components/AdditionalDetails";
@@ -74,8 +75,7 @@ export async function generateMetadata(props) {
         
         // Lean query for metadata
         const res = await pool.query(`
-            SELECT id, slug, brand, brand_he, model, model_he, name, name_he, description, description_he, image_url, category, stock,
-                   discount_percentage, discount_sizes, discount_end_date
+            SELECT id, slug, brand, brand_he, model, model_he, name, name_he, description, description_he, image_url, image_url_2, image_url_3, category, stock, discount_percentage, discount_sizes, discount_end_date
             FROM products 
             WHERE slug = $1 OR id::text = $1 
             LIMIT 1
@@ -374,39 +374,13 @@ export default async function ProductPage(props) {
             </div>
 
             <div className="flex flex-col lg:flex-row gap-8 lg:gap-16">
-                {/* Image */}
-                <div className="w-full md:w-1/2 aspect-square bg-white rounded-xl flex items-center justify-center relative shadow-sm p-8 md:p-12 group">
-                    {product.image_url ? (
-                        <Image
-                            src={product.image_url}
-                            alt={locale === 'he' ? `דוגמית בושם ${localizedName_val} בנפח 2-10 מ"ל, בקבוקון זכוכית עם מתז - ml-tlv` : `${localizedName_val} perfume sample decant 2-10ml glass atomizer - ml-tlv`}
-                            fill
-                            priority
-                            className="object-contain p-8 md:p-12 hover:scale-105 transition-transform duration-500"
-                            sizes="(max-width: 768px) 100vw, 50vw"
-                        />
-                    ) : (
-                        <div className="text-6xl text-gray-300">🧴</div>
-                    )}
-
-                    <div className="absolute top-4 start-4 z-10">
-                        <WishlistHeart productId={product.id} />
-                    </div>
-
-                    <div className="absolute top-4 end-4 z-10">
-                        <ShareButton name={product.name} />
-                    </div>
-
-                    {product.stock > 0 && product.stock <= 20 && (
-                        <span className="absolute top-16 end-4 bg-red-600 text-white text-sm font-bold px-3 py-1 rounded-full animate-pulse z-10 shadow-sm border border-red-500">
-                            {t('common.limited_stock')}
-                        </span>
-                    )}
-
-                    <div className="absolute top-4 end-16 z-20">
-                        <SpotifyPlayer trackUrl={product.spotify_track_url} />
-                    </div>
-                </div>
+                {/* Image Gallery */}
+                <ProductGallery 
+                    product={product} 
+                    locale={locale} 
+                    localizedName={localizedName_val} 
+                    t={t} 
+                />
 
 
                 {/* Details */}

@@ -49,8 +49,10 @@ export async function PUT(req, { params }) {
                     country_en = COALESCE($31, country_en),
                     perfumers = COALESCE($32, perfumers),
                     perfumers_en = COALESCE($33, perfumers_en),
-                    discovery_type = COALESCE($34, discovery_type)
-                WHERE id = $35 AND is_discovery_set = true
+                    discovery_type = COALESCE($34, discovery_type),
+                    image_url_2 = COALESCE($35, image_url_2),
+                    image_url_3 = COALESCE($36, image_url_3)
+                WHERE id = $37 AND is_discovery_set = true
                 RETURNING *
             `;
             const values = [
@@ -62,6 +64,7 @@ export async function PUT(req, { params }) {
                 data.base_notes, data.base_notes_en, data.seasons, data.seasons_en,
                 data.country, data.country_en, data.perfumers, data.perfumers_en,
                 data.discovery_type,
+                data.image_url_2 || null, data.image_url_3 || null,
                 id
             ];
             

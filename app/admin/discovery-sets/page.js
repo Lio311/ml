@@ -18,7 +18,7 @@ export default async function AdminDiscoverySetsPage(props) {
     
     const client = await pool.connect();
     try {
-        let query = 'SELECT id, brand, model, name, image_url, description, stock, single_price, volume_label, show_on_home, active, slug FROM products WHERE is_discovery_set = true';
+        let query = 'SELECT id, brand, model, name, image_url, image_url_2, image_url_3, description, stock, single_price, volume_label, show_on_home, active, slug, discovery_type FROM products WHERE is_discovery_set = true';
         const params = [];
         
         if (search) {

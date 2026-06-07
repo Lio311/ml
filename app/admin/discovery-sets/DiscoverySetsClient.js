@@ -23,7 +23,9 @@ export default function DiscoverySetsClient({ products, initialSearch, canEdit }
         stock: 0,
         active: true,
         show_on_home: true,
-        discovery_type: "discovery_set"
+        discovery_type: "discovery_set",
+        image_url_2: "",
+        image_url_3: ""
     };
     const [form, setForm] = useState(defaultForm);
 
@@ -50,7 +52,9 @@ export default function DiscoverySetsClient({ products, initialSearch, canEdit }
             stock: product.stock || 0,
             active: product.active ?? true,
             show_on_home: product.show_on_home ?? true,
-            discovery_type: product.discovery_type || "discovery_set"
+            discovery_type: product.discovery_type || "discovery_set",
+            image_url_2: product.image_url_2 || "",
+            image_url_3: product.image_url_3 || ""
         });
         setIsModalOpen(true);
     };
@@ -282,11 +286,31 @@ export default function DiscoverySetsClient({ products, initialSearch, canEdit }
                                     />
                                 </div>
                                 <div>
-                                    <label className="block text-sm font-semibold text-gray-700 mb-1.5">קישור לתמונה</label>
+                                    <label className="block text-sm font-semibold text-gray-700 mb-1.5">קישור לתמונה ראשית</label>
                                     <input
                                         type="text"
                                         value={form.image_url}
                                         onChange={e => setForm({...form, image_url: e.target.value})}
+                                        className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                                        dir="ltr"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-semibold text-gray-700 mb-1.5">תמונה 2 (אופציונלי)</label>
+                                    <input
+                                        type="text"
+                                        value={form.image_url_2}
+                                        onChange={e => setForm({...form, image_url_2: e.target.value})}
+                                        className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
+                                        dir="ltr"
+                                    />
+                                </div>
+                                <div className="md:col-span-2">
+                                    <label className="block text-sm font-semibold text-gray-700 mb-1.5">תמונה 3 (אופציונלי)</label>
+                                    <input
+                                        type="text"
+                                        value={form.image_url_3}
+                                        onChange={e => setForm({...form, image_url_3: e.target.value})}
                                         className="w-full p-2.5 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                                         dir="ltr"
                                     />
