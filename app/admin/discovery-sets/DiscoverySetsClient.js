@@ -5,6 +5,7 @@ import { Plus, Search, Edit2, Trash2, Check, X, Image as ImageIcon, Wand2 } from
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import Image from "next/image";
+import { createPortal } from "react-dom";
 
 export default function DiscoverySetsClient({ products, initialSearch, canEdit }) {
     const router = useRouter();
@@ -243,8 +244,8 @@ export default function DiscoverySetsClient({ products, initialSearch, canEdit }
             </div>
 
             {/* Modal */}
-            {isModalOpen && (
-                <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm overflow-y-auto">
+            {typeof document !== "undefined" && isModalOpen && createPortal(
+                <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/50 p-4 backdrop-blur-sm overflow-y-auto" dir="rtl">
                     <div className="bg-white rounded-2xl shadow-xl w-full max-w-2xl overflow-hidden my-auto flex flex-col max-h-[80vh]">
                         <div className="flex items-center justify-between p-6 border-b border-gray-100 bg-gray-50/50 shrink-0">
                             <h2 className="text-xl font-bold text-gray-900">

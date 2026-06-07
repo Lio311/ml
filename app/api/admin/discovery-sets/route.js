@@ -38,6 +38,8 @@ export async function POST(req) {
         const data = await req.json();
         const client = await pool.connect();
         try {
+            const generatedSlug = data.slug || `${data.brand || 'brand'}-${data.model || 'model'}`.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+            const generatedName = data.name || `${data.brand || ''} - ${data.model || ''}`.trim();
             const query = `
                 INSERT INTO products (
                     slug, brand, brand_he, model, model_he, name, name_he, name_en,
@@ -55,8 +57,8 @@ export async function POST(req) {
                 ) RETURNING *
             `;
             const values = [
-                data.slug || null, data.brand || null, data.brand_he || null, data.model || null, data.model_he || null,
-                data.name || null, data.name_he || null, data.name_en || null, data.description || null, data.description_he || null, data.description_en || null,
+                generatedSlug, data.brand || null, data.brand_he || null, data.model || null, data.model_he || null,
+                generatedName, data.name_he || null, data.name_en || null, data.description || null, data.description_he || null, data.description_en || null,
                 data.image_url || null, data.category || null, data.category_en || null, data.stock || 0, data.active ?? true, true, data.discovery_type || 'discovery_set',
                 data.single_price || null, data.volume_label || null, data.discount_percentage || null, 
                 data.discount_sizes || null, data.discount_end_date || null,
