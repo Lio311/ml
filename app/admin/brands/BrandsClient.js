@@ -61,9 +61,11 @@ export default function AdminBrandsPage() {
     const ITEMS_PER_PAGE = 7;
 
     const filteredBrands = selectedLetter
-        ? brands.filter(brand => 
-            brand.name.trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().startsWith(selectedLetter.toLowerCase())
-          )
+        ? selectedLetter === 'NO_IMAGE'
+            ? brands.filter(brand => !brand.logo_url)
+            : brands.filter(brand => 
+                brand.name.trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().startsWith(selectedLetter.toLowerCase())
+              )
         : brands;
 
     // Pagination Logic
@@ -98,7 +100,7 @@ export default function AdminBrandsPage() {
                         <tbody>
                             {paginatedBrands.length === 0 ? (
                                 <tr>
-                                    <td colSpan="4" className="p-8 text-gray-500">לא נמצאו מותגים {selectedLetter ? `באות ${selectedLetter}` : ''}</td>
+                                    <td colSpan="4" className="p-8 text-gray-500">לא נמצאו מותגים {selectedLetter === 'NO_IMAGE' ? 'ללא תמונה' : selectedLetter ? `באות ${selectedLetter}` : ''}</td>
                                 </tr>
                             ) : (
                                 paginatedBrands.map(brand => (
@@ -165,7 +167,7 @@ export default function AdminBrandsPage() {
                 {/* Mobile View Card Layout */}
                 <div className="md:hidden divide-y divide-gray-100">
                     {paginatedBrands.length === 0 ? (
-                        <div className="p-8 text-center text-gray-500 text-sm">לא נמצאו מותגים {selectedLetter ? `באות ${selectedLetter}` : ''}</div>
+                        <div className="p-8 text-center text-gray-500 text-sm">לא נמצאו מותגים {selectedLetter === 'NO_IMAGE' ? 'ללא תמונה' : selectedLetter ? `באות ${selectedLetter}` : ''}</div>
                     ) : (
                         paginatedBrands.map(brand => (
                             <div key={brand.id} className="p-5 bg-white space-y-4">

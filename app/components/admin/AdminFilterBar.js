@@ -23,6 +23,15 @@ export default function AdminFilterBar({ selectedLetter, onSelect, className = "
             >
                 הכל
             </button>
+            <button
+                onClick={() => onSelect('NO_IMAGE')}
+                className={`px-3 py-1.5 rounded-lg text-[13px] font-bold border transition shrink-0 shadow-sm ${selectedLetter === 'NO_IMAGE'
+                        ? 'bg-black text-white border-black'
+                        : 'bg-white text-black border-gray-200 hover:border-black'
+                    }`}
+            >
+                ללא תמונה
+            </button>
             {alphabet.map(letter => (
                 <button
                     key={letter}
