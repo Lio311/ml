@@ -50,12 +50,12 @@ export const sendEmail = async (to, subject, html, type = 'system', orderId = nu
                 ? 'https://www.ml-tlv.com/unsubscribe' 
                 : `https://www.ml-tlv.com/unsubscribe?email=${encodeURIComponent(finalTo)}`;
             const unsubscribeHtml = `
-                <div dir="rtl" style="margin-top: 0px; padding: 10px 20px; background-color: #fafafa; border-radius: 12px; text-align: center; font-family: 'Open Sans', 'Open Sans Hebrew', Arial, sans-serif;">
-                    <p style="margin: 0 0 8px; font-size: 12px; color: #888;">
+                <div dir="rtl" style="margin-top: 5px; text-align: center; font-family: 'Open Sans', 'Open Sans Hebrew', Arial, sans-serif; color: #999;">
+                    <p style="margin: 0 0 4px; font-size: 11px;">
                         קיבלת מייל זה כי נרשמת לעדכונים מ-<strong>ml_tlv</strong>.
                     </p>
-                    <a href="${unsubscribeLink}" style="display: inline-block; font-size: 11px; color: #555; text-decoration: none; border-bottom: 1px dashed #ccc; padding-bottom: 2px; transition: color 0.2s;">
-                        להסרה מרשימת הדיוור (Unsubscribe)
+                    <a href="${unsubscribeLink}" dir="rtl" style="display: inline-block; font-size: 11px; color: #999; text-decoration: underline;">
+                        להסרה מרשימת התפוצה
                     </a>
                 </div>
             `;
@@ -354,9 +354,9 @@ export const getAdminOrderUpdatedTemplate = (orderId, customerName, total, deliv
     let changesHtml = '';
     if (changesSummary && changesSummary.length > 0) {
         changesHtml = `
-            <div style="background-color: #f8f8f8; padding: 15px; border-radius: 12px; margin-bottom: 20px;">
-                <h3 style="margin: 0 0 10px 0; font-size: 14px; font-weight: bold; color: #333;">פירוט השינויים שבוצעו:</h3>
-                <ul style="margin: 0; padding-right: 20px; color: #555; font-size: 14px; line-height: 1.8;">
+            <div style="background-color: #f0f9ff; border: 1px solid #bae6fd; padding: 20px; border-radius: 16px; margin-bottom: 25px;">
+                <h3 style="margin: 0 0 10px 0; font-size: 16px; font-weight: 900; color: #0284c7;">פירוט השינויים שבוצעו:</h3>
+                <ul style="margin: 0; padding-right: 20px; color: #0369a1; font-size: 14px; line-height: 1.8;">
                     ${changesSummary.map(change => `<li style="margin-bottom: 5px;">${change}</li>`).join('')}
                 </ul>
             </div>
@@ -364,15 +364,41 @@ export const getAdminOrderUpdatedTemplate = (orderId, customerName, total, deliv
     }
 
     return `
-        <div dir="rtl" style="font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto; line-height: 1.6; border: 1px solid #e5e5e5; border-radius: 12px; padding: 25px;">
-            <h2 style="margin-top: 0; color: #000;">הזמנה #${orderId} עודכנה על ידי מנהל</h2>
-            <p style="margin-bottom: 8px;"><strong>לקוח:</strong> ${customerName}</p>
-            <p style="margin-bottom: 8px;"><strong>סכום חדש:</strong> ${total} ₪</p>
-            <p style="margin-bottom: 20px;"><strong>שיטת מסירה:</strong> ${deliveryMethod === 'mail' ? 'משלוח' : 'איסוף עצמי'}</p>
-            
-            ${changesHtml}
-            
-            <p style="margin-top: 25px;"><a href="https://www.ml-tlv.com/admin/orders" style="display: inline-block; background: #000; color: #fff; padding: 10px 20px; text-decoration: none; border-radius: 6px;">למעבר לניהול הזמנות</a></p>
+        <div dir="rtl" style="font-family: 'Open Sans', 'Open Sans Hebrew', Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto; line-height: 1.6;">
+            <div style="background-color: #fff; padding: 30px; border-radius: 24px; border: 1px solid #f0f0f0; box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
+                <h1 style="margin: 0 0 10px; font-size: 24px; font-weight: 900; color: #000; text-align: center;">הזמנה #${orderId} עודכנה (מנהל)</h1>
+                
+                <div style="background-color: #fcfcfc; padding: 20px; border-radius: 16px; border: 1px solid #f5f5f5; margin-bottom: 25px;">
+                    <table style="width: 100%; border-collapse: collapse; font-size: 14px; color: #666;">
+                        <tr>
+                            <td style="padding: 8px 0; text-align: right;">לקוח:</td>
+                            <td style="padding: 8px 0; text-align: left;"><strong style="color: #000;">${customerName}</strong></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px 0; text-align: right;">שיטת מסירה:</td>
+                            <td style="padding: 8px 0; text-align: left;"><strong style="color: #000;">${deliveryMethod === 'mail' ? 'משלוח' : 'איסוף עצמי'}</strong></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" style="border-top: 1px dashed #e5e5e5; padding-top: 16px;"></td>
+                        </tr>
+                        <tr>
+                            <td style="font-size: 18px; font-weight: 900; color: #000; text-align: right;">סכום חדש:</td>
+                            <td style="font-size: 18px; font-weight: 900; color: #000; text-align: left;">${total} ₪</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                ${changesHtml}
+                
+                <div style="margin-top: 30px; text-align: center;">
+                    <a href="https://www.ml-tlv.com/admin/orders" style="display: inline-block; background-color: #000; color: #fff; padding: 16px 36px; text-decoration: none; border-radius: 18px; font-weight: 900; font-size: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); transition: transform 0.2s;">
+                        למעבר לניהול הזמנות
+                    </a>
+                </div>
+            </div>
+            <div style="text-align: center; padding-top: 15px; padding-bottom: 0; color: #aaa; font-size: 11px;">
+                ml_tlv Admin Notification
+            </div>
         </div>
     `;
 };
@@ -432,43 +458,100 @@ export const getUserWelcomeTemplate = (firstName) => {
 
 export const getAdminNewOrderTemplate = (orderId, customerName, total, items, deliveryMethod, shippingCost, phoneNumber, orderDate) => {
     const itemsContent = Array.isArray(items) ? items.map(item => `
-        <li style="margin-bottom: 8px; border-bottom: 1px solid #eee; padding-bottom: 8px;">
-            <strong style="color: #000;">${item.name || (item.brand + ' ' + item.model)}</strong>
-            <span style="color: #666; font-size: 14px;">(${item.size || ''}ml x${item.quantity || 1})</span>
+        <li style="margin-bottom: 12px; border-bottom: 1px solid #f0f0f0; padding-bottom: 12px; display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <strong style="color: #000; font-size: 14px;">${item.name || (item.brand + ' ' + item.model)}</strong>
+                <div style="color: #666; font-size: 12px; margin-top: 4px;">${item.size || ''} מ"ל</div>
+            </div>
+            <div style="font-weight: bold; background: #f8f8f8; padding: 4px 10px; border-radius: 8px; font-size: 14px;">x${item.quantity || 1}</div>
         </li>
     `).join('') : items;
 
     return `
-        <div dir="rtl" style="font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto; line-height: 1.6; border: 1px solid #e5e5e5; border-radius: 12px; padding: 25px;">
-            <h2 style="margin-top: 0; color: #000;">הזמנה חדשה! #${orderId} 🔥</h2>
-            
-            <div style="background-color: #f8f8f8; padding: 15px; border-radius: 12px; margin-bottom: 20px;">
-                <p style="margin: 0 0 8px 0;"><strong>תאריך:</strong> ${orderDate || ''}</p>
-                <p style="margin: 0 0 8px 0;"><strong>לקוח:</strong> ${customerName}</p>
-                <p style="margin: 0 0 8px 0;"><strong>טלפון:</strong> ${phoneNumber || 'לא הוזן'}</p>
-                <p style="margin: 0 0 8px 0;"><strong>שיטת משלוח:</strong> ${deliveryMethod}</p>
-                <p style="margin: 0; font-size: 18px; font-weight: bold; border-top: 1px solid #ddd; padding-top: 10px; margin-top: 10px;">סה"כ: ${total} ₪</p>
+        <div dir="rtl" style="font-family: 'Open Sans', 'Open Sans Hebrew', Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto; line-height: 1.6;">
+            <div style="background-color: #fff; padding: 30px; border-radius: 24px; border: 1px solid #f0f0f0; box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
+                <div style="text-align: center; margin-bottom: 25px;">
+                    <div style="display: inline-block; background-color: #fef08a; color: #854d0e; font-size: 12px; font-weight: 900; padding: 6px 12px; border-radius: 20px; margin-bottom: 15px;">הזמנה חדשה במערכת</div>
+                    <h1 style="margin: 0; font-size: 28px; font-weight: 900; color: #000;">הזמנה #${orderId}</h1>
+                </div>
+                
+                <div style="background-color: #fcfcfc; padding: 20px; border-radius: 16px; border: 1px solid #f5f5f5; margin-bottom: 25px;">
+                    <table style="width: 100%; border-collapse: collapse; font-size: 14px; color: #666;">
+                        <tr>
+                            <td style="padding: 8px 0; text-align: right;">תאריך:</td>
+                            <td style="padding: 8px 0; text-align: left;"><strong style="color: #000;">${orderDate || ''}</strong></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px 0; text-align: right;">לקוח:</td>
+                            <td style="padding: 8px 0; text-align: left;"><strong style="color: #000;">${customerName}</strong></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px 0; text-align: right;">טלפון:</td>
+                            <td style="padding: 8px 0; text-align: left;"><strong style="color: #000;" dir="ltr">${phoneNumber || 'לא הוזן'}</strong></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px 0; text-align: right;">שיטת משלוח:</td>
+                            <td style="padding: 8px 0; text-align: left;"><strong style="color: #000;">${deliveryMethod}</strong></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" style="border-top: 1px dashed #e5e5e5; padding-top: 16px;"></td>
+                        </tr>
+                        <tr>
+                            <td style="font-size: 18px; font-weight: 900; color: #000; text-align: right;">סה"כ שולם:</td>
+                            <td style="font-size: 18px; font-weight: 900; color: #16a34a; text-align: left;">${total} ₪</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div style="margin-bottom: 25px;">
+                    <h3 style="margin: 0 0 15px 0; font-size: 16px; font-weight: 900; color: #000; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px;">פירוט פריטים:</h3>
+                    <ul style="list-style: none; padding: 0; margin: 0;">${itemsContent}</ul>
+                </div>
+
+                <div style="margin-top: 30px; text-align: center;">
+                    <a href="https://www.ml-tlv.com/admin/orders" style="display: inline-block; background-color: #000; color: #fff; padding: 16px 36px; text-decoration: none; border-radius: 18px; font-weight: 900; font-size: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); transition: transform 0.2s;">
+                        לניהול ההזמנה במערכת
+                    </a>
+                </div>
             </div>
-
-            <h3 style="margin: 0 0 10px 0; font-size: 14px; font-weight: bold; color: #333;">פירוט הזמנה:</h3>
-            <ul style="list-style: none; padding: 0; margin: 0 0 20px 0;">${itemsContent}</ul>
-
-            <p style="margin-top: 25px;"><a href="https://www.ml-tlv.com/admin/orders" style="display: inline-block; background: #000; color: #fff; padding: 10px 20px; text-decoration: none; border-radius: 6px;">למעבר לניהול הזמנות</a></p>
+            <div style="text-align: center; padding-top: 15px; padding-bottom: 0; color: #aaa; font-size: 11px;">
+                ml_tlv Admin Notification
+            </div>
         </div>
     `;
 };
 
 export const getAdminNewUserTemplate = (user) => {
     return `
-        <div dir="rtl" style="font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto; line-height: 1.6; border: 1px solid #e5e5e5; border-radius: 12px; padding: 25px;">
-            <h2 style="margin-top: 0; color: #000;">משתמש חדש נרשם למערכת! ✨</h2>
-            
-            <div style="background-color: #f8f8f8; padding: 15px; border-radius: 12px; margin-top: 15px;">
-                <p style="margin: 0 0 8px 0;"><strong>שם:</strong> ${user.first_name || ''} ${user.last_name || ''}</p>
-                <p style="margin: 0;"><strong>אימייל:</strong> ${user.email}</p>
+        <div dir="rtl" style="font-family: 'Open Sans', 'Open Sans Hebrew', Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto; line-height: 1.6;">
+            <div style="background-color: #fff; padding: 30px; border-radius: 24px; border: 1px solid #f0f0f0; box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
+                <div style="text-align: center; margin-bottom: 25px;">
+                    <div style="display: inline-block; background-color: #dbeafe; color: #1e40af; font-size: 12px; font-weight: 900; padding: 6px 12px; border-radius: 20px; margin-bottom: 15px;">משתמש חדש במערכת</div>
+                    <h1 style="margin: 0; font-size: 24px; font-weight: 900; color: #000;">הצטרפות חדשה! ✨</h1>
+                </div>
+                
+                <div style="background-color: #fcfcfc; padding: 20px; border-radius: 16px; border: 1px solid #f5f5f5; margin-bottom: 25px;">
+                    <table style="width: 100%; border-collapse: collapse; font-size: 14px; color: #666;">
+                        <tr>
+                            <td style="padding: 10px 0; border-bottom: 1px solid #f0f0f0; text-align: right;">שם המשתמש:</td>
+                            <td style="padding: 10px 0; border-bottom: 1px solid #f0f0f0; text-align: left;"><strong style="color: #000;">${user.first_name || ''} ${user.last_name || ''}</strong></td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px 0; text-align: right;">אימייל:</td>
+                            <td style="padding: 10px 0; text-align: left;"><strong style="color: #000;" dir="ltr">${user.email}</strong></td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <div style="margin-top: 30px; text-align: center;">
+                    <a href="https://www.ml-tlv.com/admin/users" style="display: inline-block; background-color: #000; color: #fff; padding: 16px 36px; text-decoration: none; border-radius: 18px; font-weight: 900; font-size: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); transition: transform 0.2s;">
+                        לניהול משתמשים
+                    </a>
+                </div>
             </div>
-            
-            <p style="margin-top: 25px;"><a href="https://www.ml-tlv.com/admin/users" style="display: inline-block; background: #000; color: #fff; padding: 10px 20px; text-decoration: none; border-radius: 6px;">לניהול משתמשים</a></p>
+            <div style="text-align: center; padding-top: 15px; padding-bottom: 0; color: #aaa; font-size: 11px;">
+                ml_tlv Admin Notification
+            </div>
         </div>
     `;
 };
