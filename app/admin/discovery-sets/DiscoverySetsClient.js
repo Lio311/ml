@@ -327,7 +327,7 @@ export default function DiscoverySetsClient({ products, initialSearch, canEdit }
                                         dir="ltr"
                                     />
                                 </div>
-                                <div className="md:col-span-2">
+                                <div>
                                     <label className="block text-sm font-semibold text-gray-700 mb-1.5">תמונה 3 (אופציונלי)</label>
                                     <input
                                         type="text"
