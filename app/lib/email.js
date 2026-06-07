@@ -354,9 +354,9 @@ export const getAdminOrderUpdatedTemplate = (orderId, customerName, total, deliv
     let changesHtml = '';
     if (changesSummary && changesSummary.length > 0) {
         changesHtml = `
-            <div style="background-color: #f0f9ff; border: 1px solid #bae6fd; padding: 20px; border-radius: 16px; margin-bottom: 25px;">
-                <h3 style="margin: 0 0 10px 0; font-size: 16px; font-weight: 900; color: #0284c7;">פירוט השינויים שבוצעו:</h3>
-                <ul style="margin: 0; padding-right: 20px; color: #0369a1; font-size: 14px; line-height: 1.8;">
+            <div style="background-color: #f8f8f8; padding: 15px; border-radius: 12px; margin-bottom: 20px;">
+                <h3 style="margin: 0 0 10px 0; font-size: 14px; font-weight: bold; color: #333;">פירוט השינויים שבוצעו:</h3>
+                <ul style="margin: 0; padding-right: 20px; color: #555; font-size: 14px; line-height: 1.8;">
                     ${changesSummary.map(change => `<li style="margin-bottom: 5px;">${change}</li>`).join('')}
                 </ul>
             </div>
@@ -364,28 +364,15 @@ export const getAdminOrderUpdatedTemplate = (orderId, customerName, total, deliv
     }
 
     return `
-        <div dir="rtl" style="font-family: 'Open Sans', 'Open Sans Hebrew', Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto; line-height: 1.6;">
-            <div style="background-color: #fff; padding: 30px; border-radius: 24px; border: 1px solid #f0f0f0; box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
-                <h1 style="margin: 0 0 10px; font-size: 24px; font-weight: 900; color: #000; text-align: center;">הזמנה #${orderId} עודכנה</h1>
-                <p style="margin: 0 0 25px; color: #666; text-align: center;">עודכנה הזמנה על ידי מנהל במערכת</p>
-                
-                <div style="background-color: #f8f8f8; padding: 20px; border-radius: 16px; margin-bottom: 25px;">
-                    <div style="margin-bottom: 8px; font-size: 14px;"><span style="color: #888;">לקוח:</span> <strong style="color: #000;">${customerName}</strong></div>
-                    <div style="margin-bottom: 8px; font-size: 14px;"><span style="color: #888;">שיטת משלוח:</span> <strong style="color: #000;">${deliveryMethod === 'mail' ? 'משלוח' : 'איסוף עצמי'}</strong></div>
-                    <div style="font-size: 18px; font-weight: 900; border-top: 1px dashed #ddd; margin-top: 15px; padding-top: 15px; color: #000;">
-                        סכום חדש: ${total} ₪
-                    </div>
-                </div>
-                
-                ${changesHtml}
-                
-                <div style="text-align: center; margin-top: 30px;">
-                    <a href="https://www.ml-tlv.com/admin/orders" style="display: inline-block; background-color: #000; color: #fff; padding: 16px 32px; text-decoration: none; border-radius: 16px; font-weight: 900; font-size: 14px;">לניהול הזמנות</a>
-                </div>
-            </div>
-            <div style="text-align: center; padding: 30px 0; color: #ccc; font-size: 11px;">
-                ml - יוקרה בחתיכות קטנות
-            </div>
+        <div dir="rtl" style="font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto; line-height: 1.6; border: 1px solid #e5e5e5; border-radius: 12px; padding: 25px;">
+            <h2 style="margin-top: 0; color: #000;">הזמנה #${orderId} עודכנה על ידי מנהל</h2>
+            <p style="margin-bottom: 8px;"><strong>לקוח:</strong> ${customerName}</p>
+            <p style="margin-bottom: 8px;"><strong>סכום חדש:</strong> ${total} ₪</p>
+            <p style="margin-bottom: 20px;"><strong>שיטת מסירה:</strong> ${deliveryMethod === 'mail' ? 'משלוח' : 'איסוף עצמי'}</p>
+            
+            ${changesHtml}
+            
+            <p style="margin-top: 25px;"><a href="https://www.ml-tlv.com/admin/orders" style="display: inline-block; background: #000; color: #fff; padding: 10px 20px; text-decoration: none; border-radius: 6px;">למעבר לניהול הזמנות</a></p>
         </div>
     `;
 };
@@ -445,59 +432,43 @@ export const getUserWelcomeTemplate = (firstName) => {
 
 export const getAdminNewOrderTemplate = (orderId, customerName, total, items, deliveryMethod, shippingCost, phoneNumber, orderDate) => {
     const itemsContent = Array.isArray(items) ? items.map(item => `
-        <li style="margin-bottom: 12px; border-bottom: 1px solid #f0f0f0; padding-bottom: 12px; display: table; width: 100%;">
-            ${item.image_url ? `<div style="display: table-cell; vertical-align: middle; width: 50px;"><img src="${getAbsoluteImageUrl(item.image_url)}" width="40" style="border-radius: 6px; border: 1px solid #f0f0f0; height: auto; max-height: 40px; object-fit: contain;" alt="product" /></div>` : ''}
-            <div style="display: table-cell; vertical-align: middle;">
-                <span style="font-weight: 900; color: #000;">${item.name || (item.brand + ' ' + item.model)}</span>
-                <div style="font-size: 12px; color: #666;">${item.size || ''}ml x${item.quantity || 1}</div>
-            </div>
+        <li style="margin-bottom: 8px; border-bottom: 1px solid #eee; padding-bottom: 8px;">
+            <strong style="color: #000;">${item.name || (item.brand + ' ' + item.model)}</strong>
+            <span style="color: #666; font-size: 14px;">(${item.size || ''}ml x${item.quantity || 1})</span>
         </li>
     `).join('') : items;
 
     return `
-        <div dir="rtl" style="font-family: 'Open Sans', 'Open Sans Hebrew', Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto; line-height: 1.6;">
-
-            <div style="background-color: #fff; padding: 30px; border-radius: 24px; border: 1px solid #f0f0f0; box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
-                <h1 style="margin: 0 0 10px; font-size: 24px; font-weight: 900; color: #000; text-align: center;">הזמנה חדשה! 🔥</h1>
-                <p style="margin: 0 0 25px; color: #666; text-align: center;">התקבלה הזמנה חדשה #<strong>${orderId}</strong></p>
-                
-                <div style="background-color: #f8f8f8; padding: 20px; border-radius: 16px; margin-bottom: 25px;">
-                    <div style="margin-bottom: 8px; font-size: 14px;"><span style="color: #888;">תאריך שעה:</span> <strong style="color: #000;">${orderDate || ''}</strong></div>
-                    <div style="margin-bottom: 8px; font-size: 14px;"><span style="color: #888;">לקוח:</span> <strong style="color: #000;">${customerName}</strong></div>
-                    <div style="margin-bottom: 8px; font-size: 14px;"><span style="color: #888;">טלפון:</span> <strong style="color: #000;">${phoneNumber || 'לא הוזן'}</strong></div>
-                    <div style="margin-bottom: 8px; font-size: 14px;"><span style="color: #888;">שיטת משלוח:</span> <strong style="color: #000;">${deliveryMethod}</strong></div>
-                    <div style="font-size: 18px; font-weight: 900; border-top: 1px dashed #ddd; margin-top: 15px; padding-top: 15px; color: #000;">
-                        סה"כ לגבייה: ${total} ₪
-                    </div>
-                </div>
-
-                <div style="border: 1px solid #f0f0f0; padding: 20px; border-radius: 16px;">
-                    <h3 style="margin-top: 0; font-size: 12px; font-weight: 900; text-transform: uppercase; color: #999; letter-spacing: 1px;">פירוט הזמנה:</h3>
-                    <ul style="list-style: none; padding: 0; margin: 15px 0 0;">${itemsContent}</ul>
-                </div>
-
-                <div style="text-align: center; margin-top: 30px;">
-                    <a href="https://www.ml-tlv.com/admin/orders" style="display: inline-block; background-color: #000; color: #fff; padding: 16px 32px; text-decoration: none; border-radius: 16px; font-weight: 900; font-size: 14px;">לניהול ההזמנה במערכת</a>
-                </div>
+        <div dir="rtl" style="font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto; line-height: 1.6; border: 1px solid #e5e5e5; border-radius: 12px; padding: 25px;">
+            <h2 style="margin-top: 0; color: #000;">הזמנה חדשה! #${orderId} 🔥</h2>
+            
+            <div style="background-color: #f8f8f8; padding: 15px; border-radius: 12px; margin-bottom: 20px;">
+                <p style="margin: 0 0 8px 0;"><strong>תאריך:</strong> ${orderDate || ''}</p>
+                <p style="margin: 0 0 8px 0;"><strong>לקוח:</strong> ${customerName}</p>
+                <p style="margin: 0 0 8px 0;"><strong>טלפון:</strong> ${phoneNumber || 'לא הוזן'}</p>
+                <p style="margin: 0 0 8px 0;"><strong>שיטת משלוח:</strong> ${deliveryMethod}</p>
+                <p style="margin: 0; font-size: 18px; font-weight: bold; border-top: 1px solid #ddd; padding-top: 10px; margin-top: 10px;">סה"כ: ${total} ₪</p>
             </div>
+
+            <h3 style="margin: 0 0 10px 0; font-size: 14px; font-weight: bold; color: #333;">פירוט הזמנה:</h3>
+            <ul style="list-style: none; padding: 0; margin: 0 0 20px 0;">${itemsContent}</ul>
+
+            <p style="margin-top: 25px;"><a href="https://www.ml-tlv.com/admin/orders" style="display: inline-block; background: #000; color: #fff; padding: 10px 20px; text-decoration: none; border-radius: 6px;">למעבר לניהול הזמנות</a></p>
         </div>
     `;
 };
 
 export const getAdminNewUserTemplate = (user) => {
     return `
-        <div dir="rtl" style="font-family: 'Open Sans', 'Open Sans Hebrew', Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto; line-height: 1.6;">
-
-            <div style="background-color: #fff; padding: 30px; border-radius: 24px; border: 1px solid #f0f0f0; box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
-                <h1 style="margin: 0 0 10px; font-size: 22px; font-weight: 900; color: #000; text-align: center;">משתמש חדש נרשם! ✨</h1>
-                <div style="background-color: #f8f8f8; padding: 20px; border-radius: 16px; margin-top: 20px; text-align: center;">
-                    <p style="margin: 5px 0; font-size: 18px; font-weight: 900; color: #000;">${user.first_name || ''} ${user.last_name || ''}</p>
-                    <p style="margin: 5px 0; color: #666;">${user.email}</p>
-                </div>
-                <div style="text-align: center; margin-top: 30px;">
-                    <a href="https://www.ml-tlv.com/admin/users" style="display: inline-block; background-color: #000; color: #fff; padding: 14px 28px; text-decoration: none; border-radius: 14px; font-weight: 900; font-size: 14px;">לניהול משתמשים</a>
-                </div>
+        <div dir="rtl" style="font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto; line-height: 1.6; border: 1px solid #e5e5e5; border-radius: 12px; padding: 25px;">
+            <h2 style="margin-top: 0; color: #000;">משתמש חדש נרשם למערכת! ✨</h2>
+            
+            <div style="background-color: #f8f8f8; padding: 15px; border-radius: 12px; margin-top: 15px;">
+                <p style="margin: 0 0 8px 0;"><strong>שם:</strong> ${user.first_name || ''} ${user.last_name || ''}</p>
+                <p style="margin: 0;"><strong>אימייל:</strong> ${user.email}</p>
             </div>
+            
+            <p style="margin-top: 25px;"><a href="https://www.ml-tlv.com/admin/users" style="display: inline-block; background: #000; color: #fff; padding: 10px 20px; text-decoration: none; border-radius: 6px;">לניהול משתמשים</a></p>
         </div>
     `;
 };
@@ -657,18 +628,16 @@ export function getSystemDefaults() {
         'contact_form_alert': {
             subject: 'פנייה חדשה מהאתר: {{name}}',
             content_html: `
-        <div dir="rtl" style="font-family: 'Open Sans', 'Open Sans Hebrew', Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto; line-height: 1.6;">
-            <div style="background-color: #fff; padding: 30px; border-radius: 24px; border: 1px solid #f0f0f0; box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
-                <h1 style="margin: 0 0 15px; font-size: 22px; font-weight: 900; color: #000; text-align: center;">פנייה חדשה מהאתר</h1>
-                <div style="background-color: #f8f8f8; padding: 20px; border-radius: 16px; margin-bottom: 25px;">
-                    <div style="margin-bottom: 10px; font-size: 14px;"><span style="color: #888;">מאת:</span> <strong style="color: #000;">{{name}}</strong></div>
-                    <div style="margin-bottom: 10px; font-size: 14px;"><span style="color: #888;">אימייל:</span> <strong style="color: #000;">{{email}}</strong></div>
-                </div>
-            <div style="background-color: #fff; border: 1px solid #eee; padding: 20px; border-radius: 16px;">
-                    <h3 style="margin-top: 0; font-size: 12px; font-weight: 900; color: #999; text-transform: uppercase;">תוכן ההודעה:</h3>
-                    <div style="white-space: pre-wrap; font-size: 15px; color: #333;">{{message}}</div>
-                </div>
+        <div dir="rtl" style="font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto; line-height: 1.6; border: 1px solid #e5e5e5; border-radius: 12px; padding: 25px;">
+            <h2 style="margin-top: 0; color: #000;">פנייה חדשה מהאתר</h2>
+            
+            <div style="background-color: #f8f8f8; padding: 15px; border-radius: 12px; margin-bottom: 20px;">
+                <p style="margin: 0 0 8px 0;"><strong>מאת:</strong> {{name}}</p>
+                <p style="margin: 0;"><strong>אימייל:</strong> {{email}}</p>
             </div>
+            
+            <h3 style="margin: 0 0 10px 0; font-size: 14px; font-weight: bold; color: #333;">תוכן ההודעה:</h3>
+            <div style="white-space: pre-wrap; background-color: #fff; border: 1px solid #ddd; padding: 15px; border-radius: 8px;">{{message}}</div>
         </div>`
         },
         'educational': {
