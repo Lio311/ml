@@ -65,6 +65,7 @@ const navGroups = [
         title: "מלאי",
         items: [
             { href: "/admin/products", label: "מוצרים", icon: FlaskConical, roles: ['admin', 'deputy'] },
+            { href: "/admin/discovery-sets", label: "דיסקברי ודוגמיות", icon: Package, roles: ['admin', 'deputy'] },
             { href: "/admin/procurement", label: "רכש", icon: TrendingUp, roles: ['admin', 'deputy'] },
             { href: "/admin/back-in-stock", label: "חזרה למלאי", icon: Bell, roles: ['admin', 'deputy'] },
             { href: "/admin/inventory", label: "בקבוקונים", icon: TestTube, roles: ['admin', 'deputy'] },

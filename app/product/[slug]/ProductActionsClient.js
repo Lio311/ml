@@ -134,57 +134,77 @@ export default function ProductActionsClient({ product }) {
 
     return (
         <div className={`space-y-4 ${dir === 'rtl' ? 'text-right' : 'text-left'}`} dir={dir}>
-            <div className="flex items-center justify-between p-3 border rounded-lg bg-white hover:border-black transition cursor-pointer" onClick={() => handleAdd(2, product.price_2ml)}>
-                <span className="font-bold">2 {t('common.ml_unit')}</span>
-                <div className="flex items-center gap-4">
-                    {getDiscountedPrice(2, product.price_2ml) !== product.price_2ml ? (
-                        <div className="flex flex-col items-end">
-                            <span className="text-[10px] text-gray-400 line-through leading-none">{product.price_2ml} ₪</span>
-                            <span className="font-black text-green-600 leading-none">{getDiscountedPrice(2, product.price_2ml)} ₪</span>
+            {product.is_discovery_set ? (
+                <div className="flex items-center justify-between p-3 border rounded-lg bg-white hover:border-black transition cursor-pointer" onClick={() => handleAdd('1', product.single_price)}>
+                    <span className="font-bold">{product.volume_label || (dir === 'rtl' ? 'יחידה' : 'Unit')}</span>
+                    <div className="flex items-center gap-4">
+                        {getDiscountedPrice('1', product.single_price) !== product.single_price ? (
+                            <div className="flex flex-col items-end">
+                                <span className="text-[10px] text-gray-400 line-through leading-none">{product.single_price} ₪</span>
+                                <span className="font-black text-green-600 leading-none">{getDiscountedPrice('1', product.single_price)} ₪</span>
+                            </div>
+                        ) : (
+                            <span>{product.single_price} ₪</span>
+                        )}
+                        <div className={`w-8 h-8 rounded-full grid place-items-center transition ${addedId === '1' ? 'bg-green-500 text-white' : 'bg-black text-white hover:bg-gray-800'}`}>
+                            {addedId === '1' ? <Check size={14} strokeWidth={2.5} /> : <Plus size={14} strokeWidth={2.5} />}
                         </div>
-                    ) : (
-                        <span>{product.price_2ml} ₪</span>
-                    )}
-                    <div className={`w-8 h-8 rounded-full grid place-items-center transition ${addedId === 2 ? 'bg-green-500 text-white' : 'bg-black text-white hover:bg-gray-800'}`}>
-                        {addedId === 2 ? <Check size={14} strokeWidth={2.5} /> : <Plus size={14} strokeWidth={2.5} />}
                     </div>
                 </div>
-            </div>
-
-            <div className="flex items-center justify-between p-3 border rounded-lg bg-white hover:border-black transition cursor-pointer" onClick={() => handleAdd(5, product.price_5ml)}>
-                <span className="font-bold">5 {t('common.ml_unit')}</span>
-                <div className="flex items-center gap-4">
-                    {getDiscountedPrice(5, product.price_5ml) !== product.price_5ml ? (
-                        <div className="flex flex-col items-end">
-                            <span className="text-[10px] text-gray-400 line-through leading-none">{product.price_5ml} ₪</span>
-                            <span className="font-black text-green-600 leading-none">{getDiscountedPrice(5, product.price_5ml)} ₪</span>
+            ) : (
+                <>
+                    <div className="flex items-center justify-between p-3 border rounded-lg bg-white hover:border-black transition cursor-pointer" onClick={() => handleAdd(2, product.price_2ml)}>
+                        <span className="font-bold">2 {t('common.ml_unit')}</span>
+                        <div className="flex items-center gap-4">
+                            {getDiscountedPrice(2, product.price_2ml) !== product.price_2ml ? (
+                                <div className="flex flex-col items-end">
+                                    <span className="text-[10px] text-gray-400 line-through leading-none">{product.price_2ml} ₪</span>
+                                    <span className="font-black text-green-600 leading-none">{getDiscountedPrice(2, product.price_2ml)} ₪</span>
+                                </div>
+                            ) : (
+                                <span>{product.price_2ml} ₪</span>
+                            )}
+                            <div className={`w-8 h-8 rounded-full grid place-items-center transition ${addedId === 2 ? 'bg-green-500 text-white' : 'bg-black text-white hover:bg-gray-800'}`}>
+                                {addedId === 2 ? <Check size={14} strokeWidth={2.5} /> : <Plus size={14} strokeWidth={2.5} />}
+                            </div>
                         </div>
-                    ) : (
-                        <span>{product.price_5ml} ₪</span>
-                    )}
-                    <div className={`w-8 h-8 rounded-full grid place-items-center transition ${addedId === 5 ? 'bg-green-500 text-white' : 'bg-black text-white hover:bg-gray-800'}`}>
-                        {addedId === 5 ? <Check size={14} strokeWidth={2.5} /> : <Plus size={14} strokeWidth={2.5} />}
                     </div>
-                </div>
-            </div>
 
-            <div className="flex items-center justify-between p-3 border rounded-lg bg-white hover:border-black transition cursor-pointer" onClick={() => handleAdd(10, product.price_10ml)}>
-                <span className="font-bold">10 {t('common.ml_unit')}</span>
-                <div className="flex items-center gap-4">
-                    {getDiscountedPrice(10, product.price_10ml) !== product.price_10ml ? (
-                        <div className="flex flex-col items-end">
-                            <span className="text-[10px] text-gray-400 line-through leading-none">{product.price_10ml} ₪</span>
-                            <span className="font-black text-green-600 leading-none">{getDiscountedPrice(10, product.price_10ml)} ₪</span>
+                    <div className="flex items-center justify-between p-3 border rounded-lg bg-white hover:border-black transition cursor-pointer" onClick={() => handleAdd(5, product.price_5ml)}>
+                        <span className="font-bold">5 {t('common.ml_unit')}</span>
+                        <div className="flex items-center gap-4">
+                            {getDiscountedPrice(5, product.price_5ml) !== product.price_5ml ? (
+                                <div className="flex flex-col items-end">
+                                    <span className="text-[10px] text-gray-400 line-through leading-none">{product.price_5ml} ₪</span>
+                                    <span className="font-black text-green-600 leading-none">{getDiscountedPrice(5, product.price_5ml)} ₪</span>
+                                </div>
+                            ) : (
+                                <span>{product.price_5ml} ₪</span>
+                            )}
+                            <div className={`w-8 h-8 rounded-full grid place-items-center transition ${addedId === 5 ? 'bg-green-500 text-white' : 'bg-black text-white hover:bg-gray-800'}`}>
+                                {addedId === 5 ? <Check size={14} strokeWidth={2.5} /> : <Plus size={14} strokeWidth={2.5} />}
+                            </div>
                         </div>
-                    ) : (
-                        <span>{product.price_10ml} ₪</span>
-                    )}
-                    <div className={`w-8 h-8 rounded-full grid place-items-center transition ${addedId === 10 ? 'bg-green-500 text-white' : 'bg-black text-white hover:bg-gray-800'}`}>
-                        {addedId === 10 ? <Check size={14} strokeWidth={2.5} /> : <Plus size={14} strokeWidth={2.5} />}
                     </div>
-                </div>
-            </div>
 
+                    <div className="flex items-center justify-between p-3 border rounded-lg bg-white hover:border-black transition cursor-pointer" onClick={() => handleAdd(10, product.price_10ml)}>
+                        <span className="font-bold">10 {t('common.ml_unit')}</span>
+                        <div className="flex items-center gap-4">
+                            {getDiscountedPrice(10, product.price_10ml) !== product.price_10ml ? (
+                                <div className="flex flex-col items-end">
+                                    <span className="text-[10px] text-gray-400 line-through leading-none">{product.price_10ml} ₪</span>
+                                    <span className="font-black text-green-600 leading-none">{getDiscountedPrice(10, product.price_10ml)} ₪</span>
+                                </div>
+                            ) : (
+                                <span>{product.price_10ml} ₪</span>
+                            )}
+                            <div className={`w-8 h-8 rounded-full grid place-items-center transition ${addedId === 10 ? 'bg-green-500 text-white' : 'bg-black text-white hover:bg-gray-800'}`}>
+                                {addedId === 10 ? <Check size={14} strokeWidth={2.5} /> : <Plus size={14} strokeWidth={2.5} />}
+                            </div>
+                        </div>
+                    </div>
+                </>
+            )}
         </div>
     );
 }

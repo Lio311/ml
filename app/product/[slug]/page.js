@@ -162,7 +162,9 @@ export default async function ProductPage(props) {
                    p.description, p.description_he, p.description_en, p.image_url, p.category, p.category_en, 
                    p.stock, p.top_notes, p.top_notes_en, p.middle_notes, p.middle_notes_en, p.base_notes, p.base_notes_en, 
                    p.price_2ml, p.price_5ml, p.price_10ml, p.seasons, p.seasons_en, p.country, p.country_en, 
-                   p.perfumers, p.perfumers_en, p.discount_percentage, p.discount_sizes, p.discount_end_date, p.spotify_track_url, b.logo_url, b.title_en, b.description_en as brand_description_en, 
+                   p.perfumers, p.perfumers_en, p.discount_percentage, p.discount_sizes, p.discount_end_date, p.spotify_track_url,
+                   p.is_discovery_set, p.single_price, p.volume_label,
+                   b.logo_url, b.title_en, b.description_en as brand_description_en, 
                    b.highlights_en as brand_highlights_en, b.perfumer_en as brand_perfumer_en,
                    (SELECT AVG(rating) FROM reviews WHERE product_id = p.id) as average_rating,
                    (SELECT COUNT(*) FROM reviews WHERE product_id = p.id) as review_count
@@ -320,7 +322,7 @@ export default async function ProductPage(props) {
         "sku": `ML${product.id}`,
         "mpn": `ML${product.id}`,
         "brand": { "@type": "Brand", "name": product.brand },
-        "offers": [
+        "offers": product.is_discovery_set && product.single_price ? [buildOffer(product.volume_label || 'Unit', product.single_price)] : [
             ...(product.price_2ml ? [buildOffer(2, product.price_2ml)] : []),
             ...(product.price_5ml ? [buildOffer(5, product.price_5ml)] : []),
             ...(product.price_10ml ? [buildOffer(10, product.price_10ml)] : []),

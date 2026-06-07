@@ -201,26 +201,26 @@ export default function ProductCard({ product }) {
                 </Link>
 
                 <div className="mt-auto space-y-2">
-                    {Number(product.price_2ml) > 0 && (
+                    {product.is_discovery_set ? (
                         <div className="flex items-center justify-between text-xs text-gray-600">
-                            <span>2 {t('common.ml_unit')}</span>
+                            <span className="truncate max-w-[120px]">{product.volume_label || (dir === 'rtl' ? 'יחידה' : 'Unit')}</span>
                             <div className="flex items-center gap-2">
-                                {getDiscountedPrice(product, 2, product.price_2ml) !== product.price_2ml ? (
+                                {getDiscountedPrice(product, '1', product.single_price) !== product.single_price ? (
                                     <div className="flex flex-col items-end">
-                                        <span className="text-[10px] text-gray-400 line-through leading-none">{product.price_2ml} ₪</span>
-                                        <span className="font-black text-green-600">{getDiscountedPrice(product, 2, product.price_2ml)} ₪</span>
+                                        <span className="text-[10px] text-gray-400 line-through leading-none">{product.single_price} ₪</span>
+                                        <span className="font-black text-green-600">{getDiscountedPrice(product, '1', product.single_price)} ₪</span>
                                     </div>
                                 ) : (
-                                    <span className="font-bold">{product.price_2ml} ₪</span>
+                                    <span className="font-bold">{product.single_price} ₪</span>
                                 )}
                                 <motion.button
                                     whileHover={{ scale: 1.15 }}
                                     whileTap={{ scale: 0.85 }}
-                                    onClick={() => handleAdd(2, product.price_2ml)}
-                                    className={`w-6 h-6 rounded flex items-center justify-center transition shadow-sm ${addedSize === 2 ? 'bg-green-500 text-white' : 'bg-gray-100 hover:bg-black hover:text-white'}`}
+                                    onClick={() => handleAdd('1', product.single_price)}
+                                    className={`w-6 h-6 rounded flex items-center justify-center transition shadow-sm ${addedSize === '1' ? 'bg-green-500 text-white' : 'bg-gray-100 hover:bg-black hover:text-white'}`}
                                     title={t('common.add_to_cart')}
                                 >
-                                    {addedSize === 2 ? (
+                                    {addedSize === '1' ? (
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor" className="w-3.5 h-3.5">
                                             <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
                                         </svg>
@@ -228,64 +228,95 @@ export default function ProductCard({ product }) {
                                 </motion.button>
                             </div>
                         </div>
-                    )}
+                    ) : (
+                        <>
+                            {Number(product.price_2ml) > 0 && (
+                                <div className="flex items-center justify-between text-xs text-gray-600">
+                                    <span>2 {t('common.ml_unit')}</span>
+                                    <div className="flex items-center gap-2">
+                                        {getDiscountedPrice(product, 2, product.price_2ml) !== product.price_2ml ? (
+                                            <div className="flex flex-col items-end">
+                                                <span className="text-[10px] text-gray-400 line-through leading-none">{product.price_2ml} ₪</span>
+                                                <span className="font-black text-green-600">{getDiscountedPrice(product, 2, product.price_2ml)} ₪</span>
+                                            </div>
+                                        ) : (
+                                            <span className="font-bold">{product.price_2ml} ₪</span>
+                                        )}
+                                        <motion.button
+                                            whileHover={{ scale: 1.15 }}
+                                            whileTap={{ scale: 0.85 }}
+                                            onClick={() => handleAdd(2, product.price_2ml)}
+                                            className={`w-6 h-6 rounded flex items-center justify-center transition shadow-sm ${addedSize === 2 ? 'bg-green-500 text-white' : 'bg-gray-100 hover:bg-black hover:text-white'}`}
+                                            title={t('common.add_to_cart')}
+                                        >
+                                            {addedSize === 2 ? (
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor" className="w-3.5 h-3.5">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                                                </svg>
+                                            ) : '+'}
+                                        </motion.button>
+                                    </div>
+                                </div>
+                            )}
 
-                    {Number(product.price_5ml) > 0 && (
-                        <div className="flex items-center justify-between text-xs text-gray-600">
-                            <span>5 {t('common.ml_unit')}</span>
-                            <div className="flex items-center gap-2">
-                                {getDiscountedPrice(product, 5, product.price_5ml) !== product.price_5ml ? (
-                                    <div className="flex flex-col items-end">
-                                        <span className="text-[10px] text-gray-400 line-through leading-none">{product.price_5ml} ₪</span>
-                                        <span className="font-black text-green-600">{getDiscountedPrice(product, 5, product.price_5ml)} ₪</span>
+                            {Number(product.price_5ml) > 0 && (
+                                <div className="flex items-center justify-between text-xs text-gray-600">
+                                    <span>5 {t('common.ml_unit')}</span>
+                                    <div className="flex items-center gap-2">
+                                        {getDiscountedPrice(product, 5, product.price_5ml) !== product.price_5ml ? (
+                                            <div className="flex flex-col items-end">
+                                                <span className="text-[10px] text-gray-400 line-through leading-none">{product.price_5ml} ₪</span>
+                                                <span className="font-black text-green-600">{getDiscountedPrice(product, 5, product.price_5ml)} ₪</span>
+                                            </div>
+                                        ) : (
+                                            <span className="font-bold">{product.price_5ml} ₪</span>
+                                        )}
+                                        <motion.button
+                                            whileHover={{ scale: 1.15 }}
+                                            whileTap={{ scale: 0.85 }}
+                                            onClick={() => handleAdd(5, product.price_5ml)}
+                                            className={`w-6 h-6 rounded flex items-center justify-center transition shadow-sm ${addedSize === 5 ? 'bg-green-500 text-white' : 'bg-gray-100 hover:bg-black hover:text-white'}`}
+                                            title={t('common.add_to_cart')}
+                                        >
+                                            {addedSize === 5 ? (
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor" className="w-3.5 h-3.5">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                                                </svg>
+                                            ) : '+'}
+                                        </motion.button>
                                     </div>
-                                ) : (
-                                    <span className="font-bold">{product.price_5ml} ₪</span>
-                                )}
-                                <motion.button
-                                    whileHover={{ scale: 1.15 }}
-                                    whileTap={{ scale: 0.85 }}
-                                    onClick={() => handleAdd(5, product.price_5ml)}
-                                    className={`w-6 h-6 rounded flex items-center justify-center transition shadow-sm ${addedSize === 5 ? 'bg-green-500 text-white' : 'bg-gray-100 hover:bg-black hover:text-white'}`}
-                                    title={t('common.add_to_cart')}
-                                >
-                                    {addedSize === 5 ? (
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor" className="w-3.5 h-3.5">
-                                            <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
-                                        </svg>
-                                    ) : '+'}
-                                </motion.button>
-                            </div>
-                        </div>
-                    )}
+                                </div>
+                            )}
 
-                    {Number(product.price_10ml) > 0 && (
-                        <div className="flex items-center justify-between text-xs text-gray-600">
-                            <span>10 {t('common.ml_unit')}</span>
-                            <div className="flex items-center gap-2">
-                                {getDiscountedPrice(product, 10, product.price_10ml) !== product.price_10ml ? (
-                                    <div className="flex flex-col items-end">
-                                        <span className="text-[10px] text-gray-400 line-through leading-none">{product.price_10ml} ₪</span>
-                                        <span className="font-black text-green-600">{getDiscountedPrice(product, 10, product.price_10ml)} ₪</span>
+                            {Number(product.price_10ml) > 0 && (
+                                <div className="flex items-center justify-between text-xs text-gray-600">
+                                    <span>10 {t('common.ml_unit')}</span>
+                                    <div className="flex items-center gap-2">
+                                        {getDiscountedPrice(product, 10, product.price_10ml) !== product.price_10ml ? (
+                                            <div className="flex flex-col items-end">
+                                                <span className="text-[10px] text-gray-400 line-through leading-none">{product.price_10ml} ₪</span>
+                                                <span className="font-black text-green-600">{getDiscountedPrice(product, 10, product.price_10ml)} ₪</span>
+                                            </div>
+                                        ) : (
+                                            <span className="font-bold">{product.price_10ml} ₪</span>
+                                        )}
+                                        <motion.button
+                                            whileHover={{ scale: 1.15 }}
+                                            whileTap={{ scale: 0.85 }}
+                                            onClick={() => handleAdd(10, product.price_10ml)}
+                                            className={`w-6 h-6 rounded flex items-center justify-center transition shadow-sm ${addedSize === 10 ? 'bg-green-500 text-white' : 'bg-gray-100 hover:bg-black hover:text-white'}`}
+                                            title={t('common.add_to_cart')}
+                                        >
+                                            {addedSize === 10 ? (
+                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor" className="w-3.5 h-3.5">
+                                                    <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
+                                                </svg>
+                                            ) : '+'}
+                                        </motion.button>
                                     </div>
-                                ) : (
-                                    <span className="font-bold">{product.price_10ml} ₪</span>
-                                )}
-                                <motion.button
-                                    whileHover={{ scale: 1.15 }}
-                                    whileTap={{ scale: 0.85 }}
-                                    onClick={() => handleAdd(10, product.price_10ml)}
-                                    className={`w-6 h-6 rounded flex items-center justify-center transition shadow-sm ${addedSize === 10 ? 'bg-green-500 text-white' : 'bg-gray-100 hover:bg-black hover:text-white'}`}
-                                    title={t('common.add_to_cart')}
-                                >
-                                    {addedSize === 10 ? (
-                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={3} stroke="currentColor" className="w-3.5 h-3.5">
-                                            <path strokeLinecap="round" strokeLinejoin="round" d="m4.5 12.75 6 6 9-13.5" />
-                                        </svg>
-                                    ) : '+'}
-                                </motion.button>
-                            </div>
-                        </div>
+                                </div>
+                            )}
+                        </>
                     )}
                 </div>
             </div>

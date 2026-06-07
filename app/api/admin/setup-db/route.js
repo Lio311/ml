@@ -15,6 +15,18 @@ export async function GET() {
                 );
             `);
 
+            // Add columns for Discovery Sets
+            try {
+                await client.query(`
+                    ALTER TABLE products 
+                    ADD COLUMN IF NOT EXISTS is_discovery_set BOOLEAN DEFAULT false,
+                    ADD COLUMN IF NOT EXISTS single_price NUMERIC,
+                    ADD COLUMN IF NOT EXISTS volume_label VARCHAR(255);
+                `);
+            } catch (alterErr) {
+                console.log("Alter table products error (might not exist yet):", alterErr.message);
+            }
+
             // Seed Menu Data
             const defaultMenu = [
                 { id: 'home', label: 'דף הבית', path: '/', visible: true, order: 1 },

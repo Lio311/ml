@@ -7,11 +7,12 @@ const DEFAULT_MENU = [
     { id: 'brands', label: 'מותגים', path: '/brands', visible: true, order: 2 },
     { id: 'catalog', label: 'קטלוג', path: '/catalog', visible: true, order: 3 },
     { id: 'bundles', label: 'חבילות', path: '/bundles', visible: true, order: 4 },
-    { id: 'sales', label: 'מבצעים', path: '/sales', visible: true, order: 5 },
-    { id: 'matching', label: 'התאמת מארזים', path: '/matching', visible: true, order: 6 },
-    { id: 'requests', label: 'בקשת בשמים', path: '/requests', visible: true, order: 7 },
-    { id: 'lottery', label: 'הגרלה', path: '/lottery', visible: true, order: 8, isRed: true },
-    { id: 'contact', label: 'צור קשר', path: '/contact', visible: true, order: 9 }
+    { id: 'discovery_sets', label: 'דיסקברי סט', path: '/discovery-sets', visible: true, order: 5 },
+    { id: 'sales', label: 'מבצעים', path: '/sales', visible: true, order: 6 },
+    { id: 'matching', label: 'התאמת מארזים', path: '/matching', visible: true, order: 7 },
+    { id: 'requests', label: 'בקשת בשמים', path: '/requests', visible: true, order: 8 },
+    { id: 'lottery', label: 'הגרלה', path: '/lottery', visible: true, order: 9, isRed: true },
+    { id: 'contact', label: 'צור קשר', path: '/contact', visible: true, order: 10 }
 ];
 
 async function ensureTable(client) {
