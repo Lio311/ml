@@ -136,23 +136,34 @@ export async function POST(req) {
                 const customerName = customerDetails.name || 'לקוח יקר/ה';
                 const customerEmail = customerDetails.email;
 
+                // Compute changes summary
+                let changesSummary = [];
+                if (Number(originalOrder.total_amount) !== Number(total)) {
+                    changesSummary.push(`סכום ההזמנה הכולל עודכן מ-${originalOrder.total_amount} ₪ ל-${total} ₪`);
+                }
+                if (originalOrder.delivery_method !== deliveryMethod) {
+                    const oldMethod = originalOrder.delivery_method === 'mail' ? 'משלוח' : 'איסוף עצמי';
+                    const newMethod = deliveryMethod === 'mail' ? 'משלוח' : 'איסוף עצמי';
+                    changesSummary.push(`שיטת המסירה שונתה מ-${oldMethod} ל-${newMethod}`);
+                }
+                
+                // Compare items (simple array comparison based on stringified value)
+                const originalItemsStr = JSON.stringify((originalOrder.items || []).map(i => ({id: i.id, q: i.quantity, s: i.size})));
+                const newItemsStr = JSON.stringify((items || []).map(i => ({id: i.id, q: i.quantity, s: i.size})));
+                if (originalItemsStr !== newItemsStr) {
+                    changesSummary.push('עודכנו פריטים או כמויות של מוצרים בהזמנה');
+                }
+
                 if (customerEmail) {
-                    const updateHtml = getOrderUpdatedTemplate(orderId, customerName, items, total, deliveryMethod, shippingCost, notes);
+                    const updateHtml = getOrderUpdatedTemplate(orderId, customerName, items, total, deliveryMethod, shippingCost, notes, changesSummary);
                     await sendEmail(customerEmail, `הזמנתך #${orderId} עודכנה - ml_tlv`, updateHtml, 'order_updated', orderId);
                 }
 
                 // Admin notification
                 const adminEmail = process.env.ADMIN_EMAIL;
                 if (adminEmail) {
-                    const adminUpdateHtml = `
-                        <div dir="rtl" style="font-family: Arial, sans-serif;">
-                            <h2>הזמנה #${orderId} עודכנה על ידי מנהל</h2>
-                            <p><strong>לקוח:</strong> ${customerName}</p>
-                            <p><strong>סכום חדש:</strong> ${total} ₪</p>
-                            <p><strong>שיטה:</strong> ${deliveryMethod === 'mail' ? 'משלוח' : 'איסוף עצמי'}</p>
-                            <p><a href="https://www.ml-tlv.com/admin/orders">למעבר לניהול הזמנות</a></p>
-                        </div>
-                    `;
+                    const { getAdminOrderUpdatedTemplate } = await import('../../../../lib/email');
+                    const adminUpdateHtml = getAdminOrderUpdatedTemplate(orderId, customerName, total, deliveryMethod, changesSummary);
                     await sendEmail(adminEmail, `הזמנה #${orderId} עודכנה בהצלחה 🔥`, adminUpdateHtml, 'admin_alert', orderId);
                 }
             } catch (emailError) {

@@ -50,9 +50,13 @@ export const sendEmail = async (to, subject, html, type = 'system', orderId = nu
                 ? 'https://www.ml-tlv.com/unsubscribe' 
                 : `https://www.ml-tlv.com/unsubscribe?email=${encodeURIComponent(finalTo)}`;
             const unsubscribeHtml = `
-                <div style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #f0f0f0; text-align: center; font-size: 11px; color: #999;">
-                    <p style="margin: 0;">קיבלת מייל זה כי נרשמת לעדכונים מ-ml_tlv.</p>
-                    <a href="${unsubscribeLink}" style="color: #666; text-decoration: underline;">להסרה מרשימת הדיוור (Unsubscribe)</a>
+                <div dir="rtl" style="margin-top: 40px; padding: 25px 20px; background-color: #fafafa; border-radius: 12px; text-align: center; font-family: 'Open Sans', 'Open Sans Hebrew', Arial, sans-serif;">
+                    <p style="margin: 0 0 8px; font-size: 12px; color: #888;">
+                        קיבלת מייל זה כי נרשמת לעדכונים מ-<strong>ml_tlv</strong>.
+                    </p>
+                    <a href="${unsubscribeLink}" style="display: inline-block; font-size: 11px; color: #555; text-decoration: none; border-bottom: 1px dashed #ccc; padding-bottom: 2px; transition: color 0.2s;">
+                        להסרה מרשימת הדיוור (Unsubscribe)
+                    </a>
                 </div>
             `;
             // Append before closing body/div if possible, otherwise at the end
@@ -258,13 +262,13 @@ export const getOrderConfirmationTemplate = (orderId, items, total, freeSamples,
     `;
 };
 
-export const getOrderUpdatedTemplate = (orderId, name, items, total, deliveryMethod, shippingCost, notes) => {
+export const getOrderUpdatedTemplate = (orderId, name, items, total, deliveryMethod, shippingCost, notes, changesSummary = []) => {
     let itemsTable = '';
     if (Array.isArray(items)) {
         const rowsHtml = items.map(item => `
         <tr style="border-bottom: 1px solid #f5f5f5;">
             <td style="padding: 12px 10px; text-align: right; font-size: 14px; color: #333;">
-                ${item.image ? `<img src="${getAbsoluteImageUrl(item.image)}" width="40" style="vertical-align: middle; margin-left: 10px; border-radius: 6px; display: inline-block; border: 1px solid #f0f0f0; height: auto; max-height: 40px; object-fit: contain;" alt="${item.name || 'product'}" />` : ''}
+                ${item.image || item.image_url ? `<img src="${getAbsoluteImageUrl(item.image || item.image_url)}" width="40" style="vertical-align: middle; margin-left: 10px; border-radius: 6px; display: inline-block; border: 1px solid #f0f0f0; height: auto; max-height: 40px; object-fit: contain;" alt="${item.name || 'product'}" />` : ''}
                 <span style="vertical-align: middle;">${item.name || (item.brand + ' ' + item.model)} (${item.size} מ"ל)</span>
             </td>
             <td style="padding: 12px 10px; text-align: center; font-size: 14px; color: #333;">${item.quantity}</td>
@@ -272,12 +276,12 @@ export const getOrderUpdatedTemplate = (orderId, name, items, total, deliveryMet
         </tr>`).join('');
         
         itemsTable = `
-                <table style="width: 100%; border-collapse: collapse; margin-bottom: 25px;">
-                    <thead>
-                        <tr style="background-color: #f8f8f8; color: #999;">
-                            <th style="padding: 12px 10px; text-align: right; font-size: 10px; font-weight: 900; text-transform: uppercase;">מוצר</th>
-                            <th style="padding: 12px 10px; text-align: center; font-size: 10px; font-weight: 900; text-transform: uppercase;">כמות</th>
-                            <th style="padding: 12px 10px; text-align: left; font-size: 10px; font-weight: 900; text-transform: uppercase;">מחיר</th>
+                <table style="width: 100%; border-collapse: collapse; margin-bottom: 25px; border-radius: 12px; overflow: hidden; border: 1px solid #f0f0f0;">
+                    <thead style="background-color: #fafafa;">
+                        <tr>
+                            <th style="padding: 12px 10px; text-align: right; font-size: 11px; font-weight: 900; color: #666; text-transform: uppercase;">מוצר</th>
+                            <th style="padding: 12px 10px; text-align: center; font-size: 11px; font-weight: 900; color: #666; text-transform: uppercase;">כמות</th>
+                            <th style="padding: 12px 10px; text-align: left; font-size: 11px; font-weight: 900; color: #666; text-transform: uppercase;">מחיר</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -286,29 +290,43 @@ export const getOrderUpdatedTemplate = (orderId, name, items, total, deliveryMet
                 </table>`;
     }
 
+    let changesHtml = '';
+    if (changesSummary && changesSummary.length > 0) {
+        changesHtml = `
+            <div style="background-color: #f0f9ff; border: 1px solid #bae6fd; padding: 20px; border-radius: 16px; margin-bottom: 25px;">
+                <h3 style="margin: 0 0 10px 0; font-size: 16px; font-weight: 900; color: #0284c7;">מה השתנה בהזמנה?</h3>
+                <ul style="margin: 0; padding-right: 20px; color: #0369a1; font-size: 14px; line-height: 1.8;">
+                    ${changesSummary.map(change => `<li style="margin-bottom: 5px;">${change}</li>`).join('')}
+                </ul>
+            </div>
+        `;
+    }
+
     return `
         <div dir="rtl" style="font-family: 'Open Sans', 'Open Sans Hebrew', Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto; line-height: 1.6;">
             <div style="background-color: #fff; padding: 30px; border-radius: 24px; border: 1px solid #f0f0f0; box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
-                <h1 style="margin: 0 0 10px; font-size: 24px; font-weight: 900; color: #000; text-align: center;">עדכון הזמנה #${orderId}</h1>
+                <h1 style="margin: 0 0 10px; font-size: 24px; font-weight: 900; color: #000; text-align: center;">הזמנה #${orderId} עודכנה</h1>
                 <p style="margin-bottom: 20px;">היי ${name},</p>
-                <p style="margin-bottom: 25px;">ההזמנה שלך עודכנה על ידי צוות ml_tlv. להלן הפרטים המעודכנים:</p>
+                <p style="margin-bottom: 25px; color: #555;">ההזמנה שלך עודכנה על ידי צוות ml_tlv. להלן הפרטים המעודכנים:</p>
+                
+                ${changesHtml}
                 
                 ${itemsTable}
 
-                <div style="background-color: #fcfcfc; padding: 20px; border-radius: 16px; border: 1px solid #f5f5f5;">
-                    <table style="width: 100%; border-collapse: collapse; font-size: 14px; color: #666;">
+                <div style="background-color: #fafafa; padding: 20px; border-radius: 16px; border: 1px solid #f0f0f0;">
+                    <table style="width: 100%; border-collapse: collapse; font-size: 14px; color: #555;">
                         <tr>
-                            <td style="padding: 6px 0; text-align: right;">שיטת מסירה:</td>
-                            <td style="padding: 6px 0; text-align: left;"><strong style="color: #000;">${deliveryMethod === 'mail' ? 'משלוח' : 'איסוף עצמי'}</strong></td>
+                            <td style="padding: 8px 0; text-align: right;">שיטת מסירה:</td>
+                            <td style="padding: 8px 0; text-align: left;"><strong style="color: #000;">${deliveryMethod === 'mail' ? 'משלוח' : 'איסוף עצמי'}</strong></td>
                         </tr>
                         <tr>
-                            <td style="padding: 6px 0 12px 0; text-align: right;">דמי משלוח:</td>
-                            <td style="padding: 6px 0 12px 0; text-align: left;">
+                            <td style="padding: 8px 0 16px 0; text-align: right;">דמי משלוח:</td>
+                            <td style="padding: 8px 0 16px 0; text-align: left;">
                                 <strong style="color: #16a34a;">${shippingCost === 0 ? 'חינם' : shippingCost + ' ₪'}</strong>
                             </td>
                         </tr>
                         <tr>
-                            <td colspan="2" style="border-top: 1px dashed #ddd; padding-top: 15px;"></td>
+                            <td colspan="2" style="border-top: 1px dashed #e5e5e5; padding-top: 16px;"></td>
                         </tr>
                         <tr>
                             <td style="font-size: 18px; font-weight: 900; color: #000; text-align: right;">סה"כ לתשלום מעודכן:</td>
@@ -317,15 +335,44 @@ export const getOrderUpdatedTemplate = (orderId, name, items, total, deliveryMet
                     </table>
                 </div>
 
-                ${notes ? `<div style="margin-top: 20px; padding: 15px; background: #fffbe6; border-radius: 12px; font-size: 14px; border: 1px solid #ffe58f;"><strong>הערות:</strong> ${notes}</div>` : ''}
+                ${notes ? `<div style="margin-top: 25px; padding: 18px; background: #fffbe6; border-radius: 16px; font-size: 14px; border: 1px solid #ffe58f; color: #d48806;"><strong style="display:block; margin-bottom: 5px;">הערות מהצוות:</strong> ${notes}</div>` : ''}
 
-                <div style="margin-top: 30px; text-align: center;">
-                    <a href="https://www.ml-tlv.com/orders" style="display: inline-block; background-color: #000; color: #fff; padding: 16px 32px; text-decoration: none; border-radius: 16px; font-weight: 900; font-size: 14px;">לצפייה בהזמנה המעודכנת</a>
+                <div style="margin-top: 35px; text-align: center;">
+                    <a href="https://www.ml-tlv.com/orders" style="display: inline-block; background-color: #000; color: #fff; padding: 16px 36px; text-decoration: none; border-radius: 18px; font-weight: 900; font-size: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); transition: transform 0.2s;">
+                        לצפייה בהזמנה המעודכנת
+                    </a>
                 </div>
             </div>
-            <div style="text-align: center; padding: 30px 0; color: #ccc; font-size: 11px;">
+            <div style="text-align: center; padding: 30px 0; color: #aaa; font-size: 11px;">
                 ml - יוקרה בחתיכות קטנות
             </div>
+        </div>
+    `;
+};
+
+export const getAdminOrderUpdatedTemplate = (orderId, customerName, total, deliveryMethod, changesSummary = []) => {
+    let changesHtml = '';
+    if (changesSummary && changesSummary.length > 0) {
+        changesHtml = `
+            <div style="background-color: #f8f8f8; padding: 15px; border-radius: 12px; margin-bottom: 20px;">
+                <h3 style="margin: 0 0 10px 0; font-size: 14px; font-weight: bold; color: #333;">פירוט השינויים שבוצעו:</h3>
+                <ul style="margin: 0; padding-right: 20px; color: #555; font-size: 14px;">
+                    ${changesSummary.map(change => `<li style="margin-bottom: 5px;">${change}</li>`).join('')}
+                </ul>
+            </div>
+        `;
+    }
+
+    return `
+        <div dir="rtl" style="font-family: Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto; line-height: 1.6; border: 1px solid #e5e5e5; border-radius: 12px; padding: 25px;">
+            <h2 style="margin-top: 0; color: #000;">הזמנה #${orderId} עודכנה על ידי מנהל</h2>
+            <p><strong>לקוח:</strong> ${customerName}</p>
+            <p><strong>סכום חדש:</strong> ${total} ₪</p>
+            <p><strong>שיטת מסירה:</strong> ${deliveryMethod === 'mail' ? 'משלוח' : 'איסוף עצמי'}</p>
+            
+            ${changesHtml}
+            
+            <p style="margin-top: 25px;"><a href="https://www.ml-tlv.com/admin/orders" style="display: inline-block; background: #000; color: #fff; padding: 10px 20px; text-decoration: none; border-radius: 6px;">למעבר לניהול הזמנות</a></p>
         </div>
     `;
 };
