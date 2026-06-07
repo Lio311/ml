@@ -203,16 +203,18 @@ export default function ProductCard({ product }) {
                 <div className="mt-auto space-y-2">
                     {product.is_discovery_set ? (
                         <div className="flex flex-col gap-3 mt-2">
-                            <div className="flex items-center justify-between text-sm text-gray-600">
+                            <div className="flex flex-col gap-1.5 text-sm text-gray-600 text-center">
                                 <span className="font-medium text-gray-700">{product.volume_label || (dir === 'rtl' ? 'יחידה' : 'Unit')}</span>
-                                {getDiscountedPrice(product, '1', product.single_price) !== product.single_price ? (
-                                    <div className="flex flex-col items-end leading-none">
-                                        <span className="text-[10px] text-gray-400 line-through">{product.single_price} ₪</span>
-                                        <span className="font-black text-green-600 text-base">{getDiscountedPrice(product, '1', product.single_price)} ₪</span>
-                                    </div>
-                                ) : (
-                                    <span className="font-bold text-base text-black">{product.single_price} ₪</span>
-                                )}
+                                <div className="flex justify-center items-center">
+                                    {getDiscountedPrice(product, '1', product.single_price) !== product.single_price ? (
+                                        <div className="flex items-center gap-2 leading-none">
+                                            <span className="text-xs text-gray-400 line-through whitespace-nowrap">{product.single_price} ₪</span>
+                                            <span className="font-black text-green-600 text-lg whitespace-nowrap">{getDiscountedPrice(product, '1', product.single_price)} ₪</span>
+                                        </div>
+                                    ) : (
+                                        <span className="font-bold text-lg text-black whitespace-nowrap">{product.single_price} ₪</span>
+                                    )}
+                                </div>
                             </div>
                             <motion.button
                                 whileHover={{ scale: 1.02 }}
