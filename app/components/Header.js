@@ -180,7 +180,7 @@ export default function Header({ brands = [] }) {
 
                         {/* Center: Navigation Menu */}
                         <div className="flex items-center justify-center px-4 h-full z-10">
-                            <nav className="flex items-center gap-3 xl:gap-6 text-black">
+                            <nav className={`flex items-center ${dir === 'ltr' ? 'gap-2 xl:gap-4' : 'gap-3 xl:gap-6'} text-black`}>
                                 {navLinks.map((link) => (
                                     <div 
                                         key={link.label}
@@ -189,7 +189,7 @@ export default function Header({ brands = [] }) {
                                     >
                                         <Link 
                                             href={link.href}
-                                            className={`text-[14px] font-bold tracking-[0.1em] uppercase whitespace-nowrap transition-all duration-500 ${
+                                            className={`${dir === 'ltr' ? 'text-[11px] xl:text-[12px]' : 'text-[14px]'} font-bold tracking-[0.1em] uppercase whitespace-nowrap transition-all duration-500 ${
                                                 link.isRed 
                                                     ? 'text-red-600 opacity-100 hover:text-red-700' 
                                                     : (link.active ? 'text-black opacity-100' : 'text-black opacity-40 hover:opacity-100')
