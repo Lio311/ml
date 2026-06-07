@@ -147,12 +147,39 @@ export async function POST(req) {
                     changesSummary.push(`שיטת המסירה שונתה מ-${oldMethod} ל-${newMethod}`);
                 }
                 
-                // Compare items (simple array comparison based on stringified value)
-                const originalItemsStr = JSON.stringify((originalOrder.items || []).map(i => ({id: i.id, q: i.quantity, s: i.size})));
-                const newItemsStr = JSON.stringify((items || []).map(i => ({id: i.id, q: i.quantity, s: i.size})));
-                if (originalItemsStr !== newItemsStr) {
-                    changesSummary.push('עודכנו פריטים או כמויות של מוצרים בהזמנה');
-                }
+                // Compare items to find exactly what changed
+                const oldItemsMap = new Map();
+                (originalOrder.items || []).forEach(item => {
+                    const key = `${item.id}-${item.size}`;
+                    oldItemsMap.set(key, item);
+                });
+
+                const newItemsMap = new Map();
+                (items || []).forEach(item => {
+                    const key = `${item.id}-${item.size}`;
+                    newItemsMap.set(key, item);
+                });
+
+                oldItemsMap.forEach((oldItem, key) => {
+                    const itemName = oldItem.name || `${oldItem.brand} ${oldItem.model}`;
+                    const sizeText = oldItem.size ? `(${oldItem.size} מ"ל)` : '';
+                    if (!newItemsMap.has(key)) {
+                        changesSummary.push(`הוסר פריט: ${itemName} ${sizeText}`);
+                    } else {
+                        const newItem = newItemsMap.get(key);
+                        if (oldItem.quantity !== newItem.quantity) {
+                            changesSummary.push(`כמות עודכנה מ-${oldItem.quantity} ל-${newItem.quantity}: ${itemName} ${sizeText}`);
+                        }
+                    }
+                });
+
+                newItemsMap.forEach((newItem, key) => {
+                    const itemName = newItem.name || `${newItem.brand} ${newItem.model}`;
+                    const sizeText = newItem.size ? `(${newItem.size} מ"ל)` : '';
+                    if (!oldItemsMap.has(key)) {
+                        changesSummary.push(`נוסף פריט: ${itemName} ${sizeText} (כמות: ${newItem.quantity})`);
+                    }
+                });
 
                 if (customerEmail) {
                     const updateHtml = getOrderUpdatedTemplate(orderId, customerName, items, total, deliveryMethod, shippingCost, notes, changesSummary);
