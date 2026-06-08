@@ -105,83 +105,66 @@ export async function GET(request) {
                         flexDirection: 'row',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        padding: '70px 80px',
                         fontFamily: fontData ? 'NarkissBlock' : 'sans-serif',
                     }}
                 >
-                    {/* Left: Product Image */}
+                    {/* Safe Zone for WhatsApp 1:1 Crop (Center 630x630) */}
                     <div style={{
                         display: 'flex',
-                        width: '440px',
-                        height: '500px',
-                        justifyContent: 'center',
-                        alignItems: 'center',
                         flexDirection: 'column',
-                        marginRight: '60px',
+                        width: '600px',
+                        height: '600px',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        textAlign: 'center',
                     }}>
+                        {/* Top: Logo (Optional, small) */}
+                        {logoData ? (
+                            <img
+                                src={logoData}
+                                alt="Logo"
+                                style={{
+                                    width: '120px',
+                                    height: '40px',
+                                    objectFit: 'contain',
+                                    marginBottom: '20px'
+                                }}
+                            />
+                        ) : null}
+
+                        {/* Product Image */}
                         {productData ? (
                             <img
                                 src={productData}
                                 alt="Product"
                                 style={{
-                                    height: '500px',
+                                    height: '280px',
                                     width: 'auto',
-                                    objectFit: 'contain'
+                                    objectFit: 'contain',
+                                    marginBottom: '20px'
                                 }}
                             />
-                        ) : logoData ? (
-                            <img
-                                src={logoData}
-                                alt="Logo"
-                                style={{
-                                    width: '300px',
-                                    height: '110px',
-                                    objectFit: 'contain'
-                                }}
-                            />
-                        ) : null}
-                    </div>
-
-                    {/* Right: Details */}
-                    <div style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        flex: 1,
-                        alignItems: 'flex-end',
-                        paddingLeft: '40px',
-                    }}>
-                        {/* Logo */}
-                        {logoData ? (
-                            <div style={{ display: 'flex', marginBottom: '24px' }}>
-                                <img
-                                    src={logoData}
-                                    alt="Logo"
-                                    style={{
-                                        width: '180px',
-                                        height: '65px',
-                                        objectFit: 'contain'
-                                    }}
-                                />
-                            </div>
                         ) : null}
 
                         {/* Brand */}
                         <div style={{
-                            fontSize: 64,
+                            fontSize: 48,
                             fontWeight: 'bold',
                             color: '#000',
-                            marginBottom: '10px',
+                            marginBottom: '8px',
                             display: 'flex',
+                            textAlign: 'center',
                         }}>
                             {brandDisplay}
                         </div>
 
                         {/* Model */}
                         <div style={{
-                            fontSize: 42,
+                            fontSize: 32,
                             color: '#444',
-                            marginBottom: '28px',
+                            marginBottom: '24px',
                             display: 'flex',
+                            textAlign: 'center',
                         }}>
                             {modelDisplay}
                         </div>
@@ -190,8 +173,8 @@ export async function GET(request) {
                         <div style={{
                             display: 'flex',
                             flexDirection: 'row',
-                            marginBottom: '28px',
-                            justifyContent: 'flex-end',
+                            justifyContent: 'center',
+                            alignItems: 'center',
                             width: '100%',
                         }}>
                             {p10 ? (
@@ -199,12 +182,12 @@ export async function GET(request) {
                                     display: 'flex',
                                     flexDirection: 'column',
                                     alignItems: 'center',
-                                    marginLeft: '40px',
+                                    margin: '0 20px',
                                 }}>
-                                    <div style={{ fontSize: 42, fontWeight: 'bold', color: '#000', display: 'flex' }}>
+                                    <div style={{ fontSize: 36, fontWeight: 'bold', color: '#000', display: 'flex' }}>
                                         {'\u20AA'}{p10}
                                     </div>
-                                    <div style={{ fontSize: 24, color: '#666', display: 'flex' }}>
+                                    <div style={{ fontSize: 20, color: '#666', display: 'flex' }}>
                                         10ml
                                     </div>
                                 </div>
@@ -214,12 +197,12 @@ export async function GET(request) {
                                     display: 'flex',
                                     flexDirection: 'column',
                                     alignItems: 'center',
-                                    marginLeft: '40px',
+                                    margin: '0 20px',
                                 }}>
-                                    <div style={{ fontSize: 42, fontWeight: 'bold', color: '#000', display: 'flex' }}>
+                                    <div style={{ fontSize: 36, fontWeight: 'bold', color: '#000', display: 'flex' }}>
                                         {'\u20AA'}{p5}
                                     </div>
-                                    <div style={{ fontSize: 24, color: '#666', display: 'flex' }}>
+                                    <div style={{ fontSize: 20, color: '#666', display: 'flex' }}>
                                         5ml
                                     </div>
                                 </div>
@@ -229,29 +212,16 @@ export async function GET(request) {
                                     display: 'flex',
                                     flexDirection: 'column',
                                     alignItems: 'center',
-                                    marginLeft: '40px',
+                                    margin: '0 20px',
                                 }}>
-                                    <div style={{ fontSize: 42, fontWeight: 'bold', color: '#000', display: 'flex' }}>
+                                    <div style={{ fontSize: 36, fontWeight: 'bold', color: '#000', display: 'flex' }}>
                                         {'\u20AA'}{p2}
                                     </div>
-                                    <div style={{ fontSize: 24, color: '#666', display: 'flex' }}>
+                                    <div style={{ fontSize: 20, color: '#666', display: 'flex' }}>
                                         2ml
                                     </div>
                                 </div>
                             ) : null}
-                        </div>
-
-                        {/* Slogan */}
-                        <div style={{
-                            display: 'flex',
-                            borderTop: '2px solid #eee',
-                            paddingTop: '24px',
-                            width: '100%',
-                            justifyContent: 'flex-end',
-                        }}>
-                            <div style={{ fontSize: 24, color: '#888', display: 'flex' }}>
-                                {sloganDisplay}
-                            </div>
                         </div>
                     </div>
                 </div>
