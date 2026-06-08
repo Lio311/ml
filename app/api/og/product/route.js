@@ -24,7 +24,7 @@ export async function GET(request) {
         try {
             const fontPath = path.join(process.cwd(), 'public', 'fonts', 'Narkiss Block Regular.ttf');
             if (fs.existsSync(fontPath)) {
-                fontData = fs.readFileSync(fontPath).buffer;
+                fontData = fs.readFileSync(fontPath);
             }
         } catch (e) {
             console.error('Font read error:', e);
@@ -35,7 +35,7 @@ export async function GET(request) {
         try {
             const logoPath = path.join(process.cwd(), 'public', 'logo_v5.png');
             if (fs.existsSync(logoPath)) {
-                logoData = fs.readFileSync(logoPath).buffer;
+                logoData = fs.readFileSync(logoPath);
             }
         } catch (e) {
             console.error('Logo read error:', e);
@@ -62,7 +62,7 @@ export async function GET(request) {
                     }
                 });
                 if (res.ok) {
-                    productData = await res.arrayBuffer();
+                    productData = Buffer.from(await res.arrayBuffer());
                 }
             } catch(e) {
                 console.error('Product image fetch error:', e);
