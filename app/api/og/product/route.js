@@ -19,40 +19,38 @@ export async function GET(request) {
 
         const baseUrl = 'https://www.ml-tlv.com';
 
-        // Helper to cleanly convert Node Buffer to Web ArrayBuffer without memory pool issues
-        function toArrayBuffer(buffer) {
-            const ab = new ArrayBuffer(buffer.length);
-            const view = new Uint8Array(ab);
-            for (let i = 0; i < buffer.length; ++i) {
-                view[i] = buffer[i];
-            }
-            return ab;
-        }
-
         // Load Font from Local Filesystem (Node.js)
         let fontData = null;
         try {
             const fontPath = path.join(process.cwd(), 'public', 'fonts', 'Narkiss Block Regular.ttf');
             if (fs.existsSync(fontPath)) {
-                fontData = toArrayBuffer(fs.readFileSync(fontPath));
+                // Font MUST be ArrayBuffer
+                const buf = fs.readFileSync(fontPath);
+                const ab = new ArrayBuffer(buf.length);
+                const view = new Uint8Array(ab);
+                for (let i = 0; i < buf.length; ++i) {
+                    view[i] = buf[i];
+                }
+                fontData = ab;
             }
         } catch (e) {
             console.error('Font read error:', e);
         }
 
         // Load Logo from Local Filesystem (Node.js)
-        let logoData = null;
+        let logoBase64 = null;
         try {
             const logoPath = path.join(process.cwd(), 'public', 'logo_v5.png');
             if (fs.existsSync(logoPath)) {
-                logoData = toArrayBuffer(fs.readFileSync(logoPath));
+                const buf = fs.readFileSync(logoPath);
+                logoBase64 = `data:image/png;base64,${buf.toString('base64')}`;
             }
         } catch (e) {
             console.error('Logo read error:', e);
         }
 
-        // Fetch Product Image manually to ensure proper headers and ArrayBuffer conversion
-        let productData = null;
+        // Fetch Product Image manually
+        let productBase64 = null;
         if (imgUrl) {
             if (!imgUrl.startsWith('http')) {
                 imgUrl = `${baseUrl}${imgUrl}`;
@@ -72,7 +70,9 @@ export async function GET(request) {
                     }
                 });
                 if (res.ok) {
-                    productData = await res.arrayBuffer();
+                    const ab = await res.arrayBuffer();
+                    const buf = Buffer.from(ab);
+                    productBase64 = `data:image/png;base64,${buf.toString('base64')}`;
                 }
             } catch(e) {
                 console.error('Product image fetch error:', e);
@@ -84,8 +84,8 @@ export async function GET(request) {
                 imgUrl,
                 baseUrl,
                 hasFont: !!fontData,
-                hasLogo: !!logoData,
-                hasProduct: !!productData
+                hasLogo: !!logoBase64,
+                hasProduct: !!productBase64
             }), { headers: { 'Content-Type': 'application/json' } });
         }
 
@@ -132,16 +132,16 @@ export async function GET(request) {
                         alignItems: 'center',
                         flexDirection: 'column',
                     }}>
-                        {productData ? (
+                        {productBase64 ? (
                             <img
-                                src={productData}
+                                src={productBase64}
                                 width="440"
                                 height="500"
                                 style={{ objectFit: 'contain' }}
                             />
-                        ) : logoData ? (
+                        ) : logoBase64 ? (
                             <img
-                                src={logoData}
+                                src={logoBase64}
                                 width="300"
                                 height="110"
                                 style={{ objectFit: 'contain' }}
@@ -158,10 +158,10 @@ export async function GET(request) {
                         paddingLeft: '40px',
                     }}>
                         {/* Logo */}
-                        {logoData ? (
+                        {logoBase64 ? (
                             <div style={{ display: 'flex', marginBottom: '24px' }}>
                                 <img
-                                    src={logoData}
+                                    src={logoBase64}
                                     width="180"
                                     height="65"
                                     style={{ objectFit: 'contain' }}
