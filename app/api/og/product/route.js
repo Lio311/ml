@@ -30,8 +30,18 @@ export async function GET(request) {
             console.error('Font fetch error:', e);
         }
 
+        function arrayBufferToBase64(buffer) {
+            let binary = '';
+            const bytes = new Uint8Array(buffer);
+            const len = bytes.byteLength;
+            for (let i = 0; i < len; i++) {
+                binary += String.fromCharCode(bytes[i]);
+            }
+            return btoa(binary);
+        }
+
         // Product image - proxy through images.weserv.nl to bypass Fragrantica IP blocks
-        let productArrayBuffer = null;
+        let productBase64 = null;
         if (imgUrl) {
             if (!imgUrl.startsWith('http')) {
                 imgUrl = `${baseUrl}${imgUrl}`;
@@ -46,22 +56,24 @@ export async function GET(request) {
             try {
                 const res = await fetch(imgUrl);
                 if (res.ok) {
-                    productArrayBuffer = await res.arrayBuffer();
+                    const buf = await res.arrayBuffer();
+                    productBase64 = `data:image/jpeg;base64,${arrayBufferToBase64(buf)}`;
                 }
             } catch(e) {
-                console.error("Failed to fetch product image array buffer:", e);
+                console.error("Failed to fetch product image:", e);
             }
         }
 
         const logoUrl = `${baseUrl}/logo_v5.png`;
-        let logoArrayBuffer = null;
+        let logoBase64 = null;
         try {
             const res = await fetch(logoUrl);
             if (res.ok) {
-                logoArrayBuffer = await res.arrayBuffer();
+                const buf = await res.arrayBuffer();
+                logoBase64 = `data:image/png;base64,${arrayBufferToBase64(buf)}`;
             }
         } catch(e) {
-            console.error("Failed to fetch logo array buffer:", e);
+            console.error("Failed to fetch logo:", e);
         }
 
         // Text helpers
@@ -106,16 +118,16 @@ export async function GET(request) {
                         justifyContent: 'center',
                         alignItems: 'center',
                     }}>
-                        {productArrayBuffer ? (
+                        {productBase64 ? (
                             <img
-                                src={productArrayBuffer}
+                                src={productBase64}
                                 width="440"
                                 height="500"
                                 style={{ objectFit: 'contain' }}
                             />
-                        ) : logoArrayBuffer ? (
+                        ) : logoBase64 ? (
                             <img
-                                src={logoArrayBuffer}
+                                src={logoBase64}
                                 width="300"
                                 height="110"
                                 style={{ objectFit: 'contain' }}
@@ -132,10 +144,10 @@ export async function GET(request) {
                         paddingLeft: '40px',
                     }}>
                         {/* Logo */}
-                        {logoArrayBuffer ? (
+                        {logoBase64 ? (
                             <div style={{ display: 'flex', marginBottom: '24px' }}>
                                 <img
-                                    src={logoArrayBuffer}
+                                    src={logoBase64}
                                     width="180"
                                     height="65"
                                     style={{ objectFit: 'contain' }}
