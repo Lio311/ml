@@ -113,8 +113,6 @@ export async function generateMetadata(props) {
 
         const productSlug = product.slug || product.id;
         const canonicalUrl = `${baseUrl}/product/${productSlug}`;
-        
-        const dynamicOgUrl = `${baseUrl}/api/og/product?url=${encodeURIComponent(ogImageUrl)}&name=${encodeURIComponent(localizedName)}&brand=${encodeURIComponent(product.brand || '')}&price=${product.price_10ml || ''}`;
 
         return {
             title: title,
@@ -134,13 +132,13 @@ export async function generateMetadata(props) {
                 siteName: 'ml-tlv',
                 locale: 'he_IL',
                 type: 'website',
-                images: [{ url: dynamicOgUrl, width: 1200, height: 630 }],
+                images: [{ url: ogImageUrl, width: 800, height: 800 }],
             },
             twitter: {
                 card: 'summary_large_image',
                 title: title,
                 description: description,
-                images: [dynamicOgUrl],
+                images: [ogImageUrl],
             },
         };
     } catch (metaErr) {
