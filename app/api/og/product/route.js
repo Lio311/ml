@@ -1,7 +1,6 @@
 import { ImageResponse } from 'next/og';
-import fs from 'fs';
-import path from 'path';
 
+export const runtime = 'edge';
 export const alt = 'Fragrance Sample';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
@@ -19,38 +18,26 @@ export async function GET(request) {
 
         const baseUrl = 'https://www.ml-tlv.com';
 
-        // Load Font from Local Filesystem (Node.js)
+        // Load Font from Local Filesystem (Edge)
         let fontData = null;
         try {
-            const fontPath = path.join(process.cwd(), 'public', 'fonts', 'Narkiss Block Regular.ttf');
-            if (fs.existsSync(fontPath)) {
-                // Font MUST be ArrayBuffer
-                const buf = fs.readFileSync(fontPath);
-                const ab = new ArrayBuffer(buf.length);
-                const view = new Uint8Array(ab);
-                for (let i = 0; i < buf.length; ++i) {
-                    view[i] = buf[i];
-                }
-                fontData = ab;
-            }
+            const fontUrl = new URL('../../../../public/fonts/Narkiss Block Regular.ttf', import.meta.url);
+            fontData = await fetch(fontUrl).then((res) => res.arrayBuffer());
         } catch (e) {
             console.error('Font read error:', e);
         }
 
-        // Load Logo from Local Filesystem (Node.js)
-        let logoBase64 = null;
+        // Load Logo from Local Filesystem (Edge)
+        let logoData = null;
         try {
-            const logoPath = path.join(process.cwd(), 'public', 'logo_v5.png');
-            if (fs.existsSync(logoPath)) {
-                const buf = fs.readFileSync(logoPath);
-                logoBase64 = `data:image/png;base64,${buf.toString('base64')}`;
-            }
+            const logoUrl = new URL('../../../../public/logo_v5.png', import.meta.url);
+            logoData = await fetch(logoUrl).then((res) => res.arrayBuffer());
         } catch (e) {
             console.error('Logo read error:', e);
         }
 
         // Fetch Product Image manually
-        let productBase64 = null;
+        let productData = null;
         if (imgUrl) {
             if (!imgUrl.startsWith('http')) {
                 imgUrl = `${baseUrl}${imgUrl}`;
@@ -70,9 +57,7 @@ export async function GET(request) {
                     }
                 });
                 if (res.ok) {
-                    const ab = await res.arrayBuffer();
-                    const buf = Buffer.from(ab);
-                    productBase64 = `data:image/png;base64,${buf.toString('base64')}`;
+                    productData = await res.arrayBuffer();
                 }
             } catch(e) {
                 console.error('Product image fetch error:', e);
@@ -84,8 +69,8 @@ export async function GET(request) {
                 imgUrl,
                 baseUrl,
                 hasFont: !!fontData,
-                hasLogo: !!logoBase64,
-                hasProduct: !!productBase64
+                hasLogo: !!logoData,
+                hasProduct: !!productData
             }), { headers: { 'Content-Type': 'application/json' } });
         }
 
@@ -132,16 +117,16 @@ export async function GET(request) {
                         alignItems: 'center',
                         flexDirection: 'column',
                     }}>
-                        {productBase64 ? (
+                        {productData ? (
                             <img
-                                src={productBase64}
+                                src={productData}
                                 width="440"
                                 height="500"
                                 style={{ objectFit: 'contain' }}
                             />
-                        ) : logoBase64 ? (
+                        ) : logoData ? (
                             <img
-                                src={logoBase64}
+                                src={logoData}
                                 width="300"
                                 height="110"
                                 style={{ objectFit: 'contain' }}
@@ -158,10 +143,10 @@ export async function GET(request) {
                         paddingLeft: '40px',
                     }}>
                         {/* Logo */}
-                        {logoBase64 ? (
+                        {logoData ? (
                             <div style={{ display: 'flex', marginBottom: '24px' }}>
                                 <img
-                                    src={logoBase64}
+                                    src={logoData}
                                     width="180"
                                     height="65"
                                     style={{ objectFit: 'contain' }}
