@@ -24,8 +24,8 @@ export async function GET(request) {
             if (!imgUrl.startsWith('http')) {
                 imgUrl = `${baseUrl}${imgUrl}`;
             }
-            if (imgUrl.toLowerCase().endsWith('.avif')) {
-                imgUrl = imgUrl.replace(/\.avif$/i, '.jpg');
+            if (/\.avif(\?.*)?$/i.test(imgUrl)) {
+                imgUrl = imgUrl.replace(/\.avif(\?.*)?$/i, '.jpg$1');
             }
             if (imgUrl.includes('fimgs.net')) {
                 const cleanUrl = imgUrl.replace(/^https?:\/\//, '');
