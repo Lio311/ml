@@ -65,22 +65,6 @@ export default async function Home() {
           __html: JSON.stringify([
             {
               "@context": "https://schema.org",
-              "@type": "WebSite",
-              "name": "ml-tlv",
-              "alternateName": "ml_tlv",
-              "url": "https://www.ml-tlv.com",
-              "description": locale === 'he'
-                ? "ml-tlv - דוגמיות בושם מקוריות מבתי בושם יוקרתיים ונישה. דיקאנטים ב-2, 5 ו-10 מ\"ל באריזת זכוכית עם מתז."
-                : "ml-tlv - Authentic luxury niche perfume samples and decants in 2ml, 5ml, and 10ml glass atomizers.",
-              "inLanguage": ["he-IL", "en-US"],
-              "potentialAction": {
-                "@type": "SearchAction",
-                "target": "https://www.ml-tlv.com/catalog?q={search_term_string}",
-                "query-input": "required name=search_term_string"
-              }
-            },
-            {
-              "@context": "https://schema.org",
               "@type": "WebPage",
               "name": locale === 'he' ? "ml-tlv — דוגמיות בשמים יוקרתיות ודיקאנטים" : "ml-tlv — Luxury Perfume Samples & Decants",
               "speakable": {
@@ -90,37 +74,6 @@ export default async function Home() {
                   ".seo-content h2",
                   ".seo-content h3"
                 ]
-              }
-            },
-            {
-              "@context": "https://schema.org",
-              "@type": "Person",
-              "name": "Lio",
-              "jobTitle": "Founder",
-              "worksFor": {
-                "@type": "Organization",
-                "name": "ml-tlv"
-              }
-            },
-            {
-              "@context": "https://schema.org",
-              "@type": "Store",
-              "name": "ml-tlv",
-              "url": "https://www.ml-tlv.com",
-              "image": "https://www.ml-tlv.com/logo_v5.png",
-              "telephone": "+972-50-000-0000",
-              "priceRange": "₪29-₪199",
-              "address": {
-                "@type": "PostalAddress",
-                "streetAddress": "Washington 19",
-                "addressLocality": "Tel Aviv",
-                "addressCountry": "IL"
-              },
-              "aggregateRating": {
-                "@type": "AggregateRating",
-                "ratingValue": "4.9",
-                "reviewCount": "542",
-                "bestRating": "5"
               }
             }
           ])

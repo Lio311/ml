@@ -8,6 +8,7 @@ import { cookies } from 'next/headers';
 import he from '../data/locales/he.json';
 import en from '../data/locales/en.json';
 import { sanitizeProductArray } from "../lib/productUtils";
+import { unstable_cache } from 'next/cache';
 
 
 const getT = (locale) => {
@@ -245,16 +246,16 @@ async function getProducts(search, brand, category, minPrice, maxPrice, sort, pa
     });
 }
 
-async function getBrands() {
+const getBrands = unstable_cache(async () => {
     try {
         const res = await pool.query('SELECT name FROM brands ORDER BY LOWER(name) ASC');
         return res.rows.map(r => r.name);
     } catch (e) {
         return [];
     }
-}
+}, ['catalog-brands'], { revalidate: 3600 });
 
-async function getCategories() {
+const getCategories = unstable_cache(async () => {
     try {
         const res = await pool.query('SELECT DISTINCT category FROM products WHERE active = true');
         const rawCategories = res.rows.map(r => r.category).filter(c => c && c !== 'General');
@@ -269,9 +270,9 @@ async function getCategories() {
         console.error("Error fetching categories:", e);
         return [];
     }
-}
+}, ['catalog-categories'], { revalidate: 3600 });
 
-async function getMetadataOptions() {
+const getMetadataOptions = unstable_cache(async () => {
     try {
         const res = await pool.query(`
             SELECT 
@@ -305,7 +306,7 @@ async function getMetadataOptions() {
         console.error("Error fetching metadata options:", e);
         return { countries: [], perfumers: [], notes: [] };
     }
-}
+}, ['catalog-metadata-options'], { revalidate: 3600 });
 
 export default async function CatalogPage(props) {
     const cookieStore = await cookies();

@@ -8,6 +8,19 @@ export async function POST(req) {
         const body = await req.json();
         const { name, email, message } = body;
 
+        if (!name || typeof name !== 'string' || name.trim().length === 0 || name.length > 100) {
+            return NextResponse.json({ error: 'Invalid name' }, { status: 400 });
+        }
+        
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!email || typeof email !== 'string' || !emailRegex.test(email) || email.length > 254) {
+            return NextResponse.json({ error: 'Invalid email' }, { status: 400 });
+        }
+
+        if (!message || typeof message !== 'string' || message.trim().length === 0 || message.length > 5000) {
+            return NextResponse.json({ error: 'Invalid message' }, { status: 400 });
+        }
+
         const { html, subject } = await getTemplate('contact_form_alert', 
             { name, email, message },
             () => {

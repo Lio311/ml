@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { auth as clerkAuth, currentUser } from '@clerk/nextjs/server';
 import pool from '@/app/lib/db';
-import { sendEmail, getTemplate, getOrderConfirmationTemplate, getAdminNewOrderTemplate } from '@/app/lib/email';
+import { sendEmail, getTemplate, getOrderConfirmationTemplate, getAdminNewOrderTemplate, formatItemsHtmlCustomer, formatItemsHtmlAdmin, formatNotesHtml } from '@/app/lib/email';
 import { recordAuditLog } from '@/app/lib/audit';
 import * as Sentry from "@sentry/nextjs";
 
@@ -35,45 +35,52 @@ export async function POST(req) {
             // --- SECURITY: Price Validation ---
             let calculatedTotal = 0;
             for (const item of items) {
-                // Skip validation for special items (prizes/sets) for now, but strict validatation for standard catalog items
-                // Real implementation should validate EVERYTHING.
-                // Assuming standard items have numeric ID and numeric size
+                if (item.isPrize) {
+                    if (Number(item.price) !== 0) throw new Error("Prize items must have a price of 0");
+                    calculatedTotal += 0;
+                    continue;
+                }
+
                 let dbId = item.id;
                 if (typeof dbId === 'string' && dbId.includes('-')) {
                     dbId = parseInt(dbId.split('-')[0]);
                 }
 
-                if (!item.isPrize && !isNaN(item.size) && !isNaN(dbId)) {
-                    const pRes = await client.query('SELECT price_2ml, price_5ml, price_10ml, discount_percentage, discount_sizes FROM products WHERE id = $1', [dbId]);
-                    if (pRes.rows.length === 0) {
-                        throw new Error(`Product ${item.name} (ID: ${dbId}) not found/active`);
-                    }
-                    const p = pRes.rows[0];
-                    let realPrice = 0;
+                if (isNaN(dbId)) {
+                    throw new Error(`Invalid item ID: ${item.id}`);
+                }
+
+                const pRes = await client.query('SELECT price_2ml, price_5ml, price_10ml, single_price, is_discovery_set, discount_percentage, discount_sizes FROM products WHERE id = $1', [dbId]);
+                if (pRes.rows.length === 0) {
+                    throw new Error(`Product ${item.name} (ID: ${dbId}) not found/active`);
+                }
+                
+                const p = pRes.rows[0];
+                let realPrice = 0;
+
+                if (p.is_discovery_set) {
+                    realPrice = p.single_price;
+                } else {
                     if (Number(item.size) === 2) realPrice = p.price_2ml;
                     else if (Number(item.size) === 5) realPrice = p.price_5ml;
                     else if (Number(item.size) === 10) realPrice = p.price_10ml;
                     else {
-                        // Fallback for sets or other sizes if logic exists
-                        continue;
+                        throw new Error(`Invalid size for product ${item.name}: ${item.size}`);
                     }
 
                     // Apply individual product discount if applicable
                     if (p.discount_percentage > 0 && Array.isArray(p.discount_sizes) && p.discount_sizes.includes(`${item.size}ml`)) {
                         realPrice = Math.round((realPrice * (1 - p.discount_percentage / 100)) / 5) * 5;
                     }
-                    
-                    if (realPrice !== item.price) {
-                        // Allow small discrepancy (1 shekel) for rounding?
-                        if (Math.abs(realPrice - item.price) > 1) {
-                            throw new Error(`Price mismatch for ${item.name}: Expecting ${realPrice}, got ${item.price}`);
-                        }
-                    }
-                    calculatedTotal += item.price * item.quantity;
-                } else {
-                    // Non-standard items or custom catalogs
-                    calculatedTotal += item.price * item.quantity;
                 }
+                
+                if (realPrice !== item.price) {
+                    // Allow small discrepancy (1 shekel) for rounding
+                    if (Math.abs(realPrice - item.price) > 1) {
+                        throw new Error(`Price mismatch for ${item.name}: Expecting ${realPrice}, got ${item.price}`);
+                    }
+                }
+                calculatedTotal += item.price * item.quantity;
             }
 
             // --- Apply Limited Time Promo (Discovery Sets & Samples) ---
@@ -375,47 +382,10 @@ export async function POST(req) {
             await client.query('COMMIT');
 
             // Prepare dynamic item lists for templates
-            const rowsHtmlCustomer = items.map(item => `
-        <tr style="border-bottom: 1px solid #f5f5f5;">
-            <td style="padding: 12px 10px; text-align: right; font-size: 14px; color: #333;">
-                ${item.image_url ? `<img src="${item.image_url}" width="40" style="vertical-align: middle; margin-left: 10px; border-radius: 6px; display: inline-block; border: 1px solid #f0f0f0; height: auto; max-height: 40px; object-fit: contain;" alt="${item.name || 'product'}" />` : ''}
-                <span style="vertical-align: middle;">${item.name || (item.brand + ' ' + item.model)} (${item.size} מ"ל)</span>
-            </td>
-            <td style="padding: 12px 10px; text-align: center; font-size: 14px; color: #333;">${item.quantity}</td>
-            <td style="padding: 12px 10px; text-align: left; font-size: 14px; font-weight: bold; color: #000;">${item.price} ₪</td>
-        </tr>
-            `).join('');
-
-            const itemsHtmlCustomer = `
-                <table style="width: 100%; border-collapse: collapse; margin-bottom: 25px;">
-                    <thead>
-                        <tr style="background-color: #f8f8f8; color: #999;">
-                            <th style="padding: 12px 10px; text-align: right; font-size: 10px; font-weight: 900; text-transform: uppercase;">מוצר</th>
-                            <th style="padding: 12px 10px; text-align: center; font-size: 10px; font-weight: 900; text-transform: uppercase;">כמות</th>
-                            <th style="padding: 12px 10px; text-align: left; font-size: 10px; font-weight: 900; text-transform: uppercase;">מחיר</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ${rowsHtmlCustomer}
-                    </tbody>
-                </table>`;
-
-            const itemsHtmlAdmin = items.map(item => `
-        <li style="margin-bottom: 12px; border-bottom: 1px solid #f0f0f0; padding-bottom: 12px; display: table; width: 100%;">
-            ${item.image_url ? `<div style="display: table-cell; vertical-align: middle; width: 50px;"><img src="${item.image_url}" width="40" style="border-radius: 6px; border: 1px solid #f0f0f0; height: auto; max-height: 40px; object-fit: contain;" alt="product" /></div>` : ''}
-            <div style="display: table-cell; vertical-align: middle;">
-                <span style="font-weight: 900; color: #000;">${item.name || (item.brand + ' ' + item.model)}</span>
-                <div style="font-size: 12px; color: #666;">${item.size || ''}ml x${item.quantity || 1}</div>
-            </div>
-        </li>
-            `).join('');
+            const itemsHtmlCustomer = formatItemsHtmlCustomer(items);
+            const itemsHtmlAdmin = formatItemsHtmlAdmin(items);
             const deliveryText = deliveryMethod === 'self_pickup' ? 'איסוף עצמי (תל אביב)' : 'משלוח בדואר';
-            
-            const notesHtml = notes && notes.trim() !== '' ? `
-                <div style="margin-top: 20px; background-color: #fffde7; padding: 15px 20px; border-radius: 16px; border: 1px dashed #fde047;">
-                    <div style="font-size: 12px; font-weight: 900; color: #ca8a04; margin-bottom: 5px; text-transform: uppercase;">הערות להזמנה:</div>
-                    <div style="font-size: 14px; color: #854d0e;">${notes}</div>
-                </div>` : '';
+            const notesHtml = formatNotesHtml(notes);
 
             // Send Confirmation Email (Async, don't block response)
             const userEmail = user?.emailAddresses[0]?.emailAddress;

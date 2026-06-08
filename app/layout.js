@@ -145,7 +145,7 @@ export default async function RootLayout({ children }) {
               <ServiceWorkerRegistration />
               <PushManager />
 
-              {/* SEO: Organization/Store Schema */}
+              {/* SEO: Organization/Store/WebSite Schema */}
               <script
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{
@@ -153,13 +153,18 @@ export default async function RootLayout({ children }) {
                       {
                         "@context": "https://schema.org",
                         "@type": "Store",
-                        "name": "ml-tlv - יוקרה בחתיכות קטנות",
+                        "name": "ml-tlv",
+                        "alternateName": "ml-tlv - יוקרה בחתיכות קטנות",
                         "url": "https://www.ml-tlv.com",
                         "logo": "https://www.ml-tlv.com/logo_v5.png",
                         "image": "https://www.ml-tlv.com/logo_v5.png",
-                        "description": "דוגמיות בשמים, דיקאנטים ובשמי נישה מקוריים בתל אביב והסביבה. משלוחים לכל הארץ.",
+                        "description": locale === 'he' 
+                            ? "דוגמיות בשמים, דיקאנטים ובשמי נישה מקוריים בתל אביב והסביבה. משלוחים לכל הארץ."
+                            : "Authentic luxury niche perfume samples and decants.",
+                        "telephone": "+972-50-000-0000",
                         "address": {
                           "@type": "PostalAddress",
+                          "streetAddress": "Washington 19",
                           "addressLocality": "Tel Aviv",
                           "addressCountry": "IL"
                         },
@@ -190,6 +195,32 @@ export default async function RootLayout({ children }) {
                         "sameAs": [
                           "https://instagram.com/ml_tlv"
                         ]
+                      },
+                      {
+                        "@context": "https://schema.org",
+                        "@type": "WebSite",
+                        "name": "ml-tlv",
+                        "alternateName": "ml_tlv",
+                        "url": "https://www.ml-tlv.com",
+                        "description": locale === 'he'
+                            ? "ml-tlv - דוגמיות בושם מקוריות מבתי בושם יוקרתיים ונישה. דיקאנטים ב-2, 5 ו-10 מ\"ל באריזת זכוכית עם מתז."
+                            : "ml-tlv - Authentic luxury niche perfume samples and decants in 2ml, 5ml, and 10ml glass atomizers.",
+                        "inLanguage": ["he-IL", "en-US"],
+                        "potentialAction": {
+                            "@type": "SearchAction",
+                            "target": "https://www.ml-tlv.com/catalog?q={search_term_string}",
+                            "query-input": "required name=search_term_string"
+                        }
+                      },
+                      {
+                        "@context": "https://schema.org",
+                        "@type": "Person",
+                        "name": "Lio",
+                        "jobTitle": "Founder",
+                        "worksFor": {
+                            "@type": "Organization",
+                            "name": "ml-tlv"
+                        }
                       },
                       {
                         "@context": "https://schema.org",

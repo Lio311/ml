@@ -1,0 +1,269 @@
+
+> app@0.1.0 build
+> next build
+
+▲ Next.js 16.2.6 (Turbopack)
+- Environments: .env.local
+- Experiments (use with caution):
+  · clientTraceMetadata
+  · serverActions
+
+  Creating an optimized production build ...
+✓ Compiled successfully in 32.2s
+  Running next.config.js provided runAfterProductionCompile ...
+✓ Completed runAfterProductionCompile in 839ms
+  Running TypeScript ...
+  Finished TypeScript in 153ms ...
+  Collecting page data using 7 workers ...
+  Generating static pages using 7 workers (0/122) ...
+  Generating static pages using 7 workers (30/122) 
+  Generating static pages using 7 workers (60/122) 
+  Generating static pages using 7 workers (91/122) 
+✓ Generating static pages using 7 workers (122/122) in 1962ms
+  Finalizing page optimization ...
+
+Route (app)
+┌ ƒ /
+├ ƒ /_not-found
+├ ƒ /about
+├ ƒ /about-2
+├ ƒ /accessibility
+├ ƒ /admin
+├ ƒ /admin/analytics
+├ ƒ /admin/announcement-bar
+├ ƒ /admin/audit-logs
+├ ƒ /admin/automations
+├ ƒ /admin/automations/[id]
+├ ƒ /admin/back-in-stock
+├ ƒ /admin/banner
+├ ƒ /admin/brand
+├ ƒ /admin/brands
+├ ƒ /admin/catalog-orders
+├ ƒ /admin/catalogs
+├ ƒ /admin/catalogs/[id]
+├ ƒ /admin/coupons
+├ ƒ /admin/desc-reviews
+├ ƒ /admin/dictionary
+├ ƒ /admin/discovery-sets
+├ ƒ /admin/email-logs
+├ ƒ /admin/error-logs
+├ ƒ /admin/expenses
+├ ƒ /admin/funnel
+├ ƒ /admin/inbox
+├ ƒ /admin/influencers
+├ ƒ /admin/inventory
+├ ƒ /admin/inventory-heatmap
+├ ƒ /admin/inventory/pricing
+├ ƒ /admin/logo
+├ ƒ /admin/lottery
+├ ƒ /admin/mailing
+├ ƒ /admin/menu
+├ ƒ /admin/migrate
+├ ƒ /admin/orders
+├ ƒ /admin/phone-order
+├ ƒ /admin/popups
+├ ƒ /admin/procurement
+├ ƒ /admin/products
+├ ƒ /admin/recommendations
+├ ƒ /admin/requests
+├ ƒ /admin/reviews
+├ ƒ /admin/search-analytics
+├ ƒ /admin/seo-generator
+├ ƒ /admin/subscribers
+├ ƒ /admin/system-status
+├ ƒ /admin/users
+├ ƒ /api/admin/analytics/ga
+├ ƒ /api/admin/analytics/gsc
+├ ƒ /api/admin/analytics/search-queries
+├ ƒ /api/admin/analytics/setup
+├ ƒ /api/admin/analytics/sync
+├ ƒ /api/admin/announcement-bar
+├ ƒ /api/admin/audit-logs
+├ ƒ /api/admin/automations
+├ ƒ /api/admin/automations/[id]
+├ ƒ /api/admin/automations/[id]/toggle
+├ ƒ /api/admin/brand
+├ ƒ /api/admin/brands
+├ ƒ /api/admin/bulk-pricing
+├ ƒ /api/admin/bulk-spotify
+├ ƒ /api/admin/catalog-orders
+├ ƒ /api/admin/catalogs
+├ ƒ /api/admin/catalogs/[id]
+├ ƒ /api/admin/catalogs/[id]/items
+├ ƒ /api/admin/catalogs/[id]/items/[itemId]
+├ ƒ /api/admin/catalogs/[id]/toggle-visibility
+├ ƒ /api/admin/clear-cache
+├ ƒ /api/admin/counts
+├ ƒ /api/admin/coupons
+├ ƒ /api/admin/coupons/[id]
+├ ƒ /api/admin/customers/history
+├ ƒ /api/admin/desc-review/apply
+├ ƒ /api/admin/desc-review/list
+├ ƒ /api/admin/desc-review/run
+├ ƒ /api/admin/desc-review/setup
+├ ƒ /api/admin/dictionary
+├ ƒ /api/admin/discovery-sets
+├ ƒ /api/admin/discovery-sets/[id]
+├ ƒ /api/admin/error-logs/list
+├ ƒ /api/admin/error-logs/setup
+├ ƒ /api/admin/expenses
+├ ƒ /api/admin/fix-all-songs
+├ ƒ /api/admin/force-review-email
+├ ƒ /api/admin/generate-product-ai
+├ ƒ /api/admin/generate-product-desc
+├ ƒ /api/admin/influencers
+├ ƒ /api/admin/influencers/[id]
+├ ƒ /api/admin/inventory
+├ ƒ /api/admin/logo
+├ ƒ /api/admin/mailing/campaigns
+├ ƒ /api/admin/mailing/campaigns/send
+├ ƒ /api/admin/mailing/send
+├ ƒ /api/admin/mailing/templates
+├ ƒ /api/admin/migrate
+├ ƒ /api/admin/migrate-db
+├ ƒ /api/admin/migrate-settings
+├ ƒ /api/admin/notifications
+├ ƒ /api/admin/notifications/mark-read
+├ ƒ /api/admin/orders/create
+├ ƒ /api/admin/orders/send-pdf
+├ ƒ /api/admin/orders/update
+├ ƒ /api/admin/orders/update-status
+├ ƒ /api/admin/popups
+├ ƒ /api/admin/procurement/insights
+├ ƒ /api/admin/push/history
+├ ƒ /api/admin/push/send
+├ ƒ /api/admin/recommendations
+├ ƒ /api/admin/recommendations/pending-count
+├ ƒ /api/admin/revalidate
+├ ƒ /api/admin/reviews
+├ ƒ /api/admin/seed-role
+├ ƒ /api/admin/seo-approve
+├ ƒ /api/admin/seo-delete
+├ ƒ /api/admin/seo-generate
+├ ƒ /api/admin/seo-list
+├ ƒ /api/admin/settings
+├ ƒ /api/admin/settings/home_banner
+├ ƒ /api/admin/setup-db
+├ ƒ /api/admin/setup-influencers
+├ ƒ /api/admin/setup-promotions
+├ ƒ /api/admin/setup-search-db
+├ ƒ /api/admin/spotify-debug
+├ ƒ /api/admin/spotify-tracks
+├ ƒ /api/admin/stock-notifications
+├ ƒ /api/admin/subscribers
+├ ƒ /api/admin/system-status
+├ ƒ /api/admin/test-emails
+├ ƒ /api/admin/users
+├ ƒ /api/admin/users/[id]
+├ ƒ /api/admin/users/[id]/phone
+├ ƒ /api/admin/users/sync
+├ ƒ /api/analytics/funnel
+├ ƒ /api/analytics/record
+├ ƒ /api/analytics/sync-sales
+├ ƒ /api/brands
+├ ƒ /api/bundles/products
+├ ƒ /api/cart/load
+├ ƒ /api/cart/share
+├ ƒ /api/cart/sync
+├ ƒ /api/catalogs-info
+├ ƒ /api/categories
+├ ƒ /api/chat
+├ ƒ /api/contact
+├ ƒ /api/coupons/validate
+├ ƒ /api/cron/desc-review
+├ ƒ /api/cron/educational-email
+├ ƒ /api/cron/mailing-campaigns
+├ ƒ /api/cron/nurture-emails
+├ ƒ /api/cron/recommendations
+├ ƒ /api/cron/recovery
+├ ƒ /api/cron/review-request
+├ ƒ /api/cron/seo-bot
+├ ƒ /api/fragrance-notes
+├ ƒ /api/history/record
+├ ƒ /api/inbox
+├ ƒ /api/inbox/[id]/messages
+├ ƒ /api/inbox/[id]/read
+├ ƒ /api/inbox/unread-count
+├ ƒ /api/lottery/generate
+├ ƒ /api/match
+├ ƒ /api/og/product
+├ ƒ /api/orders
+├ ƒ /api/orders/[id]
+├ ƒ /api/popups
+├ ƒ /api/products
+├ ƒ /api/products/upsell
+├ ƒ /api/push/subscribe
+├ ƒ /api/requests
+├ ƒ /api/revalidate-brands
+├ ƒ /api/reviews
+├ ƒ /api/reviews/status
+├ ƒ /api/search/autocomplete
+├ ƒ /api/setup
+├ ƒ /api/setup-analytics-db
+├ ƒ /api/setup-chat-db
+├ ƒ /api/setup-coupons-db
+├ ƒ /api/setup-history-db
+├ ƒ /api/setup-lottery-db
+├ ƒ /api/setup-notes-db
+├ ƒ /api/setup-recovery-db
+├ ƒ /api/setup-sales-db
+├ ƒ /api/spotify-preview
+├ ƒ /api/stock-notifications/subscribe
+├ ƒ /api/unsubscribe
+├ ƒ /api/user-catalogs
+├ ƒ /api/user-catalogs/[id]
+├ ƒ /api/user-catalogs/[id]/items
+├ ƒ /api/user-catalogs/[id]/items/[itemId]
+├ ƒ /api/user-catalogs/[id]/orders
+├ ƒ /api/user-catalogs/[id]/orders/manage
+├ ƒ /api/user-catalogs/public-by-slug/[slug]
+├ ƒ /api/user-catalogs/top
+├ ƒ /api/user/orders
+├ ƒ /api/user/phone
+├ ƒ /api/v-h
+├ ƒ /api/webhooks/clerk
+├ ƒ /api/wishlist
+├ ƒ /blog
+├ ƒ /blog/[slug]
+├ ƒ /brands
+├ ƒ /brands/[brand]
+├ ƒ /bundles
+├ ƒ /cart
+├ ƒ /catalog
+├ ƒ /catalog/[slug]
+├ ƒ /catalog/[slug]/cart
+├ ƒ /catalog/[slug]/product/[itemId]
+├ ƒ /catalogs-info
+├ ƒ /checkout/success
+├ ƒ /contact
+├ ƒ /discovery-sets
+├ ƒ /faq
+├ ○ /icon.png
+├ ƒ /inbox
+├ ƒ /lottery
+├ ƒ /matching
+├ ƒ /my-catalogs
+├ ƒ /my-catalogs/[id]
+├ ƒ /orders
+├ ƒ /privacy
+├ ƒ /product/[slug]
+├ ƒ /product/-/opengraph-image
+├ ƒ /requests
+├ ƒ /review
+├ ƒ /reviews
+├ ○ /robots.txt
+├ ƒ /sales
+├ ƒ /shipping
+├ ƒ /sign-in/[[...sign-in]]
+├ ƒ /sign-up/[[...sign-up]]
+├ ○ /sitemap.xml
+├ ƒ /terms
+├ ƒ /unsubscribe
+└ ƒ /wishlist
+
+
+ƒ Proxy (Middleware)
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+
