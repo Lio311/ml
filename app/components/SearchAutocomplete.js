@@ -68,8 +68,8 @@ export default function SearchAutocomplete({ fullWidth = false, onSelect }) {
 
     return (
 
-        <div className={`relative group ${fullWidth ? 'flex-1' : 'w-20 h-[28px]'}`} ref={wrapperRef}>
-            <form onSubmit={handleSubmit} className={`absolute top-0 flex items-center h-[28px] transition-all duration-300 ${fullWidth ? 'w-full left-0' : `w-20 focus-within:w-48 ${isLayoutRTL ? 'left-0' : 'right-0'}`}`}>
+        <div className={`relative group ${fullWidth ? 'flex-1 h-[28px]' : 'w-20 h-[28px]'}`} ref={wrapperRef}>
+            <form onSubmit={handleSubmit} className={`${fullWidth ? 'relative w-full' : `absolute top-0 w-20 focus-within:w-48 ${isLayoutRTL ? 'left-0' : 'right-0'}`} flex items-center h-[28px] transition-all duration-300`}>
 
                 <input
                     type="text"
