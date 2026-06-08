@@ -1,6 +1,7 @@
 {
     "common": {
         "home": "דף הבית",
+        "continue_shopping": "המשך בקניות",
         "select_size": "בחר/י גודל",
         "view_full_details": "לפרטי המוצר המלאים",
         "quick_view": "תצוגה מהירה",
@@ -487,6 +488,9 @@
         "cart_title": "סל קניות",
         "title": "העגלה שלי",
         "empty": "העגלה שלך ריקה",
+        "empty_title": "העגלה שלך ריקה",
+        "empty_desc": "זה הזמן למלא אותה בניחוחות חדשים!",
+        "checkout": "מעבר לתשלום",
         "back_to_catalog": "חזרה לקטלוג",
         "order_summary": "סיכום הזמנה",
         "subtotal": "סיכום ביניים",

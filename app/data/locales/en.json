@@ -1,6 +1,7 @@
 {
     "common": {
         "home": "Home",
+        "continue_shopping": "Continue Shopping",
         "select_size": "Select Size",
         "view_full_details": "View Full Details",
         "quick_view": "Quick View",
@@ -989,9 +990,12 @@
         "view_cart": "View Cart"
     },
     "cart": {
-        "cart_title": "Cart",
+        "cart_title": "Shopping Cart",
         "title": "My Cart",
         "empty": "Your cart is empty",
+        "empty_title": "Your cart is empty",
+        "empty_desc": "Time to fill it with new scents!",
+        "checkout": "Checkout",
         "back_to_catalog": "Back to Catalog",
         "order_summary": "Order Summary",
         "subtotal": "Subtotal",

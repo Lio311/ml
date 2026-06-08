@@ -64,10 +64,6 @@ export default function DesktopIcons({ cartCount, wishlistCount, onSearchToggle,
             <Link 
                 id="cart-icon-main" 
                 href="/cart" 
-                onClick={(e) => {
-                    e.preventDefault();
-                    setIsMiniCartOpen(true);
-                }}
                 className="relative group text-black" 
                 title={t('cart.cart_title')} 
                 aria-label={t('cart.cart_title') || "Cart"}

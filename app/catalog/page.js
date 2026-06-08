@@ -327,9 +327,12 @@ export default async function CatalogPage(props) {
                         initialTotalPages={totalPages} 
                         searchParams={searchParams} 
                         locale={locale} 
+                        dir={dir}
                         tProvider={{
                             no_products_found: t('common.no_products_found'),
-                            clear_all: t('common.clear_all')
+                            clear_all: t('common.clear_all'),
+                            previous: t('common.previous'),
+                            next: t('common.next')
                         }}
                         search={mappedSearch}
                         brand={brand}

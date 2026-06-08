@@ -6,17 +6,24 @@ import { useInView } from 'react-intersection-observer';
 import { fetchMoreCatalogProducts } from './actions';
 import Link from 'next/link';
 
-export default function CatalogClientGrid({ initialProducts, initialTotalPages, searchParams, locale, tProvider, search, brand, category, minPrice, maxPrice, sort, page: initialPage }) {
+export default function CatalogClientGrid({ initialProducts, initialTotalPages, searchParams, locale, dir, tProvider, search, brand, category, minPrice, maxPrice, sort, page: initialPage }) {
     const [products, setProducts] = useState(initialProducts);
     const [page, setPage] = useState(initialPage);
     const [hasMore, setHasMore] = useState(initialTotalPages > initialPage);
     const [isLoading, setIsLoading] = useState(false);
+    const [isMobile, setIsMobile] = useState(false);
+
+    useEffect(() => {
+        const checkMobile = () => setIsMobile(window.innerWidth < 768);
+        checkMobile();
+        window.addEventListener('resize', checkMobile);
+        return () => window.removeEventListener('resize', checkMobile);
+    }, []);
     
-    // We need to parse tProvider because we can't pass functions to client components.
-    // However, if we just need a few translations, it's better to pass them as strings.
     const { ref, inView } = useInView({
         threshold: 0,
-        rootMargin: '400px', // Fetch when 400px away from bottom
+        rootMargin: '400px',
+        skip: !isMobile || !hasMore // Don't observe if on desktop or no more items
     });
 
     // Reset state when search parameters change
@@ -27,7 +34,7 @@ export default function CatalogClientGrid({ initialProducts, initialTotalPages, 
     }, [initialProducts, initialTotalPages, initialPage]);
 
     const loadMore = useCallback(async () => {
-        if (isLoading || !hasMore) return;
+        if (isLoading || !hasMore || !isMobile) return;
         setIsLoading(true);
         try {
             const nextPage = page + 1;
@@ -37,7 +44,6 @@ export default function CatalogClientGrid({ initialProducts, initialTotalPages, 
             
             if (newProducts.length > 0) {
                 setProducts(prev => {
-                    // Prevent duplicates just in case
                     const existingIds = new Set(prev.map(p => p.id));
                     const uniqueNew = newProducts.filter(p => !existingIds.has(p.id));
                     return [...prev, ...uniqueNew];
@@ -54,17 +60,17 @@ export default function CatalogClientGrid({ initialProducts, initialTotalPages, 
         } finally {
             setIsLoading(false);
         }
-    }, [page, hasMore, isLoading, search, brand, category, minPrice, maxPrice, sort, searchParams, initialTotalPages]);
+    }, [page, hasMore, isLoading, isMobile, search, brand, category, minPrice, maxPrice, sort, searchParams, initialTotalPages]);
 
     useEffect(() => {
-        if (inView && hasMore) {
+        if (inView && hasMore && isMobile) {
             loadMore();
         }
-    }, [inView, hasMore, loadMore]);
+    }, [inView, hasMore, isMobile, loadMore]);
 
     return (
         <>
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+            <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 {products.map((product, idx) => (
                     <ProductCard key={`${product.id}-${idx}`} product={product} />
                 ))}
@@ -77,9 +83,70 @@ export default function CatalogClientGrid({ initialProducts, initialTotalPages, 
                 </div>
             )}
 
-            {hasMore && (
+            {/* Mobile Infinite Scroll Loader */}
+            {isMobile && hasMore && (
                 <div ref={ref} className="py-12 flex justify-center items-center">
                     <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-black"></div>
+                </div>
+            )}
+
+            {/* Desktop Classic Pagination */}
+            {!isMobile && initialTotalPages > 1 && (
+                <div className="mt-12 flex justify-center gap-2 flex-wrap" dir={dir}>
+                    {/* Previous Button */}
+                    {initialPage > 1 && (
+                        <Link
+                            href={{
+                                pathname: '/catalog',
+                                query: { ...searchParams, page: initialPage - 1 }
+                            }}
+                            className="px-4 py-2 border rounded hover:bg-gray-100 transition"
+                        >
+                            {tProvider.previous}
+                        </Link>
+                    )}
+
+                    {/* Page Numbers */}
+                    {(() => {
+                        let start = Math.max(1, initialPage - 1);
+                        let end = Math.min(initialTotalPages, initialPage + 1);
+
+                        if (initialPage === 1) end = Math.min(initialTotalPages, 3);
+                        if (initialPage === initialTotalPages) start = Math.max(1, initialTotalPages - 2);
+
+                        const pages = [];
+                        for (let i = start; i <= end; i++) {
+                            pages.push(i);
+                        }
+                        return pages.map(p => (
+                            <Link
+                                key={p}
+                                href={{
+                                    pathname: '/catalog',
+                                    query: { ...searchParams, page: p }
+                                }}
+                                className={`w-10 h-10 flex items-center justify-center rounded border transition ${p === initialPage
+                                    ? 'bg-black text-white border-black'
+                                    : 'bg-white hover:bg-gray-50'
+                                    }`}
+                            >
+                                {p}
+                            </Link>
+                        ));
+                    })()}
+
+                    {/* Next Button */}
+                    {initialPage < initialTotalPages && (
+                        <Link
+                            href={{
+                                pathname: '/catalog',
+                                query: { ...searchParams, page: initialPage + 1 }
+                            }}
+                            className="px-4 py-2 border rounded hover:bg-gray-100 transition"
+                        >
+                            {tProvider.next}
+                        </Link>
+                    )}
                 </div>
             )}
         </>
