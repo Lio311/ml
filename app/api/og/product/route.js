@@ -100,7 +100,6 @@ export async function GET(request) {
                         justifyContent: 'center',
                         gap: '60px',
                         width: '100%',
-                        maxWidth: '900px',
                     }}>
                         {/* Left: Product Image */}
                         <div style={{
@@ -116,8 +115,7 @@ export async function GET(request) {
                                     alt="Product"
                                     style={{
                                         height: '500px',
-                                        width: 'auto',
-                                        maxWidth: '400px',
+                                        width: '400px',
                                         objectFit: 'contain'
                                     }}
                                 />
