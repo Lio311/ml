@@ -40,6 +40,9 @@ export async function GET(request) {
             return btoa(binary);
         }
 
+        let productError = null;
+        let logoError = null;
+
         // Product image - proxy through images.weserv.nl to bypass Fragrantica IP blocks
         let productBase64 = null;
         if (imgUrl) {
@@ -58,9 +61,11 @@ export async function GET(request) {
                 if (res.ok) {
                     const buf = await res.arrayBuffer();
                     productBase64 = `data:image/jpeg;base64,${arrayBufferToBase64(buf)}`;
+                } else {
+                    productError = `Fetch failed: ${res.status}`;
                 }
             } catch(e) {
-                console.error("Failed to fetch product image:", e);
+                productError = `Error: ${e.message}`;
             }
         }
 
@@ -71,9 +76,11 @@ export async function GET(request) {
             if (res.ok) {
                 const buf = await res.arrayBuffer();
                 logoBase64 = `data:image/png;base64,${arrayBufferToBase64(buf)}`;
+            } else {
+                logoError = `Logo fetch failed: ${res.status}`;
             }
         } catch(e) {
-            console.error("Failed to fetch logo:", e);
+            logoError = `Logo error: ${e.message}`;
         }
 
         // Text helpers
@@ -117,6 +124,7 @@ export async function GET(request) {
                         height: '500px',
                         justifyContent: 'center',
                         alignItems: 'center',
+                        flexDirection: 'column',
                     }}>
                         {productBase64 ? (
                             <img
@@ -133,6 +141,7 @@ export async function GET(request) {
                                 style={{ objectFit: 'contain' }}
                             />
                         ) : null}
+                        {productError && <div style={{ color: 'red', fontSize: '14px', marginTop: '10px' }}>{productError}</div>}
                     </div>
 
                     {/* Right: Details */}
@@ -154,6 +163,7 @@ export async function GET(request) {
                                 />
                             </div>
                         ) : null}
+                        {logoError && <div style={{ color: 'red', fontSize: '14px', marginBottom: '10px' }}>{logoError}</div>}
 
                         {/* Brand */}
                         <div style={{
