@@ -19,44 +19,6 @@ export async function GET(request) {
 
         const baseUrl = 'https://www.ml-tlv.com';
 
-        // Load Font from Local Filesystem (Edge)
-        let fontData = null;
-        let productData = null;
-        if (imgUrl) {
-            try {
-                const productRes = await fetch(imgUrl, {
-                    headers: {
-                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-                        'Accept': 'image/jpeg,image/png,image/webp,*/*;q=0.8',
-                    },
-                    next: { revalidate: 3600 }
-                });
-                if (productRes.ok) {
-                    productData = await productRes.arrayBuffer();
-                } else {
-                    console.error('Failed to fetch product image for OG:', productRes.status, productRes.statusText);
-                }
-            } catch (err) {
-                console.error('Exception fetching product image for OG:', err);
-            }
-        }
-
-        try {
-            const fontUrl = new URL('../../../../public/fonts/Narkiss Block Regular.ttf', import.meta.url);
-            fontData = await fetch(fontUrl).then((res) => res.arrayBuffer());
-        } catch (e) {
-            console.error('Font read error:', e);
-        }
-
-        // Load Logo from Local Filesystem (Edge)
-        let logoData = null;
-        try {
-            const logoUrl = new URL('../../../../public/logo_v5.png', import.meta.url);
-            logoData = await fetch(logoUrl).then((res) => res.arrayBuffer());
-        } catch (e) {
-            console.error('Logo read error:', e);
-        }
-
         // Product image URL handling
         if (imgUrl) {
             if (!imgUrl.startsWith('http')) {
@@ -69,6 +31,38 @@ export async function GET(request) {
                 const cleanUrl = imgUrl.replace(/^https?:\/\//, '');
                 imgUrl = `https://images.weserv.nl/?url=${encodeURIComponent(cleanUrl)}&w=640&q=80&output=jpg`;
             }
+        }
+
+        // Fetch ArrayBuffers
+        let fontData = null;
+        let logoData = null;
+        let productData = null;
+
+        try {
+            const fontUrl = new URL('../../../../public/fonts/Narkiss Block Regular.ttf', import.meta.url);
+            fontData = await fetch(fontUrl).then((res) => res.arrayBuffer());
+        } catch (e) { console.error('Font read error:', e); }
+
+        try {
+            const logoUrl = new URL('../../../../public/logo_v5.png', import.meta.url);
+            logoData = await fetch(logoUrl).then((res) => res.arrayBuffer());
+        } catch (e) { console.error('Logo read error:', e); }
+
+        if (imgUrl) {
+            try {
+                const productRes = await fetch(imgUrl, {
+                    headers: {
+                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
+                        'Accept': 'image/jpeg,image/png,image/webp,*/*;q=0.8',
+                    },
+                    next: { revalidate: 3600 }
+                });
+                if (productRes.ok) {
+                    productData = await productRes.arrayBuffer();
+                } else {
+                    console.error('Failed to fetch product image:', productRes.status);
+                }
+            } catch (err) { console.error('Fetch err:', err); }
         }
 
         if (searchParams.get('debug') === '1') {
