@@ -263,7 +263,7 @@ export function CartProvider({ children }) {
             return [...prev, { ...product, size, price, originalPrice, quantity: 1, vendorId, vendorName }];
         });
 
-        setIsMiniCartOpen(true);
+        if (pathname !== '/cart') setIsMiniCartOpen(true);
 
         // Track funnel event: add_to_cart
         try {
@@ -367,10 +367,10 @@ export function CartProvider({ children }) {
                 toast.error(t(options.errorAllKey || 'cart.shared_cart_all_out_of_stock'));
             } else {
                 toast.success(t(options.mixedKey || 'cart.shared_cart_mixed'));
-                setIsMiniCartOpen(true);
+                if (pathname !== '/cart') setIsMiniCartOpen(true);
             }
         } else if (addedCount > 0) {
-            setIsMiniCartOpen(true);
+            if (pathname !== '/cart') setIsMiniCartOpen(true);
         }
 
         return { addedCount, skippedCount };
@@ -406,7 +406,7 @@ export function CartProvider({ children }) {
         };
 
         setCartItems(prev => [...prev, bundleToAdd]);
-        setIsMiniCartOpen(true);
+        if (pathname !== '/cart') setIsMiniCartOpen(true);
         
         // Track analytics
         try {
