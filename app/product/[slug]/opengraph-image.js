@@ -14,7 +14,7 @@ export default async function Image({ params }) {
 
     // Fetch product data
     const res = await pool.query(`
-        SELECT brand, brand_he, model, model_he, image_url, price_10ml 
+        SELECT brand, brand_he, model, model_he, image_url, price_2ml, price_5ml, price_10ml 
         FROM products 
         WHERE slug = $1 OR id::text = $1 
         LIMIT 1
@@ -86,7 +86,6 @@ export default async function Image({ params }) {
     const brandDisplay = reverseRtl(product.brand_he || product.brand);
     const modelDisplay = reverseRtl(product.model_he || product.model);
     const sloganDisplay = reverseRtl("דוגמיות בושם מקוריות");
-    const priceDisplay = product.price_10ml ? `₪${product.price_10ml} / 10ml` : reverseRtl("לפרטים נוספים");
 
     const fontsConfig = fontData ? [{
         name: 'NarkissBlock',
@@ -143,9 +142,26 @@ export default async function Image({ params }) {
                         {modelDisplay}
                     </div>
 
-                    {/* Price section added */}
-                    <div style={{ fontSize: 56, fontWeight: 'bold', color: '#000', marginBottom: '30px', display: 'flex' }}>
-                        {priceDisplay}
+                    {/* Prices section */}
+                    <div style={{ display: 'flex', flexDirection: 'row', gap: '50px', marginBottom: '30px', justifyContent: 'flex-end', width: '100%' }}>
+                        {product.price_10ml && (
+                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                                <div style={{ fontSize: 46, fontWeight: 'bold', color: '#000' }}>₪{product.price_10ml}</div>
+                                <div style={{ fontSize: 26, color: '#666' }}>10ml</div>
+                            </div>
+                        )}
+                        {product.price_5ml && (
+                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                                <div style={{ fontSize: 46, fontWeight: 'bold', color: '#000' }}>₪{product.price_5ml}</div>
+                                <div style={{ fontSize: 26, color: '#666' }}>5ml</div>
+                            </div>
+                        )}
+                        {product.price_2ml && (
+                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                                <div style={{ fontSize: 46, fontWeight: 'bold', color: '#000' }}>₪{product.price_2ml}</div>
+                                <div style={{ fontSize: 26, color: '#666' }}>2ml</div>
+                            </div>
+                        )}
                     </div>
                     
                     <div style={{ display: 'flex', borderTop: '2px solid #f0f0f0', paddingTop: '30px', width: '100%', justifyContent: 'flex-end' }}>
