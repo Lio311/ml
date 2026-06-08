@@ -30,21 +30,11 @@ export async function GET(request) {
             console.error('Font fetch error:', e);
         }
 
-        function arrayBufferToBase64(buffer) {
-            let binary = '';
-            const bytes = new Uint8Array(buffer);
-            const len = bytes.byteLength;
-            for (let i = 0; i < len; i++) {
-                binary += String.fromCharCode(bytes[i]);
-            }
-            return btoa(binary);
-        }
-
         let productError = null;
         let logoError = null;
 
         // Product image - proxy through images.weserv.nl to bypass Fragrantica IP blocks
-        let productBase64 = null;
+        let productArrayBuffer = null;
         if (imgUrl) {
             if (!imgUrl.startsWith('http')) {
                 imgUrl = `${baseUrl}${imgUrl}`;
@@ -54,13 +44,12 @@ export async function GET(request) {
             }
             if (imgUrl.includes('fimgs.net')) {
                 const cleanUrl = imgUrl.replace(/^https?:\/\//, '');
-                imgUrl = `https://images.weserv.nl/?url=${encodeURIComponent(cleanUrl)}&w=640&q=80&output=png`;
+                imgUrl = `https://images.weserv.nl/?url=${encodeURIComponent(cleanUrl)}&w=640&q=80`;
             }
             try {
                 const res = await fetch(imgUrl);
                 if (res.ok) {
-                    const buf = await res.arrayBuffer();
-                    productBase64 = `data:image/png;base64,${arrayBufferToBase64(buf)}`;
+                    productArrayBuffer = await res.arrayBuffer();
                 } else {
                     productError = `Fetch failed: ${res.status}`;
                 }
@@ -70,12 +59,11 @@ export async function GET(request) {
         }
 
         const logoUrl = `${baseUrl}/logo_v5.png`;
-        let logoBase64 = null;
+        let logoArrayBuffer = null;
         try {
             const res = await fetch(logoUrl);
             if (res.ok) {
-                const buf = await res.arrayBuffer();
-                logoBase64 = `data:image/png;base64,${arrayBufferToBase64(buf)}`;
+                logoArrayBuffer = await res.arrayBuffer();
             } else {
                 logoError = `Logo fetch failed: ${res.status}`;
             }
@@ -87,9 +75,9 @@ export async function GET(request) {
             return new Response(JSON.stringify({
                 imgUrl,
                 baseUrl,
-                productBase64: productBase64 ? productBase64.substring(0, 100) : null,
+                hasProduct: !!productArrayBuffer,
                 productError,
-                logoBase64: logoBase64 ? logoBase64.substring(0, 100) : null,
+                hasLogo: !!logoArrayBuffer,
                 logoError
             }), { headers: { 'Content-Type': 'application/json' } });
         }
@@ -137,16 +125,16 @@ export async function GET(request) {
                         alignItems: 'center',
                         flexDirection: 'column',
                     }}>
-                        {productBase64 ? (
+                        {productArrayBuffer ? (
                             <img
-                                src={productBase64}
+                                src={productArrayBuffer}
                                 width="440"
                                 height="500"
                                 style={{ objectFit: 'contain' }}
                             />
-                        ) : logoBase64 ? (
+                        ) : logoArrayBuffer ? (
                             <img
-                                src={logoBase64}
+                                src={logoArrayBuffer}
                                 width="300"
                                 height="110"
                                 style={{ objectFit: 'contain' }}
@@ -163,10 +151,10 @@ export async function GET(request) {
                         paddingLeft: '40px',
                     }}>
                         {/* Logo */}
-                        {logoBase64 ? (
+                        {logoArrayBuffer ? (
                             <div style={{ display: 'flex', marginBottom: '24px' }}>
                                 <img
-                                    src={logoBase64}
+                                    src={logoArrayBuffer}
                                     width="180"
                                     height="65"
                                     style={{ objectFit: 'contain' }}
