@@ -138,11 +138,20 @@ export async function GET(request) {
                         flexDirection: 'column',
                     }}>
                         {productBase64 ? (
-                            <div style={{fontSize: '12px', wordBreak: 'break-all'}}>{productBase64.substring(0, 100)}</div>
+                            <img
+                                src={productBase64}
+                                width="440"
+                                height="500"
+                                style={{ objectFit: 'contain' }}
+                            />
                         ) : logoBase64 ? (
-                            <div style={{fontSize: '12px', wordBreak: 'break-all'}}>{logoBase64.substring(0, 100)}</div>
+                            <img
+                                src={logoBase64}
+                                width="300"
+                                height="110"
+                                style={{ objectFit: 'contain' }}
+                            />
                         ) : null}
-                        {productError && <div style={{ color: 'red', fontSize: '14px', marginTop: '10px' }}>{productError}</div>}
                     </div>
 
                     {/* Right: Details */}
@@ -164,7 +173,6 @@ export async function GET(request) {
                                 />
                             </div>
                         ) : null}
-                        {logoError && <div style={{ color: 'red', fontSize: '14px', marginBottom: '10px' }}>{logoError}</div>}
 
                         {/* Brand */}
                         <div style={{
