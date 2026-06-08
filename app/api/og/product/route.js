@@ -17,27 +17,6 @@ export async function GET(request) {
 
         const decodedUrl = decodeURIComponent(imageUrl);
 
-        let imageDataUrl = decodedUrl;
-        try {
-            const imageRes = await fetch(decodedUrl);
-            if (imageRes.ok) {
-                const contentType = imageRes.headers.get('content-type') || 'image/png';
-                const arrayBuffer = await imageRes.arrayBuffer();
-                
-                const uint8Array = new Uint8Array(arrayBuffer);
-                let binary = '';
-                const CHUNK_SIZE = 0x8000;
-                for (let i = 0; i < uint8Array.length; i += CHUNK_SIZE) {
-                    binary += String.fromCharCode.apply(null, uint8Array.subarray(i, i + CHUNK_SIZE));
-                }
-                const base64 = btoa(binary);
-                imageDataUrl = `data:${contentType};base64,${base64}`;
-            }
-        } catch (fetchErr) {
-            console.error("Failed to fetch image for OG:", fetchErr);
-            Sentry.captureException(fetchErr);
-        }
-
         // Modern UI Design
         return new ImageResponse(
             (
@@ -62,7 +41,7 @@ export async function GET(request) {
                         borderRight: '1px solid #EAEAEA',
                     }}>
                         <img
-                            src={imageDataUrl}
+                            src={decodedUrl}
                             alt="Product"
                             style={{
                                 height: '500px',
