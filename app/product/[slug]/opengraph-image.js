@@ -61,10 +61,11 @@ export default async function Image({ params }) {
             console.error('Font fetch error:', e);
         }
 
-        // Logo as data URI
+        // Logo as data URI (from our own domain — always works)
         const logoDataUri = await fetchAsDataUri(`${baseUrl}/logo_v5.png`);
 
-        // Product image — try base64, if fails or returns null, use direct URL
+        // Product image — route through our own /_next/image proxy
+        // to bypass Fragrantica/CDN blocking of Vercel serverless IPs
         let productImageSrc = null;
         if (product.image_url) {
             let imgUrl = product.image_url.startsWith('http')
@@ -74,9 +75,17 @@ export default async function Image({ params }) {
             if (imgUrl.toLowerCase().endsWith('.avif')) {
                 imgUrl = imgUrl.replace(/\.avif$/i, '.jpg');
             }
-            // First try base64 (most reliable with Satori)
+
+            // Strategy 1: Try fetching directly (works for our own domain images)
             productImageSrc = await fetchAsDataUri(imgUrl);
-            // Fallback: pass the URL directly — Satori will fetch it itself
+
+            // Strategy 2: Route through /_next/image proxy (works for blocked external CDNs)
+            if (!productImageSrc) {
+                const proxyUrl = `${baseUrl}/_next/image?url=${encodeURIComponent(imgUrl)}&w=640&q=80`;
+                productImageSrc = await fetchAsDataUri(proxyUrl);
+            }
+
+            // Strategy 3: Just pass the URL directly as last resort
             if (!productImageSrc) {
                 productImageSrc = imgUrl;
             }
