@@ -68,9 +68,9 @@ export async function GET(request) {
             return new Response(JSON.stringify({
                 imgUrl,
                 baseUrl,
-                hasFont: !!fontData,
-                hasLogo: !!logoData,
-                hasProduct: !!productData
+                hasFont: fontData ? fontData.byteLength : 0,
+                hasLogo: logoData ? logoData.byteLength : 0,
+                hasProduct: productData ? productData.byteLength : 0
             }), { headers: { 'Content-Type': 'application/json' } });
         }
 
