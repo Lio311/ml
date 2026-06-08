@@ -26,7 +26,7 @@ export async function GET(request) {
             }
             if (imgUrl.includes('fimgs.net')) {
                 const cleanUrl = imgUrl.replace(/^https?:\/\//, '');
-                imgUrl = `https://images.weserv.nl/?url=${encodeURIComponent(cleanUrl)}&w=640&q=80&output=jpg`;
+                imgUrl = `https://images.weserv.nl/?url=${encodeURIComponent(cleanUrl)}&w=640&q=80&bg=white&output=jpg`;
             }
         }
 
