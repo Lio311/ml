@@ -105,19 +105,20 @@ export async function GET(request) {
                         fontFamily: fontData ? 'NarkissBlock' : 'sans-serif',
                     }}
                 >
-                    {/* Safe Zone for WhatsApp 1:1 Crop (Center 600x600) */}
+                    {/* Main Container */}
                     <div style={{
                         display: 'flex',
                         flexDirection: 'row',
-                        width: '600px',
-                        height: '600px',
+                        width: '1100px',
+                        height: '550px',
                         alignItems: 'center',
-                        justifyContent: 'center',
+                        justifyContent: 'space-between',
+                        padding: '0 40px',
                     }}>
                         {/* Left Side: Product Image */}
                         <div style={{
                             display: 'flex',
-                            width: '230px',
+                            width: '450px',
                             height: '100%',
                             alignItems: 'center',
                             justifyContent: 'center',
@@ -127,8 +128,8 @@ export async function GET(request) {
                                     src={productData}
                                     alt="Product"
                                     style={{
-                                        height: '280px',
-                                        width: '210px',
+                                        height: '460px',
+                                        width: '345px',
                                         objectFit: 'contain',
                                     }}
                                 />
@@ -139,12 +140,11 @@ export async function GET(request) {
                         <div style={{
                             display: 'flex',
                             flexDirection: 'column',
-                            width: '370px',
+                            width: '550px',
                             height: '100%',
                             justifyContent: 'center',
                             alignItems: 'flex-end',
                             textAlign: 'right',
-                            paddingLeft: '20px',
                         }}>
                             {/* Logo */}
                             {logoData ? (
@@ -152,20 +152,20 @@ export async function GET(request) {
                                     src={logoData}
                                     alt="Logo"
                                     style={{
-                                        width: '120px',
-                                        height: '40px',
+                                        width: '160px',
+                                        height: '53px',
                                         objectFit: 'contain',
-                                        marginBottom: '20px'
+                                        marginBottom: '30px'
                                     }}
                                 />
                             ) : null}
 
                             {/* Brand */}
                             <div style={{
-                                fontSize: 40,
+                                fontSize: 56,
                                 fontWeight: 'bold',
                                 color: '#000',
-                                marginBottom: '4px',
+                                marginBottom: '8px',
                                 display: 'flex',
                             }}>
                                 {brandDisplay}
@@ -173,9 +173,9 @@ export async function GET(request) {
 
                             {/* Model */}
                             <div style={{
-                                fontSize: 28,
+                                fontSize: 40,
                                 color: '#444',
-                                marginBottom: '24px',
+                                marginBottom: '40px',
                                 display: 'flex',
                             }}>
                                 {modelDisplay}
@@ -189,31 +189,31 @@ export async function GET(request) {
                                 width: '100%',
                             }}>
                                 {p10 ? (
-                                    <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'baseline', marginBottom: '8px' }}>
-                                        <div style={{ fontSize: 32, fontWeight: 'bold', color: '#000', display: 'flex' }}>
+                                    <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'baseline', marginBottom: '16px' }}>
+                                        <div style={{ fontSize: 44, fontWeight: 'bold', color: '#000', display: 'flex' }}>
                                             {'\u20AA'}{p10}
                                         </div>
-                                        <div style={{ fontSize: 22, color: '#666', display: 'flex', marginLeft: '12px' }}>
+                                        <div style={{ fontSize: 32, color: '#666', display: 'flex', marginLeft: '16px' }}>
                                             10ml
                                         </div>
                                     </div>
                                 ) : null}
                                 {p5 ? (
-                                    <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'baseline', marginBottom: '8px' }}>
-                                        <div style={{ fontSize: 32, fontWeight: 'bold', color: '#000', display: 'flex' }}>
+                                    <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'baseline', marginBottom: '16px' }}>
+                                        <div style={{ fontSize: 44, fontWeight: 'bold', color: '#000', display: 'flex' }}>
                                             {'\u20AA'}{p5}
                                         </div>
-                                        <div style={{ fontSize: 22, color: '#666', display: 'flex', marginLeft: '12px' }}>
+                                        <div style={{ fontSize: 32, color: '#666', display: 'flex', marginLeft: '16px' }}>
                                             5ml
                                         </div>
                                     </div>
                                 ) : null}
                                 {p2 ? (
                                     <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'baseline' }}>
-                                        <div style={{ fontSize: 32, fontWeight: 'bold', color: '#000', display: 'flex' }}>
+                                        <div style={{ fontSize: 44, fontWeight: 'bold', color: '#000', display: 'flex' }}>
                                             {'\u20AA'}{p2}
                                         </div>
-                                        <div style={{ fontSize: 22, color: '#666', display: 'flex', marginLeft: '12px' }}>
+                                        <div style={{ fontSize: 32, color: '#666', display: 'flex', marginLeft: '16px' }}>
                                             2ml
                                         </div>
                                     </div>
