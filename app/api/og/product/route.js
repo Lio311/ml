@@ -30,8 +30,7 @@ export async function GET(request) {
             console.error('Font fetch error:', e);
         }
 
-        // Product image - fetched via Edge (which bypasses Fragrantica blocking)
-        let productImageSrc = null;
+        // Product image - pass URL directly since Satori on Edge can fetch from Fragrantica without being blocked
         if (imgUrl) {
             if (!imgUrl.startsWith('http')) {
                 imgUrl = `${baseUrl}${imgUrl}`;
@@ -39,35 +38,9 @@ export async function GET(request) {
             if (imgUrl.toLowerCase().endsWith('.avif')) {
                 imgUrl = imgUrl.replace(/\.avif$/i, '.jpg');
             }
-            
-            // Fetch as array buffer and base64 encode it so Satori doesn't have to fetch it
-            try {
-                const res = await fetch(imgUrl);
-                if (res.ok) {
-                    const buffer = await res.arrayBuffer();
-                    const ct = res.headers.get('content-type') || 'image/png';
-                    if (ct.includes('png') || ct.includes('jpeg') || ct.includes('jpg') || ct.includes('gif') || ct.includes('svg')) {
-                        // Satori works best with base64 data URIs
-                        const base64 = Buffer.from(buffer).toString('base64');
-                        productImageSrc = `data:${ct};base64,${base64}`;
-                    }
-                }
-            } catch (e) {
-                console.error("Image fetch failed on edge:", imgUrl, e);
-            }
         }
 
-        // Logo
-        let logoDataUri = null;
-        try {
-            const logoRes = await fetch(`${baseUrl}/logo_v5.png`);
-            if (logoRes.ok) {
-                const buffer = await logoRes.arrayBuffer();
-                logoDataUri = `data:image/png;base64,${Buffer.from(buffer).toString('base64')}`;
-            }
-        } catch (e) {
-            console.error("Logo fetch failed on edge:", e);
-        }
+        const logoUrl = `${baseUrl}/logo_v5.png`;
 
         // Text helpers
         const reverseRtl = (text) => {
@@ -111,16 +84,16 @@ export async function GET(request) {
                         justifyContent: 'center',
                         alignItems: 'center',
                     }}>
-                        {productImageSrc ? (
+                        {imgUrl ? (
                             <img
-                                src={productImageSrc}
+                                src={imgUrl}
                                 width="440"
                                 height="500"
                                 style={{ objectFit: 'contain' }}
                             />
-                        ) : logoDataUri ? (
+                        ) : logoUrl ? (
                             <img
-                                src={logoDataUri}
+                                src={logoUrl}
                                 width="300"
                                 height="110"
                                 style={{ objectFit: 'contain' }}
@@ -137,10 +110,10 @@ export async function GET(request) {
                         paddingLeft: '40px',
                     }}>
                         {/* Logo */}
-                        {logoDataUri ? (
+                        {logoUrl ? (
                             <div style={{ display: 'flex', marginBottom: '24px' }}>
                                 <img
-                                    src={logoDataUri}
+                                    src={logoUrl}
                                     width="180"
                                     height="65"
                                     style={{ objectFit: 'contain' }}
