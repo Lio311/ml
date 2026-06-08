@@ -136,7 +136,7 @@ export async function GET(request) {
                                 alt="Product"
                                 style={{
                                     height: '280px',
-                                    width: 'auto',
+                                    width: '210px',
                                     objectFit: 'contain',
                                     marginBottom: '20px'
                                 }}
