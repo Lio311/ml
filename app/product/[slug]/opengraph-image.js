@@ -14,7 +14,7 @@ export default async function Image({ params }) {
 
     // Fetch product data
     const res = await pool.query(`
-        SELECT brand, brand_he, model, model_he, image_url 
+        SELECT brand, brand_he, model, model_he, image_url, price_10ml 
         FROM products 
         WHERE slug = $1 OR id::text = $1 
         LIMIT 1
@@ -38,8 +38,18 @@ export default async function Image({ params }) {
         console.error("Font fetch error:", e);
     }
 
-    let imageData;
-    let fallbackLogo = true;
+    // Fetch Logo
+    let logoData = null;
+    try {
+        const logoRes = await fetch(`${baseUrl}/logo_v5.png`, { cache: 'force-cache' });
+        if (logoRes.ok) {
+            logoData = await logoRes.arrayBuffer();
+        }
+    } catch (e) {
+        console.error("Logo fetch error:", e);
+    }
+
+    let imageData = null;
 
     if (product.image_url) {
         let imageUrl = product.image_url.startsWith('http') ? product.image_url : `${baseUrl}${product.image_url}`;
@@ -51,18 +61,14 @@ export default async function Image({ params }) {
         try {
             const response = await fetch(imageUrl);
             if (response.ok) {
-                const buffer = await response.arrayBuffer();
-                const contentType = response.headers.get('content-type') || 'image/jpeg';
-                // Convert to base64 for reliable Satori rendering in Node.js
-                imageData = `data:${contentType};base64,${Buffer.from(buffer).toString('base64')}`;
-                fallbackLogo = false;
+                imageData = await response.arrayBuffer();
             }
         } catch (e) {
             console.error("Failed to fetch OG image:", imageUrl, e);
         }
     }
 
-    const displayImage = !fallbackLogo ? imageData : `${baseUrl}/logo_v5.png`;
+    const displayImage = imageData || logoData;
 
     const reverseRtl = (text) => {
         if (!text) return "";
@@ -105,25 +111,29 @@ export default async function Image({ params }) {
             >
                 {/* Product Image */}
                 <div style={{ display: 'flex', width: '480px', height: '480px', justifyContent: 'center', alignItems: 'center' }}>
-                    <img
-                        src={displayImage}
-                        alt="Product Image"
-                        width={fallbackLogo ? "320" : "480"}
-                        height={fallbackLogo ? "120" : "480"}
-                        style={{ objectFit: 'contain' }}
-                    />
+                    {displayImage && (
+                        <img
+                            src={displayImage}
+                            alt="Product Image"
+                            width={!imageData ? "320" : "480"}
+                            height={!imageData ? "120" : "480"}
+                            style={{ objectFit: 'contain' }}
+                        />
+                    )}
                 </div>
 
                 {/* Details */}
                 <div style={{ display: 'flex', flexDirection: 'column', flex: 1, textAlign: 'right', alignItems: 'flex-end', paddingLeft: '40px' }}>
                     <div style={{ display: 'flex', marginBottom: '30px' }}>
-                        <img 
-                            src={`${baseUrl}/logo_v5.png`} 
-                            alt="Logo"
-                            width="200" 
-                            height="70" 
-                            style={{ objectFit: 'contain' }} 
-                        />
+                        {logoData && (
+                            <img 
+                                src={logoData} 
+                                alt="Logo"
+                                width="200" 
+                                height="70" 
+                                style={{ objectFit: 'contain' }} 
+                            />
+                        )}
                     </div>
                     
                     <div style={{ fontSize: 72, fontWeight: 'bold', color: '#000', marginBottom: '15px' }}>
