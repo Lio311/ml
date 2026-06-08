@@ -83,6 +83,17 @@ export async function GET(request) {
             logoError = `Logo error: ${e.message}`;
         }
 
+        if (searchParams.get('debug') === '1') {
+            return new Response(JSON.stringify({
+                imgUrl,
+                baseUrl,
+                productBase64: productBase64 ? productBase64.substring(0, 100) : null,
+                productError,
+                logoBase64: logoBase64 ? logoBase64.substring(0, 100) : null,
+                logoError
+            }), { headers: { 'Content-Type': 'application/json' } });
+        }
+
         // Text helpers
         const reverseRtl = (text) => {
             if (!text) return '';
