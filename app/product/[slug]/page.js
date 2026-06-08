@@ -132,13 +132,11 @@ export async function generateMetadata(props) {
                 siteName: 'ml-tlv',
                 locale: 'he_IL',
                 type: 'website',
-                images: [{ url: ogImageUrl, width: 800, height: 800 }],
             },
             twitter: {
                 card: 'summary_large_image',
                 title: title,
                 description: description,
-                images: [ogImageUrl],
             },
         };
     } catch (metaErr) {

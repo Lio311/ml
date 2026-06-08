@@ -43,9 +43,6 @@ export default async function Image({ params }) {
     if (product.image_url) {
         let imageUrl = product.image_url.startsWith('http') ? product.image_url : `${baseUrl}${product.image_url}`;
         
-        // Satori (engine behind next/og) does not support AVIF.
-        // If it's an .avif file, especially from fimgs.net (Fragrantica),
-        // we attempt to fetch its .jpg equivalent.
         if (imageUrl.toLowerCase().endsWith('.avif')) {
             imageUrl = imageUrl.replace(/\.avif$/i, '.jpg');
         }
@@ -54,25 +51,18 @@ export default async function Image({ params }) {
             const response = await fetch(imageUrl);
             if (response.ok) {
                 const buffer = await response.arrayBuffer();
-                const contentType = response.headers.get('content-type');
-                // Check if the content type is supported by Satori (PNG, JPG, SVG)
-                if (contentType && (contentType.includes('png') || contentType.includes('jpeg') || contentType.includes('jpg') || contentType.includes('svg'))) {
-                    imageData = `data:${contentType};base64,${Buffer.from(buffer).toString('base64')}`;
-                    fallbackLogo = false;
-                }
+                imageData = buffer; // Satori natively supports ArrayBuffer in src
+                fallbackLogo = false;
             }
         } catch (e) {
             console.error("Failed to fetch OG image:", imageUrl, e);
         }
     }
 
-    // Default to a branded placeholder if image missing or unsupported
     const displayImage = !fallbackLogo ? imageData : `${baseUrl}/logo_v5.png`;
 
-    // Helper to reverse Hebrew text for rendering in Satori (which does not support RTL shaping)
     const reverseRtl = (text) => {
         if (!text) return "";
-        // If it contains Hebrew characters, we need to reverse it visually
         if (/[א-ת]/.test(text)) {
             return text.split(" ").reverse().map(word => {
                 if (/[א-ת]/.test(word)) {
@@ -86,7 +76,8 @@ export default async function Image({ params }) {
 
     const brandDisplay = reverseRtl(product.brand_he || product.brand);
     const modelDisplay = reverseRtl(product.model_he || product.model);
-    const sloganDisplay = reverseRtl("יוקרה בחתיכות קטנות");
+    const sloganDisplay = reverseRtl("דוגמיות בושם מקוריות");
+    const priceDisplay = product.price_10ml ? `₪${product.price_10ml} / 10ml` : reverseRtl("לפרטים נוספים");
 
     return new ImageResponse(
         (
@@ -103,7 +94,7 @@ export default async function Image({ params }) {
                     fontFamily: 'NarkissBlock',
                 }}
             >
-                {/* Product Image (Left Side) - Keeping it as is */}
+                {/* Product Image */}
                 <div style={{ display: 'flex', width: '480px', height: '480px', justifyContent: 'center', alignItems: 'center' }}>
                     <img
                         src={displayImage}
@@ -114,9 +105,9 @@ export default async function Image({ params }) {
                     />
                 </div>
 
-                {/* Product Details (Right Side) */}
+                {/* Details */}
                 <div style={{ display: 'flex', flexDirection: 'column', flex: 1, textAlign: 'right', alignItems: 'flex-end', paddingLeft: '40px' }}>
-                    <div style={{ display: 'flex', marginBottom: '40px' }}>
+                    <div style={{ display: 'flex', marginBottom: '30px' }}>
                         <img 
                             src={`${baseUrl}/logo_v5.png`} 
                             alt="Logo"
@@ -129,8 +120,13 @@ export default async function Image({ params }) {
                     <div style={{ fontSize: 72, fontWeight: 'bold', color: '#000', marginBottom: '15px' }}>
                         {brandDisplay}
                     </div>
-                    <div style={{ fontSize: 48, color: '#444', marginBottom: '40px' }}>
+                    <div style={{ fontSize: 48, color: '#444', marginBottom: '30px' }}>
                         {modelDisplay}
+                    </div>
+
+                    {/* Price section added */}
+                    <div style={{ fontSize: 56, fontWeight: 'bold', color: '#000', marginBottom: '30px', display: 'flex' }}>
+                        {priceDisplay}
                     </div>
                     
                     <div style={{ display: 'flex', borderTop: '2px solid #f0f0f0', paddingTop: '30px', width: '100%', justifyContent: 'flex-end' }}>
