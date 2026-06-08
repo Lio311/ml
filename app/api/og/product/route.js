@@ -31,6 +31,7 @@ export async function GET(request) {
         }
 
         // Product image - proxy through images.weserv.nl to bypass Fragrantica IP blocks
+        let productArrayBuffer = null;
         if (imgUrl) {
             if (!imgUrl.startsWith('http')) {
                 imgUrl = `${baseUrl}${imgUrl}`;
@@ -42,9 +43,26 @@ export async function GET(request) {
                 const cleanUrl = imgUrl.replace(/^https?:\/\//, '');
                 imgUrl = `https://images.weserv.nl/?url=${encodeURIComponent(cleanUrl)}&w=640&q=80`;
             }
+            try {
+                const res = await fetch(imgUrl);
+                if (res.ok) {
+                    productArrayBuffer = await res.arrayBuffer();
+                }
+            } catch(e) {
+                console.error("Failed to fetch product image array buffer:", e);
+            }
         }
 
         const logoUrl = `${baseUrl}/logo_v5.png`;
+        let logoArrayBuffer = null;
+        try {
+            const res = await fetch(logoUrl);
+            if (res.ok) {
+                logoArrayBuffer = await res.arrayBuffer();
+            }
+        } catch(e) {
+            console.error("Failed to fetch logo array buffer:", e);
+        }
 
         // Text helpers
         const reverseRtl = (text) => {
@@ -88,16 +106,16 @@ export async function GET(request) {
                         justifyContent: 'center',
                         alignItems: 'center',
                     }}>
-                        {imgUrl ? (
+                        {productArrayBuffer ? (
                             <img
-                                src={imgUrl}
+                                src={productArrayBuffer}
                                 width="440"
                                 height="500"
                                 style={{ objectFit: 'contain' }}
                             />
-                        ) : logoUrl ? (
+                        ) : logoArrayBuffer ? (
                             <img
-                                src={logoUrl}
+                                src={logoArrayBuffer}
                                 width="300"
                                 height="110"
                                 style={{ objectFit: 'contain' }}
@@ -114,10 +132,10 @@ export async function GET(request) {
                         paddingLeft: '40px',
                     }}>
                         {/* Logo */}
-                        {logoUrl ? (
+                        {logoArrayBuffer ? (
                             <div style={{ display: 'flex', marginBottom: '24px' }}>
                                 <img
-                                    src={logoUrl}
+                                    src={logoArrayBuffer}
                                     width="180"
                                     height="65"
                                     style={{ objectFit: 'contain' }}
