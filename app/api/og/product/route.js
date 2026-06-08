@@ -152,10 +152,10 @@ export async function GET(request) {
                                     src={logoData}
                                     alt="Logo"
                                     style={{
-                                        width: '160px',
-                                        height: '53px',
+                                        width: '140px',
+                                        height: '46px',
                                         objectFit: 'contain',
-                                        marginBottom: '30px'
+                                        marginBottom: '20px'
                                     }}
                                 />
                             ) : null}
@@ -181,43 +181,62 @@ export async function GET(request) {
                                 {modelDisplay}
                             </div>
 
-                            {/* Prices by Sizes */}
+                            {/* Prices by Sizes (Horizontal Row) */}
                             <div style={{
                                 display: 'flex',
-                                flexDirection: 'column',
-                                alignItems: 'flex-end',
+                                flexDirection: 'row',
+                                justifyContent: 'flex-end',
+                                alignItems: 'center',
                                 width: '100%',
                             }}>
                                 {p10 ? (
-                                    <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'baseline', marginBottom: '16px' }}>
+                                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginLeft: '40px' }}>
                                         <div style={{ fontSize: 44, fontWeight: 'bold', color: '#000', display: 'flex' }}>
                                             {'\u20AA'}{p10}
                                         </div>
-                                        <div style={{ fontSize: 32, color: '#666', display: 'flex', marginLeft: '16px' }}>
+                                        <div style={{ fontSize: 24, color: '#666', display: 'flex' }}>
                                             10ml
                                         </div>
                                     </div>
                                 ) : null}
                                 {p5 ? (
-                                    <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'baseline', marginBottom: '16px' }}>
+                                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginLeft: '40px' }}>
                                         <div style={{ fontSize: 44, fontWeight: 'bold', color: '#000', display: 'flex' }}>
                                             {'\u20AA'}{p5}
                                         </div>
-                                        <div style={{ fontSize: 32, color: '#666', display: 'flex', marginLeft: '16px' }}>
+                                        <div style={{ fontSize: 24, color: '#666', display: 'flex' }}>
                                             5ml
                                         </div>
                                     </div>
                                 ) : null}
                                 {p2 ? (
-                                    <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'baseline' }}>
+                                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginLeft: '40px' }}>
                                         <div style={{ fontSize: 44, fontWeight: 'bold', color: '#000', display: 'flex' }}>
                                             {'\u20AA'}{p2}
                                         </div>
-                                        <div style={{ fontSize: 32, color: '#666', display: 'flex', marginLeft: '16px' }}>
+                                        <div style={{ fontSize: 24, color: '#666', display: 'flex' }}>
                                             2ml
                                         </div>
                                     </div>
                                 ) : null}
+                            </div>
+
+                            {/* Divider */}
+                            <div style={{
+                                width: '100%',
+                                height: '2px',
+                                background: '#eee',
+                                marginTop: '30px',
+                                marginBottom: '20px'
+                            }}></div>
+
+                            {/* Slogan */}
+                            <div style={{
+                                fontSize: 28,
+                                color: '#888',
+                                display: 'flex',
+                            }}>
+                                {sloganDisplay}
                             </div>
                         </div>
                     </div>

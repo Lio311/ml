@@ -202,8 +202,8 @@ export default function AccessibilityWidget() {
                 />
             )}
 
-            {/* Trigger Button - Reduced Size, Custom Image Icon */}
-            <div className={`fixed bottom-6 ${isHebrew ? 'left-6' : 'right-6'} z-[9999] font-sans rtl group acc-widget-ignore`}>
+            {/* Trigger Button - Always fixed to bottom left */}
+            <div className="fixed bottom-4 left-4 md:bottom-6 md:left-6 z-[9999] font-sans rtl group acc-widget-ignore">
                 <button
                     onClick={() => setIsOpen(!isOpen)}
                     className="w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 focus:outline-none bg-white/60 backdrop-blur-md border border-white/30 shadow-lg"
