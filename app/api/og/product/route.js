@@ -98,16 +98,17 @@ export async function GET(request) {
                         flexDirection: 'row',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        gap: '60px',
                         width: '100%',
                     }}>
                         {/* Left: Product Image */}
                         <div style={{
                             display: 'flex',
-                            width: '400px',
+                            width: '440px',
                             height: '500px',
                             justifyContent: 'center',
                             alignItems: 'center',
+                            flexDirection: 'column',
+                            marginRight: '60px',
                         }}>
                             {imgUrl ? (
                                 <img
@@ -115,7 +116,7 @@ export async function GET(request) {
                                     alt="Product"
                                     style={{
                                         height: '500px',
-                                        width: '400px',
+                                        width: 'auto',
                                         objectFit: 'contain'
                                     }}
                                 />
