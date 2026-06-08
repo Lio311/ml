@@ -9,6 +9,7 @@ export const contentType = 'image/png';
 
 /**
  * Fetch an image and return it as a data:... URI string.
+ * Only returns supported formats (png, jpeg, gif, svg).
  * Returns null on any failure.
  */
 async function fetchAsDataUri(url) {
@@ -17,7 +18,12 @@ async function fetchAsDataUri(url) {
         if (!res.ok) return null;
         const buffer = await res.arrayBuffer();
         const ct = res.headers.get('content-type') || 'image/png';
-        return `data:${ct};base64,${Buffer.from(buffer).toString('base64')}`;
+        // Only support formats Satori can render
+        if (!ct.includes('png') && !ct.includes('jpeg') && !ct.includes('jpg') && !ct.includes('gif') && !ct.includes('svg')) {
+            return null;
+        }
+        const base64 = Buffer.from(buffer).toString('base64');
+        return `data:${ct};base64,${base64}`;
     } catch (e) {
         console.error('fetchAsDataUri failed:', url, e);
         return null;
@@ -28,7 +34,6 @@ export default async function Image({ params }) {
     try {
         const { slug } = await params;
 
-        // ── 1. DB query ───────────────────────────────────────────
         const res = await pool.query(`
             SELECT brand, brand_he, model, model_he, image_url,
                    price_2ml, price_5ml, price_10ml
@@ -42,10 +47,9 @@ export default async function Image({ params }) {
             return new Response('Product not found', { status: 404 });
         }
 
-        // ── 2. Load assets ────────────────────────────────────────
         const baseUrl = 'https://www.ml-tlv.com';
 
-        // Font (ArrayBuffer is correct for fonts API)
+        // Font (ArrayBuffer is correct for the fonts API)
         let fontData = null;
         try {
             const fontRes = await fetch(
@@ -57,23 +61,28 @@ export default async function Image({ params }) {
             console.error('Font fetch error:', e);
         }
 
-        // Logo as base64 data URI
+        // Logo as data URI
         const logoDataUri = await fetchAsDataUri(`${baseUrl}/logo_v5.png`);
 
-        // Product image as base64 data URI
-        let productImageUri = null;
+        // Product image — try base64, if fails or returns null, use direct URL
+        let productImageSrc = null;
         if (product.image_url) {
             let imgUrl = product.image_url.startsWith('http')
                 ? product.image_url
                 : `${baseUrl}${product.image_url}`;
-            // Satori cannot decode AVIF
+            // Satori cannot decode AVIF — try jpg equivalent
             if (imgUrl.toLowerCase().endsWith('.avif')) {
                 imgUrl = imgUrl.replace(/\.avif$/i, '.jpg');
             }
-            productImageUri = await fetchAsDataUri(imgUrl);
+            // First try base64 (most reliable with Satori)
+            productImageSrc = await fetchAsDataUri(imgUrl);
+            // Fallback: pass the URL directly — Satori will fetch it itself
+            if (!productImageSrc) {
+                productImageSrc = imgUrl;
+            }
         }
 
-        // ── 3. Prepare text ───────────────────────────────────────
+        // Text helpers
         const reverseRtl = (text) => {
             if (!text) return '';
             if (/[א-ת]/.test(text)) {
@@ -88,17 +97,14 @@ export default async function Image({ params }) {
         const modelDisplay = reverseRtl(product.model_he || product.model);
         const sloganDisplay = reverseRtl('דוגמיות בושם מקוריות');
 
-        // Build price displays
         const p10 = product.price_10ml ? String(product.price_10ml) : null;
         const p5 = product.price_5ml ? String(product.price_5ml) : null;
         const p2 = product.price_2ml ? String(product.price_2ml) : null;
 
-        // ── 4. Fonts config ───────────────────────────────────────
         const fontsConfig = fontData
             ? [{ name: 'NarkissBlock', data: fontData, style: 'normal' }]
             : [];
 
-        // ── 5. Render ─────────────────────────────────────────────
         return new ImageResponse(
             (
                 <div
@@ -122,9 +128,9 @@ export default async function Image({ params }) {
                         justifyContent: 'center',
                         alignItems: 'center',
                     }}>
-                        {productImageUri ? (
+                        {productImageSrc ? (
                             <img
-                                src={productImageUri}
+                                src={productImageSrc}
                                 width="440"
                                 height="500"
                                 style={{ objectFit: 'contain' }}
@@ -180,7 +186,7 @@ export default async function Image({ params }) {
                             {modelDisplay}
                         </div>
 
-                        {/* Prices - explicit divs, no .map() */}
+                        {/* Prices */}
                         <div style={{
                             display: 'flex',
                             flexDirection: 'row',
@@ -196,7 +202,7 @@ export default async function Image({ params }) {
                                     marginLeft: '40px',
                                 }}>
                                     <div style={{ fontSize: 42, fontWeight: 'bold', color: '#000', display: 'flex' }}>
-                                        ₪{p10}
+                                        {'\u20AA'}{p10}
                                     </div>
                                     <div style={{ fontSize: 24, color: '#666', display: 'flex' }}>
                                         10ml
@@ -211,7 +217,7 @@ export default async function Image({ params }) {
                                     marginLeft: '40px',
                                 }}>
                                     <div style={{ fontSize: 42, fontWeight: 'bold', color: '#000', display: 'flex' }}>
-                                        ₪{p5}
+                                        {'\u20AA'}{p5}
                                     </div>
                                     <div style={{ fontSize: 24, color: '#666', display: 'flex' }}>
                                         5ml
@@ -226,7 +232,7 @@ export default async function Image({ params }) {
                                     marginLeft: '40px',
                                 }}>
                                     <div style={{ fontSize: 42, fontWeight: 'bold', color: '#000', display: 'flex' }}>
-                                        ₪{p2}
+                                        {'\u20AA'}{p2}
                                     </div>
                                     <div style={{ fontSize: 24, color: '#666', display: 'flex' }}>
                                         2ml
@@ -257,6 +263,23 @@ export default async function Image({ params }) {
         );
     } catch (e) {
         console.error('OG Image generation error:', e);
-        return new Response('Failed to generate image', { status: 500 });
+        // Return a minimal valid image instead of crashing
+        return new ImageResponse(
+            (
+                <div style={{
+                    background: 'white',
+                    width: '100%',
+                    height: '100%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: 48,
+                    color: '#333',
+                }}>
+                    ml-tlv.com
+                </div>
+            ),
+            { ...size }
+        );
     }
 }
