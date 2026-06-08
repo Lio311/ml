@@ -79,9 +79,10 @@ export default async function Image({ params }) {
             // Strategy 1: Try fetching directly (works for our own domain images)
             productImageSrc = await fetchAsDataUri(imgUrl);
 
-            // Strategy 2: Route through /_next/image proxy (works for blocked external CDNs)
-            if (!productImageSrc) {
-                const proxyUrl = `${baseUrl}/_next/image?url=${encodeURIComponent(imgUrl)}&w=640&q=80`;
+            // Strategy 2: Route through public proxy (images.weserv.nl)
+            if (!productImageSrc && imgUrl.includes('fimgs.net')) {
+                const cleanUrl = imgUrl.replace(/^https?:\/\//, '');
+                const proxyUrl = `https://images.weserv.nl/?url=${encodeURIComponent(cleanUrl)}&w=640&q=80`;
                 productImageSrc = await fetchAsDataUri(proxyUrl);
             }
 
