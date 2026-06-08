@@ -1,6 +1,7 @@
 import { ImageResponse } from 'next/og';
+import fs from 'fs';
+import path from 'path';
 
-export const runtime = 'edge';
 export const alt = 'Fragrance Sample';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
@@ -18,19 +19,30 @@ export async function GET(request) {
 
         const baseUrl = 'https://www.ml-tlv.com';
 
-        // Load Font from Edge
+        // Load Font from Local Filesystem (Node.js)
         let fontData = null;
         try {
-            const fontRes = await fetch(
-                `${baseUrl}/fonts/Narkiss%20Block%20Regular.ttf`,
-                { cache: 'force-cache' }
-            );
-            if (fontRes.ok) fontData = await fontRes.arrayBuffer();
+            const fontPath = path.join(process.cwd(), 'public', 'fonts', 'Narkiss Block Regular.ttf');
+            if (fs.existsSync(fontPath)) {
+                fontData = fs.readFileSync(fontPath).buffer;
+            }
         } catch (e) {
-            console.error('Font fetch error:', e);
+            console.error('Font read error:', e);
         }
 
-        // Product image - proxy through images.weserv.nl to bypass Fragrantica IP blocks
+        // Load Logo from Local Filesystem (Node.js)
+        let logoData = null;
+        try {
+            const logoPath = path.join(process.cwd(), 'public', 'logo_v5.png');
+            if (fs.existsSync(logoPath)) {
+                logoData = fs.readFileSync(logoPath).buffer;
+            }
+        } catch (e) {
+            console.error('Logo read error:', e);
+        }
+
+        // Fetch Product Image manually to ensure proper headers and ArrayBuffer conversion
+        let productData = null;
         if (imgUrl) {
             if (!imgUrl.startsWith('http')) {
                 imgUrl = `${baseUrl}${imgUrl}`;
@@ -40,17 +52,30 @@ export async function GET(request) {
             }
             if (imgUrl.includes('fimgs.net')) {
                 const cleanUrl = imgUrl.replace(/^https?:\/\//, '');
-                imgUrl = `https://images.weserv.nl/?url=${encodeURIComponent(cleanUrl)}&w=640&q=80`;
+                imgUrl = `https://images.weserv.nl/?url=${encodeURIComponent(cleanUrl)}&w=640&q=80&output=png`;
+            }
+            try {
+                const res = await fetch(imgUrl, {
+                    headers: {
+                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                        'Accept': 'image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8',
+                    }
+                });
+                if (res.ok) {
+                    productData = await res.arrayBuffer();
+                }
+            } catch(e) {
+                console.error('Product image fetch error:', e);
             }
         }
-
-        const logoUrl = `${baseUrl}/logo_v5.png`;
 
         if (searchParams.get('debug') === '1') {
             return new Response(JSON.stringify({
                 imgUrl,
                 baseUrl,
-                logoUrl
+                hasFont: !!fontData,
+                hasLogo: !!logoData,
+                hasProduct: !!productData
             }), { headers: { 'Content-Type': 'application/json' } });
         }
 
@@ -97,16 +122,16 @@ export async function GET(request) {
                         alignItems: 'center',
                         flexDirection: 'column',
                     }}>
-                        {imgUrl ? (
+                        {productData ? (
                             <img
-                                src={imgUrl}
+                                src={productData}
                                 width="440"
                                 height="500"
                                 style={{ objectFit: 'contain' }}
                             />
-                        ) : logoUrl ? (
+                        ) : logoData ? (
                             <img
-                                src={logoUrl}
+                                src={logoData}
                                 width="300"
                                 height="110"
                                 style={{ objectFit: 'contain' }}
@@ -123,10 +148,10 @@ export async function GET(request) {
                         paddingLeft: '40px',
                     }}>
                         {/* Logo */}
-                        {logoUrl ? (
+                        {logoData ? (
                             <div style={{ display: 'flex', marginBottom: '24px' }}>
                                 <img
-                                    src={logoUrl}
+                                    src={logoData}
                                     width="180"
                                     height="65"
                                     style={{ objectFit: 'contain' }}
