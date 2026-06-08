@@ -21,6 +21,26 @@ export async function GET(request) {
 
         // Load Font from Local Filesystem (Edge)
         let fontData = null;
+        let productData = null;
+        if (imgUrl) {
+            try {
+                const productRes = await fetch(imgUrl, {
+                    headers: {
+                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                        'Accept': 'image/jpeg,image/png,image/webp,*/*;q=0.8',
+                    },
+                    next: { revalidate: 3600 }
+                });
+                if (productRes.ok) {
+                    productData = await productRes.arrayBuffer();
+                } else {
+                    console.error('Failed to fetch product image for OG:', productRes.status, productRes.statusText);
+                }
+            } catch (err) {
+                console.error('Exception fetching product image for OG:', err);
+            }
+        }
+
         try {
             const fontUrl = new URL('../../../../public/fonts/Narkiss Block Regular.ttf', import.meta.url);
             fontData = await fetch(fontUrl).then((res) => res.arrayBuffer());
@@ -57,6 +77,7 @@ export async function GET(request) {
                 baseUrl,
                 hasFont: fontData ? fontData.byteLength : 0,
                 hasLogo: logoData ? logoData.byteLength : 0,
+                hasProduct: productData ? productData.byteLength : 0
             }), { headers: { 'Content-Type': 'application/json' } });
         }
 
@@ -104,9 +125,9 @@ export async function GET(request) {
                         flexDirection: 'column',
                         marginRight: '60px',
                     }}>
-                        {imgUrl ? (
+                        {productData ? (
                             <img
-                                src={imgUrl}
+                                src={productData}
                                 alt="Product"
                                 style={{
                                     height: '500px',
