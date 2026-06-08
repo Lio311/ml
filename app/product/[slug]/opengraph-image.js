@@ -1,7 +1,5 @@
 import { ImageResponse } from 'next/og';
 import pool from "../../lib/db";
-import fs from 'fs';
-import path from 'path';
 
 // Standard Metadata for OG Image
 export const runtime = 'nodejs';
@@ -9,14 +7,31 @@ export const alt = 'Fragrance Sample';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
+/**
+ * Helper: fetch an image and return it as a data:... URI string.
+ * Returns null on any failure so the caller can gracefully degrade.
+ */
+async function fetchAsDataUri(url) {
+    try {
+        const res = await fetch(url);
+        if (!res.ok) return null;
+        const buffer = await res.arrayBuffer();
+        const ct = res.headers.get('content-type') || 'image/png';
+        return `data:${ct};base64,${Buffer.from(buffer).toString('base64')}`;
+    } catch {
+        return null;
+    }
+}
+
 export default async function Image({ params }) {
     const { slug } = await params;
 
-    // Fetch product data
+    // ── 1. DB query ───────────────────────────────────────────────
     const res = await pool.query(`
-        SELECT brand, brand_he, model, model_he, image_url, price_2ml, price_5ml, price_10ml 
-        FROM products 
-        WHERE slug = $1 OR id::text = $1 
+        SELECT brand, brand_he, model, model_he, image_url,
+               price_2ml, price_5ml, price_10ml
+        FROM products
+        WHERE slug = $1 OR id::text = $1
         LIMIT 1
     `, [slug]);
 
@@ -25,74 +40,62 @@ export default async function Image({ params }) {
         return new Response('Product not found', { status: 404 });
     }
 
-    // Load Hebrew font safely
+    // ── 2. Load assets (font, logo, product image) ────────────────
     const baseUrl = 'https://www.ml-tlv.com';
+
+    // Font — fetched as ArrayBuffer (Satori fonts API accepts ArrayBuffer)
     let fontData = null;
     try {
-        const fontUrl = `${baseUrl}/fonts/Narkiss%20Block%20Regular.ttf`;
-        const fontRes = await fetch(fontUrl, { cache: 'force-cache' });
-        if (fontRes.ok) {
-            fontData = await fontRes.arrayBuffer();
-        }
-    } catch (e) {
-        console.error("Font fetch error:", e);
-    }
+        const fontRes = await fetch(
+            `${baseUrl}/fonts/Narkiss%20Block%20Regular.ttf`,
+            { cache: 'force-cache' }
+        );
+        if (fontRes.ok) fontData = await fontRes.arrayBuffer();
+    } catch { /* font is optional */ }
 
-    // Fetch Logo
-    let logoData = null;
-    try {
-        const logoRes = await fetch(`${baseUrl}/logo_v5.png`, { cache: 'force-cache' });
-        if (logoRes.ok) {
-            logoData = await logoRes.arrayBuffer();
-        }
-    } catch (e) {
-        console.error("Logo fetch error:", e);
-    }
+    // Logo — as base64 data URI
+    const logoDataUri = await fetchAsDataUri(`${baseUrl}/logo_v5.png`);
 
-    let imageData = null;
-
+    // Product image — as base64 data URI
+    let productImageUri = null;
     if (product.image_url) {
-        let imageUrl = product.image_url.startsWith('http') ? product.image_url : `${baseUrl}${product.image_url}`;
-        
-        if (imageUrl.toLowerCase().endsWith('.avif')) {
-            imageUrl = imageUrl.replace(/\.avif$/i, '.jpg');
+        let imgUrl = product.image_url.startsWith('http')
+            ? product.image_url
+            : `${baseUrl}${product.image_url}`;
+        // Satori cannot decode AVIF; try the .jpg equivalent
+        if (imgUrl.toLowerCase().endsWith('.avif')) {
+            imgUrl = imgUrl.replace(/\.avif$/i, '.jpg');
         }
-
-        try {
-            const response = await fetch(imageUrl);
-            if (response.ok) {
-                imageData = await response.arrayBuffer();
-            }
-        } catch (e) {
-            console.error("Failed to fetch OG image:", imageUrl, e);
-        }
+        productImageUri = await fetchAsDataUri(imgUrl);
     }
 
-    const displayImage = imageData || logoData;
-
+    // ── 3. Prepare text (reverse Hebrew words for Satori) ─────────
     const reverseRtl = (text) => {
-        if (!text) return "";
+        if (!text) return '';
         if (/[א-ת]/.test(text)) {
-            return text.split(" ").reverse().map(word => {
-                if (/[א-ת]/.test(word)) {
-                    return word.split("").reverse().join("");
-                }
-                return word;
-            }).join(" ");
+            return text.split(' ').reverse().map(w =>
+                /[א-ת]/.test(w) ? w.split('').reverse().join('') : w
+            ).join(' ');
         }
         return text;
     };
 
     const brandDisplay = reverseRtl(product.brand_he || product.brand);
     const modelDisplay = reverseRtl(product.model_he || product.model);
-    const sloganDisplay = reverseRtl("דוגמיות בושם מקוריות");
+    const sloganDisplay = reverseRtl('דוגמיות בושם מקוריות');
 
-    const fontsConfig = fontData ? [{
-        name: 'NarkissBlock',
-        data: fontData,
-        style: 'normal',
-    }] : [];
+    // Build price items (only sizes that exist)
+    const prices = [];
+    if (product.price_10ml) prices.push({ label: '10ml', price: product.price_10ml });
+    if (product.price_5ml)  prices.push({ label: '5ml',  price: product.price_5ml });
+    if (product.price_2ml)  prices.push({ label: '2ml',  price: product.price_2ml });
 
+    // ── 4. Fonts config ───────────────────────────────────────────
+    const fontsConfig = fontData
+        ? [{ name: 'NarkissBlock', data: fontData, style: 'normal' }]
+        : [];
+
+    // ── 5. Render ─────────────────────────────────────────────────
     return new ImageResponse(
         (
             <div
@@ -104,68 +107,112 @@ export default async function Image({ params }) {
                     flexDirection: 'row',
                     alignItems: 'center',
                     justifyContent: 'space-between',
-                    padding: '80px',
+                    padding: '70px 80px',
                     fontFamily: fontData ? 'NarkissBlock' : 'sans-serif',
                 }}
             >
-                {/* Product Image */}
-                <div style={{ display: 'flex', width: '480px', height: '480px', justifyContent: 'center', alignItems: 'center' }}>
-                    {displayImage && (
+                {/* ── Left: Product Image ── */}
+                <div style={{
+                    display: 'flex',
+                    width: '440px',
+                    height: '500px',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                }}>
+                    {productImageUri ? (
                         <img
-                            src={displayImage}
-                            alt="Product Image"
-                            width={!imageData ? "320" : "480"}
-                            height={!imageData ? "120" : "480"}
+                            src={productImageUri}
+                            width="440"
+                            height="500"
                             style={{ objectFit: 'contain' }}
                         />
-                    )}
+                    ) : logoDataUri ? (
+                        <img
+                            src={logoDataUri}
+                            width="300"
+                            height="110"
+                            style={{ objectFit: 'contain' }}
+                        />
+                    ) : null}
                 </div>
 
-                {/* Details */}
-                <div style={{ display: 'flex', flexDirection: 'column', flex: 1, textAlign: 'right', alignItems: 'flex-end', paddingLeft: '40px' }}>
-                    <div style={{ display: 'flex', marginBottom: '30px' }}>
-                        {logoData && (
-                            <img 
-                                src={logoData} 
-                                alt="Logo"
-                                width="200" 
-                                height="70" 
-                                style={{ objectFit: 'contain' }} 
+                {/* ── Right: Details ── */}
+                <div style={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    flex: 1,
+                    alignItems: 'flex-end',
+                    paddingLeft: '40px',
+                }}>
+                    {/* Logo */}
+                    {logoDataUri && (
+                        <div style={{ display: 'flex', marginBottom: '24px' }}>
+                            <img
+                                src={logoDataUri}
+                                width="180"
+                                height="65"
+                                style={{ objectFit: 'contain' }}
                             />
-                        )}
-                    </div>
-                    
-                    <div style={{ fontSize: 72, fontWeight: 'bold', color: '#000', marginBottom: '15px' }}>
+                        </div>
+                    )}
+
+                    {/* Brand */}
+                    <div style={{
+                        fontSize: 64,
+                        fontWeight: 'bold',
+                        color: '#000',
+                        marginBottom: '10px',
+                        textAlign: 'right',
+                    }}>
                         {brandDisplay}
                     </div>
-                    <div style={{ fontSize: 48, color: '#444', marginBottom: '30px' }}>
+
+                    {/* Model */}
+                    <div style={{
+                        fontSize: 42,
+                        color: '#444',
+                        marginBottom: '28px',
+                        textAlign: 'right',
+                    }}>
                         {modelDisplay}
                     </div>
 
-                    {/* Prices section */}
-                    <div style={{ display: 'flex', flexDirection: 'row', gap: '50px', marginBottom: '30px', justifyContent: 'flex-end', width: '100%' }}>
-                        {product.price_10ml && (
-                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                                <div style={{ fontSize: 46, fontWeight: 'bold', color: '#000' }}>₪{product.price_10ml}</div>
-                                <div style={{ fontSize: 26, color: '#666' }}>10ml</div>
-                            </div>
-                        )}
-                        {product.price_5ml && (
-                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                                <div style={{ fontSize: 46, fontWeight: 'bold', color: '#000' }}>₪{product.price_5ml}</div>
-                                <div style={{ fontSize: 26, color: '#666' }}>5ml</div>
-                            </div>
-                        )}
-                        {product.price_2ml && (
-                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                                <div style={{ fontSize: 46, fontWeight: 'bold', color: '#000' }}>₪{product.price_2ml}</div>
-                                <div style={{ fontSize: 26, color: '#666' }}>2ml</div>
-                            </div>
-                        )}
-                    </div>
-                    
-                    <div style={{ display: 'flex', borderTop: '2px solid #f0f0f0', paddingTop: '30px', width: '100%', justifyContent: 'flex-end' }}>
-                        <div style={{ fontSize: 26, color: '#888', fontWeight: 'normal' }}>
+                    {/* Prices */}
+                    {prices.length > 0 && (
+                        <div style={{
+                            display: 'flex',
+                            flexDirection: 'row',
+                            gap: '40px',
+                            marginBottom: '28px',
+                            justifyContent: 'flex-end',
+                            width: '100%',
+                        }}>
+                            {prices.map((p) => (
+                                <div key={p.label} style={{
+                                    display: 'flex',
+                                    flexDirection: 'column',
+                                    alignItems: 'center',
+                                }}>
+                                    <div style={{ fontSize: 42, fontWeight: 'bold', color: '#000' }}>
+                                        ₪{p.price}
+                                    </div>
+                                    <div style={{ fontSize: 24, color: '#666' }}>
+                                        {p.label}
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+
+                    {/* Slogan */}
+                    <div style={{
+                        display: 'flex',
+                        borderTop: '2px solid #eee',
+                        paddingTop: '24px',
+                        width: '100%',
+                        justifyContent: 'flex-end',
+                    }}>
+                        <div style={{ fontSize: 24, color: '#888' }}>
                             {sloganDisplay}
                         </div>
                     </div>
