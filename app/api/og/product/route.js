@@ -30,13 +30,17 @@ export async function GET(request) {
             console.error('Font fetch error:', e);
         }
 
-        // Product image - pass URL directly since Satori on Edge can fetch from Fragrantica without being blocked
+        // Product image - proxy through images.weserv.nl to bypass Fragrantica IP blocks
         if (imgUrl) {
             if (!imgUrl.startsWith('http')) {
                 imgUrl = `${baseUrl}${imgUrl}`;
             }
             if (imgUrl.toLowerCase().endsWith('.avif')) {
                 imgUrl = imgUrl.replace(/\.avif$/i, '.jpg');
+            }
+            if (imgUrl.includes('fimgs.net')) {
+                const cleanUrl = imgUrl.replace(/^https?:\/\//, '');
+                imgUrl = `https://images.weserv.nl/?url=${encodeURIComponent(cleanUrl)}&w=640&q=80`;
             }
         }
 
