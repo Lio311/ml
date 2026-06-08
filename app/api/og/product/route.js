@@ -105,120 +105,120 @@ export async function GET(request) {
                         fontFamily: fontData ? 'NarkissBlock' : 'sans-serif',
                     }}
                 >
-                    {/* Safe Zone for WhatsApp 1:1 Crop (Center 630x630) */}
+                    {/* Safe Zone for WhatsApp 1:1 Crop (Center 600x600) */}
                     <div style={{
                         display: 'flex',
-                        flexDirection: 'column',
+                        flexDirection: 'row',
                         width: '600px',
                         height: '600px',
                         alignItems: 'center',
                         justifyContent: 'center',
-                        textAlign: 'center',
                     }}>
-                        {/* Top: Logo (Optional, small) */}
-                        {logoData ? (
-                            <img
-                                src={logoData}
-                                alt="Logo"
-                                style={{
-                                    width: '120px',
-                                    height: '40px',
-                                    objectFit: 'contain',
-                                    marginBottom: '20px'
-                                }}
-                            />
-                        ) : null}
-
-                        {/* Product Image */}
-                        {productData ? (
-                            <img
-                                src={productData}
-                                alt="Product"
-                                style={{
-                                    height: '280px',
-                                    width: '210px',
-                                    objectFit: 'contain',
-                                    marginBottom: '20px'
-                                }}
-                            />
-                        ) : null}
-
-                        {/* Brand */}
-                        <div style={{
-                            fontSize: 48,
-                            fontWeight: 'bold',
-                            color: '#000',
-                            marginBottom: '8px',
-                            display: 'flex',
-                            textAlign: 'center',
-                        }}>
-                            {brandDisplay}
-                        </div>
-
-                        {/* Model */}
-                        <div style={{
-                            fontSize: 32,
-                            color: '#444',
-                            marginBottom: '24px',
-                            display: 'flex',
-                            textAlign: 'center',
-                        }}>
-                            {modelDisplay}
-                        </div>
-
-                        {/* Prices */}
+                        {/* Left Side: Product Image */}
                         <div style={{
                             display: 'flex',
-                            flexDirection: 'row',
-                            justifyContent: 'center',
+                            width: '230px',
+                            height: '100%',
                             alignItems: 'center',
-                            width: '100%',
+                            justifyContent: 'center',
                         }}>
-                            {p10 ? (
-                                <div style={{
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    alignItems: 'center',
-                                    margin: '0 20px',
-                                }}>
-                                    <div style={{ fontSize: 36, fontWeight: 'bold', color: '#000', display: 'flex' }}>
-                                        {'\u20AA'}{p10}
-                                    </div>
-                                    <div style={{ fontSize: 20, color: '#666', display: 'flex' }}>
-                                        10ml
-                                    </div>
-                                </div>
+                            {productData ? (
+                                <img
+                                    src={productData}
+                                    alt="Product"
+                                    style={{
+                                        height: '280px',
+                                        width: '210px',
+                                        objectFit: 'contain',
+                                    }}
+                                />
                             ) : null}
-                            {p5 ? (
-                                <div style={{
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    alignItems: 'center',
-                                    margin: '0 20px',
-                                }}>
-                                    <div style={{ fontSize: 36, fontWeight: 'bold', color: '#000', display: 'flex' }}>
-                                        {'\u20AA'}{p5}
-                                    </div>
-                                    <div style={{ fontSize: 20, color: '#666', display: 'flex' }}>
-                                        5ml
-                                    </div>
-                                </div>
+                        </div>
+
+                        {/* Right Side: Text and Prices */}
+                        <div style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            width: '370px',
+                            height: '100%',
+                            justifyContent: 'center',
+                            alignItems: 'flex-end',
+                            textAlign: 'right',
+                            paddingLeft: '20px',
+                        }}>
+                            {/* Logo */}
+                            {logoData ? (
+                                <img
+                                    src={logoData}
+                                    alt="Logo"
+                                    style={{
+                                        width: '120px',
+                                        height: '40px',
+                                        objectFit: 'contain',
+                                        marginBottom: '20px'
+                                    }}
+                                />
                             ) : null}
-                            {p2 ? (
-                                <div style={{
-                                    display: 'flex',
-                                    flexDirection: 'column',
-                                    alignItems: 'center',
-                                    margin: '0 20px',
-                                }}>
-                                    <div style={{ fontSize: 36, fontWeight: 'bold', color: '#000', display: 'flex' }}>
-                                        {'\u20AA'}{p2}
+
+                            {/* Brand */}
+                            <div style={{
+                                fontSize: 40,
+                                fontWeight: 'bold',
+                                color: '#000',
+                                marginBottom: '4px',
+                                display: 'flex',
+                            }}>
+                                {brandDisplay}
+                            </div>
+
+                            {/* Model */}
+                            <div style={{
+                                fontSize: 28,
+                                color: '#444',
+                                marginBottom: '24px',
+                                display: 'flex',
+                            }}>
+                                {modelDisplay}
+                            </div>
+
+                            {/* Prices by Sizes */}
+                            <div style={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                alignItems: 'flex-end',
+                                width: '100%',
+                            }}>
+                                {p10 ? (
+                                    <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'baseline', marginBottom: '8px' }}>
+                                        <div style={{ fontSize: 32, fontWeight: 'bold', color: '#000', display: 'flex' }}>
+                                            {'\u20AA'}{p10}
+                                        </div>
+                                        <div style={{ fontSize: 22, color: '#666', display: 'flex', marginLeft: '12px' }}>
+                                            10ml
+                                        </div>
                                     </div>
-                                    <div style={{ fontSize: 20, color: '#666', display: 'flex' }}>
-                                        2ml
+                                ) : null}
+                                {p5 ? (
+                                    <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'baseline', marginBottom: '8px' }}>
+                                        <div style={{ fontSize: 32, fontWeight: 'bold', color: '#000', display: 'flex' }}>
+                                            {'\u20AA'}{p5}
+                                        </div>
+                                        <div style={{ fontSize: 22, color: '#666', display: 'flex', marginLeft: '12px' }}>
+                                            5ml
+                                        </div>
                                     </div>
-                                </div>
-                            ) : null}
+                                ) : null}
+                                {p2 ? (
+                                    <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'baseline' }}>
+                                        <div style={{ fontSize: 32, fontWeight: 'bold', color: '#000', display: 'flex' }}>
+                                            {'\u20AA'}{p2}
+                                        </div>
+                                        <div style={{ fontSize: 22, color: '#666', display: 'flex', marginLeft: '12px' }}>
+                                            2ml
+                                        </div>
+                                    </div>
+                                ) : null}
+                            </div>
                         </div>
                     </div>
                 </div>
