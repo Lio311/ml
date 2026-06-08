@@ -143,8 +143,8 @@ export async function GET(request) {
                             width: '550px',
                             height: '100%',
                             justifyContent: 'center',
-                            alignItems: 'flex-end',
-                            textAlign: 'right',
+                            alignItems: 'center',
+                            textAlign: 'center',
                         }}>
                             {/* Logo */}
                             {logoData ? (
@@ -167,6 +167,7 @@ export async function GET(request) {
                                 color: '#000',
                                 marginBottom: '8px',
                                 display: 'flex',
+                                textAlign: 'center',
                             }}>
                                 {brandDisplay}
                             </div>
@@ -177,6 +178,7 @@ export async function GET(request) {
                                 color: '#444',
                                 marginBottom: '40px',
                                 display: 'flex',
+                                textAlign: 'center',
                             }}>
                                 {modelDisplay}
                             </div>
@@ -185,12 +187,12 @@ export async function GET(request) {
                             <div style={{
                                 display: 'flex',
                                 flexDirection: 'row',
-                                justifyContent: 'flex-end',
+                                justifyContent: 'center',
                                 alignItems: 'center',
                                 width: '100%',
                             }}>
                                 {p10 ? (
-                                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginLeft: '40px' }}>
+                                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', margin: '0 20px' }}>
                                         <div style={{ fontSize: 44, fontWeight: 'bold', color: '#000', display: 'flex' }}>
                                             {'\u20AA'}{p10}
                                         </div>
@@ -200,7 +202,7 @@ export async function GET(request) {
                                     </div>
                                 ) : null}
                                 {p5 ? (
-                                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginLeft: '40px' }}>
+                                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', margin: '0 20px' }}>
                                         <div style={{ fontSize: 44, fontWeight: 'bold', color: '#000', display: 'flex' }}>
                                             {'\u20AA'}{p5}
                                         </div>
@@ -210,7 +212,7 @@ export async function GET(request) {
                                     </div>
                                 ) : null}
                                 {p2 ? (
-                                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginLeft: '40px' }}>
+                                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', margin: '0 20px' }}>
                                         <div style={{ fontSize: 44, fontWeight: 'bold', color: '#000', display: 'flex' }}>
                                             {'\u20AA'}{p2}
                                         </div>
@@ -235,6 +237,7 @@ export async function GET(request) {
                                 fontSize: 28,
                                 color: '#888',
                                 display: 'flex',
+                                textAlign: 'center',
                             }}>
                                 {sloganDisplay}
                             </div>
