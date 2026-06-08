@@ -19,12 +19,22 @@ export async function GET(request) {
 
         const baseUrl = 'https://www.ml-tlv.com';
 
+        // Helper to cleanly convert Node Buffer to Web ArrayBuffer without memory pool issues
+        function toArrayBuffer(buffer) {
+            const ab = new ArrayBuffer(buffer.length);
+            const view = new Uint8Array(ab);
+            for (let i = 0; i < buffer.length; ++i) {
+                view[i] = buffer[i];
+            }
+            return ab;
+        }
+
         // Load Font from Local Filesystem (Node.js)
         let fontData = null;
         try {
             const fontPath = path.join(process.cwd(), 'public', 'fonts', 'Narkiss Block Regular.ttf');
             if (fs.existsSync(fontPath)) {
-                fontData = fs.readFileSync(fontPath);
+                fontData = toArrayBuffer(fs.readFileSync(fontPath));
             }
         } catch (e) {
             console.error('Font read error:', e);
@@ -35,7 +45,7 @@ export async function GET(request) {
         try {
             const logoPath = path.join(process.cwd(), 'public', 'logo_v5.png');
             if (fs.existsSync(logoPath)) {
-                logoData = fs.readFileSync(logoPath);
+                logoData = toArrayBuffer(fs.readFileSync(logoPath));
             }
         } catch (e) {
             console.error('Logo read error:', e);
@@ -62,7 +72,7 @@ export async function GET(request) {
                     }
                 });
                 if (res.ok) {
-                    productData = Buffer.from(await res.arrayBuffer());
+                    productData = await res.arrayBuffer();
                 }
             } catch(e) {
                 console.error('Product image fetch error:', e);
