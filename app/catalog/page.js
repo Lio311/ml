@@ -9,6 +9,8 @@ import he from '../data/locales/he.json';
 import en from '../data/locales/en.json';
 import { sanitizeProductArray } from "../lib/productUtils";
 import { unstable_cache } from 'next/cache';
+import { getProducts } from './dbQueries';
+import CatalogClientGrid from './CatalogClientGrid';
 
 
 const getT = (locale) => {
@@ -97,154 +99,6 @@ export async function generateMetadata(props) {
     };
 }
 
-async function getProducts(search, brand, category, minPrice, maxPrice, sort, page, searchParams) {
-    const LIMIT = 16;
-    const OFFSET = (page - 1) * LIMIT;
-
-    const joinType = 'LEFT JOIN';
-
-    let query = `
-    SELECT p.*, COALESCE(ps.sales_count, 0) as sales_count 
-    FROM products p
-    ${joinType} product_sales ps ON p.id = ps.product_id
-    ${joinType} brands b ON p.brand = b.name
-    WHERE p.active = true AND p.stock > 0 AND p.is_discovery_set IS NOT TRUE
-  `;
-    const params = [];
-
-    if (search) {
-        params.push(`%${search}%`);
-        query += ` AND (p.name ILIKE $${params.length} 
-            OR p.brand ILIKE $${params.length} 
-            OR p.model ILIKE $${params.length} 
-            OR p.description ILIKE $${params.length} 
-            OR p.name_he ILIKE $${params.length}
-            OR p.brand_he ILIKE $${params.length}
-            OR p.model_he ILIKE $${params.length}
-        )`;
-    }
-
-    if (brand) {
-        const brands = Array.isArray(brand) ? brand : [brand];
-        if (brands.length > 0) {
-            const placeHolders = brands.map((_, i) => `$${params.length + i + 1}`).join(', ');
-            query += ` AND p.brand IN (${placeHolders})`;
-            params.push(...brands);
-        }
-    }
-
-    if (category) {
-        const categories = Array.isArray(category) ? category : [category];
-        if (categories.length > 0) {
-            const hasSpecialFilter = categories.some(c => c === 'בוטיק' || c === 'נישה');
-            const otherCategories = categories.filter(c => c !== 'בוטיק' && c !== 'נישה');
-            
-            let catCondition = '';
-            if (otherCategories.length > 0) {
-                const placeHolders = otherCategories.map((_, i) => `p.category ILIKE $${params.length + i + 1}`).join(' OR ');
-                catCondition = `(${placeHolders})`;
-                params.push(...otherCategories.map(c => `%${c}%`));
-            }
-
-            if (hasSpecialFilter) {
-                const nicheBoutiqueCondition = "p.category NOT ILIKE '%דיזיינר%'";
-                if (catCondition) {
-                    query += ` AND (${catCondition} OR ${nicheBoutiqueCondition})`;
-                } else {
-                    query += ` AND ${nicheBoutiqueCondition}`;
-                }
-            } else if (catCondition) {
-                query += ` AND ${catCondition}`;
-            }
-        }
-    }
-
-    if (minPrice) {
-        params.push(minPrice);
-        query += ` AND p.price_10ml >= $${params.length}`;
-    }
-
-    if (maxPrice) {
-        params.push(maxPrice);
-        query += ` AND p.price_10ml <= $${params.length}`;
-    }
-
-    if (searchParams?.season) {
-        const seasons = Array.isArray(searchParams.season) ? searchParams.season : [searchParams.season];
-        if (seasons.length > 0) {
-            const conditions = seasons.map((_, i) => `p.seasons ILIKE $${params.length + i + 1}`).join(' OR ');
-            query += ` AND (${conditions})`;
-            params.push(...seasons.map(s => `%${s}%`));
-        }
-    }
-
-    if (searchParams?.perfumer) {
-        const perfumers = Array.isArray(searchParams.perfumer) ? searchParams.perfumer : [searchParams.perfumer];
-        if (perfumers.length > 0) {
-            const conditions = perfumers.map((_, i) => `p.perfumers ILIKE $${params.length + i + 1}`).join(' OR ');
-            query += ` AND (${conditions})`;
-            params.push(...perfumers.map(p => `%${p}%`));
-        }
-    }
-
-    if (searchParams?.note) {
-        const notes = Array.isArray(searchParams.note) ? searchParams.note : [searchParams.note];
-        if (notes.length > 0) {
-            const conditions = notes.map((_, i) => `(p.top_notes ILIKE $${params.length + i + 1} OR p.middle_notes ILIKE $${params.length + i + 1} OR p.base_notes ILIKE $${params.length + i + 1})`).join(' OR ');
-            query += ` AND (${conditions})`;
-            params.push(...notes.map(n => `%${n}%`));
-        }
-    }
-
-    if (searchParams?.country) {
-        const countries = Array.isArray(searchParams.country) ? searchParams.country : [searchParams.country];
-        if (countries.length > 0) {
-            const placeHolders = countries.map((_, i) => `$${params.length + i + 1}`).join(', ');
-            query += ` AND p.country IN (${placeHolders})`;
-            params.push(...countries);
-        }
-    }
-
-    const countQuery = `SELECT COUNT(*) FROM (${query}) AS total`;
-
-    let orderBy = 'RANDOM()';
-    switch (sort) {
-        case 'price_asc':
-            orderBy = 'p.price_10ml ASC';
-            break;
-        case 'price_desc':
-            orderBy = 'p.price_10ml DESC';
-            break;
-        case 'bestsellers':
-            orderBy = 'sales_count DESC NULLS LAST, p.name ASC';
-            break;
-        case 'oldest':
-            orderBy = 'p.id ASC';
-            break;
-        case 'newest':
-            orderBy = 'p.id DESC';
-            break;
-        case 'random':
-        default:
-            orderBy = 'id DESC';
-            break;
-    }
-
-    query += ` ORDER BY ${orderBy} LIMIT ${LIMIT} OFFSET ${OFFSET}`;
-
-    return await withClient(async (client) => {
-        const countRes = await client.query(countQuery, params);
-        const totalProducts = parseInt(countRes.rows[0].count);
-
-        const res = await client.query(query, params);
-        return { products: sanitizeProductArray(res.rows), totalProducts, totalPages: Math.ceil(totalProducts / LIMIT) };
-    }).catch(error => {
-        console.error("SEARCH DEBUG - DB Error:", error);
-        console.error("SEARCH DEBUG - Query:", query);
-        console.error("SEARCH DEBUG - Params:", params);
-        return { products: [], totalProducts: 0, totalPages: 0 };
-    });
-}
 
 const getBrands = unstable_cache(async () => {
     try {
@@ -468,79 +322,23 @@ export default async function CatalogPage(props) {
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-                        {products.map((product) => (
-                            <ProductCard key={product.id} product={product} />
-                        ))}
-                    </div>
-
-                    {products.length === 0 && (
-                        <div className="text-center py-20 bg-gray-50 rounded-lg">
-                            <p className="text-xl text-gray-500">{t('common.no_products_found')}</p>
-                            <Link href="/catalog" className="text-blue-600 mt-2 block underline">{t('common.clear_all')}</Link>
-                        </div>
-                    )}
-
-                    {/* Pagination Controls */}
-                    {totalPages > 1 && (
-                        <div className="mt-12 flex justify-center gap-2 flex-wrap" dir={dir}>
-                            {/* Previous Button */}
-                            {page > 1 && (
-                                <Link
-                                    href={{
-                                        pathname: '/catalog',
-                                        query: { ...searchParams, page: page - 1 }
-                                    }}
-                                    className="px-4 py-2 border rounded hover:bg-gray-100 transition"
-                                >
-                                    {t('common.previous')}
-                                </Link>
-                            )}
-
-                            {/* Page Numbers */}
-                            {(() => {
-                                let start = Math.max(1, page - 1);
-                                let end = Math.min(totalPages, page + 1);
-
-                                // Adjust to always show 3 if possible
-                                if (page === 1) end = Math.min(totalPages, 3);
-                                if (page === totalPages) start = Math.max(1, totalPages - 2);
-
-                                const pages = [];
-                                for (let i = start; i <= end; i++) {
-                                    pages.push(i);
-                                }
-                                return pages.map(p => (
-                                    <Link
-                                        key={p}
-                                        href={{
-                                            pathname: '/catalog',
-                                            query: { ...searchParams, page: p }
-                                        }}
-                                        className={`w-10 h-10 flex items-center justify-center rounded border transition ${p === page
-                                            ? 'bg-black text-white border-black'
-                                            : 'bg-white hover:bg-gray-50'
-                                            }`}
-                                    >
-                                        {p}
-                                    </Link>
-                                ));
-                            })()}
-
-                            {/* Next Button */}
-                            {page < totalPages && (
-                                <Link
-                                    href={{
-                                        pathname: '/catalog',
-                                        query: { ...searchParams, page: page + 1 }
-                                    }}
-                                    className="px-4 py-2 border rounded hover:bg-gray-100 transition"
-                                >
-                                    {t('common.next')}
-                                </Link>
-                            )}
-                        </div>
-                    )}
+                    <CatalogClientGrid 
+                        initialProducts={products} 
+                        initialTotalPages={totalPages} 
+                        searchParams={searchParams} 
+                        locale={locale} 
+                        tProvider={{
+                            no_products_found: t('common.no_products_found'),
+                            clear_all: t('common.clear_all')
+                        }}
+                        search={mappedSearch}
+                        brand={brand}
+                        category={category}
+                        minPrice={minPrice}
+                        maxPrice={maxPrice}
+                        sort={sort}
+                        page={page}
+                    />
                 </div>
 
             </div>

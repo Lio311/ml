@@ -18,6 +18,7 @@ import ClerkBrandingTranslator from "./components/ClerkBrandingTranslator";
 import ServiceWorkerRegistration from "./components/ServiceWorkerRegistration";
 import PushManager from "./components/PushManager";
 import SmartAdvisorTab from "./components/SmartAdvisorTab";
+import MiniCart from "./components/MiniCart";
 import { getBrand } from "./lib/brand";
 
 // Validate env vars on server start/request
@@ -138,6 +139,7 @@ export default async function RootLayout({ children }) {
                 {children}
               </ClientLayout>
 
+              <MiniCart />
               <SmartAdvisorTab />
 
               <GoogleAnalytics />

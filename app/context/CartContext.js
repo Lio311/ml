@@ -17,6 +17,7 @@ export function CartProvider({ children }) {
     const [activeVendorId, setActiveVendorId] = useState('main');
     const [vendorConfig, setVendorConfig] = useState(null);
     const [isSelfPickup, setIsSelfPickup] = useState(false);
+    const [isMiniCartOpen, setIsMiniCartOpen] = useState(false);
 
     const { user } = useUser();
     const pathname = usePathname();
@@ -262,6 +263,8 @@ export function CartProvider({ children }) {
             return [...prev, { ...product, size, price, originalPrice, quantity: 1, vendorId, vendorName }];
         });
 
+        setIsMiniCartOpen(true);
+
         // Track funnel event: add_to_cart
         try {
             const sid = sessionStorage.getItem('funnel_session_id');
@@ -364,9 +367,10 @@ export function CartProvider({ children }) {
                 toast.error(t(options.errorAllKey || 'cart.shared_cart_all_out_of_stock'));
             } else {
                 toast.success(t(options.mixedKey || 'cart.shared_cart_mixed'));
+                setIsMiniCartOpen(true);
             }
         } else if (addedCount > 0) {
-            toast.success(t(options.successKey || 'cart.shared_cart_added'));
+            setIsMiniCartOpen(true);
         }
 
         return { addedCount, skippedCount };
@@ -402,6 +406,7 @@ export function CartProvider({ children }) {
         };
 
         setCartItems(prev => [...prev, bundleToAdd]);
+        setIsMiniCartOpen(true);
         
         // Track analytics
         try {
@@ -752,7 +757,8 @@ export function CartProvider({ children }) {
             subtotal, totalItemsCount, globalItemsCount, uniqueVendorsCount, freeSamplesCount, nextTier, shippingCost, total,
             luckyPrize, setLuckyPrize, discountAmount, promoDiscountAmount, coupon, setCoupon,
             startLottery, cancelLottery, isCartLocked, lotteryTimeLeft, lotteryMode, 
-            isMainVendor, vendorConfig, isSelfPickup, setIsSelfPickup, getItemFinalPrice
+            isMainVendor, vendorConfig, isSelfPickup, setIsSelfPickup, getItemFinalPrice,
+            isMiniCartOpen, setIsMiniCartOpen
         }}>
             {children}
         </CartContext.Provider>
