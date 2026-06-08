@@ -48,13 +48,13 @@ export async function GET(request) {
             }
             if (imgUrl.includes('fimgs.net')) {
                 const cleanUrl = imgUrl.replace(/^https?:\/\//, '');
-                imgUrl = `https://images.weserv.nl/?url=${encodeURIComponent(cleanUrl)}&w=640&q=80&output=png`;
+                imgUrl = `https://images.weserv.nl/?url=${encodeURIComponent(cleanUrl)}&w=640&q=80&output=jpg`;
             }
             try {
                 const res = await fetch(imgUrl, {
                     headers: {
                         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-                        'Accept': 'image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8',
+                        'Accept': 'image/jpeg,image/png,*/*;q=0.8',
                     }
                 });
                 if (res.ok) {
@@ -121,16 +121,22 @@ export async function GET(request) {
                         {productData ? (
                             <img
                                 src={productData}
-                                width="440"
-                                height="500"
-                                style={{ objectFit: 'contain' }}
+                                alt="Product"
+                                style={{
+                                    width: '440px',
+                                    height: '500px',
+                                    objectFit: 'contain'
+                                }}
                             />
                         ) : logoData ? (
                             <img
                                 src={logoData}
-                                width="300"
-                                height="110"
-                                style={{ objectFit: 'contain' }}
+                                alt="Logo"
+                                style={{
+                                    width: '300px',
+                                    height: '110px',
+                                    objectFit: 'contain'
+                                }}
                             />
                         ) : null}
                     </div>
@@ -148,9 +154,12 @@ export async function GET(request) {
                             <div style={{ display: 'flex', marginBottom: '24px' }}>
                                 <img
                                     src={logoData}
-                                    width="180"
-                                    height="65"
-                                    style={{ objectFit: 'contain' }}
+                                    alt="Logo"
+                                    style={{
+                                        width: '180px',
+                                        height: '65px',
+                                        objectFit: 'contain'
+                                    }}
                                 />
                             </div>
                         ) : null}
