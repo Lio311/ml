@@ -54,13 +54,13 @@ export async function GET(request) {
             }
             if (imgUrl.includes('fimgs.net')) {
                 const cleanUrl = imgUrl.replace(/^https?:\/\//, '');
-                imgUrl = `https://images.weserv.nl/?url=${encodeURIComponent(cleanUrl)}&w=640&q=80`;
+                imgUrl = `https://images.weserv.nl/?url=${encodeURIComponent(cleanUrl)}&w=640&q=80&output=png`;
             }
             try {
                 const res = await fetch(imgUrl);
                 if (res.ok) {
                     const buf = await res.arrayBuffer();
-                    productBase64 = `data:image/jpeg;base64,${arrayBufferToBase64(buf)}`;
+                    productBase64 = `data:image/png;base64,${arrayBufferToBase64(buf)}`;
                 } else {
                     productError = `Fetch failed: ${res.status}`;
                 }
