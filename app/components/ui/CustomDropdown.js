@@ -46,18 +46,34 @@ export default function CustomDropdown({
         const menuHeight = menuRef.current?.offsetHeight || 250;
         const spaceBelow = window.innerHeight - rect.bottom;
         const openUpwards = spaceBelow < menuHeight + 20 && rect.top > menuHeight;
+        
+        const menuWidth = Math.max(rect.width, 180);
 
         const style = {
             position: "fixed",
             top: openUpwards ? rect.top - menuHeight - 6 : rect.bottom + 6,
-            minWidth: Math.max(rect.width, 180),
+            minWidth: menuWidth,
             zIndex: 9999,
         };
 
         if (isRTL) {
-            style.right = window.innerWidth - rect.right;
+            const rightPos = window.innerWidth - rect.right;
+            if (rect.right - menuWidth < 10) {
+                style.left = 10;
+                style.right = "auto";
+            } else {
+                style.right = rightPos;
+                style.left = "auto";
+            }
         } else {
-            style.left = rect.left;
+            const leftPos = rect.left;
+            if (leftPos + menuWidth > window.innerWidth - 10) {
+                style.right = 10;
+                style.left = "auto";
+            } else {
+                style.left = leftPos;
+                style.right = "auto";
+            }
         }
 
         setMenuStyle(style);
