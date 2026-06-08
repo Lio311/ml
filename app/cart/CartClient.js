@@ -33,6 +33,7 @@ export default function CartClient() {
     const { openSignIn } = useClerk();
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [upsellProducts, setUpsellProducts] = useState([]);
+    const [isUpsellLoading, setIsUpsellLoading] = useState(false);
     const prevSamplesCount = useRef(freeSamplesCount);
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -244,12 +245,19 @@ export default function CartClient() {
     // Upsell Fetch
     useEffect(() => {
         const fetchUpsell = async () => {
-            const res = await fetch('/api/products/upsell', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ excludedIds: cartItems.map(i => i.id) })
-            });
-            if (res.ok) setUpsellProducts(await res.json());
+            setIsUpsellLoading(true);
+            try {
+                const res = await fetch('/api/products/upsell', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ excludedIds: cartItems.map(i => i.id) })
+                });
+                if (res.ok) setUpsellProducts(await res.json());
+            } catch (err) {
+                console.error("Failed to fetch upsell", err);
+            } finally {
+                setIsUpsellLoading(false);
+            }
         };
         if (isMainVendor && activeItems.length > 0) fetchUpsell();
     }, [isMainVendor, activeItems.length, cartItems]);
@@ -538,11 +546,26 @@ export default function CartClient() {
                             />
 
                             {/* Recommendations / Upsell */}
-                            {recommendations.length > 0 && (
+                            {(recommendations.length > 0 || isUpsellLoading) && isMainVendor && nextTier > 0 && (
                                 <div className="space-y-3 pt-2">
                                     <h4 className="text-sm font-bold text-gray-700">{t('cart.upsell_title')}</h4>
-                                    <div className="space-y-2">
-                                        {recommendations.map(rec => (
+                                    
+                                    {isUpsellLoading && recommendations.length === 0 ? (
+                                        <div className="space-y-2">
+                                            {[1, 2, 3].map(i => (
+                                                <div key={`skel-${i}`} className="flex items-center gap-3 bg-white border p-2 rounded-lg shadow-sm animate-pulse">
+                                                    <div className="w-10 h-10 bg-gray-200 rounded flex-shrink-0"></div>
+                                                    <div className="flex-1 space-y-2">
+                                                        <div className="h-3 bg-gray-200 rounded w-3/4"></div>
+                                                        <div className="h-2 bg-gray-100 rounded w-1/2"></div>
+                                                    </div>
+                                                    <div className="w-8 h-8 bg-gray-200 rounded-full flex-shrink-0"></div>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    ) : (
+                                        <div className="space-y-2">
+                                            {recommendations.map(rec => (
                                             <div key={rec.id} className="flex items-center gap-3 bg-white border p-2 rounded-lg shadow-sm hover:shadow-md transition">
                                                 <div className="w-10 h-10 bg-gray-50 rounded flex-shrink-0 flex items-center justify-center overflow-hidden relative">
                                                     {rec.image_url ? <Image src={rec.image_url} alt={rec.name || "Product"} fill sizes="40px" className="object-contain p-1" /> : '🧴'}
@@ -570,8 +593,9 @@ export default function CartClient() {
                                                     +
                                                 </button>
                                             </div>
-                                        ))}
-                                    </div>
+                                            ))}
+                                        </div>
+                                    )}
                                 </div>
                             )}
 
