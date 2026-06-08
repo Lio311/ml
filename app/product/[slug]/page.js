@@ -66,8 +66,7 @@ export const revalidate = 3600; // SEO Improvement: Cache for 1 hour
 
 export async function generateMetadata(props) {
     try {
-        const cookieStore = await cookies();
-        const locale = cookieStore.get('NEXT_LOCALE')?.value || 'he';
+        const locale = 'he'; // Crawlers don't send cookies, default to Hebrew for metadata
         const t = getT(locale);
 
         const params = await props.params;
@@ -91,10 +90,7 @@ export async function generateMetadata(props) {
 
         const product = sanitizeProduct(rawProduct);
 
-        const headerData = await headers();
-        const host = headerData.get('host') || 'www.ml-tlv.com';
-        const protocol = host.includes('localhost') ? 'http' : 'https';
-        const baseUrl = `${protocol}://${host}`;
+        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.ml-tlv.com';
 
         const localizedName = locale === 'he' 
             ? `${product.brand_he || product.brand} ${product.model_he || product.model}` 
@@ -149,6 +145,10 @@ export async function generateMetadata(props) {
             },
         };
     } catch (metaErr) {
+        // In Next.js, DynamicServerError should never be caught. If it is, rethrow it.
+        if (metaErr && metaErr.digest === 'DYNAMIC_SERVER_USAGE') {
+            throw metaErr;
+        }
         console.error('[ProductPage] generateMetadata crashed:', metaErr);
         Sentry.captureException(metaErr);
         return { title: 'Product' };
