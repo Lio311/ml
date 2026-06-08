@@ -89,65 +89,73 @@ export async function GET(request) {
                         display: 'flex',
                         flexDirection: 'row',
                         alignItems: 'center',
-                        justifyContent: 'space-between',
-                        padding: '70px 80px',
+                        justifyContent: 'center',
                         fontFamily: fontData ? 'NarkissBlock' : 'sans-serif',
                     }}
                 >
-                    {/* Left: Product Image */}
                     <div style={{
                         display: 'flex',
-                        width: '440px',
-                        height: '500px',
-                        justifyContent: 'center',
+                        flexDirection: 'row',
                         alignItems: 'center',
-                        flexDirection: 'column',
+                        justifyContent: 'center',
+                        gap: '60px',
+                        width: '100%',
+                        maxWidth: '900px',
                     }}>
-                        {imgUrl ? (
-                            <img
-                                src={imgUrl}
-                                alt="Product"
-                                style={{
-                                    height: '500px',
-                                    width: 'auto',
-                                    objectFit: 'contain'
-                                }}
-                            />
-                        ) : logoData ? (
-                            <img
-                                src={logoData}
-                                alt="Logo"
-                                style={{
-                                    width: '300px',
-                                    height: '110px',
-                                    objectFit: 'contain'
-                                }}
-                            />
-                        ) : null}
-                    </div>
-
-                    {/* Right: Details */}
-                    <div style={{
-                        display: 'flex',
-                        flexDirection: 'column',
-                        flex: 1,
-                        alignItems: 'flex-end',
-                        paddingLeft: '40px',
-                    }}>
-                        {/* Logo */}
-                        {logoData ? (
-                            <div style={{ display: 'flex', marginBottom: '24px' }}>
+                        {/* Left: Product Image */}
+                        <div style={{
+                            display: 'flex',
+                            width: '400px',
+                            height: '500px',
+                            justifyContent: 'center',
+                            alignItems: 'center',
+                        }}>
+                            {imgUrl ? (
+                                <img
+                                    src={imgUrl}
+                                    alt="Product"
+                                    style={{
+                                        height: '500px',
+                                        width: 'auto',
+                                        maxWidth: '400px',
+                                        objectFit: 'contain'
+                                    }}
+                                />
+                            ) : logoData ? (
                                 <img
                                     src={logoData}
                                     alt="Logo"
                                     style={{
-                                        width: '180px',
-                                        height: '65px',
+                                        width: '300px',
+                                        height: '110px',
                                         objectFit: 'contain'
                                     }}
                                 />
-                            </div>
-                        ) : null}
+                            ) : null}
+                        </div>
+
+                        {/* Right: Details */}
+                        <div style={{
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'flex-end',
+                            justifyContent: 'center',
+                            width: '400px',
+                        }}>
+                            {/* Logo */}
+                            {logoData ? (
+                                <div style={{ display: 'flex', marginBottom: '24px' }}>
+                                    <img
+                                        src={logoData}
+                                        alt="Logo"
+                                        style={{
+                                            width: '180px',
+                                            height: '65px',
+                                            objectFit: 'contain'
+                                        }}
+                                    />
+                                </div>
+                            ) : null}
 
                         {/* Brand */}
                         <div style={{
@@ -236,6 +244,7 @@ export async function GET(request) {
                             <div style={{ fontSize: 24, color: '#888', display: 'flex' }}>
                                 {sloganDisplay}
                             </div>
+                        </div>
                         </div>
                     </div>
                 </div>
