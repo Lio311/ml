@@ -37,8 +37,7 @@ export async function GET(request) {
             console.error('Logo read error:', e);
         }
 
-        // Fetch Product Image manually
-        let productData = null;
+        // Product image URL handling
         if (imgUrl) {
             if (!imgUrl.startsWith('http')) {
                 imgUrl = `${baseUrl}${imgUrl}`;
@@ -50,19 +49,6 @@ export async function GET(request) {
                 const cleanUrl = imgUrl.replace(/^https?:\/\//, '');
                 imgUrl = `https://images.weserv.nl/?url=${encodeURIComponent(cleanUrl)}&w=640&q=80&output=jpg`;
             }
-            try {
-                const res = await fetch(imgUrl, {
-                    headers: {
-                        'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-                        'Accept': 'image/jpeg,image/png,*/*;q=0.8',
-                    }
-                });
-                if (res.ok) {
-                    productData = await res.arrayBuffer();
-                }
-            } catch(e) {
-                console.error('Product image fetch error:', e);
-            }
         }
 
         if (searchParams.get('debug') === '1') {
@@ -71,7 +57,6 @@ export async function GET(request) {
                 baseUrl,
                 hasFont: fontData ? fontData.byteLength : 0,
                 hasLogo: logoData ? logoData.byteLength : 0,
-                hasProduct: productData ? productData.byteLength : 0
             }), { headers: { 'Content-Type': 'application/json' } });
         }
 
@@ -118,13 +103,13 @@ export async function GET(request) {
                         alignItems: 'center',
                         flexDirection: 'column',
                     }}>
-                        {productData ? (
+                        {imgUrl ? (
                             <img
-                                src={productData}
+                                src={imgUrl}
                                 alt="Product"
                                 style={{
-                                    width: '440px',
                                     height: '500px',
+                                    width: 'auto',
                                     objectFit: 'contain'
                                 }}
                             />
