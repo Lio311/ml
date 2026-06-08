@@ -25,18 +25,19 @@ export default async function Image({ params }) {
         return new Response('Product not found', { status: 404 });
     }
 
-    // Load Hebrew font for rendering
-    const fontPath = path.join(process.cwd(), 'public', 'fonts', 'Narkiss Block Regular.ttf');
-    let fontData;
+    // Load Hebrew font safely
+    const baseUrl = 'https://www.ml-tlv.com';
+    let fontData = null;
     try {
-        fontData = fs.readFileSync(fontPath);
+        const fontUrl = `${baseUrl}/fonts/Narkiss%20Block%20Regular.ttf`;
+        const fontRes = await fetch(fontUrl, { cache: 'force-cache' });
+        if (fontRes.ok) {
+            fontData = await fontRes.arrayBuffer();
+        }
     } catch (e) {
-        // Fallback or handle error if font missing during build/runtime
-        console.error("Font not found at", fontPath);
+        console.error("Font fetch error:", e);
     }
 
-    // Base URL for assets
-    const baseUrl = 'https://www.ml-tlv.com';
     let imageData;
     let fallbackLogo = true;
 
@@ -51,7 +52,9 @@ export default async function Image({ params }) {
             const response = await fetch(imageUrl);
             if (response.ok) {
                 const buffer = await response.arrayBuffer();
-                imageData = buffer; // Satori natively supports ArrayBuffer in src
+                const contentType = response.headers.get('content-type') || 'image/jpeg';
+                // Convert to base64 for reliable Satori rendering in Node.js
+                imageData = `data:${contentType};base64,${Buffer.from(buffer).toString('base64')}`;
                 fallbackLogo = false;
             }
         } catch (e) {
@@ -79,6 +82,12 @@ export default async function Image({ params }) {
     const sloganDisplay = reverseRtl("דוגמיות בושם מקוריות");
     const priceDisplay = product.price_10ml ? `₪${product.price_10ml} / 10ml` : reverseRtl("לפרטים נוספים");
 
+    const fontsConfig = fontData ? [{
+        name: 'NarkissBlock',
+        data: fontData,
+        style: 'normal',
+    }] : [];
+
     return new ImageResponse(
         (
             <div
@@ -91,7 +100,7 @@ export default async function Image({ params }) {
                     alignItems: 'center',
                     justifyContent: 'space-between',
                     padding: '80px',
-                    fontFamily: 'NarkissBlock',
+                    fontFamily: fontData ? 'NarkissBlock' : 'sans-serif',
                 }}
             >
                 {/* Product Image */}
@@ -139,13 +148,7 @@ export default async function Image({ params }) {
         ),
         {
             ...size,
-            fonts: [
-                {
-                    name: 'NarkissBlock',
-                    data: fontData,
-                    style: 'normal',
-                },
-            ],
+            fonts: fontsConfig,
         }
     );
 }
