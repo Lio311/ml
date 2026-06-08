@@ -1,55 +1,24 @@
 import { ImageResponse } from 'next/og';
-import pool from "../../lib/db";
 
-// Standard Metadata for OG Image
-export const runtime = 'nodejs';
+export const runtime = 'edge';
 export const alt = 'Fragrance Sample';
 export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
-/**
- * Fetch an image and return it as a data:... URI string.
- * Only returns supported formats (png, jpeg, gif, svg).
- * Returns null on any failure.
- */
-async function fetchAsDataUri(url) {
+export async function GET(request) {
     try {
-        const res = await fetch(url);
-        if (!res.ok) return null;
-        const buffer = await res.arrayBuffer();
-        const ct = res.headers.get('content-type') || 'image/png';
-        // Only support formats Satori can render
-        if (!ct.includes('png') && !ct.includes('jpeg') && !ct.includes('jpg') && !ct.includes('gif') && !ct.includes('svg')) {
-            return null;
-        }
-        const base64 = Buffer.from(buffer).toString('base64');
-        return `data:${ct};base64,${base64}`;
-    } catch (e) {
-        console.error('fetchAsDataUri failed:', url, e);
-        return null;
-    }
-}
-
-export default async function Image({ params }) {
-    try {
-        const { slug } = await params;
-
-        const res = await pool.query(`
-            SELECT brand, brand_he, model, model_he, image_url,
-                   price_2ml, price_5ml, price_10ml
-            FROM products
-            WHERE slug = $1 OR id::text = $1
-            LIMIT 1
-        `, [slug]);
-
-        const product = res.rows[0];
-        if (!product) {
-            return new Response('Product not found', { status: 404 });
-        }
+        const { searchParams } = new URL(request.url);
+        
+        const brand = searchParams.get('brand') || '';
+        const model = searchParams.get('model') || '';
+        const p10 = searchParams.get('p10') || '';
+        const p5 = searchParams.get('p5') || '';
+        const p2 = searchParams.get('p2') || '';
+        let imgUrl = searchParams.get('img') || '';
 
         const baseUrl = 'https://www.ml-tlv.com';
 
-        // Font (ArrayBuffer is correct for the fonts API)
+        // Load Font from Edge
         let fontData = null;
         try {
             const fontRes = await fetch(
@@ -61,35 +30,43 @@ export default async function Image({ params }) {
             console.error('Font fetch error:', e);
         }
 
-        // Logo as data URI (from our own domain — always works)
-        const logoDataUri = await fetchAsDataUri(`${baseUrl}/logo_v5.png`);
-
-        // Product image — route through our own /_next/image proxy
-        // to bypass Fragrantica/CDN blocking of Vercel serverless IPs
+        // Product image - fetched via Edge (which bypasses Fragrantica blocking)
         let productImageSrc = null;
-        if (product.image_url) {
-            let imgUrl = product.image_url.startsWith('http')
-                ? product.image_url
-                : `${baseUrl}${product.image_url}`;
-            // Satori cannot decode AVIF — try jpg equivalent
+        if (imgUrl) {
+            if (!imgUrl.startsWith('http')) {
+                imgUrl = `${baseUrl}${imgUrl}`;
+            }
             if (imgUrl.toLowerCase().endsWith('.avif')) {
                 imgUrl = imgUrl.replace(/\.avif$/i, '.jpg');
             }
-
-            // Strategy 1: Try fetching directly (works for our own domain images)
-            productImageSrc = await fetchAsDataUri(imgUrl);
-
-            // Strategy 2: Route through public proxy (images.weserv.nl)
-            if (!productImageSrc && imgUrl.includes('fimgs.net')) {
-                const cleanUrl = imgUrl.replace(/^https?:\/\//, '');
-                const proxyUrl = `https://images.weserv.nl/?url=${encodeURIComponent(cleanUrl)}&w=640&q=80`;
-                productImageSrc = await fetchAsDataUri(proxyUrl);
+            
+            // Fetch as array buffer and base64 encode it so Satori doesn't have to fetch it
+            try {
+                const res = await fetch(imgUrl);
+                if (res.ok) {
+                    const buffer = await res.arrayBuffer();
+                    const ct = res.headers.get('content-type') || 'image/png';
+                    if (ct.includes('png') || ct.includes('jpeg') || ct.includes('jpg') || ct.includes('gif') || ct.includes('svg')) {
+                        // Satori works best with base64 data URIs
+                        const base64 = Buffer.from(buffer).toString('base64');
+                        productImageSrc = `data:${ct};base64,${base64}`;
+                    }
+                }
+            } catch (e) {
+                console.error("Image fetch failed on edge:", imgUrl, e);
             }
+        }
 
-            // Strategy 3: Just pass the URL directly as last resort
-            if (!productImageSrc) {
-                productImageSrc = imgUrl;
+        // Logo
+        let logoDataUri = null;
+        try {
+            const logoRes = await fetch(`${baseUrl}/logo_v5.png`);
+            if (logoRes.ok) {
+                const buffer = await logoRes.arrayBuffer();
+                logoDataUri = `data:image/png;base64,${Buffer.from(buffer).toString('base64')}`;
             }
+        } catch (e) {
+            console.error("Logo fetch failed on edge:", e);
         }
 
         // Text helpers
@@ -103,13 +80,9 @@ export default async function Image({ params }) {
             return text;
         };
 
-        const brandDisplay = reverseRtl(product.brand_he || product.brand);
-        const modelDisplay = reverseRtl(product.model_he || product.model);
+        const brandDisplay = reverseRtl(brand);
+        const modelDisplay = reverseRtl(model);
         const sloganDisplay = reverseRtl('דוגמיות בושם מקוריות');
-
-        const p10 = product.price_10ml ? String(product.price_10ml) : null;
-        const p5 = product.price_5ml ? String(product.price_5ml) : null;
-        const p2 = product.price_2ml ? String(product.price_2ml) : null;
 
         const fontsConfig = fontData
             ? [{ name: 'NarkissBlock', data: fontData, style: 'normal' }]
@@ -273,7 +246,6 @@ export default async function Image({ params }) {
         );
     } catch (e) {
         console.error('OG Image generation error:', e);
-        // Return a minimal valid image instead of crashing
         return new ImageResponse(
             (
                 <div style={{
@@ -289,7 +261,7 @@ export default async function Image({ params }) {
                     ml-tlv.com
                 </div>
             ),
-            { ...size }
+            { width: 1200, height: 630 }
         );
     }
 }

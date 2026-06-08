@@ -106,10 +106,10 @@ export async function generateMetadata(props) {
         const description = localizedDesc ? localizedDesc.substring(0, 160) : t('common.buy_sample_at').replace('{name}', localizedName);
         const rawImageUrl = product.image_url || `${baseUrl}/logo_v3.png`;
         
-        // Ensure image URL is absolute for the OG route to fetch it
-        const ogImageUrl = product.image_url 
-            ? (product.image_url.startsWith('http') ? product.image_url : `${baseUrl}${product.image_url}`)
-            : `${baseUrl}/logo_v5.png`;
+        // Edge-compatible OG image API (since Fragrantica blocks Node.js serverless IPs)
+        const brandStr = product.brand_he || product.brand || '';
+        const modelStr = product.model_he || product.model || '';
+        const ogImageUrl = `${baseUrl}/api/og/product?brand=${encodeURIComponent(brandStr)}&model=${encodeURIComponent(modelStr)}&p10=${product.price_10ml || ''}&p5=${product.price_5ml || ''}&p2=${product.price_2ml || ''}&img=${encodeURIComponent(product.image_url || '')}`;
 
         const productSlug = product.slug || product.id;
         const canonicalUrl = `${baseUrl}/product/${productSlug}`;
@@ -132,11 +132,20 @@ export async function generateMetadata(props) {
                 siteName: 'ml-tlv',
                 locale: 'he_IL',
                 type: 'website',
+                images: [
+                    {
+                        url: ogImageUrl,
+                        width: 1200,
+                        height: 630,
+                        alt: title,
+                    },
+                ],
             },
             twitter: {
                 card: 'summary_large_image',
                 title: title,
                 description: description,
+                images: [ogImageUrl],
             },
         };
     } catch (metaErr) {
