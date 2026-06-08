@@ -1,5 +1,5 @@
-import pool, { withClient } from "../../lib/db";
-import { sanitizeProductArray } from "../../lib/productUtils";
+import pool, { withClient } from "../lib/db";
+import { sanitizeProductArray } from "../lib/productUtils";
 
 export async function getProducts(search, brand, category, minPrice, maxPrice, sort, page, searchParams) {
     const LIMIT = 16;
