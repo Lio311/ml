@@ -183,7 +183,7 @@ export default function AdminOrdersListClient({
                                         <ul className="space-y-1">
                                             {order.items?.map((item, idx) => (
                                                 <li key={idx} className="flex gap-2 text-gray-700 justify-start">
-                                                    <span className={`font-bold whitespace-nowrap text-${themeColor}-600`}>{item.quantity}x</span>
+                                                    <span className={`font-bold whitespace-nowrap text-${themeColor}-600`}>x{item.quantity}</span>
                                                     <span>{item.name || `${item.brand} ${item.model}`}</span>
                                                     <span className="text-gray-400 whitespace-nowrap" dir="ltr">{item.is_discovery_set ? formatDiscoverySize(item.volume_label) : (String(item.size).includes('ml') ? item.size : `${item.size} ml`)}</span>
                                                 </li>
