@@ -27,7 +27,9 @@ export async function GET(request) {
             if (!imgUrl.startsWith('http')) {
                 imgUrl = `${baseUrl}${imgUrl}`;
             }
-            if (imgUrl.includes('fimgs.net')) {
+            // Route all external images through Weserv to force JPG and white background.
+            // Satori crashes on WebP/AVIF, which are often returned by Shopify CDNs or Google Images.
+            if (!imgUrl.includes('ml-tlv.com') && !imgUrl.includes('localhost')) {
                 const cleanUrl = imgUrl.replace(/^https?:\/\//, '');
                 imgUrl = `https://images.weserv.nl/?url=${encodeURIComponent(cleanUrl)}&w=640&q=80&bg=white&output=jpg`;
             }
