@@ -1,5 +1,8 @@
 import { ImageResponse } from 'next/og';
 
+// Global font cache to prevent Vercel Edge OOM crashes on repeated calls
+let cachedFont = null;
+
 export const runtime = 'edge';
 export const dynamic = 'force-dynamic';
 export const alt = 'Fragrance Sample';
@@ -27,23 +30,31 @@ export async function GET(request) {
             if (!imgUrl.startsWith('http')) {
                 imgUrl = `${baseUrl}${imgUrl}`;
             }
-            // Route all external images through Weserv to force JPG and white background.
-            // Satori crashes on WebP/AVIF, which are often returned by Shopify CDNs or Google Images.
-            if (!imgUrl.includes('ml-tlv.com') && !imgUrl.includes('localhost')) {
+            // Use Weserv ONLY for Fragrantica images to add white background and fix transparent AVIFs.
+            // For other CDNs (Shopify), we bypass Weserv to avoid WhatsApp timeouts, 
+            // and instead force JPG via strict Accept headers below.
+            if (imgUrl.includes('fimgs.net') || imgUrl.includes('fragrantica')) {
                 const cleanUrl = imgUrl.replace(/^https?:\/\//, '');
                 imgUrl = `https://images.weserv.nl/?url=${encodeURIComponent(cleanUrl)}&w=640&q=80&bg=white&output=jpg`;
             }
         }
 
         // Fetch ArrayBuffers
-        let fontData = null;
+        let fontData = cachedFont;
         let logoData = null;
         let productData = null;
 
-        try {
-            const fontUrl = new URL('../../../../public/fonts/Narkiss Block Regular.ttf', import.meta.url);
-            fontData = await fetch(fontUrl).then((res) => res.arrayBuffer());
-        } catch (e) { console.error('Font read error:', e); }
+        if (!fontData) {
+            try {
+                const fontRes = await fetch(`${baseUrl}/fonts/NarkissBlock-Regular.ttf`);
+                if (fontRes.ok) {
+                    fontData = await fontRes.arrayBuffer();
+                    cachedFont = fontData;
+                } else {
+                    console.error('Failed to fetch font:', fontRes.status);
+                }
+            } catch (err) { console.error('Font fetch err:', err); }
+        }
 
         try {
             const logoUrl = new URL('../../../../public/logo_v5.png', import.meta.url);
@@ -55,7 +66,7 @@ export async function GET(request) {
                 const productRes = await fetch(imgUrl, {
                     headers: {
                         'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64)',
-                        'Accept': 'image/jpeg,image/png,image/webp,*/*;q=0.8',
+                        'Accept': 'image/jpeg,image/png',
                     },
                     next: { revalidate: 3600 }
                 });
@@ -77,15 +88,32 @@ export async function GET(request) {
             }), { headers: { 'Content-Type': 'application/json' } });
         }
 
-        // Text helpers
+        // Advanced RTL reverse function that preserves english/numbers and surrogate pairs (emojis)
         const reverseRtl = (text) => {
             if (!text) return '';
-            if (/[א-ת]/.test(text)) {
-                return text.split(' ').reverse().map(function(w) {
-                    return /[א-ת]/.test(w) ? w.split('').reverse().join('') : w;
-                }).join(' ');
-            }
-            return text;
+            if (!/[א-ת]/.test(text)) return text;
+            
+            const tokens = text.match(/([א-ת]+)|([a-zA-Z0-9.\-]+)|([^א-תa-zA-Z0-9.\-]+)/g) || [];
+            tokens.reverse();
+            
+            return tokens.map(t => {
+                if (/[א-ת]/.test(t)) {
+                    return Array.from(t).reverse().join('');
+                } else if (/[a-zA-Z0-9.\-]/.test(t)) {
+                    return t;
+                } else {
+                    const flipped = Array.from(t).map(c => {
+                        if (c === '(') return ')';
+                        if (c === ')') return '(';
+                        if (c === '[') return ']';
+                        if (c === ']') return '[';
+                        if (c === '{') return '}';
+                        if (c === '}') return '{';
+                        return c;
+                    }).join('');
+                    return Array.from(flipped).reverse().join('');
+                }
+            }).join('');
         };
 
         const brandDisplay = reverseRtl(brand);

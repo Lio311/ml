@@ -110,7 +110,7 @@ export async function generateMetadata(props) {
         const volLabel = product.volume_label || (isDiscoverySet ? 'מארז התנסות' : (pSingle ? 'דוגמית רשמית' : ''));
         const sloganStr = isDiscoverySet ? 'מארזי התנסות יוקרתיים' : (pSingle ? 'דוגמיות רשמיות' : 'דוגמיות בושם מקוריות');
 
-        const ogImageUrl = `${baseUrl}/api/og/product?brand=${encodeURIComponent(brandStr)}&model=${encodeURIComponent(modelStr)}&p10=${product.price_10ml || ''}&p5=${product.price_5ml || ''}&p2=${product.price_2ml || ''}&pSingle=${pSingle}&volLabel=${encodeURIComponent(volLabel)}&slogan=${encodeURIComponent(sloganStr)}&img=${encodeURIComponent(product.image_url || '')}&v=17`;
+        const ogImageUrl = `${baseUrl}/api/og/product?brand=${encodeURIComponent(brandStr)}&model=${encodeURIComponent(modelStr)}&p10=${product.price_10ml || ''}&p5=${product.price_5ml || ''}&p2=${product.price_2ml || ''}&pSingle=${pSingle}&volLabel=${encodeURIComponent(volLabel)}&slogan=${encodeURIComponent(sloganStr)}&img=${encodeURIComponent(product.image_url || '')}&v=18`;
 
         const productSlug = product.slug || product.id;
         const canonicalUrl = `${baseUrl}/product/${productSlug}`;
