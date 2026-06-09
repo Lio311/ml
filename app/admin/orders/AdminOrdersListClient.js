@@ -16,6 +16,15 @@ import { AnimatePresence } from "framer-motion";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import Customer360Modal from "./Customer360Modal";
 
+const formatDiscoverySize = (label) => {
+    if (!label) return 'מארז דוגמיות';
+    const nums = label.match(/\d+/g);
+    if (nums && nums.length >= 2) {
+        return `${nums[0]}X${nums[1]}ml`;
+    }
+    return label;
+};
+
 const STATUS_OPTIONS = [
     { value: 'no_change', label: 'ללא שינוי סטטוס', icon: <div className="w-2 h-2 rounded-full border border-gray-300 bg-transparent" /> },
     { value: 'pending', label: 'ממתין', icon: <div className="w-2 h-2 rounded-full bg-orange-500" /> },
@@ -176,7 +185,7 @@ export default function AdminOrdersListClient({
                                                 <li key={idx} className="flex gap-2 text-gray-700 justify-start">
                                                     <span className={`font-bold whitespace-nowrap text-${themeColor}-600`}>{item.quantity}x</span>
                                                     <span>{item.name || `${item.brand} ${item.model}`}</span>
-                                                    <span className="text-gray-400 whitespace-nowrap" dir="ltr">{item.is_discovery_set ? (item.volume_label || 'מארז דוגמיות') : (String(item.size).includes('ml') ? item.size : `${item.size} ml`)}</span>
+                                                    <span className="text-gray-400 whitespace-nowrap" dir="ltr">{item.is_discovery_set ? formatDiscoverySize(item.volume_label) : (String(item.size).includes('ml') ? item.size : `${item.size} ml`)}</span>
                                                 </li>
                                             ))}
                                         </ul>
@@ -359,7 +368,7 @@ export default function AdminOrdersListClient({
                                                 <span className="font-bold text-gray-800 leading-tight pt-0.5">{item.name || `${item.brand} ${item.model}`}</span>
                                             </div>
                                             <span className="text-gray-400 font-black text-[10px] uppercase tracking-tighter pt-1 shrink-0 bg-white px-2 py-0.5 rounded-lg border border-gray-100" dir="ltr">
-                                                {item.is_discovery_set ? (item.volume_label || 'מארז דוגמיות') : (String(item.size).includes('ml') ? item.size : `${item.size}ml`)}
+                                                {item.is_discovery_set ? formatDiscoverySize(item.volume_label) : (String(item.size).includes('ml') ? item.size : `${item.size}ml`)}
                                             </span>
                                         </li>
                                     ))}
