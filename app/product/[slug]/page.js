@@ -105,7 +105,12 @@ export async function generateMetadata(props) {
         // Edge-compatible OG image API (since Fragrantica blocks Node.js serverless IPs)
         const brandStr = product.brand_he || product.brand || '';
         const modelStr = product.model_he || product.model || '';
-        const ogImageUrl = `${baseUrl}/api/og/product?brand=${encodeURIComponent(brandStr)}&model=${encodeURIComponent(modelStr)}&p10=${product.price_10ml || ''}&p5=${product.price_5ml || ''}&p2=${product.price_2ml || ''}&img=${encodeURIComponent(product.image_url || '')}&v=14`;
+        const isDiscoverySet = product.is_discovery_set || product.category?.includes('Discovery Set') || product.category_en?.includes('Discovery Set');
+        const pSingle = product.single_price || '';
+        const volLabel = product.volume_label || (isDiscoverySet ? 'מארז התנסות' : (pSingle ? 'דוגמית רשמית' : ''));
+        const sloganStr = isDiscoverySet ? 'מארזי התנסות יוקרתיים' : (pSingle ? 'דוגמיות רשמיות' : 'דוגמיות בושם מקוריות');
+
+        const ogImageUrl = `${baseUrl}/api/og/product?brand=${encodeURIComponent(brandStr)}&model=${encodeURIComponent(modelStr)}&p10=${product.price_10ml || ''}&p5=${product.price_5ml || ''}&p2=${product.price_2ml || ''}&pSingle=${pSingle}&volLabel=${encodeURIComponent(volLabel)}&slogan=${encodeURIComponent(sloganStr)}&img=${encodeURIComponent(product.image_url || '')}&v=15`;
 
         const productSlug = product.slug || product.id;
         const canonicalUrl = `${baseUrl}/product/${productSlug}`;

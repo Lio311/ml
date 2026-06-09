@@ -15,6 +15,9 @@ export async function GET(request) {
         const p10 = searchParams.get('p10') || '';
         const p5 = searchParams.get('p5') || '';
         const p2 = searchParams.get('p2') || '';
+        const pSingle = searchParams.get('pSingle') || '';
+        const volLabel = searchParams.get('volLabel') || '';
+        const slogan = searchParams.get('slogan') || 'דוגמיות בושם מקוריות';
         let imgUrl = searchParams.get('img') || '';
 
         const baseUrl = 'https://www.ml-tlv.com';
@@ -85,7 +88,7 @@ export async function GET(request) {
 
         const brandDisplay = reverseRtl(brand);
         const modelDisplay = reverseRtl(model);
-        const sloganDisplay = reverseRtl('דוגמיות בושם מקוריות');
+        const sloganDisplay = reverseRtl(slogan);
 
         const fontsConfig = fontData
             ? [{ name: 'NarkissBlock', data: fontData, style: 'normal' }]
@@ -191,36 +194,51 @@ export async function GET(request) {
                                 alignItems: 'center',
                                 width: '100%',
                             }}>
-                                {p10 ? (
+                                {pSingle ? (
                                     <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', margin: '0 20px' }}>
-                                        <div style={{ fontSize: 44, fontWeight: 'bold', color: '#000', display: 'flex' }}>
-                                            {'\u20AA'}{p10}
+                                        <div style={{ fontSize: 64, fontWeight: 'bold', color: '#000', display: 'flex', marginBottom: '8px' }}>
+                                            {'\u20AA'}{pSingle}
                                         </div>
-                                        <div style={{ fontSize: 24, color: '#666', display: 'flex' }}>
-                                            10ml
-                                        </div>
+                                        {volLabel && (
+                                            <div style={{ fontSize: 32, color: '#666', display: 'flex' }}>
+                                                {reverseRtl(volLabel)}
+                                            </div>
+                                        )}
                                     </div>
-                                ) : null}
-                                {p5 ? (
-                                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', margin: '0 20px' }}>
-                                        <div style={{ fontSize: 44, fontWeight: 'bold', color: '#000', display: 'flex' }}>
-                                            {'\u20AA'}{p5}
-                                        </div>
-                                        <div style={{ fontSize: 24, color: '#666', display: 'flex' }}>
-                                            5ml
-                                        </div>
-                                    </div>
-                                ) : null}
-                                {p2 ? (
-                                    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', margin: '0 20px' }}>
-                                        <div style={{ fontSize: 44, fontWeight: 'bold', color: '#000', display: 'flex' }}>
-                                            {'\u20AA'}{p2}
-                                        </div>
-                                        <div style={{ fontSize: 24, color: '#666', display: 'flex' }}>
-                                            2ml
-                                        </div>
-                                    </div>
-                                ) : null}
+                                ) : (
+                                    <>
+                                        {p10 ? (
+                                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', margin: '0 20px' }}>
+                                                <div style={{ fontSize: 44, fontWeight: 'bold', color: '#000', display: 'flex' }}>
+                                                    {'\u20AA'}{p10}
+                                                </div>
+                                                <div style={{ fontSize: 24, color: '#666', display: 'flex' }}>
+                                                    10ml
+                                                </div>
+                                            </div>
+                                        ) : null}
+                                        {p5 ? (
+                                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', margin: '0 20px' }}>
+                                                <div style={{ fontSize: 44, fontWeight: 'bold', color: '#000', display: 'flex' }}>
+                                                    {'\u20AA'}{p5}
+                                                </div>
+                                                <div style={{ fontSize: 24, color: '#666', display: 'flex' }}>
+                                                    5ml
+                                                </div>
+                                            </div>
+                                        ) : null}
+                                        {p2 ? (
+                                            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', margin: '0 20px' }}>
+                                                <div style={{ fontSize: 44, fontWeight: 'bold', color: '#000', display: 'flex' }}>
+                                                    {'\u20AA'}{p2}
+                                                </div>
+                                                <div style={{ fontSize: 24, color: '#666', display: 'flex' }}>
+                                                    2ml
+                                                </div>
+                                            </div>
+                                        ) : null}
+                                    </>
+                                )}
                             </div>
 
                             {/* Divider */}
