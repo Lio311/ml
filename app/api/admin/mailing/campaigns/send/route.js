@@ -70,7 +70,7 @@ export async function POST(req) {
         }
 
         // 5. Finalize status
-        const finalStatus = failCount === recipientEmails.length ? 'failed' : 'sent';
+        const finalStatus = failCount === recipientData.length ? 'failed' : 'sent';
         await pool.query(`
             UPDATE email_campaigns 
             SET status = $1, sent_at = NOW(), error_log = $2, updated_at = NOW() 
