@@ -331,6 +331,7 @@ export default async function AdminDashboard({ searchParams }) {
                         DATE_TRUNC('day', o.created_at) as day,
                         (item->>'quantity')::numeric * 
                         CASE 
+                            WHEN COALESCE(item->>'is_discovery_set', 'false') = 'true' THEN 0
                             WHEN (item->>'size') ~ '^[0-9.]+$' THEN (item->>'size')::numeric 
                             ELSE 0 
                         END as ml
