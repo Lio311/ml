@@ -151,7 +151,7 @@ export default function AdminSidebar({ role = 'customer' }) {
     useEffect(() => {
         let found = false;
         for (let idx = 0; idx < navGroups.length; idx++) {
-            if (navGroups[idx].items.some(item => pathname === item.href || pathname.startsWith(`${item.href}/`))) {
+            if (navGroups[idx].items.some(item => isActive(item.href))) {
                 setOpenGroups({ [idx]: true });
                 found = true;
                 break;

@@ -21,16 +21,28 @@ export async function POST(req) {
         if (campaign.status === 'sent') return NextResponse.json({ error: 'Campaign already sent' }, { status: 400 });
 
         // 2. Identify Recipients
-        let recipientEmails = [];
+        let recipientData = [];
         if (campaign.recipient_type === 'all') {
-            const usersRes = await pool.query('SELECT email FROM users WHERE email IS NOT NULL');
-            recipientEmails = usersRes.rows.map(u => u.email);
+            const usersRes = await pool.query('SELECT email, first_name, last_name FROM users WHERE email IS NOT NULL');
+            recipientData = usersRes.rows.map(u => ({ email: u.email, first_name: u.first_name, last_name: u.last_name }));
         } else {
             // recipients is stored as JSONB array of objects [{id: '...', label: '...', subLabel: 'email@...'}]
-            recipientEmails = (campaign.recipients || []).map(r => typeof r === 'string' ? r : (r.subLabel || r.id));
+            const emails = (campaign.recipients || []).map(r => typeof r === 'string' ? r : (r.subLabel || r.id));
+            if (emails.length > 0) {
+                const placeholders = emails.map((_, i) => `$${i + 1}`).join(',');
+                const usersRes = await pool.query(`SELECT email, first_name, last_name FROM users WHERE email IN (${placeholders})`, emails);
+                const userMap = {};
+                usersRes.rows.forEach(u => userMap[u.email] = u);
+                
+                recipientData = emails.map(email => ({
+                    email,
+                    first_name: userMap[email]?.first_name || '',
+                    last_name: userMap[email]?.last_name || ''
+                }));
+            }
         }
 
-        if (recipientEmails.length === 0) {
+        if (recipientData.length === 0) {
             return NextResponse.json({ error: 'No recipients found for this campaign' }, { status: 400 });
         }
 
@@ -42,12 +54,16 @@ export async function POST(req) {
         let failCount = 0;
         let lastError = null;
 
-        for (const email of recipientEmails) {
+        for (const data of recipientData) {
             try {
-                await sendEmail(email, campaign.subject, campaign.content_html, 'campaign', null, campaignId);
+                const displayName = data.first_name ? data.first_name : 'לקוח/ה יקר/ה';
+                const personalizedHtml = (campaign.content_html || '').replace(/\{\{name\}\}/g, displayName);
+                const personalizedSubject = (campaign.subject || '').replace(/\{\{name\}\}/g, displayName);
+
+                await sendEmail(data.email, personalizedSubject, personalizedHtml, 'campaign', null, campaignId);
                 successCount++;
             } catch (err) {
-                console.error(`Failed to send campaign email to ${email}:`, err);
+                console.error(`Failed to send campaign email to ${data.email}:`, err);
                 failCount++;
                 lastError = err.message;
             }
