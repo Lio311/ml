@@ -64,7 +64,7 @@ export default async function DiscoverySetsPage() {
         <div className="min-h-screen bg-gray-50 py-12" dir={dir}>
             <div className="container mx-auto px-4">
                 <div className="text-center mb-12">
-                    <h1 className="text-4xl md:text-5xl font-black mb-4 tracking-tight">{title}</h1>
+                    <h1 className="text-[22px] min-[390px]:text-2xl sm:text-3xl md:text-5xl font-black mb-4 tracking-tight whitespace-nowrap md:whitespace-normal">{title}</h1>
                     <div className="w-16 h-1 bg-black mx-auto"></div>
                     <p className="mt-4 text-gray-600 max-w-2xl mx-auto leading-relaxed">
                         {subtitle}
