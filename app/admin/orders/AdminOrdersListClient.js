@@ -166,7 +166,7 @@ export default function AdminOrdersListClient({
                                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-3.5 h-3.5 opacity-70">
                                                     <path fillRule="evenodd" d="M2 3.5A1.5 1.5 0 013.5 2h1.148a1.5 1.5 0 011.465 1.175l.716 3.223a1.5 1.5 0 01-1.052 1.767l-.933.267c-.41.117-.643.555-.48.95a11.542 11.542 0 006.254 6.254c.395.163.833-.07.95-.48l.267-.933a1.5 1.5 0 011.767-1.052l3.223.716A1.5 1.5 0 0118 15.352V16.5a1.5 1.5 0 01-1.5 1.5H15c-1.149 0-2.261-.15-3.326-.43a13.006 13.006 0 01-9.244-9.244A13.006 13.006 0 012 5V3.5z" clipRule="evenodd" />
                                                 </svg>
-                                                <a href={`tel:${order.customer_details.phone}`} dir="ltr">{order.customer_details.phone}</a>
+                                                <a href={`https://wa.me/972${order.customer_details.phone.replace(/^0/, '')}`} target="_blank" rel="noopener noreferrer" dir="ltr">{order.customer_details.phone}</a>
                                             </div>
                                         )}
                                     </td>
@@ -176,7 +176,7 @@ export default function AdminOrdersListClient({
                                                 <li key={idx} className="flex gap-2 text-gray-700 justify-start">
                                                     <span className={`font-bold whitespace-nowrap text-${themeColor}-600`}>{item.quantity}x</span>
                                                     <span>{item.name || `${item.brand} ${item.model}`}</span>
-                                                    <span className="text-gray-400 whitespace-nowrap" dir="ltr">{String(item.size).includes('ml') ? item.size : `${item.size} ml`}</span>
+                                                    <span className="text-gray-400 whitespace-nowrap" dir="ltr">{item.is_discovery_set ? (item.volume_label || 'מארז דוגמיות') : (String(item.size).includes('ml') ? item.size : `${item.size} ml`)}</span>
                                                 </li>
                                             ))}
                                         </ul>
@@ -326,7 +326,15 @@ export default function AdminOrdersListClient({
                                     >
                                         {(order.customer_details?.name || '').replace(/\bnull\b/gi, '').trim()}
                                     </button>
-                                    <div className="text-[9px] font-medium text-gray-500">{order.customer_details?.email}</div>
+                                    <div className="text-[9px] font-medium text-gray-500 mb-1">{order.customer_details?.email}</div>
+                                    {order.customer_details?.phone && (
+                                        <div className="text-[10px] font-black text-blue-600/90 flex items-center gap-1.5 bg-blue-50/50 py-0.5 px-2 rounded-lg border border-blue-100/50 w-fit cursor-pointer hover:bg-blue-100/50 transition-colors">
+                                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" className="w-3 h-3 opacity-70">
+                                                <path fillRule="evenodd" d="M2 3.5A1.5 1.5 0 013.5 2h1.148a1.5 1.5 0 011.465 1.175l.716 3.223a1.5 1.5 0 01-1.052 1.767l-.933.267c-.41.117-.643.555-.48.95a11.542 11.542 0 006.254 6.254c.395.163.833-.07.95-.48l.267-.933a1.5 1.5 0 011.767-1.052l3.223.716A1.5 1.5 0 0118 15.352V16.5a1.5 1.5 0 01-1.5 1.5H15c-1.149 0-2.261-.15-3.326-.43a13.006 13.006 0 01-9.244-9.244A13.006 13.006 0 012 5V3.5z" clipRule="evenodd" />
+                                            </svg>
+                                            <a href={`https://wa.me/972${order.customer_details.phone.replace(/^0/, '')}`} target="_blank" rel="noopener noreferrer" dir="ltr">{order.customer_details.phone}</a>
+                                        </div>
+                                    )}
                                 </div>
                                 <div className="flex flex-col items-end shrink-0">
                                     <div className="flex items-center justify-end gap-1.5 mb-1.5">
@@ -351,7 +359,7 @@ export default function AdminOrdersListClient({
                                                 <span className="font-bold text-gray-800 leading-tight pt-0.5">{item.name || `${item.brand} ${item.model}`}</span>
                                             </div>
                                             <span className="text-gray-400 font-black text-[10px] uppercase tracking-tighter pt-1 shrink-0 bg-white px-2 py-0.5 rounded-lg border border-gray-100" dir="ltr">
-                                                {String(item.size).includes('ml') ? item.size : `${item.size}ml`}
+                                                {item.is_discovery_set ? (item.volume_label || 'מארז דוגמיות') : (String(item.size).includes('ml') ? item.size : `${item.size}ml`)}
                                             </span>
                                         </li>
                                     ))}

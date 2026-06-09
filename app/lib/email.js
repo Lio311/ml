@@ -194,7 +194,7 @@ export const formatItemsHtmlCustomer = (items) => {
         <tr style="border-bottom: 1px solid #f5f5f5;">
             <td style="padding: 12px 10px; text-align: right; font-size: 14px; color: #333;">
                 ${item.image_url ? `<img src="${getAbsoluteImageUrl(item.image_url)}" width="40" style="vertical-align: middle; margin-left: 10px; border-radius: 6px; display: inline-block; border: 1px solid #f0f0f0; height: auto; max-height: 40px; object-fit: contain;" alt="${item.name || 'product'}" />` : ''}
-                <span style="vertical-align: middle;">${item.name || (item.brand + ' ' + item.model)} (${item.size} מ"ל)</span>
+                <span style="vertical-align: middle;">${item.name || (item.brand + ' ' + item.model)} ${item.is_discovery_set ? (item.volume_label ? `(${item.volume_label})` : '') : `(${item.size} מ"ל)`}</span>
             </td>
             <td style="padding: 12px 10px; text-align: center; font-size: 14px; color: #333;">${item.quantity}</td>
             <td style="padding: 12px 10px; text-align: left; font-size: 14px; font-weight: bold; color: #000;">${item.price} ₪</td>
@@ -223,7 +223,7 @@ export const formatItemsHtmlAdmin = (items) => {
             ${item.image_url ? `<div style="display: table-cell; vertical-align: middle; width: 50px;"><img src="${getAbsoluteImageUrl(item.image_url)}" width="40" style="border-radius: 6px; border: 1px solid #f0f0f0; height: auto; max-height: 40px; object-fit: contain;" alt="product" /></div>` : ''}
             <div style="display: table-cell; vertical-align: middle;">
                 <span style="font-weight: 900; color: #000;">${item.name || (item.brand + ' ' + item.model)}</span>
-                <div style="font-size: 12px; color: #666;">${item.size || ''}ml x${item.quantity || 1}</div>
+                <div style="font-size: 12px; color: #666;">${item.is_discovery_set ? (item.volume_label || 'מארז דוגמיות') : `${item.size || ''}ml`} x${item.quantity || 1}</div>
             </div>
         </li>
     `).join('');
@@ -245,7 +245,7 @@ export const getOrderConfirmationTemplate = (orderId, items, total, freeSamples,
         <tr style="border-bottom: 1px solid #f5f5f5;">
             <td style="padding: 12px 10px; text-align: right; font-size: 14px; color: #333;">
                 ${item.image_url ? `<img src="${getAbsoluteImageUrl(item.image_url)}" width="40" style="vertical-align: middle; margin-left: 10px; border-radius: 6px; display: inline-block; border: 1px solid #f0f0f0; height: auto; max-height: 40px; object-fit: contain;" alt="${item.name || 'product'}" />` : ''}
-                <span style="vertical-align: middle;">${item.name || (item.brand + ' ' + item.model)} (${item.size} מ"ל)</span>
+                <span style="vertical-align: middle;">${item.name || (item.brand + ' ' + item.model)} ${item.is_discovery_set ? (item.volume_label ? `(${item.volume_label})` : '') : `(${item.size} מ"ל)`}</span>
             </td>
             <td style="padding: 12px 10px; text-align: center; font-size: 14px; color: #333;">${item.quantity}</td>
             <td style="padding: 12px 10px; text-align: left; font-size: 14px; font-weight: bold; color: #000;">${item.price} ₪</td>
@@ -318,7 +318,7 @@ export const getOrderUpdatedTemplate = (orderId, name, items, total, deliveryMet
         <tr style="border-bottom: 1px solid #f5f5f5;">
             <td style="padding: 12px 10px; text-align: right; font-size: 14px; color: #333;">
                 ${item.image || item.image_url ? `<img src="${getAbsoluteImageUrl(item.image || item.image_url)}" width="40" style="vertical-align: middle; margin-left: 10px; border-radius: 6px; display: inline-block; border: 1px solid #f0f0f0; height: auto; max-height: 40px; object-fit: contain;" alt="${item.name || 'product'}" />` : ''}
-                <span style="vertical-align: middle;">${item.name || (item.brand + ' ' + item.model)} (${item.size} מ"ל)</span>
+                <span style="vertical-align: middle;">${item.name || (item.brand + ' ' + item.model)} ${item.is_discovery_set ? (item.volume_label ? `(${item.volume_label})` : '') : `(${item.size} מ"ל)`}</span>
             </td>
             <td style="padding: 12px 10px; text-align: center; font-size: 14px; color: #333;">${item.quantity}</td>
             <td style="padding: 12px 10px; text-align: left; font-size: 14px; font-weight: bold; color: #000;">${item.price} ₪</td>
@@ -510,7 +510,7 @@ export const getAdminNewOrderTemplate = (orderId, customerName, total, items, de
         <li style="margin-bottom: 12px; border-bottom: 1px solid #f0f0f0; padding-bottom: 12px; display: flex; justify-content: space-between; align-items: center;">
             <div>
                 <strong style="color: #000; font-size: 14px;">${item.name || (item.brand + ' ' + item.model)}</strong>
-                <div style="color: #666; font-size: 12px; margin-top: 4px;">${item.size || ''} מ"ל</div>
+                <div style="color: #666; font-size: 12px; margin-top: 4px;">${item.is_discovery_set ? (item.volume_label || 'מארז דוגמיות') : `${item.size || ''} מ"ל`}</div>
             </div>
             <div style="font-weight: bold; background: #f8f8f8; padding: 4px 10px; border-radius: 8px; font-size: 14px;">x${item.quantity || 1}</div>
         </li>
