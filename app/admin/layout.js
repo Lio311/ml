@@ -38,11 +38,11 @@ export default async function AdminLayout({ children }) {
         <div className="min-h-screen md:h-screen bg-gray-100 flex flex-col md:flex-row w-full max-w-full md:overflow-hidden overflow-x-hidden" dir="rtl">
             <AdminMobileNav role={currentRole} />
             <AdminSidebar role={currentRole} />
-            <main className="flex-1 p-4 md:p-8 w-full overflow-x-hidden md:overflow-y-auto bg-gray-100 flex flex-col">
-                <div className="max-w-7xl mx-auto w-full flex justify-end mb-6">
+            <main className="flex-1 p-4 md:p-8 w-full overflow-x-hidden md:overflow-y-auto bg-gray-100 flex flex-col relative">
+                <div className="absolute top-4 left-4 md:top-8 md:left-8 z-30">
                     <NotificationBell />
                 </div>
-                <div className="max-w-7xl mx-auto w-full">
+                <div className="max-w-7xl mx-auto w-full pt-10 md:pt-0">
                     {children}
                 </div>
             </main>

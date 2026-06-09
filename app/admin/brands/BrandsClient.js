@@ -171,7 +171,7 @@ export default function AdminBrandsPage() {
                     ) : (
                         paginatedBrands.map(brand => (
                             <div key={brand.id} className="p-5 bg-white space-y-4">
-                                <div className="flex justify-between items-center">
+                                <div className="flex flex-col items-start gap-2">
                                     <div className="font-bold text-gray-900 text-lg">{brand.name}</div>
                                     <div className="w-12 h-12 flex-shrink-0 bg-gray-50 rounded-lg border border-gray-100 flex items-center justify-center p-1 relative">
                                         {brand.logo_url ? (

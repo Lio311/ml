@@ -143,7 +143,10 @@ export default function AdminSidebar({ role = 'customer' }) {
         return () => clearInterval(interval);
     }, []);
 
-    const isActive = (path) => pathname === path || pathname.startsWith(`${path}/`);
+    const isActive = (path) => {
+        if (path === '/admin') return pathname === '/admin';
+        return pathname === path || pathname.startsWith(`${path}/`);
+    };
 
     useEffect(() => {
         let found = false;

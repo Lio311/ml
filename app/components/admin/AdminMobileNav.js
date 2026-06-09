@@ -147,7 +147,10 @@ export default function AdminMobileNav({ role = 'customer' }) {
         return () => clearInterval(interval);
     }, []);
 
-    const isActive = (path) => pathname === path || pathname.startsWith(`${path}/`);
+    const isActive = (path) => {
+        if (path === '/admin') return pathname === '/admin';
+        return pathname === path || pathname.startsWith(`${path}/`);
+    };
 
     useEffect(() => {
         const initialOpen = {};

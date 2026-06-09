@@ -77,7 +77,7 @@ export default function NotificationBell() {
     };
 
     return (
-        <div className="relative z-50">
+        <div className="relative z-30">
             <button
                 onClick={() => {
                     setIsOpen(!isOpen);

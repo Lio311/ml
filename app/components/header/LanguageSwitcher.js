@@ -19,7 +19,7 @@ export default function LanguageSwitcher({ variant = "header", light = false }) 
                 aria-label="English"
                 title="English"
             >
-                <img src="https://flagcdn.com/w40/us.png" width="22" alt="US Flag" className="block" />
+                <span className="text-xl block">🇺🇸</span>
             </button>
             <button
                 onClick={() => handleSwitch('he')}
@@ -27,7 +27,7 @@ export default function LanguageSwitcher({ variant = "header", light = false }) 
                 aria-label="עברית"
                 title="עברית"
             >
-                <img src="https://flagcdn.com/w40/il.png" width="22" alt="Israel Flag" className="block" />
+                <span className="text-xl block">🇮🇱</span>
             </button>
         </div>
     );
