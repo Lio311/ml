@@ -851,17 +851,19 @@ export default async function AdminDashboard({ searchParams }) {
                                     <div className="font-bold text-gray-900">{order.total_amount} ₪</div>
                                     <span className={`text-[9px] md:text-xs px-2 py-0.5 rounded-full font-bold uppercase tracking-wider ${order.status === 'pending' ? 'bg-orange-100 text-orange-800' :
                                         order.status === 'processing' ? 'bg-blue-100 text-blue-800' :
-                                            order.status === 'shipped' ? 'bg-purple-100 text-purple-800' :
-                                                order.status === 'completed' ? 'bg-green-100 text-green-800' :
-                                                    'bg-gray-100 text-gray-800'
+                                            order.status === 'READY_FOR_PICKUP' ? 'bg-yellow-100 text-yellow-800' :
+                                                order.status === 'shipped' ? 'bg-purple-100 text-purple-800' :
+                                                    order.status === 'completed' ? 'bg-green-100 text-green-800' :
+                                                        'bg-gray-100 text-gray-800'
                                         }`}>
                                         {
                                             order.status === 'pending' ? 'ממתין' :
                                                 order.status === 'processing' ? 'בטיפול' :
-                                                    order.status === 'shipped' ? 'נשלח' :
-                                                        order.status === 'completed' ? 'הושלם' :
-                                                            order.status === 'cancelled' ? 'בוטל' :
-                                                                order.status
+                                                    order.status === 'READY_FOR_PICKUP' ? 'מוכן לאיסוף' :
+                                                        order.status === 'shipped' ? 'נשלח' :
+                                                            order.status === 'completed' ? 'הושלם' :
+                                                                order.status === 'cancelled' ? 'בוטל' :
+                                                                    order.status
                                         }
                                     </span>
                                 </div>
