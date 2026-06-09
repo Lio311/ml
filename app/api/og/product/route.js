@@ -199,14 +199,14 @@ export async function GET(request) {
                                         <div style={{ fontSize: 64, fontWeight: 'bold', color: '#000', display: 'flex', marginBottom: '8px' }}>
                                             {'\u20AA'}{pSingle}
                                         </div>
-                                        {volLabel && (
+                                        {volLabel ? (
                                             <div style={{ fontSize: 32, color: '#666', display: 'flex' }}>
                                                 {reverseRtl(volLabel)}
                                             </div>
-                                        )}
+                                        ) : null}
                                     </div>
                                 ) : (
-                                    <>
+                                    <div style={{ display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
                                         {p10 ? (
                                             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', margin: '0 20px' }}>
                                                 <div style={{ fontSize: 44, fontWeight: 'bold', color: '#000', display: 'flex' }}>
@@ -237,7 +237,7 @@ export async function GET(request) {
                                                 </div>
                                             </div>
                                         ) : null}
-                                    </>
+                                    </div>
                                 )}
                             </div>
 
