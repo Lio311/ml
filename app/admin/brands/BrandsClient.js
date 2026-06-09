@@ -92,7 +92,6 @@ export default function AdminBrandsPage() {
                         <thead className="bg-gray-50 text-gray-500 text-sm">
                             <tr>
                                 <th className="p-4 border-b text-center">מותג</th>
-                                <th className="p-4 border-b text-center">לוגו (תצוגה)</th>
                                 <th className="p-4 border-b text-center">קישור ללוגו</th>
                                 <th className="p-4 border-b text-center">פעולות</th>
                             </tr>
@@ -100,19 +99,21 @@ export default function AdminBrandsPage() {
                         <tbody>
                             {paginatedBrands.length === 0 ? (
                                 <tr>
-                                    <td colSpan="4" className="p-8 text-gray-500">לא נמצאו מותגים {selectedLetter === 'NO_IMAGE' ? 'ללא תמונה' : selectedLetter ? `באות ${selectedLetter}` : ''}</td>
+                                    <td colSpan="3" className="p-8 text-gray-500">לא נמצאו מותגים {selectedLetter === 'NO_IMAGE' ? 'ללא תמונה' : selectedLetter ? `באות ${selectedLetter}` : ''}</td>
                                 </tr>
                             ) : (
                                 paginatedBrands.map(brand => (
                                     <tr key={brand.id} className="border-b hover:bg-gray-50 transition-colors">
-                                        <td className="p-4 font-bold text-center">{brand.name}</td>
                                         <td className="p-4 text-center">
-                                            <div className="flex justify-center relative h-10 w-24">
-                                                {brand.logo_url ? (
-                                                    <Image src={brand.logo_url} alt={brand.name} fill className="object-contain" sizes="96px" />
-                                                ) : (
-                                                    <span className="text-gray-300 text-xs">אין לוגו</span>
-                                                )}
+                                            <div className="flex flex-col items-center gap-2">
+                                                <span className="font-bold">{brand.name}</span>
+                                                <div className="flex justify-center relative h-10 w-24">
+                                                    {brand.logo_url ? (
+                                                        <Image src={brand.logo_url} alt={brand.name} fill className="object-contain" sizes="96px" />
+                                                    ) : (
+                                                        <span className="text-gray-300 text-xs">אין לוגו</span>
+                                                    )}
+                                                </div>
                                             </div>
                                         </td>
                                         <td className="p-4 text-center">
