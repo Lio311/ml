@@ -1,4 +1,4 @@
-const CACHE_NAME = 'ml-tlv-v4';
+const CACHE_NAME = 'ml-tlv-v5';
 const OFFLINE_URL = '/offline.html';
 
 // Assets to pre-cache on install
@@ -80,9 +80,11 @@ self.addEventListener('fetch', (event) => {
   }
 
   // For static assets (images, CSS, JS, fonts): Cache first, network fallback
+  // Only cache same-origin assets to prevent opaque response quota issues and connect-src CSP violations.
   if (
-    url.pathname.match(/\.(png|jpg|jpeg|webp|svg|ico|css|js|woff2?|ttf)$/) ||
-    url.pathname.startsWith('/_next/static/')
+    (url.pathname.match(/\.(png|jpg|jpeg|webp|svg|ico|css|js|woff2?|ttf)$/) ||
+    url.pathname.startsWith('/_next/static/')) &&
+    url.hostname === self.location.hostname
   ) {
     event.respondWith(
       caches.match(request).then((cached) => {
