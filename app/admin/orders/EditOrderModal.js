@@ -235,12 +235,12 @@ export default function EditOrderModal({ order, onClose, onSuccess }) {
     };
 
     return (
-        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex items-center justify-center p-0 md:p-4 overflow-y-auto" dir="rtl">
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[100] flex items-center justify-center p-0 md:p-4 overflow-hidden" dir="rtl">
             <motion.div 
                 initial={{ opacity: 0, scale: 0.95, y: 20 }}
                 animate={{ opacity: 1, scale: 1, y: 0 }}
                 exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                className="bg-white md:rounded-[2.5rem] w-full max-w-5xl md:max-h-[90vh] overflow-hidden flex flex-col relative shadow-2xl"
+                className="bg-white md:rounded-[2.5rem] w-full max-w-5xl max-h-[100dvh] md:max-h-[90vh] overflow-hidden flex flex-col relative shadow-2xl"
             >
                 {/* Header */}
                 <div className="bg-gray-50/50 p-4 border-b border-gray-100 flex items-center justify-between shrink-0">
