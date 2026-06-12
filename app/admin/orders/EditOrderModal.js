@@ -243,13 +243,13 @@ export default function EditOrderModal({ order, onClose, onSuccess }) {
                 className="bg-white md:rounded-[2.5rem] w-full max-w-5xl max-h-[100dvh] md:max-h-[90vh] overflow-hidden flex flex-col relative shadow-2xl"
             >
                 {/* Header */}
-                <div className="bg-gray-50/50 p-4 border-b border-gray-100 flex items-center justify-between shrink-0">
-                    <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 bg-blue-600 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-blue-200">
-                            <Save className="w-6 h-6" />
+                <div className="bg-gray-50/50 p-3 md:p-4 border-b border-gray-100 flex items-center justify-between shrink-0">
+                    <div className="flex items-center gap-3 md:gap-4">
+                        <div className="w-10 h-10 md:w-12 md:h-12 bg-blue-600 rounded-xl md:rounded-2xl flex items-center justify-center text-white shadow-lg shadow-blue-200">
+                            <Save className="w-5 h-5 md:w-6 md:h-6" />
                         </div>
                         <div>
-                            <h2 className="text-xl font-black text-gray-900">עריכת הזמנה #{order?.id}</h2>
+                            <h2 className="text-lg md:text-xl font-black text-gray-900">עריכת הזמנה #{order?.id}</h2>
                             <p className="text-sm text-gray-500 font-medium">עבור: {order?.customer_details?.name}</p>
                         </div>
                     </div>
@@ -261,9 +261,9 @@ export default function EditOrderModal({ order, onClose, onSuccess }) {
                     </button>
                 </div>
 
-                <div className="flex-1 overflow-y-auto p-4 flex flex-col lg:flex-row gap-6">
+                <div className="flex-1 overflow-y-auto p-3 md:p-6 flex flex-col lg:flex-row gap-4 md:gap-6">
                     {/* Left: Content */}
-                    <div className="flex-1 space-y-6">
+                    <div className="flex-1 space-y-4 md:space-y-6">
                         {/* Products Section */}
                         <section className="space-y-4">
                             <h3 className="font-black text-gray-900 flex items-center gap-2">
@@ -315,10 +315,10 @@ export default function EditOrderModal({ order, onClose, onSuccess }) {
                                 </AnimatePresence>
                             </div>
 
-                            <div className="space-y-3">
+                            <div className="space-y-2 md:space-y-3">
                                 {cart.map((item) => (
-                                    <div key={item.itemKey} className="group flex items-center gap-4 p-4 rounded-2xl border border-gray-100 hover:border-blue-200 transition-colors bg-white shadow-sm">
-                                        <div className="w-14 h-14 rounded-xl bg-gray-50 flex-shrink-0 relative border border-gray-100">
+                                    <div key={item.itemKey} className="group flex items-center gap-3 md:gap-4 p-2.5 md:p-4 rounded-2xl border border-gray-100 hover:border-blue-200 transition-colors bg-white shadow-sm">
+                                        <div className="w-12 h-12 md:w-14 md:h-14 rounded-xl bg-gray-50 flex-shrink-0 relative border border-gray-100">
                                             <Image src={item.image} alt={item.name} fill className="object-contain" />
                                         </div>
                                         <div className="flex-1 min-w-0">
@@ -357,33 +357,33 @@ export default function EditOrderModal({ order, onClose, onSuccess }) {
                         </section>
 
                         {/* Delivery Section */}
-                        <section className="space-y-4">
-                            <h3 className="font-black text-gray-900 flex items-center gap-2">
-                                <Truck className="w-5 h-5 text-blue-600" />
+                        <section className="space-y-3 md:space-y-4">
+                            <h3 className="font-black text-gray-900 flex items-center gap-2 text-sm md:text-base">
+                                <Truck className="w-4 h-4 md:w-5 md:h-5 text-blue-600" />
                                 שיטת שילוח והערות
                             </h3>
-                            <div className="grid grid-cols-2 gap-3">
+                            <div className="grid grid-cols-2 gap-2 md:gap-3">
                                 <button 
                                     onClick={() => setDeliveryMethod('mail')}
-                                    className={`p-3 rounded-2xl border-2 transition-all flex flex-col items-center gap-1 ${
+                                    className={`p-2.5 md:p-3 rounded-2xl border-2 transition-all flex flex-col items-center gap-1 ${
                                         deliveryMethod === 'mail' 
                                         ? 'border-blue-600 bg-blue-50 text-blue-900' 
                                         : 'border-gray-100 hover:border-gray-200 grayscale opacity-60'
                                     }`}
                                 >
-                                    <Truck className={deliveryMethod === 'mail' ? 'w-5 h-5 text-blue-600' : 'w-5 h-5'} />
-                                    <span className="font-black text-[12px]">משלוח (30 ₪)</span>
+                                    <Truck className={deliveryMethod === 'mail' ? 'w-4 h-4 md:w-5 md:h-5 text-blue-600' : 'w-4 h-4 md:w-5 md:h-5'} />
+                                    <span className="font-black text-[11px] md:text-[12px]">משלוח (30 ₪)</span>
                                 </button>
                                 <button 
                                     onClick={() => setDeliveryMethod('self_pickup')}
-                                    className={`p-3 rounded-2xl border-2 transition-all flex flex-col items-center gap-1 ${
+                                    className={`p-2.5 md:p-3 rounded-2xl border-2 transition-all flex flex-col items-center gap-1 ${
                                         deliveryMethod === 'self_pickup' 
                                         ? 'border-blue-600 bg-blue-50 text-blue-900' 
                                         : 'border-gray-100 hover:border-gray-200 grayscale opacity-60'
                                     }`}
                                 >
-                                    <Store className={deliveryMethod === 'self_pickup' ? 'w-5 h-5 text-blue-600' : 'w-5 h-5'} />
-                                    <span className="font-black text-[12px]">איסוף עצמי (0 ₪)</span>
+                                    <Store className={deliveryMethod === 'self_pickup' ? 'w-4 h-4 md:w-5 md:h-5 text-blue-600' : 'w-4 h-4 md:w-5 md:h-5'} />
+                                    <span className="font-black text-[11px] md:text-[12px]">איסוף עצמי (0 ₪)</span>
                                 </button>
                             </div>
                             <textarea 
@@ -397,12 +397,12 @@ export default function EditOrderModal({ order, onClose, onSuccess }) {
 
                     {/* Right: Summary */}
                     <div className="w-full lg:w-80 shrink-0">
-                        <div className="bg-gray-900 text-white rounded-[2rem] p-8 shadow-2xl sticky top-0">
-                            <h3 className="text-xl font-black mb-6 flex items-center gap-2 border-b border-white/10 pb-4">
+                        <div className="bg-gray-900 text-white rounded-[1.5rem] md:rounded-[2rem] p-5 md:p-8 shadow-2xl sticky top-0">
+                            <h3 className="text-lg md:text-xl font-black mb-4 md:mb-6 flex items-center gap-2 border-b border-white/10 pb-3 md:pb-4">
                                 סיכום שינויים
                             </h3>
 
-                            <div className="space-y-4 mb-8">
+                            <div className="space-y-3 md:space-y-4 mb-5 md:mb-8 text-sm md:text-base">
                                 <div className="flex justify-between text-gray-400 font-medium">
                                     <span>סכום ביניים</span>
                                     <span><span dir="ltr">₪ {subtotal.toLocaleString()}</span></span>
@@ -420,16 +420,16 @@ export default function EditOrderModal({ order, onClose, onSuccess }) {
                                     <span>משלוח</span>
                                     <span>{shippingPrice === 0 ? 'חינם' : <span dir="ltr">₪ {shippingPrice}</span>}</span>
                                 </div>
-                                <div className="pt-4 border-t border-white/10 flex justify-between items-end">
-                                    <span className="text-sm font-bold opacity-60">סה"כ לתשלום</span>
-                                    <span className="text-3xl font-black text-blue-400 tracking-tight"><span dir="ltr">₪ {total.toLocaleString()}</span></span>
+                                <div className="pt-3 md:pt-4 border-t border-white/10 flex justify-between items-end">
+                                    <span className="text-xs md:text-sm font-bold opacity-60">סה"כ לתשלום</span>
+                                    <span className="text-2xl md:text-3xl font-black text-blue-400 tracking-tight"><span dir="ltr">₪ {total.toLocaleString()}</span></span>
                                 </div>
                             </div>
 
                             <button 
                                 onClick={handleSave}
                                 disabled={isSubmitting || cart.length === 0}
-                                className={`w-full py-5 rounded-2xl font-black text-lg transition-all flex items-center justify-center gap-2 ${
+                                className={`w-full py-3 md:py-5 rounded-xl md:rounded-2xl font-black text-base md:text-lg transition-all flex items-center justify-center gap-2 ${
                                     isSubmitting || cart.length === 0
                                     ? 'bg-gray-800 text-gray-600 cursor-not-allowed'
                                     : 'bg-blue-600 hover:bg-blue-500 text-white shadow-lg shadow-blue-900/40'
@@ -444,7 +444,7 @@ export default function EditOrderModal({ order, onClose, onSuccess }) {
                                     'עדכן הזמנה'
                                 )}
                             </button>
-                            <p className="text-[10px] text-gray-400 mt-4 text-center leading-relaxed">
+                            <p className="text-[9px] md:text-[10px] text-gray-400 mt-3 md:mt-4 text-center leading-relaxed">
                                 לחיצה על עדכון תשלח מייל מעודכן ללקוח ולמנהל ותעדכן את המלאי בהתאם.
                             </p>
                         </div>
