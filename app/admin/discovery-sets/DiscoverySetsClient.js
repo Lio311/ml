@@ -163,9 +163,9 @@ export default function DiscoverySetsClient({ products: initialProducts, initial
 
     return (
         <div className="space-y-6">
-            <div className="flex flex-col items-center justify-center gap-4 py-2">
-                <div className="text-center">
-                    <div className="flex items-center justify-center gap-3">
+            <div className="flex flex-col md:flex-row items-center justify-between gap-4 py-2">
+                <div className="w-full md:w-1/3 text-right">
+                    <div className="flex items-center gap-3">
                         <h1 className="text-2xl font-black tracking-tight text-gray-900">דיסקברי סט ודוגמיות</h1>
                         <span className="bg-gray-100 text-gray-600 px-3 py-1 rounded-full text-xs font-bold border border-gray-200">
                             {products.length} פריטים
@@ -174,15 +174,19 @@ export default function DiscoverySetsClient({ products: initialProducts, initial
                     <p className="text-sm text-gray-500 mt-1">ניהול מוצרים עם מחיר אחיד וכמות מותאמת אישית</p>
                 </div>
                 
-                {canEdit && (
-                    <button
-                        onClick={openAddModal}
-                        className="flex items-center gap-2 bg-[#050505] text-white px-5 py-2.5 rounded-xl hover:bg-gray-800 transition-all shadow-md hover:shadow-xl font-medium mx-auto"
-                    >
-                        <Plus size={18} />
-                        הוסף פריט חדש
-                    </button>
-                )}
+                <div className="w-full md:w-1/3 flex justify-center">
+                    {canEdit && (
+                        <button
+                            onClick={openAddModal}
+                            className="flex items-center gap-2 bg-[#050505] text-white px-5 py-2.5 rounded-xl hover:bg-gray-800 transition-all shadow-md hover:shadow-xl font-medium"
+                        >
+                            <Plus size={18} />
+                            הוסף פריט חדש
+                        </button>
+                    )}
+                </div>
+                
+                <div className="hidden md:block w-1/3"></div>
             </div>
 
             <div className="bg-white p-4 rounded-2xl shadow-sm border border-gray-100 flex gap-2">
