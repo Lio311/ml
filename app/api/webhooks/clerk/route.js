@@ -59,15 +59,16 @@ export async function POST(req) {
         const client = await pool.connect();
         try {
             await client.query(`
-            INSERT INTO users (id, email, first_name, last_name, role, image_url, created_at, updated_at)
-            VALUES ($1, $2, $3, $4, $5, $6, $7, NOW())
+            INSERT INTO users (id, email, first_name, last_name, role, image_url, created_at, updated_at, last_active_at)
+            VALUES ($1, $2, $3, $4, $5, $6, $7, NOW(), NOW())
             ON CONFLICT (email) DO UPDATE SET
                 id = EXCLUDED.id,
                 first_name = EXCLUDED.first_name,
                 last_name = EXCLUDED.last_name,
                 role = EXCLUDED.role,
                 image_url = EXCLUDED.image_url,
-                updated_at = NOW()
+                updated_at = NOW(),
+                last_active_at = NOW()
         `, [id, email, first_name, last_name, role, imageUrl, createdDate]);
 
             if (eventType === 'user.created') {
