@@ -63,7 +63,8 @@ export default async function AdminUsersPage(props) {
                     (SELECT COUNT(*) FROM orders WHERE customer_details->>'clerk_id' = users.id AND status != 'cancelled' AND catalog_id IS NULL) as site_orders,
                     (SELECT COALESCE(SUM(total_amount), 0) FROM orders WHERE customer_details->>'clerk_id' = users.id AND status != 'cancelled' AND catalog_id IS NULL) as site_spent,
                     (SELECT COUNT(*) FROM orders WHERE customer_details->>'clerk_id' = users.id AND status != 'cancelled' AND catalog_id IS NOT NULL) as catalog_orders,
-                    (SELECT COALESCE(SUM(total_amount), 0) FROM orders WHERE customer_details->>'clerk_id' = users.id AND status != 'cancelled' AND catalog_id IS NOT NULL) as catalog_spent
+                    (SELECT COALESCE(SUM(total_amount), 0) FROM orders WHERE customer_details->>'clerk_id' = users.id AND status != 'cancelled' AND catalog_id IS NOT NULL) as catalog_spent,
+                    (SELECT MAX(created_at) FROM orders WHERE customer_details->>'clerk_id' = users.id) as last_order_at
                 FROM users 
                 ${whereClause}
                 ORDER BY 
@@ -98,22 +99,31 @@ export default async function AdminUsersPage(props) {
             }
         }
 
-        users = sanitizedUsersRows.map(u => ({
-            id: u.id,
-            firstName: u.first_name,
-            lastName: u.last_name,
-            email: u.email,
-            phone: u.phone,
-            role: u.role || 'customer',
-            createdAt: u.created_at,
-            updatedAt: u.updated_at,
-            lastLogin: u.last_active_at || clerkUsersMap[u.id]?.lastSignInAt || null,
-            imageUrl: u.image_url || clerkUsersMap[u.id]?.imageUrl || null,
-            siteOrders: parseInt(u.site_orders) || 0,
-            siteSpent: parseFloat(u.site_spent) || 0,
-            catalogOrders: parseInt(u.catalog_orders) || 0,
-            catalogSpent: parseFloat(u.catalog_spent) || 0,
-        }));
+        users = sanitizedUsersRows.map(u => {
+            const clerkLastSignIn = clerkUsersMap[u.id]?.lastSignInAt ? new Date(clerkUsersMap[u.id].lastSignInAt) : null;
+            const dbLastActive = u.last_active_at ? new Date(u.last_active_at) : null;
+            const lastOrderAt = u.last_order_at ? new Date(u.last_order_at) : null;
+            
+            const dates = [clerkLastSignIn, dbLastActive, lastOrderAt].filter(d => d && !isNaN(d));
+            const mostRecentDate = dates.length > 0 ? new Date(Math.max(...dates)) : null;
+
+            return {
+                id: u.id,
+                firstName: u.first_name,
+                lastName: u.last_name,
+                email: u.email,
+                phone: u.phone,
+                role: u.role || 'customer',
+                createdAt: u.created_at,
+                updatedAt: u.updated_at,
+                lastLogin: mostRecentDate,
+                imageUrl: u.image_url || clerkUsersMap[u.id]?.imageUrl || null,
+                siteOrders: parseInt(u.site_orders) || 0,
+                siteSpent: parseFloat(u.site_spent) || 0,
+                catalogOrders: parseInt(u.catalog_orders) || 0,
+                catalogSpent: parseFloat(u.catalog_spent) || 0,
+            };
+        });
 
         totalUsers = parseInt(countRes.rows[0].count);
     } finally {
