@@ -107,7 +107,7 @@ export default async function AdminUsersPage(props) {
             role: u.role || 'customer',
             createdAt: u.created_at,
             updatedAt: u.updated_at,
-            lastLogin: u.last_active_at || clerkUsersMap[u.id]?.lastSignInAt || u.updated_at,
+            lastLogin: u.last_active_at || clerkUsersMap[u.id]?.lastSignInAt || null,
             imageUrl: u.image_url || clerkUsersMap[u.id]?.imageUrl || null,
             siteOrders: parseInt(u.site_orders) || 0,
             siteSpent: parseFloat(u.site_spent) || 0,
