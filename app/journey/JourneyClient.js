@@ -147,7 +147,16 @@ export default function JourneyClient({ initialProducts }) {
     };
 
     return (
-        <div ref={containerRef} className="fixed inset-0 overflow-hidden bg-[#eef0f2] font-sans select-none" dir="rtl" style={{ cursor: 'none' }}>
+        <div ref={containerRef} className="fixed inset-0 overflow-hidden bg-[#eef0f2] font-sans select-none z-[99999]" dir="rtl" style={{ cursor: 'none' }}>
+            <style dangerouslySetInnerHTML={{__html: `
+                header, footer, nav, 
+                [id*="smart-advisor"], [class*="smart-advisor"],
+                [id*="nagish"], [class*="nagish"],
+                [id*="accessibility"], [class*="accessibility"],
+                .intercom-lightweight-app, #intercom-container
+                { display: none !important; }
+                body { overflow: hidden !important; }
+            `}} />
             
             {/* Custom Cursor */}
             <motion.div 
@@ -218,15 +227,17 @@ export default function JourneyClient({ initialProducts }) {
                         onClick={handleAddToBox}
                     >
                         {/* The Bottle with Mix Blend Mode */}
-                        <div className="relative w-full h-full drop-shadow-[0_20px_40px_rgba(0,0,0,0.1)] group-hover:scale-105 transition-transform duration-700 ease-out">
+                        <div className="relative w-full h-full group-hover:scale-105 transition-transform duration-700 ease-out flex items-center justify-center" style={{ mixBlendMode: 'multiply' }}>
                             <Image 
                                 src={currentProduct.image_url || '/logo_v5.png'} 
                                 alt={currentProduct.name}
                                 fill
-                                className="object-contain mix-blend-multiply"
+                                className="object-contain"
                                 sizes="(max-width: 768px) 100vw, 50vw"
                                 priority
                             />
+                            {/* Artificial Floor Shadow */}
+                            <div className="absolute bottom-[10%] left-1/2 -translate-x-1/2 w-3/4 h-8 bg-black/10 blur-xl rounded-[100%]" />
                         </div>
                     </motion.div>
                 </AnimatePresence>
