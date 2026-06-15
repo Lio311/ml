@@ -1,5 +1,5 @@
-import pool from '../../lib/db';
-import { sanitizeProductArray } from '../../lib/productUtils';
+import pool from '../lib/db';
+import { sanitizeProductArray } from '../lib/productUtils';
 import JourneyClient from './JourneyClient';
 
 export const metadata = {

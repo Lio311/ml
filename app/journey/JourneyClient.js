@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { Sparkles, ArrowLeft, Droplet, Check, ShoppingBag } from 'lucide-react';
 import Image from 'next/image';
 import confetti from 'canvas-confetti';
-import { useCart } from '../../context/CartContext';
+import { useCart } from '../context/CartContext';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 
