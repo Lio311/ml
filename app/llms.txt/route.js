@@ -1,4 +1,4 @@
-import pool from '../../lib/db';
+import pool from '../lib/db';
 import { NextResponse } from 'next/server';
 
 // Revalidate every 24 hours
