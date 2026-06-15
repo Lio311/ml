@@ -23,6 +23,7 @@ export default async function AdminUsersPage(props) {
     const page = Number(searchParams?.page) || 1;
     const q = searchParams?.q || '';
     const roleFilter = searchParams?.role || '';
+    const sortParam = searchParams?.sort || 'default';
     const LIMIT = 50; 
     const offset = (page - 1) * LIMIT;
 
@@ -56,6 +57,25 @@ export default async function AdminUsersPage(props) {
             whereClause = 'WHERE ' + conditions.join(' AND ');
         }
 
+        let orderByClause = `
+            CASE role 
+                WHEN 'admin' THEN 1 
+                WHEN 'deputy' THEN 2 
+                WHEN 'warehouse' THEN 3 
+                ELSE 4 
+            END ASC, 
+            COALESCE(last_active_at, created_at) DESC
+        `;
+
+        if (sortParam === 'last_active_desc') orderByClause = `COALESCE(last_active_at, created_at) DESC`;
+        else if (sortParam === 'last_active_asc') orderByClause = `COALESCE(last_active_at, created_at) ASC`;
+        else if (sortParam === 'orders_desc') orderByClause = `(SELECT COUNT(*) FROM orders WHERE customer_details->>'clerk_id' = users.id AND status != 'cancelled') DESC`;
+        else if (sortParam === 'spent_desc') orderByClause = `(SELECT COALESCE(SUM(total_amount), 0) FROM orders WHERE customer_details->>'clerk_id' = users.id AND status != 'cancelled') DESC`;
+        else if (sortParam === 'created_desc') orderByClause = `created_at DESC`;
+        else if (sortParam === 'created_asc') orderByClause = `created_at ASC`;
+        else if (sortParam === 'name_asc') orderByClause = `first_name ASC, last_name ASC`;
+        else if (sortParam === 'name_desc') orderByClause = `first_name DESC, last_name DESC`;
+
         const [usersRes, countRes] = await Promise.all([
             client.query(`
                 SELECT 
@@ -67,14 +87,7 @@ export default async function AdminUsersPage(props) {
                     (SELECT MAX(created_at) FROM orders WHERE customer_details->>'clerk_id' = users.id) as last_order_at
                 FROM users 
                 ${whereClause}
-                ORDER BY 
-                    CASE role 
-                        WHEN 'admin' THEN 1 
-                        WHEN 'deputy' THEN 2 
-                        WHEN 'warehouse' THEN 3 
-                        ELSE 4 
-                    END ASC, 
-                    COALESCE(last_active_at, created_at) DESC
+                ORDER BY ${orderByClause}
                 LIMIT $1 OFFSET $2
             `, queryParams),
             client.query(`SELECT COUNT(*) FROM users ${whereClause.replace(/\$(\d+)/g, (match, num) => `$${parseInt(num) - 2}`)}`, queryParams.slice(2))
@@ -141,7 +154,7 @@ export default async function AdminUsersPage(props) {
                 </div>
             </div>
 
-            <AdminUsersFilter initialQuery={q} initialRole={roleFilter} />
+            <AdminUsersFilter initialQuery={q} initialRole={roleFilter} initialSort={sortParam} />
 
             <UsersTableClient users={users} canEdit={canEdit} />
 
