@@ -4,7 +4,7 @@ import Image from "@/app/components/CImage";
 import { cookies, headers } from 'next/headers';
 import he from '../../data/locales/he.json';
 import en from '../../data/locales/en.json';
-import { redirect } from 'next/navigation';
+import { redirect, permanentRedirect } from 'next/navigation';
 import ProductCard from "../../components/ProductCard";
 import StarRating from "../../components/StarRating";
 import WishlistHeart from "../../components/WishlistHeart";
@@ -195,7 +195,9 @@ export default async function ProductPage(props) {
     }
 
     if (!rawProduct) {
-        return <div className="p-20 text-center">{t('common.product_not_found')}</div>;
+        // AIO & SEO: Avoid 404 dead ends that hurt crawler budgets. 
+        // We permanently redirect broken/deleted product URLs to the main catalog.
+        permanentRedirect('/catalog');
     }
 
     const product = sanitizeProduct(rawProduct);
