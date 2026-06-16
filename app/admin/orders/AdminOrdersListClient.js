@@ -207,7 +207,7 @@ export default function AdminOrdersListClient({
                                                     <span className={`font-bold whitespace-nowrap text-${themeColor}-600`}>x{item.quantity}</span>
                                                     <Link 
                                                         href={item.is_discovery_set ? '/discovery-sets' : `/product/${(item.product_id || item.id)?.toString().split('-')[0]}`}
-                                                        className="font-bold text-gray-800 leading-tight hover:text-blue-600 hover:underline transition-colors"
+                                                        className="font-bold text-blue-600 underline decoration-blue-600/30 underline-offset-4 leading-tight hover:text-blue-800 transition-colors"
                                                         target="_blank"
                                                     >
                                                         {item.name || `${item.brand} ${item.model}`}
@@ -394,7 +394,7 @@ export default function AdminOrdersListClient({
                                                 <span className={`font-black text-${themeColor}-600 bg-${themeColor}-50 w-6 h-6 rounded-lg flex items-center justify-center text-[11px] shrink-0 border border-${themeColor}-100/50`}>{item.quantity}</span>
                                                 <Link 
                                                     href={item.is_discovery_set ? '/discovery-sets' : `/product/${(item.product_id || item.id)?.toString().split('-')[0]}`}
-                                                    className="font-bold text-gray-800 leading-tight pt-0.5 hover:text-blue-600 hover:underline transition-colors"
+                                                    className="font-bold text-blue-600 underline decoration-blue-600/30 underline-offset-4 leading-tight pt-0.5 hover:text-blue-800 transition-colors"
                                                     target="_blank"
                                                 >
                                                     {item.name || `${item.brand} ${item.model}`}
@@ -536,16 +536,33 @@ export default function AdminOrdersListClient({
             </div>
 
             {/* Header and Batch Action Bar */}
-            <div className="flex flex-col xl:flex-row items-start xl:items-center justify-between gap-4 mb-4 lg:mb-6 min-h-[44px] xl:min-h-[64px]">
-                <div className="flex flex-col">
+            <div className="flex flex-col items-center justify-center gap-4 mb-8">
+                <div className="flex flex-col items-center text-center">
                     <h1 className="text-2xl md:text-3xl font-bold text-gray-900 shrink-0 font-black tracking-tighter">ניהול הזמנות</h1>
                     <div className="flex items-center gap-3 mt-1">
                         <p className="text-xs md:text-sm font-bold text-blue-600">סה"כ הזמנות שבוצעו באתר: {statusCounts['all'] || totalOrders}</p>
                     </div>
                 </div>
 
+                {/* Smart Search Bar Row */}
+                <div className="w-full max-w-2xl relative z-10">
+                    <form onSubmit={handleSearch} className="w-full relative group">
+                        <div className="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
+                            <Search className="h-5 w-5 text-gray-400 group-focus-within:text-blue-500 transition-colors" />
+                        </div>
+                        <input
+                            type="text"
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            className="block w-full rounded-2xl border-0 py-3 pl-4 pr-12 text-gray-900 ring-1 ring-inset ring-gray-200 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-500 sm:text-sm sm:leading-6 bg-white shadow-sm transition-all"
+                            placeholder="חיפוש לפי שם, טלפון, אימייל, או מס' הזמנה..."
+                        />
+                        <button type="submit" className="hidden" />
+                    </form>
+                </div>
+
                 {/* Status Filter Buttons */}
-                <div className="flex flex-wrap items-center justify-end gap-2 mt-4 xl:mt-0">
+                <div className="flex flex-wrap items-center justify-center gap-2 mt-2">
                     {filterOptions.map((opt) => (
                         <button
                             key={opt.value}
@@ -583,7 +600,7 @@ export default function AdminOrdersListClient({
                 </div>
 
                 {selectedOrderIds.length > 0 && canEdit && (
-                    <div className="bg-white border-2 border-black text-gray-800 p-2.5 md:p-3 rounded-2xl shadow-xl z-40 flex flex-col md:flex-row items-center gap-4 animate-in fade-in zoom-in-95 w-full xl:w-auto relative xl:absolute xl:left-1/2 xl:-translate-x-1/2 xl:top-1/2 xl:-translate-y-1/2">
+                    <div className="bg-white border-2 border-black text-gray-800 p-2.5 md:p-3 rounded-2xl shadow-2xl z-[100] flex flex-col md:flex-row items-center gap-4 animate-in fade-in zoom-in-95 w-[90%] xl:w-auto fixed top-4 md:top-8 left-1/2 -translate-x-1/2">
                         <div className="font-bold flex items-center justify-center gap-2.5 w-full md:w-auto text-sm md:text-base border-b md:border-b-0 border-gray-100 pb-3 md:pb-0 md:pl-2 whitespace-nowrap">
                             <span className="bg-black text-white w-6 h-6 rounded-full flex items-center justify-center text-xs font-black">{selectedOrderIds.length}</span>
                             <span className="text-black font-black uppercase tracking-widest text-[10px] whitespace-nowrap">סומנו לעדכון</span>
