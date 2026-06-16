@@ -969,14 +969,14 @@ export default function MailingClient() {
                                             className="w-full sm:w-auto justify-center px-6 py-3 rounded-2xl font-bold bg-gray-100 text-gray-600 hover:bg-gray-200 transition-all flex items-center gap-2"
                                             title="שחזר לעיצוב המקורי של המערכת (600px)"
                                         >
-                                            <RefreshCcw size={18} /> שחזר עיצוב
+                                            שחזר עיצוב <RefreshCcw size={18} />
                                         </button>
                                     )}
                                     <button 
                                         onClick={() => handleSendTest(activeTemplate.subject, activeTemplate.content_html)}
                                         className="w-full sm:w-auto justify-center px-6 py-3 rounded-2xl font-bold bg-blue-50 text-blue-600 hover:bg-blue-100 transition-all flex items-center gap-2"
                                     >
-                                        <Mail size={18} /> שלח בדיקה
+                                        שלח בדיקה <Mail size={18} />
                                     </button>
                                     <button 
                                         disabled={isSaving}
