@@ -18,8 +18,9 @@ export async function GET() {
         const client = await pool.connect();
         try {
             const today = new Date();
-            const currentMonth = today.getMonth() + 1;
-            const currentYear = today.getFullYear();
+            const year = today.getFullYear();
+            const monthNum = today.getMonth() + 1;
+            const currentMonthStr = `${year}-${String(monthNum).padStart(2, '0')}`;
 
             const [ordersRes, inboxRes, recsRes, monthlyRecRes] = await Promise.all([
                 // 1. Pending and Processing orders
@@ -39,7 +40,7 @@ export async function GET() {
                 client.query("SELECT count(*) as count FROM pending_recommendation_emails WHERE status = 'pending'"),
 
                 // 4. Monthly recommendation status
-                client.query("SELECT status FROM monthly_recommendations WHERE month = $1 AND year = $2", [currentMonth, currentYear])
+                client.query("SELECT status FROM monthly_recommendations WHERE month = $1", [currentMonthStr])
             ]);
 
             const monthlyRecStatus = monthlyRecRes.rows.length > 0 ? monthlyRecRes.rows[0].status : 'pending';
