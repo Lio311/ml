@@ -23,7 +23,7 @@ export async function GET(request) {
         try {
             // 1. Fetch orders history
             const ordersRes = await client.query(`
-                SELECT id, items, total_amount, status, created_at, delivery_method, customer_details
+                SELECT id, items, total_amount, status, created_at, delivery_method, customer_details, coupon_code
                 FROM orders 
                 WHERE (customer_details->>'email' = $1)
                 AND catalog_id IS NULL 

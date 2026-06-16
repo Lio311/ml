@@ -205,7 +205,13 @@ export default function AdminOrdersListClient({
                                             {order.items?.map((item, idx) => (
                                                 <li key={idx} className="flex gap-2 text-gray-700 justify-start">
                                                     <span className={`font-bold whitespace-nowrap text-${themeColor}-600`}>x{item.quantity}</span>
-                                                    <span>{item.name || `${item.brand} ${item.model}`}</span>
+                                                    <Link 
+                                                        href={item.is_discovery_set ? '/discovery-sets' : `/product/${(item.product_id || item.id)?.toString().split('-')[0]}`}
+                                                        className="font-bold text-gray-800 leading-tight hover:text-blue-600 hover:underline transition-colors"
+                                                        target="_blank"
+                                                    >
+                                                        {item.name || `${item.brand} ${item.model}`}
+                                                    </Link>
                                                     <span className="text-gray-400 whitespace-nowrap" dir="ltr">{item.is_discovery_set ? formatDiscoverySize(item.volume_label) : (String(item.size).includes('ml') ? item.size : `${item.size} ml`)}</span>
                                                 </li>
                                             ))}
@@ -538,22 +544,6 @@ export default function AdminOrdersListClient({
                     </div>
                 </div>
 
-                <div className="flex-1 flex justify-center xl:max-w-2xl w-full">
-                    <form onSubmit={handleSearch} className="w-full relative group">
-                        <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                            <Search className="h-5 w-5 text-gray-400 group-focus-within:text-blue-500 transition-colors" />
-                        </div>
-                        <input
-                            type="text"
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            className="block w-full rounded-2xl border-0 py-3 pl-4 pr-10 text-gray-900 ring-1 ring-inset ring-gray-200 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-500 sm:text-sm sm:leading-6 bg-white/50 backdrop-blur-sm transition-all shadow-sm"
-                            placeholder="חיפוש לפי שם, טלפון, אימייל, או מס' הזמנה..."
-                        />
-                        <button type="submit" className="hidden" />
-                    </form>
-                </div>
-                
                 {/* Status Filter Buttons */}
                 <div className="flex flex-wrap items-center justify-end gap-2 mt-4 xl:mt-0">
                     {filterOptions.map((opt) => (
