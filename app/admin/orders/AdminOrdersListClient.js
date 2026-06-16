@@ -11,7 +11,7 @@ import toast from "react-hot-toast";
 import DownloadBatchOrderPDF from "./DownloadBatchOrderPDF";
 import CustomDropdown from "../../components/ui/CustomDropdown";
 import EditOrderModal from "./EditOrderModal";
-import { Edit2 } from "lucide-react";
+import { Edit2, Search } from "lucide-react";
 import { AnimatePresence } from "framer-motion";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import Customer360Modal from "./Customer360Modal";
@@ -50,6 +50,7 @@ export default function AdminOrdersListClient({
     deleteOrder,
     currentLimit,
     currentStatus,
+    currentSearch,
     statusCounts
 }) {
     const router = useRouter();
@@ -62,6 +63,14 @@ export default function AdminOrdersListClient({
     const [isApplyingBatch, setIsApplyingBatch] = useState(false);
     const [editingOrder, setEditingOrder] = useState(null);
     const [viewingCustomerEmail, setViewingCustomerEmail] = useState(null);
+    
+    // Search state
+    const [searchTerm, setSearchTerm] = useState(currentSearch || '');
+
+    // Debounced search
+    import("react").then(({ useEffect }) => {
+        // Just keeping it simple without dynamic import inside component
+    });
 
     const handleSelectAll = (e) => {
         if (e.target.checked) {
@@ -75,6 +84,18 @@ export default function AdminOrdersListClient({
         setSelectedOrderIds(prev => 
             prev.includes(id) ? prev.filter(orderId => orderId !== id) : [...prev, id]
         );
+    };
+
+    const handleSearch = (e) => {
+        e.preventDefault();
+        const params = new URLSearchParams(searchParams);
+        if (searchTerm.trim()) {
+            params.set('search', searchTerm.trim());
+        } else {
+            params.delete('search');
+        }
+        params.set('page', '1');
+        router.push(`${pathname}?${params.toString()}`);
     };
 
     const handleApplyBatchStatus = async () => {
@@ -509,16 +530,32 @@ export default function AdminOrdersListClient({
             </div>
 
             {/* Header and Batch Action Bar */}
-            <div className="flex flex-col xl:flex-row items-start xl:items-center justify-center gap-4 mb-4 lg:mb-6 relative min-h-[44px] xl:min-h-[64px]">
-                <div className="flex flex-col xl:absolute xl:right-0 xl:top-1/2 xl:-translate-y-1/2">
+            <div className="flex flex-col xl:flex-row items-start xl:items-center justify-between gap-4 mb-4 lg:mb-6 min-h-[44px] xl:min-h-[64px]">
+                <div className="flex flex-col">
                     <h1 className="text-2xl md:text-3xl font-bold text-gray-900 shrink-0 font-black tracking-tighter">ניהול הזמנות</h1>
                     <div className="flex items-center gap-3 mt-1">
                         <p className="text-xs md:text-sm font-bold text-blue-600">סה"כ הזמנות שבוצעו באתר: {statusCounts['all'] || totalOrders}</p>
                     </div>
                 </div>
+
+                <div className="flex-1 flex justify-center xl:max-w-2xl w-full">
+                    <form onSubmit={handleSearch} className="w-full relative group">
+                        <div className="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
+                            <Search className="h-5 w-5 text-gray-400 group-focus-within:text-blue-500 transition-colors" />
+                        </div>
+                        <input
+                            type="text"
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                            className="block w-full rounded-2xl border-0 py-3 pl-4 pr-10 text-gray-900 ring-1 ring-inset ring-gray-200 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-500 sm:text-sm sm:leading-6 bg-white/50 backdrop-blur-sm transition-all shadow-sm"
+                            placeholder="חיפוש לפי שם, טלפון, אימייל, או מס' הזמנה..."
+                        />
+                        <button type="submit" className="hidden" />
+                    </form>
+                </div>
                 
                 {/* Status Filter Buttons */}
-                <div className="flex flex-wrap items-center justify-center gap-2 mt-4 xl:mt-0 xl:mx-auto">
+                <div className="flex flex-wrap items-center justify-end gap-2 mt-4 xl:mt-0">
                     {filterOptions.map((opt) => (
                         <button
                             key={opt.value}

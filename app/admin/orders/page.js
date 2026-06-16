@@ -24,6 +24,7 @@ export default async function AdminOrdersPage(props) {
     const searchParams = await props.searchParams;
     const page = Number(searchParams?.page) || 1;
     const currentStatus = searchParams?.status || 'all';
+    const searchQuery = searchParams?.search || '';
     
     // Support dynamic limits: 10, 50, 100, All (5000)
     let LIMIT = Number(searchParams?.limit) || 10;
@@ -38,24 +39,42 @@ export default async function AdminOrdersPage(props) {
 
     try {
         // Build query parts
-        let filterClause = 'catalog_id IS NULL';
-        let queryParams = [LIMIT, offset];
-        
-        let countFilterClause = 'catalog_id IS NULL';
-        let countQueryParams = [];
+        let conditions = ['catalog_id IS NULL'];
+        let countParams = [];
 
         if (currentStatus !== 'all') {
-            filterClause += ' AND status = $3';
-            queryParams.push(currentStatus);
-            
-            countFilterClause += ' AND status = $1';
-            countQueryParams.push(currentStatus);
+            countParams.push(currentStatus);
+            conditions.push(`status = $${countParams.length}`);
         }
+
+        if (searchQuery) {
+            countParams.push(`%${searchQuery}%`);
+            const paramIdx = countParams.length;
+            
+            let searchCond = `(
+                customer_details->>'name' ILIKE $${paramIdx} OR 
+                customer_details->>'email' ILIKE $${paramIdx} OR 
+                customer_details->>'phone' ILIKE $${paramIdx}
+            )`;
+
+            // If search query is numeric, also search by order ID
+            if (!isNaN(searchQuery) && searchQuery.trim() !== '') {
+                countParams.push(Number(searchQuery));
+                searchCond = `(id = $${countParams.length} OR ${searchCond.substring(1)}`;
+            }
+            
+            conditions.push(searchCond);
+        }
+
+        const countFilterClause = conditions.join(' AND ');
+        const queryParams = [...countParams, LIMIT, offset];
+        const limitParamIdx = queryParams.length - 1;
+        const offsetParamIdx = queryParams.length;
 
         // Fetch orders, total count for current filter, and status-wise counts
         const [res, countRes, statsRes] = await Promise.all([
-            client.query(`SELECT id, items, total_amount, status, customer_details, created_at, invoice_url, catalog_id, free_samples_count, notes, delivery_method, coupon_code FROM orders WHERE ${filterClause} ORDER BY created_at DESC LIMIT $1 OFFSET $2`, queryParams),
-            client.query(`SELECT COUNT(*) FROM orders WHERE ${countFilterClause}`, countQueryParams),
+            client.query(`SELECT id, items, total_amount, status, customer_details, created_at, invoice_url, catalog_id, free_samples_count, notes, delivery_method, coupon_code FROM orders WHERE ${countFilterClause} ORDER BY created_at DESC LIMIT $${limitParamIdx} OFFSET $${offsetParamIdx}`, queryParams),
+            client.query(`SELECT COUNT(*) FROM orders WHERE ${countFilterClause}`, countParams),
             client.query('SELECT status, COUNT(*) FROM orders WHERE catalog_id IS NULL GROUP BY status')
         ]);
 
@@ -92,6 +111,7 @@ export default async function AdminOrdersPage(props) {
             deleteOrder={deleteOrder}
             currentLimit={LIMIT}
             currentStatus={currentStatus}
+            currentSearch={searchQuery}
             statusCounts={statusCounts}
         />
     );
