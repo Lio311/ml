@@ -32,7 +32,7 @@ export async function GET() {
 
         const data = res.rows[0];
         
-        // Fetch the actual product details for the selected IDs
+        // Fetch the actual product details for the selected IDs for the current month
         let products = [];
         if (data.perfume_ids && data.perfume_ids.length > 0) {
             const productsRes = await pool.query(
@@ -42,7 +42,42 @@ export async function GET() {
             products = productsRes.rows;
         }
 
-        return NextResponse.json({ recommendation: data, products });
+        // Fetch history (past months)
+        const historyRes = await pool.query(`
+            SELECT * FROM monthly_recommendations 
+            WHERE month != $1 
+            ORDER BY month DESC 
+            LIMIT 12
+        `, [currentMonth]);
+        
+        let history = historyRes.rows;
+        
+        // Gather all unique product IDs from history to fetch them
+        const allHistoryProductIds = new Set();
+        history.forEach(h => {
+            if (h.perfume_ids && Array.isArray(h.perfume_ids)) {
+                h.perfume_ids.forEach(id => allHistoryProductIds.add(id));
+            }
+        });
+
+        let historyProductsMap = {};
+        if (allHistoryProductIds.size > 0) {
+            const hProductsRes = await pool.query(
+                'SELECT id, name, brand, image_url FROM products WHERE id = ANY($1)',
+                [Array.from(allHistoryProductIds)]
+            );
+            hProductsRes.rows.forEach(p => {
+                historyProductsMap[p.id] = p;
+            });
+        }
+
+        // Attach products to history records
+        history = history.map(h => ({
+            ...h,
+            products: (h.perfume_ids || []).map(id => historyProductsMap[id]).filter(Boolean)
+        }));
+
+        return NextResponse.json({ recommendation: data, products, history });
     } catch (error) {
         console.error('Error fetching monthly recommendation:', error);
         return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });

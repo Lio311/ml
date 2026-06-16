@@ -12,6 +12,7 @@ export default function MonthlyRecommendationAdmin() {
     const [saving, setSaving] = useState(false);
     const [status, setStatus] = useState("pending");
     const [editMode, setEditMode] = useState(false);
+    const [history, setHistory] = useState([]);
 
     useEffect(() => {
         fetchRecommendation();
@@ -36,6 +37,9 @@ export default function MonthlyRecommendationAdmin() {
                 setStatus(data.recommendation.status);
                 if (data.products && data.products.length > 0) {
                     setSelectedPerfumes(data.products);
+                }
+                if (data.history) {
+                    setHistory(data.history);
                 }
             }
         } catch (error) {
@@ -265,6 +269,49 @@ export default function MonthlyRecommendationAdmin() {
                 </div>
                 
             </div>
+
+            {/* History Section */}
+            {history.length > 0 && (
+                <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 mt-8">
+                    <h2 className="text-xl font-black mb-6 tracking-tight flex items-center gap-2">
+                        <Calendar className="text-blue-500" size={24} />
+                        היסטוריית המלצות
+                    </h2>
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        {history.map(item => (
+                            <div key={item.id} className="border border-gray-100 rounded-xl p-4 bg-gray-50/50">
+                                <div className="flex items-center justify-between mb-4">
+                                    <h3 className="font-bold text-gray-900">{item.month}</h3>
+                                    <span className={`text-[10px] font-black px-2 py-1 rounded-md uppercase ${item.status === 'sent' ? 'bg-green-100 text-green-700' : item.status === 'skipped' ? 'bg-gray-200 text-gray-600' : 'bg-blue-100 text-blue-700'}`}>
+                                        {item.status === 'sent' ? 'נשלח' : item.status === 'skipped' ? 'דולג' : 'בטיוטה'}
+                                    </span>
+                                </div>
+                                <div className="space-y-2">
+                                    {item.products && item.products.length > 0 ? (
+                                        item.products.map(p => (
+                                            <div key={p.id} className="flex items-center gap-3 bg-white p-2 rounded-lg border border-gray-100">
+                                                <div className="w-8 h-8 relative flex-shrink-0">
+                                                    {p.image_url ? (
+                                                        <Image src={p.image_url} alt={p.name} fill className="object-contain" unoptimized />
+                                                    ) : (
+                                                        <div className="w-full h-full bg-gray-100 rounded-md"></div>
+                                                    )}
+                                                </div>
+                                                <div className="min-w-0 flex-1">
+                                                    <p className="text-[10px] text-gray-500 truncate">{p.brand}</p>
+                                                    <p className="text-xs font-bold truncate">{p.name}</p>
+                                                </div>
+                                            </div>
+                                        ))
+                                    ) : (
+                                        <p className="text-xs text-gray-400 text-center py-4">לא נבחרו בשמים</p>
+                                    )}
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+            )}
         </div>
     );
 }
