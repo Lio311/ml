@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
-import pool from '../../../../lib/db';
-import { sendEmail } from '../../../../lib/email';
-import { getMonthlyRecommendationTemplate, getManagerReminderTemplate } from '../../../../lib/monthlyRecommendationEmail';
+import pool from '../../../lib/db';
+import { sendEmail } from '../../../lib/email';
+import { getMonthlyRecommendationTemplate, getManagerReminderTemplate } from '../../../lib/monthlyRecommendationEmail';
 
 export const dynamic = 'force-dynamic';
 

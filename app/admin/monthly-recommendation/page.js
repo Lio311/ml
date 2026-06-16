@@ -121,7 +121,7 @@ export default function MonthlyRecommendationAdmin() {
                 </div>
                 
                 <div className="flex items-center gap-3">
-                    <div className={\`px-4 py-2 rounded-xl text-sm font-bold flex items-center gap-2 \${status === 'selected' ? 'bg-green-50 text-green-600 border border-green-200' : 'bg-amber-50 text-amber-600 border border-amber-200'}\`}>
+                    <div className={`px-4 py-2 rounded-xl text-sm font-bold flex items-center gap-2 ${status === 'selected' ? 'bg-green-50 text-green-600 border border-green-200' : 'bg-amber-50 text-amber-600 border border-amber-200'}`}>
                         {status === 'selected' ? <CheckCircle2 size={16} /> : <AlertCircle size={16} />}
                         {status === 'selected' ? 'אושר לשליחה' : 'טרם אושר'}
                     </div>
@@ -152,7 +152,7 @@ export default function MonthlyRecommendationAdmin() {
                                         <div 
                                             key={perfume.id}
                                             onClick={() => togglePerfume(perfume)}
-                                            className={\`relative cursor-pointer rounded-xl overflow-hidden border-2 transition-all duration-300 \${isSelected ? 'border-blue-500 shadow-md transform scale-[1.02]' : 'border-gray-100 hover:border-gray-300 hover:shadow-sm'}\`}
+                                            className={`relative cursor-pointer rounded-xl overflow-hidden border-2 transition-all duration-300 ${isSelected ? 'border-blue-500 shadow-md transform scale-[1.02]' : 'border-gray-100 hover:border-gray-300 hover:shadow-sm'}`}
                                         >
                                             <div className="aspect-square relative bg-gray-50">
                                                 {perfume.image_url ? (
@@ -166,7 +166,7 @@ export default function MonthlyRecommendationAdmin() {
                                                     </div>
                                                 )}
                                             </div>
-                                            <div className={\`p-3 text-center \${isSelected ? 'bg-blue-50' : 'bg-white'}\`}>
+                                            <div className={`p-3 text-center ${isSelected ? 'bg-blue-50' : 'bg-white'}`}>
                                                 <p className="text-xs text-gray-500 font-medium mb-1 line-clamp-1">{perfume.brand}</p>
                                                 <p className="text-sm font-bold text-gray-900 line-clamp-1">{perfume.name}</p>
                                             </div>
