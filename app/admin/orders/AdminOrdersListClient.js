@@ -562,16 +562,107 @@ export default function AdminOrdersListClient({
                     </div>
                 </div>
 
-                            {isApplyingBatch ? 'מעדכן...' : 'החל שינויים'}
-                        </button>
+                {/* Search / Filters / Batch Actions Area */}
+                <div className="w-full relative min-h-[110px] flex items-center justify-center">
+                    {selectedOrderIds.length > 0 && canEdit ? (
+                        <div className="bg-white border-2 border-black text-gray-800 p-2.5 md:p-3 rounded-2xl shadow-xl z-50 flex flex-col md:flex-row items-center gap-4 animate-in fade-in zoom-in-95 w-full xl:w-auto">
+                            <div className="font-bold flex items-center justify-center gap-2.5 w-full md:w-auto text-sm md:text-base border-b md:border-b-0 border-gray-100 pb-3 md:pb-0 md:pl-2 whitespace-nowrap">
+                                <span className="bg-black text-white w-6 h-6 rounded-full flex items-center justify-center text-xs font-black">{selectedOrderIds.length}</span>
+                                <span className="text-black font-black uppercase tracking-widest text-[10px] whitespace-nowrap">סומנו לעדכון</span>
+                            </div>
+                            
+                            <div className="flex gap-4 md:gap-6 w-full md:w-auto md:mr-6">
+                                <div className="min-w-[170px] flex-1">
+                                    <CustomDropdown
+                                        options={STATUS_OPTIONS}
+                                        value={batchStatus}
+                                        onChange={setBatchStatus}
+                                        variant="status"
+                                        fullWidth={true}
+                                    />
+                                </div>
+                                <div className="min-w-[170px] flex-1">
+                                    <CustomDropdown
+                                        options={DELIVERY_METHOD_OPTIONS}
+                                        value={batchDeliveryMethod}
+                                        onChange={setBatchDeliveryMethod}
+                                        variant="status"
+                                        fullWidth={true}
+                                    />
+                                </div>
+                            </div>
 
-                        <div className="w-full md:block hidden h-8 w-px bg-gray-200"></div>
-
-                        <div className="w-full md:w-auto pt-3 md:pt-0 border-t border-gray-100 md:border-t-0 flex justify-center whitespace-nowrap">
-                            <DownloadBatchOrderPDF selectedOrders={selectedOrdersData} onComplete={() => setSelectedOrderIds([])} />
+                            <button 
+                                onClick={handleApplyBatchStatus}
+                                disabled={isApplyingBatch || (batchStatus === 'no_change' && batchDeliveryMethod === 'no_change')}
+                                className="w-full md:w-auto px-6 py-2.5 bg-black text-white rounded-xl font-bold hover:bg-gray-900 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-md active:scale-95 whitespace-nowrap"
+                            >
+                                {isApplyingBatch ? 'מעדכן...' : 'החל שינויים'}
+                            </button>
+                            <div className="hidden md:block w-px h-8 bg-gray-200 mx-2"></div>
+                            <div className="w-full md:w-auto pt-3 md:pt-0 border-t border-gray-100 md:border-t-0 flex justify-center whitespace-nowrap">
+                                <DownloadBatchOrderPDF selectedOrders={selectedOrdersData} onComplete={() => setSelectedOrderIds([])} />
+                            </div>
                         </div>
-                    </div>
-                )}
+                    ) : (
+                        <div className="flex flex-col items-center w-full animate-in fade-in duration-300">
+                            {/* Smart Search Bar Row */}
+                            <div className="w-full max-w-2xl relative z-10">
+                                <form onSubmit={handleSearch} className="w-full relative group">
+                                    <div className="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
+                                        <Search className="h-5 w-5 text-gray-400 group-focus-within:text-blue-500 transition-colors" />
+                                    </div>
+                                    <input
+                                        type="text"
+                                        value={searchTerm}
+                                        onChange={(e) => setSearchTerm(e.target.value)}
+                                        className="block w-full rounded-2xl border-0 py-3 pl-4 pr-12 text-gray-900 ring-0 focus:ring-0 outline-none focus:outline-none sm:text-sm sm:leading-6 bg-white shadow-sm transition-all"
+                                        placeholder="חיפוש לפי שם, טלפון, אימייל, או מס' הזמנה..."
+                                    />
+                                    <button type="submit" className="hidden" />
+                                </form>
+                            </div>
+
+                            {/* Status Filter Buttons */}
+                            <div className="flex flex-wrap items-center justify-center gap-2 mt-4">
+                                {filterOptions.map((opt) => (
+                                    <button
+                                        key={opt.value}
+                                        onClick={() => {
+                                            const params = new URLSearchParams(searchParams);
+                                            params.set('status', opt.value);
+                                            params.set('page', '1');
+                                            router.push(`${pathname}?${params.toString()}`);
+                                        }}
+                                        className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all border shadow-sm ${
+                                            currentStatus === opt.value
+                                                ? `bg-black text-white border-black scale-105 shadow-md`
+                                                : `bg-white text-gray-400 border-gray-100 hover:border-gray-300 hover:text-gray-600`
+                                        }`}
+                                    >
+                                        <span className={`w-2 h-2 rounded-full ${
+                                            opt.value === 'all' ? 'bg-gray-300' :
+                                            opt.value === 'pending' ? 'bg-orange-500' :
+                                            opt.value === 'processing' ? 'bg-blue-500' :
+                                            opt.value === 'shipped' ? 'bg-purple-500' :
+                                            opt.value === 'ready_for_pickup' ? 'bg-indigo-500' :
+                                            opt.value === 'completed' ? 'bg-green-500' :
+                                            'bg-gray-400'
+                                        }`} />
+                                        {opt.label}
+                                        {statusCounts[opt.value] > 0 && (
+                                            <span className={`ms-1 px-1.5 py-0.5 rounded-lg text-[9px] ${
+                                                currentStatus === opt.value ? 'bg-white/20 text-white' : 'bg-gray-100 text-gray-400'
+                                            }`}>
+                                                {statusCounts[opt.value]}
+                                            </span>
+                                        )}
+                                    </button>
+                                ))}
+                            </div>
+                        </div>
+                    )}
+                </div>
             </div>
 
             {/* Orders Section */}
