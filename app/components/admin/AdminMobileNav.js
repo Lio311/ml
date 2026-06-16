@@ -47,7 +47,8 @@ import {
     Edit3,
     FileSearch,
     Activity,
-    AlertOctagon
+    AlertOctagon,
+    Calendar
 } from "lucide-react";
 import { SignOutButton } from "@clerk/nextjs";
 import { useBrand } from "../../context/BrandContext";
@@ -95,7 +96,7 @@ const navGroups = [
             { href: "/admin/subscribers", label: "מנויי דיוור", icon: Mail, roles: ['admin', 'deputy'] },
             { href: "/admin/lottery", label: "הגרלות", icon: Dices, roles: ['admin', 'deputy'] },
             { href: "/admin/reviews", label: "ביקורות", icon: Star, roles: ['admin', 'deputy'] },
-            { href: "/admin/monthly-recommendation", label: "המלצת החודש", icon: Cpu, roles: ['admin', 'deputy'] },
+            { href: "/admin/monthly-recommendation", label: "המלצת החודש", icon: Calendar, roles: ['admin', 'deputy'] },
             { href: "/admin/recommendations", label: "המלצות", icon: Cpu, roles: ['admin', 'deputy'] },
             { href: "/admin/analytics", label: "אנליטיקה", icon: BarChart3, roles: ['admin'] },
             { href: "/admin/search-analytics", label: "חיפושים", icon: Search, roles: ['admin'] },
@@ -128,6 +129,7 @@ export default function AdminMobileNav({ role = 'customer' }) {
     const brand = useBrand();
     const [unreadCount, setUnreadCount] = useState(0);
     const [pendingOrdersCount, setPendingOrdersCount] = useState(0);
+    const [monthlyRecommendationPending, setMonthlyRecommendationPending] = useState(false);
     const [openGroups, setOpenGroups] = useState({});
 
     useEffect(() => {
@@ -138,6 +140,7 @@ export default function AdminMobileNav({ role = 'customer' }) {
                     const data = await res.json();
                     setUnreadCount(data.unreadInbox || 0);
                     setPendingOrdersCount(data.pendingOrders || 0);
+                    setMonthlyRecommendationPending(data.monthlyRecommendationPending || false);
                 }
             } catch (err) {
                 console.error("Sidebar fetch error:", err);
@@ -208,6 +211,7 @@ export default function AdminMobileNav({ role = 'customer' }) {
                             const groupNotifications = visibleItems.reduce((acc, item) => {
                                 if (item.href === '/admin/orders') return acc + pendingOrdersCount;
                                 if (item.href.includes('inbox')) return acc + unreadCount;
+                                if (item.href === '/admin/monthly-recommendation' && monthlyRecommendationPending) return acc + 1;
                                 return acc;
                             }, 0);
 
@@ -256,6 +260,12 @@ export default function AdminMobileNav({ role = 'customer' }) {
                                                         {item.href.includes('inbox') && unreadCount > 0 && (
                                                             <span className="flex h-5 min-w-[20px] items-center justify-center rounded-full bg-red-500 px-1.5 text-[10px] font-black text-white">
                                                                 {unreadCount}
+                                                            </span>
+                                                        )}
+                                                        {item.href === '/admin/monthly-recommendation' && monthlyRecommendationPending && (
+                                                            <span className="flex h-2 w-2 relative">
+                                                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                                                                <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
                                                             </span>
                                                         )}
                                                     </div>
