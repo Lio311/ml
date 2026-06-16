@@ -11,8 +11,8 @@ async function run() {
         const clientEmailHtml = `
 <div dir="rtl" style="font-family: 'Open Sans', 'Open Sans Hebrew', Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto; line-height: 1.6; background-color: #f9f9f9; padding: 20px;">
     <div style="background-color: #fff; padding: 30px; border-radius: 24px; border: 1px solid #f0f0f0; box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
-        <div style="text-align: center; margin-bottom: 30px;">
-            <img src="https://www.ml-tlv.com/logo.png" alt="ml_tlv logo" style="max-width: 150px; height: auto;" />
+        <div style="text-align: center; margin-bottom: 10px;">
+            <img src="https://www.ml-tlv.com/logo.png" alt="ml_tlv logo" style="max-width: 120px; height: auto;" />
         </div>
         
         <h1 style="margin: 0 0 10px; font-size: 24px; font-weight: 900; color: #000; text-align: center;">המלצת החודש של מנהל האתר 👑</h1>

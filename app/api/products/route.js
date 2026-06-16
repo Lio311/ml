@@ -30,7 +30,7 @@ export async function GET(req) {
             const values = [];
 
             if (search) {
-                query += ` AND (name ILIKE $1 OR brand ILIKE $1 OR model ILIKE $1)`;
+                query += ` AND (name ILIKE $1 OR brand ILIKE $1 OR model ILIKE $1 OR name_he ILIKE $1 OR brand_he ILIKE $1 OR model_he ILIKE $1 OR category ILIKE $1)`;
                 values.push(`%${search}%`);
             }
 

@@ -46,7 +46,7 @@ export default function MonthlyRecommendationAdmin() {
 
     const searchProducts = async () => {
         try {
-            const res = await fetch(`/api/products?search=${encodeURIComponent(searchTerm)}`);
+            const res = await fetch(`/api/products?q=${encodeURIComponent(searchTerm)}`);
             const data = await res.json();
             if (res.ok && data.products) {
                 setSearchResults(data.products);
