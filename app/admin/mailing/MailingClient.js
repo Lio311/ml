@@ -1314,7 +1314,7 @@ function TemplateCard({ template, onEdit, onDelete, onSend, onSendTest }) {
                         onClick={onSend}
                         className="flex-1 bg-black text-white py-3 rounded-2xl font-black text-[11px] uppercase tracking-wider flex items-center justify-center gap-2 hover:bg-gray-800 transition-all active:scale-95"
                     >
-                        <Send size={14} /> שליחה
+                        שליחה <Send size={14} />
                     </button>
                 ) : <div className="flex-1"></div>}
                 
