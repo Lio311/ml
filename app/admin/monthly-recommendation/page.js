@@ -1,8 +1,8 @@
 "use client";
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { Search, Check, AlertCircle, Save, Send, Calendar, CheckCircle2 } from "lucide-react";
-import toast, { Toaster } from 'react-hot-toast';
+import { Search, Check, AlertCircle, Save, Send, Calendar, CheckCircle2, Edit2 } from "lucide-react";
+import toast from 'react-hot-toast';
 
 export default function MonthlyRecommendationAdmin() {
     const [searchTerm, setSearchTerm] = useState("");
@@ -11,6 +11,7 @@ export default function MonthlyRecommendationAdmin() {
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [status, setStatus] = useState("pending");
+    const [editMode, setEditMode] = useState(false);
 
     useEffect(() => {
         fetchRecommendation();
@@ -109,7 +110,6 @@ export default function MonthlyRecommendationAdmin() {
 
     return (
         <div className="max-w-6xl mx-auto space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500" dir="rtl">
-            <Toaster position="top-center" />
             
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
                 <div>
@@ -214,25 +214,52 @@ export default function MonthlyRecommendationAdmin() {
                         </div>
 
                         <div className="space-y-3">
-                            <button 
-                                onClick={() => handleSave('save')}
-                                disabled={saving}
-                                className="w-full py-3 px-4 bg-white/10 hover:bg-white/20 text-white font-bold rounded-xl transition-all flex items-center justify-center gap-2"
-                            >
-                                שמור כטיוטה
-                                <Save size={18} />
-                            </button>
-                            <button 
-                                onClick={() => handleSave('save_and_send')}
-                                disabled={saving || selectedPerfumes.length === 0}
-                                className="w-full py-3 px-4 bg-blue-500 hover:bg-blue-600 text-white font-bold rounded-xl transition-all flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(59,130,246,0.3)] disabled:opacity-50 disabled:cursor-not-allowed"
-                            >
-                                אשר בחירה סופית
-                                <Send size={18} />
-                            </button>
-                            <p className="text-[11px] text-gray-500 text-center mt-4">
-                                לחיצה על אישור תקבע את הבשמים אלו. המייל יישלח אוטומטית למנויים בתאריך 30 לחודש (או 28 בפברואר).
-                            </p>
+                            {status === 'selected' && !editMode ? (
+                                <div className="space-y-4">
+                                    <div className="bg-green-500/10 border border-green-500/20 text-green-400 p-4 rounded-xl text-center">
+                                        <CheckCircle2 size={24} className="mx-auto mb-2" />
+                                        <p className="font-bold text-sm">הבחירה נשמרה ואושרה לשליחה!</p>
+                                        <p className="text-xs opacity-80 mt-1">המייל יופץ אוטומטית למנויים ב-30 לחודש.</p>
+                                    </div>
+                                    <button 
+                                        onClick={() => setEditMode(true)}
+                                        className="w-full py-3 px-4 bg-white/10 hover:bg-white/20 text-white font-bold rounded-xl transition-all flex items-center justify-center gap-2"
+                                    >
+                                        ערוך בחירה
+                                        <Edit2 size={16} />
+                                    </button>
+                                </div>
+                            ) : (
+                                <>
+                                    <button 
+                                        onClick={() => { handleSave('save'); setEditMode(false); }}
+                                        disabled={saving}
+                                        className="w-full py-3 px-4 bg-white/10 hover:bg-white/20 text-white font-bold rounded-xl transition-all flex items-center justify-center gap-2"
+                                    >
+                                        שמור כטיוטה
+                                        <Save size={18} />
+                                    </button>
+                                    <button 
+                                        onClick={() => { handleSave('save_and_send'); setEditMode(false); }}
+                                        disabled={saving || selectedPerfumes.length === 0}
+                                        className="w-full py-3 px-4 bg-blue-500 hover:bg-blue-600 text-white font-bold rounded-xl transition-all flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(59,130,246,0.3)] disabled:opacity-50 disabled:cursor-not-allowed"
+                                    >
+                                        אשר בחירה סופית
+                                        <Send size={18} />
+                                    </button>
+                                    <p className="text-[11px] text-gray-500 text-center mt-4">
+                                        לחיצה על אישור תקבע את הבשמים אלו. המייל יישלח אוטומטית למנויים בתאריך 30 לחודש (או 28 בפברואר).
+                                    </p>
+                                    {editMode && status === 'selected' && (
+                                        <button 
+                                            onClick={() => setEditMode(false)}
+                                            className="w-full py-2 px-4 text-gray-400 hover:text-white font-bold transition-all text-xs"
+                                        >
+                                            ביטול עריכה
+                                        </button>
+                                    )}
+                                </>
+                            )}
                         </div>
                     </div>
                 </div>
