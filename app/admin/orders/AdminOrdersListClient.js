@@ -225,7 +225,7 @@ export default function AdminOrdersListClient({
                                                     <span className={`font-bold whitespace-nowrap text-${themeColor}-600`}>x{item.quantity}</span>
                                                     <Link 
                                                         href={item.is_discovery_set ? '/discovery-sets' : `/product/${(item.product_id || item.id)?.toString().split('-')[0]}`}
-                                                        className="font-bold text-blue-600 underline decoration-blue-600/30 underline-offset-4 leading-tight hover:text-blue-800 transition-colors"
+                                                        className="font-normal text-gray-700 underline decoration-gray-300 underline-offset-4 leading-tight hover:text-gray-900 hover:decoration-gray-500 transition-colors"
                                                         target="_blank"
                                                     >
                                                         {item.name || `${item.brand} ${item.model}`}
@@ -412,7 +412,7 @@ export default function AdminOrdersListClient({
                                                 <span className={`font-black text-${themeColor}-600 bg-${themeColor}-50 w-6 h-6 rounded-lg flex items-center justify-center text-[11px] shrink-0 border border-${themeColor}-100/50`}>{item.quantity}</span>
                                                 <Link 
                                                     href={item.is_discovery_set ? '/discovery-sets' : `/product/${(item.product_id || item.id)?.toString().split('-')[0]}`}
-                                                    className="font-bold text-blue-600 underline decoration-blue-600/30 underline-offset-4 leading-tight pt-0.5 hover:text-blue-800 transition-colors"
+                                                    className="font-normal text-gray-700 underline decoration-gray-300 underline-offset-4 leading-tight pt-0.5 hover:text-gray-900 hover:decoration-gray-500 transition-colors"
                                                     target="_blank"
                                                 >
                                                     {item.name || `${item.brand} ${item.model}`}
@@ -562,94 +562,6 @@ export default function AdminOrdersListClient({
                     </div>
                 </div>
 
-                {/* Smart Search Bar Row */}
-                <div className="w-full max-w-2xl relative z-10">
-                    <form onSubmit={handleSearch} className="w-full relative group">
-                        <div className="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none">
-                            <Search className="h-5 w-5 text-gray-400 group-focus-within:text-blue-500 transition-colors" />
-                        </div>
-                        <input
-                            type="text"
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            className="block w-full rounded-2xl border-0 py-3 pl-4 pr-12 text-gray-900 ring-0 focus:ring-0 outline-none focus:outline-none sm:text-sm sm:leading-6 bg-white shadow-sm transition-all"
-                            placeholder="חיפוש לפי שם, טלפון, אימייל, או מס' הזמנה..."
-                        />
-                        <button type="submit" className="hidden" />
-                    </form>
-                </div>
-
-                {/* Status Filter Buttons */}
-                <div className="flex flex-wrap items-center justify-center gap-2 mt-2">
-                    {filterOptions.map((opt) => (
-                        <button
-                            key={opt.value}
-                            onClick={() => {
-                                const params = new URLSearchParams(searchParams);
-                                params.set('status', opt.value);
-                                params.set('page', '1');
-                                router.push(`${pathname}?${params.toString()}`);
-                            }}
-                            className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all border shadow-sm ${
-                                currentStatus === opt.value
-                                    ? `bg-black text-white border-black scale-105 shadow-md`
-                                    : `bg-white text-gray-400 border-gray-100 hover:border-gray-300 hover:text-gray-600`
-                            }`}
-                        >
-                            <span className={`w-2 h-2 rounded-full ${
-                                opt.value === 'all' ? 'bg-gray-300' :
-                                opt.value === 'pending' ? 'bg-orange-500' :
-                                opt.value === 'processing' ? 'bg-blue-500' :
-                                opt.value === 'shipped' ? 'bg-purple-500' :
-                                opt.value === 'ready_for_pickup' ? 'bg-indigo-500' :
-                                opt.value === 'completed' ? 'bg-green-500' :
-                                'bg-gray-400'
-                            }`} />
-                            {opt.label}
-                            {statusCounts[opt.value] > 0 && (
-                                <span className={`ms-1 px-1.5 py-0.5 rounded-lg text-[9px] ${
-                                    currentStatus === opt.value ? 'bg-white/20 text-white' : 'bg-gray-100 text-gray-400'
-                                }`}>
-                                    {statusCounts[opt.value]}
-                                </span>
-                            )}
-                        </button>
-                    ))}
-                </div>
-
-                {selectedOrderIds.length > 0 && canEdit && (
-                    <div className="bg-white border-2 border-black text-gray-800 p-2.5 md:p-3 rounded-2xl shadow-2xl z-[100] flex flex-col md:flex-row items-center gap-4 animate-in fade-in zoom-in-95 w-[90%] xl:w-auto fixed top-4 md:top-8 left-1/2 -translate-x-1/2">
-                        <div className="font-bold flex items-center justify-center gap-2.5 w-full md:w-auto text-sm md:text-base border-b md:border-b-0 border-gray-100 pb-3 md:pb-0 md:pl-2 whitespace-nowrap">
-                            <span className="bg-black text-white w-6 h-6 rounded-full flex items-center justify-center text-xs font-black">{selectedOrderIds.length}</span>
-                            <span className="text-black font-black uppercase tracking-widest text-[10px] whitespace-nowrap">סומנו לעדכון</span>
-                        </div>
-                        
-                        <div className="flex gap-4 md:gap-6 w-full md:w-auto md:mr-6">
-                            <div className="min-w-[170px] flex-1">
-                                <CustomDropdown
-                                    options={STATUS_OPTIONS}
-                                    value={batchStatus}
-                                    onChange={setBatchStatus}
-                                    variant="status"
-                                    fullWidth={true}
-                                />
-                            </div>
-                            <div className="min-w-[170px] flex-1">
-                                <CustomDropdown
-                                    options={DELIVERY_METHOD_OPTIONS}
-                                    value={batchDeliveryMethod}
-                                    onChange={setBatchDeliveryMethod}
-                                    variant="status"
-                                    fullWidth={true}
-                                />
-                            </div>
-                        </div>
-
-                        <button 
-                            onClick={handleApplyBatchStatus}
-                            disabled={isApplyingBatch}
-                            className="bg-black hover:bg-gray-800 text-white px-6 py-2.5 rounded-xl text-xs font-black transition whitespace-nowrap shadow-sm w-full md:w-auto uppercase tracking-widest"
-                        >
                             {isApplyingBatch ? 'מעדכן...' : 'החל שינויים'}
                         </button>
 
