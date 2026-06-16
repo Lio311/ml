@@ -14,6 +14,7 @@ import EditOrderModal from "./EditOrderModal";
 import { Edit2, Search } from "lucide-react";
 import { AnimatePresence } from "framer-motion";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
+import { useEffect, useRef } from "react";
 import Customer360Modal from "./Customer360Modal";
 
 const formatDiscoverySize = (label) => {
@@ -66,11 +67,28 @@ export default function AdminOrdersListClient({
     
     // Search state
     const [searchTerm, setSearchTerm] = useState(currentSearch || '');
+    const isInitialMount = useRef(true);
 
     // Debounced search
-    import("react").then(({ useEffect }) => {
-        // Just keeping it simple without dynamic import inside component
-    });
+    useEffect(() => {
+        if (isInitialMount.current) {
+            isInitialMount.current = false;
+            return;
+        }
+
+        const timeoutId = setTimeout(() => {
+            const params = new URLSearchParams(searchParams);
+            if (searchTerm.trim()) {
+                params.set('search', searchTerm.trim());
+            } else {
+                params.delete('search');
+            }
+            params.set('page', '1');
+            router.push(`${pathname}?${params.toString()}`);
+        }, 300);
+
+        return () => clearTimeout(timeoutId);
+    }, [searchTerm, searchParams, pathname, router]);
 
     const handleSelectAll = (e) => {
         if (e.target.checked) {
@@ -554,7 +572,7 @@ export default function AdminOrdersListClient({
                             type="text"
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
-                            className="block w-full rounded-2xl border-0 py-3 pl-4 pr-12 text-gray-900 ring-1 ring-inset ring-gray-200 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-500 sm:text-sm sm:leading-6 bg-white shadow-sm transition-all"
+                            className="block w-full rounded-2xl border-0 py-3 pl-4 pr-12 text-gray-900 ring-0 focus:ring-0 outline-none focus:outline-none sm:text-sm sm:leading-6 bg-white shadow-sm transition-all"
                             placeholder="חיפוש לפי שם, טלפון, אימייל, או מס' הזמנה..."
                         />
                         <button type="submit" className="hidden" />
