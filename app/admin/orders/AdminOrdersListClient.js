@@ -571,8 +571,8 @@ export default function AdminOrdersListClient({
                                 <span className="text-black font-black uppercase tracking-widest text-[10px] whitespace-nowrap">סומנו לעדכון</span>
                             </div>
                             
-                            <div className="flex gap-4 md:gap-6 w-full md:w-auto md:mr-6">
-                                <div className="min-w-[170px] flex-1">
+                            <div className="flex flex-col sm:flex-row gap-3 md:gap-6 w-full md:w-auto md:mr-6">
+                                <div className="min-w-[140px] md:min-w-[170px] flex-1">
                                     <CustomDropdown
                                         options={STATUS_OPTIONS}
                                         value={batchStatus}
@@ -581,7 +581,7 @@ export default function AdminOrdersListClient({
                                         fullWidth={true}
                                     />
                                 </div>
-                                <div className="min-w-[170px] flex-1">
+                                <div className="min-w-[140px] md:min-w-[170px] flex-1">
                                     <CustomDropdown
                                         options={DELIVERY_METHOD_OPTIONS}
                                         value={batchDeliveryMethod}
