@@ -160,7 +160,9 @@ export async function POST(req) {
                     if (args.query) {
                         const words = args.query.trim().split(/\s+/);
                         for (const word of words) {
-                            queryStr += ` AND (brand ILIKE $${paramCounter} OR model ILIKE $${paramCounter} OR category ILIKE $${paramCounter})`;
+                            // Only apply AND condition if the word is not just a hyphen or empty
+                            if (word === '-' || word.length === 0) continue;
+                            queryStr += ` AND (brand ILIKE $${paramCounter} OR model ILIKE $${paramCounter} OR category ILIKE $${paramCounter} OR name ILIKE $${paramCounter} OR name_he ILIKE $${paramCounter} OR brand_he ILIKE $${paramCounter} OR model_he ILIKE $${paramCounter})`;
                             queryParams.push(`%${word}%`);
                             paramCounter++;
                         }
