@@ -95,7 +95,7 @@ export async function POST(req) {
                 }, {});
 
                 const productIds = Object.keys(itemDict).filter(id => !isNaN(id)).map(id => parseInt(id));
-                const productsRes = await client.query('SELECT id, brand, category FROM products WHERE id = ANY($1)', [productIds]);
+                const productsRes = await client.query('SELECT id, brand, category, discovery_type FROM products WHERE id = ANY($1)', [productIds]);
                 const productDataMap = productsRes.rows.reduce((acc, p) => {
                     acc[p.id] = p;
                     return acc;
@@ -109,6 +109,13 @@ export async function POST(req) {
                     const p = productDataMap[cleanId];
 
                     let itemIsEligible = true;
+
+                    // Discovery Set Check
+                    if (itemIsEligible && limitations.exclude_discovery_sets) {
+                        if (p && p.discovery_type === 'discovery_set') {
+                            itemIsEligible = false;
+                        }
+                    }
 
                     // Size Check
                     if (limitations.allowed_sizes && limitations.allowed_sizes.length > 0) {

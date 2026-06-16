@@ -48,6 +48,7 @@ export default function AdminCouponsPage() {
         allowed_brands: [],
         allowed_products: [],
         allowed_users: [], // New User Affiliation
+        exclude_discovery_sets: false, // New Discovery Set filter
         influencer_id: '',
         min_cart_total: 0
     });
@@ -196,6 +197,7 @@ export default function AdminCouponsPage() {
             allowed_brands: limits.allowed_brands || [],
             allowed_products: limits.allowed_products || [],
             allowed_users: limits.allowed_users || [],
+            exclude_discovery_sets: limits.exclude_discovery_sets || false,
             influencer_id: coupon.influencer_id || '',
             min_cart_total: limits.min_cart_total || 0
         });
@@ -219,6 +221,7 @@ export default function AdminCouponsPage() {
                     allowed_brands: formData.allowed_brands.length > 0 ? formData.allowed_brands : null,
                     allowed_products: formData.allowed_products.length > 0 ? formData.allowed_products : null,
                     allowed_users: formData.allowed_users.length > 0 ? formData.allowed_users : null,
+                    exclude_discovery_sets: formData.exclude_discovery_sets,
                     min_cart_total: Number(formData.min_cart_total) || 0
                 },
                 influencer_id: formData.influencer_id ? Number(formData.influencer_id) : null
@@ -543,6 +546,19 @@ export default function AdminCouponsPage() {
                                                 </label>
                                             ))}
                                         </div>
+                                    </div>
+
+                                    {/* Discovery Set */}
+                                    <div>
+                                        <label className="flex items-center gap-2 bg-white px-4 py-2 rounded-xl cursor-pointer border hover:border-black transition w-fit mt-2">
+                                            <input
+                                                type="checkbox"
+                                                checked={!formData.exclude_discovery_sets}
+                                                onChange={(e) => setFormData({ ...formData, exclude_discovery_sets: !e.target.checked })}
+                                                className="w-4 h-4 rounded text-black focus:ring-black border-gray-300"
+                                            />
+                                            <span className="text-sm font-bold text-gray-800">תקף גם על דיסקברי סט</span>
+                                        </label>
                                     </div>
 
                                     {/* User Affiliation */}
