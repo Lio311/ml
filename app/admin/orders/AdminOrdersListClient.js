@@ -225,7 +225,7 @@ export default function AdminOrdersListClient({
                                                     <span className={`font-bold whitespace-nowrap text-${themeColor}-600`}>x{item.quantity}</span>
                                                     <Link 
                                                         href={item.is_discovery_set ? '/discovery-sets' : `/product/${(item.product_id || item.id)?.toString().split('-')[0]}`}
-                                                        className="font-normal text-gray-700 underline decoration-gray-300 underline-offset-4 leading-tight hover:text-gray-900 hover:decoration-gray-500 transition-colors"
+                                                        className="font-normal text-gray-700 leading-tight hover:text-gray-900 transition-colors"
                                                         target="_blank"
                                                     >
                                                         {item.name || `${item.brand} ${item.model}`}
@@ -412,7 +412,7 @@ export default function AdminOrdersListClient({
                                                 <span className={`font-black text-${themeColor}-600 bg-${themeColor}-50 w-6 h-6 rounded-lg flex items-center justify-center text-[11px] shrink-0 border border-${themeColor}-100/50`}>{item.quantity}</span>
                                                 <Link 
                                                     href={item.is_discovery_set ? '/discovery-sets' : `/product/${(item.product_id || item.id)?.toString().split('-')[0]}`}
-                                                    className="font-normal text-gray-700 underline decoration-gray-300 underline-offset-4 leading-tight pt-0.5 hover:text-gray-900 hover:decoration-gray-500 transition-colors"
+                                                    className="font-normal text-gray-700 leading-tight pt-0.5 hover:text-gray-900 transition-colors"
                                                     target="_blank"
                                                 >
                                                     {item.name || `${item.brand} ${item.model}`}
