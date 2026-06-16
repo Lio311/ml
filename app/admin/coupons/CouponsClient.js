@@ -5,6 +5,7 @@ import { useUser } from "@clerk/nextjs";
 import ObjectTagInput from '@/app/components/ObjectTagInput';
 import { useSearchParams } from 'next/navigation';
 import toast from 'react-hot-toast';
+import { Search } from 'lucide-react';
 
 export default function AdminCouponsPage() {
     // Force rebuild: Fix toast import and API caching issues
@@ -13,6 +14,14 @@ export default function AdminCouponsPage() {
     const ITEMS_PER_PAGE = 7;
     const [loading, setLoading] = useState(true);
     const [showModal, setShowModal] = useState(false);
+    
+    // Filters
+    const [searchTerm, setSearchTerm] = useState('');
+    const [showActiveOnly, setShowActiveOnly] = useState(false);
+
+    useEffect(() => {
+        setPage(1);
+    }, [searchTerm, showActiveOnly]);
 
     const [isSubmitting, setIsSubmitting] = useState(false);
     const { user } = useUser();
@@ -289,7 +298,19 @@ export default function AdminCouponsPage() {
         });
     };
 
-    const totalPages = Math.ceil(coupons.length / ITEMS_PER_PAGE);
+    const filteredCoupons = coupons.filter(coupon => {
+        const matchesSearch = coupon.code.toLowerCase().includes(searchTerm.toLowerCase());
+        
+        let isActiveStatus = true;
+        if (showActiveOnly) {
+            const isExpired = coupon.expires_at ? new Date(coupon.expires_at).getTime() <= new Date().getTime() : false;
+            isActiveStatus = coupon.status === 'active' && !isExpired;
+        }
+
+        return matchesSearch && isActiveStatus;
+    });
+
+    const totalPages = Math.ceil(filteredCoupons.length / ITEMS_PER_PAGE);
 
     return (
         <div className="container mx-auto py-8 text-right" dir="rtl">
@@ -303,6 +324,29 @@ export default function AdminCouponsPage() {
                         </button>
                     )}
                 </div>
+            </div>
+
+            {/* Filters Bar */}
+            <div className="flex flex-col md:flex-row gap-4 mb-6 px-4">
+                <div className="relative flex-1 max-w-md">
+                    <Search className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400" size={18} />
+                    <input
+                        type="text"
+                        placeholder="חפש לפי קוד קופון..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="w-full pl-4 pr-10 py-2 border rounded-xl focus:ring-2 focus:ring-black outline-none"
+                    />
+                </div>
+                <label className="flex items-center gap-2 cursor-pointer border px-4 py-2 rounded-xl hover:bg-gray-50 transition w-fit">
+                    <input
+                        type="checkbox"
+                        checked={showActiveOnly}
+                        onChange={(e) => setShowActiveOnly(e.target.checked)}
+                        className="w-4 h-4 rounded border-gray-300 text-black focus:ring-black"
+                    />
+                    <span className="text-sm font-bold">הצג פעילים בלבד</span>
+                </label>
             </div>
 
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
@@ -324,10 +368,10 @@ export default function AdminCouponsPage() {
                         <tbody className="divide-y">
                             {loading ? (
                                 <tr><td colSpan="7" className="p-8 text-center">טוען...</td></tr>
-                            ) : coupons.length === 0 ? (
-                                <tr><td colSpan="7" className="p-8 text-center text-gray-500">אין קופונים במערכת</td></tr>
+                            ) : filteredCoupons.length === 0 ? (
+                                <tr><td colSpan="7" className="p-8 text-center text-gray-500">לא נמצאו קופונים תואמים</td></tr>
                             ) : (
-                                coupons
+                                filteredCoupons
                                     .slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE)
                                     .map(coupon => (
                                         <CouponRow key={coupon.id} coupon={coupon} onDelete={handleDelete} onEdit={handleEdit} onToggleStatus={handleToggleStatus} canEdit={canEdit} />
@@ -341,10 +385,10 @@ export default function AdminCouponsPage() {
                 <div className="md:hidden divide-y divide-gray-100">
                     {loading ? (
                         <div className="p-8 text-center">טוען...</div>
-                    ) : coupons.length === 0 ? (
-                        <div className="p-8 text-center text-gray-500">אין קופונים במערכת</div>
+                    ) : filteredCoupons.length === 0 ? (
+                        <div className="p-8 text-center text-gray-500">לא נמצאו קופונים תואמים</div>
                     ) : (
-                        coupons
+                        filteredCoupons
                             .slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE)
                             .map(coupon => (
                                 <CouponCard key={coupon.id} coupon={coupon} onDelete={handleDelete} onEdit={handleEdit} onToggleStatus={handleToggleStatus} canEdit={canEdit} />
