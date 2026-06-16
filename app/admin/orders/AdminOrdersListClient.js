@@ -365,7 +365,13 @@ export default function AdminOrdersListClient({
                                         <li key={idx} className="flex justify-between items-start text-[13px]">
                                             <div className="flex gap-2.5 flex-1">
                                                 <span className={`font-black text-${themeColor}-600 bg-${themeColor}-50 w-6 h-6 rounded-lg flex items-center justify-center text-[11px] shrink-0 border border-${themeColor}-100/50`}>{item.quantity}</span>
-                                                <span className="font-bold text-gray-800 leading-tight pt-0.5">{item.name || `${item.brand} ${item.model}`}</span>
+                                                <Link 
+                                                    href={item.is_discovery_set ? '/discovery-sets' : `/product/${(item.product_id || item.id)?.toString().split('-')[0]}`}
+                                                    className="font-bold text-gray-800 leading-tight pt-0.5 hover:text-blue-600 hover:underline transition-colors"
+                                                    target="_blank"
+                                                >
+                                                    {item.name || `${item.brand} ${item.model}`}
+                                                </Link>
                                             </div>
                                             <span className="text-gray-400 font-black text-[10px] uppercase tracking-tighter pt-1 shrink-0 bg-white px-2 py-0.5 rounded-lg border border-gray-100" dir="ltr">
                                                 {item.is_discovery_set ? formatDiscoverySize(item.volume_label) : (String(item.size).includes('ml') ? item.size : `${item.size}ml`)}

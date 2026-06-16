@@ -182,6 +182,12 @@ export default function Customer360Modal({ email, onClose }) {
                                                                     );
                                                                 })}
                                                             </div>
+                                                            {order.coupon_code && (
+                                                                <div className="mt-2 flex items-center gap-2 py-1 px-2.5 bg-black/70 text-white rounded-lg border border-white/10 shadow-sm w-fit transition-all hover:bg-black/80">
+                                                                    <span className="text-[8px] font-black uppercase tracking-widest text-white/60">קוד קופון:</span>
+                                                                    <span className="font-black tracking-widest uppercase text-[10px]">{order.coupon_code}</span>
+                                                                </div>
+                                                            )}
                                                         </td>
                                                         <td className="p-4 text-left font-black text-gray-900" dir="ltr">
                                                             ₪ {parseFloat(order.total_amount).toLocaleString()}
