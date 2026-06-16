@@ -45,7 +45,8 @@ import {
     Edit3,
     FileSearch,
     Activity,
-    AlertOctagon
+    AlertOctagon,
+    Crown
 } from "lucide-react";
 import { useBrand } from "../../context/BrandContext";
 
@@ -92,7 +93,7 @@ const navGroups = [
             { href: "/admin/subscribers", label: "מנויי דיוור", icon: Mail, roles: ['admin', 'deputy'] },
             { href: "/admin/lottery", label: "הגרלות", icon: Dices, roles: ['admin', 'deputy'] },
             { href: "/admin/reviews", label: "ביקורות", icon: Star, roles: ['admin', 'deputy'] },
-            { href: "/admin/monthly-recommendation", label: "המלצת החודש", icon: Cpu, roles: ['admin', 'deputy'] },
+            { href: "/admin/monthly-recommendation", label: "המלצת החודש", icon: Crown, roles: ['admin', 'deputy'] },
             { href: "/admin/recommendations", label: "המלצות", icon: Cpu, roles: ['admin', 'deputy'] },
             { href: "/admin/analytics", label: "אנליטיקה", icon: BarChart3, roles: ['admin'] },
             { href: "/admin/search-analytics", label: "חיפושים", icon: Search, roles: ['admin'] },
