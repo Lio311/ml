@@ -529,7 +529,7 @@ export default function AdminOrdersListClient({
     return (
         <div className="pb-8 relative">
             {/* Results per page selector - placed under the bell area */}
-            <div className="absolute left-0 top-0 md:top-0 flex items-center gap-2 z-10 translate-y-9 md:translate-y-14">
+            <div className="relative md:absolute left-0 top-0 flex items-center justify-end md:justify-start gap-2 z-10 md:translate-y-14 mb-6 md:mb-0 w-full md:w-auto">
                 <span className="text-[10px] font-black uppercase text-gray-400 tracking-widest">הצג:</span>
                 <div className="flex bg-white/80 backdrop-blur-sm border border-gray-200 rounded-lg p-0.5 shadow-sm">
                     {[10, 50, 100, 'all'].map((limit) => (
