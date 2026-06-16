@@ -124,6 +124,7 @@ export default function AdminSidebar({ role = 'customer' }) {
     const brand = useBrand();
     const [unreadCount, setUnreadCount] = useState(0);
     const [pendingOrdersCount, setPendingOrdersCount] = useState(0);
+    const [monthlyRecNeedsAction, setMonthlyRecNeedsAction] = useState(false);
     const [openGroups, setOpenGroups] = useState({});
 
     useEffect(() => {
@@ -134,6 +135,7 @@ export default function AdminSidebar({ role = 'customer' }) {
                     const data = await res.json();
                     setUnreadCount(data.unreadInbox || 0);
                     setPendingOrdersCount(data.pendingOrders || 0);
+                    setMonthlyRecNeedsAction(data.monthlyRecNeedsAction || false);
                 }
             } catch (err) {
                 console.error("Sidebar fetch error:", err);
@@ -195,6 +197,7 @@ export default function AdminSidebar({ role = 'customer' }) {
                         const groupNotifications = visibleItems.reduce((acc, item) => {
                             if (item.href === '/admin/orders') return acc + pendingOrdersCount;
                             if (item.href.includes('inbox')) return acc + unreadCount;
+                            if (item.href === '/admin/monthly-recommendation' && monthlyRecNeedsAction) return acc + 1;
                             return acc;
                         }, 0);
 
@@ -251,6 +254,11 @@ export default function AdminSidebar({ role = 'customer' }) {
                                                     {item.href.includes('inbox') && unreadCount > 0 && (
                                                         <span className="flex h-5 min-w-[20px] items-center justify-center rounded-full bg-red-500 px-1.5 text-[10px] font-black text-white shadow-[0_0_10px_rgba(239,68,68,0.4)]">
                                                             {unreadCount}
+                                                        </span>
+                                                    )}
+                                                    {item.href === '/admin/monthly-recommendation' && monthlyRecNeedsAction && (
+                                                        <span className="flex h-5 w-5 items-center justify-center rounded-full bg-orange-500 text-white shadow-[0_0_10px_rgba(249,115,22,0.4)]">
+                                                            <AlertOctagon size={12} strokeWidth={3} />
                                                         </span>
                                                     )}
                                                 </div>

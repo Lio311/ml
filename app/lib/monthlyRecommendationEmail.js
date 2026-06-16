@@ -5,7 +5,7 @@ const getAbsoluteImageUrl = (url) => {
     return `${baseUrl}${url.startsWith('/') ? '' : '/'}${url}`;
 };
 
-const monthsHe = [
+export const monthsHe = [
     "ינואר", "פברואר", "מרץ", "אפריל", "מאי", "יוני",
     "יולי", "אוגוסט", "ספטמבר", "אוקטובר", "נובמבר", "דצמבר"
 ];
@@ -31,10 +31,8 @@ export const getManagerReminderTemplate = (monthStr) => {
     `;
 };
 
-export const getMonthlyRecommendationTemplate = async (products, couponCode, monthNum) => {
-    const monthName = monthsHe[monthNum - 1];
-    
-    const productsHtml = products.map(p => `
+export const generateProductsGrid = (products) => {
+    return products.map(p => `
         <div style="width: 48%; margin-bottom: 20px; background-color: #ffffff; border-radius: 12px; padding: 15px; box-sizing: border-box; text-align: center; border: 1px solid #f0f0f0;">
             <a href="https://www.ml-tlv.com/product/${p.id}" style="text-decoration: none; color: inherit;">
                 <img src="${getAbsoluteImageUrl(p.image_url)}" alt="${p.name}" style="width: 100%; max-width: 150px; height: auto; margin-bottom: 15px; object-fit: contain;">
@@ -47,6 +45,11 @@ export const getMonthlyRecommendationTemplate = async (products, couponCode, mon
             </a>
         </div>
     `).join('');
+};
+
+export const getMonthlyRecommendationTemplate = async (products, couponCode, monthNum) => {
+    const monthName = monthsHe[monthNum - 1];
+    const productsHtml = generateProductsGrid(products);
 
     return `
         <div dir="rtl" style="font-family: 'Inter', 'Open Sans Hebrew', Arial, sans-serif; background-color: #fafafa; padding: 40px 0;">

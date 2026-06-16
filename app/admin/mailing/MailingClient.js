@@ -108,7 +108,7 @@ export default function MailingClient() {
         if (!slug) return 'general';
         if (['order_confirmation', 'status_update'].includes(slug)) return 'orders';
         if (['welcome', 'review_request'].includes(slug)) return 'marketing';
-        if (['cart_recovery', 'nurture_10_days', 'nurture_25_days', 'recommendations'].includes(slug)) return 'retention';
+        if (['cart_recovery', 'nurture_10_days', 'nurture_25_days', 'recommendations', 'monthly_recommendation'].includes(slug)) return 'retention';
         if (['educational', 'discovery_launch'].includes(slug)) return 'educational';
         if (['back_in_stock', 'new_product'].includes(slug)) return 'inventory';
         return 'general';

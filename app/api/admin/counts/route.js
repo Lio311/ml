@@ -17,7 +17,11 @@ export async function GET() {
 
         const client = await pool.connect();
         try {
-            const [ordersRes, inboxRes, recsRes] = await Promise.all([
+            const today = new Date();
+            const currentMonth = today.getMonth() + 1;
+            const currentYear = today.getFullYear();
+
+            const [ordersRes, inboxRes, recsRes, monthlyRecRes] = await Promise.all([
                 // 1. Pending and Processing orders
                 client.query("SELECT COUNT(*) FROM orders WHERE catalog_id IS NULL AND (status = 'pending' OR status = 'processing')"),
                 
@@ -32,13 +36,19 @@ export async function GET() {
                 `, [user.id]),
 
                 // 3. Pending recommendations
-                client.query("SELECT count(*) as count FROM pending_recommendation_emails WHERE status = 'pending'")
+                client.query("SELECT count(*) as count FROM pending_recommendation_emails WHERE status = 'pending'"),
+
+                // 4. Monthly recommendation status
+                client.query("SELECT status FROM monthly_recommendations WHERE month = $1 AND year = $2", [currentMonth, currentYear])
             ]);
+
+            const monthlyRecStatus = monthlyRecRes.rows.length > 0 ? monthlyRecRes.rows[0].status : 'pending';
 
             return NextResponse.json({
                 pendingOrders: parseInt(ordersRes.rows[0].count || 0),
                 unreadInbox: parseInt(inboxRes.rows[0].total_unread || 0),
-                pendingRecommendations: parseInt(recsRes.rows[0].count || 0)
+                pendingRecommendations: parseInt(recsRes.rows[0].count || 0),
+                monthlyRecNeedsAction: monthlyRecStatus !== 'selected'
             });
         } finally {
             client.release();

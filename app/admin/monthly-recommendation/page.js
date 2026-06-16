@@ -156,7 +156,7 @@ export default function MonthlyRecommendationAdmin() {
                                         >
                                             <div className="aspect-square relative bg-gray-50">
                                                 {perfume.image_url ? (
-                                                    <Image src={perfume.image_url} alt={perfume.name} fill className="object-contain p-2" />
+                                                    <Image src={perfume.image_url} alt={perfume.name} fill className="object-contain p-2" unoptimized />
                                                 ) : (
                                                     <div className="w-full h-full flex items-center justify-center text-gray-300"><Image size={32} /></div>
                                                 )}
@@ -185,7 +185,7 @@ export default function MonthlyRecommendationAdmin() {
                 <div className="lg:col-span-1">
                     <div className="bg-[#050505] text-white p-6 rounded-2xl shadow-xl sticky top-24">
                         <h2 className="text-xl font-black mb-2 tracking-tight">הבחירה שלך</h2>
-                        <p className="text-gray-400 text-sm mb-6">{selectedPerfumes.length} / 4 נבחרו</p>
+                        <p className="text-gray-400 text-sm mb-6" dir="rtl">נבחרו {selectedPerfumes.length} מתוך 4</p>
 
                         <div className="space-y-3 mb-8">
                             {selectedPerfumes.length === 0 ? (
@@ -196,7 +196,7 @@ export default function MonthlyRecommendationAdmin() {
                                 selectedPerfumes.map((perfume, idx) => (
                                     <div key={perfume.id} className="flex items-center gap-4 bg-white/5 p-3 rounded-xl hover:bg-white/10 transition-colors group">
                                         <div className="w-12 h-12 relative bg-white rounded-lg flex-shrink-0">
-                                            {perfume.image_url && <Image src={perfume.image_url} alt={perfume.name} fill className="object-contain p-1" />}
+                                            {perfume.image_url && <Image src={perfume.image_url} alt={perfume.name} fill className="object-contain p-1" unoptimized />}
                                         </div>
                                         <div className="flex-1 min-w-0">
                                             <p className="text-xs text-blue-400 font-medium mb-0.5 line-clamp-1">{perfume.brand}</p>
@@ -219,16 +219,16 @@ export default function MonthlyRecommendationAdmin() {
                                 disabled={saving}
                                 className="w-full py-3 px-4 bg-white/10 hover:bg-white/20 text-white font-bold rounded-xl transition-all flex items-center justify-center gap-2"
                             >
-                                <Save size={18} />
                                 שמור כטיוטה
+                                <Save size={18} />
                             </button>
                             <button 
                                 onClick={() => handleSave('save_and_send')}
                                 disabled={saving || selectedPerfumes.length === 0}
                                 className="w-full py-3 px-4 bg-blue-500 hover:bg-blue-600 text-white font-bold rounded-xl transition-all flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(59,130,246,0.3)] disabled:opacity-50 disabled:cursor-not-allowed"
                             >
-                                <Send size={18} />
                                 אשר בחירה סופית
+                                <Send size={18} />
                             </button>
                             <p className="text-[11px] text-gray-500 text-center mt-4">
                                 לחיצה על אישור תקבע את הבשמים אלו. המייל יישלח אוטומטית למנויים בתאריך 30 לחודש (או 28 בפברואר).

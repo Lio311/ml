@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import pool from '../../../lib/db';
 import { sendEmail } from '../../../lib/email';
-import { getMonthlyRecommendationTemplate, getManagerReminderTemplate } from '../../../lib/monthlyRecommendationEmail';
+import { generateProductsGrid, monthsHe } from '../../../lib/monthlyRecommendationEmail';
 
 export const dynamic = 'force-dynamic';
 
@@ -34,13 +34,19 @@ export async function GET(req) {
 
         // 2. Manager Reminders (15, 20, 25)
         if ((day === 15 || day === 20 || day === 25) && record.status === 'pending') {
-            const html = getManagerReminderTemplate(currentMonth);
-            await sendEmail(
-                'lior31197@gmail.com',
-                `תזכורת: בחירת בשמים להמלצת החודש (${monthStr}/${year})`,
-                html,
-                'system'
-            );
+            const templateRes = await pool.query("SELECT * FROM email_templates WHERE slug = 'admin_monthly_recommendation_reminder'");
+            if (templateRes.rows.length > 0) {
+                const template = templateRes.rows[0];
+                const html = template.content_html.replace(/\{\{month\}\}/g, monthsHe[monthNum - 1]);
+                const subject = template.subject.replace(/\{\{month\}\}/g, monthsHe[monthNum - 1]);
+                
+                await sendEmail(
+                    'lior31197@gmail.com',
+                    subject,
+                    html,
+                    'system'
+                );
+            }
             return NextResponse.json({ message: 'Reminder sent to manager' });
         }
 
@@ -78,7 +84,19 @@ export async function GET(req) {
                         limitations = EXCLUDED.limitations
                 `, [couponCode, 10, JSON.stringify(limitations)]);
                 
-                const html = await getMonthlyRecommendationTemplate(products, couponCode, monthNum);
+                const templateRes = await pool.query("SELECT * FROM email_templates WHERE slug = 'monthly_recommendation'");
+                let html = '';
+                let subject = 'המלצת החודש של מנהל האתר';
+                if (templateRes.rows.length > 0) {
+                    const template = templateRes.rows[0];
+                    html = template.content_html
+                        .replace(/\{\{month\}\}/g, monthsHe[monthNum - 1])
+                        .replace(/\{\{productsHtml\}\}/g, generateProductsGrid(products))
+                        .replace(/\{\{couponCode\}\}/g, couponCode);
+                    subject = template.subject.replace(/\{\{month\}\}/g, monthsHe[monthNum - 1]);
+                } else {
+                    return NextResponse.json({ error: 'Email template not found' }, { status: 500 });
+                }
                 
                 // Get all subscribers
                 const subRes = await pool.query('SELECT email FROM subscribers WHERE status = $1', ['active']);
@@ -87,7 +105,7 @@ export async function GET(req) {
                 if (subscriberEmails.length > 0) {
                     await sendEmail(
                         subscriberEmails,
-                        'המלצת החודש של מנהל האתר',
+                        subject,
                         html,
                         'recommendations'
                     );
