@@ -16,6 +16,7 @@ import { AnimatePresence } from "framer-motion";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useRef } from "react";
 import Customer360Modal from "./Customer360Modal";
+import { useInView } from "react-intersection-observer";
 
 const formatDiscoverySize = (label) => {
     if (!label) return 'מארז דוגמיות';
@@ -65,6 +66,30 @@ export default function AdminOrdersListClient({
     const [editingOrder, setEditingOrder] = useState(null);
     const [viewingCustomerEmail, setViewingCustomerEmail] = useState(null);
     
+    // Auto-load more logic (infinite scroll) for mobile
+    const [displayedOrders, setDisplayedOrders] = useState(orders);
+    const { ref: loadMoreRef, inView } = useInView({ threshold: 0.1 });
+
+    useEffect(() => {
+        if (currentPage === 1) {
+            setDisplayedOrders(orders);
+        } else {
+            setDisplayedOrders(prev => {
+                const prevIds = new Set(prev.map(o => o.id));
+                const newOrders = orders.filter(o => !prevIds.has(o.id));
+                return [...prev, ...newOrders];
+            });
+        }
+    }, [orders, currentPage]);
+
+    useEffect(() => {
+        if (inView && currentPage < totalPages && !isApplyingBatch) {
+            const params = new URLSearchParams(searchParams);
+            params.set('page', (currentPage + 1).toString());
+            router.push(`${pathname}?${params.toString()}`, { scroll: false });
+        }
+    }, [inView, currentPage, totalPages, pathname, router, searchParams, isApplyingBatch]);
+
     // Search state
     const [searchTerm, setSearchTerm] = useState(currentSearch || '');
     const isInitialMount = useRef(true);
@@ -342,7 +367,7 @@ export default function AdminOrdersListClient({
 
                 {/* Mobile View - Card Layout */}
                 <div className="md:hidden divide-y divide-gray-100/50">
-                    {orders.map((order) => (
+                    {displayedOrders.map((order) => (
                         <div key={order.id} className={`p-5 hover:bg-${themeColor}-50/30 transition-colors ${selectedOrderIds.includes(order.id) ? `bg-${themeColor}-50/30` : 'bg-white'}`}>
                             <div className="flex justify-between items-start mb-4">
                                 <div className="space-y-1">
@@ -478,11 +503,18 @@ export default function AdminOrdersListClient({
                             )}
                         </div>
                     ))}
+                    
+                    {currentPage < totalPages && (
+                        <div ref={loadMoreRef} className="py-8 flex justify-center items-center">
+                            <div className="w-6 h-6 border-2 border-gray-300 border-t-black rounded-full animate-spin"></div>
+                            <span className="mr-3 text-xs font-bold text-gray-500 uppercase tracking-widest">טוען עוד הזמנות...</span>
+                        </div>
+                    )}
                 </div>
 
                 {/* Pagination Controls */}
                 {totalPages > 1 && (
-                    <div className={`flex justify-center items-center gap-4 py-6 bg-gray-50/50 border-t border-${themeColor}-50`}>
+                    <div className={`hidden md:flex justify-center items-center gap-4 py-6 bg-gray-50/50 border-t border-${themeColor}-50`}>
                         <Link
                             href={`/admin/orders?page=${Math.max(1, currentPage - 1)}&limit=${currentLimit === 5000 ? 'all' : currentLimit}&status=${currentStatus}`}
                             className={`w-10 h-10 flex items-center justify-center border rounded-xl hover:bg-gray-100 transition-all ${currentPage === 1 ? 'opacity-30 pointer-events-none' : 'shadow-sm'}`}
@@ -529,7 +561,7 @@ export default function AdminOrdersListClient({
     return (
         <div className="pb-8 relative">
             {/* Results per page selector - placed under the bell area */}
-            <div className="relative md:absolute left-0 top-0 flex items-center justify-end md:justify-start gap-2 z-10 md:translate-y-14 mb-6 md:mb-0 w-full md:w-auto">
+            <div className="hidden relative md:absolute left-0 top-0 md:flex items-center justify-end md:justify-start gap-2 z-10 md:translate-y-14 mb-6 md:mb-0 w-full md:w-auto">
                 <span className="text-[10px] font-black uppercase text-gray-400 tracking-widest">הצג:</span>
                 <div className="flex bg-white/80 backdrop-blur-sm border border-gray-200 rounded-lg p-0.5 shadow-sm">
                     {[10, 50, 100, 'all'].map((limit) => (
