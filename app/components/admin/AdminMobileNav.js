@@ -48,36 +48,91 @@ import {
     FileSearch,
     Activity,
     AlertOctagon,
-    Calendar
+    Calendar,
+    Crown
 } from "lucide-react";
 import { SignOutButton } from "@clerk/nextjs";
 import { useBrand } from "../../context/BrandContext";
 
 const navGroups = [
     {
-        title: "פעילות",
+        title: "מכירות וניהול שוטף",
         items: [
             { href: "/admin", label: "דשבורד", icon: LayoutDashboard, roles: ['admin', 'deputy'] },
-            { href: "/admin/automations", label: "אוטומציות", icon: Zap, roles: ['admin'] },
-            { href: "/admin/inbox", label: "תיבת דואר", icon: MessageSquare, roles: ['admin', 'deputy'] },
             { href: "/admin/orders", label: "הזמנות", icon: Package, roles: ['admin', 'deputy', 'warehouse'] },
             { href: "/admin/phone-order", label: "הזמנה טלפונית", icon: Phone, roles: ['admin', 'deputy'] },
-            { href: "/admin/users", label: "משתמשים", icon: Users, roles: ['admin', 'deputy'] },
+            { href: "/admin/expenses", label: "הוצאות", icon: Wallet, roles: ['admin', 'deputy'] },
         ]
     },
     {
-        title: "מלאי",
+        title: "מלאי ורכש",
         items: [
             { href: "/admin/products", label: "מוצרים", icon: FlaskConical, roles: ['admin', 'deputy'] },
+            { href: "/admin/brands", label: "מותגים", icon: Tag, roles: ['admin', 'deputy'] },
+            { href: "/admin/inventory", label: "בקבוקונים", icon: TestTube, roles: ['admin', 'deputy'] },
             { href: "/admin/discovery-sets", label: "דיסקברי ודוגמיות", icon: Package, roles: ['admin', 'deputy'] },
             { href: "/admin/procurement", label: "רכש", icon: TrendingUp, roles: ['admin', 'deputy'] },
-            { href: "/admin/back-in-stock", label: "חזרה למלאי", icon: Bell, roles: ['admin', 'deputy'] },
-            { href: "/admin/inventory", label: "בקבוקונים", icon: TestTube, roles: ['admin', 'deputy'] },
-            { href: "/admin/inventory/pricing", label: "תמחור חכם", icon: DollarSign, roles: ['admin', 'deputy'] },
             { href: "/admin/inventory-heatmap", label: "מפת חום", icon: Thermometer, roles: ['admin', 'deputy'] },
-            { href: "/admin/brands", label: "מותגים", icon: Tag, roles: ['admin', 'deputy'] },
+        ]
+    },
+    {
+        title: "לקוחות ושירות",
+        items: [
+            { href: "/admin/inbox", label: "תיבת דואר", icon: MessageSquare, roles: ['admin', 'deputy'] },
+            { href: "/admin/users", label: "משתמשים", icon: Users, roles: ['admin', 'deputy'] },
             { href: "/admin/requests", label: "בקשות", icon: Inbox, roles: ['admin', 'deputy'] },
-            { href: "/admin/expenses", label: "הוצאות", icon: Wallet, roles: ['admin', 'deputy'] },
+            { href: "/admin/back-in-stock", label: "חזרה למלאי", icon: Bell, roles: ['admin', 'deputy'] },
+        ]
+    },
+    {
+        title: "דאטה ואנליטיקה",
+        items: [
+            { href: "/admin/analytics", label: "אנליטיקה", icon: BarChart3, roles: ['admin'] },
+            { href: "/admin/funnel", label: "משפך המרה", icon: Target, roles: ['admin'] },
+            { href: "/admin/search-analytics", label: "חיפושים", icon: Search, roles: ['admin'] },
+        ]
+    },
+    {
+        title: "שיווק ומבצעים",
+        items: [
+            { href: "/admin/mailing", label: "דיוור", icon: Send, roles: ['admin', 'deputy'] },
+            { href: "/admin/subscribers", label: "מנויי דיוור", icon: Mail, roles: ['admin', 'deputy'] },
+            { href: "/admin/coupons", label: "קופונים", icon: Ticket, roles: ['admin', 'deputy'] },
+            { href: "/admin/lottery", label: "הגרלות", icon: Dices, roles: ['admin', 'deputy'] },
+            { href: "/admin/influencers", label: "משפיענים", icon: Camera, roles: ['admin', 'deputy'] },
+            { href: "/admin/inventory/pricing", label: "תמחור חכם", icon: DollarSign, roles: ['admin', 'deputy'] },
+        ]
+    },
+    {
+        title: "תוכן, ביקורות והמלצות",
+        items: [
+            { href: "/admin/reviews", label: "ביקורות", icon: Star, roles: ['admin', 'deputy'] },
+            { href: "/admin/recommendations", label: "המלצות", icon: Cpu, roles: ['admin', 'deputy'] },
+            { href: "/admin/monthly-recommendation", label: "המלצת החודש", icon: Crown, roles: ['admin', 'deputy'] },
+            { href: "/admin/desc-reviews", label: "סקירת תיאורים", icon: FileSearch, roles: ['admin'] },
+            { href: "/admin/dictionary", label: "מילון", icon: Book, roles: ['admin', 'deputy'] },
+            { href: "/admin/seo-generator", label: "בוט תוכן (SEO)", icon: Edit3, roles: ['admin'] },
+        ]
+    },
+    {
+        title: "עיצוב ונראות האתר",
+        items: [
+            { href: "/admin/menu", label: "תפריט", icon: MapIcon, roles: ['admin', 'deputy'] },
+            { href: "/admin/banner", label: "באנר ראשי", icon: ImageIcon, roles: ['admin', 'deputy'] },
+            { href: "/admin/announcement-bar", label: "פס עליון", icon: Megaphone, roles: ['admin', 'deputy'] },
+            { href: "/admin/popups", label: "פופאפ", icon: MessageCircle, roles: ['admin', 'deputy'] },
+            { href: "/admin/logo", label: "לוגו", icon: Bookmark, roles: ['admin', 'deputy'] },
+            { href: "/admin/brand", label: "שם מסחרי", icon: Type, roles: ['admin'] },
+        ]
+    },
+    {
+        title: "מערכת ובקרה",
+        items: [
+            { href: "/admin/automations", label: "אוטומציות", icon: Zap, roles: ['admin'] },
+            { href: "/admin/system-status", label: "סטטוס מערכת", icon: Activity, roles: ['admin'] },
+            { href: "/admin/error-logs", label: "ניטור שגיאות", icon: AlertOctagon, roles: ['admin'] },
+            { href: "/admin/audit-logs", label: "יומן פעולות", icon: History, roles: ['admin'] },
+            { href: "/admin/email-logs", label: "יומן מיילים", icon: Mail, roles: ['admin'] },
         ]
     },
     {
@@ -85,40 +140,6 @@ const navGroups = [
         items: [
             { href: "/admin/catalogs", label: "קטלוגים", icon: Store, roles: ['admin', 'deputy'] },
             { href: "/admin/catalog-orders", label: "הזמנות קטלוגים", icon: ClipboardList, roles: ['admin', 'deputy'] },
-        ]
-    },
-    {
-        title: "שיווק",
-        items: [
-            { href: "/admin/coupons", label: "קופונים", icon: Ticket, roles: ['admin', 'deputy'] },
-            { href: "/admin/influencers", label: "משפיענים", icon: Camera, roles: ['admin', 'deputy'] },
-            { href: "/admin/mailing", label: "דיוור", icon: Send, roles: ['admin', 'deputy'] },
-            { href: "/admin/subscribers", label: "מנויי דיוור", icon: Mail, roles: ['admin', 'deputy'] },
-            { href: "/admin/lottery", label: "הגרלות", icon: Dices, roles: ['admin', 'deputy'] },
-            { href: "/admin/reviews", label: "ביקורות", icon: Star, roles: ['admin', 'deputy'] },
-            { href: "/admin/monthly-recommendation", label: "המלצת החודש", icon: Calendar, roles: ['admin', 'deputy'] },
-            { href: "/admin/recommendations", label: "המלצות", icon: Cpu, roles: ['admin', 'deputy'] },
-            { href: "/admin/analytics", label: "אנליטיקה", icon: BarChart3, roles: ['admin'] },
-            { href: "/admin/search-analytics", label: "חיפושים", icon: Search, roles: ['admin'] },
-            { href: "/admin/funnel", label: "משפך המרה", icon: Target, roles: ['admin'] },
-            { href: "/admin/seo-generator", label: "בוט תוכן (SEO)", icon: Edit3, roles: ['admin'] },
-            { href: "/admin/desc-reviews", label: "סקירת תיאורים", icon: FileSearch, roles: ['admin'] },
-        ]
-    },
-    {
-        title: "מערכת",
-        items: [
-            { href: "/admin/dictionary", label: "מילון", icon: Book, roles: ['admin', 'deputy'] },
-            { href: "/admin/menu", label: "תפריט", icon: MapIcon, roles: ['admin', 'deputy'] },
-            { href: "/admin/banner", label: "באנר ראשי", icon: ImageIcon, roles: ['admin', 'deputy'] },
-            { href: "/admin/logo", label: "לוגו", icon: Bookmark, roles: ['admin', 'deputy'] },
-            { href: "/admin/popups", label: "פופאפ", icon: MessageCircle, roles: ['admin', 'deputy'] },
-            { href: "/admin/announcement-bar", label: "פס עליון", icon: Megaphone, roles: ['admin', 'deputy'] },
-            { href: "/admin/brand", label: "שם מסחרי", icon: Type, roles: ['admin'] },
-            { href: "/admin/audit-logs", label: "יומן פעולות", icon: History, roles: ['admin'] },
-            { href: "/admin/email-logs", label: "יומן מיילים", icon: Mail, roles: ['admin'] },
-            { href: "/admin/system-status", label: "סטטוס מערכת", icon: Activity, roles: ['admin'] },
-            { href: "/admin/error-logs", label: "ניטור שגיאות", icon: AlertOctagon, roles: ['admin'] },
         ]
     }
 ];
