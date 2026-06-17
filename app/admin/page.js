@@ -445,7 +445,7 @@ export default async function AdminDashboard({ searchParams }) {
                 if (item.brand) {
                     brandStatsYearly[item.brand] = (brandStatsYearly[item.brand] || 0) + itemNet;
                 }
-                if (item.size) {
+                if (item.size && item.is_discovery_set !== true && item.is_discovery_set !== 'true') {
                     const sizeKey = item.size.toString();
                     sizeStatsYearly[sizeKey] = (sizeStatsYearly[sizeKey] || 0) + itemNet;
                 }
