@@ -287,7 +287,7 @@ export default async function AdminDashboard({ searchParams }) {
                 ORDER BY day
             `, [prevMonth, prevYear]),
             safeQuery(`
-                SELECT id, code, discount_percent, email, status, expires_at, created_at FROM coupons 
+                SELECT id, code, discount_percent, email, limitations, status, expires_at, created_at FROM coupons 
                 WHERE status = 'active' 
                 AND (expires_at IS NULL OR expires_at > NOW())
                 ORDER BY created_at DESC 
@@ -899,7 +899,7 @@ export default async function AdminDashboard({ searchParams }) {
                                     <tr key={coupon.id} className="hover:bg-gray-50/80 transition-colors">
                                         <td className="p-4 font-mono font-bold text-blue-600 text-center text-sm">{coupon.code}</td>
                                         <td className="p-4 text-center font-black text-gray-900">{coupon.discount_percent}%</td>
-                                        <td className="p-4 text-xs text-center text-gray-500 truncate max-w-[150px]">{coupon.email || '-'}</td>
+                                        <td className="p-4 text-xs text-center text-gray-500 truncate max-w-[150px]">{coupon.limitations?.allowed_users?.[0] || coupon.email || '-'}</td>
                                         <td className="p-4 text-center">
                                             <span className={`px-2 py-1 rounded-lg text-[9px] font-bold uppercase tracking-wider ${displayStatus === 'active' ? 'bg-green-100 text-green-800' :
                                                 displayStatus === 'redeemed' ? 'bg-gray-800 text-white' :
