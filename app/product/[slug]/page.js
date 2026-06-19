@@ -315,6 +315,17 @@ export default async function ProductPage(props) {
     const availability = inStock ? "https://schema.org/InStock" : "https://schema.org/OutOfStock";
     const productUrl = `${baseUrl}/product/${product.slug || product.id}`;
 
+    let seoImageUrl = product.image_url;
+    if (seoImageUrl) {
+        if (!seoImageUrl.startsWith('http')) {
+            seoImageUrl = `${baseUrl}${seoImageUrl}`;
+        }
+        const cleanUrl = seoImageUrl.replace(/^https?:\/\//, '');
+        seoImageUrl = `https://images.weserv.nl/?url=${encodeURIComponent(cleanUrl)}&w=800&q=80&bg=white&output=jpg`;
+    } else {
+        seoImageUrl = `${baseUrl}/logo_v3.png`;
+    }
+
     const buildOffer = (size, price) => ({
         "@type": "Offer",
         "name": `${localizedName_val} - ${size}ml`,
@@ -333,7 +344,7 @@ export default async function ProductPage(props) {
         "@context": "https://schema.org",
         "@type": "Product",
         "name": localizedName_val,
-        "image": product.image_url,
+        "image": seoImageUrl,
         "description": localizedDesc_val || `${localizedName_val} - Original Niche Perfume Sample | ml-tlv`,
         "sku": `ML${product.id}`,
         "mpn": `ML${product.id}`,
