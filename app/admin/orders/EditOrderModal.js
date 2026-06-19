@@ -45,11 +45,19 @@ export default function EditOrderModal({ order, onClose, onSuccess }) {
                 name: item.name || `${item.brand} ${item.model}`,
                 brand: item.brand,
                 image: item.image || item.image_url,
-                size: parseInt(item.size),
+                size: parseInt(item.size) || item.size, // Handle 'set' or other non-numeric sizes gracefully if they exist
                 price: item.price,
                 quantity: item.quantity || 1,
                 itemKey: `${item.id}-${item.size}`,
-                stock: 9999 // We'll re-check stock during edit if possible, but for initial load we trust the order
+                stock: 9999, // We'll re-check stock during edit if possible, but for initial load we trust the order
+                // Keep original product pricing properties if they exist in the snapshot to support size changing
+                price_2ml: item.price_2ml,
+                price_5ml: item.price_5ml,
+                price_10ml: item.price_10ml,
+                single_price: item.single_price,
+                discount_percentage: item.discount_percentage,
+                discount_sizes: item.discount_sizes,
+                discount_end_date: item.discount_end_date,
             }));
             setCart(initialCart);
             setDeliveryMethod(order.delivery_method || 'mail');
@@ -67,6 +75,20 @@ export default function EditOrderModal({ order, onClose, onSuccess }) {
             }
         }
     }, [order]);
+
+    // -- Dropdown State --
+    const [editingSizeKey, setEditingSizeKey] = useState(null);
+    const dropdownRef = useRef(null);
+
+    useEffect(() => {
+        function handleClickOutside(event) {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+                setEditingSizeKey(null);
+            }
+        }
+        if (editingSizeKey) document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, [editingSizeKey]);
 
     // Product Search logic (copied from PhoneOrderClient)
     useEffect(() => {
@@ -162,7 +184,14 @@ export default function EditOrderModal({ order, onClose, onSuccess }) {
             price: discountedPrice,
             quantity: 1,
             itemKey: `${product.id}-${size}`,
-            stock: product.stock
+            stock: product.stock,
+            price_2ml: product.price_2ml,
+            price_5ml: product.price_5ml,
+            price_10ml: product.price_10ml,
+            single_price: product.single_price,
+            discount_percentage: product.discount_percentage,
+            discount_sizes: product.discount_sizes,
+            discount_end_date: product.discount_end_date,
         };
 
         setCart(prev => {
@@ -177,6 +206,33 @@ export default function EditOrderModal({ order, onClose, onSuccess }) {
         setProductResults([]);
         setShowProductModal(null);
         toast.success(`נוסף: ${product.name} (${size}ml)`);
+    };
+
+    const handleUpdateItemSize = (itemKey, newSize) => {
+        setEditingSizeKey(null);
+        setCart(prev => {
+            const item = prev.find(i => i.itemKey === itemKey);
+            if (!item) return prev;
+            if (String(item.size) === String(newSize)) return prev;
+
+            const discountedPrice = getDiscountedPrice(item, newSize);
+            const newCartItem = {
+                ...item,
+                size: newSize,
+                price: discountedPrice,
+                itemKey: `${item.id}-${newSize}`
+            };
+
+            const existingWithNewSize = prev.find(i => i.itemKey === newCartItem.itemKey);
+            if (existingWithNewSize) {
+                // merge into existing
+                return prev.map(i => i.itemKey === newCartItem.itemKey ? { ...i, quantity: i.quantity + item.quantity } : i)
+                           .filter(i => i.itemKey !== itemKey);
+            } else {
+                // update in place
+                return prev.map(i => i.itemKey === itemKey ? newCartItem : i);
+            }
+        });
     };
 
     const updateQuantity = (itemKey, delta) => {
@@ -324,7 +380,40 @@ export default function EditOrderModal({ order, onClose, onSuccess }) {
                                         <div className="flex-1 min-w-0">
                                             <div className="font-bold text-gray-900 truncate">{item.name}</div>
                                             <div className="flex items-center gap-3 mt-1">
-                                                <span className="text-xs px-2 py-0.5 bg-blue-50 text-blue-600 rounded-full font-bold">{item.size}ml</span>
+                                                {['2', '5', '10'].some(sz => item[`price_${sz}ml`]) ? (
+                                                    <div className="relative inline-block" ref={editingSizeKey === item.itemKey ? dropdownRef : null}>
+                                                        <button 
+                                                            onClick={(e) => { e.preventDefault(); setEditingSizeKey(editingSizeKey === item.itemKey ? null : item.itemKey); }}
+                                                            className="bg-blue-50 text-blue-600 px-3 py-1 rounded-full text-xs font-bold hover:bg-blue-100 transition-colors flex items-center gap-1"
+                                                        >
+                                                            {String(item.size).replace(/ml$/i, '')}ml
+                                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className={`w-3 h-3 transition-transform ${editingSizeKey === item.itemKey ? 'rotate-180' : ''}`}>
+                                                              <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                                                            </svg>
+                                                        </button>
+                                                        
+                                                        {editingSizeKey === item.itemKey && (
+                                                            <div className="absolute top-full mt-2 start-0 bg-white border shadow-xl rounded-xl overflow-hidden z-[120] flex flex-col min-w-[120px]">
+                                                                {['2', '5', '10'].map(sz => {
+                                                                    const price = item[`price_${sz}ml`];
+                                                                    if (!price || Number(price) <= 0) return null;
+                                                                    return (
+                                                                        <button 
+                                                                            key={sz}
+                                                                            onClick={(e) => { e.preventDefault(); handleUpdateItemSize(item.itemKey, sz); }}
+                                                                            className={`px-4 py-3 text-sm text-start hover:bg-gray-50 transition-colors flex justify-between items-center ${String(item.size) === sz ? 'font-bold bg-blue-50/50 text-blue-600' : 'text-gray-700'}`}
+                                                                        >
+                                                                            <span>{sz}ml</span>
+                                                                            {String(item.size) !== sz && <span className="text-xs text-gray-400 ms-3">{price}₪</span>}
+                                                                        </button>
+                                                                    )
+                                                                })}
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                ) : (
+                                                    <span className="text-xs px-2 py-0.5 bg-blue-50 text-blue-600 rounded-full font-bold">{String(item.size).replace(/ml$/i, '')}ml</span>
+                                                )}
                                                 <span className="text-sm font-bold text-gray-900"><span dir="ltr">₪ {item.price}</span></span>
                                             </div>
                                         </div>
