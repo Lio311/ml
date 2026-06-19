@@ -73,6 +73,32 @@ export default function EditOrderModal({ order, onClose, onSuccess }) {
                     })
                     .catch(err => console.error("Error fetching coupon details:", err));
             }
+
+            // Enrich old orders with current product data to populate price_2ml etc. for the dropdown
+            fetch('/api/products')
+                .then(res => res.json())
+                .then(data => {
+                    if (data.products) {
+                        setCart(prev => prev.map(cartItem => {
+                            const dbProduct = data.products.find(p => p.id === cartItem.id);
+                            if (dbProduct) {
+                                return {
+                                    ...cartItem,
+                                    // Override missing or outdated pricing properties from the DB
+                                    price_2ml: dbProduct.price_2ml,
+                                    price_5ml: dbProduct.price_5ml,
+                                    price_10ml: dbProduct.price_10ml,
+                                    single_price: dbProduct.single_price,
+                                    discount_percentage: dbProduct.discount_percentage,
+                                    discount_sizes: dbProduct.discount_sizes,
+                                    discount_end_date: dbProduct.discount_end_date,
+                                };
+                            }
+                            return cartItem;
+                        }));
+                    }
+                })
+                .catch(err => console.error("Error fetching product details for cart enrichment:", err));
         }
     }, [order]);
 
