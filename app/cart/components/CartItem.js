@@ -1,13 +1,42 @@
 "use client";
 
+import { useState, useRef, useEffect } from "react";
 import Image from "@/app/components/CImage";
 import Link from "next/link";
 import { useLanguage } from "../../context/LanguageContext";
 import { useCart } from "../../context/CartContext";
+import { getDiscountedPrice } from "../../lib/productUtils";
 
 export default function CartItem({ item, updateQuantity, removeFromCart, activeVendorId }) {
     const { t, localize, locale } = useLanguage();
-    const { getItemFinalPrice } = useCart();
+    const { getItemFinalPrice, updateItemSize } = useCart();
+    const [isEditingSize, setIsEditingSize] = useState(false);
+    const dropdownRef = useRef(null);
+
+    useEffect(() => {
+        function handleClickOutside(event) {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+                setIsEditingSize(false);
+            }
+        }
+        if (isEditingSize) {
+            document.addEventListener("mousedown", handleClickOutside);
+        }
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, [isEditingSize]);
+
+    const handleSizeChange = (newSize) => {
+        setIsEditingSize(false);
+        if (String(item.size) === String(newSize)) return;
+        
+        const priceKey = `price_${newSize}ml`;
+        const newOriginalPrice = item[priceKey];
+        if (!newOriginalPrice || Number(newOriginalPrice) <= 0) return;
+        
+        const discountedPrice = getDiscountedPrice(item, newSize, newOriginalPrice);
+        updateItemSize(item.id, item.size, newSize, discountedPrice, newOriginalPrice, activeVendorId);
+    };
+
     const isBundle = item.type === 'bundle';
     const productUrl = isBundle ? '#' : `/product/${item.slug || item.id}`;
     
@@ -56,8 +85,7 @@ export default function CartItem({ item, updateQuantity, removeFromCart, activeV
                         </Link>
                     )}
                 </div>
-                {!isBundle && <div className="text-sm text-gray-500">{t('cart.size')}: {item.size === 'set' ? t('cart.set') : `${String(item.size).replace(/ml$/i, '')} ${t('common.ml_unit')}`}</div>}
-                <div className={`text-sm font-bold mt-1`}>
+                <div className={`text-sm font-bold mt-1 flex items-center`}>
                     {hasDiscount && !item.isPrize ? (
                         <span className="flex items-center gap-2">
                             <span className="line-through text-gray-400 font-normal">{originalPriceToDisplay} ₪</span>
@@ -66,6 +94,40 @@ export default function CartItem({ item, updateQuantity, removeFromCart, activeV
                     ) : (
                         <span className={item.isPrize ? 'text-green-600' : 'text-primary'}>{item.price} ₪</span>
                     )}
+
+                    {!item.isPrize && !isBundle && item.size !== 'set' && (
+                        <div className="relative inline-block ms-3" ref={dropdownRef}>
+                            <button 
+                                onClick={(e) => { e.preventDefault(); setIsEditingSize(!isEditingSize); }}
+                                className="bg-blue-50 text-blue-600 px-3 py-1 rounded-full text-xs font-bold hover:bg-blue-100 transition-colors flex items-center gap-1"
+                            >
+                                {String(item.size).replace(/ml$/i, '')}ml
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className={`w-3 h-3 transition-transform ${isEditingSize ? 'rotate-180' : ''}`}>
+                                  <path strokeLinecap="round" strokeLinejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                                </svg>
+                            </button>
+                            
+                            {isEditingSize && (
+                                <div className="absolute top-full mt-2 start-0 bg-white border shadow-xl rounded-xl overflow-hidden z-50 flex flex-col min-w-[120px]">
+                                    {['2', '5', '10'].map(sz => {
+                                        const price = item[`price_${sz}ml`];
+                                        if (!price || Number(price) <= 0) return null;
+                                        return (
+                                            <button 
+                                                key={sz}
+                                                onClick={(e) => { e.preventDefault(); handleSizeChange(sz); }}
+                                                className={`px-4 py-3 text-sm text-start hover:bg-gray-50 transition-colors flex justify-between items-center ${String(item.size) === sz ? 'font-bold bg-blue-50/50 text-blue-600' : 'text-gray-700'}`}
+                                            >
+                                                <span>{sz}ml</span>
+                                                {String(item.size) !== sz && <span className="text-xs text-gray-400 ms-3">{price}₪</span>}
+                                            </button>
+                                        )
+                                    })}
+                                </div>
+                            )}
+                        </div>
+                    )}
+
                     {item.isPrize && ` (${t('cart.prize')})`}
                     {isBundle && <span className="text-[10px] bg-zinc-900 text-white px-2 py-0.5 rounded-full ms-2 font-black tracking-tight">{t('bundles.badge_discount')}</span>}
                 </div>

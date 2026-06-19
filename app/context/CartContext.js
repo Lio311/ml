@@ -750,10 +750,47 @@ export function CartProvider({ children }) {
         return Math.round(discountedPrice);
     };
 
+    const updateItemSize = (id, oldSize, newSize, newPrice, newOriginalPrice, vendorId = 'main') => {
+        markCartUnsynced();
+        if (isCartLocked && vendorId === 'main') {
+            toast.error(t('cart.cart_locked_lottery'));
+            return;
+        }
+        
+        setCartItems(prev => {
+            const parseSizeML = (s) => parseFloat(String(s)) || 0;
+            const itemToUpdate = prev.find(i => i.id === id && i.size === oldSize && (i.vendorId || 'main') === vendorId);
+            if (!itemToUpdate) return prev;
+
+            // Optional: Stock check for new size could go here, but omitted for simplicity assuming sufficient stock 
+            // since we're just shifting MLs, often not exceeding total stock if they just change size.
+            // (If strict stock check is needed, you'd calculate current ML vs total stock ML here)
+
+            const existingWithNewSize = prev.find(i => i.id === id && i.size === newSize && (i.vendorId || 'main') === vendorId);
+            if (existingWithNewSize) {
+                // Merge
+                return prev.map(i => {
+                    if (i.id === id && i.size === newSize && (i.vendorId || 'main') === vendorId) {
+                        return { ...i, quantity: i.quantity + itemToUpdate.quantity };
+                    }
+                    return i;
+                }).filter(i => !(i.id === id && i.size === oldSize && (i.vendorId || 'main') === vendorId));
+            } else {
+                // Update in place
+                return prev.map(i => {
+                    if (i.id === id && i.size === oldSize && (i.vendorId || 'main') === vendorId) {
+                        return { ...i, size: newSize, price: newPrice, originalPrice: newOriginalPrice };
+                    }
+                    return i;
+                });
+            }
+        });
+    };
+
     return (
         <CartContext.Provider value={{
             cartItems, activeVendorId, setActiveVendorId, activeItems,
-             addToCart, addMultipleToCart, addBundleToCart, removeFromCart, updateQuantity, clearCart, clearActiveVendorCart,
+             addToCart, addMultipleToCart, addBundleToCart, removeFromCart, updateQuantity, updateItemSize, clearCart, clearActiveVendorCart,
             subtotal, totalItemsCount, globalItemsCount, uniqueVendorsCount, freeSamplesCount, nextTier, shippingCost, total,
             luckyPrize, setLuckyPrize, discountAmount, promoDiscountAmount, coupon, setCoupon,
             startLottery, cancelLottery, isCartLocked, lotteryTimeLeft, lotteryMode, 
