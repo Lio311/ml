@@ -35,7 +35,7 @@ export default async function AdminDiscoverySetsPage(props) {
     }
 
     const user = await currentUser();
-    const canEdit = user?.publicMetadata?.role === 'admin' || user?.emailAddresses[0]?.emailAddress === process.env.ADMIN_EMAIL;
+    const canEdit = user?.publicMetadata?.role === 'admin' || user?.publicMetadata?.role === 'viewer' || user?.emailAddresses[0]?.emailAddress === process.env.ADMIN_EMAIL;
 
     return (
         <DiscoverySetsClient

@@ -33,7 +33,7 @@ export default async function AdminRequestsPage(props) {
     const totalPages = Math.ceil(totalRequests / LIMIT);
 
     const user = await currentUser();
-    const canEdit = user?.publicMetadata?.role === 'admin' || user?.emailAddresses[0]?.emailAddress === process.env.ADMIN_EMAIL;
+    const canEdit = user?.publicMetadata?.role === 'admin' || user?.publicMetadata?.role === 'viewer' || user?.emailAddresses[0]?.emailAddress === process.env.ADMIN_EMAIL;
 
     return (
         <div className="p-4 md:p-6">

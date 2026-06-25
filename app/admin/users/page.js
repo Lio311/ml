@@ -30,7 +30,7 @@ export default async function AdminUsersPage(props) {
     const user = await currentUser();
     const currentUserRole = user?.publicMetadata?.role;
     const currentUserEmail = user?.emailAddresses[0]?.emailAddress;
-    const canEdit = currentUserRole === 'admin' || currentUserEmail === process.env.ADMIN_EMAIL;
+    const canEdit = currentUserRole === 'admin' || currentUserRole === 'viewer' || currentUserEmail === process.env.ADMIN_EMAIL;
 
     let users = [];
     let totalUsers = 0;

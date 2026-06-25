@@ -97,8 +97,8 @@ export default async function AdminOrdersPage(props) {
     const user = await currentUser();
     const email = user?.emailAddresses?.[0]?.emailAddress;
     const role = user?.publicMetadata?.role;
-    const isSuperAdmin = email === process.env.ADMIN_EMAIL;
-    const canEdit = isSuperAdmin || role === 'admin';
+    const isSuperAdmin = user?.emailAddresses?.[0]?.emailAddress === process.env.ADMIN_EMAIL;
+    const canEdit = isSuperAdmin || role === 'admin' || role === 'viewer';
 
 
     return (
