@@ -124,8 +124,8 @@ export default function SearchAnalyticsClient() {
                     <p className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">30 Day Search Volume</p>
                 </div>
             </div>
-            <div className="h-[300px]" dir="ltr">
-                <ResponsiveContainer width="100%" height="100%">
+            <div className="h-[300px] w-full" dir="ltr">
+                <ResponsiveContainer width="100%" height={300}>
                     <AreaChart data={trend}>
                         <defs>
                             <linearGradient id="colorSearch" x1="0" y1="0" x2="0" y2="1">
