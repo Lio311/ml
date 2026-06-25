@@ -9,31 +9,47 @@ export default function ViewerGuard({ role }) {
 
         // Visual disabling of action buttons
         const disableActionElements = () => {
-            const elements = document.querySelectorAll('button, input[type="submit"], [role="button"], select');
+            const elements = document.querySelectorAll('button, input[type="submit"], [role="button"], [role="switch"]');
             
+            const exactFinalTexts = [
+                'שמור',
+                'שמור שינויים',
+                'צור מוצר',
+                'הוסף קופון',
+                'הוסף מונח',
+                'החל שינויים',
+                'כן, מחק',
+                'עדכן',
+                'הוסף',
+                'שלח',
+                'שמור מותג',
+                'הוסף מותג',
+                'שמור קופון'
+            ];
+
             elements.forEach(el => {
-                // Skip if already processed
                 if (el.dataset.viewerProcessed) return;
 
                 const text = el.textContent?.trim() || '';
                 const title = el.title || '';
                 const isSubmit = el.type === 'submit';
-                const hasActionKeyword = /שמור|עדכן|מחק|הוסף|החל|יצירת/i.test(text) || /שמור|עדכן|מחק|הוסף|החל|יצירת|ערוך/i.test(title);
+                
+                // Only match exact text or very specific final indicators to avoid disabling buttons that just OPEN modals
+                const isExactMatch = exactFinalTexts.includes(text);
+                
+                // Exclude search buttons
                 const isSearch = text.includes('חפש') || title.includes('חפש') || el.closest('form')?.method?.toLowerCase() === 'get';
                 
-                // Identify toggle switches that usually update status directly
                 const isSwitch = el.getAttribute('role') === 'switch';
 
-                // Specific case for status dropdowns in tables (like order status) which directly trigger updates
-                // We'll leave it to the fetch interceptor unless it's obviously a status changer, but to be safe we can disable selects that aren't for pagination.
-                // Pagination limits usually have numbers like '10', '50'.
+                // Check for save icons if button has no text
+                const isIconSave = !text && el.querySelector('svg path[d*="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"]');
 
-                if ((isSubmit || hasActionKeyword || isSwitch) && !isSearch) {
+                if ((isSubmit || isExactMatch || isSwitch || isIconSave) && !isSearch) {
                     el.disabled = true;
                     el.style.opacity = '0.4';
                     el.style.cursor = 'not-allowed';
                     el.title = 'משתמש במצב צופה בלבד';
-                    // We don't use pointer-events: none so the title tooltip can still show
                     el.dataset.viewerProcessed = 'true';
                 }
             });
