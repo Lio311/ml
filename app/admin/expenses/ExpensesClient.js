@@ -15,7 +15,7 @@ export default function AdminExpensesPage() {
     const [editingId, setEditingId] = useState(null);
     const { user } = useUser();
     const isAdmin = user?.emailAddresses[0]?.emailAddress === process.env.ADMIN_EMAIL;
-    const canEdit = user?.publicMetadata?.role === 'admin' || isAdmin;
+    const canEdit = user?.publicMetadata?.role === 'admin' || user?.publicMetadata?.role === 'viewer' || isAdmin;
 
     useEffect(() => {
         fetchExpenses();

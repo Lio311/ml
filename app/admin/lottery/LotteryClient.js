@@ -89,7 +89,7 @@ export default function LotteryAdminPage() {
     );
 
     const currentUserRole = user?.publicMetadata?.role;
-    const canEdit = currentUserRole === 'admin' || user?.emailAddresses[0]?.emailAddress === process.env.ADMIN_EMAIL;
+    const canEdit = currentUserRole === 'admin' || currentUserRole === 'viewer' || user?.emailAddresses[0]?.emailAddress === process.env.ADMIN_EMAIL;
 
 
     if (loading) return <div className="p-8 text-center">טוען נתונים...</div>;
