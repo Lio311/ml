@@ -3,7 +3,7 @@ import pool from '@/app/lib/db';
 import { checkAdmin } from '@/app/lib/admin';
 
 export async function GET() {
-    const isAdmin = await checkAdmin();
+    const isAdmin = await checkAdmin({ allowViewer: true });
     if (!isAdmin) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
     }

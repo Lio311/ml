@@ -1,6 +1,6 @@
 import { currentUser } from "@clerk/nextjs/server";
 
-export async function checkAdmin() {
+export async function checkAdmin({ allowViewer = false } = {}) {
     const user = await currentUser();
     if (!user) return false;
 
@@ -14,6 +14,9 @@ export async function checkAdmin() {
     // Allowed roles for modifying data: admin, deputy
     // warehouse might need read-only or specific write, but for general "admin check" strictly for critical data:
     if (role === 'admin' || role === 'deputy') return true;
+
+    // Allowed for viewing data only
+    if (allowViewer && role === 'viewer') return true;
 
     return false;
 }

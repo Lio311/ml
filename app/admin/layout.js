@@ -5,6 +5,7 @@ import { SignOutButton } from "@clerk/nextjs";
 import AdminSidebar from "../components/admin/AdminSidebar";
 import AdminMobileNav from "../components/admin/AdminMobileNav";
 import NotificationBell from "../components/admin/NotificationBell";
+import ViewerGuard from "../components/admin/ViewerGuard";
 import { updateUserActivity } from "../lib/db";
 
 export const dynamic = 'force-dynamic';
@@ -36,6 +37,7 @@ export default async function AdminLayout({ children }) {
 
     return (
         <div className="min-h-screen md:h-screen bg-gray-100 flex flex-col md:flex-row w-full max-w-full md:overflow-hidden overflow-x-hidden" dir="rtl">
+            <ViewerGuard role={currentRole} />
             <AdminMobileNav role={currentRole} />
             <AdminSidebar role={currentRole} />
             <main className="flex-1 p-4 md:p-8 w-full overflow-x-hidden md:overflow-y-auto bg-gray-100 flex flex-col relative">

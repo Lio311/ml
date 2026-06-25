@@ -68,7 +68,7 @@ export async function PUT(request) {
             return NextResponse.json({ error: "Missing parameters" }, { status: 400 });
         }
 
-        const validRoles = ['admin', 'deputy', 'warehouse', 'customer'];
+        const validRoles = ['admin', 'deputy', 'warehouse', 'viewer', 'customer'];
         if (!validRoles.includes(role)) {
             return NextResponse.json({ error: "Invalid role" }, { status: 400 });
         }

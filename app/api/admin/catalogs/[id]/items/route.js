@@ -5,7 +5,7 @@ import pool from '@/app/lib/db';
 export async function GET(req, { params }) {
     let client;
     try {
-        const isAdmin = await checkAdmin();
+        const isAdmin = await checkAdmin({ allowViewer: true });
         if (!isAdmin) {
             return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
         }

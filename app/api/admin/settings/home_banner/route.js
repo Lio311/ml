@@ -25,7 +25,7 @@ export async function GET() {
 
 export async function POST(req) {
     try {
-        const isAdmin = await checkAdmin();
+        const isAdmin = await checkAdmin({ allowViewer: true });
         if (!isAdmin) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
         }

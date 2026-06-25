@@ -14,6 +14,7 @@ export default function UserRoleSelect({ userId, initialRole, canEdit }) {
         'admin': 'bg-red-100 text-red-800 border-red-200',
         'deputy': 'bg-purple-100 text-purple-800 border-purple-200',
         'warehouse': 'bg-orange-100 text-orange-800 border-orange-200',
+        'viewer': 'bg-blue-100 text-blue-800 border-blue-200',
         'customer': 'bg-gray-100 text-gray-800 border-gray-200'
     };
 
@@ -21,6 +22,7 @@ export default function UserRoleSelect({ userId, initialRole, canEdit }) {
         'admin': 'מנהל',
         'deputy': 'סגן מנהל',
         'warehouse': 'מחסנאי',
+        'viewer': 'צופה חיצוני',
         'customer': 'לקוח'
     };
 
@@ -28,6 +30,7 @@ export default function UserRoleSelect({ userId, initialRole, canEdit }) {
         { value: 'admin', label: 'מנהל' },
         { value: 'deputy', label: 'סגן מנהל' },
         { value: 'warehouse', label: 'מחסנאי' },
+        { value: 'viewer', label: 'צופה חיצוני' },
         { value: 'customer', label: 'לקוח' },
     ];
 

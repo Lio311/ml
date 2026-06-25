@@ -5,7 +5,7 @@ import { checkAdmin } from '@/app/lib/admin';
 // GET all discovery sets
 export async function GET() {
     try {
-        const isAdmin = await checkAdmin();
+        const isAdmin = await checkAdmin({ allowViewer: true });
         if (!isAdmin) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
         }
