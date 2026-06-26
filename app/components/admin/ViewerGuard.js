@@ -20,11 +20,14 @@ export default function ViewerGuard({ role }) {
                 'החל שינויים',
                 'כן, מחק',
                 'עדכן',
-                'הוסף',
                 'שלח',
                 'שמור מותג',
                 'הוסף מותג',
-                'שמור קופון'
+                'שמור קופון',
+                'שמור פרטים',
+                'שמור קטגוריה',
+                'שמירת פרטים',
+                'שמור הגדרות'
             ];
 
             elements.forEach(el => {
@@ -32,20 +35,15 @@ export default function ViewerGuard({ role }) {
 
                 const text = el.textContent?.trim() || '';
                 const title = el.title || '';
-                const isSubmit = el.type === 'submit';
                 
-                // Only match exact text or very specific final indicators to avoid disabling buttons that just OPEN modals
+                // Only consider it a submit if explicitly marked, since DOM defaults all <button> to submit
+                const isExplicitSubmit = el.getAttribute('type') === 'submit';
+                
                 const isExactMatch = exactFinalTexts.includes(text);
-                
-                // Exclude search buttons
                 const isSearch = text.includes('חפש') || title.includes('חפש') || el.closest('form')?.method?.toLowerCase() === 'get';
-                
                 const isSwitch = el.getAttribute('role') === 'switch';
 
-                // Check for save icons if button has no text
-                const isIconSave = !text && el.querySelector('svg path[d*="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"]');
-
-                if ((isSubmit || isExactMatch || isSwitch || isIconSave) && !isSearch) {
+                if ((isExplicitSubmit || isExactMatch || isSwitch) && !isSearch) {
                     el.disabled = true;
                     el.style.opacity = '0.4';
                     el.style.cursor = 'not-allowed';
