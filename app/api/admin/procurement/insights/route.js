@@ -10,7 +10,7 @@ export async function GET() {
         const role = user?.publicMetadata?.role;
         const email = user?.emailAddresses?.[0]?.emailAddress;
         
-        const isAdmin = role === 'admin' || role === 'deputy' || email === process.env.ADMIN_EMAIL;
+        const isAdmin = role === 'admin' || role === 'deputy' || role === 'viewer' || email === process.env.ADMIN_EMAIL;
         
         if (!isAdmin) {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

@@ -62,7 +62,7 @@ export async function POST(req) {
 export async function GET(req) {
     const user = await currentUser();
     const role = user?.publicMetadata?.role;
-    if (role !== 'admin' && role !== 'deputy') {
+    if (role !== 'admin' && role !== 'deputy' && role !== 'viewer') {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
     }
 
