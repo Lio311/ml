@@ -15,7 +15,7 @@ export default async function EmailLogsPage({ searchParams }) {
     const userRes = await pool.query('SELECT role FROM users WHERE id = $1', [userId]);
     const role = userRes.rows[0]?.role;
 
-    if (role !== 'admin') {
+    if (role !== 'admin' && role !== 'viewer') {
         redirect('/admin');
     }
 

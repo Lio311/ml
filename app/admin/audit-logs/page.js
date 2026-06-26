@@ -25,7 +25,7 @@ export default async function AuditLogsPage({ searchParams }) {
 
     const adminCheck = await pool.query('SELECT role FROM users WHERE id = $1', [userId]);
     const role = adminCheck.rows[0]?.role;
-    if (role !== 'admin') {
+    if (role !== 'admin' && role !== 'viewer') {
         redirect('/admin');
     }
 
