@@ -12,7 +12,7 @@ const getCurrentMonthString = () => {
 export async function GET() {
     try {
         const user = await currentUser();
-        if (!user || (user.publicMetadata?.role !== 'admin' && user.emailAddresses?.[0]?.emailAddress !== process.env.ADMIN_EMAIL)) {
+        if (!user || (user.publicMetadata?.role !== 'admin' && user.publicMetadata?.role !== 'viewer' && user.emailAddresses?.[0]?.emailAddress !== process.env.ADMIN_EMAIL)) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
@@ -87,7 +87,7 @@ export async function GET() {
 export async function POST(req) {
     try {
         const user = await currentUser();
-        if (!user || (user.publicMetadata?.role !== 'admin' && user.emailAddresses?.[0]?.emailAddress !== process.env.ADMIN_EMAIL)) {
+        if (!user || (user.publicMetadata?.role !== 'admin' && user.publicMetadata?.role !== 'viewer' && user.emailAddresses?.[0]?.emailAddress !== process.env.ADMIN_EMAIL)) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
@@ -112,3 +112,4 @@ export async function POST(req) {
         return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
     }
 }
+

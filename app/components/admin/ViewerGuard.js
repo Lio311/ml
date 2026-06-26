@@ -43,7 +43,10 @@ export default function ViewerGuard({ role }) {
                 const isSearch = text.includes('חפש') || title.includes('חפש') || el.closest('form')?.method?.toLowerCase() === 'get';
                 const isSwitch = el.getAttribute('role') === 'switch';
 
-                if ((isExplicitSubmit || isExactMatch || isSwitch) && !isSearch) {
+                // Icon-only buttons (like Trash or Save)
+                const isActionIcon = !text && el.querySelector('.lucide-trash, .lucide-trash-2, .lucide-save, svg path[d*="M19 21H5"]');
+
+                if ((isExplicitSubmit || isExactMatch || isSwitch || isActionIcon) && !isSearch) {
                     el.disabled = true;
                     el.style.opacity = '0.4';
                     el.style.cursor = 'not-allowed';

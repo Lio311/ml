@@ -15,7 +15,7 @@ export async function GET(request) {
         }
 
         // Auth check
-        if (role !== 'admin' && role !== 'deputy') {
+        if (role !== 'admin' && role !== 'deputy' && role !== 'viewer') {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
 
@@ -63,3 +63,4 @@ export async function GET(request) {
         return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
     }
 }
+
