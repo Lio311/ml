@@ -11,7 +11,7 @@ export async function GET() {
         const email = user?.emailAddresses?.[0]?.emailAddress;
         const isSuperAdmin = email === process.env.ADMIN_EMAIL;
 
-        if (!isSuperAdmin && role !== 'admin' && role !== 'deputy' && role !== 'warehouse') {
+        if (!isSuperAdmin && role !== 'admin' && role !== 'deputy' && role !== 'warehouse' && role !== 'viewer') {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 

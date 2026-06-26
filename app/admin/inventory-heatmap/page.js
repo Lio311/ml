@@ -12,7 +12,7 @@ export default async function InventoryHeatmapPage() {
     const role = user?.publicMetadata?.role;
     const email = user?.emailAddresses?.[0]?.emailAddress;
 
-    const isAdmin = role === 'admin' || role === 'deputy' || email === process.env.ADMIN_EMAIL;
+    const isAdmin = role === 'admin' || role === 'deputy' || role === 'viewer' || email === process.env.ADMIN_EMAIL;
 
     if (!isAdmin) {
         redirect("/");

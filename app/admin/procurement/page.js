@@ -16,7 +16,7 @@ export default async function ProcurementPage() {
     const email = user?.emailAddresses?.[0]?.emailAddress;
     const adminEmail = process.env.ADMIN_EMAIL;
     
-    const isAdmin = role === 'admin' || role === 'deputy' || email === adminEmail;
+    const isAdmin = role === 'admin' || role === 'deputy' || role === 'viewer' || email === adminEmail;
     
     if (!isAdmin) {
         redirect("/");
