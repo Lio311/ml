@@ -30,7 +30,7 @@ export async function GET() {
         const email = user?.emailAddresses?.[0]?.emailAddress;
         const isSuperAdmin = email === process.env.ADMIN_EMAIL;
 
-        if (!isSuperAdmin && role !== 'admin') {
+        if (!isSuperAdmin && role !== 'admin' && role !== 'viewer') {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
@@ -148,3 +148,4 @@ export async function GET() {
         return NextResponse.json({ error: error.message }, { status: 500 });
     }
 }
+

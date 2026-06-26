@@ -11,7 +11,7 @@ export async function GET(req) {
         const email = user?.emailAddresses?.[0]?.emailAddress;
         const isSuperAdmin = email === process.env.ADMIN_EMAIL;
 
-        if (!isSuperAdmin && role !== 'admin') {
+        if (!isSuperAdmin && role !== 'admin' && role !== 'viewer') {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
@@ -43,3 +43,4 @@ export async function GET(req) {
         return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
     }
 }
+

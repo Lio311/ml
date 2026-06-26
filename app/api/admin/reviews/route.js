@@ -12,7 +12,7 @@ export async function PATCH(req) {
         // Check if requester is admin
         const adminCheck = await pool.query('SELECT role FROM users WHERE id = $1', [userId]);
         const role = adminCheck.rows[0]?.role;
-        if (role !== 'admin' && role !== 'deputy') {
+        if (role !== 'admin' && role !== 'deputy' && role !== 'viewer') {
             return new NextResponse('Forbidden', { status: 403 });
         }
 
@@ -50,7 +50,7 @@ export async function DELETE(req) {
         // Check if requester is admin
         const adminCheck = await pool.query('SELECT role FROM users WHERE id = $1', [userId]);
         const role = adminCheck.rows[0]?.role;
-        if (role !== 'admin' && role !== 'deputy') {
+        if (role !== 'admin' && role !== 'deputy' && role !== 'viewer') {
             return new NextResponse('Forbidden', { status: 403 });
         }
 
@@ -76,3 +76,4 @@ export async function DELETE(req) {
         return new NextResponse('Internal Error', { status: 500 });
     }
 }
+

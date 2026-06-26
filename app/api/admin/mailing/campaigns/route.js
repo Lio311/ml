@@ -5,7 +5,7 @@ import { currentUser } from '@clerk/nextjs/server';
 export async function GET() {
     const user = await currentUser();
     const role = user?.publicMetadata?.role;
-    if (role !== 'admin' && role !== 'deputy') {
+    if (role !== 'admin' && role !== 'deputy' && role !== 'viewer') {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
     }
 
@@ -25,7 +25,7 @@ export async function GET() {
 export async function POST(req) {
     const user = await currentUser();
     const role = user?.publicMetadata?.role;
-    if (role !== 'admin' && role !== 'deputy') {
+    if (role !== 'admin' && role !== 'deputy' && role !== 'viewer') {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
     }
 
@@ -66,7 +66,7 @@ export async function POST(req) {
 export async function DELETE(req) {
      const user = await currentUser();
     const role = user?.publicMetadata?.role;
-    if (role !== 'admin' && role !== 'deputy') {
+    if (role !== 'admin' && role !== 'deputy' && role !== 'viewer') {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
     }
 
@@ -79,3 +79,4 @@ export async function DELETE(req) {
         return NextResponse.json({ error: err.message }, { status: 500 });
     }
 }
+

@@ -5,7 +5,7 @@ import pool from '../../../lib/db';
 export async function GET(req) {
     const user = await currentUser();
     const role = user?.publicMetadata?.role;
-    if (role !== 'admin' && role !== 'deputy') {
+    if (role !== 'admin' && role !== 'deputy' && role !== 'viewer') {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
     }
 
@@ -63,7 +63,7 @@ export async function GET(req) {
 export async function POST(req) {
     const user = await currentUser();
     const role = user?.publicMetadata?.role;
-    if (role !== 'admin' && role !== 'deputy') {
+    if (role !== 'admin' && role !== 'deputy' && role !== 'viewer') {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
     }
 
@@ -89,3 +89,4 @@ export async function POST(req) {
         return NextResponse.json({ error: err.message }, { status: 500 });
     }
 }
+
