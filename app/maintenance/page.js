@@ -159,18 +159,20 @@ export default function MaintenancePage() {
                             <line x1="-7" y1="12" x2="-7" y2="14" stroke="#475569" strokeWidth="1" />
                         </g>
 
-                        {/* Welding Worker (on laptop) */}
+                        {/* Sawing Worker (on laptop) */}
                         <g transform="translate(230, 335)">
                             <circle cx="0" cy="0" r="4" fill="#64748b" />
                             <line x1="0" y1="4" x2="0" y2="10" stroke="#64748b" strokeWidth="2" />
                             <line x1="0" y1="10" x2="4" y2="15" stroke="#64748b" strokeWidth="2" />
                             <line x1="0" y1="10" x2="-4" y2="15" stroke="#64748b" strokeWidth="2" />
-                            <line x1="0" y1="6" x2="-6" y2="12" stroke="#64748b" strokeWidth="2" />
-                            <rect x="-10" y="11" width="4" height="2" fill="#475569" />
-                            <g className="animate-sparks">
-                                <circle cx="-12" cy="13" r="1" fill="#fef08a" />
-                                <circle cx="-15" cy="9" r="1" fill="#facc15" />
-                                <circle cx="-9" cy="16" r="1" fill="#fb923c" />
+                            {/* Left arm holding the laptop base */}
+                            <line x1="0" y1="6" x2="-8" y2="2" stroke="#64748b" strokeWidth="2" />
+                            {/* Right arm sawing */}
+                            <g className="animate-saw">
+                                <line x1="0" y1="6" x2="-10" y2="12" stroke="#64748b" strokeWidth="2" />
+                                {/* Hand saw */}
+                                <path d="M-10 12 L-18 18 L-16 20 L-8 14 Z" fill="#cbd5e1" stroke="#475569" strokeWidth="0.5" />
+                                <rect x="-11" y="11" width="3" height="4" fill="#1e293b" />
                             </g>
                         </g>
 
@@ -295,13 +297,13 @@ export default function MaintenancePage() {
                     animation: jackhammer 0.1s infinite;
                 }
                 
-                @keyframes sparks {
-                    0%, 100% { opacity: 0; }
-                    50% { opacity: 1; }
+                @keyframes saw {
+                    0%, 100% { transform: translateX(0) translateY(0); }
+                    50% { transform: translateX(-4px) translateY(3px); }
                 }
-                .animate-sparks circle:nth-child(1) { animation: sparks 0.2s infinite; }
-                .animate-sparks circle:nth-child(2) { animation: sparks 0.3s infinite 0.1s; }
-                .animate-sparks circle:nth-child(3) { animation: sparks 0.15s infinite 0.2s; }
+                .animate-saw {
+                    animation: saw 0.3s ease-in-out infinite;
+                }
                 
                 @keyframes paint-arm {
                     0%, 100% { transform: rotate(0deg); }
