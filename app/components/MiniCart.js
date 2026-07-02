@@ -6,6 +6,7 @@ import { useCart } from "../context/CartContext";
 import { useLanguage } from "../context/LanguageContext";
 import CartItem from "../cart/components/CartItem";
 import FreeSamplesProgress from "../cart/components/FreeSamplesProgress";
+import { ShoppingCart } from "lucide-react";
 
 export default function MiniCart() {
     const { 
@@ -79,7 +80,7 @@ export default function MiniCart() {
                 <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-4">
                     {activeItems.length === 0 ? (
                         <div className="flex flex-col items-center justify-center h-full text-center space-y-4">
-                            <div className="text-6xl">🛒</div>
+                            <div className="text-6xl text-gray-800"><ShoppingCart className="w-16 h-16" /></div>
                             <h3 className="text-xl font-bold">{t('cart.empty_title')}</h3>
                             <p className="text-gray-500">{t('cart.empty_desc')}</p>
                             <button 
