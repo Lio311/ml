@@ -121,7 +121,7 @@ export default function MonthlyRecommendationAdmin() {
                         <Calendar className="text-blue-500" size={24} />
                         המלצת החודש של מנהל האתר
                     </h1>
-                    <p className="text-gray-500 text-sm mt-1">בחר 4 בשמים שיומלצו בחודש הנוכחי. ההמלצה תישלח ללקוחות ב-30 לחודש.</p>
+                    <p className="text-gray-500 text-sm mt-1">בחר 4 בשמים שיומלצו בחודש הנוכחי. ההמלצה תישלח ללקוחות ב-10 לחודש.</p>
                 </div>
                 
                 <div className="flex items-center gap-3">
@@ -226,7 +226,7 @@ export default function MonthlyRecommendationAdmin() {
                                     <div className="bg-green-500/10 border border-green-500/20 text-green-400 p-4 rounded-xl text-center">
                                         <CheckCircle2 size={24} className="mx-auto mb-2" />
                                         <p className="font-bold text-sm">הבחירה נשמרה ואושרה לשליחה!</p>
-                                        <p className="text-xs opacity-80 mt-1">המייל יופץ אוטומטית למנויים ב-30 לחודש.</p>
+                                        <p className="text-xs opacity-80 mt-1">המייל יופץ אוטומטית למנויים ב-10 לחודש.</p>
                                     </div>
                                     <button 
                                         onClick={() => setEditMode(true)}
@@ -255,7 +255,7 @@ export default function MonthlyRecommendationAdmin() {
                                         <Send size={18} />
                                     </button>
                                     <p className="text-[11px] text-gray-500 text-center mt-4">
-                                        לחיצה על אישור תקבע את הבשמים אלו. המייל יישלח אוטומטית למנויים בתאריך 30 לחודש (או 28 בפברואר).
+                                        לחיצה על אישור תקבע את הבשמים אלו. המייל יישלח אוטומטית למנויים בתאריך 10 לחודש.
                                     </p>
                                     {editMode && status === 'selected' && (
                                         <button 

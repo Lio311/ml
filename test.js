@@ -1,25 +1,11 @@
-const { Pool } = require('pg');
-require('dotenv').config();
-
-const pool = new Pool({
-  connectionString: process.env.DATABASE_URL
-});
-
+﻿const { Pool } = require('pg');
+const pool = new Pool({ connectionString: 'postgresql://neondb_owner:npg_eDnf86UqXiGP@ep-jolly-frost-ag6p8f9f-pooler.c-2.eu-central-1.aws.neon.tech/neondb?sslmode=require' });
 async function main() {
-  try {
-    const res = await pool.query('SELECT * FROM unsubscribed_emails');
-    console.log(res.rows);
-  } catch (err) {
-    console.error('DB Error on unsubscribed_emails:', err);
-  }
-
-  try {
-    const res2 = await pool.query('SELECT email, first_name, last_name, created_at FROM users WHERE email IS NOT NULL ORDER BY created_at DESC');
-    console.log(res2.rows);
-  } catch (err) {
-    console.error('DB Error on users:', err);
-  }
-  process.exit();
+    try {
+        const t = await pool.query("SELECT column_name FROM information_schema.columns WHERE table_name = 'coupons'");
+        console.log('Columns:', t.rows.map(r => r.column_name));
+    } finally {
+        pool.end();
+    }
 }
-
 main();

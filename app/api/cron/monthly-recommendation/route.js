@@ -32,8 +32,8 @@ export async function GET(req) {
             record = insertRes.rows[0];
         }
 
-        // 2. Manager Reminders (15, 20, 25)
-        if ((day === 15 || day === 20 || day === 25) && record.status === 'pending') {
+        // 2. Manager Reminders (1, 5, 8)
+        if ((day === 1 || day === 5 || day === 8) && record.status === 'pending') {
             const templateRes = await pool.query("SELECT * FROM email_templates WHERE slug = 'admin_monthly_recommendation_reminder'");
             if (templateRes.rows.length > 0) {
                 const template = templateRes.rows[0];
@@ -50,14 +50,14 @@ export async function GET(req) {
             return NextResponse.json({ message: 'Reminder sent to manager' });
         }
 
-        // 3. Skip if not selected by 28th (excluding Feb which sends on 28th)
-        if (day === 28 && monthNum !== 2 && record.status === 'pending') {
+        // 3. Skip if not selected by 9th
+        if (day === 9 && record.status === 'pending') {
             await pool.query('UPDATE monthly_recommendations SET status = $1 WHERE id = $2', ['skipped', record.id]);
             return NextResponse.json({ message: 'Month skipped due to no selection' });
         }
 
-        // 4. Send Newsletter on 30th (or 28th for Feb)
-        const isSendDay = (day === 30 && monthNum !== 2) || (day === 28 && monthNum === 2);
+        // 4. Send Newsletter on 10th
+        const isSendDay = (day === 10);
         
         if (isSendDay && record.status === 'selected') {
             // Fetch products
