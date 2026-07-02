@@ -79,7 +79,9 @@ export default clerkMiddleware(async (auth, req) => {
                 const data = await res.json();
                 if (data.enabled) {
                     url.pathname = '/maintenance';
-                    return NextResponse.rewrite(url);
+                    const rewriteRes = NextResponse.rewrite(url);
+                    rewriteRes.headers.set('x-maintenance', 'true');
+                    return rewriteRes;
                 }
             }
         } catch (err) {

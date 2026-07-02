@@ -12,10 +12,10 @@ import MiniCart from "./MiniCart";
 import PushManager from "./PushManager";
 import { BrandProvider } from "../context/BrandContext";
 
-export default function ClientLayout({ children, brands, menu }) {
+export default function ClientLayout({ children, brands, menu, forceMaintenance }) {
     const pathname = usePathname();
     const isAdmin = pathname && typeof pathname === 'string' && pathname.startsWith('/admin');
-    const isMaintenance = pathname === '/maintenance';
+    const isMaintenance = forceMaintenance || pathname === '/maintenance';
 
     if (isAdmin || isMaintenance) {
         return (

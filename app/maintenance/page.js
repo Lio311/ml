@@ -147,8 +147,8 @@ export default function MaintenancePage() {
 
                         <div className="h-8 flex items-center justify-center">
                             {winner ? (
-                                <div className="text-center">
-                                    <span className="font-bold mr-4 text-lg">
+                                <div className="text-center flex flex-col items-center gap-2">
+                                    <span className="font-bold text-lg">
                                         {winner === 'draw' ? 'תיקו!' : `המנצח: ${winner === 'X' ? '✕' : '◯'}`}
                                     </span>
                                     <button 

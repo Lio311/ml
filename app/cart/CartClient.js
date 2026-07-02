@@ -770,11 +770,23 @@ export default function CartClient() {
                                         )}
                                     </div>
                                     <div className="space-y-3">
-                                        <div className="grid grid-cols-5 gap-3">
+                                        <div className="relative z-20">
+                                            <AutocompleteInput
+                                                disabled={!!lastAddress && !shipToNewAddress}
+                                                placeholder="עיר *"
+                                                value={address.city}
+                                                onChange={(val) => {
+                                                    setAddress(prev => ({ ...prev, city: val, street: '' }));
+                                                    if (addressError) setAddressError('');
+                                                }}
+                                                fetchSuggestions={fetchCitySuggestions}
+                                            />
+                                        </div>
+                                        <div className="grid grid-cols-5 gap-3 relative z-10">
                                             <div className="col-span-5 relative">
                                                 <AutocompleteInput
-                                                    disabled={!!lastAddress && !shipToNewAddress}
-                                                    placeholder="רחוב *"
+                                                    disabled={(!!lastAddress && !shipToNewAddress) || !address.city}
+                                                    placeholder={address.city ? "רחוב *" : "יש לבחור עיר תחילה"}
                                                     value={address.street}
                                                     onChange={(val) => {
                                                         setAddress(prev => ({ ...prev, street: val }));
@@ -819,18 +831,6 @@ export default function CartClient() {
                                                     <Check className="w-5 h-5 text-green-500 absolute left-3 top-1/2 -translate-y-1/2" />
                                                 )}
                                             </div>
-                                        </div>
-                                        <div className="relative">
-                                            <AutocompleteInput
-                                                disabled={!!lastAddress && !shipToNewAddress}
-                                                placeholder="עיר *"
-                                                value={address.city}
-                                                onChange={(val) => {
-                                                    setAddress(prev => ({ ...prev, city: val }));
-                                                    if (addressError) setAddressError('');
-                                                }}
-                                                fetchSuggestions={fetchCitySuggestions}
-                                            />
                                         </div>
                                     </div>
                                     {addressError && <p className="text-red-600 text-xs font-bold mt-1 animate-shake">{addressError}</p>}

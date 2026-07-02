@@ -7,7 +7,7 @@ import GoogleAnalytics from "./components/GoogleAnalytics";
 import MicrosoftClarity from "./components/MicrosoftClarity";
 import ClientLayout from "./components/ClientLayout";
 import { validateEnv } from "./lib/env";
-import { cookies } from "next/headers";
+import { headers, cookies } from "next/headers";
 import { LanguageProvider } from "./context/LanguageContext";
 import { CartProvider } from "./context/CartContext";
 import { WishlistProvider } from "./context/WishlistContext";
@@ -88,6 +88,9 @@ export default async function RootLayout({ children }) {
   const dir = locale === 'he' ? 'rtl' : 'ltr';
   const clerkLocale = locale === 'he' ? heIL : enUS;
 
+  const headersList = await headers();
+  const forceMaintenance = headersList.get('x-maintenance') === 'true';
+
   return (
     <ClerkProvider
       localization={clerkLocale}
@@ -132,7 +135,7 @@ export default async function RootLayout({ children }) {
                 }
               }} />
 
-              <ClientLayout brands={brands} menu={menu}>
+              <ClientLayout brands={brands} menu={menu} forceMaintenance={forceMaintenance}>
                 {children}
               </ClientLayout>
 
