@@ -107,36 +107,36 @@ export default function MaintenancePage() {
 
     return (
         <div className="h-screen w-full overflow-hidden bg-black text-white flex flex-col items-center justify-center p-4 font-sans selection:bg-white selection:text-black">
-            <div className="max-w-2xl w-full text-center flex flex-col h-full justify-between py-6 animate-fade-in-up">
+            <div className="max-w-2xl w-full text-center flex flex-col h-full justify-between py-2 md:py-4 animate-fade-in-up">
                 
-                <div className="flex-1 flex flex-col items-center justify-center space-y-8">
+                <div className="flex-1 flex flex-col items-center justify-center space-y-4 md:space-y-6">
                     {/* Logo Area */}
                     <div className="flex justify-center">
-                        <Image src="/logo_v6.png" alt="ml_tlv" width={140} height={50} className="object-contain brightness-0 invert" />
+                        <Image src="/logo_v6.png" alt="ml_tlv" width={110} height={40} className="object-contain brightness-0 invert" />
                     </div>
 
                     <div className="flex justify-center">
-                        <Hourglass className="w-12 h-12 md:w-16 md:h-16 animate-spin text-white opacity-80" style={{ animationDuration: '3s' }} />
+                        <Hourglass className="w-8 h-8 md:w-12 md:h-12 animate-spin text-white opacity-80" style={{ animationDuration: '3s' }} />
                     </div>
 
-                    <div className="space-y-3">
-                        <h1 className="text-3xl md:text-5xl font-bold tracking-tight">האתר בשיפוצים</h1>
-                        <p className="text-gray-400 text-sm md:text-lg max-w-md mx-auto leading-relaxed">
+                    <div className="space-y-2">
+                        <h1 className="text-2xl md:text-4xl font-bold tracking-tight">האתר בשיפוצים</h1>
+                        <p className="text-gray-400 text-xs md:text-base max-w-md mx-auto leading-relaxed px-4">
                             אנחנו עובדים על שדרוג החוויה שלכם. נחזור לאוויר בהקדם האפשרי עם דברים חדשים ומרגשים.
                         </p>
                     </div>
                 </div>
 
-                <div className="pt-6 border-t border-gray-800 flex-none">
-                    <h3 className="text-gray-400 mb-4 font-medium tracking-widest text-xs uppercase">בזמן שאתם מחכים...</h3>
+                <div className="pt-4 border-t border-gray-800 flex-none">
+                    <h3 className="text-gray-400 mb-2 md:mb-3 font-medium tracking-widest text-[10px] md:text-xs uppercase">בזמן שאתם מחכים...</h3>
                     
-                    <div className="inline-block bg-white/5 p-4 md:p-6 rounded-2xl backdrop-blur-sm border border-white/10 shadow-2xl mx-auto w-full max-w-[280px]">
-                        <div className="grid grid-cols-3 gap-2 mb-4">
+                    <div className="inline-block bg-white/5 p-3 md:p-5 rounded-2xl backdrop-blur-sm border border-white/10 shadow-2xl mx-auto w-full max-w-[240px]">
+                        <div className="grid grid-cols-3 gap-1.5 md:gap-2 mb-2 md:mb-4">
                             {board.map((square, i) => (
                                 <button
                                     key={i}
                                     onClick={() => handleClick(i)}
-                                    className="w-12 h-12 md:w-16 md:h-16 bg-black border border-white/20 rounded-xl text-xl md:text-2xl font-light hover:bg-white/10 transition-colors flex items-center justify-center focus:outline-none"
+                                    className="w-10 h-10 md:w-14 md:h-14 bg-black border border-white/20 rounded-xl text-lg md:text-xl font-light hover:bg-white/10 transition-colors flex items-center justify-center focus:outline-none"
                                 >
                                     {square === 'X' && <span className="text-white">✕</span>}
                                     {square === 'O' && <span className="text-gray-500">◯</span>}
@@ -144,10 +144,10 @@ export default function MaintenancePage() {
                             ))}
                         </div>
 
-                        <div className="h-16 flex items-center justify-center mt-2">
+                        <div className="h-12 flex items-center justify-center mt-1 md:mt-2">
                             {winner ? (
-                                <div className="text-center flex flex-col items-center gap-2">
-                                    <span className="font-bold text-lg">
+                                <div className="text-center flex flex-col items-center gap-1">
+                                    <span className="font-bold text-base">
                                         {winner === 'draw' ? 'תיקו!' : `המנצח: ${winner === 'X' ? '✕' : '◯'}`}
                                     </span>
                                     <button 
@@ -166,7 +166,7 @@ export default function MaintenancePage() {
                     </div>
                 </div>
                 
-                <div className="mt-6 text-xs text-gray-600 flex-none pb-2">
+                <div className="mt-2 md:mt-4 text-[10px] md:text-xs text-gray-600 flex-none pb-2">
                     &copy; {new Date().getFullYear()} ml_tlv. כל הזכויות שמורות.
                 </div>
             </div>
