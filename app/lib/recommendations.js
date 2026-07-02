@@ -22,7 +22,7 @@ export async function generateRecommendationForOrder(client, orderId, clerkId, e
     if (currentOrderProductIds.length === 0) return null;
 
     // 1.5 Fetch ALL PAST orders for this user to avoid recommending anything they already bought
-    const allOrdersRes = await client.query('SELECT items FROM orders WHERE user_id = $1', [clerkId]);
+    const allOrdersRes = await client.query("SELECT items FROM orders WHERE customer_details->>'clerk_id' = $1", [clerkId]);
     const allBoughtProductIds = new Set(currentOrderProductIds);
     allOrdersRes.rows.forEach(row => {
         (row.items || []).forEach(item => {
