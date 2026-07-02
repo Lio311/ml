@@ -1,14 +1,24 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { toast } from 'react-hot-toast';
-import { Loader2, Mail, CheckCircle2, XCircle, Search, Clock, Box } from 'lucide-react';
+import { Loader2, Mail, CheckCircle2, XCircle, Search, Clock, Box, ChevronRight, ChevronLeft } from 'lucide-react';
 
 export default function RecommendationsClient() {
     const [items, setItems] = useState([]);
     const [loading, setLoading] = useState(true);
     const [approvingId, setApprovingId] = useState(null);
     const [rejectingId, setRejectingId] = useState(null);
+    
+    const approvedScrollRef = useRef(null);
+    const sentScrollRef = useRef(null);
+
+    const scrollGallery = (ref, direction) => {
+        if (ref.current) {
+            const scrollAmount = 320;
+            ref.current.scrollBy({ left: direction === 'left' ? -scrollAmount : scrollAmount, behavior: 'smooth' });
+        }
+    };
 
     useEffect(() => {
         fetchRecommendations();
@@ -147,7 +157,7 @@ export default function RecommendationsClient() {
                         <Search className="w-3 h-3" />
                         המלצות שניתנו
                     </h4>
-                    <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+                    <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
                         {suggestedProducts.map((p, idx) => (
                             <div key={idx} className="shrink-0 w-[72px] bg-white rounded border border-gray-100 p-1 flex flex-col items-center shadow-sm">
                                 {p.image_url ? (
@@ -360,7 +370,7 @@ export default function RecommendationsClient() {
                 )}
 
             {approvedItems.length > 0 && (
-                <div className="mt-12">
+                <div className="mt-12 relative">
                     <div className="flex items-center justify-between mb-4">
                         <div>
                             <h2 className="text-2xl font-bold text-gray-800">
@@ -371,15 +381,23 @@ export default function RecommendationsClient() {
                                 {approvedItems.length} מיילים ממתינים לתזמון
                             </p>
                         </div>
+                        <div className="flex gap-2" dir="ltr">
+                            <button onClick={() => scrollGallery(approvedScrollRef, 'left')} className="p-2 rounded-full bg-white border border-gray-200 shadow-sm hover:bg-gray-50 text-gray-600 transition-colors">
+                                <ChevronLeft className="w-5 h-5" />
+                            </button>
+                            <button onClick={() => scrollGallery(approvedScrollRef, 'right')} className="p-2 rounded-full bg-white border border-gray-200 shadow-sm hover:bg-gray-50 text-gray-600 transition-colors">
+                                <ChevronRight className="w-5 h-5" />
+                            </button>
+                        </div>
                     </div>
-                    <div className="flex overflow-x-auto gap-4 pb-4 snap-x opacity-90 hover:opacity-100 transition-all">
+                    <div ref={approvedScrollRef} className="flex overflow-x-auto gap-4 pb-4 snap-x opacity-90 hover:opacity-100 transition-all scrollbar-hide [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
                         {approvedItems.map((item) => renderCompactCard(item, 'approved'))}
                     </div>
                 </div>
             )}
 
             {sentItems.length > 0 && (
-                <div className="mt-12 mb-12">
+                <div className="mt-12 mb-12 relative">
                     <div className="flex items-center justify-between mb-4">
                         <div>
                             <h2 className="text-2xl font-bold text-gray-800">
@@ -390,8 +408,16 @@ export default function RecommendationsClient() {
                                 {sentItems.length} מיילים נשלחו ללקוחות בעבר
                             </p>
                         </div>
+                        <div className="flex gap-2" dir="ltr">
+                            <button onClick={() => scrollGallery(sentScrollRef, 'left')} className="p-2 rounded-full bg-white border border-gray-200 shadow-sm hover:bg-gray-50 text-gray-600 transition-colors">
+                                <ChevronLeft className="w-5 h-5" />
+                            </button>
+                            <button onClick={() => scrollGallery(sentScrollRef, 'right')} className="p-2 rounded-full bg-white border border-gray-200 shadow-sm hover:bg-gray-50 text-gray-600 transition-colors">
+                                <ChevronRight className="w-5 h-5" />
+                            </button>
+                        </div>
                     </div>
-                    <div className="flex overflow-x-auto gap-4 pb-4 snap-x opacity-75 hover:opacity-100 transition-all">
+                    <div ref={sentScrollRef} className="flex overflow-x-auto gap-4 pb-4 snap-x opacity-75 hover:opacity-100 transition-all scrollbar-hide [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
                         {sentItems.map((item) => renderCompactCard(item, 'sent'))}
                     </div>
                 </div>
