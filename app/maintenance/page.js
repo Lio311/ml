@@ -131,6 +131,62 @@ export default function MaintenancePage() {
                                 <rect x="10" y="-14" width="4" height="4" fill="#475569" />
                             </g>
                         </g>
+
+                        {/* Forklift Worker */}
+                        <g className="animate-forklift">
+                            <rect x="0" y="325" width="30" height="20" fill="#f59e0b" rx="2" />
+                            <path d="M0 325 L5 315 H30 V325" fill="#f59e0b" />
+                            <circle cx="5" cy="345" r="5" fill="#1e293b" />
+                            <circle cx="25" cy="345" r="5" fill="#1e293b" />
+                            <rect x="30" y="320" width="4" height="25" fill="#64748b" />
+                            <g className="animate-forklift-lift">
+                                <rect x="30" y="335" width="20" height="3" fill="#64748b" />
+                                <rect x="35" y="325" width="10" height="10" fill="#94a3b8" />
+                            </g>
+                            <circle cx="15" cy="323" r="3" fill="#64748b" />
+                        </g>
+
+                        {/* Jackhammer Worker */}
+                        <g className="animate-jackhammer" transform="translate(640, 340)">
+                            <circle cx="0" cy="-10" r="4" fill="#64748b" />
+                            <line x1="0" y1="-6" x2="0" y2="4" stroke="#64748b" strokeWidth="2" />
+                            <line x1="0" y1="4" x2="-4" y2="10" stroke="#64748b" strokeWidth="2" />
+                            <line x1="0" y1="4" x2="4" y2="10" stroke="#64748b" strokeWidth="2" />
+                            <line x1="-5" y1="-2" x2="-8" y2="2" stroke="#64748b" strokeWidth="2" />
+                            <line x1="5" y1="-2" x2="-2" y2="2" stroke="#64748b" strokeWidth="2" />
+                            <rect x="-10" y="2" width="6" height="2" fill="#475569" />
+                            <rect x="-8" y="2" width="2" height="10" fill="#cbd5e1" />
+                            <line x1="-7" y1="12" x2="-7" y2="14" stroke="#475569" strokeWidth="1" />
+                        </g>
+
+                        {/* Welding Worker (on laptop) */}
+                        <g transform="translate(230, 335)">
+                            <circle cx="0" cy="0" r="4" fill="#64748b" />
+                            <line x1="0" y1="4" x2="0" y2="10" stroke="#64748b" strokeWidth="2" />
+                            <line x1="0" y1="10" x2="4" y2="15" stroke="#64748b" strokeWidth="2" />
+                            <line x1="0" y1="10" x2="-4" y2="15" stroke="#64748b" strokeWidth="2" />
+                            <line x1="0" y1="6" x2="-6" y2="12" stroke="#64748b" strokeWidth="2" />
+                            <rect x="-10" y="11" width="4" height="2" fill="#475569" />
+                            <g className="animate-sparks">
+                                <circle cx="-12" cy="13" r="1" fill="#fef08a" />
+                                <circle cx="-15" cy="9" r="1" fill="#facc15" />
+                                <circle cx="-9" cy="16" r="1" fill="#fb923c" />
+                            </g>
+                        </g>
+
+                        {/* Painter Worker (on ladder) */}
+                        <g transform="translate(447, 295)">
+                            <circle cx="0" cy="0" r="4" fill="#64748b" />
+                            <line x1="0" y1="4" x2="0" y2="12" stroke="#64748b" strokeWidth="2" />
+                            <line x1="0" y1="12" x2="-4" y2="18" stroke="#64748b" strokeWidth="2" />
+                            <line x1="0" y1="12" x2="4" y2="24" stroke="#64748b" strokeWidth="2" />
+                            <line x1="0" y1="6" x2="-6" y2="10" stroke="#64748b" strokeWidth="2" />
+                            <g className="animate-paint-arm">
+                                <line x1="0" y1="6" x2="8" y2="-2" stroke="#64748b" strokeWidth="2" />
+                                <line x1="8" y1="-2" x2="10" y2="-10" stroke="#475569" strokeWidth="1" />
+                                <rect x="8" y="-12" width="4" height="2" fill="#3b82f6" />
+                            </g>
+                        </g>
                     </svg>
                 </div>
 
@@ -214,6 +270,46 @@ export default function MaintenancePage() {
                 .animate-hammer {
                     transform-origin: 0px -4px;
                     animation: hammer 0.5s infinite;
+                }
+                
+                @keyframes forklift {
+                    0%, 100% { transform: translateX(20px); }
+                    50% { transform: translateX(120px); }
+                }
+                .animate-forklift {
+                    animation: forklift 6s ease-in-out infinite;
+                }
+                @keyframes forklift-lift {
+                    0%, 100% { transform: translateY(0); }
+                    50% { transform: translateY(-15px); }
+                }
+                .animate-forklift-lift {
+                    animation: forklift-lift 3s ease-in-out infinite;
+                }
+                
+                @keyframes jackhammer {
+                    0%, 100% { transform: translate(640px, 340px); }
+                    50% { transform: translate(640px, 339px); }
+                }
+                .animate-jackhammer {
+                    animation: jackhammer 0.1s infinite;
+                }
+                
+                @keyframes sparks {
+                    0%, 100% { opacity: 0; }
+                    50% { opacity: 1; }
+                }
+                .animate-sparks circle:nth-child(1) { animation: sparks 0.2s infinite; }
+                .animate-sparks circle:nth-child(2) { animation: sparks 0.3s infinite 0.1s; }
+                .animate-sparks circle:nth-child(3) { animation: sparks 0.15s infinite 0.2s; }
+                
+                @keyframes paint-arm {
+                    0%, 100% { transform: rotate(0deg); }
+                    50% { transform: rotate(30deg); }
+                }
+                .animate-paint-arm {
+                    transform-origin: 0px 6px;
+                    animation: paint-arm 1.5s ease-in-out infinite;
                 }
             `}</style>
         </div>
