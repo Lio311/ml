@@ -145,7 +145,7 @@ export default function CartClient() {
     const [address, setAddress] = useState({ street: '', houseNumber: '', apartment: '', city: '' });
     const [addressError, setAddressError] = useState('');
     const [lastAddress, setLastAddress] = useState(null);
-    const [useLastAddress, setUseLastAddress] = useState(false);
+    const [shipToNewAddress, setShipToNewAddress] = useState(false);
 
     useEffect(() => {
         if (isLoaded && user) {
@@ -163,20 +163,13 @@ export default function CartClient() {
                     const data = await resAddress.json();
                     if (data.address) {
                         setLastAddress(data.address);
+                        setAddress(data.address);
                     }
                 }
             };
             fetchPersonalData();
         }
     }, [isLoaded, user]);
-
-    useEffect(() => {
-        if (useLastAddress && lastAddress) {
-            setAddress(lastAddress);
-        } else if (useLastAddress) {
-            setUseLastAddress(false);
-        }
-    }, [useLastAddress, lastAddress]);
 
     // Tier Celebration (Confetti)
     useEffect(() => {
@@ -674,10 +667,18 @@ export default function CartClient() {
                                                 <input 
                                                     type="checkbox" 
                                                     className="w-4 h-4 rounded text-black focus:ring-black accent-black"
-                                                    checked={useLastAddress}
-                                                    onChange={(e) => setUseLastAddress(e.target.checked)}
+                                                    checked={shipToNewAddress}
+                                                    onChange={(e) => {
+                                                        const isNew = e.target.checked;
+                                                        setShipToNewAddress(isNew);
+                                                        if (isNew) {
+                                                            setAddress({ street: '', houseNumber: '', apartment: '', city: '' });
+                                                        } else {
+                                                            setAddress(lastAddress);
+                                                        }
+                                                    }}
                                                 />
-                                                השתמש בכתובת האחרונה
+                                                משלוח לכתובת חדשה
                                             </label>
                                         )}
                                     </div>
@@ -686,7 +687,7 @@ export default function CartClient() {
                                             <div className="col-span-2">
                                                 <input
                                                     type="text"
-                                                    disabled={useLastAddress}
+                                                    disabled={!!lastAddress && !shipToNewAddress}
                                                     className="w-full p-3 border rounded-lg text-sm focus:ring-2 focus:ring-gray-900 outline-none bg-white transition-all disabled:bg-gray-50 disabled:text-gray-500"
                                                     placeholder="רחוב *"
                                                     value={address.street}
@@ -701,7 +702,7 @@ export default function CartClient() {
                                                     type="text"
                                                     inputMode="numeric"
                                                     pattern="[0-9]*"
-                                                    disabled={useLastAddress}
+                                                    disabled={!!lastAddress && !shipToNewAddress}
                                                     className="w-full p-3 border rounded-lg text-sm focus:ring-2 focus:ring-gray-900 outline-none bg-white transition-all disabled:bg-gray-50 disabled:text-gray-500"
                                                     placeholder="מס' בית *"
                                                     value={address.houseNumber || ''}
@@ -716,7 +717,7 @@ export default function CartClient() {
                                                     type="text"
                                                     inputMode="numeric"
                                                     pattern="[0-9]*"
-                                                    disabled={useLastAddress}
+                                                    disabled={!!lastAddress && !shipToNewAddress}
                                                     className="w-full p-3 border rounded-lg text-sm focus:ring-2 focus:ring-gray-900 outline-none bg-white transition-all disabled:bg-gray-50 disabled:text-gray-500"
                                                     placeholder="מס' דירה (0 לבית פרטי) *"
                                                     value={address.apartment || ''}
@@ -729,7 +730,7 @@ export default function CartClient() {
                                         </div>
                                         <input
                                             type="text"
-                                            disabled={useLastAddress}
+                                            disabled={!!lastAddress && !shipToNewAddress}
                                             className="w-full p-3 border rounded-lg text-sm focus:ring-2 focus:ring-gray-900 outline-none bg-white transition-all disabled:bg-gray-50 disabled:text-gray-500"
                                             placeholder="עיר *"
                                             value={address.city}
