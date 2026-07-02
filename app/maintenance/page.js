@@ -1,175 +1,125 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Hourglass } from "lucide-react";
 import Image from "next/image";
 
 export default function MaintenancePage() {
-    // Tic-Tac-Toe Game State
-    const [board, setBoard] = useState(Array(9).fill(null));
-    const [xIsNext, setXIsNext] = useState(true);
-    const [winner, setWinner] = useState(null);
-
-    const calculateWinner = (squares) => {
-        const lines = [
-            [0, 1, 2], [3, 4, 5], [6, 7, 8], // rows
-            [0, 3, 6], [1, 4, 7], [2, 5, 8], // cols
-            [0, 4, 8], [2, 4, 6]             // diagonals
-        ];
-        let hasWinner = false;
-        for (let i = 0; i < lines.length; i++) {
-            const [a, b, c] = lines[i];
-            if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-                setWinner(squares[a]);
-                hasWinner = true;
-                return squares[a];
-            }
-        }
-        if (!squares.includes(null) && !hasWinner) {
-            setWinner('draw');
-            return 'draw';
-        }
-        return null;
-    };
-
-    useEffect(() => {
-        const currentWinner = calculateWinner(board);
-        
-        if (!xIsNext && !currentWinner && board.includes(null)) {
-            const timer = setTimeout(() => {
-                makeAIMove();
-            }, 600);
-            return () => clearTimeout(timer);
-        }
-    }, [board, xIsNext]);
-
-    const makeAIMove = () => {
-        const lines = [
-            [0, 1, 2], [3, 4, 5], [6, 7, 8],
-            [0, 3, 6], [1, 4, 7], [2, 5, 8],
-            [0, 4, 8], [2, 4, 6]
-        ];
-        
-        let move = -1;
-
-        // 1. Try to win
-        for (let i = 0; i < lines.length; i++) {
-            const [a, b, c] = lines[i];
-            if (board[a] === 'O' && board[b] === 'O' && !board[c]) move = c;
-            else if (board[a] === 'O' && !board[b] && board[c] === 'O') move = b;
-            else if (!board[a] && board[b] === 'O' && board[c] === 'O') move = a;
-        }
-
-        // 2. Block X
-        if (move === -1) {
-            for (let i = 0; i < lines.length; i++) {
-                const [a, b, c] = lines[i];
-                if (board[a] === 'X' && board[b] === 'X' && !board[c]) move = c;
-                else if (board[a] === 'X' && !board[b] && board[c] === 'X') move = b;
-                else if (!board[a] && board[b] === 'X' && board[c] === 'X') move = a;
-            }
-        }
-
-        // 3. Take center
-        if (move === -1 && !board[4]) {
-            move = 4;
-        }
-
-        // 4. Random
-        if (move === -1) {
-            const emptyIndices = board.map((val, i) => val === null ? i : null).filter(val => val !== null);
-            if (emptyIndices.length > 0) {
-                move = emptyIndices[Math.floor(Math.random() * emptyIndices.length)];
-            }
-        }
-
-        if (move !== -1) {
-            const newBoard = [...board];
-            newBoard[move] = 'O';
-            setBoard(newBoard);
-            setXIsNext(true);
-        }
-    };
-
-    const handleClick = (i) => {
-        if (board[i] || winner || !xIsNext) return;
-        const newBoard = [...board];
-        newBoard[i] = 'X';
-        setBoard(newBoard);
-        setXIsNext(false);
-    };
-
-    const resetGame = () => {
-        setBoard(Array(9).fill(null));
-        setXIsNext(true);
-        setWinner(null);
-    };
-
     return (
-        <div className="h-screen w-full overflow-hidden bg-black text-white flex flex-col items-center justify-center p-4 font-sans selection:bg-white selection:text-black">
-            <div className="max-w-2xl w-full text-center flex flex-col h-full justify-between py-2 md:py-4 animate-fade-in-up">
+        <div className="min-h-screen w-full bg-white text-gray-900 flex flex-col items-center justify-center p-4 font-sans selection:bg-blue-100 selection:text-blue-900 overflow-hidden">
+            <div className="max-w-4xl w-full text-center flex flex-col items-center animate-fade-in-up">
                 
-                <div className="flex-1 flex flex-col items-center justify-center space-y-4 md:space-y-6">
-                    {/* Logo Area */}
-                    <div className="flex justify-center">
-                        <Image src="/logo_v6.png" alt="ml_tlv" width={110} height={40} className="object-contain brightness-0 invert" />
-                    </div>
+                {/* SVG Illustration Container */}
+                <div className="w-full max-w-2xl relative mb-8 md:mb-12">
+                    <svg viewBox="0 0 800 450" className="w-full h-auto" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                        
+                        {/* Background City Skyline */}
+                        <path d="M50 350 V200 H120 V150 H180 V280 H250 V180 H320 V350" stroke="none" fill="#f1f5f9" />
+                        <path d="M480 350 V180 H550 V220 H620 V150 H680 V350" stroke="none" fill="#f1f5f9" />
+                        
+                        {/* Clouds */}
+                        <path d="M180 120 Q190 100 210 100 Q230 100 230 120 Q250 120 250 140 L160 140 Q160 120 180 120 Z" stroke="#cbd5e1" strokeWidth="2" fill="white" />
+                        <path d="M620 90 Q630 70 650 70 Q670 70 670 90 Q690 90 690 110 L600 110 Q600 90 620 90 Z" stroke="#cbd5e1" strokeWidth="2" fill="white" />
 
-                    <div className="flex justify-center">
-                        <Hourglass className="w-8 h-8 md:w-12 md:h-12 animate-spin text-white opacity-80" style={{ animationDuration: '3s' }} />
-                    </div>
+                        {/* Ground Line */}
+                        <line x1="0" y1="350" x2="800" y2="350" stroke="#3b82f6" strokeWidth="3" />
 
-                    <div className="space-y-2">
-                        <h1 className="text-2xl md:text-4xl font-bold tracking-tight">האתר בשיפוצים</h1>
-                        <p className="text-gray-400 text-xs md:text-base max-w-md mx-auto leading-relaxed px-4">
-                            אנחנו עובדים על שדרוג החוויה שלכם. נחזור לאוויר בהקדם האפשרי עם דברים חדשים ומרגשים.
-                        </p>
-                    </div>
+                        {/* Little Trees */}
+                        {/* Tree 1 */}
+                        <circle cx="120" cy="325" r="15" stroke="#3b82f6" fill="white" />
+                        <line x1="120" y1="340" x2="120" y2="350" stroke="#3b82f6" />
+                        {/* Tree 2 */}
+                        <circle cx="160" cy="330" r="10" stroke="#3b82f6" fill="white" />
+                        <line x1="160" y1="340" x2="160" y2="350" stroke="#3b82f6" />
+                        {/* Tree 3 */}
+                        <circle cx="700" cy="325" r="15" stroke="#3b82f6" fill="white" />
+                        <line x1="700" y1="340" x2="700" y2="350" stroke="#3b82f6" />
+                        {/* Tree 4 */}
+                        <circle cx="740" cy="330" r="10" stroke="#3b82f6" fill="white" />
+                        <line x1="740" y1="340" x2="740" y2="350" stroke="#3b82f6" />
+
+                        {/* Laptop */}
+                        <rect x="230" y="180" width="280" height="160" rx="8" stroke="#3b82f6" fill="white" />
+                        <rect x="240" y="190" width="260" height="140" rx="4" stroke="#bfdbfe" fill="#f8fafc" />
+                        {/* Laptop Screen Content */}
+                        <circle cx="280" cy="225" r="12" stroke="#94a3b8" />
+                        <path d="M272 245 Q280 235 288 245" stroke="#94a3b8" />
+                        <line x1="310" y1="220" x2="420" y2="220" stroke="#cbd5e1" strokeWidth="4" />
+                        <line x1="310" y1="235" x2="380" y2="235" stroke="#cbd5e1" strokeWidth="4" />
+                        <line x1="310" y1="250" x2="460" y2="250" stroke="#e2e8f0" strokeWidth="2" />
+                        <line x1="310" y1="260" x2="440" y2="260" stroke="#e2e8f0" strokeWidth="2" />
+                        {/* Laptop Base */}
+                        <path d="M200 350 L220 340 H520 L540 350 Z" stroke="#3b82f6" fill="white" />
+
+                        {/* Tiny ladder leaning on laptop */}
+                        <line x1="440" y1="340" x2="440" y2="300" stroke="#ef4444" />
+                        <line x1="455" y1="340" x2="455" y2="300" stroke="#ef4444" />
+                        <line x1="440" y1="330" x2="455" y2="330" stroke="#ef4444" />
+                        <line x1="440" y1="320" x2="455" y2="320" stroke="#ef4444" />
+                        <line x1="440" y1="310" x2="455" y2="310" stroke="#ef4444" />
+
+                        {/* Crane Tower */}
+                        <rect x="580" y="50" width="40" height="300" stroke="#3b82f6" fill="white" />
+                        {Array.from({length: 10}).map((_, i) => (
+                            <g key={`tower-${i}`}>
+                                <line x1="580" y1={50 + i*30} x2="620" y2={80 + i*30} stroke="#3b82f6" />
+                                <line x1="620" y1={50 + i*30} x2="580" y2={80 + i*30} stroke="#3b82f6" />
+                                <line x1="580" y1={80 + i*30} x2="620" y2={80 + i*30} stroke="#3b82f6" />
+                            </g>
+                        ))}
+
+                        {/* Crane Jib (Horizontal Arm) */}
+                        <rect x="320" y="50" width="380" height="40" stroke="#3b82f6" fill="white" />
+                        {Array.from({length: 9}).map((_, i) => (
+                            <g key={`jib-${i}`}>
+                                <line x1={320 + i*42.2} y1="50" x2={362.2 + i*42.2} y2="90" stroke="#3b82f6" />
+                                <line x1={362.2 + i*42.2} y1="50" x2={320 + i*42.2} y2="90" stroke="#3b82f6" />
+                                <line x1={362.2 + i*42.2} y1="50" x2={362.2 + i*42.2} y2="90" stroke="#3b82f6" />
+                            </g>
+                        ))}
+
+                        {/* Counter-weight box */}
+                        <rect x="700" y="50" width="60" height="40" stroke="#3b82f6" fill="white" />
+                        <line x1="720" y1="50" x2="720" y2="90" stroke="#3b82f6" />
+                        <line x1="740" y1="50" x2="740" y2="90" stroke="#3b82f6" />
+                        
+                        {/* Crane Cabin */}
+                        <path d="M540 90 H580 V130 H540 A20 20 0 0 1 540 90 Z" stroke="#3b82f6" fill="white" />
+                        <circle cx="560" cy="110" r="10" stroke="#3b82f6" fill="white" />
+                        
+                        {/* Upper cables */}
+                        <line x1="600" y1="20" x2="450" y2="50" stroke="#64748b" />
+                        <line x1="600" y1="20" x2="730" y2="50" stroke="#64748b" />
+                        <line x1="600" y1="20" x2="600" y2="50" stroke="#3b82f6" />
+
+                        {/* Animated Lift (Cable + Hook + Block) */}
+                        <g className="animate-crane-lift">
+                            {/* Cable dropping from jib */}
+                            <line x1="380" y1="90" x2="380" y2="230" stroke="#64748b" strokeWidth="2" />
+                            
+                            {/* The block being lifted */}
+                            <g transform="translate(330, 230) rotate(-10)">
+                                <rect x="0" y="0" width="100" height="24" rx="4" fill="#3b82f6" stroke="none" />
+                                <line x1="15" y1="12" x2="85" y2="12" stroke="white" strokeWidth="2" />
+                            </g>
+                        </g>
+                    </svg>
                 </div>
 
-                <div className="pt-4 border-t border-gray-800 flex-none">
-                    <h3 className="text-gray-400 mb-2 md:mb-3 font-medium tracking-widest text-[10px] md:text-xs uppercase">בזמן שאתם מחכים...</h3>
-                    
-                    <div className="inline-block bg-white/5 p-3 md:p-5 rounded-2xl backdrop-blur-sm border border-white/10 shadow-2xl mx-auto w-full max-w-[240px]">
-                        <div className="grid grid-cols-3 gap-1.5 md:gap-2 mb-2 md:mb-4">
-                            {board.map((square, i) => (
-                                <button
-                                    key={i}
-                                    onClick={() => handleClick(i)}
-                                    className="w-10 h-10 md:w-14 md:h-14 bg-black border border-white/20 rounded-xl text-lg md:text-xl font-light hover:bg-white/10 transition-colors flex items-center justify-center focus:outline-none"
-                                >
-                                    {square === 'X' && <span className="text-white">✕</span>}
-                                    {square === 'O' && <span className="text-gray-500">◯</span>}
-                                </button>
-                            ))}
-                        </div>
-
-                        <div className="h-12 flex items-center justify-center mt-1 md:mt-2">
-                            {winner ? (
-                                <div className="text-center flex flex-col items-center gap-1">
-                                    <span className="font-bold text-base">
-                                        {winner === 'draw' ? 'תיקו!' : `המנצח: ${winner === 'X' ? '✕' : '◯'}`}
-                                    </span>
-                                    <button 
-                                        onClick={resetGame}
-                                        className="text-sm underline hover:text-gray-300 transition-colors"
-                                    >
-                                        משחק נוסף
-                                    </button>
-                                </div>
-                            ) : (
-                                <span className="text-gray-400">
-                                    תור: {xIsNext ? '✕' : '◯'}
-                                </span>
-                            )}
-                        </div>
-                    </div>
+                <div className="flex justify-center mb-6 md:mb-8">
+                    <Image src="/logo_v6.png" alt="ml_tlv" width={140} height={50} className="object-contain" />
                 </div>
-                
-                <div className="mt-2 md:mt-4 text-[10px] md:text-xs text-gray-600 flex-none pb-2">
+
+                <div className="space-y-3">
+                    <h1 className="text-2xl md:text-4xl font-bold tracking-tight text-gray-800">האתר בשיפוצים</h1>
+                    <p className="text-gray-500 text-sm md:text-base max-w-md mx-auto leading-relaxed px-4">
+                        אנחנו עובדים על שדרוג החוויה שלכם. נחזור לאוויר בהקדם האפשרי עם דברים חדשים ומרגשים.
+                    </p>
+                </div>
+
+                <div className="mt-8 md:mt-12 text-[10px] md:text-xs text-gray-400 pb-4">
                     &copy; {new Date().getFullYear()} ml_tlv. כל הזכויות שמורות.
                 </div>
             </div>
+            
             <style jsx global>{`
                 @keyframes fade-in-up {
                     0% {
@@ -183,6 +133,22 @@ export default function MaintenancePage() {
                 }
                 .animate-fade-in-up {
                     animation: fade-in-up 1s ease-out forwards;
+                }
+                
+                @keyframes crane-lift {
+                    0% {
+                        transform: translateY(0);
+                    }
+                    50% {
+                        transform: translateY(-80px);
+                    }
+                    100% {
+                        transform: translateY(0);
+                    }
+                }
+                
+                .animate-crane-lift {
+                    animation: crane-lift 5s ease-in-out infinite;
                 }
             `}</style>
         </div>
