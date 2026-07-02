@@ -112,7 +112,7 @@ export default function MaintenancePage() {
                 <div className="flex-1 flex flex-col items-center justify-center space-y-8">
                     {/* Logo Area */}
                     <div className="flex justify-center">
-                        <Image src="/logo_v6.png" alt="ml_tlv" width={140} height={50} className="object-contain invert opacity-90" />
+                        <Image src="/logo_v6.png" alt="ml_tlv" width={140} height={50} className="object-contain brightness-0 invert" />
                     </div>
 
                     <div className="flex justify-center">
@@ -136,7 +136,7 @@ export default function MaintenancePage() {
                                 <button
                                     key={i}
                                     onClick={() => handleClick(i)}
-                                    className="w-16 h-16 md:w-20 md:h-20 bg-black border border-white/20 rounded-xl text-2xl md:text-3xl font-light hover:bg-white/10 transition-colors flex items-center justify-center focus:outline-none"
+                                    className="w-12 h-12 md:w-16 md:h-16 bg-black border border-white/20 rounded-xl text-xl md:text-2xl font-light hover:bg-white/10 transition-colors flex items-center justify-center focus:outline-none"
                                 >
                                     {square === 'X' && <span className="text-white">✕</span>}
                                     {square === 'O' && <span className="text-gray-500">◯</span>}
@@ -144,7 +144,7 @@ export default function MaintenancePage() {
                             ))}
                         </div>
 
-                        <div className="h-8 flex items-center justify-center">
+                        <div className="h-16 flex items-center justify-center mt-2">
                             {winner ? (
                                 <div className="text-center flex flex-col items-center gap-2">
                                     <span className="font-bold text-lg">
