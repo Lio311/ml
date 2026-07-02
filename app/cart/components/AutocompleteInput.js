@@ -26,7 +26,9 @@ export default function AutocompleteInput({
     }, []);
 
     const handleInputChange = async (e) => {
-        const val = e.target.value;
+        let val = e.target.value;
+        // Allow only Hebrew letters, spaces, quotes, and hyphens
+        val = val.replace(/[^א-ת\s'"\-]/g, '');
         onChange(val);
         if (val.length >= 1) {
             setLoading(true);
