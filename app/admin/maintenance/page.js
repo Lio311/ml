@@ -10,7 +10,7 @@ export default function MaintenanceAdminPage() {
     const [saving, setSaving] = useState(false);
 
     useEffect(() => {
-        fetch('/api/maintenance')
+        fetch('/api/maintenance', { cache: 'no-store' })
             .then(res => res.json())
             .then(data => {
                 setEnabled(data.enabled);
