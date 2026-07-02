@@ -21,7 +21,7 @@ export async function GET(req) {
             const generateRes = await client.query(`
                 SELECT id, customer_details, items
                 FROM orders 
-                WHERE status = 'completed' 
+                WHERE status IN ('processing', 'completed') 
                 AND created_at >= NOW() - INTERVAL '7 days'
             `);
 

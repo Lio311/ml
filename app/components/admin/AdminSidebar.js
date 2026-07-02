@@ -35,6 +35,7 @@ import {
     Target, 
     Book, 
     Map as MapIcon, 
+    Construction,
     Image as ImageIcon, 
     Bookmark, 
     MessageCircle, 
@@ -119,6 +120,7 @@ const navGroups = [
             { href: "/admin/popups", label: "פופאפ", icon: MessageCircle, roles: ['admin', 'deputy'] },
             { href: "/admin/logo", label: "לוגו", icon: Bookmark, roles: ['admin', 'deputy'] },
             { href: "/admin/brand", label: "שם מסחרי", icon: Type, roles: ['admin'] },
+            { href: "/admin/maintenance", label: "אתר בשיפוצים", icon: Construction, roles: ['admin'] },
         ]
     },
     {
