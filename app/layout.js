@@ -125,15 +125,17 @@ export default async function RootLayout({ children }) {
               <WishlistProvider>
               <AnalyticsTracker />
               {locale === 'he' && <ClerkBrandingTranslator />}
-              <Toaster position="top-center" toastOptions={{ 
-                duration: 3000,
-                style: {
-                  textAlign: 'center',
-                  whiteSpace: 'nowrap',
-                  maxWidth: '90vw',
-                  padding: '12px 24px',
-                }
-              }} />
+              {!forceMaintenance && (
+                <Toaster position="top-center" toastOptions={{ 
+                  duration: 3000,
+                  style: {
+                    textAlign: 'center',
+                    whiteSpace: 'nowrap',
+                    maxWidth: '90vw',
+                    padding: '12px 24px',
+                  }
+                }} />
+              )}
 
               <ClientLayout brands={brands} menu={menu} forceMaintenance={forceMaintenance}>
                 {children}

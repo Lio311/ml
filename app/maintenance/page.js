@@ -106,38 +106,37 @@ export default function MaintenancePage() {
     };
 
     return (
-        <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center p-6 font-sans selection:bg-white selection:text-black">
-            <div className="max-w-2xl w-full text-center space-y-12 animate-fade-in-up">
+        <div className="h-screen w-full overflow-hidden bg-black text-white flex flex-col items-center justify-center p-4 font-sans selection:bg-white selection:text-black">
+            <div className="max-w-2xl w-full text-center flex flex-col h-full justify-between py-6 animate-fade-in-up">
                 
-                {/* Logo Area */}
-                <div className="flex justify-center mb-8">
-                    {/* Placeholder for Logo, using text if logo image is not found */}
-                    <div className="text-4xl font-extrabold tracking-widest uppercase">
-                        ML TLV
+                <div className="flex-1 flex flex-col items-center justify-center space-y-8">
+                    {/* Logo Area */}
+                    <div className="flex justify-center">
+                        <Image src="/logo_v6.png" alt="ml_tlv" width={140} height={50} className="object-contain invert opacity-90" />
+                    </div>
+
+                    <div className="flex justify-center">
+                        <Hourglass className="w-12 h-12 md:w-16 md:h-16 animate-spin text-white opacity-80" style={{ animationDuration: '3s' }} />
+                    </div>
+
+                    <div className="space-y-3">
+                        <h1 className="text-3xl md:text-5xl font-bold tracking-tight">האתר בשיפוצים</h1>
+                        <p className="text-gray-400 text-sm md:text-lg max-w-md mx-auto leading-relaxed">
+                            אנחנו עובדים על שדרוג החוויה שלכם. נחזור לאוויר בהקדם האפשרי עם דברים חדשים ומרגשים.
+                        </p>
                     </div>
                 </div>
 
-                <div className="flex justify-center">
-                    <Hourglass className="w-16 h-16 animate-spin text-white opacity-80" style={{ animationDuration: '3s' }} />
-                </div>
-
-                <div className="space-y-4">
-                    <h1 className="text-3xl md:text-5xl font-bold tracking-tight">האתר בשיפוצים</h1>
-                    <p className="text-gray-400 text-lg md:text-xl max-w-md mx-auto leading-relaxed">
-                        אנחנו עובדים על שדרוג החוויה שלכם. נחזור לאוויר בהקדם האפשרי עם דברים חדשים ומרגשים.
-                    </p>
-                </div>
-
-                <div className="pt-12 border-t border-gray-800">
-                    <h3 className="text-gray-400 mb-6 font-medium tracking-widest text-sm uppercase">בזמן שאתם מחכים...</h3>
+                <div className="pt-6 border-t border-gray-800 flex-none">
+                    <h3 className="text-gray-400 mb-4 font-medium tracking-widest text-xs uppercase">בזמן שאתם מחכים...</h3>
                     
-                    <div className="inline-block bg-white/5 p-8 rounded-2xl backdrop-blur-sm border border-white/10 shadow-2xl">
-                        <div className="grid grid-cols-3 gap-2 mb-6">
+                    <div className="inline-block bg-white/5 p-4 md:p-6 rounded-2xl backdrop-blur-sm border border-white/10 shadow-2xl mx-auto w-full max-w-[280px]">
+                        <div className="grid grid-cols-3 gap-2 mb-4">
                             {board.map((square, i) => (
                                 <button
                                     key={i}
                                     onClick={() => handleClick(i)}
-                                    className="w-20 h-20 bg-black border border-white/20 rounded-xl text-3xl font-light hover:bg-white/10 transition-colors flex items-center justify-center focus:outline-none"
+                                    className="w-16 h-16 md:w-20 md:h-20 bg-black border border-white/20 rounded-xl text-2xl md:text-3xl font-light hover:bg-white/10 transition-colors flex items-center justify-center focus:outline-none"
                                 >
                                     {square === 'X' && <span className="text-white">✕</span>}
                                     {square === 'O' && <span className="text-gray-500">◯</span>}
@@ -167,8 +166,8 @@ export default function MaintenancePage() {
                     </div>
                 </div>
                 
-                <div className="mt-12 text-sm text-gray-600">
-                    &copy; {new Date().getFullYear()} ML TLV. כל הזכויות שמורות.
+                <div className="mt-6 text-xs text-gray-600 flex-none pb-2">
+                    &copy; {new Date().getFullYear()} ml_tlv. כל הזכויות שמורות.
                 </div>
             </div>
             <style jsx global>{`

@@ -16,7 +16,9 @@ export async function generateRecommendationForOrder(client, orderId, clerkId, e
     const orderRes = await client.query('SELECT items FROM orders WHERE id = $1', [orderId]);
     if (orderRes.rows.length === 0) return null;
     const items = orderRes.rows[0].items || [];
-    const currentOrderProductIds = items.map(item => item.id);
+    const currentOrderProductIds = items
+        .map(item => parseInt(item.id, 10))
+        .filter(id => !isNaN(id));
     if (currentOrderProductIds.length === 0) return null;
 
     // 1.5 Fetch ALL PAST orders for this user to avoid recommending anything they already bought
@@ -24,7 +26,10 @@ export async function generateRecommendationForOrder(client, orderId, clerkId, e
     const allBoughtProductIds = new Set(currentOrderProductIds);
     allOrdersRes.rows.forEach(row => {
         (row.items || []).forEach(item => {
-            if (item && item.id) allBoughtProductIds.add(item.id);
+            if (item && item.id) {
+                const parsedId = parseInt(item.id, 10);
+                if (!isNaN(parsedId)) allBoughtProductIds.add(parsedId);
+            }
         });
     });
 
@@ -35,14 +40,17 @@ export async function generateRecommendationForOrder(client, orderId, clerkId, e
         WHERE order_id = $1
     `, [orderId]);
     
-    const allPreviouslySuggestedIds = new Set(existingExcludeIds);
+    const allPreviouslySuggestedIds = new Set(existingExcludeIds.map(id => parseInt(id, 10)).filter(id => !isNaN(id)));
     previousRes.rows.forEach(row => {
         let suggested = row.suggested_products || [];
         if (typeof suggested === 'string') {
             try { suggested = JSON.parse(suggested); } catch (e) { suggested = []; }
         }
         suggested.forEach(p => {
-            if (p && p.id) allPreviouslySuggestedIds.add(p.id);
+            if (p && p.id) {
+                const parsedId = parseInt(p.id, 10);
+                if (!isNaN(parsedId)) allPreviouslySuggestedIds.add(parsedId);
+            }
         });
     });
 
