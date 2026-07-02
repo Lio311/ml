@@ -8,8 +8,8 @@ export default function MaintenancePage() {
             <div className="max-w-4xl w-full text-center flex flex-col items-center animate-fade-in-up">
                 
                 {/* SVG Illustration Container */}
-                <div className="w-full max-w-2xl relative mb-8 md:mb-12">
-                    <svg viewBox="0 0 800 450" className="w-full h-auto" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <div className="w-full max-w-4xl relative mb-2 md:mb-4">
+                    <svg viewBox="0 0 800 360" className="w-full h-auto" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                         
                         {/* Background City Skyline */}
                         <path d="M50 350 V200 H120 V150 H180 V280 H250 V180 H320 V350" stroke="none" fill="#f1f5f9" />
@@ -192,18 +192,18 @@ export default function MaintenancePage() {
                     </svg>
                 </div>
 
-                <div className="flex justify-center mb-6 md:mb-8">
-                    <Image src="/logo_v5.png" alt="ml_tlv" width={140} height={50} className="object-contain brightness-0" />
+                <div className="flex justify-center mb-2 md:mb-4">
+                    <Image src="/logo_v5.png" alt="ml_tlv" width={120} height={40} className="object-contain brightness-0" />
                 </div>
 
-                <div className="space-y-3">
-                    <h1 className="text-2xl md:text-4xl font-bold tracking-tight text-gray-800">האתר בשיפוצים</h1>
+                <div className="space-y-1 md:space-y-2">
+                    <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-gray-800">האתר בשיפוצים</h1>
                     <p className="text-gray-500 text-sm md:text-base max-w-md mx-auto leading-relaxed px-4">
                         אנחנו עובדים על שדרוג החוויה שלכם. נחזור לאוויר בהקדם האפשרי עם דברים חדשים ומרגשים.
                     </p>
                 </div>
 
-                <div className="mt-8 md:mt-12 text-[10px] md:text-xs text-gray-400 pb-4">
+                <div className="mt-4 md:mt-6 text-[10px] md:text-xs text-gray-400 pb-2">
                     &copy; {new Date().getFullYear()} ml_tlv. כל הזכויות שמורות.
                 </div>
             </div>
