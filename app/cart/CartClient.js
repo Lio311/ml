@@ -39,6 +39,9 @@ export default function CartClient() {
     const prevSamplesCount = useRef(freeSamplesCount);
     const router = useRouter();
     const searchParams = useSearchParams();
+    // Cache cities and streets to avoid full text search issues
+    const cachedCities = useRef(null);
+    const cachedStreets = useRef({});
     const [showWheel, setShowWheel] = useState(false);
     const [hasSeenWheel, setHasSeenWheel] = useState(false);
     const [sharedCart, setSharedCart] = useState(null);
@@ -385,9 +388,6 @@ export default function CartClient() {
         );
     }
 
-    // Cache cities and streets to avoid full text search issues
-    const cachedCities = useRef(null);
-
     const fetchCitySuggestions = async (val) => {
         try {
             if (!cachedCities.current) {
@@ -410,9 +410,6 @@ export default function CartClient() {
             return [];
         }
     };
-
-
-    const cachedStreets = useRef({});
 
     const fetchStreetSuggestions = async (val) => {
         try {
