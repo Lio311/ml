@@ -94,20 +94,49 @@ export default function MaintenancePage() {
                         <line x1="600" y1="20" x2="600" y2="50" stroke="#3b82f6" />
 
                         {/* Animated Lift (Cable + Hook + Block) */}
-                        <g className="animate-crane-lift">
+                        <g>
                             {/* Cable dropping from left edge of jib */}
-                            <line x1="320" y1="90" x2="320" y2="230" stroke="#64748b" strokeWidth="2" />
+                            <line x1="320" y1="90" x2="320" y2="230" stroke="#64748b" strokeWidth="2" className="animate-crane-cable" />
                             
                             {/* The block being lifted */}
-                            <g transform="translate(270, 230) rotate(-10)">
+                            <g className="animate-crane-block">
                                 <rect x="0" y="0" width="100" height="24" rx="4" fill="#3b82f6" stroke="none" />
                                 <line x1="15" y1="12" x2="85" y2="12" stroke="white" strokeWidth="2" />
+                            </g>
+                        </g>
+
+                        {/* Workers */}
+                        {/* Walking Worker */}
+                        <g className="animate-worker-walk">
+                            <circle cx="500" cy="330" r="4" fill="#64748b" />
+                            <line x1="500" y1="334" x2="500" y2="344" stroke="#64748b" strokeWidth="2" />
+                            <g className="animate-worker-legs">
+                                <line x1="500" y1="344" x2="495" y2="350" stroke="#64748b" strokeWidth="2" />
+                                <line x1="500" y1="344" x2="505" y2="350" stroke="#64748b" strokeWidth="2" />
+                            </g>
+                            <line x1="500" y1="336" x2="492" y2="340" stroke="#64748b" strokeWidth="2" />
+                            <line x1="500" y1="336" x2="508" y2="340" stroke="#64748b" strokeWidth="2" />
+                        </g>
+
+                        {/* Hammering Worker */}
+                        <g transform="translate(560, 340)">
+                            <circle cx="0" cy="-10" r="4" fill="#64748b" />
+                            <line x1="0" y1="-6" x2="0" y2="4" stroke="#64748b" strokeWidth="2" />
+                            <line x1="0" y1="4" x2="-4" y2="10" stroke="#64748b" strokeWidth="2" />
+                            <line x1="0" y1="4" x2="4" y2="10" stroke="#64748b" strokeWidth="2" />
+                            <line x1="0" y1="-4" x2="-5" y2="0" stroke="#64748b" strokeWidth="2" />
+                            <g className="animate-hammer">
+                                <line x1="0" y1="-4" x2="8" y2="-8" stroke="#64748b" strokeWidth="2" />
+                                <line x1="8" y1="-8" x2="12" y2="-12" stroke="#475569" strokeWidth="1" />
+                                <rect x="10" y="-14" width="4" height="4" fill="#475569" />
                             </g>
                         </g>
                     </svg>
                 </div>
 
-
+                <div className="flex justify-center mb-6 md:mb-8">
+                    <Image src="/logo_v5.png" alt="ml_tlv" width={140} height={50} className="object-contain brightness-0" />
+                </div>
 
                 <div className="space-y-3">
                     <h1 className="text-2xl md:text-4xl font-bold tracking-tight text-gray-800">האתר בשיפוצים</h1>
@@ -136,20 +165,55 @@ export default function MaintenancePage() {
                     animation: fade-in-up 1s ease-out forwards;
                 }
                 
-                @keyframes crane-lift {
-                    0% {
-                        transform: translateY(0);
+                @keyframes crane-cable {
+                    0%, 100% {
+                        transform: scaleY(1);
                     }
                     50% {
-                        transform: translateY(-80px);
-                    }
-                    100% {
-                        transform: translateY(0);
+                        transform: scaleY(0.4285);
                     }
                 }
+                .animate-crane-cable {
+                    transform-origin: 320px 90px;
+                    animation: crane-cable 5s ease-in-out infinite;
+                }
                 
-                .animate-crane-lift {
-                    animation: crane-lift 5s ease-in-out infinite;
+                @keyframes crane-block {
+                    0%, 100% {
+                        transform: translate(270px, 230px) rotate(-10deg);
+                    }
+                    50% {
+                        transform: translate(270px, 150px) rotate(-10deg);
+                    }
+                }
+                .animate-crane-block {
+                    animation: crane-block 5s ease-in-out infinite;
+                }
+                
+                @keyframes worker-walk {
+                    0%, 100% { transform: translateX(0); }
+                    50% { transform: translateX(-100px); }
+                }
+                .animate-worker-walk {
+                    animation: worker-walk 8s linear infinite;
+                }
+                
+                @keyframes worker-legs {
+                    0%, 50%, 100% { transform: scaleX(1); }
+                    25%, 75% { transform: scaleX(-1); }
+                }
+                .animate-worker-legs {
+                    transform-origin: 500px 344px;
+                    animation: worker-legs 0.6s infinite alternate;
+                }
+                
+                @keyframes hammer {
+                    0%, 100% { transform: rotate(0deg); }
+                    50% { transform: rotate(40deg); }
+                }
+                .animate-hammer {
+                    transform-origin: 0px -4px;
+                    animation: hammer 0.5s infinite;
                 }
             `}</style>
         </div>
