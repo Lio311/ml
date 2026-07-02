@@ -10,34 +10,93 @@ export default function MaintenancePage() {
     const [xIsNext, setXIsNext] = useState(true);
     const [winner, setWinner] = useState(null);
 
-    useEffect(() => {
-        calculateWinner(board);
-    }, [board]);
-
     const calculateWinner = (squares) => {
         const lines = [
             [0, 1, 2], [3, 4, 5], [6, 7, 8], // rows
             [0, 3, 6], [1, 4, 7], [2, 5, 8], // cols
             [0, 4, 8], [2, 4, 6]             // diagonals
         ];
+        let hasWinner = false;
         for (let i = 0; i < lines.length; i++) {
             const [a, b, c] = lines[i];
             if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
                 setWinner(squares[a]);
-                return;
+                hasWinner = true;
+                return squares[a];
             }
         }
-        if (!squares.includes(null)) {
+        if (!squares.includes(null) && !hasWinner) {
             setWinner('draw');
+            return 'draw';
+        }
+        return null;
+    };
+
+    useEffect(() => {
+        const currentWinner = calculateWinner(board);
+        
+        if (!xIsNext && !currentWinner && board.includes(null)) {
+            const timer = setTimeout(() => {
+                makeAIMove();
+            }, 600);
+            return () => clearTimeout(timer);
+        }
+    }, [board, xIsNext]);
+
+    const makeAIMove = () => {
+        const lines = [
+            [0, 1, 2], [3, 4, 5], [6, 7, 8],
+            [0, 3, 6], [1, 4, 7], [2, 5, 8],
+            [0, 4, 8], [2, 4, 6]
+        ];
+        
+        let move = -1;
+
+        // 1. Try to win
+        for (let i = 0; i < lines.length; i++) {
+            const [a, b, c] = lines[i];
+            if (board[a] === 'O' && board[b] === 'O' && !board[c]) move = c;
+            else if (board[a] === 'O' && !board[b] && board[c] === 'O') move = b;
+            else if (!board[a] && board[b] === 'O' && board[c] === 'O') move = a;
+        }
+
+        // 2. Block X
+        if (move === -1) {
+            for (let i = 0; i < lines.length; i++) {
+                const [a, b, c] = lines[i];
+                if (board[a] === 'X' && board[b] === 'X' && !board[c]) move = c;
+                else if (board[a] === 'X' && !board[b] && board[c] === 'X') move = b;
+                else if (!board[a] && board[b] === 'X' && board[c] === 'X') move = a;
+            }
+        }
+
+        // 3. Take center
+        if (move === -1 && !board[4]) {
+            move = 4;
+        }
+
+        // 4. Random
+        if (move === -1) {
+            const emptyIndices = board.map((val, i) => val === null ? i : null).filter(val => val !== null);
+            if (emptyIndices.length > 0) {
+                move = emptyIndices[Math.floor(Math.random() * emptyIndices.length)];
+            }
+        }
+
+        if (move !== -1) {
+            const newBoard = [...board];
+            newBoard[move] = 'O';
+            setBoard(newBoard);
+            setXIsNext(true);
         }
     };
 
     const handleClick = (i) => {
-        if (board[i] || winner) return;
+        if (board[i] || winner || !xIsNext) return;
         const newBoard = [...board];
-        newBoard[i] = xIsNext ? 'X' : 'O';
+        newBoard[i] = 'X';
         setBoard(newBoard);
-        setXIsNext(!xIsNext);
+        setXIsNext(false);
     };
 
     const resetGame = () => {

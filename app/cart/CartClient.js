@@ -202,10 +202,38 @@ export default function CartClient() {
             return;
         }
 
-        if (!isSelfPickup && (!address.street || !address.city || !address.apartment || !address.houseNumber)) {
-            setAddressError("אנא מלא רחוב, מספר בית, מספר דירה (0 אם פרטי), ועיר למשלוח");
-            toast.error("אנא מלא את כל שדות החובה למשלוח");
-            return;
+        if (!isSelfPickup) {
+            if (!address.street || !address.city || !address.apartment || !address.houseNumber) {
+                setAddressError("אנא מלא רחוב, מספר בית, מספר דירה (0 אם פרטי), ועיר למשלוח");
+                toast.error("אנא מלא את כל שדות החובה למשלוח");
+                return;
+            }
+
+            try {
+                if (!cachedCities.current) {
+                    const res = await fetch(`https://data.gov.il/api/3/action/datastore_search?resource_id=5c78e9fa-c2e2-4771-93ff-7f400a12f7ba&limit=3000`);
+                    const data = await res.json();
+                    cachedCities.current = data.result.records.map(r => r['שם_ישוב'].trim()).filter(c => c !== 'לא רשום');
+                }
+                if (!cachedCities.current.includes(address.city)) {
+                    setAddressError("אנא בחר עיר מתוך הרשימה המופיעה");
+                    toast.error("העיר שהזנת לא נמצאה. אנא בחר מהרשימה.");
+                    return;
+                }
+
+                if (!cachedStreets.current[address.city]) {
+                    const res = await fetch(`https://data.gov.il/api/3/action/datastore_search?resource_id=9ad3862c-8391-4b2f-84a4-2d4c68625f4b&q=${encodeURIComponent(address.city)}&limit=5000`);
+                    const data = await res.json();
+                    cachedStreets.current[address.city] = data.result.records
+                        .filter(r => r['שם_ישוב'].trim() === address.city)
+                        .map(r => r['שם_רחוב'].trim());
+                }
+                if (!cachedStreets.current[address.city].includes(address.street)) {
+                    setAddressError("אנא בחר רחוב מתוך הרשימה המופיעה");
+                    toast.error("הרחוב שהזנת לא נמצא בעיר זו. אנא בחר מהרשימה.");
+                    return;
+                }
+            } catch(e) {}
         }
 
         setIsSubmitting(true);
@@ -357,13 +385,17 @@ export default function CartClient() {
         );
     }
 
+    // Cache cities and streets to avoid full text search issues
+    const cachedCities = useRef(null);
+
     const fetchCitySuggestions = async (val) => {
         try {
-            const res = await fetch(`https://data.gov.il/api/3/action/datastore_search?resource_id=5c78e9fa-c2e2-4771-93ff-7f400a12f7ba&q=${encodeURIComponent(val)}&limit=1000`);
-            const data = await res.json();
-            let records = data.result.records
-                .map(r => r['שם_ישוב'].trim())
-                .filter(c => c !== 'לא רשום' && c.includes(val));
+            if (!cachedCities.current) {
+                const res = await fetch(`https://data.gov.il/api/3/action/datastore_search?resource_id=5c78e9fa-c2e2-4771-93ff-7f400a12f7ba&limit=3000`);
+                const data = await res.json();
+                cachedCities.current = data.result.records.map(r => r['שם_ישוב'].trim()).filter(c => c !== 'לא רשום');
+            }
+            let records = cachedCities.current.filter(c => c.includes(val));
             
             records.sort((a, b) => {
                 const aStarts = a.startsWith(val);
@@ -379,14 +411,22 @@ export default function CartClient() {
         }
     };
 
+
+    const cachedStreets = useRef({});
+
     const fetchStreetSuggestions = async (val) => {
         try {
-            const q = address.city ? `${val} ${address.city}` : val;
-            const res = await fetch(`https://data.gov.il/api/3/action/datastore_search?resource_id=9ad3862c-8391-4b2f-84a4-2d4c68625f4b&q=${encodeURIComponent(q)}&limit=1000`);
-            const data = await res.json();
-            let records = data.result.records
-                .map(r => r['שם_רחוב'].trim())
-                .filter(c => c.includes(val));
+            if (!address.city) return []; // Require city first
+            
+            if (!cachedStreets.current[address.city]) {
+                const res = await fetch(`https://data.gov.il/api/3/action/datastore_search?resource_id=9ad3862c-8391-4b2f-84a4-2d4c68625f4b&q=${encodeURIComponent(address.city)}&limit=5000`);
+                const data = await res.json();
+                cachedStreets.current[address.city] = data.result.records
+                    .filter(r => r['שם_ישוב'].trim() === address.city)
+                    .map(r => r['שם_רחוב'].trim());
+            }
+
+            let records = cachedStreets.current[address.city].filter(c => c.includes(val));
             
             records.sort((a, b) => {
                 const aStarts = a.startsWith(val);

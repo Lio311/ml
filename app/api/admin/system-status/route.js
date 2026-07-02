@@ -142,7 +142,54 @@ export async function GET() {
             lastRun: cronLogMap[cron.name] || workflowMap[cron.name] || emailLogsMap[cron.name] || null
         }));
 
-        return NextResponse.json({ crons, tablesExist });
+        // Health Checks
+        const health = {
+            neon: { status: 'loading', message: '' },
+            clerk: { status: 'loading', message: '' },
+            email: { status: 'loading', message: '' },
+            vercel: { status: 'loading', message: '' },
+            datagov: { status: 'loading', message: '' }
+        };
+
+        try {
+            const tempClient = await pool.connect();
+            await tempClient.query('SELECT 1');
+            tempClient.release();
+            health.neon = { status: 'success', message: 'מחובר בהצלחה' };
+        } catch (e) {
+            health.neon = { status: 'error', message: 'שגיאת התחברות למסד' };
+        }
+
+        if (process.env.NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY && process.env.CLERK_SECRET_KEY) {
+            health.clerk = { status: 'success', message: 'מפתחות הוגדרו' };
+        } else {
+            health.clerk = { status: 'error', message: 'חסרים מפתחות Clerk' };
+        }
+
+        if (process.env.EMAIL_USER && process.env.EMAIL_PASS) {
+            health.email = { status: 'success', message: 'מוגדר (Nodemailer)' };
+        } else {
+            health.email = { status: 'error', message: 'חסרים פרטי גישה למייל' };
+        }
+
+        if (process.env.VERCEL) {
+            health.vercel = { status: 'success', message: 'פועל על Vercel' };
+        } else {
+            health.vercel = { status: 'success', message: 'סביבה מקומית' };
+        }
+
+        try {
+            const dataGovRes = await fetch('https://data.gov.il/api/3/action/site_read', { method: 'HEAD' });
+            if (dataGovRes.ok) {
+                health.datagov = { status: 'success', message: 'מחובר בהצלחה' };
+            } else {
+                health.datagov = { status: 'error', message: 'קוד שגיאה מחזר' };
+            }
+        } catch (e) {
+            health.datagov = { status: 'error', message: 'שגיאת תקשורת' };
+        }
+
+        return NextResponse.json({ crons, tablesExist, health });
     } catch (error) {
         console.error("System status error:", error);
         return NextResponse.json({ error: error.message }, { status: 500 });

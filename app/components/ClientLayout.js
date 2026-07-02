@@ -15,8 +15,9 @@ import { BrandProvider } from "../context/BrandContext";
 export default function ClientLayout({ children, brands, menu }) {
     const pathname = usePathname();
     const isAdmin = pathname && typeof pathname === 'string' && pathname.startsWith('/admin');
+    const isMaintenance = pathname === '/maintenance';
 
-    if (isAdmin) {
+    if (isAdmin || isMaintenance) {
         return (
             <BrandProvider>
                 <div id="site-content">

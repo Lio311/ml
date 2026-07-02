@@ -1,11 +1,12 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { Activity, Clock, Play, CheckCircle2, XCircle, AlertTriangle, RefreshCw, Timer, Zap, Settings } from "lucide-react";
+import { Activity, Clock, Play, CheckCircle2, XCircle, AlertTriangle, RefreshCw, Timer, Zap, Settings, Database, Key, Mail, Globe, Server } from "lucide-react";
 import toast from "react-hot-toast";
 
 export default function SystemStatusPage() {
     const [crons, setCrons] = useState([]);
+    const [health, setHealth] = useState(null);
     const [isLoading, setIsLoading] = useState(true);
     const [tablesExist, setTablesExist] = useState(true);
     const [isSettingUp, setIsSettingUp] = useState(false);
@@ -17,6 +18,7 @@ export default function SystemStatusPage() {
             if (res.ok) {
                 const data = await res.json();
                 setCrons(data.crons || []);
+                setHealth(data.health || null);
                 setTablesExist(data.tablesExist !== false);
             }
         } catch (e) {
@@ -137,6 +139,47 @@ export default function SystemStatusPage() {
                     <p className="text-[10px] sm:text-xs text-gray-500 font-bold mt-1">טרם הורצו</p>
                 </div>
             </div>
+
+            {/* Health Checks Dashboard */}
+            {!isLoading && health && (
+                <div className="mb-8">
+                    <h2 className="text-sm font-black text-gray-900 uppercase tracking-widest mb-3 flex items-center gap-2">
+                        <Activity className="w-4 h-4 text-green-500" />
+                        בריאות חיבורים (Health Checks)
+                    </h2>
+                    <div className="grid grid-cols-2 lg:grid-cols-5 gap-3">
+                        <div className={`p-4 rounded-2xl border flex flex-col items-center text-center ${health.neon.status === 'success' ? 'bg-green-50 border-green-100' : 'bg-red-50 border-red-100'}`}>
+                            <Database className={`w-6 h-6 mb-2 ${health.neon.status === 'success' ? 'text-green-600' : 'text-red-600'}`} />
+                            <h3 className="font-bold text-sm text-gray-900">מסד נתונים (Neon)</h3>
+                            <p className={`text-xs mt-1 font-medium ${health.neon.status === 'success' ? 'text-green-700' : 'text-red-700'}`}>{health.neon.message}</p>
+                        </div>
+                        
+                        <div className={`p-4 rounded-2xl border flex flex-col items-center text-center ${health.clerk.status === 'success' ? 'bg-green-50 border-green-100' : 'bg-red-50 border-red-100'}`}>
+                            <Key className={`w-6 h-6 mb-2 ${health.clerk.status === 'success' ? 'text-green-600' : 'text-red-600'}`} />
+                            <h3 className="font-bold text-sm text-gray-900">אימות (Clerk)</h3>
+                            <p className={`text-xs mt-1 font-medium ${health.clerk.status === 'success' ? 'text-green-700' : 'text-red-700'}`}>{health.clerk.message}</p>
+                        </div>
+
+                        <div className={`p-4 rounded-2xl border flex flex-col items-center text-center ${health.email.status === 'success' ? 'bg-green-50 border-green-100' : 'bg-red-50 border-red-100'}`}>
+                            <Mail className={`w-6 h-6 mb-2 ${health.email.status === 'success' ? 'text-green-600' : 'text-red-600'}`} />
+                            <h3 className="font-bold text-sm text-gray-900">דוא״ל (Nodemailer)</h3>
+                            <p className={`text-xs mt-1 font-medium ${health.email.status === 'success' ? 'text-green-700' : 'text-red-700'}`}>{health.email.message}</p>
+                        </div>
+
+                        <div className={`p-4 rounded-2xl border flex flex-col items-center text-center ${health.vercel.status === 'success' ? 'bg-green-50 border-green-100' : 'bg-red-50 border-red-100'}`}>
+                            <Server className={`w-6 h-6 mb-2 ${health.vercel.status === 'success' ? 'text-green-600' : 'text-red-600'}`} />
+                            <h3 className="font-bold text-sm text-gray-900">שרת (Vercel)</h3>
+                            <p className={`text-xs mt-1 font-medium ${health.vercel.status === 'success' ? 'text-green-700' : 'text-red-700'}`}>{health.vercel.message}</p>
+                        </div>
+
+                        <div className={`p-4 rounded-2xl border flex flex-col items-center text-center ${health.datagov.status === 'success' ? 'bg-green-50 border-green-100' : 'bg-red-50 border-red-100'}`}>
+                            <Globe className={`w-6 h-6 mb-2 ${health.datagov.status === 'success' ? 'text-green-600' : 'text-red-600'}`} />
+                            <h3 className="font-bold text-sm text-gray-900">API מאגר ממשלתי</h3>
+                            <p className={`text-xs mt-1 font-medium ${health.datagov.status === 'success' ? 'text-green-700' : 'text-red-700'}`}>{health.datagov.message}</p>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {/* Crons List */}
             <div className="mb-4">
