@@ -140,19 +140,43 @@ export default function CartClient() {
     const [phoneNumber, setPhoneNumber] = useState('');
     const [phoneError, setPhoneError] = useState('');
     const [couponError, setCouponError] = useState('');
+    
+    // Address Logic
+    const [address, setAddress] = useState({ street: '', apartment: '', city: '' });
+    const [addressError, setAddressError] = useState('');
+    const [lastAddress, setLastAddress] = useState(null);
+    const [useLastAddress, setUseLastAddress] = useState(false);
 
     useEffect(() => {
         if (isLoaded && user) {
-            const fetchPersonalPhone = async () => {
-                const res = await fetch('/api/user/phone');
-                if (res.ok) {
-                    const data = await res.json();
+            const fetchPersonalData = async () => {
+                // Fetch Phone
+                const resPhone = await fetch('/api/user/phone');
+                if (resPhone.ok) {
+                    const data = await resPhone.json();
                     if (data.phone) setPhoneNumber(data.phone);
                 }
+
+                // Fetch Last Address
+                const resAddress = await fetch('/api/user/last-order');
+                if (resAddress.ok) {
+                    const data = await resAddress.json();
+                    if (data.address) {
+                        setLastAddress(data.address);
+                    }
+                }
             };
-            fetchPersonalPhone();
+            fetchPersonalData();
         }
     }, [isLoaded, user]);
+
+    useEffect(() => {
+        if (useLastAddress && lastAddress) {
+            setAddress(lastAddress);
+        } else if (useLastAddress) {
+            setUseLastAddress(false);
+        }
+    }, [useLastAddress, lastAddress]);
 
     // Tier Celebration (Confetti)
     useEffect(() => {
@@ -183,6 +207,12 @@ export default function CartClient() {
             return;
         }
 
+        if (!isSelfPickup && (!address.street || !address.city)) {
+            setAddressError("אנא מלא רחוב ועיר למשלוח");
+            toast.error("אנא מלא את כל שדות החובה למשלוח");
+            return;
+        }
+
         setIsSubmitting(true);
 
         // Track funnel event: checkout_started
@@ -206,6 +236,7 @@ export default function CartClient() {
                 activeVendorId,
                 freeSamples: freeSamplesCount,
                 deliveryMethod: isSelfPickup ? 'self_pickup' : 'mail',
+                address: !isSelfPickup ? address : null,
                 couponCode: coupon?.code
             };
 
@@ -629,6 +660,68 @@ export default function CartClient() {
                                 {phoneError && <p className="text-red-600 text-xs font-bold mt-1 animate-shake">{phoneError}</p>}
                                 <p className="text-[10px] text-gray-400 mt-1">{t('cart.phone_disclaimer')}</p>
                             </div>
+
+                            {/* Delivery Address */}
+                            {!isSelfPickup && (
+                                <div className="py-2 border-t pt-4">
+                                    <div className="flex items-center justify-between mb-2">
+                                        <label className="text-sm font-bold text-gray-700 block flex items-center gap-1">
+                                            כתובת למשלוח
+                                            <span className="text-red-500">*</span>
+                                        </label>
+                                        {lastAddress && (
+                                            <label className="flex items-center gap-2 cursor-pointer text-xs font-bold text-gray-600 hover:text-black transition">
+                                                <input 
+                                                    type="checkbox" 
+                                                    className="w-4 h-4 rounded text-black focus:ring-black accent-black"
+                                                    checked={useLastAddress}
+                                                    onChange={(e) => setUseLastAddress(e.target.checked)}
+                                                />
+                                                השתמש בכתובת האחרונה
+                                            </label>
+                                        )}
+                                    </div>
+                                    <div className="space-y-3">
+                                        <div className="grid grid-cols-3 gap-3">
+                                            <div className="col-span-2">
+                                                <input
+                                                    type="text"
+                                                    disabled={useLastAddress}
+                                                    className="w-full p-3 border rounded-lg text-sm focus:ring-2 focus:ring-gray-900 outline-none bg-white transition-all disabled:bg-gray-50 disabled:text-gray-500"
+                                                    placeholder="רחוב"
+                                                    value={address.street}
+                                                    onChange={(e) => {
+                                                        setAddress(prev => ({ ...prev, street: e.target.value }));
+                                                        if (addressError) setAddressError('');
+                                                    }}
+                                                />
+                                            </div>
+                                            <div className="col-span-1">
+                                                <input
+                                                    type="text"
+                                                    disabled={useLastAddress}
+                                                    className="w-full p-3 border rounded-lg text-sm focus:ring-2 focus:ring-gray-900 outline-none bg-white transition-all disabled:bg-gray-50 disabled:text-gray-500"
+                                                    placeholder="דירה/בית"
+                                                    value={address.apartment}
+                                                    onChange={(e) => setAddress(prev => ({ ...prev, apartment: e.target.value }))}
+                                                />
+                                            </div>
+                                        </div>
+                                        <input
+                                            type="text"
+                                            disabled={useLastAddress}
+                                            className="w-full p-3 border rounded-lg text-sm focus:ring-2 focus:ring-gray-900 outline-none bg-white transition-all disabled:bg-gray-50 disabled:text-gray-500"
+                                            placeholder="עיר"
+                                            value={address.city}
+                                            onChange={(e) => {
+                                                setAddress(prev => ({ ...prev, city: e.target.value }));
+                                                if (addressError) setAddressError('');
+                                            }}
+                                        />
+                                    </div>
+                                    {addressError && <p className="text-red-600 text-xs font-bold mt-1 animate-shake">{addressError}</p>}
+                                </div>
+                            )}
 
                             {/* Order Notes */}
                             <div className="py-2">

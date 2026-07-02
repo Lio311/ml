@@ -302,7 +302,8 @@ export async function POST(req) {
                 name: body.customerDetails?.name || (user ? `${user.firstName} ${user.lastName}` : ''),
                 email: body.customerDetails?.email || (user ? user.emailAddresses[0].emailAddress : ''),
                 phone: phoneNumber || '',
-                shipping_cost: shippingCost || 0
+                shipping_cost: shippingCost || 0,
+                address: body.address || null
             };
 
             const orderResult = await client.query(

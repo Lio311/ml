@@ -7,6 +7,9 @@ import ChatWidget from "./Chatbot/ChatWidget";
 import AccessibilityWidget from "./AccessibilityWidget";
 import PopupManager from "./PopupManager";
 import SwipeNavigator from "./SwipeNavigator";
+import SmartAdvisorTab from "./SmartAdvisorTab";
+import MiniCart from "./MiniCart";
+import PushManager from "./PushManager";
 import { BrandProvider } from "../context/BrandContext";
 
 export default function ClientLayout({ children, brands, menu }) {
@@ -41,6 +44,9 @@ export default function ClientLayout({ children, brands, menu }) {
             <AccessibilityWidget />
             <PopupManager />
             <SwipeNavigator />
+            <SmartAdvisorTab />
+            <MiniCart />
+            <PushManager />
         </BrandProvider>
     );
 }

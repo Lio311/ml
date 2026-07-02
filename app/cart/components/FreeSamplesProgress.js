@@ -15,35 +15,35 @@ export default function FreeSamplesProgress({
         return (
             <div className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
                 <h3 className="font-bold text-gray-900 mb-2 flex items-center gap-2 text-right justify-start">
-                    <span>🎁</span>
+                    <span className="grayscale">🎁</span>
                     {freeSamplesCount === 6 ? (
-                        <span className="text-green-600">{t('cart.all_samples_received')}</span>
+                        <span className="text-gray-900 font-black">{t('cart.all_samples_received')}</span>
                     ) : (
-                        <span>{t('cart.free_samples')}</span>
+                        <span className="text-gray-900 font-bold">{t('cart.free_samples')}</span>
                     )}
                 </h3>
 
-                <div className="relative h-4 bg-gray-100 rounded-full overflow-hidden mb-2">
+                <div className="relative h-4 bg-gray-200 rounded-full overflow-hidden mb-2 shadow-inner">
                     <div
-                        className={`absolute top-0 ${isRTL ? 'right-0' : 'left-0'} h-full bg-gradient-to-r from-blue-500 to-purple-600 transition-all duration-1000 ease-out rounded-full`}
+                        className={`absolute top-0 ${isRTL ? 'right-0' : 'left-0'} h-full bg-gradient-to-r from-gray-700 to-black transition-all duration-1000 ease-out rounded-full`}
                         style={{ width: `${Math.min(100, (subtotal / 1000) * 100)}%` }}
                     ></div>
                     <div className={`absolute top-0 ${isRTL ? 'right-[30%]' : 'left-[30%]'} h-full w-0.5 bg-white/50 z-10`} title="300₪ - 2 דוגמיות"></div>
                     <div className={`absolute top-0 ${isRTL ? 'right-[50%]' : 'left-[50%]'} h-full w-0.5 bg-white/50 z-10`} title="500₪ - 4 דוגמיות"></div>
                 </div>
 
-                <div className="flex justify-between text-[10px] text-gray-400 font-medium px-1">
-                    <span className={subtotal >= 0 ? "text-gray-900 font-bold" : ""}>0</span>
-                    <span className={subtotal >= 300 ? "text-blue-600 font-bold" : ""}>300 (2)</span>
-                    <span className={subtotal >= 500 ? "text-purple-600 font-bold" : ""}>500 (4)</span>
-                    <span className={subtotal >= 1000 ? "text-green-600 font-bold" : ""}>1000 (6)</span>
+                <div className="flex justify-between text-[10px] text-gray-400 font-bold px-1">
+                    <span className={subtotal >= 0 ? "text-gray-900" : ""}>0</span>
+                    <span className={subtotal >= 300 ? "text-gray-900" : ""}>300 (2)</span>
+                    <span className={subtotal >= 500 ? "text-gray-900" : ""}>500 (4)</span>
+                    <span className={subtotal >= 1000 ? "text-gray-900" : ""}>1000 (6)</span>
                 </div>
 
                 <div className="mt-3 text-xs text-center font-bold">
                     {freeSamplesCount === 0 && <span className="text-gray-500">{t('cart.more_for_samples', { amount: 300 - subtotal, count: 2 })}</span>}
-                    {freeSamplesCount === 2 && <span className="text-blue-600">{t('cart.have_samples_more_for_tier', { count: 2, amount: 500 - subtotal, nextCount: 4 })}</span>}
-                    {freeSamplesCount === 4 && <span className="text-purple-600">{t('cart.wow_samples_more_for_tier', { count: 4, amount: 1000 - subtotal, nextCount: 6 })}</span>}
-                    {freeSamplesCount === 6 && <span className="text-green-600 font-bold">{t('cart.max_samples_reached')}</span>}
+                    {freeSamplesCount === 2 && <span className="text-gray-800">{t('cart.have_samples_more_for_tier', { count: 2, amount: 500 - subtotal, nextCount: 4 })}</span>}
+                    {freeSamplesCount === 4 && <span className="text-black">{t('cart.wow_samples_more_for_tier', { count: 4, amount: 1000 - subtotal, nextCount: 6 })}</span>}
+                    {freeSamplesCount === 6 && <span className="text-black font-black">{t('cart.max_samples_reached')}</span>}
                 </div>
             </div>
         );
@@ -77,17 +77,17 @@ export default function FreeSamplesProgress({
     return (
         <div className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
             <h3 className="font-bold text-gray-900 mb-2 flex items-center gap-2 text-right justify-start">
-                <span>🎁</span>
+                <span className="grayscale">🎁</span>
                 {currentTier ? (
-                    <span className="text-green-600">{t('cart.received_samples', { count: currentTier.samplesCount })}</span>
+                    <span className="text-gray-900 font-black">{t('cart.received_samples', { count: currentTier.samplesCount })}</span>
                 ) : (
-                    <span>{t('cart.free_samples')}</span>
+                    <span className="text-gray-900 font-bold">{t('cart.free_samples')}</span>
                 )}
             </h3>
 
-            <div className="relative h-4 bg-gray-100 rounded-full overflow-hidden mb-2">
+            <div className="relative h-4 bg-gray-200 rounded-full overflow-hidden mb-2 shadow-inner">
                 <div
-                    className={`absolute top-0 ${isRTL ? 'right-0' : 'left-0'} h-full bg-gradient-to-r from-green-400 to-emerald-600 transition-all duration-1000 ease-out rounded-full`}
+                    className={`absolute top-0 ${isRTL ? 'right-0' : 'left-0'} h-full bg-gradient-to-r from-gray-700 to-black transition-all duration-1000 ease-out rounded-full`}
                     style={{ width: `${Math.min(100, (subtotal / maxTierSum) * 100)}%` }}
                 ></div>
                 {sortedTiers.map((t, idx) => (

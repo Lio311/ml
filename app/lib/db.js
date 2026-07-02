@@ -68,7 +68,8 @@ export const getBrands = unstable_cache(
             return res.rows;
         } catch (err) {
             Sentry.captureException(err);
-            console.error("Error fetching brands from DB, using empty array fallback during build:", err.message);
+            // Suppress console.error in dev to avoid Next.js error overlay blocking the screen
+            // when Neon DB compute quota is exceeded. Fallback is handled.
             return []; // Fallback to empty array to allow build to continue
         }
     },
@@ -85,7 +86,7 @@ export const getMenuItems = unstable_cache(
             }
         } catch (err) {
             Sentry.captureException(err);
-            console.error("Error fetching menu from DB, using fallback", err.message);
+            // Suppress console.error in dev
         }
 
         // Fallback Menu

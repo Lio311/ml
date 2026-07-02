@@ -61,7 +61,7 @@ const nextConfig = {
             key: 'Content-Security-Policy',
             value: [
               "default-src 'self';",
-              "script-src 'self' 'unsafe-inline' blob: https://*.ml-tlv.com https://ml-tlv.com https://*.clerk.accounts.dev https://clerk.ml-tlv.com https://*.clerk.services https://www.googletagmanager.com https://www.google-analytics.com https://*.clarity.ms https://browser.sentry-cdn.com https://*.sentry.io;",
+              `script-src 'self' 'unsafe-inline' ${process.env.NODE_ENV !== 'production' ? "'unsafe-eval'" : ""} blob: https://*.ml-tlv.com https://ml-tlv.com https://*.clerk.accounts.dev https://clerk.ml-tlv.com https://*.clerk.services https://www.googletagmanager.com https://www.google-analytics.com https://*.clarity.ms https://browser.sentry-cdn.com https://*.sentry.io;`,
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com https://www.gstatic.com;",
               "img-src 'self' data: blob: https: http:;",
               "media-src 'self' https: http:;",
