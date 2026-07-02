@@ -15,8 +15,17 @@ export async function POST(req) {
 
         const { enabled } = await req.json();
 
+        // Ensure table exists
+        await client.query(`
+            CREATE TABLE IF NOT EXISTS site_settings (
+                key VARCHAR(255) PRIMARY KEY,
+                value TEXT,
+                updated_at TIMESTAMP DEFAULT NOW()
+            )
+        `);
+
         // Check if exists
-        const existCheck = await client.query(`SELECT id FROM site_settings WHERE key = 'maintenance_mode'`);
+        const existCheck = await client.query(`SELECT key FROM site_settings WHERE key = 'maintenance_mode'`);
         if (existCheck.rows.length > 0) {
             await client.query(`UPDATE site_settings SET value = $1, updated_at = NOW() WHERE key = 'maintenance_mode'`, [JSON.stringify({ enabled: !!enabled })]);
         } else {
@@ -24,11 +33,15 @@ export async function POST(req) {
         }
 
         // Add to audit logs
-        const adminName = user ? `${user.firstName} ${user.lastName}` : 'Admin';
-        await client.query(
-            `INSERT INTO audit_logs (admin_id, admin_name, action, details) VALUES ($1, $2, $3, $4)`,
-            [user?.id, adminName, 'UPDATE_MAINTENANCE_MODE', JSON.stringify({ enabled })]
-        );
+        try {
+            const adminName = user ? `${user.firstName} ${user.lastName}` : 'Admin';
+            await client.query(
+                `INSERT INTO audit_logs (admin_id, admin_name, action, details) VALUES ($1, $2, $3, $4)`,
+                [user?.id, adminName, 'UPDATE_MAINTENANCE_MODE', JSON.stringify({ enabled })]
+            );
+        } catch (auditErr) {
+            console.error('Audit log failed, ignoring:', auditErr);
+        }
 
         return NextResponse.json({ success: true, enabled: !!enabled });
     } catch (err) {

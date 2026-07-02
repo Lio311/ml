@@ -359,9 +359,19 @@ export default function CartClient() {
 
     const fetchCitySuggestions = async (val) => {
         try {
-            const res = await fetch(`https://data.gov.il/api/3/action/datastore_search?resource_id=5c78e9fa-c2e2-4771-93ff-7f400a12f7ba&q=${encodeURIComponent(val)}&limit=5`);
+            const res = await fetch(`https://data.gov.il/api/3/action/datastore_search?resource_id=5c78e9fa-c2e2-4771-93ff-7f400a12f7ba&q=${encodeURIComponent(val)}&limit=100`);
             const data = await res.json();
-            return data.result.records.map(r => r['שם_ישוב'].trim()).filter(c => c !== 'לא רשום');
+            let records = data.result.records.map(r => r['שם_ישוב'].trim()).filter(c => c !== 'לא רשום');
+            
+            records.sort((a, b) => {
+                const aStarts = a.startsWith(val);
+                const bStarts = b.startsWith(val);
+                if (aStarts && !bStarts) return -1;
+                if (!aStarts && bStarts) return 1;
+                return a.localeCompare(b);
+            });
+            
+            return [...new Set(records)].slice(0, 5);
         } catch (e) {
             return [];
         }
@@ -370,10 +380,19 @@ export default function CartClient() {
     const fetchStreetSuggestions = async (val) => {
         try {
             const q = address.city ? `${val} ${address.city}` : val;
-            const res = await fetch(`https://data.gov.il/api/3/action/datastore_search?resource_id=9ad3862c-8391-4b2f-84a4-2d4c68625f4b&q=${encodeURIComponent(q)}&limit=10`);
+            const res = await fetch(`https://data.gov.il/api/3/action/datastore_search?resource_id=9ad3862c-8391-4b2f-84a4-2d4c68625f4b&q=${encodeURIComponent(q)}&limit=100`);
             const data = await res.json();
-            const results = data.result.records.map(r => r['שם_רחוב'].trim());
-            return [...new Set(results)].slice(0, 5);
+            let records = data.result.records.map(r => r['שם_רחוב'].trim());
+            
+            records.sort((a, b) => {
+                const aStarts = a.startsWith(val);
+                const bStarts = b.startsWith(val);
+                if (aStarts && !bStarts) return -1;
+                if (!aStarts && bStarts) return 1;
+                return a.localeCompare(b);
+            });
+            
+            return [...new Set(records)].slice(0, 5);
         } catch (e) {
             return [];
         }

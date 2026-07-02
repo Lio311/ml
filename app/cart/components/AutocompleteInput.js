@@ -28,7 +28,7 @@ export default function AutocompleteInput({
     const handleInputChange = async (e) => {
         const val = e.target.value;
         onChange(val);
-        if (val.length >= 2) {
+        if (val.length >= 1) {
             setLoading(true);
             const results = await fetchSuggestions(val);
             setSuggestions(results);

@@ -94,8 +94,8 @@ export default function MaintenanceAdminPage() {
                                 <Loader2 className="w-5 h-5 animate-spin" />
                             ) : (
                                 <>
-                                    <Save className="w-5 h-5" />
                                     שמור שינויים
+                                    <Save className="w-5 h-5" />
                                 </>
                             )}
                         </button>
