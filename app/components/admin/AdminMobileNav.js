@@ -152,7 +152,8 @@ export default function AdminMobileNav({ role = 'customer' }) {
     const brand = useBrand();
     const [unreadCount, setUnreadCount] = useState(0);
     const [pendingOrdersCount, setPendingOrdersCount] = useState(0);
-    const [monthlyRecommendationPending, setMonthlyRecommendationPending] = useState(false);
+    const [monthlyRecNeedsAction, setMonthlyRecNeedsAction] = useState(false);
+    const [pendingRecommendationsCount, setPendingRecommendationsCount] = useState(0);
     const [openGroups, setOpenGroups] = useState({});
 
     useEffect(() => {
@@ -163,7 +164,8 @@ export default function AdminMobileNav({ role = 'customer' }) {
                     const data = await res.json();
                     setUnreadCount(data.unreadInbox || 0);
                     setPendingOrdersCount(data.pendingOrders || 0);
-                    setMonthlyRecommendationPending(data.monthlyRecommendationPending || false);
+                    setMonthlyRecNeedsAction(data.monthlyRecNeedsAction || false);
+                    setPendingRecommendationsCount(data.pendingRecommendations || 0);
                 }
             } catch (err) {
                 console.error("Sidebar fetch error:", err);
@@ -234,7 +236,8 @@ export default function AdminMobileNav({ role = 'customer' }) {
                             const groupNotifications = visibleItems.reduce((acc, item) => {
                                 if (item.href === '/admin/orders') return acc + pendingOrdersCount;
                                 if (item.href.includes('inbox')) return acc + unreadCount;
-                                if (item.href === '/admin/monthly-recommendation' && monthlyRecommendationPending) return acc + 1;
+                                if (item.href === '/admin/monthly-recommendation' && monthlyRecNeedsAction) return acc + 1;
+                                if (item.href === '/admin/recommendations') return acc + pendingRecommendationsCount;
                                 return acc;
                             }, 0);
 
@@ -285,10 +288,15 @@ export default function AdminMobileNav({ role = 'customer' }) {
                                                                 {unreadCount}
                                                             </span>
                                                         )}
-                                                        {item.href === '/admin/monthly-recommendation' && monthlyRecommendationPending && (
-                                                            <span className="flex h-2 w-2 relative">
-                                                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
-                                                                <span className="relative inline-flex rounded-full h-2 w-2 bg-red-500"></span>
+                                                        {item.href === '/admin/monthly-recommendation' && monthlyRecNeedsAction && (
+                                                            <span title="נדרשת פעולה" className="flex h-5 w-5 items-center justify-center rounded-full bg-orange-500 text-white shadow-[0_0_10px_rgba(249,115,22,0.4)]">
+                                                                <AlertOctagon size={12} strokeWidth={3} />
+                                                            </span>
+                                                        )}
+                                                        {item.href === '/admin/recommendations' && pendingRecommendationsCount > 0 && (
+                                                            <span title="המלצות ממתינות לאישור" className="flex h-5 min-w-[20px] gap-1 items-center justify-center rounded-full bg-orange-500 px-1.5 text-[10px] font-black text-white shadow-[0_0_10px_rgba(249,115,22,0.4)]">
+                                                                <AlertOctagon size={10} strokeWidth={3} />
+                                                                {pendingRecommendationsCount}
                                                             </span>
                                                         )}
                                                     </div>
