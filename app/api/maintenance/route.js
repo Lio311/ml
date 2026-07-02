@@ -16,7 +16,8 @@ export async function GET() {
         if (res.rows.length > 0) {
             let enabled = false;
             try {
-                const parsed = JSON.parse(res.rows[0].value);
+                const val = res.rows[0].value;
+                const parsed = typeof val === 'string' ? JSON.parse(val) : val;
                 enabled = !!parsed?.enabled;
             } catch (e) {}
             return NextResponse.json({ enabled }, { headers });
