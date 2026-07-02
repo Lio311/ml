@@ -14,8 +14,10 @@ import Image from "@/app/components/CImage";
 // Modular Components
 import CartItem from "./components/CartItem";
 import CouponSection from "./components/CouponSection";
+
 import DeliverySection from "./components/DeliverySection";
 import FreeSamplesProgress from "./components/FreeSamplesProgress";
+import AutocompleteInput from "./components/AutocompleteInput";
 
 export default function CartClient() {
     const { t } = useLanguage();
@@ -355,6 +357,28 @@ export default function CartClient() {
         );
     }
 
+    const fetchCitySuggestions = async (val) => {
+        try {
+            const res = await fetch(`https://data.gov.il/api/3/action/datastore_search?resource_id=5c78e9fa-c2e2-4771-93ff-7f400a12f7ba&q=${encodeURIComponent(val)}&limit=5`);
+            const data = await res.json();
+            return data.result.records.map(r => r['שם_ישוב'].trim()).filter(c => c !== 'לא רשום');
+        } catch (e) {
+            return [];
+        }
+    };
+
+    const fetchStreetSuggestions = async (val) => {
+        try {
+            const q = address.city ? `${val} ${address.city}` : val;
+            const res = await fetch(`https://data.gov.il/api/3/action/datastore_search?resource_id=9ad3862c-8391-4b2f-84a4-2d4c68625f4b&q=${encodeURIComponent(q)}&limit=10`);
+            const data = await res.json();
+            const results = data.result.records.map(r => r['שם_רחוב'].trim());
+            return [...new Set(results)].slice(0, 5);
+        } catch (e) {
+            return [];
+        }
+    };
+
     return (
         <div className="min-h-screen bg-gray-50">
             <div className="container py-12">
@@ -683,27 +707,26 @@ export default function CartClient() {
                                         )}
                                     </div>
                                     <div className="space-y-3">
-                                        <div className="grid grid-cols-2 gap-3">
-                                            <div className="col-span-2">
-                                                <input
-                                                    type="text"
+                                        <div className="grid grid-cols-5 gap-3">
+                                            <div className="col-span-5 relative">
+                                                <AutocompleteInput
                                                     disabled={!!lastAddress && !shipToNewAddress}
-                                                    className="w-full p-3 border rounded-lg text-sm focus:ring-2 focus:ring-gray-900 outline-none bg-white transition-all disabled:bg-gray-50 disabled:text-gray-500"
                                                     placeholder="רחוב *"
                                                     value={address.street}
-                                                    onChange={(e) => {
-                                                        setAddress(prev => ({ ...prev, street: e.target.value }));
+                                                    onChange={(val) => {
+                                                        setAddress(prev => ({ ...prev, street: val }));
                                                         if (addressError) setAddressError('');
                                                     }}
+                                                    fetchSuggestions={fetchStreetSuggestions}
                                                 />
                                             </div>
-                                            <div className="col-span-1">
+                                            <div className="col-span-2 relative">
                                                 <input
                                                     type="text"
                                                     inputMode="numeric"
                                                     pattern="[0-9]*"
                                                     disabled={!!lastAddress && !shipToNewAddress}
-                                                    className="w-full p-3 border rounded-lg text-sm focus:ring-2 focus:ring-gray-900 outline-none bg-white transition-all disabled:bg-gray-50 disabled:text-gray-500"
+                                                    className="w-full p-3 border rounded-lg text-sm focus:ring-2 focus:ring-gray-900 outline-none bg-white transition-all disabled:bg-gray-50 disabled:text-gray-500 pl-10"
                                                     placeholder="מס' בית *"
                                                     value={address.houseNumber || ''}
                                                     onChange={(e) => {
@@ -711,14 +734,17 @@ export default function CartClient() {
                                                         setAddress(prev => ({ ...prev, houseNumber: val }));
                                                     }}
                                                 />
+                                                {address.houseNumber && (
+                                                    <Check className="w-5 h-5 text-green-500 absolute left-3 top-1/2 -translate-y-1/2" />
+                                                )}
                                             </div>
-                                            <div className="col-span-1">
+                                            <div className="col-span-3 relative">
                                                 <input
                                                     type="text"
                                                     inputMode="numeric"
                                                     pattern="[0-9]*"
                                                     disabled={!!lastAddress && !shipToNewAddress}
-                                                    className="w-full p-3 border rounded-lg text-sm focus:ring-2 focus:ring-gray-900 outline-none bg-white transition-all disabled:bg-gray-50 disabled:text-gray-500"
+                                                    className="w-full p-3 border rounded-lg text-sm focus:ring-2 focus:ring-gray-900 outline-none bg-white transition-all disabled:bg-gray-50 disabled:text-gray-500 pl-10"
                                                     placeholder="מס' דירה (0 לבית פרטי) *"
                                                     value={address.apartment || ''}
                                                     onChange={(e) => {
@@ -726,19 +752,23 @@ export default function CartClient() {
                                                         setAddress(prev => ({ ...prev, apartment: val }));
                                                     }}
                                                 />
+                                                {address.apartment && (
+                                                    <Check className="w-5 h-5 text-green-500 absolute left-3 top-1/2 -translate-y-1/2" />
+                                                )}
                                             </div>
                                         </div>
-                                        <input
-                                            type="text"
-                                            disabled={!!lastAddress && !shipToNewAddress}
-                                            className="w-full p-3 border rounded-lg text-sm focus:ring-2 focus:ring-gray-900 outline-none bg-white transition-all disabled:bg-gray-50 disabled:text-gray-500"
-                                            placeholder="עיר *"
-                                            value={address.city}
-                                            onChange={(e) => {
-                                                setAddress(prev => ({ ...prev, city: e.target.value }));
-                                                if (addressError) setAddressError('');
-                                            }}
-                                        />
+                                        <div className="relative">
+                                            <AutocompleteInput
+                                                disabled={!!lastAddress && !shipToNewAddress}
+                                                placeholder="עיר *"
+                                                value={address.city}
+                                                onChange={(val) => {
+                                                    setAddress(prev => ({ ...prev, city: val }));
+                                                    if (addressError) setAddressError('');
+                                                }}
+                                                fetchSuggestions={fetchCitySuggestions}
+                                            />
+                                        </div>
                                     </div>
                                     {addressError && <p className="text-red-600 text-xs font-bold mt-1 animate-shake">{addressError}</p>}
                                 </div>

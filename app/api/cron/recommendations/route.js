@@ -19,10 +19,12 @@ export async function GET(req) {
             // PHASE 1: GENERATE (Immediately post-order)
             // ==========================================
             const generateRes = await client.query(`
-                SELECT id, customer_details, items
-                FROM orders 
-                WHERE status IN ('processing', 'completed') 
-                AND created_at >= NOW() - INTERVAL '7 days'
+                SELECT o.id, o.customer_details, o.items
+                FROM orders o
+                LEFT JOIN pending_recommendation_emails p ON o.id = p.order_id
+                WHERE o.status = 'completed' 
+                AND p.id IS NULL
+                AND o.created_at >= NOW() - INTERVAL '60 days'
             `);
 
             const orders = generateRes.rows;
