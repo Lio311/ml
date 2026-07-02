@@ -159,8 +159,8 @@ export default function MaintenancePage() {
                             <line x1="-7" y1="12" x2="-7" y2="14" stroke="#475569" strokeWidth="1" />
                         </g>
 
-                        {/* Sawing Worker (on laptop) */}
-                        <g transform="translate(230, 335)">
+                        {/* Sawing Worker (on top left of laptop screen) */}
+                        <g transform="translate(250, 180)">
                             <circle cx="0" cy="0" r="4" fill="#64748b" />
                             <line x1="0" y1="4" x2="0" y2="10" stroke="#64748b" strokeWidth="2" />
                             <line x1="0" y1="10" x2="4" y2="15" stroke="#64748b" strokeWidth="2" />
