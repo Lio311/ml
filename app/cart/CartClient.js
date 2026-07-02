@@ -142,7 +142,7 @@ export default function CartClient() {
     const [couponError, setCouponError] = useState('');
     
     // Address Logic
-    const [address, setAddress] = useState({ street: '', apartment: '', city: '' });
+    const [address, setAddress] = useState({ street: '', houseNumber: '', apartment: '', city: '' });
     const [addressError, setAddressError] = useState('');
     const [lastAddress, setLastAddress] = useState(null);
     const [useLastAddress, setUseLastAddress] = useState(false);
@@ -207,8 +207,8 @@ export default function CartClient() {
             return;
         }
 
-        if (!isSelfPickup && (!address.street || !address.city || !address.apartment)) {
-            setAddressError("אנא מלא רחוב, מספר בית/דירה ועיר למשלוח");
+        if (!isSelfPickup && (!address.street || !address.city || !address.apartment || !address.houseNumber)) {
+            setAddressError("אנא מלא רחוב, מספר בית, מספר דירה (0 אם פרטי), ועיר למשלוח");
             toast.error("אנא מלא את כל שדות החובה למשלוח");
             return;
         }
@@ -682,7 +682,7 @@ export default function CartClient() {
                                         )}
                                     </div>
                                     <div className="space-y-3">
-                                        <div className="grid grid-cols-3 gap-3">
+                                        <div className="grid grid-cols-2 gap-3">
                                             <div className="col-span-2">
                                                 <input
                                                     type="text"
@@ -699,11 +699,31 @@ export default function CartClient() {
                                             <div className="col-span-1">
                                                 <input
                                                     type="text"
+                                                    inputMode="numeric"
+                                                    pattern="[0-9]*"
                                                     disabled={useLastAddress}
                                                     className="w-full p-3 border rounded-lg text-sm focus:ring-2 focus:ring-gray-900 outline-none bg-white transition-all disabled:bg-gray-50 disabled:text-gray-500"
-                                                    placeholder="דירה/בית *"
-                                                    value={address.apartment}
-                                                    onChange={(e) => setAddress(prev => ({ ...prev, apartment: e.target.value }))}
+                                                    placeholder="מס' בית *"
+                                                    value={address.houseNumber || ''}
+                                                    onChange={(e) => {
+                                                        const val = e.target.value.replace(/\D/g, '');
+                                                        setAddress(prev => ({ ...prev, houseNumber: val }));
+                                                    }}
+                                                />
+                                            </div>
+                                            <div className="col-span-1">
+                                                <input
+                                                    type="text"
+                                                    inputMode="numeric"
+                                                    pattern="[0-9]*"
+                                                    disabled={useLastAddress}
+                                                    className="w-full p-3 border rounded-lg text-sm focus:ring-2 focus:ring-gray-900 outline-none bg-white transition-all disabled:bg-gray-50 disabled:text-gray-500"
+                                                    placeholder="מס' דירה (0 לבית פרטי) *"
+                                                    value={address.apartment || ''}
+                                                    onChange={(e) => {
+                                                        const val = e.target.value.replace(/\D/g, '');
+                                                        setAddress(prev => ({ ...prev, apartment: val }));
+                                                    }}
                                                 />
                                             </div>
                                         </div>
