@@ -39,13 +39,16 @@ export default function MaintenancePage() {
                         {/* Laptop */}
                         <rect x="230" y="180" width="280" height="160" rx="8" stroke="#3b82f6" fill="white" />
                         <rect x="240" y="190" width="260" height="140" rx="4" stroke="#bfdbfe" fill="#f8fafc" />
-                        {/* Laptop Screen Content */}
-                        <circle cx="280" cy="225" r="12" stroke="#94a3b8" />
-                        <path d="M272 245 Q280 235 288 245" stroke="#94a3b8" />
-                        <line x1="310" y1="220" x2="420" y2="220" stroke="#cbd5e1" strokeWidth="4" />
-                        <line x1="310" y1="235" x2="380" y2="235" stroke="#cbd5e1" strokeWidth="4" />
-                        <line x1="310" y1="250" x2="460" y2="250" stroke="#e2e8f0" strokeWidth="2" />
-                        <line x1="310" y1="260" x2="440" y2="260" stroke="#e2e8f0" strokeWidth="2" />
+                        {/* Laptop Screen Content (Logo) */}
+                        <image 
+                            href="/logo_v5.png" 
+                            x="300" 
+                            y="220" 
+                            width="140" 
+                            height="60" 
+                            preserveAspectRatio="xMidYMid meet"
+                            style={{ filter: 'brightness(0) saturate(100%) invert(43%) sepia(87%) saturate(2891%) hue-rotate(204deg) brightness(101%) contrast(93%)' }}
+                        />
                         {/* Laptop Base */}
                         <path d="M200 350 L220 340 H520 L540 350 Z" stroke="#3b82f6" fill="white" />
 
@@ -104,9 +107,7 @@ export default function MaintenancePage() {
                     </svg>
                 </div>
 
-                <div className="flex justify-center mb-6 md:mb-8">
-                    <Image src="/logo_v6.png" alt="ml_tlv" width={140} height={50} className="object-contain" />
-                </div>
+
 
                 <div className="space-y-3">
                     <h1 className="text-2xl md:text-4xl font-bold tracking-tight text-gray-800">האתר בשיפוצים</h1>
