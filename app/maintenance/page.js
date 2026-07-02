@@ -89,17 +89,17 @@ export default function MaintenancePage() {
                         <circle cx="560" cy="110" r="10" stroke="#3b82f6" fill="white" />
                         
                         {/* Upper cables */}
-                        <line x1="600" y1="20" x2="450" y2="50" stroke="#64748b" />
+                        <line x1="600" y1="20" x2="320" y2="50" stroke="#64748b" />
                         <line x1="600" y1="20" x2="730" y2="50" stroke="#64748b" />
                         <line x1="600" y1="20" x2="600" y2="50" stroke="#3b82f6" />
 
                         {/* Animated Lift (Cable + Hook + Block) */}
                         <g className="animate-crane-lift">
-                            {/* Cable dropping from jib */}
-                            <line x1="380" y1="90" x2="380" y2="230" stroke="#64748b" strokeWidth="2" />
+                            {/* Cable dropping from left edge of jib */}
+                            <line x1="320" y1="90" x2="320" y2="230" stroke="#64748b" strokeWidth="2" />
                             
                             {/* The block being lifted */}
-                            <g transform="translate(330, 230) rotate(-10)">
+                            <g transform="translate(270, 230) rotate(-10)">
                                 <rect x="0" y="0" width="100" height="24" rx="4" fill="#3b82f6" stroke="none" />
                                 <line x1="15" y1="12" x2="85" y2="12" stroke="white" strokeWidth="2" />
                             </g>
