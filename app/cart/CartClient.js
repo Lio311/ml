@@ -207,8 +207,8 @@ export default function CartClient() {
             return;
         }
 
-        if (!isSelfPickup && (!address.street || !address.city)) {
-            setAddressError("אנא מלא רחוב ועיר למשלוח");
+        if (!isSelfPickup && (!address.street || !address.city || !address.apartment)) {
+            setAddressError("אנא מלא רחוב, מספר בית/דירה ועיר למשלוח");
             toast.error("אנא מלא את כל שדות החובה למשלוח");
             return;
         }
@@ -688,7 +688,7 @@ export default function CartClient() {
                                                     type="text"
                                                     disabled={useLastAddress}
                                                     className="w-full p-3 border rounded-lg text-sm focus:ring-2 focus:ring-gray-900 outline-none bg-white transition-all disabled:bg-gray-50 disabled:text-gray-500"
-                                                    placeholder="רחוב"
+                                                    placeholder="רחוב *"
                                                     value={address.street}
                                                     onChange={(e) => {
                                                         setAddress(prev => ({ ...prev, street: e.target.value }));
@@ -701,7 +701,7 @@ export default function CartClient() {
                                                     type="text"
                                                     disabled={useLastAddress}
                                                     className="w-full p-3 border rounded-lg text-sm focus:ring-2 focus:ring-gray-900 outline-none bg-white transition-all disabled:bg-gray-50 disabled:text-gray-500"
-                                                    placeholder="דירה/בית"
+                                                    placeholder="דירה/בית *"
                                                     value={address.apartment}
                                                     onChange={(e) => setAddress(prev => ({ ...prev, apartment: e.target.value }))}
                                                 />
@@ -711,7 +711,7 @@ export default function CartClient() {
                                             type="text"
                                             disabled={useLastAddress}
                                             className="w-full p-3 border rounded-lg text-sm focus:ring-2 focus:ring-gray-900 outline-none bg-white transition-all disabled:bg-gray-50 disabled:text-gray-500"
-                                            placeholder="עיר"
+                                            placeholder="עיר *"
                                             value={address.city}
                                             onChange={(e) => {
                                                 setAddress(prev => ({ ...prev, city: e.target.value }));
