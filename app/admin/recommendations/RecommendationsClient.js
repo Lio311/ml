@@ -110,6 +110,78 @@ export default function RecommendationsClient() {
 
     const pendingItems = items.filter(i => i.status === 'pending');
     const approvedItems = items.filter(i => i.status === 'approved');
+    const sentItems = items.filter(i => i.status === 'sent');
+
+    const renderCompactCard = (item, type) => {
+        const suggestedProducts = typeof item.suggested_products === 'string' ? JSON.parse(item.suggested_products) : item.suggested_products || [];
+        const email = item.customer_details?.email || 'ללא אימייל';
+        const firstName = item.customer_details?.first_name || 'לקוח';
+        
+        let dateText = '';
+        if (item.created_at) {
+            dateText = new Date(item.created_at).toLocaleDateString('he-IL');
+        }
+
+        const isSent = type === 'sent';
+
+        return (
+            <div key={item.id} className={`min-w-[300px] max-w-[300px] bg-white rounded-2xl shadow-sm border ${isSent ? 'border-emerald-100' : 'border-gray-200'} overflow-hidden snap-start flex flex-col shrink-0 transition-shadow hover:shadow-md`}>
+                <div className={`p-4 border-b ${isSent ? 'border-emerald-50 bg-emerald-50/30' : 'border-gray-100 bg-gray-50/50'} flex flex-col`}>
+                    <div className="flex items-center justify-between mb-2">
+                        <span className="font-bold text-gray-900 truncate">{firstName}</span>
+                        <span className="bg-white border border-gray-200 text-gray-700 text-[10px] px-2 py-0.5 rounded-full font-bold">
+                            #{item.order_id}
+                        </span>
+                    </div>
+                    <div className="text-gray-500 text-xs flex items-center gap-1.5 truncate mb-1">
+                        <Mail className="w-3 h-3 shrink-0" />
+                        <span className="truncate">{email}</span>
+                    </div>
+                    <div className="text-gray-400 text-[10px] font-mono">
+                        {isSent ? `נשלח ללקוח` : `נוצר ב-${dateText}`}
+                    </div>
+                </div>
+                
+                <div className="p-4 flex-1 flex flex-col">
+                    <h4 className="text-xs font-bold text-indigo-900 mb-3 flex items-center gap-1.5 border-b border-gray-100 pb-2">
+                        <Search className="w-3 h-3" />
+                        המלצות שניתנו
+                    </h4>
+                    <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+                        {suggestedProducts.map((p, idx) => (
+                            <div key={idx} className="shrink-0 w-[72px] bg-white rounded border border-gray-100 p-1 flex flex-col items-center shadow-sm">
+                                {p.image_url ? (
+                                    <img src={p.image_url} alt={p.name} className="h-12 object-contain mb-1" />
+                                ) : (
+                                    <div className="h-12 w-full bg-gray-50 rounded mb-1 flex items-center justify-center">
+                                        <Box className="w-4 h-4 text-gray-300" />
+                                    </div>
+                                )}
+                                <span className="text-[9px] font-bold text-gray-800 text-center truncate w-full" title={p.name}>{p.name}</span>
+                                <span className="text-[8px] text-gray-400 text-center truncate w-full" title={p.brand}>{p.brand}</span>
+                            </div>
+                        ))}
+                        {suggestedProducts.length === 0 && (
+                            <span className="text-xs text-gray-400 italic">לא נמצאו המלצות</span>
+                        )}
+                    </div>
+                    
+                    {!isSent && (
+                        <div className="mt-auto pt-3 border-t border-gray-50">
+                            <button
+                                onClick={() => handleReject(item.id)}
+                                disabled={rejectingId === item.id}
+                                className="w-full py-1.5 text-[11px] font-bold text-red-500 hover:bg-red-50 rounded-lg flex items-center justify-center gap-1 transition-colors"
+                            >
+                                {rejectingId === item.id ? <Loader2 className="w-3 h-3 animate-spin" /> : <XCircle className="w-3 h-3" />}
+                                בטל אישור (מחק)
+                            </button>
+                        </div>
+                    )}
+                </div>
+            </div>
+        );
+    };
 
     const renderItemCard = (item, isPendingActionable) => {
         const originalItems = typeof item.original_items === 'string' ? JSON.parse(item.original_items) : item.original_items || [];
@@ -289,19 +361,38 @@ export default function RecommendationsClient() {
 
             {approvedItems.length > 0 && (
                 <div className="mt-12">
-                    <div className="flex items-center justify-between mb-6">
+                    <div className="flex items-center justify-between mb-4">
                         <div>
                             <h2 className="text-2xl font-bold text-gray-800">
                                 אושרו בהמתנה לשליחה
                             </h2>
-                            <p className="text-gray-500 mt-1 flex items-center">
+                            <p className="text-gray-500 mt-1 flex items-center text-sm">
                                 <Clock className="w-4 h-4 ml-2" />
-                                {approvedItems.length} מיילים ממתינים שיעברו 30 ימים מההזמנה שלהם
+                                {approvedItems.length} מיילים ממתינים לתזמון
                             </p>
                         </div>
                     </div>
-                    <div className="flex flex-col gap-6 opacity-75 grayscale hover:grayscale-0 transition-all">
-                        {approvedItems.map((item) => renderItemCard(item, false))}
+                    <div className="flex overflow-x-auto gap-4 pb-4 snap-x opacity-90 hover:opacity-100 transition-all">
+                        {approvedItems.map((item) => renderCompactCard(item, 'approved'))}
+                    </div>
+                </div>
+            )}
+
+            {sentItems.length > 0 && (
+                <div className="mt-12 mb-12">
+                    <div className="flex items-center justify-between mb-4">
+                        <div>
+                            <h2 className="text-2xl font-bold text-gray-800">
+                                היסטוריית המלצות
+                            </h2>
+                            <p className="text-gray-500 mt-1 flex items-center text-sm">
+                                <CheckCircle2 className="w-4 h-4 ml-2 text-emerald-500" />
+                                {sentItems.length} מיילים נשלחו ללקוחות בעבר
+                            </p>
+                        </div>
+                    </div>
+                    <div className="flex overflow-x-auto gap-4 pb-4 snap-x opacity-75 hover:opacity-100 transition-all">
+                        {sentItems.map((item) => renderCompactCard(item, 'sent'))}
                     </div>
                 </div>
             )}

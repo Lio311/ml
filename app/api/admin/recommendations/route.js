@@ -21,7 +21,7 @@ export async function GET(req) {
                    o.customer_details, o.items as original_items
             FROM pending_recommendation_emails p
             JOIN orders o ON p.order_id = o.id
-            WHERE p.status IN ('pending', 'approved')
+            WHERE p.status IN ('pending', 'approved', 'sent')
             ORDER BY p.created_at DESC
         `);
 
