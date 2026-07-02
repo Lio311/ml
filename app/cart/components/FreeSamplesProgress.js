@@ -1,6 +1,7 @@
 "use client";
 
 import { useLanguage } from "../../context/LanguageContext";
+import { Gift } from "lucide-react";
 
 export default function FreeSamplesProgress({ 
     isMainVendor, 
@@ -15,7 +16,7 @@ export default function FreeSamplesProgress({
         return (
             <div className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
                 <h3 className="font-bold text-gray-900 mb-2 flex items-center gap-2 text-right justify-start">
-                    <span className="grayscale">🎁</span>
+                    <Gift className="w-5 h-5 text-gray-800" />
                     {freeSamplesCount === 6 ? (
                         <span className="text-gray-900 font-black">{t('cart.all_samples_received')}</span>
                     ) : (
@@ -59,7 +60,7 @@ export default function FreeSamplesProgress({
         if (!isMainVendor && freeSamplesCount > 0) {
              return (
                 <div className="bg-green-50 border border-green-100 p-4 rounded-xl flex items-center gap-3 animate-bounce">
-                    <div className="bg-green-600 text-white w-10 h-10 rounded-full flex items-center justify-center text-xl">🎁</div>
+                    <div className="bg-gray-900 text-white w-10 h-10 rounded-full flex items-center justify-center"><Gift className="w-5 h-5" /></div>
                     <div>
                         <p className="text-green-900 font-bold text-sm">{t('cart.benefit_waiting')}</p>
                         <p className="text-green-700 text-xs font-medium">{t('cart.eligible_for_samples', { count: freeSamplesCount })}</p>
@@ -77,7 +78,7 @@ export default function FreeSamplesProgress({
     return (
         <div className="bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
             <h3 className="font-bold text-gray-900 mb-2 flex items-center gap-2 text-right justify-start">
-                <span className="grayscale">🎁</span>
+                <Gift className="w-5 h-5 text-gray-800" />
                 {currentTier ? (
                     <span className="text-gray-900 font-black">{t('cart.received_samples', { count: currentTier.samplesCount })}</span>
                 ) : (
