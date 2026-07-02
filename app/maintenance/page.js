@@ -106,48 +106,48 @@ export default function MaintenancePage() {
                         </g>
 
                         {/* Workers */}
-                        {/* Walking Worker (inside laptop screen) */}
+                        {/* Walking Worker (on top edge of screen) */}
                         <g className="animate-worker-walk">
-                            <circle cx="300" cy="320" r="4" fill="#64748b" />
-                            <line x1="300" y1="324" x2="300" y2="334" stroke="#64748b" strokeWidth="2" />
+                            <circle cx="300" cy="160" r="4" fill="#64748b" />
+                            <line x1="300" y1="164" x2="300" y2="174" stroke="#64748b" strokeWidth="2" />
                             <g className="animate-worker-legs">
-                                <line x1="300" y1="334" x2="295" y2="340" stroke="#64748b" strokeWidth="2" />
-                                <line x1="300" y1="334" x2="305" y2="340" stroke="#64748b" strokeWidth="2" />
+                                <line x1="300" y1="174" x2="295" y2="180" stroke="#64748b" strokeWidth="2" />
+                                <line x1="300" y1="174" x2="305" y2="180" stroke="#64748b" strokeWidth="2" />
                             </g>
-                            <line x1="300" y1="326" x2="292" y2="330" stroke="#64748b" strokeWidth="2" />
-                            <line x1="300" y1="326" x2="308" y2="330" stroke="#64748b" strokeWidth="2" />
+                            <line x1="300" y1="166" x2="292" y2="170" stroke="#64748b" strokeWidth="2" />
+                            <line x1="300" y1="166" x2="308" y2="170" stroke="#64748b" strokeWidth="2" />
                         </g>
 
-                        {/* Hammering Worker (on laptop top right edge) */}
-                        <g transform="translate(470, 180)">
+                        {/* Painter Worker (on laptop top right edge) */}
+                        <g transform="translate(500, 180)">
                             <circle cx="0" cy="-10" r="4" fill="#64748b" />
                             <line x1="0" y1="-6" x2="0" y2="4" stroke="#64748b" strokeWidth="2" />
                             <line x1="0" y1="4" x2="-4" y2="10" stroke="#64748b" strokeWidth="2" />
                             <line x1="0" y1="4" x2="4" y2="10" stroke="#64748b" strokeWidth="2" />
-                            <line x1="0" y1="-4" x2="-5" y2="0" stroke="#64748b" strokeWidth="2" />
+                            <line x1="0" y1="-4" x2="5" y2="0" stroke="#64748b" strokeWidth="2" />
                             <g className="animate-hammer">
-                                <line x1="0" y1="-4" x2="8" y2="-8" stroke="#64748b" strokeWidth="2" />
-                                <line x1="8" y1="-8" x2="12" y2="-12" stroke="#475569" strokeWidth="1" />
-                                <rect x="10" y="-14" width="4" height="4" fill="#475569" />
+                                <line x1="0" y1="-4" x2="-8" y2="-4" stroke="#64748b" strokeWidth="2" />
+                                <line x1="-8" y1="-4" x2="-12" y2="-4" stroke="#475569" strokeWidth="1" />
+                                <rect x="-16" y="-6" width="4" height="4" fill="#475569" />
                             </g>
                         </g>
 
-                        {/* Forklift Worker (on laptop base) */}
+                        {/* Forklift Worker (on laptop base, left side) */}
                         <g className="animate-forklift">
-                            <rect x="320" y="325" width="30" height="20" fill="#f59e0b" rx="2" />
-                            <path d="M320 325 L325 315 H350 V325" fill="#f59e0b" />
-                            <circle cx="325" cy="345" r="5" fill="#1e293b" />
-                            <circle cx="345" cy="345" r="5" fill="#1e293b" />
-                            <rect x="350" y="320" width="4" height="25" fill="#64748b" />
+                            <rect x="240" y="325" width="30" height="20" fill="#f59e0b" rx="2" />
+                            <path d="M240 325 L245 315 H270 V325" fill="#f59e0b" />
+                            <circle cx="245" cy="345" r="5" fill="#1e293b" />
+                            <circle cx="265" cy="345" r="5" fill="#1e293b" />
+                            <rect x="270" y="320" width="4" height="25" fill="#64748b" />
                             <g className="animate-forklift-lift">
-                                <rect x="350" y="335" width="20" height="3" fill="#64748b" />
-                                <rect x="355" y="325" width="10" height="10" fill="#94a3b8" />
+                                <rect x="270" y="335" width="20" height="3" fill="#64748b" />
+                                <rect x="275" y="325" width="10" height="10" fill="#94a3b8" />
                             </g>
-                            <circle cx="335" cy="323" r="3" fill="#64748b" />
+                            <circle cx="255" cy="323" r="3" fill="#64748b" />
                         </g>
 
-                        {/* Jackhammer Worker (on laptop top middle edge) */}
-                        <g className="animate-jackhammer" transform="translate(340, 180)">
+                        {/* Jackhammer Worker (drilling the laptop base) */}
+                        <g className="animate-jackhammer" transform="translate(480, 340)">
                             <circle cx="0" cy="-10" r="4" fill="#64748b" />
                             <line x1="0" y1="-6" x2="0" y2="4" stroke="#64748b" strokeWidth="2" />
                             <line x1="0" y1="4" x2="-4" y2="10" stroke="#64748b" strokeWidth="2" />
@@ -250,7 +250,7 @@ export default function MaintenancePage() {
                 
                 @keyframes worker-walk {
                     0%, 100% { transform: translateX(0); }
-                    50% { transform: translateX(80px); }
+                    50% { transform: translateX(60px); }
                 }
                 .animate-worker-walk {
                     animation: worker-walk 8s linear infinite;
@@ -261,13 +261,13 @@ export default function MaintenancePage() {
                     25%, 75% { transform: scaleX(-1); }
                 }
                 .animate-worker-legs {
-                    transform-origin: 300px 334px;
+                    transform-origin: 300px 174px;
                     animation: worker-legs 0.6s infinite alternate;
                 }
                 
                 @keyframes hammer {
                     0%, 100% { transform: rotate(0deg); }
-                    50% { transform: rotate(40deg); }
+                    50% { transform: rotate(-40deg); }
                 }
                 .animate-hammer {
                     transform-origin: 0px -4px;
@@ -276,7 +276,7 @@ export default function MaintenancePage() {
                 
                 @keyframes forklift {
                     0%, 100% { transform: translateX(0px); }
-                    50% { transform: translateX(60px); }
+                    50% { transform: translateX(80px); }
                 }
                 .animate-forklift {
                     animation: forklift 6s ease-in-out infinite;
@@ -291,8 +291,8 @@ export default function MaintenancePage() {
                 }
                 
                 @keyframes jackhammer {
-                    0%, 100% { transform: translate(340px, 180px); }
-                    50% { transform: translate(340px, 179px); }
+                    0%, 100% { transform: translate(480px, 340px); }
+                    50% { transform: translate(480px, 339px); }
                 }
                 .animate-jackhammer {
                     animation: jackhammer 0.1s infinite;
