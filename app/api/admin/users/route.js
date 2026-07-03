@@ -13,6 +13,9 @@ export async function GET(request) {
     try {
         console.log("Fetching users from Local DB...");
 
+        // Ensure address column exists (fixes 500 error)
+        await client.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS address JSONB;`);
+
         let sql = `
             SELECT id, first_name, last_name, email, phone, role, created_at, address 
             FROM users 

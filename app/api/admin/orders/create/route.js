@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { currentUser } from '@clerk/nextjs/server';
 import pool from '../../../../lib/db';
-import { sendEmail, getOrderConfirmationTemplate, getAdminNewOrderTemplate } from '../../../../lib/email';
+import { sendEmail, getOrderConfirmationTemplate, getAdminNewOrderTemplate, formatItemsHtmlCustomer, formatItemsHtmlAdmin, formatNotesHtml } from '../../../../lib/email';
 import { recordAuditLog } from '../../../../lib/audit';
 import { checkAdmin } from '../../../../lib/admin';
 
@@ -138,11 +138,15 @@ export async function POST(req) {
                 const deliveryText = deliveryMethod === 'self_pickup' ? 'איסוף עצמי (תל אביב)' : 'משלוח בדואר';
                 const shippingText = shippingCost === 0 ? 'חינם' : `${shippingCost} ₪`;
 
-                const confirmationHtml = getOrderConfirmationTemplate(orderId, items, total, 0, notes, deliveryText, shippingText);
+                const itemsHtmlCustomer = formatItemsHtmlCustomer(items);
+                const itemsHtmlAdmin = formatItemsHtmlAdmin(items);
+                const notesHtml = formatNotesHtml(notes);
+
+                const confirmationHtml = getOrderConfirmationTemplate(orderId, itemsHtmlCustomer, total, 0, notesHtml, deliveryText, shippingText);
                 await sendEmail(customer.email, `אישור הזמנה טלפונית #${orderId} - ml_tlv`, confirmationHtml, 'order_confirmation', orderId);
 
                 const adminEmail = process.env.ADMIN_EMAIL;
-                const adminAlertHtml = getAdminNewOrderTemplate(orderId, customerName, total, items, deliveryText, shippingText, phoneNumber || customer.phone);
+                const adminAlertHtml = getAdminNewOrderTemplate(orderId, customerName, total, itemsHtmlAdmin, deliveryText, shippingText, phoneNumber || customer.phone);
                 await sendEmail(adminEmail, `הזמנה טלפונית חדשה! #${orderId} 🔥`, adminAlertHtml, 'admin_alert', orderId);
             } catch (emailError) {
                 console.error('Email sending failed for phone order:', emailError);

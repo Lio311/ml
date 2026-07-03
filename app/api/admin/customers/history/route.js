@@ -32,6 +32,9 @@ export async function GET(request) {
 
             const orders = ordersRes.rows;
 
+            // Ensure address column exists
+            await client.query(`ALTER TABLE users ADD COLUMN IF NOT EXISTS address JSONB;`);
+
             // 2. Fetch user record (if registered)
             const userRes = await client.query(`
                 SELECT id, first_name, last_name, email, phone, address, created_at, role

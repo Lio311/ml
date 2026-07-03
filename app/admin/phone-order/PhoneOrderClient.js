@@ -200,6 +200,7 @@ export default function PhoneOrderClient() {
             name: product.name,
             brand: product.brand,
             image: product.image,
+            image_url: product.image,
             size: size,
             price: discountedPrice,
             originalPrice: Number(product[`price_${size}ml`]),
