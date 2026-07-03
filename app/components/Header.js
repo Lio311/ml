@@ -155,16 +155,18 @@ export default function Header({ brands = [] }) {
                                 </div>
 
                                 {/* LOGO */}
-                                <Link href="/" className="block transform hover:scale-105 transition-transform duration-700">
-                                    <Image 
-                                        src={logoSrc} 
-                                        alt="ml." 
-                                        width={160} 
-                                        height={60} 
-                                        className="h-10 md:h-14 w-auto object-contain inverted-logo-v2" 
-                                        priority 
-                                    />
-                                </Link>
+                                <h1 className="m-0 p-0 leading-none">
+                                    <Link href="/" className="block transform hover:scale-105 transition-transform duration-700">
+                                        <Image 
+                                            src={logoSrc} 
+                                            alt="ml_tlv - דוגמיות בשמי נישה יוקרתיים" 
+                                            width={160} 
+                                            height={60} 
+                                            className="h-10 md:h-14 w-auto object-contain inverted-logo-v2" 
+                                            priority 
+                                        />
+                                    </Link>
+                                </h1>
                             </div>
                             {/* Spacer 1 */}
                             <div className="flex-1 hidden lg:block"></div>
@@ -244,16 +246,18 @@ export default function Header({ brands = [] }) {
                         </div>
 
                         <div className="flex items-center">
-                            <Link href="/">
-                                <Image 
-                                    src={logoSrc} 
-                                    alt="ml." 
-                                    width={90} 
-                                    height={30} 
-                                    className="h-6 w-auto object-contain inverted-logo-v2" 
-                                    priority 
-                                />
-                            </Link>
+                            <h1 className="m-0 p-0 leading-none">
+                                <Link href="/">
+                                    <Image 
+                                        src={logoSrc} 
+                                        alt="ml_tlv - דוגמיות בשמי נישה יוקרתיים" 
+                                        width={90} 
+                                        height={30} 
+                                        className="h-6 w-auto object-contain inverted-logo-v2" 
+                                        priority 
+                                    />
+                                </Link>
+                            </h1>
                         </div>
 
                         {/* Left side: Icons - Pushed to left edge */}
