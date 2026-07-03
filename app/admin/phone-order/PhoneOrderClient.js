@@ -820,50 +820,75 @@ export default function PhoneOrderClient() {
 
                                 <h4 className="font-black text-gray-900 mb-4 text-lg">בחר גודל בקבוק:</h4>
                                 <div className="grid grid-cols-1 gap-3">
-                                    {[2, 5, 10].map(size => {
-                                        const price = showProductModal[`price_${size}ml`];
-                                        if (!price) return null;
-                                        const discountedPrice = getDiscountedPrice(showProductModal, size);
-                                        const isDiscounted = discountedPrice !== Number(price);
+                                    {showProductModal.is_discovery_set ? (
+                                        <button 
+                                            onClick={() => handleAddProduct(showProductModal, showProductModal.volume_label || 'Set')}
+                                            className="group flex items-center justify-between p-5 rounded-2xl border-2 transition-all text-right relative border-gray-100 hover:border-blue-600 hover:bg-blue-50"
+                                        >
+                                            <div className="flex items-center gap-4">
+                                                <div className="w-10 h-10 rounded-xl border flex items-center justify-center font-bold transition-colors bg-white border-gray-100 text-gray-900 group-hover:border-blue-200">
+                                                    📦
+                                                </div>
+                                                <div>
+                                                    <div className="font-black text-gray-900">מארז התנסות</div>
+                                                    <div className="text-xs text-gray-500 uppercase font-black tracking-widest">{showProductModal.volume_label || 'סט'}</div>
+                                                </div>
+                                            </div>
+                                            {(showProductModal.stock - getConsumedStock(showProductModal.id)) <= 0 && (
+                                                <div className="absolute inset-0 bg-white/60 backdrop-blur-[1px] flex items-center justify-center z-20">
+                                                    <span className="bg-red-600 text-white text-[10px] font-black px-3 py-1 rounded-full shadow-lg">אזל מהמלאי</span>
+                                                </div>
+                                            )}
+                                            <div className="flex flex-col items-end">
+                                                <div className="text-xl font-black text-blue-600"><span dir="ltr">₪ {(showProductModal.price || 0).toLocaleString()}</span></div>
+                                            </div>
+                                        </button>
+                                    ) : (
+                                        [2, 5, 10].map(size => {
+                                            const price = showProductModal[`price_${size}ml`];
+                                            if (!price) return null;
+                                            const discountedPrice = getDiscountedPrice(showProductModal, size);
+                                            const isDiscounted = discountedPrice !== Number(price);
 
-                                        return (
-                                            <button 
-                                                key={size}
-                                                onClick={() => handleAddProduct(showProductModal, size)}
-                                                className={`group flex items-center justify-between p-5 rounded-2xl border-2 transition-all text-right relative ${isDiscounted ? 'border-red-100 bg-red-50/30 hover:border-red-600 hover:bg-red-50' : 'border-gray-100 hover:border-blue-600 hover:bg-blue-50'}`}
-                                            >
-                                                {isDiscounted && (
-                                                    <div className="absolute -top-2 -left-2 bg-red-600 text-white text-[10px] font-black px-2 py-0.5 rounded shadow-sm z-10 animate-pulse">
-                                                        SALE
-                                                    </div>
-                                                )}
-                                                <div className="flex items-center gap-4">
-                                                    <div className={`w-10 h-10 rounded-xl border flex items-center justify-center font-bold transition-colors ${isDiscounted ? 'bg-white border-red-200 text-red-600 group-hover:border-red-400' : 'bg-white border-gray-100 text-gray-900 group-hover:border-blue-200'}`}>
-                                                        {size}
-                                                    </div>
-                                                    <div>
-                                                        <div className={`font-black ${isDiscounted ? 'text-red-700' : 'text-gray-900'}`}>{size}ml</div>
-                                                        <div className="text-xs text-gray-500 uppercase font-black tracking-widest">דוגמית</div>
-                                                    </div>
-                                                </div>
-                                                {size > (showProductModal.stock - getConsumedStock(showProductModal.id)) && (
-                                                    <div className="absolute inset-0 bg-white/60 backdrop-blur-[1px] flex items-center justify-center z-20">
-                                                        <span className="bg-red-600 text-white text-[10px] font-black px-3 py-1 rounded-full shadow-lg">אזל מהמלאי</span>
-                                                    </div>
-                                                )}
-                                                <div className="flex flex-col items-end">
-                                                    {isDiscounted ? (
-                                                        <>
-                                                            <div className="text-[10px] text-gray-400 line-through leading-none mb-1">{price} ₪</div>
-                                                            <div className="text-xl font-black text-red-600"><span dir="ltr">₪ {discountedPrice.toLocaleString()}</span></div>
-                                                        </>
-                                                    ) : (
-                                                        <div className="text-xl font-black text-blue-600"><span dir="ltr">₪ {price.toLocaleString()}</span></div>
+                                            return (
+                                                <button 
+                                                    key={size}
+                                                    onClick={() => handleAddProduct(showProductModal, size)}
+                                                    className={`group flex items-center justify-between p-5 rounded-2xl border-2 transition-all text-right relative ${isDiscounted ? 'border-red-100 bg-red-50/30 hover:border-red-600 hover:bg-red-50' : 'border-gray-100 hover:border-blue-600 hover:bg-blue-50'}`}
+                                                >
+                                                    {isDiscounted && (
+                                                        <div className="absolute -top-2 -left-2 bg-red-600 text-white text-[10px] font-black px-2 py-0.5 rounded shadow-sm z-10 animate-pulse">
+                                                            SALE
+                                                        </div>
                                                     )}
-                                                </div>
-                                            </button>
-                                        );
-                                    })}
+                                                    <div className="flex items-center gap-4">
+                                                        <div className={`w-10 h-10 rounded-xl border flex items-center justify-center font-bold transition-colors ${isDiscounted ? 'bg-white border-red-200 text-red-600 group-hover:border-red-400' : 'bg-white border-gray-100 text-gray-900 group-hover:border-blue-200'}`}>
+                                                            {size}
+                                                        </div>
+                                                        <div>
+                                                            <div className={`font-black ${isDiscounted ? 'text-red-700' : 'text-gray-900'}`}>{size}ml</div>
+                                                            <div className="text-xs text-gray-500 uppercase font-black tracking-widest">דוגמית</div>
+                                                        </div>
+                                                    </div>
+                                                    {size > (showProductModal.stock - getConsumedStock(showProductModal.id)) && (
+                                                        <div className="absolute inset-0 bg-white/60 backdrop-blur-[1px] flex items-center justify-center z-20">
+                                                            <span className="bg-red-600 text-white text-[10px] font-black px-3 py-1 rounded-full shadow-lg">אזל מהמלאי</span>
+                                                        </div>
+                                                    )}
+                                                    <div className="flex flex-col items-end">
+                                                        {isDiscounted ? (
+                                                            <>
+                                                                <div className="text-[10px] text-gray-400 line-through leading-none mb-1">{price} ₪</div>
+                                                                <div className="text-xl font-black text-red-600"><span dir="ltr">₪ {discountedPrice.toLocaleString()}</span></div>
+                                                            </>
+                                                        ) : (
+                                                            <div className="text-xl font-black text-blue-600"><span dir="ltr">₪ {price.toLocaleString()}</span></div>
+                                                        )}
+                                                    </div>
+                                                </button>
+                                            );
+                                        })
+                                    )}
                                 </div>
                             </div>
                         </motion.div>
