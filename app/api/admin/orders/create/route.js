@@ -16,7 +16,7 @@ export async function POST(req) {
         const adminId = adminUser?.id;
 
         const body = await req.json();
-        const { customerId, items, total, discountAmount, couponCode, notes, deliveryMethod, shippingCost, address } = body;
+        const { customerId, items, total, discountAmount, couponCode, notes, deliveryMethod, shippingCost, address, phoneNumber } = body;
 
         if (!customerId || !items || items.length === 0) {
             return NextResponse.json({ error: 'Missing required order data' }, { status: 400 });
@@ -55,7 +55,7 @@ export async function POST(req) {
                 clerk_id: customer.id,
                 name: `${customer.first_name} ${customer.last_name}`,
                 email: customer.email,
-                phone: customer.phone || '',
+                phone: phoneNumber || customer.phone || '',
                 is_phone_order: true,
                 created_by: adminId,
                 coupon_code: couponCode || null,
@@ -142,7 +142,7 @@ export async function POST(req) {
                 await sendEmail(customer.email, `אישור הזמנה טלפונית #${orderId} - ml_tlv`, confirmationHtml, 'order_confirmation', orderId);
 
                 const adminEmail = process.env.ADMIN_EMAIL;
-                const adminAlertHtml = getAdminNewOrderTemplate(orderId, customerName, total, items, deliveryText, shippingText, customer.phone);
+                const adminAlertHtml = getAdminNewOrderTemplate(orderId, customerName, total, items, deliveryText, shippingText, phoneNumber || customer.phone);
                 await sendEmail(adminEmail, `הזמנה טלפונית חדשה! #${orderId} 🔥`, adminAlertHtml, 'admin_alert', orderId);
             } catch (emailError) {
                 console.error('Email sending failed for phone order:', emailError);

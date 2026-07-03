@@ -43,6 +43,7 @@ export default function PhoneOrderClient() {
     const [couponCode, setCouponCode] = useState('');
     const [couponDiscount, setCouponDiscount] = useState(null);
     const [notes, setNotes] = useState('');
+    const [phoneNumber, setPhoneNumber] = useState('');
     
     // Address logic
     const [address, setAddress] = useState({ street: '', houseNumber: '', apartment: '', city: '' });
@@ -297,7 +298,8 @@ export default function PhoneOrderClient() {
                     notes,
                     deliveryMethod,
                     shippingCost: shippingPrice,
-                    address: deliveryMethod === 'mail' ? address : null
+                    address: deliveryMethod === 'mail' ? address : null,
+                    phoneNumber
                 })
             });
             
@@ -419,7 +421,7 @@ export default function PhoneOrderClient() {
                                                 {customerResults.map(c => (
                                                     <button 
                                                         key={c.id}
-                                                        onClick={() => setCustomer(c)}
+                                                        onClick={() => { setCustomer(c); setPhoneNumber(c.phone || ''); }}
                                                         className="w-full p-4 hover:bg-blue-50 flex items-center gap-4 transition-colors group text-right"
                                                     >
                                                         <div className="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold">
@@ -437,24 +439,37 @@ export default function PhoneOrderClient() {
                                     </AnimatePresence>
                                 </div>
                             ) : (
-                                <div className="bg-blue-50 border border-blue-100 rounded-2xl p-4 flex items-center justify-between">
-                                    <div className="flex items-center gap-4">
-                                        <div className="w-12 h-12 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold shadow-lg shadow-blue-100">
-                                            {customer.firstName?.[0]}{customer.lastName?.[0]}
-                                        </div>
-                                        <div>
-                                            <div className="font-black text-blue-900">{customer.firstName} {customer.lastName}</div>
-                                            <div className="text-sm text-blue-600 opacity-80">{customer.email}</div>
-                                        </div>
-                                    </div>
-                                    <button 
-                                        onClick={() => { setCustomer(null); setCustomerQuery(''); }}
-                                        className="p-2 hover:bg-blue-100 rounded-xl text-blue-600 transition-colors"
-                                    >
-                                        שינוי לקוח
-                                    </button>
-                                </div>
-                            )}
+                                                <div className="bg-blue-50 border border-blue-100 rounded-2xl p-4 flex flex-col gap-4">
+                                                    <div className="flex items-center justify-between">
+                                                        <div className="flex items-center gap-4">
+                                                            <div className="w-12 h-12 rounded-full bg-blue-600 text-white flex items-center justify-center font-bold shadow-lg shadow-blue-100">
+                                                                {customer.firstName?.[0]}{customer.lastName?.[0]}
+                                                            </div>
+                                                            <div>
+                                                                <div className="font-black text-blue-900">{customer.firstName} {customer.lastName}</div>
+                                                                <div className="text-sm text-blue-600 opacity-80">{customer.email}</div>
+                                                            </div>
+                                                        </div>
+                                                        <button 
+                                                            onClick={() => { setCustomer(null); setCustomerQuery(''); setPhoneNumber(''); }}
+                                                            className="p-2 hover:bg-blue-100 rounded-xl text-blue-600 transition-colors"
+                                                        >
+                                                            שינוי לקוח
+                                                        </button>
+                                                    </div>
+                                                    <div className="pt-2 border-t border-blue-200/50">
+                                                        <label className="block text-sm font-bold text-blue-900 mb-2">מספר טלפון</label>
+                                                        <input
+                                                            type="tel"
+                                                            dir="ltr"
+                                                            className="w-full bg-white p-3 rounded-xl border border-blue-100 focus:border-blue-500 outline-none transition-all text-right"
+                                                            placeholder="הזן מספר טלפון..."
+                                                            value={phoneNumber}
+                                                            onChange={(e) => setPhoneNumber(e.target.value)}
+                                                        />
+                                                    </div>
+                                                </div>
+                                            )}
                         </div>
                     </section>
 
