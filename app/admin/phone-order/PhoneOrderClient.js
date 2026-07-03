@@ -421,7 +421,15 @@ export default function PhoneOrderClient() {
                                                 {customerResults.map(c => (
                                                     <button 
                                                         key={c.id}
-                                                        onClick={() => { setCustomer(c); setPhoneNumber(c.phone || ''); }}
+                                                        onClick={() => { 
+                                                            setCustomer(c); 
+                                                            setPhoneNumber(c.phone || ''); 
+                                                            if (c.address) {
+                                                                setAddress(c.address);
+                                                            } else {
+                                                                setAddress({ street: '', houseNumber: '', apartment: '', city: '' });
+                                                            }
+                                                        }}
                                                         className="w-full p-4 hover:bg-blue-50 flex items-center gap-4 transition-colors group text-right"
                                                     >
                                                         <div className="w-10 h-10 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center font-bold">

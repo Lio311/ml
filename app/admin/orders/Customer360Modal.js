@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { X, Mail, Phone, ShoppingBag, Calendar, TrendingUp, User, ArrowRight, ExternalLink } from "lucide-react";
 import toast from "react-hot-toast";
+import EditAddressInput from "../users/EditAddressInput";
 
 export default function Customer360Modal({ email, onClose }) {
     const [data, setData] = useState(null);
@@ -116,6 +117,17 @@ export default function Customer360Modal({ email, onClose }) {
                                         <span dir="ltr">{data.profile.phone}</span>
                                     </div>
                                 )}
+                                <EditAddressInput
+                                    userId={data.profile?.id}
+                                    initialAddress={data.profile?.address}
+                                    canEdit={true}
+                                    onSaveSuccess={(newAddr) => {
+                                        setData(prev => ({
+                                            ...prev,
+                                            profile: { ...prev.profile, address: newAddr }
+                                        }));
+                                    }}
+                                />
                                 <div className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-100 rounded-2xl shadow-sm text-sm font-bold text-gray-700">
                                     <Mail className="w-4 h-4 text-blue-500" />
                                     <span>{email}</span>
