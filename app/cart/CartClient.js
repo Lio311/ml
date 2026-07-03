@@ -10,6 +10,7 @@ import LuckyWheel from "../components/LuckyWheel";
 import toast from 'react-hot-toast';
 import { useLanguage } from "../context/LanguageContext";
 import Image from "@/app/components/CImage";
+import { Check } from "lucide-react";
 
 // Modular Components
 import CartItem from "./components/CartItem";
