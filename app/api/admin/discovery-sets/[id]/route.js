@@ -2,14 +2,38 @@ import { NextResponse } from 'next/server';
 import pool from '@/app/lib/db';
 import { checkAdmin } from '@/app/lib/admin';
 
-export async function PUT(req, { params }) {
+export async function GET(req, { params }) {
     try {
+        const { id } = await params;
         const isAdmin = await checkAdmin();
         if (!isAdmin) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
         }
 
-        const id = params.id;
+        const client = await pool.connect();
+        try {
+            const res = await client.query('SELECT * FROM products WHERE id = $1 AND is_discovery_set = true', [id]);
+            if (res.rowCount === 0) {
+                return NextResponse.json({ error: 'Not found' }, { status: 404 });
+            }
+            return NextResponse.json(res.rows[0]);
+        } finally {
+            client.release();
+        }
+    } catch (error) {
+        console.error('Get discovery set error:', error);
+        return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
+    }
+}
+
+export async function PUT(req, { params }) {
+    try {
+        const { id } = await params;
+        const isAdmin = await checkAdmin();
+        if (!isAdmin) {
+            return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
+        }
+
         const data = await req.json();
         const client = await pool.connect();
         
@@ -89,7 +113,7 @@ export async function DELETE(req, { params }) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
         }
 
-        const id = params.id;
+        const { id } = await params;
         const client = await pool.connect();
         try {
             await client.query('DELETE FROM products WHERE id = $1 AND is_discovery_set = true', [id]);

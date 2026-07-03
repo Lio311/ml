@@ -117,10 +117,10 @@ export default function PhoneOrderClient() {
     // -- Helpers --
     const getDiscountedPrice = (product, size) => {
         if (!product) return 0;
-        const originalPrice = Number(product[`price_${size}ml`]);
+        const originalPrice = product.is_discovery_set ? Number(product.price) : Number(product[`price_${size}ml`]);
         if (!originalPrice) return 0;
 
-        const sizeStr = `${size}ml`;
+        const sizeStr = product.is_discovery_set ? 'Set' : `${size}ml`;
         const hasDiscount = product.discount_percentage > 0 && (product.discount_sizes || []).includes(sizeStr);
         
         // Optional: check discount_end_date if you want to be super strict
@@ -182,7 +182,7 @@ export default function PhoneOrderClient() {
     const getConsumedStock = (productId) => {
         return cart
             .filter(item => item.id === productId)
-            .reduce((sum, item) => sum + (item.quantity * item.size), 0);
+            .reduce((sum, item) => sum + (item.quantity * (item.is_discovery_set ? 1 : (Number(item.size) || 0))), 0);
     };
 
     const handleAddProduct = (product, size) => {
@@ -203,10 +203,11 @@ export default function PhoneOrderClient() {
             image_url: product.image,
             size: size,
             price: discountedPrice,
-            originalPrice: Number(product[`price_${size}ml`]),
+            originalPrice: product.is_discovery_set ? Number(product.price) : Number(product[`price_${size}ml`]),
             quantity: 1,
             itemKey: `${product.id}-${size}`,
-            stock: product.stock // Keep track of product stock
+            stock: product.stock, // Keep track of product stock
+            is_discovery_set: product.is_discovery_set
         };
 
         setCart(prev => {
@@ -229,8 +230,9 @@ export default function PhoneOrderClient() {
                 const newQuantity = Math.max(1, i.quantity + delta);
                 if (delta > 0) {
                     const currentConsumed = getConsumedStock(i.id);
-                    if (currentConsumed + i.size > i.stock) {
-                        toast.error(`הגעת למקסימום המלאי הזמין (${i.stock} מ"ל)`);
+                    const amountToAdd = i.is_discovery_set ? 1 : (Number(i.size) || 0);
+                    if (currentConsumed + amountToAdd > i.stock) {
+                        toast.error(`הגעת למקסימום המלאי הזמין (${i.stock} ${i.is_discovery_set ? 'יחידות' : 'מ"ל'})`);
                         return i;
                     }
                 }
@@ -544,7 +546,9 @@ export default function PhoneOrderClient() {
                                             <div className="flex-1 min-w-0">
                                                 <div className="font-bold text-gray-900 truncate">{cleanProductName(item.name, item.brand)}</div>
                                                 <div className="flex items-center gap-3 mt-1">
-                                                    <span className="text-xs px-2 py-0.5 bg-blue-50 text-blue-600 rounded-full font-bold">{item.size}ml</span>
+                                                    <span className="text-xs px-2 py-0.5 bg-blue-50 text-blue-600 rounded-full font-bold">
+                                                        {item.is_discovery_set ? item.size : `${item.size}ml`}
+                                                    </span>
                                                     <span className="text-sm font-bold text-gray-900"><span dir="ltr">₪ {item.price?.toLocaleString()}</span></span>
                                                 </div>
                                             </div>
@@ -559,8 +563,8 @@ export default function PhoneOrderClient() {
                                                 <span className="w-8 text-center font-bold">{item.quantity}</span>
                                                 <button 
                                                     onClick={() => updateQuantity(item.itemKey, 1)}
-                                                    className={`p-1 hover:bg-white hover:shadow-sm rounded-lg transition-all ${getConsumedStock(item.id) + item.size > item.stock ? 'opacity-20 cursor-not-allowed' : ''}`}
-                                                    disabled={getConsumedStock(item.id) + item.size > item.stock}
+                                                    className={`p-1 hover:bg-white hover:shadow-sm rounded-lg transition-all ${getConsumedStock(item.id) + (item.is_discovery_set ? 1 : Number(item.size)) > item.stock ? 'opacity-20 cursor-not-allowed' : ''}`}
+                                                    disabled={getConsumedStock(item.id) + (item.is_discovery_set ? 1 : Number(item.size)) > item.stock}
                                                 >
                                                     <Plus size={16} />
                                                 </button>
@@ -812,7 +816,7 @@ export default function PhoneOrderClient() {
                                         </h3>
                                         <div className="mt-1 flex items-center gap-2">
                                             <span className={`text-xs font-bold px-2 py-0.5 rounded-lg ${showProductModal.stock < 50 ? 'bg-red-50 text-red-600' : 'bg-green-50 text-green-600'}`}>
-                                                מלאי זמין: {showProductModal.stock - getConsumedStock(showProductModal.id)} מ"ל
+                                                מלאי זמין: {showProductModal.stock - getConsumedStock(showProductModal.id)} {showProductModal.is_discovery_set ? 'יחידות' : 'מ"ל'}
                                             </span>
                                         </div>
                                     </div>

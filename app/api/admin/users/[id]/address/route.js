@@ -5,14 +5,13 @@ import { recordAuditLog } from "@/app/lib/audit";
 
 export async function PATCH(request, { params }) {
     try {
+        const { id: userId } = await params;
         const user = await currentUser();
         const role = user?.publicMetadata?.role;
 
         if (role !== 'admin' && role !== 'deputy') {
             return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
         }
-
-        const userId = params.id;
         const body = await request.json();
         const { address } = body;
 

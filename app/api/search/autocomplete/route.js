@@ -25,7 +25,7 @@ export async function GET(req) {
             // It will handle typos like 'שנל' instead of 'שאנל'.
             const res = await client.query(`
                 SELECT id, name, brand, model, image_url, price_2ml, price_5ml, price_10ml, single_price, stock, slug,
-                discount_percentage, discount_sizes, discount_end_date,
+                discount_percentage, discount_sizes, discount_end_date, is_discovery_set, volume_label,
                 GREATEST(similarity(name, $1), similarity(brand, $1), similarity(model, $1), similarity(name_he, $1)) as sim_score
                 FROM products 
                 WHERE active = true 
@@ -87,7 +87,9 @@ export async function GET(req) {
                         Number(product.price_10ml) || Infinity,
                         Number(product.single_price) || Infinity
                     ),
-                    stock: product.stock
+                    stock: product.stock,
+                    is_discovery_set: product.is_discovery_set,
+                    volume_label: product.volume_label
                 };
             });
 
