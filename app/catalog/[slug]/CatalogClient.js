@@ -72,7 +72,9 @@ function CatalogProductCard({ item, slug, catalogId, catalogName }) {
             slug,
             catalogName
         );
-        toast.success(t('common.added_to_cart_toast').replace('{name}', item.fragrance_name).replace('{size}', size));
+        const toastKey = item.is_discovery_set ? 'common.added_to_cart_toast_set' : 'common.added_to_cart_toast';
+        const displaySize = item.is_discovery_set ? (item.volume_label || 'Set') : size;
+        toast.success(t(toastKey).replace('{name}', item.fragrance_name).replace('{size}', displaySize));
         setAddedSize(size);
     };
 

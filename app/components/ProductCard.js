@@ -57,7 +57,11 @@ export default function ProductCard({ product }) {
         }
 
         addToCart(product, size, discountedPrice, 'main', 'האתר הרשמי', price);
-        toast.success(t('common.added_to_cart_toast').replace('{name}', localize(product, 'name')).replace('{size}', size));
+        
+        const toastKey = product.is_discovery_set ? 'common.added_to_cart_toast_set' : 'common.added_to_cart_toast';
+        const displaySize = product.is_discovery_set ? (product.volume_label || (locale === 'he' ? 'מארז' : 'Set')) : size;
+        
+        toast.success(t(toastKey).replace('{name}', localize(product, 'name')).replace('{size}', displaySize));
         setAddedSize(size);
     };
 

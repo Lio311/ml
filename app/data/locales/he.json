@@ -113,6 +113,7 @@
         "product_not_found": "המוצר לא נמצא.",
         "out_of_stock_toast": "לא ניתן להוסיף את המוצר, אזל המלאי!",
         "added_to_cart_toast": "התווסף לסל: {name} ({size} מ\"ל)",
+        "added_to_cart_toast_set": "התווסף לסל: {name} ({size})",
         "new": "חדש",
         "out_of_stock": "אזל במלאי",
         "last_units": "יחידות אחרונות",

@@ -95,7 +95,7 @@ export default function CartItem({ item, updateQuantity, removeFromCart, activeV
                         <span className={item.isPrize ? 'text-green-600' : 'text-primary'}>{item.price} ₪</span>
                     )}
 
-                    {!item.isPrize && !isBundle && item.size !== 'set' && (
+                    {!item.isPrize && !isBundle && item.size !== 'set' && !item.is_discovery_set && (
                         <div className="relative inline-block ms-3" ref={dropdownRef}>
                             <button 
                                 onClick={(e) => { e.preventDefault(); setIsEditingSize(!isEditingSize); }}
@@ -125,6 +125,14 @@ export default function CartItem({ item, updateQuantity, removeFromCart, activeV
                                     })}
                                 </div>
                             )}
+                        </div>
+                    )}
+
+                    {item.is_discovery_set && (
+                        <div className="relative inline-block ms-3">
+                            <span className="bg-blue-50 text-blue-600 px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1">
+                                {item.volume_label || (locale === 'he' ? 'מארז' : 'Set')}
+                            </span>
                         </div>
                     )}
 
