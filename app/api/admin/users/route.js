@@ -14,7 +14,7 @@ export async function GET(request) {
         console.log("Fetching users from Local DB...");
 
         let sql = `
-            SELECT id, first_name, last_name, email, role, created_at 
+            SELECT id, first_name, last_name, email, phone, role, created_at 
             FROM users 
         `;
         let params = [];
@@ -35,6 +35,7 @@ export async function GET(request) {
             firstName: user.first_name,
             lastName: user.last_name,
             email: user.email,
+            phone: user.phone,
             role: user.role || 'customer',
             createdAt: user.created_at,
             lastSignInAt: null // DB doesn't track this yet, optional

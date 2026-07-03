@@ -463,7 +463,7 @@ export default function PhoneOrderClient() {
                                                             type="tel"
                                                             dir="ltr"
                                                             className="w-full bg-white p-3 rounded-xl border border-blue-100 focus:border-blue-500 outline-none transition-all text-right"
-                                                            placeholder="הזן מספר טלפון..."
+                                                            placeholder="...הזן מספר טלפון"
                                                             value={phoneNumber}
                                                             onChange={(e) => setPhoneNumber(e.target.value)}
                                                         />
