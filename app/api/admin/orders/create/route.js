@@ -16,7 +16,7 @@ export async function POST(req) {
         const adminId = adminUser?.id;
 
         const body = await req.json();
-        const { customerId, items, total, discountAmount, couponCode, notes, deliveryMethod, shippingCost } = body;
+        const { customerId, items, total, discountAmount, couponCode, notes, deliveryMethod, shippingCost, address } = body;
 
         if (!customerId || !items || items.length === 0) {
             return NextResponse.json({ error: 'Missing required order data' }, { status: 400 });
@@ -59,7 +59,8 @@ export async function POST(req) {
                 is_phone_order: true,
                 created_by: adminId,
                 coupon_code: couponCode || null,
-                discount_amount: discountAmount || 0
+                discount_amount: discountAmount || 0,
+                address: address || null
             };
 
             // Note: The 'orders' table does not have 'discount_amount' or 'coupon_code' columns.

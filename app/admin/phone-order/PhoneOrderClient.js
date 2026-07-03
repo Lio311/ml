@@ -16,12 +16,14 @@ import {
     Loader2,
     ChevronDown,
     X,
-    AlertCircle
+    AlertCircle,
+    Check
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { toast } from 'react-hot-toast';
 import Image from '@/app/components/CImage';
 import { cleanProductName } from '@/app/lib/productUtils';
+import AutocompleteInput from '@/app/cart/components/AutocompleteInput';
 
 export default function PhoneOrderClient() {
     const router = useRouter();
@@ -42,6 +44,10 @@ export default function PhoneOrderClient() {
     const [couponDiscount, setCouponDiscount] = useState(null);
     const [notes, setNotes] = useState('');
     
+    // Address logic
+    const [address, setAddress] = useState({ street: '', houseNumber: '', apartment: '', city: '' });
+    const [addressError, setAddressError] = useState('');
+    
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [showProductModal, setShowProductModal] = useState(null);
     const [placedOrderId, setPlacedOrderId] = useState(null);
@@ -49,6 +55,8 @@ export default function PhoneOrderClient() {
     // -- Refs --
     const customerRef = useRef(null);
     const productRef = useRef(null);
+    const cachedCities = useRef(null);
+    const cachedStreets = useRef({});
 
     // -- Effects --
     
@@ -122,6 +130,51 @@ export default function PhoneOrderClient() {
         if (!hasDiscount) return originalPrice;
         // Match site rounding logic: round to nearest 5
         return Math.round((originalPrice * (1 - product.discount_percentage / 100)) / 5) * 5;
+    };
+    
+    const fetchCitySuggestions = async (val) => {
+        try {
+            if (!cachedCities.current) {
+                const res = await fetch(`https://data.gov.il/api/3/action/datastore_search?resource_id=5c78e9fa-c2e2-4771-93ff-7f400a12f7ba&limit=3000`);
+                const data = await res.json();
+                cachedCities.current = data.result.records.map(r => r['שם_ישוב'].trim()).filter(c => c !== 'לא רשום');
+            }
+            let records = cachedCities.current.filter(c => c.includes(val));
+            records.sort((a, b) => {
+                const aStarts = a.startsWith(val);
+                const bStarts = b.startsWith(val);
+                if (aStarts && !bStarts) return -1;
+                if (!aStarts && bStarts) return 1;
+                return a.localeCompare(b);
+            });
+            return [...new Set(records)].slice(0, 5);
+        } catch (e) {
+            return [];
+        }
+    };
+
+    const fetchStreetSuggestions = async (val) => {
+        try {
+            if (!address.city) return [];
+            if (!cachedStreets.current[address.city]) {
+                const res = await fetch(`https://data.gov.il/api/3/action/datastore_search?resource_id=9ad3862c-8391-4b2f-84a4-2d4c68625f4b&q=${encodeURIComponent(address.city)}&limit=5000`);
+                const data = await res.json();
+                cachedStreets.current[address.city] = data.result.records
+                    .filter(r => r['שם_ישוב'].trim() === address.city)
+                    .map(r => r['שם_רחוב'].trim());
+            }
+            let records = cachedStreets.current[address.city].filter(c => c.includes(val));
+            records.sort((a, b) => {
+                const aStarts = a.startsWith(val);
+                const bStarts = b.startsWith(val);
+                if (aStarts && !bStarts) return -1;
+                if (!aStarts && bStarts) return 1;
+                return a.localeCompare(b);
+            });
+            return [...new Set(records)].slice(0, 5);
+        } catch (e) {
+            return [];
+        }
     };
 
     // -- Actions --
@@ -221,6 +274,15 @@ export default function PhoneOrderClient() {
         if (!customer) return toast.error('אנא בחר לקוח');
         if (cart.length === 0) return toast.error('הסל ריק');
         
+        if (deliveryMethod === 'mail') {
+            if (!address.city || !address.street || !address.houseNumber) {
+                setAddressError('נא למלא עיר, רחוב ומספר בית');
+                toast.error('נא למלא את כל שדות הכתובת (עיר, רחוב ומספר בית)');
+                return;
+            }
+            setAddressError('');
+        }
+        
         setIsSubmitting(true);
         try {
             const res = await fetch('/api/admin/orders/create', {
@@ -234,7 +296,8 @@ export default function PhoneOrderClient() {
                     couponCode: couponDiscount?.code,
                     notes,
                     deliveryMethod,
-                    shippingCost: shippingPrice
+                    shippingCost: shippingPrice,
+                    address: deliveryMethod === 'mail' ? address : null
                 })
             });
             
@@ -528,6 +591,74 @@ export default function PhoneOrderClient() {
                                     <span className="font-black text-sm">איסוף עצמי (0 ₪)</span>
                                 </button>
                             </div>
+
+                            {deliveryMethod === 'mail' && (
+                                <div className="mb-6 space-y-4 bg-gray-50 p-4 rounded-2xl border border-gray-100">
+                                    <label className="block text-sm font-bold text-gray-700">כתובת למשלוח</label>
+                                    <div className="space-y-3">
+                                        <div className="relative z-20">
+                                            <AutocompleteInput
+                                                placeholder="עיר *"
+                                                value={address.city}
+                                                onChange={(val) => {
+                                                    setAddress(prev => ({ ...prev, city: val, street: '' }));
+                                                    if (addressError) setAddressError('');
+                                                }}
+                                                fetchSuggestions={fetchCitySuggestions}
+                                            />
+                                        </div>
+                                        <div className="grid grid-cols-5 gap-3 relative z-10">
+                                            <div className="col-span-5 relative">
+                                                <AutocompleteInput
+                                                    disabled={!address.city}
+                                                    placeholder={address.city ? "רחוב *" : "יש לבחור עיר תחילה"}
+                                                    value={address.street}
+                                                    onChange={(val) => {
+                                                        setAddress(prev => ({ ...prev, street: val }));
+                                                        if (addressError) setAddressError('');
+                                                    }}
+                                                    fetchSuggestions={fetchStreetSuggestions}
+                                                />
+                                            </div>
+                                            <div className="col-span-2 relative">
+                                                <input
+                                                    type="text"
+                                                    inputMode="numeric"
+                                                    pattern="[0-9]*"
+                                                    className="w-full p-3 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none bg-white transition-all pl-10"
+                                                    placeholder="מס' בית *"
+                                                    value={address.houseNumber || ''}
+                                                    onChange={(e) => {
+                                                        const val = e.target.value.replace(/\D/g, '');
+                                                        setAddress(prev => ({ ...prev, houseNumber: val }));
+                                                    }}
+                                                />
+                                                {address.houseNumber && (
+                                                    <Check className="w-5 h-5 text-green-500 absolute left-3 top-1/2 -translate-y-1/2" />
+                                                )}
+                                            </div>
+                                            <div className="col-span-3 relative">
+                                                <input
+                                                    type="text"
+                                                    inputMode="numeric"
+                                                    pattern="[0-9]*"
+                                                    className="w-full p-3 border rounded-lg text-sm focus:ring-2 focus:ring-blue-500 outline-none bg-white transition-all pl-10"
+                                                    placeholder="דירה (0 לבית פרטי)"
+                                                    value={address.apartment || ''}
+                                                    onChange={(e) => {
+                                                        const val = e.target.value.replace(/\D/g, '');
+                                                        setAddress(prev => ({ ...prev, apartment: val }));
+                                                    }}
+                                                />
+                                                {address.apartment && (
+                                                    <Check className="w-5 h-5 text-green-500 absolute left-3 top-1/2 -translate-y-1/2" />
+                                                )}
+                                            </div>
+                                        </div>
+                                    </div>
+                                    {addressError && <p className="text-red-600 text-xs font-bold mt-1">{addressError}</p>}
+                                </div>
+                            )}
 
                             <div>
                                 <label className="block text-sm font-bold text-gray-700 mb-2">הערות להזמנה</label>
