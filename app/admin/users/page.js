@@ -62,7 +62,8 @@ export default async function AdminUsersPage(props) {
                 WHEN 'admin' THEN 1 
                 WHEN 'deputy' THEN 2 
                 WHEN 'warehouse' THEN 3 
-                ELSE 4 
+                WHEN 'viewer' THEN 4
+                ELSE 5 
             END ASC, 
             COALESCE(last_active_at, created_at) DESC
         `;
