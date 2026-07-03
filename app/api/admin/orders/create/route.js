@@ -63,6 +63,17 @@ export async function POST(req) {
                 address: address || null
             };
 
+            // Update user's saved address and phone if provided in phone order
+            if (address || phoneNumber) {
+                await client.query(
+                    `UPDATE users 
+                     SET phone = COALESCE($1, phone),
+                         address = COALESCE($2, address)
+                     WHERE id = $3`,
+                    [phoneNumber || null, address ? JSON.stringify(address) : null, customerId]
+                );
+            }
+
             // Note: The 'orders' table does not have 'discount_amount' or 'coupon_code' columns.
             // We store these details within customer_details JSONB to maintain tracking.
             const orderResult = await client.query(
