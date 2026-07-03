@@ -50,17 +50,18 @@ export async function POST(req, { params }) {
             const clerkCreatedAt = new Date(user.createdAt);
 
             await client.query(`
-                INSERT INTO users (id, email, first_name, last_name, phone, role, created_at, updated_at, last_active_at)
-                VALUES ($1, $2, $3, $4, $5, $6, $7, NOW(), NOW())
+                INSERT INTO users (id, email, first_name, last_name, phone, role, address, created_at, updated_at, last_active_at)
+                VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW(), NOW())
                 ON CONFLICT (email) DO UPDATE SET
                     id = EXCLUDED.id,
                     first_name = EXCLUDED.first_name,
                     last_name = EXCLUDED.last_name,
                     phone = EXCLUDED.phone,
                     role = EXCLUDED.role,
+                    address = COALESCE(EXCLUDED.address, users.address),
                     updated_at = NOW(),
                     last_active_at = NOW()
-            `, [userId, clerkEmail, clerkFirstName, clerkLastName, phoneNumber || '', clerkRole, clerkCreatedAt]);
+            `, [userId, clerkEmail, clerkFirstName, clerkLastName, phoneNumber || '', clerkRole, body.address ? JSON.stringify(body.address) : null, clerkCreatedAt]);
 
             // 1. Create Order
             const customerDetails = {

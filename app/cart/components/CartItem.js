@@ -131,7 +131,7 @@ export default function CartItem({ item, updateQuantity, removeFromCart, activeV
                     {item.is_discovery_set && (
                         <div className="relative inline-block ms-3">
                             <span className="bg-blue-50 text-blue-600 px-3 py-1 rounded-full text-xs font-bold flex items-center gap-1">
-                                {item.volume_label || (locale === 'he' ? 'מארז' : 'Set')}
+                                {item.volume_label || (locale === 'he' ? 'דיסקברי סט' : 'Set')}
                             </span>
                         </div>
                     )}

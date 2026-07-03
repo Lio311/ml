@@ -59,7 +59,7 @@ export default function ProductCard({ product }) {
         addToCart(product, size, discountedPrice, 'main', 'האתר הרשמי', price);
         
         const toastKey = product.is_discovery_set ? 'common.added_to_cart_toast_set' : 'common.added_to_cart_toast';
-        const displaySize = product.is_discovery_set ? (product.volume_label || (locale === 'he' ? 'מארז' : 'Set')) : size;
+        const displaySize = product.is_discovery_set ? (product.volume_label || (locale === 'he' ? 'דיסקברי סט' : 'Set')) : size;
         
         toast.success(t(toastKey).replace('{name}', localize(product, 'name')).replace('{size}', displaySize));
         setAddedSize(size);

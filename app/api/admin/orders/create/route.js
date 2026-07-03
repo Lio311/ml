@@ -93,49 +93,64 @@ export async function POST(req) {
             );
 
             // 4. Update Stock & Bottle Inventory
+            const notifiedProducts = new Set();
             for (const item of items) {
                 let dbId = item.id;
                 if (typeof dbId === 'string' && dbId.includes('-')) {
                     dbId = parseInt(dbId.split('-')[0]);
                 }
 
-                if (!item.isPrize && !isNaN(item.size)) {
-                    const deduction = Number(item.size) * item.quantity;
+                // Calculate stock deduction
+                let deduction = 0;
+                if (!item.isPrize) {
+                    if (item.is_discovery_set) {
+                        deduction = item.quantity; // 1 unit per discovery set
+                    } else if (!isNaN(item.size)) {
+                        deduction = Number(item.size) * item.quantity;
+                    }
+                }
+
+                if (deduction > 0) {
                     const stockRes = await client.query(
                         `UPDATE products SET stock = stock - $1 WHERE id = $2 RETURNING stock, name_he, name, original_size`,
                         [deduction, dbId]
                     );
 
-                    // Notifications for low stock
-                    if (stockRes.rows[0]) {
-                        const currentStock = stockRes.rows[0].stock;
-                        const originalSize = Number(stockRes.rows[0].original_size || 100);
+                    // Low Stock Alert (Below 20%)
+                    if (stockRes.rows.length > 0) {
+                        const { stock: currentStock, name_he, name, original_size } = stockRes.rows[0];
+                        const pName = name_he || name;
+                        const originalSize = Number(original_size) || 1000;
+                        
                         if (currentStock < originalSize * 0.2) {
-                            const pName = stockRes.rows[0].name_he || stockRes.rows[0].name;
-                            // RTL Fix: wrap number in LRM \u200E
-                            await client.query(
-                                `INSERT INTO notifications (type, message, is_read) VALUES ($1, $2, $3)`,
-                                ['warning', `מלאי נמוך למוצר: ${pName} (נותרו \u200E${currentStock} מ"ל)`, false]
-                            );
+                            if (!notifiedProducts.has(dbId)) {
+                                const unitLabel = item.is_discovery_set ? 'יחידות' : 'מ"ל';
+                                await client.query(
+                                    `INSERT INTO notifications (type, message, is_read) VALUES ($1, $2, $3)`,
+                                    ['warning', `מלאי נמוך למוצר: ${pName} (נותרו \u200E${currentStock} ${unitLabel})`, false]
+                                );
+                                notifiedProducts.add(dbId);
+                            }
                         }
                     }
 
-                    // Bottle Inventory
-                    const bottleSize = Number(item.size);
-
-                    if ([2, 5, 10].includes(bottleSize)) {
-                        const bottleRes = await client.query(
-                            `UPDATE bottle_inventory SET quantity = quantity - $1 WHERE size = $2 RETURNING quantity`,
-                            [item.quantity, bottleSize]
-                        );
-
-                        if (bottleRes.rows[0] && bottleRes.rows[0].quantity < 20) {
-                            const sizeLabel = `${bottleSize}ml`;
-                            // RTL Fix: wrap number in LRM \u200E
-                            await client.query(
-                                `INSERT INTO notifications (type, message, is_read) VALUES ($1, $2, $3)`,
-                                ['warning', `מלאי בקבוקים נמוך: ${sizeLabel} (נותרו \u200E${bottleRes.rows[0].quantity})`, false]
+                    // 5. Update Bottle Inventory (Skip for discovery sets)
+                    if (!item.is_discovery_set && !isNaN(item.size)) {
+                        const bottleSize = Number(item.size);
+                        if ([2, 5, 10].includes(bottleSize)) {
+                            const bottleRes = await client.query(
+                                `UPDATE bottle_inventory SET quantity = quantity - $1 WHERE size = $2 RETURNING quantity`,
+                                [item.quantity, bottleSize]
                             );
+
+                            if (bottleRes.rows[0] && bottleRes.rows[0].quantity < 20) {
+                                const sizeLabel = `${bottleSize}ml`;
+                                // RTL Fix: wrap number in LRM \u200E
+                                await client.query(
+                                    `INSERT INTO notifications (type, message, is_read) VALUES ($1, $2, $3)`,
+                                    ['warning', `מלאי בקבוקים נמוך: ${sizeLabel} (נותרו \u200E${bottleRes.rows[0].quantity})`, false]
+                                );
+                            }
                         }
                     }
                 }

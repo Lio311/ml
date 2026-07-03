@@ -14,18 +14,21 @@ export async function GET(req) {
 
         const client = await pool.connect();
         try {
-            // Find the most recent order for this user that has an address
+            // Fetch the user's saved address from the users table
+            // This ensures manual updates via the Admin panel are reflected in the cart
             const res = await client.query(`
-                SELECT customer_details->>'address' as address
-                FROM orders
-                WHERE customer_details->>'clerk_id' = $1
-                  AND customer_details->>'address' IS NOT NULL
-                ORDER BY created_at DESC
+                SELECT address
+                FROM users
+                WHERE id = $1 OR email = (SELECT email FROM users WHERE id = $1 LIMIT 1)
                 LIMIT 1
             `, [userId]);
 
             if (res.rows.length > 0 && res.rows[0].address) {
-                return NextResponse.json({ address: JSON.parse(res.rows[0].address) });
+                let addr = res.rows[0].address;
+                if (typeof addr === 'string') {
+                    try { addr = JSON.parse(addr); } catch(e) {}
+                }
+                return NextResponse.json({ address: addr });
             }
 
             return NextResponse.json({ address: null });

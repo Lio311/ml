@@ -73,7 +73,7 @@ function CatalogProductCard({ item, slug, catalogId, catalogName }) {
             catalogName
         );
         const toastKey = item.is_discovery_set ? 'common.added_to_cart_toast_set' : 'common.added_to_cart_toast';
-        const displaySize = item.is_discovery_set ? (item.volume_label || 'Set') : size;
+        const displaySize = item.is_discovery_set ? (item.volume_label || (dir === 'rtl' ? 'דיסקברי סט' : 'Set')) : size;
         toast.success(t(toastKey).replace('{name}', item.fragrance_name).replace('{size}', displaySize));
         setAddedSize(size);
     };

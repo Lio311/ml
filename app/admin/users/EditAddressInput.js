@@ -7,8 +7,12 @@ import toast from 'react-hot-toast';
 import AutocompleteInput from '../../cart/components/AutocompleteInput';
 
 export default function EditAddressInput({ userId, initialAddress, canEdit, onSaveSuccess }) {
+    let parsedAddress = initialAddress;
+    if (typeof initialAddress === 'string') {
+        try { parsedAddress = JSON.parse(initialAddress); } catch(e) {}
+    }
     const [isEditing, setIsEditing] = useState(false);
-    const [address, setAddress] = useState(initialAddress || { city: '', street: '', houseNumber: '', apartment: '' });
+    const [address, setAddress] = useState(parsedAddress || { city: '', street: '', houseNumber: '', apartment: '' });
     const [isLoading, setIsLoading] = useState(false);
     const router = useRouter();
 
@@ -135,7 +139,7 @@ export default function EditAddressInput({ userId, initialAddress, canEdit, onSa
         );
     }
 
-    const addrStr = formatAddress(initialAddress);
+    const addrStr = formatAddress(parsedAddress);
 
     return (
         <div className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-100 rounded-2xl shadow-sm text-sm font-bold text-gray-700 group relative">
