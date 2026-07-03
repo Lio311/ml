@@ -6,16 +6,20 @@ import { recordAuditLog } from '@/app/lib/audit';
 import * as Sentry from "@sentry/nextjs";
 
 export async function POST(req) {
+    let userId = null;
+    let user = null;
+    let body = null;
+
     try {
         const authData = await clerkAuth();
-        const userId = authData?.userId;
-        const user = await currentUser();
+        userId = authData?.userId;
+        user = await currentUser();
 
         if (!userId) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
-        const body = await req.json();
+        body = await req.json();
         const { items, total, freeSamples, notes, deliveryMethod, phoneNumber, catalogId, couponCode } = body;
 
         if (!items || items.length === 0) {
@@ -484,6 +488,32 @@ export async function POST(req) {
     } catch (error) {
         Sentry.captureException(error);
         console.error('Order creation error:', error);
+        
+        // Log to checkout_errors table
+        if (userId) {
+            try {
+                const userEmail = user?.emailAddresses?.[0]?.emailAddress || body?.customerDetails?.email || '';
+                const userName = body?.customerDetails?.name || (user ? `${user.firstName || ''} ${user.lastName || ''}`.trim() : '');
+                const userPhone = body?.phoneNumber || '';
+                
+                await pool.query(
+                    `INSERT INTO checkout_errors (user_id, user_name, user_email, user_phone, error_message, cart_items, total_amount)
+                     VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+                    [
+                        userId, 
+                        userName, 
+                        userEmail, 
+                        userPhone, 
+                        error.message || 'Unknown error', 
+                        body?.items ? JSON.stringify(body.items) : null,
+                        body?.total || 0
+                    ]
+                );
+            } catch (logError) {
+                console.error('Failed to log checkout error:', logError);
+            }
+        }
+
         return NextResponse.json({ error: error.message || 'Internal Server Error' }, { status: 500 });
     }
 }

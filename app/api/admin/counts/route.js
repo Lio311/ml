@@ -43,13 +43,22 @@ export async function GET() {
                 client.query("SELECT status FROM monthly_recommendations WHERE month = $1", [currentMonthStr])
             ]);
 
+            let checkoutErrorsCount = 0;
+            try {
+                const ceRes = await client.query("SELECT COUNT(*) FROM checkout_errors WHERE is_resolved = false");
+                checkoutErrorsCount = parseInt(ceRes.rows[0].count || 0);
+            } catch (e) {
+                // Table might not exist yet
+            }
+
             const monthlyRecStatus = monthlyRecRes.rows.length > 0 ? monthlyRecRes.rows[0].status : 'pending';
 
             return NextResponse.json({
                 pendingOrders: parseInt(ordersRes.rows[0].count || 0),
                 unreadInbox: parseInt(inboxRes.rows[0].total_unread || 0),
                 pendingRecommendations: parseInt(recsRes.rows[0].count || 0),
-                monthlyRecNeedsAction: monthlyRecStatus !== 'selected'
+                monthlyRecNeedsAction: monthlyRecStatus !== 'selected',
+                pendingCheckoutErrors: checkoutErrorsCount
             });
         } finally {
             client.release();

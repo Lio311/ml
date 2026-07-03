@@ -129,6 +129,7 @@ const navGroups = [
             { href: "/admin/automations", label: "אוטומציות", icon: Zap, roles: ['admin'] },
             { href: "/admin/system-status", label: "סטטוס מערכת", icon: Activity, roles: ['admin'] },
             { href: "/admin/error-logs", label: "ניטור שגיאות", icon: AlertOctagon, roles: ['admin'] },
+            { href: "/admin/checkout-errors", label: "שגיאות קופה", icon: AlertOctagon, roles: ['admin'] },
             { href: "/admin/audit-logs", label: "יומן פעולות", icon: History, roles: ['admin'] },
             { href: "/admin/email-logs", label: "יומן מיילים", icon: Mail, roles: ['admin'] },
         ]
@@ -149,6 +150,7 @@ export default function AdminSidebar({ role = 'customer' }) {
     const [pendingOrdersCount, setPendingOrdersCount] = useState(0);
     const [monthlyRecNeedsAction, setMonthlyRecNeedsAction] = useState(false);
     const [pendingRecommendationsCount, setPendingRecommendationsCount] = useState(0);
+    const [pendingCheckoutErrorsCount, setPendingCheckoutErrorsCount] = useState(0);
     const [openGroups, setOpenGroups] = useState({});
 
     useEffect(() => {
@@ -161,6 +163,7 @@ export default function AdminSidebar({ role = 'customer' }) {
                     setPendingOrdersCount(data.pendingOrders || 0);
                     setMonthlyRecNeedsAction(data.monthlyRecNeedsAction || false);
                     setPendingRecommendationsCount(data.pendingRecommendations || 0);
+                    setPendingCheckoutErrorsCount(data.pendingCheckoutErrors || 0);
                 }
             } catch (err) {
                 console.error("Sidebar fetch error:", err);
@@ -224,6 +227,7 @@ export default function AdminSidebar({ role = 'customer' }) {
                             if (item.href.includes('inbox')) return acc + unreadCount;
                             if (item.href === '/admin/monthly-recommendation' && monthlyRecNeedsAction) return acc + 1;
                             if (item.href === '/admin/recommendations') return acc + pendingRecommendationsCount;
+                            if (item.href === '/admin/checkout-errors') return acc + pendingCheckoutErrorsCount;
                             return acc;
                         }, 0);
 
@@ -291,6 +295,11 @@ export default function AdminSidebar({ role = 'customer' }) {
                                                         <span title="המלצות ממתינות לאישור" className="flex h-5 min-w-[20px] gap-1 items-center justify-center rounded-full bg-orange-500 px-1.5 text-[10px] font-black text-white shadow-[0_0_10px_rgba(249,115,22,0.4)]">
                                                             <AlertOctagon size={10} strokeWidth={3} />
                                                             {pendingRecommendationsCount}
+                                                        </span>
+                                                    )}
+                                                    {item.href === '/admin/checkout-errors' && pendingCheckoutErrorsCount > 0 && (
+                                                        <span title="שגיאות קופה" className="flex h-5 min-w-[20px] items-center justify-center rounded-full bg-red-500 px-1.5 text-[10px] font-black text-white shadow-[0_0_10px_rgba(239,68,68,0.4)] animate-pulse">
+                                                            {pendingCheckoutErrorsCount}
                                                         </span>
                                                     )}
                                                 </div>
