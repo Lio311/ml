@@ -860,36 +860,6 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                             />
                                         </div>
                                     </div>
-                                    <div className="flex flex-wrap gap-3">
-                                        <div className="flex items-center gap-2">
-                                            <input
-                                                type="checkbox"
-                                                checked={editForm.in_lottery ?? true}
-                                                onChange={e => setEditForm({ ...editForm, in_lottery: e.target.checked })}
-                                                className="w-5 h-5 accent-black cursor-pointer rounded-lg"
-                                            />
-                                            <label className="text-xs font-black uppercase tracking-widest select-none text-gray-700">כלול בהגרלות</label>
-                                        </div>
-                                        <div className="flex items-center gap-2">
-                                            <input
-                                                type="checkbox"
-                                                checked={editForm.show_on_home ?? true}
-                                                onChange={e => setEditForm({ ...editForm, show_on_home: e.target.checked })}
-                                                className="w-5 h-5 accent-black cursor-pointer rounded-lg"
-                                            />
-                                            <label className="text-xs font-black uppercase tracking-widest select-none text-gray-700">להציג בחדש באתר</label>
-                                        </div>
-                                        <div className="flex items-center gap-3 bg-gray-50/50 p-3 rounded-xl border border-gray-100 w-fit">
-                                            <input
-                                                type="checkbox"
-                                                checked={editForm.active === false}
-                                                onChange={e => setEditForm({ ...editForm, active: !e.target.checked })}
-                                                className="w-5 h-5 accent-gray-500 cursor-pointer rounded-lg"
-                                            />
-                                            <label className="text-xs font-black uppercase tracking-widest select-none text-gray-700">מצב טיוטה (מוסתר)</label>
-                                        </div>
-                                    </div>
-
                                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2 p-4 bg-white rounded-2xl border border-gray-100">
                                         <div>
                                             <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">עונות</label>
@@ -932,6 +902,36 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                         </div>
                                     </div>
                                     
+                                    <div className="flex flex-wrap gap-3">
+                                        <div className="flex items-center gap-2">
+                                            <input
+                                                type="checkbox"
+                                                checked={editForm.in_lottery ?? true}
+                                                onChange={e => setEditForm({ ...editForm, in_lottery: e.target.checked })}
+                                                className="w-5 h-5 accent-black cursor-pointer rounded-lg"
+                                            />
+                                            <label className="text-xs font-black uppercase tracking-widest select-none text-gray-700">כלול בהגרלות</label>
+                                        </div>
+                                        <div className="flex items-center gap-2">
+                                            <input
+                                                type="checkbox"
+                                                checked={editForm.show_on_home ?? true}
+                                                onChange={e => setEditForm({ ...editForm, show_on_home: e.target.checked })}
+                                                className="w-5 h-5 accent-black cursor-pointer rounded-lg"
+                                            />
+                                            <label className="text-xs font-black uppercase tracking-widest select-none text-gray-700">להציג בחדש באתר</label>
+                                        </div>
+                                        <div className="flex items-center gap-3 bg-gray-50/50 p-3 rounded-xl border border-gray-100 w-fit">
+                                            <input
+                                                type="checkbox"
+                                                checked={editForm.active === false}
+                                                onChange={e => setEditForm({ ...editForm, active: !e.target.checked })}
+                                                className="w-5 h-5 accent-gray-500 cursor-pointer rounded-lg"
+                                            />
+                                            <label className="text-xs font-black uppercase tracking-widest select-none text-gray-700">מצב טיוטה (מוסתר)</label>
+                                        </div>
+                                    </div>
+
                                     <div className="mt-4 p-4 bg-green-50 rounded-2xl border border-green-100">
                                         <h4 className="text-[10px] font-black text-green-800 uppercase tracking-widest mb-3 flex items-center gap-2">
                                             <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
