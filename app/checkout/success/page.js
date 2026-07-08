@@ -15,7 +15,7 @@ export default function CheckoutSuccessPage() {
             setCountdown((prev) => {
                 if (prev <= 1) {
                     clearInterval(timer);
-                    router.push('/my-catalogs');
+                    router.push('/orders');
                     return 0;
                 }
                 return prev - 1;
@@ -39,7 +39,7 @@ export default function CheckoutSuccessPage() {
                 {dir === 'rtl' ? `מעביר לאזור האישי בעוד ${countdown} שניות...` : `Redirecting to personal area in ${countdown} seconds...`}
             </div>
 
-            <Link href="/my-catalogs" className="btn btn-primary">
+            <Link href="/orders" className="btn btn-primary">
                 {dir === 'rtl' ? 'למעבר מיידי לאזור האישי' : 'Go to Personal Area now'}
             </Link>
         </div>
