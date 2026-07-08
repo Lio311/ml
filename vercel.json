@@ -38,7 +38,7 @@
         },
         {
             "path": "/api/cron/new-perfumes",
-            "schedule": "*/10 * * * *"
+            "schedule": "*/25 * * * *"
         }
     ]
 }
