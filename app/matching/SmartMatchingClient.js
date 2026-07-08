@@ -8,7 +8,7 @@ import toast from 'react-hot-toast';
 import Image from 'next/image';
 import { marked } from 'marked';
 
-export default function SmartMatchingClient({ initialNotes = [], isEmbedded = false }) {
+export default function SmartMatchingClient({ initialNotes = [], isEmbedded = false, onClose }) {
     const { addMultipleToCart } = useCart();
     const { t, dir, localize } = useLanguage();
     const isHebrew = dir === 'rtl';
@@ -230,6 +230,13 @@ export default function SmartMatchingClient({ initialNotes = [], isEmbedded = fa
                 content: isHebrew ? 'נוסף לעגלה! 🛒 מעולה.' : 'Added to cart! 🛒 Awesome.',
                 type: 'text'
             }]);
+            
+            // Close the advisor if the cart opened, so the user can see it
+            if (onClose) {
+                setTimeout(() => {
+                    onClose();
+                }, 1000);
+            }
         } catch (error) {
             console.error("Failed to add all items to cart:", error);
             toast.error(isHebrew ? 'שגיאה בהוספה לעגלה' : 'Error adding to cart');

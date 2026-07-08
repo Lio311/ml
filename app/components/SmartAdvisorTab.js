@@ -178,7 +178,7 @@ export default function SmartAdvisorTab() {
                         {/* Content */}
                         {activeTab === 'matching' ? (
                             <div className="flex-1 bg-gray-50 overflow-y-auto custom-scrollbar min-h-[300px]">
-                                <SmartMatchingClient isEmbedded={true} />
+                                <SmartMatchingClient isEmbedded={true} onClose={() => setIsOpen(false)} />
                             </div>
                         ) : (
                             <>
