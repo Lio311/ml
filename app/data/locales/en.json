@@ -74,6 +74,7 @@
         "country_filter": "Country",
         "perfumer_filter": "Perfumer",
         "notes_filter": "Notes",
+        "concentration_filter": "Concentration",
         "filters_title": "Filters",
         "notes_map": {
             "אבקה": "Powder",
@@ -1069,7 +1070,14 @@
         "auth_overlay_title": "Login Required to Checkout",
         "auth_overlay_desc": "Please log in to save your order details and complete your purchase quickly.",
         "auth_overlay_cta": "Log In Now",
-        "catalog_auth_overlay_title": "Catalog Orders Require Login",
         "catalog_auth_overlay_desc": "To communicate with {name} and track your order, please log in."
+    },
+    "concentrations": {
+        "Eau De Parfum": "Eau De Parfum",
+        "Eau De Toilette": "Eau De Toilette",
+        "Parfum": "Parfum",
+        "Extrait De Parfum": "Extrait De Parfum",
+        "Eau De Cologne": "Eau De Cologne",
+        "Eau Fraiche": "Eau Fraiche"
     }
 }

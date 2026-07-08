@@ -11,6 +11,15 @@ import { Wand2 } from "lucide-react";
 import SpotifyTrackSelector from "../../components/admin/SpotifyTrackSelector";
 import CountrySelector from "../../components/admin/CountrySelector";
 
+const PRESET_CONCENTRATIONS = [
+    'Eau De Parfum',
+    'Eau De Toilette',
+    'Parfum',
+    'Extrait De Parfum',
+    'Eau De Cologne',
+    'Eau Fraiche'
+];
+
 export default function AdminProductsClient({ products, initialSearch, totalProducts, filteredCount, counts, currentPage, totalPages, currentLetter, currentView, currentSort, canEdit, allCountries = [], allCategories = [], allPerfumers = [] }) {
 
     const router = useRouter();
@@ -100,6 +109,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
             cost_price: product.cost_price || 0,
             original_size: product.original_size || 100,
             seasons: product.seasons || '',
+            concentration: product.concentration || '',
             perfumers: product.perfumers || '',
             country: product.country || '',
             active: product.active ?? true,
@@ -134,6 +144,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
             cost_price: 0,
             original_size: 100,
             seasons: '',
+            concentration: '',
             perfumers: '',
             country: '',
             active: true,
@@ -576,6 +587,19 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                             />
                         </div>
                         <div className="md:col-span-2">
+                            <label className="text-sm font-bold block mb-2">ריכוז הבושם</label>
+                            <input
+                                list="concentrations-list"
+                                value={editForm.concentration || ''}
+                                onChange={e => setEditForm({ ...editForm, concentration: e.target.value })}
+                                className="border-2 border-gray-100 rounded-xl p-2 w-full bg-white focus:border-black outline-none transition-colors"
+                                placeholder="לדוגמה: Eau De Parfum..."
+                            />
+                            <datalist id="concentrations-list">
+                                {PRESET_CONCENTRATIONS.map(c => <option key={c} value={c} />)}
+                            </datalist>
+                        </div>
+                        <div className="md:col-span-2">
                             <label className="text-sm font-bold block mb-2">פרפיומר (Perfumer) - לחץ Enter להוספה</label>
                             <TagInput
                                 tags={editForm.perfumers ? editForm.perfumers.split(',').filter(Boolean) : []}
@@ -889,6 +913,16 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                                 value={editForm.country} 
                                                 onChange={(val) => setEditForm({ ...editForm, country: val })} 
                                                 options={allCountries} 
+                                            />
+                                        </div>
+                                        <div className="md:col-span-2">
+                                            <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">ריכוז הבושם</label>
+                                            <input
+                                                list="concentrations-list"
+                                                value={editForm.concentration || ''}
+                                                onChange={e => setEditForm({ ...editForm, concentration: e.target.value })}
+                                                className="border-2 border-gray-100 rounded-xl p-2 w-full bg-white focus:border-black outline-none transition-colors"
+                                                placeholder="לדוגמה: Eau De Parfum..."
                                             />
                                         </div>
                                         <div className="md:col-span-2">

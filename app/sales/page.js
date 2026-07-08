@@ -86,6 +86,15 @@ async function getSalesProducts(search, brand, category, minPrice, maxPrice, sor
         }
     }
 
+    if (searchParams?.concentration) {
+        const concentrations = Array.isArray(searchParams.concentration) ? searchParams.concentration : [searchParams.concentration];
+        if (concentrations.length > 0) {
+            const placeHolders = concentrations.map((_, i) => `$${params.length + i + 1}`).join(', ');
+            query += ` AND p.concentration IN (${placeHolders})`;
+            params.push(...concentrations);
+        }
+    }
+
     const countQuery = `SELECT COUNT(*) FROM (${query}) AS total`;
 
     let orderBy = 'p.discount_percentage DESC';
@@ -119,7 +128,8 @@ async function getFilterOptions() {
                 string_agg(perfumers, ',') as all_perfumers,
                 string_agg(top_notes, ',') as top_notes,
                 string_agg(middle_notes, ',') as middle_notes,
-                string_agg(base_notes, ',') as base_notes
+                string_agg(base_notes, ',') as base_notes,
+                array_agg(DISTINCT concentration) as concentrations
             FROM products 
             WHERE active = true AND discount_percentage > 0
         `);
@@ -147,9 +157,11 @@ async function getFilterOptions() {
         });
         const notes = Array.from(notesSet).filter(Boolean).sort();
 
-        return { brands, categories, countries, perfumers, notes };
+        const concentrations = (res.rows[0].concentrations || []).filter(Boolean).sort();
+
+        return { brands, categories, countries, perfumers, notes, concentrations };
     } catch (e) {
-        return { brands: [], categories: [], countries: [], perfumers: [], notes: [] };
+        return { brands: [], categories: [], countries: [], perfumers: [], notes: [], concentrations: [] };
     }
 }
 
@@ -170,7 +182,7 @@ export default async function SalesPage(props) {
 
     const mappedSearch = await mapHebrewQuery(search);
     const { products, totalPages } = await getSalesProducts(mappedSearch, brand, category, minPrice, maxPrice, sort, page, searchParams);
-    const { brands, categories, countries, perfumers, notes } = await getFilterOptions();
+    const { brands, categories, countries, perfumers, notes, concentrations } = await getFilterOptions();
 
     return (
         <div className={`container pt-12 pb-20 ${dir === 'rtl' ? 'text-right' : 'text-left'}`} dir={dir}>
@@ -193,6 +205,7 @@ export default async function SalesPage(props) {
                         allCountries={countries}
                         allPerfumers={perfumers}
                         allNotes={notes}
+                        allConcentrations={concentrations}
                         minPrice={minPrice}
                         maxPrice={maxPrice}
                         basePath="/sales"

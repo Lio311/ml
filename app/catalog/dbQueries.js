@@ -109,6 +109,15 @@ export async function getProducts(search, brand, category, minPrice, maxPrice, s
         }
     }
 
+    if (searchParams?.concentration) {
+        const concentrations = Array.isArray(searchParams.concentration) ? searchParams.concentration : [searchParams.concentration];
+        if (concentrations.length > 0) {
+            const placeHolders = concentrations.map((_, i) => `$${params.length + i + 1}`).join(', ');
+            query += ` AND p.concentration IN (${placeHolders})`;
+            params.push(...concentrations);
+        }
+    }
+
     const countQuery = `SELECT COUNT(*) FROM (${query}) AS total`;
 
     let orderBy = 'RANDOM()';

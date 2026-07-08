@@ -9,7 +9,7 @@ import { useLanguage } from '../context/LanguageContext';
 
 const VIRTUAL_CATEGORIES = ['בוטיק', 'נישה'];
 
-export default function FilterSidebar({ allBrands = [], allCategories = [], allCountries = [], allPerfumers = [], allNotes = [], minPrice, maxPrice, basePath = '/catalog' }) {
+export default function FilterSidebar({ allBrands = [], allCategories = [], allCountries = [], allPerfumers = [], allNotes = [], allConcentrations = [], minPrice, maxPrice, basePath = '/catalog' }) {
     const { t, dir, locale } = useLanguage();
     const router = useRouter();
     const searchParams = useSearchParams();
@@ -48,6 +48,7 @@ export default function FilterSidebar({ allBrands = [], allCategories = [], allC
     const [selectedCountries, setSelectedCountries] = useState(getSelected('country'));
     const [selectedPerfumers, setSelectedPerfumers] = useState(getSelected('perfumer'));
     const [selectedNotes, setSelectedNotes] = useState(getSelected('note'));
+    const [selectedConcentrations, setSelectedConcentrations] = useState(getSelected('concentration'));
     const [searchTerm, setSearchTerm] = useState(searchParams.get('q') || '');
     const [price, setPrice] = useState(Number(searchParams.get("max")) || ABSOLUTE_MAX);
     const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
@@ -60,6 +61,7 @@ export default function FilterSidebar({ allBrands = [], allCategories = [], allC
         setSelectedCountries(searchParams.getAll('country'));
         setSelectedPerfumers(searchParams.getAll('perfumer'));
         setSelectedNotes(searchParams.getAll('note'));
+        setSelectedConcentrations(searchParams.getAll('concentration'));
         setSearchTerm(searchParams.get('q') || '');
         setPrice(Number(searchParams.get("max")) || ABSOLUTE_MAX);
     }, [searchParams]);
@@ -105,6 +107,12 @@ export default function FilterSidebar({ allBrands = [], allCategories = [], allC
         applyFilters({ note: newNotes, resetPage: true });
     };
 
+    const toggleConcentration = (concentration) => {
+        const newConcentrations = selectedConcentrations.includes(concentration) ? selectedConcentrations.filter(c => c !== concentration) : [...selectedConcentrations, concentration];
+        setSelectedConcentrations(newConcentrations);
+        applyFilters({ concentration: newConcentrations, resetPage: true });
+    };
+
     const applyFilters = (updates) => {
         const params = new URLSearchParams(searchParams.toString());
 
@@ -124,6 +132,7 @@ export default function FilterSidebar({ allBrands = [], allCategories = [], allC
         if (updates.country !== undefined) updateArrayParam('country', updates.country);
         if (updates.perfumer !== undefined) updateArrayParam('perfumer', updates.perfumer);
         if (updates.note !== undefined) updateArrayParam('note', updates.note);
+        if (updates.concentration !== undefined) updateArrayParam('concentration', updates.concentration);
         if (updates.gender !== undefined) {
             if (updates.gender === null) params.delete('gender');
             else params.set('gender', updates.gender);
@@ -150,6 +159,25 @@ export default function FilterSidebar({ allBrands = [], allCategories = [], allC
                     className="!bg-white !border-gray-100 !rounded-xl"
                 />
             </div>
+
+            {/* Concentration Filter */}
+            {allConcentrations && allConcentrations.length > 0 && (
+                <CollapsibleSection title={`${t('common.concentration_filter')} (${allConcentrations.length})`} initialOpen={true}>
+                    <div className={`space-y-2 text-sm max-h-[200px] overflow-y-auto custom-scrollbar ps-2 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
+                        {allConcentrations.map(c => (
+                            <label key={c} className="flex items-center gap-2 cursor-pointer hover:bg-gray-100 p-1 rounded">
+                                <input
+                                    type="checkbox"
+                                    checked={selectedConcentrations.includes(c)}
+                                    onChange={() => toggleConcentration(c)}
+                                    className="w-4 h-4 rounded border-gray-300 text-black focus:ring-black"
+                                />
+                                <span className={selectedConcentrations.includes(c) ? 'font-bold' : ''}>{t(`concentrations.${c}`) || c}</span>
+                            </label>
+                        ))}
+                    </div>
+                </CollapsibleSection>
+            )}
 
             {/* Category Filter */}
             <CollapsibleSection title={`${t('common.category_filter')} (${combinedCategories.length})`} initialOpen={true}>

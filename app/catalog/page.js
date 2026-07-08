@@ -134,7 +134,8 @@ const getMetadataOptions = unstable_cache(async () => {
                 array_agg(DISTINCT perfumers) as perfumers,
                 array_agg(DISTINCT top_notes) as top_notes,
                 array_agg(DISTINCT middle_notes) as middle_notes,
-                array_agg(DISTINCT base_notes) as base_notes
+                array_agg(DISTINCT base_notes) as base_notes,
+                array_agg(DISTINCT concentration) as concentrations
             FROM products 
             WHERE active = true
         `);
@@ -155,10 +156,12 @@ const getMetadataOptions = unstable_cache(async () => {
         });
         const notes = Array.from(notesSet).filter(Boolean).sort();
 
-        return { countries, perfumers, notes };
+        const concentrations = (res.rows[0].concentrations || []).filter(Boolean).sort();
+
+        return { countries, perfumers, notes, concentrations };
     } catch (e) {
         console.error("Error fetching metadata options:", e);
-        return { countries: [], perfumers: [], notes: [] };
+        return { countries: [], perfumers: [], notes: [], concentrations: [] };
     }
 }, ['catalog-metadata-options'], { revalidate: 3600 });
 
@@ -218,7 +221,7 @@ export default async function CatalogPage(props) {
     }
     const allBrands = await getBrands();
     const allCategories = await getCategories();
-    const { countries: allCountries, perfumers: allPerfumers, notes: allNotes } = await getMetadataOptions();
+    const { countries: allCountries, perfumers: allPerfumers, notes: allNotes, concentrations: allConcentrations } = await getMetadataOptions();
 
     const pageTitle = sort === 'bestsellers' ? t('common.bestsellers') : t('common.full_catalog');
 
@@ -238,6 +241,7 @@ export default async function CatalogPage(props) {
                     allCountries={allCountries}
                     allPerfumers={allPerfumers}
                     allNotes={allNotes}
+                    allConcentrations={allConcentrations}
                     minPrice={minPrice}
                     maxPrice={maxPrice}
                 />
@@ -306,6 +310,12 @@ export default async function CatalogPage(props) {
                                 {(Array.isArray(searchParams.note) ? searchParams.note : [searchParams.note]).filter(Boolean).map(n => (
                                     <Link key={n} href={getRemoveLink('note', n)} className="bg-black text-white px-2 py-1 rounded flex items-center gap-2 hover:bg-gray-800 transition-colors group">
                                         <span className="font-medium">{t('common.notes_filter')}: {n}</span>
+                                        <span className="w-4 h-4 flex items-center justify-center rounded-full bg-white/10 group-hover:bg-white/20 transition-colors text-[14px] leading-none pb-0.5">×</span>
+                                    </Link>
+                                ))}
+                                {(Array.isArray(searchParams.concentration) ? searchParams.concentration : [searchParams.concentration]).filter(Boolean).map(c => (
+                                    <Link key={c} href={getRemoveLink('concentration', c)} className="bg-black text-white px-2 py-1 rounded flex items-center gap-2 hover:bg-gray-800 transition-colors group">
+                                        <span className="font-medium">{t('common.concentration_filter')}: {t(`concentrations.${c}`)}</span>
                                         <span className="w-4 h-4 flex items-center justify-center rounded-full bg-white/10 group-hover:bg-white/20 transition-colors text-[14px] leading-none pb-0.5">×</span>
                                     </Link>
                                 ))}

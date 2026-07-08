@@ -78,6 +78,7 @@
         "country_filter": "מדינה",
         "perfumer_filter": "פרפיומר",
         "notes_filter": "תווים",
+        "concentration_filter": "ריכוז בושם",
         "filters_title": "פילטרים",
         "no_products_found": "לא נמצאו מוצרים תואמים.",
         "clear_all": "נקה הכל",
@@ -676,5 +677,13 @@
         "discount_label": "10% הנחה על חבילה",
         "badge_discount": "10% הנחה",
         "total_bundle_price": "מחיר חבילה סופי"
+    },
+    "concentrations": {
+        "Eau De Parfum": "או דה פרפיום (EDP)",
+        "Eau De Toilette": "או דה טואלט (EDT)",
+        "Parfum": "פרפיום",
+        "Extrait De Parfum": "אקסטרה דה פרפיום",
+        "Eau De Cologne": "או דה קולון (EDC)",
+        "Eau Fraiche": "או פרש"
     }
 }

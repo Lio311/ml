@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { ChevronDown, Calendar, Globe, Palette } from 'lucide-react';
+import { ChevronDown, Calendar, Globe, Palette, Droplet } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
 
 const SEASONS_MAP = {
@@ -18,11 +18,11 @@ function translateSeason(season, locale) {
     return SEASONS_MAP[trimmed] || trimmed;
 }
 
-export default function AdditionalDetails({ seasons, country, perfumers }) {
+export default function AdditionalDetails({ seasons, country, perfumers, concentration }) {
     const [isOpen, setIsOpen] = useState(false);
     const { t, dir, locale } = useLanguage();
 
-    if (!seasons && !country && !perfumers) return null;
+    if (!seasons && !country && !perfumers && !concentration) return null;
 
     return (
         <div className="w-full mt-4 border-t pt-4">
@@ -39,6 +39,18 @@ export default function AdditionalDetails({ seasons, country, perfumers }) {
 
             <div className={`transition-all duration-500 ease-in-out overflow-hidden ${isOpen ? 'max-h-[500px] opacity-100 mt-4' : 'max-h-0 opacity-0'}`}>
                 <div className="bg-white rounded-2xl p-6 border border-gray-100 space-y-6 shadow-sm">
+                    {concentration && (
+                        <div className="flex items-start gap-4 flex-row">
+                            <div className="w-10 h-10 rounded-xl bg-gray-50 border border-gray-100 flex items-center justify-center shadow-sm shrink-0">
+                                <Droplet className="w-5 h-5 text-black" />
+                            </div>
+                            <div className={dir === 'rtl' ? 'text-right' : 'text-left'}>
+                                <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none mb-1">{t('common.concentration_filter')}</div>
+                                <div className="text-sm font-bold text-gray-800">{t(`concentrations.${concentration}`) || concentration}</div>
+                            </div>
+                        </div>
+                    )}
+
                     {seasons && (
                         <div className="flex items-start gap-4 flex-row">
                             <div className="w-10 h-10 rounded-xl bg-gray-50 border border-gray-100 flex items-center justify-center shadow-sm shrink-0">
