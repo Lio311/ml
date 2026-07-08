@@ -158,6 +158,59 @@ export async function getTemplate(slug, data = {}, fallbackFn = null) {
 }
 
 
+
+export const getBatchPerfumeTemplate = (products) => {
+    if (!products || products.length === 0) return '';
+    
+    // If only one product, use the regular single product template
+    if (products.length === 1) {
+        return getNewProductTemplate(products[0]);
+    }
+    
+    // Multiple products: Use grid
+    const itemsHtml = products.map(product => {
+        const imageUrl = product.image_url || product.imageUrl || 'https://www.ml-tlv.com/logo-black.png';
+        const brand = product.brand || '';
+        const model = product.model || '';
+        const price2ml = product.price_2ml || '';
+        const url = `https://www.ml-tlv.com/product/${product.slug || product.id}`;
+        
+        return `
+        <div style="display: inline-block; width: 46%; margin: 1%; margin-bottom: 25px; vertical-align: top; text-align: center; background-color: #fcfcfc; padding: 15px 5px; border-radius: 16px; border: 1px solid #f5f5f5;">
+            <a href="${url}" style="text-decoration: none; color: inherit; display: block;">
+                <div style="height: 120px; display: flex; align-items: center; justify-content: center; margin-bottom: 15px;">
+                    <img src="${imageUrl}" alt="${brand} ${model}" style="max-height: 100px; max-width: 100%; border-radius: 8px; object-fit: contain; background-color: #ffffff; background-image: linear-gradient(#ffffff, #ffffff); padding: 5px;" />
+                </div>
+                <div style="font-size: 11px; font-weight: 900; color: #999; text-transform: uppercase; margin-bottom: 4px; letter-spacing: 1px;">${brand}</div>
+                <div style="font-size: 13px; font-weight: bold; color: #000; margin-bottom: 8px; line-height: 1.3; height: 34px; overflow: hidden;">${model}</div>
+                <div style="font-size: 14px; font-weight: 900; color: #ca8a04;">החל מ- ${price2ml} ₪</div>
+            </a>
+        </div>
+        `;
+    }).join('');
+
+    return `
+        <div dir="rtl" style="font-family: 'Open Sans', 'Open Sans Hebrew', Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto; line-height: 1.6;">
+            <div style="background-color: #fff; padding: 30px; border-radius: 24px; border: 1px solid #f0f0f0; box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
+                <div style="text-align: center; margin-bottom: 30px;">
+                    <div style="display: inline-block; background-color: #fef08a; color: #854d0e; font-size: 12px; font-weight: 900; padding: 6px 12px; border-radius: 20px; margin-bottom: 15px; letter-spacing: 1px;">חדש באתר ✨</div>
+                    <h1 style="margin: 0; font-size: 26px; font-weight: 900; color: #000;">בשמים חדשים נחתו באתר!</h1>
+                    <p style="margin: 15px 0 0; color: #666; font-size: 15px;">בדיוק נחתו אצלנו בשמים חדשים ומרגשים שאתם פשוט חייבים להכיר. לחצו על הניחוח שמעניין אתכם כדי לגלות עוד.</p>
+                </div>
+                
+                <div style="text-align: center;">
+                    ${itemsHtml}
+                </div>
+                
+                <div style="text-align: center; margin-top: 20px;">
+                    <a href="https://www.ml-tlv.com/catalog" style="display: inline-block; background-color: #000; color: #fff; padding: 16px 32px; text-decoration: none; border-radius: 16px; font-weight: 900; font-size: 15px; width: 80%; max-width: 300px;">לכל הקטלוג >></a>
+                </div>
+            </div>
+            <div style="text-align: center; padding-top: 15px; padding-bottom: 0; color: #ccc; font-size: 11px;">ml - יוקרה בחתיכות קטנות</div>
+        </div>
+    `;
+};
+
 export const getDiscoveryBatchTemplate = (products) => {
     if (!products || products.length === 0) return '';
     
@@ -773,6 +826,14 @@ export function getSystemDefaults() {
             })
         },
         
+        
+        'new_perfumes_batch': {
+            subject: 'בשמים חדשים נחתו באתר! ✨ - ml_tlv',
+            content_html: getBatchPerfumeTemplate([
+                { brand: 'Brand 1', model: 'Model 1', price_2ml: '49' },
+                { brand: 'Brand 2', model: 'Model 2', price_2ml: '55' }
+            ])
+        },
         'new_discovery_sets': {
             subject: 'השקנו 6 מארזי דיסקברי חדשים! ✨ - ml_tlv',
             content_html: getDiscoveryBatchTemplate([

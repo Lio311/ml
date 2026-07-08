@@ -206,9 +206,7 @@ export async function POST(req) {
             } catch (dictErr) {
                 console.error("Dictionary auto-add failed:", dictErr);
             }
-            // ------------------------------
-
-            // --- Newsletter Feature ---
+            // --------------------------// Newsletter logic removed. Moved to Cron Job /api/cron/new-perfumes// --- Newsletter Feature ---
             // Fetch all users to notify them about the new product
             try {
                 const clerk = await clerkClient();
