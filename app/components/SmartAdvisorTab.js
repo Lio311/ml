@@ -7,12 +7,14 @@ import { useCart } from '../context/CartContext';
 import { useLanguage } from '../context/LanguageContext';
 import { usePathname, useRouter } from 'next/navigation';
 import { marked } from 'marked';
+import SmartMatchingClient from '../matching/SmartMatchingClient';
 
 export default function SmartAdvisorTab() {
     const pathname = usePathname();
     const { locale } = useLanguage();
     const isHebrew = locale === 'he';
     const [isOpen, setIsOpen] = useState(false);
+    const [activeTab, setActiveTab] = useState('matching');
     const [messages, setMessages] = useState([
         { role: 'assistant', content: isHebrew ? 
             'שלום! אני היועץ החכם של ml-tlv.\n\nאשמח לעזור לך למצוא את הבושם המושלם עבורך. אפשר לבקש ממני בשמים לפי שם, עונה, אירוע או תווים ספציפיים (כמו וניל, עץ, הדרים).\n\n**איך אוכל לעזור לך היום?**' :
@@ -158,8 +160,30 @@ export default function SmartAdvisorTab() {
                             </button>
                         </div>
 
-                        {/* Chat Messages */}
-                        <div className="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar">
+                        <div className="flex bg-gray-800 rounded-lg p-1 mx-4 mb-2 mt-4">
+                            <button 
+                                onClick={() => setActiveTab('matching')}
+                                className={`flex-1 text-xs font-bold py-1.5 rounded-md transition ${activeTab === 'matching' ? 'bg-white text-black' : 'text-gray-300 hover:text-white'}`}
+                            >
+                                {isHebrew ? 'שאלון התאמה' : 'Matching Form'}
+                            </button>
+                            <button 
+                                onClick={() => setActiveTab('advisor')}
+                                className={`flex-1 text-xs font-bold py-1.5 rounded-md transition ${activeTab === 'advisor' ? 'bg-white text-black' : 'text-gray-300 hover:text-white'}`}
+                            >
+                                {isHebrew ? 'יועץ AI' : 'AI Advisor'}
+                            </button>
+                        </div>
+
+                        {/* Content */}
+                        {activeTab === 'matching' ? (
+                            <div className="flex-1 bg-gray-50 overflow-y-auto custom-scrollbar min-h-[300px]">
+                                <SmartMatchingClient isEmbedded={true} />
+                            </div>
+                        ) : (
+                            <>
+                                {/* Chat Messages */}
+                                <div className="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar">
                             {messages.map((msg, idx) => (
                                 <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-start' : 'justify-end'}`}>
                                     <div className={`max-w-[85%] rounded-2xl p-3 ${
@@ -221,6 +245,8 @@ export default function SmartAdvisorTab() {
                                 {isHebrew ? 'היועץ מופעל ע"י בינה מלאכותית ויכול לטעות.' : 'Advisor is powered by AI and can make mistakes.'}
                             </p>
                         </div>
+                            </>
+                        )}
                     </motion.div>
                 )}
             </AnimatePresence>
