@@ -160,8 +160,16 @@ export default function SmartMatchingClient({ initialNotes = [], isEmbedded = fa
 
         if (chatStep === 'budget_custom') {
             const val = parseInt(inputText.replace(/\D/g, ''));
-            if (!val || val < 10) {
-                toast.error(isHebrew ? 'אנא הזן סכום תקין' : 'Please enter a valid amount');
+            const basePrice = preferences.size === '2' ? 30 : preferences.size === '5' ? 60 : 100;
+            const absoluteMin = Math.floor(basePrice * preferences.quantity * 0.7); // Let's allow slightly less than the 0.8 recommended, but not zero.
+
+            if (!val || val < absoluteMin) {
+                setMessages(prev => [...prev, { role: 'user', content: `₪${val || 0}` }, {
+                    role: 'assistant',
+                    content: isHebrew ? `מצטער, אבל התקציב נמוך מדי עבור מארז של ${preferences.quantity} בשמים בגודל ${preferences.size}ml. התקציב המינימלי הוא כ-₪${absoluteMin}. אנא הזן סכום גבוה יותר.` : `Sorry, but the budget is too low for a set of ${preferences.quantity} perfumes in ${preferences.size}ml. The minimum budget is around ₪${absoluteMin}. Please enter a higher amount.`,
+                    type: 'text'
+                }]);
+                setInputText('');
                 return;
             }
             handleQuickReply('budget', val, `₪${val}`);
@@ -397,22 +405,20 @@ export default function SmartMatchingClient({ initialNotes = [], isEmbedded = fa
                     )}
                     
                     <form onSubmit={handleInputSubmit} className="relative flex items-center gap-2 max-w-full">
-                        {chatStep === 'budget_custom' ? (
-                            <style jsx>{`
-                                input[type=number]::-webkit-inner-spin-button, 
-                                input[type=number]::-webkit-outer-spin-button { 
-                                    -webkit-appearance: none; 
-                                    margin: 0; 
-                                }
-                                input[type=number] {
-                                    -moz-appearance: textfield;
-                                }
-                            `}</style>
-                        ) : null}
                         <input
-                            type={chatStep === 'budget_custom' ? "number" : "text"}
+                            type={chatStep === 'budget_custom' ? "text" : "text"}
+                            inputMode={chatStep === 'budget_custom' ? "numeric" : "text"}
+                            pattern={chatStep === 'budget_custom' ? "[0-9]*" : undefined}
                             value={inputText}
-                            onChange={handleNoteInputChange}
+                            onChange={(e) => {
+                                if (chatStep === 'budget_custom') {
+                                    // only allow numbers
+                                    const val = e.target.value.replace(/\D/g, '');
+                                    setInputText(val);
+                                } else {
+                                    handleNoteInputChange(e);
+                                }
+                            }}
                             placeholder={chatStep === 'budget_custom' 
                                 ? (isHebrew ? "הקלד סכום ב-₪" : "Enter amount in ₪") 
                                 : (isHebrew ? "הקלד תווים לחיפוש..." : "Type notes to search...")}
