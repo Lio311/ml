@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import pool from '@/app/lib/db';
 import { checkAdmin } from '@/app/lib/admin';
+import { clerkClient } from '@clerk/nextjs/server';
+import { sendEmail, getTemplate, getDiscoveryBatchTemplate } from '@/app/lib/email';
 
 // GET all discovery sets
 export async function GET() {
@@ -77,6 +79,53 @@ export async function POST(req) {
                     ON CONFLICT (name) DO NOTHING
                 `, [trimmedBrand]);
             }
+
+            
+            // --- Newsletter Feature for Discovery Sets ---
+            try {
+                // Check how many un-emailed discovery sets exist
+                const checkRes = await client.query(`
+                    SELECT id, brand, model, image_url, single_price, price_2ml, slug 
+                    FROM products 
+                    WHERE is_discovery_set = true AND discovery_email_sent = false AND active = true
+                    ORDER BY created_at ASC
+                `);
+                
+                const newSets = checkRes.rows;
+                
+                if (newSets.length >= 6) {
+                    // We have at least 6! Let's take the first 6.
+                    const batchToEmail = newSets.slice(0, 6);
+                    const batchIds = batchToEmail.map(p => p.id);
+                    
+                    const clerk = await clerkClient();
+                    const { data: users } = await clerk.users.getUserList({ limit: 500 });
+                    
+                    const emails = users
+                        .map(u => u.emailAddresses.find(e => e.id === u.primaryEmailAddressId)?.emailAddress || u.emailAddresses[0]?.emailAddress)
+                        .filter(Boolean);
+                        
+                    if (emails.length > 0) {
+                        const { html, subject } = await getTemplate('new_discovery_sets', null, () => getDiscoveryBatchTemplate(batchToEmail));
+                        const finalSubject = subject || 'השקנו 6 מארזי דיסקברי חדשים! ✨ - ml_tlv';
+                        
+                        // Send async so we don't block the API response for too long
+                        sendEmail(emails, finalSubject, html, 'new_discovery_sets')
+                            .then(() => console.log(`Discovery batch newsletter sent to ${emails.length} recipients.`))
+                            .catch(err => console.error("Failed to send discovery newsletter:", err));
+                            
+                        // Mark these 6 as sent
+                        await client.query(`
+                            UPDATE products 
+                            SET discovery_email_sent = true 
+                            WHERE id = ANY($1)
+                        `, [batchIds]);
+                    }
+                }
+            } catch (emailErr) {
+                console.error("Failed to process discovery newsletter:", emailErr);
+            }
+            // ---------------------------------------------
 
             return NextResponse.json(res.rows[0]);
         } finally {

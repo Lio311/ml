@@ -157,6 +157,52 @@ export async function getTemplate(slug, data = {}, fallbackFn = null) {
     return { html, subject }; 
 }
 
+
+export const getDiscoveryBatchTemplate = (products) => {
+    if (!products || products.length === 0) return '';
+    
+    const itemsHtml = products.map(product => {
+        const imageUrl = product.image_url || product.imageUrl || 'https://www.ml-tlv.com/logo-black.png';
+        const brand = product.brand || '';
+        const model = product.model || '';
+        const price = product.single_price || product.price_2ml || '';
+        const url = `https://www.ml-tlv.com/product/${product.slug || product.id}`;
+        
+        return `
+        <div style="display: inline-block; width: 46%; margin: 1%; margin-bottom: 25px; vertical-align: top; text-align: center; background-color: #fcfcfc; padding: 15px 5px; border-radius: 16px; border: 1px solid #f5f5f5;">
+            <a href="${url}" style="text-decoration: none; color: inherit; display: block;">
+                <div style="height: 120px; display: flex; align-items: center; justify-content: center; margin-bottom: 15px;">
+                    <img src="${imageUrl}" alt="${brand} ${model}" style="max-height: 100px; max-width: 100%; border-radius: 8px; object-fit: contain; background-color: #ffffff; background-image: linear-gradient(#ffffff, #ffffff); padding: 5px;" />
+                </div>
+                <div style="font-size: 11px; font-weight: 900; color: #999; text-transform: uppercase; margin-bottom: 4px; letter-spacing: 1px;">${brand}</div>
+                <div style="font-size: 13px; font-weight: bold; color: #000; margin-bottom: 8px; line-height: 1.3; height: 34px; overflow: hidden;">${model}</div>
+                <div style="font-size: 14px; font-weight: 900; color: #ca8a04;">${price} ₪</div>
+            </a>
+        </div>
+        `;
+    }).join('');
+
+    return `
+        <div dir="rtl" style="font-family: 'Open Sans', 'Open Sans Hebrew', Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto; line-height: 1.6;">
+            <div style="background-color: #fff; padding: 30px; border-radius: 24px; border: 1px solid #f0f0f0; box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
+                <div style="text-align: center; margin-bottom: 30px;">
+                    <div style="display: inline-block; background-color: #fef08a; color: #854d0e; font-size: 12px; font-weight: 900; padding: 6px 12px; border-radius: 20px; margin-bottom: 15px; letter-spacing: 1px;">חדש באתר ✨</div>
+                    <h1 style="margin: 0; font-size: 26px; font-weight: 900; color: #000;">השקנו מארזי דיסקברי חדשים!</h1>
+                    <p style="margin: 15px 0 0; color: #666; font-size: 15px;">בדיוק נחתו אצלנו 6 מארזי דיסקברי יוקרתיים שאתם פשוט חייבים להכיר. הדרך המושלמת לנסות ניחוחות חדשים לפני שמתחייבים לבקבוק מלא.</p>
+                </div>
+                
+                <div style="text-align: center;">
+                    ${itemsHtml}
+                </div>
+                
+                <div style="text-align: center; margin-top: 20px;">
+                    <a href="https://www.ml-tlv.com/catalog?category=Discovery+Sets" style="display: inline-block; background-color: #000; color: #fff; padding: 16px 32px; text-decoration: none; border-radius: 16px; font-weight: 900; font-size: 15px; width: 80%; max-width: 300px;">לכל מארזי הדיסקברי >></a>
+                </div>
+            </div>
+            <div style="text-align: center; padding-top: 15px; padding-bottom: 0; color: #ccc; font-size: 11px;">ml - יוקרה בחתיכות קטנות</div>
+        </div>
+    `;
+};
 export const getNewProductTemplate = (product) => {
     return `
         <div dir="rtl" style="font-family: 'Open Sans', 'Open Sans Hebrew', Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto; line-height: 1.6;">
@@ -725,6 +771,18 @@ export function getSystemDefaults() {
                 image_url: '{{imageUrl}}',
                 id: '{{productId}}'
             })
+        },
+        
+        'new_discovery_sets': {
+            subject: 'השקנו 6 מארזי דיסקברי חדשים! ✨ - ml_tlv',
+            content_html: getDiscoveryBatchTemplate([
+                { brand: 'Brand 1', model: 'Model 1', single_price: '190' },
+                { brand: 'Brand 2', model: 'Model 2', single_price: '220' },
+                { brand: 'Brand 3', model: 'Model 3', single_price: '180' },
+                { brand: 'Brand 4', model: 'Model 4', single_price: '250' },
+                { brand: 'Brand 5', model: 'Model 5', single_price: '199' },
+                { brand: 'Brand 6', model: 'Model 6', single_price: '210' }
+            ])
         },
         'review_request': {
             subject: 'נשמח לשמוע מה דעתך! ⭐',
