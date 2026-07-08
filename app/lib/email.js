@@ -866,11 +866,11 @@ export function getSystemDefaults() {
                 <h1 style="margin: 0 0 10px; font-size: 24px; font-weight: 900; color: #000; text-align: center;">הגיע הזמן לגלות את הריח הבא שלך ✨</h1>
                 <p style="margin: 0 0 25px; color: #666; text-align: center;">היי {{name}}, השקנו קטגוריה חדשה שאתה פשוט חייב להכיר!</p>
                 <p style="margin-bottom: 20px; color: #333; text-align: center; font-size: 15px;">אנחנו נרגשים להציג את קטגוריית ה-<strong>Discovery Sets &amp; דוגמיות רשמיות</strong> שלנו.<br/>הדרך המושלמת לנסות, לחוות ולהתאהב בניחוחות יוקרתיים חדשים – לפני שמתחייבים לבקבוק מלא.</p>
-                <div style="background-color: #111; color: #fff; padding: 30px; border-radius: 20px; text-align: center; margin: 25px 0;">
-                    <div style="font-size: 14px; font-weight: 900; color: #ca8a04; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 15px;">⏱️ מבצע סוף שבוע יוצא לדרך</div>
-                    <p style="margin: 0 0 15px; font-size: 13px; opacity: 0.8;">בכל יום חמישי עד שישי ב-18:00:</p>
-                    <div style="font-size: 20px; font-weight: 900; margin-bottom: 10px; line-height: 1.5;">🎁 קונים 3 ערכות דיסקברי – מקבלים <span style="color: #fde047;">1 במתנה!</span><br/>🎁 קונים 8 דוגמיות רשמיות – מקבלים <span style="color: #fde047;">2 במתנה!</span></div>
-                    <div style="font-size: 13px; opacity: 0.8; margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px;">*ההנחה מתעדכנת אוטומטית בעגלת הקניות</div>
+                <div style="background-color: #fcfcfc; color: #000; padding: 30px; border-radius: 20px; text-align: center; margin: 25px 0; border: 2px solid #ca8a04;">
+                    <div style="font-size: 14px; font-weight: 900; color: #b45309; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 15px;">⏱️ מבצע סוף שבוע יוצא לדרך</div>
+                    <p style="margin: 0 0 15px; font-size: 13px; color: #555;">בכל יום חמישי עד שישי ב-18:00:</p>
+                    <div style="font-size: 20px; font-weight: 900; margin-bottom: 10px; line-height: 1.5; color: #000;">🎁 קונים 3 ערכות דיסקברי – מקבלים <span style="color: #b45309;">1 במתנה!</span><br/>🎁 קונים 8 דוגמיות רשמיות – מקבלים <span style="color: #b45309;">2 במתנה!</span></div>
+                    <div style="font-size: 13px; color: #777; margin-top: 15px; border-top: 1px solid #eaeaea; padding-top: 15px;">*ההנחה מתעדכנת אוטומטית בעגלת הקניות</div>
                 </div>
                 <div style="background-color: #f8f8f8; padding: 20px; border-radius: 16px; margin: 25px 0;">
                     <p style="margin: 0; font-weight: 900; color: #000;">💡 מה זה בעצם Discovery Set?</p>
@@ -909,10 +909,10 @@ export function getSystemDefaults() {
             <div style="background-color: #fff; padding: 30px; border-radius: 24px; border: 1px solid #f0f0f0; box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
                 <h1 style="margin: 0 0 10px; font-size: 24px; font-weight: 900; color: #000; text-align: center;">מבצע הדיסקברי החודשי שלנו מתחיל היום! ✨</h1>
                 <p style="margin: 0 0 25px; color: #666; text-align: center;">היי {{name}}, יום רביעי הגיע וזה אומר ש... מבצע הדיסקברי שלנו חוזר!</p>
-                <div style="background-color: #111; color: #fff; padding: 30px; border-radius: 20px; text-align: center; margin: 25px 0;">
-                    <div style="font-size: 14px; font-weight: 900; color: #ca8a04; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 15px;">⏱️ המבצע החודשי שלנו</div>
-                    <div style="font-size: 20px; font-weight: 900; margin-bottom: 10px; line-height: 1.5;">🎁 קונים 3 ערכות דיסקברי – מקבלים <span style="color: #fde047;">1 במתנה!</span><br/>🎁 קונים 8 דוגמיות רשמיות – מקבלים <span style="color: #fde047;">2 במתנה!</span></div>
-                    <div style="font-size: 13px; opacity: 0.8; margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px;">*ההנחה מתעדכנת אוטומטית בעגלת הקניות</div>
+                <div style="background-color: #fcfcfc; color: #000; padding: 30px; border-radius: 20px; text-align: center; margin: 25px 0; border: 2px solid #ca8a04;">
+                    <div style="font-size: 14px; font-weight: 900; color: #b45309; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 15px;">⏱️ המבצע החודשי שלנו</div>
+                    <div style="font-size: 20px; font-weight: 900; margin-bottom: 10px; line-height: 1.5; color: #000;">🎁 קונים 3 ערכות דיסקברי – מקבלים <span style="color: #b45309;">1 במתנה!</span><br/>🎁 קונים 8 דוגמיות רשמיות – מקבלים <span style="color: #b45309;">2 במתנה!</span></div>
+                    <div style="font-size: 13px; color: #777; margin-top: 15px; border-top: 1px solid #eaeaea; padding-top: 15px;">*ההנחה מתעדכנת אוטומטית בעגלת הקניות</div>
                 </div>
                 <div style="background-color: #f8f8f8; padding: 20px; border-radius: 16px; margin: 25px 0;">
                     <p style="margin: 0; font-weight: 900; color: #000;">💡 תזכורת: מה זה Discovery Set?</p>
