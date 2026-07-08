@@ -7,6 +7,7 @@ export async function GET(req) {
     const isAuthorized = await checkCronOrAdmin(req);
     if (!isAuthorized) {
         return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
     try {
         // Enforce running only on the FIRST Wednesday of the month
         // Vercel cron might trigger every Wednesday if we use '0 19 * * 3'
