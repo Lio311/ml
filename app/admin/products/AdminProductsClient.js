@@ -880,7 +880,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                             />
                                         </div>
                                     </div>
-                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2 p-4 bg-white rounded-2xl border border-gray-100">
+                                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-2 p-4 bg-white rounded-2xl border border-gray-100">
                                         <div>
                                             <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">עונות</label>
                                             <div className="flex flex-wrap gap-2">
@@ -911,17 +911,15 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                                 options={allCountries} 
                                             />
                                         </div>
-                                        <div className="md:col-span-2">
+                                        <div>
                                             <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">ריכוז הבושם</label>
-                                            <input
-                                                list="concentrations-list"
-                                                value={editForm.concentration || ''}
-                                                onChange={e => setEditForm({ ...editForm, concentration: e.target.value })}
-                                                className="border-2 border-gray-100 rounded-xl p-2 w-full bg-white focus:border-black outline-none transition-colors"
-                                                placeholder="לדוגמה: Eau De Parfum..."
+                                            <ConcentrationSelector
+                                                value={editForm.concentration}
+                                                onChange={(val) => setEditForm({ ...editForm, concentration: val })}
+                                                options={PRESET_CONCENTRATIONS}
                                             />
                                         </div>
-                                        <div className="md:col-span-2">
+                                        <div className="md:col-span-3">
                                             <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-1">פרפיומרים (Perfumers)</label>
                                             <TagInput
                                                 tags={editForm.perfumers ? editForm.perfumers.split(',').filter(Boolean) : []}
