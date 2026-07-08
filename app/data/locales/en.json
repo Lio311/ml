@@ -1073,11 +1073,11 @@
         "catalog_auth_overlay_desc": "To communicate with {name} and track your order, please log in."
     },
     "concentrations": {
-        "Eau De Parfum": "Eau De Parfum",
-        "Eau De Toilette": "Eau De Toilette",
+        "Eau de Parfum": "Eau De Parfum",
+        "Eau de Toilette": "Eau De Toilette",
         "Parfum": "Parfum",
-        "Extrait De Parfum": "Extrait De Parfum",
-        "Eau De Cologne": "Eau De Cologne",
+        "Extrait de Parfum": "Extrait De Parfum",
+        "Eau de Cologne": "Eau De Cologne",
         "Eau Fraiche": "Eau Fraiche"
     }
 }

@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import Image from '../CImage';
 import { useLanguage } from '../../context/LanguageContext';
+import SmartMatchingClient from '../../matching/SmartMatchingClient';
 
 import { chatbotKnowledge } from '../../data/chatbot_knowledge';
 
@@ -19,6 +20,7 @@ const REPRESENTATIVES = [
 export default function ChatWidget() {
     const [isVisible, setIsVisible] = useState(true);
     const [isOpen, setIsOpen] = useState(false);
+    const [activeTab, setActiveTab] = useState('matching'); // 'matching' or 'advisor'
     const [rep, setRep] = useState(REPRESENTATIVES[0]); // Default to first for SSR
     const [messages, setMessages] = useState([]);
     
@@ -172,28 +174,50 @@ export default function ChatWidget() {
             {isOpen && (
                 <div className={`mb-4 w-80 md:w-96 bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden flex flex-col max-h-[500px] transition-all duration-300 transform ${isHebrew ? 'origin-bottom-right' : 'origin-bottom-left'}`}>
                     {/* Header with Rep Info */}
-                    <div className="bg-black text-white p-4 flex justify-between items-center">
-                        <div className="flex items-center gap-3">
-                            <div className="relative">
-                                <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-green-500 relative">
-                                    <Image src={rep.image} alt={rep.name} fill sizes="40px" className="object-cover" />
+                    <div className="bg-black text-white p-4 flex flex-col gap-3">
+                        <div className="flex justify-between items-center">
+                            <div className="flex items-center gap-3">
+                                <div className="relative">
+                                    <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-green-500 relative">
+                                        <Image src={rep.image} alt={rep.name} fill sizes="40px" className="object-cover" />
+                                    </div>
+                                    <div className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full border border-white z-10"></div>
                                 </div>
-                                <div className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full border border-white z-10"></div>
+                                <div>
+                                    <h3 className="font-bold text-sm">{rep.name}</h3>
+                                    <div className="text-[10px] opacity-75">{rep.role} • {rep.gender === 'male' ? 'מחובר' : 'מחוברת'} כעת</div>
+                                </div>
                             </div>
-                            <div>
-                                <h3 className="font-bold text-sm">{rep.name}</h3>
-                                <div className="text-[10px] opacity-75">{rep.role} • {rep.gender === 'male' ? 'מחובר' : 'מחוברת'} כעת</div>
-                            </div>
+                            <button onClick={() => setIsOpen(false)} className="text-white hover:text-gray-300">
+                                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                </svg>
+                            </button>
                         </div>
-                        <button onClick={() => setIsOpen(false)} className="text-white hover:text-gray-300">
-                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                            </svg>
-                        </button>
+                        <div className="flex bg-gray-800 rounded-lg p-1">
+                            <button 
+                                onClick={() => setActiveTab('matching')}
+                                className={`flex-1 text-xs font-bold py-1.5 rounded-md transition ${activeTab === 'matching' ? 'bg-white text-black' : 'text-gray-300 hover:text-white'}`}
+                            >
+                                שאלון התאמה
+                            </button>
+                            <button 
+                                onClick={() => setActiveTab('advisor')}
+                                className={`flex-1 text-xs font-bold py-1.5 rounded-md transition ${activeTab === 'advisor' ? 'bg-white text-black' : 'text-gray-300 hover:text-white'}`}
+                            >
+                                יועץ AI
+                            </button>
+                        </div>
                     </div>
 
-                    {/* Messages */}
-                    <div className="flex-1 bg-gray-50 p-4 overflow-y-auto min-h-[300px]" ref={scrollRef}>
+                    {/* Content */}
+                    {activeTab === 'matching' ? (
+                        <div className="flex-1 bg-gray-50 overflow-y-auto custom-scrollbar min-h-[300px]">
+                            <SmartMatchingClient isEmbedded={true} />
+                        </div>
+                    ) : (
+                        <>
+                            <div className="flex-1 bg-gray-50 p-4 overflow-y-auto min-h-[300px]" ref={scrollRef}>
                         {messages.map((msg) => (
                             <div key={msg.id} className={`mb-2 flex ${msg.sender === 'bot' ? 'justify-start' : 'justify-end'}`}>
                                 <div className={`max-w-[85%] rounded-2xl p-3 text-sm shadow-sm ${msg.sender === 'bot'
@@ -311,7 +335,9 @@ export default function ChatWidget() {
                             </svg>
                         </button>
                     </form>
-                </div>
+                    </>
+                )}
+            </div>
             )}
 
             {/* Toggle Button Container with Close Option */}

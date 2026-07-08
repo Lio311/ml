@@ -10,7 +10,7 @@ import Link from 'next/link';
 import { motion, AnimatePresence } from 'framer-motion';
 
 
-export default function SmartMatchingClient({ initialNotes }) {
+export default function SmartMatchingClient({ initialNotes = [], isEmbedded = false }) {
     const { addMultipleToCart } = useCart();
     const { t, dir, localize } = useLanguage();
     const [step, setStep] = useState(1);
@@ -30,11 +30,26 @@ export default function SmartMatchingClient({ initialNotes }) {
     const productRefs = useRef({});
 
 
+    const [notesList, setNotesList] = useState(initialNotes);
+
+    useEffect(() => {
+        if (notesList.length === 0) {
+            fetch('/api/fragrance-notes')
+                .then(res => res.json())
+                .then(data => {
+                    if (Array.isArray(data)) {
+                        setNotesList(data);
+                    }
+                })
+                .catch(err => console.error('Failed to fetch notes:', err));
+        }
+    }, []);
+
     const handleNoteInputChange = (e) => {
         const val = e.target.value;
         setNoteInput(val);
         if (val.trim().length > 0) {
-            const filtered = initialNotes.filter(n =>
+            const filtered = notesList.filter(n =>
                 n.toLowerCase().includes(val.toLowerCase()) &&
                 !preferences.notes.includes(n)
             );

@@ -98,7 +98,6 @@ export default function Header({ brands = [] }) {
             { label: t('common.catalog'), href: '/catalog', type: 'catalog', active: pathname === '/catalog' },
             { label: t('common.bundles'), href: '/bundles', active: pathname === '/bundles' },
             { label: t('common.sales'), href: '/sales', active: pathname === '/sales' },
-            { label: t('common.matching'), href: '/matching', active: pathname === '/matching' },
             { label: t('common.requests'), href: '/requests', active: pathname === '/requests' },
             { label: t('common.contact'), href: '/contact', active: pathname === '/contact' },
         ];

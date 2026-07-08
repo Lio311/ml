@@ -1,15 +1,9 @@
 import { NextResponse } from 'next/server';
-import { auth } from '@clerk/nextjs/server';
 import pool from '@/app/lib/db';
 
 export async function GET() {
     let client;
     try {
-        const { userId } = await auth();
-        if (!userId) {
-            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-        }
-
         client = await pool.connect();
         
         // Fetch unique notes from top_notes, middle_notes, and base_notes

@@ -555,7 +555,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                         />
                     </div>
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4 bg-gray-50 p-4 rounded-xl border border-gray-100">
+                    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4 bg-gray-50 p-4 rounded-xl border border-gray-100">
                         <div>
                             <label className="text-sm font-bold block mb-2">עונות (בחר לפחות אחת)</label>
                             <div className="flex flex-wrap gap-3">
@@ -586,7 +586,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                 options={allCountries} 
                             />
                         </div>
-                        <div className="md:col-span-2">
+                        <div>
                             <label className="text-sm font-bold block mb-2">ריכוז הבושם</label>
                             <input
                                 list="concentrations-list"

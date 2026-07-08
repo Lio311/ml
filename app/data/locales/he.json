@@ -679,11 +679,11 @@
         "total_bundle_price": "מחיר חבילה סופי"
     },
     "concentrations": {
-        "Eau De Parfum": "או דה פרפיום (EDP)",
-        "Eau De Toilette": "או דה טואלט (EDT)",
+        "Eau de Parfum": "או דה פרפיום (EDP)",
+        "Eau de Toilette": "או דה טואלט (EDT)",
         "Parfum": "פרפיום",
-        "Extrait De Parfum": "אקסטרה דה פרפיום",
-        "Eau De Cologne": "או דה קולון (EDC)",
+        "Extrait de Parfum": "אקסטרה דה פרפיום",
+        "Eau de Cologne": "או דה קולון (EDC)",
         "Eau Fraiche": "או פרש"
     }
 }

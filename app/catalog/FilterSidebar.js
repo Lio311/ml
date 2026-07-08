@@ -172,7 +172,9 @@ export default function FilterSidebar({ allBrands = [], allCategories = [], allC
                                     onChange={() => toggleConcentration(c)}
                                     className="w-4 h-4 rounded border-gray-300 text-black focus:ring-black"
                                 />
-                                <span className={selectedConcentrations.includes(c) ? 'font-bold' : ''}>{t(`concentrations.${c}`) || c}</span>
+                                <span className={selectedConcentrations.includes(c) ? 'font-bold' : ''}>
+                                    {t(`concentrations.${c}`) === `concentrations.${c}` ? c : t(`concentrations.${c}`)}
+                                </span>
                             </label>
                         ))}
                     </div>
