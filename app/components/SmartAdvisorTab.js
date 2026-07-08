@@ -120,15 +120,15 @@ export default function SmartAdvisorTab() {
 
     return (
         <>
-            <div className={`fixed top-1/2 ${isHebrew ? 'left-0' : 'right-0'} -translate-y-1/2 z-50 hidden md:block`}>
+            <div className={`fixed top-1/2 ${isHebrew ? 'left-0' : 'right-0'} -translate-y-1/2 z-50 block`}>
                 <button 
                     onClick={() => setIsOpen(true)} 
-                    className={`bg-black/90 backdrop-blur-md text-white px-2 py-4 shadow-[5px_0_15px_rgba(0,0,0,0.3)] border border-white/10 flex flex-col items-center gap-3 hover:bg-gray-900 transition-all group overflow-hidden relative ${isHebrew ? 'rounded-r-xl border-l-0' : 'rounded-l-xl border-r-0'}`}
+                    className={`bg-black/90 backdrop-blur-md text-white px-1 py-3 md:px-2 md:py-4 shadow-[5px_0_15px_rgba(0,0,0,0.3)] border border-white/10 flex flex-col items-center gap-2 md:gap-3 hover:bg-gray-900 transition-all group overflow-hidden relative ${isHebrew ? 'rounded-r-xl border-l-0' : 'rounded-l-xl border-r-0'}`}
                 >
                     <div className="absolute inset-0 bg-gradient-to-b from-blue-500/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
                     <span 
                         style={{ writingMode: 'vertical-rl', textOrientation: 'mixed', transform: isHebrew ? 'rotate(180deg)' : 'none' }} 
-                        className="font-bold tracking-widest text-sm relative z-10"
+                        className="font-bold tracking-widest text-[10px] md:text-sm relative z-10"
                     >
                         {isHebrew ? 'היועץ החכם' : 'Smart Advisor'}
                     </span>
@@ -142,7 +142,7 @@ export default function SmartAdvisorTab() {
                         animate={{ x: 0, opacity: 1 }}
                         exit={{ x: isHebrew ? '-100%' : '100%', opacity: 0 }}
                         transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-                        className={`fixed top-0 ${isHebrew ? 'left-0 border-r' : 'right-0 border-l'} h-[100dvh] w-[400px] bg-gradient-to-b from-gray-900 to-black text-white z-[60] shadow-2xl flex flex-col border-white/10 hidden md:flex`}
+                        className={`fixed top-0 ${isHebrew ? 'left-0 md:border-r' : 'right-0 md:border-l'} h-[100dvh] w-full md:w-[400px] bg-gradient-to-b from-gray-900 to-black text-white z-[60] shadow-2xl flex flex-col border-white/10`}
                         dir={isHebrew ? "rtl" : "ltr"}
                     >
                         {/* Header */}
