@@ -80,7 +80,7 @@ export async function GET(req) {
                     const imageUrl = p.image_url ? (p.image_url.startsWith('http') ? p.image_url : `${process.env.NEXT_PUBLIC_APP_URL || 'https://www.ml-tlv.com'}${p.image_url.startsWith('/') ? '' : '/'}${p.image_url}`) : '';
                     return `
                     <div style="background: white; border: 1px solid #eee; padding: 15px; border-radius: 8px; margin-bottom: 15px; text-align: center;">
-                        ${imageUrl ? `<img src="${imageUrl}" alt="${p.name}" style="max-height: 150px; width: auto; margin-bottom: 10px;">` : ''}
+                        ${imageUrl ? `<img src="${imageUrl}" alt="${p.name}" style="max-height: 150px; width: auto; margin-bottom: 10px; background-color: #ffffff; padding: 5px; border-radius: 4px;">` : ''}
                         <br>
                         <strong>${p.name}</strong> - ${p.brand}<br>
                         <span style="color: #666; font-size: 14px;">תווים דומים: ${p.notes}</span>

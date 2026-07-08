@@ -166,7 +166,7 @@ export const getNewProductTemplate = (product) => {
                 <p style="margin: 0 0 25px; color: #666; text-align: center;">אנחנו מתרגשים להציג את התוספת החדשה לקולקציה שלנו:</p>
 
                 <div style="text-align: center; margin: 30px 0;">
-                    <img src="${getAbsoluteImageUrl(product.image_url)}" alt="${product.brand} ${product.model}" style="max-width: 260px; height: auto; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08);" />
+                    <img src="${getAbsoluteImageUrl(product.image_url)}" alt="${product.brand} ${product.model}" style="max-width: 260px; height: auto; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); background-color: #ffffff; padding: 10px;" />
                 </div>
 
                 <div style="text-align: center; background-color: #fcfcfc; padding: 25px; border-radius: 20px; border: 1px solid #f5f5f5;">
@@ -202,7 +202,7 @@ export const formatItemsHtmlCustomer = (items) => {
     const rowsHtml = items.map(item => `
         <tr style="border-bottom: 1px solid #f5f5f5;">
             <td style="padding: 12px 10px; text-align: right; font-size: 14px; color: #333;">
-                ${item.image_url ? `<img src="${getAbsoluteImageUrl(item.image_url)}" width="40" style="vertical-align: middle; margin-left: 10px; border-radius: 6px; display: inline-block; border: 1px solid #f0f0f0; height: auto; max-height: 40px; object-fit: contain;" alt="${item.name || 'product'}" />` : ''}
+                ${item.image_url ? `<img src="${getAbsoluteImageUrl(item.image_url)}" width="40" style="vertical-align: middle; margin-left: 10px; border-radius: 6px; display: inline-block; border: 1px solid #f0f0f0; height: auto; max-height: 40px; object-fit: contain; background-color: #ffffff;" alt="${item.name || 'product'}" />` : ''}
                 <span style="vertical-align: middle;">${item.name || (item.brand + ' ' + item.model)} ${item.is_discovery_set ? `(${formatDiscoverySize(item.volume_label)})` : `(${item.size} מ"ל)`}</span>
             </td>
             <td style="padding: 12px 10px; text-align: center; font-size: 14px; color: #333;">${item.quantity}</td>
@@ -229,7 +229,7 @@ export const formatItemsHtmlAdmin = (items) => {
     if (!Array.isArray(items)) return items;
     return items.map(item => `
         <li style="margin-bottom: 12px; border-bottom: 1px solid #f0f0f0; padding-bottom: 12px; display: table; width: 100%;">
-            ${item.image_url ? `<div style="display: table-cell; vertical-align: middle; width: 50px;"><img src="${getAbsoluteImageUrl(item.image_url)}" width="40" style="border-radius: 6px; border: 1px solid #f0f0f0; height: auto; max-height: 40px; object-fit: contain;" alt="product" /></div>` : ''}
+            ${item.image_url ? `<div style="display: table-cell; vertical-align: middle; width: 50px;"><img src="${getAbsoluteImageUrl(item.image_url)}" width="40" style="border-radius: 6px; border: 1px solid #f0f0f0; height: auto; max-height: 40px; object-fit: contain; background-color: #ffffff;" alt="product" /></div>` : ''}
             <div style="display: table-cell; vertical-align: middle;">
                 <span style="font-weight: 900; color: #000;">${item.name || (item.brand + ' ' + item.model)}</span>
                 <div style="font-size: 12px; color: #666;">${item.is_discovery_set ? formatDiscoverySize(item.volume_label) : `${item.size || ''}ml`} x${item.quantity || 1}</div>
@@ -253,7 +253,7 @@ export const getOrderConfirmationTemplate = (orderId, items, total, freeSamples,
         const rowsHtml = items.map(item => `
         <tr style="border-bottom: 1px solid #f5f5f5;">
             <td style="padding: 12px 10px; text-align: right; font-size: 14px; color: #333;">
-                ${item.image_url ? `<img src="${getAbsoluteImageUrl(item.image_url)}" width="40" style="vertical-align: middle; margin-left: 10px; border-radius: 6px; display: inline-block; border: 1px solid #f0f0f0; height: auto; max-height: 40px; object-fit: contain;" alt="${item.name || 'product'}" />` : ''}
+                ${item.image_url ? `<img src="${getAbsoluteImageUrl(item.image_url)}" width="40" style="vertical-align: middle; margin-left: 10px; border-radius: 6px; display: inline-block; border: 1px solid #f0f0f0; height: auto; max-height: 40px; object-fit: contain; background-color: #ffffff;" alt="${item.name || 'product'}" />` : ''}
                 <span style="vertical-align: middle;">${item.name || (item.brand + ' ' + item.model)} ${item.is_discovery_set ? `(${formatDiscoverySize(item.volume_label)})` : `(${item.size} מ"ל)`}</span>
             </td>
             <td style="padding: 12px 10px; text-align: center; font-size: 14px; color: #333;">${item.quantity}</td>
@@ -326,7 +326,7 @@ export const getOrderUpdatedTemplate = (orderId, name, items, total, deliveryMet
         const rowsHtml = items.map(item => `
         <tr style="border-bottom: 1px solid #f5f5f5;">
             <td style="padding: 12px 10px; text-align: right; font-size: 14px; color: #333;">
-                ${item.image || item.image_url ? `<img src="${getAbsoluteImageUrl(item.image || item.image_url)}" width="40" style="vertical-align: middle; margin-left: 10px; border-radius: 6px; display: inline-block; border: 1px solid #f0f0f0; height: auto; max-height: 40px; object-fit: contain;" alt="${item.name || 'product'}" />` : ''}
+                ${item.image || item.image_url ? `<img src="${getAbsoluteImageUrl(item.image || item.image_url)}" width="40" style="vertical-align: middle; margin-left: 10px; border-radius: 6px; display: inline-block; border: 1px solid #f0f0f0; height: auto; max-height: 40px; object-fit: contain; background-color: #ffffff;" alt="${item.name || 'product'}" />` : ''}
                 <span style="vertical-align: middle;">${item.name || (item.brand + ' ' + item.model)} ${item.is_discovery_set ? `(${formatDiscoverySize(item.volume_label)})` : `(${item.size} מ"ל)`}</span>
             </td>
             <td style="padding: 12px 10px; text-align: center; font-size: 14px; color: #333;">${item.quantity}</td>
@@ -630,7 +630,7 @@ export const getBackInStockTemplate = (product) => {
                 </p>
 
                 <div style="text-align: center; margin: 30px 0;">
-                    <img src="${getAbsoluteImageUrl(product.imageUrl || product.image_url) || 'https://www.ml-tlv.com/logo-black.png'}" alt="${product.brand} ${product.model}" style="max-width: 220px; height: auto; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08);" />
+                    <img src="${getAbsoluteImageUrl(product.imageUrl || product.image_url) || 'https://www.ml-tlv.com/logo-black.png'}" alt="${product.brand} ${product.model}" style="max-width: 220px; height: auto; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); background-color: #ffffff; padding: 10px;" />
                 </div>
                 
                 <div style="text-align: center; background-color: #f8f8f8; padding: 25px; border-radius: 20px; margin: 30px 0;">
@@ -866,7 +866,7 @@ export function getSystemDefaults() {
                 <h1 style="margin: 0 0 10px; font-size: 24px; font-weight: 900; color: #000; text-align: center;">הגיע הזמן לגלות את הריח הבא שלך ✨</h1>
                 <p style="margin: 0 0 25px; color: #666; text-align: center;">היי {{name}}, השקנו קטגוריה חדשה שאתה פשוט חייב להכיר!</p>
                 <p style="margin-bottom: 20px; color: #333; text-align: center; font-size: 15px;">אנחנו נרגשים להציג את קטגוריית ה-<strong>Discovery Sets &amp; דוגמיות רשמיות</strong> שלנו.<br/>הדרך המושלמת לנסות, לחוות ולהתאהב בניחוחות יוקרתיים חדשים – לפני שמתחייבים לבקבוק מלא.</p>
-                <div style="background: linear-gradient(135deg, #000 0%, #222 100%); color: #fff; padding: 30px; border-radius: 20px; text-align: center; margin: 25px 0;">
+                <div style="background-color: #111; color: #fff; padding: 30px; border-radius: 20px; text-align: center; margin: 25px 0;">
                     <div style="font-size: 14px; font-weight: 900; color: #ca8a04; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 15px;">⏱️ מבצע סוף שבוע יוצא לדרך</div>
                     <p style="margin: 0 0 15px; font-size: 13px; opacity: 0.8;">בכל יום חמישי עד שישי ב-18:00:</p>
                     <div style="font-size: 20px; font-weight: 900; margin-bottom: 10px; line-height: 1.5;">🎁 קונים 3 ערכות דיסקברי – מקבלים <span style="color: #fde047;">1 במתנה!</span><br/>🎁 קונים 8 דוגמיות רשמיות – מקבלים <span style="color: #fde047;">2 במתנה!</span></div>
