@@ -18,6 +18,30 @@ export async function GET(req) {
             // to check if a nurture email was already sent to avoid resending.
             // In Postgres we can check NOT EXISTS
 
+            const config3 = await getAutomationConfig('nurture_3_days');
+            const delay3 = config3.delay_days || 3;
+            const active3 = await isAutomationActive('טיפוח לקוחות: 3 ימים (ללא הזמנה)');
+
+            let users3 = [];
+            if (active3) {
+                const res3Days = await client.query(`
+                    SELECT id, first_name, email, created_at 
+                    FROM users u
+                    WHERE created_at >= NOW() - INTERVAL '${delay3 + 1} days'
+                    AND created_at < NOW() - INTERVAL '${delay3} days'
+                    AND NOT EXISTS (
+                        SELECT 1 FROM email_logs 
+                        WHERE recipient = u.email 
+                        AND type = 'nurture_3_days'
+                    )
+                    AND NOT EXISTS (
+                        SELECT 1 FROM orders o
+                        WHERE o.customer_details->>'email' = u.email
+                    )
+                `);
+                users3 = res3Days.rows;
+            }
+
             const config10 = await getAutomationConfig('nurture_10_days');
             const delay10 = config10.delay_days || 10;
             const active10 = await isAutomationActive('טיפוח לקוחות: 10 ימים (בקשת בושם)');
@@ -58,10 +82,23 @@ export async function GET(req) {
                 users25 = res25Days.rows;
             }
             
-            console.log(`[Nurture Cron] Found ${users10.length} users for 10-days, ${users25.length} users for 25-days.`);
+            console.log(`[Nurture Cron] Found ${users3.length} users for 3-days, ${users10.length} users for 10-days, ${users25.length} users for 25-days.`);
 
+            let processed3 = 0;
             let processed10 = 0;
             let processed25 = 0;
+
+            // Send 3-day emails
+            for (const user of users3) {
+                if (!user.email) continue;
+                const firstName = user.first_name || 'לקוח/ה';
+                const { html, subject } = await getTemplate('nurture_3_days', { name: firstName });
+                
+                if (html && subject) {
+                    await sendEmail(user.email, subject, html, 'nurture_3_days');
+                    processed3++;
+                }
+            }
 
             // Send 10-day emails
             for (const user of users10) {
@@ -91,11 +128,12 @@ export async function GET(req) {
             await client.query(`
                 UPDATE workflows 
                 SET last_run = NOW(), total_runs = total_runs + $1 
-                WHERE name IN ('טיפוח לקוחות: 10 ימים (בקשת בושם)', 'טיפוח לקוחות: 25 ימים (התאמה אישית)')
-            `, [processed10 + processed25]);
+                WHERE name IN ('טיפוח לקוחות: 3 ימים (ללא הזמנה)', 'טיפוח לקוחות: 10 ימים (בקשת בושם)', 'טיפוח לקוחות: 25 ימים (התאמה אישית)')
+            `, [processed3 + processed10 + processed25]);
 
             return NextResponse.json({ 
                 success: true, 
+                processed3,
                 processed10,
                 processed25
             });

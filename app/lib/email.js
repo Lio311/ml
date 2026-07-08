@@ -883,6 +883,48 @@ export function getSystemDefaults() {
             </div>
             <div style="text-align: center; padding-top: 15px; padding-bottom: 0; color: #ccc; font-size: 11px;">ml - יוקרה בחתיכות קטנות</div>
         </div>`
+        },
+        'nurture_3_days': {
+            subject: 'הכל בסדר? שמנו לב שלא מצאת את מה שחיפשת...',
+            content_html: `
+        <div dir="rtl" style="font-family: 'Open Sans', 'Open Sans Hebrew', Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto; line-height: 1.6;">
+            <div style="background-color: #fff; padding: 30px; border-radius: 24px; border: 1px solid #f0f0f0; box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
+                <h2 style="margin: 0 0 15px; font-size: 22px; font-weight: 900; color: #000; text-align: center;">הכל בסדר? 💭</h2>
+                <p style="margin-bottom: 20px;">היי {{name}}, שמנו לב שנרשמת לאתר שלנו לפני מספר ימים, אבל עדיין לא ביצעת הזמנה.</p>
+                <p style="margin-bottom: 25px;">רצינו לשאול אם הכל בסדר - האם נתקלת בבעיה טכנית באתר? האם לא מצאת את הבושם שחיפשת? או אולי סתם הלכת לאיבוד בין כל האפשרויות?</p>
+                <p style="margin-bottom: 25px;">אנחנו כאן כדי לעזור! השב למייל זה ונשמח להתאים לך בדיוק את הבושם שאתה מחפש ולענות על כל שאלה.</p>
+                <div style="text-align: center; margin: 35px 0;">
+                    <a href="https://www.ml-tlv.com/contact" style="display: inline-block; background-color: #000; color: #fff; padding: 16px 32px; text-decoration: none; border-radius: 16px; font-weight: 900; font-size: 15px; letter-spacing: 0.5px;">ליצירת קשר איתנו</a>
+                </div>
+                <p style="color: #666; font-size: 14px;">נשמח לעמוד לשירותך,</p>
+                <p style="font-weight: bold; margin-top: 5px;">צוות ml_tlv</p>
+            </div>
+            <div style="text-align: center; padding-top: 15px; padding-bottom: 0; color: #ccc; font-size: 11px;">ml - יוקרה בחתיכות קטנות</div>
+        </div>`
+        },
+        'monthly_discovery': {
+            subject: 'מבצע הדיסקברי החודשי שלנו יוצא לדרך! ✨',
+            content_html: `
+        <div dir="rtl" style="font-family: 'Open Sans', 'Open Sans Hebrew', Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto; line-height: 1.6;">
+            <div style="background-color: #fff; padding: 30px; border-radius: 24px; border: 1px solid #f0f0f0; box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
+                <h1 style="margin: 0 0 10px; font-size: 24px; font-weight: 900; color: #000; text-align: center;">מבצע הדיסקברי החודשי שלנו מתחיל היום! ✨</h1>
+                <p style="margin: 0 0 25px; color: #666; text-align: center;">היי {{name}}, יום רביעי הגיע וזה אומר ש... מבצע הדיסקברי שלנו חוזר!</p>
+                <div style="background-color: #111; color: #fff; padding: 30px; border-radius: 20px; text-align: center; margin: 25px 0;">
+                    <div style="font-size: 14px; font-weight: 900; color: #ca8a04; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 15px;">⏱️ המבצע החודשי שלנו</div>
+                    <div style="font-size: 20px; font-weight: 900; margin-bottom: 10px; line-height: 1.5;">🎁 קונים 3 ערכות דיסקברי – מקבלים <span style="color: #fde047;">1 במתנה!</span><br/>🎁 קונים 8 דוגמיות רשמיות – מקבלים <span style="color: #fde047;">2 במתנה!</span></div>
+                    <div style="font-size: 13px; opacity: 0.8; margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px;">*ההנחה מתעדכנת אוטומטית בעגלת הקניות</div>
+                </div>
+                <div style="background-color: #f8f8f8; padding: 20px; border-radius: 16px; margin: 25px 0;">
+                    <p style="margin: 0; font-weight: 900; color: #000;">💡 תזכורת: מה זה Discovery Set?</p>
+                    <p style="margin: 5px 0 0; color: #666; font-size: 14px;">ערכת דוגמיות שמרכזת את הניחוחות המובילים של המותג בבקבוקונים קטנים, כך שתוכלו להתנסות בכל אחד מהם על העור לפני שבוחרים את המועדף.</p>
+                </div>
+                <p style="margin-bottom: 20px; color: #333; text-align: center;">מוכן לצאת למסע חושני?</p>
+                <div style="text-align: center; margin-top: 30px;">
+                    <a href="https://www.ml-tlv.com/discovery-sets" style="display: inline-block; background-color: #000; color: #fff; padding: 16px 35px; text-decoration: none; border-radius: 16px; font-weight: 900; font-size: 15px; box-shadow: 0 4px 15px rgba(0,0,0,0.2);">למעבר לאתר &gt;&gt;</a>
+                </div>
+            </div>
+            <div style="text-align: center; padding-top: 15px; padding-bottom: 0; color: #ccc; font-size: 11px;">ml - יוקרה בחתיכות קטנות</div>
+        </div>`
         }
     };
 }
