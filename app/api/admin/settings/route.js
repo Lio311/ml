@@ -9,7 +9,6 @@ const DEFAULT_MENU = [
     { id: 'bundles', label: 'חבילות', path: '/bundles', visible: true, order: 4 },
     { id: 'discovery_sets', label: 'דיסקברי סט', path: '/discovery-sets', visible: true, order: 5 },
     { id: 'sales', label: 'מבצעים', path: '/sales', visible: true, order: 6 },
-    { id: 'matching', label: 'התאמת מארזים', path: '/matching', visible: true, order: 7 },
     { id: 'requests', label: 'בקשת בשמים', path: '/requests', visible: true, order: 8 },
     { id: 'lottery', label: 'הגרלה', path: '/lottery', visible: true, order: 9, isRed: true },
     { id: 'contact', label: 'צור קשר', path: '/contact', visible: true, order: 10 }

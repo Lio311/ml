@@ -3,57 +3,189 @@
 import { useState, useRef, useEffect } from 'react';
 import { useCart } from '../context/CartContext';
 import { useLanguage } from '../context/LanguageContext';
-import TagInput from '../components/TagInput';
+import { ShoppingCart, Loader2, SendHorizontal, RefreshCcw } from 'lucide-react';
 import toast from 'react-hot-toast';
 import Image from 'next/image';
-import Link from 'next/link';
-import { motion, AnimatePresence } from 'framer-motion';
-
+import { marked } from 'marked';
 
 export default function SmartMatchingClient({ initialNotes = [], isEmbedded = false }) {
     const { addMultipleToCart } = useCart();
     const { t, dir, localize } = useLanguage();
-    const [step, setStep] = useState(1);
+    const isHebrew = dir === 'rtl';
+
+    // Chat state
+    const [messages, setMessages] = useState([]);
+    const [chatStep, setChatStep] = useState('quantity'); // quantity -> size -> budget -> notes -> loading -> results
     const [preferences, setPreferences] = useState({
-        quantity: 5,
-        size: '5', // 2, 5, 10
-        budget: 200,
+        quantity: null,
+        size: null,
+        budget: null,
         notes: []
     });
-    const [loading, setLoading] = useState(false);
+    const [inputText, setInputText] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
     const [results, setResults] = useState(null);
-    const [noteInput, setNoteInput] = useState('');
-    const [suggestions, setSuggestions] = useState([]);
-    const [isAddedToCart, setIsAddedToCart] = useState(false);
-    const [flyingItems, setFlyingItems] = useState([]);
-    const [animatingProductIds, setAnimatingProductIds] = useState(new Set());
-    const productRefs = useRef({});
+    const messagesEndRef = useRef(null);
 
-
+    // Notes lookup
     const [notesList, setNotesList] = useState(initialNotes);
+    const [suggestions, setSuggestions] = useState([]);
 
     useEffect(() => {
         if (notesList.length === 0) {
             fetch('/api/fragrance-notes')
                 .then(res => res.json())
                 .then(data => {
-                    if (Array.isArray(data)) {
-                        setNotesList(data);
-                    }
+                    if (Array.isArray(data)) setNotesList(data);
                 })
-                .catch(err => console.error('Failed to fetch notes:', err));
+                .catch(console.error);
         }
-    }, []);
+    }, [notesList]);
+
+    // Initial greeting
+    useEffect(() => {
+        if (messages.length === 0) {
+            setMessages([{
+                role: 'assistant',
+                content: isHebrew ? 'שלום! אשמח להרכיב עבורך מארז התאמה אישית.\n\n**כמה בשמים תרצה במארז?**' : 'Hello! I would love to build a custom set for you.\n\n**How many perfumes would you like in the set?**',
+                type: 'quantity_options'
+            }]);
+        }
+    }, [messages, isHebrew]);
+
+    const scrollToBottom = () => {
+        messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    };
+
+    useEffect(() => {
+        scrollToBottom();
+    }, [messages, suggestions, chatStep]);
+
+    const handleQuickReply = (type, value, displayLabel) => {
+        // Add user message
+        const userMsg = { role: 'user', content: displayLabel };
+        setMessages(prev => [...prev, userMsg]);
+
+        // Update preferences
+        const newPrefs = { ...preferences, [type]: value };
+        setPreferences(newPrefs);
+
+        // Determine next bot question
+        setTimeout(() => advanceFlow(type, newPrefs), 500);
+    };
+
+    const advanceFlow = async (completedStep, currentPrefs) => {
+        let nextMsg = null;
+        if (completedStep === 'quantity') {
+            setChatStep('size');
+            nextMsg = {
+                role: 'assistant',
+                content: isHebrew ? 'מעולה! **באיזה גודל תרצה את הבשמים?**' : 'Great! **What size would you like the perfumes to be?**',
+                type: 'size_options'
+            };
+        } else if (completedStep === 'size') {
+            setChatStep('budget');
+            const basePrice = currentPrefs.size === '2' ? 30 : currentPrefs.size === '5' ? 60 : 100;
+            const minBudget = Math.floor(basePrice * currentPrefs.quantity * 0.8);
+            nextMsg = {
+                role: 'assistant',
+                content: isHebrew ? `הבנתי. **מה התקציב שלך למארז?** (₪)\n\n*(הערכה מומלצת בהתבסס על הגודל והכמות: כ-${minBudget}₪ ומעלה)*` : `Got it. **What is your budget for the set?** (₪)\n\n*(Recommended based on size and quantity: roughly ${minBudget}₪ and up)*`,
+                type: 'budget_input'
+            };
+        } else if (completedStep === 'budget') {
+            setChatStep('notes');
+            nextMsg = {
+                role: 'assistant',
+                content: isHebrew ? 'מצוין. אחרון חביב - **האם יש תווים או ניחוחות שאתה אוהב במיוחד?** (למשל: וניל, עץ, הדרים).\n\nאפשר גם ללחוץ על דלג.' : 'Excellent. Last but not least - **do you have any specific notes or scents you love?** (e.g. vanilla, woody, citrus).\n\nOr just click skip.',
+                type: 'notes_input'
+            };
+        } else if (completedStep === 'notes') {
+            setChatStep('loading');
+            setMessages(prev => [...prev, {
+                role: 'assistant',
+                content: isHebrew ? 'מחפש את ההתאמות המושלמות עבורך...' : 'Finding the perfect matches for you...',
+                type: 'text'
+            }]);
+            setIsLoading(true);
+            await fetchResults(currentPrefs);
+            return;
+        }
+
+        if (nextMsg) {
+            setMessages(prev => [...prev, nextMsg]);
+        }
+    };
+
+    const fetchResults = async (prefs) => {
+        try {
+            const res = await fetch('/api/match', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(prefs)
+            });
+            const data = await res.json();
+            
+            setTimeout(() => {
+                setIsLoading(false);
+                setResults(data);
+                setChatStep('results');
+                setMessages(prev => [...prev, {
+                    role: 'assistant',
+                    content: isHebrew ? 'מצאתי! הנה ההתאמה המושלמת לפי ההעדפות שלך:' : 'Found them! Here is the perfect match based on your preferences:',
+                    type: 'results_display'
+                }]);
+            }, 1500);
+
+        } catch (e) {
+            console.error(e);
+            setIsLoading(false);
+            toast.error(t('matching.error_toast'));
+            setMessages(prev => [...prev, {
+                role: 'assistant',
+                content: isHebrew ? 'אופס, משהו השתבש. אנא נסה שוב.' : 'Oops, something went wrong. Please try again.',
+                type: 'text'
+            }]);
+            setChatStep('notes'); // fallback to last step
+        }
+    };
+
+    const handleInputSubmit = (e) => {
+        e.preventDefault();
+        if (!inputText.trim()) return;
+
+        if (chatStep === 'budget') {
+            const val = parseInt(inputText.replace(/\D/g, ''));
+            if (!val || val < 10) {
+                toast.error(isHebrew ? 'אנא הזן סכום תקין' : 'Please enter a valid amount');
+                return;
+            }
+            handleQuickReply('budget', val, `₪${val}`);
+            setInputText('');
+        } else if (chatStep === 'notes') {
+            // Check if user is typing a note or just searching
+            // For simplicity, we just add the exact text as a note if they submit
+            const newNotes = [...preferences.notes, inputText.trim()];
+            const newPrefs = { ...preferences, notes: newNotes };
+            setPreferences(newPrefs);
+            
+            setMessages(prev => [...prev, { role: 'user', content: inputText.trim() }]);
+            setInputText('');
+            setSuggestions([]);
+            
+            // Auto advance after 1 second if they just submit text
+            setTimeout(() => advanceFlow('notes', newPrefs), 1000);
+        }
+    };
 
     const handleNoteInputChange = (e) => {
         const val = e.target.value;
-        setNoteInput(val);
-        if (val.trim().length > 0) {
+        setInputText(val);
+        if (chatStep === 'notes' && val.trim().length > 0) {
             const filtered = notesList.filter(n =>
                 n.toLowerCase().includes(val.toLowerCase()) &&
                 !preferences.notes.includes(n)
             );
-            setSuggestions(filtered);
+            setSuggestions(filtered.slice(0, 5));
         } else {
             setSuggestions([]);
         }
@@ -63,84 +195,13 @@ export default function SmartMatchingClient({ initialNotes = [], isEmbedded = fa
         if (!preferences.notes.includes(note)) {
             setPreferences({ ...preferences, notes: [...preferences.notes, note] });
         }
-        setNoteInput('');
+        setInputText('');
         setSuggestions([]);
-    };
-
-    const removeNote = (note) => {
-        setPreferences({ ...preferences, notes: preferences.notes.filter(n => n !== note) });
-    };
-
-    const getBudgetRange = () => {
-        const basePrice = preferences.size === '2' ? 30 : preferences.size === '5' ? 60 : 100;
-        const min = basePrice * preferences.quantity * 0.8;
-        const max = basePrice * preferences.quantity * 1.5;
-        return { min: Math.floor(min), max: Math.ceil(max) };
-    };
-
-    const handleMatch = async () => {
-        setLoading(true);
-        setStep(2);
-
-        try {
-            const res = await fetch('/api/match', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(preferences)
-            });
-            const data = await res.json();
-
-            setTimeout(() => {
-                setResults(data);
-                setStep(3);
-                setLoading(false);
-            }, 2000);
-
-        } catch (e) {
-            console.error(e);
-            setLoading(false);
-            setStep(1);
-            toast.error(t('matching.error_toast'));
-        }
     };
 
     const addToCartAll = async () => {
         if (!results) return;
-
-        const newAnimatingIds = new Set(animatingProductIds);
-        const newFlyingItems = [];
-        const cartIcon = document.getElementById('cart-icon-main');
-        const isRtl = dir === 'rtl';
-        const cartRect = cartIcon?.getBoundingClientRect() || { 
-            left: isRtl ? 40 : window.innerWidth - 100, 
-            top: 40 
-        };
-
-        results.products.forEach((p, index) => {
-            const el = productRefs.current[p.id];
-            if (!el) return;
-
-            const rect = el.getBoundingClientRect();
-            newAnimatingIds.add(p.id);
-
-            newFlyingItems.push({
-                id: `${p.id}-${Date.now()}`,
-                productId: p.id,
-                name: localize(p, 'name'),
-                brand: p.brand,
-                image: p.image_url,
-                start: { x: rect.left, y: rect.top },
-                end: { x: cartRect.left, y: cartRect.top },
-                dimensions: { width: rect.width, height: rect.height },
-                delay: index * 0.15, // Staggered entry
-                rotation: dir === 'rtl' ? -15 : 15 // Slight rotation for physics feel
-            });
-        });
-
-        setAnimatingProductIds(newAnimatingIds);
-        setFlyingItems(newFlyingItems);
-
-        // Actual API call logic
+        setIsLoading(true);
         try {
             const itemsToBatch = results.products.map(p => ({
                 product: p,
@@ -150,376 +211,195 @@ export default function SmartMatchingClient({ initialNotes = [], isEmbedded = fa
             }));
             
             await addMultipleToCart(itemsToBatch, { successKey: 'matching.all_added_toast' });
-            setIsAddedToCart(true);
+            toast.success(isHebrew ? 'המארז נוסף לעגלה בהצלחה!' : 'Set added to cart successfully!');
+            setMessages(prev => [...prev, {
+                role: 'assistant',
+                content: isHebrew ? 'נוסף לעגלה! 🛒 מעולה.' : 'Added to cart! 🛒 Awesome.',
+                type: 'text'
+            }]);
         } catch (error) {
             console.error("Failed to add all items to cart:", error);
+            toast.error(isHebrew ? 'שגיאה בהוספה לעגלה' : 'Error adding to cart');
+        } finally {
+            setIsLoading(false);
         }
-
-        // 3. Clear flying items after animation
-        setTimeout(() => {
-            setFlyingItems([]);
-        }, 2000 + (newFlyingItems.length * 100));
     };
 
-    const resetWizard = () => {
+    const resetFlow = () => {
+        setMessages([]);
+        setChatStep('quantity');
+        setPreferences({ quantity: null, size: null, budget: null, notes: [] });
         setResults(null);
-        setIsAddedToCart(false);
-        setStep(1);
-        setAnimatingProductIds(new Set());
+        setInputText('');
     };
 
     return (
-        <div className="min-h-screen bg-[#fafafa] text-zinc-900 relative flex flex-col items-center justify-start pt-2 md:pt-4 pb-8 px-4 overflow-hidden" dir={dir}>
-            {/* Ambient Background Gradient (Subtle for Light Theme) */}
-            <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_center,_rgba(0,0,0,0.03)_0%,_transparent_70%)] pointer-events-none" />
-            
-            {/* Secondary Decorator */}
-            <div className="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-zinc-200/50 rounded-full blur-[120px] pointer-events-none" />
-            <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-zinc-200/50 rounded-full blur-[120px] pointer-events-none" />
-
-            <div className="w-full max-w-[820px] mx-auto relative z-10 px-4">
-                <div className="mb-4 text-center overflow-visible">
-                    <h1 className="text-4xl md:text-5xl font-bold mb-2 text-zinc-900 tracking-tight animate-fadeIn">
-                        {t('matching.title') || 'התאמה אישית'}
-                    </h1>
-                    <div className="flex flex-col items-center gap-1 overflow-visible">
-                        <p className="text-zinc-500 text-[10px] md:text-sm animate-fadeIn delay-100 italic tracking-wide whitespace-normal opacity-70 px-2 leading-relaxed">
-                            {t('matching.description')}
-                        </p>
-                        {/* Algorithm Info Block */}
-                        <div className="mt-1 p-3 md:p-4 bg-white/70 backdrop-blur-xl rounded-2xl border border-zinc-200 animate-fadeIn delay-200 shadow-sm w-full">
-                            <p className="text-[9px] md:text-[10px] text-zinc-500 leading-relaxed text-center italic opacity-90">
-                                {t('matching.how_it_works')}
-                            </p>
-                        </div>
-                    </div>
-                </div>
-                {/* Progress Tracking */}
-                <div className="mb-6 overflow-hidden">
-                    <div className="flex justify-between items-end mb-1.5 px-1">
-                        <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-zinc-500">
-                            {step === 1 ? t('matching.preferences_title') : step === 2 ? t('matching.analyzing') : t('matching.results_title')}
-                        </span>
-                        <span className="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-400">
-                            {t('matching.step_info', { step })}
-                        </span>
-                    </div>
-                    <div className="w-full bg-zinc-200 h-1 rounded-full overflow-hidden">
-                        <div
-                            className="bg-zinc-900 h-full transition-all duration-700 ease-out shadow-[0_0_10px_rgba(0,0,0,0.1)]"
-                            style={{ width: step === 1 ? '33%' : step === 2 ? '66%' : '100%' }}
-                        ></div>
-                    </div>
-                </div>
-
-                <div className="bg-white/70 backdrop-blur-3xl p-6 md:p-10 rounded-[2.5rem] border border-zinc-200 shadow-[0_50px_100px_-20px_rgba(0,0,0,0.12),0_30px_60px_-15px_rgba(0,0,0,0.08)] relative overflow-hidden group min-h-[500px] flex flex-col">
-                    {/* Subtle Internal Glow */}
-                    <div className="absolute top-0 right-0 w-64 h-64 bg-zinc-50/50 rounded-full -translate-y-32 translate-x-32 blur-[100px] pointer-events-none" />
-
-                    {/* STEP 1: PREFERENCES */}
-                    {step === 1 && (
-                        <div className="space-y-8 animate-fadeIn flex-1">
-                            {/* 1. Bundle Size & Sample Size */}
-                            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
-                                <div className="space-y-4">
-                                    <label className="block text-lg font-serif font-black tracking-tight text-zinc-900">{t('matching.quantity_label')}</label>
-                                    <div className="flex items-center gap-6 bg-zinc-50/50 p-6 rounded-2xl border border-zinc-100 shadow-inner">
-                                        <input
-                                            type="range"
-                                            min="3"
-                                            max="12"
-                                            value={preferences.quantity}
-                                            onChange={(e) => setPreferences({ ...preferences, quantity: parseInt(e.target.value) })}
-                                            className="w-full accent-zinc-900 h-1.5 bg-zinc-200 rounded-lg appearance-none cursor-pointer"
-                                        />
-                                        <span className="text-3xl font-black w-12 text-center text-zinc-900">{preferences.quantity}</span>
-                                    </div>
-                                </div>
-
-                                <div className="space-y-4">
-                                    <label className="block text-lg font-serif font-black tracking-tight text-zinc-900">{t('matching.size_label')}</label>
-                                    <div className="flex gap-3">
-                                        {[2, 5, 10].map((s) => (
-                                            <button
-                                                key={s}
-                                                onClick={() => setPreferences({ ...preferences, size: s.toString() })}
-                                                className={`flex-1 py-4 rounded-2xl border-2 font-black text-sm tracking-widest transition-all ${preferences.size === s.toString()
-                                                    ? 'border-zinc-900 bg-zinc-900 text-white shadow-lg scale-[1.02]'
-                                                    : 'border-zinc-200 bg-white/50 text-zinc-500 hover:border-zinc-300 hover:text-zinc-700'
-                                                    }`}
-                                            >
-                                                {s} {t('common.ml_unit')}
-                                            </button>
-                                        ))}
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* 2. Budget */}
-                            <div className="space-y-4">
-                                <label className="block text-lg font-serif font-black tracking-tight flex justify-between text-zinc-900">
-                                    <span>{t('matching.budget_label')}</span>
-                                    <span className="text-zinc-900 font-black">{preferences.budget} ₪</span>
-                                </label>
-                                <div className="bg-zinc-50/50 p-6 rounded-2xl border border-zinc-100 shadow-inner">
-                                    <input
-                                        type="range"
-                                        min={getBudgetRange().min / 2}
-                                        max={getBudgetRange().max * 1.5}
-                                        value={preferences.budget}
-                                        onChange={(e) => setPreferences({ ...preferences, budget: parseInt(e.target.value) })}
-                                        className="w-full accent-zinc-900 h-1.5 bg-zinc-200 rounded-lg appearance-none cursor-pointer"
-                                    />
-                                    <div className="flex justify-between text-[10px] uppercase font-bold tracking-[0.2em] text-zinc-400 mt-4 px-1">
-                                        <span>{t('matching.economy')}</span>
-                                        <span>{t('matching.premium')}</span>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* 3. Notes (Autocomplete) */}
-                            <div className="space-y-4">
-                                <label className="block text-lg font-serif font-black tracking-tight text-zinc-900">{t('matching.favorite_notes')}</label>
-                                
-                                <div className="relative">
-                                    <input
-                                        type="text"
-                                        value={noteInput}
-                                        onChange={handleNoteInputChange}
-                                        placeholder={t('matching.search_placeholder')}
-                                        className="w-full bg-white/50 border border-zinc-200 rounded-2xl px-6 py-5 text-sm focus:outline-none focus:ring-1 focus:ring-zinc-900/30 transition-all placeholder:text-zinc-400 shadow-sm"
-                                    />
-                                    {suggestions.length > 0 && (
-                                        <div className="absolute z-20 w-full bg-white/95 backdrop-blur-xl border border-zinc-200 rounded-2xl mt-3 shadow-2xl max-h-60 overflow-y-auto divide-y divide-zinc-100">
-                                            {suggestions.map((note) => (
-                                                <button
-                                                    key={note}
-                                                    onClick={() => addNote(note)}
-                                                    className={`w-full px-6 py-4 hover:bg-zinc-50 transition flex justify-between items-center group ${dir === 'rtl' ? 'text-right' : 'text-left'}`}
-                                                >
-                                                    <span className="font-bold text-zinc-700 group-hover:text-zinc-900">{note}</span>
-                                                    <span className="text-[10px] uppercase font-black tracking-widest text-zinc-400 group-hover:text-zinc-600">{t('matching.add_note')}</span>
-                                                </button>
-                                            ))}
-                                        </div>
-                                    )}
-                                </div>
-
-                                <div className="flex flex-wrap gap-2 min-h-[60px] p-5 bg-zinc-50/50 rounded-2xl border border-dashed border-zinc-200 shadow-inner">
-                                    {preferences.notes.length === 0 && (
-                                        <span className="text-zinc-400 text-xs font-medium italic p-2">{t('matching.no_notes_selected')}</span>
-                                    )}
-                                    {preferences.notes.map(note => (
-                                        <div
-                                            key={note}
-                                            className="px-4 py-2 bg-zinc-100 hover:bg-zinc-200 border border-zinc-200 text-zinc-900 rounded-full text-xs font-black tracking-wide flex items-center gap-3 transition-colors animate-fadeIn"
+        <div className="flex flex-col h-full bg-gray-50 dark:bg-gray-900 text-zinc-900 dark:text-gray-100 relative" dir={dir}>
+            {/* Chat Messages */}
+            <div className="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar">
+                {messages.map((msg, idx) => (
+                    <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-start' : 'justify-end'}`}>
+                        <div className={`max-w-[90%] md:max-w-[85%] rounded-2xl p-4 shadow-sm ${
+                            msg.role === 'user' 
+                                ? `bg-blue-600 text-white ${isHebrew ? 'rounded-br-sm' : 'rounded-bl-sm'}` 
+                                : `bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100 border border-gray-100 dark:border-gray-700 ${isHebrew ? 'rounded-bl-sm' : 'rounded-br-sm'}`
+                        }`}>
+                            <div 
+                                className="text-sm leading-relaxed chat-markdown"
+                                dangerouslySetInnerHTML={{ __html: marked.parse(msg.content || '') }}
+                            />
+                            
+                            {/* Interactive Options inside Bot Message */}
+                            {msg.type === 'quantity_options' && chatStep === 'quantity' && (
+                                <div className="mt-4 flex flex-wrap gap-2">
+                                    {[2, 3, 5, 10].map(num => (
+                                        <button 
+                                            key={num}
+                                            onClick={() => handleQuickReply('quantity', num, `${num} ${isHebrew ? 'בשמים' : 'perfumes'}`)}
+                                            className="px-4 py-2 bg-gray-100 hover:bg-blue-50 dark:bg-gray-700 dark:hover:bg-blue-900/30 text-blue-600 dark:text-blue-400 font-bold rounded-xl transition-colors border border-transparent hover:border-blue-200 dark:hover:border-blue-800"
                                         >
-                                            {note}
-                                            <button
-                                                onClick={() => removeNote(note)}
-                                                className="w-4 h-4 bg-zinc-200/50 rounded-full flex items-center justify-center hover:bg-red-500/50 hover:text-white transition-colors"
-                                            >
-                                                ×
-                                            </button>
-                                        </div>
+                                            {num} {isHebrew ? 'בשמים' : 'perfumes'}
+                                        </button>
                                     ))}
                                 </div>
-                            </div>
+                            )}
 
-                            {/* Action */}
-                            <div className="pt-6">
-                                <button
-                                    onClick={handleMatch}
-                                    className="w-full py-5 bg-zinc-900 text-white font-black rounded-full hover:bg-black hover:scale-[1.01] transition-all active:scale-[0.98] text-xs uppercase tracking-[0.4em] shadow-xl"
-                                >
-                                    {t('matching.submit_btn')}
-                                </button>
-                            </div>
-                        </div>
-                    )}
-
-                    {/* STEP 2: LOADING */}
-                    {step === 2 && (
-                        <div className="flex-1 flex flex-col items-center justify-center space-y-8 animate-fadeIn text-center">
-                            <div className="relative">
-                                <div className="w-24 h-24 border-2 border-zinc-100 rounded-full"></div>
-                                <div className="absolute inset-0 w-24 h-24 border-t-2 border-zinc-900 rounded-full animate-spin"></div>
-                                <div className="absolute inset-0 flex items-center justify-center">
-                                    <span className="text-2xl animate-pulse">✨</span>
-                                </div>
-                            </div>
-                            <div>
-                                <h3 className="text-3xl font-serif font-black mb-3 tracking-tight text-zinc-900">{t('matching.loading_title')}</h3>
-                                <p className="text-zinc-500 text-sm max-w-xs mx-auto italic leading-relaxed opacity-80">
-                                    {t('matching.loading_desc')}
-                                </p>
-                            </div>
-                        </div>
-                    )}
-
-                    {/* STEP 3: RESULTS */}
-                    {step === 3 && results && (
-                        <div className="animate-fadeIn space-y-10 flex-1 flex flex-col">
-                            <div className="text-center">
-                                <h2 className="text-3xl md:text-4xl font-serif font-black mb-2 tracking-tight text-zinc-900">{t('matching.ready_title')}</h2>
-                                <p className="text-zinc-500 text-sm italic opacity-90">{t('matching.ready_desc').replace('{count}', results.products.length)}</p>
-                            </div>
-
-                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 lg:gap-6 overflow-visible">
-                                {results.products.map((p, idx) => (
-                                    <div 
-                                        key={p.id} 
-                                        ref={el => productRefs.current[p.id] = el}
-                                        className={`flex gap-5 p-5 bg-white/50 border border-zinc-100 rounded-[1.5rem] items-center hover:bg-white hover:border-zinc-200 hover:shadow-md transition-all duration-300 group`}
-                                        style={{ 
-                                            animationDelay: `${idx * 100}ms`
-                                        }}
-                                    >
-                                        <div className="w-20 h-20 bg-zinc-50 rounded-2xl flex-shrink-0 flex items-center justify-center relative overflow-hidden group-hover:scale-105 transition-transform">
-                                            {p.image_url ? (
-                                                <Image src={p.image_url} alt={localize(p, 'name') || "Product"} fill sizes="80px" className="object-contain p-2" />
-                                            ) : (
-                                                <span className="text-2xl">🧴</span>
-                                            )}
-                                        </div>
-                                        <div className="flex-1">
-                                            <div className="font-serif font-black text-zinc-900 text-sm line-clamp-1 mb-0.5">{localize(p, 'name')}</div>
-                                            <div className="text-zinc-500 text-[10px] uppercase font-bold tracking-widest mb-2 opacity-70">{p.brand}</div>
-                                            <div className="flex items-center gap-3">
-                                                <div className="flex items-center gap-1.5">
-                                                    <div className="text-lg font-black text-zinc-900 whitespace-nowrap">{p.price} ₪</div>
-                                                    {p.original_price && p.original_price > p.price && (
-                                                        <span className="text-[10px] text-zinc-400 line-through opacity-70">{p.original_price} ₪</span>
-                                                    )}
-                                                </div>
-                                                {isAddedToCart && (
-                                                    <span className="text-xs font-bold text-emerald-500 animate-fadeIn flex items-center gap-1 whitespace-nowrap">
-                                                        <span className="text-sm">✓</span>
-                                                        {t('common.added_to_cart_btn')}
-                                                    </span>
-                                                )}
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-
-                            {/* Summary & Actions */}
-                            <div className="mt-auto bg-zinc-50/80 backdrop-blur-xl border border-zinc-200 p-8 rounded-[2rem] flex flex-col md:flex-row items-center justify-between gap-8 animate-fadeUp shadow-sm">
-                                <div className={`${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
-                                    <div className="text-[10px] font-black uppercase tracking-[0.3em] text-zinc-400 mb-1">{t('matching.final_price')}</div>
-                                    <div className="text-4xl font-black text-zinc-900 drop-shadow-sm">{results.totalPrice} ₪</div>
-                                    <div className="text-xs font-bold text-zinc-500 mt-2 italic whitespace-nowrap overflow-visible">{results.message}</div>
-                                </div>
-
-                                <div className="flex flex-col sm:flex-row gap-4 w-full md:w-auto">
-                                    <button
-                                        onClick={resetWizard}
-                                        className="px-8 py-4 rounded-full border border-zinc-200 text-xs font-black uppercase tracking-widest hover:bg-white transition-all text-zinc-500 hover:text-zinc-900"
-                                    >
-                                        {t('matching.rematch')}
-                                    </button>
-                                    {isAddedToCart ? (
-                                        <Link
-                                            href="/cart"
-                                            className="px-10 py-4 rounded-full bg-emerald-500 text-white font-black text-xs uppercase tracking-[0.2em] hover:bg-emerald-600 transition-all shadow-xl active:scale-95 flex items-center gap-2 animate-bounceSuccess whitespace-nowrap"
+                            {msg.type === 'size_options' && chatStep === 'size' && (
+                                <div className="mt-4 flex flex-wrap gap-2">
+                                    {['2', '5', '10'].map(s => (
+                                        <button 
+                                            key={s}
+                                            onClick={() => handleQuickReply('size', s, `${s}ml`)}
+                                            className="px-4 py-2 bg-gray-100 hover:bg-blue-50 dark:bg-gray-700 dark:hover:bg-blue-900/30 text-blue-600 dark:text-blue-400 font-bold rounded-xl transition-colors border border-transparent hover:border-blue-200 dark:hover:border-blue-800"
                                         >
-                                            <span className="text-sm">✓</span>
-                                            {t('matching.view_cart')}
-                                        </Link>
-                                    ) : (
-                                        <button
-                                            onClick={addToCartAll}
-                                            className="px-10 py-4 rounded-full bg-zinc-900 text-white font-black text-xs uppercase tracking-[0.2em] hover:bg-black transition-all shadow-xl active:scale-95"
-                                        >
-                                            {t('matching.add_all')}
+                                            {s}ml
                                         </button>
-                                    )}
+                                    ))}
                                 </div>
-                            </div>
+                            )}
+
+                            {msg.type === 'notes_input' && chatStep === 'notes' && (
+                                <div className="mt-4 space-y-3">
+                                    <div className="flex flex-wrap gap-2">
+                                        {preferences.notes.map(note => (
+                                            <span key={note} className="px-3 py-1 bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 rounded-full text-xs font-bold flex items-center gap-1 border border-blue-200 dark:border-blue-800">
+                                                {note}
+                                            </span>
+                                        ))}
+                                    </div>
+                                    <div className="flex flex-wrap gap-2">
+                                        <button 
+                                            onClick={() => advanceFlow('notes', preferences)}
+                                            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition-colors shadow-sm w-full md:w-auto"
+                                        >
+                                            {preferences.notes.length > 0 
+                                                ? (isHebrew ? 'התאם לי עכשיו' : 'Match Me Now') 
+                                                : (isHebrew ? 'דלג והתאם לי' : 'Skip & Match')}
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
+
+                            {msg.type === 'results_display' && results && (
+                                <div className="mt-4 border-t border-gray-100 dark:border-gray-700 pt-4">
+                                    <div className="flex flex-col gap-3 mb-4">
+                                        {results.products.map(p => (
+                                            <div key={p.id} className="flex items-center gap-3 bg-gray-50 dark:bg-gray-900/50 p-2 rounded-xl border border-gray-100 dark:border-gray-800">
+                                                <div className="w-12 h-12 relative bg-white rounded-lg flex-shrink-0">
+                                                    <Image src={p.image_url} alt={p.name} fill className="object-contain p-1 mix-blend-multiply" />
+                                                </div>
+                                                <div className="flex-1 min-w-0">
+                                                    <p className="text-xs font-bold truncate dark:text-white">{localize(p, 'name')}</p>
+                                                    <p className="text-[10px] text-gray-500 uppercase tracking-wider truncate">{p.brand}</p>
+                                                </div>
+                                                <div className="text-sm font-black dark:text-white shrink-0">₪{p.price}</div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                    <button 
+                                        onClick={addToCartAll}
+                                        disabled={isLoading}
+                                        className="w-full py-3 bg-black dark:bg-white text-white dark:text-black font-bold rounded-xl flex items-center justify-center gap-2 hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors shadow-lg shadow-black/10 dark:shadow-white/10"
+                                    >
+                                        {isLoading ? <Loader2 size={18} className="animate-spin" /> : <ShoppingCart size={18} />}
+                                        {isHebrew ? `הוסף הכל לעגלה (₪${results.totalPrice})` : `Add all to cart (₪${results.totalPrice})`}
+                                    </button>
+                                    
+                                    <button 
+                                        onClick={resetFlow}
+                                        className="w-full mt-2 py-2 text-xs text-gray-500 font-bold hover:text-black dark:hover:text-white transition-colors flex items-center justify-center gap-1"
+                                    >
+                                        <RefreshCcw size={12} />
+                                        {isHebrew ? 'התחל מחדש' : 'Start Over'}
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+                ))}
+                
+                {isLoading && chatStep === 'loading' && (
+                    <div className="flex justify-end">
+                        <div className={`bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100 rounded-2xl p-4 border border-gray-100 dark:border-gray-700 flex items-center gap-2 shadow-sm ${isHebrew ? 'rounded-bl-sm' : 'rounded-br-sm'}`}>
+                            <Loader2 size={16} className="animate-spin text-blue-500" />
+                            <span className="text-xs font-medium text-gray-500">{isHebrew ? 'מרכיב את המארז...' : 'Building the set...'}</span>
+                        </div>
+                    </div>
+                )}
+                <div ref={messagesEndRef} />
+            </div>
+
+            {/* Input Area (Only active for Budget and Notes) */}
+            {(chatStep === 'budget' || chatStep === 'notes') && (
+                <div className="p-4 bg-white dark:bg-gray-800 border-t border-gray-100 dark:border-gray-700 relative">
+                    {/* Auto-suggest dropdown for Notes */}
+                    {chatStep === 'notes' && suggestions.length > 0 && (
+                        <div className="absolute bottom-full left-0 right-0 mb-2 mx-4 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden z-10 flex flex-wrap gap-2 p-3">
+                            {suggestions.map(s => (
+                                <button
+                                    key={s}
+                                    onClick={() => addNote(s)}
+                                    className="px-3 py-1.5 text-xs font-bold bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 rounded-lg transition-colors border border-transparent"
+                                >
+                                    {s}
+                                </button>
+                            ))}
                         </div>
                     )}
-                </div>
-            </div>
-
-            <style jsx global>{`
-                .custom-scrollbar::-webkit-scrollbar {
-                    width: 4px;
-                }
-                .custom-scrollbar::-webkit-scrollbar-track {
-                    background: rgba(0, 0, 0, 0.03);
-                    border-radius: 10px;
-                }
-                .custom-scrollbar::-webkit-scrollbar-thumb {
-                    background: rgba(0, 0, 0, 0.1);
-                    border-radius: 10px;
-                }
-                .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-                    background: rgba(0, 0, 0, 0.2);
-                }
-                @keyframes bounceSuccess {
-                    0%, 100% { transform: scale(1); }
-                    50% { transform: scale(1.05); }
-                }
-                .animate-bounceSuccess {
-                    animation: bounceSuccess 0.5s ease-out;
-                }
-            `}</style>
-
-            {/* Fly-to-cart Animation Overlay */}
-            <div className="fixed inset-0 pointer-events-none z-[9999]" dir="ltr">
-                <AnimatePresence>
-                    {flyingItems.map(item => (
-                        <motion.div
-                            key={item.id}
-                            initial={{ 
-                                x: item.start.x, 
-                                y: item.start.y, 
-                                width: item.dimensions.width,
-                                height: item.dimensions.height,
-                                scale: 1, 
-                                opacity: 1,
-                                rotate: 0 
-                            }}
-                            animate={{ 
-                                x: item.end.x,
-                                // Smooth hover arc
-                                y: [item.start.y, item.start.y - 150, item.end.y],
-                                scale: [1, 0.8, 0.05], 
-                                opacity: [1, 1, 0],
-                                rotate: item.rotation
-                            }}
-                            transition={{ 
-                                duration: 1.1, 
-                                delay: item.delay,
-                                ease: "easeInOut",
-                                onComplete: () => {
-                                    const cartIcon = document.getElementById('cart-icon-main');
-                                    if (cartIcon) {
-                                        cartIcon.classList.remove('animate-cart-pop');
-                                        void cartIcon.offsetWidth; 
-                                        cartIcon.classList.add('animate-cart-pop');
-                                    }
-                                }
-                            }}
-                            className="absolute bg-white/90 backdrop-blur-md rounded-[1.5rem] shadow-[0_30px_70px_rgba(0,0,0,0.2)] p-5 border border-zinc-200/50 flex items-center gap-5 overflow-hidden origin-top-left"
-                            style={{ zIndex: 10000, left: 0, top: 0 }}
+                    
+                    <form onSubmit={handleInputSubmit} className="relative flex items-center gap-2 max-w-full">
+                        <input
+                            type={chatStep === 'budget' ? "number" : "text"}
+                            value={inputText}
+                            onChange={handleNoteInputChange}
+                            placeholder={chatStep === 'budget' 
+                                ? (isHebrew ? "הקלד סכום ב-₪" : "Enter amount in ₪") 
+                                : (isHebrew ? "הקלד תווים לחיפוש..." : "Type notes to search...")}
+                            className={`flex-1 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-full py-3 px-5 text-sm dark:text-white placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all`}
+                            disabled={isLoading}
+                            dir={isHebrew ? "rtl" : "ltr"}
+                        />
+                        <button 
+                            type="submit" 
+                            disabled={!inputText.trim() || isLoading}
+                            className="bg-blue-600 text-white p-3 rounded-full hover:bg-blue-500 disabled:opacity-50 transition-colors shadow-sm shrink-0"
                         >
-                            <div className="w-16 h-16 bg-zinc-50 rounded-xl flex-shrink-0 flex items-center justify-center relative overflow-hidden">
-                                {item.image ? (
-                                    <img src={item.image} alt="" className="w-full h-full object-contain p-2" />
-                                ) : (
-                                    <span className="text-2xl">🧴</span>
-                                )}
-                            </div>
-                            <div className="flex-1 opacity-80">
-                                <div className="font-serif font-black text-zinc-900 text-xs line-clamp-1">{item.name}</div>
-                                <div className="text-zinc-500 text-[8px] uppercase font-bold tracking-widest">{item.brand}</div>
-                            </div>
-                        </motion.div>
-                    ))}
-                </AnimatePresence>
-            </div>
+                            <SendHorizontal size={18} className={isHebrew ? 'rotate-180' : ''} />
+                        </button>
+                    </form>
+                </div>
+            )}
+            
+            {/* If waiting for button selection, disable input visually or hide it */}
+            {(chatStep === 'quantity' || chatStep === 'size' || chatStep === 'loading' || chatStep === 'results') && (
+                <div className="p-4 bg-white dark:bg-gray-800 border-t border-gray-100 dark:border-gray-700 flex items-center justify-center opacity-50 select-none">
+                    <p className="text-[10px] text-gray-400 font-medium">
+                        {chatStep === 'results' 
+                            ? (isHebrew ? 'ההתאמה הסתיימה' : 'Matching complete') 
+                            : (isHebrew ? 'אנא בחר מהאפשרויות למעלה' : 'Please select from options above')}
+                    </p>
+                </div>
+            )}
         </div>
     );
 }
