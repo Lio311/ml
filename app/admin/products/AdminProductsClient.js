@@ -10,6 +10,7 @@ import AdminFilterBar from "../../components/admin/AdminFilterBar";
 import { Wand2 } from "lucide-react";
 import SpotifyTrackSelector from "../../components/admin/SpotifyTrackSelector";
 import CountrySelector from "../../components/admin/CountrySelector";
+import ConcentrationSelector from "../../components/admin/ConcentrationSelector";
 
 const PRESET_CONCENTRATIONS = [
     'Eau De Parfum',
@@ -588,16 +589,11 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                         </div>
                         <div>
                             <label className="text-sm font-bold block mb-2">ריכוז הבושם</label>
-                            <input
-                                list="concentrations-list"
-                                value={editForm.concentration || ''}
-                                onChange={e => setEditForm({ ...editForm, concentration: e.target.value })}
-                                className="border-2 border-gray-100 rounded-xl p-2 w-full bg-white focus:border-black outline-none transition-colors"
-                                placeholder="לדוגמה: Eau De Parfum..."
+                            <ConcentrationSelector
+                                value={editForm.concentration}
+                                onChange={(val) => setEditForm({ ...editForm, concentration: val })}
+                                options={PRESET_CONCENTRATIONS}
                             />
-                            <datalist id="concentrations-list">
-                                {PRESET_CONCENTRATIONS.map(c => <option key={c} value={c} />)}
-                            </datalist>
                         </div>
                         <div className="md:col-span-2">
                             <label className="text-sm font-bold block mb-2">פרפיומר (Perfumer) - לחץ Enter להוספה</label>
