@@ -1,28 +1,32 @@
+"use client";
+
 import Link from "next/link";
-import { cookies } from 'next/headers';
-import he from '../../data/locales/he.json';
-import en from '../../data/locales/en.json';
+import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useLanguage } from "../../context/LanguageContext";
 
-const getT = (locale) => {
-  const dict = locale === 'en' ? en : he;
-  return (key) => {
-    const keys = key.split('.');
-    let result = dict;
-    for (const k of keys) {
-      if (result[k]) result = result[k];
-      else return key;
-    }
-    return result;
-  };
-};
+export default function CheckoutSuccessPage() {
+    const { t, dir } = useLanguage();
+    const router = useRouter();
+    const [countdown, setCountdown] = useState(3);
 
-export default async function CheckoutSuccessPage() {
-    const cookieStore = await cookies();
-    const locale = cookieStore.get('NEXT_LOCALE')?.value || 'he';
-    const t = getT(locale);
+    useEffect(() => {
+        const timer = setInterval(() => {
+            setCountdown((prev) => {
+                if (prev <= 1) {
+                    clearInterval(timer);
+                    router.push('/my-catalogs');
+                    return 0;
+                }
+                return prev - 1;
+            });
+        }, 1000);
+
+        return () => clearInterval(timer);
+    }, [router]);
 
     return (
-        <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-4">
+        <div className="flex flex-col items-center justify-center min-h-[60vh] text-center px-4" dir={dir}>
             <div className="text-6xl mb-6">🎉</div>
             <h1 className="text-4xl font-bold mb-4">{t('checkout_success.title')}</h1>
             <p className="text-xl text-gray-600 mb-8 max-w-md">
@@ -31,8 +35,12 @@ export default async function CheckoutSuccessPage() {
                 {t('checkout_success.subtitle_p2')}
             </p>
 
-            <Link href="/catalog" className="btn btn-primary">
-                {t('checkout_success.back_to_catalog')}
+            <div className="text-sm text-gray-500 mb-8">
+                {dir === 'rtl' ? `מעביר לאזור האישי בעוד ${countdown} שניות...` : `Redirecting to personal area in ${countdown} seconds...`}
+            </div>
+
+            <Link href="/my-catalogs" className="btn btn-primary">
+                {dir === 'rtl' ? 'למעבר מיידי לאזור האישי' : 'Go to Personal Area now'}
             </Link>
         </div>
     );
