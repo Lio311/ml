@@ -15,7 +15,7 @@ export default function SmartMatchingClient({ initialNotes = [], isEmbedded = fa
 
     // Chat state
     const [messages, setMessages] = useState([]);
-    const [chatStep, setChatStep] = useState('quantity'); // quantity -> size -> budget -> notes -> loading -> results
+    const [chatStep, setChatStep] = useState('quantity'); // quantity -> size -> budget -> budget_custom -> notes -> loading -> results
     const [preferences, setPreferences] = useState({
         quantity: null,
         size: null,
@@ -74,6 +74,10 @@ export default function SmartMatchingClient({ initialNotes = [], isEmbedded = fa
         setTimeout(() => advanceFlow(type, newPrefs), 500);
     };
 
+    const handleOtherBudget = () => {
+        setChatStep('budget_custom');
+    };
+
     const advanceFlow = async (completedStep, currentPrefs) => {
         let nextMsg = null;
         if (completedStep === 'quantity') {
@@ -90,9 +94,10 @@ export default function SmartMatchingClient({ initialNotes = [], isEmbedded = fa
             nextMsg = {
                 role: 'assistant',
                 content: isHebrew ? `הבנתי. **מה התקציב שלך למארז?** (₪)\n\n*(הערכה מומלצת בהתבסס על הגודל והכמות: כ-${minBudget}₪ ומעלה)*` : `Got it. **What is your budget for the set?** (₪)\n\n*(Recommended based on size and quantity: roughly ${minBudget}₪ and up)*`,
-                type: 'budget_input'
+                type: 'budget_options',
+                minBudget: minBudget
             };
-        } else if (completedStep === 'budget') {
+        } else if (completedStep === 'budget' || completedStep === 'budget_custom') {
             setChatStep('notes');
             nextMsg = {
                 role: 'assistant',
@@ -153,7 +158,7 @@ export default function SmartMatchingClient({ initialNotes = [], isEmbedded = fa
         e.preventDefault();
         if (!inputText.trim()) return;
 
-        if (chatStep === 'budget') {
+        if (chatStep === 'budget_custom') {
             const val = parseInt(inputText.replace(/\D/g, ''));
             if (!val || val < 10) {
                 toast.error(isHebrew ? 'אנא הזן סכום תקין' : 'Please enter a valid amount');
@@ -234,7 +239,7 @@ export default function SmartMatchingClient({ initialNotes = [], isEmbedded = fa
     };
 
     return (
-        <div className="flex flex-col h-full bg-gray-50 dark:bg-gray-900 text-zinc-900 dark:text-gray-100 relative" dir={dir}>
+        <div className="flex flex-col h-full bg-[#111] text-gray-100 relative" dir={dir}>
             {/* Chat Messages */}
             <div className="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar">
                 {messages.map((msg, idx) => (
@@ -242,7 +247,7 @@ export default function SmartMatchingClient({ initialNotes = [], isEmbedded = fa
                         <div className={`max-w-[90%] md:max-w-[85%] rounded-2xl p-4 shadow-sm ${
                             msg.role === 'user' 
                                 ? `bg-blue-600 text-white ${isHebrew ? 'rounded-br-sm' : 'rounded-bl-sm'}` 
-                                : `bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100 border border-gray-100 dark:border-gray-700 ${isHebrew ? 'rounded-bl-sm' : 'rounded-br-sm'}`
+                                : `bg-gray-800 text-gray-100 border border-gray-700 ${isHebrew ? 'rounded-bl-sm' : 'rounded-br-sm'}`
                         }`}>
                             <div 
                                 className="text-sm leading-relaxed chat-markdown"
@@ -256,7 +261,7 @@ export default function SmartMatchingClient({ initialNotes = [], isEmbedded = fa
                                         <button 
                                             key={num}
                                             onClick={() => handleQuickReply('quantity', num, `${num} ${isHebrew ? 'בשמים' : 'perfumes'}`)}
-                                            className="px-4 py-2 bg-gray-100 hover:bg-blue-50 dark:bg-gray-700 dark:hover:bg-blue-900/30 text-blue-600 dark:text-blue-400 font-bold rounded-xl transition-colors border border-transparent hover:border-blue-200 dark:hover:border-blue-800"
+                                            className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-gray-100 font-bold rounded-xl transition-colors border border-transparent hover:border-gray-500"
                                         >
                                             {num} {isHebrew ? 'בשמים' : 'perfumes'}
                                         </button>
@@ -270,7 +275,7 @@ export default function SmartMatchingClient({ initialNotes = [], isEmbedded = fa
                                         <button 
                                             key={s}
                                             onClick={() => handleQuickReply('size', s, `${s}ml`)}
-                                            className="px-4 py-2 bg-gray-100 hover:bg-blue-50 dark:bg-gray-700 dark:hover:bg-blue-900/30 text-blue-600 dark:text-blue-400 font-bold rounded-xl transition-colors border border-transparent hover:border-blue-200 dark:hover:border-blue-800"
+                                            className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-gray-100 font-bold rounded-xl transition-colors border border-transparent hover:border-gray-500"
                                         >
                                             {s}ml
                                         </button>
@@ -278,11 +283,35 @@ export default function SmartMatchingClient({ initialNotes = [], isEmbedded = fa
                                 </div>
                             )}
 
+                            {msg.type === 'budget_options' && chatStep === 'budget' && msg.minBudget && (
+                                <div className="mt-4 flex flex-wrap gap-2">
+                                    {[
+                                        msg.minBudget,
+                                        Math.floor(msg.minBudget * 1.5),
+                                        msg.minBudget * 2
+                                    ].map(b => (
+                                        <button 
+                                            key={b}
+                                            onClick={() => handleQuickReply('budget', b, `₪${b}`)}
+                                            className="px-4 py-2 bg-gray-700 hover:bg-gray-600 text-gray-100 font-bold rounded-xl transition-colors border border-transparent hover:border-gray-500"
+                                        >
+                                            ₪{b}
+                                        </button>
+                                    ))}
+                                    <button 
+                                        onClick={handleOtherBudget}
+                                        className="px-4 py-2 bg-transparent border border-gray-600 hover:bg-gray-700 text-gray-300 font-bold rounded-xl transition-colors"
+                                    >
+                                        {isHebrew ? 'סכום אחר' : 'Other amount'}
+                                    </button>
+                                </div>
+                            )}
+
                             {msg.type === 'notes_input' && chatStep === 'notes' && (
                                 <div className="mt-4 space-y-3">
                                     <div className="flex flex-wrap gap-2">
                                         {preferences.notes.map(note => (
-                                            <span key={note} className="px-3 py-1 bg-blue-100 dark:bg-blue-900/50 text-blue-700 dark:text-blue-300 rounded-full text-xs font-bold flex items-center gap-1 border border-blue-200 dark:border-blue-800">
+                                            <span key={note} className="px-3 py-1 bg-gray-700 text-blue-300 rounded-full text-xs font-bold flex items-center gap-1 border border-gray-600">
                                                 {note}
                                             </span>
                                         ))}
@@ -290,7 +319,7 @@ export default function SmartMatchingClient({ initialNotes = [], isEmbedded = fa
                                     <div className="flex flex-wrap gap-2">
                                         <button 
                                             onClick={() => advanceFlow('notes', preferences)}
-                                            className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition-colors shadow-sm w-full md:w-auto"
+                                            className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-xl transition-colors shadow-sm w-full md:w-auto"
                                         >
                                             {preferences.notes.length > 0 
                                                 ? (isHebrew ? 'התאם לי עכשיו' : 'Match Me Now') 
@@ -301,25 +330,25 @@ export default function SmartMatchingClient({ initialNotes = [], isEmbedded = fa
                             )}
 
                             {msg.type === 'results_display' && results && (
-                                <div className="mt-4 border-t border-gray-100 dark:border-gray-700 pt-4">
+                                <div className="mt-4 border-t border-gray-700 pt-4">
                                     <div className="flex flex-col gap-3 mb-4">
                                         {results.products.map(p => (
-                                            <div key={p.id} className="flex items-center gap-3 bg-gray-50 dark:bg-gray-900/50 p-2 rounded-xl border border-gray-100 dark:border-gray-800">
+                                            <div key={p.id} className="flex items-center gap-3 bg-gray-900/50 p-2 rounded-xl border border-gray-700">
                                                 <div className="w-12 h-12 relative bg-white rounded-lg flex-shrink-0">
                                                     <Image src={p.image_url} alt={p.name} fill className="object-contain p-1 mix-blend-multiply" />
                                                 </div>
                                                 <div className="flex-1 min-w-0">
-                                                    <p className="text-xs font-bold truncate dark:text-white">{localize(p, 'name')}</p>
-                                                    <p className="text-[10px] text-gray-500 uppercase tracking-wider truncate">{p.brand}</p>
+                                                    <p className="text-xs font-bold truncate text-white">{localize(p, 'name')}</p>
+                                                    <p className="text-[10px] text-gray-400 uppercase tracking-wider truncate">{p.brand}</p>
                                                 </div>
-                                                <div className="text-sm font-black dark:text-white shrink-0">₪{p.price}</div>
+                                                <div className="text-sm font-black text-white shrink-0">₪{p.price}</div>
                                             </div>
                                         ))}
                                     </div>
                                     <button 
                                         onClick={addToCartAll}
                                         disabled={isLoading}
-                                        className="w-full py-3 bg-black dark:bg-white text-white dark:text-black font-bold rounded-xl flex items-center justify-center gap-2 hover:bg-gray-800 dark:hover:bg-gray-200 transition-colors shadow-lg shadow-black/10 dark:shadow-white/10"
+                                        className="w-full py-3 bg-white text-black font-bold rounded-xl flex items-center justify-center gap-2 hover:bg-gray-200 transition-colors shadow-lg shadow-white/10"
                                     >
                                         {isLoading ? <Loader2 size={18} className="animate-spin" /> : <ShoppingCart size={18} />}
                                         {isHebrew ? `הוסף הכל לעגלה (₪${results.totalPrice})` : `Add all to cart (₪${results.totalPrice})`}
@@ -327,7 +356,7 @@ export default function SmartMatchingClient({ initialNotes = [], isEmbedded = fa
                                     
                                     <button 
                                         onClick={resetFlow}
-                                        className="w-full mt-2 py-2 text-xs text-gray-500 font-bold hover:text-black dark:hover:text-white transition-colors flex items-center justify-center gap-1"
+                                        className="w-full mt-2 py-2 text-xs text-gray-400 font-bold hover:text-white transition-colors flex items-center justify-center gap-1"
                                     >
                                         <RefreshCcw size={12} />
                                         {isHebrew ? 'התחל מחדש' : 'Start Over'}
@@ -340,9 +369,9 @@ export default function SmartMatchingClient({ initialNotes = [], isEmbedded = fa
                 
                 {isLoading && chatStep === 'loading' && (
                     <div className="flex justify-end">
-                        <div className={`bg-white dark:bg-gray-800 text-gray-800 dark:text-gray-100 rounded-2xl p-4 border border-gray-100 dark:border-gray-700 flex items-center gap-2 shadow-sm ${isHebrew ? 'rounded-bl-sm' : 'rounded-br-sm'}`}>
+                        <div className={`bg-gray-800 text-gray-100 rounded-2xl p-4 border border-gray-700 flex items-center gap-2 shadow-sm ${isHebrew ? 'rounded-bl-sm' : 'rounded-br-sm'}`}>
                             <Loader2 size={16} className="animate-spin text-blue-500" />
-                            <span className="text-xs font-medium text-gray-500">{isHebrew ? 'מרכיב את המארז...' : 'Building the set...'}</span>
+                            <span className="text-xs font-medium text-gray-400">{isHebrew ? 'מרכיב את המארז...' : 'Building the set...'}</span>
                         </div>
                     </div>
                 )}
@@ -350,16 +379,16 @@ export default function SmartMatchingClient({ initialNotes = [], isEmbedded = fa
             </div>
 
             {/* Input Area (Only active for Budget and Notes) */}
-            {(chatStep === 'budget' || chatStep === 'notes') && (
-                <div className="p-4 bg-white dark:bg-gray-800 border-t border-gray-100 dark:border-gray-700 relative">
+            {(chatStep === 'budget_custom' || chatStep === 'notes') && (
+                <div className="p-4 bg-gray-900 border-t border-gray-800 relative">
                     {/* Auto-suggest dropdown for Notes */}
                     {chatStep === 'notes' && suggestions.length > 0 && (
-                        <div className="absolute bottom-full left-0 right-0 mb-2 mx-4 bg-white dark:bg-gray-800 rounded-xl shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden z-10 flex flex-wrap gap-2 p-3">
+                        <div className="absolute bottom-full left-0 right-0 mb-2 mx-4 bg-gray-800 rounded-xl shadow-lg border border-gray-700 overflow-hidden z-10 flex flex-wrap gap-2 p-3">
                             {suggestions.map(s => (
                                 <button
                                     key={s}
                                     onClick={() => addNote(s)}
-                                    className="px-3 py-1.5 text-xs font-bold bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-600 rounded-lg transition-colors border border-transparent"
+                                    className="px-3 py-1.5 text-xs font-bold bg-gray-700 hover:bg-gray-600 rounded-lg transition-colors border border-transparent"
                                 >
                                     {s}
                                 </button>
@@ -368,14 +397,26 @@ export default function SmartMatchingClient({ initialNotes = [], isEmbedded = fa
                     )}
                     
                     <form onSubmit={handleInputSubmit} className="relative flex items-center gap-2 max-w-full">
+                        {chatStep === 'budget_custom' ? (
+                            <style jsx>{`
+                                input[type=number]::-webkit-inner-spin-button, 
+                                input[type=number]::-webkit-outer-spin-button { 
+                                    -webkit-appearance: none; 
+                                    margin: 0; 
+                                }
+                                input[type=number] {
+                                    -moz-appearance: textfield;
+                                }
+                            `}</style>
+                        ) : null}
                         <input
-                            type={chatStep === 'budget' ? "number" : "text"}
+                            type={chatStep === 'budget_custom' ? "number" : "text"}
                             value={inputText}
                             onChange={handleNoteInputChange}
-                            placeholder={chatStep === 'budget' 
+                            placeholder={chatStep === 'budget_custom' 
                                 ? (isHebrew ? "הקלד סכום ב-₪" : "Enter amount in ₪") 
                                 : (isHebrew ? "הקלד תווים לחיפוש..." : "Type notes to search...")}
-                            className={`flex-1 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-full py-3 px-5 text-sm dark:text-white placeholder-gray-400 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all`}
+                            className={`flex-1 bg-gray-800 border border-gray-700 rounded-full py-3 px-5 text-sm text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all`}
                             disabled={isLoading}
                             dir={isHebrew ? "rtl" : "ltr"}
                         />
@@ -391,9 +432,9 @@ export default function SmartMatchingClient({ initialNotes = [], isEmbedded = fa
             )}
             
             {/* If waiting for button selection, disable input visually or hide it */}
-            {(chatStep === 'quantity' || chatStep === 'size' || chatStep === 'loading' || chatStep === 'results') && (
-                <div className="p-4 bg-white dark:bg-gray-800 border-t border-gray-100 dark:border-gray-700 flex items-center justify-center opacity-50 select-none">
-                    <p className="text-[10px] text-gray-400 font-medium">
+            {(chatStep === 'quantity' || chatStep === 'size' || chatStep === 'loading' || chatStep === 'results' || chatStep === 'budget') && (
+                <div className="p-4 bg-gray-900 border-t border-gray-800 flex items-center justify-center opacity-50 select-none">
+                    <p className="text-[10px] text-gray-500 font-medium">
                         {chatStep === 'results' 
                             ? (isHebrew ? 'ההתאמה הסתיימה' : 'Matching complete') 
                             : (isHebrew ? 'אנא בחר מהאפשרויות למעלה' : 'Please select from options above')}
