@@ -5,7 +5,7 @@ import confetti from 'canvas-confetti';
 import { useLanguage } from '../context/LanguageContext';
 
 const LuckyWheel = ({ onWin, onClose }) => {
-    const { t } = useLanguage();
+    const { t, locale } = useLanguage();
     const [spinning, setSpinning] = useState(false);
     const [rotation, setRotation] = useState(0);
     const [winnerIndex, setWinnerIndex] = useState(null);
@@ -143,7 +143,7 @@ const LuckyWheel = ({ onWin, onClose }) => {
                         <h3 className="text-2xl font-bold text-green-600 mb-4">
                             {t('common.lucky_wheel_win').replace('{prize}', prizes[winnerIndex].label)}
                         </h3>
-                        <p className="text-sm text-gray-500 mb-4">{t('common.loading_brands')}</p>
+                        <p className="text-sm text-gray-500 mb-4">{t('common.updating_cart') || (locale === 'he' ? 'מעדכן את העגלה...' : 'Updating cart...')}</p>
                     </div>
                 ) : (
                     <button
@@ -151,7 +151,7 @@ const LuckyWheel = ({ onWin, onClose }) => {
                         disabled={spinning}
                         className="btn btn-primary w-full py-4 text-xl shadow-lg transform hover:scale-105 transition disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                        {spinning ? t('common.loading_brands') : t('common.spin_wheel')}
+                        {spinning ? (t('common.spinning_prize') || (locale === 'he' ? 'מגריל פרס עבורך...' : 'Raffling a prize for you...')) : (t('common.spin_wheel') || (locale === 'he' ? 'סובב את הגלגל' : 'Spin Wheel'))}
                     </button>
                 )}
             </div>
