@@ -169,7 +169,7 @@ export const getBatchPerfumeTemplate = (products) => {
     
     // Multiple products: Use grid
     const itemsHtml = products.map(product => {
-        const imageUrl = product.image_url || product.imageUrl || 'https://www.ml-tlv.com/logo-black.png';
+        const imageUrl = product.image_url || product.imageUrl || 'https://www.ml-tlv.com/logo_v6.png';
         const brand = product.brand || '';
         const model = product.model || '';
         const price2ml = product.price_2ml || '';
@@ -215,7 +215,7 @@ export const getDiscoveryBatchTemplate = (products) => {
     if (!products || products.length === 0) return '';
     
     const itemsHtml = products.map(product => {
-        const imageUrl = product.image_url || product.imageUrl || 'https://www.ml-tlv.com/logo-black.png';
+        const imageUrl = product.image_url || product.imageUrl || 'https://www.ml-tlv.com/logo_v6.png';
         const brand = product.brand || '';
         const model = product.model || '';
         const price = product.single_price || product.price_2ml || '';
@@ -729,7 +729,7 @@ export const getBackInStockTemplate = (product) => {
                 </p>
 
                 <div style="text-align: center; margin: 30px 0;">
-                    <img src="${getAbsoluteImageUrl(product.imageUrl || product.image_url) || 'https://www.ml-tlv.com/logo-black.png'}" alt="${product.brand} ${product.model}" style="max-width: 220px; height: auto; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); background-color: #ffffff; background-image: linear-gradient(#ffffff, #ffffff); padding: 10px;" />
+                    <img src="${getAbsoluteImageUrl(product.imageUrl || product.image_url) || 'https://www.ml-tlv.com/logo_v6.png'}" alt="${product.brand} ${product.model}" style="max-width: 220px; height: auto; border-radius: 16px; box-shadow: 0 4px 20px rgba(0,0,0,0.08); background-color: #ffffff; background-image: linear-gradient(#ffffff, #ffffff); padding: 10px;" />
                 </div>
                 
                 <div style="text-align: center; background-color: #f8f8f8; padding: 25px; border-radius: 20px; margin: 30px 0;">
