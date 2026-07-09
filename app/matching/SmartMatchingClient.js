@@ -218,7 +218,7 @@ export default function SmartMatchingClient({ initialNotes = [], isEmbedded = fa
         try {
             const itemsToBatch = results.products.map(p => ({
                 product: p,
-                size: p.volume || '10ml',
+                size: preferences.size ? `${preferences.size}ml` : (p.volume || '10ml'),
                 price: p.price,
                 quantity: 1
             }));
