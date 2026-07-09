@@ -110,7 +110,7 @@ export default function MailingClient() {
         if (['welcome', 'review_request', 'discovery_launch', 'monthly_discovery'].includes(slug)) return 'marketing';
         if (['cart_recovery', 'nurture_10_days', 'nurture_25_days', 'recommendations', 'monthly_recommendation', 'nurture_3_days'].includes(slug)) return 'retention';
         if (['educational'].includes(slug)) return 'educational';
-        if (['back_in_stock', 'new_product'].includes(slug)) return 'inventory';
+        if (['back_in_stock', 'new_product', 'new_perfumes_batch', 'new_discovery_sets'].includes(slug)) return 'inventory';
         return 'general';
     };
 
