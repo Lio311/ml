@@ -45,7 +45,7 @@ function ParallaxImages() {
     <group ref={groupRef}>
       {/* Background Layer (Fields) */}
       <Image
-        url="https://images.unsplash.com/photo-1600171221319-33b2a59a9332?q=80&w=1200&auto=format&fit=crop"
+        url="/images/lottery-bg-opt.jpg"
         transparent
         opacity={0.3}
         position={[4, 2, -10]}
@@ -54,14 +54,14 @@ function ParallaxImages() {
       
       {/* Midground Layer (Jasmine / Flowers) */}
       <Image
-        url="https://images.unsplash.com/photo-1615962122149-ef61db6e4fc3?q=80&w=800&auto=format&fit=crop"
+        url="/collection-summer.png"
         transparent
         opacity={0.7}
         position={[5, -1, -5]}
         scale={[6, 8]}
       />
       <Image
-        url="https://images.unsplash.com/photo-1596431980838-8c10bead2c7f?q=80&w=800&auto=format&fit=crop"
+        url="/collection-datenight.png"
         transparent
         opacity={0.8}
         position={[0, 3, -4]}
@@ -70,14 +70,14 @@ function ParallaxImages() {
 
       {/* Foreground Layer (Oils, Resins, Amber) */}
       <Image
-        url="https://images.unsplash.com/photo-1615486511484-92e172fc4fe0?q=80&w=800&auto=format&fit=crop"
+        url="/collection-exclusive.png"
         transparent
         opacity={0.9}
         position={[-4, 0, -2]}
         scale={[4, 6]}
       />
       <Image
-        url="https://images.unsplash.com/photo-1608248593842-8021c17293a3?q=80&w=800&auto=format&fit=crop"
+        url="/logo.png"
         transparent
         opacity={0.9}
         position={[-7, -2, -1]}
