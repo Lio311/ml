@@ -126,6 +126,7 @@ export default async function AdminUsersPage(props) {
                 firstName: u.first_name,
                 lastName: u.last_name,
                 email: u.email,
+                secondary_email: u.secondary_email,
                 phone: u.phone,
                 role: u.role || 'customer',
                 createdAt: u.created_at,

@@ -196,14 +196,17 @@ export default function UsersTableClient({ users, canEdit }) {
                                     </div>
                                 </div>
                                 <div className="space-y-2 text-right">
-                                    <div className="text-[11px] text-blue-600 font-black tracking-tight py-1.5 border-b border-blue-50/50 mb-1 truncate">
-                                        {u.email}
-                                    </div>
-                                    {u.secondary_email && (
-                                        <div className="text-[10px] text-gray-500 font-bold mb-2">
-                                            {u.secondary_email}
+                                    <div className="py-1.5 border-b border-blue-50/50 mb-1">
+                                        <div className="text-[11px] text-blue-600 font-black tracking-tight truncate">
+                                            {u.email}
                                         </div>
-                                    )}
+                                        {u.secondary_email && (
+                                            <div className="text-[10px] text-gray-400 font-medium tracking-tight truncate mt-0.5">
+                                                {u.secondary_email}
+                                            </div>
+                                        )}
+                                    </div>
+
                                     <EditPhoneInput 
                                         userId={u.id} 
                                         initialPhone={u.phone} 
