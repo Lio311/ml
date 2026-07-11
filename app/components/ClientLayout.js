@@ -16,8 +16,9 @@ export default function ClientLayout({ children, brands, menu, forceMaintenance 
     const pathname = usePathname();
     const isAdmin = pathname && typeof pathname === 'string' && pathname.startsWith('/admin');
     const isMaintenance = forceMaintenance || pathname === '/maintenance';
+    const isLanding = pathname === '/landing';
 
-    if (isAdmin || isMaintenance) {
+    if (isAdmin || isMaintenance || isLanding) {
         return (
             <BrandProvider>
                 <div id="site-content">
