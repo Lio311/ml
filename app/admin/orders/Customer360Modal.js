@@ -152,6 +152,9 @@ export default function Customer360Modal({ email, onClose }) {
                                     <div className="flex items-center gap-2 px-4 py-2 bg-black text-white rounded-2xl shadow-sm text-[10px] font-black uppercase tracking-widest">
                                         {data.profile.role}
                                     </div>
+                                )}
+                            </div>
+
                             {/* Tabs */}
                             <div className="flex items-center gap-8 border-b border-gray-100">
                                 <button 
