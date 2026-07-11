@@ -60,7 +60,7 @@ export async function POST(req, { params }) {
                 deliveryMethodText, 
                 shippingCostText
             );
-        } else if (log.type === 'order_update') {
+        } else if (log.type === 'order_updated' || log.type === 'order_update') {
             if (!log.order_id) return NextResponse.json({ error: 'Order ID missing' }, { status: 400 });
             const orderRes = await pool.query(`SELECT * FROM orders WHERE id = $1`, [log.order_id]);
             if (orderRes.rows.length === 0) return NextResponse.json({ error: 'Order not found' }, { status: 404 });
@@ -104,35 +104,46 @@ export async function POST(req, { params }) {
                 '' // messageBody we might not have it exactly as it was, but we resend the status update
             );
         } else if (log.type === 'cart_recovery') {
-            if (!log.order_id) return NextResponse.json({ error: 'Order ID missing' }, { status: 400 });
-            const orderRes = await pool.query(`SELECT * FROM orders WHERE id = $1`, [log.order_id]);
-            if (orderRes.rows.length === 0) return NextResponse.json({ error: 'Order not found' }, { status: 404 });
+            const { getTemplate } = require('@/app/lib/email');
             
-            const order = orderRes.rows[0];
-            const items = order.items || [];
+            // Try to find the existing coupon for this user
+            const couponRes = await pool.query(`
+                SELECT code FROM coupons 
+                WHERE email = $1 AND code LIKE 'SAVE5-%'
+                ORDER BY created_at DESC LIMIT 1
+            `, [log.recipient]);
             
-            let deliveryMethodText = 'משלוח לנקודת חלוקה';
-            let shippingCostText = '0';
-            if (order.shipping_details?.deliveryMethod === 'courier') {
-                deliveryMethodText = 'שליח עד הבית';
-                shippingCostText = '35';
+            let couponCode = 'SAVE5-RSND';
+            if (couponRes.rows.length > 0) {
+                couponCode = couponRes.rows[0].code;
+            } else {
+                const randomPart = Math.random().toString(36).substring(2, 7).toUpperCase();
+                couponCode = `SAVE5-${randomPart}`;
             }
 
-            const { formatItemsHtmlCustomer, formatNotesHtml } = require('@/app/lib/email');
-            // Assuming there is a generic way to resend abandoned cart, or we fallback to order update for display
-            // But if getAbandonedCartTemplate is missing, we might fail. Let's try to just require it if it exists.
-            const { getAbandonedCartTemplate, getOrderUpdatedTemplate } = require('@/app/lib/email');
-            
-            const itemsHtml = formatItemsHtmlCustomer(items);
-            const notesHtml = formatNotesHtml(order.notes);
-            
-            if (getAbandonedCartTemplate) {
-                html = getAbandonedCartTemplate(order.id, itemsHtml, order.total_amount, deliveryMethodText, shippingCostText, notesHtml);
-            } else {
-                html = getOrderUpdatedTemplate(order.id, order.customer_details?.firstName || 'לקוח', items, order.total_amount, deliveryMethodText, shippingCostText, notesHtml);
-            }
+            const templateResult = await getTemplate('cart_recovery', 
+                { couponCode },
+                () => {
+                    return `
+                    <div dir="rtl" style="font-family: Arial, sans-serif; color: #333;">
+                        <h2>ראינו שהשארת מספר פריטים בסל... 👀</h2>
+                        <p>אנחנו שומרים לך עליהם, אבל המלאי מוגבל!</p>
+                        <p>כדי להקל עליך, הנה קוד קופון מיוחד של <strong>5% הנחה</strong>:</p>
+                        <div style="background: #f0fdf4; border: 2px dashed #16a34a; padding: 15px; text-align: center; margin: 20px 0;">
+                            <h1 style="color: #16a34a; margin: 0;">${couponCode}</h1>
+                            <p style="margin: 5px 0 0 0; color: #666; font-size: 12px;">תקף ל-24 השעות הקרובות בלבד!</p>
+                        </div>
+                        <p>
+                            <a href="https://www.ml-tlv.com/cart" style="background: #000; color: #fff; padding: 10px 20px; text-decoration: none; border-radius: 5px;">
+                                לחזרה לעגלה >>
+                            </a>
+                        </p>
+                    </div>`;
+                }
+            );
+            html = templateResult.html;
         } else {
-            return NextResponse.json({ error: 'Resending this type of email is not supported yet' }, { status: 400 });
+            return NextResponse.json({ error: `Resending this type of email (${log.type}) is not supported yet` }, { status: 400 });
         }
 
         await sendEmail(

@@ -191,68 +191,116 @@ export default function Customer360Modal({ email, onClose }) {
                                         className="space-y-4"
                                     >
                                         <div className="bg-white border border-gray-100 rounded-[2rem] overflow-hidden shadow-sm">
-                                            <div className="overflow-x-auto">
-                                        <table className="w-full text-right" dir="rtl">
-                                            <thead className="bg-gray-50/50 text-[10px] font-bold text-gray-400 uppercase tracking-widest border-b border-gray-50">
-                                                <tr>
-                                                    <th className="p-3 md:p-4 whitespace-nowrap">#</th>
-                                                    <th className="p-3 md:p-4 whitespace-nowrap">תאריך</th>
-                                                    <th className="p-3 md:p-4 whitespace-nowrap">סטטוס</th>
-                                                    <th className="p-3 md:p-4 whitespace-nowrap">פריטים</th>
-                                                    <th className="p-3 md:p-4 text-left whitespace-nowrap">סכום</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody className="divide-y divide-gray-50">
-                                                {data.orders.map((order) => (
-                                                    <tr key={order.id} className="hover:bg-gray-50/50 transition-colors">
-                                                        <td className="p-3 md:p-4 text-xs font-black text-gray-400">#{order.id}</td>
-                                                        <td className="p-3 md:p-4 text-xs font-bold text-gray-600 whitespace-nowrap">
-                                                            {new Date(order.created_at).toLocaleDateString('he-IL', { day: '2-digit', month: '2-digit', year: '2-digit' })}
-                                                        </td>
-                                                        <td className="p-3 md:p-4 whitespace-nowrap">
-                                                            {(() => {
-                                                                const statusMap = {
-                                                                    'pending': { label: 'ממתין', color: 'bg-orange-100 text-orange-700' },
-                                                                    'processing': { label: 'בטיפול', color: 'bg-blue-100 text-blue-700' },
-                                                                    'shipped': { label: 'נשלח', color: 'bg-indigo-100 text-indigo-700' },
-                                                                    'ready_for_pickup': { label: 'מוכן לאיסוף', color: 'bg-emerald-100 text-emerald-700' },
-                                                                    'completed': { label: 'הושלם', color: 'bg-green-100 text-green-700' },
-                                                                    'cancelled': { label: 'בוטל', color: 'bg-red-100 text-red-700' }
-                                                                };
-                                                                const s = statusMap[order.status] || { label: order.status, color: 'bg-gray-100 text-gray-700' };
+                                        <div className="md:hidden space-y-3 p-1">
+                                            {data.orders.map((order) => {
+                                                const statusMap = {
+                                                    'pending': { label: 'ממתין', color: 'bg-orange-100 text-orange-700' },
+                                                    'processing': { label: 'בטיפול', color: 'bg-blue-100 text-blue-700' },
+                                                    'shipped': { label: 'נשלח', color: 'bg-indigo-100 text-indigo-700' },
+                                                    'ready_for_pickup': { label: 'מוכן לאיסוף', color: 'bg-emerald-100 text-emerald-700' },
+                                                    'completed': { label: 'הושלם', color: 'bg-green-100 text-green-700' },
+                                                    'cancelled': { label: 'בוטל', color: 'bg-red-100 text-red-700' }
+                                                };
+                                                const s = statusMap[order.status] || { label: order.status, color: 'bg-gray-100 text-gray-700' };
+
+                                                return (
+                                                    <div key={order.id} className="bg-white border border-gray-100 rounded-2xl p-4 shadow-sm flex flex-col gap-3">
+                                                        <div className="flex justify-between items-center border-b border-gray-50 pb-2">
+                                                            <div className="text-sm font-black text-gray-900">#{order.id}</div>
+                                                            <div className="text-xs font-bold text-gray-600">
+                                                                {new Date(order.created_at).toLocaleDateString('he-IL', { day: '2-digit', month: '2-digit', year: '2-digit' })}
+                                                            </div>
+                                                        </div>
+                                                        <div className="flex justify-between items-center">
+                                                            <span className={`text-[10px] px-2 py-0.5 rounded-full font-black uppercase tracking-widest ${s.color}`}>
+                                                                {s.label}
+                                                            </span>
+                                                            <div className="text-sm font-black text-gray-900" dir="ltr">
+                                                                ₪ {parseFloat(order.total_amount).toLocaleString()}
+                                                            </div>
+                                                        </div>
+                                                        <div className="flex flex-wrap gap-1 mt-1">
+                                                            {order.items?.filter(item => item.name || item.brand || item.model).map((item, idx) => {
+                                                                const displayName = item.name || `${item.brand || ''} ${item.model || ''}`.trim() || 'פריט לא ידוע';
                                                                 return (
-                                                                    <span className={`text-[9px] px-2 py-0.5 rounded-full font-black uppercase tracking-widest ${s.color}`}>
-                                                                        {s.label}
+                                                                    <span key={idx} className="bg-gray-50 px-2 py-1 rounded-md border border-gray-100 text-[11px] whitespace-nowrap" dir="rtl">
+                                                                        {displayName} {item.size && <span className="opacity-70">({item.size} מ"ל)</span>}
                                                                     </span>
                                                                 );
-                                                            })()}
-                                                        </td>
-                                                        <td className="p-3 md:p-4 text-xs font-medium text-gray-500 min-w-[200px] max-w-[240px]">
-                                                            <div className="flex flex-wrap gap-1">
-                                                                {order.items?.filter(item => item.name || item.brand || item.model).map((item, idx) => {
-                                                                    const displayName = item.name || `${item.brand || ''} ${item.model || ''}`.trim() || 'פריט לא ידוע';
+                                                            })}
+                                                        </div>
+                                                        {order.coupon_code && (
+                                                            <div className="text-right mt-1">
+                                                                <span className="font-bold text-gray-900 text-[10px]">קופון: </span>
+                                                                <span className="bg-black/70 text-white px-1.5 py-[1px] rounded font-black uppercase text-[10px] tracking-wider inline-block leading-normal">{order.coupon_code}</span>
+                                                            </div>
+                                                        )}
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+                                        <div className="hidden md:block overflow-x-auto">
+                                            <table className="w-full text-right" dir="rtl">
+                                                <thead className="bg-gray-50/50 text-[10px] font-bold text-gray-400 uppercase tracking-widest border-b border-gray-50">
+                                                    <tr>
+                                                        <th className="p-4 w-16 whitespace-nowrap">#</th>
+                                                        <th className="p-4 whitespace-nowrap">תאריך</th>
+                                                        <th className="p-4 whitespace-nowrap">סטטוס</th>
+                                                        <th className="p-4 whitespace-nowrap">פריטים</th>
+                                                        <th className="p-4 text-left whitespace-nowrap">סכום</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody className="divide-y divide-gray-50">
+                                                    {data.orders.map((order) => (
+                                                        <tr key={order.id} className="hover:bg-gray-50/50 transition-colors">
+                                                            <td className="p-4 text-xs font-black text-gray-400">#{order.id}</td>
+                                                            <td className="p-4 text-xs font-bold text-gray-600 whitespace-nowrap">
+                                                                {new Date(order.created_at).toLocaleDateString('he-IL', { day: '2-digit', month: '2-digit', year: '2-digit' })}
+                                                            </td>
+                                                            <td className="p-4 whitespace-nowrap">
+                                                                {(() => {
+                                                                    const statusMap = {
+                                                                        'pending': { label: 'ממתין', color: 'bg-orange-100 text-orange-700' },
+                                                                        'processing': { label: 'בטיפול', color: 'bg-blue-100 text-blue-700' },
+                                                                        'shipped': { label: 'נשלח', color: 'bg-indigo-100 text-indigo-700' },
+                                                                        'ready_for_pickup': { label: 'מוכן לאיסוף', color: 'bg-emerald-100 text-emerald-700' },
+                                                                        'completed': { label: 'הושלם', color: 'bg-green-100 text-green-700' },
+                                                                        'cancelled': { label: 'בוטל', color: 'bg-red-100 text-red-700' }
+                                                                    };
+                                                                    const s = statusMap[order.status] || { label: order.status, color: 'bg-gray-100 text-gray-700' };
                                                                     return (
-                                                                        <span key={idx} className="bg-gray-50 px-2 py-0.5 rounded-md border border-gray-100 text-[10px] whitespace-nowrap" dir="rtl">
-                                                                            {displayName} {item.size && <span className="opacity-70">({item.size} מ"ל)</span>}
+                                                                        <span className={`text-[9px] px-2 py-0.5 rounded-full font-black uppercase tracking-widest ${s.color}`}>
+                                                                            {s.label}
                                                                         </span>
                                                                     );
-                                                                })}
-                                                            </div>
-                                                            {order.coupon_code && (
-                                                                <div className="mt-2 text-right">
-                                                                    <span className="font-bold text-gray-900 text-[9px]">קוד קופון: </span>
-                                                                    <span className="bg-black/70 text-white px-1.5 py-[1px] rounded font-black uppercase text-[9px] tracking-wider inline-block leading-normal">{order.coupon_code}</span>
+                                                                })()}
+                                                            </td>
+                                                            <td className="p-4 text-xs font-medium text-gray-500 min-w-[200px] max-w-[240px]">
+                                                                <div className="flex flex-wrap gap-1">
+                                                                    {order.items?.filter(item => item.name || item.brand || item.model).map((item, idx) => {
+                                                                        const displayName = item.name || `${item.brand || ''} ${item.model || ''}`.trim() || 'פריט לא ידוע';
+                                                                        return (
+                                                                            <span key={idx} className="bg-gray-50 px-2 py-0.5 rounded-md border border-gray-100 text-[10px] whitespace-nowrap" dir="rtl">
+                                                                                {displayName} {item.size && <span className="opacity-70">({item.size} מ"ל)</span>}
+                                                                            </span>
+                                                                        );
+                                                                    })}
                                                                 </div>
-                                                            )}
-                                                        </td>
-                                                        <td className="p-3 md:p-4 text-left font-black text-gray-900 whitespace-nowrap" dir="ltr">
-                                                            ₪ {parseFloat(order.total_amount).toLocaleString()}
-                                                        </td>
-                                                    </tr>
-                                                ))}
-                                            </tbody>
-                                        </table>
-                                    </div>
+                                                                {order.coupon_code && (
+                                                                    <div className="mt-2 text-right">
+                                                                        <span className="font-bold text-gray-900 text-[9px]">קוד קופון: </span>
+                                                                        <span className="bg-black/70 text-white px-1.5 py-[1px] rounded font-black uppercase text-[9px] tracking-wider inline-block leading-normal">{order.coupon_code}</span>
+                                                                    </div>
+                                                                )}
+                                                            </td>
+                                                            <td className="p-4 text-left font-black text-gray-900 whitespace-nowrap" dir="ltr">
+                                                                ₪ {parseFloat(order.total_amount).toLocaleString()}
+                                                            </td>
+                                                        </tr>
+                                                    ))}
+                                                </tbody>
+                                            </table>
+                                        </div>
                                 </div>
                                     </motion.div>
                                 )}
