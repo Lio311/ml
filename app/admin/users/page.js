@@ -70,8 +70,8 @@ export default async function AdminUsersPage(props) {
 
         if (sortParam === 'last_active_desc') orderByClause = `COALESCE(last_active_at, created_at) DESC`;
         else if (sortParam === 'last_active_asc') orderByClause = `COALESCE(last_active_at, created_at) ASC`;
-        else if (sortParam === 'orders_desc') orderByClause = `(SELECT COUNT(*) FROM orders WHERE customer_details->>'clerk_id' = users.id AND status != 'cancelled') DESC`;
-        else if (sortParam === 'spent_desc') orderByClause = `(SELECT COALESCE(SUM(total_amount), 0) FROM orders WHERE customer_details->>'clerk_id' = users.id AND status != 'cancelled') DESC`;
+        else if (sortParam === 'orders_desc') orderByClause = `(SELECT COUNT(*) FROM orders WHERE customer_details->>'clerk_id' = users.id AND status != 'cancelled') DESC, (SELECT COALESCE(SUM(total_amount), 0) FROM orders WHERE customer_details->>'clerk_id' = users.id AND status != 'cancelled') DESC`;
+        else if (sortParam === 'spent_desc') orderByClause = `(SELECT COALESCE(SUM(total_amount), 0) FROM orders WHERE customer_details->>'clerk_id' = users.id AND status != 'cancelled') DESC, (SELECT COUNT(*) FROM orders WHERE customer_details->>'clerk_id' = users.id AND status != 'cancelled') DESC`;
         else if (sortParam === 'created_desc') orderByClause = `created_at DESC`;
         else if (sortParam === 'created_asc') orderByClause = `created_at ASC`;
         else if (sortParam === 'name_asc') orderByClause = `first_name ASC, last_name ASC`;
