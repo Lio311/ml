@@ -25,7 +25,8 @@ export default function EmailLogsClient({ initialLogs, currentPage, totalPages, 
             case 'educational': return 'bg-pink-100 text-pink-700 border-pink-200';
             case 'admin_alert': return 'bg-red-100 text-red-700 border-red-200';
             case 'contact_form': return 'bg-gray-100 text-gray-700 border-gray-200';
-            case 'campaign': return 'bg-blue-600 text-white border-blue-700';
+            case 'campaign': 
+            case 'manual_campaign': return 'bg-blue-600 text-white border-blue-700';
             case 'nurture_3_days': 
             case 'nurture_10_days': 
             case 'nurture_25_days': return 'bg-cyan-100 text-cyan-700 border-cyan-200';
@@ -64,6 +65,8 @@ export default function EmailLogsClient({ initialLogs, currentPage, totalPages, 
             case 'admin_order_alert': return 'התראת הזמנה למנהל';
             case 'admin_user_alert': return 'התראת משתמש למנהל';
             case 'contact_form_alert': return 'התראת טופס צור קשר';
+            case 'system': return 'מערכת';
+            case 'manual_campaign': return 'דיוור קמפיין';
             default: return type || 'מערכת';
         }
     };

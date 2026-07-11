@@ -19,19 +19,35 @@ export default function AuditLogsClient({ initialLogs, totalCount, currentPage, 
     const actionColors = {
         'delete_order': 'bg-red-100 text-red-700',
         'update_order_status': 'bg-blue-100 text-blue-700',
+        'update_order': 'bg-blue-100 text-blue-700',
+        'update_order_batch': 'bg-blue-100 text-blue-700',
+        'create_order': 'bg-green-100 text-green-700',
         'update_product': 'bg-amber-100 text-amber-700',
         'delete_product': 'bg-red-100 text-red-700',
         'create_product': 'bg-green-100 text-green-700',
         'update_catalog': 'bg-indigo-100 text-indigo-700',
+        'update_user_address': 'bg-purple-100 text-purple-700',
+        'update_user_role': 'bg-purple-100 text-purple-700',
+        'create_review': 'bg-teal-100 text-teal-700',
+        'approve_recommendation_email': 'bg-emerald-100 text-emerald-700',
+        'reject_recommendation_email': 'bg-rose-100 text-rose-700',
     };
 
     const actionLabels = {
         'delete_order': 'מחיקת הזמנה',
         'update_order_status': 'עדכון סטטוס הזמנה',
+        'update_order': 'עדכון הזמנה',
+        'update_order_batch': 'עדכון רצף הזמנות',
+        'create_order': 'יצירת הזמנה',
         'update_product': 'עדכון מוצר',
         'delete_product': 'מחיקת מוצר',
         'create_product': 'יצירת מוצר',
         'update_catalog': 'עדכון קטלוג',
+        'update_user_address': 'עדכון כתובת משתמש',
+        'update_user_role': 'עדכון הרשאת משתמש',
+        'create_review': 'יצירת ביקורת',
+        'approve_recommendation_email': 'אישור המלצה',
+        'reject_recommendation_email': 'דחיית המלצה',
         'default': 'פעולה כללית'
     };
 
