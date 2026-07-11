@@ -45,7 +45,7 @@ function ParallaxImages() {
     <group ref={groupRef}>
       {/* Background Layer (Fields) */}
       <Image
-        url="/images/lottery-bg-opt.jpg"
+        url="/images/journey/field.jpg"
         transparent
         opacity={0.3}
         position={[4, 2, -10]}
@@ -54,14 +54,14 @@ function ParallaxImages() {
       
       {/* Midground Layer (Jasmine / Flowers) */}
       <Image
-        url="/collection-summer.png"
+        url="/images/journey/jasmine1.jpg"
         transparent
         opacity={0.7}
         position={[5, -1, -5]}
         scale={[6, 8]}
       />
       <Image
-        url="/collection-datenight.png"
+        url="/images/journey/jasmine2.jpg"
         transparent
         opacity={0.8}
         position={[0, 3, -4]}
@@ -70,14 +70,14 @@ function ParallaxImages() {
 
       {/* Foreground Layer (Oils, Resins, Amber) */}
       <Image
-        url="/collection-exclusive.png"
+        url="/images/journey/oil1.jpg"
         transparent
         opacity={0.9}
         position={[-4, 0, -2]}
         scale={[4, 6]}
       />
       <Image
-        url="/logo.png"
+        url="/images/journey/oil2.jpg"
         transparent
         opacity={0.9}
         position={[-7, -2, -1]}
