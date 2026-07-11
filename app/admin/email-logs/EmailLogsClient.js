@@ -38,6 +38,7 @@ export default function EmailLogsClient({ initialLogs, currentPage, totalPages, 
             case 'admin_order_alert':
             case 'admin_user_alert':
             case 'contact_form_alert': return 'bg-red-100 text-red-700 border-red-200';
+            case 'new_product': return 'bg-violet-100 text-violet-700 border-violet-200';
             default: return 'bg-gray-100 text-gray-600 border-gray-200';
         }
     };
@@ -67,6 +68,7 @@ export default function EmailLogsClient({ initialLogs, currentPage, totalPages, 
             case 'contact_form_alert': return 'התראת טופס צור קשר';
             case 'system': return 'מערכת';
             case 'manual_campaign': return 'דיוור קמפיין';
+            case 'new_product': return 'מוצר חדש';
             default: return type || 'מערכת';
         }
     };
