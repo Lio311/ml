@@ -22,7 +22,7 @@ export async function GET() {
             const monthNum = today.getMonth() + 1;
             const currentMonthStr = `${year}-${String(monthNum).padStart(2, '0')}`;
 
-            const [ordersRes, inboxRes, recsRes, monthlyRecRes] = await Promise.all([
+            const [ordersRes, inboxRes, recsRes, monthlyRecRes, hiddenReviewsRes] = await Promise.all([
                 // 1. Pending and Processing orders
                 client.query("SELECT COUNT(*) FROM orders WHERE catalog_id IS NULL AND (status = 'pending' OR status = 'processing')"),
                 
@@ -40,7 +40,10 @@ export async function GET() {
                 client.query("SELECT count(*) as count FROM pending_recommendation_emails WHERE status = 'pending'"),
 
                 // 4. Monthly recommendation status
-                client.query("SELECT status FROM monthly_recommendations WHERE month = $1", [currentMonthStr])
+                client.query("SELECT status FROM monthly_recommendations WHERE month = $1", [currentMonthStr]),
+
+                // 5. Hidden reviews count
+                client.query("SELECT COUNT(*) FROM reviews WHERE is_public = false")
             ]);
 
             let checkoutErrorsCount = 0;
@@ -57,6 +60,7 @@ export async function GET() {
                 pendingOrders: parseInt(ordersRes.rows[0].count || 0),
                 unreadInbox: parseInt(inboxRes.rows[0].total_unread || 0),
                 pendingRecommendations: parseInt(recsRes.rows[0].count || 0),
+                hiddenReviews: parseInt(hiddenReviewsRes.rows[0].count || 0),
                 monthlyRecNeedsAction: monthlyRecStatus !== 'selected',
                 pendingCheckoutErrors: checkoutErrorsCount
             });

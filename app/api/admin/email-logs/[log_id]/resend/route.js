@@ -1,5 +1,5 @@
 import pool from '@/app/lib/db';
-import { sendEmail, getOrderConfirmationTemplate, formatItemsHtmlCustomer, formatNotesHtml } from '@/app/lib/email';
+import { sendEmail, getOrderConfirmationTemplate, formatItemsHtmlCustomer, formatNotesHtml, getOrderUpdatedTemplate, getStatusUpdateTemplate, getTemplate } from '@/app/lib/email';
 import { currentUser } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
 
@@ -76,7 +76,6 @@ export async function POST(req, { params }) {
                 shippingCostText = '35';
             }
 
-            const { getOrderUpdatedTemplate } = require('@/app/lib/email');
             const name = order.customer_details?.firstName || 'לקוח';
 
             html = getOrderUpdatedTemplate(
@@ -94,7 +93,6 @@ export async function POST(req, { params }) {
             if (orderRes.rows.length === 0) return NextResponse.json({ error: 'Order not found' }, { status: 404 });
             
             const order = orderRes.rows[0];
-            const { getStatusUpdateTemplate } = require('@/app/lib/email');
             const name = order.customer_details?.firstName || 'לקוח';
             
             html = getStatusUpdateTemplate(
@@ -104,8 +102,6 @@ export async function POST(req, { params }) {
                 '' // messageBody we might not have it exactly as it was, but we resend the status update
             );
         } else if (log.type === 'cart_recovery') {
-            const { getTemplate } = require('@/app/lib/email');
-            
             // Try to find the existing coupon for this user
             const couponRes = await pool.query(`
                 SELECT code FROM coupons 

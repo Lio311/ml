@@ -155,6 +155,7 @@ export default function AdminMobileNav({ role = 'customer' }) {
     const [pendingOrdersCount, setPendingOrdersCount] = useState(0);
     const [monthlyRecNeedsAction, setMonthlyRecNeedsAction] = useState(false);
     const [pendingRecommendationsCount, setPendingRecommendationsCount] = useState(0);
+    const [hiddenReviewsCount, setHiddenReviewsCount] = useState(0);
     const [pendingCheckoutErrorsCount, setPendingCheckoutErrorsCount] = useState(0);
     const [openGroups, setOpenGroups] = useState({});
 
@@ -168,6 +169,7 @@ export default function AdminMobileNav({ role = 'customer' }) {
                     setPendingOrdersCount(data.pendingOrders || 0);
                     setMonthlyRecNeedsAction(data.monthlyRecNeedsAction || false);
                     setPendingRecommendationsCount(data.pendingRecommendations || 0);
+                    setHiddenReviewsCount(data.hiddenReviews || 0);
                     setPendingCheckoutErrorsCount(data.pendingCheckoutErrors || 0);
                 }
             } catch (err) {
@@ -241,6 +243,7 @@ export default function AdminMobileNav({ role = 'customer' }) {
                                 if (item.href.includes('inbox')) return acc + unreadCount;
                                 if (item.href === '/admin/monthly-recommendation' && monthlyRecNeedsAction) return acc + 1;
                                 if (item.href === '/admin/recommendations') return acc + pendingRecommendationsCount;
+                                if (item.href === '/admin/reviews') return acc + hiddenReviewsCount;
                                 if (item.href === '/admin/checkout-errors') return acc + pendingCheckoutErrorsCount;
                                 return acc;
                             }, 0);
@@ -301,6 +304,12 @@ export default function AdminMobileNav({ role = 'customer' }) {
                                                             <span title="המלצות ממתינות לאישור" className="flex h-5 min-w-[20px] gap-1 items-center justify-center rounded-full bg-orange-500 px-1.5 text-[10px] font-black text-white shadow-[0_0_10px_rgba(249,115,22,0.4)]">
                                                                 <AlertOctagon size={10} strokeWidth={3} />
                                                                 {pendingRecommendationsCount}
+                                                            </span>
+                                                        )}
+                                                        {item.href === '/admin/reviews' && hiddenReviewsCount > 0 && (
+                                                            <span title="ביקורות מוסתרות" className="flex h-5 min-w-[20px] gap-1 items-center justify-center rounded-full bg-blue-500 px-1.5 text-[10px] font-black text-white shadow-[0_0_10px_rgba(59,130,246,0.4)]">
+                                                                <AlertOctagon size={10} strokeWidth={3} />
+                                                                {hiddenReviewsCount}
                                                             </span>
                                                         )}
                                                         {item.href === '/admin/checkout-errors' && pendingCheckoutErrorsCount > 0 && (
