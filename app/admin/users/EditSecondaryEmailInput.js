@@ -93,24 +93,23 @@ export default function EditSecondaryEmailInput({ userId, initialEmail, canEdit,
     }
 
     return (
-        <div className="group flex items-center gap-2 px-4 py-2 bg-white border border-gray-100 hover:border-blue-100 rounded-2xl shadow-sm text-sm font-bold text-gray-700 transition-all">
-            <Mail className="w-4 h-4 text-gray-400 group-hover:text-blue-500 transition-colors" />
-            
-            <div className="flex items-center gap-2 relative">
-                {initialEmail ? (
+        <button
+            onClick={() => setIsEditing(true)}
+            className={`group flex items-center justify-center gap-2 px-4 py-2 bg-white border ${initialEmail ? 'border-gray-100 hover:border-blue-100' : 'border-dashed border-gray-300 hover:border-blue-300'} rounded-2xl shadow-sm text-sm font-bold text-gray-700 transition-all`}
+            title={initialEmail ? "ערוך מייל נוסף" : "הוסף מייל נוסף"}
+        >
+            {initialEmail ? (
+                <>
+                    <Mail className="w-4 h-4 text-gray-400 group-hover:text-blue-500 transition-colors" />
                     <span className="text-gray-700" dir="ltr">{initialEmail}</span>
-                ) : (
-                    <span className="text-gray-400 font-normal text-xs transition-colors">אין מייל נוסף</span>
-                )}
-                
-                <button
-                    onClick={() => setIsEditing(true)}
-                    className="text-gray-400 hover:text-blue-600 p-1 rounded-lg transition-colors opacity-0 group-hover:opacity-100 absolute -left-8"
-                    title={initialEmail ? "ערוך מייל נוסף" : "הוסף מייל נוסף"}
-                >
-                    {initialEmail ? <Pencil className="w-3 h-3" /> : <Plus className="w-3 h-3" />}
-                </button>
-            </div>
-        </div>
+                    <Pencil className="w-3 h-3 text-gray-400 opacity-0 group-hover:opacity-100 transition-all" />
+                </>
+            ) : (
+                <>
+                    <Plus className="w-4 h-4 text-gray-400 group-hover:text-blue-500 transition-colors" />
+                    <span className="text-gray-400 group-hover:text-blue-500 font-normal text-xs transition-colors">הוסף מייל נוסף</span>
+                </>
+            )}
+        </button>
     );
 }

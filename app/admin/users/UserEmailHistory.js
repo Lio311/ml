@@ -70,55 +70,60 @@ export default function UserEmailHistory({ userId }) {
     }
 
     return (
-        <div className="mt-4 border-t border-gray-100 pt-4">
-            <h4 className="text-xs font-black text-gray-700 mb-3 flex items-center gap-1.5">
-                <Mail className="w-3.5 h-3.5 text-blue-500" />
-                היסטורית מיילים
-            </h4>
-            <div className="space-y-2 max-h-64 overflow-y-auto pr-1 custom-scrollbar">
-                {logs.map((log) => (
-                    <div key={log.id} className="flex items-center justify-between p-2.5 bg-white border border-gray-100 rounded-lg hover:border-blue-100 hover:shadow-sm transition-all group">
-                        <div className="flex items-start gap-2.5 overflow-hidden">
-                            <div className="mt-0.5">
-                                {log.status === 'sent' ? (
-                                    <CheckCircle2 className="w-4 h-4 text-green-500" />
-                                ) : log.status === 'failed' ? (
-                                    <AlertCircle className="w-4 h-4 text-red-500" />
-                                ) : (
-                                    <Clock className="w-4 h-4 text-amber-500" />
-                                )}
-                            </div>
-                            <div className="flex-1 min-w-0">
-                                <p className="text-xs font-bold text-gray-800 truncate" title={log.subject}>
+        <div className="bg-white border border-gray-100 rounded-[2rem] overflow-hidden shadow-sm">
+            <div className="overflow-x-auto max-h-64 custom-scrollbar">
+                <table className="w-full text-right" dir="rtl">
+                    <thead className="bg-gray-50/50 text-[10px] font-bold text-gray-400 uppercase tracking-widest border-b border-gray-50 sticky top-0 z-10">
+                        <tr>
+                            <th className="p-4 w-12 text-center">סטטוס</th>
+                            <th className="p-4">נושא</th>
+                            <th className="p-4">נמען</th>
+                            <th className="p-4">תאריך</th>
+                            <th className="p-4 text-center">פעולות</th>
+                        </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-50">
+                        {logs.map((log) => (
+                            <tr key={log.id} className="hover:bg-gray-50/50 transition-colors group">
+                                <td className="p-4 text-center">
+                                    {log.status === 'sent' ? (
+                                        <CheckCircle2 className="w-4 h-4 text-green-500 mx-auto" />
+                                    ) : log.status === 'failed' ? (
+                                        <AlertCircle className="w-4 h-4 text-red-500 mx-auto" />
+                                    ) : (
+                                        <Clock className="w-4 h-4 text-amber-500 mx-auto" />
+                                    )}
+                                </td>
+                                <td className="p-4 text-xs font-bold text-gray-800 max-w-[200px] truncate" title={log.subject}>
                                     {log.subject || 'ללא נושא'}
-                                </p>
-                                <div className="flex items-center gap-2 mt-0.5 text-[10px] text-gray-500">
+                                </td>
+                                <td className="p-4 text-xs font-medium text-gray-500 truncate max-w-[150px]" dir="ltr">
+                                    {log.recipient}
+                                </td>
+                                <td className="p-4 text-xs font-bold text-gray-600 whitespace-nowrap">
                                     <span dir="ltr">{new Date(log.sent_at).toLocaleString('he-IL', {
                                         day: '2-digit', month: '2-digit', year: '2-digit',
                                         hour: '2-digit', minute: '2-digit'
                                     })}</span>
-                                    <span>•</span>
-                                    <span className="truncate max-w-[120px]" dir="ltr">{log.recipient}</span>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div className="mr-2">
-                            <button
-                                onClick={() => handleResend(log.id)}
-                                disabled={resendingId === log.id}
-                                className="flex items-center justify-center w-7 h-7 rounded-full bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors disabled:opacity-50"
-                                title="שלח שוב"
-                            >
-                                {resendingId === log.id ? (
-                                    <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                                ) : (
-                                    <RefreshCw className="w-3.5 h-3.5" />
-                                )}
-                            </button>
-                        </div>
-                    </div>
-                ))}
+                                </td>
+                                <td className="p-4 text-center">
+                                    <button
+                                        onClick={() => handleResend(log.id)}
+                                        disabled={resendingId === log.id}
+                                        className="inline-flex items-center justify-center w-7 h-7 rounded-full bg-blue-50 text-blue-600 hover:bg-blue-100 transition-colors disabled:opacity-50"
+                                        title="שלח שוב"
+                                    >
+                                        {resendingId === log.id ? (
+                                            <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                                        ) : (
+                                            <RefreshCw className="w-3.5 h-3.5" />
+                                        )}
+                                    </button>
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
             </div>
         </div>
     );
