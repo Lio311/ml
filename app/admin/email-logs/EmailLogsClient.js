@@ -26,6 +26,17 @@ export default function EmailLogsClient({ initialLogs, currentPage, totalPages, 
             case 'admin_alert': return 'bg-red-100 text-red-700 border-red-200';
             case 'contact_form': return 'bg-gray-100 text-gray-700 border-gray-200';
             case 'campaign': return 'bg-blue-600 text-white border-blue-700';
+            case 'nurture_3_days': 
+            case 'nurture_10_days': 
+            case 'nurture_25_days': return 'bg-cyan-100 text-cyan-700 border-cyan-200';
+            case 'monthly_recommendation': return 'bg-teal-100 text-teal-700 border-teal-200';
+            case 'back_in_stock': return 'bg-emerald-100 text-emerald-700 border-emerald-200';
+            case 'status_update':
+            case 'order_updated': return 'bg-blue-100 text-blue-700 border-blue-200';
+            case 'welcome': return 'bg-indigo-100 text-indigo-700 border-indigo-200';
+            case 'admin_order_alert':
+            case 'admin_user_alert':
+            case 'contact_form_alert': return 'bg-red-100 text-red-700 border-red-200';
             default: return 'bg-gray-100 text-gray-600 border-gray-200';
         }
     };
@@ -42,6 +53,17 @@ export default function EmailLogsClient({ initialLogs, currentPage, totalPages, 
             case 'contact_form': return 'פניית צור קשר';
             case 'manual_review_request': return 'בקשת ביקורת ידנית';
             case 'campaign': return 'דיוור קמפיין';
+            case 'nurture_3_days': return 'טיפוח - 3 ימים';
+            case 'nurture_10_days': return 'טיפוח - 10 ימים';
+            case 'nurture_25_days': return 'טיפוח - 25 ימים';
+            case 'monthly_recommendation': return 'המלצה חודשית';
+            case 'back_in_stock': return 'חזר למלאי';
+            case 'status_update': return 'עדכון סטטוס';
+            case 'order_updated': return 'עדכון הזמנה';
+            case 'welcome': return 'ברוכים הבאים';
+            case 'admin_order_alert': return 'התראת הזמנה למנהל';
+            case 'admin_user_alert': return 'התראת משתמש למנהל';
+            case 'contact_form_alert': return 'התראת טופס צור קשר';
             default: return type || 'מערכת';
         }
     };
