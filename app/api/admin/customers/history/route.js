@@ -37,7 +37,7 @@ export async function GET(request) {
 
             // 2. Fetch user record (if registered)
             const userRes = await client.query(`
-                SELECT id, first_name, last_name, email, phone, address, created_at, role
+                SELECT id, first_name, last_name, email, secondary_email, phone, address, created_at, role
                 FROM users 
                 WHERE email = $1
             `, [emailParam]);

@@ -5,6 +5,8 @@ import { motion, AnimatePresence } from "framer-motion";
 import { X, Mail, Phone, ShoppingBag, Calendar, TrendingUp, User, ArrowRight, ExternalLink } from "lucide-react";
 import toast from "react-hot-toast";
 import EditAddressInput from "../users/EditAddressInput";
+import EditSecondaryEmailInput from "../users/EditSecondaryEmailInput";
+import UserEmailHistory from "../users/UserEmailHistory";
 
 export default function Customer360Modal({ email, onClose }) {
     const [data, setData] = useState(null);
@@ -132,12 +134,27 @@ export default function Customer360Modal({ email, onClose }) {
                                     <Mail className="w-4 h-4 text-blue-500" />
                                     <span>{email}</span>
                                 </div>
+                                {data.profile?.id && (
+                                    <div className="bg-white border border-gray-100 rounded-2xl shadow-sm px-4 flex items-center justify-center">
+                                        <EditSecondaryEmailInput
+                                            userId={data.profile.id}
+                                            initialEmail={data.profile.secondary_email}
+                                            canEdit={true}
+                                        />
+                                    </div>
+                                )}
                                 {data.profile?.role && (
                                     <div className="flex items-center gap-2 px-4 py-2 bg-black text-white rounded-2xl shadow-sm text-[10px] font-black uppercase tracking-widest">
                                         {data.profile.role}
                                     </div>
                                 )}
                             </div>
+
+                            {data.profile?.id && (
+                                <div className="bg-white p-4 rounded-3xl border border-gray-100 shadow-sm mt-4">
+                                    <UserEmailHistory userId={data.profile.id} />
+                                </div>
+                            )}
 
                             {/* History Table */}
                             <div className="space-y-4">
