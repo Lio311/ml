@@ -29,9 +29,34 @@ export default function UserEmailHistory({ userId }) {
         }
     }, [userId]);
 
-    const handleResend = async (logId) => {
-        if (!confirm('האם אתה בטוח שברצונך לשלוח שוב את המייל הזה?')) return;
-        
+    const handleResend = (logId) => {
+        toast((t) => (
+            <div className="flex flex-col gap-3">
+                <div className="text-sm font-bold text-gray-800 text-center" dir="rtl">
+                    האם אתה בטוח שברצונך לשלוח שוב את המייל הזה?
+                </div>
+                <div className="flex items-center justify-center gap-2" dir="rtl">
+                    <button
+                        onClick={() => {
+                            toast.dismiss(t.id);
+                            performResend(logId);
+                        }}
+                        className="px-4 py-1.5 bg-black text-white rounded-lg text-xs font-bold transition-colors hover:bg-gray-800"
+                    >
+                        כן, שלח
+                    </button>
+                    <button
+                        onClick={() => toast.dismiss(t.id)}
+                        className="px-4 py-1.5 bg-gray-100 text-gray-700 rounded-lg text-xs font-bold transition-colors hover:bg-gray-200"
+                    >
+                        ביטול
+                    </button>
+                </div>
+            </div>
+        ), { duration: 4000, id: 'resend-confirm' });
+    };
+
+    const performResend = async (logId) => {
         setResendingId(logId);
         try {
             const res = await fetch(`/api/admin/email-logs/${logId}/resend`, {
