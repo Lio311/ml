@@ -120,15 +120,22 @@ export const sendEmail = async (to, subject, html, type = 'system', orderId = nu
         const info = await transporter.sendMail(mailOptions);
         console.log("Message sent: %s", info.messageId);
 
-        const recipient = Array.isArray(finalTo) ? finalTo.join(', ') : finalTo;
-        await logEmail({ recipient, subject, type, status: 'sent', orderId, campaignId });
+        let loggedRecipient = Array.isArray(finalTo) ? finalTo.join(', ') : finalTo;
+        if (secondaryBcc && secondaryBcc.length > 0) {
+            loggedRecipient += ', ' + secondaryBcc.join(', ');
+        }
+        await logEmail({ recipient: loggedRecipient, subject, type, status: 'sent', orderId, campaignId });
 
         return info;
     } catch (error) {
         console.error("Error sending email:", error);
         
-        const recipient = Array.isArray(to) ? to.join(', ') : to;
-        await logEmail({ recipient, subject, type, status: 'failed', error: error.message, orderId, campaignId });
+        let loggedRecipient = Array.isArray(to) ? to.join(', ') : to;
+        // In case it fails, we might not have secondaryBcc yet depending on where it failed, but we do our best
+        if (typeof secondaryBcc !== 'undefined' && secondaryBcc && secondaryBcc.length > 0) {
+            loggedRecipient += ', ' + secondaryBcc.join(', ');
+        }
+        await logEmail({ recipient: loggedRecipient, subject, type, status: 'failed', error: error.message, orderId, campaignId });
 
         return null;
     }
