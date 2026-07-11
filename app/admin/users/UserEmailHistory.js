@@ -100,17 +100,17 @@ export default function UserEmailHistory({ userId }) {
                 <table className="w-full text-right" dir="rtl">
                     <thead className="bg-gray-50/50 text-[10px] font-bold text-gray-400 uppercase tracking-widest border-b border-gray-50 sticky top-0 z-10">
                         <tr>
-                            <th className="p-4 w-12 text-center">סטטוס</th>
-                            <th className="p-4">נושא</th>
-                            <th className="p-4">נמען</th>
-                            <th className="p-4">תאריך</th>
-                            <th className="p-4 text-center">פעולות</th>
+                            <th className="p-3 md:p-4 w-10 md:w-12 text-center whitespace-nowrap">סטטוס</th>
+                            <th className="p-3 md:p-4 whitespace-nowrap">נושא</th>
+                            <th className="p-3 md:p-4 whitespace-nowrap">נמען</th>
+                            <th className="p-3 md:p-4 whitespace-nowrap">תאריך</th>
+                            <th className="p-3 md:p-4 text-center whitespace-nowrap">פעולות</th>
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-gray-50">
                         {logs.map((log) => (
                             <tr key={log.id} className="hover:bg-gray-50/50 transition-colors group">
-                                <td className="p-4 text-center">
+                                <td className="p-3 md:p-4 text-center">
                                     {log.status === 'sent' ? (
                                         <CheckCircle2 className="w-4 h-4 text-green-500 mx-auto" />
                                     ) : log.status === 'failed' ? (
@@ -119,19 +119,19 @@ export default function UserEmailHistory({ userId }) {
                                         <Clock className="w-4 h-4 text-amber-500 mx-auto" />
                                     )}
                                 </td>
-                                <td className="p-4 text-xs font-bold text-gray-800 max-w-[200px] truncate" title={log.subject}>
+                                <td className="p-3 md:p-4 text-xs font-bold text-gray-800 min-w-[150px] max-w-[200px] truncate" title={log.subject}>
                                     {log.subject || 'ללא נושא'}
                                 </td>
-                                <td className="p-4 text-xs font-medium text-gray-500 truncate max-w-[150px]" dir="ltr">
+                                <td className="p-3 md:p-4 text-xs font-medium text-gray-500 min-w-[150px] max-w-[180px] truncate" dir="ltr">
                                     {log.recipient}
                                 </td>
-                                <td className="p-4 text-xs font-bold text-gray-600 whitespace-nowrap">
+                                <td className="p-3 md:p-4 text-xs font-bold text-gray-600 whitespace-nowrap">
                                     <span dir="ltr">{new Date(log.sent_at).toLocaleString('he-IL', {
                                         day: '2-digit', month: '2-digit', year: '2-digit',
                                         hour: '2-digit', minute: '2-digit'
                                     })}</span>
                                 </td>
-                                <td className="p-4 text-center">
+                                <td className="p-3 md:p-4 text-center">
                                     <button
                                         onClick={() => handleResend(log.id)}
                                         disabled={resendingId === log.id}

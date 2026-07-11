@@ -36,7 +36,7 @@ export default function Customer360Modal({ email, onClose }) {
     if (!email) return null;
 
     return (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-2 md:p-4">
             <motion.div 
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
@@ -113,7 +113,7 @@ export default function Customer360Modal({ email, onClose }) {
                             </div>
 
                             {/* Customer Info */}
-                            <div className="flex flex-wrap gap-4">
+                            <div className="flex flex-col sm:flex-row sm:flex-wrap gap-3">
                                 {data.profile?.phone && (
                                     <div className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-100 rounded-2xl shadow-sm text-sm font-bold text-gray-700">
                                         <Phone className="w-4 h-4 text-blue-500" />
@@ -195,21 +195,21 @@ export default function Customer360Modal({ email, onClose }) {
                                         <table className="w-full text-right" dir="rtl">
                                             <thead className="bg-gray-50/50 text-[10px] font-bold text-gray-400 uppercase tracking-widest border-b border-gray-50">
                                                 <tr>
-                                                    <th className="p-4">#</th>
-                                                    <th className="p-4">תאריך</th>
-                                                    <th className="p-4">סטטוס</th>
-                                                    <th className="p-4">פריטים</th>
-                                                    <th className="p-4 text-left">סכום</th>
+                                                    <th className="p-3 md:p-4 whitespace-nowrap">#</th>
+                                                    <th className="p-3 md:p-4 whitespace-nowrap">תאריך</th>
+                                                    <th className="p-3 md:p-4 whitespace-nowrap">סטטוס</th>
+                                                    <th className="p-3 md:p-4 whitespace-nowrap">פריטים</th>
+                                                    <th className="p-3 md:p-4 text-left whitespace-nowrap">סכום</th>
                                                 </tr>
                                             </thead>
                                             <tbody className="divide-y divide-gray-50">
                                                 {data.orders.map((order) => (
                                                     <tr key={order.id} className="hover:bg-gray-50/50 transition-colors">
-                                                        <td className="p-4 text-xs font-black text-gray-400">#{order.id}</td>
-                                                        <td className="p-4 text-xs font-bold text-gray-600 whitespace-nowrap">
+                                                        <td className="p-3 md:p-4 text-xs font-black text-gray-400">#{order.id}</td>
+                                                        <td className="p-3 md:p-4 text-xs font-bold text-gray-600 whitespace-nowrap">
                                                             {new Date(order.created_at).toLocaleDateString('he-IL', { day: '2-digit', month: '2-digit', year: '2-digit' })}
                                                         </td>
-                                                        <td className="p-4">
+                                                        <td className="p-3 md:p-4 whitespace-nowrap">
                                                             {(() => {
                                                                 const statusMap = {
                                                                     'pending': { label: 'ממתין', color: 'bg-orange-100 text-orange-700' },
@@ -227,7 +227,7 @@ export default function Customer360Modal({ email, onClose }) {
                                                                 );
                                                             })()}
                                                         </td>
-                                                        <td className="p-4 text-xs font-medium text-gray-500 max-w-[240px]">
+                                                        <td className="p-3 md:p-4 text-xs font-medium text-gray-500 min-w-[200px] max-w-[240px]">
                                                             <div className="flex flex-wrap gap-1">
                                                                 {order.items?.filter(item => item.name || item.brand || item.model).map((item, idx) => {
                                                                     const displayName = item.name || `${item.brand || ''} ${item.model || ''}`.trim() || 'פריט לא ידוע';
@@ -245,7 +245,7 @@ export default function Customer360Modal({ email, onClose }) {
                                                                 </div>
                                                             )}
                                                         </td>
-                                                        <td className="p-4 text-left font-black text-gray-900" dir="ltr">
+                                                        <td className="p-3 md:p-4 text-left font-black text-gray-900 whitespace-nowrap" dir="ltr">
                                                             ₪ {parseFloat(order.total_amount).toLocaleString()}
                                                         </td>
                                                     </tr>

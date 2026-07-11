@@ -60,6 +60,77 @@ export async function POST(req, { params }) {
                 deliveryMethodText, 
                 shippingCostText
             );
+        } else if (log.type === 'order_update') {
+            if (!log.order_id) return NextResponse.json({ error: 'Order ID missing' }, { status: 400 });
+            const orderRes = await pool.query(`SELECT * FROM orders WHERE id = $1`, [log.order_id]);
+            if (orderRes.rows.length === 0) return NextResponse.json({ error: 'Order not found' }, { status: 404 });
+            
+            const order = orderRes.rows[0];
+            const items = order.items;
+            const notesHtml = formatNotesHtml(order.notes);
+            
+            let deliveryMethodText = 'משלוח לנקודת חלוקה';
+            let shippingCostText = '0';
+            if (order.shipping_details?.deliveryMethod === 'courier') {
+                deliveryMethodText = 'שליח עד הבית';
+                shippingCostText = '35';
+            }
+
+            const { getOrderUpdatedTemplate } = require('@/app/lib/email');
+            const name = order.customer_details?.firstName || 'לקוח';
+
+            html = getOrderUpdatedTemplate(
+                order.id, 
+                name, 
+                items, 
+                order.total_amount, 
+                deliveryMethodText, 
+                shippingCostText, 
+                notesHtml
+            );
+        } else if (log.type === 'status_update') {
+            if (!log.order_id) return NextResponse.json({ error: 'Order ID missing' }, { status: 400 });
+            const orderRes = await pool.query(`SELECT * FROM orders WHERE id = $1`, [log.order_id]);
+            if (orderRes.rows.length === 0) return NextResponse.json({ error: 'Order not found' }, { status: 404 });
+            
+            const order = orderRes.rows[0];
+            const { getStatusUpdateTemplate } = require('@/app/lib/email');
+            const name = order.customer_details?.firstName || 'לקוח';
+            
+            html = getStatusUpdateTemplate(
+                order.id,
+                name,
+                order.status,
+                '' // messageBody we might not have it exactly as it was, but we resend the status update
+            );
+        } else if (log.type === 'cart_recovery') {
+            if (!log.order_id) return NextResponse.json({ error: 'Order ID missing' }, { status: 400 });
+            const orderRes = await pool.query(`SELECT * FROM orders WHERE id = $1`, [log.order_id]);
+            if (orderRes.rows.length === 0) return NextResponse.json({ error: 'Order not found' }, { status: 404 });
+            
+            const order = orderRes.rows[0];
+            const items = order.items || [];
+            
+            let deliveryMethodText = 'משלוח לנקודת חלוקה';
+            let shippingCostText = '0';
+            if (order.shipping_details?.deliveryMethod === 'courier') {
+                deliveryMethodText = 'שליח עד הבית';
+                shippingCostText = '35';
+            }
+
+            const { formatItemsHtmlCustomer, formatNotesHtml } = require('@/app/lib/email');
+            // Assuming there is a generic way to resend abandoned cart, or we fallback to order update for display
+            // But if getAbandonedCartTemplate is missing, we might fail. Let's try to just require it if it exists.
+            const { getAbandonedCartTemplate, getOrderUpdatedTemplate } = require('@/app/lib/email');
+            
+            const itemsHtml = formatItemsHtmlCustomer(items);
+            const notesHtml = formatNotesHtml(order.notes);
+            
+            if (getAbandonedCartTemplate) {
+                html = getAbandonedCartTemplate(order.id, itemsHtml, order.total_amount, deliveryMethodText, shippingCostText, notesHtml);
+            } else {
+                html = getOrderUpdatedTemplate(order.id, order.customer_details?.firstName || 'לקוח', items, order.total_amount, deliveryMethodText, shippingCostText, notesHtml);
+            }
         } else {
             return NextResponse.json({ error: 'Resending this type of email is not supported yet' }, { status: 400 });
         }
