@@ -35,6 +35,16 @@ export const generateFullOrderPDFDoc = async (order) => {
         `;
     }).join('');
 
+    const formatAddress = (addr) => {
+        if (!addr) return '';
+        if (typeof addr === 'string') return addr;
+        let res = `${addr.street || ''} ${addr.houseNumber || ''}`.trim();
+        if (addr.apartment && addr.apartment !== '0') res += ` / ${addr.apartment}`;
+        if (addr.city) res += `, ${addr.city}`;
+        return res;
+    };
+    const addressStr = formatAddress(customer.address);
+
     // Build the full HTML document
     const html = `
         <div id="pdf-content" style="
@@ -55,7 +65,7 @@ export const generateFullOrderPDFDoc = async (order) => {
             <p style="font-size: 13px; margin: 4px 0;">אימייל: <span dir="ltr">${customer.email || ''}</span></p>
             <p style="font-size: 13px; margin: 4px 0;">טלפון: <span dir="ltr">${customer.phone || ''}</span></p>
             ${customer.city ? `<p style="font-size: 13px; margin: 4px 0;">עיר: ${customer.city}</p>` : ''}
-            ${customer.address ? `<p style="font-size: 13px; margin: 4px 0;">כתובת: ${customer.address}</p>` : ''}
+            ${addressStr ? `<p style="font-size: 13px; margin: 4px 0;">כתובת: ${addressStr}</p>` : ''}
             
             <div style="margin-top: 20px;">
                 <h2 style="font-size: 16px; margin: 0 0 8px 0; color: #333; border-bottom: 2px solid #333; padding-bottom: 4px; display: inline-block;">פרטי משלוח ומידע נוסף:</h2>
