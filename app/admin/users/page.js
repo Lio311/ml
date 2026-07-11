@@ -80,7 +80,7 @@ export default async function AdminUsersPage(props) {
         const [usersRes, countRes] = await Promise.all([
             client.query(`
                 SELECT 
-                    id, first_name, last_name, email, phone, role, image_url, created_at, updated_at, last_active_at,
+                    id, first_name, last_name, email, secondary_email, phone, role, image_url, created_at, updated_at, last_active_at,
                     (SELECT COUNT(*) FROM orders WHERE customer_details->>'clerk_id' = users.id AND status != 'cancelled' AND catalog_id IS NULL) as site_orders,
                     (SELECT COALESCE(SUM(total_amount), 0) FROM orders WHERE customer_details->>'clerk_id' = users.id AND status != 'cancelled' AND catalog_id IS NULL) as site_spent,
                     (SELECT COUNT(*) FROM orders WHERE customer_details->>'clerk_id' = users.id AND status != 'cancelled' AND catalog_id IS NOT NULL) as catalog_orders,

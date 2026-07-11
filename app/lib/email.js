@@ -35,6 +35,24 @@ export const sendEmail = async (to, subject, html, type = 'system', orderId = nu
 
     try {
         let finalTo = to;
+        let secondaryBcc = [];
+        
+        // Fetch secondary emails
+        try {
+            const emailList = Array.isArray(finalTo) ? finalTo : [finalTo];
+            if (emailList.length > 0) {
+                const userRes = await pool.query(
+                    'SELECT email, secondary_email FROM users WHERE email = ANY($1::text[]) AND secondary_email IS NOT NULL', 
+                    [emailList]
+                );
+                if (userRes.rows.length > 0) {
+                    secondaryBcc = userRes.rows.map(r => r.secondary_email);
+                }
+            }
+        } catch (e) {
+            console.error('Error fetching secondary emails:', e);
+        }
+
         const isMarketing = ['manual_campaign', 'recommendations', 'new_product', 'review_request', 'cart_recovery', 'educational', 'nurture_10_days', 'nurture_25_days', 'discovery_launch'].includes(type) || campaignId !== null;
 
         if (isMarketing) {
@@ -89,8 +107,14 @@ export const sendEmail = async (to, subject, html, type = 'system', orderId = nu
 
         if (Array.isArray(finalTo)) {
             mailOptions.bcc = finalTo;
+            if (secondaryBcc && secondaryBcc.length > 0) {
+                 mailOptions.bcc = [...mailOptions.bcc, ...secondaryBcc];
+            }
         } else {
             mailOptions.to = finalTo;
+            if (secondaryBcc && secondaryBcc.length > 0) {
+                 mailOptions.bcc = secondaryBcc;
+            }
         }
 
         const info = await transporter.sendMail(mailOptions);
