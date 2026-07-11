@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
-import { ShoppingBag, ArrowRight } from "lucide-react";
+import { ShoppingBag, ArrowLeft } from "lucide-react";
 
 export default function JourneyOverlay() {
   const containerRef = useRef(null);
@@ -10,13 +10,19 @@ export default function JourneyOverlay() {
 
   useEffect(() => {
     const handleMouseMove = (e) => {
+      // In RTL, we usually start from the right. Let's map X such that:
+      // right side (x > 0.7) is phase 0
+      // middle (x > 0.35 && x <= 0.7) is phase 1
+      // left side (x <= 0.35) is phase 2
       const x = e.clientX / window.innerWidth;
       
       let newPhase = 0;
-      if (x > 0.35 && x < 0.7) {
-        newPhase = 1;
-      } else if (x >= 0.7) {
-        newPhase = 2;
+      if (x <= 0.35) {
+        newPhase = 2; // Left side of screen
+      } else if (x <= 0.7) {
+        newPhase = 1; // Middle
+      } else {
+        newPhase = 0; // Right side of screen
       }
 
       if (newPhase !== phase) {
@@ -50,24 +56,24 @@ export default function JourneyOverlay() {
     });
   }, [phase]);
 
-  // Content for different phases of the mouse journey
+  // Content for different phases of the mouse journey (Hebrew)
   const content = [
     {
-      title: "The Fields of Grasse",
-      subtitle: "A JOURNEY OF SCENT",
-      desc: "Move your cursor to explore. We begin where the rare midnight jasmine blooms, harvested in the silent hours to capture its purest essence.",
+      title: "שדות היסמין",
+      subtitle: "מסע אל הריח",
+      desc: "הזז את העכבר כדי לחקור. המסע שלנו מתחיל היכן שפרחי היסמין הנדירים פורחים. הם נקטפים בשעות הלילה השקטות ביותר, רק כדי ללכוד את התמצית הטהורה והמזוקקת שלהם.",
       cta: false
     },
     {
-      title: "Ancient Resins",
-      subtitle: "THE WARMTH OF AMBER",
-      desc: "As the journey deepens, golden drops of Madagascar vanilla and ancient amber oils blend into an intoxicating, warm embrace.",
+      title: "שמנים עתיקים",
+      subtitle: "החמימות של הענבר",
+      desc: "ככל שהמסע מעמיק, טיפות מוזהבות של וניל ממדגסקר ושמני ענבר עתיקים משתלבים יחד. החומרים העוצמתיים ביותר בטבע, בחיבוק חמים ומשכר.",
       cta: false
     },
     {
-      title: "Aura de Minuit",
-      subtitle: "L'ÉDITION LIMITÉE",
-      desc: "The culmination of rare materials and masterful alchemy. Crafted for the bold, remembered by all.",
+      title: "אלכימיה מושלמת",
+      subtitle: "הקולקציה הבלעדית",
+      desc: "נקודת השיא של חומרי גלם נדירים ואלכימיה של מומחים. בושם שנוצר עבור הנועזים, ונחרט בזיכרון של כולם.",
       cta: true
     }
   ];
@@ -75,9 +81,9 @@ export default function JourneyOverlay() {
   const currentContent = content[phase];
 
   return (
-    <div className="absolute inset-0 z-10 pointer-events-none flex flex-col justify-center px-12 md:px-32 mix-blend-difference" dir="ltr">
+    <div className="absolute inset-0 z-10 pointer-events-none flex flex-col justify-center px-12 md:px-32 mix-blend-difference" dir="rtl">
       <div ref={containerRef} className="max-w-2xl text-white">
-        <p className="text-xs md:text-sm tracking-[0.3em] font-semibold text-white/70 mb-4">
+        <p className="text-xs md:text-sm tracking-widest font-semibold text-white/70 mb-4 uppercase">
           {currentContent.subtitle}
         </p>
         <h1 className="text-5xl md:text-7xl font-serif leading-tight mb-6" style={{ fontFamily: "'Playfair Display', serif" }}>
@@ -90,18 +96,18 @@ export default function JourneyOverlay() {
         {currentContent.cta ? (
           <button className="pointer-events-auto bg-white text-black font-semibold py-4 px-10 rounded-full flex items-center justify-center gap-3 hover:scale-105 transition-transform duration-300">
             <ShoppingBag className="w-5 h-5" />
-            Discover the Collection
+            גלה את הקולקציה
           </button>
         ) : (
           <div className="flex items-center gap-4 text-white/50 animate-pulse">
-            <span className="text-sm tracking-widest uppercase">Move right to continue</span>
-            <ArrowRight className="w-5 h-5" />
+            <span className="text-sm tracking-widest uppercase">הזז שמאלה כדי להמשיך</span>
+            <ArrowLeft className="w-5 h-5" />
           </div>
         )}
       </div>
       
       {/* Progress indicator */}
-      <div className="absolute bottom-12 left-12 right-12 md:left-32 md:right-32 flex gap-4">
+      <div className="absolute bottom-12 left-12 right-12 md:left-32 md:right-32 flex gap-4 flex-row-reverse">
         {[0, 1, 2].map((i) => (
           <div key={i} className={`h-[1px] flex-1 transition-all duration-700 ${phase >= i ? 'bg-white' : 'bg-white/20'}`} />
         ))}

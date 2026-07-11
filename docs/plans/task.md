@@ -1,7 +1,5 @@
 | Status | Task |
 |---|---|
-| `[x]` | Task 1: Update ClientLayout.js to hide global UI for /landing |
-| `[x]` | Task 2: Delete old components (Hero3D, ProductPanel, ReviewCarousel) |
-| `[x]` | Task 3: Create JourneyScene.jsx and JourneyOverlay.jsx |
-| `[x]` | Task 4: Re-write app/landing/page.jsx |
-| `[x]` | Task 5: Quality Assurance (lint, build) |
+| `[x]` | Task 1: Update JourneyOverlay.jsx for Hebrew storytelling & RTL |
+| `[x]` | Task 2: Update JourneyScene.jsx for 2.5D Parallax Engine |
+| `[x]` | Task 3: Quality Assurance (lint, build) |
