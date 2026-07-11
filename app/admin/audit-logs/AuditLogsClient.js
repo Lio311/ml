@@ -36,6 +36,7 @@ export default function AuditLogsClient({ initialLogs, totalCount, currentPage, 
         'update_bottle_purchase': 'bg-emerald-100 text-emerald-700',
         'update_coupon': 'bg-fuchsia-100 text-fuchsia-700',
         'update_brand': 'bg-orange-100 text-orange-700',
+        'update_review_visibility': 'bg-teal-100 text-teal-700',
     };
 
     const actionLabels = {
@@ -58,6 +59,7 @@ export default function AuditLogsClient({ initialLogs, totalCount, currentPage, 
         'update_bottle_purchase': 'עדכון רכישת בקבוק',
         'update_coupon': 'עדכון קופון',
         'update_brand': 'עדכון מותג',
+        'update_review_visibility': 'עדכון נראות ביקורת',
         'default': 'פעולה כללית'
     };
 
