@@ -4,8 +4,6 @@ import { useState } from "react";
 import { AnimatePresence } from "framer-motion";
 import UserRoleSelect from "./UserRoleSelect";
 import EditPhoneInput from "./EditPhoneInput";
-import EditSecondaryEmailInput from "./EditSecondaryEmailInput";
-import UserEmailHistory from "./UserEmailHistory";
 import { RatingBadge, RatingLegend } from "./RatingInfo";
 import DeleteUserButton from "./DeleteUserButton";
 import Customer360Modal from "../orders/Customer360Modal";
@@ -79,6 +77,9 @@ export default function UsersTableClient({ users, canEdit }) {
                                         <td className="p-4 text-center">
                                             <div className="flex flex-col items-center gap-1">
                                                 <div className="text-gray-600 text-[11px] font-bold tracking-tight">{u.email}</div>
+                                                {u.secondary_email && (
+                                                    <div className="text-gray-400 text-[10px] tracking-tight">{u.secondary_email}</div>
+                                                )}
                                                 <EditPhoneInput 
                                                     userId={u.id} 
                                                     initialPhone={u.phone} 
@@ -198,11 +199,11 @@ export default function UsersTableClient({ users, canEdit }) {
                                     <div className="text-[11px] text-blue-600 font-black tracking-tight py-1.5 border-b border-blue-50/50 mb-1 truncate">
                                         {u.email}
                                     </div>
-                                    <EditSecondaryEmailInput 
-                                        userId={u.id} 
-                                        initialEmail={u.secondary_email} 
-                                        canEdit={canEdit} 
-                                    />
+                                    {u.secondary_email && (
+                                        <div className="text-[10px] text-gray-500 font-bold mb-2">
+                                            {u.secondary_email}
+                                        </div>
+                                    )}
                                     <EditPhoneInput 
                                         userId={u.id} 
                                         initialPhone={u.phone} 
@@ -216,7 +217,6 @@ export default function UsersTableClient({ users, canEdit }) {
                                         </div>
                                     )}
                                 </div>
-                                <UserEmailHistory userId={u.id} />
                                 <div className="pt-4 mt-4 border-t border-gray-100 flex items-center justify-between">
                                     <div className="flex items-center gap-3">
                                         <div className="text-[9px] uppercase font-black text-gray-400 tracking-widest">הרשאת מערכת:</div>

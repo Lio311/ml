@@ -11,6 +11,7 @@ import UserEmailHistory from "../users/UserEmailHistory";
 export default function Customer360Modal({ email, onClose }) {
     const [data, setData] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [activeTab, setActiveTab] = useState('orders');
 
     useEffect(() => {
         const fetchHistory = async () => {
@@ -135,36 +136,59 @@ export default function Customer360Modal({ email, onClose }) {
                                     <span>{email}</span>
                                 </div>
                                 {data.profile?.id && (
-                                    <div className="bg-white border border-gray-100 rounded-2xl shadow-sm px-4 flex items-center justify-center">
-                                        <EditSecondaryEmailInput
-                                            userId={data.profile.id}
-                                            initialEmail={data.profile.secondary_email}
-                                            canEdit={true}
-                                        />
-                                    </div>
+                                    <EditSecondaryEmailInput
+                                        userId={data.profile.id}
+                                        initialEmail={data.profile.secondary_email}
+                                        canEdit={true}
+                                        onSaveSuccess={(newEmail) => {
+                                            setData(prev => ({
+                                                ...prev,
+                                                profile: { ...prev.profile, secondary_email: newEmail }
+                                            }));
+                                        }}
+                                    />
                                 )}
                                 {data.profile?.role && (
                                     <div className="flex items-center gap-2 px-4 py-2 bg-black text-white rounded-2xl shadow-sm text-[10px] font-black uppercase tracking-widest">
                                         {data.profile.role}
                                     </div>
+                            {/* Tabs */}
+                            <div className="flex items-center gap-8 border-b border-gray-100">
+                                <button 
+                                    onClick={() => setActiveTab('orders')}
+                                    className={`pb-4 text-sm font-black transition-colors relative ${activeTab === 'orders' ? 'text-black' : 'text-gray-400 hover:text-gray-600'}`}
+                                >
+                                    היסטוריית הזמנות
+                                    <span className="mr-2 text-xs font-bold bg-gray-100 text-gray-500 px-2 py-0.5 rounded-full">{data.orders.length}</span>
+                                    {activeTab === 'orders' && (
+                                        <motion.div layoutId="activeTabIndicator" className="absolute bottom-0 left-0 right-0 h-0.5 bg-black rounded-t-full" />
+                                    )}
+                                </button>
+                                {data.profile?.id && (
+                                    <button 
+                                        onClick={() => setActiveTab('emails')}
+                                        className={`pb-4 text-sm font-black transition-colors relative ${activeTab === 'emails' ? 'text-black' : 'text-gray-400 hover:text-gray-600'}`}
+                                    >
+                                        היסטורית מיילים
+                                        {activeTab === 'emails' && (
+                                            <motion.div layoutId="activeTabIndicator" className="absolute bottom-0 left-0 right-0 h-0.5 bg-black rounded-t-full" />
+                                        )}
+                                    </button>
                                 )}
                             </div>
 
-                            {data.profile?.id && (
-                                <div className="bg-white p-4 rounded-3xl border border-gray-100 shadow-sm mt-4">
-                                    <UserEmailHistory userId={data.profile.id} />
-                                </div>
-                            )}
-
-                            {/* History Table */}
-                            <div className="space-y-4">
-                                <h4 className="text-lg font-black text-gray-900 flex items-center gap-2 px-1">
-                                    היסטוריית הזמנות
-                                    <span className="text-xs font-bold text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">{data.orders.length}</span>
-                                </h4>
-                                
-                                <div className="bg-white border border-gray-100 rounded-[2rem] overflow-hidden shadow-sm">
-                                    <div className="overflow-x-auto">
+                            <AnimatePresence mode="wait">
+                                {activeTab === 'orders' && (
+                                    <motion.div
+                                        key="orders"
+                                        initial={{ opacity: 0, y: 10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        exit={{ opacity: 0, y: -10 }}
+                                        transition={{ duration: 0.2 }}
+                                        className="space-y-4"
+                                    >
+                                        <div className="bg-white border border-gray-100 rounded-[2rem] overflow-hidden shadow-sm">
+                                            <div className="overflow-x-auto">
                                         <table className="w-full text-right" dir="rtl">
                                             <thead className="bg-gray-50/50 text-[10px] font-bold text-gray-400 uppercase tracking-widest border-b border-gray-50">
                                                 <tr>
@@ -227,7 +251,22 @@ export default function Customer360Modal({ email, onClose }) {
                                         </table>
                                     </div>
                                 </div>
-                            </div>
+                                    </motion.div>
+                                )}
+
+                                {activeTab === 'emails' && data.profile?.id && (
+                                    <motion.div
+                                        key="emails"
+                                        initial={{ opacity: 0, y: 10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        exit={{ opacity: 0, y: -10 }}
+                                        transition={{ duration: 0.2 }}
+                                        className="bg-white p-4 rounded-3xl border border-gray-100 shadow-sm"
+                                    >
+                                        <UserEmailHistory userId={data.profile.id} />
+                                    </motion.div>
+                                )}
+                            </AnimatePresence>
                         </div>
                     ) : (
                         <div className="py-20 text-center">
