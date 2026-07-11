@@ -31,6 +31,11 @@ export default function AuditLogsClient({ initialLogs, totalCount, currentPage, 
         'create_review': 'bg-teal-100 text-teal-700',
         'approve_recommendation_email': 'bg-emerald-100 text-emerald-700',
         'reject_recommendation_email': 'bg-rose-100 text-rose-700',
+        'create_phone_order': 'bg-green-100 text-green-700',
+        'create_bottle_purchase': 'bg-emerald-100 text-emerald-700',
+        'update_bottle_purchase': 'bg-emerald-100 text-emerald-700',
+        'update_coupon': 'bg-fuchsia-100 text-fuchsia-700',
+        'update_brand': 'bg-orange-100 text-orange-700',
     };
 
     const actionLabels = {
@@ -48,6 +53,11 @@ export default function AuditLogsClient({ initialLogs, totalCount, currentPage, 
         'create_review': 'יצירת ביקורת',
         'approve_recommendation_email': 'אישור המלצה',
         'reject_recommendation_email': 'דחיית המלצה',
+        'create_phone_order': 'יצירת הזמנה טלפונית',
+        'create_bottle_purchase': 'יצירת רכישת בקבוק',
+        'update_bottle_purchase': 'עדכון רכישת בקבוק',
+        'update_coupon': 'עדכון קופון',
+        'update_brand': 'עדכון מותג',
         'default': 'פעולה כללית'
     };
 
