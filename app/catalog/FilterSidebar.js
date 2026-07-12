@@ -163,7 +163,7 @@ export default function FilterSidebar({ allBrands = [], allCategories = [], allC
             {/* Concentration Filter */}
             {allConcentrations && allConcentrations.length > 0 && (
                 <CollapsibleSection title={`${t('common.concentration_filter')} (${allConcentrations.length})`} initialOpen={true}>
-                    <div className={`space-y-2 text-sm max-h-[200px] overflow-y-auto custom-scrollbar ps-2 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
+                    <div className={`space-y-2 text-sm max-h-[110px] overflow-y-auto custom-scrollbar ps-2 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
                         {allConcentrations.map(c => (
                             <label key={c} className="flex items-center gap-2 cursor-pointer hover:bg-gray-100 p-1 rounded">
                                 <input
@@ -183,7 +183,7 @@ export default function FilterSidebar({ allBrands = [], allCategories = [], allC
 
             {/* Category Filter */}
             <CollapsibleSection title={`${t('common.category_filter')} (${combinedCategories.length})`} initialOpen={true}>
-                <div className={`space-y-2 text-sm max-h-[200px] overflow-y-auto custom-scrollbar ps-2 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
+                <div className={`space-y-2 text-sm max-h-[110px] overflow-y-auto custom-scrollbar ps-2 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
                     {combinedCategories.map(cat => (
                         <label key={cat} className="flex items-center gap-2 cursor-pointer hover:bg-gray-100 p-1 rounded">
                             <input
@@ -200,7 +200,7 @@ export default function FilterSidebar({ allBrands = [], allCategories = [], allC
 
             {/* Brand Filter */}
             <CollapsibleSection title={`${t('common.brand_filter')} (${allBrands.length})`} initialOpen={true}>
-                <div className={`space-y-2 text-sm max-h-[300px] overflow-y-auto custom-scrollbar ps-2 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
+                <div className={`space-y-2 text-sm max-h-[110px] overflow-y-auto custom-scrollbar ps-2 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
                     {allBrands.map(b => (
                         <label key={b} className="flex items-center gap-2 cursor-pointer hover:bg-gray-100 p-1 rounded">
                             <input
