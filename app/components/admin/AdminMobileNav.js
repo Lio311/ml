@@ -221,18 +221,17 @@ export default function AdminMobileNav({ role = 'customer' }) {
         <div className="md:hidden">
             {/* Header / Hamburger */}
             <div className="fixed top-0 left-0 right-0 h-16 bg-[#050505] border-b border-white/[0.06] z-[60] flex flex-row-reverse items-center justify-between px-4">
-                <div className="flex flex-col">
+                <div className="flex items-center gap-3">
+                    <Link href="/" className="text-[11px] text-gray-500 font-bold uppercase tracking-[0.2em] px-2 py-1.5 rounded-md border border-gray-800 bg-white/5 active:bg-white/10 transition-colors flex items-center gap-1">
+                        לאתר <ArrowUpRight size={12} />
+                    </Link>
                     <h2 className="text-xl font-black tracking-tighter uppercase flex items-center gap-1 text-white">
                         <span className="lowercase">{brand.name?.split(' ')[0]}</span>
                         <span className="text-blue-500 text-sm not-italic font-bold tracking-widest bg-blue-500/10 px-1.5 py-0.5 rounded border border-blue-500/20">Admin</span>
                     </h2>
                 </div>
 
-                <div className="flex items-center gap-4">
-                    <Link href="/" className="text-[11px] text-gray-500 font-bold uppercase tracking-[0.2em] px-2 py-1.5 rounded-md border border-gray-800 bg-white/5 active:bg-white/10 transition-colors flex items-center gap-1">
-                        לאתר <ArrowUpRight size={12} />
-                    </Link>
-
+                <div className="flex items-center">
                     <button 
                         onClick={() => setIsOpen(!isOpen)}
                         className="text-white p-2 rounded-xl border border-white/10 bg-white/5 relative"
