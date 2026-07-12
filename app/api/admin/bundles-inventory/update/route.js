@@ -13,9 +13,12 @@ export async function POST(req) {
         try {
             const settingsRes = await client.query(`SELECT value FROM site_settings WHERE key = 'bundles_config'`);
             let config = settingsRes.rows.length > 0 ? settingsRes.rows[0].value : {};
+            if (typeof config === 'string') {
+                try { config = JSON.parse(config); } catch (e) {}
+            }
             
             if (config[bundleId]) {
-                config[bundleId].items = config[bundleId].items.map(id => id === oldProductId ? newProductId : id);
+                config[bundleId].items = config[bundleId].items.map(id => String(id) === String(oldProductId) ? newProductId : id);
                 await client.query(`
                     INSERT INTO site_settings (key, value) 
                     VALUES ('bundles_config', $1) 

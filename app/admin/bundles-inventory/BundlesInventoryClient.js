@@ -263,9 +263,13 @@ export default function BundlesInventoryClient({ initialBundlesConfig, productsM
                                                         <span className="text-[10px] text-gray-400">אין תמונה</span>
                                                     )}
                                                 </div>
-                                                <div className="flex-1 min-w-0">
-                                                    <div className="font-bold text-sm truncate">{product.name || `${product.brand} ${product.model}`}</div>
-                                                    <div className="text-xs text-gray-500 truncate">{product.brand}</div>
+                                                <div className="flex-1 min-w-0 flex flex-col justify-center text-right" dir="rtl">
+                                                    <div className="font-bold text-sm truncate w-full text-right" style={{ textAlign: 'right', direction: 'rtl' }}>
+                                                        {product.name || `${product.brand} ${product.model}`}
+                                                    </div>
+                                                    <div className="text-xs text-gray-500 truncate w-full text-right" style={{ textAlign: 'right', direction: 'rtl' }}>
+                                                        {product.brand}
+                                                    </div>
                                                 </div>
                                                 <div className="shrink-0 flex flex-col items-end">
                                                     {product.stock > 0 ? (
