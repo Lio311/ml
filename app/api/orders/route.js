@@ -50,6 +50,39 @@ export async function POST(req) {
                     dbId = parseInt(dbId.split('-')[0]);
                 }
 
+                if (item.type === 'bundle' && Array.isArray(item.items)) {
+                    const bundleSize = Number(item.size) || 2;
+                    let rawBundlePrice = 0;
+                    for (const innerItem of item.items) {
+                        let innerDbId = innerItem.id;
+                        if (typeof innerDbId === 'string' && innerDbId.includes('-')) {
+                            innerDbId = parseInt(innerDbId.split('-')[0]);
+                        }
+                        if (isNaN(innerDbId)) throw new Error(`Invalid inner item ID in bundle: ${innerItem.id}`);
+                        
+                        const pRes = await client.query('SELECT price_2ml, price_5ml, price_10ml, discount_percentage, discount_sizes FROM products WHERE id = $1', [innerDbId]);
+                        if (pRes.rows.length === 0) throw new Error(`Product ${innerItem.name} (ID: ${innerDbId}) not found/active`);
+                        
+                        const p = pRes.rows[0];
+                        let realPrice = 0;
+                        if (bundleSize === 2) realPrice = p.price_2ml;
+                        else if (bundleSize === 5) realPrice = p.price_5ml;
+                        else if (bundleSize === 10) realPrice = p.price_10ml;
+                        else throw new Error(`Invalid bundle size: ${bundleSize}`);
+
+                        if (p.discount_percentage > 0 && Array.isArray(p.discount_sizes) && p.discount_sizes.includes(`${bundleSize}ml`)) {
+                            realPrice = Math.round((realPrice * (1 - p.discount_percentage / 100)) / 5) * 5;
+                        }
+                        rawBundlePrice += realPrice;
+                    }
+                    const expectedBundlePrice = Math.round((rawBundlePrice * 0.9) / 5) * 5;
+                    if (Math.abs(expectedBundlePrice - item.price) > 2) {
+                        throw new Error(`Price mismatch for bundle ${item.name}: Expecting ${expectedBundlePrice}, got ${item.price}`);
+                    }
+                    calculatedTotal += item.price * item.quantity;
+                    continue;
+                }
+
                 if (isNaN(dbId)) {
                     throw new Error(`Invalid item ID: ${item.id}`);
                 }
