@@ -200,6 +200,12 @@ export async function GET(req) {
                     }
                 }
 
+                // Fallback: If no products found, just grab 10 random products so the bundle is not empty!
+                if (itemIds.length === 0) {
+                    const fallbackRes = await client.query(`SELECT id FROM products WHERE active = true AND is_discovery_set = false ORDER BY RANDOM() LIMIT 10`);
+                    fallbackRes.rows.forEach(r => itemIds.push(r.id));
+                }
+
                 bundlesConfig[bundleProductId] = {
                     type: bundle.type,
                     name: bundle.name,
