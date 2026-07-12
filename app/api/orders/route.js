@@ -334,8 +334,51 @@ export async function POST(req) {
                     dbId = parseInt(dbId.split('-')[0]);
                 }
 
-                // Skip prizes (synthetic IDs) or non-numeric sizes (sets) if stock tracking is ML only
-                if (!item.isPrize && !isNaN(item.size) && !isNaN(dbId)) {
+                if (item.type === 'bundle' && Array.isArray(item.items)) {
+                    // Deduct stock for each individual perfume inside the bundle
+                    const bundleSize = Number(item.size) || 2; // Usually 2ml
+                    for (const innerItem of item.items) {
+                        let innerDbId = innerItem.id;
+                        if (typeof innerDbId === 'string' && innerDbId.includes('-')) {
+                            innerDbId = parseInt(innerDbId.split('-')[0]);
+                        }
+                        if (!isNaN(innerDbId)) {
+                            const deduction = bundleSize * item.quantity;
+                            const stockRes = await client.query(
+                                `UPDATE products SET stock = stock - $1 WHERE id = $2 RETURNING stock, name_he, name, original_size`,
+                                [deduction, innerDbId]
+                            );
+                            
+                            if (stockRes.rows[0]) {
+                                const currentStock = stockRes.rows[0].stock;
+                                const originalSize = Number(stockRes.rows[0].original_size || 100);
+                                if (currentStock < originalSize * 0.2) {
+                                    const pName = stockRes.rows[0].name_he || stockRes.rows[0].name || 'מוצר לא ידוע';
+                                    await client.query(
+                                        `INSERT INTO notifications (type, message, is_read) VALUES ($1, $2, $3)`,
+                                        ['warning', `מלאי נמוך למוצר: ${pName} (נותרו \u200E${currentStock} מ"ל)`, false]
+                                    );
+                                }
+                            }
+                        }
+                    }
+                    
+                    // Deduct bottles for the entire bundle
+                    if ([2, 5, 10].includes(bundleSize)) {
+                        const totalBottles = item.items.length * item.quantity;
+                        const bottleRes = await client.query(
+                            `UPDATE bottle_inventory SET quantity = quantity - $1 WHERE size = $2 RETURNING quantity`,
+                            [totalBottles, bundleSize]
+                        );
+
+                        if (bottleRes.rows[0] && bottleRes.rows[0].quantity < 20) {
+                            await client.query(
+                                `INSERT INTO notifications (type, message, is_read) VALUES ($1, $2, $3)`,
+                                ['warning', `מלאי בקבוקים נמוך: ${bundleSize}ml (נותרו \u200E${bottleRes.rows[0].quantity})`, false]
+                            );
+                        }
+                    }
+                } else if (!item.isPrize && !isNaN(item.size) && !isNaN(dbId)) {
                     const deduction = Number(item.size) * item.quantity;
                     const stockRes = await client.query(
                         `UPDATE products SET stock = stock - $1 WHERE id = $2 RETURNING stock, name_he, name, original_size`,
