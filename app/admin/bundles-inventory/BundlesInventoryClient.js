@@ -74,9 +74,9 @@ export default function BundlesInventoryClient({ initialBundlesConfig, productsM
                 };
                 return (
                 <div key={bundleId} className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-                    <div className="flex items-center justify-between mb-6">
+                    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-6">
                         <h2 className="text-xl font-bold">{bundle.name}</h2>
-                        <div className="flex items-center gap-2 text-sm text-gray-500">
+                        <div className="flex flex-wrap items-center gap-2 text-sm text-gray-500">
                             <span className="bg-zinc-100 text-zinc-800 px-3 py-1 rounded-full text-xs font-bold">
                                 {typeToHebrew[bundle.type] || bundle.type}
                             </span>
