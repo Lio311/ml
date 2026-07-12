@@ -312,7 +312,8 @@
                 "photo_uploaded_success": "התמונה הועלתה בהצלחה!"
             }
         },
-        "spinning_prize": "מסובב..."
+        "spinning_prize": "מסובב...",
+        "updating_cart": "מעדכן סל קניות..."
     },
     "catalogs_info": {
         "hero_badge": "פלטפורמה בלעדית עבור ml_tlv",

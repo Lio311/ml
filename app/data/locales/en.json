@@ -640,7 +640,8 @@
                 "photo_uploaded_success": "Photo uploaded successfully!"
             }
         },
-        "spinning_prize": "Spinning..."
+        "spinning_prize": "Spinning...",
+        "updating_cart": "Updating cart..."
     },
     "catalogs_info": {
         "hero_badge": "Exclusive Platform for ml_tlv",

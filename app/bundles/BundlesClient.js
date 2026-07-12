@@ -113,7 +113,7 @@ export default function BundlesClient() {
     const handleThemed2mlAdd = () => {
         if (loading) return;
         if (products.length === 0) {
-            toast('הבשמים נטענים, אנא המתן...', { icon: '🟢' });
+            toast.success('הבשמים נטענים, אנא המתן...');
             return;
         }
         
@@ -191,12 +191,20 @@ export default function BundlesClient() {
                     <div className="flex items-center gap-4">
                         {[1, 2, 3].map((s) => (
                             <div key={s} className="flex items-center">
-                                <div className={`w-10 h-10 rounded-full flex items-center justify-center font-black transition-all ${
-                                    step === s ? 'bg-zinc-900 text-white scale-110 shadow-lg' : 
-                                    step > s ? 'bg-emerald-500 text-white' : 'bg-zinc-200 text-zinc-400'
-                                }`}>
+                                <button 
+                                    onClick={() => {
+                                        if (s < step) { setStep(s); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+                                        else if (s === 2 && selectedType) { setStep(2); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+                                        else if (s === 3 && selectedSize && selectedType && !isThemed2ml) { setStep(3); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+                                    }}
+                                    disabled={s > step && !(s === 2 && selectedType) && !(s === 3 && selectedSize && selectedType && !isThemed2ml)}
+                                    className={`w-10 h-10 rounded-full flex items-center justify-center font-black transition-all ${s < step || (s === 2 && selectedType) || (s === 3 && selectedSize && selectedType && !isThemed2ml) ? 'cursor-pointer hover:scale-105' : 'cursor-default'} ${
+                                        step === s ? 'bg-zinc-900 text-white scale-110 shadow-lg cursor-default' : 
+                                        step > s ? 'bg-emerald-500 text-white' : 'bg-zinc-200 text-zinc-400'
+                                    }`}
+                                >
                                     {step > s ? <Check size={18} /> : s}
-                                </div>
+                                </button>
                                 {s < 3 && <div className={`w-8 md:w-16 h-1 mx-2 rounded-full ${step > s ? 'bg-emerald-500' : 'bg-zinc-200'}`} />}
                             </div>
                         ))}
