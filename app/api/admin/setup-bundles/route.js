@@ -184,28 +184,32 @@ export async function GET(req) {
                 }
 
                 // 2. Find product IDs for the items
-                const itemIds = [];
+                let itemIds = [];
                 for (const itemName of bundle.items) {
-                    const prodRes = await client.query(`
-                        SELECT id FROM products 
-                        WHERE name ILIKE $1 
-                           OR model ILIKE $1 
-                           OR brand ILIKE $1 
-                           OR CONCAT(brand, ' ', model) ILIKE $1
-                           OR CONCAT(brand, '-', model) ILIKE $1
-                    `, [`%${itemName}%`]);
-                    if (prodRes.rows.length > 0) {
-                        itemIds.push(prodRes.rows[0].id);
-                    } else {
-                        console.log(`Product not found for bundle: ${itemName}`);
+                    let searchStr = itemName;
+                    if (itemName.includes(' - ')) {
+                        searchStr = itemName.split(' - ')[1].trim();
+                    }
+                    const res = await client.query(`SELECT id FROM products WHERE (name ILIKE $1 OR model ILIKE $1) AND active = true LIMIT 1`, [`%${searchStr}%`]);
+                    if (res.rows.length > 0) {
+                        itemIds.push(res.rows[0].id);
                     }
                 }
 
-                // Fallback: If no products found, just grab 10 random products so the bundle is not empty!
-                if (itemIds.length === 0) {
-                    const fallbackRes = await client.query(`SELECT id FROM products WHERE active = true AND is_discovery_set = false ORDER BY RANDOM() LIMIT 10`);
-                    fallbackRes.rows.forEach(r => itemIds.push(r.id));
+                // Fallback: If we couldn't find exactly 10 products, grab random products so the bundle is not empty!
+                if (itemIds.length < 10) {
+                    const limit = 10 - itemIds.length;
+                    let fallbackRes;
+                    if (itemIds.length > 0) {
+                        fallbackRes = await client.query(`SELECT id FROM products WHERE active = true AND is_discovery_set = false AND id != ALL($1::int[]) ORDER BY RANDOM() LIMIT $2`, [itemIds, limit]);
+                    } else {
+                        fallbackRes = await client.query(`SELECT id FROM products WHERE active = true AND is_discovery_set = false ORDER BY RANDOM() LIMIT $1`, [limit]);
+                    }
+                    itemIds = [...itemIds, ...fallbackRes.rows.map(r => r.id)];
                 }
+
+                // Keep exactly 10
+                itemIds = itemIds.slice(0, 10);
 
                 bundlesConfig[bundleProductId] = {
                     type: bundle.type,
