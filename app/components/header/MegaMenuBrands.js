@@ -37,7 +37,7 @@ export default function MegaMenuBrands({ brands = [], isOpen, onClose }) {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -30 }}
                     transition={{ duration: 0.3, ease: "easeOut" }}
-                    className="absolute top-full left-0 w-full glass-dark pt-5 pb-3 z-40 overflow-hidden flex flex-col"
+                    className="absolute top-full left-0 w-full glass-dark pt-5 pb-3 z-30 overflow-hidden flex flex-col"
                     onMouseLeave={onClose}
                     style={{ 
                         height: 'calc(82vh - var(--header-height, 112px))',

@@ -62,7 +62,7 @@ export default function MegaMenuCatalog({ isOpen, onClose }) {
                     animate={{ opacity: 1, y: 0 }}
                     exit={{ opacity: 0, y: -30 }}
                     transition={{ duration: 0.3, ease: "easeOut" }}
-                    className="absolute top-full left-0 w-full glass-dark py-6 z-40 flex flex-col justify-center overflow-y-auto"
+                    className="absolute top-full left-0 w-full glass-dark py-6 z-30 flex flex-col justify-center overflow-y-auto"
                     onMouseLeave={onClose}
                     style={{ 
                         height: 'calc(82vh - var(--header-height, 112px))',
