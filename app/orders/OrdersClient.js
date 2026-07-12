@@ -183,8 +183,8 @@ export default function OrdersClient() {
                                     <div key={idx} className="flex items-center gap-4 py-2">
                                         {/* Product Image */}
                                         <div className="w-16 h-16 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0 border relative">
-                                            {item.image_url ? (
-                                                <Image src={item.image_url} alt={(item.name || (item.brand + ' ' + item.model)) || "Product"} fill sizes="64px" className="object-contain" />
+                                            {(item.image_url || (item.type === 'bundle' && item.bundleType)) ? (
+                                                <Image src={item.image_url || `/images/bundles/${item.bundleType}.webp`} alt={(item.name || (item.brand + ' ' + item.model)) || "Product"} fill sizes="64px" className="object-contain" />
                                             ) : (
                                                 <div className="w-full h-full flex items-center justify-center text-xl">🧴</div>
                                             )}

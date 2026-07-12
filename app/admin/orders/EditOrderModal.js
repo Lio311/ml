@@ -44,7 +44,7 @@ export default function EditOrderModal({ order, onClose, onSuccess }) {
                 id: item.id,
                 name: item.name || `${item.brand} ${item.model}`,
                 brand: item.brand,
-                image: item.image || item.image_url,
+                image: item.image || item.image_url || (item.type === 'bundle' && item.bundleType ? `/images/bundles/${item.bundleType}.webp` : null),
                 size: parseInt(item.size) || item.size, // Handle 'set' or other non-numeric sizes gracefully if they exist
                 price: item.price,
                 quantity: item.quantity || 1,

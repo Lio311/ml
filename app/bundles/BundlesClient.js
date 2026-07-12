@@ -97,7 +97,8 @@ export default function BundlesClient() {
             size: selectedSize,
             items: selectedProducts,
             name: t(`bundles.${selectedType}_bundle`),
-            quantity: 1
+            quantity: 1,
+            image_url: `/images/bundles/${selectedType}.webp`
         };
 
         if (addBundleToCart) {
@@ -137,7 +138,8 @@ export default function BundlesClient() {
             size: '2',
             items: availableProducts.slice(0, 10),
             name: t(`bundles.${selectedType}_bundle`),
-            quantity: 1
+            quantity: 1,
+            image_url: `/images/bundles/${selectedType}.webp`
         };
 
         if (addBundleToCart) {
