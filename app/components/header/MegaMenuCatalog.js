@@ -2,11 +2,10 @@
 
 import { useLanguage } from '../../context/LanguageContext';
 import Link from 'next/link';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function MegaMenuCatalog({ isOpen, onClose }) {
     const { t } = useLanguage();
-
-    if (!isOpen) return null;
 
     const categories = [
         { 
@@ -56,14 +55,20 @@ export default function MegaMenuCatalog({ isOpen, onClose }) {
     ];
 
     return (
-        <div 
-            className="absolute top-full left-0 w-full glass-dark py-6 z-40 animate-fadeIn flex flex-col justify-center overflow-y-auto"
-            onMouseLeave={onClose}
-            style={{ 
-                height: 'calc(82vh - var(--header-height, 112px))',
-                minHeight: '400px'
-            }}
-        >
+        <AnimatePresence>
+            {isOpen && (
+                <motion.div 
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.2 }}
+                    className="absolute top-full left-0 w-full glass-dark py-6 z-40 flex flex-col justify-center overflow-y-auto"
+                    onMouseLeave={onClose}
+                    style={{ 
+                        height: 'calc(82vh - var(--header-height, 112px))',
+                        minHeight: '400px'
+                    }}
+                >
             <div className="container mx-auto max-w-5xl">
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 px-6">
                     {categories.map((cat) => (
@@ -90,6 +95,8 @@ export default function MegaMenuCatalog({ isOpen, onClose }) {
                     height: 280px;
                 }
             `}</style>
-        </div>
+                </motion.div>
+            )}
+        </AnimatePresence>
     );
 }

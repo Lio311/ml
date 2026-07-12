@@ -4,6 +4,7 @@ import { useState, useMemo } from 'react';
 import Link from 'next/link';
 import Image from '../CImage';
 import { useLanguage } from '../../context/LanguageContext';
+import { motion, AnimatePresence } from 'framer-motion';
 
 export default function MegaMenuBrands({ brands = [], isOpen, onClose }) {
     const [hoveredLetter, setHoveredLetter] = useState(null);
@@ -26,20 +27,24 @@ export default function MegaMenuBrands({ brands = [], isOpen, onClose }) {
 
     const alphabet = Object.keys(brandsByLetter);
 
-    if (!isOpen) return null;
-
     const hoveredBrands = hoveredLetter ? brandsByLetter[hoveredLetter] : [];
 
     return (
-        <div 
-            className="absolute top-full left-0 w-full glass-dark pt-5 pb-3 z-40 animate-fadeIn overflow-hidden flex flex-col"
-            onMouseLeave={onClose}
-            style={{ 
-                height: 'calc(82vh - var(--header-height, 112px))',
-                minHeight: '400px'
-            }}
-        >
-            <div className="container mx-auto px-6 flex flex-col items-center h-full">
+        <AnimatePresence>
+            {isOpen && (
+                <motion.div 
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.2 }}
+                    className="absolute top-full left-0 w-full glass-dark pt-5 pb-3 z-40 overflow-hidden flex flex-col"
+                    onMouseLeave={onClose}
+                    style={{ 
+                        height: 'calc(82vh - var(--header-height, 112px))',
+                        minHeight: '400px'
+                    }}
+                >
+                    <div className="container mx-auto px-6 flex flex-col items-center h-full">
                 
                 {/* Alphabet Selection Grid - Single Row, LTR */}
                 <div className="w-full flex justify-center mb-2 border-b border-white/10 pb-1 flex-shrink-0" dir="ltr">
@@ -129,6 +134,8 @@ export default function MegaMenuBrands({ brands = [], isOpen, onClose }) {
                     to { opacity: 1; transform: translateY(0); }
                 }
             `}</style>
-        </div>
+                </motion.div>
+            )}
+        </AnimatePresence>
     );
 }
