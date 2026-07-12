@@ -220,7 +220,7 @@ export default function AdminMobileNav({ role = 'customer' }) {
     return (
         <div className="md:hidden">
             {/* Header / Hamburger */}
-            <div className="fixed top-0 left-0 right-0 h-16 bg-[#050505] border-b border-white/[0.06] z-[60] flex items-center justify-between px-4">
+            <div className="fixed top-0 left-0 right-0 h-16 bg-[#050505] border-b border-white/[0.06] z-[60] flex flex-row-reverse items-center justify-between px-4">
                 <div className="flex flex-col">
                     <h2 className="text-xl font-black tracking-tighter uppercase flex items-center gap-1 text-white">
                         <span className="lowercase">{brand.name?.split(' ')[0]}</span>
