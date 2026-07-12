@@ -361,23 +361,16 @@ export default function AdminMobileNav({ role = 'customer' }) {
                                 </div>
                             );
                         })}
-                    </nav>
-
-                    <div className="mt-auto pt-6 border-t border-white/5">
-                        <Link 
-                            href="/" 
-                            className="flex items-center gap-3 p-3 text-gray-500 hover:text-white hover:bg-white/5 rounded-xl transition-all mb-2"
-                        >
-                            <ArrowUpRight className="w-5 h-5" />
-                            <span className="text-sm font-bold tracking-tight uppercase tracking-widest">חזרה לאתר</span>
-                        </Link>
-                        <SignOutButton>
-                            <button className="flex items-center gap-3 p-3 text-gray-500 hover:text-red-400 hover:bg-red-500/5 rounded-xl transition-all w-full text-right" dir="rtl">
-                                <LogOut className="w-5 h-5" />
-                                <span className="text-sm font-bold tracking-tight">התנתק מהמערכת</span>
-                            </button>
-                        </SignOutButton>
                     </div>
+                </nav>
+
+                <div className="p-4 border-t border-white/[0.06] bg-[#050505]">
+                    <SignOutButton>
+                        <button className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-white/5 hover:bg-red-500/10 text-gray-400 hover:text-red-400 transition-colors border border-white/10 hover:border-red-500/20">
+                            <LogOut size={18} />
+                            <span className="text-sm font-bold tracking-tight">התנתק מהמערכת</span>
+                        </button>
+                    </SignOutButton>
                 </div>
             </div>
         </div>
