@@ -64,39 +64,56 @@ export default function BundlesInventoryClient({ initialBundlesConfig, productsM
         <div className="space-y-8" dir="rtl">
             <h1 className="text-2xl font-black mb-6">מלאי חבילות ודיסקברי</h1>
             
-            {Object.entries(bundlesConfig).map(([bundleId, bundle]) => (
+            {Object.entries(bundlesConfig).map(([bundleId, bundle]) => {
+                const typeToHebrew = {
+                    'clean_bundle': 'קולקציית נקיים',
+                    'tropical_bundle': 'קולקציית מנגו וטרופי',
+                    'vanilla_bundle': 'קולקציית וניל',
+                    'gourmand_bundle': 'קולקציית קינוחים',
+                    'citrus_bundle': 'קולקציית הדרים'
+                };
+                return (
                 <div key={bundleId} className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
-                    <h2 className="text-xl font-bold mb-2">{bundle.name}</h2>
-                    <div className="flex items-center gap-2 mb-4 text-sm text-gray-500">
-                        <span className="bg-gray-100 px-2 py-0.5 rounded-full uppercase tracking-wider text-[10px] font-bold">
-                            {bundle.type}
-                        </span>
-                        <span>{bundle.items?.length || 0} בשמים</span>
+                    <div className="flex items-center justify-between mb-6">
+                        <h2 className="text-xl font-bold">{bundle.name}</h2>
+                        <div className="flex items-center gap-2 text-sm text-gray-500">
+                            <span className="bg-zinc-100 text-zinc-800 px-3 py-1 rounded-full text-xs font-bold">
+                                {typeToHebrew[bundle.type] || bundle.type}
+                            </span>
+                            <span className="bg-zinc-100 text-zinc-800 px-3 py-1 rounded-full text-xs font-bold">{bundle.items?.length || 0} בשמים</span>
+                        </div>
                     </div>
 
-                    <div className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         {bundle.items?.map(productId => {
                             const product = productsMap[productId];
                             if (!product) return null;
                             const isOOS = product.stock <= 0;
 
                             return (
-                                <div key={productId} className={`p-4 rounded-xl border ${isOOS ? 'border-red-200 bg-red-50/30' : 'border-gray-100 bg-gray-50'}`}>
-                                    <div className="flex justify-between items-start">
-                                        <div className="flex flex-col gap-1">
-                                            <span className="font-bold">{product.name || `${product.brand} ${product.model}`}</span>
-                                            <span className="text-xs text-gray-500">{product.brand} • {product.categories?.[0] || 'ללא קטגוריה'}</span>
-                                        </div>
-                                        <div className="flex items-center gap-3">
-                                            {isOOS ? (
-                                                <span className="text-xs bg-red-100 text-red-700 px-2 py-1 rounded font-bold">
-                                                    חסר במלאי
-                                                </span>
+                                <div key={productId} className={`p-4 rounded-2xl border transition-all ${isOOS ? 'border-red-200 bg-red-50/30' : 'border-gray-100 bg-gray-50 hover:shadow-md'}`}>
+                                    <div className="flex gap-4">
+                                        <div className="w-16 h-16 shrink-0 bg-white rounded-xl border border-gray-100 flex items-center justify-center overflow-hidden p-1">
+                                            {product.image_url ? (
+                                                <img src={product.image_url} alt={product.name} className="w-full h-full object-contain" />
                                             ) : (
-                                                <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded font-bold">
-                                                    במלאי: {product.stock}
-                                                </span>
+                                                <div className="text-xs text-gray-400">אין תמונה</div>
                                             )}
+                                        </div>
+                                        <div className="flex flex-col flex-1 justify-center gap-1">
+                                            <span className="font-bold text-sm leading-tight">{product.name || `${product.brand} ${product.model}`}</span>
+                                            <span className="text-xs text-gray-500">{product.brand}{product.category ? ` • ${product.category}` : ''}</span>
+                                            <div className="mt-1">
+                                                {isOOS ? (
+                                                    <span className="text-[10px] bg-red-100 text-red-700 px-2 py-0.5 rounded font-bold">
+                                                        חסר במלאי
+                                                    </span>
+                                                ) : (
+                                                    <span className="text-[10px] bg-emerald-100 text-emerald-700 px-2 py-0.5 rounded font-bold">
+                                                        במלאי: {product.stock}
+                                                    </span>
+                                                )}
+                                            </div>
                                         </div>
                                     </div>
 
@@ -106,31 +123,31 @@ export default function BundlesInventoryClient({ initialBundlesConfig, productsM
                                                 <button 
                                                     onClick={() => handleSuggest(productId)}
                                                     disabled={loadingSuggestionsFor === productId}
-                                                    className="text-sm bg-black text-white px-4 py-2 rounded-lg font-bold hover:bg-gray-800 transition-colors disabled:opacity-50"
+                                                    className="w-full text-sm bg-black text-white px-4 py-2 rounded-lg font-bold hover:bg-gray-800 transition-colors disabled:opacity-50"
                                                 >
-                                                    {loadingSuggestionsFor === productId ? 'טוען חלופות...' : 'הצע חלופות'}
+                                                    {loadingSuggestionsFor === productId ? 'טוען חלופות...' : 'הצע חלופות מתוך המלאי'}
                                                 </button>
                                             )}
 
                                             {suggestions[productId] && (
-                                                <div className="space-y-3">
+                                                <div className="space-y-3 mt-3">
                                                     <h4 className="text-sm font-bold text-gray-700">חלופות מוצעות:</h4>
                                                     {suggestions[productId].length === 0 ? (
                                                         <p className="text-xs text-gray-500">לא נמצאו חלופות מתאימות במלאי.</p>
                                                     ) : (
                                                         <div className="grid gap-2">
                                                             {suggestions[productId].map(sug => (
-                                                                <div key={sug.id} className="flex justify-between items-center bg-white p-3 rounded border border-gray-200">
+                                                                <div key={sug.id} className="flex justify-between items-center bg-white p-3 rounded-lg border border-gray-200">
                                                                     <div className="flex flex-col">
-                                                                        <span className="font-bold text-sm">{sug.name || `${sug.brand} ${sug.model}`}</span>
-                                                                        <span className="text-xs text-gray-500">מלאי: {sug.stock}</span>
+                                                                        <span className="font-bold text-xs">{sug.name || `${sug.brand} ${sug.model}`}</span>
+                                                                        <span className="text-[10px] text-gray-500">מלאי: {sug.stock}</span>
                                                                     </div>
                                                                     <button
                                                                         onClick={() => handleReplace(bundleId, productId, sug)}
                                                                         disabled={updatingFor === productId}
-                                                                        className="text-xs bg-blue-50 text-blue-600 px-3 py-1.5 rounded font-bold hover:bg-blue-100 transition-colors disabled:opacity-50"
+                                                                        className="text-xs bg-blue-50 text-blue-600 px-3 py-1.5 rounded-md font-bold hover:bg-blue-100 transition-colors disabled:opacity-50 shrink-0 mr-2"
                                                                     >
-                                                                        {updatingFor === productId ? 'מעדכן...' : 'החלף לבושם זה'}
+                                                                        {updatingFor === productId ? 'מעדכן...' : 'החלף'}
                                                                     </button>
                                                                 </div>
                                                             ))}
@@ -145,7 +162,7 @@ export default function BundlesInventoryClient({ initialBundlesConfig, productsM
                         })}
                     </div>
                 </div>
-            ))}
+            )})}
         </div>
     );
 }
