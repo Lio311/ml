@@ -10,6 +10,7 @@ export default function EmailLogsClient({ initialLogs, currentPage, totalPages, 
     const router = useRouter();
     const [searchTerm, setSearchTerm] = useState('');
     const [mounted, setMounted] = useState(false);
+    const [expandedLogId, setExpandedLogId] = useState(null);
 
     useEffect(() => {
         setMounted(true);
@@ -243,10 +244,26 @@ export default function EmailLogsClient({ initialLogs, currentPage, totalPages, 
                                     </div>
                                 )}
                                 
-                                <button className="text-[10px] font-black text-gray-400 flex items-center gap-1">
-                                    פרטים נוספים <ChevronLeft className="w-3 h-3" />
+                                <button 
+                                    onClick={() => setExpandedLogId(prev => prev === log.id ? null : log.id)}
+                                    className="text-[10px] font-black text-gray-400 flex items-center gap-1"
+                                >
+                                    פרטים נוספים <ChevronLeft className={`w-3 h-3 transition-transform ${expandedLogId === log.id ? '-rotate-90' : ''}`} />
                                 </button>
                             </div>
+
+                            {expandedLogId === log.id && (
+                                <div className="mt-3 pt-3 border-t border-gray-100 text-xs text-gray-600">
+                                    <div className="font-bold mb-1">נושא מלא:</div>
+                                    <div className="mb-2 break-words">{log.subject}</div>
+                                    {log.error_message && (
+                                        <>
+                                            <div className="font-bold mb-1 text-red-600">שגיאה:</div>
+                                            <div className="text-red-500 break-words">{log.error_message}</div>
+                                        </>
+                                    )}
+                                </div>
+                            )}
                         </div>
                     ))}
                 </div>
