@@ -881,13 +881,13 @@ export default async function AdminDashboard({ searchParams }) {
                 </div>
                 <div className="overflow-x-auto custom-scrollbar">
                     <table className="w-full text-right" dir="rtl">
-                        <thead className="bg-gray-50 text-gray-500 text-sm font-bold">
+                        <thead className="bg-gray-50 text-gray-500 text-xs md:text-sm font-bold">
                             <tr>
-                                <th className="p-4 text-center">קוד</th>
-                                <th className="p-4 text-center">הנחה</th>
-                                <th className="p-4 text-center">מייל לקוח</th>
-                                <th className="p-4 text-center">סטטוס</th>
-                                <th className="p-4 text-center">נוצר בתאריך</th>
+                                <th className="px-2 py-3 md:p-4 text-[10px] md:text-sm text-center">קוד</th>
+                                <th className="px-2 py-3 md:p-4 text-[10px] md:text-sm text-center">הנחה</th>
+                                <th className="px-2 py-3 md:p-4 text-[10px] md:text-sm text-center">מייל לקוח</th>
+                                <th className="px-2 py-3 md:p-4 text-[10px] md:text-sm text-center">סטטוס</th>
+                                <th className="px-2 py-3 md:p-4 text-[10px] md:text-sm text-center">נוצר בתאריך</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100">
@@ -897,11 +897,11 @@ export default async function AdminDashboard({ searchParams }) {
 
                                 return (
                                     <tr key={coupon.id} className="hover:bg-gray-50/80 transition-colors">
-                                        <td className="p-4 font-mono font-bold text-blue-600 text-center text-sm">{coupon.code}</td>
-                                        <td className="p-4 text-center font-black text-gray-900">{coupon.discount_percent}%</td>
-                                        <td className="p-4 text-xs text-center text-gray-500 truncate max-w-[150px]">{coupon.limitations?.allowed_users?.[0] || coupon.email || '-'}</td>
-                                        <td className="p-4 text-center">
-                                            <span className={`px-2 py-1 rounded-lg text-[9px] font-bold uppercase tracking-wider ${displayStatus === 'active' ? 'bg-green-100 text-green-800' :
+                                        <td className="px-2 py-3 md:p-4 font-mono font-bold text-blue-600 text-center text-[10px] md:text-sm">{coupon.code}</td>
+                                        <td className="px-2 py-3 md:p-4 text-center font-black text-gray-900 text-xs md:text-base">{coupon.discount_percent}%</td>
+                                        <td className="px-2 py-3 md:p-4 text-[10px] md:text-xs text-center text-gray-500 truncate max-w-[100px] md:max-w-[150px]">{coupon.limitations?.allowed_users?.[0] || coupon.email || '-'}</td>
+                                        <td className="px-2 py-3 md:p-4 text-center">
+                                            <span className={`px-1.5 md:px-2 py-1 rounded-lg text-[8px] md:text-[9px] font-bold uppercase tracking-wider ${displayStatus === 'active' ? 'bg-green-100 text-green-800' :
                                                 displayStatus === 'redeemed' ? 'bg-gray-800 text-white' :
                                                     'bg-red-100 text-red-800'
                                                 }`}>
@@ -909,7 +909,7 @@ export default async function AdminDashboard({ searchParams }) {
                                                     displayStatus === 'redeemed' ? 'מומש' : 'פג תוקף'}
                                             </span>
                                         </td>
-                                        <td className="p-4 text-xs text-gray-500 text-center whitespace-nowrap">
+                                        <td className="px-2 py-3 md:p-4 text-[10px] md:text-xs text-gray-500 text-center whitespace-nowrap">
                                             {new Date(coupon.created_at).toLocaleString('he-IL')}
                                         </td>
                                     </tr>
