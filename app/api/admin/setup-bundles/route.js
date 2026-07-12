@@ -180,6 +180,7 @@ export async function GET(req) {
                     bundleProductId = insertRes.rows[0].id;
                 } else {
                     bundleProductId = bundleProductRes.rows[0].id;
+                    await client.query(`UPDATE products SET show_on_home = true WHERE id = $1`, [bundleProductId]);
                 }
 
                 // 2. Find product IDs for the items
