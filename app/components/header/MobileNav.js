@@ -118,7 +118,7 @@ export default function MobileNav({ isOpen, onClose, navLinks = [], isAdmin }) {
                             </div>
 
                             <p className="text-[10px] text-white/20 text-center font-light">
-                                {brand.dot} <span className="uppercase text-[9px] tracking-[0.2em]">luxury sample boutique</span>
+                                {brand.dot} <span className="text-[10px] tracking-[0.2em]">Luxury sample boutique</span>
                             </p>
                         </div>
                     </motion.div>
