@@ -266,7 +266,7 @@ export default function FilterSidebar({ allBrands = [], allCategories = [], allC
                             </svg>
                         </div>
 
-                        <div className={`space-y-2 text-sm max-h-[200px] overflow-y-auto custom-scrollbar ps-2 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
+                        <div className={`space-y-2 text-sm max-h-[110px] overflow-y-auto custom-scrollbar ps-2 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
                             {allNotes
                                 .map(n => ({ original: n, translated: translateNote(n) }))
                                 .sort((a, b) => a.translated.localeCompare(b.translated, locale === 'he' ? 'he' : 'en'))
@@ -293,7 +293,7 @@ export default function FilterSidebar({ allBrands = [], allCategories = [], allC
             {/* Country Filter */}
             {allCountries && allCountries.length > 0 && (
                 <CollapsibleSection title={`${t('common.country_filter')} (${allCountries.length})`} initialOpen={true}>
-                    <div className={`space-y-2 text-sm max-h-[200px] overflow-y-auto custom-scrollbar ps-2 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
+                    <div className={`space-y-2 text-sm max-h-[110px] overflow-y-auto custom-scrollbar ps-2 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
                         {allCountries.map(c => (
                             <label key={c} className="flex items-center gap-2 cursor-pointer hover:bg-gray-100 p-1 rounded">
                                 <input
@@ -312,7 +312,7 @@ export default function FilterSidebar({ allBrands = [], allCategories = [], allC
             {/* Perfumer Filter */}
             {allPerfumers && allPerfumers.length > 0 && (
                 <CollapsibleSection title={`${t('common.perfumer_filter')} (${allPerfumers.length})`} initialOpen={true}>
-                    <div className={`space-y-2 text-sm max-h-[200px] overflow-y-auto custom-scrollbar ps-2 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
+                    <div className={`space-y-2 text-sm max-h-[110px] overflow-y-auto custom-scrollbar ps-2 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
                         {allPerfumers.map(p => (
                             <label key={p} className="flex items-center gap-2 cursor-pointer hover:bg-gray-100 p-1 rounded">
                                 <input
