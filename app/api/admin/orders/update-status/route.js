@@ -48,22 +48,48 @@ export async function POST(req) {
             // Bottle inventory logic
             if (newStatus === 'cancelled' && oldStatus !== 'cancelled') {
                 for (const item of (order.items || [])) {
-                    const itemSize = parseFloat(String(item.size));
-                    if (!item.isPrize && !isNaN(itemSize)) {
-                        // Restore Bottle Inventory
-                        let bSize = itemSize;
-                        if (bSize === 10 && item.price >= 300) bSize = 11;
-                        if ([2, 5, 10, 11].includes(bSize)) {
-                            await client.query('UPDATE bottle_inventory SET quantity = quantity + $1 WHERE size = $2', [item.quantity, bSize]);
+                    let dbId = item.id;
+                    if (typeof dbId === 'string' && dbId.includes('-')) {
+                        dbId = parseInt(dbId.split('-')[0]);
+                    } else if (typeof dbId !== 'number') {
+                        dbId = parseInt(dbId);
+                    }
+
+                    if (item.type === 'bundle' && Array.isArray(item.items)) {
+                        const bundleSize = Number(item.size) || 2;
+                        for (const innerItem of item.items) {
+                            let innerDbId = innerItem.id;
+                            if (typeof innerDbId === 'string' && innerDbId.includes('-')) {
+                                innerDbId = parseInt(innerDbId.split('-')[0]);
+                            }
+                            if (!isNaN(innerDbId)) {
+                                const revertAmount = bundleSize * (item.quantity || 1);
+                                await client.query('UPDATE products SET stock = stock + $1 WHERE id = $2', [revertAmount, innerDbId]);
+                            }
+                        }
+                        if ([2, 5, 10, 11].includes(bundleSize)) {
+                            const totalBottles = item.items.length * (item.quantity || 1);
+                            await client.query('UPDATE bottle_inventory SET quantity = quantity + $1 WHERE size = $2', [totalBottles, bundleSize]);
+                        }
+                    } else if (!item.isPrize) {
+                        let amountToRestore = 0;
+                        if (item.is_discovery_set) {
+                            amountToRestore = parseInt(item.quantity) || 0;
+                        } else if (!isNaN(parseFloat(String(item.size)))) {
+                            amountToRestore = parseFloat(String(item.size)) * (parseInt(item.quantity) || 0);
                         }
 
-                        // Restore Product ML Stock
-                        const amountToRestore = itemSize * item.quantity;
-                        let dbId = item.id;
-                        if (typeof dbId === 'string' && dbId.includes('-')) {
-                            dbId = parseInt(dbId.split('-')[0]);
+                        if (amountToRestore > 0 && !isNaN(dbId)) {
+                            await client.query('UPDATE products SET stock = stock + $1 WHERE id = $2', [amountToRestore, dbId]);
+
+                            if (!item.is_discovery_set) {
+                                let bSize = parseFloat(String(item.size));
+                                if (bSize === 10 && item.price >= 300) bSize = 11;
+                                if ([2, 5, 10, 11].includes(bSize)) {
+                                    await client.query('UPDATE bottle_inventory SET quantity = quantity + $1 WHERE size = $2', [parseInt(item.quantity) || 0, bSize]);
+                                }
+                            }
                         }
-                        await client.query('UPDATE products SET stock = stock + $1 WHERE id = $2', [amountToRestore, dbId]);
                     }
                 }
                 if (order.free_samples_count > 0) {
@@ -72,22 +98,48 @@ export async function POST(req) {
             }
             if (oldStatus === 'cancelled' && newStatus !== 'cancelled') {
                 for (const item of (order.items || [])) {
-                    const itemSize = parseFloat(String(item.size));
-                    if (!item.isPrize && !isNaN(itemSize)) {
-                        // Deduct Bottle Inventory
-                        let bSize = itemSize;
-                        if (bSize === 10 && item.price >= 300) bSize = 11;
-                        if ([2, 5, 10, 11].includes(bSize)) {
-                            await client.query('UPDATE bottle_inventory SET quantity = quantity - $1 WHERE size = $2', [item.quantity, bSize]);
+                    let dbId = item.id;
+                    if (typeof dbId === 'string' && dbId.includes('-')) {
+                        dbId = parseInt(dbId.split('-')[0]);
+                    } else if (typeof dbId !== 'number') {
+                        dbId = parseInt(dbId);
+                    }
+
+                    if (item.type === 'bundle' && Array.isArray(item.items)) {
+                        const bundleSize = Number(item.size) || 2;
+                        for (const innerItem of item.items) {
+                            let innerDbId = innerItem.id;
+                            if (typeof innerDbId === 'string' && innerDbId.includes('-')) {
+                                innerDbId = parseInt(innerDbId.split('-')[0]);
+                            }
+                            if (!isNaN(innerDbId)) {
+                                const amountToDeduct = bundleSize * (item.quantity || 1);
+                                await client.query('UPDATE products SET stock = GREATEST(0, stock - $1) WHERE id = $2', [amountToDeduct, innerDbId]);
+                            }
+                        }
+                        if ([2, 5, 10, 11].includes(bundleSize)) {
+                            const totalBottles = item.items.length * (item.quantity || 1);
+                            await client.query('UPDATE bottle_inventory SET quantity = GREATEST(0, quantity - $1) WHERE size = $2', [totalBottles, bundleSize]);
+                        }
+                    } else if (!item.isPrize) {
+                        let amountToDeduct = 0;
+                        if (item.is_discovery_set) {
+                            amountToDeduct = parseInt(item.quantity) || 0;
+                        } else if (!isNaN(parseFloat(String(item.size)))) {
+                            amountToDeduct = parseFloat(String(item.size)) * (parseInt(item.quantity) || 0);
                         }
 
-                        // Deduct Product ML Stock
-                        const amountToDeduct = itemSize * item.quantity;
-                        let dbId = item.id;
-                        if (typeof dbId === 'string' && dbId.includes('-')) {
-                            dbId = parseInt(dbId.split('-')[0]);
+                        if (amountToDeduct > 0 && !isNaN(dbId)) {
+                            await client.query('UPDATE products SET stock = GREATEST(0, stock - $1) WHERE id = $2', [amountToDeduct, dbId]);
+
+                            if (!item.is_discovery_set) {
+                                let bSize = parseFloat(String(item.size));
+                                if (bSize === 10 && item.price >= 300) bSize = 11;
+                                if ([2, 5, 10, 11].includes(bSize)) {
+                                    await client.query('UPDATE bottle_inventory SET quantity = GREATEST(0, quantity - $1) WHERE size = $2', [parseInt(item.quantity) || 0, bSize]);
+                                }
+                            }
                         }
-                        await client.query('UPDATE products SET stock = GREATEST(0, stock - $1) WHERE id = $2', [amountToDeduct, dbId]);
                     }
                 }
                 if (order.free_samples_count > 0) {
