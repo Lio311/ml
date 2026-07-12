@@ -219,6 +219,7 @@ export default function BundlesClient() {
                                     onClick={() => {
                                         setSelectedType(type.id);
                                         setStep(2);
+                                        window.scrollTo({ top: 0, behavior: 'smooth' });
                                     }}
                                     className={`group relative p-10 md:p-14 rounded-[3rem] border-2 bg-white transition-all hover:shadow-2xl hover:-translate-y-2 overflow-hidden flex flex-col items-center text-center ${
                                         selectedType === type.id ? 'border-zinc-900 shadow-xl' : 'border-zinc-100'
@@ -287,7 +288,7 @@ export default function BundlesClient() {
                                     </div>
                                 </div>
                                 <div className="flex gap-4 w-full md:w-auto">
-                                    <button onClick={() => setStep(1)} className="flex-1 md:flex-none px-6 py-3 rounded-full border border-white/20 text-xs font-black uppercase tracking-widest hover:bg-white/10 transition-all text-center">
+                                    <button onClick={() => { setStep(1); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="flex-1 md:flex-none px-6 py-3 rounded-full border border-white/20 text-xs font-black uppercase tracking-widest hover:bg-white/10 transition-all text-center">
                                         {t('common.previous')}
                                     </button>
                                     {isThemed2ml ? (
@@ -295,7 +296,7 @@ export default function BundlesClient() {
                                             {loading ? 'טוען...' : 'הוסף לעגלה'} <ShoppingCart size={16} />
                                         </button>
                                     ) : (
-                                        <button onClick={() => setStep(3)} className="flex-1 md:flex-none px-10 py-3 rounded-full bg-white text-zinc-900 text-xs font-black uppercase tracking-widest hover:scale-105 transition-all text-center">
+                                        <button onClick={() => { setStep(3); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="flex-1 md:flex-none px-10 py-3 rounded-full bg-white text-zinc-900 text-xs font-black uppercase tracking-widest hover:scale-105 transition-all text-center">
                                             {t('common.next')}
                                         </button>
                                     )}
@@ -334,7 +335,7 @@ export default function BundlesClient() {
                                     />
                                 </div>
                                 <div className="flex gap-3 w-full md:w-auto">
-                                    <button onClick={() => setStep(2)} className="flex-1 md:flex-none px-5 py-4 rounded-2xl border border-zinc-200 text-zinc-500 hover:text-zinc-900 hover:bg-zinc-50 transition-all flex justify-center items-center">
+                                    <button onClick={() => { setStep(2); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="flex-1 md:flex-none px-5 py-4 rounded-2xl border border-zinc-200 text-zinc-500 hover:text-zinc-900 hover:bg-zinc-50 transition-all flex justify-center items-center">
                                         <ChevronRight size={20} />
                                     </button>
                                     <button 
