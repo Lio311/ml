@@ -18,7 +18,9 @@ const BUNDLE_TYPES = [
     { id: 'tropical', bgImage: '/images/vibe/tropical.jpg', isThemed: true },
     { id: 'vanilla', bgImage: '/images/vibe/vanilla.jpg', isThemed: true },
     { id: 'gourmand', bgImage: '/images/vibe/gourmand.jpg', isThemed: true },
-    { id: 'citrus', bgImage: '/images/vibe/citrus.jpg', isThemed: true }
+    { id: 'citrus', bgImage: '/images/vibe/citrus.jpg', isThemed: true },
+    { id: 'floral', bgImage: '/images/vibe/floral.jpg', isThemed: true },
+    { id: 'aquatic', bgImage: '/images/vibe/aquatic.jpg', isThemed: true }
 ];
 
 const SIZES = [
