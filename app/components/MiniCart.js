@@ -14,7 +14,7 @@ export default function MiniCart() {
         cartItems, activeVendorId,
         subtotal, total, freeSamplesCount, nextTier,
         updateQuantity, removeFromCart,
-        isMainVendor, vendorConfig
+        isMainVendor, vendorConfig, shippingCost
     } = useCart();
     const { t, dir } = useLanguage();
     const isRTL = dir === 'rtl';
@@ -122,7 +122,7 @@ export default function MiniCart() {
                     <div className="p-4 border-t bg-white shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
                         <div className="flex items-center justify-between mb-4">
                             <span className="font-bold text-gray-500">{t('cart.subtotal')}:</span>
-                            <span className="text-xl font-black">{total} ₪</span>
+                            <span className="text-xl font-black">{total - shippingCost} ₪</span>
                         </div>
                         <Link 
                             href="/cart"
