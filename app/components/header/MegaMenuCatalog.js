@@ -70,7 +70,7 @@ export default function MegaMenuCatalog({ isOpen, onClose }) {
                         <Link 
                             key={cat.id} 
                             href={cat.href}
-                            className="quadrant glass flex flex-col items-center justify-center p-12 hover:bg-white/10 group/item relative overflow-hidden"
+                            className="quadrant glass flex flex-col items-center justify-center p-12 border border-transparent hover:border-white/20 hover:bg-white/5 transition-all duration-300 rounded-xl group/item relative overflow-hidden"
                         >
                             <div className="quadrant-icon mb-6 transform group-hover/item:scale-110 transition-all duration-500">
                                 {cat.icon}
