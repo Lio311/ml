@@ -68,6 +68,7 @@ const navGroups = [
             { href: "/admin/brands", label: "מותגים", icon: Tag, roles: ['admin', 'deputy'] },
             { href: "/admin/inventory", label: "בקבוקונים", icon: TestTube, roles: ['admin', 'deputy'] },
             { href: "/admin/discovery-sets", label: "דיסקברי ודוגמיות", icon: Package, roles: ['admin', 'deputy'] },
+            { href: "/admin/bundles-inventory", label: "מלאי חבילות", icon: Package, roles: ['admin', 'deputy'] },
             { href: "/admin/procurement", label: "רכש", icon: TrendingUp, roles: ['admin', 'deputy'] },
             { href: "/admin/inventory-heatmap", label: "מפת חום", icon: Thermometer, roles: ['admin', 'deputy'] },
         ]

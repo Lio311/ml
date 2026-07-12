@@ -16,6 +16,7 @@ import { AnimatePresence } from "framer-motion";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useRef } from "react";
 import Customer360Modal from "./Customer360Modal";
+import OrderAlerts from "./OrderAlerts";
 import { useInView } from "react-intersection-observer";
 
 const formatDiscoverySize = (label) => {
@@ -280,6 +281,7 @@ export default function AdminOrdersListClient({
                                                 <span className="bg-black/70 text-white px-1.5 py-[1px] rounded font-black uppercase text-[9px] tracking-wider inline-block leading-normal">{order.coupon_code}</span>
                                             </div>
                                         )}
+                                        <OrderAlerts order={order} />
                                     </td>
                                     <td className="p-4 font-black text-gray-900 whitespace-nowrap">
                                         <div className="flex items-center justify-center gap-1.5">
@@ -495,6 +497,7 @@ export default function AdminOrdersListClient({
                                         <span className="font-black tracking-widest uppercase text-[10px]">{order.coupon_code}</span>
                                     </div>
                                 )}
+                                <OrderAlerts order={order} />
                             </div>
 
                             <div className="flex flex-wrap items-center gap-2 mb-4">
