@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import { format } from 'date-fns';
 import { he } from 'date-fns/locale';
@@ -9,6 +9,11 @@ import { ChevronRight, ChevronLeft, Info, User, History } from 'lucide-react';
 export default function AuditLogsClient({ initialLogs, totalCount, currentPage, limit }) {
     const router = useRouter();
     const [selectedLog, setSelectedLog] = useState(null);
+    const [mounted, setMounted] = useState(false);
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
 
     const totalPages = Math.ceil(totalCount / limit);
 
@@ -82,13 +87,17 @@ export default function AuditLogsClient({ initialLogs, totalCount, currentPage, 
                             {initialLogs.map((log) => (
                                 <tr key={log.id} className="hover:bg-gray-50/50 transition-colors">
                                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-600">
-                                        {format(new Date(log.created_at), 'dd/MM/yyyy HH:mm', { locale: he })}
+                                        {mounted ? format(new Date(log.created_at), 'dd/MM/yyyy HH:mm', { locale: he }) : '--/--/---- --:--'}
                                     </td>
                                     <td className="px-6 py-4 whitespace-nowrap">
                                         <div className="flex items-center gap-2">
-                                            <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-500">
-                                                <User className="w-4 h-4" />
-                                            </div>
+                                            {log.image_url ? (
+                                                <img src={log.image_url} alt="" className="w-8 h-8 rounded-full object-cover" referrerPolicy="no-referrer" />
+                                            ) : (
+                                                <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-500">
+                                                    <User className="w-4 h-4" />
+                                                </div>
+                                            )}
                                             <div className="flex flex-col">
                                                 <span className="text-sm font-bold text-gray-900">{log.user_name || 'מערכת'}</span>
                                                 <span className="text-[10px] text-gray-400 font-mono">{log.user_id?.slice(-6)}</span>
@@ -125,12 +134,16 @@ export default function AuditLogsClient({ initialLogs, totalCount, currentPage, 
                         <div key={log.id} className="p-4 space-y-3">
                             <div className="flex justify-between items-start">
                                 <div className="flex items-center gap-3">
-                                    <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-600">
-                                        <User className="w-5 h-5" />
-                                    </div>
+                                    {log.image_url ? (
+                                        <img src={log.image_url} alt="" className="w-10 h-10 rounded-full object-cover border border-gray-200" referrerPolicy="no-referrer" />
+                                    ) : (
+                                        <div className="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-600">
+                                            <User className="w-5 h-5" />
+                                        </div>
+                                    )}
                                     <div className="flex flex-col">
                                         <span className="text-sm font-bold text-gray-900">{log.user_name || 'מערכת'}</span>
-                                        <span className="text-[10px] text-gray-500">{format(new Date(log.created_at), 'dd/MM/yy HH:mm', { locale: he })}</span>
+                                        <span className="text-[10px] text-gray-500">{mounted ? format(new Date(log.created_at), 'dd/MM/yy HH:mm', { locale: he }) : '--/--/-- --:--'}</span>
                                     </div>
                                 </div>
                                 <span className={`px-2 py-0.5 rounded-full text-[10px] font-bold ${actionColors[log.action] || 'bg-gray-100 text-gray-600'}`}>
@@ -196,7 +209,7 @@ export default function AuditLogsClient({ initialLogs, totalCount, currentPage, 
                             <div className="grid grid-cols-2 gap-8">
                                 <div>
                                     <label className="block text-xs font-bold text-gray-400 uppercase mb-1">תאריך ושעה</label>
-                                    <p className="text-gray-900 font-medium">{format(new Date(selectedLog.created_at), 'dd בMMMM yyyy, HH:mm', { locale: he })}</p>
+                                    <p className="text-gray-900 font-medium">{mounted ? format(new Date(selectedLog.created_at), 'dd בMMMM yyyy, HH:mm', { locale: he }) : ''}</p>
                                 </div>
                                 <div>
                                     <label className="block text-xs font-bold text-gray-400 uppercase mb-1">משתמש מבצע</label>

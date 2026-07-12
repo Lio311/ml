@@ -6,7 +6,7 @@ import Image from "@/app/components/CImage";
 import MegaMenuBrands from './header/MegaMenuBrands';
 import MegaMenuCatalog from './header/MegaMenuCatalog';
 import MobileNav from './header/MobileNav';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import LiveVisitorCounter from './LiveVisitorCounter';
 import { useLanguage } from '../context/LanguageContext';
 import { useCart } from '../context/CartContext';
@@ -50,7 +50,12 @@ export default function Header({ brands = [] }) {
         user?.publicMetadata?.isAdmin === true;
 
     const pathname = usePathname();
+    const searchParams = useSearchParams();
     const isHome = pathname === '/';
+
+    useEffect(() => {
+        setActiveMenu(null);
+    }, [pathname, searchParams]);
 
     const [menuItems, setMenuItems] = useState([]);
     const [menuLoading, setMenuLoading] = useState(true);

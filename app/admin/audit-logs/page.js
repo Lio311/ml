@@ -35,7 +35,7 @@ export default async function AuditLogsPage({ searchParams }) {
 
     const logsRes = await pool.query(`
         SELECT al.id, al.user_id, al.action, al.entity_type, al.entity_id, al.details, al.created_at,
-               CONCAT(u.first_name, ' ', u.last_name) as user_name
+               CONCAT(u.first_name, ' ', u.last_name) as user_name, u.image_url
         FROM audit_logs al
         LEFT JOIN users u ON al.user_id = u.id
         ORDER BY al.created_at DESC

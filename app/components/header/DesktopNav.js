@@ -56,6 +56,7 @@ export default function DesktopNav({ menu = [], brands = [] }) {
                                                                     <Link
                                                                         key={brand.name}
                                                                         href={`/brands/${encodeURIComponent(brand.name)}`}
+                                                                        onClick={() => setIsBrandsDropdownOpen(false)}
                                                                         className="text-xs text-gray-600 hover:text-black hover:font-bold transition-colors"
                                                                     >
                                                                         {brand.name}
@@ -68,7 +69,7 @@ export default function DesktopNav({ menu = [], brands = [] }) {
                                             )}
                                         </div>
                                         <div className="p-4 bg-gray-50 border-t text-center">
-                                            <Link href="/brands" className="text-sm font-bold underline hover:text-red-600">
+                                            <Link href="/brands" onClick={() => setIsBrandsDropdownOpen(false)} className="text-sm font-bold underline hover:text-red-600">
                                                 {t('common.all_brands')} {dir === 'rtl' ? '←' : '→'}
                                             </Link>
                                         </div>

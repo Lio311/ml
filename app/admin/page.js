@@ -879,7 +879,43 @@ export default async function AdminDashboard({ searchParams }) {
                     <h3 className="font-bold text-gray-800 text-lg">קופונים אחרונים</h3>
                     <Link href="/admin/coupons" className="text-blue-600 text-sm font-bold hover:underline">לכל הקופונים</Link>
                 </div>
-                <div className="overflow-x-auto custom-scrollbar">
+                <div className="md:hidden divide-y divide-gray-100">
+                    {!kpis.recentCoupons || kpis.recentCoupons.length === 0 ? (
+                        <div className="p-8 text-center text-gray-400 text-sm italic">
+                            עדיין אין קופונים...
+                        </div>
+                    ) : (
+                        kpis.recentCoupons.map(coupon => {
+                            const isExpired = coupon.expires_at && new Date(coupon.expires_at) < new Date();
+                            const displayStatus = isExpired ? 'expired' : coupon.status;
+
+                            return (
+                                <div key={coupon.id} className="p-4 flex flex-col gap-2 hover:bg-gray-50 transition-colors">
+                                    <div className="flex justify-between items-center">
+                                        <div className="font-mono font-bold text-blue-600">{coupon.code}</div>
+                                        <div className="font-black text-gray-900">{coupon.discount_percent}% הנחה</div>
+                                    </div>
+                                    <div className="flex justify-between items-end">
+                                        <div className="text-sm text-gray-500">
+                                            <div>{coupon.limitations?.allowed_users?.[0] || coupon.email || '-'}</div>
+                                            <div className="text-xs">{new Date(coupon.created_at).toLocaleString('he-IL')}</div>
+                                        </div>
+                                        <div>
+                                            <span className={`px-2 py-1 rounded-lg text-[10px] font-bold uppercase tracking-wider ${displayStatus === 'active' ? 'bg-green-100 text-green-800' :
+                                                displayStatus === 'redeemed' ? 'bg-gray-800 text-white' :
+                                                    'bg-red-100 text-red-800'
+                                                }`}>
+                                                {displayStatus === 'active' ? 'פעיל' :
+                                                    displayStatus === 'redeemed' ? 'מומש' : 'פג תוקף'}
+                                            </span>
+                                        </div>
+                                    </div>
+                                </div>
+                            );
+                        })
+                    )}
+                </div>
+                <div className="hidden md:block overflow-x-auto custom-scrollbar">
                     <table className="w-full text-right" dir="rtl">
                         <thead className="bg-gray-50 text-gray-500 text-xs md:text-sm font-bold">
                             <tr>
