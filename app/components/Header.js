@@ -35,6 +35,9 @@ export default function Header({ brands = [] }) {
         resizeObserver.observe(headerEl);
         return () => resizeObserver.disconnect();
     }, []);
+    const [isHoveringTop, setIsHoveringTop] = useState(false);
+    const [isScrollingUp, setIsScrollingUp] = useState(false);
+    const [isAtTop, setIsAtTop] = useState(true);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
     const { t, dir } = useLanguage();
@@ -103,16 +106,47 @@ export default function Header({ brands = [] }) {
         ];
 
     useEffect(() => {
+        let lastScrollY = window.scrollY;
+
         const handleScroll = () => {
-            setIsScrolled(window.scrollY > 20);
+            const currentScrollY = window.scrollY;
+            setIsAtTop(currentScrollY <= 100);
+            setIsScrolled(currentScrollY > 20);
+
+            if (currentScrollY > 100) {
+                if (currentScrollY > lastScrollY) {
+                    setIsScrollingUp(false);
+                } else if (currentScrollY < lastScrollY - 10) {
+                    setIsScrollingUp(true);
+                }
+            } else {
+                setIsScrollingUp(false);
+            }
+            lastScrollY = currentScrollY;
         };
-        window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
+
+        const handleMouseMove = (e) => {
+            setIsHoveringTop(e.clientY < 150);
+        };
+
+        window.addEventListener('scroll', handleScroll, { passive: true });
+        window.addEventListener('mousemove', handleMouseMove);
+
+        handleScroll(); // Initial check
+
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+            window.removeEventListener('mousemove', handleMouseMove);
+        };
     }, []);
+
+    const isHeaderVisible = isAtTop || isHoveringTop || isScrollingUp || activeMenu !== null || isMobileMenuOpen || isMobileSearchOpen;
 
     return (
         <header 
-            className="fixed top-0 !left-0 !right-0 !w-screen z-50 transition-all duration-500 group/header"
+            className={`fixed top-0 !left-0 !right-0 !w-screen z-50 transition-all duration-500 group/header ${
+                isHeaderVisible ? 'translate-y-0' : '-translate-y-full'
+            }`}
             onMouseLeave={() => setActiveMenu(null)}
             dir={dir}
             style={{ '--header-height': `${headerHeight}px` }}
