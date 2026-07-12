@@ -22,7 +22,7 @@ export async function GET(req) {
             `;
             const values = [];
 
-            if (['clean', 'tropical', 'vanilla', 'gourmand', 'citrus'].includes(type)) {
+            if (['clean', 'tropical', 'vanilla', 'gourmand', 'citrus', 'floral', 'aquatic'].includes(type)) {
                 const settingsRes = await client.query(`SELECT value FROM site_settings WHERE key = 'bundles_config'`);
                 if (settingsRes.rows.length > 0) {
                     const config = settingsRes.rows[0].value;
