@@ -92,6 +92,42 @@ const bundlesToCreate = [
             'Clive Christian - 1872 For Men',
             'Creed -  Aventus 15X01'
         ]
+    },
+    {
+        type: 'floral_bundle',
+        name: 'קולקציית גן עדן פרחוני',
+        description: 'קולקציה המוקדשת כולה לפרחים היוקרתיים ביותר - ורדים, יסמין ואדמוניות.',
+        image: '/images/bundles/floral.jpg',
+        items: [
+            'Delina',
+            'Cruel Gardenia',
+            'A La Rose',
+            'Spring Flower',
+            'Fleur Narcotique',
+            'Good Girl Gone Bad',
+            'Guidance',
+            'Room Service',
+            'Rose Barbare',
+            'French Leather'
+        ]
+    },
+    {
+        type: 'aquatic_bundle',
+        name: 'קולקציית חופשה בריביירה',
+        description: 'קולקציה אקווטית וימית - חופשה יוונית, אוויר ים מלוח והדרים עסיסיים.',
+        image: '/images/bundles/aquatic.jpg',
+        items: [
+            'Megamare',
+            'Costa Azzurra',
+            'Silver Mountain Water',
+            'Virgin Island Water',
+            'Pacific Rock Moss',
+            'Wood Sage & Sea Salt',
+            'Mirto di Panarea',
+            'Acqua di Gio Profumo',
+            '40 Knots',
+            'Sailing Day'
+        ]
     }
 ];
 
