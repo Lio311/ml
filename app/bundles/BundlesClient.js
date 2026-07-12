@@ -113,7 +113,7 @@ export default function BundlesClient() {
     const handleThemed2mlAdd = () => {
         if (loading) return;
         if (products.length === 0) {
-            toast.error('הבשמים נטענים, אנא המתן...');
+            toast('הבשמים נטענים, אנא המתן...', { icon: '🟢' });
             return;
         }
         

@@ -639,7 +639,8 @@
                 "uploading": "Uploading...",
                 "photo_uploaded_success": "Photo uploaded successfully!"
             }
-        }
+        },
+        "spinning_prize": "Spinning..."
     },
     "catalogs_info": {
         "hero_badge": "Exclusive Platform for ml_tlv",
@@ -932,9 +933,9 @@
     },
     "bundles": {
         "title": "Perfume Bundles",
-        "subtitle": "Create your perfect custom bundle at a great price",
+        "subtitle": "Build your perfect bundle at a great price",
         "step_1_type": "Choose Bundle Type",
-        "step_2_size": "Select Sample Size",
+        "step_2_size": "Select sample size",
         "step_3_perfumes": "Select Perfumes ({current}/{total})",
         "summer_bundle": "Summer Bundle",
         "summer_desc": "Fresh, light fragrances perfect for the warm sun",
@@ -944,17 +945,27 @@
         "dates_desc": "Compliment-pulling, sexy, and unforgettable scents for the perfect evening",
         "collectors_bundle": "Collectors Bundle",
         "collectors_desc": "Limited editions, rare perfumes, and discontinued treasures",
-        "ml_2_desc": "10 Perfumes (2ml each)",
-        "ml_5_desc": "7 Perfumes (5ml each)",
-        "ml_10_desc": "5 Perfumes (10ml each)",
+        "ml_2_desc": "10 perfumes (2 ml each)",
+        "ml_5_desc": "7 perfumes (5 ml each)",
+        "ml_10_desc": "5 perfumes (10 ml each)",
         "add_to_bundle": "Add to Bundle",
         "remove_from_bundle": "Remove",
-        "complete_bundle": "Add Bundle to Cart",
-        "bundle_added_toast": "Bundle added to cart!",
-        "must_select_exact": "Please select exactly {count} perfumes",
-        "discount_label": "10% bundle discount",
+        "complete_bundle": "Add to Cart",
+        "bundle_added_toast": "Bundle added to cart successfully!",
+        "must_select_exact": "You must select exactly {count} perfumes",
+        "discount_label": "Special bundle discount",
         "badge_discount": "10% OFF",
-        "total_bundle_price": "Final bundle price"
+        "total_bundle_price": "Final bundle price",
+        "clean_bundle": "Clean & Fresh Collection",
+        "clean_desc": "A unique collection of clean, fresh and soapy perfumes.",
+        "tropical_bundle": "Mango & Tropical Collection",
+        "tropical_desc": "Tropical vacation vibe, cocktails and juicy mango.",
+        "vanilla_bundle": "Vanilla Collection",
+        "vanilla_desc": "A celebration of vanilla, amber and warm scents.",
+        "gourmand_bundle": "Gourmand / Desserts Collection",
+        "gourmand_desc": "For those who love sweet scents, pastries and desserts.",
+        "citrus_bundle": "Citrus Collection",
+        "citrus_desc": "Perfect citrus freshness, grapefruits and lemons."
     },
     "matching": {
         "step_info": "Step {step} of 3",
