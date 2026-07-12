@@ -31,32 +31,59 @@ export async function deleteOrder(formData) {
 
             for (const item of items) {
                 if (!item) continue;
-                
-                const itemSize = parseFloat(String(item.size));
-                if (!item.isPrize && !isNaN(itemSize)) {
-                    const quantity = parseInt(item.quantity) || 0;
-                    const amountToRestore = itemSize * quantity;
 
-                    // Fix for composite IDs (e.g. "74-2")
-                    let dbId = item.id;
-                    if (typeof dbId === 'string' && dbId.includes('-')) {
-                        dbId = parseInt(dbId.split('-')[0]);
-                    } else if (typeof dbId !== 'number') {
-                        dbId = parseInt(dbId);
+                let dbId = item.id;
+                if (typeof dbId === 'string' && dbId.includes('-')) {
+                    dbId = parseInt(dbId.split('-')[0]);
+                } else if (typeof dbId !== 'number') {
+                    dbId = parseInt(dbId);
+                }
+
+                if (item.type === 'bundle' && Array.isArray(item.items)) {
+                    const bundleSize = Number(item.size) || 2;
+                    for (const innerItem of item.items) {
+                        let innerDbId = innerItem.id;
+                        if (typeof innerDbId === 'string' && innerDbId.includes('-')) {
+                            innerDbId = parseInt(innerDbId.split('-')[0]);
+                        }
+                        if (!isNaN(innerDbId)) {
+                            const revertAmount = bundleSize * (item.quantity || 1);
+                            await client.query(
+                                'UPDATE products SET stock = stock + $1 WHERE id = $2',
+                                [revertAmount, innerDbId]
+                            );
+                        }
+                    }
+                    if ([2, 5, 10].includes(bundleSize)) {
+                        const totalBottles = item.items.length * (item.quantity || 1);
+                        await client.query(
+                            'UPDATE bottle_inventory SET quantity = quantity + $1 WHERE size = $2',
+                            [totalBottles, bundleSize]
+                        );
+                    }
+                } else if (!item.isPrize) {
+                    let amountToRestore = 0;
+                    if (item.is_discovery_set) {
+                        amountToRestore = parseInt(item.quantity) || 0;
+                    } else if (!isNaN(parseFloat(String(item.size)))) {
+                        amountToRestore = parseFloat(String(item.size)) * (parseInt(item.quantity) || 0);
                     }
 
-                    if (!isNaN(dbId)) {
+                    if (amountToRestore > 0 && !isNaN(dbId)) {
                         await client.query(
                             'UPDATE products SET stock = stock + $1 WHERE id = $2',
                             [amountToRestore, dbId]
                         );
 
                         // --- RESTORE BOTTLE INVENTORY ---
-                        if ([2, 5, 10].includes(itemSize)) {
-                            await client.query(
-                                'UPDATE bottle_inventory SET quantity = quantity + $1 WHERE size = $2',
-                                [quantity, itemSize]
-                            );
+                        if (!item.is_discovery_set) {
+                            const itemSize = parseFloat(String(item.size));
+                            if ([2, 5, 10].includes(itemSize)) {
+                                await client.query(
+                                    'UPDATE bottle_inventory SET quantity = quantity + $1 WHERE size = $2',
+                                    [parseInt(item.quantity) || 0, itemSize]
+                                );
+                            }
                         }
                     }
                 }
