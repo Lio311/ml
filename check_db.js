@@ -1,16 +1,21 @@
-require('dotenv').config({path: '.env.local'});
 const { Pool } = require('pg');
-const pool = new Pool({ connectionString: process.env.DATABASE_URL });
-async function run() {
-    try {
-        const orderRes = await pool.query(`SELECT id, status, created_at, customer_details FROM orders WHERE id IN (185, 188, 190, 191, 192)`);
-        console.log("Orders:", orderRes.rows);
-        const recRes = await pool.query(`SELECT order_id, status FROM pending_recommendation_emails WHERE order_id IN (185, 188, 190, 191, 192)`);
-        console.log("Pending Recs:", recRes.rows);
-    } catch(e) {
-        console.error(e);
-    } finally {
-        process.exit(0);
-    }
+require('dotenv').config({ path: '.env' });
+require('dotenv').config({ path: '.env.local' });
+
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL
+});
+
+async function main() {
+  try {
+    const res = await pool.query(`
+      SELECT column_name, data_type 
+      FROM information_schema.columns 
+      WHERE table_name = 'products' AND column_name IN ('top_notes', 'heart_notes', 'base_notes')
+    `);
+    console.log(res.rows);
+  } finally {
+    pool.end();
+  }
 }
-run();
+main();

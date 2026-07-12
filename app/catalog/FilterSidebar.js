@@ -21,10 +21,9 @@ export default function FilterSidebar({ allBrands = [], allCategories = [], allC
         return mapped.startsWith('common.category_map.') ? hebrewCat : mapped;
     };
 
-    const translateNote = (hebrewNote) => {
-        if (locale === 'he') return hebrewNote;
-        const mapped = t(`common.notes_map.${hebrewNote}`);
-        return mapped.startsWith('common.notes_map.') ? hebrewNote : mapped;
+    const translateNote = (note) => {
+        const mapped = t(`common.notes_map.${note}`);
+        return mapped.startsWith('common.notes_map.') ? note : mapped;
     };
     
     const GENDER_OPTIONS = [
@@ -267,24 +266,43 @@ export default function FilterSidebar({ allBrands = [], allCategories = [], allC
                         </div>
 
                         <div className={`space-y-2 text-sm max-h-[110px] overflow-y-auto custom-scrollbar ps-2 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
-                            {allNotes
-                                .map(n => ({ original: n, translated: translateNote(n) }))
+                            {Object.values(allNotes.reduce((acc, n) => {
+                                const translated = translateNote(n);
+                                if (!acc[translated]) {
+                                    acc[translated] = { original: [n], translated };
+                                } else {
+                                    acc[translated].original.push(n);
+                                }
+                                return acc;
+                            }, {}))
                                 .sort((a, b) => a.translated.localeCompare(b.translated, locale === 'he' ? 'he' : 'en'))
                                 .filter(item => 
                                     item.translated.toLowerCase().includes(noteSearch.toLowerCase()) || 
-                                    item.original.toLowerCase().includes(noteSearch.toLowerCase())
+                                    item.original.some(o => o.toLowerCase().includes(noteSearch.toLowerCase()))
                                 )
-                                .map(item => (
-                                    <label key={item.original} className="flex items-center gap-2 cursor-pointer hover:bg-gray-100 p-1 rounded">
-                                        <input
-                                            type="checkbox"
-                                            checked={selectedNotes.includes(item.original)}
-                                            onChange={() => toggleNote(item.original)}
-                                            className="w-4 h-4 rounded border-gray-300 text-black focus:ring-black"
-                                        />
-                                        <span className={selectedNotes.includes(item.original) ? 'font-bold' : ''}>{item.translated}</span>
-                                    </label>
-                                ))}
+                                .map(item => {
+                                    const isSelected = item.original.some(o => selectedNotes.includes(o));
+                                    return (
+                                        <label key={item.translated} className="flex items-center gap-2 cursor-pointer hover:bg-gray-100 p-1 rounded">
+                                            <input
+                                                type="checkbox"
+                                                checked={isSelected}
+                                                onChange={() => {
+                                                    let newNotes;
+                                                    if (isSelected) {
+                                                        newNotes = selectedNotes.filter(n => !item.original.includes(n));
+                                                    } else {
+                                                        newNotes = [...selectedNotes, ...item.original];
+                                                    }
+                                                    setSelectedNotes(newNotes);
+                                                    applyFilters({ note: newNotes, resetPage: true });
+                                                }}
+                                                className="w-4 h-4 rounded border-gray-300 text-black focus:ring-black"
+                                            />
+                                            <span className={isSelected ? 'font-bold' : ''}>{item.translated}</span>
+                                        </label>
+                                    );
+                                })}
                         </div>
                     </div>
                 </CollapsibleSection>
