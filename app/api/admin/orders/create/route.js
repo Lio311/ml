@@ -42,6 +42,22 @@ export async function POST(req) {
                     dbId = parseInt(dbId.split('-')[0]);
                 }
 
+                if (item.type === 'bundle' && Array.isArray(item.items)) {
+                    for (const innerItem of item.items) {
+                        let innerDbId = innerItem.id;
+                        if (typeof innerDbId === 'string' && innerDbId.includes('-')) {
+                            innerDbId = parseInt(innerDbId.split('-')[0]);
+                        }
+                        if (!isNaN(innerDbId)) {
+                            const pRes = await client.query('SELECT stock, name_he, name FROM products WHERE id = $1', [innerDbId]);
+                            if (pRes.rows.length === 0) {
+                                throw new Error(`Product ID ${innerDbId} not found in bundle`);
+                            }
+                        }
+                    }
+                    continue;
+                }
+
                 if (!item.isPrize && !isNaN(item.size)) {
                     const pRes = await client.query('SELECT stock, name_he, name FROM products WHERE id = $1', [dbId]);
                     if (pRes.rows.length === 0) {
@@ -98,6 +114,56 @@ export async function POST(req) {
                 let dbId = item.id;
                 if (typeof dbId === 'string' && dbId.includes('-')) {
                     dbId = parseInt(dbId.split('-')[0]);
+                }
+
+                if (item.type === 'bundle' && Array.isArray(item.items)) {
+                    const bundleSize = Number(item.size) || 2;
+                    for (const innerItem of item.items) {
+                        let innerDbId = innerItem.id;
+                        if (typeof innerDbId === 'string' && innerDbId.includes('-')) {
+                            innerDbId = parseInt(innerDbId.split('-')[0]);
+                        }
+                        if (!isNaN(innerDbId)) {
+                            const deduction = bundleSize * item.quantity;
+                            const stockRes = await client.query(
+                                `UPDATE products SET stock = stock - $1 WHERE id = $2 RETURNING stock, name_he, name, original_size`,
+                                [deduction, innerDbId]
+                            );
+
+                            if (stockRes.rows.length > 0) {
+                                const { stock: currentStock, name_he, name, original_size } = stockRes.rows[0];
+                                const pName = name_he || name;
+                                const originalSize = Number(original_size) || 1000;
+                                
+                                if (currentStock < originalSize * 0.2) {
+                                    if (!notifiedProducts.has(innerDbId)) {
+                                        await client.query(
+                                            `INSERT INTO notifications (type, message, is_read) VALUES ($1, $2, $3)`,
+                                            ['warning', `מלאי נמוך למוצר: ${pName} (נותרו \u200E${currentStock} מ"ל)`, false]
+                                        );
+                                        notifiedProducts.add(innerDbId);
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    if ([2, 5, 10].includes(bundleSize)) {
+                        const totalBottles = item.items.length * item.quantity;
+                        const bottleRes = await client.query(
+                            `UPDATE bottle_inventory SET quantity = quantity - $1 WHERE size = $2 RETURNING quantity`,
+                            [totalBottles, bundleSize]
+                        );
+
+                        if (bottleRes.rows[0] && bottleRes.rows[0].quantity < 20) {
+                            const sizeLabel = `${bundleSize}ml`;
+                            await client.query(
+                                `INSERT INTO notifications (type, message, is_read) VALUES ($1, $2, $3)`,
+                                ['warning', `מלאי בקבוקים נמוך: ${sizeLabel} (נותרו \u200E${bottleRes.rows[0].quantity})`, false]
+                            );
+                        }
+                    }
+                    continue;
                 }
 
                 // Calculate stock deduction
