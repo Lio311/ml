@@ -202,8 +202,8 @@ export default function AccessibilityWidget() {
                 />
             )}
 
-            {/* Trigger Button - Always fixed to bottom left */}
-            <div className="fixed bottom-4 left-4 md:bottom-6 md:left-6 z-[9999] font-sans rtl group acc-widget-ignore">
+            {/* Trigger Button - Bottom left in HE, Bottom right in EN */}
+            <div className={`fixed bottom-4 ${isHebrew ? 'left-4 md:left-6' : 'right-4 md:right-6'} md:bottom-6 z-[9999] font-sans rtl group acc-widget-ignore`}>
                 <button
                     onClick={() => setIsOpen(!isOpen)}
                     className="w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 focus:outline-none bg-white/60 backdrop-blur-md border border-white/30 shadow-lg"
@@ -226,7 +226,7 @@ export default function AccessibilityWidget() {
                 {/* The Widget Panel - Reduced size and max-height */}
                 {isOpen && (
                     <div
-                        className="absolute bottom-16 left-0 w-[300px] bg-white/95 backdrop-blur-xl border border-white/20 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.3)] overflow-hidden animate-fade-in-up origin-bottom-left acc-widget-ignore text-gray-800"
+                        className={`absolute bottom-16 ${isHebrew ? 'left-0 origin-bottom-left' : 'right-0 origin-bottom-right'} w-[300px] bg-white/95 backdrop-blur-xl border border-white/20 rounded-2xl shadow-[0_20px_50px_rgba(0,0,0,0.3)] overflow-hidden animate-fade-in-up acc-widget-ignore text-gray-800`}
                         dir="rtl"
                         style={{ filter: 'none', color: '#1f2937' }} // Explicit colors to override high contrast
                     >

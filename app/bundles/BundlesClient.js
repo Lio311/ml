@@ -254,7 +254,7 @@ export default function BundlesClient() {
                                             {t(`bundles.${type.id}_desc`)}
                                         </p>
                                         <div className="flex items-center gap-2 text-zinc-900 font-black text-xs uppercase tracking-[0.2em] group-hover:gap-4 transition-all bg-white/60 backdrop-blur-sm px-6 py-3 rounded-full border border-black/5">
-                                            {t('common.next')} <ChevronLeft size={16} />
+                                            {t('common.next')} {dir === 'rtl' ? <ChevronLeft size={16} /> : <ChevronRight size={16} />}
                                         </div>
                                     </div>
                                 </button>
@@ -305,7 +305,7 @@ export default function BundlesClient() {
                                     </button>
                                     {isThemed2ml ? (
                                         <button onClick={handleThemed2mlAdd} disabled={loading} className="flex-1 md:flex-none px-10 py-3 rounded-full bg-emerald-500 text-white text-xs font-black uppercase tracking-widest hover:scale-105 transition-all text-center flex items-center justify-center gap-2">
-                                            {loading ? 'טוען...' : 'הוסף לעגלה'} <ShoppingCart size={16} />
+                                            {loading ? (t('common.loading') || 'טוען...') : (t('common.add_to_cart') || 'הוסף לעגלה')} <ShoppingCart size={16} />
                                         </button>
                                     ) : (
                                         <button onClick={() => { setStep(3); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="flex-1 md:flex-none px-10 py-3 rounded-full bg-white text-zinc-900 text-xs font-black uppercase tracking-widest hover:scale-105 transition-all text-center">
@@ -348,7 +348,7 @@ export default function BundlesClient() {
                                 </div>
                                 <div className="flex gap-3 w-full md:w-auto">
                                     <button onClick={() => { setStep(2); window.scrollTo({ top: 0, behavior: 'smooth' }); }} className="flex-1 md:flex-none px-5 py-4 rounded-2xl border border-zinc-200 text-zinc-500 hover:text-zinc-900 hover:bg-zinc-50 transition-all flex justify-center items-center">
-                                        <ChevronRight size={20} />
+                                        {dir === 'rtl' ? <ChevronRight size={20} /> : <ChevronLeft size={20} />}
                                     </button>
                                     <button 
                                         onClick={handleAddToCart}
