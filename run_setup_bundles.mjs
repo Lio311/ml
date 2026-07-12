@@ -1,6 +1,11 @@
-import { NextResponse } from 'next/server';
-import pool from '@/app/lib/db';
-import { checkAdmin } from '@/app/lib/admin';
+import pkg from 'pg';
+const { Pool } = pkg;
+import dotenv from 'dotenv';
+dotenv.config({ path: '.env.local' });
+
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+});
 
 const bundlesToCreate = [
     {
@@ -95,85 +100,67 @@ const bundlesToCreate = [
     }
 ];
 
-export async function GET(req) {
+async function run() {
+    const client = await pool.connect();
     try {
-        const isAdmin = await checkAdmin();
-        const url = new URL(req.url);
-        if (!isAdmin && url.searchParams.get('bypass') !== 'lior123') {
-            return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
-        }
-
-        const client = await pool.connect();
-        try {
-            await client.query('BEGIN');
-
-            const bundlesConfig = {};
-
-            for (const bundle of bundlesToCreate) {
-                // 1. Create or get the bundle product
-                let bundleProductRes = await client.query(
-                    `SELECT id FROM products WHERE discovery_type = $1 AND is_discovery_set = true`,
-                    [bundle.type]
-                );
-
-                let bundleProductId;
-                if (bundleProductRes.rows.length === 0) {
-                    const insertRes = await client.query(`
-                        INSERT INTO products (
-                            name, name_he, description_he, image_url, category, category_en, 
-                            active, is_discovery_set, discovery_type, stock,
-                            price_2ml, price_5ml, price_10ml, show_on_home, single_price
-                        ) VALUES (
-                            $1, $2, $3, $4, 'מארזים', 'bundles',
-                            true, true, $5, 100,
-                            190, 390, 690, true, 190
-                        ) RETURNING id
-                    `, [bundle.name, bundle.name, bundle.description, bundle.image, bundle.type]);
-                    bundleProductId = insertRes.rows[0].id;
-                } else {
-                    bundleProductId = bundleProductRes.rows[0].id;
-                }
-
-                // 2. Find product IDs for the items
-                const itemIds = [];
-                for (const itemName of bundle.items) {
-                    const parts = itemName.split(' - ');
-                    const searchTerm = parts[parts.length - 1].trim();
-                    const searchRes = await client.query(
-                        `SELECT id FROM products WHERE name ILIKE $1 OR name_he ILIKE $1 OR name_en ILIKE $1 LIMIT 1`,
-                        [`%${searchTerm}%`]
-                    );
-                    if (searchRes.rows.length > 0) {
-                        itemIds.push(searchRes.rows[0].id);
-                    } else {
-                        console.warn(`Warning: Could not find product for ${itemName}`);
-                    }
-                }
-
-                bundlesConfig[bundleProductId] = {
-                    type: bundle.type,
-                    name: bundle.name,
-                    items: itemIds
-                };
+        await client.query('BEGIN');
+        const bundlesConfig = {};
+        for (const bundle of bundlesToCreate) {
+            let bundleProductRes = await client.query(
+                `SELECT id FROM products WHERE discovery_type = $1 AND is_discovery_set = true`,
+                [bundle.type]
+            );
+            let bundleProductId;
+            if (bundleProductRes.rows.length === 0) {
+                const insertRes = await client.query(`
+                    INSERT INTO products (
+                        name, name_he, description_he, image_url, category, category_en, 
+                        active, is_discovery_set, discovery_type, stock,
+                        price_2ml, price_5ml, price_10ml, show_on_home, single_price
+                    ) VALUES (
+                        $1, $2, $3, $4, 'מארזים', 'bundles',
+                        true, true, $5, 100,
+                        190, 390, 690, true, 190
+                    ) RETURNING id
+                `, [bundle.name, bundle.name, bundle.description, bundle.image, bundle.type]);
+                bundleProductId = insertRes.rows[0].id;
+            } else {
+                bundleProductId = bundleProductRes.rows[0].id;
             }
 
-            // 3. Save to site_settings
-            await client.query(`
-                INSERT INTO site_settings (key, value)
-                VALUES ('bundles_config', $1)
-                ON CONFLICT (key) DO UPDATE SET value = $1
-            `, [JSON.stringify(bundlesConfig)]);
-
-            await client.query('COMMIT');
-            return NextResponse.json({ success: true, message: 'Bundles setup complete', config: bundlesConfig });
-        } catch (dbErr) {
-            await client.query('ROLLBACK');
-            throw dbErr;
-        } finally {
-            client.release();
+            const itemIds = [];
+            for (const itemName of bundle.items) {
+                const parts = itemName.split(' - ');
+                const searchTerm = parts[parts.length - 1].trim();
+                const searchRes = await client.query(
+                    `SELECT id, name FROM products WHERE name ILIKE $1 OR name_he ILIKE $1 OR name_en ILIKE $1 LIMIT 1`,
+                    [`%${searchTerm}%`]
+                );
+                if (searchRes.rows.length > 0) {
+                    itemIds.push(searchRes.rows[0].id);
+                } else {
+                    console.warn(`Warning: Could not find product for ${itemName}`);
+                }
+            }
+            bundlesConfig[bundleProductId] = {
+                type: bundle.type,
+                name: bundle.name,
+                items: itemIds
+            };
         }
-    } catch (error) {
-        console.error("Setup Bundles Error:", error);
-        return NextResponse.json({ error: error.message }, { status: 500 });
+        await client.query(`
+            INSERT INTO site_settings (key, value)
+            VALUES ('bundles_config', $1)
+            ON CONFLICT (key) DO UPDATE SET value = $1
+        `, [JSON.stringify(bundlesConfig)]);
+        await client.query('COMMIT');
+        console.log("Success! Bundles config updated:", bundlesConfig);
+    } catch (e) {
+        await client.query('ROLLBACK');
+        console.error(e);
+    } finally {
+        client.release();
+        process.exit(0);
     }
 }
+run();
