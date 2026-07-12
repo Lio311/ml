@@ -174,13 +174,13 @@ export async function GET(req) {
                         ) VALUES (
                             $1, $2, $3, $4, 'מארזים', 'bundles',
                             true, true, $5, 100,
-                            190, 390, 690, true, 190
+                            190, 390, 690, false, 190
                         ) RETURNING id
                     `, [bundle.name, bundle.name, bundle.description, bundle.image, bundle.type]);
                     bundleProductId = insertRes.rows[0].id;
                 } else {
                     bundleProductId = bundleProductRes.rows[0].id;
-                    await client.query(`UPDATE products SET show_on_home = true WHERE id = $1`, [bundleProductId]);
+                    await client.query(`UPDATE products SET show_on_home = false WHERE id = $1`, [bundleProductId]);
                 }
 
                 // 2. Find product IDs for the items
