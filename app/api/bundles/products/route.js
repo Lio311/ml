@@ -21,7 +21,21 @@ export async function GET(req) {
             `;
             const values = [];
 
-            if (type === 'summer') {
+            if (['clean', 'tropical', 'vanilla', 'gourmand', 'citrus'].includes(type)) {
+                const settingsRes = await client.query(`SELECT value FROM site_settings WHERE key = 'bundles_config'`);
+                if (settingsRes.rows.length > 0) {
+                    const config = settingsRes.rows[0].value;
+                    const bundleConfig = Object.values(config).find(b => b.type === `${type}_bundle`);
+                    if (bundleConfig && bundleConfig.items && bundleConfig.items.length > 0) {
+                        query += ` AND id = ANY($1::int[])`;
+                        values.push(bundleConfig.items);
+                    } else {
+                        return NextResponse.json({ products: [] });
+                    }
+                } else {
+                    return NextResponse.json({ products: [] });
+                }
+            } else if (type === 'summer') {
                 // Summer filter: 'קיץ' in seasons (stored as text or array, checking for both)
                 query += ` AND (seasons ILIKE '%קיץ%' OR seasons ILIKE '%Summer%')`;
             } else if (type === 'winter') {

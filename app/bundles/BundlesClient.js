@@ -13,7 +13,12 @@ const BUNDLE_TYPES = [
     { id: 'summer', bgImage: '/images/vibe/summer.png' },
     { id: 'winter', bgImage: '/images/vibe/winter.png' },
     { id: 'dates', bgImage: '/images/vibe/dates.png' },
-    { id: 'collectors', bgImage: '/images/vibe/collectors.png' }
+    { id: 'collectors', bgImage: '/images/vibe/collectors.png' },
+    { id: 'clean', bgImage: '/images/vibe/clean.jpg', isThemed: true },
+    { id: 'tropical', bgImage: '/images/vibe/tropical.jpg', isThemed: true },
+    { id: 'vanilla', bgImage: '/images/vibe/vanilla.jpg', isThemed: true },
+    { id: 'gourmand', bgImage: '/images/vibe/gourmand.jpg', isThemed: true },
+    { id: 'citrus', bgImage: '/images/vibe/citrus.jpg', isThemed: true }
 ];
 
 const SIZES = [
@@ -37,6 +42,9 @@ export default function BundlesClient() {
 
     const currentSizeData = SIZES.find(s => s.id === selectedSize);
     const requiredCount = currentSizeData?.count || 10;
+
+    const currentBundle = BUNDLE_TYPES.find(b => b.id === selectedType);
+    const isThemed2ml = currentBundle?.isThemed && selectedSize === '2';
 
     useEffect(() => {
         if (selectedType) {
@@ -98,6 +106,45 @@ export default function BundlesClient() {
             router.push('/cart');
         } else {
             // Fallback if context not updated yet
+            toast.error('סל הקניות עדיין לא מעודכן לתמיכה בחבילות');
+        }
+    };
+
+    const handleThemed2mlAdd = () => {
+        if (loading) return;
+        if (products.length === 0) {
+            toast.error('הבשמים נטענים, אנא המתן...');
+            return;
+        }
+        
+        // Ensure all 10 products are available in 2ml size
+        const availableProducts = products.filter(p => {
+            const stockVal = Number(p.stock) || 0;
+            const sizePriceKey = `price_2ml`;
+            const hasSize = p[sizePriceKey] !== null && Number(p[sizePriceKey]) > 0;
+            return stockVal >= 2 && hasSize;
+        });
+
+        if (availableProducts.length < 10) {
+            toast.error('אזל המלאי באופן זמני ויתחדש בקרוב');
+            return;
+        }
+
+        const bundle = {
+            id: `bundle-${selectedType}-${Date.now()}`,
+            type: 'bundle',
+            bundleType: selectedType,
+            size: '2',
+            items: availableProducts.slice(0, 10),
+            name: t(`bundles.${selectedType}_bundle`),
+            quantity: 1
+        };
+
+        if (addBundleToCart) {
+            addBundleToCart(bundle);
+            toast.success(t('bundles.bundle_added_toast'));
+            router.push('/cart');
+        } else {
             toast.error('סל הקניות עדיין לא מעודכן לתמיכה בחבילות');
         }
     };
@@ -243,9 +290,15 @@ export default function BundlesClient() {
                                     <button onClick={() => setStep(1)} className="flex-1 md:flex-none px-6 py-3 rounded-full border border-white/20 text-xs font-black uppercase tracking-widest hover:bg-white/10 transition-all text-center">
                                         {t('common.previous')}
                                     </button>
-                                    <button onClick={() => setStep(3)} className="flex-1 md:flex-none px-10 py-3 rounded-full bg-white text-zinc-900 text-xs font-black uppercase tracking-widest hover:scale-105 transition-all text-center">
-                                        {t('common.next')}
-                                    </button>
+                                    {isThemed2ml ? (
+                                        <button onClick={handleThemed2mlAdd} disabled={loading} className="flex-1 md:flex-none px-10 py-3 rounded-full bg-emerald-500 text-white text-xs font-black uppercase tracking-widest hover:scale-105 transition-all text-center flex items-center justify-center gap-2">
+                                            {loading ? 'טוען...' : 'הוסף לעגלה'} <ShoppingCart size={16} />
+                                        </button>
+                                    ) : (
+                                        <button onClick={() => setStep(3)} className="flex-1 md:flex-none px-10 py-3 rounded-full bg-white text-zinc-900 text-xs font-black uppercase tracking-widest hover:scale-105 transition-all text-center">
+                                            {t('common.next')}
+                                        </button>
+                                    )}
                                 </div>
                             </div>
                         </motion.div>
