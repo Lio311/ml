@@ -97,8 +97,7 @@ const bundlesToCreate = [
 
 export async function GET(req) {
     try {
-        const url = new URL(req.url);
-        const bypass = url.searchParams.get('bypass');
+        const bypass = req.nextUrl.searchParams.get('bypass');
         
         let isAdmin = false;
         if (bypass === 'true') {
