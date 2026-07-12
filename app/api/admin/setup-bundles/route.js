@@ -185,16 +185,18 @@ export async function GET(req) {
                 // 2. Find product IDs for the items
                 const itemIds = [];
                 for (const itemName of bundle.items) {
-                    const parts = itemName.split(' - ');
-                    const searchTerm = parts[parts.length - 1].trim();
-                    const searchRes = await client.query(
-                        `SELECT id FROM products WHERE name ILIKE $1 OR name_he ILIKE $1 OR name_en ILIKE $1 LIMIT 1`,
-                        [`%${searchTerm}%`]
-                    );
-                    if (searchRes.rows.length > 0) {
-                        itemIds.push(searchRes.rows[0].id);
+                    const prodRes = await client.query(`
+                        SELECT id FROM products 
+                        WHERE name ILIKE $1 
+                           OR model ILIKE $1 
+                           OR brand ILIKE $1 
+                           OR CONCAT(brand, ' ', model) ILIKE $1
+                           OR CONCAT(brand, '-', model) ILIKE $1
+                    `, [`%${itemName}%`]);
+                    if (prodRes.rows.length > 0) {
+                        itemIds.push(prodRes.rows[0].id);
                     } else {
-                        console.warn(`Warning: Could not find product for ${itemName}`);
+                        console.log(`Product not found for bundle: ${itemName}`);
                     }
                 }
 

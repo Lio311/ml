@@ -257,8 +257,8 @@ export default function BundlesInventoryClient({ initialBundlesConfig, productsM
                                                 className="w-full flex items-center gap-4 p-3 hover:bg-gray-50 border rounded-xl transition-colors text-right"
                                             >
                                                 <div className="w-12 h-12 bg-white rounded-lg border flex items-center justify-center overflow-hidden shrink-0">
-                                                    {product.image_url ? (
-                                                        <img src={product.image_url} alt={product.name} className="w-full h-full object-contain p-1" />
+                                                    {(product.image || product.image_url) ? (
+                                                        <img src={product.image || product.image_url} alt={product.name} className="w-full h-full object-contain p-1" />
                                                     ) : (
                                                         <span className="text-[10px] text-gray-400">אין תמונה</span>
                                                     )}
