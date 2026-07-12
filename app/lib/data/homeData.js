@@ -18,7 +18,7 @@ export async function getHomeData() {
                 topCatRes,
                 bannerRes
             ] = await Promise.all([
-                client.query('SELECT id, brand, model, price_2ml, price_5ml, price_10ml, image_url, category, in_lottery, slug, description, stock, brand_he, model_he, original_size, created_at, discount_percentage, discount_sizes, discount_end_date, is_discovery_set, single_price, volume_label FROM products WHERE active = true AND stock > 0 AND show_on_home = true ORDER BY created_at DESC LIMIT 6').catch(e => { console.error(e); return { rows: [] }; }),
+                client.query(`SELECT id, brand, model, price_2ml, price_5ml, price_10ml, image_url, category, in_lottery, slug, description, stock, brand_he, model_he, original_size, created_at, discount_percentage, discount_sizes, discount_end_date, is_discovery_set, single_price, volume_label FROM products WHERE active = true AND stock > 0 AND show_on_home = true AND (is_discovery_set IS NULL OR is_discovery_set = false) AND (category_en IS NULL OR category_en != 'bundles') ORDER BY created_at DESC LIMIT 6`).catch(e => { console.error(e); return { rows: [] }; }),
                 client.query('SELECT COUNT(*) FROM products WHERE active = true AND stock > 0 AND (is_discovery_set IS NULL OR is_discovery_set = false)').catch(e => { console.error(e); return { rows: [{ count: 0 }] }; }),
                 client.query('SELECT COUNT(DISTINCT brand) FROM products WHERE active = true AND stock > 0').catch(e => { console.error(e); return { rows: [{ count: 0 }] }; }),
                 client.query('SELECT name, logo_url FROM brands WHERE logo_url IS NOT NULL ORDER BY RANDOM()').catch(e => { console.error(e); return { rows: [] }; }),
