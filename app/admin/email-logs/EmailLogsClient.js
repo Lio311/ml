@@ -123,9 +123,13 @@ export default function EmailLogsClient({ initialLogs, currentPage, totalPages, 
                                 <tr key={log.id} className="hover:bg-gray-50/80 transition-colors">
                                     <td className="px-6 py-4">
                                         <div className="flex items-center gap-3">
-                                            <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-400 font-bold text-xs shrink-0">
-                                                {log.recipient[0].toUpperCase()}
-                                            </div>
+                                            {log.image_url ? (
+                                                <img src={log.image_url} alt="" className="w-8 h-8 rounded-full object-cover shrink-0 border border-gray-200" referrerPolicy="no-referrer" />
+                                            ) : (
+                                                <div className="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-400 font-bold text-xs shrink-0 border border-gray-200">
+                                                    {log.recipient[0].toUpperCase()}
+                                                </div>
+                                            )}
                                             <div className="min-w-0 flex-1">
                                                 <div className="text-sm font-bold text-gray-900 leading-tight break-all line-clamp-2" title={log.recipient}>{log.recipient}</div>
                                             </div>
@@ -193,9 +197,13 @@ export default function EmailLogsClient({ initialLogs, currentPage, totalPages, 
                         <div key={log.id} className="p-4 active:bg-gray-50 transition-colors">
                             <div className="flex justify-between items-start mb-3">
                                 <div className="flex items-center gap-3 min-w-0">
-                                    <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-400 font-extrabold text-sm shrink-0 border border-gray-200">
-                                        {log.recipient[0].toUpperCase()}
-                                    </div>
+                                    {log.image_url ? (
+                                        <img src={log.image_url} alt="" className="w-10 h-10 rounded-full object-cover shrink-0 border border-gray-200" referrerPolicy="no-referrer" />
+                                    ) : (
+                                        <div className="w-10 h-10 rounded-full bg-gray-100 flex items-center justify-center text-gray-400 font-extrabold text-sm shrink-0 border border-gray-200">
+                                            {log.recipient[0].toUpperCase()}
+                                        </div>
+                                    )}
                                     <div className="min-w-0 flex-1">
                                         <div className="text-sm font-black text-gray-900 break-all line-clamp-2" title={log.recipient}>{log.recipient}</div>
                                         <div className="flex items-center gap-2 mt-0.5">

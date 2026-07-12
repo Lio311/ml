@@ -38,7 +38,9 @@ export default async function EmailLogsPage({ searchParams }) {
 
     // Fetch logs
     const logsRes = await pool.query(`
-        SELECT * FROM email_logs 
+        SELECT email_logs.*, users.image_url 
+        FROM email_logs 
+        LEFT JOIN users ON email_logs.recipient = users.email
         ORDER BY sent_at DESC 
         LIMIT $1 OFFSET $2
     `, [limit, offset]);
