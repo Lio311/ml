@@ -40,7 +40,7 @@ export default async function BundlesInventoryPage() {
 
         if (allProductIds.size > 0) {
             const productsRes = await client.query(
-                `SELECT id, name, brand, model, stock, volume_ml, categories, notes_he 
+                `SELECT id, name, brand, model, stock, image_url, category, description 
                  FROM products WHERE id = ANY($1)`,
                 [Array.from(allProductIds)]
             );

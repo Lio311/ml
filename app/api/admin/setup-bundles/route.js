@@ -136,9 +136,11 @@ export async function GET() {
                 // 2. Find product IDs for the items
                 const itemIds = [];
                 for (const itemName of bundle.items) {
+                    const parts = itemName.split(' - ');
+                    const searchTerm = parts[parts.length - 1].trim();
                     const searchRes = await client.query(
                         `SELECT id FROM products WHERE name ILIKE $1 OR name_he ILIKE $1 OR name_en ILIKE $1 LIMIT 1`,
-                        [`%${itemName}%`]
+                        [`%${searchTerm}%`]
                     );
                     if (searchRes.rows.length > 0) {
                         itemIds.push(searchRes.rows[0].id);
