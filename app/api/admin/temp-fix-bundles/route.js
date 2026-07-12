@@ -1,6 +1,8 @@
 import { NextResponse } from 'next/server';
 import pool from '@/app/lib/db';
 
+export const dynamic = 'force-dynamic';
+
 const newBundles = [
     {
         type: 'floral_bundle',
