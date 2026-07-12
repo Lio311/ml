@@ -68,7 +68,7 @@ const navGroups = [
             { href: "/admin/brands", label: "מותגים", icon: Tag, roles: ['admin', 'deputy'] },
             { href: "/admin/inventory", label: "בקבוקונים", icon: TestTube, roles: ['admin', 'deputy'] },
             { href: "/admin/discovery-sets", label: "דיסקברי ודוגמיות", icon: Package, roles: ['admin', 'deputy'] },
-            { href: "/admin/bundles-inventory", label: "מלאי חבילות", icon: Package, roles: ['admin', 'deputy'] },
+            { href: "/admin/bundles-inventory", label: "חבילות", icon: Package, roles: ['admin', 'deputy'] },
             { href: "/admin/procurement", label: "רכש", icon: TrendingUp, roles: ['admin', 'deputy'] },
             { href: "/admin/inventory-heatmap", label: "מפת חום", icon: Thermometer, roles: ['admin', 'deputy'] },
         ]
@@ -153,6 +153,7 @@ export default function AdminSidebar({ role = 'customer' }) {
     const [pendingRecommendationsCount, setPendingRecommendationsCount] = useState(0);
     const [hiddenReviewsCount, setHiddenReviewsCount] = useState(0);
     const [pendingCheckoutErrorsCount, setPendingCheckoutErrorsCount] = useState(0);
+    const [missingBundleItems, setMissingBundleItems] = useState(false);
     const [openGroups, setOpenGroups] = useState({});
 
     useEffect(() => {
@@ -167,6 +168,7 @@ export default function AdminSidebar({ role = 'customer' }) {
                     setPendingRecommendationsCount(data.pendingRecommendations || 0);
                     setHiddenReviewsCount(data.hiddenReviews || 0);
                     setPendingCheckoutErrorsCount(data.pendingCheckoutErrors || 0);
+                    setMissingBundleItems(data.missingBundleItems || false);
                 }
             } catch (err) {
                 console.error("Sidebar fetch error:", err);
@@ -232,6 +234,7 @@ export default function AdminSidebar({ role = 'customer' }) {
                             if (item.href === '/admin/recommendations') return acc + pendingRecommendationsCount;
                             if (item.href === '/admin/reviews') return acc + hiddenReviewsCount;
                             if (item.href === '/admin/checkout-errors') return acc + pendingCheckoutErrorsCount;
+                            if (item.href === '/admin/bundles-inventory' && missingBundleItems) return acc + 1;
                             return acc;
                         }, 0);
 
@@ -310,6 +313,11 @@ export default function AdminSidebar({ role = 'customer' }) {
                                                     {item.href === '/admin/checkout-errors' && pendingCheckoutErrorsCount > 0 && (
                                                         <span title="שגיאות קופה" className="flex h-5 min-w-[20px] items-center justify-center rounded-full bg-red-500 px-1.5 text-[10px] font-black text-white shadow-[0_0_10px_rgba(239,68,68,0.4)] animate-pulse">
                                                             {pendingCheckoutErrorsCount}
+                                                        </span>
+                                                    )}
+                                                    {item.href === '/admin/bundles-inventory' && missingBundleItems && (
+                                                        <span title="חלק מהבשמים בחבילות אזלו מהמלאי" className="flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-white shadow-[0_0_10px_rgba(239,68,68,0.4)]">
+                                                            <AlertOctagon size={12} strokeWidth={3} />
                                                         </span>
                                                     )}
                                                 </div>

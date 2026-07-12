@@ -20,14 +20,13 @@ export async function GET(req) {
 
             // Same category or brand, in stock
             const suggestionsRes = await client.query(`
-                SELECT id, name, brand, model, stock, volume_ml, categories, notes_he 
+                SELECT id, name, brand, model, stock, image_url, category, description 
                 FROM products 
                 WHERE id != $1 
                 AND stock > 0
-                AND is_active = true
-                AND (brand = $2 OR categories && $3)
+                AND (brand = $2 OR category = $3)
                 LIMIT 10
-            `, [productId, orig.brand, orig.categories || []]);
+            `, [productId, orig.brand, orig.category || '']);
             
             return NextResponse.json({ suggestions: suggestionsRes.rows.slice(0, 3) });
         } finally {

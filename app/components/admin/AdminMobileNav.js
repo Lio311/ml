@@ -72,7 +72,7 @@ const navGroups = [
             { href: "/admin/brands", label: "מותגים", icon: Tag, roles: ['admin', 'deputy'] },
             { href: "/admin/inventory", label: "בקבוקונים", icon: TestTube, roles: ['admin', 'deputy'] },
             { href: "/admin/discovery-sets", label: "דיסקברי ודוגמיות", icon: Package, roles: ['admin', 'deputy'] },
-            { href: "/admin/bundles-inventory", label: "מלאי חבילות", icon: Package, roles: ['admin', 'deputy'] },
+            { href: "/admin/bundles-inventory", label: "חבילות", icon: Package, roles: ['admin', 'deputy'] },
             { href: "/admin/procurement", label: "רכש", icon: TrendingUp, roles: ['admin', 'deputy'] },
             { href: "/admin/inventory-heatmap", label: "מפת חום", icon: Thermometer, roles: ['admin', 'deputy'] },
         ]
@@ -152,13 +152,21 @@ export default function AdminMobileNav({ role = 'customer' }) {
     const [isOpen, setIsOpen] = useState(false);
     const pathname = usePathname();
     const brand = useBrand();
+    
+    // Notifications state
     const [unreadCount, setUnreadCount] = useState(0);
     const [pendingOrdersCount, setPendingOrdersCount] = useState(0);
     const [monthlyRecNeedsAction, setMonthlyRecNeedsAction] = useState(false);
     const [pendingRecommendationsCount, setPendingRecommendationsCount] = useState(0);
     const [hiddenReviewsCount, setHiddenReviewsCount] = useState(0);
     const [pendingCheckoutErrorsCount, setPendingCheckoutErrorsCount] = useState(0);
+    const [missingBundleItems, setMissingBundleItems] = useState(false);
     const [openGroups, setOpenGroups] = useState({});
+
+    // Close sidebar on route change
+    useEffect(() => {
+        setIsOpen(false);
+    }, [pathname]);
 
     useEffect(() => {
         const fetchCounts = async () => {
@@ -172,15 +180,17 @@ export default function AdminMobileNav({ role = 'customer' }) {
                     setPendingRecommendationsCount(data.pendingRecommendations || 0);
                     setHiddenReviewsCount(data.hiddenReviews || 0);
                     setPendingCheckoutErrorsCount(data.pendingCheckoutErrors || 0);
+                    setMissingBundleItems(data.missingBundleItems || false);
                 }
             } catch (err) {
-                console.error("Sidebar fetch error:", err);
+                console.error("Mobile Nav fetch error:", err);
             }
         };
-        fetchCounts();
-        const interval = setInterval(fetchCounts, 30000);
-        return () => clearInterval(interval);
-    }, []);
+
+        if (isOpen) {
+            fetchCounts();
+        }
+    }, [isOpen]);
 
     const isActive = (path) => {
         if (path === '/admin') return pathname === '/admin';
@@ -188,53 +198,68 @@ export default function AdminMobileNav({ role = 'customer' }) {
     };
 
     useEffect(() => {
-        const initialOpen = {};
-        navGroups.forEach((group, idx) => {
-            if (group.items.some(item => pathname === item.href || pathname.startsWith(`${item.href}/`))) {
-                initialOpen[idx] = true;
+        if (!isOpen) return;
+        
+        let found = false;
+        for (let idx = 0; idx < navGroups.length; idx++) {
+            if (navGroups[idx].items.some(item => isActive(item.href))) {
+                setOpenGroups({ [idx]: true });
+                found = true;
+                break;
             }
-        });
-        setOpenGroups(initialOpen);
-    }, [pathname]);
+        }
+        if (!found) setOpenGroups({});
+    }, [pathname, isOpen]);
 
     const toggleGroup = (idx) => {
         setOpenGroups(prev => prev[idx] ? {} : { [idx]: true });
     };
 
+    const hasAnyNotification = unreadCount > 0 || pendingOrdersCount > 0 || monthlyRecNeedsAction || pendingRecommendationsCount > 0 || hiddenReviewsCount > 0 || pendingCheckoutErrorsCount > 0 || missingBundleItems;
+
     return (
         <div className="md:hidden">
-            <div className="bg-[#050505] text-white p-4 flex justify-between items-center shadow-lg sticky top-0 z-50 border-b border-white/[0.06]">
-                <button 
-                    onClick={() => setIsOpen(!isOpen)}
-                    className="p-2 hover:bg-white/5 rounded-lg transition-colors"
-                >
-                    {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-                </button>
-                <span className="font-black text-lg tracking-tighter uppercase flex items-center gap-1">
-                    <span className="lowercase">{brand.name?.split(' ')[0]}</span> <span className="text-blue-500 not-italic text-xs bg-blue-500/10 px-1 rounded border border-blue-500/20">Admin</span>
-                </span>
+            {/* Header / Hamburger */}
+            <div className="fixed top-0 left-0 right-0 h-16 bg-[#050505] border-b border-white/[0.06] z-[60] flex items-center justify-between px-4">
+                <div className="flex flex-col">
+                    <h2 className="text-xl font-black tracking-tighter uppercase flex items-center gap-1 text-white">
+                        <span className="lowercase">{brand.name?.split(' ')[0]}</span>
+                        <span className="text-blue-500 text-sm not-italic font-bold tracking-widest bg-blue-500/10 px-1.5 py-0.5 rounded border border-blue-500/20">Admin</span>
+                    </h2>
+                </div>
+
+                <div className="flex items-center gap-4">
+                    <Link href="/" className="text-[11px] text-gray-500 font-bold uppercase tracking-[0.2em] px-2 py-1.5 rounded-md border border-gray-800 bg-white/5 active:bg-white/10 transition-colors flex items-center gap-1">
+                        לאתר <ArrowUpRight size={12} />
+                    </Link>
+
+                    <button 
+                        onClick={() => setIsOpen(!isOpen)}
+                        className="text-white p-2 rounded-xl border border-white/10 bg-white/5 relative"
+                    >
+                        {isOpen ? <X size={20} /> : <Menu size={20} />}
+                        {!isOpen && hasAnyNotification && (
+                            <span className="absolute -top-1 -right-1 flex h-3 w-3">
+                                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-red-400 opacity-75"></span>
+                                <span className="relative inline-flex rounded-full h-3 w-3 bg-red-500"></span>
+                            </span>
+                        )}
+                    </button>
+                </div>
             </div>
 
+            {/* Overlay */}
             {isOpen && (
                 <div 
-                    className="fixed inset-0 bg-black/80 z-40 backdrop-blur-md"
+                    className="fixed inset-0 bg-black/60 backdrop-blur-sm z-[50]"
                     onClick={() => setIsOpen(false)}
                 />
             )}
 
-            <div className={`fixed top-0 right-0 h-full w-72 bg-[#0a0a0a] z-50 transform transition-transform duration-500 ease-in-out shadow-2xl border-l border-white/[0.06] ${isOpen ? 'translate-x-0 opacity-100' : 'translate-x-full opacity-0 invisible'}`}>
-                <div className="p-6 flex flex-col h-full">
-                    <div className="flex justify-between items-center mb-8">
-                        <div>
-                            <h2 className="text-xl font-black uppercase tracking-tighter text-white lowercase">{brand.name}</h2>
-                            <p className="text-[10px] text-gray-500 font-bold tracking-wider">ממשק ניהול מתקדם</p>
-                        </div>
-                        <button onClick={() => setIsOpen(false)} className="p-2 hover:bg-white/5 rounded-full transition-colors">
-                            <X className="w-5 h-5 text-gray-400" />
-                        </button>
-                    </div>
-
-                    <nav className="flex-1 space-y-6 overflow-y-auto no-scrollbar" dir="rtl">
+            {/* Sidebar Menu */}
+            <div className={`fixed top-16 bottom-0 right-0 w-[280px] bg-[#050505] border-l border-white/[0.06] z-[55] transform transition-transform duration-300 ease-out flex flex-col ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}>
+                <nav className="flex-1 overflow-y-auto py-6 px-4 space-y-6" dir="ltr">
+                    <div dir="rtl" className="space-y-6">
                         {navGroups.map((group, idx) => {
                             const visibleItems = group.items.filter(item => item.roles.includes(role));
                             if (visibleItems.length === 0) return null;
@@ -246,6 +271,7 @@ export default function AdminMobileNav({ role = 'customer' }) {
                                 if (item.href === '/admin/recommendations') return acc + pendingRecommendationsCount;
                                 if (item.href === '/admin/reviews') return acc + hiddenReviewsCount;
                                 if (item.href === '/admin/checkout-errors') return acc + pendingCheckoutErrorsCount;
+                                if (item.href === '/admin/bundles-inventory' && missingBundleItems) return acc + 1;
                                 return acc;
                             }, 0);
 
@@ -253,7 +279,7 @@ export default function AdminMobileNav({ role = 'customer' }) {
                                 <div key={idx} className="space-y-2">
                                     <button 
                                         onClick={() => toggleGroup(idx)}
-                                        className="w-full flex items-center justify-between px-3 py-1 text-[10px] font-black text-gray-600 uppercase tracking-[0.2em]"
+                                        className="w-full flex items-center justify-between px-3 text-[10px] font-black text-gray-600 uppercase tracking-[0.25em]"
                                     >
                                         <div className="flex items-center gap-1.5">
                                             <span>{group.title}</span>
@@ -266,7 +292,8 @@ export default function AdminMobileNav({ role = 'customer' }) {
                                             className={`transition-transform duration-300 ${openGroups[idx] ? '' : '-rotate-90'}`} 
                                         />
                                     </button>
-                                    <div className={`space-y-1 overflow-hidden transition-all duration-500 ease-in-out ${openGroups[idx] ? 'max-h-[800px] opacity-100' : 'max-h-0 opacity-0'}`}>
+                                    
+                                    <div className={`space-y-1 overflow-hidden transition-all duration-300 ${openGroups[idx] ? 'max-h-[600px] opacity-100' : 'max-h-0 opacity-0'}`}>
                                         {visibleItems.map((item) => {
                                             const Icon = item.icon;
                                             const active = isActive(item.href);
@@ -274,18 +301,21 @@ export default function AdminMobileNav({ role = 'customer' }) {
                                                 <Link
                                                     key={item.href}
                                                     href={item.href}
-                                                    onClick={() => setIsOpen(false)}
-                                                    className={`flex items-center gap-3 p-3 rounded-xl transition-all duration-300 ${active
-                                                        ? "bg-blue-500/10 text-blue-400 border border-blue-500/20 shadow-[0_0_15px_rgba(0,122,255,0.1)]"
-                                                        : "hover:bg-white/5 text-gray-400 hover:text-white"
+                                                    className={`flex justify-between items-center px-4 py-3 rounded-xl transition-all ${active
+                                                        ? "bg-blue-500/10 text-blue-400 border border-blue-500/20"
+                                                        : "text-gray-400 hover:bg-white/[0.03] hover:text-white border border-transparent"
                                                         }`}
                                                 >
-                                                    <div className={`p-1.5 rounded-lg ${active ? 'bg-blue-500/20 text-blue-400' : 'text-gray-500'}`}>
-                                                        <Icon size={18} strokeWidth={active ? 2.5 : 2} />
+                                                    <div className="flex items-center gap-3">
+                                                        <div className={`p-1.5 rounded-lg ${active ? 'bg-blue-500/20 text-blue-400' : 'text-gray-500'}`}>
+                                                            <Icon size={18} strokeWidth={active ? 2.5 : 2} />
+                                                        </div>
+                                                        <span className={`text-[14px] ${active ? 'font-bold' : 'font-medium'}`}>
+                                                            {item.label}
+                                                        </span>
                                                     </div>
-                                                    <span className={`text-sm tracking-tight ${active ? 'font-bold' : ''}`}>{item.label}</span>
-                                                    
-                                                    <div className="mr-auto flex items-center gap-2">
+
+                                                    <div className="flex items-center gap-2">
                                                         {item.href === '/admin/orders' && pendingOrdersCount > 0 && (
                                                             <span className="flex h-5 min-w-[20px] items-center justify-center rounded-full bg-blue-500 px-1.5 text-[10px] font-black text-white">
                                                                 {pendingOrdersCount}
@@ -297,25 +327,30 @@ export default function AdminMobileNav({ role = 'customer' }) {
                                                             </span>
                                                         )}
                                                         {item.href === '/admin/monthly-recommendation' && monthlyRecNeedsAction && (
-                                                            <span title="נדרשת פעולה" className="flex h-5 w-5 items-center justify-center rounded-full bg-orange-500 text-white shadow-[0_0_10px_rgba(249,115,22,0.4)]">
+                                                            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-orange-500 text-white">
                                                                 <AlertOctagon size={12} strokeWidth={3} />
                                                             </span>
                                                         )}
                                                         {item.href === '/admin/recommendations' && pendingRecommendationsCount > 0 && (
-                                                            <span title="המלצות ממתינות לאישור" className="flex h-5 min-w-[20px] gap-1 items-center justify-center rounded-full bg-orange-500 px-1.5 text-[10px] font-black text-white shadow-[0_0_10px_rgba(249,115,22,0.4)]">
+                                                            <span className="flex h-5 min-w-[20px] gap-1 items-center justify-center rounded-full bg-orange-500 px-1.5 text-[10px] font-black text-white">
                                                                 <AlertOctagon size={10} strokeWidth={3} />
                                                                 {pendingRecommendationsCount}
                                                             </span>
                                                         )}
                                                         {item.href === '/admin/reviews' && hiddenReviewsCount > 0 && (
-                                                            <span title="ביקורות מוסתרות" className="flex h-5 min-w-[20px] gap-1 items-center justify-center rounded-full bg-blue-500 px-1.5 text-[10px] font-black text-white shadow-[0_0_10px_rgba(59,130,246,0.4)]">
+                                                            <span className="flex h-5 min-w-[20px] gap-1 items-center justify-center rounded-full bg-blue-500 px-1.5 text-[10px] font-black text-white">
                                                                 <AlertOctagon size={10} strokeWidth={3} />
                                                                 {hiddenReviewsCount}
                                                             </span>
                                                         )}
                                                         {item.href === '/admin/checkout-errors' && pendingCheckoutErrorsCount > 0 && (
-                                                            <span title="שגיאות קופה" className="flex h-5 min-w-[20px] items-center justify-center rounded-full bg-red-500 px-1.5 text-[10px] font-black text-white shadow-[0_0_10px_rgba(239,68,68,0.4)] animate-pulse">
+                                                            <span className="flex h-5 min-w-[20px] items-center justify-center rounded-full bg-red-500 px-1.5 text-[10px] font-black text-white animate-pulse">
                                                                 {pendingCheckoutErrorsCount}
+                                                            </span>
+                                                        )}
+                                                        {item.href === '/admin/bundles-inventory' && missingBundleItems && (
+                                                            <span className="flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-white">
+                                                                <AlertOctagon size={12} strokeWidth={3} />
                                                             </span>
                                                         )}
                                                     </div>

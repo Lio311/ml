@@ -67,10 +67,10 @@ const bundlesToCreate = [
             'ASMR Fragrances - Yummy Tingles',
             'Bohoboco -  Sea Salt Caramel',
             'The Lab - Amber Chocolate',
-            'Peach Macaroon',
+            'Theodoros Kalotinis - Peach Macaron',
             'Maie Piou - Cherry Harley',
             'Soma Parfums - Halcyon',
-            'Mango Sticky Rice',
+            'Bergamoss - Mango Sticky Rice',
             'Xerjoff - Lira',
             'Sora Dora - Jany'
         ]

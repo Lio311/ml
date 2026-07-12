@@ -54,6 +54,32 @@ export async function GET() {
                 // Table might not exist yet
             }
 
+            // 6. Check bundles inventory
+            let missingBundleItems = false;
+            try {
+                const settingsRes = await client.query(`SELECT value FROM site_settings WHERE key = 'bundles_config'`);
+                if (settingsRes.rows.length > 0) {
+                    const bundlesConfig = settingsRes.rows[0].value || {};
+                    const allProductIds = new Set();
+                    for (const bundle of Object.values(bundlesConfig)) {
+                        if (bundle && bundle.items && Array.isArray(bundle.items)) {
+                            bundle.items.forEach(id => allProductIds.add(id));
+                        }
+                    }
+                    if (allProductIds.size > 0) {
+                        const stockRes = await client.query(
+                            `SELECT COUNT(*) FROM products WHERE id = ANY($1) AND stock <= 0`,
+                            [Array.from(allProductIds)]
+                        );
+                        if (parseInt(stockRes.rows[0].count) > 0) {
+                            missingBundleItems = true;
+                        }
+                    }
+                }
+            } catch (e) {
+                // Ignore
+            }
+
             const monthlyRecStatus = monthlyRecRes.rows.length > 0 ? monthlyRecRes.rows[0].status : 'pending';
 
             return NextResponse.json({
@@ -62,7 +88,8 @@ export async function GET() {
                 pendingRecommendations: parseInt(recsRes.rows[0].count || 0),
                 hiddenReviews: parseInt(hiddenReviewsRes.rows[0].count || 0),
                 monthlyRecNeedsAction: monthlyRecStatus !== 'selected',
-                pendingCheckoutErrors: checkoutErrorsCount
+                pendingCheckoutErrors: checkoutErrorsCount,
+                missingBundleItems
             });
         } finally {
             client.release();
