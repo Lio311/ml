@@ -143,8 +143,8 @@ export default function BundlesInventoryClient({ initialBundlesConfig, productsM
 
                                     <div className="flex gap-4">
                                         <div className="w-16 h-16 shrink-0 bg-white rounded-xl border border-gray-100 flex items-center justify-center overflow-hidden p-1">
-                                            {product.image_url ? (
-                                                <img src={product.image_url} alt={product.name} className="w-full h-full object-contain" />
+                                            {(product.image_url || product.image) ? (
+                                                <img src={product.image_url || product.image} alt={product.name} className="w-full h-full object-contain" />
                                             ) : (
                                                 <div className="text-xs text-gray-400">אין תמונה</div>
                                             )}
