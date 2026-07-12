@@ -247,9 +247,17 @@ export default function BundlesInventoryClient({ initialBundlesConfig, productsM
                             </div>
 
                             <div className="flex-1 overflow-y-auto min-h-[300px]">
-                                {searchResults.length > 0 ? (
+                                {searchResults.filter(p => !p.is_discovery_set).length > 0 ? (
                                     <div className="space-y-2">
-                                        {searchResults.map(product => (
+                                        {searchResults.filter(p => !p.is_discovery_set).map(product => {
+                                            let displayName = product.name || product.model || '';
+                                            if (product.brand && displayName.toLowerCase().includes(product.brand.toLowerCase())) {
+                                                const regex = new RegExp(`^${product.brand}\\s*-?\\s*`, 'i');
+                                                displayName = displayName.replace(regex, '').trim();
+                                            }
+                                            if (!displayName) displayName = product.model || product.name;
+
+                                            return (
                                             <button
                                                 key={product.id}
                                                 onClick={() => handleReplace(editingProductData.bundleId, editingProductData.oldProductId, product)}
@@ -265,7 +273,7 @@ export default function BundlesInventoryClient({ initialBundlesConfig, productsM
                                                 </div>
                                                 <div className="flex-1 min-w-0 flex flex-col justify-center text-right" dir="rtl">
                                                     <div className="font-bold text-sm truncate w-full text-right" style={{ textAlign: 'right', direction: 'rtl' }}>
-                                                        {product.name || `${product.brand} ${product.model}`}
+                                                        {displayName}
                                                     </div>
                                                     <div className="text-xs text-gray-500 truncate w-full text-right" style={{ textAlign: 'right', direction: 'rtl' }}>
                                                         {product.brand}
@@ -279,7 +287,7 @@ export default function BundlesInventoryClient({ initialBundlesConfig, productsM
                                                     )}
                                                 </div>
                                             </button>
-                                        ))}
+                                        )})}
                                     </div>
                                 ) : searchQuery.length >= 2 && !isSearching ? (
                                     <div className="flex flex-col items-center justify-center h-full text-gray-400 space-y-2">
