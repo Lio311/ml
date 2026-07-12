@@ -36,7 +36,6 @@ export default function Header({ brands = [] }) {
         return () => resizeObserver.disconnect();
     }, []);
     const [isHoveringTop, setIsHoveringTop] = useState(false);
-    const [isScrollingUp, setIsScrollingUp] = useState(false);
     const [isAtTop, setIsAtTop] = useState(true);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
@@ -106,23 +105,10 @@ export default function Header({ brands = [] }) {
         ];
 
     useEffect(() => {
-        let lastScrollY = window.scrollY;
-
         const handleScroll = () => {
             const currentScrollY = window.scrollY;
             setIsAtTop(currentScrollY <= 100);
             setIsScrolled(currentScrollY > 20);
-
-            if (currentScrollY > 100) {
-                if (currentScrollY > lastScrollY) {
-                    setIsScrollingUp(false);
-                } else if (currentScrollY < lastScrollY - 10) {
-                    setIsScrollingUp(true);
-                }
-            } else {
-                setIsScrollingUp(false);
-            }
-            lastScrollY = currentScrollY;
         };
 
         const handleMouseMove = (e) => {
@@ -140,7 +126,7 @@ export default function Header({ brands = [] }) {
         };
     }, []);
 
-    const isHeaderVisible = isAtTop || isHoveringTop || isScrollingUp || activeMenu !== null || isMobileMenuOpen || isMobileSearchOpen;
+    const isHeaderVisible = isAtTop || isHoveringTop || activeMenu !== null || isMobileMenuOpen || isMobileSearchOpen;
 
     return (
         <header 
