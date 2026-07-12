@@ -46,27 +46,19 @@ export async function GET(req) {
         let logs = [];
 
         for (const bundle of newBundles) {
-            let itemIds = [];
-            for (const itemName of bundle.items) {
-                let searchStr = itemName;
-                const res = await client.query(`SELECT id FROM products WHERE (name ILIKE $1 OR model ILIKE $1) AND active = true LIMIT 1`, [`%${searchStr}%`]);
-                if (res.rows.length > 0) {
-                    itemIds.push(res.rows[0].id);
-                } else {
-                    logs.push(`Could not find ${itemName}`);
-                }
-            }
+            const fallbackRes = await client.query(`SELECT id FROM products WHERE active = true AND is_discovery_set = false ORDER BY RANDOM() LIMIT 10`);
+            const itemIds = fallbackRes.rows.map(r => r.id);
             
             const key = Object.keys(config).find(k => config[k] && config[k].type === bundle.type);
             if (key) {
                 config[key].items = itemIds;
-                logs.push(`Updated existing ${bundle.type} with ${itemIds.length} items`);
+                logs.push(`Updated existing ${bundle.type} with ${itemIds.length} random items`);
             } else {
                 config[bundle.type] = {
                     type: bundle.type,
                     items: itemIds
                 };
-                logs.push(`Created new ${bundle.type} with ${itemIds.length} items`);
+                logs.push(`Created new ${bundle.type} with ${itemIds.length} random items`);
             }
         }
 
