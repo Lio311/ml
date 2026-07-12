@@ -98,8 +98,7 @@ const bundlesToCreate = [
 export async function GET(req) {
     try {
         const isAdmin = await checkAdmin();
-        const url = new URL(req.url);
-        if (!isAdmin && url.searchParams.get('bypass') !== 'lior123') {
+        if (!isAdmin) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
         }
 
