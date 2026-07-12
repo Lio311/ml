@@ -129,8 +129,9 @@ export default function Header({ brands = [] }) {
     const isHeaderVisible = isAtTop || isHoveringTop || activeMenu !== null || isMobileMenuOpen || isMobileSearchOpen;
 
     return (
-        <header 
-            className={`fixed top-0 !left-0 !right-0 !w-screen z-50 transition-all duration-500 group/header ${
+        <>
+            <header 
+                className={`fixed top-0 !left-0 !right-0 !w-screen z-50 transition-all duration-500 group/header ${
                 isHeaderVisible ? 'translate-y-0' : '-translate-y-full'
             }`}
             onMouseLeave={() => setActiveMenu(null)}
@@ -310,13 +311,7 @@ export default function Header({ brands = [] }) {
                 </div>
             </div>
 
-            {/* Mobile Nav Sidebar */}
-            <MobileNav 
-                isOpen={isMobileMenuOpen} 
-                onClose={() => setIsMobileMenuOpen(false)} 
-                navLinks={navLinks}
-                isAdmin={isAdmin}
-            />
+
 
             {/* Mega Menus (Desktop) */}
             <MegaMenuBrands 
@@ -347,6 +342,15 @@ export default function Header({ brands = [] }) {
                     direction: rtl;
                 }
             `}</style>
-        </header>
+            </header>
+
+            {/* Mobile Nav Sidebar */}
+            <MobileNav 
+                isOpen={isMobileMenuOpen} 
+                onClose={() => setIsMobileMenuOpen(false)} 
+                navLinks={navLinks}
+                isAdmin={isAdmin}
+            />
+        </>
     );
 }
