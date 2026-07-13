@@ -23,6 +23,25 @@ export async function GET(req) {
 
         const client = await pool.connect();
         try {
+            // Lazy migration to ensure table exists
+            await client.query(`
+                CREATE TABLE IF NOT EXISTS preorders (
+                    id SERIAL PRIMARY KEY,
+                    product_id INTEGER NOT NULL REFERENCES products(id) ON DELETE CASCADE,
+                    user_email TEXT NOT NULL,
+                    status TEXT DEFAULT 'pending', 
+                    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
+                    notified_at TIMESTAMP WITH TIME ZONE,
+                    converted_at TIMESTAMP WITH TIME ZONE,
+                    UNIQUE(product_id, user_email)
+                );
+            `);
+
+            // Also ensure is_preorder column exists on products
+            await client.query(`
+                ALTER TABLE products ADD COLUMN IF NOT EXISTS is_preorder BOOLEAN DEFAULT false;
+            `);
+
             const query = `
                 SELECT 
                     p.id as product_id,

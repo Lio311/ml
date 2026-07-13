@@ -63,23 +63,21 @@ export default function PreordersClient() {
     }
 
     return (
-        <div className="p-8 max-w-7xl mx-auto" dir="rtl">
-            <div className="mb-8">
-                <h1 className="text-3xl font-black mb-2 flex items-center gap-3">
-                    <PackageOpen className="w-8 h-8" />
+        <div className="p-4 md:p-8 max-w-7xl mx-auto" dir="rtl">
+            <div className="mb-6 md:mb-8">
+                <h1 className="text-2xl md:text-3xl font-black mb-2 flex items-center gap-3">
                     ניהול הזמנות מוקדמות
                 </h1>
-                <p className="text-gray-500">
+                <p className="text-sm md:text-base text-gray-500">
                     מעקב אחר נרשמים להזמנה מוקדמת, ניהול סטטוסים ושליחת התראות כשהמוצר זמין.
                 </p>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
                 {products.length === 0 ? (
-                    <div className="col-span-full p-12 text-center bg-gray-50 rounded-3xl border border-dashed border-gray-200">
-                        <PackageOpen className="w-12 h-12 mx-auto text-gray-300 mb-4" />
+                    <div className="col-span-full p-8 md:p-12 text-center bg-gray-50 rounded-3xl border border-dashed border-gray-200">
                         <h3 className="text-lg font-bold text-gray-900 mb-1">אין מוצרים בהזמנה מוקדמת</h3>
-                        <p className="text-gray-500">כרגע אין רשימות המתנה פעילות</p>
+                        <p className="text-sm md:text-base text-gray-500">כרגע אין רשימות המתנה פעילות</p>
                     </div>
                 ) : (
                     products.map(product => {
