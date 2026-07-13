@@ -239,62 +239,66 @@ export default function MaintenancePage() {
                     </svg>
                 </div>
 
-                <div className="flex justify-center mb-2 md:mb-4">
-                    <Image src="/logo_v5.png" alt="ml_tlv" width={120} height={40} className="object-contain brightness-0" />
-                </div>
+                <div className="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-24 w-full px-4 mt-4">
+                    {/* Right Column (Logo & Text) */}
+                    <div className="flex flex-col items-center md:items-start text-center md:text-right space-y-2 md:space-y-4 max-w-md shrink-0">
+                        <div className="flex justify-center md:justify-start">
+                            <Image src="/logo_v5.png" alt="ml_tlv" width={120} height={40} className="object-contain brightness-0" />
+                        </div>
+                        <div className="space-y-1 md:space-y-2">
+                            <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-gray-800">האתר בשיפוצים</h1>
+                            <p className="text-gray-500 text-sm md:text-base leading-relaxed">
+                                אנחנו עובדים על שדרוג החוויה שלכם. נחזור לאוויר בהקדם האפשרי עם דברים חדשים ומרגשים.
+                            </p>
+                        </div>
+                    </div>
 
-                <div className="space-y-1 md:space-y-2">
-                    <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-gray-800">האתר בשיפוצים</h1>
-                    <p className="text-gray-500 text-sm md:text-base max-w-md mx-auto leading-relaxed px-4">
-                        אנחנו עובדים על שדרוג החוויה שלכם. נחזור לאוויר בהקדם האפשרי עם דברים חדשים ומרגשים.
-                    </p>
-                </div>
-
-                <div className="mt-8 flex flex-col items-center space-y-6 w-full max-w-xs z-20">
-                    <a href="https://instagram.com/ml_tlv" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-pink-600 transition-colors">
-                        <Instagram className="w-6 h-6" />
-                    </a>
-                    
-                    <div className="w-full">
-                        {status === 'success' ? (
-                            <p className="text-green-600 text-sm text-center font-medium">ההודעה נשלחה בהצלחה! נחזור אליך בהקדם.</p>
-                        ) : (
-                            <form onSubmit={handleContact} className="flex flex-col gap-2" dir="rtl">
-                                <input 
-                                    type="text" 
-                                    placeholder="שם מלא" 
-                                    required 
-                                    value={formData.name}
-                                    onChange={(e) => setFormData({...formData, name: e.target.value})}
-                                    className="bg-transparent border-b border-gray-200 px-2 py-2 text-sm focus:outline-none focus:border-blue-500 w-full placeholder:text-gray-400 text-center transition-colors"
-                                />
-                                <input 
-                                    type="email" 
-                                    placeholder="אימייל" 
-                                    required 
-                                    value={formData.email}
-                                    onChange={(e) => setFormData({...formData, email: e.target.value})}
-                                    className="bg-transparent border-b border-gray-200 px-2 py-2 text-sm focus:outline-none focus:border-blue-500 w-full placeholder:text-gray-400 text-center transition-colors"
-                                />
-                                <div className="relative mt-2">
+                    {/* Left Column (Form) */}
+                    <div className="flex flex-col items-center md:items-start space-y-6 w-full max-w-xs z-20 shrink-0">
+                        <div className="w-full">
+                            {status === 'success' ? (
+                                <p className="text-green-600 text-sm text-center md:text-right font-medium mt-4">ההודעה נשלחה בהצלחה! נחזור אליך בהקדם.</p>
+                            ) : (
+                                <form onSubmit={handleContact} className="flex flex-col gap-3" dir="rtl">
                                     <input 
                                         type="text" 
-                                        placeholder="הודעה (אופציונלי)" 
-                                        value={formData.message}
-                                        onChange={(e) => setFormData({...formData, message: e.target.value})}
-                                        className="bg-transparent border-b border-gray-200 px-2 py-2 pr-8 text-sm focus:outline-none focus:border-blue-500 w-full placeholder:text-gray-400 text-center transition-colors"
+                                        placeholder="שם מלא" 
+                                        required 
+                                        value={formData.name}
+                                        onChange={(e) => setFormData({...formData, name: e.target.value})}
+                                        className="bg-transparent border-b border-gray-200 px-2 py-2 text-sm focus:outline-none focus:border-blue-500 w-full placeholder:text-gray-400 text-center md:text-right transition-colors"
                                     />
-                                    <button 
-                                        type="submit" 
-                                        disabled={status === 'loading'}
-                                        className="absolute left-0 top-1/2 -translate-y-1/2 text-gray-400 hover:text-blue-500 disabled:opacity-50 p-1 transition-colors"
-                                    >
-                                        <Send className="w-4 h-4 transform -scale-x-100" />
-                                    </button>
-                                </div>
-                                {status === 'error' && <p className="text-red-500 text-xs text-center mt-2">אירעה שגיאה. אנא נסו שוב.</p>}
-                            </form>
-                        )}
+                                    <input 
+                                        type="email" 
+                                        placeholder="אימייל" 
+                                        required 
+                                        value={formData.email}
+                                        onChange={(e) => setFormData({...formData, email: e.target.value})}
+                                        className="bg-transparent border-b border-gray-200 px-2 py-2 text-sm focus:outline-none focus:border-blue-500 w-full placeholder:text-gray-400 text-center md:text-right transition-colors"
+                                    />
+                                    <div className="relative mt-2">
+                                        <input 
+                                            type="text" 
+                                            placeholder="הודעה (אופציונלי)" 
+                                            value={formData.message}
+                                            onChange={(e) => setFormData({...formData, message: e.target.value})}
+                                            className="bg-transparent border-b border-gray-200 px-2 py-2 pr-2 pl-8 text-sm focus:outline-none focus:border-blue-500 w-full placeholder:text-gray-400 text-center md:text-right transition-colors"
+                                        />
+                                        <button 
+                                            type="submit" 
+                                            disabled={status === 'loading'}
+                                            className="absolute left-0 top-1/2 -translate-y-1/2 text-gray-400 hover:text-blue-500 disabled:opacity-50 p-1 transition-colors"
+                                        >
+                                            <Send className="w-4 h-4 transform -scale-x-100" />
+                                        </button>
+                                    </div>
+                                    {status === 'error' && <p className="text-red-500 text-xs text-center md:text-right mt-2">אירעה שגיאה. אנא נסו שוב.</p>}
+                                </form>
+                            )}
+                        </div>
+                        <a href="https://instagram.com/ml_tlv" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-pink-600 transition-colors self-center md:self-start">
+                            <Instagram className="w-5 h-5" />
+                        </a>
                     </div>
                 </div>
 
