@@ -210,37 +210,39 @@ export async function POST(req) {
                 console.error("Dictionary auto-add failed:", dictErr);
             }
             // --------------------------// Newsletter logic removed. Moved to Cron Job /api/cron/new-perfumes// --- Newsletter Feature ---
-            // Fetch all users to notify them about the new product
-            try {
-                const clerk = await clerkClient();
-                const { data: users } = await clerk.users.getUserList({ limit: 500 });
+            // Fetch all users to notify them about the new product (Skip if it's a pre-order)
+            if (!is_preorder) {
+                try {
+                    const clerk = await clerkClient();
+                    const { data: users } = await clerk.users.getUserList({ limit: 500 });
 
-                const emails = users
-                    .map(u => u.emailAddresses.find(e => e.id === u.primaryEmailAddressId)?.emailAddress || u.emailAddresses[0]?.emailAddress)
-                    .filter(Boolean);
+                    const emails = users
+                        .map(u => u.emailAddresses.find(e => e.id === u.primaryEmailAddressId)?.emailAddress || u.emailAddresses[0]?.emailAddress)
+                        .filter(Boolean);
 
-                if (emails.length > 0) {
-                    const productForEmail = { ...body, id: newProductId };
-                    
-                    const { html, subject } = await getTemplate('new_product', {
-                        brand: brand || '',
-                        model: model || '',
-                        description: description || '',
-                        price_2ml: price_2ml || '',
-                        price_5ml: price_5ml || '',
-                        price_10ml: price_10ml || '',
-                        imageUrl: image_url || 'https://www.ml-tlv.com/logo-black.png',
-                        productId: newProductId
-                    }, () => getNewProductTemplate(productForEmail));
-                    
-                    const finalSubject = subject || `חדש באתר: ${brand} ${model} ✨ - ml_tlv`;
+                    if (emails.length > 0) {
+                        const productForEmail = { ...body, id: newProductId };
+                        
+                        const { html, subject } = await getTemplate('new_product', {
+                            brand: brand || '',
+                            model: model || '',
+                            description: description || '',
+                            price_2ml: price_2ml || '',
+                            price_5ml: price_5ml || '',
+                            price_10ml: price_10ml || '',
+                            imageUrl: image_url || 'https://www.ml-tlv.com/logo-black.png',
+                            productId: newProductId
+                        }, () => getNewProductTemplate(productForEmail));
+                        
+                        const finalSubject = subject || `חדש באתר: ${brand} ${model} ✨ - ml_tlv`;
 
-                    // Send as BCC to protect privacy and respect bulk limits
-                    await sendEmail(emails, finalSubject, html, 'new_product');
-                    console.log(`Newsletter sent to ${emails.length} recipients.`);
+                        // Send as BCC to protect privacy and respect bulk limits
+                        await sendEmail(emails, finalSubject, html, 'new_product');
+                        console.log(`Newsletter sent to ${emails.length} recipients.`);
+                    }
+                } catch (emailErr) {
+                    console.error("Failed to send newsletter:", emailErr);
                 }
-            } catch (emailErr) {
-                console.error("Failed to send newsletter:", emailErr);
             }
             // --------------------------
 
