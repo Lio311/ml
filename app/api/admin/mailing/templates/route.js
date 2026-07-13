@@ -42,7 +42,7 @@ async function ensureTables() {
             INSERT INTO email_templates (slug, name, type, content_html, subject)
             VALUES ($1, $2, 'system', $3, $4)
             ON CONFLICT (slug) DO NOTHING
-        `, [slug, slug, data.content_html, data.subject]);
+        `, [slug, data.name || slug, data.content_html, data.subject]);
     }
 }
 

@@ -877,8 +877,23 @@ export function getSystemDefaults() {
             })
         },
         'new_product': {
+            name: 'השקת בושם חדש (מערכת)',
             subject: 'חדש באתר: {{brand}} {{model}} ✨ - ml_tlv',
             content_html: getNewProductTemplate({
+                brand: '{{brand}}',
+                model: '{{model}}',
+                description: '{{description}}',
+                price_2ml: '{{price_2ml}}',
+                price_5ml: '{{price_5ml}}',
+                price_10ml: '{{price_10ml}}',
+                image_url: '{{imageUrl}}',
+                id: '{{productId}}'
+            })
+        },
+        'new_preorder': {
+            name: 'בושם חדש בהזמנה מוקדמת (מערכת)',
+            subject: 'בושם חדש בהזמנה מוקדמת: {{brand}} {{model}} ⏳ - ml_tlv',
+            content_html: getNewPreorderTemplate({
                 brand: '{{brand}}',
                 model: '{{model}}',
                 description: '{{description}}',
@@ -892,6 +907,7 @@ export function getSystemDefaults() {
         
         
         'new_perfumes_batch': {
+            name: 'השקת מספר בשמים (מערכת)',
             subject: 'בשמים חדשים נחתו באתר! ✨ - ml_tlv',
             content_html: getBatchPerfumeTemplate([
                 { brand: 'Brand 1', model: 'Model 1', price_2ml: '49' },
@@ -899,6 +915,7 @@ export function getSystemDefaults() {
             ])
         },
         'new_discovery_sets': {
+            name: 'השקת מארזי דיסקברי (מערכת)',
             subject: 'השקנו 6 מארזי דיסקברי חדשים! ✨ - ml_tlv',
             content_html: getDiscoveryBatchTemplate([
                 { brand: 'Brand 1', model: 'Model 1', single_price: '190' },
