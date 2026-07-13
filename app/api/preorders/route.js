@@ -1,15 +1,24 @@
 import { NextResponse } from 'next/server';
 import pool from '@/app/lib/db';
-import { auth } from '@clerk/nextjs/server';
+import { currentUser } from '@clerk/nextjs/server';
 
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
 
 export async function GET(req) {
     try {
-        const { sessionClaims } = await auth();
-        const userEmail = sessionClaims?.email;
-        if (!userEmail || userEmail !== ADMIN_EMAIL) {
+        const user = await currentUser();
+        const userEmail = user?.emailAddresses?.[0]?.emailAddress;
+        const role = user?.publicMetadata?.role;
+
+        if (!userEmail) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        }
+
+        const isSuperAdmin = userEmail === ADMIN_EMAIL;
+        const currentRole = isSuperAdmin ? 'admin' : role;
+
+        if (currentRole !== 'admin' && currentRole !== 'deputy' && currentRole !== 'viewer') {
+            return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
         }
 
         const client = await pool.connect();

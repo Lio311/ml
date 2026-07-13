@@ -1285,25 +1285,37 @@ const getTemplateTiming = (slug) => {
 };
 
 function TemplateCard({ template, onEdit, onDelete, onSend, onSendTest }) {
+    const getTemplateColor = () => {
+        const slug = template.slug || '';
+        if (slug.includes('admin_') || slug.includes('contact_form') || slug === 'daily_summary') {
+            return 'red';
+        }
+        const greenSlugs = ['welcome', 'new_product', 'new_perfumes', 'discovery_batch', 'monthly_discovery', 'monthly_recommendation', 'new_preorder'];
+        if (greenSlugs.includes(slug) || slug.startsWith('educational_') || slug.startsWith('nurture_') || template.type !== 'system') {
+            return 'green';
+        }
+        return 'blue';
+    };
+
+    const color = getTemplateColor();
+    const colorClasses = {
+        red: 'bg-red-50 text-red-500 border-red-100',
+        blue: 'bg-blue-50 text-blue-500 border-blue-100',
+        green: 'bg-green-50 text-green-500 border-green-100'
+    };
+    
     return (
         <div className="bg-white p-6 rounded-[2.5rem] shadow-sm border border-gray-100 hover:shadow-xl hover:shadow-black/5 hover:-translate-y-1 transition-all duration-300 group flex flex-col h-full relative overflow-hidden">
             <div className="flex justify-between items-start mb-4 relative z-10">
                 <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${
-                    template.slug?.includes('admin_') || template.slug?.includes('contact_form') || template.slug === 'daily_summary' 
-                    ? 'bg-red-50 text-red-500' 
-                    : template.type === 'system' 
-                    ? 'bg-blue-50 text-blue-500' 
-                    : 'bg-green-50 text-green-500'
+                    color === 'red' ? 'bg-red-50 text-red-500' : 
+                    color === 'blue' ? 'bg-blue-50 text-blue-500' : 'bg-green-50 text-green-500'
                 }`}>
                     <Mail size={24} />
                 </div>
                 <div className="flex flex-col items-end gap-1.5">
                     {template.type === 'system' && (
-                        <span className={`text-[9px] font-black uppercase px-2.5 py-1 rounded-full border tracking-widest ${
-                            template.slug?.includes('admin_') || template.slug?.includes('contact_form') || template.slug === 'daily_summary'
-                            ? 'bg-red-50 text-red-500 border-red-100'
-                            : 'bg-blue-50 text-blue-500 border-blue-100'
-                        }`}>
+                        <span className={`text-[9px] font-black uppercase px-2.5 py-1 rounded-full border tracking-widest ${colorClasses[color]}`}>
                             System
                         </span>
                     )}
