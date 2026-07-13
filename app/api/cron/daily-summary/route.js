@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
-import pool from '../../../../lib/db';
-import { sendEmail, getDailySummaryTemplate } from '../../../../lib/email';
+import pool from '../../../lib/db';
+import { sendEmail, getDailySummaryTemplate } from '../../../lib/email';
 
 export const dynamic = 'force-dynamic';
 
