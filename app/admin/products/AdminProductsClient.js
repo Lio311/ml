@@ -106,6 +106,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
             middle_notes: product.middle_notes || '',
             base_notes: product.base_notes || '',
             in_lottery: product.in_lottery ?? true,
+            is_preorder: product.is_preorder || false,
             show_on_home: product.show_on_home ?? true,
             cost_price: product.cost_price || 0,
             original_size: product.original_size || 100,
@@ -141,6 +142,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
             middle_notes: '',
             base_notes: '',
             in_lottery: true,
+            is_preorder: false,
             show_on_home: true,
             cost_price: 0,
             original_size: 100,
@@ -624,6 +626,17 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                             />
                             <label className="text-sm font-bold select-none">להציג בדף הבית (חדש באתר)</label>
                         </div>
+                        {!editForm.is_discovery_set && (
+                            <div className="flex items-center gap-2">
+                                <input
+                                    type="checkbox"
+                                    checked={editForm.is_preorder || false}
+                                    onChange={e => setEditForm({ ...editForm, is_preorder: e.target.checked })}
+                                    className="w-5 h-5 accent-black cursor-pointer rounded"
+                                />
+                                <label className="text-sm font-bold select-none">הזמנה מוקדמת</label>
+                            </div>
+                        )}
                         <div className="flex items-center gap-2">
                             <input
                                 type="checkbox"
@@ -949,6 +962,17 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                                             />
                                             <label className="text-xs font-black uppercase tracking-widest select-none text-gray-700">להציג בחדש באתר</label>
                                         </div>
+                                        {!editForm.is_discovery_set && (
+                                            <div className="flex items-center gap-2">
+                                                <input
+                                                    type="checkbox"
+                                                    checked={editForm.is_preorder || false}
+                                                    onChange={e => setEditForm({ ...editForm, is_preorder: e.target.checked })}
+                                                    className="w-5 h-5 accent-black cursor-pointer rounded-lg"
+                                                />
+                                                <label className="text-xs font-black uppercase tracking-widest select-none text-gray-700">הזמנה מוקדמת</label>
+                                            </div>
+                                        )}
                                         <div className="flex items-center gap-3 bg-gray-50/50 p-3 rounded-xl border border-gray-100 w-fit">
                                             <input
                                                 type="checkbox"

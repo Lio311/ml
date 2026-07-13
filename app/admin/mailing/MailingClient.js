@@ -1291,7 +1291,7 @@ function TemplateCard({ template, onEdit, onDelete, onSend, onSendTest }) {
                 <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${
                     template.slug?.includes('admin_') || template.slug?.includes('contact_form') || template.slug === 'daily_summary' 
                     ? 'bg-red-50 text-red-500' 
-                    : template.type === 'system' && getTemplateTiming(template.slug) !== 'ידני / דיוור מתוזמן'
+                    : template.type === 'system' 
                     ? 'bg-blue-50 text-blue-500' 
                     : 'bg-green-50 text-green-500'
                 }`}>
@@ -1302,9 +1302,7 @@ function TemplateCard({ template, onEdit, onDelete, onSend, onSendTest }) {
                         <span className={`text-[9px] font-black uppercase px-2.5 py-1 rounded-full border tracking-widest ${
                             template.slug?.includes('admin_') || template.slug?.includes('contact_form') || template.slug === 'daily_summary'
                             ? 'bg-red-50 text-red-500 border-red-100'
-                            : getTemplateTiming(template.slug) !== 'ידני / דיוור מתוזמן'
-                            ? 'bg-blue-50 text-blue-500 border-blue-100'
-                            : 'bg-green-50 text-green-500 border-green-100'
+                            : 'bg-blue-50 text-blue-500 border-blue-100'
                         }`}>
                             System
                         </span>

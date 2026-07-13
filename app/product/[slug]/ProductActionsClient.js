@@ -156,6 +156,68 @@ export default function ProductActionsClient({ product }) {
                     </div>
                 </div>
             ) : (
+                product.is_preorder ? (
+                    <div className="bg-blue-50 border border-blue-200 rounded-2xl p-6 text-center shadow-sm relative overflow-hidden">
+                        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-400 to-blue-600"></div>
+                        <span className="text-3xl block mb-3">📅</span>
+                        <p className="font-bold text-gray-900 text-lg mb-1">
+                            {dir === 'rtl' ? 'הזמנה מוקדמת' : 'Pre-Order'}
+                        </p>
+                        <p className="text-sm text-gray-500 mb-6">
+                            {dir === 'rtl' ? 'מוצר זה זמין להזמנה מוקדמת. הירשמו ונעדכן אתכם כשהוא נוחת באתר!' : 'This product is available for pre-order. Register and we will notify you when it arrives!'}
+                        </p>
+                        
+                        {subscribed ? (
+                            <div className="bg-blue-100 text-blue-700 p-3 rounded-xl border border-blue-200 flex items-center justify-center gap-2 font-bold text-sm">
+                                <Check size={16} />
+                                <span>{dir === 'rtl' ? 'נרשמת בהצלחה! נעדכן אותך במייל' : 'Successfully registered! We will notify you via email'}</span>
+                            </div>
+                        ) : (
+                            <button
+                                onClick={async () => {
+                                    if (!isSignedIn) {
+                                        toast.error(dir === 'rtl' ? 'יש להתחבר כדי להירשם להזמנה מוקדמת' : 'Please sign in to register for pre-order');
+                                        return;
+                                    }
+                                    setIsSubscribing(true);
+                                    try {
+                                        const res = await fetch('/api/preorders/subscribe', {
+                                            method: 'POST',
+                                            headers: { 'Content-Type': 'application/json' },
+                                            body: JSON.stringify({ productId: product.id })
+                                        });
+                                        if (res.ok) {
+                                            toast.success(dir === 'rtl' ? 'נרשמת בהצלחה להזמנה מוקדמת!' : 'Successfully registered for pre-order!');
+                                            setSubscribed(true);
+                                        } else {
+                                            const data = await res.json();
+                                            toast.error(data.error || (dir === 'rtl' ? 'שגיאה בהרשמה' : 'Registration error'));
+                                        }
+                                    } catch (error) {
+                                        toast.error(dir === 'rtl' ? 'שגיאה בתקשורת' : 'Network error');
+                                    } finally {
+                                        setIsSubscribing(false);
+                                    }
+                                }}
+                                disabled={isSubscribing}
+                                className="w-full bg-blue-600 text-white py-3.5 rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-blue-700 transition-all active:scale-95 disabled:opacity-50"
+                            >
+                                <span>{dir === 'rtl' ? 'הרשמה להזמנה מוקדמת' : 'Register for Pre-Order'}</span>
+                                {isSubscribing ? (
+                                    <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                                ) : (
+                                    <Bell size={18} />
+                                )}
+                            </button>
+                        )}
+                        
+                        {!isSignedIn && !subscribed && (
+                            <p className="text-[10px] text-gray-400 mt-3 font-medium">
+                                * {dir === 'rtl' ? 'ההרשמה מיועדת ללקוחות רשומים בלבד.' : 'Registration is for registered customers only.'}
+                            </p>
+                        )}
+                    </div>
+                ) : (
                 <>
                     <div className="flex items-center justify-between p-3 border rounded-lg bg-white hover:border-black transition cursor-pointer" onClick={() => handleAdd(2, product.price_2ml)}>
                         <span className="font-bold">2 {t('common.ml_unit')}</span>
@@ -208,6 +270,7 @@ export default function ProductActionsClient({ product }) {
                         </div>
                     </div>
                 </>
+            )
             )}
         </div>
     );

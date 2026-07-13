@@ -45,6 +45,38 @@ export async function POST(req) {
 
             await client.query('UPDATE orders SET status = $1 WHERE id = $2', [newStatus, orderId]);
 
+            // Conversion tracking for preorders
+            if (newStatus === 'in_progress' && oldStatus !== 'in_progress') {
+                try {
+                    const customerEmail = typeof order.customer_details === 'string' 
+                        ? JSON.parse(order.customer_details)?.email 
+                        : order.customer_details?.email;
+                        
+                    if (customerEmail) {
+                        const productIds = (order.items || []).flatMap(i => {
+                            if (i.type === 'bundle' && Array.isArray(i.items)) {
+                                return i.items.map(inner => parseInt(inner.id)).filter(id => !isNaN(id));
+                            }
+                            let dbId = i.id;
+                            if (typeof dbId === 'string' && dbId.includes('-')) {
+                                dbId = parseInt(dbId.split('-')[0]);
+                            }
+                            return parseInt(dbId);
+                        }).filter(id => !isNaN(id));
+
+                        if (productIds.length > 0) {
+                            await client.query(`
+                                UPDATE preorders 
+                                SET status = 'converted', converted_at = NOW() 
+                                WHERE user_email = $1 AND product_id = ANY($2) AND status = 'notified'
+                            `, [customerEmail, productIds]);
+                        }
+                    }
+                } catch (e) {
+                    console.error('Error updating preorder conversions:', e);
+                }
+            }
+
             // Bottle inventory logic
             if (newStatus === 'cancelled' && oldStatus !== 'cancelled') {
                 for (const item of (order.items || [])) {

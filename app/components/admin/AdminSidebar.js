@@ -80,6 +80,7 @@ const navGroups = [
             { href: "/admin/users", label: "משתמשים", icon: Users, roles: ['admin', 'deputy'] },
             { href: "/admin/requests", label: "בקשות", icon: Inbox, roles: ['admin', 'deputy'] },
             { href: "/admin/back-in-stock", label: "חזרה למלאי", icon: Bell, roles: ['admin', 'deputy'] },
+            { href: "/admin/preorders", label: "הזמנות מוקדמות", icon: Store, roles: ['admin', 'deputy'] },
         ]
     },
     {

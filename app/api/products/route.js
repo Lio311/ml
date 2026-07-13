@@ -64,7 +64,8 @@ export async function PUT(req) {
             category, description, stock, top_notes, middle_notes, base_notes,
             in_lottery, show_on_home, name_he, brand_he, model_he, cost_price, original_size,
             seasons, perfumers, country, active,
-            discount_percentage, discount_sizes, discount_end_date, spotify_track_url, concentration
+            discount_percentage, discount_sizes, discount_end_date, spotify_track_url, concentration,
+            is_preorder
         } = body;
 
         const client = await pool.connect();
@@ -91,7 +92,7 @@ export async function PUT(req) {
                      middle_notes_en = $27, base_notes_en = $28, seasons_en = $29,
                      active = $30,
                      discount_percentage = $31, discount_sizes = $32, discount_end_date = $33, show_on_home = $34,
-                     spotify_track_url = $35, concentration = $36
+                     spotify_track_url = $35, concentration = $36, is_preorder = $37
                  WHERE id = $23`,
                 [
                     trimmedBrand, trimmedModel, price_2ml, price_5ml, price_10ml, image_url,
@@ -101,7 +102,7 @@ export async function PUT(req) {
                     category_en, description_en, top_notes_en, middle_notes_en, base_notes_en, seasons_en,
                     active ?? true,
                     discount_percentage || 0, discount_sizes || [], discount_end_date || null, show_on_home ?? true,
-                    spotify_track_url, concentration
+                    spotify_track_url, concentration, is_preorder || false
                 ]
             );
 
@@ -148,7 +149,8 @@ export async function POST(req) {
             category, description, stock, top_notes, middle_notes, base_notes,
             in_lottery, show_on_home, name_he, brand_he, model_he, cost_price, original_size,
             seasons, perfumers, country, active,
-            discount_percentage, discount_sizes, discount_end_date, spotify_track_url, concentration
+            discount_percentage, discount_sizes, discount_end_date, spotify_track_url, concentration,
+            is_preorder
         } = body;
 
         const client = await pool.connect();
@@ -172,8 +174,8 @@ export async function POST(req) {
                    name_he, brand_he, model_he, cost_price, original_size,
                    seasons, perfumers, country,
                    category_en, description_en, top_notes_en, middle_notes_en, base_notes_en, seasons_en, slug, active,
-                   discount_percentage, discount_sizes, discount_end_date, spotify_track_url, concentration) 
-                  VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $35, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30, $31, $32, $33, $34, $36) 
+                   discount_percentage, discount_sizes, discount_end_date, spotify_track_url, concentration, is_preorder) 
+                  VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $35, $15, $16, $17, $18, $19, $20, $21, $22, $23, $24, $25, $26, $27, $28, $29, $30, $31, $32, $33, $34, $36, $37) 
                  RETURNING id`,
                 [
                     trimmedBrand + ' ' + trimmedModel, category || 'General', trimmedBrand, trimmedModel, price_2ml, price_5ml, price_10ml, image_url,
@@ -182,7 +184,7 @@ export async function POST(req) {
                     seasons, perfumers, country,
                     category_en, description_en, top_notes_en, middle_notes_en, base_notes_en, seasons_en, newSlug, active ?? true,
                     discount_percentage || 0, discount_sizes || [], discount_end_date || null, spotify_track_url, show_on_home ?? true,
-                    concentration
+                    concentration, is_preorder || false
                 ]
             );
 
