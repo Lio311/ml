@@ -177,7 +177,7 @@ export default async function ProductPage(props) {
                    p.stock, p.top_notes, p.top_notes_en, p.middle_notes, p.middle_notes_en, p.base_notes, p.base_notes_en, 
                    p.price_2ml, p.price_5ml, p.price_10ml, p.seasons, p.seasons_en, p.country, p.country_en, 
                    p.perfumers, p.perfumers_en, p.discount_percentage, p.discount_sizes, p.discount_end_date, p.spotify_track_url,
-                   p.is_discovery_set, p.single_price, p.volume_label, p.volume_label_en, p.concentration,
+                   p.is_discovery_set, p.is_preorder, p.single_price, p.volume_label, p.volume_label_en, p.concentration,
                    b.logo_url, b.title_en, b.description_en as brand_description_en, 
                    b.highlights_en as brand_highlights_en, b.perfumer_en as brand_perfumer_en,
                    (SELECT AVG(rating) FROM reviews WHERE product_id = p.id) as average_rating,

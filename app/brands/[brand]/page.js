@@ -67,7 +67,7 @@ export default async function BrandPage(props) {
         // Fetch Products
         const res = await client.query(`
             SELECT p.id, p.brand, p.model, p.price_2ml, p.price_5ml, p.price_10ml, p.image_url, p.category, p.category_en, p.in_lottery, p.slug, p.description, p.description_en, p.stock, p.brand_he, p.model_he, p.name_en, p.name_he, p.original_size, p.created_at, 
-                   p.discount_percentage, p.discount_sizes, p.discount_end_date, p.is_discovery_set, p.single_price, p.volume_label, p.volume_label_en, s.sales_count 
+                   p.discount_percentage, p.discount_sizes, p.discount_end_date, p.is_discovery_set, p.is_preorder, p.single_price, p.volume_label, p.volume_label_en, s.sales_count 
             FROM products p 
             LEFT JOIN product_sales s ON p.id = s.product_id
             WHERE p.active = true AND p.brand ILIKE $1

@@ -18,7 +18,7 @@ export async function GET(req) {
                        category, description, stock, seasons, brand_he, model_he, name_he,
                        discount_percentage, discount_sizes, discount_end_date
                 FROM products 
-                WHERE active = true AND stock > 0
+                WHERE active = true AND stock > 0 AND (is_preorder IS NULL OR is_preorder = false)
             `;
             const values = [];
 

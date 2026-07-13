@@ -150,12 +150,12 @@ export const getNewPreorderTemplate = (data) => {
     <div dir="rtl" style="font-family: 'Open Sans', 'Open Sans Hebrew', Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto; line-height: 1.6;">
         <div style="background-color: #fff; padding: 40px 30px; border-radius: 24px; border: 1px solid #e0f2fe; box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
             <div style="text-align: center; margin-bottom: 25px;">
-                <div style="display: inline-block; background-color: #e0f2fe; color: #0284c7; font-size: 12px; font-weight: 900; padding: 6px 12px; border-radius: 20px; margin-bottom: 15px; letter-spacing: 1px;">הזמנה מוקדמת 📅</div>
-                <h1 style="margin: 0; font-size: 28px; font-weight: 900; color: #000;">בדרך לאתר: {{brand}} {{model}}</h1>
+                <div style="display: inline-block; background-color: #e0f2fe; color: #0284c7; font-size: 12px; font-weight: 900; padding: 6px 12px; border-radius: 20px; margin-bottom: 15px; letter-spacing: 1px;">הזמנה מוקדמת</div>
+                <h1 style="margin: 0; font-size: 28px; font-weight: 900; color: #000;">בדרך לאתר: ${data.brand || ''} ${data.model || ''}</h1>
             </div>
             
             <div style="text-align: center; margin-bottom: 30px;">
-                <img src="{{imageUrl}}" alt="{{brand}} {{model}}" style="max-width: 250px; height: auto; border-radius: 16px; margin: 0 auto; box-shadow: 0 10px 25px rgba(0,0,0,0.05);" />
+                <img src="${data.image_url || data.imageUrl || 'https://www.ml-tlv.com/logo-black.png'}" alt="${data.brand || ''} ${data.model || ''}" style="max-width: 250px; height: auto; border-radius: 16px; margin: 0 auto; box-shadow: 0 10px 25px rgba(0,0,0,0.05);" />
             </div>
 
             <div style="background-color: #f8fafc; border-radius: 16px; padding: 25px; margin-bottom: 30px; text-align: center;">
@@ -163,12 +163,12 @@ export const getNewPreorderTemplate = (data) => {
                     הבושם המבוקש הזה נמצא בדרכו אלינו, והחלטנו לאפשר לכם להירשם להזמנה מוקדמת כדי להבטיח שלא תפספסו!
                 </p>
                 <div style="font-weight: bold; color: #ca8a04; font-size: 18px; margin-top: 15px;">
-                    מחיר צפוי החל מ- {{price_2ml}} ₪
+                    מחיר צפוי החל מ- ${data.price_2ml || ''} ₪
                 </div>
             </div>
 
             <div style="text-align: center;">
-                <a href="https://www.ml-tlv.com/product/{{productId}}" style="display: inline-block; background-color: #0284c7; color: #fff; padding: 18px 40px; text-decoration: none; border-radius: 16px; font-weight: 900; font-size: 16px; box-shadow: 0 4px 15px rgba(2, 132, 199, 0.3);">
+                <a href="https://www.ml-tlv.com/product/${data.slug || data.id || ''}" style="display: inline-block; background-color: #0284c7; color: #fff; padding: 18px 40px; text-decoration: none; border-radius: 16px; font-weight: 900; font-size: 16px; box-shadow: 0 4px 15px rgba(2, 132, 199, 0.3);">
                     להרשמה להזמנה המוקדמת >>
                 </a>
             </div>

@@ -24,7 +24,7 @@ export async function GET(req) {
                 SELECT id, name, brand, model, price_2ml, price_5ml, price_10ml, image_url, 
                        category, description, stock, top_notes, middle_notes, base_notes,
                        in_lottery, show_on_home, name_he, brand_he, model_he, cost_price, original_size,
-                       seasons, perfumers, country, is_discovery_set, active, discount_percentage, discount_sizes, discount_end_date, spotify_track_url, concentration
+                       seasons, perfumers, country, is_discovery_set, is_preorder, active, discount_percentage, discount_sizes, discount_end_date, spotify_track_url, concentration
                 FROM products WHERE active = true
             `;
             const values = [];
@@ -238,7 +238,7 @@ export async function POST(req) {
                             productId: newProductId
                         }, () => getNewPreorderTemplate(productForEmail));
                         
-                        const finalSubject = subject || `בדרך לאתר: ${brand} ${model} 📅 - ml_tlv`;
+                        const finalSubject = subject || `בדרך לאתר: ${brand} ${model} 🆕 - ml_tlv`;
 
                         // Send as BCC to protect privacy and respect bulk limits
                         await sendEmail(emails, finalSubject, html, 'new_preorder');
