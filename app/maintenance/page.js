@@ -1,17 +1,42 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
 import { useUser } from '@clerk/nextjs';
 import { useRouter } from 'next/navigation';
+import { Instagram, Send } from "lucide-react";
 
 export default function MaintenancePage() {
     const { user, isLoaded } = useUser();
     const router = useRouter();
     const isAdmin = user?.publicMetadata?.role === 'admin';
 
+    const [status, setStatus] = useState(null);
+    const [formData, setFormData] = useState({ name: '', email: '', message: '' });
+
     const handleBypass = () => {
         document.cookie = "bypass_maintenance=true; path=/; max-age=86400"; // 24 hours
         window.location.href = '/';
+    };
+
+    const handleContact = async (e) => {
+        e.preventDefault();
+        setStatus('loading');
+        try {
+            const res = await fetch('/api/contact', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ ...formData, phone: '' }),
+            });
+            if (res.ok) {
+                setStatus('success');
+                setFormData({ name: '', email: '', message: '' });
+            } else {
+                setStatus('error');
+            }
+        } catch (err) {
+            setStatus('error');
+        }
     };
 
     return (
@@ -225,7 +250,55 @@ export default function MaintenancePage() {
                     </p>
                 </div>
 
-                <div className="mt-4 md:mt-6 text-[10px] md:text-xs text-gray-400 pb-2">
+                <div className="mt-8 flex flex-col items-center space-y-6 w-full max-w-xs z-20">
+                    <a href="https://instagram.com/ml_tlv" target="_blank" rel="noopener noreferrer" className="text-gray-400 hover:text-pink-600 transition-colors">
+                        <Instagram className="w-6 h-6" />
+                    </a>
+                    
+                    <div className="w-full">
+                        {status === 'success' ? (
+                            <p className="text-green-600 text-sm text-center font-medium">ההודעה נשלחה בהצלחה! נחזור אליך בהקדם.</p>
+                        ) : (
+                            <form onSubmit={handleContact} className="flex flex-col gap-2" dir="rtl">
+                                <input 
+                                    type="text" 
+                                    placeholder="שם מלא" 
+                                    required 
+                                    value={formData.name}
+                                    onChange={(e) => setFormData({...formData, name: e.target.value})}
+                                    className="bg-transparent border-b border-gray-200 px-2 py-2 text-sm focus:outline-none focus:border-blue-500 w-full placeholder:text-gray-400 text-center transition-colors"
+                                />
+                                <input 
+                                    type="email" 
+                                    placeholder="אימייל" 
+                                    required 
+                                    value={formData.email}
+                                    onChange={(e) => setFormData({...formData, email: e.target.value})}
+                                    className="bg-transparent border-b border-gray-200 px-2 py-2 text-sm focus:outline-none focus:border-blue-500 w-full placeholder:text-gray-400 text-center transition-colors"
+                                />
+                                <div className="relative mt-2">
+                                    <input 
+                                        type="text" 
+                                        placeholder="הודעה (אופציונלי)" 
+                                        value={formData.message}
+                                        onChange={(e) => setFormData({...formData, message: e.target.value})}
+                                        className="bg-transparent border-b border-gray-200 px-2 py-2 pr-8 text-sm focus:outline-none focus:border-blue-500 w-full placeholder:text-gray-400 text-center transition-colors"
+                                    />
+                                    <button 
+                                        type="submit" 
+                                        disabled={status === 'loading'}
+                                        className="absolute left-0 top-1/2 -translate-y-1/2 text-gray-400 hover:text-blue-500 disabled:opacity-50 p-1 transition-colors"
+                                    >
+                                        <Send className="w-4 h-4 transform -scale-x-100" />
+                                    </button>
+                                </div>
+                                {status === 'error' && <p className="text-red-500 text-xs text-center mt-2">אירעה שגיאה. אנא נסו שוב.</p>}
+                            </form>
+                        )}
+                    </div>
+                </div>
+
+                <div className="mt-8 md:mt-10 text-[10px] md:text-xs text-gray-400 pb-4 z-20">
                     &copy; {new Date().getFullYear()} ml_tlv. כל הזכויות שמורות.
                 </div>
             </div>
