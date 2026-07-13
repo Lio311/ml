@@ -2,6 +2,8 @@ import { NextResponse } from 'next/server';
 import { sendEmail, getNewPreorderTemplate } from '@/app/lib/email';
 import pool from '@/app/lib/db';
 
+export const dynamic = 'force-dynamic';
+
 export async function GET() {
     try {
         const adminEmail = process.env.ADMIN_EMAIL || 'lior31197@gmail.com';
