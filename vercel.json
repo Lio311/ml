@@ -30,7 +30,7 @@
         },
         {
             "path": "/api/cron/monthly-recommendation",
-            "schedule": "0 15 * * *"
+            "schedule": "0 12 * * *"
         },
         {
             "path": "/api/cron/monthly-discovery",

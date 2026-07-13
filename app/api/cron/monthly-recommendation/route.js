@@ -50,19 +50,18 @@ export async function GET(req) {
             return NextResponse.json({ message: 'Reminder sent to manager' });
         }
 
-        // 3. Skip if not selected by 9th
-        if (day === 9 && record.status === 'pending') {
+        // 3. Skip if not selected by 13th
+        if (day === 13 && record.status === 'pending') {
             await pool.query('UPDATE monthly_recommendations SET status = $1 WHERE id = $2', ['skipped', record.id]);
             return NextResponse.json({ message: 'Month skipped due to no selection' });
         }
 
-        // 4. Send Newsletter on 10th
-        const isSendDay = (day === 10);
+        // 4. Send Newsletter on 14th
+        const isSendDay = (day === 14);
         
         if (isSendDay && record.status === 'selected') {
-            // Fetch products
             const productsRes = await pool.query(
-                'SELECT id, name, brand, image_url, price FROM products WHERE id = ANY($1)',
+                'SELECT id, name, brand, image_url, COALESCE(price_2ml, single_price) AS price FROM products WHERE id = ANY($1)',
                 [record.perfume_ids]
             );
             const products = productsRes.rows;
