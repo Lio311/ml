@@ -183,11 +183,27 @@ export default function OrdersClient() {
                                     <div key={idx} className="flex items-center gap-4 py-2">
                                         {/* Product Image */}
                                         <div className="w-16 h-16 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0 border relative">
-                                            {(item.image_url || (item.type === 'bundle' && item.bundleType)) ? (
-                                                <Image src={item.image_url || `/images/bundles/${item.bundleType}.webp`} alt={(item.name || (item.brand + ' ' + item.model)) || "Product"} fill sizes="64px" className="object-contain" />
-                                            ) : (
-                                                <div className="w-full h-full flex items-center justify-center text-xl">🧴</div>
-                                            )}
+                                            {(() => {
+                                                const bundleVibeMap = {
+                                                    'summer': '/images/vibe/summer.png',
+                                                    'winter': '/images/vibe/winter.png',
+                                                    'dates': '/images/vibe/dates.png',
+                                                    'collectors': '/images/vibe/collectors.png',
+                                                    'clean': '/images/vibe/clean.jpg',
+                                                    'tropical': '/images/vibe/tropical.jpg',
+                                                    'vanilla': '/images/vibe/vanilla.jpg',
+                                                    'gourmand': '/images/vibe/gourmand.jpg',
+                                                    'citrus': '/images/vibe/citrus.jpg',
+                                                    'floral': '/images/vibe/floral.jpg',
+                                                    'aquatic': '/images/vibe/aquatic.jpg'
+                                                };
+                                                const imageUrl = item.image_url && !item.image_url.includes('/images/bundles/') ? item.image_url : (item.type === 'bundle' && item.bundleType ? bundleVibeMap[item.bundleType] : null);
+                                                
+                                                if (imageUrl) {
+                                                    return <Image src={imageUrl} alt={(item.name || (item.brand + ' ' + item.model)) || "Product"} fill sizes="64px" className="object-contain" />;
+                                                }
+                                                return <div className="w-full h-full flex items-center justify-center text-xl">🧴</div>;
+                                            })()}
                                         </div>
 
                                         {/* Details */}

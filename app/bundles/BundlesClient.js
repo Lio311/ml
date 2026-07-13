@@ -100,7 +100,7 @@ export default function BundlesClient() {
             items: selectedProducts,
             name: t(`bundles.${selectedType}_bundle`),
             quantity: 1,
-            image_url: `/images/bundles/${selectedType}.webp`
+            image_url: currentBundle?.bgImage || `/images/vibe/${selectedType}.png`
         };
 
         if (addBundleToCart) {
@@ -141,7 +141,7 @@ export default function BundlesClient() {
             items: availableProducts.slice(0, 10),
             name: t(`bundles.${selectedType}_bundle`),
             quantity: 1,
-            image_url: `/images/bundles/${selectedType}.webp`
+            image_url: currentBundle?.bgImage || `/images/vibe/${selectedType}.png`
         };
 
         if (addBundleToCart) {

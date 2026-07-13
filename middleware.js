@@ -65,11 +65,16 @@ export default clerkMiddleware(async (auth, req) => {
         }
     }
 
+    const bypassCookie = req.cookies.get('bypass_maintenance');
+    const userAuth = await auth();
+    const isAdmin = userAuth.sessionClaims?.metadata?.role === 'admin';
+
     // Maintenance Mode Check
     if (!url.pathname.startsWith('/admin') && 
         !url.pathname.startsWith('/api') && 
         !url.pathname.startsWith('/sign-in') && 
-        url.pathname !== '/maintenance') {
+        url.pathname !== '/maintenance' &&
+        !(isAdmin && bypassCookie?.value === 'true')) {
         try {
             const baseUrl = process.env.NEXT_PUBLIC_APP_URL || req.nextUrl.origin;
             const res = await fetch(`${baseUrl}/api/maintenance`, {

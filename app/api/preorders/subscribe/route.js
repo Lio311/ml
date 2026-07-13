@@ -28,8 +28,8 @@ export async function POST(req) {
 
             // Check if already subscribed
             const existingRes = await client.query(
-                'SELECT id FROM preorders WHERE product_id = $1 AND user_id = $2',
-                [productId, userId]
+                'SELECT id FROM preorders WHERE product_id = $1 AND user_email = $2',
+                [productId, userEmail]
             );
 
             if (existingRes.rows.length > 0) {
@@ -37,8 +37,8 @@ export async function POST(req) {
             }
 
             await client.query(
-                'INSERT INTO preorders (product_id, user_id, user_email, status) VALUES ($1, $2, $3, $4)',
-                [productId, userId, userEmail, 'pending']
+                'INSERT INTO preorders (product_id, user_email, status) VALUES ($1, $2, $3)',
+                [productId, userEmail, 'pending']
             );
 
             return NextResponse.json({ success: true });

@@ -237,7 +237,6 @@ export async function POST(req) {
                             imageUrl: image_url || 'https://www.ml-tlv.com/logo-black.png',
                             productId: newProductId
                         }, () => getNewPreorderTemplate(productForEmail));
-                        
                         const finalSubject = subject || `בדרך לאתר: ${brand} ${model} 🆕 - ml_tlv`;
 
                         // Send as BCC to protect privacy and respect bulk limits

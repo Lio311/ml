@@ -157,9 +157,8 @@ export default function ProductActionsClient({ product }) {
                 </div>
             ) : (
                 product.is_preorder ? (
-                    <div className="bg-blue-50 border border-blue-200 rounded-2xl p-6 text-center shadow-sm relative overflow-hidden">
-                        <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-blue-400 to-blue-600"></div>
-                        <span className="text-3xl block mb-3">📅</span>
+                    <div className="bg-gray-50 border border-gray-100 rounded-2xl p-6 text-center">
+                        <span className="text-3xl block mb-3">⏳</span>
                         <p className="font-bold text-gray-900 text-lg mb-1">
                             {dir === 'rtl' ? 'הזמנה מוקדמת' : 'Pre-Order'}
                         </p>
@@ -168,7 +167,7 @@ export default function ProductActionsClient({ product }) {
                         </p>
                         
                         {subscribed ? (
-                            <div className="bg-blue-100 text-blue-700 p-3 rounded-xl border border-blue-200 flex items-center justify-center gap-2 font-bold text-sm">
+                            <div className="bg-green-50 text-green-700 p-3 rounded-xl border border-green-100 flex items-center justify-center gap-2 font-bold text-sm">
                                 <Check size={16} />
                                 <span>{dir === 'rtl' ? 'נרשמת בהצלחה! נעדכן אותך במייל' : 'Successfully registered! We will notify you via email'}</span>
                             </div>
@@ -200,9 +199,9 @@ export default function ProductActionsClient({ product }) {
                                     }
                                 }}
                                 disabled={isSubscribing}
-                                className="w-full bg-blue-600 text-white py-3.5 rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-blue-700 transition-all active:scale-95 disabled:opacity-50"
+                                className="w-full bg-black text-white py-3.5 rounded-2xl font-bold flex items-center justify-center gap-2 hover:bg-gray-900 transition-all active:scale-95 disabled:opacity-50"
                             >
-                                <span>{dir === 'rtl' ? 'הרשמה להזמנה מוקדמת' : 'Register for Pre-Order'}</span>
+                                <span>{dir === 'rtl' ? 'עדכנו אותי כשהמוצר נוחת' : 'Notify me when it arrives'}</span>
                                 {isSubscribing ? (
                                     <div className="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                                 ) : (

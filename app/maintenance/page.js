@@ -1,11 +1,33 @@
 "use client";
 
 import Image from "next/image";
+import { useUser } from '@clerk/nextjs';
+import { useRouter } from 'next/navigation';
 
 export default function MaintenancePage() {
+    const { user, isLoaded } = useUser();
+    const router = useRouter();
+    const isAdmin = user?.publicMetadata?.role === 'admin';
+
+    const handleBypass = () => {
+        document.cookie = "bypass_maintenance=true; path=/; max-age=86400"; // 24 hours
+        window.location.href = '/';
+    };
+
     return (
         <div className="min-h-screen w-full bg-white text-gray-900 flex flex-col items-center justify-center p-4 font-sans selection:bg-blue-100 selection:text-blue-900 overflow-hidden">
             <div className="max-w-4xl w-full text-center flex flex-col items-center animate-fade-in-up">
+                
+                {isLoaded && isAdmin && (
+                    <div className="absolute top-4 left-4 z-50">
+                        <button 
+                            onClick={handleBypass}
+                            className="bg-black text-white px-4 py-2 rounded-lg font-bold text-sm shadow hover:bg-gray-800 transition"
+                        >
+                            כניסת מנהל (עקיפת שיפוצים)
+                        </button>
+                    </div>
+                )}
                 
                 {/* SVG Illustration Container */}
                 <div className="w-full max-w-4xl relative mb-2 md:mb-4">

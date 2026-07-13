@@ -90,16 +90,18 @@ export default function PreordersClient() {
                         return (
                             <div key={product.product_id} className="bg-white rounded-3xl border border-gray-200 overflow-hidden shadow-sm hover:shadow-md transition-shadow">
                                 <div className="p-6 border-b border-gray-100 flex gap-4">
-                                    <div className="relative w-20 h-20 rounded-2xl overflow-hidden bg-gray-50 shrink-0 border border-gray-100">
+                                    <div className="relative w-20 h-20 rounded-2xl overflow-hidden bg-white shrink-0 border border-gray-100 p-2">
                                         <Image
                                             src={product.image_url || '/placeholder.png'}
                                             alt={product.name}
                                             fill
-                                            className="object-cover"
+                                            className="object-contain"
                                         />
                                     </div>
-                                    <div>
-                                        <h3 className="font-bold text-lg leading-tight mb-1">{product.name}</h3>
+                                    <div className="flex-1">
+                                        <h3 className="font-bold text-lg leading-tight mb-1">
+                                            {product.name.replace(new RegExp(`^${product.brand}\\s*-?\\s*`, 'i'), '').trim()}
+                                        </h3>
                                         <p className="text-sm text-gray-500 mb-2">{product.brand}</p>
                                         <div className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-bold">
                                             <Users size={14} />
@@ -131,7 +133,7 @@ export default function PreordersClient() {
                                     {product.is_preorder ? (
                                         <button
                                             onClick={() => handleNotify(product.product_id)}
-                                            disabled={notifyingId === product.product_id || pending === 0}
+                                            disabled={notifyingId === product.product_id}
                                             className="w-full flex items-center justify-center gap-2 py-3.5 rounded-xl font-bold text-white bg-black hover:bg-gray-800 disabled:opacity-50 transition-all active:scale-95"
                                         >
                                             {notifyingId === product.product_id ? (
