@@ -1075,6 +1075,42 @@ export function getSystemDefaults() {
             </div>
             <div style="text-align: center; padding-top: 15px; padding-bottom: 0; color: #ccc; font-size: 11px;">ml - יוקרה בחתיכות קטנות</div>
         </div>`
+        },
+        'daily_summary': {
+            subject: 'סיכום אימיילים יומי - {{date}}',
+            content_html: `
+        <div dir="rtl" style="font-family: 'Open Sans', 'Open Sans Hebrew', Arial, sans-serif; color: #333; max-width: 700px; margin: 0 auto; line-height: 1.6;">
+            <div style="background-color: #fff; padding: 30px; border-radius: 24px; border: 1px solid #f0f0f0; box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
+                <div style="text-align: center; margin-bottom: 25px;">
+                    <div style="display: inline-block; background-color: #e0f2fe; color: #0284c7; font-size: 12px; font-weight: 900; padding: 6px 12px; border-radius: 20px; margin-bottom: 15px;">סיכום יומי</div>
+                    <h1 style="margin: 0; font-size: 24px; font-weight: 900; color: #000;">סיכום המיילים שנשלחו היום</h1>
+                    <p style="margin: 10px 0 0; color: #666; font-size: 14px;">ריכוז של כל התקשורת שיצאה מהמערכת ב-24 השעות האחרונות.</p>
+                </div>
+                
+                <div style="background-color: #fcfcfc; border-radius: 16px; border: 1px solid #f5f5f5; overflow: hidden;">
+                    <table style="width: 100%; border-collapse: collapse;">
+                        <thead style="background-color: #f8f8f8;">
+                            <tr>
+                                <th style="padding: 12px 10px; text-align: right; font-size: 12px; font-weight: 900; color: #999; text-transform: uppercase;">נושא המייל</th>
+                                <th style="padding: 12px 10px; text-align: right; font-size: 12px; font-weight: 900; color: #999; text-transform: uppercase;">נמען</th>
+                                <th style="padding: 12px 10px; text-align: center; font-size: 12px; font-weight: 900; color: #999; text-transform: uppercase;">שעת שליחה</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {{rowsHtml}}
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div style="margin-top: 30px; text-align: center; padding-top: 20px; border-top: 1px dashed #eaeaea;">
+                    <p style="font-size: 14px; font-weight: bold; margin: 0;">סה"כ הודעות: <span style="color: #0284c7;">{{totalCount}}</span></p>
+                </div>
+            </div>
+            <div style="text-align: center; padding-top: 15px; padding-bottom: 0; color: #ccc; font-size: 11px;">
+                ml_tlv System Notification
+            </div>
+        </div>
+    `
         }
     };
 }

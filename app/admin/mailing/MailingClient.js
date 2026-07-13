@@ -640,7 +640,7 @@ export default function MailingClient() {
                             
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                                 {templates.filter(t => {
-                                    if (t.slug?.includes('admin_') || t.slug?.includes('contact_form') || t.slug === 'admin_alert') return false;
+                                    if (t.slug?.includes('admin_') || t.slug?.includes('contact_form') || t.slug === 'admin_alert' || t.slug === 'daily_summary') return false;
                                     if (selectedCategory === 'all') return true;
                                     return getTemplateCategory(t.slug) === selectedCategory;
                                 }).map(t => (
@@ -670,7 +670,7 @@ export default function MailingClient() {
 
                     {view === 'admin-alerts' && (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {templates.filter(t => (t.slug?.includes('admin_') || t.slug?.includes('contact_form')) && t.slug !== 'admin_alert').map(t => (
+                            {templates.filter(t => (t.slug?.includes('admin_') || t.slug?.includes('contact_form') || t.slug === 'daily_summary') && t.slug !== 'admin_alert').map(t => (
                                 <TemplateCard 
                                     key={t.id} 
                                     template={t} 
@@ -1279,6 +1279,7 @@ const getTemplateTiming = (slug) => {
         case 'admin_order_alert': return 'מיידי (מנהלים)';
         case 'admin_user_alert': return 'מיידי (מנהלים)';
         case 'contact_form_alert': return 'מיידי (צור קשר)';
+        case 'daily_summary': return 'בסוף כל יום (מנהלים)';
         default: return 'ידני / דיוור מתוזמן';
     }
 };
@@ -1287,7 +1288,13 @@ function TemplateCard({ template, onEdit, onDelete, onSend, onSendTest }) {
     return (
         <div className="bg-white p-6 rounded-[2.5rem] shadow-sm border border-gray-100 hover:shadow-xl hover:shadow-black/5 hover:-translate-y-1 transition-all duration-300 group flex flex-col h-full relative overflow-hidden">
             <div className="flex justify-between items-start mb-4 relative z-10">
-                <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${template.type === 'system' ? 'bg-blue-50 text-blue-500' : 'bg-green-50 text-green-500'}`}>
+                <div className={`w-12 h-12 rounded-2xl flex items-center justify-center ${
+                    template.slug?.includes('admin_') || template.slug?.includes('contact_form') || template.slug === 'daily_summary' 
+                    ? 'bg-red-50 text-red-500' 
+                    : template.type === 'system' 
+                    ? 'bg-blue-50 text-blue-500' 
+                    : 'bg-green-50 text-green-500'
+                }`}>
                     <Mail size={24} />
                 </div>
                 <div className="flex flex-col items-end gap-1.5">

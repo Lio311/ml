@@ -25,14 +25,34 @@ export async function GET(req) {
 
         const emails = res.rows;
 
-        // Generate the HTML summary using the template
-        const html = getDailySummaryTemplate(emails);
-        const subject = `סיכום אימיילים יומי - ${new Date().toLocaleDateString('he-IL')}`;
+        // Generate the rows HTML
+        let rowsHtml = '';
+        if (emails && emails.length > 0) {
+            rowsHtml = emails.map(email => `
+                <tr style="border-bottom: 1px solid #f0f0f0;">
+                    <td style="padding: 12px 10px; font-size: 14px; color: #333; text-align: right;">${email.subject || 'ללא נושא'}</td>
+                    <td style="padding: 12px 10px; font-size: 14px; color: #333; text-align: right;" dir="ltr">${email.recipient || 'לא ידוע'}</td>
+                    <td style="padding: 12px 10px; font-size: 14px; color: #666; text-align: center;" dir="ltr">${new Date(email.sent_at).toLocaleTimeString('he-IL', {hour: '2-digit', minute:'2-digit', timeZone: 'Asia/Jerusalem'})}</td>
+                </tr>
+            `).join('');
+        } else {
+            rowsHtml = `<tr><td colspan="3" style="padding: 20px; text-align: center; color: #999;">לא נשלחו מיילים היום.</td></tr>`;
+        }
+
+        const { getTemplate } = require('../../../lib/email');
+        const templateData = {
+            date: new Date().toLocaleDateString('he-IL'),
+            rowsHtml,
+            totalCount: emails ? emails.length : 0
+        };
+
+        const { html, subject } = await getTemplate('daily_summary', templateData, () => getDailySummaryTemplate(emails));
+        const finalSubject = subject || `סיכום אימיילים יומי - ${new Date().toLocaleDateString('he-IL')}`;
 
         // Send to admin
         await sendEmail(
             adminEmail,
-            subject,
+            finalSubject,
             html,
             'system'
         );
