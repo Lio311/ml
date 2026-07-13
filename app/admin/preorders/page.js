@@ -1,5 +1,4 @@
 import PreordersClient from './PreordersClient';
-import AdminLayout from '../components/AdminLayout';
 import { auth } from '@clerk/nextjs/server';
 import { redirect } from 'next/navigation';
 
@@ -12,9 +11,5 @@ export default async function PreordersPage() {
         redirect('/');
     }
 
-    return (
-        <AdminLayout>
-            <PreordersClient />
-        </AdminLayout>
-    );
+    return <PreordersClient />;
 }
