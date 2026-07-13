@@ -74,7 +74,7 @@ export default clerkMiddleware(async (auth, req) => {
         !url.pathname.startsWith('/api') && 
         !url.pathname.startsWith('/sign-in') && 
         url.pathname !== '/maintenance' &&
-        !(isAdmin && bypassCookie?.value === 'true')) {
+        bypassCookie?.value !== 'true') {
         try {
             const baseUrl = process.env.NEXT_PUBLIC_APP_URL || req.nextUrl.origin;
             const res = await fetch(`${baseUrl}/api/maintenance`, {

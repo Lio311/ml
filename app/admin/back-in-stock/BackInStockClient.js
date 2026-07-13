@@ -129,8 +129,8 @@ export default function BackInStockClient() {
                                 </div>
                                 <div className="flex flex-wrap justify-center md:justify-start gap-4 text-sm">
                                     <div className="flex items-center gap-2 bg-blue-50 text-blue-700 px-3 py-1.5 rounded-full font-bold">
-                                        <Bell className="w-4 h-4" />
                                         <span>{product.subscriber_count} ממתינים להתראה</span>
+                                        <Bell className="w-4 h-4" />
                                     </div>
                                     <div className="flex items-center gap-2 bg-gray-50 text-gray-500 px-3 py-1.5 rounded-full font-bold">
                                         <Package className="w-4 h-4" />
@@ -167,12 +167,12 @@ export default function BackInStockClient() {
                                         : 'bg-black text-white hover:bg-gray-800'
                                     }`}
                                 >
+                                    <span>עדכן ושלח מיילים</span>
                                     {notifyingId === product.id ? (
                                         <Loader2 className="w-5 h-5 animate-spin" />
                                     ) : (
                                         <Bell className="w-5 h-5" />
                                     )}
-                                    <span>עדכן ושלח מיילים</span>
                                 </button>
                             </div>
                         </div>

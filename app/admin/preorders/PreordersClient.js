@@ -112,13 +112,13 @@ export default function PreordersClient() {
 
                                 <div className="p-6 bg-gray-50/50">
                                     <div className="grid grid-cols-2 gap-4 mb-6">
-                                        <div className="bg-white p-4 rounded-2xl border border-gray-100">
+                                        <div className="bg-white p-4 rounded-2xl border border-gray-100 text-center">
                                             <p className="text-xs text-gray-500 font-bold uppercase tracking-wider mb-1">ממתינים להתראה</p>
                                             <p className="text-2xl font-black text-gray-900">{pending}</p>
                                         </div>
-                                        <div className="bg-white p-4 rounded-2xl border border-gray-100">
+                                        <div className="bg-white p-4 rounded-2xl border border-gray-100 text-center">
                                             <p className="text-xs text-gray-500 font-bold uppercase tracking-wider mb-1">רכשו לאחר התראה</p>
-                                            <div className="flex items-end gap-2">
+                                            <div className="flex items-end justify-center gap-2">
                                                 <p className="text-2xl font-black text-green-600">{converted}</p>
                                                 {notified > 0 && (
                                                     <span className="text-sm font-bold text-green-600/70 mb-1 flex items-center">
@@ -140,8 +140,8 @@ export default function PreordersClient() {
                                                 <Loader2 className="w-5 h-5 animate-spin" />
                                             ) : (
                                                 <>
-                                                    <Bell size={18} />
                                                     <span>המוצר זמין למכירה (שלח התראות)</span>
+                                                    <Bell size={18} />
                                                 </>
                                             )}
                                         </button>

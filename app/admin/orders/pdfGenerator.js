@@ -19,12 +19,12 @@ export const generateFullOrderPDFDoc = async (order) => {
     const dateStr = new Date(order.created_at).toLocaleDateString('he-IL');
 
     // Build product rows
-    const productRows = items.map((item, index) => {
+    const productRows = items.flatMap((item, index) => {
         const qty = item.quantity || 1;
-        const name = item.name || `${item.brand || ''} ${item.model || ''}`;
+        const name = item.name || (item.type === 'bundle' ? `חבילת ${item.bundleType || ''}` : `${item.brand || ''} ${item.model || ''}`);
         const size = String(item.size).includes('ml') ? item.size : `${item.size || ''} ml`;
         const price = item.price ? `₪${item.price}` : '';
-        return `
+        const mainRow = `
             <tr>
                 <td style="padding:4px 8px; border-bottom:1px solid #eee; text-align:right;">${index + 1}</td>
                 <td style="padding:4px 8px; border-bottom:1px solid #eee; text-align:right;" dir="auto">${name}</td>
@@ -33,6 +33,23 @@ export const generateFullOrderPDFDoc = async (order) => {
                 <td style="padding:4px 8px; border-bottom:1px solid #eee; text-align:left;">${price}</td>
             </tr>
         `;
+        
+        let subRows = [];
+        if (item.type === 'bundle' && Array.isArray(item.items) && item.items.length > 0) {
+            subRows = item.items.map((subItem) => `
+                <tr>
+                    <td style="padding:4px 8px; border-bottom:1px solid #eee; text-align:right;"></td>
+                    <td style="padding:4px 8px; border-bottom:1px solid #eee; text-align:right; font-size:10px; color:#666;" dir="auto">
+                        ↳ ${subItem.brand || ''} ${subItem.model || ''}
+                    </td>
+                    <td style="padding:4px 8px; border-bottom:1px solid #eee; text-align:center; font-size:10px; color:#666;"><span dir="ltr">${size}</span></td>
+                    <td style="padding:4px 8px; border-bottom:1px solid #eee; text-align:center; font-size:10px; color:#666;">1</td>
+                    <td style="padding:4px 8px; border-bottom:1px solid #eee; text-align:left;"></td>
+                </tr>
+            `);
+        }
+        
+        return [mainRow, ...subRows];
     }).join('');
 
     const formatAddress = (addr) => {

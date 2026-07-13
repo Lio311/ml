@@ -263,7 +263,13 @@ export default function AdminOrdersListClient({
                                                         <ul className="pl-4 pr-6 mt-1 space-y-1 list-disc text-[11px] text-gray-500 text-right w-full">
                                                             {item.items.map((subItem, subIdx) => (
                                                                 <li key={subIdx} className="text-right">
-                                                                    {subItem.brand} {subItem.model} ({item.size}ml)
+                                                                    <Link 
+                                                                        href={`/product/${(subItem.product_id || subItem.id)?.toString().split('-')[0]}`}
+                                                                        className="hover:text-gray-900 transition-colors"
+                                                                        target="_blank"
+                                                                    >
+                                                                        {subItem.brand} {subItem.model} ({item.size}ml)
+                                                                    </Link>
                                                                 </li>
                                                             ))}
                                                         </ul>
@@ -466,20 +472,22 @@ export default function AdminOrdersListClient({
                                                         >
                                                             {item.name || (item.type === 'bundle' ? `חבילת ${item.bundleType}` : `${item.brand} ${item.model}`)}
                                                         </Link>
-                                                        <button 
-                                                            onClick={(e) => {
-                                                                e.preventDefault();
-                                                                e.stopPropagation();
-                                                                navigator.clipboard.writeText(item.name || (item.type === 'bundle' ? `חבילת ${item.bundleType}` : `${item.brand} ${item.model}`));
-                                                                toast.success('שם הועתק');
-                                                            }}
-                                                            className="md:hidden flex items-center gap-1 text-[10px] text-blue-600 bg-blue-50 px-2 py-0.5 rounded-md active:bg-blue-100 transition-colors"
-                                                        >
-                                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-3 h-3">
-                                                                <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H9.75" />
-                                                            </svg>
-                                                            העתק
-                                                        </button>
+                                                        {item.type !== 'bundle' && (
+                                                            <button 
+                                                                onClick={(e) => {
+                                                                    e.preventDefault();
+                                                                    e.stopPropagation();
+                                                                    navigator.clipboard.writeText(item.name || (item.type === 'bundle' ? `חבילת ${item.bundleType}` : `${item.brand} ${item.model}`));
+                                                                    toast.success('שם הועתק');
+                                                                }}
+                                                                className="md:hidden flex items-center gap-1 text-[10px] text-blue-600 bg-blue-50 px-2 py-0.5 rounded-md active:bg-blue-100 transition-colors"
+                                                            >
+                                                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-3 h-3">
+                                                                    <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H9.75" />
+                                                                </svg>
+                                                                העתק
+                                                            </button>
+                                                        )}
                                                     </div>
                                                 </div>
                                                 <span className="text-gray-400 font-black text-[10px] uppercase tracking-tighter pt-1 shrink-0 bg-white px-2 py-0.5 rounded-lg border border-gray-100" dir="ltr">

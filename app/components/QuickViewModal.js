@@ -162,10 +162,7 @@ export default function QuickViewModal({ product, isOpen, onClose }) {
                             <div className="mt-8 flex-1 space-y-4">
                                 {product.is_preorder ? (
                                     <div className="space-y-3">
-                                        <Link href={`/product/${product.slug || product.id}`} className="w-full bg-blue-600 text-white py-4 rounded-xl flex items-center justify-center gap-2 font-bold transition-all shadow-sm hover:bg-blue-700 text-lg">
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-5 h-5">
-                                              <path strokeLinecap="round" strokeLinejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 1 1-18 0 9 9 0 0 1 18 0Z" />
-                                            </svg>
+                                        <Link href={`/product/${product.slug || product.id}`} className="w-full bg-[#050505] text-white py-4 rounded-xl flex items-center justify-center gap-2 font-bold transition-all shadow-sm hover:bg-gray-800 text-lg">
                                             <span>{dir === 'rtl' ? 'הרשמה להזמנה מוקדמת' : 'Pre-order'}</span>
                                         </Link>
                                     </div>

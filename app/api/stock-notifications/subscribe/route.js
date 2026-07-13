@@ -48,3 +48,27 @@ export async function POST(req) {
         return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
     }
 }
+
+export async function GET(req) {
+    try {
+        const { userId } = await clerkAuth();
+        if (!userId) return NextResponse.json({ subscribed: false });
+
+        const url = new URL(req.url);
+        const productId = url.searchParams.get('productId');
+        if (!productId) return NextResponse.json({ subscribed: false });
+
+        const client = await pool.connect();
+        try {
+            const res = await client.query(
+                'SELECT id FROM back_in_stock_subscriptions WHERE product_id = $1 AND user_id = $2 AND status = $3',
+                [productId, userId, 'pending']
+            );
+            return NextResponse.json({ subscribed: res.rows.length > 0 });
+        } finally {
+            client.release();
+        }
+    } catch (error) {
+        return NextResponse.json({ subscribed: false });
+    }
+}

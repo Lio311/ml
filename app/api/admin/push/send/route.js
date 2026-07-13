@@ -4,11 +4,13 @@ import { currentUser } from '@clerk/nextjs/server';
 import webpush from 'web-push';
 
 // Setup VAPID keys
-webpush.setVapidDetails(
-  'mailto:lior31197@gmail.com',
-  process.env.VAPID_PUBLIC_KEY,
-  process.env.VAPID_PRIVATE_KEY
-);
+if (process.env.VAPID_PUBLIC_KEY && process.env.VAPID_PRIVATE_KEY) {
+    webpush.setVapidDetails(
+      'mailto:lior31197@gmail.com',
+      process.env.VAPID_PUBLIC_KEY,
+      process.env.VAPID_PRIVATE_KEY
+    );
+}
 
 export async function POST(req) {
     const user = await currentUser();

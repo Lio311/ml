@@ -46,7 +46,7 @@ export default function ProductActionsClient({ product }) {
         }
     };
 
-    // Track View History
+    // Track View History and Check Subscription
     useEffect(() => {
         if (isSignedIn && product?.id) {
             fetch('/api/history/record', {
@@ -54,8 +54,24 @@ export default function ProductActionsClient({ product }) {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ productId: product.id })
             }).catch(err => console.error("Tracking failed", err));
+
+            // Check if user is already subscribed to preorder or restock
+            if (isOutOfStock || product.is_preorder) {
+                const endpoint = product.is_preorder 
+                    ? `/api/preorders/subscribe?productId=${product.id}`
+                    : `/api/stock-notifications/subscribe?productId=${product.id}`;
+                
+                fetch(endpoint)
+                    .then(res => res.json())
+                    .then(data => {
+                        if (data.subscribed) {
+                            setSubscribed(true);
+                        }
+                    })
+                    .catch(err => console.error("Subscription check failed", err));
+            }
         }
-    }, [isSignedIn, product]);
+    }, [isSignedIn, product, isOutOfStock]);
 
     const isDiscountActive = (size) => {
         if (!product.discount_percentage || product.discount_percentage <= 0) return false;
