@@ -72,8 +72,8 @@ export default function EmailLogsClient({ initialLogs, currentPage, totalPages, 
             case 'system': return 'מערכת';
             case 'manual_campaign': return 'דיוור קמפיין';
             case 'new_product': return 'מוצר חדש';
-            case 'new_perfumes_batch': return 'מוצרים חדשים (אצווה)';
-            case 'new_preorder': return 'התראת מלאי (הזמנה מוקדמת)';
+            case 'new_perfumes_batch': return 'מוצרים חדשים';
+            case 'new_preorder': return 'הזמנה מוקדמת';
             default: return type || 'מערכת';
         }
     };
@@ -115,7 +115,7 @@ export default function EmailLogsClient({ initialLogs, currentPage, totalPages, 
                         <thead>
                             <tr className="bg-gray-50/50 border-b border-gray-100">
                                 <th className="px-6 py-4 w-1/3 text-[10px] font-black text-gray-400 uppercase tracking-widest">נמען</th>
-                                <th className="px-6 py-4 w-28 text-[10px] font-black text-gray-400 uppercase tracking-widest">סוג מייל</th>
+                                <th className="px-6 py-4 w-32 text-[10px] font-black text-gray-400 uppercase tracking-widest">סוג מייל</th>
                                 <th className="px-6 py-4 w-1/4 text-[10px] font-black text-gray-400 uppercase tracking-widest">נושא</th>
                                 <th className="px-6 py-4 w-24 text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">סטטוס</th>
                                 <th className="px-6 py-4 w-24 text-[10px] font-black text-gray-400 uppercase tracking-widest text-center">שיוך</th>
