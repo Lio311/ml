@@ -27,9 +27,42 @@ export default function PreordersClient() {
         }
     };
 
-    const handleNotify = async (productId) => {
-        if (!confirm('האם אתה בטוח שברצונך לסמן את המוצר כזמין ולשלוח מייל לכל הנרשמים? הפעולה תהפוך את המוצר לזמין לרכישה רגילה.')) return;
-        
+    const handleNotify = (productId) => {
+        toast((t) => (
+            <div className="bg-white p-5 shadow-2xl rounded-2xl border border-gray-100 flex flex-col gap-3 max-w-sm w-full mx-auto" dir="rtl">
+                <div className="flex items-start gap-4">
+                    <div className="shrink-0 w-10 h-10 bg-black rounded-full flex items-center justify-center">
+                        <Bell className="w-5 h-5 text-white" />
+                    </div>
+                    <div>
+                        <h3 className="font-black text-gray-900 text-lg mb-1">שליחת התראות זמינות</h3>
+                        <p className="text-sm text-gray-500 leading-relaxed font-medium">
+                            האם אתה בטוח שברצונך לסמן את המוצר כזמין ולשלוח מייל לכל הנרשמים? הפעולה תהפוך את המוצר לזמין לרכישה רגילה.
+                        </p>
+                    </div>
+                </div>
+                <div className="flex gap-2 mt-2">
+                    <button
+                        onClick={() => {
+                            toast.dismiss(t.id);
+                            processNotify(productId);
+                        }}
+                        className="flex-1 bg-black text-white px-4 py-2.5 rounded-xl text-sm font-bold hover:bg-gray-800 transition-colors"
+                    >
+                        אישור ושליחה
+                    </button>
+                    <button
+                        onClick={() => toast.dismiss(t.id)}
+                        className="flex-1 bg-gray-100 text-gray-700 px-4 py-2.5 rounded-xl text-sm font-bold hover:bg-gray-200 transition-colors"
+                    >
+                        ביטול
+                    </button>
+                </div>
+            </div>
+        ), { duration: Infinity, position: 'top-center' });
+    };
+
+    const processNotify = async (productId) => {
         setNotifyingId(productId);
         try {
             const res = await fetch('/api/preorders/notify', {
