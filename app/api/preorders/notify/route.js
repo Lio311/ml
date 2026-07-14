@@ -32,9 +32,10 @@ export async function POST(req) {
         try {
             await client.query('BEGIN');
 
-            // Set product is_preorder to false
+            // Set product is_preorder to false and perfume_email_sent to true
+            // to prevent the cron job from treating it as a new product and blasting everyone
             const productRes = await client.query(
-                'UPDATE products SET is_preorder = false WHERE id = $1 RETURNING *',
+                'UPDATE products SET is_preorder = false, perfume_email_sent = true WHERE id = $1 RETURNING *',
                 [productId]
             );
 

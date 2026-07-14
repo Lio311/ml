@@ -40,6 +40,8 @@ export default function EmailLogsClient({ initialLogs, currentPage, totalPages, 
             case 'admin_user_alert':
             case 'contact_form_alert': return 'bg-red-100 text-red-700 border-red-200';
             case 'new_product': return 'bg-violet-100 text-violet-700 border-violet-200';
+            case 'new_perfumes_batch': return 'bg-fuchsia-100 text-fuchsia-700 border-fuchsia-200';
+            case 'new_preorder': return 'bg-rose-100 text-rose-700 border-rose-200';
             default: return 'bg-gray-100 text-gray-600 border-gray-200';
         }
     };
@@ -70,6 +72,8 @@ export default function EmailLogsClient({ initialLogs, currentPage, totalPages, 
             case 'system': return 'מערכת';
             case 'manual_campaign': return 'דיוור קמפיין';
             case 'new_product': return 'מוצר חדש';
+            case 'new_perfumes_batch': return 'מוצרים חדשים (אצווה)';
+            case 'new_preorder': return 'התראת מלאי (הזמנה מוקדמת)';
             default: return type || 'מערכת';
         }
     };
