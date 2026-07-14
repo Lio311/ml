@@ -48,12 +48,12 @@ export default function OrderAlerts({ order }) {
                 </div>
             )}
             {orangeAlert && (
-                <div className="text-[10px] bg-orange-50 text-orange-700 p-1.5 rounded border border-orange-200 font-bold flex flex-col items-end gap-0.5 w-fit ml-auto mr-0 text-right">
+                <div className="text-[10px] bg-orange-50 text-orange-700 p-1.5 rounded border border-orange-200 font-bold flex flex-col items-start gap-0.5 w-fit ml-auto mr-0 text-right">
                     <div className="flex items-center gap-1">
                         <span className="text-orange-500">🟠</span>
                         <span>בושם זה כבר הוזמן בעבר על ידי הלקוח:</span>
                     </div>
-                    <span className="font-normal">{orangeAlert}</span>
+                    <span className="font-normal text-right">{orangeAlert}</span>
                 </div>
             )}
         </div>
