@@ -55,8 +55,8 @@ export default function MaintenancePage() {
                 )}
                 
                 {/* SVG Illustration Container */}
-                <div className="w-full max-w-4xl relative mb-2 md:mb-4">
-                    <svg viewBox="0 0 800 360" className="w-full h-auto" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <div className="w-full max-w-4xl relative mb-0 md:mb-2">
+                    <svg viewBox="0 0 800 360" className="w-full h-auto max-h-[35vh]" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                         
                         {/* Background City Skyline */}
                         <path d="M50 350 V200 H120 V150 H180 V280 H250 V180 H320 V350" stroke="none" fill="#f1f5f9" />
@@ -302,7 +302,7 @@ export default function MaintenancePage() {
                     </div>
                 </div>
 
-                <div className="mt-4 md:mt-6 text-[10px] md:text-xs text-gray-400 pb-2 z-20">
+                <div className="mt-2 md:mt-4 text-[10px] md:text-xs text-gray-400 pb-1 z-20">
                     &copy; {new Date().getFullYear()} ml_tlv. כל הזכויות שמורות.
                 </div>
             </div>
