@@ -28,8 +28,11 @@ export default function PreordersClient() {
     };
 
     const handleNotify = (productId) => {
-        toast((t) => (
-            <div className="bg-white p-5 shadow-2xl rounded-2xl border border-gray-100 flex flex-col gap-3 max-w-sm w-full mx-auto" dir="rtl">
+        toast.custom((t) => (
+            <div 
+                className={`${t.visible ? 'animate-enter' : 'animate-leave'} max-w-md w-full bg-white shadow-2xl rounded-2xl pointer-events-auto flex flex-col gap-3 p-5 border border-gray-100 mx-auto mt-4`} 
+                dir="rtl"
+            >
                 <div className="flex items-start gap-4">
                     <div className="shrink-0 w-10 h-10 bg-black rounded-full flex items-center justify-center">
                         <Bell className="w-5 h-5 text-white" />
