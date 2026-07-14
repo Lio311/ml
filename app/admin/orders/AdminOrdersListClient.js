@@ -260,45 +260,19 @@ export default function AdminOrdersListClient({
                                                         <span className="text-gray-400 whitespace-nowrap" dir="ltr">{item.is_discovery_set ? formatDiscoverySize(item.volume_label) : (String(item.size).includes('ml') ? item.size : `${item.size} ml`)}</span>
                                                     </li>
                                                     {item.type === 'bundle' && item.items && item.items.length > 0 && (
-                                                        <div className="mr-6 bg-white/50 p-2.5 rounded-xl border border-gray-100/50 mt-2">
-                                                            <ul className="space-y-3 list-none">
+                                                        <div className="mr-6 mt-1 mb-2">
+                                                            <ul className="space-y-1 list-none">
                                                                 {item.items.map((subItem, subIdx) => (
-                                                                    <li key={subIdx} className="flex flex-col text-[13px]">
-                                                                        <div className="flex justify-between items-start">
-                                                                            <div className="flex gap-2.5 flex-1 text-right">
-                                                                                <span className="text-gray-300 font-black text-xl flex items-center justify-center shrink-0 w-6" style={{ transform: 'scaleX(-1) translateY(-2px)' }}>
-                                                                                    {"↳"}
-                                                                                </span>
-                                                                                <div className="flex flex-col gap-1 items-start">
-                                                                                    <Link 
-                                                                                        href={`/product/${(subItem.product_id || subItem.id)?.toString().split('-')[0]}`}
-                                                                                        className="font-normal text-gray-700 leading-tight hover:text-gray-900 transition-colors pt-0.5"
-                                                                                        target="_blank"
-                                                                                    >
-                                                                                        {subItem.brand} {subItem.model}
-                                                                                    </Link>
-                                                                                    <button 
-                                                                                        onClick={(e) => {
-                                                                                            e.preventDefault();
-                                                                                            e.stopPropagation();
-                                                                                            navigator.clipboard.writeText(`${subItem.brand} ${subItem.model}`);
-                                                                                            toast.success('שם הועתק');
-                                                                                        }}
-                                                                                        className="flex items-center gap-1 text-[10px] text-blue-600 bg-blue-50 px-2 py-0.5 rounded-md active:bg-blue-100 hover:bg-blue-100 transition-colors"
-                                                                                    >
-                                                                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-3 h-3">
-                                                                                            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H9.75" />
-                                                                                        </svg>
-                                                                                        {"העתק"}
-                                                                                    </button>
-                                                                                </div>
-                                                                            </div>
-                                                                            {item.size && (
-                                                                                <span className="text-gray-400 font-black text-[10px] uppercase tracking-tighter pt-1 shrink-0 bg-white px-2 py-0.5 rounded-lg border border-gray-100" dir="ltr">
-                                                                                    {String(item.size).toLowerCase().includes('ml') ? item.size : `${item.size}ml`}
-                                                                                </span>
-                                                                            )}
-                                                                        </div>
+                                                                    <li key={subIdx} className="flex gap-2 text-gray-600 justify-start text-[13px]">
+                                                                        <span className={`font-bold whitespace-nowrap text-${themeColor}-600/70`}>x1</span>
+                                                                        <Link 
+                                                                            href={`/product/${(subItem.product_id || subItem.id)?.toString().split('-')[0]}`}
+                                                                            className="font-normal text-gray-600 leading-tight hover:text-gray-900 transition-colors"
+                                                                            target="_blank"
+                                                                        >
+                                                                            {subItem.brand} {subItem.model}
+                                                                        </Link>
+                                                                        <span className="text-gray-400 whitespace-nowrap" dir="ltr">{String(item.size).includes('ml') ? item.size : `${item.size} ml`}</span>
                                                                     </li>
                                                                 ))}
                                                             </ul>
