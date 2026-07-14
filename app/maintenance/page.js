@@ -302,7 +302,7 @@ export default function MaintenancePage() {
                     </div>
                 </div>
 
-                <div className="mt-8 md:mt-10 text-[10px] md:text-xs text-gray-400 pb-4 z-20">
+                <div className="mt-4 md:mt-6 text-[10px] md:text-xs text-gray-400 pb-2 z-20">
                     &copy; {new Date().getFullYear()} ml_tlv. כל הזכויות שמורות.
                 </div>
             </div>
