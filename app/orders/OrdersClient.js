@@ -182,7 +182,7 @@ export default function OrdersClient() {
                                 {order.items.map((item, idx) => (
                                     <div key={idx} className="flex items-center gap-4 py-2">
                                         {/* Product Image */}
-                                        <div className="w-16 h-16 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0 border relative">
+                                        <div className="w-16 h-16 bg-white rounded-lg overflow-hidden flex-shrink-0 border border-gray-200 relative">
                                             {(() => {
                                                 const bundleVibeMap = {
                                                     'summer': '/images/vibe/summer.png',
