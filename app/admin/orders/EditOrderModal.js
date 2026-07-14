@@ -509,7 +509,7 @@ export default function EditOrderModal({ order, onClose, onSuccess }) {
                                     }`}
                                 >
                                     <Store className={deliveryMethod === 'self_pickup' ? 'w-4 h-4 md:w-5 md:h-5 text-blue-600' : 'w-4 h-4 md:w-5 md:h-5'} />
-                                    <span className="font-black text-[11px] md:text-[12px]">איסוף (0 ₪)</span>
+                                    <span className="font-black text-[11px] md:text-[12px]">איסוף עצמי (0 ₪)</span>
                                 </button>
                             </div>
                             <textarea 

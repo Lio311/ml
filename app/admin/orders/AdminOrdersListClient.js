@@ -358,7 +358,7 @@ export default function AdminOrdersListClient({
                                             {order.delivery_method === 'self_pickup' ? (
                                                 <div className="inline-flex flex-col items-center text-[10px] text-green-700 bg-green-50 px-2 py-1 rounded-lg border border-green-100" title="איסוף עצמי">
                                                     <span className="text-sm">📍</span>
-                                                    <span className="font-bold">איסוף</span>
+                                                    <span className="font-bold">איסוף עצמי</span>
                                                 </div>
                                             ) : order.delivery_method === 'home_delivery' ? (
                                                 <div className="inline-flex flex-col items-center text-[10px] text-purple-700 bg-purple-50 px-2 py-1 rounded-lg border border-purple-100" title="משלוח עד הבית">
