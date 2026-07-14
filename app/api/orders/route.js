@@ -464,6 +464,44 @@ export async function POST(req) {
                 );
             }
 
+            // --- UPDATE PREORDERS (CONVERSION) ---
+            const customerEmail = body.customerDetails?.email || (user ? user.emailAddresses[0]?.emailAddress : '');
+            if (customerEmail) {
+                const purchasedProductIds = [];
+                for (const item of items) {
+                    let dbId = item.id;
+                    if (typeof dbId === 'string' && dbId.includes('-')) {
+                        dbId = parseInt(dbId.split('-')[0]);
+                    }
+                    if (!isNaN(dbId)) purchasedProductIds.push(Number(dbId));
+                    
+                    // Check inside bundles
+                    if (item.type === 'bundle' && Array.isArray(item.items)) {
+                        for (const innerItem of item.items) {
+                            let innerDbId = innerItem.id;
+                            if (typeof innerDbId === 'string' && innerDbId.includes('-')) {
+                                innerDbId = parseInt(innerDbId.split('-')[0]);
+                            }
+                            if (!isNaN(innerDbId)) purchasedProductIds.push(Number(innerDbId));
+                        }
+                    }
+                }
+
+                if (purchasedProductIds.length > 0) {
+                    try {
+                        await client.query(`
+                            UPDATE preorders 
+                            SET status = 'converted', converted_at = NOW()
+                            WHERE LOWER(user_email) = LOWER($1) 
+                            AND product_id = ANY($2)
+                            AND status != 'converted'
+                        `, [customerEmail, purchasedProductIds]);
+                    } catch (e) {
+                        console.error("Failed to update preorder conversion status:", e);
+                    }
+                }
+            }
+
             await client.query('COMMIT');
 
             // Prepare dynamic item lists for templates

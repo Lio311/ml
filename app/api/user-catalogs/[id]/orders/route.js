@@ -95,6 +95,27 @@ export async function POST(req, { params }) {
                 }
             }
 
+            // --- UPDATE PREORDERS (CONVERSION) ---
+            if (clerkEmail) {
+                const purchasedProductIds = items.map(item => {
+                    return item.originalId || parseInt(String(item.id).split('_')[0]) || null;
+                }).filter(id => id !== null && !isNaN(id));
+
+                if (purchasedProductIds.length > 0) {
+                    try {
+                        await client.query(`
+                            UPDATE preorders 
+                            SET status = 'converted', converted_at = NOW()
+                            WHERE LOWER(user_email) = LOWER($1) 
+                            AND product_id = ANY($2)
+                            AND status != 'converted'
+                        `, [clerkEmail, purchasedProductIds]);
+                    } catch (e) {
+                        console.error("Failed to update preorder conversion status:", e);
+                    }
+                }
+            }
+
             await client.query('COMMIT');
 
             // Send Emails
