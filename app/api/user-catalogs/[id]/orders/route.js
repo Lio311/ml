@@ -107,7 +107,9 @@ export async function POST(req, { params }) {
                 </div>` : '';
 
             // 1. Email to Customer
-            const deliveryText = deliveryMethod === 'self_pickup' ? 'איסוף עצמי (תל אביב)' : 'משלוח בדואר';
+            let deliveryText = 'איסוף עצמי (תל אביב)';
+            if (deliveryMethod === 'mail') deliveryText = 'משלוח עד נקודת איסוף';
+            else if (deliveryMethod === 'home_delivery') deliveryText = 'משלוח עד הבית';
             const customerHtml = getOrderConfirmationTemplate(orderId, items, total, freeSamples, notesHtml, deliveryText, "חינם"); // Shipping cost included in total for catalogs
             await sendEmail(clerkEmail, `אישור הזמנה מ-${catalogName} #${orderId}`, customerHtml, 'order_confirmation', orderId);
 

@@ -44,12 +44,10 @@ export async function POST(req, { params }) {
             const itemsHtml = formatItemsHtmlCustomer(items);
             const notesHtml = formatNotesHtml(order.notes);
             
-            let deliveryMethodText = 'משלוח לנקודת חלוקה';
-            let shippingCostText = '0';
-            if (order.shipping_details?.deliveryMethod === 'courier') {
-                deliveryMethodText = 'שליח עד הבית';
-                shippingCostText = '35';
-            }
+            let deliveryMethodText = 'איסוף עצמי (תל אביב)';
+            if (order.delivery_method === 'mail') deliveryMethodText = 'משלוח עד נקודת איסוף';
+            else if (order.delivery_method === 'home_delivery') deliveryMethodText = 'משלוח עד הבית';
+            let shippingCostText = order.shipping_cost === 0 ? 'חינם' : `${order.shipping_cost} ₪`;
 
             html = getOrderConfirmationTemplate(
                 order.id, 
@@ -69,12 +67,10 @@ export async function POST(req, { params }) {
             const items = order.items;
             const notesHtml = formatNotesHtml(order.notes);
             
-            let deliveryMethodText = 'משלוח לנקודת חלוקה';
-            let shippingCostText = '0';
-            if (order.shipping_details?.deliveryMethod === 'courier') {
-                deliveryMethodText = 'שליח עד הבית';
-                shippingCostText = '35';
-            }
+            let deliveryMethodText = 'איסוף עצמי (תל אביב)';
+            if (order.delivery_method === 'mail') deliveryMethodText = 'משלוח עד נקודת איסוף';
+            else if (order.delivery_method === 'home_delivery') deliveryMethodText = 'משלוח עד הבית';
+            let shippingCostText = order.shipping_cost === 0 ? 'חינם' : `${order.shipping_cost} ₪`;
 
             const name = order.customer_details?.firstName || 'לקוח';
 

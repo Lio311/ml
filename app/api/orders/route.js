@@ -488,7 +488,7 @@ export async function POST(req) {
                     itemsHtml: itemsHtmlCustomer,
                     deliveryMethod: deliveryText,
                     shippingCost: shippingCost === 0 ? 'חינם' : `${shippingCost} ₪`
-                }, getOrderConfirmationTemplate.bind(null, orderId, items, total, freeSamples, notes, deliveryMethod || 'mail', shippingCost));
+                }, getOrderConfirmationTemplate.bind(null, orderId, items, total, freeSamples, notes, deliveryText, shippingCost));
                 
                 await sendEmail(userEmail, dynamicSubject || `אישור הזמנה #${orderId} - ml_tlv`, dynamicHtml, 'order_confirmation', orderId);
             } else if (userEmail && catalogId) {
@@ -502,7 +502,7 @@ export async function POST(req) {
                     itemsHtml: itemsHtmlCustomer,
                     deliveryMethod: deliveryText,
                     shippingCost: shippingCost === 0 ? 'חינם' : `${shippingCost} ₪`
-                }, getOrderConfirmationTemplate.bind(null, orderId, items, total, freeSamples, notes, deliveryMethod || 'mail', shippingCost));
+                }, getOrderConfirmationTemplate.bind(null, orderId, items, total, freeSamples, notes, deliveryText, shippingCost));
                 
                 await sendEmail(userEmail, dynamicSubject || `אישור קבלת פנייה מ${catalogName} #${orderId}`, dynamicHtml, 'order_confirmation', orderId);
             }
@@ -524,7 +524,7 @@ export async function POST(req) {
                     itemsHtmlAdmin: itemsHtmlAdmin,
                     orderDate: orderDateStr
                 },
-                () => getAdminNewOrderTemplate(orderId, customerFullName, total, items, deliveryMethod || 'mail', shippingCost, phoneNumber, orderDateStr)
+                () => getAdminNewOrderTemplate(orderId, customerFullName, total, items, deliveryText, shippingCost, phoneNumber, orderDateStr)
             );
             
             if (catalogOwnerEmail) {
