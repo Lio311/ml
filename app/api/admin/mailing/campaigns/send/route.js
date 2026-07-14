@@ -23,22 +23,38 @@ export async function POST(req) {
         // 2. Identify Recipients
         let recipientData = [];
         if (campaign.recipient_type === 'all') {
-            const usersRes = await pool.query('SELECT email, first_name, last_name FROM users WHERE email IS NOT NULL');
+            const usersRes = await pool.query(`
+                SELECT u.email, u.first_name, u.last_name 
+                FROM users u
+                LEFT JOIN unsubscribed_emails un ON LOWER(TRIM(u.email)) = LOWER(TRIM(un.email))
+                WHERE u.email IS NOT NULL AND un.email IS NULL
+            `);
             recipientData = usersRes.rows.map(u => ({ email: u.email, first_name: u.first_name, last_name: u.last_name }));
         } else {
             // recipients is stored as JSONB array of objects [{id: '...', label: '...', subLabel: 'email@...'}]
             const emails = (campaign.recipients || []).map(r => typeof r === 'string' ? r : (r.subLabel || r.id));
             if (emails.length > 0) {
                 const placeholders = emails.map((_, i) => `$${i + 1}`).join(',');
-                const usersRes = await pool.query(`SELECT email, first_name, last_name FROM users WHERE email IN (${placeholders})`, emails);
+                const usersRes = await pool.query(`
+                    SELECT u.email, u.first_name, u.last_name 
+                    FROM users u
+                    LEFT JOIN unsubscribed_emails un ON LOWER(TRIM(u.email)) = LOWER(TRIM(un.email))
+                    WHERE u.email IN (${placeholders}) AND un.email IS NULL
+                `, emails);
                 const userMap = {};
                 usersRes.rows.forEach(u => userMap[u.email] = u);
                 
-                recipientData = emails.map(email => ({
-                    email,
-                    first_name: userMap[email]?.first_name || '',
-                    last_name: userMap[email]?.last_name || ''
-                }));
+                // For explicit list, we still filter against the unsubscribed table
+                const unsubRes = await pool.query(`SELECT LOWER(TRIM(email)) as email FROM unsubscribed_emails WHERE email IN (${placeholders})`, emails);
+                const unsubMap = new Set(unsubRes.rows.map(r => r.email));
+
+                recipientData = emails
+                    .filter(email => !unsubMap.has(email.toLowerCase().trim()))
+                    .map(email => ({
+                        email,
+                        first_name: userMap[email]?.first_name || '',
+                        last_name: userMap[email]?.last_name || ''
+                    }));
             }
         }
 

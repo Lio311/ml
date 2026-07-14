@@ -29,14 +29,25 @@ export async function GET(req) {
                 // 2. Determine recipients
                 let recipientEmails = [];
                 if (campaign.recipient_type === 'all') {
-                    const usersRes = await pool.query('SELECT email FROM users WHERE email IS NOT NULL');
+                    const usersRes = await pool.query(`
+                        SELECT u.email 
+                        FROM users u
+                        LEFT JOIN unsubscribed_emails un ON LOWER(TRIM(u.email)) = LOWER(TRIM(un.email))
+                        WHERE u.email IS NOT NULL AND un.email IS NULL
+                    `);
                     recipientEmails = usersRes.rows.map(u => u.email);
                 } else if (Array.isArray(campaign.recipients)) {
-                    recipientEmails = campaign.recipients;
+                    // Filter explicit array
+                    const placeholders = campaign.recipients.map((_, i) => `$${i + 1}`).join(',');
+                    if (placeholders) {
+                        const unsubRes = await pool.query(`SELECT LOWER(TRIM(email)) as email FROM unsubscribed_emails WHERE email IN (${placeholders})`, campaign.recipients);
+                        const unsubMap = new Set(unsubRes.rows.map(r => r.email));
+                        recipientEmails = campaign.recipients.filter(email => !unsubMap.has(email.toLowerCase().trim()));
+                    }
                 }
 
                 if (recipientEmails.length === 0) {
-                    await pool.query("UPDATE email_campaigns SET status = 'sent', sent_at = NOW(), error_log = 'No recipients found' WHERE id = $1", [campaign.id]);
+                    await pool.query("UPDATE email_campaigns SET status = 'sent', sent_at = NOW(), error_log = 'No recipients found after filtering unsubscribed' WHERE id = $1", [campaign.id]);
                     continue;
                 }
 
