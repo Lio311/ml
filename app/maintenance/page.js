@@ -56,7 +56,7 @@ export default function MaintenancePage() {
                 
                 {/* SVG Illustration Container */}
                 <div className="w-full max-w-4xl relative mb-0 md:mb-2">
-                    <svg viewBox="0 0 800 360" className="w-full h-auto max-h-[35vh]" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <svg viewBox="0 0 800 360" className="w-full h-auto max-h-[45vh]" fill="none" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                         
                         {/* Background City Skyline */}
                         <path d="M50 350 V200 H120 V150 H180 V280 H250 V180 H320 V350" stroke="none" fill="#f1f5f9" />

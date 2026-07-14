@@ -29,7 +29,7 @@ export default function CartClient() {
         luckyPrize, setLuckyPrize, discountAmount, promoDiscountAmount,
         lotteryMode, lotteryTimeLeft,
         coupon, setCoupon, isMainVendor, totalItemsCount, vendorConfig,
-        isSelfPickup, setIsSelfPickup
+        deliveryMethod, setDeliveryMethod, isSelfPickup, setIsSelfPickup
     } = useCart();
 
     const { user, isLoaded } = useUser();
@@ -206,7 +206,7 @@ export default function CartClient() {
             return;
         }
 
-        if (!isSelfPickup) {
+        if (deliveryMethod !== 'self_pickup') {
             if (!address.street || !address.city || !address.apartment || !address.houseNumber) {
                 setAddressError("אנא מלא רחוב, מספר בית, מספר דירה (0 אם פרטי), ועיר למשלוח");
                 toast.error("אנא מלא את כל שדות החובה למשלוח");
@@ -262,8 +262,8 @@ export default function CartClient() {
                 phoneNumber: cleanPhone,
                 activeVendorId,
                 freeSamples: freeSamplesCount,
-                deliveryMethod: isSelfPickup ? 'self_pickup' : 'mail',
-                address: !isSelfPickup ? address : null,
+                deliveryMethod: deliveryMethod,
+                address: deliveryMethod !== 'self_pickup' ? address : null,
                 couponCode: coupon?.code
             };
 
@@ -643,8 +643,8 @@ export default function CartClient() {
                             <DeliverySection 
                                 isMainVendor={isMainVendor} 
                                 vendorConfig={vendorConfig} 
-                                isSelfPickup={isSelfPickup} 
-                                setIsSelfPickup={setIsSelfPickup} 
+                                deliveryMethod={deliveryMethod} 
+                                setDeliveryMethod={setDeliveryMethod} 
                             />
 
                             <FreeSamplesProgress 

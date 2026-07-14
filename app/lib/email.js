@@ -53,7 +53,7 @@ export const sendEmail = async (to, subject, html, type = 'system', orderId = nu
             console.error('Error fetching secondary emails:', e);
         }
 
-        const isMarketing = ['manual_campaign', 'recommendations', 'new_product', 'review_request', 'cart_recovery', 'educational', 'nurture_10_days', 'nurture_25_days', 'discovery_launch'].includes(type) || campaignId !== null;
+        const isMarketing = ['manual_campaign', 'recommendations', 'new_product', 'new_preorder', 'review_request', 'cart_recovery', 'educational', 'nurture_10_days', 'nurture_25_days', 'discovery_launch'].includes(type) || campaignId !== null;
 
         if (isMarketing) {
             try {

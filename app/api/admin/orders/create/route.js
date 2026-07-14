@@ -227,7 +227,9 @@ export async function POST(req) {
             // 5. Send Emails
             try {
                 const customerName = `${customer.first_name} ${customer.last_name}`;
-                const deliveryText = deliveryMethod === 'self_pickup' ? 'איסוף עצמי (תל אביב)' : 'משלוח בדואר';
+                let deliveryText = 'איסוף עצמי (תל אביב)';
+                if (deliveryMethod === 'mail') deliveryText = 'משלוח עד נקודת איסוף';
+                else if (deliveryMethod === 'home_delivery') deliveryText = 'משלוח עד הבית';
                 const shippingText = shippingCost === 0 ? 'חינם' : `${shippingCost} ₪`;
 
                 const itemsHtmlCustomer = formatItemsHtmlCustomer(items);

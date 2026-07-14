@@ -289,8 +289,10 @@ export async function POST(req) {
                 calculatedTotal = priceAfterDiscounts;
             }
 
-            // Add shipping cost (0 for self_pickup, 30 for mail)
-            const shippingCost = deliveryMethod === 'self_pickup' ? 0 : 30;
+            // Add shipping cost (0 for self_pickup, 30 for mail, 50 for home_delivery)
+            let shippingCost = 0;
+            if (deliveryMethod === 'mail') shippingCost = 30;
+            else if (deliveryMethod === 'home_delivery') shippingCost = 50;
             calculatedTotal += shippingCost;
 
             // Verify Total (Allow 1 shekel diff for rounding discrepancies)
@@ -467,7 +469,9 @@ export async function POST(req) {
             // Prepare dynamic item lists for templates
             const itemsHtmlCustomer = formatItemsHtmlCustomer(items);
             const itemsHtmlAdmin = formatItemsHtmlAdmin(items);
-            const deliveryText = deliveryMethod === 'self_pickup' ? 'איסוף עצמי (תל אביב)' : 'משלוח בדואר';
+            let deliveryText = 'איסוף עצמי (תל אביב)';
+            if (deliveryMethod === 'mail') deliveryText = 'משלוח עד נקודת איסוף';
+            else if (deliveryMethod === 'home_delivery') deliveryText = 'משלוח עד הבית';
             const notesHtml = formatNotesHtml(notes);
 
             // Send Confirmation Email (Async, don't block response)

@@ -44,17 +44,29 @@ export async function GET() {
             
             orders.forEach(order => {
                 const items = Array.isArray(order.items) ? order.items : [];
-                items.forEach(item => {
-                    const pid = item.id;
+                
+                const processSaleItem = (item, bundleQuantity = 1, bundlePricePerItem = null) => {
+                    if (item.type === 'bundle' && Array.isArray(item.items) && item.items.length > 0) {
+                        const bQty = parseInt(item.quantity) || 1;
+                        const bPrice = parseFloat(item.price) || 0;
+                        const allocatedPrice = bPrice / item.items.length;
+                        
+                        item.items.forEach(subItem => {
+                            processSaleItem(subItem, bundleQuantity * bQty, allocatedPrice);
+                        });
+                        return;
+                    }
+
+                    const pid = item.product_id || item.id;
                     if (!pid) return;
 
                     if (!salesMap[pid]) {
                         salesMap[pid] = { total_ml: 0, count: 0, revenue: 0, profit: 0 };
                     }
 
-                    const quantity = parseInt(item.quantity) || 0;
+                    const quantity = (parseInt(item.quantity) || 1) * bundleQuantity;
                     const size = parseFloat(String(item.size).replace(/[^\d.]/g, '')) || 0;
-                    const price = parseFloat(item.price) || 0;
+                    const price = bundlePricePerItem !== null ? bundlePricePerItem : (parseFloat(item.price) || 0);
                     
                     const totalMl = size * quantity;
                     salesMap[pid].total_ml += totalMl;
@@ -68,7 +80,9 @@ export async function GET() {
                         const itemCost = costPerMl * totalMl;
                         salesMap[pid].profit += (price * quantity) - itemCost;
                     }
-                });
+                };
+
+                items.forEach(item => processSaleItem(item));
             });
 
             // 4. Calculate Insights per Product
@@ -190,6 +204,8 @@ export async function GET() {
                 const day = date.getDay();
                 
                 const items = Array.isArray(order.items) ? order.items : [];
+                
+                // Track total revenue at the order-item level so we don't duplicate
                 items.forEach(it => {
                     const price = parseFloat(it.price) || 0;
                     const qty = parseInt(it.quantity) || 0;
@@ -197,8 +213,26 @@ export async function GET() {
                     
                     hourlyStats[hour].revenue += amount;
                     dailyStats[day].revenue += amount;
+                });
+                
+                const processCatSizeItem = (it, bundleQuantity = 1, allocatedAmount = null) => {
+                    if (it.type === 'bundle' && Array.isArray(it.items) && it.items.length > 0) {
+                        const price = parseFloat(it.price) || 0;
+                        const qty = parseInt(it.quantity) || 0;
+                        const amount = price * qty;
+                        const allocated = amount / it.items.length;
+                        it.items.forEach(subItem => {
+                            processCatSizeItem(subItem, bundleQuantity * (parseInt(it.quantity) || 1), allocated);
+                        });
+                        return;
+                    }
 
-                    const prod = products.find(p => p.id === it.id);
+                    const price = parseFloat(it.price) || 0;
+                    const qty = (parseInt(it.quantity) || 1) * bundleQuantity;
+                    const amount = allocatedAmount !== null ? allocatedAmount : (price * qty);
+
+                    const pid = it.product_id || it.id;
+                    const prod = products.find(p => p.id === pid);
                     const cat = (prod?.category || '').toLowerCase();
                     if (cat.includes('men')) dailyStats[day].men += amount;
                     else if (cat.includes('women')) dailyStats[day].women += amount;
@@ -208,7 +242,9 @@ export async function GET() {
                     if (sizeStats.hasOwnProperty(sizeKey)) {
                         sizeStats[sizeKey] += qty;
                     }
-                });
+                };
+
+                items.forEach(it => processCatSizeItem(it));
             });
 
             // 8. Brand Performance
@@ -240,12 +276,20 @@ export async function GET() {
                 monthlyGridMap[key].count += 1;
                 
                 const items = Array.isArray(order.items) ? order.items : [];
-                items.forEach(it => {
-                    const prod = products.find(p => p.id === it.id);
+                
+                const processGridItem = (it) => {
+                    if (it.type === 'bundle' && Array.isArray(it.items)) {
+                        it.items.forEach(sub => processGridItem(sub));
+                        return;
+                    }
+                    const pid = it.product_id || it.id;
+                    const prod = products.find(p => p.id === pid);
                     const cat = (prod?.category || 'Unisex').toLowerCase();
                     if (!monthlyGridMap[key].cats[cat]) monthlyGridMap[key].cats[cat] = 0;
                     monthlyGridMap[key].cats[cat] += 1;
-                });
+                };
+
+                items.forEach(it => processGridItem(it));
             });
 
             const monthlyDensityGrid = [];

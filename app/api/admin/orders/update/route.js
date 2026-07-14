@@ -208,8 +208,8 @@ export async function POST(req) {
                     changesSummary.push(`סכום ההזמנה הכולל עודכן מ-${originalOrder.total_amount} ₪ ל-${total} ₪`);
                 }
                 if (originalOrder.delivery_method !== deliveryMethod) {
-                    const oldMethod = originalOrder.delivery_method === 'mail' ? 'משלוח' : 'איסוף עצמי';
-                    const newMethod = deliveryMethod === 'mail' ? 'משלוח' : 'איסוף עצמי';
+                    const oldMethod = originalOrder.delivery_method === 'mail' ? 'משלוח עד נקודת איסוף' : originalOrder.delivery_method === 'home_delivery' ? 'משלוח עד הבית' : 'איסוף עצמי';
+                    const newMethod = deliveryMethod === 'mail' ? 'משלוח עד נקודת איסוף' : deliveryMethod === 'home_delivery' ? 'משלוח עד הבית' : 'איסוף עצמי';
                     changesSummary.push(`שיטת המסירה שונתה מ-${oldMethod} ל-${newMethod}`);
                 }
                 

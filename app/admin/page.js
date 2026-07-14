@@ -148,25 +148,42 @@ export default async function AdminDashboard({ searchParams }) {
             `, [month, year]),
             // 4. Total Samples Sold
             safeQuery(`
-                 SELECT SUM((item->>'quantity')::int) as count 
+                 SELECT 
+                     SUM(
+                         CASE 
+                             WHEN item->>'type' = 'bundle' AND item->'items' IS NOT NULL 
+                             THEN (item->>'quantity')::int * jsonb_array_length(item->'items')
+                             ELSE (item->>'quantity')::int 
+                         END
+                     ) as count 
                  FROM orders, jsonb_array_elements(items::jsonb) as item 
                  WHERE orders.status != 'cancelled' 
                  AND orders.catalog_id IS NULL
                  AND (
                     item->>'name' LIKE '%דוגמיות%' 
                     OR item->>'name' ILIKE '%sample%'
+                    OR item->>'type' = 'bundle'
                     OR item->>'size' IN ('2', '5', '10')
                  )
             `),
             // 5. Samples Breakdown
             safeQuery(`
-                 SELECT item->>'size' as size, SUM((item->>'quantity')::int) as count 
+                 SELECT 
+                     item->>'size' as size, 
+                     SUM(
+                         CASE 
+                             WHEN item->>'type' = 'bundle' AND item->'items' IS NOT NULL 
+                             THEN (item->>'quantity')::int * jsonb_array_length(item->'items')
+                             ELSE (item->>'quantity')::int 
+                         END
+                     ) as count 
                  FROM orders, jsonb_array_elements(items::jsonb) as item 
                  WHERE orders.status != 'cancelled' 
                  AND orders.catalog_id IS NULL
                  AND (
                     item->>'name' LIKE '%דוגמיות%' 
                     OR item->>'name' ILIKE '%sample%'
+                    OR item->>'type' = 'bundle'
                     OR item->>'size' IN ('2', '5', '10')
                  )
                  GROUP BY size
@@ -442,12 +459,27 @@ export default async function AdminDashboard({ searchParams }) {
             items.forEach(item => {
                 const quantity = parseInt(item.quantity || 1);
                 const itemNet = parseFloat(item.price || 0) * quantity * ratio;
-                if (item.brand) {
-                    brandStatsYearly[item.brand] = (brandStatsYearly[item.brand] || 0) + itemNet;
-                }
-                if (item.size && item.is_discovery_set !== true && item.is_discovery_set !== 'true') {
-                    const sizeKey = item.size.toString();
-                    sizeStatsYearly[sizeKey] = (sizeStatsYearly[sizeKey] || 0) + itemNet;
+
+                if (item.type === 'bundle' && item.items && item.items.length > 0) {
+                    const bundleSize = item.items.length;
+                    const subItemNet = itemNet / bundleSize;
+                    item.items.forEach(subItem => {
+                        if (subItem.brand) {
+                            brandStatsYearly[subItem.brand] = (brandStatsYearly[subItem.brand] || 0) + subItemNet;
+                        }
+                    });
+                    if (item.size) {
+                        const sizeKey = item.size.toString();
+                        sizeStatsYearly[sizeKey] = (sizeStatsYearly[sizeKey] || 0) + itemNet;
+                    }
+                } else {
+                    if (item.brand) {
+                        brandStatsYearly[item.brand] = (brandStatsYearly[item.brand] || 0) + itemNet;
+                    }
+                    if (item.size && item.is_discovery_set !== true && item.is_discovery_set !== 'true') {
+                        const sizeKey = item.size.toString();
+                        sizeStatsYearly[sizeKey] = (sizeStatsYearly[sizeKey] || 0) + itemNet;
+                    }
                 }
             });
         });
@@ -477,15 +509,30 @@ export default async function AdminDashboard({ searchParams }) {
             const orderNetTotal = (parseFloat(order.total_amount) || 0) - shippingCost;
 
             items.forEach(item => {
-                let dbId = item.id;
-                if (typeof dbId === 'string' && dbId.includes('-')) {
-                    dbId = parseInt(dbId.split('-')[0]);
-                }
-                const prodInfo = productMap[dbId];
-                const soldSize = parseFloat(item.size || 2);
                 const quantity = parseInt(item.quantity || 1);
-                if (prodInfo && prodInfo.size > 0) {
-                    orderItemsCost += (prodInfo.cost / prodInfo.size) * soldSize * quantity;
+                
+                if (item.type === 'bundle' && item.items && item.items.length > 0) {
+                    const soldSize = parseFloat(item.size || 2);
+                    item.items.forEach(subItem => {
+                        let dbId = subItem.id || subItem.product_id;
+                        if (typeof dbId === 'string' && dbId.includes('-')) {
+                            dbId = parseInt(dbId.split('-')[0]);
+                        }
+                        const prodInfo = productMap[dbId];
+                        if (prodInfo && prodInfo.size > 0) {
+                            orderItemsCost += (prodInfo.cost / prodInfo.size) * soldSize * quantity;
+                        }
+                    });
+                } else {
+                    let dbId = item.id;
+                    if (typeof dbId === 'string' && dbId.includes('-')) {
+                        dbId = parseInt(dbId.split('-')[0]);
+                    }
+                    const prodInfo = productMap[dbId];
+                    const soldSize = parseFloat(item.size || 2);
+                    if (prodInfo && prodInfo.size > 0) {
+                        orderItemsCost += (prodInfo.cost / prodInfo.size) * soldSize * quantity;
+                    }
                 }
             });
             monthlyProfit += (orderNetTotal - orderItemsCost);

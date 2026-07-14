@@ -260,19 +260,49 @@ export default function AdminOrdersListClient({
                                                         <span className="text-gray-400 whitespace-nowrap" dir="ltr">{item.is_discovery_set ? formatDiscoverySize(item.volume_label) : (String(item.size).includes('ml') ? item.size : `${item.size} ml`)}</span>
                                                     </li>
                                                     {item.type === 'bundle' && item.items && item.items.length > 0 && (
-                                                        <ul className="pl-4 pr-6 mt-1 space-y-1 list-disc text-[11px] text-gray-500 text-right w-full">
-                                                            {item.items.map((subItem, subIdx) => (
-                                                                <li key={subIdx} className="text-right">
-                                                                    <Link 
-                                                                        href={`/product/${(subItem.product_id || subItem.id)?.toString().split('-')[0]}`}
-                                                                        className="hover:text-gray-900 transition-colors"
-                                                                        target="_blank"
-                                                                    >
-                                                                        {subItem.brand} {subItem.model} ({item.size}ml)
-                                                                    </Link>
-                                                                </li>
-                                                            ))}
-                                                        </ul>
+                                                        <div className="mr-6 bg-white/50 p-2.5 rounded-xl border border-gray-100/50 mt-2">
+                                                            <ul className="space-y-3 list-none">
+                                                                {item.items.map((subItem, subIdx) => (
+                                                                    <li key={subIdx} className="flex flex-col text-[13px]">
+                                                                        <div className="flex justify-between items-start">
+                                                                            <div className="flex gap-2.5 flex-1 text-right">
+                                                                                <span className="text-gray-300 font-black text-xl flex items-center justify-center shrink-0 w-6" style={{ transform: 'scaleX(-1) translateY(-2px)' }}>
+                                                                                    {"↳"}
+                                                                                </span>
+                                                                                <div className="flex flex-col gap-1 items-start">
+                                                                                    <Link 
+                                                                                        href={`/product/${(subItem.product_id || subItem.id)?.toString().split('-')[0]}`}
+                                                                                        className="font-normal text-gray-700 leading-tight hover:text-gray-900 transition-colors pt-0.5"
+                                                                                        target="_blank"
+                                                                                    >
+                                                                                        {subItem.brand} {subItem.model}
+                                                                                    </Link>
+                                                                                    <button 
+                                                                                        onClick={(e) => {
+                                                                                            e.preventDefault();
+                                                                                            e.stopPropagation();
+                                                                                            navigator.clipboard.writeText(`${subItem.brand} ${subItem.model}`);
+                                                                                            toast.success('שם הועתק');
+                                                                                        }}
+                                                                                        className="flex items-center gap-1 text-[10px] text-blue-600 bg-blue-50 px-2 py-0.5 rounded-md active:bg-blue-100 hover:bg-blue-100 transition-colors"
+                                                                                    >
+                                                                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-3 h-3">
+                                                                                            <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 17.25v3.375c0 .621-.504 1.125-1.125 1.125h-9.75a1.125 1.125 0 0 1-1.125-1.125V7.875c0-.621.504-1.125 1.125-1.125H6.75a9.06 9.06 0 0 1 1.5.124m7.5 10.376h3.375c.621 0 1.125-.504 1.125-1.125V11.25c0-4.46-3.243-8.161-7.5-8.876a9.06 9.06 0 0 0-1.5-.124H9.375c-.621 0-1.125.504-1.125 1.125v3.5m7.5 10.375H9.375a1.125 1.125 0 0 1-1.125-1.125v-9.25m12 6.625v-1.875a3.375 3.375 0 0 0-3.375-3.375h-1.5a1.125 1.125 0 0 1-1.125-1.125v-1.5a3.375 3.375 0 0 0-3.375-3.375H9.75" />
+                                                                                        </svg>
+                                                                                        {"העתק"}
+                                                                                    </button>
+                                                                                </div>
+                                                                            </div>
+                                                                            {item.size && (
+                                                                                <span className="text-gray-400 font-black text-[10px] uppercase tracking-tighter pt-1 shrink-0 bg-white px-2 py-0.5 rounded-lg border border-gray-100" dir="ltr">
+                                                                                    {String(item.size).toLowerCase().includes('ml') ? item.size : `${item.size}ml`}
+                                                                                </span>
+                                                                            )}
+                                                                        </div>
+                                                                    </li>
+                                                                ))}
+                                                            </ul>
+                                                        </div>
                                                     )}
                                                 </div>
                                             ))}
@@ -302,10 +332,13 @@ export default function AdminOrdersListClient({
                                     </td>
                                     <td className="p-4 font-black text-gray-900 whitespace-nowrap">
                                         <div className="flex items-center justify-center gap-1.5">
-                                            {(order.delivery_method === 'mail' || order.delivery_method === 'shipping') && (
-                                                <span className="text-[11px] text-blue-500/80 font-bold bg-blue-50 px-1.5 py-0.5 rounded-md border border-blue-100" dir="ltr" title="תוספת משלוח">+30</span>
+                                            {order.delivery_method === 'home_delivery' && (
+                                                <span className="text-[11px] text-blue-500/80 font-bold bg-blue-50 px-1.5 py-0.5 rounded-md border border-blue-100" dir="ltr" title="תוספת משלוח עד הבית">+50</span>
                                             )}
-                                            <span><span dir="ltr">₪ {(order.total_amount - (order.delivery_method === 'mail' || order.delivery_method === 'shipping' ? (order.customer_details?.shipping_cost ?? 30) : 0))?.toLocaleString()}</span></span>
+                                            {(order.delivery_method === 'mail' || order.delivery_method === 'shipping') && (
+                                                <span className="text-[11px] text-blue-500/80 font-bold bg-blue-50 px-1.5 py-0.5 rounded-md border border-blue-100" dir="ltr" title="תוספת משלוח נק' איסוף">+30</span>
+                                            )}
+                                            <span><span dir="ltr">₪ {(order.total_amount - (order.delivery_method === 'home_delivery' ? 50 : ((order.delivery_method === 'mail' || order.delivery_method === 'shipping') ? (order.customer_details?.shipping_cost ?? 30) : 0)))?.toLocaleString()}</span></span>
                                         </div>
                                     </td>
                                     <td className="p-4">
@@ -327,16 +360,21 @@ export default function AdminOrdersListClient({
                                                     <span className="text-sm">📍</span>
                                                     <span className="font-bold">איסוף</span>
                                                 </div>
+                                            ) : order.delivery_method === 'home_delivery' ? (
+                                                <div className="inline-flex flex-col items-center text-[10px] text-purple-700 bg-purple-50 px-2 py-1 rounded-lg border border-purple-100" title="משלוח עד הבית">
+                                                    <span className="text-sm">🏠</span>
+                                                    <span className="font-bold">עד הבית</span>
+                                                </div>
                                             ) : (
-                                                <div className="inline-flex flex-col items-center text-[10px] text-sky-700 bg-sky-50 px-2 py-1 rounded-lg border border-sky-100" title="משלוח בדואר">
+                                                <div className="inline-flex flex-col items-center text-[10px] text-sky-700 bg-sky-50 px-2 py-1 rounded-lg border border-sky-100" title="משלוח עד נקודת איסוף">
                                                     <span className="text-sm">📦</span>
-                                                    <span className="font-bold">משלוח</span>
+                                                    <span className="font-bold">נק' איסוף</span>
                                                 </div>
                                             )}
                                         </div>
                                     </td>
                                     <td className="p-4 text-xs text-gray-500 whitespace-nowrap">
-                                        {new Date(order.created_at).toLocaleString('he-IL', { day: '2-digit', month: '2-digit', year: '2-digit', hour: '2-digit', minute: '2-digit' })}
+                                        {new Date(order.created_at).toLocaleString('he-IL', { day: '2-digit', month: '2-digit', year: '2-digit', hour: '2-digit', minute: '2-digit', timeZone: 'Asia/Jerusalem' })}
                                     </td>
                                     <td className="p-4">
                                         <div className="flex justify-center">
@@ -443,15 +481,18 @@ export default function AdminOrdersListClient({
                                         </div>
                                     )}
                                 </div>
-                                <div className="flex flex-col items-end shrink-0">
-                                    <div className="flex items-center justify-end gap-1.5 mb-1.5">
-                                        {(order.delivery_method === 'mail' || order.delivery_method === 'shipping') && (
-                                            <span className="text-[11px] text-blue-500/80 font-bold bg-blue-50 px-1.5 py-0.5 rounded-md border border-blue-100" dir="ltr" title="תוספת משלוח">+30</span>
-                                        )}
-                                        <div className="font-black text-gray-900 text-lg leading-none" dir="ltr">₪ {(order.total_amount - (order.delivery_method === 'mail' || order.delivery_method === 'shipping' ? (order.customer_details?.shipping_cost ?? 30) : 0))?.toLocaleString()}</div>
-                                    </div>
+                                    <div className="flex flex-col items-end shrink-0">
+                                        <div className="flex items-center justify-end gap-1.5 mb-1.5">
+                                            {order.delivery_method === 'home_delivery' && (
+                                                <span className="text-[11px] text-blue-500/80 font-bold bg-blue-50 px-1.5 py-0.5 rounded-md border border-blue-100" dir="ltr" title="תוספת משלוח עד הבית">+50</span>
+                                            )}
+                                            {(order.delivery_method === 'mail' || order.delivery_method === 'shipping') && (
+                                                <span className="text-[11px] text-blue-500/80 font-bold bg-blue-50 px-1.5 py-0.5 rounded-md border border-blue-100" dir="ltr" title="תוספת משלוח נק' איסוף">+30</span>
+                                            )}
+                                            <div className="font-black text-gray-900 text-lg leading-none" dir="ltr">₪ {(order.total_amount - (order.delivery_method === 'home_delivery' ? 50 : ((order.delivery_method === 'mail' || order.delivery_method === 'shipping') ? (order.customer_details?.shipping_cost ?? 30) : 0)))?.toLocaleString()}</div>
+                                        </div>
                                     <div className="text-[10px] font-black text-gray-400 uppercase tracking-widest leading-none">
-                                        {new Date(order.created_at).toLocaleDateString('he-IL', { day: '2-digit', month: '2-digit', year: '2-digit' })}
+                                        {new Date(order.created_at).toLocaleDateString('he-IL', { day: '2-digit', month: '2-digit', year: '2-digit', timeZone: 'Asia/Jerusalem' })}
                                     </div>
                                 </div>
                             </div>
@@ -568,9 +609,9 @@ export default function AdminOrdersListClient({
                                     </div>
                                 )}
 
-                                <div className={`flex items-center gap-2 text-[10px] font-black px-3 py-1.5 rounded-xl border shadow-sm ${order.delivery_method === 'self_pickup' ? 'text-green-700 bg-green-50 border-green-100' : 'text-sky-700 bg-sky-50 border-sky-100'}`}>
-                                    <span>{order.delivery_method === 'self_pickup' ? '📍' : '📦'}</span>
-                                    <span className="uppercase tracking-widest">{order.delivery_method === 'self_pickup' ? 'איסוף עצמי' : 'משלוח'}</span>
+                                <div className={`flex items-center gap-2 text-[10px] font-black px-3 py-1.5 rounded-xl border shadow-sm ${order.delivery_method === 'self_pickup' ? 'text-green-700 bg-green-50 border-green-100' : order.delivery_method === 'home_delivery' ? 'text-purple-700 bg-purple-50 border-purple-100' : 'text-sky-700 bg-sky-50 border-sky-100'}`}>
+                                    <span>{order.delivery_method === 'self_pickup' ? '📍' : order.delivery_method === 'home_delivery' ? '🏠' : '📦'}</span>
+                                    <span className="uppercase tracking-widest">{order.delivery_method === 'self_pickup' ? 'איסוף עצמי' : order.delivery_method === 'home_delivery' ? 'משלוח עד הבית' : 'נקודת איסוף'}</span>
                                 </div>
                             </div>
 

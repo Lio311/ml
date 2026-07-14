@@ -80,7 +80,7 @@ export async function POST(req) {
 
                 for (const user of pendingUsers) {
                     if (user.user_email) {
-                        await sendEmail(user.user_email, subject, html, 'system');
+                        await sendEmail(user.user_email, subject, html, 'new_preorder');
                     }
                 }
 

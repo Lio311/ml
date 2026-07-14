@@ -167,7 +167,7 @@ export default function EditOrderModal({ order, onClose, onSuccess }) {
         }
     }
 
-    const shippingPrice = deliveryMethod === 'mail' ? 30 : 0;
+    const shippingPrice = deliveryMethod === 'mail' ? 30 : deliveryMethod === 'home_delivery' ? 50 : 0;
     const total = subtotal - couponDiscount + shippingPrice;
 
     // -- Helpers --
@@ -477,7 +477,7 @@ export default function EditOrderModal({ order, onClose, onSuccess }) {
                                 <Truck className="w-4 h-4 md:w-5 md:h-5 text-blue-600" />
                                 שיטת שילוח והערות
                             </h3>
-                            <div className="grid grid-cols-2 gap-2 md:gap-3">
+                            <div className="grid grid-cols-3 gap-2 md:gap-3">
                                 <button 
                                     onClick={() => setDeliveryMethod('mail')}
                                     className={`p-2.5 md:p-3 rounded-2xl border-2 transition-all flex flex-col items-center gap-1 ${
@@ -487,7 +487,18 @@ export default function EditOrderModal({ order, onClose, onSuccess }) {
                                     }`}
                                 >
                                     <Truck className={deliveryMethod === 'mail' ? 'w-4 h-4 md:w-5 md:h-5 text-blue-600' : 'w-4 h-4 md:w-5 md:h-5'} />
-                                    <span className="font-black text-[11px] md:text-[12px]">משלוח (30 ₪)</span>
+                                    <span className="font-black text-[11px] md:text-[12px]">נק' איסוף (30 ₪)</span>
+                                </button>
+                                <button 
+                                    onClick={() => setDeliveryMethod('home_delivery')}
+                                    className={`p-2.5 md:p-3 rounded-2xl border-2 transition-all flex flex-col items-center gap-1 ${
+                                        deliveryMethod === 'home_delivery' 
+                                        ? 'border-blue-600 bg-blue-50 text-blue-900' 
+                                        : 'border-gray-100 hover:border-gray-200 grayscale opacity-60'
+                                    }`}
+                                >
+                                    <Truck className={deliveryMethod === 'home_delivery' ? 'w-4 h-4 md:w-5 md:h-5 text-blue-600' : 'w-4 h-4 md:w-5 md:h-5'} />
+                                    <span className="font-black text-[11px] md:text-[12px]">עד הבית (50 ₪)</span>
                                 </button>
                                 <button 
                                     onClick={() => setDeliveryMethod('self_pickup')}
@@ -498,7 +509,7 @@ export default function EditOrderModal({ order, onClose, onSuccess }) {
                                     }`}
                                 >
                                     <Store className={deliveryMethod === 'self_pickup' ? 'w-4 h-4 md:w-5 md:h-5 text-blue-600' : 'w-4 h-4 md:w-5 md:h-5'} />
-                                    <span className="font-black text-[11px] md:text-[12px]">איסוף עצמי (0 ₪)</span>
+                                    <span className="font-black text-[11px] md:text-[12px]">איסוף (0 ₪)</span>
                                 </button>
                             </div>
                             <textarea 

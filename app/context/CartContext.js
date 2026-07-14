@@ -16,7 +16,7 @@ export function CartProvider({ children }) {
     const [cartItems, setCartItems] = useState([]);
     const [activeVendorId, setActiveVendorId] = useState('main');
     const [vendorConfig, setVendorConfig] = useState(null);
-    const [isSelfPickup, setIsSelfPickup] = useState(false);
+    const [deliveryMethod, setDeliveryMethod] = useState('mail'); // 'mail', 'home_delivery', 'self_pickup'
     const [isMiniCartOpen, setIsMiniCartOpen] = useState(false);
 
     const { user } = useUser();
@@ -81,9 +81,9 @@ export function CartProvider({ children }) {
     useEffect(() => {
         if (!isMainVendor && vendorConfig) {
             if (vendorConfig.delivery_active && !vendorConfig.self_pickup_active) {
-                setIsSelfPickup(false);
+                setDeliveryMethod('mail');
             } else if (!vendorConfig.delivery_active && vendorConfig.self_pickup_active) {
-                setIsSelfPickup(true);
+                setDeliveryMethod('self_pickup');
             }
         } else if (isMainVendor) {
             // Main vendor doesn't really use this shared state for buttons yet, but let's default it
@@ -665,10 +665,13 @@ export function CartProvider({ children }) {
         }
     }
 
-    const shippingCost = Number(isMainVendor 
-        ? (isSelfPickup ? 0 : 30) 
-        : (vendorConfig?.delivery_active ? (isSelfPickup ? 0 : (vendorConfig.delivery_price || 0)) : 0)
-    );
+    let baseShippingCost = 0;
+    if (deliveryMethod === 'mail') {
+        baseShippingCost = isMainVendor ? 30 : (vendorConfig?.delivery_price || 0);
+    } else if (deliveryMethod === 'home_delivery') {
+        baseShippingCost = isMainVendor ? 50 : ((vendorConfig?.delivery_price || 0) + 20);
+    }
+    const shippingCost = Number(baseShippingCost);
     const total = Number(priceAfterDiscounts) + shippingCost;
 
     let freeSamplesCount = 0;
@@ -787,6 +790,9 @@ export function CartProvider({ children }) {
         });
     };
 
+    const isSelfPickup = deliveryMethod === 'self_pickup';
+    const setIsSelfPickup = (val) => setDeliveryMethod(val ? 'self_pickup' : 'mail');
+
     return (
         <CartContext.Provider value={{
             cartItems, activeVendorId, setActiveVendorId, activeItems,
@@ -794,7 +800,7 @@ export function CartProvider({ children }) {
             subtotal, totalItemsCount, globalItemsCount, uniqueVendorsCount, freeSamplesCount, nextTier, shippingCost, total,
             luckyPrize, setLuckyPrize, discountAmount, promoDiscountAmount, coupon, setCoupon,
             startLottery, cancelLottery, isCartLocked, lotteryTimeLeft, lotteryMode, 
-            isMainVendor, vendorConfig, isSelfPickup, setIsSelfPickup, getItemFinalPrice,
+            isMainVendor, vendorConfig, deliveryMethod, setDeliveryMethod, isSelfPickup, setIsSelfPickup, getItemFinalPrice,
             isMiniCartOpen, setIsMiniCartOpen
         }}>
             {children}

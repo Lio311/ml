@@ -23,7 +23,16 @@ export async function getHomeData() {
                 client.query('SELECT COUNT(DISTINCT brand) FROM products WHERE active = true AND stock > 0').catch(e => { console.error(e); return { rows: [{ count: 0 }] }; }),
                 client.query('SELECT name, logo_url FROM brands WHERE logo_url IS NOT NULL ORDER BY RANDOM()').catch(e => { console.error(e); return { rows: [] }; }),
                 client.query(`
-                    SELECT COALESCE(SUM((item->>'quantity')::integer), 0) as total
+                    SELECT 
+                        COALESCE(
+                            SUM(
+                                CASE 
+                                    WHEN item->>'type' = 'bundle' AND item->'items' IS NOT NULL 
+                                    THEN (item->>'quantity')::integer * jsonb_array_length(item->'items')
+                                    ELSE (item->>'quantity')::integer 
+                                END
+                            ), 0
+                        ) as total
                     FROM orders, jsonb_array_elements(items::jsonb) as item
                     WHERE status != 'cancelled'
                 `).catch(e => { console.error(e); return { rows: [{ total: 0 }] }; }),
