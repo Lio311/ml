@@ -143,7 +143,7 @@ export default function OrdersClient() {
                                             </span>
                                         ) : (
                                             <span className="text-black font-bold flex items-center gap-1.5">
-                                                <Package className="w-4 h-4 text-blue-500" /> {t('orders.shipping')}
+                                                <Package className="w-4 h-4 text-blue-500" /> {order.delivery_method === 'home_delivery' ? 'משלוח עד הבית' : "משלוח עד לנק' איסוף"}
                                             </span>
                                         )}
                                     </div>
