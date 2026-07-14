@@ -316,21 +316,31 @@ export default async function AdminDashboard({ searchParams }) {
             safeQuery("SELECT SUM(amount) as sum FROM expenses"),
             // 23. Total COGS (All Time) - SQL Calculation
             safeQuery(`
-                WITH expanded_items AS(
-                SELECT
-                    (item ->> 'quantity'):: numeric as qty,
-                COALESCE((item ->> 'size'):: numeric, 2) as size,
-                (SPLIT_PART(item ->> 'id', '-', 1)):: int as product_id,
-                orders.catalog_id
+                WITH basic_items AS (
+                    SELECT 
+                        (item->>'quantity')::numeric as qty,
+                        (item->>'size')::numeric as size,
+                        (item->>'id') as item_id,
+                        (item->>'type') as type,
+                        (item->'items') as subitems,
+                        catalog_id
                     FROM orders, jsonb_array_elements(items) as item
-                    WHERE status != 'cancelled'
-            )
+                    WHERE status != 'cancelled' AND catalog_id IS NULL
+                ),
+                expanded_items AS (
+                    SELECT qty, COALESCE(size, 2) as size, (SPLIT_PART(item_id, '-', 1))::int as product_id
+                    FROM basic_items
+                    WHERE type IS DISTINCT FROM 'bundle' AND item_id ~ '^[0-9]+'
+                    UNION ALL
+                    SELECT b.qty, COALESCE(b.size, 2) as size, (SPLIT_PART(COALESCE(sub->>'product_id', sub->>'id'), '-', 1))::int as product_id
+                    FROM basic_items b, jsonb_array_elements(b.subitems) as sub
+                    WHERE b.type = 'bundle' AND COALESCE(sub->>'product_id', sub->>'id') ~ '^[0-9]+'
+                )
                 SELECT
                     SUM(qty * (COALESCE(p.cost_price, 0) / NULLIF(p.original_size, 1)) * size) as sum
                 FROM expanded_items ei
                 JOIN products p ON ei.product_id = p.id
-                WHERE ei.catalog_id IS NULL
-                `),
+            `),
             // 24. Cumulative Revenue (All Time)
             safeQuery(`
                 SELECT 
@@ -349,7 +359,12 @@ export default async function AdminDashboard({ searchParams }) {
                         (item->>'quantity')::numeric * 
                         CASE 
                             WHEN COALESCE(item->>'is_discovery_set', 'false') = 'true' THEN 0
-                            WHEN (item->>'size') ~ '^[0-9.]+$' THEN (item->>'size')::numeric 
+                            WHEN (item->>'size') ~ '^[0-9.]+$' THEN 
+                                (item->>'size')::numeric * 
+                                CASE 
+                                    WHEN item->>'type' = 'bundle' AND item->'items' IS NOT NULL THEN jsonb_array_length(item->'items')
+                                    ELSE 1
+                                END
                             ELSE 0 
                         END as ml
                     FROM orders o, jsonb_array_elements(o.items) as item
@@ -591,7 +606,11 @@ export default async function AdminDashboard({ searchParams }) {
                     const s = item.size ? item.size.toString() : '10';
                     const sKey = s.replace(/[^0-9]/g, '');
                     if (sizeConsumption[sKey] !== undefined) {
-                        sizeConsumption[sKey] += parseInt(item.quantity || 1);
+                        if (item.type === 'bundle' && item.items && item.items.length > 0) {
+                            sizeConsumption[sKey] += parseInt(item.quantity || 1) * item.items.length;
+                        } else {
+                            sizeConsumption[sKey] += parseInt(item.quantity || 1);
+                        }
                     }
                 });
             });
