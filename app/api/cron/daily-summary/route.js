@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import pool from '../../../lib/db';
-import { sendEmail, getDailySummaryTemplate } from '../../../lib/email';
+import { sendEmail, getDailySummaryTemplate, getTemplate } from '../../../lib/email';
 
 export const dynamic = 'force-dynamic';
 
@@ -19,7 +19,7 @@ export async function GET(req) {
         const res = await pool.query(`
             SELECT subject, recipient, sent_at, type, status 
             FROM email_logs 
-            WHERE (sent_at AT TIME ZONE 'UTC' AT TIME ZONE 'Asia/Jerusalem')::date = (NOW() AT TIME ZONE 'UTC' AT TIME ZONE 'Asia/Jerusalem')::date
+            WHERE (sent_at AT TIME ZONE 'Asia/Jerusalem')::date = (NOW() AT TIME ZONE 'Asia/Jerusalem')::date
             ORDER BY sent_at DESC
         `);
 
@@ -39,7 +39,6 @@ export async function GET(req) {
             rowsHtml = `<tr><td colspan="3" style="padding: 20px; text-align: center; color: #999;">לא נשלחו מיילים היום.</td></tr>`;
         }
 
-        const { getTemplate } = require('../../../lib/email');
         const templateData = {
             date: new Date().toLocaleDateString('he-IL'),
             rowsHtml,
