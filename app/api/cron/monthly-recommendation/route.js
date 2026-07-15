@@ -32,8 +32,12 @@ export async function GET(req) {
             record = insertRes.rows[0];
         }
 
-        // 2. Manager Reminders (1, 5, 8) at 12:00 UTC
-        if (now.getUTCHours() === 12 && (day === 1 || day === 5 || day === 8) && record.status === 'pending') {
+        const targetDay = record.send_at ? new Date(record.send_at).getDate() : 16;
+        const reminderDays = [targetDay - 7, targetDay - 5, targetDay - 2];
+        const skipDay = targetDay - 1;
+
+        // 2. Manager Reminders (X-7, X-5, X-2) at 12:00 UTC
+        if (now.getUTCHours() === 12 && reminderDays.includes(day) && record.status === 'pending') {
             const templateRes = await pool.query("SELECT * FROM email_templates WHERE slug = 'admin_monthly_recommendation_reminder'");
             if (templateRes.rows.length > 0) {
                 const template = templateRes.rows[0];
@@ -50,8 +54,8 @@ export async function GET(req) {
             return NextResponse.json({ message: 'Reminder sent to manager' });
         }
 
-        // 3. Skip if not selected by 15th at 12:00 UTC
-        if (now.getUTCHours() === 12 && day === 15 && record.status === 'pending') {
+        // 3. Skip if not selected by X-1 at 12:00 UTC
+        if (now.getUTCHours() === 12 && day === skipDay && record.status === 'pending') {
             await pool.query('UPDATE monthly_recommendations SET status = $1 WHERE id = $2', ['skipped', record.id]);
             return NextResponse.json({ message: 'Month skipped due to no selection' });
         }
