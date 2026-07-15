@@ -14,7 +14,12 @@ export default function MonthlyRecommendationAdmin() {
     const [status, setStatus] = useState("pending");
     const [editMode, setEditMode] = useState(false);
     const [history, setHistory] = useState([]);
-    const [sendAt, setSendAt] = useState(null);
+    const [sendAt, setSendAt] = useState(() => {
+        const d = new Date();
+        d.setDate(16);
+        d.setHours(12, 0, 0, 0);
+        return d;
+    });
 
     useEffect(() => {
         fetchRecommendation();

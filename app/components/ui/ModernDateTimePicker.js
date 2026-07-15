@@ -50,32 +50,8 @@ export default function ModernDateTimePicker({
         return isValid(d) ? d : null;
     }, [value]);
 
-    const updateMenuPosition = useCallback(() => {
-        if (!triggerRef.current) return;
-        const rect = triggerRef.current.getBoundingClientRect();
-        const menuHeight = 380; // Approximate height
-        const spaceBelow = window.innerHeight - rect.bottom;
-        const openUpwards = spaceBelow < menuHeight && rect.top > menuHeight;
-
-        const style = {
-            position: "fixed",
-            top: openUpwards ? rect.top - menuHeight - 8 : rect.bottom + 8,
-            width: "320px",
-            zIndex: 9999,
-        };
-
-        if (isRTL) {
-            style.right = window.innerWidth - rect.right;
-        } else {
-            style.left = rect.left;
-        }
-
-        setMenuStyle(style);
-    }, [isRTL]);
-
     const handleToggle = () => {
         if (!isOpen) {
-            updateMenuPosition();
             if (selectedDate) setViewDate(selectedDate);
             setMode("date");
         }
@@ -91,14 +67,10 @@ export default function ModernDateTimePicker({
             }
         };
         window.addEventListener("mousedown", handleClickOutside);
-        window.addEventListener("scroll", updateMenuPosition, true);
-        window.addEventListener("resize", updateMenuPosition);
         return () => {
             window.removeEventListener("mousedown", handleClickOutside);
-            window.removeEventListener("scroll", updateMenuPosition, true);
-            window.removeEventListener("resize", updateMenuPosition);
         };
-    }, [isOpen, updateMenuPosition]);
+    }, [isOpen]);
 
     // Calendar Generation Logic
     const monthStart = startOfMonth(viewDate);
@@ -146,8 +118,7 @@ export default function ModernDateTimePicker({
                     initial={{ opacity: 0, scale: 0.95, y: -10 }}
                     animate={{ opacity: 1, scale: 1, y: 0 }}
                     exit={{ opacity: 0, scale: 0.95, y: -10 }}
-                    style={menuStyle}
-                    className="bg-white/80 backdrop-blur-2xl rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-white/50 overflow-hidden flex flex-col p-4"
+                    className={`absolute z-[9999] top-[calc(100%+8px)] w-[320px] bg-white/80 backdrop-blur-2xl rounded-[2rem] shadow-[0_20px_50px_rgba(0,0,0,0.1)] border border-white/50 overflow-hidden flex flex-col p-4 ${isRTL ? 'right-0' : 'left-0'}`}
                     dir={isRTL ? "rtl" : "ltr"}
                 >
                     {/* Header Controls */}
@@ -312,7 +283,7 @@ export default function ModernDateTimePicker({
                 </div>
             </button>
 
-            {typeof document !== "undefined" && createPortal(menu, document.body)}
+            {menu}
 
             <style jsx global>{`
                 .no-scrollbar::-webkit-scrollbar { display: none; }
