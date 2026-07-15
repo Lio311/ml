@@ -1,8 +1,9 @@
 "use client";
 import { useState, useEffect } from "react";
 import Image from "next/image";
-import { Search, Check, AlertCircle, Save, Send, Calendar, CheckCircle2, Edit2 } from "lucide-react";
+import { Search, Check, AlertCircle, Save, Send, Calendar, CheckCircle2, Edit2, Clock } from "lucide-react";
 import toast from 'react-hot-toast';
+import ModernDateTimePicker from "../../components/ui/ModernDateTimePicker";
 
 export default function MonthlyRecommendationAdmin() {
     const [searchTerm, setSearchTerm] = useState("");
@@ -13,6 +14,7 @@ export default function MonthlyRecommendationAdmin() {
     const [status, setStatus] = useState("pending");
     const [editMode, setEditMode] = useState(false);
     const [history, setHistory] = useState([]);
+    const [sendAt, setSendAt] = useState(null);
 
     useEffect(() => {
         fetchRecommendation();
@@ -35,6 +37,9 @@ export default function MonthlyRecommendationAdmin() {
             const data = await res.json();
             if (res.ok && data.recommendation) {
                 setStatus(data.recommendation.status);
+                if (data.recommendation.send_at) {
+                    setSendAt(new Date(data.recommendation.send_at));
+                }
                 if (data.products && data.products.length > 0) {
                     setSelectedPerfumes(data.products);
                 }
@@ -91,7 +96,8 @@ export default function MonthlyRecommendationAdmin() {
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     perfumeIds: selectedPerfumes.map(p => p.id),
-                    action
+                    action,
+                    sendAt: sendAt ? sendAt.toISOString() : null
                 })
             });
             const data = await res.json();
@@ -142,7 +148,7 @@ export default function MonthlyRecommendationAdmin() {
                         <Calendar className="text-blue-500" size={24} />
                         המלצת החודש של מנהל האתר
                     </h1>
-                    <p className="text-gray-500 text-sm mt-1">בחר 4 בשמים שיומלצו בחודש הנוכחי. ההמלצה תישלח ללקוחות ב-16 לחודש.</p>
+                    <p className="text-gray-500 text-sm mt-1">בחר 4 בשמים שיומלצו בחודש הנוכחי.</p>
                 </div>
                 
                 <div className="flex items-center gap-3">
@@ -247,7 +253,10 @@ export default function MonthlyRecommendationAdmin() {
                                     <div className="bg-green-500/10 border border-green-500/20 text-green-400 p-4 rounded-xl text-center">
                                         <CheckCircle2 size={24} className="mx-auto mb-2" />
                                         <p className="font-bold text-sm">הבחירה נשמרה ואושרה לשליחה!</p>
-                                        <p className="text-xs opacity-80 mt-1">המייל יופץ אוטומטית למנויים ב-16 לחודש.</p>
+                                        <p className="text-xs opacity-80 mt-1">
+                                            המייל יופץ אוטומטית למנויים ב-
+                                            {sendAt ? sendAt.toLocaleString('he-IL', { dateStyle: 'short', timeStyle: 'short' }) : '16 לחודש'}
+                                        </p>
                                     </div>
                                     <button 
                                         onClick={() => setEditMode(true)}
@@ -267,6 +276,16 @@ export default function MonthlyRecommendationAdmin() {
                                 </div>
                             ) : (
                                 <>
+                                    <div className="mb-6 pt-4 border-t border-gray-800">
+                                        <div className="flex items-center gap-2 text-gray-400 mb-2">
+                                            <Clock size={14} />
+                                            <span className="text-xs font-bold">תזמון שליחה (אופציונלי)</span>
+                                        </div>
+                                        <ModernDateTimePicker 
+                                            value={sendAt} 
+                                            onChange={setSendAt} 
+                                        />
+                                    </div>
                                     <button 
                                         onClick={() => { handleSave('save'); setEditMode(false); }}
                                         disabled={saving}
@@ -284,7 +303,8 @@ export default function MonthlyRecommendationAdmin() {
                                         <Send size={18} />
                                     </button>
                                     <p className="text-[11px] text-gray-500 text-center mt-4">
-                                        לחיצה על אישור תקבע את הבשמים אלו. המייל יישלח אוטומטית למנויים בתאריך 16 לחודש.
+                                        לחיצה על אישור תקבע את הבשמים אלו. המייל יישלח אוטומטית למנויים ב-
+                                        {sendAt ? sendAt.toLocaleString('he-IL', { dateStyle: 'short', timeStyle: 'short' }) : '16 לחודש'}.
                                     </p>
                                     {editMode && status === 'selected' && (
                                         <button 

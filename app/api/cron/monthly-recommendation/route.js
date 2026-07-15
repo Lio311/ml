@@ -32,8 +32,8 @@ export async function GET(req) {
             record = insertRes.rows[0];
         }
 
-        // 2. Manager Reminders (1, 5, 8)
-        if ((day === 1 || day === 5 || day === 8) && record.status === 'pending') {
+        // 2. Manager Reminders (1, 5, 8) at 12:00 UTC
+        if (now.getUTCHours() === 12 && (day === 1 || day === 5 || day === 8) && record.status === 'pending') {
             const templateRes = await pool.query("SELECT * FROM email_templates WHERE slug = 'admin_monthly_recommendation_reminder'");
             if (templateRes.rows.length > 0) {
                 const template = templateRes.rows[0];
@@ -50,16 +50,30 @@ export async function GET(req) {
             return NextResponse.json({ message: 'Reminder sent to manager' });
         }
 
-        // 3. Skip if not selected by 15th
-        if (day === 15 && record.status === 'pending') {
+        // 3. Skip if not selected by 15th at 12:00 UTC
+        if (now.getUTCHours() === 12 && day === 15 && record.status === 'pending') {
             await pool.query('UPDATE monthly_recommendations SET status = $1 WHERE id = $2', ['skipped', record.id]);
             return NextResponse.json({ message: 'Month skipped due to no selection' });
         }
 
-        // 4. Send Newsletter on 16th
+        // 4. Send Newsletter
         const url = new URL(req.url);
         const forceSend = url.searchParams.get('force') === 'true';
-        const isSendDay = (day === 16) || forceSend;
+        
+        let isSendDay = false;
+        if (record.send_at) {
+            const sendAtTime = new Date(record.send_at).getTime();
+            if (now.getTime() >= sendAtTime) {
+                isSendDay = true;
+            }
+        } else {
+            // Default schedule: 16th at 12:00 UTC
+            if (day === 16 && now.getUTCHours() === 12) {
+                isSendDay = true;
+            }
+        }
+        
+        if (forceSend) isSendDay = true;
         
         if (isSendDay && record.status === 'selected') {
             const productsRes = await pool.query(

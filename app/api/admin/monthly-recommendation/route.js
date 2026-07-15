@@ -91,15 +91,16 @@ export async function POST(req) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
-        const { perfumeIds, action } = await req.json(); // action can be 'save' or 'save_and_send'
+        const { perfumeIds, action, sendAt } = await req.json(); // action can be 'save' or 'save_and_send'
         const currentMonth = getCurrentMonthString();
         const newStatus = action === 'save_and_send' ? 'selected' : 'pending';
 
+        // sendAt should be a valid timestamp or null
         const updateRes = await pool.query(`
             UPDATE monthly_recommendations 
-            SET perfume_ids = $1, status = $2, updated_at = NOW() 
+            SET perfume_ids = $1, status = $2, updated_at = NOW(), send_at = $4 
             WHERE month = $3 RETURNING *
-        `, [JSON.stringify(perfumeIds), newStatus, currentMonth]);
+        `, [JSON.stringify(perfumeIds), newStatus, currentMonth, sendAt || null]);
 
         let updatedData = updateRes.rows[0];
 
