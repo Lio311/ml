@@ -291,31 +291,23 @@ export default function ModernDateTimePicker({
                     ${className.includes('h-') ? className : ''}
                 `}
             >
-                <div className="flex items-center gap-3">
-                    <div className={`p-2 rounded-xl transition-all ${selectedDate ? 'bg-green-50 text-green-600' : 'bg-gray-50 text-gray-400'}`}>
+                <div className="flex items-center gap-3 min-w-0">
+                    <div className={`p-2 rounded-xl transition-all shrink-0 ${selectedDate ? 'bg-green-50 text-green-600' : 'bg-gray-50 text-gray-400'}`}>
                         {mode === 'time' && isOpen ? <Clock size={16} /> : <CalendarIcon size={16} />}
                     </div>
-                    <div className="flex flex-col items-start leading-tight">
-                        <span className={`text-[11px] font-bold transition-all ${selectedDate ? 'text-green-700' : 'text-gray-400'}`}>
+                    <div className="flex flex-col items-start leading-tight min-w-0 overflow-hidden">
+                        <span className={`text-[11px] font-bold transition-all truncate max-w-full text-right ${selectedDate ? 'text-green-700' : 'text-gray-400'}`}>
                             {selectedDate ? format(selectedDate, "dd/MM/yyyy") : placeholder}
                         </span>
                         {selectedDate && (
-                            <span className="text-[9px] font-black text-gray-300 uppercase tracking-widest mt-0.5">
+                            <span className="text-[9px] font-black text-gray-300 uppercase tracking-widest mt-0.5 truncate max-w-full">
                                 {format(selectedDate, "HH:mm")}
                             </span>
                         )}
                     </div>
                 </div>
 
-                <div className="flex items-center gap-2">
-                    {selectedDate && (
-                        <div 
-                            onClick={(e) => { e.stopPropagation(); onChange(''); }}
-                            className="p-1.5 text-gray-300 hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
-                        >
-                            <X size={14} />
-                        </div>
-                    )}
+                <div className="flex items-center gap-2 shrink-0 pl-1">
                     <ChevronDownIcon size={14} className={`text-gray-300 transition-transform duration-300 ${isOpen ? 'rotate-180' : ''}`} />
                 </div>
             </button>
