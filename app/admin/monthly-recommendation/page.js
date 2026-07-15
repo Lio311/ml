@@ -108,6 +108,27 @@ export default function MonthlyRecommendationAdmin() {
         }
     };
 
+    const handleManualSend = async () => {
+        if (!confirm("האם אתה בטוח שברצונך לשלוח את המייל כעת לכל המנויים? פעולה זו אינה הפיכה.")) {
+            return;
+        }
+        setSaving(true);
+        try {
+            const res = await fetch('/api/cron/monthly-recommendation?force=true');
+            const data = await res.json();
+            if (res.ok) {
+                toast.success(data.message || "המייל נשלח בהצלחה");
+                fetchRecommendation(); // reload to get updated history
+            } else {
+                toast.error(data.error || "שגיאה בשליחת המייל");
+            }
+        } catch (error) {
+            toast.error("שגיאה בתקשורת");
+        } finally {
+            setSaving(false);
+        }
+    };
+
     if (loading) {
         return <div className="flex justify-center items-center h-96"><div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-500"></div></div>;
     }
@@ -121,7 +142,7 @@ export default function MonthlyRecommendationAdmin() {
                         <Calendar className="text-blue-500" size={24} />
                         המלצת החודש של מנהל האתר
                     </h1>
-                    <p className="text-gray-500 text-sm mt-1">בחר 4 בשמים שיומלצו בחודש הנוכחי. ההמלצה תישלח ללקוחות ב-10 לחודש.</p>
+                    <p className="text-gray-500 text-sm mt-1">בחר 4 בשמים שיומלצו בחודש הנוכחי. ההמלצה תישלח ללקוחות ב-16 לחודש.</p>
                 </div>
                 
                 <div className="flex items-center gap-3">
@@ -226,7 +247,7 @@ export default function MonthlyRecommendationAdmin() {
                                     <div className="bg-green-500/10 border border-green-500/20 text-green-400 p-4 rounded-xl text-center">
                                         <CheckCircle2 size={24} className="mx-auto mb-2" />
                                         <p className="font-bold text-sm">הבחירה נשמרה ואושרה לשליחה!</p>
-                                        <p className="text-xs opacity-80 mt-1">המייל יופץ אוטומטית למנויים ב-10 לחודש.</p>
+                                        <p className="text-xs opacity-80 mt-1">המייל יופץ אוטומטית למנויים ב-16 לחודש.</p>
                                     </div>
                                     <button 
                                         onClick={() => setEditMode(true)}
@@ -234,6 +255,14 @@ export default function MonthlyRecommendationAdmin() {
                                     >
                                         ערוך בחירה
                                         <Edit2 size={16} />
+                                    </button>
+                                    <button 
+                                        onClick={handleManualSend}
+                                        disabled={saving}
+                                        className="w-full py-3 px-4 bg-green-500 hover:bg-green-600 text-white font-bold rounded-xl transition-all flex items-center justify-center gap-2 shadow-[0_0_20px_rgba(34,197,94,0.3)] disabled:opacity-50 disabled:cursor-not-allowed"
+                                    >
+                                        שלח כעת ידנית
+                                        <Send size={18} />
                                     </button>
                                 </div>
                             ) : (
@@ -255,7 +284,7 @@ export default function MonthlyRecommendationAdmin() {
                                         <Send size={18} />
                                     </button>
                                     <p className="text-[11px] text-gray-500 text-center mt-4">
-                                        לחיצה על אישור תקבע את הבשמים אלו. המייל יישלח אוטומטית למנויים בתאריך 10 לחודש.
+                                        לחיצה על אישור תקבע את הבשמים אלו. המייל יישלח אוטומטית למנויים בתאריך 16 לחודש.
                                     </p>
                                     {editMode && status === 'selected' && (
                                         <button 

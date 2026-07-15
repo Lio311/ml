@@ -50,14 +50,16 @@ export async function GET(req) {
             return NextResponse.json({ message: 'Reminder sent to manager' });
         }
 
-        // 3. Skip if not selected by 13th
-        if (day === 13 && record.status === 'pending') {
+        // 3. Skip if not selected by 15th
+        if (day === 15 && record.status === 'pending') {
             await pool.query('UPDATE monthly_recommendations SET status = $1 WHERE id = $2', ['skipped', record.id]);
             return NextResponse.json({ message: 'Month skipped due to no selection' });
         }
 
-        // 4. Send Newsletter on 14th
-        const isSendDay = (day === 14);
+        // 4. Send Newsletter on 16th
+        const url = new URL(req.url);
+        const forceSend = url.searchParams.get('force') === 'true';
+        const isSendDay = (day === 16) || forceSend;
         
         if (isSendDay && record.status === 'selected') {
             const productsRes = await pool.query(
