@@ -16,7 +16,7 @@ export async function GET(req) {
         try {
             // Fetch carts updated within the last 24 hours
             const res = await client.query(`
-                SELECT session_id, email, items, total_price, created_at, updated_at 
+                SELECT session_id, email, user_image, items, total_price, created_at, updated_at 
                 FROM live_carts 
                 WHERE updated_at > NOW() - INTERVAL '24 HOURS'
                 ORDER BY updated_at DESC

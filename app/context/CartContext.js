@@ -197,6 +197,7 @@ export function CartProvider({ children }) {
 
         const liveSync = setTimeout(() => {
             const email = user?.primaryEmailAddress?.emailAddress || null;
+            const userImage = user?.imageUrl || null;
             const subtotalLive = cartItems.reduce((sum, item) => sum + (Number(item.price) * (item.quantity || 1)), 0);
             
             fetch('/api/cart/live', {
@@ -205,6 +206,7 @@ export function CartProvider({ children }) {
                 body: JSON.stringify({
                     sessionId: sid,
                     email,
+                    userImage,
                     items: cartItems,
                     totalPrice: subtotalLive
                 })

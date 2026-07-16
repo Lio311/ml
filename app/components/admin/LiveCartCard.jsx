@@ -58,9 +58,13 @@ export function LiveCartCard({ cart, isNew }) {
             <CardHeader className="pb-3 border-b border-gray-100 flex flex-row items-center justify-between space-y-0">
                 <div className="flex items-center gap-3">
                     <Avatar className="h-10 w-10 border border-gray-200">
-                        <AvatarFallback className={isAnonymous ? "bg-gray-100 text-gray-500" : "bg-blue-100 text-blue-700"}>
-                            {isAnonymous ? "?" : cart.email.charAt(0).toUpperCase()}
-                        </AvatarFallback>
+                        {cart.user_image ? (
+                            <img src={cart.user_image} alt="User" className="w-full h-full object-cover rounded-full" />
+                        ) : (
+                            <AvatarFallback className={isAnonymous ? "bg-gray-100 text-gray-500" : "bg-blue-100 text-blue-700"}>
+                                {isAnonymous ? "?" : cart.email.charAt(0).toUpperCase()}
+                            </AvatarFallback>
+                        )}
                     </Avatar>
                     <div className="flex flex-col">
                         <CardTitle className="text-sm font-semibold text-gray-800 flex items-center gap-2">
