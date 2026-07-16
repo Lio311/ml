@@ -39,7 +39,7 @@ const AboutHE = ({ brand }) => {
             <section>
                 <h2 className="text-3xl font-serif font-black text-gray-900 mb-6">הסיפור מאחורי {brandLower}</h2>
                 <p>
-                    הכל התחיל מאהבה פשוטה — או אולי נכון יותר לומר, מהתמכרות — לניחוחות. בתור חובב בשמים מושבע, המייסד שלנו, <strong>Lio</strong>, מצא את עצמו שוב ושוב עומד מול המדף בחנות, מתלבט אם להוציא אלפי שקלים על בקבוק של 100 מ"ל שייתכן שיימאס עליו אחרי שבוע.
+                    הכל התחיל מאהבה פשוטה — או אולי נכון יותר לומר, מהתמכרות — לניחוחות. בתור חובב בשמים מושבע, המייסד שלנו מצא את עצמו שוב ושוב עומד מול המדף בחנות, מתלבט אם להוציא אלפי שקלים על בקבוק של 100 מ"ל שייתכן שיימאס עליו אחרי שבוע.
                 </p>
                 <p className="mt-4">
                     הצורך בפתרון חכם יותר הוליד את <strong>{brandLower}</strong>. הבנו שהדרך האמיתית להכיר בושם היא לא ב-"התזה מהירה" על הנייר בחנות, אלא בחיים עצמם: בבוקר במשרד, בחדר הכושר, ובדייט בערב. הבושם צריך לחיות איתכם כדי שתדעו אם הוא באמת "שלכם".
@@ -111,7 +111,7 @@ const AboutEN = ({ brand }) => {
             <section>
                 <h2 className="text-3xl font-serif font-black text-gray-900 mb-6">The Story Behind {brandLower}</h2>
                 <p>
-                    It all started with a simple passion — or perhaps more accurately, an obsession — for fragrances. As a dedicated perfume enthusiast, our founder, <strong>Lio</strong>, found himself repeatedly standing before store shelves, hesitating to spend thousands on a 100ml bottle that he might grow tired of within a week.
+                    It all started with a simple passion — or perhaps more accurately, an obsession — for fragrances. As a dedicated perfume enthusiast, our founder found himself repeatedly standing before store shelves, hesitating to spend thousands on a 100ml bottle that he might grow tired of within a week.
                 </p>
                 <p className="mt-4">
                     The need for a smarter solution gave birth to <strong>{brandLower}</strong>. We realized that the true way to experience a perfume isn't through a "quick spray" on a paper strip in a store, but in real life: at the office in the morning, at the gym, and on a date in the evening. A fragrance needs to live with you for you to know if it's truly "yours."
