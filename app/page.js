@@ -182,22 +182,22 @@ export default async function Home() {
 
       {/* Discovery Sets Banner */}
       <FadeIn delay={0.2}>
-        <section className="py-10 md:py-16 text-white relative overflow-hidden my-4 md:my-8">
+        <section className="py-10 md:py-16 bg-black text-white relative overflow-hidden my-4 md:my-8">
           {/* Video Background */}
           <video 
             autoPlay 
             loop 
             muted 
             playsInline 
-            className="absolute top-0 left-0 w-full h-full object-cover z-0"
+            className="absolute inset-0 w-full h-full object-cover z-0"
           >
             <source src="/video-banner.mp4" type="video/mp4" />
           </video>
           
           {/* Black overlay with 50% opacity */}
-          <div className="absolute top-0 left-0 w-full h-full bg-black/50 z-0"></div>
+          <div className="absolute inset-0 w-full h-full bg-black/50 z-10"></div>
           
-          <div className="container mx-auto px-4 relative z-10 text-center flex flex-col items-center">
+          <div className="container mx-auto px-4 relative z-20 text-center flex flex-col items-center">
             <span className="text-xs md:text-sm tracking-[0.3em] uppercase mb-4 text-gray-400 font-medium">
               {locale === 'he' ? 'לא בטוחים איזה בושם לבחור?' : 'Not sure which perfume to choose?'}
             </span>
