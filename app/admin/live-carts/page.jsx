@@ -53,29 +53,29 @@ export default function LiveCartsDashboard() {
                 {/* Dashboard Header */}
                 <header className="flex flex-col md:flex-row md:items-end justify-between gap-4 pb-6 border-b border-gray-200">
                     <div>
-                        <h1 className="text-3xl font-bold tracking-tight text-gray-900">Live Carts Dashboard</h1>
-                        <p className="text-gray-500 mt-1">Real-time monitor of active shopping sessions.</p>
+                        <h1 className="text-3xl font-bold tracking-tight text-gray-900">לוח בקרת עגלות חיות</h1>
+                        <p className="text-gray-500 mt-1">מעקב בזמן אמת אחר עגלות של מבקרים פעילים באתר.</p>
                     </div>
                     
                     <div className="flex items-center gap-4 text-sm bg-white p-3 rounded-lg shadow-sm border border-gray-100">
                         <div className="flex flex-col items-center px-4 border-r border-gray-200">
-                            <span className="text-gray-500 font-medium">Total</span>
+                            <span className="text-gray-500 font-medium">סה״כ</span>
                             <span className="text-xl font-bold text-gray-900">{activeCount}</span>
                         </div>
                         <div className="flex flex-col items-center px-4 border-r border-gray-200">
-                            <span className="text-gray-500 font-medium">Registered</span>
+                            <span className="text-gray-500 font-medium">רשומים</span>
                             <span className="text-xl font-bold text-emerald-600">{registeredCount}</span>
                         </div>
                         <div className="flex flex-col items-center px-4">
-                            <span className="text-gray-500 font-medium">Anonymous</span>
+                            <span className="text-gray-500 font-medium">אנונימיים</span>
                             <span className="text-xl font-bold text-blue-600">{anonymousCount}</span>
                         </div>
                     </div>
                 </header>
 
-                <div className="flex justify-between items-center text-sm text-gray-500">
-                    <p>Auto-refreshing every 60 seconds.</p>
-                    <p>Last updated: {lastRefresh.toLocaleTimeString()}</p>
+                <div className="flex justify-between items-center text-sm text-gray-500" dir="rtl">
+                    <p>מתרענן אוטומטית בכל 60 שניות.</p>
+                    <p>עודכן לאחרונה: {lastRefresh.toLocaleTimeString()}</p>
                 </div>
 
                 {/* Dashboard Grid */}
@@ -83,7 +83,7 @@ export default function LiveCartsDashboard() {
                     <div className="flex justify-center py-20">
                         <div className="animate-pulse flex flex-col items-center gap-4">
                             <div className="w-8 h-8 border-4 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
-                            <p className="text-gray-500">Loading active carts...</p>
+                            <p className="text-gray-500">טוען עגלות פעילות...</p>
                         </div>
                     </div>
                 ) : error ? (
@@ -92,7 +92,7 @@ export default function LiveCartsDashboard() {
                     </div>
                 ) : carts.length === 0 ? (
                     <div className="text-center py-20 bg-white rounded-xl border border-gray-200 border-dashed">
-                        <p className="text-gray-500 text-lg">No active carts found in the last 24 hours.</p>
+                        <p className="text-gray-500 text-lg">לא נמצאו עגלות פעילות ב-24 השעות האחרונות.</p>
                     </div>
                 ) : (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">

@@ -51,7 +51,7 @@ export function LiveCartCard({ cart, isNew }) {
     const updatedTime = new Date(cart.updated_at);
     const now = new Date();
     const diffMins = Math.floor((now - updatedTime) / 60000);
-    const timeDisplay = diffMins < 1 ? "Just now" : `${diffMins} min ago`;
+    const timeDisplay = diffMins < 1 ? "ממש עכשיו" : `לפני ${diffMins} דקות`;
 
     return (
         <Card ref={cardRef} className="w-full flex flex-col shadow-md border border-gray-200/50 hover:shadow-lg transition-all duration-300 overflow-hidden bg-white/60 backdrop-blur-md">
@@ -64,20 +64,20 @@ export function LiveCartCard({ cart, isNew }) {
                     </Avatar>
                     <div className="flex flex-col">
                         <CardTitle className="text-sm font-semibold text-gray-800 flex items-center gap-2">
-                            {isAnonymous ? "Anonymous User" : cart.email}
+                            {isAnonymous ? "משתמש אנונימי" : cart.email}
                         </CardTitle>
                         <span className="text-xs text-gray-500">ID: {cart.session_id.substring(0, 8)}...</span>
                     </div>
                 </div>
                 <Badge variant={isAnonymous ? "secondary" : "default"} className={isAnonymous ? "bg-gray-100 text-gray-600 hover:bg-gray-200" : "bg-emerald-100 text-emerald-700 hover:bg-emerald-200"}>
-                    {isAnonymous ? "Anonymous" : "Registered"}
+                    {isAnonymous ? "אנונימי" : "רשום"}
                 </Badge>
             </CardHeader>
             <CardContent className="pt-4 pb-2 flex-grow">
                 <div className="flex justify-between items-center mb-3">
-                    <span className="text-sm font-medium text-gray-700 flex items-center gap-1.5">
-                        <ShoppingCart className="w-4 h-4 text-gray-400" />
-                        {items.length} {items.length === 1 ? 'Item' : 'Items'}
+                    <span className="text-sm font-medium text-gray-700 flex items-center gap-1.5" dir="rtl">
+                        <ShoppingCart className="w-4 h-4 text-gray-400 ml-1.5" />
+                        {items.length} {items.length === 1 ? 'פריט' : 'פריטים'}
                     </span>
                     <span className="text-lg font-bold text-gray-900">
                         ₪{Number(cart.total_price || 0).toLocaleString()}
@@ -89,7 +89,7 @@ export function LiveCartCard({ cart, isNew }) {
                             <div key={`${item.id}-${idx}`} className="flex items-center justify-between text-sm py-1 border-b border-gray-100 last:border-0">
                                 <div className="flex items-center gap-2 truncate">
                                     {/* Product image could go here if available */}
-                                    <span className="truncate w-32 text-gray-600" title={item.name}>{item.name || 'Product'}</span>
+                                    <span className="truncate w-32 text-gray-600" title={item.name}>{item.name || 'מוצר'}</span>
                                 </div>
                                 <div className="flex items-center gap-2">
                                     <span className="text-xs text-gray-400">x{item.quantity}</span>
@@ -100,9 +100,9 @@ export function LiveCartCard({ cart, isNew }) {
                     </div>
                 </ScrollArea>
             </CardContent>
-            <CardFooter className="pt-2 pb-3 bg-gray-50/30 flex justify-between items-center text-xs text-gray-500">
+            <CardFooter className="pt-2 pb-3 bg-gray-50/30 flex justify-between items-center text-xs text-gray-500" dir="rtl">
                 <span className="flex items-center gap-1">
-                    <Clock className="w-3 h-3" /> Last Active
+                    <Clock className="w-3 h-3 ml-1" /> פעילות אחרונה:
                 </span>
                 <span className="font-medium">{timeDisplay}</span>
             </CardFooter>
