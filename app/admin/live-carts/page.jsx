@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { LiveCartCard } from "@/components/admin/LiveCartCard";
+import { LiveCartCard } from "../../components/admin/LiveCartCard";
 import { useLanguage } from "@/app/context/LanguageContext";
 
 export default function LiveCartsDashboard() {

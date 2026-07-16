@@ -2,10 +2,10 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
-import { Card, CardHeader, CardContent, CardTitle, CardFooter } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { Card, CardHeader, CardContent, CardTitle, CardFooter } from "../ui/card";
+import { Badge } from "../ui/badge";
+import { Avatar, AvatarFallback } from "../ui/avatar";
+import { ScrollArea } from "../ui/scroll-area";
 import { ShoppingCart, Clock } from "lucide-react";
 
 export function LiveCartCard({ cart, isNew }) {
