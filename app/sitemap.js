@@ -7,6 +7,7 @@ export default async function sitemap() {
     const staticRoutes = [
         '',
         '/catalog',
+        '/discovery-sets',
         '/about',
         '/contact',
         '/faq',
@@ -19,7 +20,7 @@ export default async function sitemap() {
         url: `${baseUrl}${route}`,
         lastModified: new Date(),
         changeFrequency: 'weekly',
-        priority: route === '' ? 1 : 0.8,
+        priority: route === '' ? 1 : (route === '/discovery-sets' ? 0.9 : 0.8),
     }));
 
     // 2. Dynamic Data Fetching
