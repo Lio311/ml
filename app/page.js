@@ -190,7 +190,7 @@ export default async function Home() {
             muted 
             playsInline 
             preload="auto"
-            className="absolute top-0 left-0 w-full h-[102%] object-cover object-top z-0"
+            className="absolute top-0 left-0 w-full h-[calc(100%+5px)] object-cover object-top z-0"
           >
             <source src="/video-banner.mp4" type="video/mp4" />
           </video>
