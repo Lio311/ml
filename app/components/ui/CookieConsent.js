@@ -54,10 +54,10 @@ export default function CookieConsent() {
   return (
     <div
       ref={containerRef}
-      className="fixed z-[10000] pointer-events-auto w-full md:w-auto mx-0 md:mx-auto left-0 right-0 md:left-24 md:right-24 md:max-w-6xl bottom-0 md:bottom-8 bg-[#0a0a0a] border-t md:border border-neutral-800 shadow-2xl rounded-none md:rounded-sm p-5 md:py-4 md:px-8 text-white opacity-0 flex flex-col items-center justify-center gap-4"
+      className="fixed z-[10000] pointer-events-auto w-full md:w-auto mx-0 md:mx-auto left-0 right-0 md:left-24 md:right-24 md:max-w-4xl bottom-0 md:bottom-8 bg-[#0a0a0a] border-t md:border border-neutral-800 shadow-2xl rounded-none md:rounded-sm p-5 md:py-4 md:px-6 text-white opacity-0 flex flex-col md:flex-row items-center justify-between gap-4 md:gap-6"
       dir={isHebrew ? "rtl" : "ltr"}
     >
-      <p className="text-[14px] md:text-[15px] text-center leading-relaxed font-medium m-0">
+      <p className="text-[13.5px] md:text-[14px] text-center md:text-start leading-relaxed font-medium m-0 flex-1">
         {isHebrew
           ? "אנו משתמשים בקבצי קוקיז לצורך שיפור חוויית הגלישה, לצרכי שיווק והתאמת תכנים ובקרה, לקריאה נוספת אנא כנסו ל"
           : "We use cookies to improve your browsing experience, for marketing, personalized content, and analytics. For more information, please read our "}
@@ -71,7 +71,7 @@ export default function CookieConsent() {
 
       <button
         onClick={handleAccept}
-        className="w-full md:w-auto min-w-[200px] whitespace-nowrap bg-white text-black hover:bg-neutral-200 font-bold py-2.5 px-6 transition-colors text-[14px] shadow-sm"
+        className="w-full md:w-auto whitespace-nowrap bg-white text-black hover:bg-neutral-200 font-bold py-2 px-4 transition-colors text-[13.5px] shadow-sm rounded-sm"
       >
         {isHebrew ? "אישור וסגירה" : "Accept & Close"}
       </button>
