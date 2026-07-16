@@ -199,8 +199,8 @@ export default async function Home() {
             <div className="w-12 h-0.5 bg-gray-500 mb-6" />
             <p className="text-gray-300 max-w-2xl mx-auto mb-10 text-sm md:text-base leading-relaxed">
               {locale === 'he' 
-                ? 'הדרך המושלמת להכיר ניחוחות יוקרה בנחת בבית, לפני שמתחייבים לבקבוק מלא. ערכות הדיסקברי (מארזי התנסות) והדוגמיות המקוריות מגיעות ישירות מבתי הבושם המובילים בעולם.' 
-                : 'The perfect way to experience luxury scents at home before committing to a full bottle. Discovery sets and original samples come directly from the world\'s leading perfume houses.'}
+                ? 'הדרך המושלמת להכיר ניחוחות יוקרה בנחת בבית, לפני שמתחייבים לבקבוק מלא. ערכות הדיסקברי (מארזי התנסות) והדוגמיות המקוריות מגיעות ישירות ממותגי הבישום המובילים בעולם.' 
+                : 'The perfect way to experience luxury scents at home before committing to a full bottle. Discovery sets and original samples come directly from the world\'s leading perfume brands.'}
             </p>
             <Link 
               href="/discovery-sets" 
