@@ -54,7 +54,7 @@ export default function CookieConsent() {
   return (
     <div
       ref={containerRef}
-      className="fixed z-[10000] pointer-events-auto w-full md:w-auto mx-0 md:mx-auto left-0 right-0 md:left-24 md:right-24 md:max-w-6xl bottom-0 md:bottom-8 bg-[#0a0a0a] border-t md:border border-neutral-800 shadow-2xl rounded-none md:rounded-sm p-5 md:py-4 md:px-6 text-white opacity-0 flex flex-col md:flex-row items-center justify-center gap-4 md:gap-6"
+      className="fixed z-[10000] pointer-events-auto w-full md:w-max mx-0 md:mx-auto left-0 right-0 md:max-w-[95vw] bottom-0 md:bottom-8 bg-[#0a0a0a] border-t md:border border-neutral-800 shadow-2xl rounded-none md:rounded-sm p-5 md:py-4 md:px-6 text-white opacity-0 flex flex-col md:flex-row items-center justify-center gap-4 md:gap-6"
       dir={isHebrew ? "rtl" : "ltr"}
     >
       <p className="text-[13.5px] md:text-[14px] text-center md:text-start leading-relaxed font-medium m-0">
