@@ -16,6 +16,7 @@ import { sanitizeProductArray } from "./lib/productUtils";
 import { Toaster } from 'react-hot-toast';
 import ClerkBrandingTranslator from "./components/ClerkBrandingTranslator";
 import ServiceWorkerRegistration from "./components/ServiceWorkerRegistration";
+import CookieConsent from "./components/ui/CookieConsent";
 import { getBrand } from "./lib/brand";
 
 // Validate env vars on server start/request
@@ -144,6 +145,7 @@ export default async function RootLayout({ children }) {
               <GoogleAnalytics />
               <MicrosoftClarity />
               <ServiceWorkerRegistration />
+              <CookieConsent />
 
               {/* SEO: Organization/Store/WebSite Schema */}
               <script
