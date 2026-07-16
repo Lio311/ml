@@ -98,7 +98,9 @@ export function CartProvider({ children }) {
     // Initial Cart Pull Strategy (Sync on Login)
     useEffect(() => {
         if (!user?.primaryEmailAddress?.emailAddress) {
-            hasSyncedRef.current = false;
+            // Anonymous users rely solely on local storage which is already read.
+            // We set hasSyncedRef to true so Live Carts feature can start syncing.
+            hasSyncedRef.current = true;
             return;
         }
 
