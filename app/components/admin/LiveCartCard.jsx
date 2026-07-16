@@ -87,8 +87,16 @@ export function LiveCartCard({ cart, isNew }) {
                     <div className="space-y-2">
                         {items.map((item, idx) => (
                             <div key={`${item.id}-${idx}`} className="flex items-center justify-between text-sm py-1 border-b border-gray-100 last:border-0">
-                                <div className="flex items-center gap-2 truncate">
-                                    {/* Product image could go here if available */}
+                                <div className="flex items-center gap-2 truncate" dir="rtl">
+                                    {item.image_url ? (
+                                        <div className="w-8 h-8 rounded bg-gray-50 flex-shrink-0 border border-gray-100 flex items-center justify-center overflow-hidden">
+                                            <img src={item.image_url} alt="Product" className="w-full h-full object-contain p-0.5" />
+                                        </div>
+                                    ) : (
+                                        <div className="w-8 h-8 rounded bg-gray-50 flex-shrink-0 border border-gray-100 flex items-center justify-center text-xs text-gray-400">
+                                            {item.isPrize ? '🎁' : '🧴'}
+                                        </div>
+                                    )}
                                     <span className="truncate w-32 text-gray-600" title={item.name_he || item.name || item.model_he || item.model || item.title || 'מוצר'}>{item.name_he || item.name || item.model_he || item.model || item.title || 'מוצר'}</span>
                                 </div>
                                 <div className="flex items-center gap-2">
