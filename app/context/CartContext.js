@@ -183,6 +183,35 @@ export function CartProvider({ children }) {
         return () => clearTimeout(syncCart);
     }, [cartItems, user]);
 
+    // Sync Live Carts for Admin Dashboard (Anonymous & Registered)
+    useEffect(() => {
+        if (!hasSyncedRef.current) return;
+        
+        let sid = localStorage.getItem('live_session_id');
+        if (!sid) {
+            sid = 'sess_' + Math.random().toString(36).substring(2, 15);
+            localStorage.setItem('live_session_id', sid);
+        }
+
+        const liveSync = setTimeout(() => {
+            const email = user?.primaryEmailAddress?.emailAddress || null;
+            const subtotalLive = cartItems.reduce((sum, item) => sum + (Number(item.price) * (item.quantity || 1)), 0);
+            
+            fetch('/api/cart/live', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    sessionId: sid,
+                    email,
+                    items: cartItems,
+                    totalPrice: subtotalLive
+                })
+            }).catch(err => console.error("Live cart sync error:", err));
+        }, 2000); // 2 second debounce
+        
+        return () => clearTimeout(liveSync);
+    }, [cartItems, user]);
+
     const markCartUnsynced = () => {
         localStorage.setItem("cartUnsynced", "true");
     };

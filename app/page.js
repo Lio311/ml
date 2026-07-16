@@ -182,7 +182,7 @@ export default async function Home() {
 
       {/* Discovery Sets Banner */}
       <FadeIn delay={0.2}>
-        <section className="py-16 md:py-24 bg-gradient-to-r from-gray-900 via-gray-800 to-black text-white relative overflow-hidden my-4 md:my-8">
+        <section className="py-10 md:py-16 bg-black text-white relative overflow-hidden my-4 md:my-8">
           {/* Decorative background elements */}
           <div className="absolute top-0 left-0 w-full h-full overflow-hidden opacity-20 pointer-events-none">
              <div className="absolute -top-[20%] -left-[10%] w-[50%] h-[150%] bg-white/5 blur-[100px] rounded-full transform rotate-12"></div>
@@ -194,19 +194,19 @@ export default async function Home() {
               {locale === 'he' ? 'לא בטוחים איזה בושם לבחור?' : 'Not sure which perfume to choose?'}
             </span>
             <h2 className="text-3xl md:text-5xl font-serif font-medium mb-6 whitespace-pre-line leading-tight max-w-3xl">
-              {locale === 'he' ? 'גלו את ניחוח החתימה החדש שלכם\nעם מארזי ההתנסות' : 'Discover Your New Signature with\nOur Discovery Sets'}
+              {locale === 'he' ? 'גלו את ניחוח החתימה החדש שלכם\nעם קולקציית הדיסקברי סט' : 'Discover Your New Signature with\nOur Discovery Sets'}
             </h2>
             <div className="w-12 h-0.5 bg-gray-500 mb-6" />
             <p className="text-gray-300 max-w-2xl mx-auto mb-10 text-sm md:text-base leading-relaxed">
               {locale === 'he' 
-                ? 'הדרך המושלמת להכיר ניחוחות יוקרה בנחת בבית, לפני שמתחייבים לבקבוק מלא. המארזים והדוגמיות המקוריות מגיעים ישירות מבתי הבושם המובילים בעולם.' 
-                : 'The perfect way to experience luxury scents at home before committing to a full bottle. Sets and original samples come directly from the world\'s leading perfume houses.'}
+                ? 'הדרך המושלמת להכיר ניחוחות יוקרה בנחת בבית, לפני שמתחייבים לבקבוק מלא. ערכות הדיסקברי (מארזי התנסות) והדוגמיות המקוריות מגיעות ישירות מבתי הבושם המובילים בעולם.' 
+                : 'The perfect way to experience luxury scents at home before committing to a full bottle. Discovery sets and original samples come directly from the world\'s leading perfume houses.'}
             </p>
             <Link 
               href="/discovery-sets" 
               className="group relative inline-flex items-center justify-center px-8 py-3.5 text-sm font-bold tracking-widest uppercase transition-all duration-300 bg-white text-black hover:bg-transparent hover:text-white border border-white rounded-full overflow-hidden"
             >
-              <span className="relative z-10">{locale === 'he' ? 'לכל מארזי ההתנסות' : 'Shop Discovery Sets'}</span>
+              <span className="relative z-10">{locale === 'he' ? 'לקטלוג דיסקברי סט' : 'Shop Discovery Sets'}</span>
               <div className="absolute inset-0 h-full w-0 bg-white/10 group-hover:w-full transition-all duration-300 ease-out"></div>
             </Link>
           </div>

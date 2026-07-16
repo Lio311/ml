@@ -50,7 +50,8 @@ import {
     Activity,
     AlertOctagon,
     Calendar,
-    Crown
+    Crown,
+    ShoppingCart
 } from "lucide-react";
 import { SignOutButton } from "@clerk/nextjs";
 import { useBrand } from "../../context/BrandContext";
@@ -61,6 +62,7 @@ const navGroups = [
         items: [
             { href: "/admin", label: "דשבורד", icon: LayoutDashboard, roles: ['admin', 'deputy'] },
             { href: "/admin/orders", label: "הזמנות", icon: Package, roles: ['admin', 'deputy', 'warehouse'] },
+            { href: "/admin/live-carts", label: "עגלות חיות", icon: ShoppingCart, roles: ['admin', 'deputy'] },
             { href: "/admin/phone-order", label: "הזמנה טלפונית", icon: Phone, roles: ['admin', 'deputy'] },
             { href: "/admin/expenses", label: "הוצאות", icon: Wallet, roles: ['admin', 'deputy'] },
         ]
