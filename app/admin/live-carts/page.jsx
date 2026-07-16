@@ -57,12 +57,12 @@ export default function LiveCartsDashboard() {
                         <p className="text-gray-500 mt-1">מעקב בזמן אמת אחר עגלות של מבקרים פעילים באתר.</p>
                     </div>
                     
-                    <div className="flex items-center gap-4 text-sm bg-white p-3 rounded-lg shadow-sm border border-gray-100">
-                        <div className="flex flex-col items-center px-4 border-r border-gray-200">
+                    <div className="flex items-center gap-4 text-sm bg-white p-3 rounded-lg shadow-sm border border-gray-100" dir="rtl">
+                        <div className="flex flex-col items-center px-4 border-l border-gray-200">
                             <span className="text-gray-500 font-medium">סה״כ</span>
                             <span className="text-xl font-bold text-gray-900">{activeCount}</span>
                         </div>
-                        <div className="flex flex-col items-center px-4 border-r border-gray-200">
+                        <div className="flex flex-col items-center px-4 border-l border-gray-200">
                             <span className="text-gray-500 font-medium">רשומים</span>
                             <span className="text-xl font-bold text-emerald-600">{registeredCount}</span>
                         </div>
