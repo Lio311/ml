@@ -182,7 +182,7 @@ export default async function Home() {
 
       {/* Discovery Sets Banner */}
       <FadeIn delay={0.2}>
-        <section className="py-10 md:py-16 bg-black text-white relative overflow-hidden my-1 md:my-2">
+        <section className="py-10 md:py-16 bg-black text-white relative overflow-hidden my-4 md:my-8">
           {/* Video Background */}
           <video 
             autoPlay 
@@ -190,13 +190,13 @@ export default async function Home() {
             muted 
             playsInline 
             preload="auto"
-            className="absolute top-0 left-0 w-full h-[calc(100%+5px)] object-cover object-top z-0"
+            className="absolute inset-0 w-full h-full object-cover z-0"
           >
             <source src="/video-banner.mp4" type="video/mp4" />
           </video>
           
-          {/* Black overlay with 70% opacity */}
-          <div className="absolute inset-0 w-full h-full bg-black/70 z-10"></div>
+          {/* Black overlay with 75% opacity */}
+          <div className="absolute inset-0 w-full h-full bg-black/75 z-10"></div>
           
           <div className="container mx-auto px-4 relative z-20 text-center flex flex-col items-center">
             <span className="text-xs md:text-sm tracking-[0.3em] uppercase mb-4 text-gray-400 font-medium">
