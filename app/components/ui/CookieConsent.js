@@ -10,7 +10,7 @@ import { X } from "lucide-react";
 export default function CookieConsent() {
   const [show, setShow] = useState(false);
   const containerRef = useRef(null);
-  const { language } = useLanguage();
+  const { locale } = useLanguage();
 
   useEffect(() => {
     // Only check localStorage on the client side
@@ -49,37 +49,37 @@ export default function CookieConsent() {
 
   if (!show) return null;
 
-  const isHebrew = language === "he";
+  const isHebrew = locale === "he";
 
   return (
-    <div className="fixed bottom-0 left-0 w-full z-50 pointer-events-none p-4 md:p-6 pb-6 md:pb-8 flex justify-center md:justify-start">
-      <div
-        ref={containerRef}
-        className={`pointer-events-auto w-full md:max-w-sm bg-[#3a3532] border border-[#4a4542] shadow-2xl rounded-sm p-6 text-white opacity-0 ${
-          isHebrew ? "md:ml-auto md:mr-0" : "md:mr-auto md:ml-0"
-        }`}
-        dir={isHebrew ? "rtl" : "ltr"}
-      >
-        <p className="text-[15px] text-center leading-relaxed mb-6 font-medium">
-          {isHebrew
-            ? "אנו משתמשים בקבצי קוקיז לצורך שיפור חוויית הגלישה, לצרכי שיווק והתאמת תכנים ובקרה, לקריאה נוספת אנא כנסו למדיניות הפרטיות של האתר."
-            : "We use cookies to improve your browsing experience, for marketing, personalized content, and analytics. For more information, please read our "}
-          <br className="hidden md:block" />
-          <Link
-            href="/privacy"
-            className="text-white font-semibold underline decoration-white hover:opacity-80 transition-opacity mt-2 inline-block"
-          >
-            {isHebrew ? "לקריאת מדיניות" : "Privacy Policy."}
-          </Link>
-        </p>
-
-        <button
-          onClick={handleAccept}
-          className="w-full bg-white text-[#3a3532] hover:bg-neutral-100 font-bold py-3 px-4 transition-colors text-[15px] shadow-sm"
+    <div
+      ref={containerRef}
+      className={`fixed z-50 pointer-events-auto w-[calc(100%-2rem)] mx-4 md:mx-0 md:w-full md:max-w-sm bg-[#0a0a0a] border border-neutral-800 shadow-2xl rounded-sm p-6 text-white opacity-0 ${
+        isHebrew
+          ? "bottom-4 right-0 md:bottom-8 md:right-8"
+          : "bottom-4 left-0 md:bottom-8 md:left-8"
+      }`}
+      dir={isHebrew ? "rtl" : "ltr"}
+    >
+      <p className="text-[15px] text-center leading-relaxed mb-6 font-medium">
+        {isHebrew
+          ? "אנו משתמשים בקבצי קוקיז לצורך שיפור חוויית הגלישה, לצרכי שיווק והתאמת תכנים ובקרה, לקריאה נוספת אנא כנסו למדיניות הפרטיות של האתר."
+          : "We use cookies to improve your browsing experience, for marketing, personalized content, and analytics. For more information, please read our "}
+        <br className="hidden md:block" />
+        <Link
+          href="/privacy"
+          className="text-white font-semibold underline decoration-white hover:opacity-80 transition-opacity mt-2 inline-block"
         >
-          {isHebrew ? "אישור וסגירה" : "Accept & Close"}
-        </button>
-      </div>
+          {isHebrew ? "לקריאת מדיניות" : "Privacy Policy."}
+        </Link>
+      </p>
+
+      <button
+        onClick={handleAccept}
+        className="w-full bg-white text-black hover:bg-neutral-200 font-bold py-3 px-4 transition-colors text-[15px] shadow-sm"
+      >
+        {isHebrew ? "אישור וסגירה" : "Accept & Close"}
+      </button>
     </div>
   );
 }
