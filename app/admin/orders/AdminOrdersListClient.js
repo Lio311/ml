@@ -28,6 +28,16 @@ const formatDiscoverySize = (label) => {
     return label;
 };
 
+const calculateTotalItems = (order) => {
+    if (!order.items) return 0;
+    return order.items.reduce((total, item) => {
+        if (item.type === 'bundle' && item.items && item.items.length > 0) {
+            return total + (item.quantity * item.items.length);
+        }
+        return total + item.quantity;
+    }, 0);
+};
+
 const STATUS_OPTIONS = [
     { value: 'no_change', label: 'ללא שינוי סטטוס', icon: <div className="w-2 h-2 rounded-full border border-gray-300 bg-transparent" /> },
     { value: 'pending', label: 'ממתין', icon: <div className="w-2 h-2 rounded-full bg-orange-500" /> },
@@ -207,6 +217,7 @@ export default function AdminOrdersListClient({
                                 <th className="p-4 text-center">#</th>
                                 <th className="p-4 text-center">לקוח</th>
                                 <th className="p-4 text-center w-96">תכולת ההזמנה</th>
+                                <th className="p-4 text-center">פריטים</th>
                                 <th className="p-4 text-center w-28">סכום</th>
                                 <th className="p-4 text-center">בונוסים</th>
                                 <th className="p-4 text-center">שיטה</th>
@@ -303,6 +314,9 @@ export default function AdminOrdersListClient({
                                             </div>
                                         )}
                                         <OrderAlerts order={order} />
+                                    </td>
+                                    <td className="p-4 text-center font-bold text-gray-700">
+                                        {calculateTotalItems(order)}
                                     </td>
                                     <td className="p-4 font-black text-gray-900 whitespace-nowrap">
                                         <div className="flex items-center justify-center gap-1.5">
@@ -472,7 +486,12 @@ export default function AdminOrdersListClient({
                             </div>
 
                             <div className={`mb-5 bg-${themeColor}-50/30 rounded-[1.5rem] border border-${themeColor}-100/50 p-4`}>
-                                <h4 className="text-[9px] uppercase font-black text-gray-400 mb-3 tracking-widest opacity-60">תכולת ההזמנה</h4>
+                                <div className="flex justify-between items-center mb-3">
+                                    <h4 className="text-[9px] uppercase font-black text-gray-400 tracking-widest opacity-60 m-0">תכולת ההזמנה</h4>
+                                    <span className="text-[10px] font-bold text-gray-500 bg-white px-2 py-0.5 rounded-md border border-gray-100">
+                                        סה"כ {calculateTotalItems(order)} פריטים
+                                    </span>
+                                </div>
                                 <ul className="space-y-2.5">
                                     {order.items?.map((item, idx) => (
                                         <li key={idx} className="flex flex-col text-[13px]">
