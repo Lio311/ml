@@ -59,13 +59,13 @@ export default function CookieConsent() {
     >
       <p className="text-[13.5px] md:text-[14px] text-center md:text-start leading-relaxed font-medium m-0 flex-1">
         {isHebrew
-          ? "אנו משתמשים בקבצי קוקיז לצורך שיפור חוויית הגלישה, לצרכי שיווק והתאמת תכנים ובקרה, לקריאה נוספת אנא כנסו ל"
+          ? "אנו משתמשים בקבצי קוקיז לצורך שיפור חוויית הגלישה, לצרכי שיווק והתאמת תכנים ובקרה, לקריאה נוספת אנא כנסו "
           : "We use cookies to improve your browsing experience, for marketing, personalized content, and analytics. For more information, please read our "}
         <Link
           href="/privacy"
-          className="text-white font-semibold underline decoration-white hover:opacity-80 transition-opacity mx-1"
+          className="text-white font-semibold underline decoration-white hover:opacity-80 transition-opacity"
         >
-          {isHebrew ? "מדיניות הפרטיות של האתר." : "Privacy Policy."}
+          {isHebrew ? "למדיניות הפרטיות של האתר." : "Privacy Policy."}
         </Link>
       </p>
 
