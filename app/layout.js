@@ -204,6 +204,7 @@ export default async function RootLayout({ children }) {
                         "name": "ml-tlv",
                         "alternateName": "ml_tlv",
                         "url": "https://www.ml-tlv.com",
+                        "image": "https://www.ml-tlv.com/logo_v5.png",
                         "description": locale === 'he'
                             ? "ml-tlv - דוגמיות בושם מקוריות מבתי בושם יוקרתיים ונישה. דיקאנטים ב-2, 5 ו-10 מ\"ל באריזת זכוכית עם מתז."
                             : "ml-tlv - Authentic luxury niche perfume samples and decants in 2ml, 5ml, and 10ml glass atomizers.",
@@ -222,6 +223,28 @@ export default async function RootLayout({ children }) {
                         "worksFor": {
                             "@type": "Organization",
                             "name": "ml-tlv"
+                        }
+                      },
+                      {
+                        "@context": "https://schema.org",
+                        "@type": "ItemList",
+                        "name": "Site Navigation",
+                        "itemListElement": [
+                          { "@type": "SiteNavigationElement", "position": 1, "name": "קטלוג", "url": "https://www.ml-tlv.com/catalog" },
+                          { "@type": "SiteNavigationElement", "position": 2, "name": "גברים", "url": "https://www.ml-tlv.com/catalog?gender=men" },
+                          { "@type": "SiteNavigationElement", "position": 3, "name": "נשים", "url": "https://www.ml-tlv.com/catalog?gender=women" },
+                          { "@type": "SiteNavigationElement", "position": 4, "name": "חבילות", "url": "https://www.ml-tlv.com/bundles" },
+                          { "@type": "SiteNavigationElement", "position": 5, "name": "דיסקברי סט", "url": "https://www.ml-tlv.com/discovery-sets" }
+                        ]
+                      },
+                      {
+                        "@context": "https://schema.org",
+                        "@type": "WebPage",
+                        "name": "ml-tlv",
+                        "url": "https://www.ml-tlv.com",
+                        "primaryImageOfPage": {
+                          "@type": "ImageObject",
+                          "url": "https://www.ml-tlv.com/logo_v5.png"
                         }
                       },
                       {
