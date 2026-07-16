@@ -89,7 +89,7 @@ export function LiveCartCard({ cart, isNew }) {
                             <div key={`${item.id}-${idx}`} className="flex items-center justify-between text-sm py-1 border-b border-gray-100 last:border-0">
                                 <div className="flex items-center gap-2 truncate">
                                     {/* Product image could go here if available */}
-                                    <span className="truncate w-32 text-gray-600" title={item.name}>{item.name || 'מוצר'}</span>
+                                    <span className="truncate w-32 text-gray-600" title={item.name_he || item.name || item.model_he || item.model || item.title || 'מוצר'}>{item.name_he || item.name || item.model_he || item.model || item.title || 'מוצר'}</span>
                                 </div>
                                 <div className="flex items-center gap-2">
                                     <span className="text-xs text-gray-400">x{item.quantity}</span>

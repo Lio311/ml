@@ -75,7 +75,7 @@ export default function LiveCartsDashboard() {
 
                 <div className="flex justify-between items-center text-sm text-gray-500" dir="rtl">
                     <p>מתרענן אוטומטית בכל 60 שניות.</p>
-                    <p>עודכן לאחרונה: {lastRefresh.toLocaleTimeString()}</p>
+                    <p>עודכן לאחרונה: {lastRefresh.toLocaleTimeString('en-GB', { hour12: false })}</p>
                 </div>
 
                 {/* Dashboard Grid */}
