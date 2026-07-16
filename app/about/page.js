@@ -39,7 +39,7 @@ const AboutHE = ({ brand }) => {
             <section>
                 <h2 className="text-3xl font-serif font-black text-gray-900 mb-6">הסיפור מאחורי {brandLower}</h2>
                 <p>
-                    הכל התחיל מאהבה פשוטה — או אולי נכון יותר לומר, מהתמכרות — לניחוחות. בתור חובב בשמים מושבע, המייסד שלנו מצא את עצמו שוב ושוב עומד מול המדף בחנות, מתלבט אם להוציא אלפי שקלים על בקבוק של 100 מ"ל שייתכן שיימאס עליו אחרי שבוע.
+                    הכל התחיל מאהבה פשוטה, או אולי נכון יותר לומר, מהתמכרות לניחוחות. בתור חובב בשמים מושבע, המייסד שלנו מצא את עצמו שוב ושוב עומד מול המדף בחנות, מתלבט אם להוציא אלפי שקלים על בקבוק של 100 מ"ל שייתכן שיימאס עליו אחרי שבוע.
                 </p>
                 <p className="mt-4">
                     הצורך בפתרון חכם יותר הוליד את <strong>{brandLower}</strong>. הבנו שהדרך האמיתית להכיר בושם היא לא ב-"התזה מהירה" על הנייר בחנות, אלא בחיים עצמם: בבוקר במשרד, בחדר הכושר, ובדייט בערב. הבושם צריך לחיות איתכם כדי שתדעו אם הוא באמת "שלכם".
@@ -59,9 +59,9 @@ const AboutHE = ({ brand }) => {
             </section>
 
             <section>
-                <h3 className="text-2xl font-serif font-bold text-gray-900 mb-4">יותר מחנות — קהילה של חובבי נישה</h3>
+                <h3 className="text-2xl font-serif font-bold text-gray-900 mb-4">יותר מחנות: קהילה של חובבי נישה</h3>
                 <p>
-                    מאז שהקמנו את {brandLower} בשנת 2023 בתל אביב, הפכנו לבית לאלפי חובבי בשמים בישראל. אנחנו גאים להציע מעל 300 סוגי בשמים ממותגי העל הנחשקים בעולם — Xerjoff, Roja, Amouage, Creed, ו-Maison Francis Kurkdjian. 
+                    מאז שהקמנו את {brandLower} בשנת 2023 בתל אביב, הפכנו לבית לאלפי חובבי בשמים בישראל. אנחנו גאים להציע מעל 300 סוגי בשמים ממותגי העל הנחשקים בעולם: Xerjoff, Roja, Amouage, Creed, ו-Maison Francis Kurkdjian. 
                 </p>
                 <p className="mt-4">
                     המטרה שלנו היא להנגיש את עולם ה-<strong>Haute Parfumerie</strong> לכולם. בין אם אתם מחפשים את הבושם המושלם לחתונה או פשוט רוצים להריח כמו מיליון דולר ביומיום מבלי לשבור תוכנית חיסכון, אנחנו כאן כדי לייעץ ולכוון.
@@ -111,7 +111,7 @@ const AboutEN = ({ brand }) => {
             <section>
                 <h2 className="text-3xl font-serif font-black text-gray-900 mb-6">The Story Behind {brandLower}</h2>
                 <p>
-                    It all started with a simple passion — or perhaps more accurately, an obsession — for fragrances. As a dedicated perfume enthusiast, our founder found himself repeatedly standing before store shelves, hesitating to spend thousands on a 100ml bottle that he might grow tired of within a week.
+                    It all started with a simple passion, or perhaps more accurately, an obsession for fragrances. As a dedicated perfume enthusiast, our founder found himself repeatedly standing before store shelves, hesitating to spend thousands on a 100ml bottle that he might grow tired of within a week.
                 </p>
                 <p className="mt-4">
                     The need for a smarter solution gave birth to <strong>{brandLower}</strong>. We realized that the true way to experience a perfume isn't through a "quick spray" on a paper strip in a store, but in real life: at the office in the morning, at the gym, and on a date in the evening. A fragrance needs to live with you for you to know if it's truly "yours."
@@ -131,9 +131,9 @@ const AboutEN = ({ brand }) => {
             </section>
 
             <section>
-                <h3 className="text-2xl font-serif font-bold text-gray-900 mb-4">More Than a Store — A Niche Community</h3>
+                <h3 className="text-2xl font-serif font-bold text-gray-900 mb-4">More Than a Store: A Niche Community</h3>
                 <p>
-                    Since our founding in 2023 in Tel Aviv, we've become a home for thousands of perfume lovers in Israel. We are proud to offer over 300 types of perfumes from the world's most coveted luxury brands — Xerjoff, Roja, Amouage, Creed, and Maison Francis Kurkdjian. 
+                    Since our founding in 2023 in Tel Aviv, we've become a home for thousands of perfume lovers in Israel. We are proud to offer over 300 types of perfumes from the world's most coveted luxury brands: Xerjoff, Roja, Amouage, Creed, and Maison Francis Kurkdjian. 
                 </p>
                 <p className="mt-4">
                     Our goal is to make the world of <strong>Haute Parfumerie</strong> accessible to everyone. Whether you're looking for the perfect wedding scent or just want to smell like a million dollars every day without breaking the bank, we're here to advise and guide you.
