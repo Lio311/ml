@@ -54,25 +54,24 @@ export default function CookieConsent() {
   return (
     <div
       ref={containerRef}
-      className="fixed z-[10000] pointer-events-auto w-[calc(100%-2rem)] md:w-auto mx-4 md:mx-auto left-0 right-0 md:left-24 md:right-24 md:max-w-4xl bottom-20 md:bottom-8 bg-[#0a0a0a] border border-neutral-800 shadow-2xl rounded-sm p-4 md:p-6 text-white opacity-0 flex flex-col md:flex-row items-center justify-between gap-4 md:gap-8"
+      className="fixed z-[10000] pointer-events-auto w-[calc(100%-2rem)] mx-4 md:mx-auto left-0 right-0 md:left-24 md:right-24 md:max-w-6xl bottom-20 md:bottom-8 bg-[#0a0a0a] border border-neutral-800 shadow-2xl rounded-sm p-4 md:py-4 md:px-8 text-white opacity-0 flex flex-col items-center justify-center gap-4"
       dir={isHebrew ? "rtl" : "ltr"}
     >
-      <p className="text-[14px] md:text-[15px] text-center md:text-start leading-relaxed font-medium flex-1 m-0">
+      <p className="text-[14px] md:text-[15px] text-center leading-relaxed font-medium m-0">
         {isHebrew
-          ? "אנו משתמשים בקבצי קוקיז לצורך שיפור חוויית הגלישה, לצרכי שיווק והתאמת תכנים ובקרה, לקריאה נוספת אנא כנסו למדיניות הפרטיות של האתר."
+          ? "אנו משתמשים בקבצי קוקיז לצורך שיפור חוויית הגלישה, לצרכי שיווק והתאמת תכנים ובקרה, לקריאה נוספת אנא כנסו ל"
           : "We use cookies to improve your browsing experience, for marketing, personalized content, and analytics. For more information, please read our "}
-        <br className="hidden md:block" />
         <Link
           href="/privacy"
-          className="text-white font-semibold underline decoration-white hover:opacity-80 transition-opacity mt-1 md:mt-2 inline-block"
+          className="text-white font-semibold underline decoration-white hover:opacity-80 transition-opacity mx-1"
         >
-          {isHebrew ? "לקריאת מדיניות" : "Privacy Policy."}
+          {isHebrew ? "מדיניות הפרטיות של האתר." : "Privacy Policy."}
         </Link>
       </p>
 
       <button
         onClick={handleAccept}
-        className="w-full md:w-auto min-w-[160px] whitespace-nowrap bg-white text-black hover:bg-neutral-200 font-bold py-3 px-6 transition-colors text-[15px] shadow-sm"
+        className="w-full md:w-auto min-w-[200px] whitespace-nowrap bg-white text-black hover:bg-neutral-200 font-bold py-2.5 px-6 transition-colors text-[14px] shadow-sm"
       >
         {isHebrew ? "אישור וסגירה" : "Accept & Close"}
       </button>
