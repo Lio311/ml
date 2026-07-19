@@ -11,9 +11,21 @@ import {
     ResponsiveContainer,
     Legend
 } from "recharts";
-import { Activity, AlertCircle } from "lucide-react";
+import { Activity, AlertCircle, Info } from "lucide-react";
 
-export default function NeonConsumptionChart({ data, error }) {
+export default function NeonConsumptionChart({ data, error, isFreeTier }) {
+    if (isFreeTier) {
+        return (
+            <div className="bg-blue-50 p-6 rounded-2xl border border-blue-100 flex items-start gap-4">
+                <Info className="text-blue-500 mt-1" size={24} />
+                <div>
+                    <h3 className="text-blue-800 font-bold">מעקב צריכה היסטורי (Compute Units)</h3>
+                    <p className="text-blue-600 text-sm mt-1">{error}</p>
+                </div>
+            </div>
+        );
+    }
+
     if (error) {
         return (
             <div className="bg-red-50 p-6 rounded-2xl border border-red-100 flex items-start gap-4">

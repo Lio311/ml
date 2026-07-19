@@ -104,6 +104,9 @@ async function getNeonConsumption() {
 
         if (!res.ok) {
             const errText = await res.text();
+            if (res.status === 403 && errText.includes("Launch plans")) {
+                return { error: "תכונת מעקב הצריכה ההיסטורית זמינה רק בתוכניות בתשלום (Launch ומעלה) של Neon. שדרג את החשבון שלך כדי לצפות בגרף.", isFreeTier: true };
+            }
             return { error: `Neon API error: ${res.status} - ${errText}` };
         }
 
@@ -191,7 +194,11 @@ export default async function DatabaseMonitorPage() {
             </div>
 
             {/* Neon Consumption Graph */}
-            <NeonConsumptionChart data={neonConsumption.data} error={neonConsumption.error} />
+            <NeonConsumptionChart 
+                data={neonConsumption.data} 
+                error={neonConsumption.error} 
+                isFreeTier={neonConsumption.isFreeTier} 
+            />
 
             {/* Top Slowest Queries */}
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
