@@ -124,10 +124,9 @@ export default async function DatabaseMonitorPage() {
 
     return (
         <div className="space-y-6" dir="rtl">
-            <div className="flex justify-between items-center bg-white p-6 rounded-2xl shadow-sm border border-gray-100">
+            <div className="flex justify-between items-center mb-2">
                 <div>
                     <h1 className="text-2xl font-bold text-gray-900 flex items-center gap-3">
-                        <Database className="text-blue-600" size={28} />
                         ניטור מסד נתונים וצריכת משאבים
                     </h1>
                     <p className="text-gray-500 mt-1">
