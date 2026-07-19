@@ -9,6 +9,44 @@ export const metadata = {
     title: 'ניטור מסד נתונים | פאנל ניהול',
 };
 
+function formatQueryDescription(sql) {
+    if (!sql) return 'שאילתא לא ידועה';
+    const upper = sql.toUpperCase();
+    
+    if (upper.includes('NEON_MIGRATION') || upper.includes('NEON_CHECK_FOR_SUPERUSER')) return 'שאילתת מערכת פנימית של Neon (בדיקת מיגרציות והרשאות)';
+    if (upper.includes('PG_CATALOG') || upper.includes('PG_STAT')) return 'שאילתת מערכת פנימית של PostgreSQL (סטטיסטיקות וקטלוג)';
+    
+    // Extract main table name if possible
+    let table = '';
+    const fromMatch = upper.match(/FROM\s+["']?([a-zA-Z0-9_]+)["']?/);
+    const updateMatch = upper.match(/UPDATE\s+["']?([a-zA-Z0-9_]+)["']?/);
+    const insertMatch = upper.match(/INSERT\s+INTO\s+["']?([a-zA-Z0-9_]+)["']?/);
+    
+    if (fromMatch) table = fromMatch[1];
+    else if (updateMatch) table = updateMatch[1];
+    else if (insertMatch) table = insertMatch[1];
+
+    const translateTable = (t) => {
+        const dict = {
+            'users': 'משתמשים',
+            'products': 'מוצרים',
+            'orders': 'הזמנות',
+            'catalogs': 'קטלוגים',
+            'brands': 'מותגים',
+            'reviews': 'ביקורות'
+        };
+        return dict[t.toLowerCase()] || t;
+    };
+
+    if (upper.startsWith('SELECT')) return table ? `שליפת נתונים מטבלת ${translateTable(table)}` : 'שליפת נתונים (SELECT)';
+    if (upper.startsWith('UPDATE')) return table ? `עדכון נתונים בטבלת ${translateTable(table)}` : 'עדכון נתונים (UPDATE)';
+    if (upper.startsWith('INSERT')) return table ? `הוספת נתונים לטבלת ${translateTable(table)}` : 'הוספת נתונים (INSERT)';
+    if (upper.startsWith('DELETE')) return table ? `מחיקת נתונים מטבלת ${translateTable(table)}` : 'מחיקת נתונים (DELETE)';
+    if (upper.startsWith('BEGIN') || upper.startsWith('COMMIT') || upper.startsWith('ROLLBACK')) return 'ניהול טרנזקציה (Transaction)';
+    
+    return 'שאילתת מסד נתונים כללית';
+}
+
 async function getDatabaseStats() {
     const stats = {
         activeConnections: 0,
@@ -228,8 +266,11 @@ export default async function DatabaseMonitorPage() {
                                         <td className="p-4 text-sm text-gray-600 text-center">
                                             {q.calls}
                                         </td>
-                                        <td className="p-4 text-sm text-gray-500 font-mono text-left dir-ltr whitespace-pre-wrap break-all text-[11px] leading-relaxed w-2/3 max-w-[400px]">
-                                            {q.query}
+                                        <td 
+                                            className="p-4 text-sm text-gray-700 font-medium text-right dir-rtl"
+                                            title={q.query}
+                                        >
+                                            {formatQueryDescription(q.query)}
                                         </td>
                                     </tr>
                                 ))
