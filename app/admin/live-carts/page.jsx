@@ -92,12 +92,40 @@ export default function LiveCartsDashboard() {
                     </div>
                 ) : carts.length === 0 ? (
                     <div className="text-center py-20 bg-white rounded-xl border border-gray-200 border-dashed">
-                        <p className="text-gray-500 text-lg">לא נמצאו עגלות פעילות ב-24 השעות האחרונות.</p>
+                        <p className="text-gray-500 text-lg">לא נמצאו עגלות ב-30 הימים האחרונים.</p>
                     </div>
                 ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                        {carts.map(cart => (
-                            <LiveCartCard key={cart.session_id} cart={cart} isNew={true} />
+                    <div className="space-y-12">
+                        {Object.entries(carts.reduce((acc, cart) => {
+                            const date = new Date(cart.updated_at);
+                            const today = new Date();
+                            const yesterday = new Date(today);
+                            yesterday.setDate(yesterday.getDate() - 1);
+                            
+                            let dateStr = '';
+                            if (date.toDateString() === today.toDateString()) {
+                                dateStr = 'היום';
+                            } else if (date.toDateString() === yesterday.toDateString()) {
+                                dateStr = 'אתמול';
+                            } else {
+                                dateStr = date.toLocaleDateString('he-IL', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+                            }
+                            
+                            if (!acc[dateStr]) acc[dateStr] = [];
+                            acc[dateStr].push(cart);
+                            return acc;
+                        }, {})).map(([dateLabel, dateCarts]) => (
+                            <div key={dateLabel} className="space-y-4">
+                                <div className="flex items-center gap-3 border-b border-gray-200 pb-2">
+                                    <h2 className="text-xl font-bold text-gray-800">{dateLabel}</h2>
+                                    <span className="text-sm bg-gray-100 text-gray-600 px-2 py-0.5 rounded-full">{dateCarts.length}</span>
+                                </div>
+                                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                                    {dateCarts.map(cart => (
+                                        <LiveCartCard key={cart.session_id} cart={cart} isNew={true} />
+                                    ))}
+                                </div>
+                            </div>
                         ))}
                     </div>
                 )}

@@ -18,9 +18,9 @@ export async function GET(req) {
             const res = await client.query(`
                 SELECT session_id, email, user_image, items, total_price, created_at, updated_at 
                 FROM live_carts 
-                WHERE updated_at > NOW() - INTERVAL '24 HOURS'
+                WHERE updated_at > NOW() - INTERVAL '30 DAYS'
                 ORDER BY updated_at DESC
-                LIMIT 100
+                LIMIT 500
             `);
             
             return NextResponse.json({ carts: res.rows });
