@@ -95,6 +95,50 @@ async function getDatabaseStats() {
 
     return stats;
 }
+async function getNeonEndpointStatus() {
+    const NEON_API_KEY = process.env.NEON_API_KEY;
+    const NEON_PROJECT_ID = process.env.NEON_PROJECT_ID;
+
+    if (!NEON_API_KEY || !NEON_PROJECT_ID) {
+        return { error: "Missing keys" };
+    }
+
+    try {
+        const url = `https://console.neon.tech/api/v2/projects/${NEON_PROJECT_ID}/endpoints`;
+        const res = await fetch(url, {
+            headers: {
+                'Authorization': `Bearer ${NEON_API_KEY}`,
+                'Accept': 'application/json'
+            },
+            cache: 'no-store'
+        });
+
+        if (!res.ok) {
+            return { error: "Failed to fetch endpoints" };
+        }
+
+        const data = await res.json();
+        const endpoints = data.endpoints || [];
+        
+        let totalActiveCu = 0;
+        let isAnyActive = false;
+
+        endpoints.forEach(ep => {
+            if (ep.current_state === 'active') {
+                isAnyActive = true;
+                totalActiveCu += (ep.autoscaling_limit_max_cu || 0.25);
+            }
+        });
+
+        return { 
+            isAnyActive, 
+            totalActiveCu,
+            maxCapacity: endpoints.reduce((acc, ep) => acc + (ep.autoscaling_limit_max_cu || 0.25), 0)
+        };
+    } catch (err) {
+        return { error: err.message };
+    }
+}
 
 async function getNeonConsumption() {
     const NEON_API_KEY = process.env.NEON_API_KEY;
@@ -168,7 +212,13 @@ async function getNeonConsumption() {
     }
 }
 
-export default async function DatabaseMonitorPage() {
+export default async function DatabaseMonitor() {
+    // Run both queries in parallel for faster loading
+    const [stats, neonConsumption, endpointStatus] = await Promise.all([
+        getDatabaseStats(),
+        getNeonConsumption(),
+        getNeonEndpointStatus()
+    ]);
     const user = await currentUser();
     const role = user?.publicMetadata?.role;
     const adminEmail = process.env.ADMIN_EMAIL;
@@ -177,10 +227,6 @@ export default async function DatabaseMonitorPage() {
     if (!isSuperAdmin && role !== 'admin') {
         redirect("/admin");
     }
-
-    const stats = await getDatabaseStats();
-    const neonConsumption = await getNeonConsumption();
-
     return (
         <div className="space-y-6" dir="rtl">
             <div className="flex justify-between items-center mb-2">
@@ -222,12 +268,16 @@ export default async function DatabaseMonitorPage() {
                 </div>
 
                 <div className="bg-white p-6 rounded-2xl shadow-sm border border-gray-100 flex flex-col items-center justify-center text-center">
-                    <div className="bg-purple-50 p-3 rounded-full mb-3">
-                        <TrendingDown className="text-purple-600" size={24} />
+                    <div className={`${endpointStatus.isAnyActive ? 'bg-orange-50' : 'bg-gray-50'} p-3 rounded-full mb-3`}>
+                        <TrendingDown className={endpointStatus.isAnyActive ? 'text-orange-600' : 'text-gray-400'} size={24} />
                     </div>
-                    <h3 className="text-gray-500 text-sm font-medium">הערכת חיסכון CU</h3>
-                    <p className="text-3xl font-bold text-purple-600 mt-2" dir="ltr">~65%</p>
-                    <span className="text-xs text-gray-400 mt-1">מבוסס על מעבר ל-HTTP Mode</span>
+                    <h3 className="text-gray-500 text-sm font-medium">קצב צריכת CU לשעה</h3>
+                    <p className={`text-3xl font-bold ${endpointStatus.isAnyActive ? 'text-orange-600' : 'text-gray-500'} mt-2`} dir="ltr">
+                        {endpointStatus.error ? '---' : `${endpointStatus.totalActiveCu} CU/h`}
+                    </p>
+                    <span className={`text-xs mt-1 font-medium ${endpointStatus.isAnyActive ? 'text-orange-600 animate-pulse' : 'text-gray-400'}`}>
+                        {endpointStatus.error ? 'שגיאת חיבור' : endpointStatus.isAnyActive ? 'השרת כרגע פעיל' : 'השרת במצב שינה (חוסך)'}
+                    </span>
                 </div>
             </div>
 
