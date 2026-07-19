@@ -74,7 +74,25 @@ async function getNeonConsumption() {
         const from = firstDay.toISOString();
         const to = lastDay.toISOString();
 
-        const url = `https://console.neon.tech/api/v2/consumption_history/v2/projects?project_ids=${NEON_PROJECT_ID}&from=${from}&to=${to}&granularity=daily`;
+        // 1. Fetch project details to get org_id
+        const projRes = await fetch(`https://console.neon.tech/api/v2/projects/${NEON_PROJECT_ID}`, {
+            headers: {
+                'Authorization': `Bearer ${NEON_API_KEY}`,
+                'Accept': 'application/json'
+            },
+            next: { revalidate: 3600 }
+        });
+
+        if (!projRes.ok) {
+            const errText = await projRes.text();
+            return { error: `Neon Project API error: ${projRes.status} - ${errText}` };
+        }
+
+        const projData = await projRes.json();
+        const orgId = projData.project?.org_id || '';
+
+        // 2. Fetch consumption history
+        const url = `https://console.neon.tech/api/v2/consumption_history/v2/projects?project_ids=${NEON_PROJECT_ID}&org_id=${orgId}&from=${from}&to=${to}&granularity=daily`;
         
         const res = await fetch(url, {
             headers: {
