@@ -115,7 +115,7 @@ export default async function DatabaseMonitorPage() {
                         <TrendingDown className="text-purple-600" size={24} />
                     </div>
                     <h3 className="text-gray-500 text-sm font-medium">הערכת חיסכון CU</h3>
-                    <p className="text-3xl font-bold text-purple-600 mt-2">~65%</p>
+                    <p className="text-3xl font-bold text-purple-600 mt-2" dir="ltr">~65%</p>
                     <span className="text-xs text-gray-400 mt-1">מבוסס על מעבר ל-HTTP Mode</span>
                 </div>
             </div>
