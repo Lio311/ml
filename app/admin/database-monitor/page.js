@@ -204,7 +204,7 @@ export default async function DatabaseMonitorPage() {
                                         <td className="p-4 text-sm text-gray-600">
                                             {q.calls}
                                         </td>
-                                        <td className="p-4 text-sm text-gray-500 font-mono text-left dir-ltr whitespace-pre-wrap text-[11px] leading-relaxed">
+                                        <td className="p-4 text-sm text-gray-500 font-mono text-left dir-ltr whitespace-pre-wrap break-all text-[11px] leading-relaxed w-2/3 max-w-[400px]">
                                             {q.query}
                                         </td>
                                     </tr>

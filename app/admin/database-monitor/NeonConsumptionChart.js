@@ -61,12 +61,11 @@ export default function NeonConsumptionChart({ data, error }) {
                         <YAxis 
                             tick={{ fontSize: 12, fill: '#6B7280' }} 
                             axisLine={false}
-                            tickLine={false}
-                            tickFormatter={(value) => \`\${(value / 3600).toFixed(1)}h\`}
+                            tickFormatter={(value) => `${(value / 3600).toFixed(1)}h`}
                         />
                         <Tooltip 
                             contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)' }}
-                            formatter={(value) => [\`\${(value / 3600).toFixed(2)} שעות (\${value} שניות)\`, 'Compute']}
+                            formatter={(value) => [`${(value / 3600).toFixed(2)} שעות (${value} שניות)`, 'Compute']}
                             labelStyle={{ color: '#374151', fontWeight: 'bold', marginBottom: '8px' }}
                         />
                         <Bar 

@@ -793,11 +793,11 @@
         "evaporated": "התנדף"
     },
     "concentrations": {
-        "Eau de Parfum": "או דה פרפיום (EDP)",
-        "Eau de Toilette": "או דה טואלט (EDT)",
-        "Parfum": "פרפיום",
-        "Extrait de Parfum": "אקסטרה דה פרפיום",
-        "Eau de Cologne": "או דה קולון (EDC)",
-        "Eau Fraiche": "או פרש"
+        "Eau De Parfum": "או דה פרפיום (EDP)",
+        "Extrait De Parfum": "אקסטרייט דה פרפיום (Extrait)",
+        "Eau De Toilette": "או דה טואלט (EDT)",
+        "Parfum": "פרפיום (Parfum)",
+        "Extrait de Parfum": "אקסטרייט דה פרפיום (Extrait)",
+        "Eau de Parfum": "או דה פרפיום (EDP)"
     }
 }
