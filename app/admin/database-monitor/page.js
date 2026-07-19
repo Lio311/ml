@@ -92,7 +92,7 @@ async function getNeonConsumption() {
         const orgId = projData.project?.org_id || '';
 
         // 2. Fetch consumption history
-        const url = `https://console.neon.tech/api/v2/consumption_history/v2/projects?project_ids=${NEON_PROJECT_ID}&org_id=${orgId}&from=${from}&to=${to}&granularity=daily`;
+        const url = `https://console.neon.tech/api/v2/consumption_history/v2/projects?project_ids=${NEON_PROJECT_ID}&org_id=${orgId}&from=${from}&to=${to}&granularity=daily&metrics=compute_unit_seconds`;
         
         const res = await fetch(url, {
             headers: {
