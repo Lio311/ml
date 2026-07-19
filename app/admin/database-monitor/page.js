@@ -251,26 +251,26 @@ export default async function DatabaseMonitorPage() {
                     <table className="w-full text-center border-collapse">
                         <thead>
                             <tr className="bg-gray-50 border-b border-gray-100">
-                                <th className="p-4 text-sm font-medium text-gray-500 text-center">זמן ממוצע (ms)</th>
-                                <th className="p-4 text-sm font-medium text-gray-500 text-center">קריאות</th>
                                 <th className="p-4 text-sm font-medium text-gray-500 text-center w-2/3">שאילתא</th>
+                                <th className="p-4 text-sm font-medium text-gray-500 text-center">קריאות</th>
+                                <th className="p-4 text-sm font-medium text-gray-500 text-center">זמן ממוצע (ms)</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-gray-100">
                             {stats.topQueries.length > 0 ? (
                                 stats.topQueries.map((q, i) => (
                                     <tr key={i} className="hover:bg-gray-50 transition-colors">
-                                        <td className="p-4 text-sm font-bold text-orange-600 text-center">
-                                            {Number(q.avg_time_ms).toFixed(2)}
+                                        <td 
+                                            className="p-4 text-sm text-gray-700 font-medium text-center dir-rtl"
+                                            title={q.query}
+                                        >
+                                            {formatQueryDescription(q.query)}
                                         </td>
                                         <td className="p-4 text-sm text-gray-600 text-center">
                                             {q.calls}
                                         </td>
-                                        <td 
-                                            className="p-4 text-sm text-gray-700 font-medium text-right dir-rtl"
-                                            title={q.query}
-                                        >
-                                            {formatQueryDescription(q.query)}
+                                        <td className="p-4 text-sm font-bold text-orange-600 text-center">
+                                            {Number(q.avg_time_ms).toFixed(2)}
                                         </td>
                                     </tr>
                                 ))
