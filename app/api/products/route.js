@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import pool from '../../lib/db';
+import pool, { sql } from '../../lib/db';
 import { clerkClient } from '@clerk/nextjs/server';
 import { sendEmail, getNewProductTemplate, getTemplate } from '../../lib/email';
 import { checkAdmin } from '../../lib/admin';
@@ -18,34 +18,29 @@ export async function GET(req) {
         const limit = searchParams.get('limit');
         const search = searchParams.get('q');
 
-        const client = await pool.connect();
-        try {
-            let query = `
-                SELECT id, name, brand, model, price_2ml, price_5ml, price_10ml, image_url, 
-                       category, description, stock, top_notes, middle_notes, base_notes,
-                       in_lottery, show_on_home, name_he, brand_he, model_he, cost_price, original_size,
-                       seasons, perfumers, country, is_discovery_set, is_preorder, active, discount_percentage, discount_sizes, discount_end_date, spotify_track_url, concentration
-                FROM products WHERE active = true
-            `;
-            const values = [];
+        let query = `
+            SELECT id, name, brand, model, price_2ml, price_5ml, price_10ml, image_url, 
+                   category, description, stock, top_notes, middle_notes, base_notes,
+                   in_lottery, show_on_home, name_he, brand_he, model_he, cost_price, original_size,
+                   seasons, perfumers, country, is_discovery_set, is_preorder, active, discount_percentage, discount_sizes, discount_end_date, spotify_track_url, concentration
+            FROM products WHERE active = true
+        `;
+        const values = [];
 
-            if (search) {
-                query += ` AND (name ILIKE $1 OR brand ILIKE $1 OR model ILIKE $1 OR name_he ILIKE $1 OR brand_he ILIKE $1 OR model_he ILIKE $1 OR category ILIKE $1)`;
-                values.push(`%${search}%`);
-            }
-
-            query += ' ORDER BY id DESC';
-
-            if (limit) {
-                query += ` LIMIT $${values.length + 1}`;
-                values.push(parseInt(limit));
-            }
-
-            const res = await client.query(query, values);
-            return NextResponse.json({ products: res.rows });
-        } finally {
-            client.release();
+        if (search) {
+            query += ` AND (name ILIKE $1 OR brand ILIKE $1 OR model ILIKE $1 OR name_he ILIKE $1 OR brand_he ILIKE $1 OR model_he ILIKE $1 OR category ILIKE $1)`;
+            values.push(`%${search}%`);
         }
+
+        query += ' ORDER BY id DESC';
+
+        if (limit) {
+            query += ` LIMIT $${values.length + 1}`;
+            values.push(parseInt(limit));
+        }
+
+        const rows = await sql(query, values);
+        return NextResponse.json({ products: rows });
     } catch (error) {
         console.error('Get Products Error:', error);
         return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });

@@ -26,12 +26,8 @@ export async function GET(req) {
         }
 
         const oldestPerfume = oldestRes.rows[0];
-        const ageInMs = Date.now() - new Date(oldestPerfume.created_at).getTime();
-        const oneHourInMs = 60 * 60 * 1000;
-
-        if (ageInMs < oneHourInMs) {
-            return NextResponse.json({ message: 'Oldest new perfume is less than 1 hour old. Waiting.' });
-        }
+        // 1-hour wait logic removed because the cron now runs every 6 hours.
+        // It will pick up whatever new products are pending and send them.
 
         // It has been 1 hour! Let's fetch ALL un-emailed perfumes
         const batchRes = await client.query(`

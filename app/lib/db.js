@@ -1,6 +1,8 @@
-import { Pool } from 'pg';
+import { Pool, neon } from '@neondatabase/serverless';
 import { unstable_cache } from 'next/cache';
 import * as Sentry from "@sentry/nextjs";
+
+export const sql = neon(process.env.DATABASE_URL);
 
 let pool;
 

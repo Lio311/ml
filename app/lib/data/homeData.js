@@ -1,7 +1,8 @@
 import { withClient } from "../db";
 import { sanitizeProductArray } from "../productUtils";
+import { unstable_cache } from "next/cache";
 
-export async function getHomeData() {
+async function getHomeDataRaw() {
     let newArrivals = [];
     let topCatalogs = [];
     let stats = { brands: 0, products: 0, samples: 500 };
@@ -71,3 +72,5 @@ export async function getHomeData() {
 
     return { newArrivals, topCatalogs, stats, banners };
 }
+
+export const getHomeData = unstable_cache(getHomeDataRaw, ['home-data'], { revalidate: 3600 });

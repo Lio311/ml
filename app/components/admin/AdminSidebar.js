@@ -48,7 +48,8 @@ import {
     Activity,
     AlertOctagon,
     Crown,
-    ShoppingCart
+    ShoppingCart,
+    Database
 } from "lucide-react";
 import { useBrand } from "../../context/BrandContext";
 
@@ -130,6 +131,7 @@ const navGroups = [
     {
         title: "מערכת ובקרה",
         items: [
+            { href: "/admin/database-monitor", label: "ניטור מסד נתונים", icon: Database, roles: ['admin'] },
             { href: "/admin/automations", label: "אוטומציות", icon: Zap, roles: ['admin'] },
             { href: "/admin/system-status", label: "סטטוס מערכת", icon: Activity, roles: ['admin'] },
             { href: "/admin/error-logs", label: "ניטור שגיאות", icon: AlertOctagon, roles: ['admin'] },

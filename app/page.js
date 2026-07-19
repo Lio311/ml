@@ -34,8 +34,6 @@ const getT = (locale) => {
 };
 
 
-export const dynamic = 'force-dynamic';
-
 export async function generateMetadata() {
   const cookieStore = await cookies();
   const locale = cookieStore.get('NEXT_LOCALE')?.value || 'he';
