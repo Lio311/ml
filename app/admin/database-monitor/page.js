@@ -2,6 +2,7 @@ import { currentUser } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { Activity, Database, Zap, Clock, TrendingDown } from "lucide-react";
 import pool from "../../lib/db";
+import NeonConsumptionChart from "./NeonConsumptionChart";
 
 export const dynamic = 'force-dynamic';
 export const metadata = {
@@ -57,6 +58,57 @@ async function getDatabaseStats() {
     return stats;
 }
 
+async function getNeonConsumption() {
+    const NEON_API_KEY = process.env.NEON_API_KEY;
+    const NEON_PROJECT_ID = process.env.NEON_PROJECT_ID;
+
+    if (!NEON_API_KEY || !NEON_PROJECT_ID) {
+        return { error: "המשתנים NEON_API_KEY או NEON_PROJECT_ID חסרים." };
+    }
+
+    try {
+        const now = new Date();
+        const firstDay = new Date(now.getFullYear(), now.getMonth(), 1);
+        const lastDay = new Date(now.getFullYear(), now.getMonth() + 1, 0);
+
+        const from = firstDay.toISOString();
+        const to = lastDay.toISOString();
+
+        const url = `https://console.neon.tech/api/v2/consumption_history/v2/projects?project_ids=${NEON_PROJECT_ID}&from=${from}&to=${to}&granularity=daily`;
+        
+        const res = await fetch(url, {
+            headers: {
+                'Authorization': `Bearer ${NEON_API_KEY}`,
+                'Accept': 'application/json'
+            },
+            next: { revalidate: 3600 } 
+        });
+
+        if (!res.ok) {
+            const errText = await res.text();
+            return { error: `Neon API error: ${res.status} - ${errText}` };
+        }
+
+        const data = await res.json();
+        if (!data.periods || !Array.isArray(data.periods)) {
+             return { data: [] };
+        }
+
+        const formattedData = data.periods.map(p => {
+             const d = new Date(p.period_id);
+             return {
+                 date: `${d.getDate()}/${d.getMonth()+1}`,
+                 compute_unit_seconds: p.compute_unit_seconds || 0,
+             };
+        });
+
+        return { data: formattedData };
+    } catch (err) {
+        console.error("Failed to fetch neon consumption", err);
+        return { error: err.message };
+    }
+}
+
 export default async function DatabaseMonitorPage() {
     const user = await currentUser();
     const role = user?.publicMetadata?.role;
@@ -68,6 +120,7 @@ export default async function DatabaseMonitorPage() {
     }
 
     const stats = await getDatabaseStats();
+    const neonConsumption = await getNeonConsumption();
 
     return (
         <div className="space-y-6" dir="rtl">
@@ -119,6 +172,9 @@ export default async function DatabaseMonitorPage() {
                     <span className="text-xs text-gray-400 mt-1">מבוסס על מעבר ל-HTTP Mode</span>
                 </div>
             </div>
+
+            {/* Neon Consumption Graph */}
+            <NeonConsumptionChart data={neonConsumption.data} error={neonConsumption.error} />
 
             {/* Top Slowest Queries */}
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
