@@ -3,7 +3,7 @@ import pool, { sql } from '../../lib/db';
 import { clerkClient } from '@clerk/nextjs/server';
 import { sendEmail, getNewProductTemplate, getTemplate } from '../../lib/email';
 import { checkAdmin } from '../../lib/admin';
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, revalidateTag } from 'next/cache';
 import { translateList, translateText } from '../../lib/translate';
 import { recordAuditLog } from '../../lib/audit';
 import { auth as clerkAuth } from '@clerk/nextjs/server';
@@ -108,6 +108,7 @@ export async function PUT(req) {
                 `, [trimmedBrand]);
             }
             revalidatePath('/');
+            revalidateTag('home-data');
             revalidatePath('/catalog');
             revalidatePath('/brands/[brand]', 'page');
             revalidatePath('/product/[slug]', 'page');
@@ -246,6 +247,7 @@ export async function POST(req) {
             // --------------------------
 
             revalidatePath('/');
+            revalidateTag('home-data');
             revalidatePath('/catalog');
             revalidatePath('/brands/[brand]', 'page');
             revalidatePath('/product/[slug]', 'page');
@@ -341,6 +343,7 @@ export async function DELETE(req) {
             await client.query('DELETE FROM products WHERE id = $1', [id]);
             
             revalidatePath('/');
+            revalidateTag('home-data');
             revalidatePath('/catalog');
             
             const authData = await clerkAuth();
