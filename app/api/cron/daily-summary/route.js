@@ -23,7 +23,7 @@ export async function GET(req) {
             WHERE (sent_at AT TIME ZONE 'Asia/Jerusalem')::date = (NOW() AT TIME ZONE 'Asia/Jerusalem')::date
             AND recipient NOT ILIKE $1
             ORDER BY sent_at DESC
-        `, [\`%\${adminEmail}%\`]);
+        `, [`%${adminEmail}%`]);
 
         const emails = res.rows;
 
