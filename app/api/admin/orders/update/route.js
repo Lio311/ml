@@ -28,7 +28,7 @@ export async function POST(req) {
             await client.query('BEGIN');
 
             // 1. Fetch Original Order
-            const originalOrderRes = await client.query('SELECT items, customer_details, delivery_method, total_amount FROM orders WHERE id = $1', [orderId]);
+            const originalOrderRes = await client.query('SELECT items, customer_details, delivery_method, total_amount, catalog_id, free_samples_count FROM orders WHERE id = $1', [orderId]);
             if (originalOrderRes.rows.length === 0) {
                 throw new Error('Order not found');
             }
@@ -80,6 +80,11 @@ export async function POST(req) {
                         );
                     }
                 }
+            }
+            // 2.5 Revert original free samples
+            const originalSamples = originalOrder.free_samples_count || 0;
+            if (originalSamples > 0) {
+                await client.query('UPDATE bottle_inventory SET quantity = quantity + $1 WHERE size = 2', [originalSamples]);
             }
 
             // 3. Apply New Stock & Bottle Inventory
@@ -174,6 +179,35 @@ export async function POST(req) {
                     }
                 }
             }
+            // 3.5 Recalculate Free Samples
+            let newFreeSamplesCount = 0;
+            const subtotal = total - (shippingCost || 0);
+            
+            if (originalOrder.catalog_id) {
+                 const catRes = await client.query('SELECT settings FROM user_catalogs WHERE id = $1', [originalOrder.catalog_id]);
+                 if (catRes.rows.length > 0) {
+                     const settings = catRes.rows[0].settings || {};
+                     let tiers = [];
+                     try {
+                         tiers = typeof settings.sample_tiers === 'string' ? JSON.parse(settings.sample_tiers) : (settings.sample_tiers || []);
+                     } catch(e){}
+                     if (tiers.length > 0) {
+                         const sortedTiers = [...tiers].sort((a, b) => a.minAmount - b.minAmount);
+                         const currentTier = sortedTiers.filter(t => subtotal >= t.minAmount).reverse()[0];
+                         newFreeSamplesCount = currentTier ? currentTier.samplesCount : 0;
+                     } else {
+                         newFreeSamplesCount = originalOrder.free_samples_count || 0;
+                     }
+                 }
+            } else {
+                 if (subtotal >= 1000) newFreeSamplesCount = 6;
+                 else if (subtotal >= 500) newFreeSamplesCount = 4;
+                 else if (subtotal >= 300) newFreeSamplesCount = 2;
+            }
+
+            if (newFreeSamplesCount > 0) {
+                await client.query('UPDATE bottle_inventory SET quantity = quantity - $1 WHERE size = 2', [newFreeSamplesCount]);
+            }
 
             // 4. Update Order Record
             const updatedCustomerDetails = {
@@ -190,9 +224,10 @@ export async function POST(req) {
                      total_amount = $2, 
                      notes = $3, 
                      delivery_method = $4, 
-                     customer_details = $5
-                 WHERE id = $6`,
-                [JSON.stringify(items), total, notes, deliveryMethod, JSON.stringify(updatedCustomerDetails), orderId]
+                     customer_details = $5,
+                     free_samples_count = $6
+                 WHERE id = $7`,
+                [JSON.stringify(items), total, notes, deliveryMethod, JSON.stringify(updatedCustomerDetails), newFreeSamplesCount, orderId]
             );
 
             await client.query('COMMIT');
@@ -211,6 +246,9 @@ export async function POST(req) {
                     const oldMethod = originalOrder.delivery_method === 'mail' ? 'משלוח עד נקודת איסוף' : originalOrder.delivery_method === 'home_delivery' ? 'משלוח עד הבית' : 'איסוף עצמי';
                     const newMethod = deliveryMethod === 'mail' ? 'משלוח עד נקודת איסוף' : deliveryMethod === 'home_delivery' ? 'משלוח עד הבית' : 'איסוף עצמי';
                     changesSummary.push(`שיטת המסירה שונתה מ-${oldMethod} ל-${newMethod}`);
+                }
+                if ((originalOrder.free_samples_count || 0) !== newFreeSamplesCount) {
+                    changesSummary.push(`כמות הדוגמיות במתנה עודכנה מ-${originalOrder.free_samples_count || 0} ל-${newFreeSamplesCount}`);
                 }
                 
                 // Compare items to find exactly what changed
