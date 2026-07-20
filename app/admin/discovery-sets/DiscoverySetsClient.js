@@ -184,6 +184,29 @@ export default function DiscoverySetsClient({ products: initialProducts, initial
                             הוסף פריט חדש
                         </button>
                     )}
+                    <button
+                        onClick={async () => {
+                            const btn = document.getElementById('refresh-home-ds-btn');
+                            const originalText = btn.innerText;
+                            btn.innerText = 'מרענן...';
+                            try {
+                                const res = await fetch('/api/admin/refresh-home', { method: 'POST' });
+                                if (res.ok) {
+                                    toast.success('דף הבית עורנן בהצלחה');
+                                } else {
+                                    toast.error('שגיאה ברענון דף הבית');
+                                }
+                            } catch (e) {
+                                toast.error('שגיאה ברענון דף הבית');
+                            } finally {
+                                btn.innerText = originalText;
+                            }
+                        }}
+                        id="refresh-home-ds-btn"
+                        className="flex items-center gap-2 bg-emerald-600 text-white px-5 py-2.5 rounded-xl hover:bg-emerald-700 transition-all shadow-md hover:shadow-xl font-medium"
+                    >
+                        רענן דף הבית (Cache)
+                    </button>
                 </div>
                 
                 <div className="hidden md:block w-1/3"></div>
