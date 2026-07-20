@@ -13,12 +13,7 @@ export const metadata = {
 export default function BundlesPage() {
   return (
     <>
-      <div className="bg-[#fafafa] pt-8">
-        <div className="container mx-auto px-4 md:px-8">
-          <Breadcrumbs items={[{ label: 'חבילות בשמים בהתאמה אישית' }]} />
-          <BreadcrumbSchema items={[{ name: 'חבילות בשמים בהתאמה אישית' }]} />
-        </div>
-      </div>
+            <BreadcrumbSchema items={[{ name: 'חבילות בשמים בהתאמה אישית' }]} />
       <BundlesClient />
     </>
   );

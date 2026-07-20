@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useCart } from '../context/CartContext';
 import { useLanguage } from '../context/LanguageContext';
+import Breadcrumbs from '../components/Breadcrumbs';
 import Image from "@/app/components/CImage";
 import { motion, AnimatePresence } from 'framer-motion';
 import toast from 'react-hot-toast';
@@ -170,6 +171,9 @@ export default function BundlesClient() {
     return (
         <div className="min-h-screen bg-[#fafafa] pt-4 pb-20 px-4 md:px-8" dir={dir}>
             <div className="max-w-6xl mx-auto">
+                <div className="mb-4 -mt-2">
+                    <Breadcrumbs items={[{ label: 'חבילות בשמים בהתאמה אישית' }]} />
+                </div>
                 
                 {/* Header */}
                 <div className="text-center mb-12">

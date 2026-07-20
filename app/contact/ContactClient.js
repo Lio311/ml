@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useLanguage } from "../context/LanguageContext";
+import Breadcrumbs from '../components/Breadcrumbs';
 
 export default function ContactClient() {
     const [status, setStatus] = useState(null); // null | 'loading' | 'success' | 'error'
@@ -46,6 +47,9 @@ export default function ContactClient() {
             <div className="absolute bottom-[-10%] right-[-10%] w-[40%] h-[40%] bg-zinc-200/50 rounded-full blur-[120px] pointer-events-none" />
 
             <div className="container max-w-md mx-auto relative z-10 px-4">
+                <div className="mb-4">
+                    <Breadcrumbs items={[{ label: 'צור קשר' }]} />
+                </div>
                 <div className="mb-10 text-center overflow-visible">
                     <h1 className="text-4xl md:text-5xl font-bold mb-3 text-zinc-900 tracking-tight animate-fadeIn">
                         {t('common.contact_title')}
