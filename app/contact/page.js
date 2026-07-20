@@ -13,9 +13,11 @@ export const metadata = {
 export default function ContactPage() {
     return (
         <>
-            <div className="container mx-auto px-4 pt-6">
-                <Breadcrumbs items={[{ label: 'צור קשר' }]} />
-                <BreadcrumbSchema items={[{ name: 'צור קשר' }]} />
+            <div className="bg-[#fafafa] pt-8">
+                <div className="container mx-auto px-4 md:px-8">
+                    <Breadcrumbs items={[{ label: 'צור קשר' }]} />
+                    <BreadcrumbSchema items={[{ name: 'צור קשר' }]} />
+                </div>
             </div>
             <ContactClient />
         </>

@@ -168,7 +168,7 @@ export default function BundlesClient() {
     });
 
     return (
-        <div className="min-h-screen bg-[#fafafa] pt-24 pb-20 px-4 md:px-8" dir={dir}>
+        <div className="min-h-screen bg-[#fafafa] pt-4 pb-20 px-4 md:px-8" dir={dir}>
             <div className="max-w-6xl mx-auto">
                 
                 {/* Header */}
