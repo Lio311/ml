@@ -52,7 +52,7 @@ export default async function BrandsPage() {
     }
 
     return (
-        <div className="min-h-screen bg-gray-100 py-12">
+        <div className="min-h-screen bg-gray-100 pt-4 pb-12">
             <div className="container mx-auto px-4">
                 <Breadcrumbs items={[{ label: t('common.our_brands') }]} />
                 <BreadcrumbSchema items={[{ name: locale === 'he' ? 'מותגים' : 'Brands' }]} />

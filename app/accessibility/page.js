@@ -11,7 +11,7 @@ export const metadata = {
 
 export default function AccessibilityPage() {
     return (
-        <div className="container mx-auto py-12 px-6 max-w-4xl text-right" dir="rtl">
+        <div className="container mx-auto pt-4 pb-12 px-6 max-w-4xl text-right" dir="rtl">
             <Breadcrumbs items={[{ label: 'הצהרת נגישות' }]} />
             <BreadcrumbSchema items={[{ name: 'הצהרת נגישות' }]} />
             <h1 className="text-4xl font-bold mb-8 text-center text-gray-900">הצהרת נגישות</h1>
