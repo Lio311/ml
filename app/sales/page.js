@@ -1,4 +1,6 @@
 import Link from "next/link";
+import Breadcrumbs from '../components/Breadcrumbs';
+import BreadcrumbSchema from '../components/BreadcrumbSchema';
 import pool, { withClient } from "../lib/db";
 import ProductCard from "../components/ProductCard";
 import FilterSidebar from "../catalog/FilterSidebar";
@@ -33,6 +35,9 @@ export async function generateMetadata() {
     return {
         title: t('common.sales'),
         description: t('common.meta_catalog_desc'),
+        alternates: {
+            canonical: 'https://www.ml-tlv.com/sales',
+        },
     };
 }
 
@@ -186,6 +191,8 @@ export default async function SalesPage(props) {
 
     return (
         <div className={`container pt-12 pb-20 ${dir === 'rtl' ? 'text-right' : 'text-left'}`} dir={dir}>
+            <Breadcrumbs items={[{ label: t('common.sales') }]} />
+            <BreadcrumbSchema items={[{ name: 'מבצעים' }]} />
             <div className="text-center mb-12">
                 <h1 className="text-4xl md:text-5xl font-serif font-black mb-4 flex items-center justify-center gap-3">
                     {t('common.sales')}

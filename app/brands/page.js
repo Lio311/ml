@@ -1,5 +1,7 @@
 import pool from '../lib/db';
 import BrandsClient from './BrandsClient';
+import Breadcrumbs from '../components/Breadcrumbs';
+import BreadcrumbSchema from '../components/BreadcrumbSchema';
 import { cookies } from 'next/headers';
 import { sanitizeProductArray } from '../lib/productUtils';
 import he from '../data/locales/he.json';
@@ -26,6 +28,9 @@ export async function generateMetadata() {
     return {
         title: t('common.our_brands'),
         description: t('common.brands_meta_desc'),
+        alternates: {
+            canonical: 'https://www.ml-tlv.com/brands',
+        },
     };
 }
 
@@ -49,6 +54,8 @@ export default async function BrandsPage() {
     return (
         <div className="min-h-screen bg-gray-100 py-12">
             <div className="container mx-auto px-4">
+                <Breadcrumbs items={[{ label: t('common.our_brands') }]} />
+                <BreadcrumbSchema items={[{ name: locale === 'he' ? 'מותגים' : 'Brands' }]} />
                 <div className="text-center mb-12">
                     <h1 className="text-4xl md:text-5xl font-bold mb-4">{t('common.our_brands')}</h1>
                     <div className="w-16 h-1 bg-black mx-auto"></div>

@@ -5,6 +5,8 @@ import { sanitizeProductArray } from '../lib/productUtils';
 import he from '../data/locales/he.json';
 import en from '../data/locales/en.json';
 import DiscoveryTimer from './components/DiscoveryTimer';
+import Breadcrumbs from '../components/Breadcrumbs';
+import BreadcrumbSchema from '../components/BreadcrumbSchema';
 
 const getT = (locale) => {
     const dict = locale === 'en' ? en : he;
@@ -30,6 +32,9 @@ export async function generateMetadata() {
     return {
         title,
         description,
+        alternates: {
+            canonical: 'https://www.ml-tlv.com/discovery-sets',
+        },
     };
 }
 
@@ -62,6 +67,8 @@ export default async function DiscoverySetsPage() {
 
     return (
         <div className="min-h-screen bg-gray-50 py-12" dir={dir}>
+            <Breadcrumbs items={[{ label: title }]} />
+            <BreadcrumbSchema items={[{ name: title }]} />
             <div className="container mx-auto px-4">
                 <div className="text-center mb-12">
                     <h1 className="text-[22px] min-[390px]:text-2xl sm:text-3xl md:text-5xl font-black mb-4 tracking-tight whitespace-nowrap md:whitespace-normal">{title}</h1>

@@ -3,30 +3,35 @@ import pool from './lib/db';
 export default async function sitemap() {
     const baseUrl = 'https://www.ml-tlv.com';
 
-    // 1. Static Routes (Expanded)
+    // 1. Static Routes — full site hierarchy
     const staticRoutes = [
-        '',
-        '/catalog',
-        '/discovery-sets',
-        '/about',
-        '/contact',
-        '/faq',
-        '/terms',
-        '/shipping',
-        '/privacy',
-        '/matching',
-        '/lottery'
-    ].map((route) => ({
+        { route: '', priority: 1.0, changeFrequency: 'daily' },
+        { route: '/catalog', priority: 0.9, changeFrequency: 'daily' },
+        { route: '/discovery-sets', priority: 0.9, changeFrequency: 'weekly' },
+        { route: '/bundles', priority: 0.85, changeFrequency: 'weekly' },
+        { route: '/sales', priority: 0.85, changeFrequency: 'daily' },
+        { route: '/brands', priority: 0.8, changeFrequency: 'weekly' },
+        { route: '/blog', priority: 0.8, changeFrequency: 'daily' },
+        { route: '/about', priority: 0.6, changeFrequency: 'monthly' },
+        { route: '/contact', priority: 0.6, changeFrequency: 'monthly' },
+        { route: '/faq', priority: 0.6, changeFrequency: 'monthly' },
+        { route: '/matching', priority: 0.7, changeFrequency: 'weekly' },
+        { route: '/lottery', priority: 0.5, changeFrequency: 'weekly' },
+        { route: '/shipping', priority: 0.4, changeFrequency: 'monthly' },
+        { route: '/terms', priority: 0.3, changeFrequency: 'yearly' },
+        { route: '/privacy', priority: 0.3, changeFrequency: 'yearly' },
+        { route: '/accessibility', priority: 0.3, changeFrequency: 'yearly' },
+    ].map(({ route, priority, changeFrequency }) => ({
         url: `${baseUrl}${route}`,
         lastModified: new Date(),
-        changeFrequency: 'weekly',
-        priority: route === '' ? 1 : (route === '/discovery-sets' ? 0.9 : 0.8),
+        changeFrequency,
+        priority,
     }));
 
     // 2. Dynamic Data Fetching
     let products = [];
     let brands = [];
-    let categories = [];
+    let blogs = [];
 
     try {
         const client = await pool.connect();
@@ -37,7 +42,7 @@ export default async function sitemap() {
             url: `${baseUrl}/product/${product.slug || product.id}`,
             lastModified: product.created_at || new Date(),
             changeFrequency: 'weekly',
-            priority: 0.9,
+            priority: 0.8,
         }));
 
         // Brands (Distinct)
@@ -53,24 +58,18 @@ export default async function sitemap() {
 
         // Blog Posts
         const blogRes = await client.query("SELECT id, slug, created_at FROM blog_posts WHERE status = 'published' OR status IS NULL");
-        const blogs = blogRes.rows.map((post) => ({
+        blogs = blogRes.rows.map((post) => ({
             url: `${baseUrl}/blog/${post.slug || post.id}`,
             lastModified: post.created_at || new Date(),
             changeFrequency: 'weekly',
-            priority: 0.8,
+            priority: 0.7,
         }));
 
-        const blogIndex = {
-            url: `${baseUrl}/blog`,
-            lastModified: new Date(),
-            changeFrequency: 'daily',
-            priority: 0.8,
-        };
-
         client.release();
-        return [...staticRoutes, blogIndex, ...products, ...brands, ...blogs];
+        return [...staticRoutes, ...products, ...brands, ...blogs];
     } catch (error) {
         console.error("Sitemap generation error:", error);
         return [...staticRoutes];
     }
 }
+

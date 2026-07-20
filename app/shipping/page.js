@@ -1,5 +1,7 @@
 import FAQClient from '../faq/FAQClient';
 import { shipping_he, shipping_en } from '../data/shipping_data';
+import Breadcrumbs from '../components/Breadcrumbs';
+import BreadcrumbSchema from '../components/BreadcrumbSchema';
 import { cookies } from 'next/headers';
 import he from '../data/locales/he.json';
 import en from '../data/locales/en.json';
@@ -41,6 +43,8 @@ export default async function ShippingPage() {
 
     return (
         <div className="min-h-screen bg-gray-50 pb-20">
+            <Breadcrumbs items={[{ label: t('common.shipping_returns') }]} />
+            <BreadcrumbSchema items={[{ name: t('common.shipping_returns') }]} />
             {/* Header section with background pattern */}
             <div className="bg-black text-white py-20 mb-12 relative overflow-hidden">
                 <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_center,white_0%,transparent_70%)]" />

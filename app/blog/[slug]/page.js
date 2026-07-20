@@ -7,6 +7,8 @@ import { sanitizeProduct, sanitizeProductArray } from '../../lib/productUtils';
 import he from '../../data/locales/he.json';
 import en from '../../data/locales/en.json';
 import AuthorBox from '../../components/AuthorBox';
+import Breadcrumbs from '../../components/Breadcrumbs';
+import BreadcrumbSchema from '../../components/BreadcrumbSchema';
 
 const getT = (locale) => {
     const dict = locale === 'en' ? en : he;
@@ -86,10 +88,10 @@ export default async function BlogPost({ params }) {
 
     if (!article) {
         return (
-            <div className="container py-20 text-center">
+            <main className="container py-20 text-center">
                 <h1 className="text-3xl font-bold mb-4">{t('common.article_not_found')}</h1>
                 <Link href="/blog" className="text-blue-600 underline">{t('common.back_to_magazine')}</Link>
-            </div>
+            </main>
         );
     }
 
@@ -175,7 +177,7 @@ export default async function BlogPost({ params }) {
     const contentHtml = renderContent(localizedContent);
 
     return (
-        <div className="container py-12 max-w-4xl mx-auto">
+        <main className="container py-12 max-w-4xl mx-auto">
             <style dangerouslySetInnerHTML={{ __html: `
                 .prose table { width: 100% !important; border-collapse: collapse !important; border: 1px solid #e5e7eb !important; margin: 2rem 0 !important; }
                 .prose th, .prose td { border: 1px solid #e5e7eb !important; padding: 12px 16px !important; text-align: ${locale === 'he' ? 'right' : 'left'} !important; }
@@ -183,14 +185,14 @@ export default async function BlogPost({ params }) {
                 .prose tr:nth-child(even) { background-color: #fcfcfc !important; }
             `}} />
             
-            <nav className="text-sm text-gray-500 mb-8 flex gap-2 items-center flex-wrap" dir={dir}>
-                <Link href="/" className="hover:underline">{t('common.home')}</Link>
-                <span>/</span>
-                <Link href="/blog" className="hover:underline">{t('common.magazine')}</Link>
-                <span>/</span>
-                <span className="text-gray-900 truncate max-w-[200px] md:max-w-none">{localizedTitle}</span>
-            </nav>
-            
+            <Breadcrumbs items={[
+                { label: t('common.magazine'), href: '/blog' },
+                { label: localizedTitle }
+            ]} />
+            <BreadcrumbSchema items={[
+                { name: locale === 'he' ? 'מגזין' : 'Magazine', url: 'https://www.ml-tlv.com/blog' },
+                { name: localizedTitle }
+            ]} />
             <script
                 type="application/ld+json"
                 dangerouslySetInnerHTML={{
@@ -364,6 +366,6 @@ export default async function BlogPost({ params }) {
                     {t('common.back_to_magazine')}
                 </Link>
             </div>
-        </div>
+        </main>
     );
 }

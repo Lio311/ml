@@ -6,6 +6,8 @@ import he from '../data/locales/he.json';
 import en from '../data/locales/en.json';
 import { sanitizeProductArray } from '../lib/productUtils';
 import TagFilterBar from '../components/TagFilterBar';
+import Breadcrumbs from '../components/Breadcrumbs';
+import BreadcrumbSchema from '../components/BreadcrumbSchema';
 
 
 const getT = (locale) => {
@@ -118,8 +120,10 @@ export default async function BlogIndex(props) {
     const gridArticles = articles;
 
     return (
-        <div className="min-h-screen bg-[#fafafa] pt-12 md:pt-20 pb-6 md:pb-10" dir={dir}>
+        <main className="min-h-screen bg-[#fafafa] pt-12 md:pt-20 pb-6 md:pb-10" dir={dir}>
             <div className="container px-4">
+                <Breadcrumbs items={[{ label: t('common.magazine_title') }]} />
+                <BreadcrumbSchema items={[{ name: locale === 'he' ? 'מגזין' : 'Magazine' }]} />
                 <header className="mb-16">
                     <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
                         <div className={dir === 'rtl' ? 'text-right' : 'text-left'}>
@@ -245,7 +249,24 @@ export default async function BlogIndex(props) {
                         )}
                     </div>
                 )}
+                <script
+                    type="application/ld+json"
+                    dangerouslySetInnerHTML={{
+                        __html: JSON.stringify({
+                            "@context": "https://schema.org",
+                            "@type": "CollectionPage",
+                            "name": t('common.magazine_title'),
+                            "description": t('common.magazine_header_desc'),
+                            "url": "https://www.ml-tlv.com/blog",
+                            "isPartOf": {
+                                "@type": "WebSite",
+                                "name": "ml-tlv",
+                                "url": "https://www.ml-tlv.com"
+                            }
+                        })
+                    }}
+                />
             </div>
-        </div>
+        </main>
     );
 }

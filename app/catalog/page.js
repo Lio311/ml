@@ -1,4 +1,6 @@
 import Link from "next/link";
+import Breadcrumbs from '../components/Breadcrumbs';
+import BreadcrumbSchema from '../components/BreadcrumbSchema';
 import pool, { withClient } from "../lib/db";
 import ProductCard from "../components/ProductCard";
 import FilterSidebar from "./FilterSidebar";
@@ -226,7 +228,9 @@ export default async function CatalogPage(props) {
     const pageTitle = sort === 'bestsellers' ? t('common.bestsellers') : t('common.full_catalog');
 
     return (
-        <div className={`container pt-12 pb-4 ${dir === 'rtl' ? 'text-right' : 'text-left'}`} dir={dir}>
+        <main className={`container pt-12 pb-4 ${dir === 'rtl' ? 'text-right' : 'text-left'}`} dir={dir}>
+            <Breadcrumbs items={[{ label: t('common.catalog') }]} />
+            <BreadcrumbSchema items={[{ name: 'קטלוג' }]} />
             <h1 className="text-3xl font-serif font-bold mb-2 text-center">{pageTitle}</h1>
             <p className="hidden md:block text-sm text-gray-400 text-center mb-10">
                 {t('common.showing_products').replace('{count}', products.length).replace('{page}', page).replace('{total}', totalPages)}
@@ -390,6 +394,6 @@ export default async function CatalogPage(props) {
                     </div>
                 </div>
             </div>
-        </div>
+        </main>
     );
 }

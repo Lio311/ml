@@ -1,4 +1,6 @@
 import FAQClient from './FAQClient';
+import Breadcrumbs from '../components/Breadcrumbs';
+import BreadcrumbSchema from '../components/BreadcrumbSchema';
 import { faq_he, faq_en } from '../data/faq_data';
 import { cookies } from 'next/headers';
 import he from '../data/locales/he.json';
@@ -54,6 +56,8 @@ export default async function FAQPage() {
 
     return (
         <div className="min-h-screen bg-gray-50 pb-20">
+            <Breadcrumbs items={[{ label: t('common.faq') }]} />
+            <BreadcrumbSchema items={[{ name: 'שאלות ותשובות' }]} />
             {/* GEO: FAQPage Structured Data — enables rich snippets and AI citation */}
             <script
                 type="application/ld+json"

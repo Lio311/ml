@@ -1,11 +1,19 @@
+import Breadcrumbs from '../components/Breadcrumbs';
+import BreadcrumbSchema from '../components/BreadcrumbSchema';
+
 export const metadata = {
     title: "הצהרת נגישות",
     description: "הצהרת הנגישות שלנו - מחויבים לחווית גלישה שוויונית ונגישה לכולם.",
+    alternates: {
+        canonical: 'https://www.ml-tlv.com/accessibility',
+    },
 };
 
 export default function AccessibilityPage() {
     return (
         <div className="container mx-auto py-12 px-6 max-w-4xl text-right" dir="rtl">
+            <Breadcrumbs items={[{ label: 'הצהרת נגישות' }]} />
+            <BreadcrumbSchema items={[{ name: 'הצהרת נגישות' }]} />
             <h1 className="text-4xl font-bold mb-8 text-center text-gray-900">הצהרת נגישות</h1>
 
             <section className="mb-10">

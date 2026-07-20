@@ -1,4 +1,6 @@
 import ContactClient from "./ContactClient";
+import Breadcrumbs from '../components/Breadcrumbs';
+import BreadcrumbSchema from '../components/BreadcrumbSchema';
 
 export const metadata = {
     title: "צור קשר",
@@ -9,5 +11,11 @@ export const metadata = {
 };
 
 export default function ContactPage() {
-    return <ContactClient />;
+    return (
+        <>
+            <Breadcrumbs items={[{ label: 'צור קשר' }]} />
+            <BreadcrumbSchema items={[{ name: 'צור קשר' }]} />
+            <ContactClient />
+        </>
+    );
 }
