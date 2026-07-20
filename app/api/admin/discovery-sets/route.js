@@ -2,7 +2,7 @@ import { NextResponse } from 'next/server';
 import pool from '@/app/lib/db';
 import { checkAdmin } from '@/app/lib/admin';
 import { clerkClient } from '@clerk/nextjs/server';
-import { sendEmail, getTemplate, getDiscoveryBatchTemplate } from '@/app/lib/email';
+import { sendEmail, getTemplate, getDiscoveryBatchItemsHtml, getSystemDefaults } from '@/app/lib/email';
 
 // GET all discovery sets
 export async function GET() {
@@ -106,7 +106,11 @@ export async function POST(req) {
                         .filter(Boolean);
                         
                     if (emails.length > 0) {
-                        const { html, subject } = await getTemplate('new_discovery_sets', null, () => getDiscoveryBatchTemplate(batchToEmail));
+                        const itemsHtml = getDiscoveryBatchItemsHtml(batchToEmail);
+                        const { html, subject } = await getTemplate('new_discovery_sets', { itemsHtml }, () => {
+                            const defaultTplHtml = getSystemDefaults()['new_discovery_sets'].content_html;
+                            return defaultTplHtml.replace('{{itemsHtml}}', itemsHtml);
+                        });
                         const finalSubject = subject || 'השקנו 6 מארזי דיסקברי חדשים! ✨ - ml_tlv';
                         
                         // Send async so we don't block the API response for too long

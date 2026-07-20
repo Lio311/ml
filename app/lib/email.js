@@ -195,10 +195,17 @@ export async function getTemplate(slug, data = {}, fallbackFn = null) {
         const res = await pool.query('SELECT content_html, subject FROM email_templates WHERE slug = $1 AND is_active = true', [slug]);
         if (res.rows.length > 0) {
             const template = res.rows[0];
-            return {
-                html: replacePlaceholders(template.content_html, data),
-                subject: replacePlaceholders(template.subject, data) || null
-            };
+            
+            // EMERGENCY HOTFIX: If the template in DB is the old hardcoded mock data, force it to fallback!
+            const isCorruptedNewPerfumes = slug === 'new_perfumes_batch' && template.content_html.includes('Brand 1') && !template.content_html.includes('{{itemsHtml}}');
+            const isCorruptedDiscovery = slug === 'new_discovery_sets' && template.content_html.includes('Brand 1') && !template.content_html.includes('{{itemsHtml}}');
+            
+            if (!isCorruptedNewPerfumes && !isCorruptedDiscovery) {
+                return {
+                    html: replacePlaceholders(template.content_html, data),
+                    subject: replacePlaceholders(template.subject, data) || null
+                };
+            }
         }
     } catch (err) {
         console.error('Error fetching dynamic template:', err);
@@ -223,16 +230,10 @@ export async function getTemplate(slug, data = {}, fallbackFn = null) {
 
 
 
-export const getBatchPerfumeTemplate = (products) => {
+export const getBatchPerfumeItemsHtml = (products) => {
     if (!products || products.length === 0) return '';
     
-    // If only one product, use the regular single product template
-    if (products.length === 1) {
-        return getNewProductTemplate(products[0]);
-    }
-    
-    // Multiple products: Use grid
-    const itemsHtml = products.map(product => {
+    return products.map(product => {
         const imageUrl = product.image_url || product.imageUrl || 'https://www.ml-tlv.com/logo_v6.png';
         const brand = product.brand || '';
         const model = product.model || '';
@@ -252,33 +253,12 @@ export const getBatchPerfumeTemplate = (products) => {
         </div>
         `;
     }).join('');
-
-    return `
-        <div dir="rtl" style="font-family: 'Open Sans', 'Open Sans Hebrew', Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto; line-height: 1.6;">
-            <div style="background-color: #fff; padding: 30px; border-radius: 24px; border: 1px solid #f0f0f0; box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
-                <div style="text-align: center; margin-bottom: 30px;">
-                    <div style="display: inline-block; background-color: #fef08a; color: #854d0e; font-size: 12px; font-weight: 900; padding: 6px 12px; border-radius: 20px; margin-bottom: 15px; letter-spacing: 1px;">חדש באתר ✨</div>
-                    <h1 style="margin: 0; font-size: 26px; font-weight: 900; color: #000;">בשמים חדשים נחתו באתר!</h1>
-                    <p style="margin: 15px 0 0; color: #666; font-size: 15px;">בדיוק נחתו אצלנו בשמים חדשים ומרגשים שאתם פשוט חייבים להכיר. לחצו על הניחוח שמעניין אתכם כדי לגלות עוד.</p>
-                </div>
-                
-                <div style="text-align: center;">
-                    ${itemsHtml}
-                </div>
-                
-                <div style="text-align: center; margin-top: 20px;">
-                    <a href="https://www.ml-tlv.com/catalog" style="display: inline-block; background-color: #000; color: #fff; padding: 16px 32px; text-decoration: none; border-radius: 16px; font-weight: 900; font-size: 15px; width: 80%; max-width: 300px;">לכל הקטלוג >></a>
-                </div>
-            </div>
-            <div style="text-align: center; padding-top: 15px; padding-bottom: 0; color: #ccc; font-size: 11px;">ml - יוקרה בחתיכות קטנות</div>
-        </div>
-    `;
 };
 
-export const getDiscoveryBatchTemplate = (products) => {
+export const getDiscoveryBatchItemsHtml = (products) => {
     if (!products || products.length === 0) return '';
     
-    const itemsHtml = products.map(product => {
+    return products.map(product => {
         const imageUrl = product.image_url || product.imageUrl || 'https://www.ml-tlv.com/logo_v6.png';
         const brand = product.brand || '';
         const model = product.model || '';
@@ -298,27 +278,6 @@ export const getDiscoveryBatchTemplate = (products) => {
         </div>
         `;
     }).join('');
-
-    return `
-        <div dir="rtl" style="font-family: 'Open Sans', 'Open Sans Hebrew', Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto; line-height: 1.6;">
-            <div style="background-color: #fff; padding: 30px; border-radius: 24px; border: 1px solid #f0f0f0; box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
-                <div style="text-align: center; margin-bottom: 30px;">
-                    <div style="display: inline-block; background-color: #fef08a; color: #854d0e; font-size: 12px; font-weight: 900; padding: 6px 12px; border-radius: 20px; margin-bottom: 15px; letter-spacing: 1px;">חדש באתר ✨</div>
-                    <h1 style="margin: 0; font-size: 26px; font-weight: 900; color: #000;">השקנו מארזי דיסקברי חדשים!</h1>
-                    <p style="margin: 15px 0 0; color: #666; font-size: 15px;">בדיוק נחתו אצלנו 6 מארזי דיסקברי יוקרתיים שאתם פשוט חייבים להכיר. הדרך המושלמת לנסות ניחוחות חדשים לפני שמתחייבים לבקבוק מלא.</p>
-                </div>
-                
-                <div style="text-align: center;">
-                    ${itemsHtml}
-                </div>
-                
-                <div style="text-align: center; margin-top: 20px;">
-                    <a href="https://www.ml-tlv.com/catalog?category=Discovery+Sets" style="display: inline-block; background-color: #000; color: #fff; padding: 16px 32px; text-decoration: none; border-radius: 16px; font-weight: 900; font-size: 15px; width: 80%; max-width: 300px;">לכל מארזי הדיסקברי >></a>
-                </div>
-            </div>
-            <div style="text-align: center; padding-top: 15px; padding-bottom: 0; color: #ccc; font-size: 11px;">ml - יוקרה בחתיכות קטנות</div>
-        </div>
-    `;
 };
 export const getNewProductTemplate = (product) => {
     return `

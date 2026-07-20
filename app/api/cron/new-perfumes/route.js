@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import pool from '@/app/lib/db';
 import { clerkClient } from '@clerk/nextjs/server';
-import { sendEmail, getTemplate, getBatchPerfumeTemplate } from '@/app/lib/email';
+import { sendEmail, getTemplate, getBatchPerfumeItemsHtml, getSystemDefaults } from '@/app/lib/email';
 
 export async function GET(req) {
     // Only allow cron requests
@@ -72,7 +72,11 @@ export async function GET(req) {
                 finalSubject = tpl.subject || `חדש באתר: ${newPerfumes[0].brand} ${newPerfumes[0].model} 🌟 - ml_tlv`;
             } else {
                 // Multiple perfumes, use the new batch template
-                const tpl = await getTemplate('new_perfumes_batch', null, () => getBatchPerfumeTemplate(newPerfumes));
+                const itemsHtml = getBatchPerfumeItemsHtml(newPerfumes);
+                const tpl = await getTemplate('new_perfumes_batch', { itemsHtml }, () => {
+                    const defaultTplHtml = getSystemDefaults()['new_perfumes_batch'].content_html;
+                    return defaultTplHtml.replace('{{itemsHtml}}', itemsHtml);
+                });
                 html = tpl.html;
                 finalSubject = tpl.subject || 'בשמים חדשים נחתו באתר! ✨ - ml_tlv';
             }
