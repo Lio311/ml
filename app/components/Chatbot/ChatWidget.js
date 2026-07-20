@@ -194,30 +194,10 @@ export default function ChatWidget() {
                                 </svg>
                             </button>
                         </div>
-                        <div className="flex bg-gray-800 rounded-lg p-1">
-                            <button 
-                                onClick={() => setActiveTab('matching')}
-                                className={`flex-1 text-xs font-bold py-1.5 rounded-md transition ${activeTab === 'matching' ? 'bg-white text-black' : 'text-gray-300 hover:text-white'}`}
-                            >
-                                שאלון התאמה
-                            </button>
-                            <button 
-                                onClick={() => setActiveTab('advisor')}
-                                className={`flex-1 text-xs font-bold py-1.5 rounded-md transition ${activeTab === 'advisor' ? 'bg-white text-black' : 'text-gray-300 hover:text-white'}`}
-                            >
-                                יועץ AI
-                            </button>
-                        </div>
                     </div>
 
                     {/* Content */}
-                    {activeTab === 'matching' ? (
-                        <div className="flex-1 bg-gray-50 overflow-y-auto custom-scrollbar min-h-[300px]">
-                            <SmartMatchingClient isEmbedded={true} />
-                        </div>
-                    ) : (
-                        <>
-                            <div className="flex-1 bg-gray-50 p-4 overflow-y-auto min-h-[300px]" ref={scrollRef}>
+                    <div className="flex-1 bg-gray-50 p-4 overflow-y-auto min-h-[300px]" ref={scrollRef}>
                         {messages.map((msg) => (
                             <div key={msg.id} className={`mb-2 flex ${msg.sender === 'bot' ? 'justify-start' : 'justify-end'}`}>
                                 <div className={`max-w-[85%] rounded-2xl p-3 text-sm shadow-sm ${msg.sender === 'bot'
@@ -335,8 +315,6 @@ export default function ChatWidget() {
                             </svg>
                         </button>
                     </form>
-                    </>
-                )}
             </div>
             )}
 
