@@ -240,7 +240,7 @@ export const getBatchPerfumeTemplate = (products) => {
         const url = `https://www.ml-tlv.com/product/${product.slug || product.id}`;
         
         return `
-        <div style="display: inline-block; width: 46%; margin: 1%; margin-bottom: 25px; vertical-align: top; text-align: center; background-color: #fcfcfc; padding: 15px 5px; border-radius: 16px; border: 1px solid #f5f5f5;">
+        <div style="display: inline-block; width: 44%; box-sizing: border-box; margin: 1%; margin-bottom: 25px; vertical-align: top; text-align: center; background-color: #fcfcfc; padding: 15px 5px; border-radius: 16px; border: 1px solid #f5f5f5;">
             <a href="${url}" style="text-decoration: none; color: inherit; display: block;">
                 <div style="height: 120px; display: flex; align-items: center; justify-content: center; margin-bottom: 15px;">
                     <img src="${imageUrl}" alt="${brand} ${model}" style="max-height: 100px; max-width: 100%; border-radius: 8px; object-fit: contain; background-color: #ffffff; background-image: linear-gradient(#ffffff, #ffffff); padding: 5px; margin: 0 auto; display: inline-block;" />
@@ -286,7 +286,7 @@ export const getDiscoveryBatchTemplate = (products) => {
         const url = `https://www.ml-tlv.com/product/${product.slug || product.id}`;
         
         return `
-        <div style="display: inline-block; width: 31%; margin: 1%; margin-bottom: 25px; vertical-align: top; text-align: center; background-color: #fcfcfc; padding: 15px 5px; border-radius: 16px; border: 1px solid #f5f5f5;">
+        <div style="display: inline-block; width: 44%; box-sizing: border-box; margin: 1%; margin-bottom: 25px; vertical-align: top; text-align: center; background-color: #fcfcfc; padding: 15px 5px; border-radius: 16px; border: 1px solid #f5f5f5;">
             <a href="${url}" style="text-decoration: none; color: inherit; display: block;">
                 <div style="height: 120px; display: flex; align-items: center; justify-content: center; margin-bottom: 15px;">
                     <img src="${imageUrl}" alt="${brand} ${model}" style="max-height: 100px; max-width: 100%; border-radius: 8px; object-fit: contain; background-color: #ffffff; background-image: linear-gradient(#ffffff, #ffffff); padding: 5px; margin: 0 auto; display: inline-block;" />
