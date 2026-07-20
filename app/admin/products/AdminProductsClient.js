@@ -340,29 +340,7 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                             + מוצר חדש
                         </button>
                     )}
-                    <button 
-                        onClick={async () => {
-                            const btn = document.getElementById('refresh-home-btn');
-                            const originalText = btn.innerText;
-                            btn.innerText = 'מרענן...';
-                            try {
-                                const res = await fetch('/api/admin/refresh-home', { method: 'POST' });
-                                if (res.ok) {
-                                    toast.success('דף הבית עורנן בהצלחה');
-                                } else {
-                                    toast.error('שגיאה ברענון דף הבית');
-                                }
-                            } catch (e) {
-                                toast.error('שגיאה ברענון דף הבית');
-                            } finally {
-                                btn.innerText = originalText;
-                            }
-                        }} 
-                        id="refresh-home-btn"
-                        className="bg-emerald-600 text-white px-4 py-2 rounded-xl font-bold hover:bg-emerald-700 transition shadow-md w-full md:w-auto text-sm md:text-base"
-                    >
-                        רענן דף הבית (Cache)
-                    </button>
+
                     <form onSubmit={handleSearch} className="flex gap-2 w-full md:w-auto">
                         <input
                             value={searchTerm}
