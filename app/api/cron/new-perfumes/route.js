@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import pool from '@/app/lib/db';
 import { clerkClient } from '@clerk/nextjs/server';
-import { sendEmail, getTemplate, getBatchPerfumeItemsHtml, getSystemDefaults } from '@/app/lib/email';
+import { sendEmail, getTemplate, getBatchPerfumeItemsHtml, getDiscoveryBatchItemsHtml, getSystemDefaults } from '@/app/lib/email';
 
 export async function GET(req) {
     // Only allow cron requests
@@ -12,52 +12,42 @@ export async function GET(req) {
 
     const client = await pool.connect();
     try {
-        // Find if there is any un-emailed perfume older than 1 hour
-        const oldestRes = await client.query(`
-            SELECT id, created_at 
-            FROM products 
-            WHERE is_discovery_set = false AND is_preorder = false AND perfume_email_sent = false AND active = true
-            ORDER BY created_at ASC
-            LIMIT 1
-        `);
+        // --- 1. Rate Limiting Check ---
+        const todayStr = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Jerusalem' });
+        const settingsRes = await client.query(`SELECT value FROM site_settings WHERE key = 'last_marketing_email_date'`);
+        const lastSentDate = settingsRes.rows.length > 0 ? settingsRes.rows[0].value : null;
 
-        if (oldestRes.rows.length === 0) {
-            return NextResponse.json({ message: 'No new perfumes found.' });
+        if (lastSentDate === todayStr) {
+            return NextResponse.json({ message: 'A marketing email was already sent today. Deferring to tomorrow.' });
         }
 
-        const oldestPerfume = oldestRes.rows[0];
-        // 1-hour wait logic removed because the cron now runs every 6 hours.
-        // It will pick up whatever new products are pending and send them.
+        let emailSent = false;
+        let sentCount = 0;
+        let actionTaken = '';
 
-        // It has been 1 hour! Let's fetch ALL un-emailed perfumes
-        const batchRes = await client.query(`
+        // --- 2. Check for New Perfumes (Priority 1: Batch, Priority 2: Single) ---
+        const perfumesRes = await client.query(`
             SELECT id, brand, model, image_url, single_price, price_2ml, price_5ml, price_10ml, description, slug 
             FROM products 
             WHERE is_discovery_set = false AND is_preorder = false AND perfume_email_sent = false AND active = true
             ORDER BY created_at ASC
         `);
-
-        const newPerfumes = batchRes.rows;
-        if (newPerfumes.length === 0) {
-            return NextResponse.json({ message: 'No new perfumes to email.' });
-        }
-
-        const batchIds = newPerfumes.map(p => p.id);
+        const newPerfumes = perfumesRes.rows;
 
         // Fetch users
         const clerk = await clerkClient();
         const { data: users } = await clerk.users.getUserList({ limit: 500 });
-
         const emails = users
             .map(u => u.emailAddresses.find(e => e.id === u.primaryEmailAddressId)?.emailAddress || u.emailAddresses[0]?.emailAddress)
             .filter(Boolean);
 
-        if (emails.length > 0) {
+        if (emails.length > 0 && newPerfumes.length > 0) {
             let html, subject;
             let finalSubject = '';
+            const batchIds = newPerfumes.map(p => p.id);
 
             if (newPerfumes.length === 1) {
-                // Just one perfume, use the existing single product format
+                // Priority 2: Single Perfume
                 const tpl = await getTemplate('new_product', {
                     brand: newPerfumes[0].brand || '',
                     model: newPerfumes[0].model || '',
@@ -70,8 +60,9 @@ export async function GET(req) {
                 });
                 html = tpl.html;
                 finalSubject = tpl.subject || `חדש באתר: ${newPerfumes[0].brand} ${newPerfumes[0].model} 🌟 - ml_tlv`;
+                actionTaken = 'sent_single_perfume';
             } else {
-                // Multiple perfumes, use the new batch template
+                // Priority 1: Batch of Perfumes
                 const itemsHtml = getBatchPerfumeItemsHtml(newPerfumes);
                 const tpl = await getTemplate('new_perfumes_batch', { itemsHtml }, () => {
                     const defaultTplHtml = getSystemDefaults()['new_perfumes_batch'].content_html;
@@ -79,23 +70,77 @@ export async function GET(req) {
                 });
                 html = tpl.html;
                 finalSubject = tpl.subject || 'בשמים חדשים נחתו באתר! ✨ - ml_tlv';
+                actionTaken = 'sent_perfumes_batch';
             }
 
-            // Send emails via BCC
             await sendEmail(emails, finalSubject, html, 'new_perfumes_batch');
-            console.log(`Perfume batch newsletter sent to ${emails.length} recipients for ${newPerfumes.length} products.`);
+            console.log(`Perfume newsletter sent to ${emails.length} recipients for ${newPerfumes.length} products.`);
 
-            // Mark as sent
             await client.query(`
                 UPDATE products 
                 SET perfume_email_sent = true 
                 WHERE id = ANY($1)
             `, [batchIds]);
+            
+            emailSent = true;
+            sentCount = newPerfumes.length;
         }
 
-        return NextResponse.json({ success: true, count: newPerfumes.length });
+        // --- 3. Check for Discovery Sets (Priority 3) ---
+        // Only if no perfume email was sent today!
+        if (!emailSent && emails.length > 0) {
+            const discoveryRes = await client.query(`
+                SELECT id, brand, model, image_url, single_price, price_2ml, slug 
+                FROM products 
+                WHERE is_discovery_set = true AND discovery_email_sent = false AND active = true
+                ORDER BY created_at ASC
+            `);
+            const newSets = discoveryRes.rows;
+
+            if (newSets.length >= 6) {
+                const batchToEmail = newSets.slice(0, 6);
+                const batchIds = batchToEmail.map(p => p.id);
+
+                const itemsHtml = getDiscoveryBatchItemsHtml(batchToEmail);
+                const { html, subject } = await getTemplate('new_discovery_sets', { itemsHtml }, () => {
+                    const defaultTplHtml = getSystemDefaults()['new_discovery_sets'].content_html;
+                    return defaultTplHtml.replace('{{itemsHtml}}', itemsHtml);
+                });
+                const finalSubject = subject || 'השקנו 6 מארזי דיסקברי חדשים! ✨ - ml_tlv';
+
+                await sendEmail(emails, finalSubject, html, 'new_discovery_sets');
+                console.log(`Discovery batch newsletter sent to ${emails.length} recipients.`);
+
+                await client.query(`
+                    UPDATE products 
+                    SET discovery_email_sent = true 
+                    WHERE id = ANY($1)
+                `, [batchIds]);
+
+                emailSent = true;
+                sentCount = 6;
+                actionTaken = 'sent_discovery_sets';
+            }
+        }
+
+        // --- 4. Update Rate Limit Record ---
+        if (emailSent) {
+            await client.query(`
+                INSERT INTO site_settings (key, value) 
+                VALUES ('last_marketing_email_date', $1)
+                ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value
+            `, [todayStr]);
+        }
+
+        return NextResponse.json({ 
+            success: true, 
+            emailSent, 
+            actionTaken, 
+            count: sentCount,
+            message: emailSent ? `Sent ${actionTaken} today.` : 'No emails pending.'
+        });
     } catch (error) {
-        console.error('Error in new perfumes cron:', error);
+        console.error('Error in marketing cron:', error);
         return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
     } finally {
         client.release();
