@@ -61,7 +61,9 @@ export default function AdminBrandsPage() {
     const ITEMS_PER_PAGE = 7;
 
     const filteredBrands = selectedLetter
-        ? brands.filter(brand => 
+        ? selectedLetter === "no_logo"
+            ? brands.filter(brand => !brand.logo_url)
+            : brands.filter(brand => 
                 brand.name.trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().startsWith(selectedLetter.toLowerCase())
               )
         : brands;
@@ -81,6 +83,7 @@ export default function AdminBrandsPage() {
             <AdminFilterBar
                 selectedLetter={selectedLetter}
                 onSelect={(letter) => { setSelectedLetter(letter); setPage(1); }}
+                extraTags={[{ id: 'no_logo', label: 'ללא לוגו' }]}
             />
 
             <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden mb-6">

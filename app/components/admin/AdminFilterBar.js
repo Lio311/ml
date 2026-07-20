@@ -1,6 +1,6 @@
 "use client";
 
-export default function AdminFilterBar({ selectedLetter, onSelect, className = "" }) {
+export default function AdminFilterBar({ selectedLetter, onSelect, className = "", extraTags = [] }) {
     const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split('');
 
     return (
@@ -23,6 +23,18 @@ export default function AdminFilterBar({ selectedLetter, onSelect, className = "
             >
                 הכל
             </button>
+            {extraTags.map(tag => (
+                <button
+                    key={tag.id}
+                    onClick={() => onSelect(tag.id)}
+                    className={`px-3 py-1.5 rounded-lg text-[13px] font-bold border transition shrink-0 shadow-sm ${selectedLetter === tag.id
+                            ? 'bg-black text-white border-black'
+                            : 'bg-white text-black border-gray-200 hover:border-black'
+                        }`}
+                >
+                    {tag.label}
+                </button>
+            ))}
             {alphabet.map(letter => (
                 <button
                     key={letter}
