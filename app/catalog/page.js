@@ -228,7 +228,7 @@ export default async function CatalogPage(props) {
     const pageTitle = sort === 'bestsellers' ? t('common.bestsellers') : t('common.full_catalog');
 
     return (
-        <main className={`container pt-12 pb-4 ${dir === 'rtl' ? 'text-right' : 'text-left'}`} dir={dir}>
+        <main className={`container pt-4 pb-4 ${dir === 'rtl' ? 'text-right' : 'text-left'}`} dir={dir}>
             <Breadcrumbs items={[{ label: t('common.catalog') }]} />
             <BreadcrumbSchema items={[{ name: 'קטלוג' }]} />
             <h1 className="text-3xl font-serif font-bold mb-2 text-center">{pageTitle}</h1>

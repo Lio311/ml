@@ -209,7 +209,7 @@ export default async function AboutPage() {
     };
 
     return (
-        <div className="min-h-screen bg-gray-50 pt-24 pb-12">
+        <div className="min-h-screen bg-gray-50 pt-4 pb-12">
             <div className="container max-w-4xl mx-auto px-4">
                 <Breadcrumbs items={[{ label: locale === 'en' ? 'About Us' : 'אודות' }]} />
                 <BreadcrumbSchema items={[{ name: 'אודות' }]} />

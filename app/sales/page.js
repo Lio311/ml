@@ -190,7 +190,7 @@ export default async function SalesPage(props) {
     const { brands, categories, countries, perfumers, notes, concentrations } = await getFilterOptions();
 
     return (
-        <div className={`container pt-12 pb-20 ${dir === 'rtl' ? 'text-right' : 'text-left'}`} dir={dir}>
+        <div className={`container pt-4 pb-20 ${dir === 'rtl' ? 'text-right' : 'text-left'}`} dir={dir}>
             <Breadcrumbs items={[{ label: t('common.sales') }]} />
             <BreadcrumbSchema items={[{ name: 'מבצעים' }]} />
             <div className="text-center mb-12">

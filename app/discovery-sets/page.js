@@ -66,7 +66,7 @@ export default async function DiscoverySetsPage() {
     }
 
     return (
-        <div className="min-h-screen bg-gray-50 py-12" dir={dir}>
+        <div className="min-h-screen bg-gray-50 pt-4 pb-12" dir={dir}>
             <div className="container mx-auto px-4">
                 <Breadcrumbs items={[{ label: title }]} />
                 <BreadcrumbSchema items={[{ name: title }]} />

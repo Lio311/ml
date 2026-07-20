@@ -8,7 +8,7 @@ export default function Breadcrumbs({ items }) {
     if (!items || items.length === 0) return null;
 
     return (
-        <nav aria-label="Breadcrumb" className="mb-4 mt-2" dir={dir}>
+        <nav aria-label="Breadcrumb" className="mb-2 mt-2" dir={dir}>
             <ol className={`flex flex-wrap items-center text-[10px] md:text-xs text-gray-400 gap-1.5 md:gap-2 ${dir === 'rtl' ? 'flex-row' : 'flex-row'}`}>
                 <li>
                     <Link href="/" className="hover:text-black transition-colors">
