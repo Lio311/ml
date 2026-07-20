@@ -56,8 +56,10 @@ export default async function FAQPage() {
 
     return (
         <div className="min-h-screen bg-gray-50 pb-20">
-            <Breadcrumbs items={[{ label: t('common.faq') }]} />
-            <BreadcrumbSchema items={[{ name: 'שאלות ותשובות' }]} />
+            <div className="container mx-auto px-4 pt-6">
+                <Breadcrumbs items={[{ label: t('common.faq') }]} />
+                <BreadcrumbSchema items={[{ name: 'שאלות ותשובות' }]} />
+            </div>
             {/* GEO: FAQPage Structured Data — enables rich snippets and AI citation */}
             <script
                 type="application/ld+json"

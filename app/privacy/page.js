@@ -43,8 +43,10 @@ export default async function PrivacyPolicyPage() {
 
     return (
         <div className="min-h-screen bg-gray-50 pb-20">
-            <Breadcrumbs items={[{ label: t('common.privacy_policy') }]} />
-            <BreadcrumbSchema items={[{ name: t('common.privacy_policy') }]} />
+            <div className="container mx-auto px-4 pt-6">
+                <Breadcrumbs items={[{ label: t('common.privacy_policy') }]} />
+                <BreadcrumbSchema items={[{ name: t('common.privacy_policy') }]} />
+            </div>
             {/* Header section with background pattern */}
             <div className="bg-black text-white py-20 mb-12 relative overflow-hidden">
                 <div className="absolute inset-0 opacity-20 bg-[radial-gradient(circle_at_center,white_0%,transparent_70%)]" />

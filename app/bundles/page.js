@@ -13,8 +13,10 @@ export const metadata = {
 export default function BundlesPage() {
   return (
     <>
-      <Breadcrumbs items={[{ label: 'חבילות בשמים בהתאמה אישית' }]} />
-      <BreadcrumbSchema items={[{ name: 'חבילות בשמים בהתאמה אישית' }]} />
+      <div className="container mx-auto px-4 pt-6">
+        <Breadcrumbs items={[{ label: 'חבילות בשמים בהתאמה אישית' }]} />
+        <BreadcrumbSchema items={[{ name: 'חבילות בשמים בהתאמה אישית' }]} />
+      </div>
       <BundlesClient />
     </>
   );
