@@ -160,9 +160,30 @@ export default function SmartAdvisorTab() {
                             </button>
                         </div>
 
+                        <div className="flex bg-gray-800 rounded-lg p-1 mx-4 mb-2 mt-4">
+                            <button 
+                                onClick={() => setActiveTab('matching')}
+                                className={`flex-1 text-xs font-bold py-1.5 rounded-md transition ${activeTab === 'matching' ? 'bg-white text-black' : 'text-gray-300 hover:text-white'}`}
+                            >
+                                {isHebrew ? 'שאלון התאמה' : 'Matching Form'}
+                            </button>
+                            <button 
+                                onClick={() => setActiveTab('advisor')}
+                                className={`flex-1 text-xs font-bold py-1.5 rounded-md transition ${activeTab === 'advisor' ? 'bg-white text-black' : 'text-gray-300 hover:text-white'}`}
+                            >
+                                {isHebrew ? 'יועץ AI' : 'AI Advisor'}
+                            </button>
+                        </div>
+
                         {/* Content */}
-                        {/* Chat Messages */}
-                        <div className="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar">
+                        {activeTab === 'matching' ? (
+                            <div className="flex-1 bg-gray-50 overflow-y-auto custom-scrollbar min-h-[300px]">
+                                <SmartMatchingClient isEmbedded={true} onClose={() => setIsOpen(false)} />
+                            </div>
+                        ) : (
+                            <>
+                                {/* Chat Messages */}
+                                <div className="flex-1 overflow-y-auto p-4 space-y-4 custom-scrollbar">
                             {messages.map((msg, idx) => (
                                 <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-start' : 'justify-end'}`}>
                                     <div className={`max-w-[85%] rounded-2xl p-3 ${
@@ -224,6 +245,8 @@ export default function SmartAdvisorTab() {
                                 {isHebrew ? 'היועץ מופעל ע"י בינה מלאכותית ויכול לטעות.' : 'Advisor is powered by AI and can make mistakes.'}
                             </p>
                         </div>
+                            </>
+                        )}
                     </motion.div>
                 )}
             </AnimatePresence>
