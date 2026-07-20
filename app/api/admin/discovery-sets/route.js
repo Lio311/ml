@@ -78,6 +78,16 @@ export async function POST(req) {
                 `, [trimmedBrand]);
             }
 
+            try {
+                const { revalidatePath, revalidateTag } = require('next/cache');
+                revalidatePath('/');
+                revalidateTag('home-data');
+                revalidatePath('/catalog');
+                revalidatePath('/discovery-sets');
+            } catch (e) {
+                console.error("Cache invalidation error:", e);
+            }
+
             return NextResponse.json(res.rows[0]);
         } finally {
             client.release();
@@ -136,6 +146,16 @@ export async function PUT(req) {
                     INSERT INTO brands (name) VALUES ($1)
                     ON CONFLICT (name) DO NOTHING
                 `, [trimmedBrand]);
+            }
+
+            try {
+                const { revalidatePath, revalidateTag } = require('next/cache');
+                revalidatePath('/');
+                revalidateTag('home-data');
+                revalidatePath('/catalog');
+                revalidatePath('/discovery-sets');
+            } catch (e) {
+                console.error("Cache invalidation error:", e);
             }
 
             return NextResponse.json(res.rows[0]);
