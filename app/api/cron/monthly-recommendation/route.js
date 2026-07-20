@@ -118,7 +118,7 @@ export async function GET(req) {
                 }
                 
                 // Get all subscribers
-                const subRes = await pool.query('SELECT email FROM subscribers WHERE status = $1', ['active']);
+                const subRes = await pool.query('SELECT email FROM users WHERE email IS NOT NULL');
                 const subscriberEmails = subRes.rows.map(r => r.email);
 
                 if (subscriberEmails.length > 0) {
