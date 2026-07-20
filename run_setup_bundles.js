@@ -113,7 +113,7 @@ async function run() {
                         price_2ml, price_5ml, price_10ml, show_on_home, single_price
                     ) VALUES (
                         $1, $2, $3, $4, 'מארזים', 'bundles',
-                        true, true, $5, 100,
+                        true, false, $5, 100,
                         190, 390, 690, true, 190
                     ) RETURNING id
                 `, [bundle.name, bundle.name, bundle.description, bundle.image, bundle.type]);
