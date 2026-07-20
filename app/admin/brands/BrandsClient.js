@@ -101,7 +101,7 @@ export default function AdminBrandsPage() {
                         <tbody>
                             {paginatedBrands.length === 0 ? (
                                 <tr>
-                                    <td colSpan="4" className="p-8 text-gray-500">לא נמצאו מותגים {selectedLetter ? `באות ${selectedLetter}` : ''}</td>
+                                    <td colSpan="4" className="p-8 text-gray-500">לא נמצאו מותגים {selectedLetter === 'no_logo' ? 'ללא לוגו' : selectedLetter ? `באות ${selectedLetter}` : ''}</td>
                                 </tr>
                             ) : (
                                 paginatedBrands.map(brand => (
@@ -168,7 +168,7 @@ export default function AdminBrandsPage() {
                 {/* Mobile View Card Layout */}
                 <div className="md:hidden divide-y divide-gray-100">
                     {paginatedBrands.length === 0 ? (
-                        <div className="p-8 text-center text-gray-500 text-sm">לא נמצאו מותגים {selectedLetter ? `באות ${selectedLetter}` : ''}</div>
+                        <div className="p-8 text-center text-gray-500 text-sm">לא נמצאו מותגים {selectedLetter === 'no_logo' ? 'ללא לוגו' : selectedLetter ? `באות ${selectedLetter}` : ''}</div>
                     ) : (
                         paginatedBrands.map(brand => (
                             <div key={brand.id} className="p-5 bg-white space-y-4">
