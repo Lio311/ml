@@ -320,6 +320,7 @@ export default function DiscoverySetsClient({ products: initialProducts, initial
                                     <label className="block text-sm font-semibold text-gray-700 mb-1.5">מחיר (₪)</label>
                                     <input
                                         type="number"
+                                        onWheel={(e) => e.target.blur()}
                                         value={form.single_price}
                                         onChange={e => setForm({ ...form, single_price: e.target.value })}
                                         className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:ring-2 focus:ring-black focus:border-transparent outline-none transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none text-right"
@@ -341,6 +342,7 @@ export default function DiscoverySetsClient({ products: initialProducts, initial
                                     <label className="block text-sm font-semibold text-gray-700 mb-1.5">מלאי זמין</label>
                                     <input
                                         type="number"
+                                        onWheel={(e) => e.target.blur()}
                                         value={form.stock}
                                         onChange={e => setForm({ ...form, stock: e.target.value })}
                                         className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:ring-2 focus:ring-black focus:border-transparent outline-none transition-all [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none text-right"
@@ -388,6 +390,7 @@ export default function DiscoverySetsClient({ products: initialProducts, initial
                                         <label className="block text-xs font-semibold text-gray-600 mb-1">כמות דוגמיות בערכה</label>
                                         <input
                                             type="number"
+                                            onWheel={(e) => e.target.blur()}
                                             value={tempGen.numberOfSamples}
                                             onChange={e => setTempGen({ ...tempGen, numberOfSamples: e.target.value })}
                                             placeholder="לדוגמה: 5"
@@ -398,6 +401,7 @@ export default function DiscoverySetsClient({ products: initialProducts, initial
                                         <label className="block text-xs font-semibold text-gray-600 mb-1">גודל דוגמית (מ"ל)</label>
                                         <input
                                             type="number"
+                                            onWheel={(e) => e.target.blur()}
                                             value={tempGen.sampleSize}
                                             onChange={e => setTempGen({ ...tempGen, sampleSize: e.target.value })}
                                             placeholder="לדוגמה: 2"
