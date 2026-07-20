@@ -243,7 +243,7 @@ export const getBatchPerfumeTemplate = (products) => {
         <div style="display: inline-block; width: 46%; margin: 1%; margin-bottom: 25px; vertical-align: top; text-align: center; background-color: #fcfcfc; padding: 15px 5px; border-radius: 16px; border: 1px solid #f5f5f5;">
             <a href="${url}" style="text-decoration: none; color: inherit; display: block;">
                 <div style="height: 120px; display: flex; align-items: center; justify-content: center; margin-bottom: 15px;">
-                    <img src="${imageUrl}" alt="${brand} ${model}" style="max-height: 100px; max-width: 100%; border-radius: 8px; object-fit: contain; background-color: #ffffff; background-image: linear-gradient(#ffffff, #ffffff); padding: 5px;" />
+                    <img src="${imageUrl}" alt="${brand} ${model}" style="max-height: 100px; max-width: 100%; border-radius: 8px; object-fit: contain; background-color: #ffffff; background-image: linear-gradient(#ffffff, #ffffff); padding: 5px; margin: 0 auto; display: inline-block;" />
                 </div>
                 <div style="font-size: 11px; font-weight: 900; color: #999; text-transform: uppercase; margin-bottom: 4px; letter-spacing: 1px;">${brand}</div>
                 <div style="font-size: 13px; font-weight: bold; color: #000; margin-bottom: 8px; line-height: 1.3; height: 34px; overflow: hidden;">${model}</div>
@@ -289,7 +289,7 @@ export const getDiscoveryBatchTemplate = (products) => {
         <div style="display: inline-block; width: 31%; margin: 1%; margin-bottom: 25px; vertical-align: top; text-align: center; background-color: #fcfcfc; padding: 15px 5px; border-radius: 16px; border: 1px solid #f5f5f5;">
             <a href="${url}" style="text-decoration: none; color: inherit; display: block;">
                 <div style="height: 120px; display: flex; align-items: center; justify-content: center; margin-bottom: 15px;">
-                    <img src="${imageUrl}" alt="${brand} ${model}" style="max-height: 100px; max-width: 100%; border-radius: 8px; object-fit: contain; background-color: #ffffff; background-image: linear-gradient(#ffffff, #ffffff); padding: 5px;" />
+                    <img src="${imageUrl}" alt="${brand} ${model}" style="max-height: 100px; max-width: 100%; border-radius: 8px; object-fit: contain; background-color: #ffffff; background-image: linear-gradient(#ffffff, #ffffff); padding: 5px; margin: 0 auto; display: inline-block;" />
                 </div>
                 <div style="font-size: 11px; font-weight: 900; color: #999; text-transform: uppercase; margin-bottom: 4px; letter-spacing: 1px;">${brand}</div>
                 <div style="font-size: 13px; font-weight: bold; color: #000; margin-bottom: 8px; line-height: 1.3; height: 34px; overflow: hidden;">${model}</div>
