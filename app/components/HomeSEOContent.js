@@ -9,7 +9,7 @@ export default function HomeSEOContent() {
     const isRTL = dir === 'rtl';
 
     return (
-        <section className="pt-4 pb-16 md:pt-8 md:pb-24 bg-stone-50/50 border-t border-gray-100 overflow-hidden" dir={dir}>
+        <section className="pt-4 pb-4 md:pt-8 md:pb-6 bg-stone-50/50 border-t border-gray-100 overflow-hidden" dir={dir}>
             <div className="container mx-auto px-6 md:px-12 max-w-6xl">
                 <div className={isRTL ? 'text-right' : 'text-left'}>
                     {/* Premium Header */}
@@ -65,7 +65,7 @@ export default function HomeSEOContent() {
 
                                 <h3 className={`text-3xl font-serif font-black text-white mb-8 relative z-10 ${isRTL ? 'text-right' : 'text-left'}`}>
                                     {t('common.seo_experience_title')}
-                                </h3>
+                               </h3>
 
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-10 relative z-10">
                                     <p className="text-gray-300 text-lg font-light leading-relaxed" dangerouslySetInnerHTML={{ __html: t('common.seo_experience_p1') }} />
@@ -83,8 +83,6 @@ export default function HomeSEOContent() {
                     </FadeIn>
                 </div>
             </div>
-            {/* Flush bottom spacer */}
-            <div className="h-10 w-full pointer-events-none"></div>
         </section>
     );
 }
