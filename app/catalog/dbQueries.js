@@ -12,7 +12,7 @@ export async function getProducts(search, brand, category, minPrice, maxPrice, s
     FROM products p
     ${joinType} product_sales ps ON p.id = ps.product_id
     ${joinType} brands b ON p.brand = b.name
-    WHERE p.active = true AND p.stock > 0 AND p.is_discovery_set IS NOT TRUE
+    WHERE p.active = true AND p.stock > 0 AND p.is_discovery_set IS NOT TRUE AND (p.category IS NULL OR p.category != 'מארזים') AND (p.category_en IS NULL OR p.category_en != 'bundles')
   `;
     const params = [];
 

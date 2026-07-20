@@ -113,7 +113,7 @@ const getBrands = unstable_cache(async () => {
 
 const getCategories = unstable_cache(async () => {
     try {
-        const res = await pool.query('SELECT DISTINCT category FROM products WHERE active = true');
+        const res = await pool.query('SELECT DISTINCT category FROM products WHERE active = true AND (category IS NULL OR category != \'מארזים\') AND (category_en IS NULL OR category_en != \'bundles\')');
         const rawCategories = res.rows.map(r => r.category).filter(c => c && c !== 'General');
 
         const uniqueCategories = new Set();
