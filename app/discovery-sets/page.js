@@ -56,7 +56,7 @@ export default async function DiscoverySetsPage() {
             SELECT id, slug, name, brand, brand_he, model, model_he, image_url, price_2ml, price_5ml, price_10ml, stock, category, created_at,
                    discount_percentage, discount_sizes, discount_end_date, is_discovery_set, single_price, volume_label
             FROM products 
-            WHERE active = true AND is_discovery_set = true AND (category != 'מארזים' OR category IS NULL)
+            WHERE active = true AND is_discovery_set = true AND (category != 'מארזים' OR category IS NULL) AND stock > 0
             ORDER BY created_at DESC
         `);
         products = sanitizeProductArray(res.rows);
