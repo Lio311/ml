@@ -36,7 +36,7 @@ export default async function AdminProductsPage(props) {
         let query = 'SELECT id, brand, model, name, name_he, brand_he, model_he, price_2ml, price_5ml, price_10ml, image_url, category, description, stock, top_notes, middle_notes, base_notes, in_lottery, show_on_home, cost_price, original_size, seasons, concentration, perfumers, country, active, discount_percentage, discount_sizes, discount_end_date, spotify_track_url FROM products';
         let countQuery = 'SELECT COUNT(*) FROM products';
         const params = [];
-        let whereClauses = [];
+        let whereClauses = ['(is_discovery_set IS NOT TRUE)'];
 
         if (search) {
             whereClauses.push(`(brand ILIKE $${params.length + 1} OR model ILIKE $${params.length + 1} OR name ILIKE $${params.length + 1})`);
@@ -63,6 +63,7 @@ export default async function AdminProductsPage(props) {
                 COUNT(*) FILTER (WHERE active = false) as drafts,
                 COUNT(*) FILTER (WHERE discount_percentage > 0) as on_sale
             FROM products
+            WHERE is_discovery_set IS NOT TRUE
         `);
         counts = {
             all: parseInt(countsRes.rows[0].all),
