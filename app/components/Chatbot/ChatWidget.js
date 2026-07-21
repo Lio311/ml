@@ -393,24 +393,7 @@ export default function ChatWidget() {
                     */}
                 {!isOpen && (
                     <button
-                        onClick={handleDismiss}            </form>
-            </div>
-            )}
-
-            {/* Toggle Button Container with Close Option */}
-            <div className="relative group">
-                {/* Close Button (X) - Always visible when chat is closed to allow hiding the widget,
-                        OR visible when chat is open too?
-                        User asked: "תשים כפתור X *על* הצאט בוט שיהיה אפשר להסתיר אותו"
-                        Interpretation: A way to remove the floating button from screen.
-                    */}
-                {!isOpen && (
-                    <button
-                        onClick={(e) => { 
-                            e.stopPropagation(); 
-                            setIsVisible(false); 
-                            window.dispatchEvent(new Event('chatWidgetClosed'));
-                        }}
+                        onClick={handleDismiss}
                         className="absolute -top-2 -left-2 z-10 bg-gray-200 text-gray-600 rounded-full p-1 opacity-0 group-hover:opacity-100 transition shadow-sm hover:bg-red-500 hover:text-white"
                         title="סגור צ'אט"
                     >

@@ -410,6 +410,7 @@ export default function AccessibilityWidget() {
                     </div>
                 )}
             </div>
+            )}
         </div>
     );
 }
