@@ -16,7 +16,7 @@ const formatDiscoverySize = (label) => {
     if (nums && nums.length >= 2) {
         return `${nums[0]}X${nums[1]}ml`;
     }
-    return label;
+    return label.replace('מ״ל', 'ml').replace('מ"ל', 'ml');
 };
 
 const transporter = nodemailer.createTransport({
