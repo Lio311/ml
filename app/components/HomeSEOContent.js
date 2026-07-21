@@ -47,7 +47,7 @@ export default function HomeSEOContent() {
                                 <p dangerouslySetInnerHTML={{ __html: t('common.seo_p4') }} />
                             </FadeIn>
                             <FadeIn delay={0.6}>
-                                <p className="text-sm font-medium text-gray-500 uppercase tracking-wider">
+                                <p className="text-sm font-medium text-gray-500 uppercase tracking-wider text-center">
                                     Xerjoff • Roja Parfums • Amouage • Creed • Louis Vuitton • Bvlgari • Tom Ford • Maison Francis Kurkdjian • Byredo • Le Labo • Diptyque • Penhaligon's
                                 </p>
                             </FadeIn>
