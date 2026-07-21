@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { usePathname } from 'next/navigation';
 import { Bell, BellOff, Loader2, X } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { useUser } from '@clerk/nextjs';
 
 // Helper to convert base64 to Uint8Array for VAPID key
 function urlBase64ToUint8Array(base64String) {
@@ -22,13 +23,39 @@ export default function PushManager() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [isDismissed, setIsDismissed] = useState(false);
+  const { user, isLoaded } = useUser();
   const pathname = usePathname();
 
   const VAPID_PUBLIC_KEY = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
 
   useEffect(() => {
-    const dismissed = localStorage.getItem('push_manager_dismissed');
-    if (dismissed) setIsDismissed(true);
+    const checkDismissal = async () => {
+      let dismissedAt = localStorage.getItem('push_dismissed_at');
+      
+      if (isLoaded && user) {
+        try {
+          const res = await fetch('/api/user/preferences');
+          if (res.ok) {
+            const data = await res.json();
+            if (data.preferences?.push_dismissed_at) {
+              dismissedAt = data.preferences.push_dismissed_at;
+              localStorage.setItem('push_dismissed_at', dismissedAt);
+            }
+          }
+        } catch (e) {
+          console.error("Failed to fetch preferences", e);
+        }
+      }
+
+      if (dismissedAt) {
+        const thirtyDays = 30 * 24 * 60 * 60 * 1000;
+        if (Date.now() - new Date(dismissedAt).getTime() < thirtyDays) {
+          setIsDismissed(true);
+        }
+      }
+    };
+
+    checkDismissal();
 
     if (typeof window !== 'undefined' && 'serviceWorker' in navigator && 'PushManager' in window) {
       setIsSupported(true);
@@ -36,7 +63,7 @@ export default function PushManager() {
     } else {
       setLoading(false);
     }
-  }, []);
+  }, [isLoaded, user]);
 
   const checkSubscription = async () => {
     try {
@@ -118,10 +145,25 @@ export default function PushManager() {
   if (pathname?.startsWith('/admin')) return null;
   if (subscription || isDismissed) return null;
 
-  const handleDismiss = (e) => {
+  const handleDismiss = async (e) => {
     e.stopPropagation();
     setIsDismissed(true);
-    localStorage.setItem('push_manager_dismissed', 'true');
+    const now = new Date().toISOString();
+    localStorage.setItem('push_dismissed_at', now);
+    
+    if (isLoaded && user) {
+        try {
+            await fetch('/api/user/preferences', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    preferences: { push_dismissed_at: now }
+                })
+            });
+        } catch (error) {
+            console.error("Failed to save preference", error);
+        }
+    }
   };
 
   return (

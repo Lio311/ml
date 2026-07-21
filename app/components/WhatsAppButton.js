@@ -1,17 +1,80 @@
 'use client';
 import { useLanguage } from '../context/LanguageContext';
 import { useState, useEffect } from 'react';
+import { useUser } from '@clerk/nextjs';
 
 export default function WhatsAppButton() {
     const { dir } = useLanguage();
+    const { user, isLoaded } = useUser();
     const [isVisible, setIsVisible] = useState(true);
     const [isChatClosed, setIsChatClosed] = useState(false);
 
     useEffect(() => {
         const handleChatClosed = () => setIsChatClosed(true);
         window.addEventListener('chatWidgetClosed', handleChatClosed);
+        
+        const chatDismissedAt = localStorage.getItem('chat_dismissed_at');
+        if (chatDismissedAt) {
+            const thirtyDays = 30 * 24 * 60 * 60 * 1000;
+            if (Date.now() - new Date(chatDismissedAt).getTime() < thirtyDays) {
+                setIsChatClosed(true);
+            }
+        }
+        
         return () => window.removeEventListener('chatWidgetClosed', handleChatClosed);
     }, []);
+
+    useEffect(() => {
+        const checkDismissal = async () => {
+            const DISMISSAL_KEY = 'whatsapp_dismissed_at';
+            let dismissedAt = localStorage.getItem(DISMISSAL_KEY);
+            
+            if (isLoaded && user) {
+                try {
+                    const res = await fetch('/api/user/preferences');
+                    if (res.ok) {
+                        const data = await res.json();
+                        if (data.preferences?.whatsapp_dismissed_at) {
+                            dismissedAt = data.preferences.whatsapp_dismissed_at;
+                            localStorage.setItem(DISMISSAL_KEY, dismissedAt);
+                        }
+                    }
+                } catch (e) {
+                    console.error("Failed to fetch preferences", e);
+                }
+            }
+
+            if (dismissedAt) {
+                const thirtyDays = 30 * 24 * 60 * 60 * 1000;
+                if (Date.now() - new Date(dismissedAt).getTime() < thirtyDays) {
+                    setIsVisible(false);
+                }
+            }
+        };
+
+        checkDismissal();
+    }, [isLoaded, user]);
+
+    const handleDismiss = async (e) => {
+        e.stopPropagation();
+        setIsVisible(false);
+        const now = new Date().toISOString();
+        localStorage.setItem('whatsapp_dismissed_at', now);
+        
+        if (isLoaded && user) {
+            try {
+                await fetch('/api/user/preferences', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        preferences: { whatsapp_dismissed_at: now }
+                    })
+                });
+            } catch (error) {
+                console.error("Failed to save preference", error);
+            }
+        }
+    };
 
     if (!isVisible) return null;
 
@@ -29,7 +92,7 @@ export default function WhatsAppButton() {
                 </svg>
             </a>
             <button 
-                onClick={(e) => { e.stopPropagation(); setIsVisible(false); }}
+                onClick={handleDismiss}
                 className="absolute -top-2 -left-2 z-10 bg-gray-200 text-gray-600 rounded-full p-1 opacity-0 group-hover:opacity-100 transition shadow-sm hover:bg-red-500 hover:text-white"
                 title="סגור"
             >

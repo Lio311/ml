@@ -7,6 +7,7 @@ import { useRouter } from 'next/navigation';
 import Image from '../CImage';
 import { useLanguage } from '../../context/LanguageContext';
 import SmartMatchingClient from '../../matching/SmartMatchingClient';
+import { useUser } from '@clerk/nextjs';
 
 import { chatbotKnowledge } from '../../data/chatbot_knowledge';
 
@@ -18,6 +19,7 @@ const REPRESENTATIVES = [
 ];
 
 export default function ChatWidget() {
+    const { user, isLoaded } = useUser();
     const [isVisible, setIsVisible] = useState(true);
     const [isOpen, setIsOpen] = useState(false);
     const [activeTab, setActiveTab] = useState('matching'); // 'matching' or 'advisor'
@@ -57,7 +59,37 @@ export default function ChatWidget() {
                 ]
             }
         ]);
-    }, []);
+        
+        const checkDismissal = async () => {
+            const DISMISSAL_KEY = 'chat_dismissed_at';
+            let dismissedAt = localStorage.getItem(DISMISSAL_KEY);
+            
+            if (isLoaded && user) {
+                try {
+                    const res = await fetch('/api/user/preferences');
+                    if (res.ok) {
+                        const data = await res.json();
+                        if (data.preferences?.chat_dismissed_at) {
+                            dismissedAt = data.preferences.chat_dismissed_at;
+                            localStorage.setItem(DISMISSAL_KEY, dismissedAt);
+                        }
+                    }
+                } catch (e) {
+                    console.error("Failed to fetch preferences", e);
+                }
+            }
+
+            if (dismissedAt) {
+                const thirtyDays = 30 * 24 * 60 * 60 * 1000;
+                if (Date.now() - new Date(dismissedAt).getTime() < thirtyDays) {
+                    setIsVisible(false);
+                    window.dispatchEvent(new Event('chatWidgetClosed'));
+                }
+            }
+        };
+
+        checkDismissal();
+    }, [isLoaded, user]);
 
     // Auto-scroll to bottom of chat
     useEffect(() => {
@@ -167,6 +199,29 @@ export default function ChatWidget() {
 
     // Render nothing if user closed the widget completely (state could be persisted in localStorage)
     if (!isVisible) return null;
+
+    const handleDismiss = async (e) => {
+        e.stopPropagation();
+        setIsVisible(false);
+        window.dispatchEvent(new Event('chatWidgetClosed'));
+        
+        const now = new Date().toISOString();
+        localStorage.setItem('chat_dismissed_at', now);
+        
+        if (isLoaded && user) {
+            try {
+                await fetch('/api/user/preferences', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        preferences: { chat_dismissed_at: now }
+                    })
+                });
+            } catch (error) {
+                console.error("Failed to save preference", error);
+            }
+        }
+    };
 
     return (
         <div className={`fixed bottom-6 ${isHebrew ? 'right-6 items-end' : 'left-6 items-start'} z-[60] flex flex-col`} style={{ direction: 'rtl' }}>
@@ -326,6 +381,19 @@ export default function ChatWidget() {
                             </svg>
                         </button>
                     </form>
+            </div>
+            )}
+
+            {/* Toggle Button Container with Close Option */}
+            <div className="relative group">
+                {/* Close Button (X) - Always visible when chat is closed to allow hiding the widget,
+                        OR visible when chat is open too?
+                        User asked: "תשים כפתור X *על* הצאט בוט שיהיה אפשר להסתיר אותו"
+                        Interpretation: A way to remove the floating button from screen.
+                    */}
+                {!isOpen && (
+                    <button
+                        onClick={handleDismiss}            </form>
             </div>
             )}
 
