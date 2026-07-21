@@ -263,10 +263,12 @@ export default function AccessibilityWidget() {
                 <div className={`fixed bottom-6 ${isHebrew ? 'left-4 md:left-6' : 'right-4 md:right-6'} z-[9999] font-sans rtl group acc-widget-ignore`}>
                     <button
                         onClick={handleDismiss}
-                        className="absolute -top-2 -right-2 z-10 bg-gray-200 text-gray-600 rounded-full p-1 opacity-0 group-hover:opacity-100 hover:bg-red-500 hover:text-white transition-all shadow-md"
+                        className="absolute -top-2 -right-2 z-10 bg-gray-200 text-gray-600 rounded-full p-1 opacity-0 group-hover:opacity-100 transition shadow-sm hover:bg-red-500 hover:text-white"
                         aria-label="סגור תפריט נגישות"
                     >
-                        <Icons.Close />
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-3 h-3">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
                     </button>
                     <button
                         onClick={() => setIsOpen(!isOpen)}

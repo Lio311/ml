@@ -173,10 +173,12 @@ export default function PushManager() {
        {/* Close Button (X) */}
        <button 
         onClick={handleDismiss}
-        className="absolute -top-2 -right-2 bg-gray-100 text-gray-400 rounded-full p-1 hover:bg-red-500 hover:text-white transition-all shadow-sm z-20 opacity-0 group-hover:opacity-100"
+        className="absolute -top-2 -right-2 z-10 bg-gray-200 text-gray-600 rounded-full p-1 opacity-0 group-hover:opacity-100 transition shadow-sm hover:bg-red-500 hover:text-white"
         title="הסתר"
       >
-        <X size={10} />
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2.5} stroke="currentColor" className="w-3 h-3">
+            <path strokeLinecap="round" strokeLinejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
       </button>
 
       {/* Floating Bell Button */}
