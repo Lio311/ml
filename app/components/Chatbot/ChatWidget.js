@@ -169,7 +169,7 @@ export default function ChatWidget() {
     if (!isVisible) return null;
 
     return (
-        <div className={`fixed bottom-6 ${isHebrew ? 'right-6 items-end' : 'left-6 items-start'} z-50 flex flex-col`} style={{ direction: 'rtl' }}>
+        <div className={`fixed bottom-6 ${isHebrew ? 'right-6 items-end' : 'left-6 items-start'} z-[60] flex flex-col`} style={{ direction: 'rtl' }}>
             {/* Chat Window */}
             {isOpen && (
                 <div className={`mb-4 w-80 md:w-96 bg-white rounded-2xl shadow-2xl border border-gray-200 overflow-hidden flex flex-col max-h-[500px] transition-all duration-300 transform ${isHebrew ? 'origin-bottom-right' : 'origin-bottom-left'}`}>
