@@ -52,6 +52,7 @@ async function getDatabaseStats() {
         activeConnections: 0,
         idleConnections: 0,
         topQueries: [],
+        currentCu: null,
         error: null
     };
 
@@ -83,6 +84,17 @@ async function getDatabaseStats() {
             } catch (e) {
                 // pg_stat_statements might not be enabled
                 stats.error = "pg_stat_statements extension is not enabled or accessible.";
+            }
+
+            // Get live CU usage
+            try {
+                await client.query(`CREATE EXTENSION IF NOT EXISTS neon_utils`);
+                const cpuRes = await client.query(`SELECT num_cpus()`);
+                if (cpuRes.rows && cpuRes.rows.length > 0) {
+                    stats.currentCu = parseFloat(cpuRes.rows[0].num_cpus);
+                }
+            } catch (e) {
+                console.error("Failed to get live CU:", e);
             }
 
         } finally {
@@ -271,12 +283,12 @@ export default async function DatabaseMonitor() {
                     <div className={`${endpointStatus.isAnyActive ? 'bg-orange-50' : 'bg-gray-50'} p-3 rounded-full mb-3`}>
                         <TrendingDown className={endpointStatus.isAnyActive ? 'text-orange-600' : 'text-gray-400'} size={24} />
                     </div>
-                    <h3 className="text-gray-500 text-sm font-medium">קצב צריכת CU לשעה</h3>
+                    <h3 className="text-gray-500 text-sm font-medium">צריכת CU בזמן אמת</h3>
                     <p className={`text-3xl font-bold ${endpointStatus.isAnyActive ? 'text-orange-600' : 'text-gray-500'} mt-2`} dir="ltr">
-                        {endpointStatus.error ? '---' : `${endpointStatus.totalActiveCu} CU/h`}
+                        {endpointStatus.error ? '---' : stats.currentCu !== null ? `${stats.currentCu} CU` : endpointStatus.isAnyActive ? 'פעיל' : '0 CU'}
                     </p>
                     <span className={`text-xs mt-1 font-medium ${endpointStatus.isAnyActive ? 'text-orange-600 animate-pulse' : 'text-gray-400'}`}>
-                        {endpointStatus.error ? 'שגיאת חיבור' : endpointStatus.isAnyActive ? 'השרת כרגע פעיל' : 'השרת במצב שינה (חוסך)'}
+                        {endpointStatus.error ? 'שגיאת חיבור' : endpointStatus.isAnyActive ? 'מתעדכן בלייב מהשרת' : 'השרת במצב שינה (חוסך)'}
                     </span>
                 </div>
             </div>
