@@ -185,13 +185,13 @@ export default function PushManager() {
       <button
         onClick={subscribe}
         disabled={loading}
-        className={`p-4 rounded-full shadow-2xl transition-all duration-500 hover:scale-110 active:scale-95 bg-black text-white flex items-center justify-center`}
+        className={`w-14 h-14 rounded-full shadow-2xl transition-all duration-500 hover:scale-110 active:scale-95 bg-black text-white flex items-center justify-center`}
         title="הפעל התראות"
       >
         {loading ? (
-          <Loader2 className="w-6 h-6 animate-spin text-white" />
+          <Loader2 className="w-7 h-7 animate-spin text-white" />
         ) : (
-          <Bell className="w-6 h-6 text-white animate-ring" />
+          <Bell className="w-7 h-7 text-white animate-ring" />
         )}
       </button>
       

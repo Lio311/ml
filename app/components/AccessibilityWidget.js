@@ -272,7 +272,7 @@ export default function AccessibilityWidget() {
                     </button>
                     <button
                         onClick={() => setIsOpen(!isOpen)}
-                        className="w-12 h-12 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 focus:outline-none bg-white/60 backdrop-blur-md border border-white/30 shadow-lg"
+                        className="w-14 h-14 rounded-full flex items-center justify-center transition-all duration-300 hover:scale-110 focus:outline-none bg-white/60 backdrop-blur-md border border-white/30 shadow-lg"
                         aria-label="פתח תפריט נגישות"
                         style={{ filter: 'none' }} // Extra safety
                     >
@@ -280,7 +280,7 @@ export default function AccessibilityWidget() {
                             xmlns="http://www.w3.org/2000/svg" 
                             viewBox="0 0 24 24" 
                             fill="currentColor" 
-                            className="w-6 h-6 text-[#007AFF] transition-transform duration-300 group-hover:scale-110"
+                            className="w-7 h-7 text-[#007AFF] transition-transform duration-300 group-hover:scale-110"
                         >
                             {/* Traced Head */}
                             <path d="M 11.672 0.000 L 11.203 0.094 L 11.062 0.188 L 10.969 0.188 L 10.688 0.328 L 10.172 0.703 L 9.844 1.078 L 9.750 1.219 L 9.562 1.594 L 9.562 1.688 L 9.469 1.828 L 9.375 2.297 L 9.375 2.906 L 9.469 3.375 L 9.562 3.516 L 9.562 3.609 L 9.750 3.984 L 10.078 4.406 L 10.406 4.688 L 10.688 4.875 L 10.969 5.016 L 11.391 5.156 L 12.281 5.203 L 12.562 5.156 L 12.984 5.016 L 13.359 4.828 L 13.781 4.500 L 14.109 4.125 L 14.391 3.609 L 14.531 3.188 L 14.578 2.906 L 14.578 2.297 L 14.484 1.828 L 14.391 1.688 L 14.391 1.594 L 14.203 1.219 L 13.875 0.797 L 13.500 0.469 L 13.359 0.375 L 12.984 0.188 L 12.891 0.188 L 12.750 0.094 L 12.281 0.000 Z" />
