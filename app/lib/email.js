@@ -354,7 +354,7 @@ export const formatItemsHtmlAdmin = (items) => {
             ${item.image_url ? `<div style="display: table-cell; vertical-align: middle; width: 50px;"><img src="${getAbsoluteImageUrl(item.image_url)}" width="40" style="border-radius: 6px; border: 1px solid #f0f0f0; height: auto; max-height: 40px; object-fit: contain; background-color: #ffffff; background-image: linear-gradient(#ffffff, #ffffff);" alt="product" /></div>` : ''}
             <div style="display: table-cell; vertical-align: middle;">
                 <span style="font-weight: 900; color: #000;">${item.name || (item.brand + ' ' + item.model)}</span>
-                <div style="font-size: 12px; color: #666;">${item.is_discovery_set ? formatDiscoverySize(item.volume_label) : `${item.size || ''}ml`} x${item.quantity || 1}</div>
+                <div style="font-size: 12px; color: #666;"><span dir="ltr" style="display: inline-block;">${item.is_discovery_set ? formatDiscoverySize(item.volume_label) : `${item.size || ''}ml`} x${item.quantity || 1}</span></div>
             </div>
         </li>
     `).join('');
