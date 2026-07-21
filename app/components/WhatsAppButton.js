@@ -16,7 +16,7 @@ export default function WhatsAppButton() {
     if (!isVisible) return null;
 
     return (
-        <div className={`fixed z-50 ${isChatClosed ? 'bottom-6' : 'bottom-28'} ${dir === 'rtl' ? 'right-6' : 'left-6'} transition-all duration-300 group`}>
+        <div className={`fixed z-50 ${isChatClosed ? 'bottom-6' : 'bottom-24'} ${dir === 'rtl' ? 'right-6' : 'left-6'} transition-all duration-300 group`}>
             <a 
                 href="https://wa.me/972502266071" 
                 target="_blank" 
