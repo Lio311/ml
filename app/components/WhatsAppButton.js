@@ -8,7 +8,7 @@ export default function WhatsAppButton() {
             href="https://wa.me/972502266071" 
             target="_blank" 
             rel="noopener noreferrer"
-            className={`fixed bottom-24 ${dir === 'rtl' ? 'left-6' : 'right-6'} z-50 bg-green-500 text-white rounded-full p-3 shadow-lg hover:bg-green-600 hover:scale-110 transition-all duration-300 flex items-center justify-center`}
+            className={`fixed bottom-28 ${dir === 'rtl' ? 'right-6' : 'left-6'} z-50 bg-green-500 text-white rounded-full p-3 shadow-lg hover:bg-green-600 hover:scale-110 transition-all duration-300 flex items-center justify-center`}
             aria-label="Contact us on WhatsApp"
         >
             <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" fill="currentColor" viewBox="0 0 16 16">
