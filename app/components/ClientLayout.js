@@ -10,6 +10,7 @@ import SwipeNavigator from "./SwipeNavigator";
 import SmartAdvisorTab from "./SmartAdvisorTab";
 import MiniCart from "./MiniCart";
 import PushManager from "./PushManager";
+import WhatsAppButton from "./WhatsAppButton";
 import { BrandProvider } from "../context/BrandContext";
 
 export default function ClientLayout({ children, brands, menu, forceMaintenance }) {
@@ -42,6 +43,7 @@ export default function ClientLayout({ children, brands, menu, forceMaintenance 
             </div>
 
             <ChatWidget />
+            <WhatsAppButton />
             <AccessibilityWidget />
             <PopupManager />
             <SwipeNavigator />

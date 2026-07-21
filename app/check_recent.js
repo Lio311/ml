@@ -1,0 +1,1 @@
+import pool from './lib/db.js'; pool.query("SELECT id, name, active, stock, show_on_home, category, is_discovery_set, created_at FROM products ORDER BY created_at DESC LIMIT 5;").then(res => console.log(res.rows)).catch(console.error).finally(() => pool.end());

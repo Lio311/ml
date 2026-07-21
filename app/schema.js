@@ -1,0 +1,1 @@
+import pool from './lib/db.js'; pool.query("SELECT column_name, data_type FROM information_schema.columns WHERE table_name = 'products';").then(res => console.log(res.rows)).catch(console.error).finally(() => pool.end());

@@ -1,1 +1,11 @@
-require('dotenv').config({path: '.env.local'}); const { Pool } = require('pg'); const pool = new Pool({ connectionString: process.env.DATABASE_URL }); pool.query(\WITH basic_items AS (SELECT (item->>'quantity')::numeric as qty, (item->>'size')::numeric as size, (item->>'id') as item_id, (item->>'type') as type, (item->'items') as subitems FROM orders, jsonb_array_elements(items) as item WHERE status != 'cancelled' AND catalog_id IS NULL), expanded_items AS (SELECT qty, COALESCE(size, 2) as size, (SPLIT_PART(item_id, '-', 1))::int as product_id FROM basic_items WHERE type IS DISTINCT FROM 'bundle' AND item_id ~ '^[0-9]+' UNION ALL SELECT b.qty, COALESCE(b.size, 2) as size, (SPLIT_PART(COALESCE(sub->>'product_id', sub->>'id'), '-', 1))::int as product_id FROM basic_items b, jsonb_array_elements(b.subitems) as sub WHERE b.type = 'bundle' AND COALESCE(sub->>'product_id', sub->>'id') ~ '^[0-9]+') SELECT SUM(qty * (COALESCE(p.cost_price, 0) / NULLIF(p.original_size, 1)) * size) as sum FROM expanded_items ei JOIN products p ON ei.product_id = p.id\).then(res => { console.log(res.rows); process.exit(0); }).catch(err => { console.error(err); process.exit(1); })
+import { getProducts } from './app/catalog/dbQueries.js';
+import dotenv from 'dotenv';
+dotenv.config({ path: './.env.local' });
+
+async function run() {
+  const result = await getProducts('FUGAZZI', null, null, null, null, 'random', 1, {});
+  console.log('Results:', result.products.length);
+  result.products.forEach(p => console.log(p.name, p.brand, p.is_discovery_set));
+}
+
+run().catch(console.error);
