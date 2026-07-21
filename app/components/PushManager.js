@@ -166,8 +166,10 @@ export default function PushManager() {
     }
   };
 
+  if (isDismissed) return null;
+
   return (
-    <div className="fixed bottom-24 left-6 z-[9998] flex flex-col items-center group">
+    <div className="fixed bottom-20 left-4 md:left-6 z-[9998] flex flex-col items-center group">
        {/* Close Button (X) */}
        <button 
         onClick={handleDismiss}

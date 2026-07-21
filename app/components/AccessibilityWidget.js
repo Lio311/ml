@@ -260,7 +260,7 @@ export default function AccessibilityWidget() {
 
             {/* Trigger Button - Bottom left in HE, Bottom right in EN */}
             {!isDismissed && (
-                <div className={`fixed bottom-4 ${isHebrew ? 'left-4 md:left-6' : 'right-4 md:right-6'} md:bottom-6 z-[9999] font-sans rtl group acc-widget-ignore`}>
+                <div className={`fixed bottom-6 ${isHebrew ? 'left-4 md:left-6' : 'right-4 md:right-6'} z-[9999] font-sans rtl group acc-widget-ignore`}>
                     <button
                         onClick={handleDismiss}
                         className="absolute -top-2 -right-2 z-10 bg-gray-200 text-gray-600 rounded-full p-1 opacity-0 group-hover:opacity-100 hover:bg-red-500 hover:text-white transition-all shadow-md"
