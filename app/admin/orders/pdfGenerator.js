@@ -22,7 +22,13 @@ export const generateFullOrderPDFDoc = async (order) => {
     const productRows = items.flatMap((item, index) => {
         const qty = item.quantity || 1;
         const name = item.name || (item.type === 'bundle' ? `חבילת ${item.bundleType || ''}` : `${item.brand || ''} ${item.model || ''}`);
-        const size = String(item.size).includes('ml') ? item.size : `${item.size || ''} ml`;
+        
+        // Use volume_label if available (especially for discovery sets which might have size: '1'), otherwise fallback to size
+        let rawSize = item.volume_label || item.size;
+        if (typeof rawSize === 'string') {
+            rawSize = rawSize.replace('מ״ל', 'ml').trim();
+        }
+        const size = String(rawSize).toLowerCase().includes('ml') ? rawSize : `${rawSize || ''} ml`;
         const price = item.price ? `₪${item.price}` : '';
         const mainRow = `
             <tr>
