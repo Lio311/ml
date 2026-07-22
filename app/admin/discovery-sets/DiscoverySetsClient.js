@@ -206,7 +206,8 @@ export default function DiscoverySetsClient({ products: initialProducts, initial
             </div>
 
             <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-                <div className="overflow-x-auto">
+                {/* Desktop View */}
+                <div className="hidden lg:block overflow-x-auto">
                     <table className="w-full text-right border-collapse">
                         <thead>
                             <tr className="bg-gray-50/80 text-gray-500 text-sm border-b border-gray-100">
@@ -278,6 +279,64 @@ export default function DiscoverySetsClient({ products: initialProducts, initial
                             )}
                         </tbody>
                     </table>
+                </div>
+
+                {/* Mobile View */}
+                <div className="block lg:hidden divide-y divide-gray-100">
+                    {products.length === 0 ? (
+                        <div className="p-8 text-center text-gray-500">
+                            לא נמצאו פריטים
+                        </div>
+                    ) : (
+                        products.map(product => (
+                            <div key={product.id} className="p-4 flex flex-col gap-3">
+                                <div className="flex items-start gap-4">
+                                    <Link href={`/product/${product.slug || product.id}`} target="_blank" className="shrink-0 w-16 h-16 rounded-xl bg-gray-50 border border-gray-100 overflow-hidden relative flex items-center justify-center hover:opacity-80 transition-opacity">
+                                        {product.image_url ? (
+                                            <Image src={product.image_url} alt={product.name || product.model} fill className="object-cover" />
+                                        ) : (
+                                            <ImageIcon className="w-6 h-6 text-gray-300" />
+                                        )}
+                                    </Link>
+                                    <div className="flex-1 min-w-0">
+                                        <div className="flex justify-between items-start gap-2">
+                                            <Link href={`/product/${product.slug || product.id}`} target="_blank" className="font-medium text-gray-900 hover:text-blue-600 hover:underline line-clamp-1 leading-tight">
+                                                {product.model}
+                                            </Link>
+                                            <div className="font-bold text-gray-900 shrink-0">₪{product.single_price || 0}</div>
+                                        </div>
+                                        <div className="text-sm text-gray-500 mt-1">{product.brand}</div>
+                                        <div className="text-xs text-gray-400 mt-0.5">{product.discovery_type === 'official_sample' ? 'דוגמית רשמית' : 'דיסקברי סט'}</div>
+                                    </div>
+                                </div>
+                                
+                                <div className="flex flex-wrap items-center gap-2 mt-1 bg-gray-50/80 rounded-lg p-2.5 border border-gray-100">
+                                    <span className="text-xs text-gray-600 flex-1 truncate font-medium">{product.volume_label || "-"}</span>
+                                    <div className="flex gap-1.5">
+                                        <span className={`inline-flex items-center justify-center px-2 py-0.5 rounded text-[11px] font-bold border ${product.stock > 0 ? 'bg-green-50 text-green-700 border-green-200' : 'bg-red-50 text-red-700 border-red-200'}`}>
+                                            מלאי: {product.stock}
+                                        </span>
+                                        {product.active ? (
+                                            <span className="text-green-600 bg-green-50 px-2 py-0.5 rounded text-[11px] font-bold border border-green-200">פעיל</span>
+                                        ) : (
+                                            <span className="text-gray-500 bg-gray-50 px-2 py-0.5 rounded text-[11px] font-bold border border-gray-200">טיוטה</span>
+                                        )}
+                                    </div>
+                                </div>
+                                
+                                {canEdit && (
+                                    <div className="flex justify-end gap-2 pt-2 border-t border-gray-100/80 mt-1">
+                                        <button onClick={() => openEditModal(product)} className="flex-1 flex items-center justify-center gap-1.5 px-3 py-2 text-sm text-blue-600 bg-blue-50 hover:bg-blue-100 rounded-lg transition-colors font-medium">
+                                            <Edit2 size={14} /> עריכה
+                                        </button>
+                                        <button onClick={() => deleteProduct(product.id)} className="flex items-center justify-center gap-1.5 px-3 py-2 text-sm text-red-600 bg-red-50 hover:bg-red-100 rounded-lg transition-colors font-medium">
+                                            <Trash2 size={14} /> מחק
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
+                        ))
+                    )}
                 </div>
             </div>
 
