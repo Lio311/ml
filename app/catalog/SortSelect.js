@@ -7,9 +7,10 @@ export default function SortSelect({ basePath = "/catalog" }) {
     const router = useRouter();
     const searchParams = useSearchParams();
     const { t } = useLanguage();
-    const currentSort = searchParams.get("sort") || "newest";
+    const currentSort = searchParams.get("sort") || "default";
 
     const SORT_OPTIONS = [
+        { value: "default", label: t('common.sort_default') },
         { value: "newest", label: t('common.sort_newest') },
         { value: "oldest", label: t('common.sort_oldest') },
         { value: "price_asc", label: t('common.sort_price_asc') },

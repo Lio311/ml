@@ -411,7 +411,8 @@
             "White Peach": "אפרסק לבן",
             "Ylang-ylang": "אילנג-אילנג",
             "Ylang-Ylang": "אילנג-אילנג"
-        }
+        },
+        "sort_default": "ברירת מחדל"
     },
     "catalogs_info": {
         "hero_badge": "פלטפורמה בלעדית עבור ml_tlv",

@@ -641,7 +641,8 @@
             }
         },
         "spinning_prize": "Spinning...",
-        "updating_cart": "Updating cart..."
+        "updating_cart": "Updating cart...",
+        "sort_default": "Default"
     },
     "catalogs_info": {
         "hero_badge": "Exclusive Platform for ml_tlv",

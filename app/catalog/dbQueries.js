@@ -142,6 +142,13 @@ export async function getProducts(search, brand, category, minPrice, maxPrice, s
             orderBy = 'p.id DESC';
             break;
         case 'random':
+            orderBy = 'RANDOM()';
+            break;
+        case 'default': {
+            const seed = new Date().toISOString().split('T')[0];
+            orderBy = `md5(p.id::text || '${seed}')`;
+            break;
+        }
         default:
             orderBy = 'id DESC';
             break;
