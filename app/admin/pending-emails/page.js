@@ -114,7 +114,34 @@ export default async function PendingEmailsPage() {
         rawContent: null
     }));
 
-    // 5. Implicit Marketing Emails (New Perfumes & Discovery Sets)
+    // 5. Fetch last marketing email date
+    const settingsRes = await pool.query(`SELECT value FROM site_settings WHERE key = 'last_marketing_email_date'`);
+    let lastSentDateStr = null;
+    if (settingsRes.rows.length > 0) {
+        try {
+            // It might be stored as JSON array string '["2023-10-25"]' or simple string
+            const val = settingsRes.rows[0].value;
+            if (val.startsWith('[')) {
+                lastSentDateStr = JSON.parse(val)[0];
+            } else {
+                lastSentDateStr = val;
+            }
+        } catch (e) {
+            lastSentDateStr = settingsRes.rows[0].value;
+        }
+    }
+
+    const todayStr = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Jerusalem' });
+    let nextAvailableDate = new Date(); // default to today/now
+    if (lastSentDateStr === todayStr) {
+        // Already sent today, next available is tomorrow
+        nextAvailableDate = new Date();
+        nextAvailableDate.setDate(nextAvailableDate.getDate() + 1);
+    }
+    // Set a reasonable time for display (e.g. 10:00 AM)
+    nextAvailableDate.setHours(10, 0, 0, 0);
+
+    // 6. Implicit Marketing Emails (New Perfumes & Discovery Sets)
     const perfumesRes = await pool.query(`
         SELECT id, brand, model, is_discovery_set
         FROM products 
@@ -128,16 +155,20 @@ export default async function PendingEmailsPage() {
     const newSets = perfumesRes.rows.filter(p => p.is_discovery_set);
     const productEmails = [];
 
+    let currentAvailableDate = new Date(nextAvailableDate);
+
     if (newPerfumes.length > 0) {
         productEmails.push({
             id: `new_perfumes_pending`,
             type: 'קמפיין בשמים חדשים',
             recipient: 'כלל המנויים',
             customerName: '-',
-            scheduledDate: null,
+            scheduledDate: currentAvailableDate.toISOString(),
             contentPreview: `מוכן לשליחה: מכיל ${newPerfumes.length} בשמים חדשים`,
-            rawContent: null
+            rawContent: JSON.stringify(newPerfumes.map(p => `${p.brand} ${p.model}`), null, 2)
         });
+        // Push the available date for the next campaign by 1 day
+        currentAvailableDate.setDate(currentAvailableDate.getDate() + 1);
     }
 
     if (newSets.length > 0) {
@@ -151,9 +182,9 @@ export default async function PendingEmailsPage() {
             type: 'קמפיין מארזי דיסקברי',
             recipient: 'כלל המנויים',
             customerName: '-',
-            scheduledDate: null,
+            scheduledDate: missing > 0 ? null : currentAvailableDate.toISOString(), // No date if missing items
             contentPreview: previewText,
-            rawContent: null
+            rawContent: JSON.stringify(newSets.map(p => `${p.brand} ${p.model}`), null, 2)
         });
     }
 
