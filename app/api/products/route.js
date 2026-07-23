@@ -206,43 +206,6 @@ export async function POST(req) {
                 console.error("Dictionary auto-add failed:", dictErr);
             }
             // --------------------------// Newsletter logic removed. Moved to Cron Job /api/cron/new-perfumes// --- Newsletter Feature ---
-            // --------------------------// Newsletter logic removed. Moved to Cron Job /api/cron/new-perfumes// --- Newsletter Feature ---
-            // If it's a pre-order, we send a special email immediately. Normal products are batched by the cron job.
-            if (is_preorder) {
-                try {
-                    const clerk = await clerkClient();
-                    const { data: users } = await clerk.users.getUserList({ limit: 500 });
-
-                    const emails = users
-                        .map(u => u.emailAddresses.find(e => e.id === u.primaryEmailAddressId)?.emailAddress || u.emailAddresses[0]?.emailAddress)
-                        .filter(Boolean);
-
-                    if (emails.length > 0) {
-                        const productForEmail = { ...body, id: newProductId };
-                        
-                        // Import getNewPreorderTemplate dynamically or it should be exported from email.js
-                        const { getNewPreorderTemplate } = await import('../../lib/email.js');
-                        
-                        const { html, subject } = await getTemplate('new_preorder', {
-                            brand: brand || '',
-                            model: model || '',
-                            description: description || '',
-                            price_2ml: price_2ml || '',
-                            price_5ml: price_5ml || '',
-                            price_10ml: price_10ml || '',
-                            imageUrl: image_url || 'https://www.ml-tlv.com/logo-black.png',
-                            productId: newProductId
-                        }, () => getNewPreorderTemplate(productForEmail));
-                        const finalSubject = subject || `בדרך לאתר: ${brand} ${model} 🆕 - ml_tlv`;
-
-                        // Send as BCC to protect privacy and respect bulk limits
-                        await sendEmail(emails, finalSubject, html, 'new_preorder');
-                        console.log(`Preorder Newsletter sent to ${emails.length} recipients.`);
-                    }
-                } catch (emailErr) {
-                    console.error("Failed to send preorder newsletter:", emailErr);
-                }
-            }
             // --------------------------
             // --------------------------
 
