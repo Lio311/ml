@@ -15,6 +15,7 @@ import BrandInsight from "../../components/BrandInsight";
 import ProductFAQ from "../../components/ProductFAQ";
 import { sanitizeProduct, sanitizeProductArray } from "../../lib/productUtils";
 import ProductGallery from "../../components/ProductGallery";
+import CatalogSEOContent from "../../components/CatalogSEOContent";
 
 
 import AdditionalDetails from "../../components/AdditionalDetails";
@@ -678,6 +679,8 @@ export default async function ProductPage(props) {
 
             {/* Brand Insight Section (SEO) */}
             <BrandInsight brand={product.brand} />
+            
+            <CatalogSEOContent />
         </div >
     );
 }
