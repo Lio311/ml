@@ -830,7 +830,7 @@ export function CartProvider({ children }) {
         <CartContext.Provider value={{
             cartItems, activeVendorId, setActiveVendorId, activeItems,
              addToCart, addMultipleToCart, addBundleToCart, removeFromCart, updateQuantity, updateItemSize, clearCart, clearActiveVendorCart,
-            subtotal, totalItemsCount, globalItemsCount, uniqueVendorsCount, freeSamplesCount, nextTier, shippingCost, total,
+            subtotal, priceAfterDiscounts, totalItemsCount, globalItemsCount, uniqueVendorsCount, freeSamplesCount, nextTier, shippingCost, total,
             luckyPrize, setLuckyPrize, discountAmount, promoDiscountAmount, coupon, setCoupon,
             startLottery, cancelLottery, isCartLocked, lotteryTimeLeft, lotteryMode, 
             isMainVendor, vendorConfig, deliveryMethod, setDeliveryMethod, isSelfPickup, setIsSelfPickup, getItemFinalPrice,

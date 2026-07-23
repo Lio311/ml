@@ -25,7 +25,7 @@ export default function CartClient() {
     const {
         cartItems, activeVendorId, setActiveVendorId, activeItems,
         removeFromCart, updateQuantity, addToCart, addMultipleToCart, clearCart, clearActiveVendorCart,
-        subtotal, total, freeSamplesCount, nextTier,
+        subtotal, priceAfterDiscounts, total, freeSamplesCount, nextTier,
         luckyPrize, setLuckyPrize, discountAmount, promoDiscountAmount,
         lotteryMode, lotteryTimeLeft,
         coupon, setCoupon, isMainVendor, totalItemsCount, vendorConfig,
@@ -657,7 +657,7 @@ export default function CartClient() {
 
                             <FreeSamplesProgress 
                                 isMainVendor={isMainVendor} 
-                                subtotal={subtotal} 
+                                subtotal={priceAfterDiscounts} 
                                 freeSamplesCount={freeSamplesCount} 
                                 vendorConfig={vendorConfig} 
                             />
