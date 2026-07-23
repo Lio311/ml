@@ -21,11 +21,36 @@ export async function GET(req) {
             SELECT subject, recipient, sent_at, type, status 
             FROM email_logs 
             WHERE (sent_at AT TIME ZONE 'Asia/Jerusalem')::date = (NOW() AT TIME ZONE 'Asia/Jerusalem')::date
-            AND recipient NOT ILIKE $1
+            AND TRIM(recipient) != $1
             ORDER BY sent_at DESC
-        `, [`%${adminEmail}%`]);
+        `, [adminEmail]);
 
-        const emails = res.rows;
+        const rawEmails = res.rows;
+
+        const groupedEmails = [];
+        const groupMap = new Map();
+
+        rawEmails.forEach(email => {
+            const isCommaSeparated = email.recipient && email.recipient.includes(',');
+            const recipientCount = isCommaSeparated ? email.recipient.split(',').length : 1;
+            
+            const key = email.type ? `${email.type}_${email.subject}` : email.subject;
+
+            if (groupMap.has(key)) {
+                const existing = groupMap.get(key);
+                existing.count += recipientCount;
+                existing.recipient = `כל המשתמשים (${existing.count} נמענים)`;
+            } else {
+                const newEmailObj = { ...email, count: recipientCount };
+                if (recipientCount > 1) {
+                    newEmailObj.recipient = `כל המשתמשים (${recipientCount} נמענים)`;
+                }
+                groupMap.set(key, newEmailObj);
+                groupedEmails.push(newEmailObj);
+            }
+        });
+
+        const emails = groupedEmails;
 
         // Generate the rows HTML
         let rowsHtml = '';
