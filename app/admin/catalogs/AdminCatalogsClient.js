@@ -122,6 +122,7 @@ export default function AdminCatalogsClient() {
             console.error(error);
             toast.error("שגיאת תקשורת");
         }
+    };
     const handleToggleGlobalCatalogs = async (checked) => {
         setEnableCatalogs(checked);
         try {
@@ -326,7 +327,6 @@ export default function AdminCatalogsClient() {
                     ))
                 )}
             </div>
-        </div>
         </div>
     );
 }
