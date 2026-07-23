@@ -7,10 +7,13 @@ export async function GET() {
       return NextResponse.json({ error: 'Missing Analytics Configuration in Environment' }, { status: 400 });
     }
 
+    let privateKey = process.env.GOOGLE_PRIVATE_KEY || '';
+    privateKey = privateKey.replace(/^"|"$/g, '').replace(/\\n/g, '\n');
+
     const auth = new google.auth.GoogleAuth({
       credentials: {
         client_email: process.env.GOOGLE_CLIENT_EMAIL,
-        private_key: process.env.GOOGLE_PRIVATE_KEY.replace(/\\n/g, '\n'),
+        private_key: privateKey,
       },
       scopes: ['https://www.googleapis.com/auth/analytics.readonly'],
     });
