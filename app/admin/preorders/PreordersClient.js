@@ -1,7 +1,7 @@
 'use client';
 import { useState, useEffect } from 'react';
 import toast from 'react-hot-toast';
-import { Loader2, Bell, Check, PackageOpen, Users, ArrowUpRight } from 'lucide-react';
+import { Loader2, Bell, Check, PackageOpen, Users, ArrowUpRight, Trash2 } from 'lucide-react';
 import Image from 'next/image';
 
 export default function PreordersClient() {
@@ -90,6 +90,22 @@ export default function PreordersClient() {
         }
     };
 
+    const handleDeletePreorder = async (preorderId) => {
+        if (!confirm('האם אתה בטוח שברצונך למחוק נרשם זה?')) return;
+        try {
+            const res = await fetch(`/api/preorders/${preorderId}`, { method: 'DELETE' });
+            if (res.ok) {
+                toast.success('הנרשם נמחק בהצלחה');
+                fetchPreorders();
+            } else {
+                toast.error('שגיאה במחיקת הנרשם');
+            }
+        } catch (error) {
+            console.error(error);
+            toast.error('שגיאה בתקשורת');
+        }
+    };
+
     if (isLoading) {
         return (
             <div className="flex items-center justify-center min-h-[60vh]">
@@ -165,6 +181,26 @@ export default function PreordersClient() {
                                             </div>
                                         </div>
                                     </div>
+
+                                    {product.preorders && product.preorders.some(p => p && p.id) && (
+                                        <div className="mb-4 bg-white rounded-xl border border-gray-100 p-3">
+                                            <p className="text-xs font-bold text-gray-500 mb-2 border-b border-gray-50 pb-2">רשימת ממתינים</p>
+                                            <div className="max-h-32 overflow-y-auto custom-scrollbar pr-1">
+                                                {product.preorders.filter(p => p && p.id).map(p => (
+                                                    <div key={p.id} className="flex justify-between items-center text-sm py-1.5 border-b border-gray-50 last:border-0 group">
+                                                        <span className="text-gray-700 truncate" dir="ltr">{p.user_email}</span>
+                                                        <button 
+                                                            onClick={() => handleDeletePreorder(p.id)}
+                                                            className="text-gray-300 hover:text-red-500 transition-colors p-1"
+                                                            title="מחק נרשם"
+                                                        >
+                                                            <Trash2 size={14} />
+                                                        </button>
+                                                    </div>
+                                                ))}
+                                            </div>
+                                        </div>
+                                    )}
 
                                     {product.is_preorder ? (
                                         <button
