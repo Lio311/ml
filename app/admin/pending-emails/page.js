@@ -35,7 +35,7 @@ export default async function PendingEmailsPage() {
     `);
 
     const orderEmails = orderEmailsRes.rows.map(row => ({
-        id: `order_${row.order_id}_${row.created_at.getTime()}`,
+        id: `order_${row.order_id}_${new Date(row.created_at || Date.now()).getTime()}`,
         type: 'פולו-אפ להזמנה / סקירה',
         recipient: row.recipient,
         customerName: row.customer_name,
@@ -95,7 +95,9 @@ export default async function PendingEmailsPage() {
 
     // Combine and sort
     const allPending = [...orderEmails, ...recEmails, ...campaigns].sort((a, b) => {
-        return new Date(a.scheduledDate).getTime() - new Date(b.scheduledDate).getTime();
+        const timeA = a.scheduledDate ? new Date(a.scheduledDate).getTime() : Infinity;
+        const timeB = b.scheduledDate ? new Date(b.scheduledDate).getTime() : Infinity;
+        return timeA - timeB;
     });
 
     // Ensure we send serializable dates

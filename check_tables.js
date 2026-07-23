@@ -5,11 +5,4 @@ const pool = new Pool({
   ssl: { rejectUnauthorized: false }
 });
 
-pool.query(`
-    SELECT column_name, data_type 
-    FROM information_schema.columns 
-    WHERE table_name = 'email_campaigns'
-`).then(res => {
-    console.log("email_campaigns:", res.rows);
-    process.exit(0);
-}).catch(console.error);
+pool.query("SELECT id, status, scheduled_at FROM email_campaigns WHERE status = 'scheduled' AND scheduled_at IS NULL").then(res => { console.log('Null scheduled_at with status=scheduled:', res.rows); process.exit(0); });
