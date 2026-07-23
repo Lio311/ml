@@ -45,23 +45,23 @@ export default async function PendingEmailsPage() {
         rawContent: null
     }));
 
-    // 2. Fetch pending recommendation emails
+    // 2. Fetch pending/approved recommendation emails
     const recEmailsRes = await pool.query(`
         SELECT 
-            pre.id, pre.created_at, pre.suggested_products,
+            pre.id, pre.created_at, pre.suggested_products, pre.status,
             u.email as recipient, u.first_name, u.last_name
         FROM pending_recommendation_emails pre
         LEFT JOIN users u ON u.id = pre.user_id
-        WHERE pre.status = 'pending'
+        WHERE pre.status IN ('pending', 'approved')
         ORDER BY pre.created_at ASC
     `);
 
     const recEmails = recEmailsRes.rows.map(row => ({
         id: `rec_${row.id}`,
-        type: 'המלצות אישיות (בוט החודש)',
+        type: row.status === 'approved' ? 'המלצות (מאושר, ממתין לשליחה)' : 'המלצות אישיות (ממתין לאישור)',
         recipient: row.recipient || 'לא ידוע',
         customerName: `${row.first_name || ''} ${row.last_name || ''}`.trim(),
-        scheduledDate: row.created_at, // Recommendation emails are sent shortly after creation by cron
+        scheduledDate: row.created_at, 
         contentPreview: `מכיל ${row.suggested_products?.length || 0} המלצות בשמים`,
         rawContent: JSON.stringify(row.suggested_products, null, 2)
     }));
@@ -94,8 +94,28 @@ export default async function PendingEmailsPage() {
         };
     });
 
+    // 4. Fetch back in stock subscriptions
+    const bisRes = await pool.query(`
+        SELECT 
+            b.id, b.created_at, b.user_email as recipient,
+            p.name as product_name
+        FROM back_in_stock_subscriptions b
+        LEFT JOIN products p ON p.id = b.product_id
+        WHERE b.status = 'pending'
+    `);
+
+    const bisEmails = bisRes.rows.map(row => ({
+        id: `bis_${row.id}`,
+        type: 'חזר למלאי (ממתין)',
+        recipient: row.recipient,
+        customerName: '-',
+        scheduledDate: row.created_at,
+        contentPreview: `הרשמה לעדכון חזרה למלאי: ${row.product_name}`,
+        rawContent: null
+    }));
+
     // Combine and sort
-    const allPending = [...orderEmails, ...recEmails, ...campaigns].sort((a, b) => {
+    const allPending = [...orderEmails, ...recEmails, ...campaigns, ...bisEmails].sort((a, b) => {
         const timeA = a.scheduledDate ? new Date(a.scheduledDate).getTime() : Infinity;
         const timeB = b.scheduledDate ? new Date(b.scheduledDate).getTime() : Infinity;
         return timeA - timeB;
