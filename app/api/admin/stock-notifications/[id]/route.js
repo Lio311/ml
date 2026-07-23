@@ -2,8 +2,9 @@ import { NextResponse } from 'next/server';
 import pool from '@/app/lib/db';
 import { checkAdmin } from '@/app/lib/admin';
 
-export async function DELETE(req, { params }) {
+export async function DELETE(req, props) {
     try {
+        const params = await props.params;
         const isAdmin = await checkAdmin();
         if (!isAdmin) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });

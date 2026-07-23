@@ -4,8 +4,9 @@ import { currentUser } from '@clerk/nextjs/server';
 
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
 
-export async function DELETE(req, { params }) {
+export async function DELETE(req, props) {
     try {
+        const params = await props.params;
         const user = await currentUser();
         const userEmail = user?.emailAddresses?.[0]?.emailAddress;
         const role = user?.publicMetadata?.role;
