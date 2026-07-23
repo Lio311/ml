@@ -60,8 +60,8 @@ export default async function BrandPage(props) {
     let brandData = null;
 
     try {
-        // Fetch Brand Data (Logo)
-        const brandRes = await client.query('SELECT id, name, logo_url FROM brands WHERE name ILIKE $1', [brandName]);
+        // Fetch Brand Data
+        const brandRes = await client.query('SELECT * FROM brands WHERE name ILIKE $1', [brandName]);
         brandData = sanitizeProduct(brandRes.rows[0]);
 
         // Fetch Products
@@ -139,6 +139,9 @@ export default async function BrandPage(props) {
                 )}
 
                 <h1 className="text-4xl font-serif font-bold mb-4">{displayName}</h1>
+                <p className="max-w-2xl text-gray-600">
+                    {t('brands_page.description', { brand: displayName })}
+                </p>
             </div>
 
             {/* Products Grid */}
