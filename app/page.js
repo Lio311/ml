@@ -203,7 +203,6 @@ export default async function Home() {
             <h2 className="text-3xl md:text-5xl font-serif font-medium mb-6 whitespace-pre-line leading-tight max-w-3xl">
               {locale === 'he' ? 'גלו את ניחוח החתימה החדש שלכם\nעם קולקציית הדיסקברי סט' : 'Discover Your New Signature with\nOur Discovery Sets'}
             </h2>
-            <div className="w-12 h-0.5 bg-gray-500 mb-6" />
             <p className="text-gray-300 max-w-2xl mx-auto mb-10 text-sm md:text-base leading-relaxed">
               {locale === 'he' 
                 ? 'הדרך המושלמת להכיר ניחוחות יוקרה בנחת בבית, לפני שמתחייבים לבקבוק מלא. ערכות הדיסקברי (מארזי התנסות) והדוגמיות המקוריות מגיעות ישירות ממותגי הבישום המובילים בעולם.' 

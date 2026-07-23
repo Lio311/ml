@@ -7,20 +7,32 @@ import { Pencil, Trash2, Eye, EyeOff, AlertTriangle, Check, X } from "lucide-rea
 export default function AdminCatalogsClient() {
     const [catalogs, setCatalogs] = useState([]);
     const [isLoading, setIsLoading] = useState(true);
+    const [enableCatalogs, setEnableCatalogs] = useState(true);
 
     const fetchCatalogs = async () => {
         setIsLoading(true);
         try {
-            const res = await fetch("/api/admin/catalogs");
-            if (res.ok) {
-                const data = await res.json();
+            const [catalogsRes, settingsRes] = await Promise.all([
+                fetch("/api/admin/catalogs"),
+                fetch("/api/admin/settings")
+            ]);
+            
+            if (catalogsRes.ok) {
+                const data = await catalogsRes.json();
                 setCatalogs(data);
             } else {
                 toast.error("שגיאה בטעינת קטלוגים");
             }
+
+            if (settingsRes.ok) {
+                const settingsData = await settingsRes.json();
+                if (settingsData.features && settingsData.features.enable_personal_catalogs !== undefined) {
+                    setEnableCatalogs(settingsData.features.enable_personal_catalogs);
+                }
+            }
         } catch (error) {
             console.error(error);
-            toast.error("שגיאה בטעינת הקטלוגים");
+            toast.error("שגיאה בטעינת הנתונים");
         } finally {
             setIsLoading(false);
         }
@@ -110,6 +122,27 @@ export default function AdminCatalogsClient() {
             console.error(error);
             toast.error("שגיאת תקשורת");
         }
+    const handleToggleGlobalCatalogs = async (checked) => {
+        setEnableCatalogs(checked);
+        try {
+            const res = await fetch("/api/admin/settings", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    features: { enable_personal_catalogs: checked }
+                })
+            });
+            if (res.ok) {
+                toast.success(checked ? "הקטלוגים האישיים פעילים" : "הקטלוגים האישיים הוסתרו מהאתר");
+            } else {
+                toast.error("שגיאה בעדכון הגדרות");
+                setEnableCatalogs(!checked);
+            }
+        } catch (error) {
+            console.error(error);
+            toast.error("שגיאת תקשורת");
+            setEnableCatalogs(!checked);
+        }
     };
 
     if (isLoading) {
@@ -117,9 +150,27 @@ export default function AdminCatalogsClient() {
     }
 
     return (
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-            {/* Desktop View Table */}
-            <div className="hidden md:block overflow-x-auto">
+        <div className="space-y-6">
+            <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-100 flex items-center justify-between">
+                <div>
+                    <h2 className="text-xl font-bold text-gray-900">הגדרות קטלוגים</h2>
+                    <p className="text-gray-500 text-sm mt-1">הפעל או כבה את הופעת הקטלוגים האישיים בתפריט העליון ובפוטר של האתר</p>
+                </div>
+                <label className="relative inline-flex items-center cursor-pointer" dir="ltr">
+                    <input 
+                        type="checkbox" 
+                        value="" 
+                        className="sr-only peer" 
+                        checked={enableCatalogs}
+                        onChange={(e) => handleToggleGlobalCatalogs(e.target.checked)}
+                    />
+                    <div className="w-14 h-7 bg-gray-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-6 after:w-6 after:transition-all peer-checked:bg-green-600"></div>
+                </label>
+            </div>
+
+            <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                {/* Desktop View Table */}
+                <div className="hidden md:block overflow-x-auto">
                 <table className="w-full border-collapse">
                     <thead>
                         <tr className="bg-gray-50 border-b text-gray-500 text-sm">
@@ -275,6 +326,7 @@ export default function AdminCatalogsClient() {
                     ))
                 )}
             </div>
+        </div>
         </div>
     );
 }

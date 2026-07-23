@@ -8,7 +8,7 @@ import { useLanguage } from '../../context/LanguageContext';
 import LanguageSwitcher from './LanguageSwitcher';
 import { useBrand } from '../../context/BrandContext';
 
-export default function MobileNav({ isOpen, onClose, navLinks = [], isAdmin }) {
+export default function MobileNav({ isOpen, onClose, navLinks = [], isAdmin, enableCatalogs = true }) {
     const { t, dir } = useLanguage();
     const brand = useBrand();
 
@@ -57,9 +57,11 @@ export default function MobileNav({ isOpen, onClose, navLinks = [], isAdmin }) {
                         <div className="flex justify-center items-center gap-4 py-5 px-6">
                             <SignedIn>
                                 <UserButton fallbackRedirectUrl="/" appearance={{ elements: { userButtonAvatarBox: "w-12 h-12" } }} />
-                                <Link href="/my-catalogs" onClick={onClose} className="bg-yellow-400 text-black px-4 py-2 rounded-full text-sm font-bold shadow-sm hover:bg-yellow-300 transition-colors">
-                                    {t('common.my_catalogs_mobile')}
-                                </Link>
+                                {enableCatalogs && (
+                                    <Link href="/my-catalogs" onClick={onClose} className="bg-yellow-400 text-black px-4 py-2 rounded-full text-sm font-bold shadow-sm hover:bg-yellow-300 transition-colors">
+                                        {t('common.my_catalogs_mobile')}
+                                    </Link>
+                                )}
                             </SignedIn>
                             <SignedOut>
                                 <SignInButton mode="modal">

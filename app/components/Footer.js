@@ -1,4 +1,5 @@
 'use client';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { useLanguage } from '../context/LanguageContext';
 import { useBrand } from '../context/BrandContext';
@@ -6,6 +7,23 @@ import { useBrand } from '../context/BrandContext';
 export default function Footer() {
     const { t, dir } = useLanguage();
     const brand = useBrand();
+    const [enableCatalogs, setEnableCatalogs] = useState(true);
+
+    useEffect(() => {
+        const fetchSettings = async () => {
+            try {
+                const res = await fetch('/api/admin/settings');
+                const data = await res.json();
+                if (data.features && data.features.enable_personal_catalogs !== undefined) {
+                    setEnableCatalogs(data.features.enable_personal_catalogs);
+                }
+            } catch (e) {
+                // ignore
+            }
+        };
+        fetchSettings();
+    }, []);
+
     return (
         <footer className="border-t bg-black text-white py-2 overflow-hidden mt-auto">
             <div className={`container grid grid-cols-2 md:grid-cols-5 gap-4 text-center py-4 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
@@ -15,11 +33,13 @@ export default function Footer() {
                     <p className="text-sm text-gray-400">
                         {t('common.footer_tagline')}
                     </p>
-                    <div className="mt-4">
-                        <Link href="/catalogs-info" className="text-yellow-400 font-bold hover:underline transition">
-                            {t('common.create_store')}
-                        </Link>
-                    </div>
+                    {enableCatalogs && (
+                        <div className="mt-4">
+                            <Link href="/catalogs-info" className="text-yellow-400 font-bold hover:underline transition">
+                                {t('common.create_store')}
+                            </Link>
+                        </div>
+                    )}
                 </div>
 
                 <div>

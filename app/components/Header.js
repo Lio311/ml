@@ -60,6 +60,7 @@ export default function Header({ brands = [] }) {
     const [menuItems, setMenuItems] = useState([]);
     const [menuLoading, setMenuLoading] = useState(true);
     const [logoSrc, setLogoSrc] = useState('/logo_v5.png');
+    const [enableCatalogs, setEnableCatalogs] = useState(true);
 
     useEffect(() => {
         const fetchLogo = async () => {
@@ -81,6 +82,9 @@ export default function Header({ brands = [] }) {
                 const data = await res.json();
                 if (data.menu) {
                     setMenuItems(data.menu.filter(item => item.visible));
+                }
+                if (data.features && data.features.enable_personal_catalogs !== undefined) {
+                    setEnableCatalogs(data.features.enable_personal_catalogs);
                 }
             } catch (error) {
                 console.error('Header Menu Fetch Error:', error);
@@ -244,7 +248,7 @@ export default function Header({ brands = [] }) {
                                     <SearchAutocomplete />
                                 </div>
                                 <div className="flex items-center h-[34px] v2-desktop-icons">
-                                    <DesktopIcons cartCount={cartCount} wishlistCount={wishlistCount} />
+                                    <DesktopIcons cartCount={cartCount} wishlistCount={wishlistCount} enableCatalogs={enableCatalogs} />
                                 </div>
                             </div>
                         </div>
@@ -299,6 +303,7 @@ export default function Header({ brands = [] }) {
                                 cartCount={cartCount} 
                                 wishlistCount={wishlistCount} 
                                 hideSearch={true}
+                                enableCatalogs={enableCatalogs}
                             />
                         </div>
                     </div>
@@ -356,6 +361,7 @@ export default function Header({ brands = [] }) {
                 onClose={() => setIsMobileMenuOpen(false)} 
                 navLinks={navLinks}
                 isAdmin={isAdmin}
+                enableCatalogs={enableCatalogs}
             />
         </>
     );

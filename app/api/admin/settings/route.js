@@ -32,8 +32,10 @@ export async function GET() {
         try {
             await ensureTable(client);
             const res = await client.query("SELECT value FROM site_settings WHERE key = 'main_menu'");
+            const resFeatures = await client.query("SELECT value FROM site_settings WHERE key = 'features'");
             
             let currentMenu = res.rows.length > 0 ? res.rows[0].value : [];
+            let currentFeatures = resFeatures.rows.length > 0 ? resFeatures.rows[0].value : { enable_personal_catalogs: true };
             
             // Merge & Purge logic: 
             // 1. Remove items that are NOT in DEFAULT_MENU (at least according to user request "should not appear there")
@@ -70,7 +72,7 @@ export async function GET() {
                 currentMenu = filteredMenu;
             }
 
-            return NextResponse.json({ menu: currentMenu });
+            return NextResponse.json({ menu: currentMenu, features: currentFeatures });
         } finally {
             client.release();
         }
@@ -86,16 +88,25 @@ export async function POST(req) {
         if (!isAdmin) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 403 });
         }
-        const { menu } = await req.json();
+        const body = await req.json();
 
         const client = await pool.connect();
         try {
             await ensureTable(client);
-            await client.query(`
-                INSERT INTO site_settings (key, value)
-                VALUES ('main_menu', $1)
-                ON CONFLICT (key) DO UPDATE SET value = $1, updated_at = CURRENT_TIMESTAMP
-            `, [JSON.stringify(menu)]);
+            if (body.menu) {
+                await client.query(`
+                    INSERT INTO site_settings (key, value)
+                    VALUES ('main_menu', $1)
+                    ON CONFLICT (key) DO UPDATE SET value = $1, updated_at = CURRENT_TIMESTAMP
+                `, [JSON.stringify(body.menu)]);
+            }
+            if (body.features) {
+                await client.query(`
+                    INSERT INTO site_settings (key, value)
+                    VALUES ('features', $1)
+                    ON CONFLICT (key) DO UPDATE SET value = $1, updated_at = CURRENT_TIMESTAMP
+                `, [JSON.stringify(body.features)]);
+            }
 
             return NextResponse.json({ success: true });
         } finally {
