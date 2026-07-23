@@ -77,7 +77,16 @@ export default function AdminOrdersListClient({
     const [editingOrder, setEditingOrder] = useState(null);
     const [viewingCustomerEmail, setViewingCustomerEmail] = useState(null);
     
-    // Auto-load more logic (infinite scroll) for mobile
+    // Poll for delayed emails while admin dashboard is open
+    useEffect(() => {
+        const checkDelayedEmails = () => {
+            fetch('/api/admin/orders/process-delayed-emails', { method: 'POST' }).catch(() => {});
+        };
+        checkDelayedEmails(); // check on mount
+        const interval = setInterval(checkDelayedEmails, 30000); // check every 30s
+        return () => clearInterval(interval);
+    }, []);
+
     const [displayedOrders, setDisplayedOrders] = useState(orders);
     const { ref: loadMoreRef, inView } = useInView({ threshold: 0.1 });
 

@@ -31,6 +31,10 @@ export default function AdminOrderStatusSelect({ orderId, initialStatus }) {
             if (res.ok) {
                 setStatus(newStatus);
                 toast.success("סטטוס עודכן");
+                // Schedule exact delivery in 2 minutes (if dashboard is kept open)
+                setTimeout(() => {
+                    fetch('/api/admin/orders/process-delayed-emails', { method: 'POST' }).catch(() => {});
+                }, 120500); // 120.5 seconds
             } else {
                 toast.error("שגיאה בעדכון סטטוס");
             }
