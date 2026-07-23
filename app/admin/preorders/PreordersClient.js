@@ -88,10 +88,45 @@ export default function PreordersClient() {
         } finally {
             setNotifyingId(null);
         }
+    const handleDeletePreorder = (preorderId) => {
+        toast.custom((t) => (
+            <div 
+                className={`${t.visible ? 'animate-enter' : 'animate-leave'} max-w-md w-full bg-white shadow-2xl rounded-2xl pointer-events-auto flex flex-col gap-3 p-5 border border-gray-100 mx-auto mt-4`} 
+                dir="rtl"
+            >
+                <div className="flex items-start gap-4">
+                    <div className="shrink-0 w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
+                        <Trash2 className="w-5 h-5 text-red-600" />
+                    </div>
+                    <div>
+                        <h3 className="font-black text-gray-900 text-lg mb-1">מחיקת נרשם</h3>
+                        <p className="text-sm text-gray-500 leading-relaxed font-medium">
+                            האם אתה בטוח שברצונך למחוק נרשם זה מרשימת ההמתנה? פעולה זו אינה ניתנת לביטול.
+                        </p>
+                    </div>
+                </div>
+                <div className="flex gap-2 mt-2">
+                    <button
+                        onClick={() => {
+                            toast.dismiss(t.id);
+                            processDeletePreorder(preorderId);
+                        }}
+                        className="flex-1 bg-red-600 text-white px-4 py-2.5 rounded-xl text-sm font-bold hover:bg-red-700 transition-colors"
+                    >
+                        כן, מחק
+                    </button>
+                    <button
+                        onClick={() => toast.dismiss(t.id)}
+                        className="flex-1 bg-gray-100 text-gray-700 px-4 py-2.5 rounded-xl text-sm font-bold hover:bg-gray-200 transition-colors"
+                    >
+                        ביטול
+                    </button>
+                </div>
+            </div>
+        ), { duration: Infinity, position: 'top-center' });
     };
 
-    const handleDeletePreorder = async (preorderId) => {
-        if (!confirm('האם אתה בטוח שברצונך למחוק נרשם זה?')) return;
+    const processDeletePreorder = async (preorderId) => {
         try {
             const res = await fetch(`/api/preorders/${preorderId}`, { method: 'DELETE' });
             if (res.ok) {
