@@ -29,7 +29,7 @@ export async function GET(req) {
         const perfumesRes = await client.query(`
             SELECT id, brand, model, image_url, single_price, price_2ml, price_5ml, price_10ml, description, slug 
             FROM products 
-            WHERE is_discovery_set = false AND is_preorder = false AND perfume_email_sent = false AND active = true
+            WHERE is_discovery_set = false AND perfume_email_sent = false AND active = true
             ORDER BY created_at ASC
         `);
         const newPerfumes = perfumesRes.rows;
