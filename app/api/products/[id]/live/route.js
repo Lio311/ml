@@ -12,7 +12,7 @@ export async function GET(req, { params }) {
     const client = await pool.connect();
     try {
         const res = await client.query(
-            'SELECT id, name, brand, model, image_url, stock, price_2ml, price_5ml, price_10ml, single_price, is_discovery_set, discount_percentage, discount_sizes FROM products WHERE id = $1',
+            'SELECT id, name, brand, model, image_url, stock, price_2ml, price_5ml, price_10ml, single_price, is_discovery_set, discount_percentage, discount_sizes, volume_label FROM products WHERE id = $1',
             [parseInt(id)]
         );
 

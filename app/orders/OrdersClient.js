@@ -264,6 +264,7 @@ export default function OrdersClient() {
                                                             price_10ml: liveProduct.price_10ml,
                                                             single_price: liveProduct.single_price,
                                                             is_discovery_set: liveProduct.is_discovery_set,
+                                                            volume_label: liveProduct.volume_label,
                                                             discount_percentage: liveProduct.discount_percentage,
                                                             discount_sizes: liveProduct.discount_sizes
                                                         }, liveProduct.is_discovery_set ? 'set' : numericSize, selectedPrice);
