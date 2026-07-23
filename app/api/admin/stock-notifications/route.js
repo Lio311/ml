@@ -28,7 +28,13 @@ export async function GET() {
                     p.image_url, 
                     p.stock,
                     p.active,
-                    COUNT(s.id)::int as subscriber_count
+                    COUNT(s.id)::int as subscriber_count,
+                    json_agg(
+                        json_build_object(
+                            'id', s.id,
+                            'user_email', s.user_email
+                        )
+                    ) as subscribers
                 FROM products p
                 JOIN back_in_stock_subscriptions s ON p.id = s.product_id
                 WHERE s.status = 'pending'

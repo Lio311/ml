@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Image from "@/app/components/CImage";
 import toast from "react-hot-toast";
-import { Bell, Package, Search, Loader2, CheckCircle, AlertCircle, XCircle } from "lucide-react";
+import { Bell, Package, Search, Loader2, CheckCircle, AlertCircle, XCircle, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 export default function BackInStockClient() {
@@ -64,6 +64,59 @@ export default function BackInStockClient() {
             toast.error("שגיאה בתקשורת");
         } finally {
             setNotifyingId(null);
+        }
+    };
+
+    const handleDeleteSubscriber = (subscriptionId) => {
+        toast.custom((t) => (
+            <div 
+                className={`${t.visible ? 'animate-enter' : 'animate-leave'} max-w-md w-full bg-white shadow-2xl rounded-2xl pointer-events-auto flex flex-col gap-3 p-5 border border-gray-100 mx-auto mt-4`} 
+                dir="rtl"
+            >
+                <div className="flex items-start gap-4">
+                    <div className="shrink-0 w-10 h-10 bg-red-100 rounded-full flex items-center justify-center">
+                        <Trash2 className="w-5 h-5 text-red-600" />
+                    </div>
+                    <div>
+                        <h3 className="font-black text-gray-900 text-lg mb-1">מחיקת נרשם</h3>
+                        <p className="text-sm text-gray-500 leading-relaxed font-medium">
+                            האם אתה בטוח שברצונך למחוק נרשם זה מרשימת ההמתנה לחזרה למלאי? פעולה זו אינה ניתנת לביטול.
+                        </p>
+                    </div>
+                </div>
+                <div className="flex gap-2 mt-2">
+                    <button
+                        onClick={() => {
+                            toast.dismiss(t.id);
+                            processDeleteSubscriber(subscriptionId);
+                        }}
+                        className="flex-1 bg-red-600 text-white px-4 py-2.5 rounded-xl text-sm font-bold hover:bg-red-700 transition-colors"
+                    >
+                        כן, מחק
+                    </button>
+                    <button
+                        onClick={() => toast.dismiss(t.id)}
+                        className="flex-1 bg-gray-100 text-gray-700 px-4 py-2.5 rounded-xl text-sm font-bold hover:bg-gray-200 transition-colors"
+                    >
+                        ביטול
+                    </button>
+                </div>
+            </div>
+        ), { duration: Infinity, position: 'top-center' });
+    };
+
+    const processDeleteSubscriber = async (subscriptionId) => {
+        try {
+            const res = await fetch(`/api/admin/stock-notifications/${subscriptionId}`, { method: 'DELETE' });
+            if (res.ok) {
+                toast.success('הנרשם נמחק בהצלחה');
+                fetchProducts();
+            } else {
+                toast.error('שגיאה במחיקת הנרשם');
+            }
+        } catch (error) {
+            console.error(error);
+            toast.error('שגיאה בתקשורת');
         }
     };
 
@@ -143,6 +196,28 @@ export default function BackInStockClient() {
                                         </div>
                                     )}
                                 </div>
+                            </div>
+
+                            <div className="flex-1 flex flex-col justify-center">
+                                {product.subscribers && product.subscribers.some(s => s && s.id) && (
+                                    <div className="mb-4 bg-white rounded-xl border border-gray-100 p-3 w-full max-w-sm ml-auto mr-auto md:mr-0">
+                                        <p className="text-xs font-bold text-gray-500 mb-2 border-b border-gray-50 pb-2">רשימת ממתינים</p>
+                                        <div className="max-h-32 overflow-y-auto custom-scrollbar pr-1">
+                                            {product.subscribers.filter(s => s && s.id).map(s => (
+                                                <div key={s.id} className="flex justify-between items-center text-sm py-1.5 border-b border-gray-50 last:border-0 group">
+                                                    <span className="text-gray-700 truncate" dir="ltr">{s.user_email}</span>
+                                                    <button 
+                                                        onClick={() => handleDeleteSubscriber(s.id)}
+                                                        className="text-gray-300 hover:text-red-500 transition-colors p-1"
+                                                        title="מחק נרשם"
+                                                    >
+                                                        <Trash2 size={14} />
+                                                    </button>
+                                                </div>
+                                            ))}
+                                        </div>
+                                    </div>
+                                )}
                             </div>
 
                             {/* Restock Form */}
