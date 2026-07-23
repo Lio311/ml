@@ -328,5 +328,6 @@ export default function AdminCatalogsClient() {
                 )}
             </div>
         </div>
+        </div>
     );
 }
