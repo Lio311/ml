@@ -238,11 +238,7 @@ export default async function CatalogPage(props) {
                 {t('common.showing_products').replace('{count}', products.length).replace('{page}', page).replace('{total}', totalPages)}
             </p>
 
-            {brand && typeof brand === 'string' && !category && !search && (
-                <div className="mb-12">
-                    <BrandInsight brand={brand} /> 
-                </div>
-            )}
+
 
             <div className="flex flex-col md:flex-row gap-8">
 
@@ -367,6 +363,12 @@ export default async function CatalogPage(props) {
                 </div>
 
             </div>
+
+            {brand && typeof brand === 'string' && !category && !search && (
+                <div className="mt-8 mb-8">
+                    <BrandInsight brand={brand} /> 
+                </div>
+            )}
 
             {/* SEO Content Section */}
             <CatalogSEOContent />

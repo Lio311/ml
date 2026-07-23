@@ -16,7 +16,7 @@ export async function getProducts(search, brand, category, minPrice, maxPrice, s
   `;
     const params = [];
 
-    if (!search) {
+    if (!search && !brand) {
         query += ` AND p.is_discovery_set IS NOT TRUE AND (p.category IS NULL OR p.category != 'מארזים') AND (p.category_en IS NULL OR p.category_en != 'bundles')`;
     }
 
