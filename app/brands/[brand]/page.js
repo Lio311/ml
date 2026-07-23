@@ -6,6 +6,7 @@ import { cookies } from 'next/headers';
 import he from '../../data/locales/he.json';
 import en from '../../data/locales/en.json';
 import { sanitizeProductArray, sanitizeProduct } from "../../lib/productUtils";
+import CatalogSEOContent from '../../components/CatalogSEOContent';
 
 
 export const revalidate = 3600; // Cache for 1 hour
@@ -207,6 +208,9 @@ export default async function BrandPage(props) {
                     </div>
                 </div>
             )}
+
+            {/* SEO Content Section */}
+            <CatalogSEOContent />
         </div>
     );
 }
