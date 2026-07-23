@@ -58,7 +58,7 @@ export async function POST(req) {
                             status: mapped.label, 
                             messageBody: mapped.body,
                             name: cleanName 
-                        }, getStatusUpdateTemplate.bind(null, order_id, current_status, cleanName));
+                        }, getStatusUpdateTemplate.bind(null, order_id, cleanName, mapped.label, mapped.body));
                         
                         await sendEmail(customerEmail, dynamicSubject || `עדכון סטטוס הזמנה #${order_id} - ml_tlv`, dynamicHtml, 'status_update', order_id);
                     } catch (e) {

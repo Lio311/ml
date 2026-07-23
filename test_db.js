@@ -1,7 +1,4 @@
-const { getProducts } = require('./app/catalog/dbQueries.js');
-async function run() {
-  const { products } = await getProducts('fugazzi', null, null, null, null, 'random', 1, {});
-  console.log("Fugazzi result:", products.map(p => p.name));
-  process.exit(0);
-}
-run();
+const { neon } = require('@neondatabase/serverless');
+require('dotenv').config({path: '.env.local'});
+const sql = neon(process.env.DATABASE_URL);
+sql`SELECT column_name, data_type FROM information_schema.columns WHERE table_name = 'users'`.then(console.log).catch(console.error);

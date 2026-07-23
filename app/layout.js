@@ -18,6 +18,7 @@ import ClerkBrandingTranslator from "./components/ClerkBrandingTranslator";
 import ServiceWorkerRegistration from "./components/ServiceWorkerRegistration";
 import CookieConsent from "./components/ui/CookieConsent";
 import { getBrand } from "./lib/brand";
+import BackgroundCronTrigger from "./components/BackgroundCronTrigger";
 
 // Validate env vars on server start/request
 validateEnv();
@@ -146,6 +147,7 @@ export default async function RootLayout({ children }) {
               <MicrosoftClarity />
               <ServiceWorkerRegistration />
               <CookieConsent />
+              <BackgroundCronTrigger />
 
               {/* SEO: Organization/Store/WebSite Schema */}
               <script

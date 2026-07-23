@@ -13,12 +13,6 @@ import pool from './db';
  */
 export async function logEmail({ recipient, subject, type, status, error = null, orderId = null, campaignId = null }) {
     try {
-        // Ensure campaign_id column exists (one-time check/migration)
-        await pool.query('ALTER TABLE email_logs ADD COLUMN IF NOT EXISTS campaign_id INTEGER');
-        
-        // Data Cleanup: Move campaign IDs mistakenly stored in order_id
-        await pool.query("UPDATE email_logs SET campaign_id = order_id, order_id = NULL WHERE type = 'campaign' AND order_id IS NOT NULL AND campaign_id IS NULL");
-
         await pool.query(`
             INSERT INTO email_logs (recipient, subject, type, status, error_message, order_id, campaign_id)
             VALUES ($1, $2, $3, $4, $5, $6, $7)

@@ -129,7 +129,7 @@ export async function GET(req) {
                 INSERT INTO site_settings (key, value) 
                 VALUES ('last_marketing_email_date', $1)
                 ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value
-            `, [todayStr]);
+            `, [JSON.stringify([todayStr])]);
         }
 
         return NextResponse.json({ 

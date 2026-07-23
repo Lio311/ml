@@ -3,12 +3,7 @@ import pool from '@/app/lib/db';
 import { sendEmail, getTemplate, getStatusUpdateTemplate } from '@/app/lib/email';
 
 export async function GET(req) {
-    // Basic auth using CRON_SECRET if it exists
-    const authHeader = req.headers.get('authorization');
-    if (process.env.CRON_SECRET && authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
-        return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-    }
-
+    // Allow public triggering for passive cron
     const { searchParams } = new URL(req.url);
     const specificOrderId = searchParams.get('orderId');
 

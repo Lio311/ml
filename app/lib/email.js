@@ -106,11 +106,19 @@ export const sendEmail = async (to, subject, html, type = 'system', orderId = nu
         };
 
         if (Array.isArray(finalTo)) {
+            if (finalTo.length === 0) {
+                console.warn("Skipping email send: recipient array is empty.");
+                return null;
+            }
             mailOptions.bcc = finalTo;
             if (secondaryBcc && secondaryBcc.length > 0) {
                  mailOptions.bcc = [...mailOptions.bcc, ...secondaryBcc];
             }
         } else {
+            if (!finalTo) {
+                console.warn("Skipping email send: no recipient provided.");
+                return null;
+            }
             mailOptions.to = finalTo;
             if (secondaryBcc && secondaryBcc.length > 0) {
                  mailOptions.bcc = secondaryBcc;

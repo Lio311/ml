@@ -179,32 +179,19 @@ export async function POST(req) {
                 }
             }
 
-            // Delay Email by 2 minutes
-            if (order.customer_details?.email) {
-                try {
-                    // Check if there is already a pending email for this order
-                    const pendingRes = await client.query('SELECT 1 FROM pending_order_emails WHERE order_id = $1', [orderId]);
-                    if (pendingRes.rows.length === 0) {
-                        // Insert a pending record so the cron job picks it up in 2 minutes
-                        await client.query(`
-                            INSERT INTO pending_order_emails (order_id, initial_status, process_at)
-                            VALUES ($1, $2, NOW() + INTERVAL '2 minutes')
-                        `, [orderId, oldStatus]);
-                        
-                        // Attempt to trigger the email processing in the background (works if server stays alive)
-                        const host = req.headers.get('host');
-                        if (host) {
-                            const protocol = host.includes('localhost') ? 'http' : 'https';
-                            const baseUrl = `${protocol}://${host}`;
-                            setTimeout(() => {
-                                fetch(`${baseUrl}/api/cron/process-delayed-emails?orderId=${orderId}`, {
-                                    headers: { 'Authorization': `Bearer ${process.env.CRON_SECRET || ''}` }
-                                }).catch(() => {});
-                            }, 120000); // 2 minutes
-                        }
-                    }
-                } catch (e) { console.error('Error handling delayed email:', e); }
-            }
+        // Delay Email by 2 minutes
+        if (order.customer_details?.email) {
+            try {
+                // Check if there is already a pending email for this order
+                const pendingRes = await client.query('SELECT 1 FROM pending_order_emails WHERE order_id = $1', [orderId]);
+                if (pendingRes.rows.length === 0) {
+                    // Insert a pending record so the cron job picks it up in 2 minutes
+                    await client.query(`
+                        INSERT INTO pending_order_emails (order_id, initial_status, process_at)
+                        VALUES ($1, $2, NOW() + INTERVAL '2 minutes')
+                    `, [orderId, oldStatus]);
+                }
+            } catch (e) { console.error('Error handling delayed email:', e); }
         }
 
         if (deliveryMethod && deliveryMethod !== 'no_change') {
