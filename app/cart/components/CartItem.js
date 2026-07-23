@@ -7,7 +7,7 @@ import { useLanguage } from "../../context/LanguageContext";
 import { useCart } from "../../context/CartContext";
 import { getDiscountedPrice } from "../../lib/productUtils";
 
-export default function CartItem({ item, updateQuantity, removeFromCart, activeVendorId }) {
+export default function CartItem({ item, updateQuantity, removeFromCart, activeVendorId, isOutOfStockError }) {
     const { t, localize, locale } = useLanguage();
     const { getItemFinalPrice, updateItemSize } = useCart();
     const [isEditingSize, setIsEditingSize] = useState(false);
@@ -45,7 +45,12 @@ export default function CartItem({ item, updateQuantity, removeFromCart, activeV
     const originalPriceToDisplay = item.originalPrice || item.price;
     
     return (
-        <div key={`${item.id}-${item.size}`} className={`flex items-center gap-4 border p-4 rounded-xl bg-white shadow-sm relative ${isBundle ? 'border-zinc-900 border-2 shadow-md' : ''}`}>
+        <div key={`${item.id}-${item.size}`} className={`flex items-center gap-4 border p-4 rounded-xl shadow-sm relative ${isBundle ? 'border-zinc-900 border-2 shadow-md' : ''} ${isOutOfStockError ? 'bg-red-50 border-red-500 animate-pulse' : 'bg-white'}`}>
+            {isOutOfStockError && (
+                <div className="absolute -top-3 right-4 bg-red-600 text-white text-[10px] font-bold px-2 py-0.5 rounded-full z-10 shadow-sm animate-bounce">
+                    אזל מהמלאי
+                </div>
+            )}
             {isBundle ? (
                 <div className="w-20 h-20 bg-gray-50 grid grid-cols-2 grid-rows-2 gap-0.5 rounded overflow-hidden relative border border-gray-100 flex-shrink-0">
                     {item.items.slice(0, 4).map((p, i) => (

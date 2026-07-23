@@ -222,17 +222,46 @@ export default function OrdersClient() {
                                         <div className="font-medium text-gray-900 flex flex-col items-end gap-2">
                                             <div>{item.price * item.quantity} ₪</div>
                                             <button
-                                                onClick={() => {
-                                                    // Add to cart (assuming item has id, name, etc)
-                                                    addToCart({
-                                                        id: item.id,
-                                                        name: item.name || (item.brand + ' ' + item.model),
-                                                        image_url: item.image_url,
-                                                        // Use old stock or standard default? 
-                                                        // We'll trust backend validation at checkout.
-                                                        stock: item.stock || 20
-                                                    }, item.size, item.price);
-                                                    toast.success(t('orders.added_to_cart'));
+                                                onClick={async () => {
+                                                    try {
+                                                        const res = await fetch(`/api/products/${item.id}/live`);
+                                                        if (!res.ok) throw new Error('Product not found');
+                                                        const liveProduct = await res.json();
+                                                        
+                                                        // Determine the correct numeric size from the historical string (e.g. "2", "2ml", "2 מ\"ל")
+                                                        let numericSize = String(item.size).replace(/[^0-9]/g, '');
+                                                        if (!numericSize) numericSize = '2'; // Fallback
+                                                        
+                                                        const sizeField = `price_${numericSize}ml`;
+                                                        if (!liveProduct[sizeField] || liveProduct[sizeField] <= 0) {
+                                                            toast.error('הגודל המבוקש לא זמין כרגע במלאי');
+                                                            return;
+                                                        }
+                                                        
+                                                        let requiredVolume = liveProduct.is_discovery_set ? 1 : Number(numericSize);
+                                                        if (liveProduct.stock < requiredVolume) {
+                                                            toast.error('המוצר אזל מהמלאי');
+                                                            return;
+                                                        }
+
+                                                        addToCart({
+                                                            id: liveProduct.id,
+                                                            name: liveProduct.name || (liveProduct.brand + ' ' + liveProduct.model),
+                                                            image_url: liveProduct.image_url,
+                                                            stock: liveProduct.stock,
+                                                            price_2ml: liveProduct.price_2ml,
+                                                            price_5ml: liveProduct.price_5ml,
+                                                            price_10ml: liveProduct.price_10ml,
+                                                            single_price: liveProduct.single_price,
+                                                            is_discovery_set: liveProduct.is_discovery_set,
+                                                            discount_percentage: liveProduct.discount_percentage,
+                                                            discount_sizes: liveProduct.discount_sizes
+                                                        }, numericSize, liveProduct[sizeField]);
+                                                        
+                                                        toast.success(t('orders.added_to_cart'));
+                                                    } catch (e) {
+                                                        toast.error('אירעה שגיאה בטעינת המוצר. ייתכן שהוא הוסר מהאתר.');
+                                                    }
                                                 }}
                                                 className="text-xs bg-black text-white px-3 py-1.5 rounded hover:bg-gray-800 transition shadow-sm flex items-center gap-1.5 w-full justify-center"
                                             >

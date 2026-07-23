@@ -36,6 +36,62 @@ export async function POST(req) {
                 await client.query('ALTER TABLE orders ADD COLUMN IF NOT EXISTS coupon_code TEXT');
             } catch (e) { /* Ignore */ }
 
+            // --- SECURITY: Stock Validation ---
+            let outOfStockItems = [];
+            for (const item of items) {
+                if (item.isPrize) continue;
+
+                let dbId = item.id;
+                if (typeof dbId === 'string' && dbId.includes('-')) {
+                    dbId = parseInt(dbId.split('-')[0]);
+                }
+
+                if (item.type === 'bundle' && Array.isArray(item.items)) {
+                    for (const innerItem of item.items) {
+                        let innerDbId = innerItem.id;
+                        if (typeof innerDbId === 'string' && innerDbId.includes('-')) {
+                            innerDbId = parseInt(innerDbId.split('-')[0]);
+                        }
+                        if (isNaN(innerDbId)) continue;
+                        
+                        const stockRes = await client.query('SELECT stock FROM products WHERE id = $1', [innerDbId]);
+                        if (stockRes.rows.length > 0) {
+                            const requiredVolume = Number(item.size) * item.quantity;
+                            if (stockRes.rows[0].stock < requiredVolume) {
+                                outOfStockItems.push({ id: innerItem.id, name: innerItem.name, size: item.size });
+                            }
+                        }
+                    }
+                    continue;
+                }
+
+                if (isNaN(dbId)) continue;
+
+                const stockRes = await client.query('SELECT stock, is_discovery_set FROM products WHERE id = $1', [dbId]);
+                if (stockRes.rows.length > 0) {
+                    const p = stockRes.rows[0];
+                    let requiredVolume = 0;
+                    if (p.is_discovery_set) {
+                        requiredVolume = item.quantity; // 1 unit per quantity for discovery sets
+                    } else {
+                        requiredVolume = Number(item.size) * item.quantity;
+                    }
+
+                    if (p.stock < requiredVolume) {
+                        outOfStockItems.push({ id: item.id, name: item.name, size: item.size });
+                    }
+                }
+            }
+
+            if (outOfStockItems.length > 0) {
+                await client.query('ROLLBACK');
+                return NextResponse.json({ 
+                    error: 'OUT_OF_STOCK', 
+                    message: 'One or more items are out of stock',
+                    items: outOfStockItems 
+                }, { status: 400 });
+            }
+
             // --- SECURITY: Price Validation ---
             let calculatedTotal = 0;
             for (const item of items) {

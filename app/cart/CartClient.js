@@ -89,6 +89,8 @@ export default function CartClient() {
         }
     }, [searchParams]);
 
+    const [outOfStockErrorItems, setOutOfStockErrorItems] = useState([]);
+
     const handleLoadSharedCart = () => {
         if (!sharedCart) return;
         
@@ -291,7 +293,12 @@ export default function CartClient() {
                 router.push('/checkout/success');
             } else {
                 const data = await res.json();
-                toast.error(data.error);
+                if (data.error === 'OUT_OF_STOCK') {
+                    setOutOfStockErrorItems(data.items || []);
+                    toast.error('אחד או יותר מהפריטים בעגלה אזל במלאי. אנא הסר אותם בכדי להמשיך.', { duration: 6000 });
+                } else {
+                    toast.error(data.error || data.message || 'שגיאה בעת ביצוע ההזמנה');
+                }
                 setIsSubmitting(false);
             }
         } catch (e) {
@@ -573,6 +580,7 @@ export default function CartClient() {
                                 updateQuantity={updateQuantity} 
                                 removeFromCart={removeFromCart} 
                                 activeVendorId={activeVendorId} 
+                                isOutOfStockError={outOfStockErrorItems.some(i => String(i.id) === String(item.id) && String(i.size) === String(item.size))}
                             />
                         ))}
                     </div>
