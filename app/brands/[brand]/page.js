@@ -122,72 +122,24 @@ export default async function BrandPage(props) {
             />
 
             {/* Header */}
-            {brandData?.title ? (
-                <div className="flex flex-col-reverse md:flex-row gap-8 mb-16 items-start justify-between">
-                    {/* Text Section */}
-                    <div className="w-full md:w-2/3 flex flex-col justify-center">
-                        <h1 className="text-3xl md:text-4xl font-bold mb-4 text-gray-900 leading-tight">
-                            {brandData.title}
-                        </h1>
-                        <p className="text-lg text-gray-600 leading-relaxed mb-8">
-                            {brandData.description}
-                        </p>
-                        
-                        {(brandData.highlights || brandData.perfumer) && (
-                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                                {brandData.perfumer && (
-                                    <div className="p-6 border border-gray-100 rounded-xl bg-white shadow-sm flex flex-col items-center justify-center text-center">
-                                        <h3 className="text-sm font-bold text-gray-400 mb-2">האף שמאחורי הקלעים</h3>
-                                        <p className="text-gray-800 font-medium">{brandData.perfumer}</p>
-                                    </div>
-                                )}
-                                {brandData.highlights && (
-                                    <div className="p-6 border border-gray-100 rounded-xl bg-white shadow-sm flex flex-col items-center justify-center text-center">
-                                        <h3 className="text-sm font-bold text-gray-400 mb-2">החתימה של המותג</h3>
-                                        <p className="text-gray-800 font-medium">{brandData.highlights}</p>
-                                    </div>
-                                )}
-                            </div>
-                        )}
+            <div className="flex flex-col items-center mb-12 text-center">
+                {brandData?.logo_url ? (
+                    <div className="w-32 h-32 relative mb-6 p-4 border rounded-full bg-white shadow-sm flex items-center justify-center">
+                        <Image
+                            src={brandData.logo_url}
+                            alt={brandData.name}
+                            fill
+                            className="object-contain p-4"
+                        />
                     </div>
-                    
-                    {/* Logo Section */}
-                    <div className="w-full md:w-1/3 flex justify-center md:justify-end">
-                        {brandData.logo_url && (
-                            <div className="w-64 h-64 relative border border-gray-100 rounded-2xl bg-white shadow-sm flex items-center justify-center">
-                                <Image
-                                    src={brandData.logo_url}
-                                    alt={brandData.name}
-                                    fill
-                                    className="object-contain p-8"
-                                />
-                            </div>
-                        )}
+                ) : (
+                    <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center text-3xl mb-4">
+                        ✨
                     </div>
-                </div>
-            ) : (
-                <div className="flex flex-col items-center mb-12 text-center">
-                    {brandData?.logo_url ? (
-                        <div className="w-32 h-32 relative mb-6 p-4 border rounded-full bg-white shadow-sm flex items-center justify-center">
-                            <Image
-                                src={brandData.logo_url}
-                                alt={brandData.name}
-                                fill
-                                className="object-contain p-4"
-                            />
-                        </div>
-                    ) : (
-                        <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center text-3xl mb-4">
-                            ✨
-                        </div>
-                    )}
+                )}
 
-                    <h1 className="text-4xl font-serif font-bold mb-4">{displayName}</h1>
-                    <p className="max-w-4xl text-gray-600">
-                        {t('brands_page.description', { brand: displayName })}
-                    </p>
-                </div>
-            )}
+                <h1 className="text-4xl font-serif font-bold mb-4">{displayName}</h1>
+            </div>
 
             {/* Products Grid */}
             {products.length > 0 ? (
@@ -202,6 +154,54 @@ export default async function BrandPage(props) {
                     <Link href="/brands" className="text-blue-600 font-bold mt-4 inline-block">
                         {t('brands_page.back_to_brands')}
                     </Link>
+                </div>
+            )}
+
+            {/* Rich Brand Description at Bottom */}
+            {brandData?.title && (
+                <div className="mt-20 border-t pt-16">
+                    <div className="flex flex-col-reverse md:flex-row gap-8 items-start justify-between">
+                        {/* Text Section */}
+                        <div className="w-full md:w-2/3 flex flex-col justify-center">
+                            <h2 className="text-3xl md:text-4xl font-bold mb-4 text-gray-900 leading-tight">
+                                {brandData.title}
+                            </h2>
+                            <p className="text-lg text-gray-600 leading-relaxed mb-8 whitespace-pre-wrap">
+                                {brandData.description}
+                            </p>
+                            
+                            {(brandData.highlights || brandData.perfumer) && (
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                                    {brandData.perfumer && (
+                                        <div className="p-6 border border-gray-100 rounded-xl bg-gray-50 shadow-sm flex flex-col items-center justify-center text-center">
+                                            <h3 className="text-sm font-bold text-gray-400 mb-2">האף שמאחורי הקלעים</h3>
+                                            <p className="text-gray-800 font-medium">{brandData.perfumer}</p>
+                                        </div>
+                                    )}
+                                    {brandData.highlights && (
+                                        <div className="p-6 border border-gray-100 rounded-xl bg-gray-50 shadow-sm flex flex-col items-center justify-center text-center">
+                                            <h3 className="text-sm font-bold text-gray-400 mb-2">החתימה של המותג</h3>
+                                            <p className="text-gray-800 font-medium">{brandData.highlights}</p>
+                                        </div>
+                                    )}
+                                </div>
+                            )}
+                        </div>
+                        
+                        {/* Logo Section */}
+                        <div className="w-full md:w-1/3 flex justify-center md:justify-end">
+                            {brandData.logo_url && (
+                                <div className="w-64 h-64 relative border border-gray-100 rounded-2xl bg-white shadow-sm flex items-center justify-center">
+                                    <Image
+                                        src={brandData.logo_url}
+                                        alt={brandData.name}
+                                        fill
+                                        className="object-contain p-8"
+                                    />
+                                </div>
+                            )}
+                        </div>
+                    </div>
                 </div>
             )}
         </div>
