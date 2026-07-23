@@ -627,7 +627,7 @@ export default function CartClient() {
                             {promoDiscountAmount > 0 && (
                                 <div className="flex justify-between text-blue-600 font-bold bg-blue-50 p-3 rounded-lg border border-blue-100">
                                     <span>{t('cart.promo_discount')}</span>
-                                    <span className="font-bold" dir="ltr">-{promoDiscountAmount} ₪</span>
+                                    <span className="font-bold" dir="ltr">-₪{promoDiscountAmount}</span>
                                 </div>
                             )}
 
