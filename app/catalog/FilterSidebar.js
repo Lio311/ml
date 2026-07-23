@@ -52,6 +52,8 @@ export default function FilterSidebar({ allBrands = [], allCategories = [], allC
     const [price, setPrice] = useState(Number(searchParams.get("max")) || ABSOLUTE_MAX);
     const [isMobileFiltersOpen, setIsMobileFiltersOpen] = useState(false);
     const [noteSearch, setNoteSearch] = useState('');
+    const [countrySearch, setCountrySearch] = useState('');
+    const [perfumerSearch, setPerfumerSearch] = useState('');
 
     useEffect(() => {
         setSelectedBrands(searchParams.getAll('brand'));
@@ -311,18 +313,34 @@ export default function FilterSidebar({ allBrands = [], allCategories = [], allC
             {/* Country Filter */}
             {allCountries && allCountries.length > 0 && (
                 <CollapsibleSection title={`${t('common.country_filter')} (${allCountries.length})`} initialOpen={true}>
-                    <div className={`space-y-2 text-sm max-h-[110px] overflow-y-auto custom-scrollbar ps-2 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
-                        {allCountries.map(c => (
-                            <label key={c} className="flex items-center gap-2 cursor-pointer hover:bg-gray-100 p-1 rounded">
-                                <input
-                                    type="checkbox"
-                                    checked={selectedCountries.includes(c)}
-                                    onChange={() => toggleCountry(c)}
-                                    className="w-4 h-4 rounded border-gray-300 text-black focus:ring-black"
-                                />
-                                <span className={selectedCountries.includes(c) ? 'font-bold' : ''}>{c}</span>
-                            </label>
-                        ))}
+                    <div className="space-y-4">
+                        <div className="relative">
+                            <input
+                                type="text"
+                                value={countrySearch}
+                                onChange={(e) => setCountrySearch(e.target.value)}
+                                placeholder={t('common.search')}
+                                className="w-full p-2 ps-8 text-xs border border-gray-100 rounded-lg bg-white focus:outline-none focus:border-black"
+                            />
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={`absolute top-1/2 -translate-y-1/2 w-4 h-4 text-gray-300 ${dir === 'rtl' ? 'right-2' : 'left-2'}`}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                            </svg>
+                        </div>
+                        <div className={`space-y-2 text-sm max-h-[110px] overflow-y-auto custom-scrollbar ps-2 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
+                            {allCountries
+                                .filter(c => c.toLowerCase().includes(countrySearch.toLowerCase()))
+                                .map(c => (
+                                <label key={c} className="flex items-center gap-2 cursor-pointer hover:bg-gray-100 p-1 rounded">
+                                    <input
+                                        type="checkbox"
+                                        checked={selectedCountries.includes(c)}
+                                        onChange={() => toggleCountry(c)}
+                                        className="w-4 h-4 rounded border-gray-300 text-black focus:ring-black"
+                                    />
+                                    <span className={selectedCountries.includes(c) ? 'font-bold' : ''}>{c}</span>
+                                </label>
+                            ))}
+                        </div>
                     </div>
                 </CollapsibleSection>
             )}
@@ -330,18 +348,34 @@ export default function FilterSidebar({ allBrands = [], allCategories = [], allC
             {/* Perfumer Filter */}
             {allPerfumers && allPerfumers.length > 0 && (
                 <CollapsibleSection title={`${t('common.perfumer_filter')} (${allPerfumers.length})`} initialOpen={true}>
-                    <div className={`space-y-2 text-sm max-h-[110px] overflow-y-auto custom-scrollbar ps-2 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
-                        {allPerfumers.map(p => (
-                            <label key={p} className="flex items-center gap-2 cursor-pointer hover:bg-gray-100 p-1 rounded">
-                                <input
-                                    type="checkbox"
-                                    checked={selectedPerfumers.includes(p)}
-                                    onChange={() => togglePerfumer(p)}
-                                    className="w-4 h-4 rounded border-gray-300 text-black focus:ring-black"
-                                />
-                                <span className={selectedPerfumers.includes(p) ? 'font-bold' : ''}>{p}</span>
-                            </label>
-                        ))}
+                    <div className="space-y-4">
+                        <div className="relative">
+                            <input
+                                type="text"
+                                value={perfumerSearch}
+                                onChange={(e) => setPerfumerSearch(e.target.value)}
+                                placeholder={t('common.search')}
+                                className="w-full p-2 ps-8 text-xs border border-gray-100 rounded-lg bg-white focus:outline-none focus:border-black"
+                            />
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={`absolute top-1/2 -translate-y-1/2 w-4 h-4 text-gray-300 ${dir === 'rtl' ? 'right-2' : 'left-2'}`}>
+                                <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                            </svg>
+                        </div>
+                        <div className={`space-y-2 text-sm max-h-[110px] overflow-y-auto custom-scrollbar ps-2 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
+                            {allPerfumers
+                                .filter(p => p.toLowerCase().includes(perfumerSearch.toLowerCase()))
+                                .map(p => (
+                                <label key={p} className="flex items-center gap-2 cursor-pointer hover:bg-gray-100 p-1 rounded">
+                                    <input
+                                        type="checkbox"
+                                        checked={selectedPerfumers.includes(p)}
+                                        onChange={() => togglePerfumer(p)}
+                                        className="w-4 h-4 rounded border-gray-300 text-black focus:ring-black"
+                                    />
+                                    <span className={selectedPerfumers.includes(p) ? 'font-bold' : ''}>{p}</span>
+                                </label>
+                            ))}
+                        </div>
                     </div>
                 </CollapsibleSection>
             )}
