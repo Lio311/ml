@@ -211,7 +211,7 @@ export default function OrdersClient() {
                                             <div className="font-bold text-gray-900">{item.name || (item.brand + ' ' + item.model)}</div>
                                             <div className="text-sm text-gray-500 flex items-center gap-3 mt-1">
                                                 <span className="bg-gray-100 px-2 py-0.5 rounded text-xs text-gray-700">
-                                                    {item.is_discovery_set ? (item.volume_label || (locale === 'he' ? 'דיסקברי סט' : 'Set')) : (String(item.size).includes('ml') || String(item.size).includes('מ"ל') || String(item.size).includes('מ״ל') ? item.size : `${item.size} ${t('common.ml_unit') || (locale === 'he' ? 'מ"ל' : 'ml')}`)}
+                                                    {item.is_discovery_set ? (item.volume_label ? (locale === 'he' ? String(item.volume_label).replace(/ml/gi, 'מ"ל') : item.volume_label) : (locale === 'he' ? 'דיסקברי סט' : 'Set')) : (String(item.size).includes('ml') || String(item.size).includes('מ"ל') || String(item.size).includes('מ״ל') ? item.size : `${item.size} ${t('common.ml_unit') || (locale === 'he' ? 'מ"ל' : 'ml')}`)}
                                                 </span>
                                                 <span className="text-xs">
                                                     {t('orders.quantity')}: {item.quantity}

@@ -224,7 +224,7 @@ export default function Customer360Modal({ email, onClose }) {
                                                                 const displayName = item.name || `${item.brand || ''} ${item.model || ''}`.trim() || 'פריט לא ידוע';
                                                                 return (
                                                                         <span key={idx} className="bg-gray-50 px-2 py-1 rounded-md border border-gray-100 text-[11px] whitespace-nowrap" dir="rtl">
-                                                                            {displayName} {item.size && <span className="opacity-70">({item.is_discovery_set ? (item.volume_label || 'Set') : (String(item.size).includes('ml') || String(item.size).includes('מ"ל') || String(item.size).includes('מ״ל') ? item.size : `${item.size} מ"ל`)})</span>}
+                                                                            {displayName} {item.size && <span className="opacity-70">({item.is_discovery_set ? (item.volume_label ? String(item.volume_label).replace(/ml/gi, 'מ"ל') : 'Set') : (String(item.size).includes('ml') || String(item.size).includes('מ"ל') || String(item.size).includes('מ״ל') ? item.size : `${item.size} מ"ל`)})</span>}
                                                                         </span>
                                                                 );
                                                             })}
@@ -281,7 +281,7 @@ export default function Customer360Modal({ email, onClose }) {
                                                                         const displayName = item.name || `${item.brand || ''} ${item.model || ''}`.trim() || 'פריט לא ידוע';
                                                                         return (
                                                                             <span key={idx} className="bg-gray-50 px-2 py-0.5 rounded-md border border-gray-100 text-[10px] whitespace-nowrap" dir="rtl">
-                                                                                {displayName} {item.size && <span className="opacity-70">({item.is_discovery_set ? (item.volume_label || 'Set') : (String(item.size).includes('ml') || String(item.size).includes('מ"ל') || String(item.size).includes('מ״ל') ? item.size : `${item.size} מ"ל`)})</span>}
+                                                                                {displayName} {item.size && <span className="opacity-70">({item.is_discovery_set ? (item.volume_label ? String(item.volume_label).replace(/ml/gi, 'מ"ל') : 'Set') : (String(item.size).includes('ml') || String(item.size).includes('מ"ל') || String(item.size).includes('מ״ל') ? item.size : `${item.size} מ"ל`)})</span>}
                                                                             </span>
                                                                         );
                                                                     })}

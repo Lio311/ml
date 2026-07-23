@@ -20,12 +20,13 @@ import OrderAlerts from "./OrderAlerts";
 import { useInView } from "react-intersection-observer";
 
 const formatDiscoverySize = (label) => {
-    if (!label) return 'מארז דוגמיות';
+    if (!label) return 'דיסקברי סט';
     const nums = label.match(/\d+/g);
     if (nums && nums.length >= 2) {
-        return `${nums[0]}X${nums[1]}ml`;
+        return `${nums[0]}X${nums[1]} מ"ל`;
     }
-    return label;
+    // Convert English 'ml' to Hebrew 'מ"ל' for consistency
+    return String(label).replace(/ml/gi, 'מ"ל');
 };
 
 const calculateTotalItems = (order) => {
