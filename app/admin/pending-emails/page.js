@@ -51,7 +51,7 @@ export default async function PendingEmailsPage() {
             pre.id, pre.created_at, pre.suggested_products,
             u.email as recipient, u.first_name, u.last_name
         FROM pending_recommendation_emails pre
-        LEFT JOIN users u ON u.clerk_id = pre.user_id
+        LEFT JOIN users u ON u.id = pre.user_id
         WHERE pre.status = 'pending'
         ORDER BY pre.created_at ASC
     `);
