@@ -710,10 +710,10 @@ export function CartProvider({ children }) {
     let freeSamplesCount = 0;
     let nextTier = 0;
     if (isMainVendor) {
-        if (subtotal >= 1000) freeSamplesCount = 6;
-        else if (subtotal >= 500) { freeSamplesCount = 4; nextTier = 1000 - subtotal; }
-        else if (subtotal >= 300) { freeSamplesCount = 2; nextTier = 500 - subtotal; }
-        else { nextTier = 300 - subtotal; }
+        if (priceAfterDiscounts >= 1000) freeSamplesCount = 6;
+        else if (priceAfterDiscounts >= 500) { freeSamplesCount = 4; nextTier = 1000 - priceAfterDiscounts; }
+        else if (priceAfterDiscounts >= 300) { freeSamplesCount = 2; nextTier = 500 - priceAfterDiscounts; }
+        else { nextTier = 300 - priceAfterDiscounts; }
     } else if (vendorConfig && vendorConfig.sample_tiers) {
         let tiers = vendorConfig.sample_tiers;
         if (typeof tiers === 'string') {
@@ -722,12 +722,12 @@ export function CartProvider({ children }) {
         if (Array.isArray(tiers) && tiers.length > 0) {
             // Find applicable tier
             const sortedTiers = [...tiers].sort((a,b) => b.minAmount - a.minAmount);
-            const activeTier = sortedTiers.find(t => subtotal >= Number(t.minAmount));
+            const activeTier = sortedTiers.find(t => priceAfterDiscounts >= Number(t.minAmount));
             if (activeTier) freeSamplesCount = Number(activeTier.samplesCount);
             
             // Find next tier limit
-            const nextT = [...tiers].sort((a,b) => a.minAmount - b.minAmount).find(t => Number(t.minAmount) > subtotal);
-            if (nextT) nextTier = Number(nextT.minAmount) - subtotal;
+            const nextT = [...tiers].sort((a,b) => a.minAmount - b.minAmount).find(t => Number(t.minAmount) > priceAfterDiscounts);
+            if (nextT) nextTier = Number(nextT.minAmount) - priceAfterDiscounts;
         }
     }
     const getItemFinalPrice = (item) => {
