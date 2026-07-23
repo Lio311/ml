@@ -193,6 +193,7 @@ export async function POST(req) {
                 }
             } catch (e) { console.error('Error handling delayed email:', e); }
         }
+        }
 
         if (deliveryMethod && deliveryMethod !== 'no_change') {
             await client.query('UPDATE orders SET delivery_method = $1 WHERE id = $2', [deliveryMethod, orderId]);
