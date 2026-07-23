@@ -309,6 +309,12 @@ export default function AdminProductsClient({ products, initialSearch, totalProd
                     טיוטות ({counts?.drafts || 0})
                 </button>
                 <button
+                    onClick={() => router.push('/admin/products?view=preorder')}
+                    className={`pb-2 px-4 font-bold transition whitespace-nowrap ${currentView === 'preorder' ? 'border-b-2 border-purple-600 text-purple-600' : 'text-gray-500 hover:text-purple-600'}`}
+                >
+                    הזמנה מוקדמת ({counts?.preorder || 0})
+                </button>
+                <button
                     onClick={() => router.push('/admin/products?view=stock_list')}
                     className={`pb-2 px-4 font-bold transition whitespace-nowrap ${currentView === 'stock_list' ? 'border-b-2 border-blue-600 text-blue-600' : 'text-gray-500 hover:text-blue-600'}`}
                 >

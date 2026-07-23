@@ -26,7 +26,7 @@ export default async function AdminProductsPage(props) {
     let products = [];
     let totalProducts = 0;
     let filteredCount = 0;
-    let counts = { all: 0, out_of_stock: 0, drafts: 0, on_sale: 0 };
+    let counts = { all: 0, out_of_stock: 0, drafts: 0, on_sale: 0, preorder: 0 };
     let allCountries = [];
     let allCategories = [];
     let allPerfumers = [];
@@ -53,6 +53,8 @@ export default async function AdminProductsPage(props) {
             whereClauses.push(`active = false`);
         } else if (view === 'on_sale') {
             whereClauses.push(`discount_percentage > 0`);
+        } else if (view === 'preorder') {
+            whereClauses.push(`is_preorder = true`);
         }
 
         // Fetch Global Counts (Quickly, without search/letter filtering)
@@ -61,15 +63,17 @@ export default async function AdminProductsPage(props) {
                 COUNT(*) as all,
                 COUNT(*) FILTER (WHERE stock <= 0) as out_of_stock,
                 COUNT(*) FILTER (WHERE active = false) as drafts,
-                COUNT(*) FILTER (WHERE discount_percentage > 0) as on_sale
+                COUNT(*) FILTER (WHERE discount_percentage > 0) as on_sale,
+                COUNT(*) FILTER (WHERE is_preorder = true) as preorder
             FROM products
             WHERE is_discovery_set IS NOT TRUE
         `);
         counts = {
-            all: parseInt(countsRes.rows[0].all),
-            out_of_stock: parseInt(countsRes.rows[0].out_of_stock),
-            drafts: parseInt(countsRes.rows[0].drafts),
-            on_sale: parseInt(countsRes.rows[0].on_sale)
+            all: parseInt(countsRes.rows[0].all) || 0,
+            out_of_stock: parseInt(countsRes.rows[0].out_of_stock) || 0,
+            drafts: parseInt(countsRes.rows[0].drafts) || 0,
+            on_sale: parseInt(countsRes.rows[0].on_sale) || 0,
+            preorder: parseInt(countsRes.rows[0].preorder) || 0
         };
         totalProducts = counts.all;
 
