@@ -74,7 +74,7 @@ export async function POST(req) {
                             לרכישת המוצר
                         </a>
                         <p style="margin-top: 40px; font-size: 12px; color: #999;">
-                            צוות ML-TLV
+                            צוות ml-tlv
                         </p>
                     </div>
                 `;
