@@ -923,22 +923,12 @@ export function getSystemDefaults() {
         'new_perfumes_batch': {
             name: 'השקת מספר בשמים (מערכת)',
             subject: 'בשמים חדשים נחתו באתר! ✨ - ml_tlv',
-            content_html: getBatchPerfumeTemplate([
-                { brand: 'Brand 1', model: 'Model 1', price_2ml: '49' },
-                { brand: 'Brand 2', model: 'Model 2', price_2ml: '55' }
-            ])
+            content_html: getBatchPerfumeTemplate(null)
         },
         'new_discovery_sets': {
             name: 'השקת מארזי דיסקברי (מערכת)',
             subject: 'השקנו 6 מארזי דיסקברי חדשים! ✨ - ml_tlv',
-            content_html: getDiscoveryBatchTemplate([
-                { brand: 'Brand 1', model: 'Model 1', single_price: '190' },
-                { brand: 'Brand 2', model: 'Model 2', single_price: '220' },
-                { brand: 'Brand 3', model: 'Model 3', single_price: '180' },
-                { brand: 'Brand 4', model: 'Model 4', single_price: '250' },
-                { brand: 'Brand 5', model: 'Model 5', single_price: '199' },
-                { brand: 'Brand 6', model: 'Model 6', single_price: '210' }
-            ])
+            content_html: getDiscoveryBatchTemplate(null)
         },
         'review_request': {
             subject: 'נשמח לשמוע מה דעתך! ⭐',
