@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import pool from '../../../lib/db';
 import { recordAuditLog } from '../../../lib/audit';
 import { auth as clerkAuth } from '@clerk/nextjs/server';
+import { revalidatePath, revalidateTag } from 'next/cache';
 
 
 export async function GET() {
@@ -24,6 +25,9 @@ export async function PUT(req) {
         const client = await pool.connect();
         await client.query('UPDATE brands SET logo_url = $1 WHERE id = $2', [logo_url, id]);
         client.release();
+
+        revalidateTag('brands');
+        revalidatePath('/', 'layout');
 
         const authData = await clerkAuth();
         await recordAuditLog({

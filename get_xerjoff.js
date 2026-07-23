@@ -5,7 +5,7 @@ const pool = new Pool({
   ssl: { rejectUnauthorized: false }
 });
 
-pool.query("SELECT column_name FROM information_schema.columns WHERE table_name = 'brands'").then(pRes => {
-  console.log('Brands columns:', pRes.rows.map(r => r.column_name));
+pool.query("SELECT title, description, highlights FROM brands WHERE name ILIKE '%Xerjoff%'").then(pRes => {
+  console.log(JSON.stringify(pRes.rows[0], null, 2));
   process.exit(0);
 });
