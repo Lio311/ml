@@ -49,7 +49,8 @@ import {
     AlertOctagon,
     Crown,
     ShoppingCart,
-    Database
+    Database,
+    Calendar
 } from "lucide-react";
 import { useBrand } from "../../context/BrandContext";
 
@@ -138,6 +139,7 @@ const navGroups = [
             { href: "/admin/checkout-errors", label: "שגיאות קופה", icon: AlertOctagon, roles: ['admin'] },
             { href: "/admin/audit-logs", label: "יומן פעולות", icon: History, roles: ['admin'] },
             { href: "/admin/email-logs", label: "יומן מיילים", icon: Mail, roles: ['admin'] },
+            { href: "/admin/pending-emails", label: "מיילים בהמתנה", icon: Calendar, roles: ['admin'] },
         ]
     },
     {
