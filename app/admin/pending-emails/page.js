@@ -177,18 +177,28 @@ export default async function PendingEmailsPage() {
     let currentAvailableDate = new Date(nextAvailableDate);
 
     if (newPerfumes.length > 0) {
-        productEmails.push({
-            id: `new_perfumes_pending`,
-            type: 'קמפיין בשמים חדשים',
-            recipient: 'כלל המנויים',
-            customerName: '-',
-            scheduledDate: currentAvailableDate.toISOString(),
-            contentPreview: `מוכן לשליחה: מכיל ${newPerfumes.length} בשמים חדשים`,
-            rawContent: JSON.stringify(newPerfumes.map(p => `${p.brand} ${p.model}`), null, 2)
-        });
-        // Push the available date for the next campaign by 1 day
-        currentAvailableDate.setDate(currentAvailableDate.getDate() + 1);
-        skipSaturdays(currentAvailableDate);
+        let perfumesRemaining = [...newPerfumes];
+        let batchIndex = 1;
+        
+        while (perfumesRemaining.length > 0) {
+            const currentBatch = perfumesRemaining.slice(0, 6);
+            perfumesRemaining = perfumesRemaining.slice(6);
+            
+            productEmails.push({
+                id: `new_perfumes_pending_${batchIndex}`,
+                type: 'קמפיין בשמים חדשים',
+                recipient: 'כלל המנויים',
+                customerName: '-',
+                scheduledDate: currentAvailableDate.toISOString(),
+                contentPreview: `מוכן לשליחה: מכיל ${currentBatch.length} בשמים חדשים`,
+                rawContent: JSON.stringify(currentBatch.map(p => `${p.brand} ${p.model}`), null, 2)
+            });
+            
+            // Push the available date for the next campaign by 1 day
+            currentAvailableDate.setDate(currentAvailableDate.getDate() + 1);
+            skipSaturdays(currentAvailableDate);
+            batchIndex++;
+        }
     }
 
     if (newSets.length > 0) {

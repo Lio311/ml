@@ -51,26 +51,29 @@ export async function GET(req) {
         if (emails.length > 0 && newPerfumes.length > 0) {
             let html, subject;
             let finalSubject = '';
-            const batchIds = newPerfumes.map(p => p.id);
+            
+            // Limit to a maximum of 6 new perfumes per email
+            const batchToEmail = newPerfumes.slice(0, 6);
+            const batchIds = batchToEmail.map(p => p.id);
 
-            if (newPerfumes.length === 1) {
+            if (batchToEmail.length === 1) {
                 // Priority 2: Single Perfume
                 const tpl = await getTemplate('new_product', {
-                    brand: newPerfumes[0].brand || '',
-                    model: newPerfumes[0].model || '',
-                    description: newPerfumes[0].description || '',
-                    price_2ml: newPerfumes[0].price_2ml || '',
-                    price_5ml: newPerfumes[0].price_5ml || '',
-                    price_10ml: newPerfumes[0].price_10ml || '',
-                    imageUrl: newPerfumes[0].image_url || 'https://www.ml-tlv.com/logo-black.png',
-                    productId: newPerfumes[0].id
+                    brand: batchToEmail[0].brand || '',
+                    model: batchToEmail[0].model || '',
+                    description: batchToEmail[0].description || '',
+                    price_2ml: batchToEmail[0].price_2ml || '',
+                    price_5ml: batchToEmail[0].price_5ml || '',
+                    price_10ml: batchToEmail[0].price_10ml || '',
+                    imageUrl: batchToEmail[0].image_url || 'https://www.ml-tlv.com/logo-black.png',
+                    productId: batchToEmail[0].id
                 });
                 html = tpl.html;
-                finalSubject = tpl.subject || `חדש באתר: ${newPerfumes[0].brand} ${newPerfumes[0].model} 🌟 - ml_tlv`;
+                finalSubject = tpl.subject || `חדש באתר: ${batchToEmail[0].brand} ${batchToEmail[0].model} 🌟 - ml_tlv`;
                 actionTaken = 'sent_single_perfume';
             } else {
-                // Priority 1: Batch of Perfumes
-                const itemsHtml = getBatchPerfumeItemsHtml(newPerfumes);
+                // Priority 1: Batch of Perfumes (2 to 6)
+                const itemsHtml = getBatchPerfumeItemsHtml(batchToEmail);
                 const tpl = await getTemplate('new_perfumes_batch', { itemsHtml }, () => {
                     const defaultTplHtml = getSystemDefaults()['new_perfumes_batch'].content_html;
                     return defaultTplHtml.replace('{{itemsHtml}}', itemsHtml);
