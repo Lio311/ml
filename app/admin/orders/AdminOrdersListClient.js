@@ -113,6 +113,7 @@ export default function AdminOrdersListClient({
     // Search state
     const [searchTerm, setSearchTerm] = useState(currentSearch || '');
     const isInitialMount = useRef(true);
+    const prevSearchTerm = useRef(searchTerm);
 
     // Debounced search
     useEffect(() => {
@@ -120,6 +121,12 @@ export default function AdminOrdersListClient({
             isInitialMount.current = false;
             return;
         }
+
+        if (prevSearchTerm.current === searchTerm) {
+            // Search term didn't change, meaning some other param (like page) triggered this render.
+            return;
+        }
+        prevSearchTerm.current = searchTerm;
 
         const timeoutId = setTimeout(() => {
             const params = new URLSearchParams(searchParams);
