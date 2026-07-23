@@ -54,6 +54,7 @@ export default function FilterSidebar({ allBrands = [], allCategories = [], allC
     const [noteSearch, setNoteSearch] = useState('');
     const [countrySearch, setCountrySearch] = useState('');
     const [perfumerSearch, setPerfumerSearch] = useState('');
+    const [brandSearch, setBrandSearch] = useState('');
 
     useEffect(() => {
         setSelectedBrands(searchParams.getAll('brand'));
@@ -201,18 +202,34 @@ export default function FilterSidebar({ allBrands = [], allCategories = [], allC
 
             {/* Brand Filter */}
             <CollapsibleSection title={`${t('common.brand_filter')} (${allBrands.length})`} initialOpen={true}>
-                <div className={`space-y-2 text-sm max-h-[110px] overflow-y-auto custom-scrollbar ps-2 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
-                    {allBrands.map(b => (
-                        <label key={b} className="flex items-center gap-2 cursor-pointer hover:bg-gray-100 p-1 rounded">
-                            <input
-                                type="checkbox"
-                                checked={selectedBrands.includes(b)}
-                                onChange={() => toggleBrand(b)}
-                                className="w-4 h-4 rounded border-gray-300 text-black focus:ring-black"
-                            />
-                            <span className={selectedBrands.includes(b) ? 'font-bold' : ''}>{b}</span>
-                        </label>
-                    ))}
+                <div className="space-y-4">
+                    <div className="relative">
+                        <input
+                            type="text"
+                            value={brandSearch}
+                            onChange={(e) => setBrandSearch(e.target.value)}
+                            placeholder={t('common.search')}
+                            className="w-full p-2 ps-8 text-xs border border-gray-100 rounded-lg bg-white focus:outline-none focus:border-black"
+                        />
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className={`absolute top-1/2 -translate-y-1/2 w-4 h-4 text-gray-300 ${dir === 'rtl' ? 'right-2' : 'left-2'}`}>
+                            <path strokeLinecap="round" strokeLinejoin="round" d="m21 21-5.197-5.197m0 0A7.5 7.5 0 1 0 5.196 5.196a7.5 7.5 0 0 0 10.607 10.607Z" />
+                        </svg>
+                    </div>
+                    <div className={`space-y-2 text-sm max-h-[110px] overflow-y-auto custom-scrollbar ps-2 ${dir === 'rtl' ? 'text-right' : 'text-left'}`}>
+                        {allBrands
+                            .filter(b => b.toLowerCase().includes(brandSearch.toLowerCase()))
+                            .map(b => (
+                            <label key={b} className="flex items-center gap-2 cursor-pointer hover:bg-gray-100 p-1 rounded">
+                                <input
+                                    type="checkbox"
+                                    checked={selectedBrands.includes(b)}
+                                    onChange={() => toggleBrand(b)}
+                                    className="w-4 h-4 rounded border-gray-300 text-black focus:ring-black"
+                                />
+                                <span className={selectedBrands.includes(b) ? 'font-bold' : ''}>{b}</span>
+                            </label>
+                        ))}
+                    </div>
                 </div>
             </CollapsibleSection>
 
