@@ -28,8 +28,8 @@ export default function PendingEmailsClient({ initialEmails }) {
         const hours = Math.floor(diff / (1000 * 60 * 60));
         const days = Math.floor(hours / 24);
         
-        if (days > 0) return \`בעוד \${days} ימים\`;
-        if (hours > 0) return \`בעוד \${hours} שעות\`;
+        if (days > 0) return `בעוד ${days} ימים`;
+        if (hours > 0) return `בעוד ${hours} שעות`;
         return 'בקרוב מאוד';
     };
 
