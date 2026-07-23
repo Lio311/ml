@@ -13,17 +13,25 @@ export async function GET() {
     let privateKey = privateKeyEnv;
 
     try {
-      // In case the user pasted the entire JSON file into the environment variable
       const parsed = JSON.parse(privateKeyEnv);
-      if (parsed && parsed.private_key) {
-        privateKey = parsed.private_key;
-      }
-      if (parsed && parsed.client_email && !clientEmail) {
-        clientEmail = parsed.client_email;
+      if (parsed && typeof parsed === 'object') {
+        if (parsed.private_key) privateKey = parsed.private_key;
+        if (parsed.client_email && !clientEmail) clientEmail = parsed.client_email;
+      } else if (typeof parsed === 'string') {
+        privateKey = parsed;
       }
     } catch (e) {}
 
-    privateKey = privateKey.replace(/^"|"$/g, '').replace(/\\n/g, '\n');
+    // Clean up
+    privateKey = privateKey.replace(/^"|"$/g, '').replace(/\\n/g, '\n').trim();
+
+    // Ensure headers exist just in case they were stripped
+    if (privateKey && !privateKey.includes('-----BEGIN PRIVATE KEY-----')) {
+        privateKey = `-----BEGIN PRIVATE KEY-----\n${privateKey}`;
+    }
+    if (privateKey && !privateKey.includes('-----END PRIVATE KEY-----')) {
+        privateKey = `${privateKey}\n-----END PRIVATE KEY-----\n`;
+    }
 
     const auth = new google.auth.GoogleAuth({
       credentials: {
