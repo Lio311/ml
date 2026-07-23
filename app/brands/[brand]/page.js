@@ -7,6 +7,7 @@ import he from '../../data/locales/he.json';
 import en from '../../data/locales/en.json';
 import { sanitizeProductArray, sanitizeProduct } from "../../lib/productUtils";
 import CatalogSEOContent from '../../components/CatalogSEOContent';
+import Breadcrumbs from '../../components/Breadcrumbs';
 
 
 export const revalidate = 3600; // Cache for 1 hour
@@ -83,13 +84,12 @@ export default async function BrandPage(props) {
     const displayName = brandData?.name || brandName;
 
     return (
-        <div className="container py-12 min-h-screen">
+        <div className="container pt-4 pb-12 min-h-screen">
             {/* Breadcrumbs */}
-            <div className="text-sm text-gray-500 mb-8 flex gap-2">
-                <Link href="/" className="hover:underline">{t('brands_page.home')}</Link> /
-                <Link href="/brands" className="hover:underline">{t('brands_page.brands')}</Link> /
-                <span className="font-bold text-black">{displayName}</span>
-            </div>
+            <Breadcrumbs items={[
+                { label: t('brands_page.brands'), href: '/brands' },
+                { label: displayName }
+            ]} />
 
             {/* Breadcrumb Schema */}
             <script
@@ -123,7 +123,7 @@ export default async function BrandPage(props) {
             />
 
             {/* Simple Header */}
-            <div className="flex flex-col items-center mb-12 text-center">
+            <div className="flex flex-col items-center mb-8 mt-4 text-center">
                 {brandData?.logo_url ? (
                     <div className="w-32 h-32 relative mb-6 p-4 border rounded-full bg-white shadow-sm flex items-center justify-center">
                         <Image
