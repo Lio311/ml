@@ -232,10 +232,20 @@ export default function OrdersClient() {
                                                         let numericSize = String(item.size).replace(/[^0-9]/g, '');
                                                         if (!numericSize) numericSize = '2'; // Fallback
                                                         
-                                                        const sizeField = `price_${numericSize}ml`;
-                                                        if (!liveProduct[sizeField] || liveProduct[sizeField] <= 0) {
-                                                            toast.error('הגודל המבוקש לא זמין כרגע במלאי');
-                                                            return;
+                                                        let selectedPrice = 0;
+                                                        if (liveProduct.is_discovery_set) {
+                                                            selectedPrice = liveProduct.single_price;
+                                                            if (!selectedPrice || selectedPrice <= 0) {
+                                                                toast.error('המוצר לא זמין כרגע');
+                                                                return;
+                                                            }
+                                                        } else {
+                                                            const sizeField = `price_${numericSize}ml`;
+                                                            selectedPrice = liveProduct[sizeField];
+                                                            if (!selectedPrice || selectedPrice <= 0) {
+                                                                toast.error('הגודל המבוקש לא זמין כרגע במלאי');
+                                                                return;
+                                                            }
                                                         }
                                                         
                                                         let requiredVolume = liveProduct.is_discovery_set ? 1 : Number(numericSize);
@@ -256,10 +266,11 @@ export default function OrdersClient() {
                                                             is_discovery_set: liveProduct.is_discovery_set,
                                                             discount_percentage: liveProduct.discount_percentage,
                                                             discount_sizes: liveProduct.discount_sizes
-                                                        }, numericSize, liveProduct[sizeField]);
+                                                        }, liveProduct.is_discovery_set ? 'set' : numericSize, selectedPrice);
                                                         
                                                         toast.success(t('orders.added_to_cart'));
                                                     } catch (e) {
+                                                        console.error(e);
                                                         toast.error('אירעה שגיאה בטעינת המוצר. ייתכן שהוא הוסר מהאתר.');
                                                     }
                                                 }}
