@@ -27,7 +27,8 @@ export default async function PendingEmailsPage() {
     const orderEmailsRes = await pool.query(`
         SELECT 
             poe.order_id, poe.process_at, poe.created_at, poe.initial_status,
-            o.email as recipient, o.customer_name
+            o.customer_details->>'email' as recipient, 
+            o.customer_details->>'name' as customer_name
         FROM pending_order_emails poe
         JOIN orders o ON o.id = poe.order_id
         WHERE poe.initial_status = 'pending'
