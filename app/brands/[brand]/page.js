@@ -122,6 +122,29 @@ export default async function BrandPage(props) {
                 }}
             />
 
+            {/* Simple Header */}
+            <div className="flex flex-col items-center mb-12 text-center">
+                {brandData?.logo_url ? (
+                    <div className="w-32 h-32 relative mb-6 p-4 border rounded-full bg-white shadow-sm flex items-center justify-center">
+                        <Image
+                            src={brandData.logo_url}
+                            alt={brandData.name}
+                            fill
+                            className="object-contain p-4"
+                        />
+                    </div>
+                ) : (
+                    <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center text-3xl mb-4">
+                        ✨
+                    </div>
+                )}
+
+                <h1 className="text-4xl font-serif font-bold mb-4">{displayName}</h1>
+                <p className="max-w-2xl text-gray-600">
+                    {t('brands_page.description', { brand: displayName })}
+                </p>
+            </div>
+
             {/* Products Grid */}
             {products.length > 0 ? (
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
@@ -138,9 +161,9 @@ export default async function BrandPage(props) {
                 </div>
             )}
 
-            {/* Brand Header / Info Section (Moved to bottom) */}
-            <div className="mt-16 mb-8 pt-12 border-t border-gray-100">
-                {brandData?.title ? (
+            {/* Rich Brand Description (Bottom) */}
+            {brandData?.title && (
+                <div className="mt-16 mb-8 pt-12 border-t border-gray-100">
                     <div className="flex flex-col-reverse md:flex-row gap-8 items-start justify-between">
                         {/* Text Section */}
                         <div className="w-full md:w-2/3 flex flex-col justify-center">
@@ -183,30 +206,8 @@ export default async function BrandPage(props) {
                             )}
                         </div>
                     </div>
-                ) : (
-                    <div className="flex flex-col items-center text-center">
-                        {brandData?.logo_url ? (
-                            <div className="w-32 h-32 relative mb-6 p-4 border rounded-full bg-white shadow-sm flex items-center justify-center">
-                                <Image
-                                    src={brandData.logo_url}
-                                    alt={brandData.name}
-                                    fill
-                                    className="object-contain p-4"
-                                />
-                            </div>
-                        ) : (
-                            <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center text-3xl mb-4">
-                                ✨
-                            </div>
-                        )}
-
-                        <h2 className="text-4xl font-serif font-bold mb-4">{displayName}</h2>
-                        <p className="max-w-2xl text-gray-600">
-                            {t('brands_page.description', { brand: displayName })}
-                        </p>
-                    </div>
-                )}
-            </div>
+                </div>
+            )}
 
             {/* SEO Content Section */}
             <CatalogSEOContent />
