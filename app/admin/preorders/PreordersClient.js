@@ -88,6 +88,8 @@ export default function PreordersClient() {
         } finally {
             setNotifyingId(null);
         }
+    };
+
     const handleDeletePreorder = (preorderId) => {
         toast.custom((t) => (
             <div 
