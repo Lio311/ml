@@ -12,6 +12,13 @@ export async function GET(req) {
 
     const client = await pool.connect();
     try {
+        // --- 0. Shabbat Check ---
+        const israelTime = new Date().toLocaleString("en-US", {timeZone: "Asia/Jerusalem"});
+        const israelDate = new Date(israelTime);
+        if (israelDate.getDay() === 6) {
+            return NextResponse.json({ message: 'No marketing emails on Saturday (Shabbat).' });
+        }
+
         // --- 1. Rate Limiting Check ---
         const todayStr = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Jerusalem' });
         const settingsRes = await client.query(`SELECT value FROM site_settings WHERE key = 'last_marketing_email_date'`);

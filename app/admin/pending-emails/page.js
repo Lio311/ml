@@ -132,6 +132,14 @@ export default async function PendingEmailsPage() {
     }
 
     const todayStr = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Jerusalem' });
+    const skipSaturdays = (dateObj) => {
+        const israelTime = dateObj.toLocaleString("en-US", {timeZone: "Asia/Jerusalem"});
+        const israelDate = new Date(israelTime);
+        if (israelDate.getDay() === 6) { // 6 = Saturday
+            dateObj.setDate(dateObj.getDate() + 1);
+        }
+    };
+
     let nextAvailableDate = new Date(); // default to today/now
     if (lastSentDateStr === todayStr) {
         // Already sent today, next available is tomorrow
@@ -149,6 +157,8 @@ export default async function PendingEmailsPage() {
             nextAvailableDate = today10am;
         }
     }
+    
+    skipSaturdays(nextAvailableDate);
 
     // 6. Implicit Marketing Emails (New Perfumes & Discovery Sets)
     const perfumesRes = await pool.query(`
@@ -178,6 +188,7 @@ export default async function PendingEmailsPage() {
         });
         // Push the available date for the next campaign by 1 day
         currentAvailableDate.setDate(currentAvailableDate.getDate() + 1);
+        skipSaturdays(currentAvailableDate);
     }
 
     if (newSets.length > 0) {
@@ -208,6 +219,7 @@ export default async function PendingEmailsPage() {
             if (isFullBatch) {
                 // Push the available date for the next campaign by 1 day
                 currentAvailableDate.setDate(currentAvailableDate.getDate() + 1);
+                skipSaturdays(currentAvailableDate);
             }
             batchIndex++;
         }
