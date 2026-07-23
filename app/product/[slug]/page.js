@@ -679,7 +679,6 @@ export default async function ProductPage(props) {
 
             {/* Brand Insight Section (SEO) */}
             <BrandInsight brand={product.brand} />
-            
             <CatalogSEOContent />
         </div >
     );

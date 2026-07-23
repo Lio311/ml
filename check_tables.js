@@ -6,12 +6,13 @@ const pool = new Pool({
 });
 
 pool.query(`
-    SELECT id, brand, model, created_at, discovery_email_sent, perfume_email_sent, is_discovery_set, active 
+    SELECT brand, COUNT(*) as total_products, 
+           SUM(CASE WHEN description IS NULL OR description = '' THEN 1 ELSE 0 END) as missing_descriptions
     FROM products 
-    WHERE (brand ILIKE '%anelo%' OR model ILIKE '%anelo%' 
-       OR brand ILIKE '%yuma%' OR model ILIKE '%yuma%'
-       OR brand ILIKE '%maiestus%' OR model ILIKE '%maiestus%')
+    GROUP BY brand
+    HAVING SUM(CASE WHEN description IS NULL OR description = '' THEN 1 ELSE 0 END) > 0
 `).then(res => {
-    console.log("Perfumes:", res.rows);
+    console.log(`Brands with missing product descriptions:`);
+    console.dir(res.rows, { depth: null });
     process.exit(0);
 }).catch(console.error);

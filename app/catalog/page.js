@@ -14,6 +14,7 @@ import { unstable_cache } from 'next/cache';
 import { getProducts } from './dbQueries';
 import CatalogClientGrid from './CatalogClientGrid';
 import CatalogSEOContent from '../components/CatalogSEOContent';
+import BrandInsight from '../components/BrandInsight';
 
 
 const getT = (locale) => {
@@ -236,6 +237,12 @@ export default async function CatalogPage(props) {
             <p className="hidden md:block text-sm text-gray-400 text-center mb-10">
                 {t('common.showing_products').replace('{count}', products.length).replace('{page}', page).replace('{total}', totalPages)}
             </p>
+
+            {brand && typeof brand === 'string' && !category && !search && (
+                <div className="mb-12">
+                    <BrandInsight brand={brand} /> 
+                </div>
+            )}
 
             <div className="flex flex-col md:flex-row gap-8">
 
