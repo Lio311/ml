@@ -35,12 +35,12 @@ export default async function PendingEmailsPage() {
     `);
 
     const orderEmails = orderEmailsRes.rows.map(row => ({
-        id: \`order_\${row.order_id}_\${row.created_at.getTime()}\`,
+        id: `order_${row.order_id}_${row.created_at.getTime()}`,
         type: 'פולו-אפ להזמנה / סקירה',
         recipient: row.recipient,
         customerName: row.customer_name,
         scheduledDate: row.process_at,
-        contentPreview: \`מייל מעקב להזמנה #\${row.order_id}\`,
+        contentPreview: `מייל מעקב להזמנה #${row.order_id}`,
         rawContent: null
     }));
 
@@ -56,12 +56,12 @@ export default async function PendingEmailsPage() {
     `);
 
     const recEmails = recEmailsRes.rows.map(row => ({
-        id: \`rec_\${row.id}\`,
+        id: `rec_${row.id}`,
         type: 'המלצות אישיות (בוט החודש)',
         recipient: row.recipient || 'לא ידוע',
-        customerName: \`\${row.first_name || ''} \${row.last_name || ''}\`.trim(),
+        customerName: `${row.first_name || ''} ${row.last_name || ''}`.trim(),
         scheduledDate: row.created_at, // Recommendation emails are sent shortly after creation by cron
-        contentPreview: \`מכיל \${row.suggested_products?.length || 0} המלצות בשמים\`,
+        contentPreview: `מכיל ${row.suggested_products?.length || 0} המלצות בשמים`,
         rawContent: JSON.stringify(row.suggested_products, null, 2)
     }));
 
@@ -77,13 +77,13 @@ export default async function PendingEmailsPage() {
     const campaigns = campaignsRes.rows.map(row => {
         let recipientDisplay = row.recipient_type;
         if (row.recipient_type === 'specific') {
-            recipientDisplay = \`רשימה ספציפית (\${row.recipients?.length || 0} נמענים)\`;
+            recipientDisplay = `רשימה ספציפית (${row.recipients?.length || 0} נמענים)`;
         } else if (row.recipient_type === 'all') {
             recipientDisplay = 'כלל המנויים';
         }
 
         return {
-            id: \`campaign_\${row.id}\`,
+            id: `campaign_${row.id}`,
             type: 'קמפיין דיוור',
             recipient: recipientDisplay,
             customerName: row.title || 'ללא כותרת',
