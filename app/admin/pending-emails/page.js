@@ -137,9 +137,18 @@ export default async function PendingEmailsPage() {
         // Already sent today, next available is tomorrow
         nextAvailableDate = new Date();
         nextAvailableDate.setDate(nextAvailableDate.getDate() + 1);
+        nextAvailableDate.setHours(10, 0, 0, 0);
+    } else {
+        // Next available is today. Set to 10:00 AM if it hasn't passed, otherwise set to slightly in the future so it doesn't get filtered out
+        const today10am = new Date();
+        today10am.setHours(10, 0, 0, 0);
+        if (new Date() > today10am) {
+            nextAvailableDate = new Date();
+            nextAvailableDate.setMinutes(nextAvailableDate.getMinutes() + 5);
+        } else {
+            nextAvailableDate = today10am;
+        }
     }
-    // Set a reasonable time for display (e.g. 10:00 AM)
-    nextAvailableDate.setHours(10, 0, 0, 0);
 
     // 6. Implicit Marketing Emails (New Perfumes & Discovery Sets)
     const perfumesRes = await pool.query(`
@@ -172,20 +181,36 @@ export default async function PendingEmailsPage() {
     }
 
     if (newSets.length > 0) {
-        const missing = 6 - newSets.length;
-        const previewText = missing > 0 
-            ? `חסרים ${missing} מארזים כדי לשלוח (יש ${newSets.length} מתוך 6)` 
-            : `מוכן לשליחה (מכיל ${newSets.length} מארזים)`;
+        let setsRemaining = [...newSets];
+        let batchIndex = 1;
+
+        while (setsRemaining.length > 0) {
+            const currentBatch = setsRemaining.slice(0, 6);
+            setsRemaining = setsRemaining.slice(6);
             
-        productEmails.push({
-            id: `new_discovery_pending`,
-            type: 'קמפיין מארזי דיסקברי',
-            recipient: 'כלל המנויים',
-            customerName: '-',
-            scheduledDate: missing > 0 ? null : currentAvailableDate.toISOString(), // No date if missing items
-            contentPreview: previewText,
-            rawContent: JSON.stringify(newSets.map(p => `${p.brand} ${p.model}`), null, 2)
-        });
+            const isFullBatch = currentBatch.length === 6;
+            const missing = 6 - currentBatch.length;
+            
+            const previewText = !isFullBatch
+                ? `חסרים ${missing} מארזים כדי לשלוח (יש ${currentBatch.length} מתוך 6)` 
+                : `מוכן לשליחה (מכיל 6 מארזים)`;
+                
+            productEmails.push({
+                id: `new_discovery_pending_${batchIndex}`,
+                type: 'קמפיין מארזי דיסקברי',
+                recipient: 'כלל המנויים',
+                customerName: '-',
+                scheduledDate: !isFullBatch ? null : new Date(currentAvailableDate).toISOString(),
+                contentPreview: previewText,
+                rawContent: JSON.stringify(currentBatch.map(p => `${p.brand} ${p.model}`), null, 2)
+            });
+            
+            if (isFullBatch) {
+                // Push the available date for the next campaign by 1 day
+                currentAvailableDate.setDate(currentAvailableDate.getDate() + 1);
+            }
+            batchIndex++;
+        }
     }
 
     // Combine and sort
