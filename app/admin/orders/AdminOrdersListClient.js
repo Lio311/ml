@@ -284,7 +284,7 @@ export default function AdminOrdersListClient({
                                                         >
                                                             {item.name || (item.type === 'bundle' ? `חבילת ${item.bundleType}` : `${item.brand} ${item.model}`)}
                                                         </Link>
-                                                        <span className="text-gray-400 whitespace-nowrap" dir="ltr">{item.is_discovery_set ? formatDiscoverySize(item.volume_label) : (String(item.size).includes('ml') ? item.size : `${item.size} ml`)}</span>
+                                                        <span className="text-gray-400 whitespace-nowrap">{item.is_discovery_set ? formatDiscoverySize(item.volume_label) : (String(item.size).includes('ml') || String(item.size).includes('מ"ל') || String(item.size).includes('מ״ל') ? item.size : `${item.size} מ"ל`)}</span>
                                                     </li>
                                                     {item.type === 'bundle' && item.items && item.items.length > 0 && (
                                                         <div className="mr-6 mt-1 mb-2">
@@ -299,7 +299,7 @@ export default function AdminOrdersListClient({
                                                                         >
                                                                             {subItem.brand} {subItem.model}
                                                                         </Link>
-                                                                        <span className="text-gray-400 whitespace-nowrap" dir="ltr">{String(item.size).includes('ml') ? item.size : `${item.size} ml`}</span>
+                                                                        <span className="text-gray-400 whitespace-nowrap">{String(item.size).includes('ml') || String(item.size).includes('מ"ל') || String(item.size).includes('מ״ל') ? item.size : `${item.size} מ"ל`}</span>
                                                                     </li>
                                                                 ))}
                                                             </ul>
@@ -540,8 +540,8 @@ export default function AdminOrdersListClient({
                                                         )}
                                                     </div>
                                                 </div>
-                                                <span className="text-gray-400 font-black text-[10px] uppercase tracking-tighter pt-1 shrink-0 bg-white px-2 py-0.5 rounded-lg border border-gray-100" dir="ltr">
-                                                    {item.is_discovery_set ? formatDiscoverySize(item.volume_label) : (String(item.size).includes('ml') ? item.size : `${item.size}ml`)}
+                                                <span className="text-gray-400 font-black text-[10px] uppercase tracking-tighter pt-1 shrink-0 bg-white px-2 py-0.5 rounded-lg border border-gray-100">
+                                                    {item.is_discovery_set ? formatDiscoverySize(item.volume_label) : (String(item.size).includes('ml') || String(item.size).includes('מ"ל') || String(item.size).includes('מ״ל') ? item.size : `${item.size} מ"ל`)}
                                                 </span>
                                             </div>
                                             {item.type === 'bundle' && item.items && item.items.length > 0 && (
@@ -573,8 +573,8 @@ export default function AdminOrdersListClient({
                                                                         </div>
                                                                     </div>
                                                                     {item.size && (
-                                                                        <span className="text-gray-400 font-black text-[10px] uppercase tracking-tighter pt-1 shrink-0 bg-white px-2 py-0.5 rounded-lg border border-gray-100" dir="ltr">
-                                                                            {String(item.size).toLowerCase().includes('ml') ? item.size : `${item.size}ml`}
+                                                                        <span className="text-gray-400 font-black text-[10px] uppercase tracking-tighter pt-1 shrink-0 bg-white px-2 py-0.5 rounded-lg border border-gray-100">
+                                                                            {String(item.size).includes('ml') || String(item.size).includes('מ"ל') || String(item.size).includes('מ״ל') ? item.size : `${item.size} מ"ל`}
                                                                         </span>
                                                                     )}
                                                                 </div>
