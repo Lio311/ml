@@ -104,7 +104,7 @@ export default function Header({ brands = [] }) {
             { label: t('common.brands'), href: '/brands', type: 'brands', active: pathname === '/brands' },
             { label: t('common.catalog'), href: '/catalog', type: 'catalog', active: pathname === '/catalog' },
             { label: t('common.bundles'), href: '/bundles', active: pathname === '/bundles' },
-            { label: t('common.discovery_sets') || 'דיסקברי סט', href: '/discovery-sets', active: pathname === '/discovery-sets' },
+            { label: t('common.discovery_sets') !== 'common.discovery_sets' ? t('common.discovery_sets') : (dir === 'ltr' ? 'Discovery Sets' : 'דיסקברי סט'), href: '/discovery-sets', active: pathname === '/discovery-sets' },
             { label: t('common.sales'), href: '/sales', active: pathname === '/sales' },
             { label: t('common.requests'), href: '/requests', active: pathname === '/requests' },
             { label: t('common.contact'), href: '/contact', active: pathname === '/contact' },
