@@ -55,9 +55,9 @@ export function LiveCartCard({ cart, isNew }) {
 
     return (
         <Card ref={cardRef} className="w-full flex flex-col shadow-md border border-gray-200/50 hover:shadow-lg transition-all duration-300 overflow-hidden bg-white/60 backdrop-blur-md">
-            <CardHeader className="pb-3 border-b border-gray-100 flex flex-row items-center justify-between space-y-0">
-                <div className="flex items-center gap-3">
-                    <Avatar className="h-10 w-10 border border-gray-200">
+            <CardHeader className="pb-3 border-b border-gray-100 flex flex-row items-center justify-between gap-3 space-y-0">
+                <div className="flex items-center gap-3 min-w-0">
+                    <Avatar className="h-10 w-10 border border-gray-200 flex-shrink-0">
                         {cart.user_image ? (
                             <img src={cart.user_image} alt="User" className="w-full h-full object-cover rounded-full" />
                         ) : (
@@ -66,14 +66,14 @@ export function LiveCartCard({ cart, isNew }) {
                             </AvatarFallback>
                         )}
                     </Avatar>
-                    <div className="flex flex-col">
-                        <CardTitle className="text-sm font-semibold text-gray-800 flex items-center gap-2">
+                    <div className="flex flex-col min-w-0">
+                        <CardTitle className="text-sm font-semibold text-gray-800 truncate" title={isAnonymous ? "משתמש אנונימי" : cart.email}>
                             {isAnonymous ? "משתמש אנונימי" : cart.email}
                         </CardTitle>
-                        <span className="text-xs text-gray-500">ID: {cart.session_id.substring(0, 8)}...</span>
+                        <span className="text-xs text-gray-500 truncate">ID: {cart.session_id.substring(0, 8)}...</span>
                     </div>
                 </div>
-                <Badge variant={isAnonymous ? "secondary" : "default"} className={isAnonymous ? "bg-gray-100 text-gray-600 hover:bg-gray-200" : "bg-emerald-100 text-emerald-700 hover:bg-emerald-200"}>
+                <Badge variant={isAnonymous ? "secondary" : "default"} className={`flex-shrink-0 ${isAnonymous ? "bg-gray-100 text-gray-600 hover:bg-gray-200" : "bg-emerald-100 text-emerald-700 hover:bg-emerald-200"}`}>
                     {isAnonymous ? "אנונימי" : "רשום"}
                 </Badge>
             </CardHeader>
