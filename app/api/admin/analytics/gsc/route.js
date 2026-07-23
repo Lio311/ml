@@ -8,12 +8,26 @@ export async function GET() {
       return NextResponse.json({ error: 'Missing Search Console Configuration in Environment' }, { status: 400 });
     }
 
-    let privateKey = process.env.GOOGLE_PRIVATE_KEY || '';
+    let privateKeyEnv = process.env.GOOGLE_PRIVATE_KEY || '';
+    let clientEmail = process.env.GOOGLE_CLIENT_EMAIL || '';
+    let privateKey = privateKeyEnv;
+
+    try {
+      // In case the user pasted the entire JSON file into the environment variable
+      const parsed = JSON.parse(privateKeyEnv);
+      if (parsed && parsed.private_key) {
+        privateKey = parsed.private_key;
+      }
+      if (parsed && parsed.client_email && !clientEmail) {
+        clientEmail = parsed.client_email;
+      }
+    } catch (e) {}
+
     privateKey = privateKey.replace(/^"|"$/g, '').replace(/\\n/g, '\n');
 
     const auth = new google.auth.GoogleAuth({
       credentials: {
-        client_email: process.env.GOOGLE_CLIENT_EMAIL,
+        client_email: clientEmail,
         private_key: privateKey,
       },
       scopes: ['https://www.googleapis.com/auth/webmasters.readonly'],
