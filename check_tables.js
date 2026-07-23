@@ -5,7 +5,13 @@ const pool = new Pool({
   ssl: { rejectUnauthorized: false }
 });
 
-pool.query("SELECT * FROM email_logs WHERE status IN ('pending', 'scheduled')").then(res => {
-    console.log("email_logs pending/scheduled:", res.rows.length);
+Promise.all([
+    pool.query("SELECT * FROM automation_config"),
+    pool.query("SELECT * FROM workflows"),
+    pool.query("SELECT * FROM email_logs WHERE created_at > NOW() - INTERVAL '1 days'")
+]).then(res => {
+    console.log("automation_config:", res[0].rows);
+    console.log("workflows:", res[1].rows);
+    console.log("recent email_logs:", res[2].rows.length);
     process.exit(0);
 }).catch(console.error);

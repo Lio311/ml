@@ -15,13 +15,13 @@ export default function PendingEmailsClient({ initialEmails }) {
     };
 
     const formatDate = (dateString) => {
-        if (!dateString) return 'לא ידוע';
+        if (!dateString) return 'מבוסס אירוע (ללא תאריך מוגדר)';
         return format(new Date(dateString), "dd/MM/yyyy HH:mm", { locale: he });
     };
 
     // Calculate time until send
     const getTimeUntil = (dateString) => {
-        if (!dateString) return '';
+        if (!dateString) return 'בהקדם האפשרי';
         const diff = new Date(dateString).getTime() - new Date().getTime();
         if (diff < 0) return 'אמור להישלח (ממתין לתור)';
         

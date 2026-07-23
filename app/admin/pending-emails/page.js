@@ -61,7 +61,7 @@ export default async function PendingEmailsPage() {
         type: row.status === 'approved' ? 'המלצות (מאושר, ממתין לשליחה)' : 'המלצות אישיות (ממתין לאישור)',
         recipient: row.recipient || 'לא ידוע',
         customerName: `${row.first_name || ''} ${row.last_name || ''}`.trim(),
-        scheduledDate: row.created_at, 
+        scheduledDate: null, // Event-based, no specific scheduled date
         contentPreview: `מכיל ${row.suggested_products?.length || 0} המלצות בשמים`,
         rawContent: JSON.stringify(row.suggested_products, null, 2)
     }));
@@ -109,17 +109,23 @@ export default async function PendingEmailsPage() {
         type: 'חזר למלאי (ממתין)',
         recipient: row.recipient,
         customerName: '-',
-        scheduledDate: row.created_at,
+        scheduledDate: null, // Event-based
         contentPreview: `הרשמה לעדכון חזרה למלאי: ${row.product_name}`,
         rawContent: null
     }));
 
     // Combine and sort
-    const allPending = [...orderEmails, ...recEmails, ...campaigns, ...bisEmails].sort((a, b) => {
-        const timeA = a.scheduledDate ? new Date(a.scheduledDate).getTime() : Infinity;
-        const timeB = b.scheduledDate ? new Date(b.scheduledDate).getTime() : Infinity;
-        return timeA - timeB;
-    });
+    const now = Date.now();
+    const allPending = [...orderEmails, ...recEmails, ...campaigns, ...bisEmails]
+        .filter(p => {
+            if (!p.scheduledDate) return true;
+            return new Date(p.scheduledDate).getTime() > now - (1000 * 60 * 60); // Allow up to 1 hour past
+        })
+        .sort((a, b) => {
+            const timeA = a.scheduledDate ? new Date(a.scheduledDate).getTime() : Infinity;
+            const timeB = b.scheduledDate ? new Date(b.scheduledDate).getTime() : Infinity;
+            return timeA - timeB;
+        });
 
     // Ensure we send serializable dates
     const serializedPending = allPending.map(p => ({
