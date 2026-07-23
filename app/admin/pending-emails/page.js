@@ -114,9 +114,52 @@ export default async function PendingEmailsPage() {
         rawContent: null
     }));
 
+    // 5. Implicit Marketing Emails (New Perfumes & Discovery Sets)
+    const perfumesRes = await pool.query(`
+        SELECT id, brand, model, is_discovery_set
+        FROM products 
+        WHERE active = true 
+          AND ((is_discovery_set = false AND perfume_email_sent = false)
+           OR (is_discovery_set = true AND discovery_email_sent = false))
+        ORDER BY created_at ASC
+    `);
+
+    const newPerfumes = perfumesRes.rows.filter(p => !p.is_discovery_set);
+    const newSets = perfumesRes.rows.filter(p => p.is_discovery_set);
+    const productEmails = [];
+
+    if (newPerfumes.length > 0) {
+        productEmails.push({
+            id: `new_perfumes_pending`,
+            type: 'קמפיין בשמים חדשים',
+            recipient: 'כלל המנויים',
+            customerName: '-',
+            scheduledDate: null,
+            contentPreview: `מוכן לשליחה: מכיל ${newPerfumes.length} בשמים חדשים`,
+            rawContent: null
+        });
+    }
+
+    if (newSets.length > 0) {
+        const missing = 6 - newSets.length;
+        const previewText = missing > 0 
+            ? `חסרים ${missing} מארזים כדי לשלוח (יש ${newSets.length} מתוך 6)` 
+            : `מוכן לשליחה (מכיל ${newSets.length} מארזים)`;
+            
+        productEmails.push({
+            id: `new_discovery_pending`,
+            type: 'קמפיין מארזי דיסקברי',
+            recipient: 'כלל המנויים',
+            customerName: '-',
+            scheduledDate: null,
+            contentPreview: previewText,
+            rawContent: null
+        });
+    }
+
     // Combine and sort
     const now = Date.now();
-    const allPending = [...orderEmails, ...recEmails, ...campaigns, ...bisEmails]
+    const allPending = [...orderEmails, ...recEmails, ...campaigns, ...bisEmails, ...productEmails]
         .filter(p => {
             if (!p.scheduledDate) return true;
             return new Date(p.scheduledDate).getTime() > now - (1000 * 60 * 60); // Allow up to 1 hour past

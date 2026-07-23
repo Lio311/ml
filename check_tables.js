@@ -5,13 +5,13 @@ const pool = new Pool({
   ssl: { rejectUnauthorized: false }
 });
 
-Promise.all([
-    pool.query("SELECT * FROM automation_config"),
-    pool.query("SELECT * FROM workflows"),
-    pool.query("SELECT * FROM email_logs WHERE created_at > NOW() - INTERVAL '1 days'")
-]).then(res => {
-    console.log("automation_config:", res[0].rows);
-    console.log("workflows:", res[1].rows);
-    console.log("recent email_logs:", res[2].rows.length);
+pool.query(`
+    SELECT id, brand, model, created_at, discovery_email_sent, perfume_email_sent, is_discovery_set, active 
+    FROM products 
+    WHERE (brand ILIKE '%anelo%' OR model ILIKE '%anelo%' 
+       OR brand ILIKE '%yuma%' OR model ILIKE '%yuma%'
+       OR brand ILIKE '%maiestus%' OR model ILIKE '%maiestus%')
+`).then(res => {
+    console.log("Perfumes:", res.rows);
     process.exit(0);
 }).catch(console.error);
