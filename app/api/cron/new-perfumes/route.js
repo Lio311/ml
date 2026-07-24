@@ -22,9 +22,13 @@ export async function GET(req) {
         // --- 1. Rate Limiting Check ---
         const todayStr = new Date().toLocaleDateString('en-CA', { timeZone: 'Asia/Jerusalem' });
         const settingsRes = await client.query(`SELECT value FROM site_settings WHERE key = 'last_marketing_email_date'`);
-        const lastSentDate = settingsRes.rows.length > 0 ? settingsRes.rows[0].value : null;
+        let lastSentDateStr = null;
+        if (settingsRes.rows.length > 0) {
+            const val = settingsRes.rows[0].value;
+            lastSentDateStr = Array.isArray(val) ? val[0] : val;
+        }
 
-        if (lastSentDate === todayStr) {
+        if (lastSentDateStr === todayStr) {
             return NextResponse.json({ message: 'A marketing email was already sent today. Deferring to tomorrow.' });
         }
 
@@ -139,7 +143,7 @@ export async function GET(req) {
                 INSERT INTO site_settings (key, value) 
                 VALUES ('last_marketing_email_date', $1)
                 ON CONFLICT (key) DO UPDATE SET value = EXCLUDED.value
-            `, [JSON.stringify([todayStr])]);
+            `, [JSON.stringify(todayStr)]);
         }
 
         return NextResponse.json({ 
