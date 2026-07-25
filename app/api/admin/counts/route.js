@@ -51,8 +51,14 @@ export async function GET() {
                 // 7. Pending perfume requests
                 client.query("SELECT COUNT(*) FROM perfume_requests").catch(() => ({ rows: [{ count: 0 }] })),
 
-                // 8. Pending scheduled emails
-                client.query("SELECT COUNT(*) FROM pending_order_emails WHERE initial_status = 'pending'").catch(() => ({ rows: [{ count: 0 }] }))
+                // 8. Pending scheduled emails (aggregating all types shown on the pending emails page)
+                client.query(`
+                    SELECT 
+                        (SELECT COUNT(*) FROM pending_order_emails WHERE initial_status = 'pending') +
+                        (SELECT COUNT(*) FROM email_campaigns WHERE status = 'scheduled') +
+                        (SELECT COUNT(*) FROM pending_recommendation_emails WHERE status IN ('pending', 'approved')) +
+                        (SELECT COUNT(*) FROM back_in_stock_subscriptions WHERE status = 'pending') as count
+                `).catch(() => ({ rows: [{ count: 0 }] }))
             ]);
 
             let checkoutErrorsCount = 0;
