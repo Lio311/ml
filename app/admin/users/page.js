@@ -85,7 +85,8 @@ export default async function AdminUsersPage(props) {
                     (SELECT COALESCE(SUM(total_amount), 0) FROM orders WHERE customer_details->>'clerk_id' = users.id AND status != 'cancelled' AND catalog_id IS NULL) as site_spent,
                     (SELECT COUNT(*) FROM orders WHERE customer_details->>'clerk_id' = users.id AND status != 'cancelled' AND catalog_id IS NOT NULL) as catalog_orders,
                     (SELECT COALESCE(SUM(total_amount), 0) FROM orders WHERE customer_details->>'clerk_id' = users.id AND status != 'cancelled' AND catalog_id IS NOT NULL) as catalog_spent,
-                    (SELECT MAX(created_at) FROM orders WHERE customer_details->>'clerk_id' = users.id) as last_order_at
+                    (SELECT MAX(created_at) FROM orders WHERE customer_details->>'clerk_id' = users.id) as last_order_at,
+                    (SELECT MAX(updated_at) FROM live_carts WHERE live_carts.email = users.email) as last_cart_at
                 FROM users 
                 ${whereClause}
                 ORDER BY ${orderByClause}
@@ -117,8 +118,9 @@ export default async function AdminUsersPage(props) {
             const clerkLastSignIn = clerkUsersMap[u.id]?.lastSignInAt ? new Date(clerkUsersMap[u.id].lastSignInAt) : null;
             const dbLastActive = u.last_active_at ? new Date(u.last_active_at) : null;
             const lastOrderAt = u.last_order_at ? new Date(u.last_order_at) : null;
+            const lastCartAt = u.last_cart_at ? new Date(u.last_cart_at) : null;
             
-            const dates = [clerkLastSignIn, dbLastActive, lastOrderAt].filter(d => d && !isNaN(d));
+            const dates = [clerkLastSignIn, dbLastActive, lastOrderAt, lastCartAt].filter(d => d && !isNaN(d));
             const mostRecentDate = dates.length > 0 ? new Date(Math.max(...dates)) : null;
 
             return {
