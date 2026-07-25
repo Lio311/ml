@@ -84,45 +84,35 @@ export async function GET(req) {
             
             console.log(`[Nurture Cron] Found ${users3.length} users for 3-days, ${users10.length} users for 10-days, ${users25.length} users for 25-days.`);
 
-            let processed3 = 0;
-            let processed10 = 0;
-            let processed25 = 0;
-
-            // Send 3-day emails
-            for (const user of users3) {
-                if (!user.email) continue;
-                const firstName = user.first_name || 'לקוח/ה';
-                const { html, subject } = await getTemplate('nurture_3_days', { name: firstName });
-                
-                if (html && subject) {
-                    await sendEmail(user.email, subject, html, 'nurture_3_days');
-                    processed3++;
+            async function processNurture(users, typeStr) {
+                let count = 0;
+                for (const user of users) {
+                    if (!user.email) continue;
+                    await client.query('BEGIN');
+                    const lockId = Math.abs(String(user.email + typeStr).split('').reduce((a,b)=>(((a<<5)-a)+b.charCodeAt(0))|0,0));
+                    await client.query('SELECT pg_advisory_xact_lock($1)', [lockId]);
+                    
+                    const check = await client.query("SELECT 1 FROM email_logs WHERE recipient = $1 AND type = $2", [user.email, typeStr]);
+                    if (check.rows.length === 0) {
+                        await client.query("INSERT INTO email_logs (recipient, subject, type, status) VALUES ($1, 'Processing', $2, 'processing')", [user.email, typeStr]);
+                        await client.query('COMMIT');
+                        
+                        const firstName = user.first_name || 'לקוח/ה';
+                        const { html, subject } = await getTemplate(typeStr, { name: firstName });
+                        if (html && subject) {
+                            await sendEmail(user.email, subject, html, typeStr);
+                            count++;
+                        }
+                    } else {
+                        await client.query('ROLLBACK');
+                    }
                 }
+                return count;
             }
 
-            // Send 10-day emails
-            for (const user of users10) {
-                if (!user.email) continue;
-                const firstName = user.first_name || 'לקוח/ה';
-                const { html, subject } = await getTemplate('nurture_10_days', { name: firstName });
-                
-                if (html && subject) {
-                    await sendEmail(user.email, subject, html, 'nurture_10_days');
-                    processed10++;
-                }
-            }
-
-            // Send 25-day emails
-            for (const user of users25) {
-                if (!user.email) continue;
-                const firstName = user.first_name || 'לקוח/ה';
-                const { html, subject } = await getTemplate('nurture_25_days', { name: firstName });
-                
-                if (html && subject) {
-                    await sendEmail(user.email, subject, html, 'nurture_25_days');
-                    processed25++;
-                }
-            }
+            let processed3 = await processNurture(users3, 'nurture_3_days');
+            let processed10 = await processNurture(users10, 'nurture_10_days');
+            let processed25 = await processNurture(users25, 'nurture_25_days');
 
             // Update workflow last_run for visual sync
             await client.query(`

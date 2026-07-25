@@ -9,6 +9,8 @@ export async function GET(req) {
 
     const client = await pool.connect();
     try {
+        await client.query('BEGIN');
+        
         let queryText = `
             SELECT p.order_id, p.initial_status, p.process_at,
                    o.status as current_status, o.customer_details
@@ -22,6 +24,8 @@ export async function GET(req) {
             queryText += ` AND p.order_id = $1`;
             queryParams.push(specificOrderId);
         }
+
+        queryText += ` FOR UPDATE OF p SKIP LOCKED`;
 
         const res = await client.query(queryText, queryParams);
 
@@ -70,8 +74,10 @@ export async function GET(req) {
             }
         }
 
+        await client.query('COMMIT');
         return NextResponse.json({ success: true, processedCount: res.rows.length });
     } catch (error) {
+        await client.query('ROLLBACK');
         console.error('Error processing delayed emails:', error);
         return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
     } finally {

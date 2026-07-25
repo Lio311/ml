@@ -20,7 +20,7 @@ export async function POST(req) {
         }
 
         body = await req.json();
-        const { items, total, freeSamples, notes, deliveryMethod, phoneNumber, catalogId, couponCode } = body;
+        const { items, total, freeSamples: clientFreeSamples, notes, deliveryMethod, phoneNumber, catalogId, couponCode } = body;
 
         if (!items || items.length === 0) {
             return NextResponse.json({ error: 'Cart is empty' }, { status: 400 });
@@ -54,7 +54,7 @@ export async function POST(req) {
                         }
                         if (isNaN(innerDbId)) continue;
                         
-                        const stockRes = await client.query('SELECT stock FROM products WHERE id = $1', [innerDbId]);
+                        const stockRes = await client.query('SELECT stock FROM products WHERE id = $1 FOR UPDATE', [innerDbId]);
                         if (stockRes.rows.length > 0) {
                             const requiredVolume = Number(item.size) * item.quantity;
                             if (stockRes.rows[0].stock < requiredVolume) {
@@ -67,7 +67,7 @@ export async function POST(req) {
 
                 if (isNaN(dbId)) continue;
 
-                const stockRes = await client.query('SELECT stock, is_discovery_set FROM products WHERE id = $1', [dbId]);
+                const stockRes = await client.query('SELECT stock, is_discovery_set FROM products WHERE id = $1 FOR UPDATE', [dbId]);
                 if (stockRes.rows.length > 0) {
                     const p = stockRes.rows[0];
                     let requiredVolume = 0;
@@ -211,12 +211,21 @@ export async function POST(req) {
 
             const priceAfterDiscounts = calculatedTotal - promoDiscountAmount;
 
+            // --- SERVER-SIDE FREE SAMPLES VALIDATION ---
+            let freeSamples = Number(clientFreeSamples) || 0;
+            // Prevent malicious inventory drain
+            const maxAllowedSamples = priceAfterDiscounts >= 1000 ? 6 : (priceAfterDiscounts >= 500 ? 4 : (priceAfterDiscounts >= 300 ? 2 : 0));
+            if (freeSamples > maxAllowedSamples) {
+                freeSamples = maxAllowedSamples;
+            }
+
             // --- Apply Coupon Discount ---
             let discountAmount = 0;
             if (couponCode) {
                 const coupRes = await client.query(`
                     SELECT code, discount_percent, limitations, email FROM coupons 
                     WHERE code = $1 AND status = 'active' AND (expires_at IS NULL OR expires_at > NOW())
+                    FOR UPDATE
                 `, [couponCode.toUpperCase()]);
 
                 if (coupRes.rows.length === 0) {

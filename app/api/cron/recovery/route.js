@@ -26,11 +26,14 @@ export async function GET(req) {
             // 1. Find Abandoned Carts (> delay_hours ago, pending)
             const cutoff = new Date(Date.now() - delayMs).toISOString();
 
+            await client.query('BEGIN');
+            
             const res = await client.query(`
                 SELECT email, items, updated_at, recovery_status FROM abandoned_carts 
                 WHERE updated_at < $1 
                 AND recovery_status = 'pending'
                 AND email IS NOT NULL
+                FOR UPDATE SKIP LOCKED
             `, [cutoff]);
 
             const carts = res.rows;
@@ -114,8 +117,12 @@ export async function GET(req) {
                 WHERE name = 'שחזור עגלה נטושה (+5% הנחה)'
             `, [processed]);
 
+            await client.query('COMMIT');
             return NextResponse.json({ success: true, processed });
 
+        } catch (error) {
+            await client.query('ROLLBACK');
+            throw error;
         } finally {
             client.release();
         }

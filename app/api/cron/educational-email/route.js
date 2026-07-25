@@ -19,20 +19,28 @@ export async function GET(req) {
 
             // Find completed orders created between delayDays and delayDays+1 days ago
             // Ensure we haven't already sent an educational email to this user in a previous order
+            await client.query('BEGIN');
             const res = await client.query(`
-                SELECT id, customer_details 
-                FROM orders o1
-                WHERE status = 'completed' 
-                AND educational_email_sent = false
-                AND created_at >= NOW() - INTERVAL '${delayDays + 1} days'
-                AND created_at < NOW() - INTERVAL '${delayDays} days'
-                AND NOT EXISTS (
-                    SELECT 1 
-                    FROM orders o2 
-                    WHERE o2.customer_details->>'email' = o1.customer_details->>'email'
-                    AND o2.educational_email_sent = true
+                UPDATE orders o1
+                SET educational_email_sent = true
+                WHERE id IN (
+                    SELECT id 
+                    FROM orders sub
+                    WHERE status = 'completed' 
+                    AND educational_email_sent = false
+                    AND created_at >= NOW() - INTERVAL '${delayDays + 1} days'
+                    AND created_at < NOW() - INTERVAL '${delayDays} days'
+                    AND NOT EXISTS (
+                        SELECT 1 
+                        FROM orders o2 
+                        WHERE o2.customer_details->>'email' = sub.customer_details->>'email'
+                        AND o2.educational_email_sent = true
+                    )
+                    FOR UPDATE SKIP LOCKED
                 )
+                RETURNING id, customer_details
             `);
+            await client.query('COMMIT');
 
             const orders = res.rows;
             console.log(`[Educational Cron] Found ${orders.length} eligible orders.`);
@@ -48,15 +56,7 @@ export async function GET(req) {
 
                     if (!email) continue;
                     
-                    if (processedEmails.has(email)) {
-                        // Mark as sent so we don't pick it up again, even though we skip sending
-                        await client.query(`
-                            UPDATE orders 
-                            SET educational_email_sent = true 
-                            WHERE id = $1
-                        `, [order.id]);
-                        continue;
-                    }
+                    if (processedEmails.has(email)) continue;
 
                     const { html, subject } = await getTemplate('educational', 
                         { name: firstName, orderId: order.id },
@@ -84,12 +84,6 @@ export async function GET(req) {
 
                     try {
                         await sendEmail(email, subject, html, 'educational', order.id);
-
-                        await client.query(`
-                            UPDATE orders 
-                            SET educational_email_sent = true 
-                            WHERE id = $1
-                        `, [order.id]);
 
                         processedEmails.add(email);
                         processed++;

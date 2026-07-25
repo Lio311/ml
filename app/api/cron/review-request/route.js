@@ -39,6 +39,18 @@ export async function GET(req) {
 
             let processed = 0;
             if (orders.length > 0) {
+                // Batch fetch all rewarded emails to prevent N+1 queries
+                const emails = orders.map(o => o.customer_details?.email).filter(Boolean);
+                const rewardedEmails = new Set();
+                
+                if (emails.length > 0) {
+                    const rewardedCheck = await client.query(`
+                        SELECT DISTINCT email FROM coupons 
+                        WHERE email = ANY($1) AND code LIKE 'SAVE10-%'
+                    `, [emails]);
+                    rewardedCheck.rows.forEach(r => rewardedEmails.add(r.email));
+                }
+
                 for (const order of orders) {
                     const customer = order.customer_details || {};
                     const email = customer.email;
@@ -50,13 +62,7 @@ export async function GET(req) {
                     const firstProductName = items.length > 0 ? items[0].name : "הבשמים שלנו";
                     const token = generateReviewToken(order.id);
 
-                    // Check if user already received a coupon for any other order (global check in coupons table)
-                    const rewardedCheck = await client.query(`
-                        SELECT 1 FROM coupons 
-                        WHERE email = $1 AND code LIKE 'SAVE10-%'
-                        LIMIT 1
-                    `, [email]);
-                    const alreadyRewarded = rewardedCheck.rows.length > 0;
+                    const alreadyRewarded = rewardedEmails.has(email);
 
                     const bonusText = !alreadyRewarded ? `
                         <div style="background-color: #fffde7; padding: 20px; border-radius: 16px; border: 1px solid #fff9c4; text-align: center; margin-top: 20px;">
