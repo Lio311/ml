@@ -37,6 +37,7 @@ export default function AdminUsersFilter({ initialQuery = '', initialRole = '', 
         { value: 'admin', label: 'מנהל' },
         { value: 'deputy', label: 'סגן מנהל' },
         { value: 'warehouse', label: 'מחסן' },
+        { value: 'viewer', label: 'צופה חיצוני' },
         { value: 'customer', label: 'לקוח' },
     ];
 
