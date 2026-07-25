@@ -40,7 +40,7 @@ export async function POST(req) {
 
         const adminCheck = await pool.query('SELECT role FROM users WHERE id = $1', [userId]);
         const role = adminCheck.rows[0]?.role;
-        if (role !== 'admin' && role !== 'deputy' && role !== 'viewer') {
+        if (role !== 'admin' && role !== 'deputy') {
             return new NextResponse('Forbidden', { status: 403 });
         }
 
@@ -94,7 +94,7 @@ export async function DELETE(req) {
 
         const adminCheck = await pool.query('SELECT role FROM users WHERE id = $1', [userId]);
         const role = adminCheck.rows[0]?.role;
-        if (role !== 'admin' && role !== 'deputy' && role !== 'viewer') {
+        if (role !== 'admin' && role !== 'deputy') {
             return new NextResponse('Forbidden', { status: 403 });
         }
 
