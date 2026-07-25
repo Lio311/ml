@@ -57,6 +57,13 @@ export default async function AdminUsersPage(props) {
             whereClause = 'WHERE ' + conditions.join(' AND ');
         }
 
+        const lastActiveSortExpr = `GREATEST(
+            COALESCE(last_active_at, '1970-01-01'::timestamptz),
+            COALESCE((SELECT MAX(created_at) FROM orders WHERE customer_details->>'clerk_id' = users.id), '1970-01-01'::timestamptz),
+            COALESCE((SELECT MAX(updated_at) FROM live_carts WHERE live_carts.email = users.email), '1970-01-01'::timestamptz),
+            COALESCE(created_at, '1970-01-01'::timestamptz)
+        )`;
+
         let orderByClause = `
             CASE role 
                 WHEN 'admin' THEN 1 
@@ -65,11 +72,11 @@ export default async function AdminUsersPage(props) {
                 WHEN 'viewer' THEN 4
                 ELSE 5 
             END ASC, 
-            COALESCE(last_active_at, created_at) DESC
+            ${lastActiveSortExpr} DESC
         `;
 
-        if (sortParam === 'last_active_desc') orderByClause = `COALESCE(last_active_at, created_at) DESC`;
-        else if (sortParam === 'last_active_asc') orderByClause = `COALESCE(last_active_at, created_at) ASC`;
+        if (sortParam === 'last_active_desc') orderByClause = `${lastActiveSortExpr} DESC`;
+        else if (sortParam === 'last_active_asc') orderByClause = `${lastActiveSortExpr} ASC`;
         else if (sortParam === 'orders_desc') orderByClause = `(SELECT COUNT(*) FROM orders WHERE customer_details->>'clerk_id' = users.id AND status != 'cancelled') DESC, (SELECT COALESCE(SUM(total_amount), 0) FROM orders WHERE customer_details->>'clerk_id' = users.id AND status != 'cancelled') DESC`;
         else if (sortParam === 'spent_desc') orderByClause = `(SELECT COALESCE(SUM(total_amount), 0) FROM orders WHERE customer_details->>'clerk_id' = users.id AND status != 'cancelled') DESC, (SELECT COUNT(*) FROM orders WHERE customer_details->>'clerk_id' = users.id AND status != 'cancelled') DESC`;
         else if (sortParam === 'created_desc') orderByClause = `created_at DESC`;
