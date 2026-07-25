@@ -161,6 +161,9 @@ export default function AdminSidebar({ role = 'customer' }) {
     const [hiddenReviewsCount, setHiddenReviewsCount] = useState(0);
     const [pendingCheckoutErrorsCount, setPendingCheckoutErrorsCount] = useState(0);
     const [missingBundleItems, setMissingBundleItems] = useState(false);
+    const [seoDraftsCount, setSeoDraftsCount] = useState(0);
+    const [pendingRequestsCount, setPendingRequestsCount] = useState(0);
+    const [pendingEmailsCount, setPendingEmailsCount] = useState(0);
     const [openGroups, setOpenGroups] = useState({});
 
     useEffect(() => {
@@ -176,6 +179,9 @@ export default function AdminSidebar({ role = 'customer' }) {
                     setHiddenReviewsCount(data.hiddenReviews || 0);
                     setPendingCheckoutErrorsCount(data.pendingCheckoutErrors || 0);
                     setMissingBundleItems(data.missingBundleItems || false);
+                    setSeoDraftsCount(data.seoDrafts || 0);
+                    setPendingRequestsCount(data.pendingRequests || 0);
+                    setPendingEmailsCount(data.pendingEmails || 0);
                 }
             } catch (err) {
                 console.error("Sidebar fetch error:", err);
@@ -242,6 +248,9 @@ export default function AdminSidebar({ role = 'customer' }) {
                             if (item.href === '/admin/reviews') return acc + hiddenReviewsCount;
                             if (item.href === '/admin/checkout-errors') return acc + pendingCheckoutErrorsCount;
                             if (item.href === '/admin/bundles-inventory' && missingBundleItems) return acc + 1;
+                            if (item.href === '/admin/seo-generator') return acc + seoDraftsCount;
+                            if (item.href === '/admin/requests') return acc + pendingRequestsCount;
+                            if (item.href === '/admin/pending-emails') return acc + pendingEmailsCount;
                             return acc;
                         }, 0);
 
@@ -325,6 +334,22 @@ export default function AdminSidebar({ role = 'customer' }) {
                                                     {item.href === '/admin/bundles-inventory' && missingBundleItems && (
                                                         <span title="חלק מהבשמים בחבילות אזלו מהמלאי" className="flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-white shadow-[0_0_10px_rgba(239,68,68,0.4)]">
                                                             <AlertOctagon size={12} strokeWidth={3} />
+                                                        </span>
+                                                    )}
+                                                    {item.href === '/admin/seo-generator' && seoDraftsCount > 0 && (
+                                                        <span title="טיוטות ממתינות לפרסום" className="flex h-5 min-w-[20px] gap-1 items-center justify-center rounded-full bg-purple-500 px-1.5 text-[10px] font-black text-white shadow-[0_0_10px_rgba(168,85,247,0.4)]">
+                                                            <Edit3 size={10} strokeWidth={3} />
+                                                            {seoDraftsCount}
+                                                        </span>
+                                                    )}
+                                                    {item.href === '/admin/requests' && pendingRequestsCount > 0 && (
+                                                        <span title="בקשות בשמים" className="flex h-5 min-w-[20px] items-center justify-center rounded-full bg-amber-500 px-1.5 text-[10px] font-black text-white shadow-[0_0_10px_rgba(245,158,11,0.4)]">
+                                                            {pendingRequestsCount}
+                                                        </span>
+                                                    )}
+                                                    {item.href === '/admin/pending-emails' && pendingEmailsCount > 0 && (
+                                                        <span title="מיילים מתוזמנים" className="flex h-5 min-w-[20px] items-center justify-center rounded-full bg-sky-500 px-1.5 text-[10px] font-black text-white shadow-[0_0_10px_rgba(14,165,233,0.4)]">
+                                                            {pendingEmailsCount}
                                                         </span>
                                                     )}
                                                 </div>

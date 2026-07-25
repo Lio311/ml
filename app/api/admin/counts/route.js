@@ -22,7 +22,7 @@ export async function GET() {
             const monthNum = today.getMonth() + 1;
             const currentMonthStr = `${year}-${String(monthNum).padStart(2, '0')}`;
 
-            const [ordersRes, inboxRes, recsRes, monthlyRecRes, hiddenReviewsRes] = await Promise.all([
+            const [ordersRes, inboxRes, recsRes, monthlyRecRes, hiddenReviewsRes, seoDraftsRes, requestsRes, pendingEmailsRes] = await Promise.all([
                 // 1. Pending and Processing orders
                 client.query("SELECT COUNT(*) FROM orders WHERE catalog_id IS NULL AND (status = 'pending' OR status = 'processing')"),
                 
@@ -43,7 +43,16 @@ export async function GET() {
                 client.query("SELECT status FROM monthly_recommendations WHERE month = $1", [currentMonthStr]),
 
                 // 5. Hidden reviews count
-                client.query("SELECT COUNT(*) FROM reviews WHERE is_public = false")
+                client.query("SELECT COUNT(*) FROM reviews WHERE is_public = false"),
+
+                // 6. SEO draft blog posts
+                client.query("SELECT COUNT(*) FROM blog_posts WHERE status = 'draft'").catch(() => ({ rows: [{ count: 0 }] })),
+
+                // 7. Pending perfume requests
+                client.query("SELECT COUNT(*) FROM perfume_requests").catch(() => ({ rows: [{ count: 0 }] })),
+
+                // 8. Pending scheduled emails
+                client.query("SELECT COUNT(*) FROM pending_order_emails WHERE initial_status = 'pending'").catch(() => ({ rows: [{ count: 0 }] }))
             ]);
 
             let checkoutErrorsCount = 0;
@@ -89,7 +98,10 @@ export async function GET() {
                 hiddenReviews: parseInt(hiddenReviewsRes.rows[0].count || 0),
                 monthlyRecNeedsAction: monthlyRecStatus !== 'selected',
                 pendingCheckoutErrors: checkoutErrorsCount,
-                missingBundleItems
+                missingBundleItems,
+                seoDrafts: parseInt(seoDraftsRes.rows[0].count || 0),
+                pendingRequests: parseInt(requestsRes.rows[0].count || 0),
+                pendingEmails: parseInt(pendingEmailsRes.rows[0].count || 0)
             });
         } finally {
             client.release();

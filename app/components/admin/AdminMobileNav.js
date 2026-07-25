@@ -167,6 +167,9 @@ export default function AdminMobileNav({ role = 'customer' }) {
     const [hiddenReviewsCount, setHiddenReviewsCount] = useState(0);
     const [pendingCheckoutErrorsCount, setPendingCheckoutErrorsCount] = useState(0);
     const [missingBundleItems, setMissingBundleItems] = useState(false);
+    const [seoDraftsCount, setSeoDraftsCount] = useState(0);
+    const [pendingRequestsCount, setPendingRequestsCount] = useState(0);
+    const [pendingEmailsCount, setPendingEmailsCount] = useState(0);
     const [openGroups, setOpenGroups] = useState({});
 
     // Close sidebar on route change
@@ -187,6 +190,9 @@ export default function AdminMobileNav({ role = 'customer' }) {
                     setHiddenReviewsCount(data.hiddenReviews || 0);
                     setPendingCheckoutErrorsCount(data.pendingCheckoutErrors || 0);
                     setMissingBundleItems(data.missingBundleItems || false);
+                    setSeoDraftsCount(data.seoDrafts || 0);
+                    setPendingRequestsCount(data.pendingRequests || 0);
+                    setPendingEmailsCount(data.pendingEmails || 0);
                 }
             } catch (err) {
                 console.error("Mobile Nav fetch error:", err);
@@ -221,7 +227,7 @@ export default function AdminMobileNav({ role = 'customer' }) {
         setOpenGroups(prev => prev[idx] ? {} : { [idx]: true });
     };
 
-    const hasAnyNotification = unreadCount > 0 || pendingOrdersCount > 0 || monthlyRecNeedsAction || pendingRecommendationsCount > 0 || hiddenReviewsCount > 0 || pendingCheckoutErrorsCount > 0 || missingBundleItems;
+    const hasAnyNotification = unreadCount > 0 || pendingOrdersCount > 0 || monthlyRecNeedsAction || pendingRecommendationsCount > 0 || hiddenReviewsCount > 0 || pendingCheckoutErrorsCount > 0 || missingBundleItems || seoDraftsCount > 0 || pendingRequestsCount > 0 || pendingEmailsCount > 0;
 
     return (
         <div className="md:hidden">
@@ -277,6 +283,9 @@ export default function AdminMobileNav({ role = 'customer' }) {
                                 if (item.href === '/admin/reviews') return acc + hiddenReviewsCount;
                                 if (item.href === '/admin/checkout-errors') return acc + pendingCheckoutErrorsCount;
                                 if (item.href === '/admin/bundles-inventory' && missingBundleItems) return acc + 1;
+                                if (item.href === '/admin/seo-generator') return acc + seoDraftsCount;
+                                if (item.href === '/admin/requests') return acc + pendingRequestsCount;
+                                if (item.href === '/admin/pending-emails') return acc + pendingEmailsCount;
                                 return acc;
                             }, 0);
 
@@ -356,6 +365,22 @@ export default function AdminMobileNav({ role = 'customer' }) {
                                                         {item.href === '/admin/bundles-inventory' && missingBundleItems && (
                                                             <span className="flex h-5 w-5 items-center justify-center rounded-full bg-red-500 text-white">
                                                                 <AlertOctagon size={12} strokeWidth={3} />
+                                                            </span>
+                                                        )}
+                                                        {item.href === '/admin/seo-generator' && seoDraftsCount > 0 && (
+                                                            <span className="flex h-5 min-w-[20px] gap-1 items-center justify-center rounded-full bg-purple-500 px-1.5 text-[10px] font-black text-white">
+                                                                <Edit3 size={10} strokeWidth={3} />
+                                                                {seoDraftsCount}
+                                                            </span>
+                                                        )}
+                                                        {item.href === '/admin/requests' && pendingRequestsCount > 0 && (
+                                                            <span className="flex h-5 min-w-[20px] items-center justify-center rounded-full bg-amber-500 px-1.5 text-[10px] font-black text-white">
+                                                                {pendingRequestsCount}
+                                                            </span>
+                                                        )}
+                                                        {item.href === '/admin/pending-emails' && pendingEmailsCount > 0 && (
+                                                            <span className="flex h-5 min-w-[20px] items-center justify-center rounded-full bg-sky-500 px-1.5 text-[10px] font-black text-white">
+                                                                {pendingEmailsCount}
                                                             </span>
                                                         )}
                                                     </div>
