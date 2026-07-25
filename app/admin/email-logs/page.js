@@ -41,12 +41,13 @@ export default async function EmailLogsPage({ searchParams }) {
         SELECT email_logs.*, users.image_url 
         FROM email_logs 
         LEFT JOIN users ON email_logs.recipient = users.email
+        WHERE email_logs.status != 'processing'
         ORDER BY sent_at DESC 
         LIMIT $1 OFFSET $2
     `, [limit, offset]);
 
     // Fetch total count for pagination
-    const countRes = await pool.query('SELECT COUNT(*) FROM email_logs');
+    const countRes = await pool.query("SELECT COUNT(*) FROM email_logs WHERE status != 'processing'");
     const totalCount = parseInt(countRes.rows[0].count);
     const totalPages = Math.ceil(totalCount / limit);
 

@@ -43,6 +43,10 @@
         {
             "path": "/api/cron/daily-summary",
             "schedule": "59 20 * * *"
+        },
+        {
+            "path": "/api/cron/process-shabbat-queue",
+            "schedule": "0 19 * * 6"
         }
     ]
 }

@@ -3,6 +3,29 @@ import { logEmail } from './emailLogger';
 import pool from './db';
 import { getBrandName } from './brand';
 
+function isShabbat() {
+    const now = new Date();
+    // Get time in Jerusalem
+    const formatter = new Intl.DateTimeFormat('en-US', {
+        timeZone: 'Asia/Jerusalem',
+        weekday: 'short',
+        hour: 'numeric',
+        hour12: false
+    });
+    const parts = formatter.formatToParts(now);
+    let weekday = '';
+    let hour = 0;
+    for (const part of parts) {
+        if (part.type === 'weekday') weekday = part.value;
+        if (part.type === 'hour') hour = parseInt(part.value, 10);
+    }
+    
+    // Friday from 16:00 to Saturday 20:00 (approximate Shabbat times)
+    if (weekday === 'Fri' && hour >= 16) return true;
+    if (weekday === 'Sat' && hour < 20) return true;
+    return false;
+}
+
 const getAbsoluteImageUrl = (url) => {
     if (!url) return '';
     if (url.startsWith('http')) return url;
@@ -27,10 +50,33 @@ const transporter = nodemailer.createTransport({
     },
 });
 
-export const sendEmail = async (to, subject, html, type = 'system', orderId = null, campaignId = null, attachments = []) => {
+export const sendEmail = async (to, subject, html, type = 'system', orderId = null, campaignId = null, attachments = [], skipShabbatCheck = false) => {
     if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
         console.warn("Skipping email send: Missing EMAIL_USER or EMAIL_PASS environment variables.");
         return;
+    }
+
+    if (!skipShabbatCheck && isShabbat()) {
+        try {
+            await pool.query(
+                `INSERT INTO queued_shabbat_emails (recipient, subject, html, type, order_id, campaign_id, attachments) 
+                 VALUES ($1, $2, $3, $4, $5, $6, $7)`,
+                [
+                    Array.isArray(to) ? JSON.stringify(to) : to, 
+                    subject, 
+                    html, 
+                    type, 
+                    orderId, 
+                    campaignId, 
+                    JSON.stringify(attachments)
+                ]
+            );
+            console.log("Shabbat mode: Email queued for later sending:", subject);
+            return { messageId: 'queued_for_shabbat' }; // Fake info to prevent errors in caller
+        } catch (e) {
+            console.error("Error queueing email for Shabbat:", e);
+            return null;
+        }
     }
 
     try {
