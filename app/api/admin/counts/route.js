@@ -1,20 +1,12 @@
 import { NextResponse } from "next/server";
 import pool from "@/app/lib/db";
 import { currentUser } from "@clerk/nextjs/server";
+import { unstable_cache } from "next/cache";
 
 export const dynamic = 'force-dynamic';
 
-export async function GET() {
-    try {
-        const user = await currentUser();
-        const role = user?.publicMetadata?.role;
-        const email = user?.emailAddresses?.[0]?.emailAddress;
-        const isSuperAdmin = email === process.env.ADMIN_EMAIL;
-
-        if (!isSuperAdmin && role !== 'admin' && role !== 'deputy' && role !== 'warehouse' && role !== 'viewer') {
-            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
-        }
-
+const getCachedAdminCounts = unstable_cache(
+    async (userId) => {
         const client = await pool.connect();
         try {
             const today = new Date();
@@ -34,7 +26,7 @@ export async function GET() {
                     WHERE (c.participant2_id = 'admin' OR c.participant1_id = $1)
                     AND m.sender_id != $1
                     AND m.is_read = false
-                `, [user.id]),
+                `, [userId]),
 
                 // 3. Pending recommendations
                 client.query("SELECT count(*) as count FROM pending_recommendation_emails WHERE status = 'pending'"),
@@ -97,7 +89,7 @@ export async function GET() {
 
             const monthlyRecStatus = monthlyRecRes.rows.length > 0 ? monthlyRecRes.rows[0].status : 'pending';
 
-            return NextResponse.json({
+            return {
                 pendingOrders: parseInt(ordersRes.rows[0].count || 0),
                 unreadInbox: parseInt(inboxRes.rows[0].total_unread || 0),
                 pendingRecommendations: parseInt(recsRes.rows[0].count || 0),
@@ -108,10 +100,33 @@ export async function GET() {
                 seoDrafts: parseInt(seoDraftsRes.rows[0].count || 0),
                 pendingRequests: parseInt(requestsRes.rows[0].count || 0),
                 pendingEmails: parseInt(pendingEmailsRes.rows[0].count || 0)
-            });
+            };
         } finally {
             client.release();
         }
+    },
+    ['admin-counts'], // Base cache key
+    { revalidate: 60, tags: ['admin-counts'] } // Cache for 60 seconds
+);
+
+export async function GET() {
+    try {
+        const user = await currentUser();
+        if (!user) {
+            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        }
+        
+        const role = user?.publicMetadata?.role;
+        const email = user?.emailAddresses?.[0]?.emailAddress;
+        const isSuperAdmin = email === process.env.ADMIN_EMAIL;
+
+        if (!isSuperAdmin && role !== 'admin' && role !== 'deputy' && role !== 'warehouse' && role !== 'viewer') {
+            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        }
+
+        const counts = await getCachedAdminCounts(user.id);
+        
+        return NextResponse.json(counts);
     } catch (error) {
         console.error("Failed to fetch admin counts:", error);
         return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
