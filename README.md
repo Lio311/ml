@@ -18,7 +18,8 @@ A high-performance, enterprise-grade Israeli commerce platform for the luxury pe
 | **Custom UI Components** | 106 |
 | **Database Tables** | 66 |
 | **Automated Cron Jobs** | 12 |
-| **Admin Dashboard Pages** | 35+ |
+| **Total Site Pages** | 91 |
+| **Admin Dashboard Pages** | 52 |
 | **Mini-Games** | 8 |
 | **Tech Stack** | Next.js 16, React 19, PostgreSQL (Neon), Clerk, Three.js, GSAP, Framer Motion, Recharts, ReactFlow, Sentry, Spotify API, Gemini AI |
 
@@ -60,7 +61,7 @@ A high-performance, enterprise-grade Israeli commerce platform for the luxury pe
 
 ## 📊 Operational Excellence (Admin Dashboard)
 
-A comprehensive 35+ page admin panel powering every aspect of the business:
+A comprehensive 52 page admin panel powering every aspect of the business:
 
 ### Sales & Operations
 - **Order Management**: Full lifecycle tracking with status workflows (pending → processing → shipped → ready for pickup → completed), batch operations, PDF invoice/dispatch slip generation, and re-send confirmation emails.
@@ -161,7 +162,7 @@ A comprehensive 35+ page admin panel powering every aspect of the business:
 ```bash
 ml-tlv/app/
 ├── app/
-│   ├── admin/              # 35+ Admin Dashboard Pages
+│   ├── admin/              # 52 Admin Dashboard Pages
 │   ├── api/                # 190 Serverless API Endpoints
 │   ├── blog/               # SEO-Optimized Fragrance Magazine
 │   ├── brands/             # Brand Directory & Brand Pages
