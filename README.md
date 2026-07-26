@@ -1,6 +1,6 @@
 # 💎 ml_tlv — The Ultimate Luxury Perfume Ecosystem
 
-[![Next.js](https://img.shields.io/badge/Next.js-16.2-black?logo=next.js)](https://nextjs.org/) [![React](https://img.shields.io/badge/React-19.2-61DAFB?logo=react)](https://react.dev/) [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4-38B2AC?logo=tailwind-css)](https://tailwindcss.com/) [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Neon-336791?logo=postgresql)](https://neon.tech/) [![Clerk](https://img.shields.io/badge/Auth-Clerk-6C47FF?logo=clerk)](https://clerk.com/) [![Sentry](https://img.shields.io/badge/Monitoring-Sentry-362D59?logo=sentry)](https://sentry.io/) [![Vercel](https://img.shields.io/badge/Deploy-Vercel-000?logo=vercel)](https://vercel.com/)
+[![Next.js](https://img.shields.io/badge/Next.js-16.2-black?logo=next.js)](https://nextjs.org/) [![React](https://img.shields.io/badge/React-19.2-61DAFB?logo=react)](https://react.dev/) [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4-38B2AC?logo=tailwind-css)](https://tailwindcss.com/) [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Neon-336791?logo=postgresql)](https://neon.tech/) [![Clerk](https://img.shields.io/badge/Auth-Clerk-6C47FF?logo=clerk)](https://clerk.com/) [![Cloudflare](https://img.shields.io/badge/CDN-Cloudflare-F38020?logo=cloudflare)](https://www.cloudflare.com/) [![Sentry](https://img.shields.io/badge/Monitoring-Sentry-362D59?logo=sentry)](https://sentry.io/) [![Vercel](https://img.shields.io/badge/Deploy-Vercel-000?logo=vercel)](https://vercel.com/)
 
 A high-performance, enterprise-grade Israeli commerce platform for the luxury perfume decant industry. Far beyond a simple shop — **ml_tlv** is a multi-tenant ecosystem combining AI-powered product intelligence, visual marketing automation, gamified engagement, real-time customer support, and deep operational analytics.
 
@@ -150,6 +150,7 @@ A comprehensive 35+ page admin panel powering every aspect of the business:
 - **Security Headers**: HSTS (2 years), X-Frame-Options, X-Content-Type-Options, strict Content-Security-Policy, and Referrer-Policy.
 - **HTTPS & Domain Enforcement**: Automatic redirect to `https://www.ml-tlv.com` in production.
 - **Maintenance Mode**: Dynamic toggle with admin bypass cookie and `/admin` path exclusion.
+- **Cloudflare CDN & DNS**: Global content delivery, DNS management, DDoS protection, and edge caching for static assets and media.
 - **Full Observability**: Triple-stack monitoring — **Sentry** (error tracking & Vercel cron instrumentation), **Microsoft Clarity** (session recording & heatmaps), and **GA4** (traffic analytics).
 - **Audit Trail**: Every admin action logged with user identity, action type, entity ID, IP address, and user-agent.
 
