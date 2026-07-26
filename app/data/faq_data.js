@@ -184,7 +184,7 @@ export const faq_en = [
             },
             { 
                 q: "Is local pickup available?", 
-                a: "Yes, free local pickup is available from כיכר מילאנו, תל אביב. This option must be selected in the shopping cart and coordinated in advance via WhatsApp." 
+                a: "Yes, free local pickup is available from Milano Square, Tel Aviv. This option must be selected in the shopping cart and coordinated in advance via WhatsApp." 
             }
         ]
     },

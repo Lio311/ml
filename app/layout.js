@@ -168,7 +168,7 @@ export default async function RootLayout({ children }) {
                         "telephone": "+972-50-000-0000",
                         "address": {
                           "@type": "PostalAddress",
-                          "streetAddress": "כיכר מילאנו",
+                          "streetAddress": "Milano Square",
                           "addressLocality": "Tel Aviv",
                           "addressCountry": "IL"
                         },
