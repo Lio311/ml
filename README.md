@@ -10,11 +10,11 @@ A high-performance, enterprise-grade Israeli commerce platform designed for the 
 
 | Metric | Value |
 | :--- | :--- |
-| **Total Lines of Code** | 75,000+ |
-| **Project Files** | 750+ |
-| **API Endpoints** | 190+ |
-| **Custom UI Components** | 150+ |
-| **Database Tables** | 25+ |
+| **Total Lines of Code** | 79,809 |
+| **Project Files** | 772 |
+| **API Endpoints** | 190 |
+| **Custom UI Components** | 106 |
+| **Database Tables** | 66 |
 | **Tech Stack** | Next.js 16, React 19, PostgreSQL, Clerk, Three.js, GSAP |
 
 ---
