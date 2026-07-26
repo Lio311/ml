@@ -1,6 +1,6 @@
 # 💎 ml_tlv - The Ultimate Luxury Perfume Ecosystem
 
-[![Next.js](https://img.shields.io/badge/Next.js-15.1-black?logo=next.js)](https://nextjs.org/) [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4-38B2AC?logo=tailwind-css)](https://tailwindcss.com/) [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16.0-336791?logo=postgresql)](https://www.postgresql.org/) [![Clerk](https://img.shields.io/badge/Authentication-Clerk-6C47FF?logo=clerk)](https://clerk.com/)
+[![Next.js](https://img.shields.io/badge/Next.js-16.2-black?logo=next.js)](https://nextjs.org/) [![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-3.4-38B2AC?logo=tailwind-css)](https://tailwindcss.com/) [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16.0-336791?logo=postgresql)](https://www.postgresql.org/) [![Clerk](https://img.shields.io/badge/Authentication-Clerk-6C47FF?logo=clerk)](https://clerk.com/)
 
 A high-performance, enterprise-grade Israeli commerce platform designed for the luxury perfume decant industry. Beyond a simple shop, **ml_tlv** is a multi-tenant ecosystem combining algorithmic bundling, virtual store creation, and real-time operational tools.
 
@@ -10,12 +10,12 @@ A high-performance, enterprise-grade Israeli commerce platform designed for the 
 
 | Metric | Value |
 | :--- | :--- |
-| **Total Lines of Code** | 25,000+ |
-| **Project Files** | 220+ |
-| **API Endpoints** | 75+ |
-| **Custom UI Components** | 40+ |
-| **Database Tables** | 15+ |
-| **Tech Stack** | Next.js 15, React 19, PostgreSQL, Clerk |
+| **Total Lines of Code** | 75,000+ |
+| **Project Files** | 750+ |
+| **API Endpoints** | 190+ |
+| **Custom UI Components** | 150+ |
+| **Database Tables** | 25+ |
+| **Tech Stack** | Next.js 16, React 19, PostgreSQL, Clerk, Three.js, GSAP |
 
 ---
 
@@ -48,10 +48,10 @@ A high-performance, enterprise-grade Israeli commerce platform designed for the 
 ## 🛠️ Technical Sophistication
 
 ### Frontend & UX
-- **Next.js 15 (App Router)**: Utilizing fine-grained Server Components and optimized Server Actions.
+- **Next.js 16 (App Router)**: Utilizing fine-grained Server Components and optimized Server Actions.
 - **Hydration Guarding**: Advanced use of `suppressHydrationWarning` and client-side rendering strategies to manage cross-timezone date synchronization without React hydration mismatches.
 - **Accessibility Suite**: A custom, WCAG-compliant accessibility widget that remains isolated from global CSS filters (Invert/Contrast).
-- **Premium Design System**: Glassmorphism, tailored Framer Motion animations, and bi-directional RTL support.
+- **Premium Design System & 3D**: Glassmorphism, tailored Framer Motion & GSAP animations, immersive 3D Spline experiences, and bi-directional RTL support.
 
 ### Backend & Data
 - **Postgres (Neon)**: Relational database with advanced JSONB usage for flexible order tracking and complex schema constraints.
@@ -71,12 +71,16 @@ A high-performance, enterprise-grade Israeli commerce platform designed for the 
 ml/
 ├── app/
 │   ├── admin/              # Financial Dashboards & Inventory Forecasting
-│   ├── my-catalogs/        # Virtual Store Creation & Management
-│   ├── matching/           # Algorithmic Perfume Matching Wizard
-│   ├── lottery/            # Gamified Mystery Bundle System
+│   ├── api/                # 190+ Serverless API Endpoints
+│   ├── cart/ & checkout/   # Advanced E-commerce Flows
+│   ├── catalog/ & product/ # Dynamic Product Displays & Catalogs
+│   ├── components/         # High-End Shared UI (3D, GSAP, Sarah AI)
 │   ├── inbox/              # Multi-Role Real-time Communication
-│   ├── blog/               # SEO-Optimized CMS Magazine
-│   ├── components/         # High-End Shared UI (Sarah AI, Header, Games)
+│   ├── lottery/            # Gamified Mystery Bundle System
+│   ├── matching/           # Algorithmic Perfume Matching Wizard
+│   ├── my-catalogs/        # Virtual Store Creation & Management
+│   ├── orders/ & sales/    # Order Tracking & Sales Management
+│   ├── wishlist/           # Dynamic User Wishlist
 │   └── lib/                # Core Logic (DB Pooling, Encryption, Mailer)
 ```
 
@@ -94,6 +98,6 @@ ml/
 <div align="center">
 
 **Crafted with excellence for ml_tlv**  
-**Luxury Perfume Decants | Tel Aviv | Next.js 15**
+**Luxury Perfume Decants | Tel Aviv | Next.js 16**
 
 </div>
