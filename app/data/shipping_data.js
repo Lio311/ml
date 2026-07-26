@@ -62,7 +62,7 @@ export const shipping_en = [
             },
             { 
                 q: "Local Pickup", 
-                a: "Free local pickup is available from 19 Washington St, Tel Aviv. After ordering, the pickup time must be coordinated via WhatsApp." 
+                a: "Free local pickup is available from כיכר מילאנו, תל אביב. After ordering, the pickup time must be coordinated via WhatsApp." 
             }
         ]
     },
