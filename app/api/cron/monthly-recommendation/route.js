@@ -2,15 +2,15 @@ import { NextResponse } from 'next/server';
 import pool from '../../../lib/db';
 import { sendEmail } from '../../../lib/email';
 import { generateProductsGrid, monthsHe } from '../../../lib/monthlyRecommendationEmail';
+import { checkCronOrAdmin } from "@/app/lib/admin";
 
 export const dynamic = 'force-dynamic';
 
 export async function GET(req) {
     try {
-        const authHeader = req.headers.get('authorization');
-        if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
-            // Uncomment in production to secure the cron
-            // return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        const isAuthorized = await checkCronOrAdmin(req);
+        if (!isAuthorized) {
+            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
         const now = new Date();

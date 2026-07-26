@@ -1,6 +1,7 @@
 import { clerkMiddleware, createRouteMatcher } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
 import { rateLimit } from "./app/lib/rate-limit";
+import { neon } from "@neondatabase/serverless";
 
 // List of bots to block (Aggressive scrapers, not search engines)
 const BAD_BOTS = [
@@ -69,20 +70,18 @@ export default clerkMiddleware(async (auth, req) => {
     const userAuth = await auth();
     const isAdmin = userAuth.sessionClaims?.metadata?.role === 'admin';
 
-    // Maintenance Mode Check
-    if (!url.pathname.startsWith('/admin') && 
-        !url.pathname.startsWith('/api') && 
-        !url.pathname.startsWith('/sign-in') && 
+    // Maintenance Mode — query DB directly (no self-fetch!)
+    if (!url.pathname.startsWith('/admin') &&
+        !url.pathname.startsWith('/api') &&
+        !url.pathname.startsWith('/sign-in') &&
         url.pathname !== '/maintenance' &&
         bypassCookie?.value !== 'true') {
         try {
-            const baseUrl = process.env.NEXT_PUBLIC_APP_URL || req.nextUrl.origin;
-            const res = await fetch(`${baseUrl}/api/maintenance`, {
-                next: { revalidate: 60 } // Cache for 60 seconds
-            });
-            if (res.ok) {
-                const data = await res.json();
-                if (data.enabled) {
+            const sql = neon(process.env.DATABASE_URL);
+            const rows = await sql`SELECT value FROM site_settings WHERE key = 'maintenance_mode'`;
+            if (rows.length > 0) {
+                const parsed = typeof rows[0].value === 'string' ? JSON.parse(rows[0].value) : rows[0].value;
+                if (parsed?.enabled) {
                     url.pathname = '/maintenance';
                     const rewriteRes = NextResponse.rewrite(url);
                     rewriteRes.headers.set('x-maintenance', 'true');

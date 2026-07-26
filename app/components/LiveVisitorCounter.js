@@ -35,7 +35,7 @@ export default function LiveVisitorCounter() {
         fetchCount();
 
         // Poll every 10 seconds
-        const interval = setInterval(fetchCount, 10000);
+        const interval = setInterval(fetchCount, 60000);
 
         return () => clearInterval(interval);
     }, []);

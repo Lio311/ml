@@ -1,16 +1,16 @@
 import { NextResponse } from 'next/server';
 import pool from '../../../lib/db';
 import { sendEmail, getDailySummaryTemplate, getTemplate } from '../../../lib/email';
+import { checkCronOrAdmin } from "@/app/lib/admin";
 
 export const dynamic = 'force-dynamic';
 export const maxDuration = 60;
 
 export async function GET(req) {
     try {
-        const authHeader = req.headers.get('authorization');
-        if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
-            // Uncomment in production to secure the cron
-            // return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+        const isAuthorized = await checkCronOrAdmin(req);
+        if (!isAuthorized) {
+            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
         }
 
         const adminEmail = process.env.ADMIN_EMAIL || 'lior31197@gmail.com';
