@@ -1055,6 +1055,7 @@
         "coupon_invalid": "Invalid coupon code",
         "coupon_already_used": "This coupon has already been used by you",
         "coupon_error": "Error validating coupon",
+        "coupon_conflict_lucky_prize": "Cannot apply coupon with an active lucky prize",
         "coupon_applied": "Coupon {code}",
         "discount": "{percent}% Discount",
         "shipping": "Shipping",

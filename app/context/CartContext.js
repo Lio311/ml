@@ -637,8 +637,19 @@ export function CartProvider({ children }) {
             const d = Math.round(priceAfterDiscounts * 0.15);
             discountAmount += d;
             priceAfterDiscounts -= d;
-        } else if (luckyPrize?.type === 'discount') {
-            const d = Math.round(priceAfterDiscounts * luckyPrize.value);
+        } else if (luckyPrize?.type === 'discount' && !coupon) {
+            // Calculate eligible subtotal for lucky prize
+            const luckyEligibleSubtotal = activeItems.reduce((sum, item) => {
+                if (item.type === 'bundle') return sum;
+                if (isActivePromo && item.is_discovery_set) return sum;
+                return sum + (Number(item.price) * item.quantity);
+            }, 0);
+            
+            // Adjust eligible subtotal by promo proportion if needed
+            const ratio = subtotal > 0 ? (priceAfterDiscounts / subtotal) : 1;
+            const adjustedLuckyEligibleSubtotal = luckyEligibleSubtotal * ratio;
+            
+            const d = Math.round(adjustedLuckyEligibleSubtotal * luckyPrize.value);
             discountAmount += d;
             priceAfterDiscounts -= d;
         }
@@ -652,6 +663,9 @@ export function CartProvider({ children }) {
             const eligibleSubtotal = activeItems.reduce((sum, item) => {
                 // IMPORTANT: Coupons do NOT apply to Bundles
                 if (item.type === 'bundle') return sum;
+                
+                // IMPORTANT: Coupons do NOT apply to promo items when promo is active
+                if (isActivePromo && item.is_discovery_set) return sum;
 
                 // 1. Prepare IDs and normalized values
                 let cleanId = item.id;

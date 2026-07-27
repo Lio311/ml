@@ -11,7 +11,8 @@ export default function CouponSection({
     cartItems, 
     user,
     couponError,
-    setCouponError
+    setCouponError,
+    luckyPrize
 }) {
     const { t } = useLanguage();
     const [couponCode, setCouponCode] = useState("");
@@ -19,6 +20,12 @@ export default function CouponSection({
 
     const handleApplyCoupon = async () => {
         if (!couponCode) return;
+        
+        if (luckyPrize?.type === 'discount' || luckyPrize?.type === 'item') {
+            setCouponError(t('cart.coupon_conflict_lucky_prize', { defaultValue: 'לא ניתן לממש קופון יחד עם זכייה בגלגל המזל' }));
+            return;
+        }
+
         setIsValidating(true);
         setCouponError("");
 

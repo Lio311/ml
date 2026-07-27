@@ -266,7 +266,8 @@ export default function CartClient() {
                 freeSamples: freeSamplesCount,
                 deliveryMethod: deliveryMethod,
                 address: deliveryMethod !== 'self_pickup' ? address : null,
-                couponCode: coupon?.code
+                couponCode: coupon?.code,
+                luckyPrize: luckyPrize
             };
 
             const endpoint = isMainVendor ? '/api/orders' : `/api/user-catalogs/${activeVendorId}/orders`;
@@ -366,7 +367,8 @@ export default function CartClient() {
     useEffect(() => {
         const lastSpin = localStorage.getItem('lastLuckySpin');
         const canSpin = !lastSpin || (Date.now() - parseInt(lastSpin) > 24 * 60 * 60 * 1000);
-        if (subtotal >= 1200 && !luckyPrize && !hasSeenWheel && canSpin) setShowWheel(true);
+        // Auto-show wheel if conditions are met
+        if (subtotal >= 1200 && !luckyPrize && !hasSeenWheel && canSpin && !coupon) setShowWheel(true);
     }, [subtotal, luckyPrize, hasSeenWheel]);
 
     const handleWin = (prize) => {
@@ -646,6 +648,7 @@ export default function CartClient() {
                                 user={user} 
                                 couponError={couponError}
                                 setCouponError={setCouponError}
+                                luckyPrize={luckyPrize}
                             />
 
                             <DeliverySection 

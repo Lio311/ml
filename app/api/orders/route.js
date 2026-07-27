@@ -20,7 +20,7 @@ export async function POST(req) {
         }
 
         body = await req.json();
-        const { items, total, freeSamples: clientFreeSamples, notes, deliveryMethod, phoneNumber, catalogId, couponCode } = body;
+        const { items, total, freeSamples: clientFreeSamples, notes, deliveryMethod, phoneNumber, catalogId, couponCode, luckyPrize } = body;
 
         if (!items || items.length === 0) {
             return NextResponse.json({ error: 'Cart is empty' }, { status: 400 });
@@ -219,6 +219,11 @@ export async function POST(req) {
                 freeSamples = maxAllowedSamples;
             }
 
+            // --- Mutually Exclusive Discounts Check ---
+            if (couponCode && luckyPrize?.type === 'discount') {
+                throw new Error('לא ניתן לממש קופון במקביל לזכייה בגלגל המזל / Cannot apply coupon with lucky prize');
+            }
+
             // --- Apply Coupon Discount ---
             let discountAmount = 0;
             if (couponCode) {
@@ -301,6 +306,9 @@ export async function POST(req) {
                 let hasEligibleItem = false;
 
                 for (const item of items) {
+                    if (item.type === 'bundle') continue;
+                    if (isActivePromo && item.is_discovery_set) continue;
+
                     let cleanId = item.id;
                     if (typeof cleanId === 'string' && cleanId.includes('-')) cleanId = cleanId.split('-')[0];
                     const p = productDataMap[cleanId];
@@ -349,6 +357,20 @@ export async function POST(req) {
                 const adjustedEligibleSubtotal = eligibleSubtotal * ratio;
 
                 discountAmount = Math.round(adjustedEligibleSubtotal * (coupon.discount_percent / 100));
+                calculatedTotal = priceAfterDiscounts - discountAmount;
+            } else if (luckyPrize?.type === 'discount') {
+                let eligibleSubtotal = 0;
+                for (const item of items) {
+                    if (item.type === 'bundle') continue;
+                    if (isActivePromo && item.is_discovery_set) continue;
+                    eligibleSubtotal += item.price * item.quantity;
+                }
+
+                const subtotalBeforeDiscount = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+                const ratio = subtotalBeforeDiscount > 0 ? (priceAfterDiscounts / subtotalBeforeDiscount) : 1;
+                const adjustedEligibleSubtotal = eligibleSubtotal * ratio;
+
+                discountAmount = Math.round(adjustedEligibleSubtotal * luckyPrize.value);
                 calculatedTotal = priceAfterDiscounts - discountAmount;
             } else {
                 calculatedTotal = priceAfterDiscounts;
