@@ -140,21 +140,23 @@ export default async function PendingEmailsPage() {
         }
     };
 
-    let nextAvailableDate = new Date(); // default to today/now
+    let nextAvailableDate = new Date();
     if (lastSentDateStr === todayStr) {
-        // Already sent today, next available is tomorrow
+        // Already sent today, next available is tomorrow at 10:00 UTC
         nextAvailableDate = new Date();
-        nextAvailableDate.setDate(nextAvailableDate.getDate() + 1);
-        nextAvailableDate.setHours(10, 0, 0, 0);
+        nextAvailableDate.setUTCDate(nextAvailableDate.getUTCDate() + 1);
+        nextAvailableDate.setUTCHours(10, 0, 0, 0);
     } else {
-        // Next available is today. Set to 10:00 AM if it hasn't passed, otherwise set to slightly in the future so it doesn't get filtered out
-        const today10am = new Date();
-        today10am.setHours(10, 0, 0, 0);
-        if (new Date() > today10am) {
+        // Next available is today at 10:00 UTC if it hasn't passed, otherwise tomorrow at 10:00 UTC
+        const today10amUTC = new Date();
+        today10amUTC.setUTCHours(10, 0, 0, 0);
+        
+        if (new Date() > today10amUTC) {
             nextAvailableDate = new Date();
-            nextAvailableDate.setMinutes(nextAvailableDate.getMinutes() + 5);
+            nextAvailableDate.setUTCDate(nextAvailableDate.getUTCDate() + 1);
+            nextAvailableDate.setUTCHours(10, 0, 0, 0);
         } else {
-            nextAvailableDate = today10am;
+            nextAvailableDate = today10amUTC;
         }
     }
     
