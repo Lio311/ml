@@ -311,7 +311,7 @@ export default function Header({ brands = [] }) {
             </div>
 
             {/* Mobile Search Bar Expansion - Moved outside frosted-nav for better layout */}
-            <div className={`md:hidden bg-white border-b border-gray-100 transition-all duration-300 ease-in-out relative z-30 ${
+            <div className={`xl:hidden bg-white border-b border-gray-100 transition-all duration-300 ease-in-out relative z-30 ${
                 isMobileSearchOpen ? 'h-16 opacity-100 overflow-visible' : 'h-0 opacity-0 overflow-hidden'
             }`}>
                 <div className="w-full max-w-[1800px] mx-auto px-4 h-full flex items-center">
