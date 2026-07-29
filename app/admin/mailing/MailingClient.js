@@ -15,8 +15,10 @@ import VisualEditor from '@/app/components/VisualEditor';
 import ModernDateTimePicker from '@/app/components/ui/ModernDateTimePicker';
 import ObjectTagInput from '@/app/components/ObjectTagInput';
 import { generateCatalogHTML } from '@/app/lib/catalogEmailGenerator';
+import { useBrand } from '@/app/context/BrandContext';
 
 export default function MailingClient() {
+    const brand = useBrand();
     const { user } = useUser();
     const adminEmail = user?.primaryEmailAddress?.emailAddress || 'lior31197@gmail.com';
     const adminName = user?.firstName || 'מנהל';
@@ -218,7 +220,7 @@ export default function MailingClient() {
             shippingCost: 'חינם',
             deliveryMethod: 'איסוף עצמי',
             notesHtml: `<div style="margin-top: 20px; background-color: #fffde7; padding: 15px 20px; border-radius: 16px; border: 1px dashed #fde047;"><div style="font-size: 12px; font-weight: 900; color: #ca8a04; margin-bottom: 5px; text-transform: uppercase;">הערות להזמנה:</div><div style="font-size: 14px; color: #854d0e;">זוהי הערת בדיקה במסגרת טסט של המערכת.</div></div>`,
-            productsHtml: `<div style="background: white; border: 1px solid #eee; padding: 15px; border-radius: 8px; margin-bottom: 15px; text-align: center;"><br><strong>בושם לדוגמה</strong> - ml_tlv<br><span style="color: #666; font-size: 14px;">תווים דומים: בדיקה</span></div>`,
+            productsHtml: `<div style="background: white; border: 1px solid #eee; padding: 15px; border-radius: 8px; margin-bottom: 15px; text-align: center;"><br><strong>בושם לדוגמה</strong> - ${brand.name}<br><span style="color: #666; font-size: 14px;">תווים דומים: בדיקה</span></div>`,
             itemsHtml: `
                 <table style="width: 100%; border-collapse: collapse; margin-bottom: 25px;">
                     <thead>
@@ -231,7 +233,7 @@ export default function MailingClient() {
                     <tbody>
                         <tr style="border-bottom: 1px solid #f5f5f5;">
                             <td style="padding: 12px 10px; text-align: right; font-size: 14px; color: #333;">
-                                <img src="https://ml-tlv.com/logo.png" width="40" style="vertical-align: middle; margin-left: 10px; border-radius: 6px; display: inline-block; border: 1px solid #f0f0f0; height: auto; max-height: 40px; object-fit: contain;" alt="product test" />
+                                <img src="https://${brand.hyphen}.com/logo.png" width="40" style="vertical-align: middle; margin-left: 10px; border-radius: 6px; display: inline-block; border: 1px solid #f0f0f0; height: auto; max-height: 40px; object-fit: contain;" alt="product test" />
                                 <span style="vertical-align: middle;">בושם לדוגמה טסט (10 מ"ל)</span>
                             </td>
                             <td style="padding: 12px 10px; text-align: center; font-size: 14px; color: #333;">1</td>
@@ -242,9 +244,9 @@ export default function MailingClient() {
             `,
             itemsHtmlAdmin: `
                 <li style="margin-bottom: 12px; border-bottom: 1px solid #f0f0f0; padding-bottom: 12px; display: table; width: 100%;">
-                    <div style="display: table-cell; vertical-align: middle; width: 50px;"><img src="https://ml-tlv.com/logo.png" width="40" style="border-radius: 6px; border: 1px solid #f0f0f0; height: auto; max-height: 40px; object-fit: contain;" alt="product test" /></div>
+                    <div style="display: table-cell; vertical-align: middle; width: 50px;"><img src="https://${brand.hyphen}.com/logo.png" width="40" style="border-radius: 6px; border: 1px solid #f0f0f0; height: auto; max-height: 40px; object-fit: contain;" alt="product test" /></div>
                     <div style="display: table-cell; vertical-align: middle;">
-                        <span style="font-weight: 900; color: #000;">בושם לדוגמה טסט ml_tlv</span>
+                        <span style="font-weight: 900; color: #000;">בושם לדוגמה טסט ${brand.name}</span>
                         <div style="font-size: 12px; color: #666;">10ml x1</div>
                     </div>
                 </li>
@@ -466,10 +468,10 @@ export default function MailingClient() {
             <p style="margin: 5px 0 0; color: #666; font-size: 14px;">תוכל להוסיף כל מידע חשוב כאן בתיבה המודגשת.</p>
         </div>
         <div style="text-align: center; margin-top: 30px;">
-            <a href="https://www.ml-tlv.com" style="display: inline-block; background-color: #000; color: #fff; padding: 16px 32px; text-decoration: none; border-radius: 16px; font-weight: 900; font-size: 14px;">לצפייה באתר</a>
+            <a href="https://www.${brand.hyphen}.com" style="display: inline-block; background-color: #000; color: #fff; padding: 16px 32px; text-decoration: none; border-radius: 16px; font-weight: 900; font-size: 14px;">לצפייה באתר</a>
         </div>
     </div>
-    <div style="text-align: center; padding: 30px 0; color: #ccc; font-size: 11px;">ml - יוקרה בחתיכות קטנות</div>
+    <div style="text-align: center; padding: 30px 0; color: #ccc; font-size: 11px;">${brand.short} - יוקרה בחתיכות קטנות</div>
 </div>`
         },
         {
@@ -490,10 +492,10 @@ export default function MailingClient() {
         </div>
         <p style="margin-bottom: 20px; color: #333; text-align: center;">לא לפספס — המבצע תקף לזמן מוגבל בלבד!</p>
         <div style="text-align: center; margin-top: 30px;">
-            <a href="https://www.ml-tlv.com/catalog" style="display: inline-block; background-color: #000; color: #fff; padding: 16px 32px; text-decoration: none; border-radius: 16px; font-weight: 900; font-size: 14px;">לקטלוג המלא &gt;&gt;</a>
+            <a href="https://www.${brand.hyphen}.com/catalog" style="display: inline-block; background-color: #000; color: #fff; padding: 16px 32px; text-decoration: none; border-radius: 16px; font-weight: 900; font-size: 14px;">לקטלוג המלא &gt;&gt;</a>
         </div>
     </div>
-    <div style="text-align: center; padding: 30px 0; color: #ccc; font-size: 11px;">ml - יוקרה בחתיכות קטנות</div>
+    <div style="text-align: center; padding: 30px 0; color: #ccc; font-size: 11px;">${brand.short} - יוקרה בחתיכות קטנות</div>
 </div>`
         },
         {
@@ -519,10 +521,10 @@ export default function MailingClient() {
             <p style="margin: 0; color: #666; font-size: 14px;">ואת הטיפ השלישי כאן.</p>
         </div>
         <div style="text-align: center; margin-top: 30px;">
-            <a href="https://www.ml-tlv.com/catalog" style="display: inline-block; background-color: #000; color: #fff; padding: 16px 32px; text-decoration: none; border-radius: 16px; font-weight: 900; font-size: 14px;">לגלות עוד &gt;&gt;</a>
+            <a href="https://www.${brand.hyphen}.com/catalog" style="display: inline-block; background-color: #000; color: #fff; padding: 16px 32px; text-decoration: none; border-radius: 16px; font-weight: 900; font-size: 14px;">לגלות עוד &gt;&gt;</a>
         </div>
     </div>
-    <div style="text-align: center; padding: 30px 0; color: #ccc; font-size: 11px;">ml - יוקרה בחתיכות קטנות</div>
+    <div style="text-align: center; padding: 30px 0; color: #ccc; font-size: 11px;">${brand.short} - יוקרה בחתיכות קטנות</div>
 </div>`
         },
         {
@@ -536,7 +538,7 @@ export default function MailingClient() {
         <p>היי {{name}},</p>
         <p>כאן תוכן המייל שלך...</p>
     </div>
-    <div style="text-align: center; padding: 30px 0; color: #ccc; font-size: 11px;">ml - יוקרה בחתיכות קטנות</div>
+    <div style="text-align: center; padding: 30px 0; color: #ccc; font-size: 11px;">${brand.short} - יוקרה בחתיכות קטנות</div>
 </div>`
         }
     ];

@@ -2,29 +2,19 @@ import pool from '../lib/db';
 import ProductCard from '../components/ProductCard';
 import { cookies } from 'next/headers';
 import { sanitizeProductArray } from '../lib/productUtils';
-import he from '../data/locales/he.json';
-import en from '../data/locales/en.json';
 import DiscoveryTimer from './components/DiscoveryTimer';
 import Breadcrumbs from '../components/Breadcrumbs';
 import BreadcrumbSchema from '../components/BreadcrumbSchema';
-
-const getT = (locale) => {
-    const dict = locale === 'en' ? en : he;
-    return (key) => {
-        const keys = key.split('.');
-        let result = dict;
-        for (const k of keys) {
-            if (result[k]) result = result[k];
-            else return key;
-        }
-        return result;
-    };
-};
+import { getBrandName, buildVariants } from '../lib/brand';
 
 export async function generateMetadata() {
     const cookieStore = await cookies();
     const locale = cookieStore.get('NEXT_LOCALE')?.value || 'he';
-    const title = locale === 'he' ? 'דיסקברי סט ודוגמיות רשמיות | ml-tlv' : 'Discovery Sets & Official Samples | ml-tlv';
+    
+    const brandName = await getBrandName();
+    const brand = buildVariants(brandName);
+    
+    const title = locale === 'he' ? `דיסקברי סט ודוגמיות רשמיות | ${brand.hyphen}` : `Discovery Sets & Official Samples | ${brand.hyphen}`;
     const description = locale === 'he' 
         ? 'מגוון מארזי התנסות ודוגמיות רשמיות של מותגי יוקרה. הדרך המושלמת להכיר את הניחוחות הבאים שלכם.'
         : 'A variety of discovery sets and official samples from luxury brands. The perfect way to explore your next signature scent.';
@@ -33,7 +23,7 @@ export async function generateMetadata() {
         title,
         description,
         alternates: {
-            canonical: 'https://www.ml-tlv.com/discovery-sets',
+            canonical: `https://www.${brand.hyphen}.com/discovery-sets`,
         },
     };
 }

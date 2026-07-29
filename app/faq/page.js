@@ -1,34 +1,22 @@
 import FAQClient from './FAQClient';
 import Breadcrumbs from '../components/Breadcrumbs';
 import BreadcrumbSchema from '../components/BreadcrumbSchema';
-import { faq_he, faq_en } from '../data/faq_data';
+import { getFaqHe, getFaqEn } from '../data/faq_data';
+import { getBrandName, getBrand } from '../lib/brand';
 import { cookies } from 'next/headers';
-import he from '../data/locales/he.json';
-import en from '../data/locales/en.json';
-
-const getT = (locale) => {
-    const dict = locale === 'en' ? en : he;
-    return (key) => {
-        const keys = key.split('.');
-        let result = dict;
-        for (const k of keys) {
-            if (result[k]) result = result[k];
-            else return key;
-        }
-        return result;
-    };
-};
+import { getT } from '../lib/getT';
 
 export async function generateMetadata() {
     const cookieStore = await cookies();
     const locale = cookieStore.get('NEXT_LOCALE')?.value || 'he';
-    const t = getT(locale);
+    const brand = await getBrand();
+    const t = getT(locale, brand.name);
 
     return {
         title: t('common.faq'),
         description: t('common.faq_desc'),
         alternates: {
-            canonical: 'https://www.ml-tlv.com/faq',
+            canonical: `https://www.${brand.hyphen}.com/faq`,
         },
     };
 }
@@ -36,8 +24,9 @@ export async function generateMetadata() {
 export default async function FAQPage() {
     const cookieStore = await cookies();
     const locale = cookieStore.get('NEXT_LOCALE')?.value || 'he';
-    const t = getT(locale);
-    const categories = locale === 'en' ? faq_en : faq_he;
+    const brandName = await getBrandName();
+    const t = getT(locale, brandName);
+    const categories = locale === 'en' ? getFaqEn(brandName) : getFaqHe(brandName);
 
     // GEO: Build FAQPage schema for rich snippets and AI engine citation
     const allFaqItems = categories.flatMap(cat => cat.items);

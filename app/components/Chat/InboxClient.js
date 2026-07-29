@@ -5,6 +5,7 @@ import OrderReviewPrompt from '../OrderReviewPrompt';
 import { Reply, User as UserIcon, Loader2, MessageSquare, Search, Store, Package, ExternalLink, Image as ImageIcon } from 'lucide-react';
 import { useUser } from '@clerk/nextjs';
 import { useLanguage } from '../../context/LanguageContext';
+import { useBrand } from '../../context/BrandContext';
 import toast from 'react-hot-toast';
 import Link from 'next/link';
 import Image from '../CImage';
@@ -13,6 +14,7 @@ import OrderStatusTimeline from '../OrderStatusTimeline';
 export default function InboxClient({ role = 'buyer', catalogId = null, preSelectConversationWith = null, initialOrderId = null, initialCatalogId = null }) {
     const { user, isLoaded } = useUser();
     const { t, locale, dir } = useLanguage();
+    const brand = useBrand();
     const [conversations, setConversations] = useState([]);
     const [orders, setOrders] = useState([]);
     const [messages, setMessages] = useState([]);
@@ -385,7 +387,7 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
                                 
                                 <div className={`w-12 h-12 rounded-full flex-shrink-0 flex items-center justify-center overflow-hidden border relative ${((role === 'buyer' && !conv.catalog_id) || (role === 'seller' && !conv.catalog_id && conv.participant2_id === 'admin')) ? 'bg-white border-gray-100' : 'bg-gray-200 border-gray-300'}`}>
                                     {(role === 'buyer' && !conv.catalog_id) || (role === 'seller' && !conv.catalog_id && conv.participant2_id === 'admin') ? (
-                                        <Image src="/ml_CHAT.png" alt="ml_tlv" fill sizes="48px" className="object-cover" />
+                                        <Image src="/ml_CHAT.png" alt={brand.name} fill sizes="48px" className="object-cover" />
                                     ) : role === 'buyer' && conv.catalog_id ? (
                                         catalogsData[conv.catalog_id]?.logo_url ? (
                                             <Image src={catalogsData[conv.catalog_id].logo_url} alt="Store" fill sizes="48px" className="object-cover" />
@@ -442,7 +444,7 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
                             </button>
                             <div className={`w-10 h-10 rounded-full flex items-center justify-center overflow-hidden border flex-shrink-0 relative ${((role === 'buyer' && !activeConversation?.catalog_id) || (role === 'seller' && !activeConversation?.catalog_id && activeConversation?.participant2_id === 'admin')) ? 'bg-white border-gray-100' : 'bg-gray-200 border-gray-300'}`}>
                                 {(role === 'buyer' && !activeConversation?.catalog_id) || (role === 'seller' && !activeConversation?.catalog_id && activeConversation?.participant2_id === 'admin') ? (
-                                    <Image src="/ml_CHAT.png" alt="ml_tlv" fill sizes="40px" className="object-cover" />
+                                    <Image src="/ml_CHAT.png" alt={brand.name} fill sizes="40px" className="object-cover" />
                                 ) : role === 'buyer' && activeConversation?.catalog_id ? (
                                     catalogsData[activeConversation.catalog_id]?.logo_url ? (
                                         <Image src={catalogsData[activeConversation.catalog_id].logo_url} alt="Store" fill sizes="40px" className="object-cover" />

@@ -4,13 +4,16 @@ import { useState, useEffect, useRef, useCallback } from 'react';
 import toast from 'react-hot-toast';
 import { Save, Image as ImageIcon, Video, AlignCenter, ArrowUp, ArrowDown, ArrowLeft, ArrowRight, Plus, Trash2, Eye, EyeOff, ChevronUp, ChevronDown } from 'lucide-react';
 import RichTextEditor from '../components/RichTextEditor';
+import { useBrand } from '@/app/context/BrandContext';
 
 // Default content shown in editor when no content has been saved yet.
 // This mirrors the hardcoded fallback in page.js / HeroCarousel.
-const DEFAULT_CONTENT_HE = `<p style="text-align:center"><span style="font-family: Assistant, sans-serif; font-size: 0.75em; font-weight: bold; letter-spacing: 0.2em; text-transform: uppercase;">גלה את בושם החתימה שלך</span></p><p style="text-align:center"><span style="font-family: 'Gveret Levin', 'Dancing Script', cursive; font-size: 2.5em; font-weight: bold;">ml-tlv: דוגמיות בשמי נישה</span></p><p style="text-align:center"><span style="font-family: 'Gveret Levin', 'Dancing Script', cursive; font-size: 2.5em; font-weight: bold;">ודיקאנטים מקוריים</span></p><p style="text-align:center"><span style="font-family: Assistant, sans-serif; font-size: 1em;">הדרך החכמה לגלות בשמי נישה יוקרתיים. מגוון דוגמיות יוקרה ודיקאנטים של הבשמים הנחשקים בעולם. הזמינו דוגמיות לפני רכישת בקבוק מלא.</span></p>`;
-const DEFAULT_CONTENT_EN = `<p style="text-align:center"><span style="font-family: Assistant, sans-serif; font-size: 0.75em; font-weight: bold; letter-spacing: 0.2em; text-transform: uppercase;">Discover your signature scent</span></p><p style="text-align:center"><span style="font-family: 'Gveret Levin', 'Dancing Script', cursive; font-size: 2.5em; font-weight: bold;">ml-tlv: Niche Perfume Samples</span></p><p style="text-align:center"><span style="font-family: 'Gveret Levin', 'Dancing Script', cursive; font-size: 2.5em; font-weight: bold;">&amp; Original Decants</span></p><p style="text-align:center"><span style="font-family: Assistant, sans-serif; font-size: 1em;">The smart way to explore luxury niche perfumes. Sample before you commit to a full bottle.</span></p>`;
+const getDefaultContentHe = (brandName) => `<p style="text-align:center"><span style="font-family: Assistant, sans-serif; font-size: 0.75em; font-weight: bold; letter-spacing: 0.2em; text-transform: uppercase;">גלה את בושם החתימה שלך</span></p><p style="text-align:center"><span style="font-family: 'Gveret Levin', 'Dancing Script', cursive; font-size: 2.5em; font-weight: bold;">${brandName}: דוגמיות בשמי נישה</span></p><p style="text-align:center"><span style="font-family: 'Gveret Levin', 'Dancing Script', cursive; font-size: 2.5em; font-weight: bold;">ודיקאנטים מקוריים</span></p><p style="text-align:center"><span style="font-family: Assistant, sans-serif; font-size: 1em;">הדרך החכמה לגלות בשמי נישה יוקרתיים. מגוון דוגמיות יוקרה ודיקאנטים של הבשמים הנחשקים בעולם. הזמינו דוגמיות לפני רכישת בקבוק מלא.</span></p>`;
+const getDefaultContentEn = (brandName) => `<p style="text-align:center"><span style="font-family: Assistant, sans-serif; font-size: 0.75em; font-weight: bold; letter-spacing: 0.2em; text-transform: uppercase;">Discover your signature scent</span></p><p style="text-align:center"><span style="font-family: 'Gveret Levin', 'Dancing Script', cursive; font-size: 2.5em; font-weight: bold;">${brandName}: Niche Perfume Samples</span></p><p style="text-align:center"><span style="font-family: 'Gveret Levin', 'Dancing Script', cursive; font-size: 2.5em; font-weight: bold;">&amp; Original Decants</span></p><p style="text-align:center"><span style="font-family: Assistant, sans-serif; font-size: 1em;">The smart way to explore luxury niche perfumes. Sample before you commit to a full bottle.</span></p>`;
 
-export default function BannerClient() {
+export default function BannerClient({ brandName: brandNameProp } = {}) {
+    const brand = useBrand();
+    const brandName = brandNameProp || brand.name;
     const [banners, setBanners] = useState([{ type: 'video', url: '/hero-video.mp4', objectPosition: 'center' }]);
     const [loading, setLoading] = useState(true);
     const [dataLoaded, setDataLoaded] = useState(false);
@@ -582,7 +585,7 @@ export default function BannerClient() {
                                                 <div className={banner.contentLang === 'en' ? 'dir-ltr' : 'dir-rtl'}>
                                                     <RichTextEditor 
                                                         key={`editor-${index}-${banner.contentLang || 'he'}-${dataLoaded ? 'loaded' : 'loading'}`}
-                                                        value={banner.contentLang === 'en' ? (banner.contentEn || DEFAULT_CONTENT_EN) : (banner.contentHe || banner.content || DEFAULT_CONTENT_HE)}
+                                                        value={banner.contentLang === 'en' ? (banner.contentEn || getDefaultContentEn(brandName)) : (banner.contentHe || banner.content || getDefaultContentHe(brandName))}
                                                         onChange={(val) => updateBanner(index, banner.contentLang === 'en' ? 'contentEn' : 'contentHe', val)}
                                                         dir={banner.contentLang === 'en' ? 'ltr' : 'rtl'}
                                                     />
@@ -815,7 +818,7 @@ export default function BannerClient() {
                                                         <div className="w-8 h-8 rounded-full bg-gray-200"></div>
                                                         <div className="w-24 h-3 bg-gray-200 rounded"></div>
                                                     </div>
-                                                    <span className="text-black font-bold tracking-widest text-2xl">ml-tlv.</span>
+                                                    <span className="text-black font-bold tracking-widest text-2xl">{brandName.replace(/_/g, '-')}.</span>
                                                     <div className="w-8 h-8 rounded-full bg-gray-200"></div>
                                                 </div>
 

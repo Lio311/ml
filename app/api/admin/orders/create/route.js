@@ -4,6 +4,7 @@ import pool from '../../../../lib/db';
 import { sendEmail, getOrderConfirmationTemplate, getAdminNewOrderTemplate, formatItemsHtmlCustomer, formatItemsHtmlAdmin, formatNotesHtml } from '../../../../lib/email';
 import { recordAuditLog } from '../../../../lib/audit';
 import { checkAdmin } from '../../../../lib/admin';
+import { getBrandName } from '../../../../lib/brand';
 
 export async function POST(req) {
     try {
@@ -237,7 +238,8 @@ export async function POST(req) {
                 const notesHtml = formatNotesHtml(notes);
 
                 const confirmationHtml = getOrderConfirmationTemplate(orderId, itemsHtmlCustomer, total, 0, notesHtml, deliveryText, shippingText);
-                await sendEmail(customer.email, `אישור הזמנה טלפונית #${orderId} - ml_tlv`, confirmationHtml, 'order_confirmation', orderId);
+                const brandName = await getBrandName();
+                await sendEmail(customer.email, `אישור הזמנה טלפונית #${orderId} - ${brandName}`, confirmationHtml, 'order_confirmation', orderId);
 
                 const adminEmail = process.env.ADMIN_EMAIL;
                 const adminAlertHtml = getAdminNewOrderTemplate(orderId, customerName, total, itemsHtmlAdmin, deliveryText, shippingText, phoneNumber || customer.phone);

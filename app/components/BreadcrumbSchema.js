@@ -9,10 +9,13 @@
  *     { name: "Product Name" }  // last item — no url = current page
  *   ]} />
  */
-export default function BreadcrumbSchema({ items }) {
+import { getBrand } from '../lib/brand';
+
+export default async function BreadcrumbSchema({ items }) {
     if (!items || items.length === 0) return null;
 
-    const baseUrl = 'https://www.ml-tlv.com';
+    const brand = await getBrand();
+    const baseUrl = brand.url;
 
     const schema = {
         "@context": "https://schema.org",

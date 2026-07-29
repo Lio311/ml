@@ -9,6 +9,7 @@ import ClientLayout from "./components/ClientLayout";
 import { validateEnv } from "./lib/env";
 import { headers, cookies } from "next/headers";
 import { LanguageProvider } from "./context/LanguageContext";
+import { BrandProvider } from "./context/BrandContext";
 import { CartProvider } from "./context/CartContext";
 import { WishlistProvider } from "./context/WishlistContext";
 import pool, { getBrands, getMenuItems } from "./lib/db";
@@ -53,7 +54,7 @@ export async function generateMetadata() {
       default: brand.fullTitle,
     },
     description: "חנות דוגמיות בשמים בקונספט קצת שונה. מגוון בשמי בוטיק, נישא ודיזיינר במחירים הוגנים",
-    metadataBase: new URL('https://www.ml-tlv.com'),
+    metadataBase: new URL(brand.url),
     manifest: '/manifest.json',
     appleWebApp: {
       capable: true,
@@ -69,7 +70,7 @@ export async function generateMetadata() {
     openGraph: {
       title: brand.fullTitle,
       description: "חנות דוגמיות בשמים הגדולה בישראל",
-      url: 'https://www.ml-tlv.com',
+      url: brand.url,
       siteName: brand.name,
       images: [{ url: '/logo_v5.png', width: 800, height: 600 }],
       locale: 'he_IL',
@@ -92,6 +93,7 @@ export default async function RootLayout({ children }) {
 
   const headersList = await headers();
   const forceMaintenance = headersList.get('x-maintenance') === 'true';
+  const brand = await getBrand();
 
   return (
     <ClerkProvider
@@ -122,11 +124,12 @@ export default async function RootLayout({ children }) {
     >
       <html lang={locale} dir={dir} style={{ colorScheme: 'light' }}>
         <body className={`${assistant.variable} ${dancingScript.variable} antialiased`}>
-          <LanguageProvider initialLocale={locale}>
-            <CartProvider>
-              <WishlistProvider>
-              <AnalyticsTracker />
-              {locale === 'he' && <ClerkBrandingTranslator />}
+          <BrandProvider initialBrand={brand}>
+            <LanguageProvider initialLocale={locale}>
+              <CartProvider>
+                <WishlistProvider>
+                <AnalyticsTracker />
+                {locale === 'he' && <ClerkBrandingTranslator />}
               {!forceMaintenance && (
                 <Toaster position="top-center" toastOptions={{ 
                   duration: 3000,
@@ -157,11 +160,11 @@ export default async function RootLayout({ children }) {
                       {
                         "@context": "https://schema.org",
                         "@type": "Store",
-                        "name": "ml-tlv",
-                        "alternateName": "ml-tlv - יוקרה בחתיכות קטנות",
-                        "url": "https://www.ml-tlv.com",
-                        "logo": "https://www.ml-tlv.com/logo_v5.png",
-                        "image": "https://www.ml-tlv.com/logo_v5.png",
+                        "name": brand.name,
+                        "alternateName": `${brand.name} - יוקרה בחתיכות קטנות`,
+                        "url": brand.url,
+                        "logo": `${brand.url}/logo_v5.png`,
+                        "image": `${brand.url}/logo_v5.png`,
                         "description": locale === 'he' 
                             ? "דוגמיות בשמים, דיקאנטים ובשמי נישה מקוריים בתל אביב והסביבה. משלוחים לכל הארץ."
                             : "Authentic luxury niche perfume samples and decants.",
@@ -197,23 +200,23 @@ export default async function RootLayout({ children }) {
                           "closes": "20:00"
                         },
                         "sameAs": [
-                          "https://instagram.com/ml_tlv"
+                          `https://instagram.com/${brand.instagram}`
                         ]
                       },
                       {
                         "@context": "https://schema.org",
                         "@type": "WebSite",
-                        "name": "ml-tlv",
-                        "alternateName": "ml_tlv",
-                        "url": "https://www.ml-tlv.com",
-                        "image": "https://www.ml-tlv.com/logo_v5.png",
+                        "name": brand.name,
+                        "alternateName": brand.name,
+                        "url": brand.url,
+                        "image": `${brand.url}/logo_v5.png`,
                         "description": locale === 'he'
-                            ? "ml-tlv - דוגמיות בושם מקוריות מבתי בושם יוקרתיים ונישה. דיקאנטים ב-2, 5 ו-10 מ\"ל באריזת זכוכית עם מתז."
-                            : "ml-tlv - Authentic luxury niche perfume samples and decants in 2ml, 5ml, and 10ml glass atomizers.",
+                            ? `${brand.name} - דוגמיות בושם מקוריות מבתי בושם יוקרתיים ונישה. דיקאנטים ב-2, 5 ו-10 מ"ל באריזת זכוכית עם מתז.`
+                            : `${brand.name} - Authentic luxury niche perfume samples and decants in 2ml, 5ml, and 10ml glass atomizers.`,
                         "inLanguage": ["he-IL", "en-US"],
                         "potentialAction": {
                             "@type": "SearchAction",
-                            "target": "https://www.ml-tlv.com/catalog?q={search_term_string}",
+                            "target": `${brand.url}/catalog?q={search_term_string}`,
                             "query-input": "required name=search_term_string"
                         }
                       },
@@ -224,7 +227,7 @@ export default async function RootLayout({ children }) {
                         "jobTitle": "Founder",
                         "worksFor": {
                             "@type": "Organization",
-                            "name": "ml-tlv"
+                            "name": brand.name
                         }
                       },
                       {
@@ -232,21 +235,21 @@ export default async function RootLayout({ children }) {
                         "@type": "ItemList",
                         "name": "Site Navigation",
                         "itemListElement": [
-                          { "@type": "SiteNavigationElement", "position": 1, "name": "קטלוג", "url": "https://www.ml-tlv.com/catalog" },
-                          { "@type": "SiteNavigationElement", "position": 2, "name": "גברים", "url": "https://www.ml-tlv.com/catalog?gender=men" },
-                          { "@type": "SiteNavigationElement", "position": 3, "name": "נשים", "url": "https://www.ml-tlv.com/catalog?gender=women" },
-                          { "@type": "SiteNavigationElement", "position": 4, "name": "חבילות", "url": "https://www.ml-tlv.com/bundles" },
-                          { "@type": "SiteNavigationElement", "position": 5, "name": "דיסקברי סט", "url": "https://www.ml-tlv.com/discovery-sets" }
+                          { "@type": "SiteNavigationElement", "position": 1, "name": "קטלוג", "url": `${brand.url}/catalog` },
+                          { "@type": "SiteNavigationElement", "position": 2, "name": "גברים", "url": `${brand.url}/catalog?gender=men` },
+                          { "@type": "SiteNavigationElement", "position": 3, "name": "נשים", "url": `${brand.url}/catalog?gender=women` },
+                          { "@type": "SiteNavigationElement", "position": 4, "name": "חבילות", "url": `${brand.url}/bundles` },
+                          { "@type": "SiteNavigationElement", "position": 5, "name": "דיסקברי סט", "url": `${brand.url}/discovery-sets` }
                         ]
                       },
                       {
                         "@context": "https://schema.org",
                         "@type": "WebPage",
-                        "name": "ml-tlv",
-                        "url": "https://www.ml-tlv.com",
+                        "name": brand.name,
+                        "url": brand.url,
                         "primaryImageOfPage": {
                           "@type": "ImageObject",
-                          "url": "https://www.ml-tlv.com/logo_v5.png"
+                          "url": `${brand.url}/logo_v5.png`
                         }
                       },
                       {
@@ -257,16 +260,17 @@ export default async function RootLayout({ children }) {
                             "@type": "ListItem",
                             "position": 1,
                             "name": "דף הבית",
-                            "item": "https://www.ml-tlv.com"
+                            "item": brand.url
                           }
                         ]
                       }
                     ])
                 }}
               />
-              </WishlistProvider>
-            </CartProvider>
-          </LanguageProvider>
+                </WishlistProvider>
+              </CartProvider>
+            </LanguageProvider>
+          </BrandProvider>
         </body>
       </html>
     </ClerkProvider>

@@ -6,9 +6,11 @@ import WishlistHeart from './WishlistHeart';
 import ShareButton from './ShareButton';
 import SpotifyPlayer from './SpotifyPlayer';
 import { useLanguage } from '../context/LanguageContext';
+import { useBrand } from '../context/BrandContext';
 
 export default function ProductGallery({ product, locale, localizedName }) {
     const { t } = useLanguage();
+    const brand = useBrand();
     // Collect all available images
     const images = [product.image_url, product.image_url_2, product.image_url_3].filter(Boolean);
     const [activeImageIndex, setActiveImageIndex] = useState(0);
@@ -22,7 +24,7 @@ export default function ProductGallery({ product, locale, localizedName }) {
                 {activeImage ? (
                     <Image
                         src={activeImage}
-                        alt={locale === 'he' ? `דוגמית בושם ${localizedName} בנפח 2-10 מ"ל, בקבוקון זכוכית עם מתז - ml-tlv` : `${localizedName} perfume sample decant 2-10ml glass atomizer - ml-tlv`}
+                        alt={locale === 'he' ? `דוגמית בושם ${localizedName} בנפח 2-10 מ"ל, בקבוקון זכוכית עם מתז - ${brand.hyphen}` : `${localizedName} perfume sample decant 2-10ml glass atomizer - ${brand.hyphen}`}
                         fill
                         priority
                         className={`object-contain transition-all duration-300 ${product.is_discovery_set ? 'p-4 md:p-6' : 'p-8 md:p-12'}`}

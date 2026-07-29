@@ -69,6 +69,8 @@ export function buildVariants(name) {
         instagram: name,                             // ml_tlv  / MySite
         titleSuffix: ` | ${name}`,                  // " | ml_tlv"
         fullTitle: `${name} | דוגמיות בשמים`,
+        domain: `www.${name.replace(/_/g, '-')}.com`,
+        url: `https://www.${name.replace(/_/g, '-')}.com`,
     };
 }
 

@@ -3,6 +3,7 @@ import { currentUser } from "@clerk/nextjs/server";
 import { GoogleGenerativeAI } from "@google/generative-ai";
 import fs from 'fs';
 import path from 'path';
+import { getBrandName } from '@/app/lib/brand';
 
 export const dynamic = 'force-dynamic';
 export const maxDuration = 60;
@@ -46,10 +47,12 @@ export async function POST(req) {
             candidatesList = candidateTracks.map(t => `- ID: ${t.id} | Artist: ${t.artist} | Title: ${t.name} | Genre: ${t.genre}`).join('\n');
         } catch(e) {}
 
+        const brandName = await getBrandName();
+
         const searchPrompt = `Search Fragrantica for the perfume "${brand} ${name}" and find its EXACT fragrance note pyramid (top notes, middle/heart notes, base notes). 
 Use only notes that actually appear on the Fragrantica page for this specific perfume. Do NOT guess or make up notes.
 
-After finding the real notes, write a short poetic product description in Hebrew for a luxury Israeli perfume decant shop called "ml-tlv".
+After finding the real notes, write a short poetic product description in Hebrew for a luxury Israeli perfume decant shop called "${brandName}".
 
 Description rules:
 - 3-5 sentences max, Hebrew only

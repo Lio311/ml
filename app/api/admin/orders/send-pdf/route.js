@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { sendEmail, getTemplate } from '../../../../lib/email';
 import { currentUser } from '@clerk/nextjs/server';
+import { getBrandName } from '../../../../lib/brand';
 
 export const dynamic = 'force-dynamic';
 export const revalidate = 0;
@@ -28,7 +29,8 @@ export async function POST(request) {
             name: name || 'לקוח' 
         });
 
-        const finalSubject = subject || `טופס הזמנה - ml_tlv #${orderId} (v2)`;
+        const brandName = await getBrandName();
+        const finalSubject = subject || `טופס הזמנה - ${brandName} #${orderId} (v2)`;
         const finalHtml = html || `<p>היי ${name || 'לקוח'},</p><p>מצורף טופס ההזמנה שלך (PDF) עבור הזמנה #${orderId}.</p>`;
 
         const attachments = [

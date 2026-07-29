@@ -6,7 +6,7 @@ import { useBrand } from '../context/BrandContext';
 
 export default function AuthorBox() {
     const { dir } = useLanguage();
-    const { dot, hyphen, short } = useBrand();
+    const { dot, hyphen, short, url, instagram } = useBrand();
     const isRTL = dir === 'rtl';
 
     return (
@@ -27,7 +27,7 @@ export default function AuthorBox() {
                 </p>
                 <div className={`flex items-center justify-center ${isRTL ? 'md:justify-start' : 'md:justify-start'} gap-4`}>
                     <a 
-                        href="https://instagram.com/ml_tlv" 
+                        href={`https://instagram.com/${instagram}`} 
                         target="_blank" 
                         rel="noopener noreferrer"
                         className="flex items-center gap-2 text-xs font-bold text-gray-500 hover:text-black transition-colors"
@@ -48,11 +48,11 @@ export default function AuthorBox() {
                         "name": "Lio",
                         "jobTitle": "Founder & Fragrance Expert",
                         "description": `Founder of ${hyphen}, perfume enthusiast and expert in niche and luxury fragrances.`,
-                        "sameAs": ["https://instagram.com/ml_tlv"],
+                        "sameAs": [`https://instagram.com/${instagram}`],
                         "worksFor": {
                             "@type": "Organization",
                             "name": hyphen,
-                            "url": "https://www.ml-tlv.com"
+                            "url": url
                         }
                     })
                 }}

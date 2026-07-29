@@ -117,15 +117,23 @@ export const sendEmail = async (to, subject, html, type = 'system', orderId = nu
             }
         }
 
+        const { getBrand } = await import('./brand');
+        const b = await getBrand();
+
         let finalHtml = html;
+        finalHtml = finalHtml.replace(/https:\/\/www\.ml-tlv\.com/g, b.url);
+        finalHtml = finalHtml.replace(/https:\/\/ml-tlv\.com/g, b.url);
+        finalHtml = finalHtml.replace(/ml_tlv/g, b.name);
+        finalHtml = finalHtml.replace(/ml-tlv(?!\.com)/g, b.hyphen);
+
         if (isMarketing) {
             const unsubscribeLink = Array.isArray(finalTo) 
-                ? 'https://www.ml-tlv.com/unsubscribe' 
-                : `https://www.ml-tlv.com/unsubscribe?email=${encodeURIComponent(finalTo)}`;
+                ? `${b.url}/unsubscribe` 
+                : `${b.url}/unsubscribe?email=${encodeURIComponent(finalTo)}`;
             const unsubscribeHtml = `
                 <div dir="rtl" style="margin-top: 5px; text-align: center; font-family: 'Open Sans', 'Open Sans Hebrew', Arial, sans-serif; color: #999;">
                     <p style="margin: 0 0 4px; font-size: 11px;">
-                        קיבלת מייל זה כי נרשמת לעדכונים מ-<strong>ml_tlv</strong>.
+                        קיבלת מייל זה כי נרשמת לעדכונים מ-<strong>${b.name}</strong>.
                     </p>
                     <a href="${unsubscribeLink}" dir="rtl" style="display: inline-block; font-size: 11px; color: #999; text-decoration: underline;">
                         להסרה מרשימת התפוצה
@@ -143,10 +151,12 @@ export const sendEmail = async (to, subject, html, type = 'system', orderId = nu
             }
         }
 
-        const brandName = await getBrandName();
+        const brandName = b.name;
+        const finalSubject = subject.replace(/ml_tlv/g, brandName);
+
         const mailOptions = {
             from: `"${brandName}" <${process.env.EMAIL_USER}>`,
-            subject,
+            subject: finalSubject,
             html: finalHtml,
             attachments
         };

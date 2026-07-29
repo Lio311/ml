@@ -1,9 +1,10 @@
 import { NextResponse } from 'next/server';
 import pool from '@/app/lib/db';
 import { checkAdmin } from '@/app/lib/admin';
+import { getBrand } from '@/app/lib/brand';
 
 // Default Instagram popup — seeded on first load if DB is empty
-const DEFAULT_POPUPS = [
+const getDefaultPopups = (brand) => [
     {
         id: 'instagram_popup',
         name: 'פופאפ אינסטגרם',
@@ -19,11 +20,11 @@ const DEFAULT_POPUPS = [
         content: {
             title: 'בואו נדבר באינסטגרם!',
             title_en: "Let's talk on Instagram!",
-            description: 'זקוקים לייעוץ או מענה מהיר? אנחנו זמינים עבורכם ב-ml_tlv לכל שאלה, בכל ימות השבוע.',
-            description_en: 'Need advice or a quick answer? We are available for you at ml_tlv for any question, all week long.',
+            description: `זקוקים לייעוץ או מענה מהיר? אנחנו זמינים עבורכם ב-${brand.instagram} לכל שאלה, בכל ימות השבוע.`,
+            description_en: `Need advice or a quick answer? We are available for you at ${brand.instagram} for any question, all week long.`,
             buttonText: 'למעבר לייעוץ אישי',
             buttonText_en: 'Go to personal advice',
-            buttonUrl: 'https://instagram.com/ml_tlv',
+            buttonUrl: `https://instagram.com/${brand.instagram}`,
             icon: 'instagram',
             imageUrl: ''
         },
@@ -57,13 +58,15 @@ export async function GET() {
                 return NextResponse.json({ popups: res.rows[0].value });
             } else {
                 // Seed with default Instagram popup
+                const brand = await getBrand();
+                const defaultPopups = getDefaultPopups(brand);
                 await client.query(`
                     INSERT INTO site_settings (key, value)
                     VALUES ('site_popups', $1)
                     ON CONFLICT (key) DO NOTHING
-                `, [JSON.stringify(DEFAULT_POPUPS)]);
+                `, [JSON.stringify(defaultPopups)]);
 
-                return NextResponse.json({ popups: DEFAULT_POPUPS });
+                return NextResponse.json({ popups: defaultPopups });
             }
         } finally {
             client.release();

@@ -8,19 +8,37 @@ import { useLanguage } from '../context/LanguageContext';
 import { usePathname, useRouter } from 'next/navigation';
 import { marked } from 'marked';
 import SmartMatchingClient from '../matching/SmartMatchingClient';
+import { useBrand } from '../context/BrandContext';
 
 export default function SmartAdvisorTab() {
     const pathname = usePathname();
     const { locale } = useLanguage();
+    const brand = useBrand();
     const isHebrew = locale === 'he';
     const [isOpen, setIsOpen] = useState(false);
     const [activeTab, setActiveTab] = useState('matching');
     const [messages, setMessages] = useState([
         { role: 'assistant', content: isHebrew ? 
-            'שלום! אני היועץ החכם של ml-tlv.\n\nאשמח לעזור לך למצוא את הבושם המושלם עבורך. אפשר לבקש ממני בשמים לפי שם, עונה, אירוע או תווים ספציפיים (כמו וניל, עץ, הדרים).\n\n**איך אוכל לעזור לך היום?**' :
-            'Hello! I am the Smart Advisor of ml-tlv.\n\nI would love to help you find your perfect perfume. You can ask me for perfumes by name, season, occasion, or specific notes (like vanilla, woody, citrus).\n\n**How can I help you today?**' 
+            `שלום! אני היועץ החכם של ${brand.hyphen}.\n\nאשמח לעזור לך למצוא את הבושם המושלם עבורך. אפשר לבקש ממני בשמים לפי שם, עונה, אירוע או תווים ספציפיים (כמו וניל, עץ, הדרים).\n\n**איך אוכל לעזור לך היום?**` :
+            `Hello! I am the Smart Advisor of ${brand.hyphen}.\n\nI would love to help you find your perfect perfume. You can ask me for perfumes by name, season, occasion, or specific notes (like vanilla, woody, citrus).\n\n**How can I help you today?**` 
         }
     ]);
+    
+    // Update welcome message if brand or language changes before user interacts
+    useEffect(() => {
+        setMessages(prev => {
+            if (prev.length === 1 && prev[0].role === 'assistant') {
+                return [{
+                    role: 'assistant',
+                    content: isHebrew ? 
+                        `שלום! אני היועץ החכם של ${brand.hyphen}.\n\nאשמח לעזור לך למצוא את הבושם המושלם עבורך. אפשר לבקש ממני בשמים לפי שם, עונה, אירוע או תווים ספציפיים (כמו וניל, עץ, הדרים).\n\n**איך אוכל לעזור לך היום?**` :
+                        `Hello! I am the Smart Advisor of ${brand.hyphen}.\n\nI would love to help you find your perfect perfume. You can ask me for perfumes by name, season, occasion, or specific notes (like vanilla, woody, citrus).\n\n**How can I help you today?**`
+                }];
+            }
+            return prev;
+        });
+    }, [brand.hyphen, isHebrew]);
+
     const [input, setInput] = useState('');
     const [isLoading, setIsLoading] = useState(false);
     const messagesEndRef = useRef(null);
@@ -152,7 +170,7 @@ export default function SmartAdvisorTab() {
                                     <h3 className="font-bold text-lg tracking-wide">
                                         {isHebrew ? 'היועץ החכם' : 'Smart Advisor'}
                                     </h3>
-                                    <p className="text-xs text-gray-400">{isHebrew ? 'מומחה נישה AI של ml-tlv' : 'ml-tlv AI Niche Expert'}</p>
+                                    <p className="text-xs text-gray-400">{isHebrew ? `מומחה נישה AI של ${brand.hyphen}` : `${brand.hyphen} AI Niche Expert`}</p>
                                 </div>
                             </div>
                             <button onClick={() => setIsOpen(false)} className="text-gray-400 hover:text-white transition-colors bg-white/5 p-2 rounded-full hover:bg-white/10">

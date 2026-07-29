@@ -9,6 +9,7 @@ import MobileNav from './header/MobileNav';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import LiveVisitorCounter from './LiveVisitorCounter';
 import { useLanguage } from '../context/LanguageContext';
+import { useBrand } from '../context/BrandContext';
 import { useCart } from '../context/CartContext';
 import { useWishlist } from '../context/WishlistContext';
 import { Menu, Search, User, ChevronRight, ChevronLeft } from 'lucide-react';
@@ -40,6 +41,7 @@ export default function Header({ brands = [] }) {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
     const { t, dir } = useLanguage();
+    const brand = useBrand();
     const { globalItemsCount: cartCount } = useCart();
     const { count: wishlistCount } = useWishlist();
     const { user } = useUser();
@@ -189,7 +191,7 @@ export default function Header({ brands = [] }) {
                                     <Link href="/" className="block transform hover:scale-105 transition-transform duration-700">
                                         <Image 
                                             src={logoSrc} 
-                                            alt="ml_tlv - דוגמיות בשמי נישה יוקרתיים" 
+                                            alt={`${brand.name} - דוגמיות בשמי נישה יוקרתיים`} 
                                             width={160} 
                                             height={60} 
                                             className="h-10 md:h-14 w-auto object-contain inverted-logo-v2" 
@@ -280,7 +282,7 @@ export default function Header({ brands = [] }) {
                                 <Link href="/">
                                     <Image 
                                         src={logoSrc} 
-                                        alt="ml_tlv - דוגמיות בשמי נישה יוקרתיים" 
+                                        alt={`${brand.name} - דוגמיות בשמי נישה יוקרתיים`} 
                                         width={90} 
                                         height={30} 
                                         className="h-6 w-auto object-contain inverted-logo-v2" 

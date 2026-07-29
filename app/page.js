@@ -11,39 +11,26 @@ import TrustSection from "./components/TrustSection";
 import HeroCarousel from "./components/HeroCarousel";
 import TypewriterText from "./components/TypewriterText";
 import HomeFAQSection from "./components/HomeFAQSection";
+import { getBrandName, getBrand } from "./lib/brand";
 import { withClient } from "./lib/db";
 import { cookies } from 'next/headers';
-import he from './data/locales/he.json';
-import en from './data/locales/en.json';
+import { getT } from "./lib/getT";
 import { sanitizeProductArray } from "./lib/productUtils";
 import FadeIn from "./components/FadeIn";
 import { getHomeData } from "./lib/data/homeData";
 
 
-const getT = (locale) => {
-  const dict = locale === 'en' ? en : he;
-  return (key) => {
-    const keys = key.split('.');
-    let result = dict;
-    for (const k of keys) {
-      if (result[k]) result = result[k];
-      else return key;
-    }
-    return result;
-  };
-};
-
-
 export async function generateMetadata() {
   const cookieStore = await cookies();
   const locale = cookieStore.get('NEXT_LOCALE')?.value || 'he';
-  const t = getT(locale);
+  const brand = await getBrand();
+  const t = getT(locale, brand.name);
 
   return {
     title: t('metadata.home.title'),
     description: t('metadata.home.description'),
     alternates: {
-      canonical: 'https://www.ml-tlv.com',
+      canonical: brand.url,
     },
   };
 }
@@ -51,7 +38,8 @@ export async function generateMetadata() {
 export default async function Home() {
   const cookieStore = await cookies();
   const locale = cookieStore.get('NEXT_LOCALE')?.value || 'he';
-  const t = getT(locale);
+  const brandName = await getBrandName();
+  const t = getT(locale, brandName);
 
   const { newArrivals, topCatalogs, stats, banners } = await getHomeData();
 
@@ -64,7 +52,7 @@ export default async function Home() {
             {
               "@context": "https://schema.org",
               "@type": "WebPage",
-              "name": locale === 'he' ? "ml-tlv — דוגמיות בשמים יוקרתיות ודיקאנטים" : "ml-tlv — Luxury Perfume Samples & Decants",
+              "name": locale === 'he' ? `${brandName} — דוגמיות בשמים יוקרתיות ודיקאנטים` : `${brandName} — Luxury Perfume Samples & Decants`,
               "speakable": {
                 "@type": "SpeakableSpecification",
                 "cssSelector": [
@@ -220,7 +208,7 @@ export default async function Home() {
       </FadeIn>
 
       <FadeIn delay={0.1}>
-        <HomeFAQSection />
+        <HomeFAQSection brandName={brandName} />
       </FadeIn>
       <HomeSEOContent />
     </div>

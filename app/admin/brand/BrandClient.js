@@ -3,8 +3,10 @@
 import { useState, useEffect } from 'react';
 import { toast } from 'react-hot-toast';
 import { Loader2, Save, RotateCcw, Palette, AlertTriangle } from 'lucide-react';
+import { useBrand } from '@/app/context/BrandContext';
 
 export default function BrandClient() {
+    const brand = useBrand();
     const [brandName, setBrandName] = useState('');
     const [current, setCurrent] = useState(null);
     const [isDefault, setIsDefault] = useState(true);
@@ -25,7 +27,7 @@ export default function BrandClient() {
         } catch { toast.error('שגיאה בטעינת שם המותג'); }
     };
 
-    const preview = brandName.trim() || current?.name || 'ml_tlv';
+    const preview = brandName.trim() || current?.name || brand.name;
     const dotVariant = preview.split('_')[0] + '.';
     const hyphenVariant = preview.replace(/_/g, '-');
 
@@ -62,7 +64,7 @@ export default function BrandClient() {
                 setCurrent({ name: 'ml_tlv', isDefault: true });
                 setIsDefault(true);
                 setBrandName('');
-                toast.success('שם המותג אופס לברירת המחדל (ml_tlv)');
+                toast.success(`שם המותג אופס לברירת המחדל (${brand.name})`);
             }
         } catch { toast.error('שגיאת רשת'); }
         finally { setIsResetting(false); }
@@ -83,7 +85,7 @@ export default function BrandClient() {
             <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-6 flex gap-3">
                 <AlertTriangle className="w-5 h-5 text-amber-500 flex-shrink-0 mt-0.5" />
                 <div className="text-sm text-amber-800">
-                    <strong>שים לב:</strong> שינוי שם המותג ישפיע על ממשק המשתמש מיידית עם רענון הדף. מטא-דאטה לגוגל ותוכן מיילים עתידיים יתעדכנו גם הם. <strong>דומיין האתר</strong> (ml-tlv.com) לא ישתנה — זה דורש שינוי DNS נפרד.
+                    <strong>שים לב:</strong> שינוי שם המותג ישפיע על ממשק המשתמש מיידית עם רענון הדף. מטא-דאטה לגוגל ותוכן מיילים עתידיים יתעדכנו גם הם. <strong>דומיין האתר</strong> ({brand.hyphen}.com) לא ישתנה — זה דורש שינוי DNS נפרד.
                 </div>
             </div>
 
@@ -128,7 +130,7 @@ export default function BrandClient() {
                             value={brandName}
                             onChange={(e) => setBrandName(e.target.value)}
                             onKeyDown={(e) => e.key === 'Enter' && handleSave()}
-                            placeholder={`${current?.name || 'ml_tlv'}`}
+                            placeholder={`${current?.name || brand.name}`}
                             className="w-full p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-left text-sm font-mono"
                         />
                         <p className="text-xs text-gray-500 mt-2">
@@ -152,7 +154,7 @@ export default function BrandClient() {
                                 disabled={isResetting || isSaving}
                                 className="w-full flex items-center justify-center gap-2 bg-red-50 hover:bg-red-100 text-red-600 font-bold py-3 px-4 rounded-xl transition-all disabled:opacity-50 border border-red-200"
                             >
-                                אופס לשם המקורי (ml_tlv)
+                                אופס לשם המקורי ({brand.name})
                                 {isResetting ? <Loader2 className="w-4 h-4 animate-spin" /> : <RotateCcw className="w-4 h-4" />}
                             </button>
                         )}

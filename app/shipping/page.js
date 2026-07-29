@@ -3,21 +3,7 @@ import { shipping_he, shipping_en } from '../data/shipping_data';
 import Breadcrumbs from '../components/Breadcrumbs';
 import BreadcrumbSchema from '../components/BreadcrumbSchema';
 import { cookies } from 'next/headers';
-import he from '../data/locales/he.json';
-import en from '../data/locales/en.json';
-
-const getT = (locale) => {
-    const dict = locale === 'en' ? en : he;
-    return (key) => {
-        const keys = key.split('.');
-        let result = dict;
-        for (const k of keys) {
-            if (result[k]) result = result[k];
-            else return key;
-        }
-        return result;
-    };
-};
+import { getT } from '../lib/getT';
 
 export async function generateMetadata() {
     const cookieStore = await cookies();

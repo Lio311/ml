@@ -3,6 +3,7 @@ import { auth as clerkAuth, currentUser } from '@clerk/nextjs/server';
 import pool from '@/app/lib/db';
 import { sendEmail, getTemplate, getOrderConfirmationTemplate, getAdminNewOrderTemplate, formatItemsHtmlCustomer, formatItemsHtmlAdmin, formatNotesHtml } from '@/app/lib/email';
 import { recordAuditLog } from '@/app/lib/audit';
+import { getBrandName } from '@/app/lib/brand';
 import * as Sentry from "@sentry/nextjs";
 
 export async function POST(req) {
@@ -602,6 +603,7 @@ export async function POST(req) {
             // Send Confirmation Email (Async, don't block response)
             const userEmail = user?.emailAddresses[0]?.emailAddress;
             const adminEmail = process.env.ADMIN_EMAIL;
+            const brandName = await getBrandName();
 
             if (userEmail && !catalogId) {
                 const { html: dynamicHtml, subject: dynamicSubject } = await getTemplate('order_confirmation', { 
@@ -615,7 +617,7 @@ export async function POST(req) {
                     shippingCost: shippingCost === 0 ? 'חינם' : `${shippingCost} ₪`
                 }, getOrderConfirmationTemplate.bind(null, orderId, items, total, freeSamples, notesHtml, deliveryText, shippingCost));
                 
-                await sendEmail(userEmail, dynamicSubject || `אישור הזמנה #${orderId} - ml_tlv`, dynamicHtml, 'order_confirmation', orderId);
+                await sendEmail(userEmail, dynamicSubject || `אישור הזמנה #${orderId} - ${brandName}`, dynamicHtml, 'order_confirmation', orderId);
             } else if (userEmail && catalogId) {
                 const { html: dynamicHtml, subject: dynamicSubject } = await getTemplate('order_confirmation', { 
                     orderId, 

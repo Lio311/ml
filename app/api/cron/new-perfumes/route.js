@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import pool from '@/app/lib/db';
 import { clerkClient } from '@clerk/nextjs/server';
 import { sendEmail, getTemplate, getBatchPerfumeItemsHtml, getDiscoveryBatchItemsHtml, getSystemDefaults } from '@/app/lib/email';
+import { getBrandName } from '@/app/lib/brand';
 
 export async function GET(req) {
     // Only allow cron requests
@@ -32,6 +33,7 @@ export async function GET(req) {
             return NextResponse.json({ message: 'A marketing email was already sent today. Deferring to tomorrow.' });
         }
 
+        const brandName = await getBrandName();
         let emailSent = false;
         let sentCount = 0;
         let actionTaken = '';
@@ -73,7 +75,7 @@ export async function GET(req) {
                     productId: batchToEmail[0].id
                 });
                 html = tpl.html;
-                finalSubject = tpl.subject || `חדש באתר: ${batchToEmail[0].brand} ${batchToEmail[0].model} 🌟 - ml_tlv`;
+                finalSubject = tpl.subject || `חדש באתר: ${batchToEmail[0].brand} ${batchToEmail[0].model} 🌟 - ${brandName}`;
                 actionTaken = 'sent_single_perfume';
             } else {
                 // Priority 1: Batch of Perfumes (2 to 6)
@@ -83,7 +85,7 @@ export async function GET(req) {
                     return defaultTplHtml.replace('{{itemsHtml}}', itemsHtml);
                 });
                 html = tpl.html;
-                finalSubject = tpl.subject || 'בשמים חדשים נחתו באתר! ✨ - ml_tlv';
+                finalSubject = tpl.subject || `בשמים חדשים נחתו באתר! ✨ - ${brandName}`;
                 actionTaken = 'sent_perfumes_batch';
             }
 
@@ -120,7 +122,7 @@ export async function GET(req) {
                     const defaultTplHtml = getSystemDefaults()['new_discovery_sets'].content_html;
                     return defaultTplHtml.replace('{{itemsHtml}}', itemsHtml);
                 });
-                const finalSubject = subject || 'השקנו 6 מארזי דיסקברי חדשים! ✨ - ml_tlv';
+                const finalSubject = subject || `השקנו 6 מארזי דיסקברי חדשים! ✨ - ${brandName}`;
 
                 await sendEmail(emails, finalSubject, html, 'new_discovery_sets');
                 console.log(`Discovery batch newsletter sent to ${emails.length} recipients.`);

@@ -1,7 +1,7 @@
 import he from '../data/locales/he.json';
 import en from '../data/locales/en.json';
 
-export const getT = (locale) => {
+export const getT = (locale, brandName = null) => {
     const dict = locale === 'en' ? en : he;
     return (key, vars = {}) => {
         const keys = key.split('.');
@@ -14,10 +14,16 @@ export const getT = (locale) => {
             }
         }
         
-        if (typeof result === 'string' && vars) {
-            return Object.entries(vars).reduce((str, [k, v]) => {
-                return str.replace(new RegExp(`\\{${k}\\}`, 'g'), v);
-            }, result);
+        if (typeof result === 'string') {
+            if (brandName) {
+                result = result.replace(/ml_tlv/g, brandName);
+                result = result.replace(/ml-tlv(?!\.com)/g, brandName);
+            }
+            if (vars) {
+                return Object.entries(vars).reduce((str, [k, v]) => {
+                    return str.replace(new RegExp(`\\{${k}\\}`, 'g'), v);
+                }, result);
+            }
         }
         
         return result;

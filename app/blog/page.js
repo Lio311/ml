@@ -2,26 +2,12 @@ import Link from 'next/link';
 import Image from 'next/image';
 import pool from '../lib/db';
 import { cookies } from 'next/headers';
-import he from '../data/locales/he.json';
-import en from '../data/locales/en.json';
+import { getT } from '../lib/getT';
 import { sanitizeProductArray } from '../lib/productUtils';
 import TagFilterBar from '../components/TagFilterBar';
 import Breadcrumbs from '../components/Breadcrumbs';
 import BreadcrumbSchema from '../components/BreadcrumbSchema';
-
-
-const getT = (locale) => {
-    const dict = locale === 'en' ? en : he;
-    return (key) => {
-        const keys = key.split('.');
-        let result = dict;
-        for (const k of keys) {
-            if (result[k]) result = result[k];
-            else return key;
-        }
-        return result;
-    };
-};
+import { getBrandName, buildVariants } from '../lib/brand';
 
 const localize = (obj, field, locale) => {
     if (!obj) return '';
@@ -36,12 +22,13 @@ export const dynamic = 'force-dynamic';
 export async function generateMetadata(props) {
     const cookieStore = await cookies();
     const locale = cookieStore.get('NEXT_LOCALE')?.value || 'he';
-    const t = getT(locale);
-
     const searchParams = await props.searchParams;
     const page = searchParams?.page;
+    const brandName = await getBrandName();
+    const t = getT(locale, brandName);
+    const brand = buildVariants(brandName);
     
-    let canonical = 'https://www.ml-tlv.com/blog';
+    let canonical = `${brand.url}/blog`;
     if (page) {
         canonical = `${canonical}?page=${page}`;
     }
@@ -110,7 +97,6 @@ async function getArticles(locale = 'he', page = 1, tag = null) {
 export default async function BlogIndex(props) {
     const cookieStore = await cookies();
     const locale = cookieStore.get('NEXT_LOCALE')?.value || 'he';
-    const t = getT(locale);
     const dir = locale === 'he' ? 'rtl' : 'ltr';
 
     const searchParams = await props.searchParams;
@@ -118,6 +104,9 @@ export default async function BlogIndex(props) {
     const activeTag = searchParams?.tag || null;
     const { articles, totalPages, allTags } = await getArticles(locale, page, activeTag);
     const gridArticles = articles;
+    const brandName = await getBrandName();
+    const t = getT(locale, brandName);
+    const brand = buildVariants(brandName);
 
     return (
         <main className="min-h-screen bg-[#fafafa] pt-12 md:pt-20 pb-6 md:pb-10" dir={dir}>
@@ -257,11 +246,11 @@ export default async function BlogIndex(props) {
                             "@type": "CollectionPage",
                             "name": t('common.magazine_title'),
                             "description": t('common.magazine_header_desc'),
-                            "url": "https://www.ml-tlv.com/blog",
+                            "url": `${brand.url}/blog`,
                             "isPartOf": {
                                 "@type": "WebSite",
-                                "name": "ml-tlv",
-                                "url": "https://www.ml-tlv.com"
+                                "name": brand.name,
+                                "url": brand.url
                             }
                         })
                     }}

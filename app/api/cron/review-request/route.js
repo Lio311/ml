@@ -3,6 +3,7 @@ import pool from '@/app/lib/db';
 import { sendEmail, getTemplate } from '@/app/lib/email';
 import { generateReviewToken } from '@/app/lib/reviewToken';
 import { getAutomationConfig, isAutomationActive } from '@/app/lib/automationConfig';
+import { getBrandName } from '@/app/lib/brand';
 
 import { checkCronOrAdmin } from "@/app/lib/admin";
 
@@ -21,6 +22,7 @@ export async function GET(req) {
 
         const config = await getAutomationConfig('review_request');
         const delayDays = config.delay_days || 7;
+        const brandName = await getBrandName();
 
         const client = await pool.connect();
         try {
@@ -89,7 +91,7 @@ export async function GET(req) {
                                 <p style="text-align: center; color: #d97706; font-weight: bold; background: #fef3c7; padding: 10px; border-radius: 6px;">
                                     🎁 בונוס קטן: על כל דירוג שתשאיר/י באתר, נשלח אליך למייל קופון של 10% הנחה לקנייה הבאה!
                                 </p>` : ''}
-                                <p>תודה מראש,<br>צוות ml_tlv</p>
+                                <p>תודה מראש,<br>צוות ${brandName}</p>
                             </div>`;
                         }
                     );

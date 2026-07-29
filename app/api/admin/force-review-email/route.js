@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import pool from '@/app/lib/db';
 import { sendEmail } from '@/app/lib/email';
 import { auth as clerkAuth } from '@clerk/nextjs/server';
+import { getBrandName } from '@/app/lib/brand';
 
 import { generateReviewToken } from '@/app/lib/reviewToken';
 
@@ -42,6 +43,7 @@ export async function GET(req) {
             const firstProductName = items.length > 0 ? items[0].name : "הבשמים שלנו";
 
             const token = generateReviewToken(order.id);
+            const brandName = await getBrandName();
 
             const subject = 'נשמח לשמוע מה דעתך! ⭐';
             const html = `
@@ -65,7 +67,7 @@ export async function GET(req) {
                         🎁 בונוס קטן: על כל דירוג שתשאיר/י באתר, נשלח אליך למייל קופון של 10% הנחה לקנייה הבאה!
                     </p>
                     
-                    <p>תודה מראש,<br>צוות ml_tlv</p>
+                    <p>תודה מראש,<br>צוות ${brandName}</p>
                 </div>
             `;
 

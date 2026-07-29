@@ -4,6 +4,7 @@ import { headers } from 'next/headers';
 import { NextResponse } from 'next/server';
 import pool from '../../../lib/db';
 import { sendEmail, getTemplate, getAdminNewUserTemplate, getUserWelcomeTemplate } from '../../../lib/email';
+import { getBrandName } from '../../../lib/brand';
 import { isAutomationActive } from '../../../lib/automationConfig';
 
 export async function POST(req) {
@@ -72,6 +73,7 @@ export async function POST(req) {
         `, [id, email, first_name, last_name, role, imageUrl, createdDate]);
 
             if (eventType === 'user.created') {
+                const brandName = await getBrandName();
                 await client.query(
                     `INSERT INTO notifications (type, message, is_read) VALUES ($1, $2, $3)`,
                     ['user', `משתמש חדש נרשם: ${first_name || ''} ${last_name || ''}`, false]
@@ -93,7 +95,7 @@ export async function POST(req) {
                         { firstName: first_name, name: first_name },
                         () => getUserWelcomeTemplate(first_name)
                     );
-                    await sendEmail(email, welcomeTmpl.subject || 'ברוכים הבאים ל-ml_tlv! ✨', welcomeTmpl.html, 'welcome');
+                    await sendEmail(email, welcomeTmpl.subject || `ברוכים הבאים ל-${brandName}! ✨`, welcomeTmpl.html, 'welcome');
                 }
                 // Update visual workflows last_run
                 await client.query(`

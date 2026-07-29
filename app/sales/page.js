@@ -7,22 +7,7 @@ import FilterSidebar from "../catalog/FilterSidebar";
 import SortSelect from "../catalog/SortSelect";
 import { mapHebrewQuery } from "../lib/hebrewMapping";
 import { cookies } from 'next/headers';
-import he from '../data/locales/he.json';
-import en from '../data/locales/en.json';
-import { sanitizeProductArray } from "../lib/productUtils";
-
-const getT = (locale) => {
-    const dict = locale === 'en' ? en : he;
-    return (key) => {
-        const keys = key.split('.');
-        let result = dict;
-        for (const k of keys) {
-            if (result[k]) result = result[k];
-            else return key;
-        }
-        return result;
-    };
-};
+import { getT } from '../lib/getT';
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -30,13 +15,15 @@ export const revalidate = 0;
 export async function generateMetadata() {
     const cookieStore = await cookies();
     const locale = cookieStore.get('NEXT_LOCALE')?.value || 'he';
-    const t = getT(locale);
+    const brandNameStr = await getBrandName();
+    const t = getT(locale, brandNameStr);
+    const brand = await getBrand();
 
     return {
         title: t('common.sales'),
         description: t('common.meta_catalog_desc'),
         alternates: {
-            canonical: 'https://www.ml-tlv.com/sales',
+            canonical: `https://www.${brand.hyphen}.com/sales`,
         },
     };
 }
@@ -173,7 +160,8 @@ async function getFilterOptions() {
 export default async function SalesPage(props) {
     const cookieStore = await cookies();
     const locale = cookieStore.get('NEXT_LOCALE')?.value || 'he';
-    const t = getT(locale);
+    const brandNameStr = await getBrandName();
+    const t = getT(locale, brandNameStr);
     const dir = locale === 'he' ? 'rtl' : 'ltr';
 
     const searchParams = await props.searchParams;

@@ -84,29 +84,40 @@ export const brandData = {
     }
 };
 
-export const getBrandInsight = (brandName) => {
+export const getBrandInsight = (brandName, siteBrand = 'ml_tlv') => {
     if (!brandName) return null;
     
     // Normalize brand name for matching
     const normalized = brandName.trim();
     
+    let result = null;
     // Exact match direct
-    if (brandData[normalized]) return brandData[normalized];
+    if (brandData[normalized]) {
+        result = { ...brandData[normalized] };
+    } else {
+        // Try Case-insensitive match or contains
+        const foundKey = Object.keys(brandData).find(key => 
+            key.toLowerCase() === normalized.toLowerCase() || 
+            normalized.toLowerCase().includes(key.toLowerCase())
+        );
+        if (foundKey) {
+            result = { ...brandData[foundKey] };
+        }
+    }
     
-    // Try Case-insensitive match or contains
-    const foundKey = Object.keys(brandData).find(key => 
-        key.toLowerCase() === normalized.toLowerCase() || 
-        normalized.toLowerCase().includes(key.toLowerCase())
-    );
-    
-    if (foundKey) return brandData[foundKey];
+    if (result) {
+        if (result.description) {
+            result.description = result.description.replace(/ml_tlv/g, siteBrand).replace(/ml-tlv(?!\.com)/g, siteBrand);
+        }
+        return result;
+    }
     
     // Generic professional fallback
     return {
         title: `הכירו את עולם הבישום של ${normalized}`,
         title_en: `Discover the World of ${normalized}`,
-        description: `המותג ${normalized} מייצג את הפסגה של יצירה אמנותית ואיכות בשמי המזרח והמערב. כל בושם של המותג נבחר בקפידה על ידי צוות ml_tlv כדי להבטיח שאתם מקבלים חוויה חושית עשירה, עמידה ומתוחכמת המבוססת על חומרי הגלם הטובים ביותר.`,
-        description_en: `${normalized} represents the pinnacle of artistic creation and quality in both Eastern and Western perfumery. Each fragrance from the brand is carefully selected by the ml_tlv team to ensure you receive a rich, long-lasting, and sophisticated sensory experience based on the finest raw materials.`,
+        description: `המותג ${normalized} מייצג את הפסגה של יצירה אמנותית ואיכות בשמי המזרח והמערב. כל בושם של המותג נבחר בקפידה על ידי צוות ${siteBrand} כדי להבטיח שאתם מקבלים חוויה חושית עשירה, עמידה ומתוחכמת המבוססת על חומרי הגלם הטובים ביותר.`,
+        description_en: `${normalized} represents the pinnacle of artistic creation and quality in both Eastern and Western perfumery. Each fragrance from the brand is carefully selected by the ${siteBrand} team to ensure you receive a rich, long-lasting, and sophisticated sensory experience based on the finest raw materials.`,
         perfumer: 'אמני בישום בינלאומיים מובילים',
         perfumer_en: 'Leading international perfumers',
         highlights: 'ייצור תחת סטנדרטים גבוהים של יוקרה, דגש על עמידות ונוכחות, ושימוש ברכיבי פרימיום.',

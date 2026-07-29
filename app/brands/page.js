@@ -4,32 +4,23 @@ import Breadcrumbs from '../components/Breadcrumbs';
 import BreadcrumbSchema from '../components/BreadcrumbSchema';
 import { cookies } from 'next/headers';
 import { sanitizeProductArray } from '../lib/productUtils';
-import he from '../data/locales/he.json';
-import en from '../data/locales/en.json';
+import { getT } from '../lib/getT';
+import { getBrandName, buildVariants } from '../lib/brand';
 
-const getT = (locale) => {
-    const dict = locale === 'en' ? en : he;
-    return (key) => {
-        const keys = key.split('.');
-        let result = dict;
-        for (const k of keys) {
-            if (result[k]) result = result[k];
-            else return key;
-        }
-        return result;
-    };
-};
+
 
 export async function generateMetadata() {
     const cookieStore = await cookies();
     const locale = cookieStore.get('NEXT_LOCALE')?.value || 'he';
-    const t = getT(locale);
+    const brandName = await getBrandName();
+    const t = getT(locale, brandName);
+    const brand = buildVariants(brandName);
 
     return {
         title: t('common.our_brands'),
         description: t('common.brands_meta_desc'),
         alternates: {
-            canonical: 'https://www.ml-tlv.com/brands',
+            canonical: `${brand.url}/brands`,
         },
     };
 }
@@ -39,7 +30,9 @@ export const dynamic = 'force-dynamic';
 export default async function BrandsPage() {
     const cookieStore = await cookies();
     const locale = cookieStore.get('NEXT_LOCALE')?.value || 'he';
-    const t = getT(locale);
+    const brandName = await getBrandName();
+    const t = getT(locale, brandName);
+    const brandVars = buildVariants(brandName);
 
     let brands = [];
     try {
@@ -80,7 +73,7 @@ export default async function BrandsPage() {
                             "@type": "ListItem",
                             "position": index + 1,
                             "name": brand.name,
-                            "url": `https://www.ml-tlv.com/brands/${encodeURIComponent(brand.name)}`
+                            "url": `${brandVars.url}/brands/${encodeURIComponent(brand.name)}`
                         }))
                     })
                 }}

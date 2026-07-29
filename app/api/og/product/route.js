@@ -1,4 +1,5 @@
 import { ImageResponse } from 'next/og';
+import { getBrandName, buildVariants } from '@/app/lib/brand';
 
 // Global font cache to prevent Vercel Edge OOM crashes on repeated calls
 let cachedFont = null;
@@ -10,7 +11,12 @@ export const size = { width: 1200, height: 630 };
 export const contentType = 'image/png';
 
 export async function GET(request) {
+    let brandVariantsFallback = 'ml-tlv.com';
     try {
+        const brandNameStr = await getBrandName();
+        const brandVariants = buildVariants(brandNameStr);
+        brandVariantsFallback = 'ml-tlv.com';
+
         const { searchParams } = new URL(request.url);
         
         const brand = searchParams.get('brand') || '';
@@ -23,7 +29,7 @@ export async function GET(request) {
         const slogan = searchParams.get('slogan') || 'דוגמיות בושם מקוריות';
         let imgUrl = searchParams.get('img') || '';
 
-        const baseUrl = 'https://www.ml-tlv.com';
+        const baseUrl = `https://www.ml-tlv.com`;
 
         // Product image URL handling
         if (imgUrl) {
@@ -32,7 +38,7 @@ export async function GET(request) {
             }
             // Route all external images through Weserv to force JPG and white background.
             // Satori crashes on WebP/AVIF, which are often returned by Shopify CDNs or Google Images.
-            if (!imgUrl.includes('ml-tlv.com') && !imgUrl.includes('localhost')) {
+            if (!imgUrl.includes(`ml-tlv.com`) && !imgUrl.includes('localhost')) {
                 const cleanUrl = imgUrl.replace(/^https?:\/\//, '');
                 imgUrl = `https://images.weserv.nl/?url=${encodeURIComponent(cleanUrl)}&w=640&q=80&bg=white&output=jpg`;
             }
@@ -312,7 +318,7 @@ export async function GET(request) {
                     fontSize: 48,
                     color: '#333',
                 }}>
-                    ml-tlv.com
+                    {brandVariantsFallback}
                 </div>
             ),
             { width: 1200, height: 630 }

@@ -4,6 +4,7 @@ import { GoogleGenerativeAI } from "@google/generative-ai";
 import { logCronStart, logCronEnd } from "@/app/lib/errorLogger";
 import { checkCronOrAdmin } from "@/app/lib/admin";
 import { getPremiumBlogImage } from "@/app/lib/blogImageMatcher";
+import { getBrandName } from "@/app/lib/brand";
 
 export const dynamic = 'force-dynamic';
 export const maxDuration = 60; // Allow more time for LLM generation
@@ -33,6 +34,7 @@ export async function GET(req) {
         }
 
         const client = await pool.connect();
+        const brandName = await getBrandName();
         let existingTitles = [];
         try {
             // Fetch recent articles to avoid duplication
@@ -50,7 +52,7 @@ export async function GET(req) {
         });
 
         const prompt = `
-        You are an expert SEO content writer and researcher for an Israeli luxury niche perfume website called "ml-tlv". 
+        You are an expert SEO content writer and researcher for an Israeli luxury niche perfume website called "${brandName}". 
         The website sells perfume samples and decants (2ml, 5ml, 10ml) of highly sought-after niche brands (e.g., Tom Ford, Creed, Xerjoff, Parfums de Marly).
         
         Your task today is to autonomously find a NEW, trending, highly searched topic in the niche perfume world for 2026.

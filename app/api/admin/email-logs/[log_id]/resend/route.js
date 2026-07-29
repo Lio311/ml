@@ -1,5 +1,6 @@
 import pool from '@/app/lib/db';
 import { sendEmail, getOrderConfirmationTemplate, formatItemsHtmlCustomer, formatNotesHtml, getOrderUpdatedTemplate, getStatusUpdateTemplate, getTemplate } from '@/app/lib/email';
+import { getBrandName, buildVariants } from '@/app/lib/brand';
 import { currentUser } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
 
@@ -115,7 +116,9 @@ export async function POST(req, { params }) {
 
             const templateResult = await getTemplate('cart_recovery', 
                 { couponCode },
-                () => {
+                async () => {
+                    const brandNameStr = await getBrandName();
+                    const brandVariants = buildVariants(brandNameStr);
                     return `
                     <div dir="rtl" style="font-family: Arial, sans-serif; color: #333;">
                         <h2>ראינו שהשארת מספר פריטים בסל... 👀</h2>

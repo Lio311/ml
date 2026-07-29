@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+import { useBrand } from '../../context/BrandContext';
 import { 
     AreaChart, Area, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, 
     ScatterChart, Scatter, ZAxis, Cell, BarChart, Bar, Legend, PieChart, Pie,
@@ -23,6 +24,7 @@ export default function ProcurementClient() {
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
     const router = useRouter();
+    const brand = useBrand();
 
     useEffect(() => {
         fetchData();
@@ -35,7 +37,7 @@ export default function ProcurementClient() {
             
             // Add Hebrew font support if available, or use standard table
             doc.setFontSize(22);
-            doc.text("ml_tlv - Procurement Draft Order", 20, 20);
+            doc.text(`${brand} - Procurement Draft Order`, 20, 20);
             doc.setFontSize(12);
             doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 20, 30);
             

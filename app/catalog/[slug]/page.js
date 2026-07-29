@@ -1,8 +1,11 @@
 import CatalogClient from "./CatalogClient";
+import { getBrandName, buildVariants } from "../../lib/brand";
 
 export async function generateMetadata({ params }) {
     const { slug } = await params;
-    const baseUrl = 'https://www.ml-tlv.com';
+    const brandName = await getBrandName();
+    const brand = buildVariants(brandName);
+    const baseUrl = brand.url;
     return {
         title: `קטלוג אישי`,
         description: `צפה בקטלוג ובמוצרים של ${slug}`,

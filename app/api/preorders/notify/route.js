@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import pool from '@/app/lib/db';
 import { currentUser } from '@clerk/nextjs/server';
 import { sendEmail } from '@/app/lib/email';
+import { getBrandName } from '@/app/lib/brand';
 
 const ADMIN_EMAIL = process.env.ADMIN_EMAIL;
 
@@ -55,6 +56,7 @@ export async function POST(req) {
             const pendingUsers = preordersRes.rows;
 
             if (pendingUsers.length > 0) {
+                const brandName = await getBrandName();
                 // Send emails
                 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://www.ml-tlv.com';
                 const productUrl = `${siteUrl}/product/${product.slug}`;
@@ -74,7 +76,7 @@ export async function POST(req) {
                             לרכישת המוצר
                         </a>
                         <p style="margin-top: 40px; font-size: 12px; color: #999;">
-                            צוות ml-tlv
+                            צוות ${brandName}
                         </p>
                     </div>
                 `;

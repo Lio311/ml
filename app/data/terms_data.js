@@ -1,10 +1,10 @@
-export const terms_he = [
+export const getTermsHe = (brandName = 'ml_tlv') => [
     {
         title: "כללי",
         items: [
             { 
                 q: "מהות האתר", 
-                a: "אתר ml_tlv משמש כפלטפורמה להתנסות בבשמי יוקרה באמצעות דוגמיות (דיקנטים), וכן כזירה המאפשרת לאספנים ושותפים להציג את הקולקציות שלהם דרך חנויות וירטואליות." 
+                a: `אתר ${brandName} משמש כפלטפורמה להתנסות בבשמי יוקרה באמצעות דוגמיות (דיקנטים), וכן כזירה המאפשרת לאספנים ושותפים להציג את הקולקציות שלהם דרך חנויות וירטואליות.` 
             },
             { 
                 q: "הסכמה לתנאים", 
@@ -17,11 +17,11 @@ export const terms_he = [
         items: [
             { 
                 q: "אחריות ושימוש בתשתית", 
-                a: " ml_tlv מספקת את התשתית הטכנולוגית והמאובטחת עבור שותפים (מוכרי צד ג'). בעוד אנו מוודאים את סטנדרט האיכות, האחריות הישירה על מוצרי שותפים חלה עליהם." 
+                a: ` ${brandName} מספקת את התשתית הטכנולוגית והמאובטחת עבור שותפים (מוכרי צד ג'). בעוד אנו מוודאים את סטנדרט האיכות, האחריות הישירה על מוצרי שותפים חלה עליהם.` 
             },
             { 
                 q: "הגבלת אחריות", 
-                a: "המפעיל (ml_tlv) אינו צד לעסקאות המתבצעות ישירות בחנויות צד ג', ואינו נושא באחריות לנזקים עקיפים הנובעים משימוש במוצרי שותפים, מעבר לאחריות הספק עצמו." 
+                a: `המפעיל (${brandName}) אינו צד לעסקאות המתבצעות ישירות בחנויות צד ג', ואינו נושא באחריות לנזקים עקיפים הנובעים משימוש במוצרי שותפים, מעבר לאחריות הספק עצמו.` 
             }
         ]
     },
@@ -30,7 +30,7 @@ export const terms_he = [
         items: [
             { 
                 q: "התחייבות למקוריות", 
-                a: "אנו מתחייבים כי כל הבשמים הנמכרים תחת המותג ml_tlv הם מקוריים ב-100% ונרכשים ממקורות מהימנים ומוסמכים." 
+                a: `אנו מתחייבים כי כל הבשמים הנמכרים תחת המותג ${brandName} הם מקוריים ב-100% ונרכשים ממקורות מהימנים ומוסמכים.` 
             },
             { 
                 q: "הבהרה לגבי דוגמיות (דיקנטים)", 
@@ -69,7 +69,7 @@ export const terms_he = [
         items: [
             { 
                 q: "זכויות יוצרים", 
-                a: "כל התכנים, העיצובים והסימנים המסחריים באתר הם רכושה של ml_tlv או של שותפיה ואין לעשות בהם שימוש ללא אישור בכתב." 
+                a: `כל התכנים, העיצובים והסימנים המסחריים באתר הם רכושה של ${brandName} או של שותפיה ואין לעשות בהם שימוש ללא אישור בכתב.` 
             },
             { 
                 q: "מקום שיפוט", 
@@ -79,13 +79,13 @@ export const terms_he = [
     }
 ];
 
-export const terms_en = [
+export const getTermsEn = (brandName = 'ml_tlv') => [
     {
         title: "General",
         items: [
             { 
                 q: "Nature of the Website", 
-                a: "ml_tlv serves as a platform for experiencing luxury perfumes through samples (decants), and as an arena allowing collectors and partners to showcase their collections via virtual stores." 
+                a: `${brandName} serves as a platform for experiencing luxury perfumes through samples (decants), and as an arena allowing collectors and partners to showcase their collections via virtual stores.` 
             },
             { 
                 q: "Agreement to Terms", 
@@ -98,11 +98,11 @@ export const terms_en = [
         items: [
             { 
                 q: "Responsibility and Infrastructure", 
-                a: "ml_tlv provides the technological and secure infrastructure for partners (third-party sellers). While we verify quality standards, direct responsibility for partner products lies with them." 
+                a: `${brandName} provides the technological and secure infrastructure for partners (third-party sellers). While we verify quality standards, direct responsibility for partner products lies with them.` 
             },
             { 
                 q: "Limitation of Liability", 
-                a: "The operator (ml_tlv) is not a party to transactions carried out directly in third-party stores and bears no responsibility for indirect damages resulting from the use of partner products, beyond the supplier's own liability." 
+                a: `The operator (${brandName}) is not a party to transactions carried out directly in third-party stores and bears no responsibility for indirect damages resulting from the use of partner products, beyond the supplier's own liability.` 
             }
         ]
     },
@@ -111,7 +111,7 @@ export const terms_en = [
         items: [
             { 
                 q: "Commitment to Authenticity", 
-                a: "We guarantee that all perfumes sold under the ml_tlv brand are 100% original and purchased from reliable and certified sources." 
+                a: `We guarantee that all perfumes sold under the ${brandName} brand are 100% original and purchased from reliable and certified sources.` 
             },
             { 
                 q: "Clarification Regarding Samples (Decants)", 
@@ -150,7 +150,7 @@ export const terms_en = [
         items: [
             { 
                 q: "Copyright", 
-                a: "All content, designs, and trademarks on the site are the property of ml_tlv or its partners and may not be used without written permission." 
+                a: `All content, designs, and trademarks on the site are the property of ${brandName} or its partners and may not be used without written permission.` 
             },
             { 
                 q: "Jurisdiction", 

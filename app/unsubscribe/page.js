@@ -3,6 +3,7 @@
 import { useState, useEffect, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
+import { useBrand } from '../context/BrandContext';
 
 function UnsubscribeContent() {
     const searchParams = useSearchParams();
@@ -11,6 +12,7 @@ function UnsubscribeContent() {
     const [email, setEmail] = useState(initialEmail);
     const [status, setStatus] = useState('idle'); // idle, loading, success, error
     const [errorMessage, setErrorMessage] = useState('');
+    const brand = useBrand();
 
     const handleUnsubscribe = async (e) => {
         if (e) e.preventDefault();
@@ -48,7 +50,7 @@ function UnsubscribeContent() {
                 <div className="absolute top-0 left-0 w-full h-1 bg-black"></div>
                 
                 <div className="text-center mb-8">
-                    <h1 className="text-2xl font-black text-black tracking-tight mb-2 uppercase">ml_tlv</h1>
+                    <h1 className="text-2xl font-black text-black tracking-tight mb-2 uppercase">{brand.name}</h1>
                     <p className="text-sm text-gray-500 font-medium tracking-wide">יוקרה בחתיכות קטנות</p>
                 </div>
 

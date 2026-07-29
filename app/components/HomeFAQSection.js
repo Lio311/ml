@@ -2,16 +2,16 @@
 
 import { useState } from 'react';
 import { useLanguage } from '../context/LanguageContext';
-import { faq_he, faq_en } from '../data/faq_data';
+import { getFaqHe, getFaqEn } from '../data/faq_data';
 import ContactModal from './ContactModal';
 
-export default function HomeFAQSection() {
+export default function HomeFAQSection({ brandName }) {
     const { t, locale, dir } = useLanguage();
     const [openIndex, setOpenIndex] = useState(-1);
     const [isContactModalOpen, setIsContactModalOpen] = useState(false);
 
     // Pick a subset of important questions from the FAQ data
-    const faqs = locale === 'en' ? faq_en : faq_he;
+    const faqs = locale === 'en' ? getFaqEn(brandName) : getFaqHe(brandName);
     
     // We manually pick some highly asked questions across categories
     const topQuestions = [

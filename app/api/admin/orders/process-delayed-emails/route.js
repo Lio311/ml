@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { currentUser } from '@clerk/nextjs/server';
 import pool from '@/app/lib/db';
 import { sendEmail, getTemplate, getStatusUpdateTemplate } from '@/app/lib/email';
+import { getBrandName } from '@/app/lib/brand';
 
 export async function POST(req) {
     const user = await currentUser();
@@ -60,7 +61,8 @@ export async function POST(req) {
                             name: cleanName 
                         }, getStatusUpdateTemplate.bind(null, order_id, cleanName, mapped.label, mapped.body));
                         
-                        await sendEmail(customerEmail, dynamicSubject || `עדכון סטטוס הזמנה #${order_id} - ml_tlv`, dynamicHtml, 'status_update', order_id);
+                        const brandName = await getBrandName();
+                        await sendEmail(customerEmail, dynamicSubject || `עדכון סטטוס הזמנה #${order_id} - ${brandName}`, dynamicHtml, 'status_update', order_id);
                     } catch (e) {
                         console.error(`Error sending delayed email for order ${order_id}:`, e);
                     }

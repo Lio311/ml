@@ -1,10 +1,10 @@
-export const privacy_he = [
+export const getPrivacyHe = (brandName = 'ml_tlv') => [
     {
         title: "כללי",
         items: [
             { 
                 q: "מטרה", 
-                a: "מדיניות זו נועדה להסביר כיצד ml_tlv אוספת ומשמשת במידע האישי שלך. אנו מתחייבים לשמור על פרטיותך בהתאם לחוק הגנת הפרטיות הישראלי." 
+                a: `מדיניות זו נועדה להסביר כיצד ${brandName} אוספת ומשמשת במידע האישי שלך. אנו מתחייבים לשמור על פרטיותך בהתאם לחוק הגנת הפרטיות הישראלי.` 
             }
         ]
     },
@@ -62,13 +62,13 @@ export const privacy_he = [
     }
 ];
 
-export const privacy_en = [
+export const getPrivacyEn = (brandName = 'ml_tlv') => [
     {
         title: "General",
         items: [
             { 
                 q: "Purpose", 
-                a: "This policy is intended to explain how ml_tlv collects and uses your personal information. We are committed to protecting your privacy in accordance with the Israeli Privacy Protection Law." 
+                a: `This policy is intended to explain how ${brandName} collects and uses your personal information. We are committed to protecting your privacy in accordance with the Israeli Privacy Protection Law.` 
             }
         ]
     },

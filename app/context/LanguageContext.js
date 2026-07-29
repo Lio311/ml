@@ -2,6 +2,7 @@
 
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import { useBrand } from './BrandContext';
 
 import he from '../data/locales/he.json';
 import en from '../data/locales/en.json';
@@ -14,6 +15,7 @@ export function LanguageProvider({ children, initialLocale = 'he' }) {
     const [locale, setLocale] = useState(initialLocale);
     
     const router = useRouter();
+    const brand = useBrand();
     
     const dir = locale === 'he' ? 'rtl' : 'ltr';
 
@@ -46,6 +48,12 @@ export function LanguageProvider({ children, initialLocale = 'he' }) {
             result = result[key];
         }
         
+        // Auto-replace brand name
+        if (typeof result === 'string' && brand && brand.name) {
+            result = result.replace(/ml_tlv/g, brand.name);
+            result = result.replace(/ml-tlv(?!\.com)/g, brand.name);
+        }
+
         // Handle placeholders if data provided
         if (data && typeof result === 'string') {
             Object.keys(data).forEach(key => {

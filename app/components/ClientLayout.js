@@ -11,7 +11,6 @@ import SmartAdvisorTab from "./SmartAdvisorTab";
 import MiniCart from "./MiniCart";
 import PushManager from "./PushManager";
 import WhatsAppButton from "./WhatsAppButton";
-import { BrandProvider } from "../context/BrandContext";
 
 export default function ClientLayout({ children, brands, menu, forceMaintenance }) {
     const pathname = usePathname();
@@ -20,20 +19,18 @@ export default function ClientLayout({ children, brands, menu, forceMaintenance 
 
     if (isAdmin || isMaintenance) {
         return (
-            <BrandProvider>
-                <div id="site-content">
-                    <main className="min-h-screen">
-                        {children}
-                    </main>
-                </div>
-            </BrandProvider>
+            <div id="site-content">
+                <main className="min-h-screen">
+                    {children}
+                </main>
+            </div>
         );
     }
 
     const isHome = pathname === '/';
 
     return (
-        <BrandProvider>
+        <>
             <div id="site-content">
                 <Header brands={brands} />
                 <main className={`min-h-screen ${!isHome ? 'pt-20 md:pt-28' : ''}`}>
@@ -50,6 +47,6 @@ export default function ClientLayout({ children, brands, menu, forceMaintenance 
             <SmartAdvisorTab />
             <MiniCart />
             <PushManager />
-        </BrandProvider>
+        </>
     );
 }

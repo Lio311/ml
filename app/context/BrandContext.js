@@ -14,8 +14,8 @@ const DEFAULT = {
 
 const BrandContext = createContext(DEFAULT);
 
-export function BrandProvider({ children }) {
-    const [brand, setBrand] = useState(DEFAULT);
+export function BrandProvider({ children, initialBrand }) {
+    const [brand, setBrand] = useState(initialBrand || DEFAULT);
 
     useEffect(() => {
         fetch('/api/admin/brand')

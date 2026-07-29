@@ -1,8 +1,8 @@
 import Image from './CImage';
 import { getBrandInsight } from '../lib/db';
 import { cookies } from 'next/headers';
-import he from '../data/locales/he.json';
-import en from '../data/locales/en.json';
+import { getT } from '../lib/getT';
+import { getBrandName } from '../lib/brand';
 
 const localize = (obj, field, locale) => {
     if (!obj) return '';
@@ -12,23 +12,11 @@ const localize = (obj, field, locale) => {
     return obj[`${field}_he`] || obj[`${field}_HE`] || obj[field] || '';
 };
 
-const getT = (locale) => {
-    const dict = locale === 'en' ? en : he;
-    return (key) => {
-        const keys = key.split('.');
-        let result = dict;
-        for (const k of keys) {
-            if (result[k]) result = result[k];
-            else return key;
-        }
-        return result;
-    };
-};
-
 export default async function BrandInsight({ brand }) {
     const cookieStore = await cookies();
     const locale = cookieStore.get('NEXT_LOCALE')?.value || 'he';
-    const t = getT(locale);
+    const brandNameStr = await getBrandName();
+    const t = getT(locale, brandNameStr);
     const dir = locale === 'he' ? 'rtl' : 'ltr';
 
     const insight = await getBrandInsight(brand);

@@ -1,28 +1,17 @@
 import FAQClient from '../faq/FAQClient';
-import { privacy_he, privacy_en } from '../data/privacy_data';
+import { getPrivacyHe, getPrivacyEn } from '../data/privacy_data';
+import { getBrandName, getBrand } from '../lib/brand';
 import Breadcrumbs from '../components/Breadcrumbs';
 import BreadcrumbSchema from '../components/BreadcrumbSchema';
 import { cookies } from 'next/headers';
-import he from '../data/locales/he.json';
-import en from '../data/locales/en.json';
-
-const getT = (locale) => {
-    const dict = locale === 'en' ? en : he;
-    return (key) => {
-        const keys = key.split('.');
-        let result = dict;
-        for (const k of keys) {
-            if (result[k]) result = result[k];
-            else return key;
-        }
-        return result;
-    };
-};
+import { getT } from '../lib/getT';
 
 export async function generateMetadata() {
     const cookieStore = await cookies();
     const locale = cookieStore.get('NEXT_LOCALE')?.value || 'he';
-    const t = getT(locale);
+    const brandNameStr = await getBrandName();
+    const t = getT(locale, brandNameStr);
+    const brand = await getBrand();
 
     return {
         title: t('common.privacy_policy'),
@@ -30,7 +19,7 @@ export async function generateMetadata() {
             ? "Information on data collection, security and user privacy protection."
             : "מידע על איסוף נתונים, אבטחה ושמירה על פרטיות המשתמשים.",
         alternates: {
-            canonical: 'https://www.ml-tlv.com/privacy',
+            canonical: `https://www.${brand.hyphen}.com/privacy`,
         },
     };
 }
@@ -38,8 +27,10 @@ export async function generateMetadata() {
 export default async function PrivacyPolicyPage() {
     const cookieStore = await cookies();
     const locale = cookieStore.get('NEXT_LOCALE')?.value || 'he';
-    const t = getT(locale);
-    const categories = locale === 'en' ? privacy_en : privacy_he;
+    const brandNameStr = await getBrandName();
+    const t = getT(locale, brandNameStr);
+    const brandName = brandNameStr;
+    const categories = locale === 'en' ? getPrivacyEn(brandName) : getPrivacyHe(brandName);
 
     return (
         <div className="min-h-screen bg-gray-50 pb-20">

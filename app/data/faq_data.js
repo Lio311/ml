@@ -1,10 +1,10 @@
-export const faq_he = [
+export const getFaqHe = (brandName = 'ml_tlv') => [
     {
         title: "מקוריות ואיכות בשמים",
         items: [
             { 
                 q: "האם הבשמים מקוריים ב-100%?", 
-                a: "חד משמעית כן. אנחנו ב-ml_tlv מתחייבים למקוריות מלאה. כל הבשמים נרכשים מהיבואנים הרשמיים או ממשווקים מורשים בלבד. אנחנו לא מתעסקים עם חיקויים או בשמי 'טסטר' ממקורות לא ידועים." 
+                a: `חד משמעית כן. אנחנו ב-${brandName} מתחייבים למקוריות מלאה. כל הבשמים נרכשים מהיבואנים הרשמיים או ממשווקים מורשים בלבד. אנחנו לא מתעסקים עם חיקויים או בשמי 'טסטר' ממקורות לא ידועים.` 
             },
             { 
                 q: "איך מתבצע תהליך המילוי (Decanting)?", 
@@ -107,13 +107,13 @@ export const faq_he = [
     }
 ];
 
-export const faq_en = [
+export const getFaqEn = (brandName = 'ml_tlv') => [
     {
         title: "Originality and Quality",
         items: [
             { 
                 q: "Are the perfumes 100% original?", 
-                a: "Absolutely yes. At ml_tlv, we guarantee full originality. All perfumes are purchased only from official importers or authorized distributors. We do not deal with imitations or 'tester' perfumes from unknown sources." 
+                a: `Absolutely yes. At ${brandName}, we guarantee full originality. All perfumes are purchased only from official importers or authorized distributors. We do not deal with imitations or 'tester' perfumes from unknown sources.` 
             },
             { 
                 q: "How is the decanting process performed?", 

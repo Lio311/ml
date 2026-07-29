@@ -9,6 +9,7 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import LuckyWheel from "../components/LuckyWheel";
 import toast from 'react-hot-toast';
 import { useLanguage } from "../context/LanguageContext";
+import { useBrand } from '@/app/context/BrandContext';
 import Image from "@/app/components/CImage";
 import { Check } from "lucide-react";
 
@@ -22,6 +23,7 @@ import AutocompleteInput from "./components/AutocompleteInput";
 
 export default function CartClient() {
     const { t } = useLanguage();
+    const brand = useBrand();
     const {
         cartItems, activeVendorId, setActiveVendorId, activeItems,
         removeFromCart, updateQuantity, addToCart, addMultipleToCart, clearCart, clearActiveVendorCart,
@@ -130,7 +132,7 @@ export default function CartClient() {
 
                 if (navigator.share) {
                     navigator.share({ 
-                        title: `ml_tlv - ${t('cart.title')}`, 
+                        title: `${brand.name} - ${t('cart.title')}`, 
                         text: shareText,
                         url 
                     }).catch(console.error);

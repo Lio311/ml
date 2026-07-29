@@ -2,8 +2,7 @@ import pool from "../../lib/db";
 import Link from "next/link";
 import Image from "@/app/components/CImage";
 import { cookies, headers } from 'next/headers';
-import he from '../../data/locales/he.json';
-import en from '../../data/locales/en.json';
+import { getT } from '../../lib/getT';
 import { redirect, permanentRedirect } from 'next/navigation';
 import ProductCard from "../../components/ProductCard";
 import StarRating from "../../components/StarRating";
@@ -16,6 +15,7 @@ import ProductFAQ from "../../components/ProductFAQ";
 import { sanitizeProduct, sanitizeProductArray } from "../../lib/productUtils";
 import ProductGallery from "../../components/ProductGallery";
 import CatalogSEOContent from "../../components/CatalogSEOContent";
+import { getBrandName, buildVariants } from "../../lib/brand";
 
 
 import AdditionalDetails from "../../components/AdditionalDetails";
@@ -40,35 +40,26 @@ const localize = (obj, field, locale) => {
 };
 
 
-const translateCategory = (cat, locale) => {
+const translateCategory = (cat, locale, t) => {
     if (!cat || locale !== 'en') return cat;
     return cat.split(',').map(part => {
         const trimmed = part.trim();
-        const dict = en;
-        const mapped = dict.category_map?.[trimmed];
-        return mapped || trimmed;
+        const mapped = t(`category_map.${trimmed}`);
+        return mapped.startsWith('category_map.') ? trimmed : mapped;
     }).join(', ');
 };
 
-const getT = (locale) => {
-    const dict = locale === 'en' ? en : he;
-    return (key) => {
-        const keys = key.split('.');
-        let result = dict;
-        for (const k of keys) {
-            if (result[k]) result = result[k];
-            else return key;
-        }
-        return result;
-    };
-};
+
 
 export const revalidate = 3600; // SEO Improvement: Cache for 1 hour
 
 export async function generateMetadata(props) {
     try {
         const locale = 'he'; // Crawlers don't send cookies, default to Hebrew for metadata
-        const t = getT(locale);
+        
+        const brandNameStr = await getBrandName();
+        const t = getT(locale, brandNameStr);
+        const brandVars = buildVariants(brandNameStr);
 
         const params = await props.params;
         const { slug } = params;
@@ -91,7 +82,7 @@ export async function generateMetadata(props) {
 
         const product = sanitizeProduct(rawProduct);
 
-        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'https://www.ml-tlv.com';
+        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || brandVars.url;
 
         const localizedName = locale === 'he' 
             ? `${product.brand_he || product.brand} ${product.model_he || product.model}` 
@@ -131,7 +122,7 @@ export async function generateMetadata(props) {
                 title: title,
                 description: description,
                 url: canonicalUrl,
-                siteName: 'ml-tlv',
+                siteName: brandVars.hyphen,
                 locale: 'he_IL',
                 type: 'website',
                 images: [
@@ -164,8 +155,11 @@ export async function generateMetadata(props) {
 export default async function ProductPage(props) {
     const cookieStore = await cookies();
     const locale = cookieStore.get('NEXT_LOCALE')?.value || 'he';
-    const t = getT(locale);
     const dir = locale === 'he' ? 'rtl' : 'ltr';
+    
+    const brandNameStr = await getBrandName();
+    const t = getT(locale, brandNameStr);
+    const brandVars = buildVariants(brandNameStr);
 
     const params = await props.params;
     const { slug } = params;
@@ -286,10 +280,10 @@ export default async function ProductPage(props) {
         ? `${product.brand_he || product.brand} ${product.model_he || product.model}`
         : localize(product, 'name', locale);
     const localizedDesc_val = localize(product, 'description', locale);
-    const localizedCategory = translateCategory(localize(product, 'category', locale), locale);
+    const localizedCategory = translateCategory(localize(product, 'category', locale), locale, t);
 
     const headerData = await headers();
-    const host = headerData.get('host') || 'www.ml-tlv.com';
+    const host = headerData.get('host') || brandVars.domain;
     const protocol = host.includes('localhost') ? 'http' : 'https';
     const baseUrl = `${protocol}://${host}`;
 
@@ -346,7 +340,7 @@ export default async function ProductPage(props) {
         "@type": "Product",
         "name": localizedName_val,
         "image": seoImageUrl,
-        "description": localizedDesc_val || `${localizedName_val} - Original Niche Perfume Sample | ml-tlv`,
+        "description": localizedDesc_val || `${localizedName_val} - Original Niche Perfume Sample | ${brandNameStr}`,
         "sku": `ML${product.id}`,
         "mpn": `ML${product.id}`,
         "brand": { "@type": "Brand", "name": product.brand },
@@ -434,25 +428,25 @@ export default async function ProductPage(props) {
                                             "@type": "ListItem",
                                             "position": 1,
                                             "name": t('common.home'),
-                                            "item": "https://www.ml-tlv.com"
+                                            "item": baseUrl
                                         },
                                         {
                                             "@type": "ListItem",
                                             "position": 2,
                                             "name": t('common.catalog'),
-                                            "item": "https://ml-tlv.com/catalog"
+                                            "item": `${baseUrl}/catalog`
                                         },
                                         {
                                             "@type": "ListItem",
                                             "position": 3,
                                             "name": localizedCategory || t('common.perfumes'),
-                                            "item": `https://www.ml-tlv.com/catalog?category=${encodeURIComponent(product.category || '')}`
+                                            "item": `${baseUrl}/catalog?category=${encodeURIComponent(product.category || '')}`
                                         },
                                         {
                                             "@type": "ListItem",
                                             "position": 4,
                                             "name": localizedName_val,
-                                            "item": `https://www.ml-tlv.com/product/${product.slug || product.id}`
+                                            "item": `${baseUrl}/product/${product.slug || product.id}`
                                         }
                                     ]
                                 })

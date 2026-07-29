@@ -1,27 +1,14 @@
 import { cookies } from 'next/headers';
 import Breadcrumbs from '../components/Breadcrumbs';
 import BreadcrumbSchema from '../components/BreadcrumbSchema';
-import he from '../data/locales/he.json';
-import en from '../data/locales/en.json';
 import { getBrand } from '../lib/brand';
-
-const getT = (locale) => {
-    const dict = locale === 'en' ? en : he;
-    return (key) => {
-        const keys = key.split('.');
-        let result = dict;
-        for (const k of keys) {
-            if (result[k]) result = result[k];
-            else return key;
-        }
-        return result;
-    };
-};
+import { getT } from '../lib/getT';
 
 export async function generateMetadata() {
     const cookieStore = await cookies();
     const locale = cookieStore.get('NEXT_LOCALE')?.value || 'he';
-    const t = getT(locale);
+    const brand = await getBrand();
+    const t = getT(locale, brand.name);
 
     return {
         title: t('common.about'),
@@ -29,7 +16,7 @@ export async function generateMetadata() {
             ? "Our story - how we turned our love for perfumes into a business of experiences."
             : "הסיפור שלנו - איך הפכנו אהבה לבשמים לעסק של חוויות.",
         alternates: {
-            canonical: 'https://www.ml-tlv.com/about',
+            canonical: `${brand.url}/about`,
         },
     };
 }
@@ -190,8 +177,8 @@ export default async function AboutPage() {
         "description": locale === 'en' 
             ? `Israel's leading shop for perfume samples, decants, and luxury niche fragrances. 100% original niche and boutique perfumes.`
             : `חנות דוגמיות בשמים, דיקאנטים ודוגמיות יוקרה הגדולה בישראל. בשמי נישה ובוטיק מקוריים (דיקנטים, דקנטים, דקאנטים).`,
-        "url": "https://www.ml-tlv.com",
-        "logo": "https://www.ml-tlv.com/logo_v5.png",
+        "url": brand.url,
+        "logo": `${brand.url}/logo_v5.png`,
         "foundingDate": "2023",
         "address": {
             "@type": "PostalAddress",
@@ -199,7 +186,7 @@ export default async function AboutPage() {
             "addressCountry": "IL"
         },
         "sameAs": [
-            "https://instagram.com/ml_tlv"
+            `https://instagram.com/${brand.instagram}`
         ],
         "contactPoint": {
             "@type": "ContactPoint",

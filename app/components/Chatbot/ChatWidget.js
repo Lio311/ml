@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import Image from '../CImage';
 import { useLanguage } from '../../context/LanguageContext';
+import { useBrand } from '../../context/BrandContext';
 import SmartMatchingClient from '../../matching/SmartMatchingClient';
 import { useUser } from '@clerk/nextjs';
 
@@ -20,6 +21,7 @@ const REPRESENTATIVES = [
 
 export default function ChatWidget() {
     const { user, isLoaded } = useUser();
+    const brand = useBrand();
     const [isVisible, setIsVisible] = useState(true);
     const [isOpen, setIsOpen] = useState(false);
     const [activeTab, setActiveTab] = useState('matching'); // 'matching' or 'advisor'
@@ -45,7 +47,7 @@ export default function ChatWidget() {
         
         const helpVerb = selectedRep.gender === 'female' ? 'יכולה' : 'יכול';
         setMessages([
-            { id: 1, text: `היי! 👋 אני ${selectedRep.name} מ-ml_tlv. איך אני ${helpVerb} לעזור לך היום?`, sender: 'bot', type: 'text' },
+            { id: 1, text: `היי! 👋 אני ${selectedRep.name} מ-${brand.name}. איך אני ${helpVerb} לעזור לך היום?`, sender: 'bot', type: 'text' },
             {
                 id: 2,
                 type: 'faq_options',
@@ -296,7 +298,7 @@ export default function ChatWidget() {
                                     {msg.type === 'returns_options' && (
                                         <div className="mt-3 flex flex-col gap-2">
                                             <a
-                                                href="https://instagram.com/ml_tlv"
+                                                href={`https://instagram.com/${brand.instagram}`}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
                                                 className="block w-full text-center bg-gradient-to-r from-purple-500 to-pink-500 text-white py-2 px-4 rounded-xl text-xs font-bold hover:opacity-90 transition"
@@ -326,7 +328,7 @@ export default function ChatWidget() {
                                     {msg.type === 'fallback_instagram' && (
                                         <div className="mt-3 flex flex-col gap-2">
                                             <a
-                                                href="https://instagram.com/ml_tlv"
+                                                href={`https://instagram.com/${brand.instagram}`}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
                                                 className="flex items-center justify-center gap-2 bg-gradient-to-r from-purple-500 to-pink-500 text-white py-2 px-4 rounded-full text-xs font-bold hover:opacity-90 transition transform hover:scale-105"

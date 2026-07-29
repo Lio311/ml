@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import pool from '@/app/lib/db';
 import { sendEmail, getTemplate, getStatusUpdateTemplate } from '@/app/lib/email';
+import { getBrandName } from '@/app/lib/brand';
 
 export async function GET(req) {
     // Allow public triggering for passive cron
@@ -66,7 +67,8 @@ export async function GET(req) {
                             name: cleanName 
                         }, getStatusUpdateTemplate.bind(null, order_id, current_status, cleanName));
                         
-                        await sendEmail(customerEmail, dynamicSubject || `עדכון סטטוס הזמנה #${order_id} - ml_tlv`, dynamicHtml, 'status_update', order_id);
+                        const brandName = await getBrandName();
+                        await sendEmail(customerEmail, dynamicSubject || `עדכון סטטוס הזמנה #${order_id} - ${brandName}`, dynamicHtml, 'status_update', order_id);
                     } catch (e) {
                         console.error(`Error sending delayed email for order ${order_id}:`, e);
                     }

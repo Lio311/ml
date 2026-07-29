@@ -5,6 +5,7 @@ import crypto from "crypto";
 import { logCronStart, logCronEnd } from "@/app/lib/errorLogger";
 
 import { checkCronOrAdmin } from "@/app/lib/admin";
+import { getBrandName } from "@/app/lib/brand";
 
 export const dynamic = 'force-dynamic';
 export const maxDuration = 300; // 5 minutes
@@ -73,6 +74,7 @@ export async function GET(req) {
             generationConfig: { responseMimeType: "application/json" }
         });
 
+        const brandName = await getBrandName();
         const BATCH_SIZE = 5;
         let totalReviewed = 0;
 
@@ -80,7 +82,7 @@ export async function GET(req) {
             const batch = toReview.slice(i, i + BATCH_SIZE);
             
             const batchPrompt = `
-You are a senior copywriter reviewing product descriptions for a luxury Israeli niche perfume decant shop called "ml-tlv".
+You are a senior copywriter reviewing product descriptions for a luxury Israeli niche perfume decant shop called "${brandName}".
 Review each of the following product descriptions. Provide rating (1-10), strengths, suggestions, and a suggested_rewrite.
 Products to review:
 ${batch.map((p, idx) => `

@@ -5,9 +5,11 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Instagram, MessageCircle } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
+import { useBrand } from '../context/BrandContext';
 
 export default function InstagramPopup() {
     const { t, dir } = useLanguage();
+    const brand = useBrand();
     const [isOpen, setIsOpen] = useState(false);
 
     useEffect(() => {
@@ -34,7 +36,7 @@ export default function InstagramPopup() {
     };
 
     const handleInstagramClick = () => {
-        window.open('https://instagram.com/ml_tlv', '_blank');
+        window.open(`https://instagram.com/${brand.instagram}`, '_blank');
         handleClose();
     };
 
@@ -82,7 +84,7 @@ export default function InstagramPopup() {
                             </h2>
                             
                             <p className="text-gray-600 dark:text-zinc-400 mb-8 text-lg leading-relaxed">
-                                {t('common.instagram_popup_desc') || "Need advice or a quick answer? We are available for you at ml_tlv for any question, all week long."}
+                                {t('common.instagram_popup_desc') || `Need advice or a quick answer? We are available for you at ${brand.instagram} for any question, all week long.`}
                             </p>
 
                             <button

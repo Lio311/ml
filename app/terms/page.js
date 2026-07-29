@@ -1,34 +1,22 @@
 import FAQClient from '../faq/FAQClient';
-import { terms_he, terms_en } from '../data/terms_data';
+import { getTermsHe, getTermsEn } from '../data/terms_data';
+import { getBrandName, getBrand } from '../lib/brand';
 import Breadcrumbs from '../components/Breadcrumbs';
 import BreadcrumbSchema from '../components/BreadcrumbSchema';
 import { cookies } from 'next/headers';
-import he from '../data/locales/he.json';
-import en from '../data/locales/en.json';
-
-const getT = (locale) => {
-    const dict = locale === 'en' ? en : he;
-    return (key) => {
-        const keys = key.split('.');
-        let result = dict;
-        for (const k of keys) {
-            if (result[k]) result = result[k];
-            else return key;
-        }
-        return result;
-    };
-};
+import { getT } from '../lib/getT';
 
 export async function generateMetadata() {
     const cookieStore = await cookies();
     const locale = cookieStore.get('NEXT_LOCALE')?.value || 'he';
-    const t = getT(locale);
+    const brand = await getBrand();
+    const t = getT(locale, brand.name);
 
     return {
         title: t('common.website_terms'),
         description: t('common.terms_desc') || "Website terms and conditions.",
         alternates: {
-            canonical: 'https://www.ml-tlv.com/terms',
+            canonical: `https://www.${brand.hyphen}.com/terms`,
         },
     };
 }
@@ -36,8 +24,9 @@ export async function generateMetadata() {
 export default async function TermsPage() {
     const cookieStore = await cookies();
     const locale = cookieStore.get('NEXT_LOCALE')?.value || 'he';
-    const t = getT(locale);
-    const categories = locale === 'en' ? terms_en : terms_he;
+    const brandName = await getBrandName();
+    const t = getT(locale, brandName);
+    const categories = locale === 'en' ? getTermsEn(brandName) : getTermsHe(brandName);
 
     return (
         <div className="min-h-screen bg-gray-50 pb-20">

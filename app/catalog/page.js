@@ -7,28 +7,17 @@ import FilterSidebar from "./FilterSidebar";
 import SortSelect from "./SortSelect";
 import { mapHebrewQuery } from "../lib/hebrewMapping";
 import { cookies } from 'next/headers';
-import he from '../data/locales/he.json';
-import en from '../data/locales/en.json';
+import { getT } from '../lib/getT';
 import { sanitizeProductArray } from "../lib/productUtils";
 import { unstable_cache } from 'next/cache';
 import { getProducts } from './dbQueries';
 import CatalogClientGrid from './CatalogClientGrid';
 import CatalogSEOContent from '../components/CatalogSEOContent';
 import BrandInsight from '../components/BrandInsight';
+import { getBrandName, buildVariants } from '../lib/brand';
 
 
-const getT = (locale) => {
-    const dict = locale === 'en' ? en : he;
-    return (key) => {
-        const keys = key.split('.');
-        let result = dict;
-        for (const k of keys) {
-            if (result[k]) result = result[k];
-            else return key;
-        }
-        return result;
-    };
-};
+
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -36,10 +25,12 @@ export const revalidate = 0;
 export async function generateMetadata(props) {
     const cookieStore = await cookies();
     const locale = cookieStore.get('NEXT_LOCALE')?.value || 'he';
-    const t = getT(locale);
-
     const searchParams = await props.searchParams;
     const { q, brand, category, page } = searchParams;
+    
+    const brandNameStr = await getBrandName();
+    const t = getT(locale, brandNameStr);
+    const brandVars = buildVariants(brandNameStr);
 
     let title = t('common.meta_catalog_title');
     let description = t('common.meta_catalog_desc');
@@ -59,7 +50,7 @@ export async function generateMetadata(props) {
         description = t('common.meta_search_desc').replace('{q}', q);
     }
 
-    const baseUrl = 'https://www.ml-tlv.com';
+    const baseUrl = brandVars.url;
     const params = new URLSearchParams();
     if (q) params.set('q', q);
     if (brand) params.set('brand', brand);
@@ -97,7 +88,7 @@ export async function generateMetadata(props) {
             title,
             description,
             url: canonical,
-            siteName: 'ml-tlv',
+            siteName: brandVars.hyphen,
             type: 'website',
         },
     };
@@ -172,7 +163,8 @@ const getMetadataOptions = unstable_cache(async () => {
 export default async function CatalogPage(props) {
     const cookieStore = await cookies();
     const locale = cookieStore.get('NEXT_LOCALE')?.value || 'he';
-    const t = getT(locale);
+    const brandNameStr = await getBrandName();
+    const t = getT(locale, brandNameStr);
     const dir = locale === 'he' ? 'rtl' : 'ltr';
 
     const searchParams = await props.searchParams;

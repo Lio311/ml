@@ -3,30 +3,16 @@ import Image from "@/app/components/CImage";
 import ProductCard from '../../components/ProductCard';
 import Link from 'next/link';
 import { cookies } from 'next/headers';
-import he from '../../data/locales/he.json';
-import en from '../../data/locales/en.json';
+import { getT } from '../../lib/getT';
 import { sanitizeProductArray, sanitizeProduct } from "../../lib/productUtils";
 import CatalogSEOContent from '../../components/CatalogSEOContent';
 import Breadcrumbs from '../../components/Breadcrumbs';
+import { getBrandName, buildVariants } from '../../lib/brand';
 
 
 export const revalidate = 3600; // Cache for 1 hour
 
-const getT = (locale) => {
-    const dict = locale === 'en' ? en : he;
-    return (key, vars = {}) => {
-        const keys = key.split('.');
-        let result = dict;
-        for (const k of keys) {
-            if (result[k]) result = result[k];
-            else return key;
-        }
-        if (typeof result === 'string' && vars) {
-            return Object.entries(vars).reduce((str, [k, v]) => str.replace(new RegExp(`\\{${k}\\}`, 'g'), v), result);
-        }
-        return result;
-    };
-};
+
 
 export async function generateMetadata(props) {
     const params = await props.params;
@@ -34,13 +20,15 @@ export async function generateMetadata(props) {
     const brandName = decodeURIComponent(brand);
     const cookieStore = await cookies();
     const locale = cookieStore.get('NEXT_LOCALE')?.value || 'he';
-    const t = getT(locale);
+    const dbBrandName = await getBrandName();
+    const t = getT(locale, dbBrandName);
+    const brandVars = buildVariants(dbBrandName);
 
     return {
         title: t('brands_page.meta_title', { brand: brandName }),
         description: t('brands_page.meta_desc', { brand: brandName }),
         alternates: {
-            canonical: `https://www.ml-tlv.com/brands/${brand}`,
+            canonical: `${brandVars.url}/brands/${brand}`,
         },
         openGraph: {
             title: t('brands_page.og_title', { brand: brandName }),
@@ -55,7 +43,9 @@ export default async function BrandPage(props) {
     const brandName = decodeURIComponent(brand);
     const cookieStore = await cookies();
     const locale = cookieStore.get('NEXT_LOCALE')?.value || 'he';
-    const t = getT(locale);
+    const dbBrandName = await getBrandName();
+    const t = getT(locale, dbBrandName);
+    const brandVars = buildVariants(dbBrandName);
 
     const client = await pool.connect();
     let products = [];
@@ -103,19 +93,19 @@ export default async function BrandPage(props) {
                                 "@type": "ListItem",
                                 position: 1,
                                 "name": t('brands_page.home'),
-                                "item": "https://www.ml-tlv.com"
+                                "item": brandVars.url
                             },
                             {
                                 "@type": "ListItem",
                                 position: 2,
                                 "name": t('brands_page.brands'),
-                                "item": "https://www.ml-tlv.com/brands"
+                                "item": `${brandVars.url}/brands`
                             },
                             {
                                 "@type": "ListItem",
                                 position: 3,
                                 "name": displayName,
-                                "item": `https://www.ml-tlv.com/brands/${brand}`
+                                "item": `${brandVars.url}/brands/${brand}`
                             }
                         ]
                     })

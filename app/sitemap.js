@@ -1,7 +1,9 @@
 import pool from './lib/db';
+import { getBrand } from './lib/brand';
 
 export default async function sitemap() {
-    const baseUrl = 'https://www.ml-tlv.com';
+    const brand = await getBrand();
+    const baseUrl = `https://www.${brand.hyphen}.com`;
 
     // 1. Static Routes — full site hierarchy
     const staticRoutes = [

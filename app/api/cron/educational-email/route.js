@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import pool from '@/app/lib/db';
 import { sendEmail, getTemplate } from '@/app/lib/email';
 import { getAutomationConfig } from '@/app/lib/automationConfig';
+import { getBrandName } from '@/app/lib/brand';
 
 import { checkCronOrAdmin } from "@/app/lib/admin";
 
@@ -16,6 +17,7 @@ export async function GET(req) {
         try {
             const config = await getAutomationConfig('educational_email');
             const delayDays = config.delay_days || 3;
+            const brandName = await getBrandName();
 
             // Find completed orders created between delayDays and delayDays+1 days ago
             // Ensure we haven't already sent an educational email to this user in a previous order
@@ -77,7 +79,7 @@ export async function GET(req) {
                                 </div>
                                 
                                 <p>אם יש לך שאלות או שאתה רוצה להתייעץ לגבי הבושם הבא שלך, אנחנו כאן תמיד!</p>
-                                <p>באהבה,<br>צוות ml_tlv</p>
+                                <p>באהבה,<br>צוות ${brandName}</p>
                             </div>`;
                         }
                     );

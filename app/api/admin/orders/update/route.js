@@ -4,6 +4,7 @@ import pool from '../../../../lib/db';
 import { sendEmail, getOrderUpdatedTemplate } from '../../../../lib/email';
 import { recordAuditLog } from '../../../../lib/audit';
 import { checkAdmin } from '../../../../lib/admin';
+import { getBrandName } from '../../../../lib/brand';
 
 export async function POST(req) {
     try {
@@ -287,7 +288,8 @@ export async function POST(req) {
 
                 if (customerEmail) {
                     const updateHtml = getOrderUpdatedTemplate(orderId, customerName, items, total, deliveryMethod, shippingCost, notes, changesSummary);
-                    await sendEmail(customerEmail, `הזמנתך #${orderId} עודכנה - ml_tlv`, updateHtml, 'order_updated', orderId);
+                    const brandName = await getBrandName();
+                    await sendEmail(customerEmail, `הזמנתך #${orderId} עודכנה - ${brandName}`, updateHtml, 'order_updated', orderId);
                 }
 
                 // Admin notification
