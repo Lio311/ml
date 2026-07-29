@@ -26,7 +26,7 @@ export default function CatalogLoading() {
                         <div className="h-10 w-32 bg-gray-200 animate-pulse rounded"></div>
                     </div>
 
-                    <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+                    <div className="grid grid-cols-2 lg:grid-cols-5 gap-6">
                         {Array.from({ length: 16 }).map((_, i) => (
                             <div key={i} className="flex flex-col gap-2">
                                 <div className="aspect-[4/5] w-full bg-gray-200 animate-pulse rounded-lg"></div>

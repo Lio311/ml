@@ -434,7 +434,7 @@ export default function CatalogClient({ slug }) {
                             <button onClick={() => { setSearch(''); setSearchInput(''); setSelectedCategories([]); setSelectedGenders([]); setCurrentPage(1); }} className="text-blue-600 mt-2 underline text-sm">{t('common.clear_all')}</button>
                         </div>
                     ) : (
-                        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+                        <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 md:gap-6">
                             {pagedItems.map(item => (
                                 <CatalogProductCard
                                     key={item.id}
