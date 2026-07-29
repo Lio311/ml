@@ -9,6 +9,7 @@ import { mapHebrewQuery } from "../lib/hebrewMapping";
 import { cookies } from 'next/headers';
 import { getT } from '../lib/getT';
 import { getBrandName, getBrand } from '../lib/brand';
+import { sanitizeProductArray } from "../lib/productUtils";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
