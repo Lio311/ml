@@ -102,7 +102,6 @@ function LogoSection({ section, logos, isDefault, onSave, onDelete }) {
                         alt="Logo Preview"
                         className="max-h-20 max-w-full object-contain"
                         onError={() => setPreviewError(true)}
-                        style={{ filter: section.key === 'favicon' ? 'none' : 'brightness(0)' }}
                     />
                 ) : (
                     <div className="text-center text-gray-400 text-sm">
