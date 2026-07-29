@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import OrderReviewPrompt from '../OrderReviewPrompt';
-import { Reply, User as UserIcon, Loader2, MessageSquare, Search, Store, Package, ExternalLink, Image as ImageIcon } from 'lucide-react';
+import { Reply, User as UserIcon, Loader2, MessageSquare, Search, Store, Package, ExternalLink, Image as ImageIcon, ChevronLeft, ChevronRight } from 'lucide-react';
 import { useUser } from '@clerk/nextjs';
 import { useLanguage } from '../../context/LanguageContext';
 import { useBrand } from '../../context/BrandContext';
@@ -30,6 +30,7 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
     const [hasSubmittedReview, setHasSubmittedReview] = useState({}); // orderId -> boolean
     const scrollRef = useRef(null);
     const messagesEndRef = useRef(null);
+    const orderItemsScrollRef = useRef(null);
 
     const scrollToBottom = () => {
         if (scrollRef.current) {
@@ -507,21 +508,43 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
                                         </Link>
                                     </div>
 
-                                    <div className="flex gap-4 overflow-x-auto pb-1 custom-scrollbar w-full min-w-0">
-                                        {orderData[activeConversation.order_id].items?.map((item, idx) => (
-                                            <div key={idx} className="flex items-center gap-2 bg-gray-50/80 rounded-xl p-1.5 border border-gray-100/50 flex-shrink-0 group hover:bg-white hover:shadow-sm transition-all duration-300">
-                                                <div className="w-10 h-10 rounded-lg overflow-hidden border border-gray-100 bg-white relative">
-                                                    <Image src={item.image_url || '/placeholder.png'} alt={item.name || "Product"} fill sizes="40px" className="object-contain group-hover:scale-110 transition-transform" />
-                                                </div>
-                                                <div className="flex flex-col min-w-0 flex-1">
-                                                    <span className="text-[10px] font-bold text-gray-800 leading-tight">{item.name || `${item.brand || ''} ${item.model || ''}`.trim()}</span>
-                                                    <div className="flex items-center gap-1 text-[9px] text-gray-400 mt-0.5">
-                                                        <span className="bg-gray-200 px-1 rounded font-medium text-gray-600">{String(item.size).replace(/ml|מ"ל/gi, '').trim()} {t('common.ml_unit')}</span>
-                                                        <span className="font-bold text-black">x{item.quantity}</span>
+                                    <div className="relative group px-2 w-full">
+                                        <button 
+                                            type="button"
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                if (orderItemsScrollRef.current) orderItemsScrollRef.current.scrollBy({ left: 200, behavior: 'smooth' });
+                                            }}
+                                            className="absolute -right-1 md:-right-3 top-1/2 -translate-y-1/2 z-10 bg-white/90 backdrop-blur-sm border border-gray-200 rounded-full p-1 shadow-sm hover:bg-white hover:shadow-md transition-all hidden md:flex opacity-0 group-hover:opacity-100"
+                                        >
+                                            <ChevronRight className="w-4 h-4 text-gray-600" />
+                                        </button>
+                                        <div ref={orderItemsScrollRef} className="flex gap-4 overflow-x-auto pb-2 custom-scrollbar w-full min-w-0 scroll-smooth px-1">
+                                            {orderData[activeConversation.order_id].items?.map((item, idx) => (
+                                                <div key={idx} className="flex items-center gap-2 bg-gray-50/80 rounded-xl p-1.5 border border-gray-100/50 flex-shrink-0 group/item hover:bg-white hover:shadow-sm transition-all duration-300">
+                                                    <div className="w-10 h-10 rounded-lg overflow-hidden border border-gray-100 bg-white relative">
+                                                        <Image src={item.image_url || '/placeholder.png'} alt={item.name || "Product"} fill sizes="40px" className="object-contain group-hover/item:scale-110 transition-transform" />
+                                                    </div>
+                                                    <div className="flex flex-col min-w-0 flex-1">
+                                                        <span className="text-[10px] font-bold text-gray-800 leading-tight">{item.name || `${item.brand || ''} ${item.model || ''}`.trim()}</span>
+                                                        <div className="flex items-center gap-1 text-[9px] text-gray-400 mt-0.5">
+                                                            <span className="bg-gray-200 px-1 rounded font-medium text-gray-600">{String(item.size).replace(/ml|מ"ל/gi, '').trim()} {t('common.ml_unit')}</span>
+                                                            <span className="font-bold text-black">x{item.quantity}</span>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        ))}
+                                            ))}
+                                        </div>
+                                        <button 
+                                            type="button"
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                if (orderItemsScrollRef.current) orderItemsScrollRef.current.scrollBy({ left: -200, behavior: 'smooth' });
+                                            }}
+                                            className="absolute -left-1 md:-left-3 top-1/2 -translate-y-1/2 z-10 bg-white/90 backdrop-blur-sm border border-gray-200 rounded-full p-1 shadow-sm hover:bg-white hover:shadow-md transition-all hidden md:flex opacity-0 group-hover:opacity-100"
+                                        >
+                                            <ChevronLeft className="w-4 h-4 text-gray-600" />
+                                        </button>
                                     </div>
 
                                     {role === 'buyer' && (orderData[activeConversation.order_id].status === 'completed' || orderData[activeConversation.order_id].status === 'הושלם') && (
