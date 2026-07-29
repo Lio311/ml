@@ -387,7 +387,7 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
                                 
                                 <div className={`w-12 h-12 rounded-full flex-shrink-0 flex items-center justify-center overflow-hidden border relative ${((role === 'buyer' && !conv.catalog_id) || (role === 'seller' && !conv.catalog_id && conv.participant2_id === 'admin')) ? 'bg-white border-gray-100' : 'bg-gray-200 border-gray-300'}`}>
                                     {(role === 'buyer' && !conv.catalog_id) || (role === 'seller' && !conv.catalog_id && conv.participant2_id === 'admin') ? (
-                                        <Image src="/ml_CHAT.png" alt={brand.name} fill sizes="48px" className="object-cover" />
+                                        <Image src="/api/assets/logo?type=logo_chat" alt={brand.name} fill sizes="48px" className="object-cover" />
                                     ) : role === 'buyer' && conv.catalog_id ? (
                                         catalogsData[conv.catalog_id]?.logo_url ? (
                                             <Image src={catalogsData[conv.catalog_id].logo_url} alt="Store" fill sizes="48px" className="object-cover" />
@@ -444,7 +444,7 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
                             </button>
                             <div className={`w-10 h-10 rounded-full flex items-center justify-center overflow-hidden border flex-shrink-0 relative ${((role === 'buyer' && !activeConversation?.catalog_id) || (role === 'seller' && !activeConversation?.catalog_id && activeConversation?.participant2_id === 'admin')) ? 'bg-white border-gray-100' : 'bg-gray-200 border-gray-300'}`}>
                                 {(role === 'buyer' && !activeConversation?.catalog_id) || (role === 'seller' && !activeConversation?.catalog_id && activeConversation?.participant2_id === 'admin') ? (
-                                    <Image src="/ml_CHAT.png" alt={brand.name} fill sizes="40px" className="object-cover" />
+                                    <Image src="/api/assets/logo?type=logo_chat" alt={brand.name} fill sizes="40px" className="object-cover" />
                                 ) : role === 'buyer' && activeConversation?.catalog_id ? (
                                     catalogsData[activeConversation.catalog_id]?.logo_url ? (
                                         <Image src={catalogsData[activeConversation.catalog_id].logo_url} alt="Store" fill sizes="40px" className="object-cover" />

@@ -55,16 +55,19 @@ export async function generateMetadata() {
     },
     description: "חנות דוגמיות בשמים בקונספט קצת שונה. מגוון בשמי בוטיק, נישא ודיזיינר במחירים הוגנים",
     metadataBase: new URL(brand.url),
-    manifest: '/manifest.json',
+    icons: {
+      icon: '/api/assets/logo?type=favicon',
+      apple: '/api/assets/logo?type=icon_apple',
+    },
     appleWebApp: {
       capable: true,
       statusBarStyle: 'black-translucent',
       title: brand.name,
       startupImage: [
-        { url: '/icon-512.png', media: '(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3)' },
-        { url: '/icon-512.png', media: '(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3)' },
-        { url: '/icon-512.png', media: '(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3)' },
-        { url: '/icon-512.png', media: '(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)' },
+        { url: '/api/assets/logo?type=icon_512', media: '(device-width: 430px) and (device-height: 932px) and (-webkit-device-pixel-ratio: 3)' },
+        { url: '/api/assets/logo?type=icon_512', media: '(device-width: 393px) and (device-height: 852px) and (-webkit-device-pixel-ratio: 3)' },
+        { url: '/api/assets/logo?type=icon_512', media: '(device-width: 390px) and (device-height: 844px) and (-webkit-device-pixel-ratio: 3)' },
+        { url: '/api/assets/logo?type=icon_512', media: '(device-width: 375px) and (device-height: 812px) and (-webkit-device-pixel-ratio: 3)' },
       ],
     },
     openGraph: {
@@ -72,7 +75,7 @@ export async function generateMetadata() {
       description: "חנות דוגמיות בשמים הגדולה בישראל",
       url: brand.url,
       siteName: brand.name,
-      images: [{ url: '/logo_v5.png', width: 800, height: 600 }],
+      images: [{ url: '/api/assets/logo?type=logo_fallback', width: 800, height: 600 }],
       locale: 'he_IL',
       type: 'website',
     },
@@ -100,7 +103,7 @@ export default async function RootLayout({ children }) {
       localization={clerkLocale}
       appearance={{
         layout: {
-          logoImageUrl: '/logo_v5.png',
+          logoImageUrl: '/api/assets/logo?type=logo_header',
           socialButtonsVariant: 'iconButton'
         },
         variables: {
@@ -163,8 +166,8 @@ export default async function RootLayout({ children }) {
                         "name": brand.name,
                         "alternateName": `${brand.name} - יוקרה בחתיכות קטנות`,
                         "url": brand.url,
-                        "logo": `${brand.url}/logo_v5.png`,
-                        "image": `${brand.url}/logo_v5.png`,
+                        "logo": `${brand.url}/api/assets/logo?type=logo_fallback`,
+                        "image": `${brand.url}/api/assets/logo?type=logo_fallback`,
                         "description": locale === 'he' 
                             ? "דוגמיות בשמים, דיקאנטים ובשמי נישה מקוריים בתל אביב והסביבה. משלוחים לכל הארץ."
                             : "Authentic luxury niche perfume samples and decants.",
@@ -209,7 +212,7 @@ export default async function RootLayout({ children }) {
                         "name": brand.name,
                         "alternateName": brand.name,
                         "url": brand.url,
-                        "image": `${brand.url}/logo_v5.png`,
+                        "image": `${brand.url}/api/assets/logo?type=logo_fallback`,
                         "description": locale === 'he'
                             ? `${brand.name} - דוגמיות בושם מקוריות מבתי בושם יוקרתיים ונישה. דיקאנטים ב-2, 5 ו-10 מ"ל באריזת זכוכית עם מתז.`
                             : `${brand.name} - Authentic luxury niche perfume samples and decants in 2ml, 5ml, and 10ml glass atomizers.`,
@@ -249,7 +252,7 @@ export default async function RootLayout({ children }) {
                         "url": brand.url,
                         "primaryImageOfPage": {
                           "@type": "ImageObject",
-                          "url": `${brand.url}/logo_v5.png`
+                          "url": `${brand.url}/api/assets/logo?type=logo_fallback`
                         }
                       },
                       {
