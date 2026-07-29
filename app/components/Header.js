@@ -194,7 +194,7 @@ export default function Header({ brands = [] }) {
                                             alt={`${brand.name} - דוגמיות בשמי נישה יוקרתיים`} 
                                             width={160} 
                                             height={60} 
-                                            className="h-10 md:h-14 w-auto object-contain inverted-logo-v2" 
+                                            className="h-10 md:h-14 w-auto object-contain" 
                                             priority 
                                         />
                                     </Link>
@@ -285,7 +285,7 @@ export default function Header({ brands = [] }) {
                                         alt={`${brand.name} - דוגמיות בשמי נישה יוקרתיים`} 
                                         width={90} 
                                         height={30} 
-                                        className="h-6 w-auto object-contain inverted-logo-v2" 
+                                        className="h-6 w-auto object-contain" 
                                         priority 
                                     />
                                 </Link>
@@ -338,9 +338,6 @@ export default function Header({ brands = [] }) {
             />
 
             <style jsx global>{`
-                .inverted-logo-v2 {
-                    filter: brightness(0);
-                }
                 .v2-user-actions input {
                     background: transparent !important;
                     border-bottom-color: black !important;

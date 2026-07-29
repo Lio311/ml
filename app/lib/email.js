@@ -1273,3 +1273,29 @@ export const getDailySummaryTemplate = (emails) => {
         </div>
     `;
 };
+
+export const getAdminNewMessageTemplate = (senderName, conversationId, content) => {
+    return `
+        <div dir="rtl" style="font-family: 'Open Sans', 'Open Sans Hebrew', Arial, sans-serif; color: #333; max-width: 600px; margin: 0 auto; line-height: 1.6;">
+            <div style="background-color: #fff; padding: 30px; border-radius: 24px; border: 1px solid #f0f0f0; box-shadow: 0 4px 20px rgba(0,0,0,0.03);">
+                <div style="text-align: center; margin-bottom: 25px;">
+                    <div style="display: inline-block; background-color: #e0f2fe; color: #0369a1; font-size: 12px; font-weight: 900; padding: 6px 12px; border-radius: 20px; margin-bottom: 15px;">הודעה חדשה בתיבת הדואר</div>
+                    <h1 style="margin: 0; font-size: 24px; font-weight: 900; color: #000;">הודעה חדשה מאת ${senderName}</h1>
+                </div>
+                
+                <div style="background-color: #f8fafc; padding: 20px; border-radius: 16px; border: 1px solid #f1f5f9; margin-bottom: 25px;">
+                    <p style="margin: 0; font-size: 15px; color: #334155; white-space: pre-wrap;">${content}</p>
+                </div>
+                
+                <div style="margin-top: 30px; text-align: center;">
+                    <a href="https://www.ml-tlv.com/admin/inbox?conversation=${conversationId}" style="display: inline-block; background-color: #000; color: #fff; padding: 16px 36px; text-decoration: none; border-radius: 18px; font-weight: 900; font-size: 14px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); transition: transform 0.2s;">
+                        למעבר לתיבת הדואר
+                    </a>
+                </div>
+            </div>
+            <div style="text-align: center; padding-top: 15px; padding-bottom: 0; color: #aaa; font-size: 11px;">
+                ml_tlv Admin Notification
+            </div>
+        </div>
+    `;
+};

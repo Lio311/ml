@@ -97,7 +97,6 @@ export default function MaintenanceClient({ brand: brandProp }) {
                             width="140" 
                             height="60" 
                             preserveAspectRatio="xMidYMid meet"
-                            style={{ filter: 'brightness(0) saturate(100%) invert(43%) sepia(87%) saturate(2891%) hue-rotate(204deg) brightness(101%) contrast(93%)' }}
                         />
                         {/* Laptop Base */}
                         <path d="M200 350 L220 340 H520 L540 350 Z" stroke="#3b82f6" fill="white" />
@@ -246,7 +245,7 @@ export default function MaintenanceClient({ brand: brandProp }) {
                     {/* Right Column (Logo & Text) */}
                     <div className="flex flex-col items-center md:items-start text-center md:text-right space-y-2 md:space-y-4 max-w-md shrink-0">
                         <div className="flex justify-center md:justify-start">
-                            <Image src="/api/assets/logo?type=logo_header" alt={brand.name} width={120} height={40} className="object-contain brightness-0" />
+                            <Image src="/api/assets/logo?type=logo_header" alt={brand.name} width={120} height={40} className="object-contain" />
                         </div>
                         <div className="space-y-1 md:space-y-2">
                             <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-gray-800">האתר בשיפוצים</h1>

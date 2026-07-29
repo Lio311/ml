@@ -198,6 +198,9 @@ export default function LogoClient() {
                     <ImageIcon className="w-4 h-4" />
                     החלפה, עדכון או איפוס של כל הלוגואים והאייקונים במערכת
                 </p>
+                <div className="mt-4 p-4 bg-blue-50 border border-blue-100 rounded-xl text-blue-800 text-sm">
+                    <strong>שימו לב:</strong> כדי למנוע מתיחה של תמונות (כמו במקרה של ה-Favicon ואייקונים לאפליקציה), יש לוודא שהתמונות המועלות עבורם הן <strong>מרובעות (יחס 1:1)</strong>.
+                </div>
             </div>
 
             <div className="flex flex-col gap-6">

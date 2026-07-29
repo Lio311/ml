@@ -2,6 +2,7 @@ import pool, { updateUserActivity } from '../../../../lib/db';
 import { auth as clerkAuth, clerkClient } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
 import { sanitizeProductArray } from '../../../../lib/productUtils';
+import { sendEmail, getAdminNewMessageTemplate } from '../../../../lib/email';
 
 export async function GET(req, { params }) {
     try {
@@ -145,7 +146,36 @@ export async function POST(req, { params }) {
             UPDATE conversations SET updated_at = CURRENT_TIMESTAMP WHERE id = $1
         `, [conversationId]);
 
-        return NextResponse.json(sanitizeProductArray([insertMsg.rows[0]])[0]);
+        const messageRow = insertMsg.rows[0];
+
+        // Send email notification to admin if the sender is not admin
+        if (messageRow.sender_role !== 'admin') {
+            try {
+                const clerk = await clerkClient();
+                let senderName = "לקוח";
+                try {
+                    const senderUser = await clerk.users.getUser(userId);
+                    if (senderUser) {
+                        senderName = `${senderUser.firstName || ''} ${senderUser.lastName || ''}`.trim() || senderUser.emailAddresses[0]?.emailAddress || "לקוח";
+                    }
+                } catch (e) {
+                    console.error("DEBUG: POST /api/inbox/messages - Failed to fetch sender name from Clerk", e);
+                }
+                
+                const subject = `הודעה חדשה בתיבת הדואר מאת ${senderName}`;
+                const html = getAdminNewMessageTemplate(senderName, conversationId, content);
+                
+                const adminEmail = process.env.ADMIN_EMAIL || process.env.EMAIL_USER;
+                if (adminEmail) {
+                    await sendEmail(adminEmail, subject, html, 'system');
+                    console.log("DEBUG: POST /api/inbox/messages - Sent email notification to admin");
+                }
+            } catch (emailErr) {
+                console.error("ERROR: POST /api/inbox/messages - Failed to send admin email notification:", emailErr);
+            }
+        }
+
+        return NextResponse.json(sanitizeProductArray([messageRow])[0]);
     } catch (error) {
         console.error('Error sending message:', error);
         return NextResponse.json({ error: 'Internal Error', details: error.message }, { status: 500 });
