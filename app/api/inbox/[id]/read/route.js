@@ -1,7 +1,7 @@
 import pool from '../../../../lib/db';
 import { auth as clerkAuth } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
-
+import { revalidateTag } from 'next/cache';
 export async function PATCH(req, { params }) {
     try {
         const authData = await clerkAuth();
@@ -39,6 +39,10 @@ export async function PATCH(req, { params }) {
             WHERE conversation_id = $1 AND sender_id != $2
             RETURNING id
         `, [conversationId, userId]);
+
+        if (update.rowCount > 0) {
+            revalidateTag('admin-counts');
+        }
 
         return NextResponse.json({ success: true, count: update.rowCount });
     } catch (error) {

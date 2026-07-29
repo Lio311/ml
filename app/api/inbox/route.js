@@ -3,7 +3,7 @@ import { auth as clerkAuth, clerkClient } from '@clerk/nextjs/server';
 import { NextResponse } from 'next/server';
 import { sanitizeProductArray } from '../../lib/productUtils';
 import { sendEmail, getAdminNewMessageTemplate } from '../../lib/email';
-
+import { revalidateTag } from 'next/cache';
 export async function GET(req) {
     try {
         console.log("DEBUG: GET /api/inbox - Starting request");
@@ -258,6 +258,8 @@ export async function POST(req) {
         await pool.query(`
             UPDATE conversations SET updated_at = CURRENT_TIMESTAMP WHERE id = $1
         `, [conversationId]);
+        
+        revalidateTag('admin-counts');
 
         const messageRow = insertMsg.rows[0];
 
