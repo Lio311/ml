@@ -21,20 +21,23 @@ export const generateFullOrderPDFDoc = async (order) => {
     // Build product rows
     const productRows = items.flatMap((item, index) => {
         const qty = item.quantity || 1;
-        const name = item.name || (item.type === 'bundle' ? `חבילת ${item.bundleType || ''}` : `${item.brand || ''} ${item.model || ''}`);
+        let rawName = item.name || (item.type === 'bundle' ? `חבילת ${item.bundleType || ''}` : `${item.brand || ''} ${item.model || ''}`);
+        const name = String(rawName).replace(/(\d+)\s*מ["״]ל/gi, '$1ml').replace(/(\d+)\s*ml/gi, '<span dir="ltr" style="display:inline-block;">$1ml</span>&rlm;');
         
         // Use volume_label if available (especially for discovery sets which might have size: '1'), otherwise fallback to size
         let rawSize = item.volume_label || item.size;
         if (typeof rawSize === 'string') {
-            rawSize = rawSize.replace('מ״ל', 'ml').trim();
+            rawSize = rawSize.replace('מ״ל', 'ml').replace(/(\d+)\s*ml/gi, '$1ml').trim();
         }
-        const size = String(rawSize).toLowerCase().includes('ml') ? rawSize : `${rawSize || ''} ml`;
+        let sizeText = String(rawSize).toLowerCase().includes('ml') ? rawSize : `${rawSize || ''}ml`;
+        // Force LTR rendering for ml values to fix html2canvas bidi scrambling
+        const size = String(sizeText).replace(/(\d+)\s*ml/gi, '<span dir="ltr" style="display:inline-block;">$1ml</span>&rlm;');
         const price = item.price ? `₪${item.price}` : '';
         const mainRow = `
             <tr>
                 <td style="padding:4px 8px; border-bottom:1px solid #eee; text-align:right;">${index + 1}</td>
                 <td style="padding:4px 8px; border-bottom:1px solid #eee; text-align:right;" dir="auto">${name}</td>
-                <td style="padding:4px 8px; border-bottom:1px solid #eee; text-align:center;"><span dir="auto">${size}</span></td>
+                <td style="padding:4px 8px; border-bottom:1px solid #eee; text-align:center;"><span dir="rtl">${size}</span></td>
                 <td style="padding:4px 8px; border-bottom:1px solid #eee; text-align:center;">${qty}</td>
                 <td style="padding:4px 8px; border-bottom:1px solid #eee; text-align:left;">${price}</td>
             </tr>
@@ -45,16 +48,21 @@ export const generateFullOrderPDFDoc = async (order) => {
             subRows = item.items.map((subItem) => {
                 let subRawSize = subItem.volume_label || subItem.size;
                 if (typeof subRawSize === 'string') {
-                    subRawSize = subRawSize.replace('מ״ל', 'ml').trim();
+                    subRawSize = subRawSize.replace('מ״ל', 'ml').replace(/(\d+)\s*ml/gi, '$1ml').trim();
                 }
-                const subSize = subRawSize ? (String(subRawSize).toLowerCase().includes('ml') ? subRawSize : `${subRawSize} ml`) : '';
+                const subSize = subRawSize ? (String(subRawSize).toLowerCase().includes('ml') ? subRawSize : `${subRawSize}ml`) : '';
+                const finalSubSize = String(subSize).replace(/(\d+)\s*ml/gi, '<span dir="ltr" style="display:inline-block;">$1ml</span>&rlm;');
+                
+                let subName = `${subItem.brand || ''} ${subItem.model || ''}`;
+                subName = String(subName).replace(/(\d+)\s*מ["״]ל/gi, '$1ml').replace(/(\d+)\s*ml/gi, '<span dir="ltr" style="display:inline-block;">$1ml</span>&rlm;');
+                
                 return `
                 <tr>
                     <td style="padding:4px 8px; border-bottom:1px solid #eee; text-align:right;"></td>
                     <td style="padding:4px 8px; border-bottom:1px solid #eee; text-align:right; font-size:10px; color:#666;" dir="auto">
-                        ↳ ${subItem.brand || ''} ${subItem.model || ''}
+                        ↳ ${subName}
                     </td>
-                    <td style="padding:4px 8px; border-bottom:1px solid #eee; text-align:center; font-size:10px; color:#666;"><span dir="auto">${subSize}</span></td>
+                    <td style="padding:4px 8px; border-bottom:1px solid #eee; text-align:center; font-size:10px; color:#666;"><span dir="rtl">${finalSubSize}</span></td>
                     <td style="padding:4px 8px; border-bottom:1px solid #eee; text-align:center; font-size:10px; color:#666;">1</td>
                     <td style="padding:4px 8px; border-bottom:1px solid #eee; text-align:left;"></td>
                 </tr>
@@ -164,7 +172,7 @@ export const generateFullOrderPDFDoc = async (order) => {
         const pageWidth = doc.internal.pageSize.getWidth();
         const pageHeight = doc.internal.pageSize.getHeight();
         
-        const margin = 25; // 25mm margin
+        const margin = 35; // 35mm margin (increased from 25 for better top/bottom spacing on multi-page)
         const usableHeight = pageHeight - (margin * 2);
         
         // Calculate image dimensions to fit A4 width
