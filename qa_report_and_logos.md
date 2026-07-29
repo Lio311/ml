@@ -1,4 +1,4 @@
-# דוח קבצים ששונו ומיפוי לוגואים (QA Report & Logo Mappings)
+# דוח קבצים ששונו ומיפוי לוגואים ואייקונים (QA Report & Logo Mappings)
 
 ## 1. רשימת עמודים וקבצים ששונו
 להלן רשימת כל הקבצים ששונו במסגרת הריפקטור של הברנד, כדי שתוכל לעבור ולעשות בדיקה ידנית:
@@ -72,8 +72,8 @@
 - app/terms/page.js
 - app/unsubscribe/page.js
 
-## 2. מיפוי שימוש בתמונות לוגו בקוד
-היכן נעשה שימוש בכל אחד מקבצי הלוגו בתוך קוד המקור:
+## 2. מיפוי שימוש בתמונות לוגו ואייקונים בקוד
+היכן נעשה שימוש בכל אחד מקבצי הלוגו והאייקונים בתוך קוד המקור:
 
 ### `logo_v3.png`
 - `app/product/[slug]/page.js`
@@ -105,3 +105,33 @@
 ### `ml_CHAT.png`
 - `app/blog/[slug]/page.js`
 - `app/components/Chat/InboxClient.js`
+
+### `icon-192.png`
+- `public/manifest.json`
+- `public/sw.js`
+
+### `icon-512.png`
+- `app/layout.js`
+- `public/manifest.json`
+- `public/sw.js`
+- `scripts/archive/test.html`
+- `scripts/archive/test2.html`
+- `scripts/archive/test3.html`
+
+### `apple-touch-icon.png`
+- `scripts/archive/test.html`
+- `scripts/archive/test2.html`
+- `scripts/archive/test3.html`
+
+### `favicon.ico`
+- `public/sw.js`
+
+### `logo.png`
+- `app/admin/logo/LogoClient.js`
+- `app/admin/mailing/MailingClient.js`
+- `scripts/archive/insert_templates.js`
+- `scripts/archive/test.html`
+- `scripts/archive/test2.html`
+- `scripts/archive/test3.html`
+
+*(הערה: קבצים כמו `logo_profile.jpg`, `logo_v2.png`, `ml_v4.png` קיימים בתיקיית `public` אך לא נמצאו להם מופעים ישירים בקוד המקור הנוכחי)*
