@@ -31,7 +31,7 @@ export async function generateMetadata() {
 }
 
 async function getSalesProducts(search, brand, category, minPrice, maxPrice, sort, page, searchParams) {
-    const LIMIT = 16;
+    const LIMIT = 25;
     const OFFSET = (page - 1) * LIMIT;
 
     let query = `

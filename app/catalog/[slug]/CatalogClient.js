@@ -8,7 +8,7 @@ import { useCart } from "../../context/CartContext";
 import CustomDropdown from "../../components/ui/CustomDropdown";
 import { useLanguage } from "../../context/LanguageContext";
 
-const ITEMS_PER_PAGE = 16;
+const ITEMS_PER_PAGE = 25;
 
 // ─── Collapsible Section (same as FilterSidebar) ─────────────────────
 function CollapsibleSection({ title, children }) {

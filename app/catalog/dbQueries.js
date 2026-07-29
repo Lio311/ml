@@ -2,7 +2,7 @@ import pool, { withClient } from "../lib/db";
 import { sanitizeProductArray } from "../lib/productUtils";
 
 export async function getProducts(search, brand, category, minPrice, maxPrice, sort, page, searchParams) {
-    const LIMIT = 16;
+    const LIMIT = 25;
     const OFFSET = (page - 1) * LIMIT;
 
     const joinType = 'LEFT JOIN';
