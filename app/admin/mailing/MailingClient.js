@@ -233,7 +233,7 @@ export default function MailingClient() {
                     <tbody>
                         <tr style="border-bottom: 1px solid #f5f5f5;">
                             <td style="padding: 12px 10px; text-align: right; font-size: 14px; color: #333;">
-                                <img src="https://${brand.hyphen}.com/logo.png" width="40" style="vertical-align: middle; margin-left: 10px; border-radius: 6px; display: inline-block; border: 1px solid #f0f0f0; height: auto; max-height: 40px; object-fit: contain;" alt="product test" />
+                                <img src={`https://${brand.hyphen}.com/api/assets/logo?type=logo_email`} width="40" style="vertical-align: middle; margin-left: 10px; border-radius: 6px; display: inline-block; border: 1px solid #f0f0f0; height: auto; max-height: 40px; object-fit: contain;" alt="product test" />
                                 <span style="vertical-align: middle;">בושם לדוגמה טסט (10 מ"ל)</span>
                             </td>
                             <td style="padding: 12px 10px; text-align: center; font-size: 14px; color: #333;">1</td>
@@ -244,7 +244,7 @@ export default function MailingClient() {
             `,
             itemsHtmlAdmin: `
                 <li style="margin-bottom: 12px; border-bottom: 1px solid #f0f0f0; padding-bottom: 12px; display: table; width: 100%;">
-                    <div style="display: table-cell; vertical-align: middle; width: 50px;"><img src="https://${brand.hyphen}.com/logo.png" width="40" style="border-radius: 6px; border: 1px solid #f0f0f0; height: auto; max-height: 40px; object-fit: contain;" alt="product test" /></div>
+                    <div style="display: table-cell; vertical-align: middle; width: 50px;"><img src={`https://${brand.hyphen}.com/api/assets/logo?type=logo_email`} width="40" style="border-radius: 6px; border: 1px solid #f0f0f0; height: auto; max-height: 40px; object-fit: contain;" alt="product test" /></div>
                     <div style="display: table-cell; vertical-align: middle;">
                         <span style="font-weight: 900; color: #000;">בושם לדוגמה טסט ${brand.name}</span>
                         <div style="font-size: 12px; color: #666;">10ml x1</div>

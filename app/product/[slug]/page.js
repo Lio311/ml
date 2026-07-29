@@ -92,7 +92,7 @@ export async function generateMetadata(props) {
         const sampleLabel = locale === 'he' ? 'דוגמית בושם מקורית' : 'Original Perfume Sample';
         const title = `${localizedName} - ${sampleLabel}`;
         const description = localizedDesc ? localizedDesc.substring(0, 160) : t('common.buy_sample_at').replace('{name}', localizedName);
-        const rawImageUrl = product.image_url || `${baseUrl}/logo_v3.png`;
+        const rawImageUrl = product.image_url || `${baseUrl}/api/assets/logo?type=logo_fallback`;
         
         // Edge-compatible OG image API (since Fragrantica blocks Node.js serverless IPs)
         const brandStr = product.brand_he || product.brand || '';
@@ -318,7 +318,7 @@ export default async function ProductPage(props) {
         const cleanUrl = seoImageUrl.replace(/^https?:\/\//, '');
         seoImageUrl = `https://images.weserv.nl/?url=${encodeURIComponent(cleanUrl)}&w=800&q=80&bg=white&output=jpg`;
     } else {
-        seoImageUrl = `${baseUrl}/logo_v3.png`;
+        seoImageUrl = `${baseUrl}/api/assets/logo?type=logo_fallback`;
     }
 
     const buildOffer = (size, price) => ({

@@ -61,7 +61,7 @@ export default function Header({ brands = [] }) {
 
     const [menuItems, setMenuItems] = useState([]);
     const [menuLoading, setMenuLoading] = useState(true);
-    const [logoSrc, setLogoSrc] = useState('/logo_v5.png');
+    const [logoSrc, setLogoSrc] = useState('/api/assets/logo?type=logo_header');
     const [enableCatalogs, setEnableCatalogs] = useState(true);
 
     useEffect(() => {

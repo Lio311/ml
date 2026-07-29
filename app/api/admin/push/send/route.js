@@ -38,7 +38,7 @@ export async function POST(req) {
             title,
             body: message,
             url: url || '/',
-            icon: icon || '/logo_v3.png',
+            icon: icon || '/api/assets/logo?type=icon_192',
             image: image || null,
         });
 

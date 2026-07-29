@@ -178,7 +178,7 @@ export default async function AboutPage() {
             ? `Israel's leading shop for perfume samples, decants, and luxury niche fragrances. 100% original niche and boutique perfumes.`
             : `חנות דוגמיות בשמים, דיקאנטים ודוגמיות יוקרה הגדולה בישראל. בשמי נישה ובוטיק מקוריים (דיקנטים, דקנטים, דקאנטים).`,
         "url": brand.url,
-        "logo": `${brand.url}/logo_v5.png`,
+        "logo": `${brand.url}/api/assets/logo?type=logo_header`,
         "foundingDate": "2023",
         "address": {
             "@type": "PostalAddress",

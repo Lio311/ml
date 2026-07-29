@@ -204,7 +204,7 @@ export default async function BlogPost({ params }) {
                             "name": brand.hyphen,
                             "logo": {
                                 "@type": "ImageObject",
-                                "url": `${brand.url}/logo_v5.png`
+                                "url": `${brand.url}/api/assets/logo?type=logo_fallback`
                             }
                         },
                         "mainEntityOfPage": {

@@ -43,7 +43,7 @@ export async function generateMetadata(props) {
             title: t('common.magazine_title'),
             description: t('common.magazine_desc'),
             url: canonical,
-            images: ['/logo_v5.png'],
+            images: ['/api/assets/logo?type=logo_fallback'],
             type: 'website'
         }
     };
