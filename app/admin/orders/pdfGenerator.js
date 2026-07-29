@@ -34,7 +34,7 @@ export const generateFullOrderPDFDoc = async (order) => {
             <tr>
                 <td style="padding:4px 8px; border-bottom:1px solid #eee; text-align:right;">${index + 1}</td>
                 <td style="padding:4px 8px; border-bottom:1px solid #eee; text-align:right;" dir="auto">${name}</td>
-                <td style="padding:4px 8px; border-bottom:1px solid #eee; text-align:center;"><span dir="ltr">${size}</span></td>
+                <td style="padding:4px 8px; border-bottom:1px solid #eee; text-align:center;"><span dir="auto">${size}</span></td>
                 <td style="padding:4px 8px; border-bottom:1px solid #eee; text-align:center;">${qty}</td>
                 <td style="padding:4px 8px; border-bottom:1px solid #eee; text-align:left;">${price}</td>
             </tr>
@@ -54,7 +54,7 @@ export const generateFullOrderPDFDoc = async (order) => {
                     <td style="padding:4px 8px; border-bottom:1px solid #eee; text-align:right; font-size:10px; color:#666;" dir="auto">
                         ↳ ${subItem.brand || ''} ${subItem.model || ''}
                     </td>
-                    <td style="padding:4px 8px; border-bottom:1px solid #eee; text-align:center; font-size:10px; color:#666;"><span dir="ltr">${subSize}</span></td>
+                    <td style="padding:4px 8px; border-bottom:1px solid #eee; text-align:center; font-size:10px; color:#666;"><span dir="auto">${subSize}</span></td>
                     <td style="padding:4px 8px; border-bottom:1px solid #eee; text-align:center; font-size:10px; color:#666;">1</td>
                     <td style="padding:4px 8px; border-bottom:1px solid #eee; text-align:left;"></td>
                 </tr>
@@ -164,7 +164,7 @@ export const generateFullOrderPDFDoc = async (order) => {
         const pageWidth = doc.internal.pageSize.getWidth();
         const pageHeight = doc.internal.pageSize.getHeight();
         
-        const margin = 15; // 15mm margin
+        const margin = 25; // 25mm margin
         const usableHeight = pageHeight - (margin * 2);
         
         // Calculate image dimensions to fit A4 width

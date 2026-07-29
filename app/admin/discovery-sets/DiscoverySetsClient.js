@@ -97,15 +97,15 @@ export default function DiscoverySetsClient({ products: initialProducts, initial
                 toast.error("יש למלא כמות דוגמיות וגודל");
                 return;
             }
-            generatedVolume = `${tempGen.numberOfSamples} בקבוקונים של ${tempGen.sampleSize} מ״ל`;
-            generatedDesc = `גלו את עולמו הקסום של המותג ${form.brand} עם ערכת ההתנסות הרשמית והיוקרתית. הערכה כוללת ${tempGen.numberOfSamples} דוגמיות בנפח ${tempGen.sampleSize} מ״ל כל אחת, המאפשרות לכם לחוות את הניחוחות המובילים והאהובים ביותר של בית הבושם. הזדמנות מושלמת למצוא את חותם הריח הבא שלכם בנוחות של הבית, לפני התחייבות לבקבוק בגודל מלא.`;
+            generatedVolume = `${tempGen.numberOfSamples} בקבוקונים של ${tempGen.sampleSize}ml`;
+            generatedDesc = `גלו את עולמו הקסום של המותג ${form.brand} עם ערכת ההתנסות הרשמית והיוקרתית. הערכה כוללת ${tempGen.numberOfSamples} דוגמיות בנפח ${tempGen.sampleSize}ml כל אחת, המאפשרות לכם לחוות את הניחוחות המובילים והאהובים ביותר של בית הבושם. הזדמנות מושלמת למצוא את חותם הריח הבא שלכם בנוחות של הבית, לפני התחייבות לבקבוק בגודל מלא.`;
         } else {
             if (!tempGen.sampleSize) {
                 toast.error("יש למלא גודל דוגמית");
                 return;
             }
-            generatedVolume = `${tempGen.sampleSize} מ״ל`;
-            generatedDesc = `דוגמית רשמית ומקורית של המותג ${form.brand} בנפח ${tempGen.sampleSize} מ״ל. הדרך המושלמת והבטוחה להתנסות בניחוח היוקרתי על העור שלכם לאורך זמן, ולגלות איך הוא מתפתח במהלך היום לפני שמתחייבים לבקבוק המלא.`;
+            generatedVolume = `${tempGen.sampleSize}ml`;
+            generatedDesc = `דוגמית רשמית ומקורית של המותג ${form.brand} בנפח ${tempGen.sampleSize}ml. הדרך המושלמת והבטוחה להתנסות בניחוח היוקרתי על העור שלכם לאורך זמן, ולגלות איך הוא מתפתח במהלך היום לפני שמתחייבים לבקבוק המלא.`;
         }
 
         setForm({ ...form, description: generatedDesc, volume_label: generatedVolume });
@@ -484,7 +484,7 @@ export default function DiscoverySetsClient({ products: initialProducts, initial
                                     value={form.volume_label}
                                     onChange={e => setForm({ ...form, volume_label: e.target.value })}
                                     className="w-full px-4 py-2.5 rounded-xl border border-gray-200 focus:ring-2 focus:ring-black focus:border-transparent outline-none transition-all"
-                                    placeholder="לדוגמה: 5 בקבוקונים של 2 מ״ל"
+                                    placeholder="לדוגמה: 5 בקבוקונים של 2ml"
                                 />
                             </div>
 
