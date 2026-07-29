@@ -429,7 +429,7 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
             </div>
 
             {/* Main Chat Area */}
-            <div className={`flex-1 flex flex-col bg-white ${!activeConvId ? 'hidden md:flex items-center justify-center' : 'flex'}`}>
+            <div className={`flex-1 min-w-0 flex flex-col bg-white ${!activeConvId ? 'hidden md:flex items-center justify-center' : 'flex'}`}>
                 {!activeConvId ? (
                     <div className="text-center text-gray-400">
                         <MessageSquare className="w-16 h-16 mx-auto mb-4 opacity-20" />
