@@ -137,7 +137,7 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
             await fetch(`/api/inbox/${convId}/read`, { method: 'PATCH' });
             // Update counts locally
             setConversations(prev => prev.map(c => 
-                c.id === convId ? { ...c, unread_count: 0 } : c
+                String(c.id) === String(convId) ? { ...c, unread_count: 0 } : c
             ));
         } catch (err) {
             console.error("Failed to mark as read", err);
@@ -173,7 +173,7 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
         if (convId === 'new') return;
         
         // Find conversation in displays to see if it holds an order
-        const conv = displayConversations.find(c => c.id === convId);
+        const conv = displayConversations.find(c => String(c.id) === String(convId));
         if (conv?.order_id && !isPolling) {
             fetchOrderDetails(conv.order_id);
         }
@@ -195,7 +195,7 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
                     
                     // Update unread count locally
                     setConversations(prev => prev.map(c => 
-                        c.id === convId ? { ...c, unread_count: 0 } : c
+                        String(c.id) === String(convId) ? { ...c, unread_count: 0 } : c
                     ));
                 }
             }
@@ -205,7 +205,7 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
     };
 
     const getActiveDisplayConv = () => {
-        return displayConversations.find(c => c.id === activeConvId);
+        return displayConversations.find(c => String(c.id) === String(activeConvId));
     };
 
     const handleScroll = (e) => {
@@ -252,7 +252,7 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
                 } else {
                     setMessages(prev => [...prev, sentMsg]);
                     setConversations(prev => prev.map(c => 
-                        c.id === activeConvId ? { ...c, last_message: sentMsg.content, last_message_time: sentMsg.created_at } : c
+                        String(c.id) === String(activeConvId) ? { ...c, last_message: sentMsg.content, last_message_time: sentMsg.created_at } : c
                     ).sort((a,b) => new Date(b.last_message_time || 0) - new Date(a.last_message_time || 0)));
                 }
             } else {
@@ -382,9 +382,9 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
                             <button
                                 key={conv.id}
                                 onClick={() => setActiveConvId(conv.id)}
-                                className={`w-full text-right p-4 border-b border-gray-100 hover:bg-gray-100 transition flex items-center gap-3 ${activeConvId === conv.id ? 'bg-blue-50/50 relative' : ''}`}
+                                className={`w-full text-right p-4 border-b border-gray-100 hover:bg-gray-100 transition flex items-center gap-3 ${String(activeConvId) === String(conv.id) ? 'bg-blue-50/50 relative' : ''}`}
                             >
-                                {activeConvId === conv.id && <div className="absolute right-0 top-0 bottom-0 w-1 bg-black rounded-r-full" />}
+                                {String(activeConvId) === String(conv.id) && <div className="absolute right-0 top-0 bottom-0 w-1 bg-black rounded-r-full" />}
                                 
                                 <div className={`w-12 h-12 rounded-full flex-shrink-0 flex items-center justify-center overflow-hidden border relative ${((role === 'buyer' && !conv.catalog_id) || (role === 'seller' && !conv.catalog_id && conv.participant2_id === 'admin')) ? 'bg-white border-gray-100' : 'bg-gray-200 border-gray-300'}`}>
                                     {(role === 'buyer' && !conv.catalog_id) || (role === 'seller' && !conv.catalog_id && conv.participant2_id === 'admin') ? (
