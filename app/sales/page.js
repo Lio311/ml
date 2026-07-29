@@ -8,6 +8,7 @@ import SortSelect from "../catalog/SortSelect";
 import { mapHebrewQuery } from "../lib/hebrewMapping";
 import { cookies } from 'next/headers';
 import { getT } from '../lib/getT';
+import { getBrandName, getBrand } from '../lib/brand';
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
