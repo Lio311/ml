@@ -481,7 +481,7 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
                             onScroll={handleScroll}
                         >
                             {activeConversation?.order_id && orderData[activeConversation.order_id] && (
-                                <div className="mb-4 bg-white rounded-2xl py-3 px-4 border border-teal-100 shadow-sm flex flex-col gap-3">
+                                <div className="mb-4 bg-white rounded-2xl py-3 px-4 border border-teal-100 shadow-sm flex flex-col gap-3 w-full min-w-0">
                                     <div className="flex items-center justify-between">
                                         <div className="flex items-center gap-2">
                                             <div className={`w-2 h-2 rounded-full ${
@@ -507,7 +507,7 @@ export default function InboxClient({ role = 'buyer', catalogId = null, preSelec
                                         </Link>
                                     </div>
 
-                                    <div className="flex gap-4 overflow-x-auto pb-1 custom-scrollbar">
+                                    <div className="flex gap-4 overflow-x-auto pb-1 custom-scrollbar w-full min-w-0">
                                         {orderData[activeConversation.order_id].items?.map((item, idx) => (
                                             <div key={idx} className="flex items-center gap-2 bg-gray-50/80 rounded-xl p-1.5 border border-gray-100/50 flex-shrink-0 group hover:bg-white hover:shadow-sm transition-all duration-300">
                                                 <div className="w-10 h-10 rounded-lg overflow-hidden border border-gray-100 bg-white relative">
