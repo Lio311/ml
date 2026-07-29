@@ -42,17 +42,23 @@ export const generateFullOrderPDFDoc = async (order) => {
         
         let subRows = [];
         if (item.type === 'bundle' && Array.isArray(item.items) && item.items.length > 0) {
-            subRows = item.items.map((subItem) => `
+            subRows = item.items.map((subItem) => {
+                let subRawSize = subItem.volume_label || subItem.size;
+                if (typeof subRawSize === 'string') {
+                    subRawSize = subRawSize.replace('מ״ל', 'ml').trim();
+                }
+                const subSize = subRawSize ? (String(subRawSize).toLowerCase().includes('ml') ? subRawSize : `${subRawSize} ml`) : '';
+                return `
                 <tr>
                     <td style="padding:4px 8px; border-bottom:1px solid #eee; text-align:right;"></td>
                     <td style="padding:4px 8px; border-bottom:1px solid #eee; text-align:right; font-size:10px; color:#666;" dir="auto">
                         ↳ ${subItem.brand || ''} ${subItem.model || ''}
                     </td>
-                    <td style="padding:4px 8px; border-bottom:1px solid #eee; text-align:center; font-size:10px; color:#666;"><span dir="ltr">${size}</span></td>
+                    <td style="padding:4px 8px; border-bottom:1px solid #eee; text-align:center; font-size:10px; color:#666;"><span dir="ltr">${subSize}</span></td>
                     <td style="padding:4px 8px; border-bottom:1px solid #eee; text-align:center; font-size:10px; color:#666;">1</td>
                     <td style="padding:4px 8px; border-bottom:1px solid #eee; text-align:left;"></td>
                 </tr>
-            `);
+            `});
         }
         
         return [mainRow, ...subRows];
@@ -158,22 +164,29 @@ export const generateFullOrderPDFDoc = async (order) => {
         const pageWidth = doc.internal.pageSize.getWidth();
         const pageHeight = doc.internal.pageSize.getHeight();
         
-        // Calculate image dimensions to fit A4 width with margins
+        const margin = 15; // 15mm margin
+        const usableHeight = pageHeight - (margin * 2);
+        
+        // Calculate image dimensions to fit A4 width
         const imgWidth = pageWidth;
         const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
-        // If content is taller than one page, we may need to split
         const imgData = canvas.toDataURL('image/jpeg', 0.92);
         
-        if (imgHeight <= pageHeight) {
-            doc.addImage(imgData, 'JPEG', 0, 0, imgWidth, imgHeight);
+        if (imgHeight <= usableHeight) {
+            doc.addImage(imgData, 'JPEG', 0, margin, imgWidth, imgHeight);
         } else {
             // Multi-page: slice the canvas
-            const totalPages = Math.ceil(imgHeight / pageHeight);
+            const totalPages = Math.ceil(imgHeight / usableHeight);
             for (let page = 0; page < totalPages; page++) {
                 if (page > 0) doc.addPage();
-                const yOffset = -(page * pageHeight);
+                const yOffset = margin - (page * usableHeight);
                 doc.addImage(imgData, 'JPEG', 0, yOffset, imgWidth, imgHeight);
+                
+                // Mask the top and bottom to create clean margins
+                doc.setFillColor(255, 255, 255);
+                doc.rect(0, 0, pageWidth, margin, 'F'); // Top margin
+                doc.rect(0, pageHeight - margin, pageWidth, margin, 'F'); // Bottom margin
             }
         }
 
