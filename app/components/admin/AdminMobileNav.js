@@ -180,7 +180,7 @@ export default function AdminMobileNav({ role = 'customer' }) {
     useEffect(() => {
         const fetchCounts = async () => {
             try {
-                const res = await fetch('/api/admin/counts');
+                const res = await fetch(`/api/admin/counts?t=${Date.now()}`, { cache: 'no-store' });
                 if (res.ok) {
                     const data = await res.json();
                     setUnreadCount(data.unreadInbox || 0);
@@ -199,10 +199,10 @@ export default function AdminMobileNav({ role = 'customer' }) {
             }
         };
 
-        if (isOpen) {
-            fetchCounts();
-        }
-    }, [isOpen]);
+        fetchCounts();
+        const interval = setInterval(fetchCounts, 30000);
+        return () => clearInterval(interval);
+    }, []);
 
     const isActive = (path) => {
         if (path === '/admin') return pathname === '/admin';
