@@ -50,7 +50,7 @@ const transporter = nodemailer.createTransport({
     },
 });
 
-export const sendEmail = async (to, subject, html, type = 'system', orderId = null, campaignId = null, attachments = [], skipShabbatCheck = false) => {
+export const sendEmail = async (to, subject, html, type = 'system', orderId = null, campaignId = null, attachments = [], skipShabbatCheck = false, replyTo = null) => {
     if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
         console.warn("Skipping email send: Missing EMAIL_USER or EMAIL_PASS environment variables.");
         return;
@@ -160,6 +160,10 @@ export const sendEmail = async (to, subject, html, type = 'system', orderId = nu
             html: finalHtml,
             attachments
         };
+        
+        if (replyTo) {
+            mailOptions.replyTo = replyTo;
+        }
 
         if (Array.isArray(finalTo)) {
             if (finalTo.length === 0) {

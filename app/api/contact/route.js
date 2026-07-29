@@ -42,8 +42,9 @@ export async function POST(req) {
             return NextResponse.json({ success: true });
         }
 
-        // Send to admin email (GMAIL_USER)
-        await sendEmail(process.env.GMAIL_USER || process.env.EMAIL_USER, subject, html, 'contact_form_alert');
+        // Send to admin email
+        const adminEmail = process.env.ADMIN_EMAIL || process.env.EMAIL_USER;
+        await sendEmail(adminEmail, subject, html, 'contact_form_alert', null, null, [], false, email);
 
         // Update visual workflow last_run
         await pool.query(`
