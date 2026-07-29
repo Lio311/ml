@@ -10,7 +10,7 @@ export const DEFAULT_LOGOS = {
     icon_apple: '/apple-touch-icon.png',
     icon_192: '/icon-192.png',
     icon_512: '/icon-512.png',
-    favicon: '/favicon.ico'
+    favicon: '/favicon.svg'
 };
 
 async function ensureTable(client) {
