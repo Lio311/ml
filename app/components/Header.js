@@ -70,7 +70,7 @@ export default function Header({ brands = [] }) {
                 const res = await fetch('/api/admin/logo');
                 if (res.ok) {
                     const data = await res.json();
-                    if (data.logoUrl) setLogoSrc(data.logoUrl);
+                    if (data.logos?.logo_header) setLogoSrc(data.logos.logo_header);
                 }
             } catch (e) { /* keep default */ }
         };

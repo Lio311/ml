@@ -15,12 +15,13 @@ export default function CImage({ unoptimized, onError, ...props }) {
     
     // Check for global override via environment variable
     const globalUnoptimized = process.env.NEXT_PUBLIC_DISABLE_IMAGE_OPTIMIZATION === 'true';
+    const isLogoRedirect = typeof props.src === 'string' && props.src.includes('/api/assets/logo');
 
     return (
         <Image
             alt={props.alt || ""}
             {...props}
-            unoptimized={unoptimized || fallback || globalUnoptimized}
+            unoptimized={unoptimized || fallback || globalUnoptimized || isLogoRedirect}
             onError={(e) => {
                 // If we haven't already fallen back, and it's not explicitly unoptimized
                 if (!fallback && !unoptimized && !globalUnoptimized) {
