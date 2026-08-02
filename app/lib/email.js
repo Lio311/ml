@@ -50,13 +50,24 @@ const transporter = nodemailer.createTransport({
     },
 });
 
+// Admin email types that should ALWAYS be sent immediately, even on Shabbat
+const ADMIN_BYPASS_TYPES = [
+    'admin_alert',
+    'contact_form_alert',
+    'system',           // System notifications (inbox messages, etc.)
+    'daily_summary',
+];
+
 export const sendEmail = async (to, subject, html, type = 'system', orderId = null, campaignId = null, attachments = [], skipShabbatCheck = false, replyTo = null) => {
     if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS) {
         console.warn("Skipping email send: Missing EMAIL_USER or EMAIL_PASS environment variables.");
         return;
     }
 
-    if (!skipShabbatCheck && isShabbat()) {
+    // Auto-bypass Shabbat check for admin notification types
+    const isAdminType = ADMIN_BYPASS_TYPES.includes(type);
+
+    if (!skipShabbatCheck && !isAdminType && isShabbat()) {
         try {
             await pool.query(
                 `INSERT INTO queued_shabbat_emails (recipient, subject, html, type, order_id, campaign_id, attachments) 
