@@ -86,7 +86,7 @@ export async function POST(req) {
                         { firstName: first_name, lastName: last_name, email: email, name: first_name },
                         () => getAdminNewUserTemplate({ first_name, last_name, email })
                     );
-                    await sendEmail(adminEmail, adminTmpl.subject || 'משתמש חדש נרשם למערכת! ✨', adminTmpl.html, 'admin_alert');
+                    await sendEmail(adminEmail, adminTmpl.subject || 'משתמש חדש נרשם למערכת! ✨', adminTmpl.html, 'admin_alert', null, null, [], true);
                 }
 
                 const welcomeActive = await isAutomationActive('מייל ברוכים הבאים (למשתמש חדש)');

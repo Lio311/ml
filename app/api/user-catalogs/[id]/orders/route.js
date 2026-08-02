@@ -136,10 +136,10 @@ export async function POST(req, { params }) {
 
             // 2. Email to Catalog Owner
             const ownerHtml = getAdminNewOrderTemplate(orderId, `${user.firstName} ${user.lastName}`, total, items, deliveryText, "חינם", phoneNumber);
-            await sendEmail(catalogOwnerEmail, `הזמנה חדשה התקבלה בקטלוג שלך #${orderId} 🔥`, ownerHtml, 'admin_alert', orderId);
+            await sendEmail(catalogOwnerEmail, `הזמנה חדשה התקבלה בקטלוג שלך #${orderId} 🔥`, ownerHtml, 'admin_alert', orderId, null, [], true);
 
             // 3. Email to Site Admin
-            await sendEmail(adminEmail, `הזמנת קטלוג משתמש חדשה #${orderId} (${catalogName})`, ownerHtml, 'admin_alert', orderId);
+            await sendEmail(adminEmail, `הזמנת קטלוג משתמש חדשה #${orderId} (${catalogName})`, ownerHtml, 'admin_alert', orderId, null, [], true);
 
             return NextResponse.json({ success: true, orderId });
 

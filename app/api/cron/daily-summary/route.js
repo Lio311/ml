@@ -76,12 +76,15 @@ export async function GET(req) {
         const { html, subject } = await getTemplate('daily_summary', templateData, () => getDailySummaryTemplate(emails));
         const finalSubject = subject || `סיכום אימיילים יומי - ${new Date().toLocaleDateString('he-IL')}`;
 
-        // Send to admin
         await sendEmail(
             adminEmail,
             finalSubject,
             html,
-            'system'
+            'system',
+            null,
+            null,
+            [],
+            true
         );
 
         return NextResponse.json({ message: `Daily summary sent successfully to ${adminEmail}`, count: emails.length });

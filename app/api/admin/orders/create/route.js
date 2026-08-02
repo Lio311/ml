@@ -243,7 +243,7 @@ export async function POST(req) {
 
                 const adminEmail = process.env.ADMIN_EMAIL;
                 const adminAlertHtml = getAdminNewOrderTemplate(orderId, customerName, total, itemsHtmlAdmin, deliveryText, shippingText, phoneNumber || customer.phone);
-                await sendEmail(adminEmail, `הזמנה טלפונית חדשה! #${orderId} 🔥`, adminAlertHtml, 'admin_alert', orderId);
+                await sendEmail(adminEmail, `הזמנה טלפונית חדשה! #${orderId} 🔥`, adminAlertHtml, 'admin_alert', orderId, null, [], true);
             } catch (emailError) {
                 console.error('Email sending failed for phone order:', emailError);
                 // Don't rollback for email failures

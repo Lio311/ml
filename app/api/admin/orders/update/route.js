@@ -297,7 +297,7 @@ export async function POST(req) {
                 if (adminEmail) {
                     const { getAdminOrderUpdatedTemplate } = await import('../../../../lib/email');
                     const adminUpdateHtml = getAdminOrderUpdatedTemplate(orderId, customerName, total, deliveryMethod, changesSummary);
-                    await sendEmail(adminEmail, `הזמנה #${orderId} עודכנה בהצלחה 🔥`, adminUpdateHtml, 'admin_alert', orderId);
+                    await sendEmail(adminEmail, `הזמנה #${orderId} עודכנה בהצלחה 🔥`, adminUpdateHtml, 'admin_alert', orderId, null, [], true);
                 }
             } catch (emailError) {
                 console.error('Email sending failed for order update:', emailError);

@@ -282,7 +282,7 @@ export async function POST(req) {
                 
                 const adminEmail = process.env.ADMIN_EMAIL || process.env.EMAIL_USER;
                 if (adminEmail) {
-                    await sendEmail(adminEmail, subject, html, 'system');
+                    await sendEmail(adminEmail, subject, html, 'system', null, null, [], true);
                     console.log("DEBUG: POST /api/inbox - Sent email notification to admin");
                 }
             } catch (emailErr) {

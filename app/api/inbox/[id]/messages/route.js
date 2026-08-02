@@ -169,7 +169,7 @@ export async function POST(req, { params }) {
                 
                 const adminEmail = process.env.ADMIN_EMAIL || process.env.EMAIL_USER;
                 if (adminEmail) {
-                    await sendEmail(adminEmail, subject, html, 'system');
+                    await sendEmail(adminEmail, subject, html, 'system', null, null, [], true);
                     console.log("DEBUG: POST /api/inbox/messages - Sent email notification to admin");
                 }
             } catch (emailErr) {

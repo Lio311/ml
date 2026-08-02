@@ -44,7 +44,7 @@ export async function POST(req) {
 
         // Send to admin email
         const adminEmail = process.env.ADMIN_EMAIL || process.env.EMAIL_USER;
-        await sendEmail(adminEmail, subject, html, 'contact_form_alert', null, null, [], false, email);
+        await sendEmail(adminEmail, subject, html, 'contact_form_alert', null, null, [], true, email);
 
         // Update visual workflow last_run
         await pool.query(`

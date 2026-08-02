@@ -48,7 +48,11 @@ export async function GET(req) {
                     'lior31197@gmail.com',
                     subject,
                     html,
-                    'system'
+                    'system',
+                    null,
+                    null,
+                    [],
+                    true
                 );
             }
             return NextResponse.json({ message: 'Reminder sent to manager' });

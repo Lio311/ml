@@ -656,11 +656,11 @@ export async function POST(req) {
             
             if (catalogOwnerEmail) {
                 // Send to catalog owner
-                await sendEmail(catalogOwnerEmail, adminTmpl.subject, adminTmpl.html, 'admin_alert', orderId);
+                await sendEmail(catalogOwnerEmail, adminTmpl.subject, adminTmpl.html, 'admin_alert', orderId, null, [], true);
             }
             
             // Also send to main admin
-            await sendEmail(adminEmail, adminTmpl.subject, adminTmpl.html, 'admin_alert', orderId);
+            await sendEmail(adminEmail, adminTmpl.subject, adminTmpl.html, 'admin_alert', orderId, null, [], true);
 
             // Record Audit Log
             await recordAuditLog({
