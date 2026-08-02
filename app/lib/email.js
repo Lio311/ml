@@ -51,10 +51,11 @@ const transporter = nodemailer.createTransport({
 });
 
 // Admin email types that should ALWAYS be sent immediately, even on Shabbat
+// Note: 'system' is NOT included because it's the default type for sendEmail,
+// so including it would bypass Shabbat for ALL emails without an explicit type.
 const ADMIN_BYPASS_TYPES = [
     'admin_alert',
     'contact_form_alert',
-    'system',           // System notifications (inbox messages, etc.)
     'daily_summary',
 ];
 
@@ -136,7 +137,7 @@ export const sendEmail = async (to, subject, html, type = 'system', orderId = nu
         finalHtml = finalHtml.replace(/https:\/\/ml-tlv\.com/g, b.url);
         finalHtml = finalHtml.replace(/ml_tlv/g, b.name);
         finalHtml = finalHtml.replace(/ml-tlv(?!\.com)/g, b.hyphen);
-        finalHtml = finalHtml.replace(/(?<![a-zA-Z\d])ml\./g, b.dot);
+        finalHtml = finalHtml.replace(/(?<![a-zA-Z\d@/:.-])ml\.(?=[\s<&]|$)/g, b.dot);
 
         if (isMarketing) {
             const unsubscribeLink = Array.isArray(finalTo) 
