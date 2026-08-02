@@ -54,7 +54,7 @@ export async function GET(req) {
                 // But this cron runs on Sunday so it's fine).
                 await sendEmail(parsedRecipient, subject, html, type, order_id, campaign_id, parsedAttachments, true);
 
-                await client.query('UPDATE queued_shabbat_emails SET status = $1 WHERE id = $2', ['sent', id]);
+                await client.query('DELETE FROM queued_shabbat_emails WHERE id = $1', [id]);
                 processedCount++;
             } catch (e) {
                 console.error(`Error sending shabbat email ${id}:`, e);

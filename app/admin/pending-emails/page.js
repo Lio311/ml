@@ -260,6 +260,7 @@ export default async function PendingEmailsPage() {
     const shabbatRes = await pool.query(`
         SELECT id, recipient, subject, type, created_at, order_id, campaign_id, html
         FROM queued_shabbat_emails
+        WHERE status = 'pending'
         ORDER BY created_at ASC
     `);
 
