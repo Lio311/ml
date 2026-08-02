@@ -256,10 +256,28 @@ export default async function PendingEmailsPage() {
         scheduledDate: p.scheduledDate ? new Date(p.scheduledDate).toISOString() : null
     }));
 
+    // 7. Fetch Shabbat queued emails
+    const shabbatRes = await pool.query(`
+        SELECT id, recipient, subject, type, created_at, order_id, campaign_id, html
+        FROM queued_shabbat_emails
+        ORDER BY created_at ASC
+    `);
+
+    const shabbatEmails = shabbatRes.rows.map(row => ({
+        id: `shabbat_${row.id}`,
+        type: `ממתין למוצ"ש (${row.type})`,
+        recipient: row.recipient,
+        customerName: row.order_id ? `הזמנה #${row.order_id}` : (row.campaign_id ? `קמפיין #${row.campaign_id}` : '-'),
+        scheduledDate: null,
+        contentPreview: row.subject,
+        rawContent: row.html,
+        isShabbatQueued: true
+    }));
+
     return (
         <div className="min-h-screen">
             <h1 className="text-3xl font-bold mb-6 text-gray-800">מיילים בהמתנה</h1>
-            <PendingEmailsClient initialEmails={serializedPending} />
+            <PendingEmailsClient initialEmails={serializedPending} initialShabbatEmails={shabbatEmails} />
         </div>
     );
 }

@@ -81,6 +81,25 @@ export async function GET(req) {
     } catch (error) {
         await client.query('ROLLBACK');
         console.error('Error processing delayed emails:', error);
+        
+        try {
+            const adminEmail = process.env.ADMIN_EMAIL || process.env.EMAIL_USER;
+            if (adminEmail) {
+                await sendEmail(
+                    adminEmail,
+                    '🚨 CRON Error: process-delayed-emails',
+                    `<div dir="ltr"><p>An error occurred while processing delayed emails:</p><pre>${error.message}\n${error.stack}</pre></div>`,
+                    'system',
+                    null,
+                    null,
+                    [],
+                    true // skipShabbatCheck
+                );
+            }
+        } catch (alertError) {
+            console.error('Failed to send admin alert:', alertError);
+        }
+
         return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
     } finally {
         client.release();

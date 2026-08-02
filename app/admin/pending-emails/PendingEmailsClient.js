@@ -1,16 +1,18 @@
 "use client";
 import React, { useState } from 'react';
-import { Mail, Calendar, User, Eye, X, Send, Cpu, Package } from 'lucide-react';
+import { Mail, Calendar, User, Eye, X, Send, Cpu, Package, Moon } from 'lucide-react';
 import { he } from 'date-fns/locale';
 import { format } from 'date-fns';
 
-export default function PendingEmailsClient({ initialEmails }) {
+export default function PendingEmailsClient({ initialEmails, initialShabbatEmails = [] }) {
     const [emails, setEmails] = useState(initialEmails);
+    const [shabbatEmails, setShabbatEmails] = useState(initialShabbatEmails);
     const [selectedEmail, setSelectedEmail] = useState(null);
 
     const getIconForType = (type) => {
         if (type.includes('קמפיין')) return <Send className="w-4 h-4 text-blue-500" />;
         if (type.includes('המלצות')) return <Cpu className="w-4 h-4 text-purple-500" />;
+        if (type.includes('שבת') || type.includes('מוצ"ש')) return <Moon className="w-4 h-4 text-indigo-500" />;
         return <Package className="w-4 h-4 text-green-500" />;
     };
 
@@ -20,7 +22,8 @@ export default function PendingEmailsClient({ initialEmails }) {
     };
 
     // Calculate time until send
-    const getTimeUntil = (dateString) => {
+    const getTimeUntil = (dateString, isShabbatQueued) => {
+        if (isShabbatQueued) return 'ממתין למוצ"ש';
         if (!dateString) return 'בהקדם האפשרי';
         const diff = new Date(dateString).getTime() - new Date().getTime();
         if (diff < 0) return 'אמור להישלח (ממתין לתור)';
@@ -33,12 +36,12 @@ export default function PendingEmailsClient({ initialEmails }) {
         return 'בקרוב מאוד';
     };
 
-    return (
-        <div className="w-full">
-            {emails.length === 0 ? (
+    const renderEmailList = (emailList, emptyMessage) => (
+        <>
+            {emailList.length === 0 ? (
                 <div className="bg-white rounded-2xl shadow p-8 text-center">
                     <Mail className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-                    <p className="text-gray-500 text-lg">אין כרגע מיילים מתוזמנים בהמתנה.</p>
+                    <p className="text-gray-500 text-lg">{emptyMessage}</p>
                 </div>
             ) : (
                 <>
@@ -55,7 +58,7 @@ export default function PendingEmailsClient({ initialEmails }) {
                                 </tr>
                             </thead>
                             <tbody>
-                                {emails.map((email) => (
+                                {emailList.map((email) => (
                                     <tr key={email.id} className="border-b last:border-0 hover:bg-gray-50 transition">
                                         <td className="p-4">
                                             <div className="flex items-center gap-2">
@@ -69,7 +72,7 @@ export default function PendingEmailsClient({ initialEmails }) {
                                         </td>
                                         <td className="p-4">
                                             <div className="text-gray-800">{formatDate(email.scheduledDate)}</div>
-                                            <div className="text-xs text-blue-600 font-medium">{getTimeUntil(email.scheduledDate)}</div>
+                                            <div className="text-xs text-blue-600 font-medium">{getTimeUntil(email.scheduledDate, email.isShabbatQueued)}</div>
                                         </td>
                                         <td className="p-4 text-gray-600 truncate max-w-[200px]" title={email.contentPreview}>
                                             {email.contentPreview}
@@ -91,7 +94,7 @@ export default function PendingEmailsClient({ initialEmails }) {
 
                     {/* Mobile View: Cards */}
                     <div className="grid grid-cols-1 gap-4 md:hidden">
-                        {emails.map((email) => (
+                        {emailList.map((email) => (
                             <div key={email.id} className="bg-white rounded-2xl shadow p-5 flex flex-col gap-3 relative overflow-hidden">
                                 <div className="flex items-center gap-2 border-b pb-3">
                                     <div className="p-2 bg-gray-50 rounded-xl">
@@ -116,7 +119,7 @@ export default function PendingEmailsClient({ initialEmails }) {
                                         <Calendar className="w-4 h-4 text-gray-400" />
                                         <span>{formatDate(email.scheduledDate)}</span>
                                     </div>
-                                    <span className="text-xs text-blue-600 font-medium bg-blue-50 px-2 py-1 rounded-full">{getTimeUntil(email.scheduledDate)}</span>
+                                    <span className="text-xs text-blue-600 font-medium bg-blue-50 px-2 py-1 rounded-full">{getTimeUntil(email.scheduledDate, email.isShabbatQueued)}</span>
                                 </div>
 
                                 <div className="mt-2 flex items-center justify-between bg-gray-50 p-2 rounded-xl">
@@ -133,6 +136,23 @@ export default function PendingEmailsClient({ initialEmails }) {
                     </div>
                 </>
             )}
+        </>
+    );
+
+    return (
+        <div className="w-full flex flex-col gap-8">
+            <section>
+                <h2 className="text-2xl font-bold mb-4 text-gray-800">מיילים מתוזמנים</h2>
+                {renderEmailList(emails, 'אין כרגע מיילים מתוזמנים בהמתנה.')}
+            </section>
+
+            <section>
+                <h2 className="text-2xl font-bold mb-4 text-indigo-800 flex items-center gap-2">
+                    <Moon className="w-6 h-6" />
+                    ממתינים למוצ״ש (במצב שבת)
+                </h2>
+                {renderEmailList(shabbatEmails, 'אין מיילים שממתינים למוצ״ש.')}
+            </section>
 
             {/* Modal for Raw Content */}
             {selectedEmail && (
@@ -158,7 +178,7 @@ export default function PendingEmailsClient({ initialEmails }) {
                             </div>
                             
                             {selectedEmail.rawContent ? (
-                                selectedEmail.type === 'קמפיין דיוור' ? (
+                                (selectedEmail.type === 'קמפיין דיוור' || selectedEmail.isShabbatQueued) ? (
                                     <div 
                                         className="prose prose-sm max-w-none border rounded-xl p-4 bg-gray-50"
                                         dangerouslySetInnerHTML={{ __html: selectedEmail.rawContent }} 

@@ -3,6 +3,17 @@ import pool from '@/app/lib/db';
 import { sendEmail } from '@/app/lib/email';
 import { checkCronOrAdmin } from "@/app/lib/admin";
 
+async function sendAdminAlert(subject, message) {
+    const adminEmail = process.env.ADMIN_EMAIL || process.env.EMAIL_USER;
+    if (adminEmail) {
+        const html = `<div dir="ltr" style="font-family: sans-serif; padding: 20px;">
+            <h2>${subject}</h2>
+            <p>${message}</p>
+        </div>`;
+        await sendEmail(adminEmail, subject, html, 'system', null, null, [], true);
+    }
+}
+
 export async function GET(req) {
     const isAuthorized = await checkCronOrAdmin(req);
     if (!isAuthorized) {
@@ -48,6 +59,10 @@ export async function GET(req) {
             } catch (e) {
                 console.error(`Error sending shabbat email ${id}:`, e);
                 await client.query('UPDATE queued_shabbat_emails SET status = $1 WHERE id = $2', ['failed', id]);
+                await sendAdminAlert(
+                    'Shabbat Queue Error: Failed to send email',
+                    `Failed to send email with ID: ${id}.<br>Error: ${e.message}`
+                );
             }
         }
 
@@ -57,6 +72,10 @@ export async function GET(req) {
     } catch (error) {
         await client.query('ROLLBACK');
         console.error('Error processing shabbat emails:', error);
+        await sendAdminAlert(
+            'Shabbat Queue CRITICAL Error',
+            `The Shabbat queue processor failed completely.<br>Error: ${error.message}`
+        );
         return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
     } finally {
         client.release();
