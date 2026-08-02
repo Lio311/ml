@@ -136,6 +136,7 @@ export const sendEmail = async (to, subject, html, type = 'system', orderId = nu
         finalHtml = finalHtml.replace(/https:\/\/ml-tlv\.com/g, b.url);
         finalHtml = finalHtml.replace(/ml_tlv/g, b.name);
         finalHtml = finalHtml.replace(/ml-tlv(?!\.com)/g, b.hyphen);
+        finalHtml = finalHtml.replace(/(?<![a-zA-Z\d])ml\./g, b.dot);
 
         if (isMarketing) {
             const unsubscribeLink = Array.isArray(finalTo) 
