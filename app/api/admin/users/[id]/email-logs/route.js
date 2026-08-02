@@ -33,7 +33,7 @@ export async function GET(req, { params }) {
         const logsRes = await pool.query(
             `SELECT id, order_id, sent_at, campaign_id, status, error_message, recipient, subject, type 
              FROM email_logs 
-             WHERE ${conditions.join(' OR ')}
+             WHERE (${conditions.join(' OR ')}) AND status != 'processing'
              ORDER BY sent_at DESC
              LIMIT 50`,
             queryParams

@@ -22,6 +22,7 @@ export async function GET(req) {
             FROM email_logs 
             WHERE (sent_at AT TIME ZONE 'Asia/Jerusalem')::date = (NOW() AT TIME ZONE 'Asia/Jerusalem')::date
             AND TRIM(recipient) != $1
+            AND status != 'processing'
             ORDER BY sent_at DESC
         `, [adminEmail]);
 
