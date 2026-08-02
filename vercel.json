@@ -46,7 +46,7 @@
         },
         {
             "path": "/api/cron/process-shabbat-queue",
-            "schedule": "0 19 * * 6"
+            "schedule": "0 18 * * 6"
         }
     ]
 }
