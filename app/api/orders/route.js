@@ -428,7 +428,7 @@ export async function POST(req) {
             // We save minimal user info snapshot for the order record
             const customerDetails = {
                 clerk_id: userId || null,
-                name: body.customerDetails?.name || (user ? `${user.firstName} ${user.lastName}` : ''),
+                name: body.customerDetails?.name || (user ? `${user.firstName || ''} ${user.lastName || ''}`.trim() : 'אורח'),
                 email: body.customerDetails?.email || (user ? user.emailAddresses[0].emailAddress : ''),
                 phone: phoneNumber || '',
                 shipping_cost: shippingCost || 0,
@@ -445,7 +445,8 @@ export async function POST(req) {
             const orderId = orderResult.rows[0].id;
 
             // 1.1 Insert Notification for Admin
-            await notifyAdmin('info', `הזמנה חדשה! #${orderId} - ${user.firstName} ${user.lastName}`, client);
+            const customerFullName = body.customerDetails?.name || (user ? `${user.firstName || ''} ${user.lastName || ''}`.trim() : 'אורח');
+            await notifyAdmin('info', `הזמנה חדשה! #${orderId} - ${customerFullName}`, client);
 
             // 2. Update Stock
             for (const item of items) {
