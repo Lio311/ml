@@ -133,7 +133,7 @@ export default function ProductCard({ product }) {
                 )}
 
                 {/* Low Stock / Out of Stock Badge */}
-                {((product.stock || 0) <= 20) && !product.is_discovery_set && (
+                {((product.stock || 0) <= 20) && !product.is_discovery_set && !product.is_preorder && (
                     <div className={`text-[9px] leading-3 font-bold px-1.5 py-1 rounded shadow-sm text-center text-white whitespace-nowrap pointer-events-auto cursor-default ${(product.stock || 0) <= 0 ? 'bg-gray-400' : 'bg-red-600'}`}>
                         {(product.stock || 0) <= 0 ? (
                             <span>{t('common.out_of_stock')}</span>
