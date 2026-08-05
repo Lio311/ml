@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server';
 import { currentUser } from '@clerk/nextjs/server';
 import pool from '@/app/lib/db';
-import { revalidatePath } from 'next/cache';
+import { revalidatePath, revalidateTag } from 'next/cache';
 import { sendEmail, getTemplate, getStatusUpdateTemplate } from '@/app/lib/email';
 import { recordAuditLog } from '@/app/lib/audit';
 import { auth as clerkAuth } from '@clerk/nextjs/server';
@@ -200,6 +200,8 @@ export async function POST(req) {
         }
 
         revalidatePath('/admin/orders');
+        revalidateTag('home-data');
+        revalidatePath('/');
 
         const authData = await clerkAuth();
         await recordAuditLog({
