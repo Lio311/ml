@@ -56,6 +56,7 @@ import {
 } from "lucide-react";
 import { SignOutButton } from "@clerk/nextjs";
 import { useBrand } from "../../context/BrandContext";
+import NotificationBell from "./NotificationBell";
 
 const navGroups = [
     {
@@ -243,7 +244,8 @@ export default function AdminMobileNav({ role = 'customer' }) {
                     </h2>
                 </div>
 
-                <div className="flex items-center">
+                <div className="flex items-center gap-1">
+                    <NotificationBell isDark={true} />
                     <button 
                         onClick={() => setIsOpen(!isOpen)}
                         className="text-white p-2 rounded-xl border border-white/10 bg-white/5 relative"

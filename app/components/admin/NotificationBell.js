@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Bell, Trash2, BellRing } from 'lucide-react';
 import toast from 'react-hot-toast';
 
-export default function NotificationBell() {
+export default function NotificationBell({ isDark = false }) {
     const [notifications, setNotifications] = useState([]);
     const [unreadCount, setUnreadCount] = useState(0);
     const [isOpen, setIsOpen] = useState(false);
@@ -137,9 +137,9 @@ export default function NotificationBell() {
                     setIsOpen(!isOpen);
                     if (!isOpen) markAsRead();
                 }}
-                className="relative p-2 rounded-full hover:bg-gray-100 transition"
+                className={`relative p-2 rounded-full transition ${isDark ? 'hover:bg-white/10' : 'hover:bg-gray-100'}`}
             >
-                <Bell className="w-6 h-6 text-gray-600" />
+                <Bell className={`w-6 h-6 ${isDark ? 'text-gray-300' : 'text-gray-600'}`} />
                 {unreadCount > 0 && (
                     <span className="absolute top-0 right-0 w-4 h-4 bg-red-500 text-white text-[10px] font-bold flex items-center justify-center rounded-full animate-pulse">
                         {unreadCount}

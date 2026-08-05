@@ -41,7 +41,7 @@ export default async function AdminLayout({ children }) {
             <AdminMobileNav role={currentRole === 'viewer' ? 'admin' : currentRole} />
             <AdminSidebar role={currentRole === 'viewer' ? 'admin' : currentRole} />
             <main className="flex-1 p-4 pt-20 md:p-8 md:pt-8 w-full overflow-x-hidden md:overflow-y-auto bg-gray-100 flex flex-col relative">
-                <div className="max-w-7xl mx-auto w-full flex justify-end h-0 overflow-visible relative z-30">
+                <div className="max-w-7xl mx-auto w-full justify-end h-0 overflow-visible relative z-30 hidden md:flex">
                     <NotificationBell />
                 </div>
                 <div className="max-w-7xl mx-auto w-full pt-4 md:pt-0">
