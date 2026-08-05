@@ -623,7 +623,7 @@ export async function POST(req) {
 
             // Send Admin and Catalog Owner Alerts
             const orderDateStr = new Intl.DateTimeFormat('he-IL', { dateStyle: 'short', timeStyle: 'short', timeZone: 'Asia/Jerusalem' }).format(new Date());
-            const customerFullName = `${user.firstName} ${user.lastName || ''}`.trim();
+
             const adminTmpl = await getTemplate('admin_order_alert', 
                 { 
                     orderId, 
