@@ -5,6 +5,7 @@ import { sendEmail, getOrderConfirmationTemplate, getAdminNewOrderTemplate, form
 import { recordAuditLog } from '../../../../lib/audit';
 import { checkAdmin } from '../../../../lib/admin';
 import { getBrandName } from '../../../../lib/brand';
+import { notifyAdmin } from '../../../../lib/notifications';
 
 export async function POST(req) {
     try {
@@ -104,10 +105,7 @@ export async function POST(req) {
 
             // 3.1 Notify Admin of Phone Order
             const customerFullName = `${customer.first_name || ''} ${customer.last_name || ''}`.trim();
-            await client.query(
-                `INSERT INTO notifications (type, message, is_read) VALUES ($1, $2, $3)`,
-                ['info', `הזמנה טלפונית חדשה! #${orderId} - ${customerFullName}`, false]
-            );
+            await notifyAdmin('info', `הזמנה טלפונית חדשה! #${orderId} - ${customerFullName}`, client);
 
             // 4. Update Stock & Bottle Inventory
             const notifiedProducts = new Set();
@@ -138,10 +136,7 @@ export async function POST(req) {
                                 
                                 if (currentStock < originalSize * 0.2) {
                                     if (!notifiedProducts.has(innerDbId)) {
-                                        await client.query(
-                                            `INSERT INTO notifications (type, message, is_read) VALUES ($1, $2, $3)`,
-                                            ['warning', `מלאי נמוך למוצר: ${pName} (נותרו \u200E${currentStock} מ"ל)`, false]
-                                        );
+                                        await notifyAdmin('warning', `מלאי נמוך למוצר: ${pName} (נותרו \u200E${currentStock} מ"ל)`, client);
                                         notifiedProducts.add(innerDbId);
                                     }
                                 }
@@ -158,10 +153,7 @@ export async function POST(req) {
 
                         if (bottleRes.rows[0] && bottleRes.rows[0].quantity < 20) {
                             const sizeLabel = `${bundleSize}ml`;
-                            await client.query(
-                                `INSERT INTO notifications (type, message, is_read) VALUES ($1, $2, $3)`,
-                                ['warning', `מלאי בקבוקים נמוך: ${sizeLabel} (נותרו \u200E${bottleRes.rows[0].quantity})`, false]
-                            );
+                            await notifyAdmin('warning', `מלאי בקבוקים נמוך: ${sizeLabel} (נותרו \u200E${bottleRes.rows[0].quantity})`, client);
                         }
                     }
                     continue;
@@ -192,10 +184,7 @@ export async function POST(req) {
                         if (currentStock < originalSize * 0.2) {
                             if (!notifiedProducts.has(dbId)) {
                                 const unitLabel = item.is_discovery_set ? 'יחידות' : 'מ"ל';
-                                await client.query(
-                                    `INSERT INTO notifications (type, message, is_read) VALUES ($1, $2, $3)`,
-                                    ['warning', `מלאי נמוך למוצר: ${pName} (נותרו \u200E${currentStock} ${unitLabel})`, false]
-                                );
+                                await notifyAdmin('warning', `מלאי נמוך למוצר: ${pName} (נותרו \u200E${currentStock} ${unitLabel})`, client);
                                 notifiedProducts.add(dbId);
                             }
                         }
@@ -213,10 +202,7 @@ export async function POST(req) {
                             if (bottleRes.rows[0] && bottleRes.rows[0].quantity < 20) {
                                 const sizeLabel = `${bottleSize}ml`;
                                 // RTL Fix: wrap number in LRM \u200E
-                                await client.query(
-                                    `INSERT INTO notifications (type, message, is_read) VALUES ($1, $2, $3)`,
-                                    ['warning', `מלאי בקבוקים נמוך: ${sizeLabel} (נותרו \u200E${bottleRes.rows[0].quantity})`, false]
-                                );
+                                await notifyAdmin('warning', `מלאי בקבוקים נמוך: ${sizeLabel} (נותרו \u200E${bottleRes.rows[0].quantity})`, client);
                             }
                         }
                     }

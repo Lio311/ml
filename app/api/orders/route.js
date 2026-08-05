@@ -5,6 +5,7 @@ import { sendEmail, getTemplate, getOrderConfirmationTemplate, getAdminNewOrderT
 import { recordAuditLog } from '@/app/lib/audit';
 import { getBrandName } from '@/app/lib/brand';
 import * as Sentry from "@sentry/nextjs";
+import { notifyAdmin } from '@/app/lib/notifications';
 
 export async function POST(req) {
     let userId = null;
@@ -444,10 +445,7 @@ export async function POST(req) {
             const orderId = orderResult.rows[0].id;
 
             // 1.1 Insert Notification for Admin
-            await client.query(
-                `INSERT INTO notifications (type, message, is_read) VALUES ($1, $2, $3)`,
-                ['info', `הזמנה חדשה! #${orderId} - ${user.firstName} ${user.lastName}`, false]
-            );
+            await notifyAdmin('info', `הזמנה חדשה! #${orderId} - ${user.firstName} ${user.lastName}`, client);
 
             // 2. Update Stock
             for (const item of items) {
@@ -477,10 +475,7 @@ export async function POST(req) {
                                 const originalSize = Number(stockRes.rows[0].original_size || 100);
                                 if (currentStock < originalSize * 0.2) {
                                     const pName = stockRes.rows[0].name_he || stockRes.rows[0].name || 'מוצר לא ידוע';
-                                    await client.query(
-                                        `INSERT INTO notifications (type, message, is_read) VALUES ($1, $2, $3)`,
-                                        ['warning', `מלאי נמוך למוצר: ${pName} (נותרו \u200E${currentStock} מ"ל)`, false]
-                                    );
+                                    await notifyAdmin('warning', `מלאי נמוך למוצר: ${pName} (נותרו \u200E${currentStock} מ"ל)`, client);
                                 }
                             }
                         }
@@ -495,10 +490,7 @@ export async function POST(req) {
                         );
 
                         if (bottleRes.rows[0] && bottleRes.rows[0].quantity < 20) {
-                            await client.query(
-                                `INSERT INTO notifications (type, message, is_read) VALUES ($1, $2, $3)`,
-                                ['warning', `מלאי בקבוקים נמוך: ${bundleSize}ml (נותרו \u200E${bottleRes.rows[0].quantity})`, false]
-                            );
+                            await notifyAdmin('warning', `מלאי בקבוקים נמוך: ${bundleSize}ml (נותרו \u200E${bottleRes.rows[0].quantity})`, client);
                         }
                     }
                 } else if (!item.isPrize && (!isNaN(item.size) || item.size === 'set' || item.is_discovery_set) && !isNaN(dbId)) {
@@ -517,10 +509,7 @@ export async function POST(req) {
                         if (currentStock < threshold) {
                             const pName = stockRes.rows[0].name_he || stockRes.rows[0].name || 'מוצר לא ידוע';
                             // RTL Fix: wrap number in LRM \u200E
-                            await client.query(
-                                `INSERT INTO notifications (type, message, is_read) VALUES ($1, $2, $3)`,
-                                ['warning', `מלאי נמוך למוצר: ${pName} (נותרו \u200E${currentStock} מ"ל)`, false]
-                            );
+                            await notifyAdmin('warning', `מלאי נמוך למוצר: ${pName} (נותרו \u200E${currentStock} מ"ל)`, client);
                         }
                     }
 
@@ -535,10 +524,7 @@ export async function POST(req) {
                         if (bottleRes.rows[0] && bottleRes.rows[0].quantity < 20) {
                             const sizeLabel = `${bottleSize}ml`;
                             // RTL Fix: wrap number in LRM \u200E
-                            await client.query(
-                                `INSERT INTO notifications (type, message, is_read) VALUES ($1, $2, $3)`,
-                                ['warning', `מלאי בקבוקים נמוך: ${sizeLabel} (נותרו \u200E${bottleRes.rows[0].quantity})`, false]
-                            );
+                            await notifyAdmin('warning', `מלאי בקבוקים נמוך: ${sizeLabel} (נותרו \u200E${bottleRes.rows[0].quantity})`, client);
                         }
                     }
                 }

@@ -6,6 +6,7 @@ import pool from '../../../lib/db';
 import { sendEmail, getTemplate, getAdminNewUserTemplate, getUserWelcomeTemplate } from '../../../lib/email';
 import { getBrandName } from '../../../lib/brand';
 import { isAutomationActive } from '../../../lib/automationConfig';
+import { notifyAdmin } from '../../../lib/notifications';
 
 export async function POST(req) {
     const WEBHOOK_SECRET = process.env.CLERK_WEBHOOK_SECRET;
@@ -74,10 +75,7 @@ export async function POST(req) {
 
             if (eventType === 'user.created') {
                 const brandName = await getBrandName();
-                await client.query(
-                    `INSERT INTO notifications (type, message, is_read) VALUES ($1, $2, $3)`,
-                    ['user', `משתמש חדש נרשם: ${first_name || ''} ${last_name || ''}`, false]
-                );
+                await notifyAdmin('user', `משתמש חדש נרשם: ${first_name || ''} ${last_name || ''}`, client);
 
                 const adminActive = await isAutomationActive('התראת נרשם חדש (למנהל)');
                 if (adminActive) {

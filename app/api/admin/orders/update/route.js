@@ -5,6 +5,7 @@ import { sendEmail, getOrderUpdatedTemplate } from '../../../../lib/email';
 import { recordAuditLog } from '../../../../lib/audit';
 import { checkAdmin } from '../../../../lib/admin';
 import { getBrandName } from '../../../../lib/brand';
+import { notifyAdmin } from '../../../../lib/notifications';
 
 export async function POST(req) {
     try {
@@ -120,10 +121,7 @@ export async function POST(req) {
                             const originalSize = Number(stockRes.rows[0].original_size || 100);
                             if (currentStock < originalSize * 0.2) {
                                 const pName = stockRes.rows[0].name_he || stockRes.rows[0].name;
-                                await client.query(
-                                    `INSERT INTO notifications (type, message, is_read) VALUES ($1, $2, $3)`,
-                                    ['warning', `מלאי נמוך למוצר במארז (עקב עריכה): ${pName} (נותרו \u200E${currentStock} מ"ל)`, false]
-                                );
+                                await notifyAdmin('warning', `מלאי נמוך למוצר במארז (עקב עריכה): ${pName} (נותרו \u200E${currentStock} מ"ל)`, client);
                             }
                         }
                     }
@@ -160,10 +158,7 @@ export async function POST(req) {
                     const originalSize = Number(stockRes.rows[0].original_size || 100);
                     if (currentStock < originalSize * 0.2) {
                         const pName = stockRes.rows[0].name_he || stockRes.rows[0].name;
-                        await client.query(
-                            `INSERT INTO notifications (type, message, is_read) VALUES ($1, $2, $3)`,
-                            ['warning', `מלאי נמוך למוצר (עקב עריכה): ${pName} (נותרו \u200E${currentStock} מ"ל)`, false]
-                        );
+                        await notifyAdmin('warning', `מלאי נמוך למוצר (עקב עריכה): ${pName} (נותרו \u200E${currentStock} מ"ל)`, client);
                     }
 
                     // Bottle Inventory
