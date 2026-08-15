@@ -12,6 +12,9 @@ const BAD_BOTS = [
     'petalbot',
     'bytespider',
     'gptbot', // Open AI scraper
+    'anthropic-ai', // Claude scraper
+    'perplexitybot', // Perplexity AI
+    'google-extended', // Google Bard/Gemini scraper
     'ccbot'
 ];
 
@@ -52,7 +55,12 @@ export default clerkMiddleware(async (auth, req) => {
     }
 
     if (isBadBot(req)) {
-        return new NextResponse("Access Denied: Bot Detected", { status: 403 });
+        // AEO (Answer Engine Optimization) - Allow AI bots to read specific knowledge paths
+        if (url.pathname === '/llms.txt' || url.pathname.startsWith('/blog')) {
+            // Let them pass
+        } else {
+            return new NextResponse("Access Denied: Bot Detected", { status: 403 });
+        }
     }
 
     // Rate Limiting for API routes
