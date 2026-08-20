@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
+import Image from "@/app/components/CImage";
 import { useUser } from '@clerk/nextjs';
 import { useRouter } from 'next/navigation';
 import { Instagram, Send } from "lucide-react";
@@ -91,7 +91,8 @@ export default function MaintenanceClient({ brand: brandProp }) {
                         <rect x="240" y="190" width="260" height="140" rx="4" stroke="#bfdbfe" fill="#f8fafc" />
                         {/* Laptop Screen Content (Logo) */}
                         <image 
-                            href="/api/assets/logo?type=logo_header" 
+                            href="/api/assets/logo?type=logo_header"
+                            xlinkHref="/api/assets/logo?type=logo_header"
                             x="300" 
                             y="220" 
                             width="140" 
@@ -245,7 +246,7 @@ export default function MaintenanceClient({ brand: brandProp }) {
                     {/* Right Column (Logo & Text) */}
                     <div className="flex flex-col items-center md:items-start text-center md:text-right space-y-2 md:space-y-4 max-w-md shrink-0">
                         <div className="flex justify-center md:justify-start">
-                            <Image src="/api/assets/logo?type=logo_header" alt={brand.name} width={120} height={40} className="object-contain" />
+                            <Image src="/api/assets/logo?type=logo_header" alt={brand.name} width={120} height={40} className="object-contain" unoptimized />
                         </div>
                         <div className="space-y-1 md:space-y-2">
                             <h1 className="text-2xl md:text-3xl font-bold tracking-tight text-gray-800">האתר בשיפוצים</h1>
